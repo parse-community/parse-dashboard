@@ -1,10 +1,10 @@
-import * as ComponentsMap from 'PIG/ComponentsMap';
-import { Link } from 'react-router';
-import PropsTable from 'PIG/PropsTable.react';
-import React from 'react';
-import styles from 'PIG/PIG.scss';
-import beautify from 'js-beautify';
-import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
+import * as ComponentsMap from 'parse-interface-guide/ComponentsMap';
+import { Link }           from 'react-router';
+import PropsTable         from 'parse-interface-guide/PropsTable.react';
+import React              from 'react';
+import styles             from 'parse-interface-guide/PIG.scss';
+import beautify           from 'js-beautify';
+import CodeSnippet        from 'components/CodeSnippet/CodeSnippet.react';
 
 let PIGRow = ({ title, children }) => <div>
   <div className={styles.header}>{title}</div>

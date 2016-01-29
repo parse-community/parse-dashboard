@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from 'PIG/PIG.scss';
+import React  from 'react';
+import styles from 'parse-interface-guide/PIG.scss';
 
 function typeString(prop) {
   switch (prop._id) {
