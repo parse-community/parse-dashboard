@@ -1,0 +1,28 @@
+@import 'stylesheets/globals.scss';
+
+.wrapper {
+  background: $inputBackgroundColor;
+  padding: 0px 5px;
+}
+
+.input_padded {
+  padding-right: 50px;
+}
+
+.button {
+  @include DIN17Font;
+  position: absolute;
+  top: 30px;
+  right: 15px;
+  height: 20px;
+  line-height: 20px;
+  border: 1px solid #159cee;
+  outline: 0;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0px 7px;
+  font-size: 10px;
+  color: #159cee;
+}

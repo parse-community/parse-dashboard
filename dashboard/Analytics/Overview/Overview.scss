@@ -1,0 +1,95 @@
+@import 'stylesheets/globals.scss';
+
+$overviewBackground: #fbfbfc;
+$containerWidth: 720px;
+$containerPadding: 20px;
+$infoWidth: ($containerWidth - 2 * $containerPadding) / 4;
+
+.content {
+  padding: 96px 0px 48px 0px;
+  background: $white;
+  min-height: 100vh; //to remove the purple background from bleeding through on tall sizes
+}
+
+h2{
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.4px;
+  padding-top: 8px;
+}
+
+.healthInfoContainer {
+  background-color: $overviewBackground;
+  position: relative;
+  display: table;
+  width: 100%;
+  padding: 32px;
+
+  .healthInfo {
+    display: table-cell;
+    text-align: center;
+  }
+}
+
+.overviewRow {
+  position: relative;
+}
+
+.overviewHeader {
+  position: relative;
+  padding: 0px 20px;
+  margin: 48px 0px 16px 0px;
+  min-height: 20px;
+  text-align: center;
+}
+
+.infoContainer {
+  background-color: $overviewBackground;
+  min-width: $containerWidth;
+  display: table;
+  margin: auto;
+  border-radius: 4px;
+  .activityInfo, .billingInfo {
+    display: table-cell;
+    width: $infoWidth;
+    position: relative;
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  .activityInfo {
+    text-align: left;
+  }
+
+  .billingInfo {
+    text-align: center;
+  }
+
+  .infoNumber {
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: -0.2px;
+    @include DIN17Font;
+  }
+
+  .infoLabel{
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.1px;
+    font-weight: 400;
+  }
+}
+
+.upArrow {
+  @include arrow('up', 12px, 9px, #00db7c);
+}
+
+.downArrow {
+  @include arrow('down', 12px, 9px, #ff395e);
+}
+
+.upArrow, .downArrow {
+  position: absolute;
+  top: 6px;
+  left: 80px;
+}

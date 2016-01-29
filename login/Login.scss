@@ -1,0 +1,17 @@
+@import 'stylesheets/globals.scss';
+
+.message {
+  background: #f9f9fa;
+  height: 50px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.error {
+  background: #f9f9fa;
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  font-size: 13px;
+  color: $red;
+}

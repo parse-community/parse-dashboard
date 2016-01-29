@@ -1,0 +1,45 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const SvgPrep = require('svg-prep');
+
+function SvgPrepPlugin(options) {
+  this.options = {};
+  Object.assign(
+    this.options,
+    {
+      output: 'sprites.svg'
+    },
+    options || {}
+  );
+}
+
+SvgPrepPlugin.prototype.apply = function(compiler) {
+  compiler.plugin('emit', (compilation, callback) => {
+    if (!this.options.source) {
+      return callback();
+    }
+
+    // TODO: (andrewi) Keep track of file hashes, so we can avoid recompiling when none have changed
+    let files = fs.readdirSync(this.options.source).filter((name) => {
+      return !!name.match(/\.svg$/);
+    }).map((name) => path.join(this.options.source, name));
+    SvgPrep(files)
+      .filter({ removeIds: true, noFill: true })
+      .output().then((sprited) => {
+        compilation.assets[this.options.output] = {
+          source: function() {
+            return sprited;
+          },
+          size: function() {
+            return sprited.length;
+          }
+        };
+
+        callback();
+      });
+  });
+}
+
+module.exports = SvgPrepPlugin;

@@ -1,0 +1,22 @@
+@import 'stylesheets/globals.scss';
+
+.moneyInput {
+  @include DIN17Font;;
+  border: 0;
+  outline: 0;
+  background: $inputBackgroundColor;
+  font-size: 22px;
+  width: 100%;
+  padding: 6px;
+  vertical-align: top;
+  resize: none;
+  height: 80px;
+  color: $green;
+  text-align: center;
+
+  &:focus {
+    @include placeholder {
+      opacity: 0;
+    }
+  }
+}

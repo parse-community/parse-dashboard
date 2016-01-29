@@ -1,0 +1,15 @@
+@import 'stylesheets/globals.scss';
+
+.curl {
+  @include MonospaceFont;
+  white-space: pre;
+  font-size: 12px;
+  padding: 20px;
+  line-height: 18px;
+}
+
+.footer {
+  border-top: 1px solid #e3e3ea;
+  padding: 10px 0;
+  text-align: center;
+}

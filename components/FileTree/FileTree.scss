@@ -1,0 +1,43 @@
+.directory, .file {
+  color: #8fb9cf;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.directory {
+  svg {
+    vertical-align: middle;
+    fill: #8fb9cf;
+    margin-right: 6px;
+  }
+
+  > span {
+    vertical-align: middle;
+  }
+
+  &:hover {
+    color: white;
+
+    svg {
+      fill: white;
+    }
+  }
+}
+
+.contents {
+  padding-left: 12px;
+}
+
+.file {
+  display: block;
+  
+  &:hover {
+    color: white;
+  }
+}
+
+.current {
+  color: white;
+}

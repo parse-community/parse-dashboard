@@ -1,0 +1,19 @@
+@import 'stylesheets/globals.scss';
+
+.source {
+  position: relative;
+  min-height: 100vh;
+}
+
+.content {
+  padding: 96px 0px 0px 0px;
+  min-height: 100vh;
+}
+
+.empty {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

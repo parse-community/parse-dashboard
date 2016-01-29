@@ -1,0 +1,22 @@
+@import 'stylesheets/globals.scss';
+
+.note {
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  line-height: 30px;
+  min-height: 30px;
+}
+
+.blue {
+  background: $blue;
+}
+.green {
+  background: $green;
+}
+.orange {
+  background: $orange;
+}
+.red {
+  background: $red;
+}

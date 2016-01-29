@@ -1,0 +1,18 @@
+@import 'stylesheets/globals.scss';
+
+.editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+
+  input {
+    @include MonospaceFont;
+    width: 100%;
+    height: 30px;
+    border: none;
+    outline: none;
+    padding: 0 4px;
+    font-size: 12px;
+  }
+}

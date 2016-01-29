@@ -1,0 +1,35 @@
+@import 'stylesheets/globals.scss';
+
+.geopoint {
+  width: 100%;
+  background: $inputBackgroundColor;
+  height: 80px;
+}
+
+.labels {
+  height: 30px;
+
+  span {
+    display: inline-block;
+    width: 50%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: $secondaryTextColor;
+    font-size: 14px;
+  }
+}
+
+.inputs {
+  height: 50px;
+
+  input {
+    border: none;
+    outline: none;
+    background: none;
+    height: 50px;
+    width: 50%;
+    font-size: 16px;
+    text-align: center;
+  }
+}

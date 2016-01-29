@@ -1,0 +1,26 @@
+@import 'stylesheets/globals.scss';
+
+.loader {
+  position: relative;
+  display: block;
+  width: 140px;
+  height: 140px;
+
+  div {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    transform: translate(-50%, -50%);
+
+    &:nth-child(3n) {
+      background: $red;
+    }
+    &:nth-child(3n + 1) {
+      background: $green;
+    }
+    &:nth-child(3n + 2) {
+      background: $blue;
+    }
+  }
+}

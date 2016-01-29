@@ -1,0 +1,20 @@
+@import 'stylesheets/globals.scss';
+
+.logs {
+  position: relative;
+  min-height: 100vh;
+}
+
+.content {
+  padding: 106px 10px 10px 10px;
+  background: $logViewBackgroundColor;
+  min-height: 100vh;
+}
+
+.empty {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

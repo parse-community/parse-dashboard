@@ -1,0 +1,62 @@
+@import 'stylesheets/globals.scss';
+
+.headers {
+  position: fixed;
+  top: 96px;
+  left: 300px;
+  right: 0;
+  background: #66637A;
+  height: 30px;
+  transition: left 0.5s ease-in;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .headers {
+    left: 0;
+  }
+}
+
+.content {
+  position: relative;
+  padding-top: 126px;
+  min-height: 100vh;
+}
+
+.empty {
+  position: absolute;
+  top: 126px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.rows {
+  background: #fdfafb;
+
+  table {
+    width: 100%;
+  }
+
+  tr {
+    background: #fdfafb;
+    border-bottom: 1px solid $borderGrey;
+  }
+
+  tr:nth-child(2n) {
+    background: #f4f5f7;
+  }
+
+  td {
+    line-height: 30px;
+    padding: 10px 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 0;
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+}

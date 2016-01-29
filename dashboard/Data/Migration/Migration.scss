@@ -1,0 +1,151 @@
+@import 'stylesheets/globals.scss';
+
+$migrationStatesWidth: 175px;
+$progressRowHeight: 25px;
+$progressRowBorder: 1px $grey solid;
+$progressBarHeight: 10px;
+$progressBarGrey: #edeaeb;
+
+$progressRowPadding: 15px;
+
+@media (min-width: 980px) {
+  .content {
+	//Add 150px when sidebar is present, because it is position: fixed, so regular centering won't work
+    left: calc(50% + 150px);
+  }
+}
+
+.content {
+	padding: 120px 0 80px 0;
+	width: $migrationStatesWidth * 4;
+}
+
+.stepsWrapper {
+	width: 4 * $migrationStatesWidth;
+}
+
+.statusNote {
+	&:not(:last-of-type) {
+		padding-right: $progressRowPadding;
+	}
+}
+
+.statusBar {
+	clear: both;
+	background-color: $borderGrey;
+	height: 32px;
+	padding-top: 8px;
+	padding-left: $progressRowPadding;
+	padding-right: $progressRowPadding;
+	//gracefully degrades via statusNote class
+	display: flex;
+	justify-content: space-between;
+}
+
+.mongosBar {
+	background-color: $lightGrey;
+	height: 45px;
+}
+
+.statusBottomCorners {
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.infoText {
+	@include DIN17Font;
+	color: $blue;
+}
+
+.detailMongoName {
+	@include ellipsis();
+	width: $migrationStatesWidth;
+	float: left;
+	font-size: 20px;
+	color: $blue;
+	padding-top: 15px;
+	padding-left: $progressRowPadding;
+	padding-right: $progressRowPadding;
+	text-align: left;
+}
+
+.detailClassName {
+	@include ellipsis();
+	width: $migrationStatesWidth;
+	float: left;
+	text-align: left;
+	background-color: $progressBarGrey;
+	height: $progressRowHeight;
+	padding: 4px $progressRowPadding;
+	border-top: $progressRowBorder;
+}
+
+.detailProgressWrapper {
+	background-color: $lightGrey;
+	height: $progressRowHeight;
+	border-top: $progressRowBorder;
+	padding-left: $progressRowPadding;
+	padding-right: $progressRowPadding;
+	float: left;
+	width: $migrationStatesWidth * 2;
+	text-align: right;
+}
+
+.detailBackground {
+	background-color: $progressBarGrey;
+	border-radius: $progressBarHeight / 2;
+	height: $progressBarHeight;
+}
+
+.detailCompletion {
+	position: absolute;
+	top: 0;
+	border-radius: $progressBarHeight / 2;
+	height: $progressBarHeight;
+	min-width: $progressBarHeight;
+}
+
+.detailPercent {
+	position: relative;
+	width: calc(100% - #{$progressRowPadding});
+}
+
+.detailIcon {
+	@include transform(translate(50%, -35%));
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border-radius: 100%;
+	background-color: $progressBarGrey;
+	text-align: center;
+}
+
+.button {
+	display: inline-block;
+	margin: 25px 14px;
+}
+
+.title {
+	@include DIN17Font;
+	margin-bottom: 15px;
+}
+
+.migrationStatusError {
+	color: $red;
+	text-align: center;
+	display: block;
+}
+
+.longStateDescription {
+	background-color: $borderGrey;
+	padding: $progressRowPadding;
+	border-radius: 5px;
+	margin-top: 20px;
+	line-height: 20px;
+	text-align: left;
+	clear: both;
+}
+
+.descriptionMongoName {
+	@include MonospaceFont;
+}

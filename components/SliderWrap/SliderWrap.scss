@@ -1,0 +1,9 @@
+.slider {
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(1, 0, 0, 1);
+}
+
+.metrics {
+  width: 100%;
+  display: inline-block;
+}

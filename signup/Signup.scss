@@ -1,0 +1,19 @@
+@import 'stylesheets/globals.scss';
+
+.suggestion {
+  width: 350px;
+  height: 30px;
+  line-height: 30px;
+  background: #f9f9fa;
+  border-bottom: 1px solid #e0e0e1;
+  font-size: 13px;
+}
+
+.error {
+  background: #f9f9fa;
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  font-size: 13px;
+  color: $red;
+}

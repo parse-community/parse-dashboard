@@ -1,0 +1,60 @@
+{
+  "private": true,
+  "dependencies": {
+    "babel-runtime": "~5.8.25",
+    "history": "~1.9.1",
+    "immutable": "~3.7.5",
+    "marked": "^0.3.5",
+    "parse": "1.6.13",
+    "prismjs": "~1.2.0",
+    "react": "^0.14.0",
+    "react-dnd": "~2.0.2",
+    "react-dnd-html5-backend": "~2.0.0",
+    "react-dom": "^0.14.0",
+    "react-router": "1.0.0-rc1"
+  },
+  "devDependencies": {
+    "babel-core": "~5.8.12",
+    "babel-loader": "~5.3.0",
+    "babel-plugin-remove-proptypes": "~1.0.0",
+    "css-loader": "~0.18.0",
+    "http-server": "~0.8.5",
+    "immutable-devtools": "~0.0.4",
+    "jest-cli": "^0.7.1",
+    "js-beautify": "~1.5.0",
+    "node-sass": "~3.3.2",
+    "react-addons-test-utils": "^0.14.2",
+    "sass-loader": "~2.0.1",
+    "style-loader": "~0.12.3",
+    "svg-prep": "~1.0.0",
+    "transform-jest-deps": "^2.1.0",
+    "webpack": "~1.12.0"
+  },
+  "scripts": {
+    "pig": "http-server ./PIG -p 4041 -s & webpack --progress --watch",
+    "build": "NODE_ENV=production webpack --config production.config.js && webpack --config PIG.config.js",
+    "test": "NODE_PATH=./node_modules jest",
+    "generate": "node scripts/generate.js"
+  },
+  "jest": {
+    "rootDir": "../../app/webpack",
+    "testPathDirs": [
+      "components",
+      "lib"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "scriptPreprocessor": "<rootDir>/../../script/webpack/testing/preprocessor.js",
+    "testDirectoryName": "webpack",
+    "testFileExtensions": [
+      "test.js"
+    ],
+    "unmockedModulePathPatterns": [
+      "react",
+      "react-dom",
+      "react-addons-test-utils",
+      "fbjs"
+    ]
+  }
+}

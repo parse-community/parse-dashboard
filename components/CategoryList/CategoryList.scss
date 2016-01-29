@@ -1,0 +1,50 @@
+@import 'stylesheets/globals.scss';
+
+.class_list {
+  position: relative;
+  margin-bottom: 5px;
+
+  a {
+    display: block;
+    padding-left: 12px;
+    height: 20px;
+    line-height: 20px;
+    border-left: 1px solid #3e87b2;
+    color: #8fb9cf;
+    font-size: 12px;
+
+    &.active {
+      color: white;
+    }
+    
+    &:hover{
+      color: white;
+    }
+
+    span {
+      display: block;
+
+      &:first-of-type {
+        @include DIN17Font;
+        float: right;
+        width: 50px;
+        text-align: right;
+      }
+
+      &:last-of-type {
+        margin-right: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.highlight {
+  position: absolute;
+  width: 1px;
+  height: 20px;
+  background: white;
+  transition: top 0.2s cubic-bezier(1, 0, 0, 1);
+}

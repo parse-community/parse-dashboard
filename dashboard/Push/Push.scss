@@ -1,0 +1,79 @@
+@import 'stylesheets/globals.scss';
+
+.pushFlow {
+  padding: 120px 0 70px 0;
+}
+
+.warning {
+  background: $orange;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 10px;
+}
+
+.info {
+  background: $blue;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  line-height: 20px;
+  padding: 18px;
+}
+
+.infoSubline {
+  font-size: 12px;
+}
+
+// workaround for non standard spec 
+// https://developer.mozilla.org/en-US/docs/Web/CSS/%3A%3A-moz-placeholder
+// using more selective hack to avoid using !important
+.messageContentWrap textarea:not(#foo) {
+  @include placeholder {
+    top: 0%;
+    line-height: 190px;
+  }
+}
+
+.messageContentWrap .monospace textarea:not(#foo) {
+  @include placeholder {
+    top: 0%;
+    line-height: 60px;
+  }  
+}
+
+.invalidMessage {
+  padding-right: 5px;
+}
+
+.localeContainer {
+  margin: 15px 0 25px 0;
+}
+
+.localeTitle {
+  margin: 5px 0;
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+}
+
+.localeRemoveButton {
+  position: absolute;
+  right: 15px;
+  font-size: 12px;
+  top: 3px;
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
+}
+
+.localizationSegment {
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.localedeviceCount {
+  margin-top: 5px;
+  color: $secondaryTextColor;
+}

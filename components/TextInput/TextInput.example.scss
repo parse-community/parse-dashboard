@@ -1,0 +1,9 @@
+@import 'stylesheets/globals.scss';
+
+//example of how to fix height alignment of placeholder text
+.textarea_wrap textarea:not(.monospace) {
+  @include placeholder {
+    line-height: 200px;
+    top: 0%;
+  }
+}

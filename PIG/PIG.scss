@@ -1,0 +1,84 @@
+@import 'stylesheets/globals.scss';
+@import 'stylesheets/fonts.scss';
+
+.sidebar {
+  position: fixed;
+  background: white;
+  width: 200px;
+  padding: 10px;
+  border-right: 1px solid #b0b8bf;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow: auto;
+
+  a {
+    display: block;
+    margin-bottom: 6px;
+    color: #169cee;
+  }
+
+  .active {
+    color: #1F62B1;
+  }
+}
+
+.content {
+  margin-left: 200px;
+  padding: 10px;
+  min-height: 100vh;
+}
+
+h1 {
+  width: 90%;
+  font-size: 32px;
+  font-weight: 400;
+  margin: 10px auto;
+  color: $secondaryTextColor;
+}
+
+.component_name {
+  color: $mainTextColor;
+}
+
+.table {
+  margin: 10px auto 40px auto;
+  width: 90%;
+  overflow: hidden;
+}
+.header {
+  background: #169cee;
+  color: white;
+  font-weight: 700;
+  height: 30px;
+  line-height: 32px;
+  padding: 0 10px;
+}
+.row {
+  border-color: #b0b8bf;
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  padding: 10px 9px;
+
+  p {
+    margin: 10px 0 0 0;
+  }
+}
+.prop_name {
+  font-size: 22px;
+  color: black;
+  font-weight: 700;
+  vertical-align: bottom;
+}
+.prop_required {
+  @include DIN17Font;
+  font-size: 14px;
+  color: #767580;
+  margin-left: 10px;
+}
+.prop_type {
+  @include DIN17Font;
+  font-size: 14px;
+  color: #a5a5b4;
+  margin-left: 10px;
+}

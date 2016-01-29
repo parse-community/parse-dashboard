@@ -1,0 +1,132 @@
+@import 'stylesheets/globals.scss';
+
+$retentionCellHeight: 40px;
+$contentPadding: 10px;
+
+.content {
+  padding: (96px + $contentPadding) $contentPadding $contentPadding $contentPadding;
+  min-height: 100vh;
+  position: relative;
+  background: $white;
+}
+
+.average {
+  @include DIN17Font;
+  color: $mainTextColor;
+  opacity: 0.5;
+  font-size: 14px;
+  line-height: 15px;
+  &:first-of-type {
+    //"average" label
+    @include AlrightSansFont;
+  }
+}
+
+.table {
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  td {
+    padding: 3px;
+    &:last-of-type {
+      padding-right: 0px;
+    }
+  }
+
+  .tableHeader {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 14px;
+    line-height: 15px;
+    @include DIN17Font;
+    &:first-of-type {
+      //"Still active after" and "average" labels
+      @include AlrightSansFont;
+      // so "Still active after" hangs over the edge to give better visual spacing
+      max-width: 80px; 
+      white-space: nowrap;
+    }
+  }
+}
+
+table tr:first-of-type {
+  .tableHeader:nth-of-type(3) {
+    &:after {
+      //"1 day" label
+      @include AlrightSansFont;
+      content: " day";
+    }
+  }
+}
+
+//funky css hack to give some spacing to the top of the first row because we don't have :first-of-class yet
+.divider + .tableRow {
+  td {
+    padding-top: 10px;
+    &:first-of-type {
+      position: relative;
+      top: -7.5px;
+    }
+  }
+}
+
+.YaxisSignedUp {
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.retentionCell {
+  @include DIN17Font;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  vertical-align: middle;
+  min-width: 75px;
+  height: $retentionCellHeight;
+  line-height: $retentionCellHeight;
+}
+
+.table td.YaxisLabel {
+  padding-right: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.YaxisLabelDate {
+  margin-top: 3px;
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.YaxisLabelNumber {
+  @include DIN17Font;
+}
+
+.YaxisLabelUsers {
+  @include DIN17Font;
+  font-size: 13px;
+  line-height: 15px;
+  opacity: 0.5;
+}
+
+.divider {
+  border-bottom: 1px solid $translucentGrey;
+}
+
+.footer {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  min-height: 50px;
+  background-color: $pushDetailsHeaderBackground;
+  padding: 10px;
+  bottom: 0px;
+  border-top: 1px solid $translucentGrey;
+}
+
+.right {
+  position: absolute;
+  right: 10px;
+}

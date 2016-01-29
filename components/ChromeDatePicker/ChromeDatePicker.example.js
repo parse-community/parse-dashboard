@@ -1,0 +1,45 @@
+import ChromeDatePicker from 'components/ChromeDatePicker/ChromeDatePicker.react';
+import { Directions }   from 'lib/Constants';
+import Field            from 'components/Field/Field.react';
+import Fieldset         from 'components/Fieldset/Fieldset.react';
+import Label            from 'components/Label/Label.react';
+import Option           from 'components/Dropdown/Option.react';
+import React            from 'react';
+
+export const component = ChromeDatePicker;
+
+class Demo extends React.Component {
+  constructor() {
+    super();
+    this.state = { value: new Date() };
+  }
+
+  handleChange(value) {
+    this.setState({ value });
+  }
+
+  render() {
+    return (
+      <ChromeDatePicker value={this.state.value} onChange={this.handleChange.bind(this)} align={this.props.align} />
+    );
+  }
+}
+
+export const demos = [
+  {
+    name: 'Left-aligned',
+    render: () => (
+      <div style={{ width: 500, margin: '0 auto' }}>
+        <Demo />
+      </div>
+    )
+  },
+  {
+    name: 'Right-aligned',
+    render: () => (
+      <div style={{ width: 500, margin: '0 auto', textAlign: 'right' }}>
+        <Demo align={Directions.RIGHT} />
+      </div>
+    )
+  }
+];

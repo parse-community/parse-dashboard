@@ -1,0 +1,16 @@
+@import 'stylesheets/globals.scss';
+
+.showMoreWrap {
+  padding: 10px;
+  margin-left: 20px;
+}
+
+.pushAudienceData {
+  border: 1px solid $borderGrey;
+}
+
+.pushAudienceDialog {
+  text-align: right;
+  border-top: 1px solid $borderGrey;
+  padding: 15px 30px 15px 15px;
+}

@@ -1,0 +1,69 @@
+@import 'stylesheets/globals.scss';
+
+.content {
+  padding: 96px 0px 0px 0px;
+  min-height: 100vh;
+  position: relative;
+}
+
+.header, .footer {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  min-height: 50px;
+  background-color: $pushDetailsHeaderBackground;
+}
+
+.header {
+  top: 96px;
+  border-bottom: 1px solid $translucentGrey;
+}
+
+.display {
+  position: absolute;
+  overflow: auto;
+  left: 0px;
+  right: 0px;
+  top: 146px;
+  bottom: 50px;
+}
+
+.table {
+  width: 100%;
+
+  .td {
+    @include ellipsis;
+  }
+}
+
+.toolbarAction {
+  padding: 0px 20px;
+  color: white;
+
+  > *:not(svg) {
+    margin: 5px;
+  }
+}
+
+.activeQueryWrap {
+  display: inline-block;
+  padding: 10px 15px;
+  border-right: 1px solid $translucentGrey;
+  height: 50px;
+}
+
+.menuButtonWrap {
+  display: inline-block;
+  padding: 10px 15px;
+}
+
+.footer {
+  padding: 10px;
+  bottom: 0px;
+  border-top: 1px solid $translucentGrey;
+}
+
+.right {
+  position: absolute;
+  right: 10px;
+}

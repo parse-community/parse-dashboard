@@ -1,0 +1,104 @@
+@import 'globals.scss';
+
+html, body {
+  min-height: 100vh;
+}
+html{
+  background-color: #110D11;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  color: $mainTextColor;
+  background-color: #110D11;
+  &:global(.fonts_loaded) {
+    font-family: AlrightSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+}
+
+:global(#browser_mount) {
+  min-height: 100vh;
+  background: #FDFAFB;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-moz-selection {
+  color: white;
+  background: $blue;
+}
+
+::selection {
+  color: white;
+  background: $blue;
+}
+
+a {
+  color: $blue;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.unselectable {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.verticalCenter {
+  position: absolute;
+  top: 50%;
+  @include transform(translateY(-50%));
+}
+
+.horizontalCenter {
+  margin: auto;
+  text-align: center;
+}
+
+.center {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  @include transform(translate(-50%, -50%));
+}
+
+.failedBackground {
+  background-color: $red;
+}
+
+.succeededBackground {
+  background-color: $green;
+}
+
+.progressBackground {
+  background-color: $blue;
+}
+
+.failedText {
+  color: $red;
+}
+
+.succeededText {
+  color: $green;
+}
+
+.progressText {
+  color: $blue;
+}

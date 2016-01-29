@@ -1,0 +1,173 @@
+@import 'stylesheets/globals.scss';
+
+.browser {
+  position: fixed;
+  top: 96px;
+  left: 300px;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding-top: 30px;
+  transition: left 0.5s ease-in;
+  // fix for safari scrolling issue:
+  // https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/
+  // only applying to safari as a side effect of this is emptystate component centering is off
+  &.safari {
+    -webkit-transform: translate3d(0,0,0);
+  }
+}
+
+@media (max-width: 980px) {
+  .browser {
+    left: 0;
+  }
+}
+
+.empty {
+  position: fixed;
+  left: 300px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.toolbarSeparator {
+  display: inline-block;
+  height: 18px;
+  width: 1px;
+  background: #66637A;
+  vertical-align: bottom;
+  margin: 0 4px;
+}
+
+.toolbarButton {
+  @include DIN17Font;
+  display: inline-block;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  height: 14px;
+  padding: 0 8px;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 4px;
+    fill: #66637A;
+  }
+
+  &:hover {
+    svg {
+      fill: white;
+    }
+  }
+
+  span {
+    vertical-align: middle;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+.toolbarButtonDisabled {
+  cursor: not-allowed;
+  color: #66637A;
+
+  &:hover svg {
+    fill: #66637A;
+  }
+}
+
+.table {
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  left: 0;
+  min-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table .empty {
+  top: 126px;
+}
+
+.tableRow {
+  @include MonospaceFont;
+  font-size: 12px;
+  white-space: nowrap;
+  height: 31px;
+  border-bottom: 1px solid #e3e3ea;
+
+  &:nth-child(odd) {
+    background: #F4F5F7;
+  }
+}
+
+.checkCell {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 31px;
+  vertical-align: top;
+  border-right: 1px solid #e3e3ea;
+  text-align: center;
+}
+
+.addRow {
+  height: 30px;
+  padding: 8px;
+
+  a {
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  svg {
+    fill: $blue;
+
+    &:hover {
+      fill: $darkBlue;
+    }
+  }
+}
+
+.notification {
+  @include animation('fade-in 0.2s ease-out');
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  opacity: 1;
+  background: white;
+  padding: 10px;
+  border: 2px solid $red;
+  color: $red;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 260px;
+}
+
+.notificationHide {
+  @include animation('fade-out 0.2s ease-out');
+}
+
+@include keyframes(fade-in) {
+  0% {
+    @include transform(scale(0.9));
+    opacity: 0;
+  }
+  100% {
+    @include transform(scale(1));
+    opacity: 1;
+  }
+}
+
+@include keyframes(fade-out) {
+  0% {
+    @include transform(scale(1));
+    opacity: 1;
+  }
+  100% {
+    @include transform(scale(0.9));
+    opacity: 0;
+  }
+}

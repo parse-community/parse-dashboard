@@ -1,0 +1,9 @@
+@import 'stylesheets/globals.scss';
+
+.input {
+  width: 100%;
+  height: 80px;
+  text-align: center;
+  padding-top: 25px;
+  background: $inputBackgroundColor;
+}

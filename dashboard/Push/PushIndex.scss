@@ -1,0 +1,57 @@
+@import 'stylesheets/globals.scss';
+
+.colType {
+  width: 10%;
+}
+
+.colTarget {
+  width: 15%;
+}
+
+.colPushesSent {
+  width: 15%;
+}
+
+.colName {
+  width: 30%;
+}
+
+.colTime {
+  width: 20%;
+}
+
+.colStatus {
+  width: 10%;
+}
+
+.experimentLabel, .localTimeLabel, .translationLabel {
+  font-size: 12px;
+  line-height: 12px;
+  color: $secondaryTextColor;
+}
+
+.tr {
+  cursor: pointer;
+
+  //TODO: (peterjs) - add focus styles once tab index is added
+  &:hover {
+    background-color: $lightBlue;
+  }
+
+  //NOTE: (peterjs) would like to get rid of alternating styles - hard to see for users 
+  &:nth-child(2n) {
+    &:hover {
+      background-color: $lightBlue;
+    }
+  }
+}
+
+.showMore {
+  padding: 20px;
+  a {
+    display: block;
+    height: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+}

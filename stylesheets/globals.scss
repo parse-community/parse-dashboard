@@ -1,0 +1,199 @@
+$white: #fff;
+$blue: #169cee;
+$green: #00db7c;
+$red: #ff395e;
+$orange: #fd9539;
+$pink: #ff395e;
+$yellow: #f5a623;
+$purple: #343445;
+
+$grey: #e0e0ea;
+$lightGrey: #f5f5f5;
+$borderGrey: #e3e3e3;
+$greyArrowColor: rgba(27, 27, 27, 0.57);
+$formTableGrey: #ecf0f3;
+$translucentGrey: rgba(151, 151, 151, 0.27);
+$inactiveTextGrey: #cccbd2;
+$progressGrey: #d8d8d8;
+
+$darkBlue: #0e69a1;
+$lightBlue: #acd7f1;
+
+$darkGreen: #63c166;
+$lightGreen: #a8f0ad;
+
+$darkRed: #CE2E4B;
+$lightRed: #fbc3bd;
+
+$mainTextColor: #555572;
+$secondaryTextColor: #a5a5b4;
+$platformCardTextColor: #768c97;
+$platformCardSecondaryTextColor: rgba(118, 140, 151, 0.5);
+
+$inputBackgroundColor: #f6fafb;
+
+$logViewBackgroundColor: #fdfafb;
+
+$explorerQueryBackgroundColor: #148fdb;
+$borderRadiusConst: 5px;
+
+$pushDetailsHeaderBackground: #FBFBFC;
+$pushDetailsContent: #66637A;
+
+// neutral open rate colors for push experiment
+$darkPurple: #8D11BA;
+$blueGreen: #11A4BA;
+
+@mixin AlrightSansFont {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  body:global(.fonts_loaded) & {
+    font-family: AlrightSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+}
+
+@mixin DIN17Font {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  body:global(.fonts_loaded) & {
+    font-family: 'DIN17SBOP', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+}
+
+@mixin MonospaceFont {
+  font-family: 'Courier New', monospace;
+
+  body:global(.fonts_loaded) & {
+    font-family: InputMonoNarrow, 'Courier New', monospace;
+  }
+}
+
+@mixin arrow($direction, $base, $height, $color) {
+  border-style: solid;
+
+  $halfbase: $base/2;
+
+  @if $direction == 'up' {
+    border-width: 0 $halfbase $height $halfbase;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: $color;
+    border-left-color: transparent;
+  } @else if $direction == 'right' {
+    border-width: $halfbase 0 $halfbase $height;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: $color;
+  } @else if $direction == 'down' {
+    border-width: $height $halfbase 0 $halfbase;
+    border-top-color: $color;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  } @else if $direction == 'left' {
+    border-width: $halfbase $height $halfbase 0;
+    border-top-color: transparent;
+    border-right-color: $color;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
+@mixin animation($props) {
+  -webkit-animation: #{$props};
+  -moz-animation: #{$props};
+  -ms-animation: #{$props};
+  animation: #{$props};
+}
+
+@mixin animation-name($prop) {
+  -webkit-animation-name: $prop;
+  -moz-animation-name: $prop;
+  -ms-animation-name: $prop;
+  animation-name: $prop;
+}
+
+@mixin animation-duration($prop) {
+  -webkit-animation-duration: $prop;
+  -moz-animation-duration: $prop;
+  -ms-animation-duration: $prop;
+  animation-duration: $prop;
+}
+
+@mixin animation-delay($prop) {
+  -webkit-animation-delay: $prop;
+  -moz-animation-delay: $prop;
+  -ms-animation-delay: $prop;
+  animation-delay: $prop;
+}
+
+@mixin animation-iteration-count($prop) {
+  -webkit-animation-iteration-count: $prop;
+  -moz-animation-iteration-count: $prop;
+  -ms-animation-iteration-count: $prop;
+  animation-iteration-count: $prop;
+}
+
+@mixin animation-fill-mode($prop) {
+  -webkit-animation-fill-mode: $prop;
+  -moz-animation-fill-mode: $prop;
+  -ms-animation-fill-mode: $prop;
+  animation-fill-mode: $prop;
+}
+
+@mixin keyframes($name) {
+  @-webkit-keyframes $name {
+    @content;
+  }
+  @-moz-keyframes $name {
+    @content;
+  }
+  @-ms-keyframes $name {
+    @content;
+  }
+  @keyframes $name {
+    @content;
+  }
+}
+
+@mixin transform($props) {
+  -webkit-transform: #{$props};
+  -moz-transform: #{$props};
+  -ms-transform: #{$props};
+  transform: #{$props};
+}
+
+@mixin placeholder() {
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &:-moz-placeholder {
+    @content;
+  }
+  &::-moz-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+}
+
+@mixin ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin modalAnimation(){
+  @include animation('modal-intro 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1)');
+  @include transform(translate3D(-50%, -50%, 0) scale(1));
+}
+
+@mixin modalKeyframes(){
+  @include keyframes(modal-intro) {
+  0% {
+    @include transform(translate3D(-50%, -50%, 0) scale(.9));
+  }
+}
+}

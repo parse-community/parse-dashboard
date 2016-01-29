@@ -1,0 +1,20 @@
+@import 'stylesheets/globals.scss';
+
+.cost {
+	font-size: 18px;
+	color: $blue;
+	line-height: 18px;
+	padding-right: 18px;
+	padding-top: 16px;
+  @include DIN17Font;
+  text-transform: uppercase;
+}
+
+.features {
+  @include DIN17Font;
+	padding-right: 18px;
+	padding-top: 1px;
+	font-size: 14px;
+	color: #66637a;
+	line-height: 14px;
+}

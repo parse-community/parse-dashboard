@@ -1,0 +1,50 @@
+@import 'stylesheets/globals.scss';
+
+$migrationStatesWidth: 175px;
+
+.wrapper {
+	background-color: $lightGrey;
+	position: relative;
+	text-align: left;
+	width: calc(700px/3);
+	float: left;
+	&:not(:last-child) {
+		border-right: 2px solid $borderGrey;
+	}
+	&:last-child {
+		border-top-right-radius: 5px;
+	}
+	&:first-child {
+		border-top-left-radius: 5px;
+	}
+}
+
+.progressBackground {
+	height: 10px;
+	position: absolute;
+	bottom: 0;
+	background-color: $progressGrey;
+}
+
+.status {
+	height: 10px;
+	position: absolute;
+	bottom: 0;
+}
+
+.title {
+	padding-left: 15px;
+	padding-top: 15px;
+	font-size: 14px;
+	height: 35px;
+}
+
+.description {
+	padding-left: 15px;
+	padding-bottom: 25px; //15 from mockup + 10 to account for progress bar
+	font-size: 12px;
+}
+
+.inactiveText {
+	color: $inactiveTextGrey;
+}

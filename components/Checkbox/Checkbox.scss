@@ -1,0 +1,50 @@
+@import 'stylesheets/globals.scss';
+
+.input {
+  display: inline-block;
+  cursor: pointer;
+  height: 20px;
+  line-height: 20px;
+}
+
+.checkbox {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  padding: 3px;
+  border-radius: 4px;
+  background: white;
+  vertical-align: middle;
+  border: 1px solid $mainTextColor;
+
+  svg {
+    vertical-align: top;
+  }
+}
+
+.minus {
+  display: block;
+  width: 12px;
+  height: 4px;
+  background: $blue;
+  margin-top: 4px;
+  border-radius: 2px;
+}
+
+.label {
+  @include DIN17Font;
+  color: $mainTextColor;
+  font-size: 14px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.checked, .indeterminate {
+  .checkbox {
+    border-color: $blue;
+  }
+
+  .label {
+    color: $blue;
+  }
+}

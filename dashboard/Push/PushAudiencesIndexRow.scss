@@ -1,0 +1,85 @@
+@import 'stylesheets/globals.scss';
+
+.colName {
+  width: 20%;
+}
+
+.colSize {
+  width: 10%;
+}
+
+.colDetails {
+  width: 30%;
+}
+
+.colCreatedOn {
+  width: 20%;
+}
+
+.colPushesSent {
+  width: 10%;
+}
+
+.colAction {
+  width: 10%;
+}
+
+.shortInfo {
+  @include ellipsis();
+  margin-right: 5px;
+  max-width: 300px;
+  float: left;
+}
+
+.longInfo {
+  overflow: hidden;
+  margin: 10px 10px 0 0;
+
+  .platformInfo {
+    float: left;
+    width: 150px;
+    white-space: normal;
+  }
+
+  .installationInfo {
+    float: left;
+    width: 250px;
+    white-space: normal;
+  }
+
+  .detailsHeaderListItem {
+    color: $secondaryTextColor;
+  }
+}
+
+.moreDetails {
+  color: $blue;
+  font-size: 14px;
+
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
+
+  &.hideMoreDetails {
+    display: none;
+  }
+}
+
+.newPushButton {
+  font-size: 14px;
+  display: block;
+  margin: -5px 0 -10px 0;
+
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
+}
+
+//NOTE: May be used to global so SVG icons wrapped by <a> can have common styles.
+.removeIcon {
+  &:hover, &:focus {
+    svg {
+      fill: $blue;
+    }
+  }
+}

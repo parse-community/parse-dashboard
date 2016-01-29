@@ -1,0 +1,104 @@
+@import 'stylesheets/globals.scss';
+
+.detailsWrapper {
+  background: $white;
+  padding-bottom: 100px;
+}
+
+.header {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.groupHeader {
+  text-align: center;
+  padding: 150px 0 50px 0;
+  background: $pushDetailsHeaderBackground;
+}
+
+.headerTitle {
+  color: $blue;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.headline {
+  font-size: 26px;
+  margin: 10px;
+}
+
+.subline {
+  color: $secondaryTextColor;
+  font-size: 14px;
+}
+
+.content {
+  font-size: 14px;
+  color: $pushDetailsContent;
+}
+
+.tableSectionHeader, .chartTitle {
+  font-size: 22px;
+  color: $blue;
+  text-align: center;
+  padding: 25px 0;
+  line-height: 26px;
+  font-weight: 700;
+}
+
+.tableSectionWrap {
+  width: 750px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.tableWrap {
+  border-radius: $borderRadiusConst;
+  border: 1px solid $borderGrey;
+  border-top: 0;
+  overflow: hidden;
+}
+
+.deliveryName {
+  font-weight: 700;
+}
+
+.deliveryMessage {
+  font-size: 12px;
+  color: $secondaryTextColor;
+  line-height: 16px;
+}
+
+.groupA {
+  float: left;
+  width: 50%;
+}
+
+.groupB {
+  margin-left: 50%;
+}
+
+.messageHeader {
+  background: $white;
+}
+
+.chartWrap {
+  margin-top: 50px;
+}
+
+.chartWrap > div {
+  margin: 0 auto;
+}
+
+.openRateTitle {
+  text-align: center;
+  height: 15px;
+  margin-bottom: -10px;
+}
+
+.flowFooterHeader {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
