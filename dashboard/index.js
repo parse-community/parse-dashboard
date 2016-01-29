@@ -1,13 +1,11 @@
-import Parse from 'parse';
-import ReactDOM from 'react-dom';
-import Routes from './routes';
+import Parse           from 'parse';
+import ReactDOM        from 'react-dom';
+import Routes          from './routes';
+import Immutable       from 'immutable';
+import installDevTools from 'immutable-devtools';
 
 require('stylesheets/fonts.scss');
-
-if (process.env.NODE_ENV !== 'production') {
-	const Immutable = require('immutable');
-	require('immutable-devtools')(Immutable);
-}
+installDevTools(Immutable);
 
 if (window.DEVELOPMENT) {
   let host = location.host.split('.');
