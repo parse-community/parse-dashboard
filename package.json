@@ -39,7 +39,6 @@
   },
   "jest": {
     "testPathDirs": [
-      "components",
       "lib"
     ],
     "scriptPreprocessor": "<rootDir>/testing/preprocessor.js",

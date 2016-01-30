@@ -5,8 +5,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const rootDir = path.join(__dirname, '..', '..', '..', 'app', 'webpack', 'components');
-const pigDir = path.join(__dirname, '..', '..', '..', 'app', 'webpack', 'PIG');
+const rootDir = path.join(__dirname, '..', 'components');
+const pigDir = path.join(__dirname, '..', 'parse-interface-guide');
 
 function padding(length) {
   let space = [];
@@ -18,17 +18,16 @@ function padding(length) {
 
 function generateReact(name) {
   return (
-`import React  from 'react';
-import styles from 'components/${name}/${name}.scss';
+`import PropTypes from 'lib/PropTypes';
+import React     from 'react';
+import styles    from 'components/${name}/${name}.scss';
 
-export default class ${name} extends React.Component {
-  constructor() {
-    super();
-  }
+let ${name} = ({prop1}) => {
+  return <div />;
+}
 
-  render() {
-
-  }
+${name}.propTypes = {
+  prop1: PropTypes.string.isRequired.describe('Replace me with the actual props'),
 }
 `);
 }
@@ -36,7 +35,7 @@ export default class ${name} extends React.Component {
 function generateExample(name) {
   return (
 `import React${padding(name.length - 5)} from 'react';
-import ${name}${padding(5 - name.length)} from 'components/${name}/${name}.react';
+import ${name}${padding(5 - name.length)} f`+ 'rom' +` 'components/${name}/${name}.react';
 
 export const component = ${name};
 
@@ -74,6 +73,7 @@ describe('${name}', () => {
 `);
 }
 
+
 function updateComponentMap(name) {
   let numSpace = 1;
   if (name.length < 26) {
@@ -86,7 +86,7 @@ function updateComponentMap(name) {
   }
 
   return (
-`export let ${name}${spaces}= require('components/${name}/${name}.example');`
+`export let ${name}${spaces}= require('components/${name}/${name}.example');\n`
   );
 }
 
