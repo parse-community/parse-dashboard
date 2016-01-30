@@ -7,6 +7,7 @@ const path = require('path');
 
 const rootDir = path.join(__dirname, '..', 'components');
 const pigDir = path.join(__dirname, '..', 'parse-interface-guide');
+const testDir = path.join(__dirname, '..', 'lib', 'tests');
 
 function padding(length) {
   let space = [];
@@ -52,18 +53,18 @@ export const demos = [
 
 function generateTest(name) {
   return (
-`jest.dontMock('./${name}.react');
+`jest.dontMock('../../components/${name}/${name}.react');
 
 import React     from 'react';
 import ReactDOM  from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
-const ${name} = require('./${name}.react');
+const ${name} = require('../../components/${name}/${name}.react');
 
 describe('${name}', () => {
   it('can render examples', () => {
-    jest.dontMock('./${name}.example');
-    const example = require('./${name}.example');
+    jest.dontMock('../../components/${name}/${name}.example');
+    const example = require('../../components/${name}/${name}.example');
     example.demos.forEach((example, i) => {
       example.render();
     });
@@ -122,7 +123,7 @@ try {
   fs.writeFileSync(path.join(rootDir, name, `${name}.react.js`), generateReact(name));
   fs.writeFileSync(path.join(rootDir, name, `${name}.scss`), '');
   fs.writeFileSync(path.join(rootDir, name, `${name}.example.js`), generateExample(name));
-  fs.writeFileSync(path.join(rootDir, name, `${name}.test.js`), generateTest(name));
+  fs.writeFileSync(path.join(testDir, `${name}.test.js`), generateTest(name));
   fs.appendFileSync(path.join(pigDir, 'ComponentsMap.js'), updateComponentMap(name));
 
   console.log(`Component ${name} created at ${path.join(rootDir, name)}.`);
