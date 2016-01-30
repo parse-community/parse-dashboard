@@ -1,9 +1,8 @@
 // Production build configuration for dashboard.parse.com
-
 var webpack = require('webpack');
 
 // Import the main configuration file
-var configuration = require('./webpack.config.js');
+var configuration = require('./base.config.js');
 
 // Remove the PIG configuration, we're only building the dashboard
 delete configuration.entry.PIG;

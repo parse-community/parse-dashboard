@@ -1,14 +1,6 @@
-var path = require('path');
+var configuration = require('./base.config.js');
 
-// Import the main configuration file
-var configuration = require('./webpack.config.js');
-
-// Remove the dashboard configuration, we're only building the PIG
-delete configuration.entry.PIG;
-
-configuration.output.path = path.join(__dirname, 'Parse-Dashboard', 'bundles');
-
-// Remove SVG plugin
-configuration.plugins = [];
+configuration.entry = './dashboard/index.js';
+configuration.output.path = './Parse-Dashboard/bundles';
 
 module.exports = configuration;
