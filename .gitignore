@@ -3,3 +3,4 @@ node_modules/
 bundles/
 PIG/bundles/
 Parse-Dashboard/bundles/
+Parse-Dashboard/parse-dashboard-config.json

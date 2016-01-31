@@ -1,8 +1,9 @@
+import AppsManager     from 'lib/AppsManager';
+import Immutable       from 'immutable';
+import installDevTools from 'immutable-devtools';
 import Parse           from 'parse';
 import ReactDOM        from 'react-dom';
 import Routes          from './routes';
-import Immutable       from 'immutable';
-import installDevTools from 'immutable-devtools';
 
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);
@@ -16,5 +17,6 @@ if (window.DEVELOPMENT) {
 Parse.CoreManager.set('VERSION', 'browser');
 
 // App entry point
-
-ReactDOM.render(Routes, document.getElementById('browser_mount'));
+AppsManager.seed().then(() => {
+	ReactDOM.render(Routes, document.getElementById('browser_mount'));
+});
