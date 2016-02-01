@@ -5,8 +5,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const rootDir = path.join(__dirname, '..', '..', '..', 'app', 'webpack', 'components');
-const pigDir = path.join(__dirname, '..', '..', '..', 'app', 'webpack', 'PIG');
+const rootDir = path.join(__dirname, '..', 'components');
+const pigDir = path.join(__dirname, '..', 'parse-interface-guide');
+const testDir = path.join(__dirname, '..', 'lib', 'tests');
 
 function padding(length) {
   let space = [];
@@ -18,17 +19,16 @@ function padding(length) {
 
 function generateReact(name) {
   return (
-`import React  from 'react';
-import styles from 'components/${name}/${name}.scss';
+`import PropTypes from 'lib/PropTypes';
+import React     from 'react';
+import styles    from 'components/${name}/${name}.scss';
 
-export default class ${name} extends React.Component {
-  constructor() {
-    super();
-  }
+let ${name} = ({prop1}) => {
+  return <div />;
+}
 
-  render() {
-
-  }
+${name}.propTypes = {
+  prop1: PropTypes.string.isRequired.describe('Replace me with the actual props'),
 }
 `);
 }
@@ -36,7 +36,7 @@ export default class ${name} extends React.Component {
 function generateExample(name) {
   return (
 `import React${padding(name.length - 5)} from 'react';
-import ${name}${padding(5 - name.length)} from 'components/${name}/${name}.react';
+import ${name}${padding(5 - name.length)} f`+ 'rom' +` 'components/${name}/${name}.react';
 
 export const component = ${name};
 
@@ -53,18 +53,18 @@ export const demos = [
 
 function generateTest(name) {
   return (
-`jest.dontMock('./${name}.react');
+`jest.dontMock('../../components/${name}/${name}.react');
 
 import React     from 'react';
 import ReactDOM  from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
-const ${name} = require('./${name}.react');
+const ${name} = require('../../components/${name}/${name}.react');
 
 describe('${name}', () => {
   it('can render examples', () => {
-    jest.dontMock('./${name}.example');
-    const example = require('./${name}.example');
+    jest.dontMock('../../components/${name}/${name}.example');
+    const example = require('../../components/${name}/${name}.example');
     example.demos.forEach((example, i) => {
       example.render();
     });
@@ -73,6 +73,7 @@ describe('${name}', () => {
 });
 `);
 }
+
 
 function updateComponentMap(name) {
   let numSpace = 1;
@@ -86,7 +87,7 @@ function updateComponentMap(name) {
   }
 
   return (
-`export let ${name}${spaces}= require('components/${name}/${name}.example');`
+`export let ${name}${spaces}= require('components/${name}/${name}.example');\n`
   );
 }
 
@@ -122,7 +123,7 @@ try {
   fs.writeFileSync(path.join(rootDir, name, `${name}.react.js`), generateReact(name));
   fs.writeFileSync(path.join(rootDir, name, `${name}.scss`), '');
   fs.writeFileSync(path.join(rootDir, name, `${name}.example.js`), generateExample(name));
-  fs.writeFileSync(path.join(rootDir, name, `${name}.test.js`), generateTest(name));
+  fs.writeFileSync(path.join(testDir, `${name}.test.js`), generateTest(name));
   fs.appendFileSync(path.join(pigDir, 'ComponentsMap.js'), updateComponentMap(name));
 
   console.log(`Component ${name} created at ${path.join(rootDir, name)}.`);

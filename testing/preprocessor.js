@@ -1,8 +1,5 @@
 var babel = require('babel-core');
 var extractClassnames = require('./extractClassnames');
-var path = require('path');
-
-var rootDir = path.join(process.cwd(), '..', '..', 'app', 'webpack');
 
 module.exports = {
   process: function (src, filename) {
@@ -12,9 +9,9 @@ module.exports = {
     }
 
     // Let Jest handle our custom module resolution
-    src = src.replace(/from \'stylesheets/g, "from '" + path.join(rootDir, 'stylesheets'));
-    src = src.replace(/from \'lib/g, "from '" + path.join(rootDir, 'lib'));
-    src = src.replace(/from \'components/g, "from '" + path.join(rootDir, 'components'));
+    src = src.replace(/from \'stylesheets/g, "from '../../stylesheets");
+    src = src.replace(/from \'lib/g, "from '../../lib");
+    src = src.replace(/from \'components/g, "from '../../components");
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6

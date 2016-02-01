@@ -38,16 +38,11 @@
     "generate": "node scripts/generate.js"
   },
   "jest": {
-    "rootDir": "../../app/webpack",
     "testPathDirs": [
-      "components",
       "lib"
     ],
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "scriptPreprocessor": "<rootDir>/../../script/webpack/testing/preprocessor.js",
-    "testDirectoryName": "webpack",
+    "scriptPreprocessor": "<rootDir>/testing/preprocessor.js",
+    "testDirectoryName": "tests",
     "testFileExtensions": [
       "test.js"
     ],
