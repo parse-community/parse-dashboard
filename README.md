@@ -8,7 +8,7 @@ To run it:
 git clone git@github.com:ParsePlatform/parse-dashboard.git
 cd parse-dashboard
 npm install
-npm run-script dashboard
+npm run dashboard
 ```
 
  Next add your app into parse-dashboard/Parse-Dashboard/parse-dashboard-config.json. Drew can help you make this easier, or if you want to do it yourself, the format is this:
