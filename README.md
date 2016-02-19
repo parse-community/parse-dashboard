@@ -22,7 +22,7 @@ Next add your app info into parse-dashboard/Parse-Dashboard/parse-dashboard-conf
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "MyApp"
-    },
+    }
   ]
 }
 ```
