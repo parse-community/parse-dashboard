@@ -117,62 +117,62 @@ class Dashboard extends React.Component {
     }
 
     return <Router history={history}>
-      <Redirect from='/' to='/apps' />
-      <Route path='/' component={App}>
-        <Route path='apps' component={AppsIndexPage} />
+  <Redirect from='/' to='/apps' />
+  <Route path='/' component={App}>
+    <Route path='apps' component={AppsIndexPage} />
 
-        <Redirect from='apps/:appId' to='/apps/:appId/browser' />
-        <Route path='apps/:appId' component={AppData}>
-          <Route path='getting_started' component={Empty} />
+    <Redirect from='apps/:appId' to='/apps/:appId/browser' />
+    <Route path='apps/:appId' component={AppData}>
+      <Route path='getting_started' component={Empty} />
 
-          <Route path='browser' component={check_gatekeeper('schema_overview') ? SchemaOverview : Browser} />
-          <Route path='browser/:className' component={Browser} />
+      <Route path='browser' component={check_gatekeeper('schema_overview') ? SchemaOverview : Browser} />
+      <Route path='browser/:className' component={Browser} />
 
-          <Route path='cloud_code' component={CloudCode} />
-          <Route path='cloud_code/*' component={CloudCode} />
-          <Route path='webhooks' component={Webhooks} />
-          <Redirect from='jobs' to='/apps/:appId/jobs/scheduled' />
-          <Route path='jobs' component={JobsData}>
-            <Route path='new' component={JobEdit} />
-            <Route path='edit/:jobId' component={JobEdit} />
-            <Route path=':section' component={Jobs} />
-          </Route>
-          <Redirect from='logs' to='/apps/:appId/logs/info' />
-          <Route path='logs/:type' component={Logs} />
-          <Route path='config' component={Config} />
-          <Route path='api_console' component={ApiConsole} />
-          <Route path='migration' component={Migration} />
-          <Redirect from='push' to='/apps/:appId/push/activity/all' />
-          <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
-          <Route path='push/activity/:category' component={PushIndex} />
-          <Route path='push/audiences' component={PushAudiencesIndex} />
-          <Route path='push/new' component={PushNew} />
-          <Route path='push/:pushId' component={PushDetails} />
-
-          <Redirect from='analytics' to='/apps/:appId/analytics/overview' />
-          <Route path='analytics'>
-            <Route path='overview' component={AnalyticsOverview} />
-            <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' />
-            <Route path='explorer/:displayType' component={Explorer} />
-            <Route path='retention' component={Retention} />
-            <Route path='performance' component={Performance} />
-            <Route path='slow_queries' component={SlowQueries} />
-          </Route>
-
-          <Redirect from='settings' to='/apps/:appId/settings/general' />
-          <Route path='settings' component={SettingsData}>
-            <Route path='general' component={GeneralSettings} />
-            <Route path='keys' component={SecuritySettings} />
-            <Route path='users' component={UsersSettings} />
-            <Route path='push' component={PushSettings} />
-            <Route path='hosting' component={HostingSettings} />
-          </Route>
-        </Route>
-
-        <Redirect from='account' to='/account/overview' />
-        <Route path='account/overview' component={AccountSettingsPage} />
+      <Route path='cloud_code' component={CloudCode} />
+      <Route path='cloud_code/*' component={CloudCode} />
+      <Route path='webhooks' component={Webhooks} />
+      <Redirect from='jobs' to='/apps/:appId/jobs/scheduled' />
+      <Route path='jobs' component={JobsData}>
+        <Route path='new' component={JobEdit} />
+        <Route path='edit/:jobId' component={JobEdit} />
+        <Route path=':section' component={Jobs} />
       </Route>
-      <Route path='*' component={FourOhFour} />
+      <Redirect from='logs' to='/apps/:appId/logs/info' />
+      <Route path='logs/:type' component={Logs} />
+      <Route path='config' component={Config} />
+      <Route path='api_console' component={ApiConsole} />
+      <Route path='migration' component={Migration} />
+      <Redirect from='push' to='/apps/:appId/push/activity/all' />
+      <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
+      <Route path='push/activity/:category' component={PushIndex} />
+      <Route path='push/audiences' component={PushAudiencesIndex} />
+      <Route path='push/new' component={PushNew} />
+      <Route path='push/:pushId' component={PushDetails} />
+
+      <Redirect from='analytics' to='/apps/:appId/analytics/overview' />
+      <Route path='analytics'>
+        <Route path='overview' component={AnalyticsOverview} />
+        <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' />
+        <Route path='explorer/:displayType' component={Explorer} />
+        <Route path='retention' component={Retention} />
+        <Route path='performance' component={Performance} />
+        <Route path='slow_queries' component={SlowQueries} />
+      </Route>
+
+      <Redirect from='settings' to='/apps/:appId/settings/general' />
+      <Route path='settings' component={SettingsData}>
+        <Route path='general' component={GeneralSettings} />
+        <Route path='keys' component={SecuritySettings} />
+        <Route path='users' component={UsersSettings} />
+        <Route path='push' component={PushSettings} />
+        <Route path='hosting' component={HostingSettings} />
+      </Route>
+    </Route>
+
+    <Redirect from='account' to='/account/overview' />
+    <Route path='account/overview' component={AccountSettingsPage} />
+  </Route>
+  <Route path='*' component={FourOhFour} />
     </Router>
   }
 }
