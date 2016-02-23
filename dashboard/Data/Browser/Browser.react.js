@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
 import { ActionTypes }                    from 'lib/stores/SchemaStore';
 import AddColumnDialog                    from 'dashboard/Data/Browser/AddColumnDialog.react';
 import CategoryList                       from 'components/CategoryList/CategoryList.react';

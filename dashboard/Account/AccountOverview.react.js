@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
 import AccountLinkField from 'dashboard/Account/AccountLinkField.react.js'
 import AccountManager from 'lib/AccountManager';
 import CreditCardInput from 'components/CreditCardInput/CreditCardInput.react';
