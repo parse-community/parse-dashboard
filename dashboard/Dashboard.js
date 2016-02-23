@@ -11,6 +11,7 @@ import AnalyticsOverview  from './Analytics/Overview/Overview.react';
 import ApiConsole         from './Data/ApiConsole/ApiConsole.react';
 import AppData            from './AppData.react';
 import AppsIndex          from './Apps/AppsIndex.react';
+import AppsManager        from 'lib/AppsManager';
 import Browser            from './Data/Browser/Browser.react';
 import check_gatekeeper   from 'lib/check_gatekeeper';
 import CloudCode          from './Data/CloudCode/CloudCode.react';
@@ -20,10 +21,12 @@ import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
 import GeneralSettings    from './Settings/GeneralSettings.react';
 import history            from 'dashboard/history';
 import HostingSettings    from './Settings/HostingSettings.react';
+import Icon               from 'components/Icon/Icon.react';
 import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
 import Jobs               from './Data/Jobs/Jobs.react';
 import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
 import JobsForm           from 'dashboard/Data/Jobs/JobsForm.react';
+import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
 import Performance        from './Analytics/Performance/Performance.react';
@@ -38,8 +41,12 @@ import SchemaOverview     from './Data/Browser/SchemaOverview.react';
 import SecuritySettings   from './Settings/SecuritySettings.react';
 import SettingsData       from './Settings/SettingsData.react';
 import SlowQueries        from './Analytics/SlowQueries/SlowQueries.react';
+import styles             from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings      from './Settings/UsersSettings.react';
 import Webhooks           from './Data/Webhooks/Webhooks.react';
+import { AsyncStatus }    from 'lib/Constants';
+import { center }         from 'stylesheets/base.scss';
+import { get }            from 'lib/AJAX';
 import {
   Router,
   Route,
@@ -48,13 +55,6 @@ import {
 
 let App = React.createClass({
   render() {
-    try {
-      if (typeof window.ga === 'function') {
-        window.ga('send', 'pageview', location.pathname);
-      }
-    } catch(e) {
-      // Don't let Google Analytics crash our party
-    }
     return this.props.children;
   }
 });
@@ -77,8 +77,46 @@ const AccountSettingsPage = () => (
     </AccountView>
   );
 
-module.exports = (
-<Router history={history}>
+class Dashboard extends React.Component {
+  constructor(props) {
+    super();
+
+    this.state = {
+      configLoadingError: '',
+      configLoadingState: AsyncStatus.PROGRESS,
+    };
+  }
+
+  componentDidMount() {
+    let promise = get('/parse-dashboard-config.json');
+    promise.then(({ apps }) => {
+      AppsManager.seed(apps)
+      this.setState({ configLoadingState: AsyncStatus.SUCCESS });
+    }).fail(error => {
+      if (typeof error === 'string') {
+        this.setState({ configLoadingError: 'Your parse-dashboard-config.json file contains invalid JSON.' });
+      }
+      this.setState({ configLoadingState: AsyncStatus.FAILED });
+    });
+  }
+
+  render() {
+    if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
+      return <div className={center}><Loader/></div>;
+    }
+
+    if (this.state.configLoadingError.length > 0) {
+      return <div className={styles.empty}>
+        <div className={center}>
+          <div className={styles.cloud}>
+            <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
+          </div>
+          <div style={{fontSize: '58px', color: '#ffffff'}}>{this.state.configLoadingError}</div>
+        </div>
+      </div>
+    }
+
+    return <Router history={history}>
   <Redirect from='/' to='/apps' />
   <Route path='/' component={App}>
     <Route path='apps' component={AppsIndexPage} />
@@ -135,5 +173,8 @@ module.exports = (
     <Route path='account/overview' component={AccountSettingsPage} />
   </Route>
   <Route path='*' component={FourOhFour} />
-</Router>
-);
+    </Router>
+  }
+}
+
+module.exports = Dashboard;

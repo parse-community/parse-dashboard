@@ -44,12 +44,14 @@ export default class NewAppDialog extends React.Component {
     let valid = hasValidName && (!needsConnectionString || this.state.connectionURL);
 
     let customDBWarning = this.state.databaseType === 'custom' ? <FormNote
+      key='dbwarning'
       show={this.state.databaseType === 'custom'}
       color='orange'>
       <Icon name='warn-solid' width={12} height={12} fill="white"/> Important: You will not be able to change the database type after creation.
     </FormNote> : null;
     let URLfield =
     <SliderWrap
+      key='urlfield'
       expanded={this.state.databaseType === 'custom'}>
       <Field
         label={<Label
@@ -67,6 +69,7 @@ export default class NewAppDialog extends React.Component {
     </SliderWrap>;
     let mongoURLField = check_gatekeeper('show_new_app_form_connection_string') ? [
       <Field
+        key='show_new_app_form_connection_string'
         label={<Label
           text='Database Type'
           description={<span><Link to='#'>Learn more</Link> about database types</span>} />}
