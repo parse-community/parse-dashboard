@@ -93,7 +93,7 @@ class Dashboard extends React.Component {
       AppsManager.seed(apps)
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }).fail(error => {
-      if (typeof error == 'string') {
+      if (typeof error === 'string') {
         this.setState({ configLoadingError: 'Your parse-dashboard-config.json file contains invalid JSON.' });
       }
       this.setState({ configLoadingState: AsyncStatus.FAILED });
@@ -177,4 +177,4 @@ class Dashboard extends React.Component {
   }
 }
 
-module.exports = <Dashboard/>;
+module.exports = Dashboard;

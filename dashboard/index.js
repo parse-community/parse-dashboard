@@ -9,10 +9,11 @@ import AppsManager     from 'lib/AppsManager';
 import Immutable       from 'immutable';
 import installDevTools from 'immutable-devtools';
 import Parse           from 'parse';
+import React           from 'react';
 import ReactDOM        from 'react-dom';
 import Dashboard       from './Dashboard';
 
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);
 
-ReactDOM.render(Dashboard, document.getElementById('browser_mount'));
+ReactDOM.render(<Dashboard/>, document.getElementById('browser_mount'));
