@@ -240,7 +240,7 @@ let ManageAppFields = ({
           text='Migration complete'
           description='Your database has been migrated to an external database.'
         />}
-        //TODO(drewgross): KeyField bascially does what we want, but is maybe too specialize. Maybe at some point we should have a component dedicated to semi-secret stuff that we want to prevent shoulder surfers from seeing, and emphasizing that stuff something should be secret.
+        //TODO: KeyField bascially does what we want, but is maybe too specialized. Maybe at some point we should have a component dedicated to semi-secret stuff that we want to prevent shoulder surfers from seeing, and emphasizing that stuff something should be secret.
         input={<KeyField
           hidden={true}
           whenHiddenText='Show connection string'
@@ -289,7 +289,7 @@ let ManageAppFields = ({
       label={<Label
         text='Export app data'
         description={'We firmly believe in data portability.'} />}
-      //TODO(drewgross): Add export progress view when designs are ready.
+      //TODO: Add export progress view when designs are ready.
       input={<FormButton
         onClick={exportData}
         value='Export Data'/>} />
@@ -371,7 +371,7 @@ export default class GeneralSettings extends DashboardView {
       showMigrateAppModal: false,
       migrationMongoURL: '',
       migrationWarnings: [],
-      //TODO(drewgross): modify FormModal to clear errors when it's content changes, then this hack will be unnecessary.
+      //TODO: modify FormModal to clear errors when it's content changes, then this hack will be unnecessary.
       showMongoConnectionValidationErrors: true,
 
       showChangeConnectionStringModal: false,
@@ -452,16 +452,6 @@ export default class GeneralSettings extends DashboardView {
           })} />} />
       {this.state.migrationWarnings.map(warning => <FormNote key={warning} show={true} color='orange'>{warning}</FormNote>)}
     </FormModal>;
-
-    if (check_gatekeeper('migration_tool_unavailable')) {
-      migrateAppModal = this.state.showMigrateAppModal ? <Modal
-        title='Sorry!'
-        width={650}
-        subtitle='The migration tool is temporarily unavailable. Please check back later.'
-        icon='cloud-sad'
-        onConfirm={() => this.setState({showMigrateAppModal: false})}
-        showCancel={false}/> : null;
-    }
 
     let changeConnectionStringModal = <FormModal
       title='Change Connection String'
@@ -789,7 +779,7 @@ let generalFieldsOptions = {
     friendlyName: 'app name',
     showTo: true,
   },
-  //TODO(drewgross): This will display 'enabled production' or 'disabled production' which is sub-optimal. Try to make it better.
+  //TODO: This will display 'enabled production' or 'disabled production' which is sub-optimal. Try to make it better.
   inProduction: {
     friendlyName: 'production',
     type: 'boolean',

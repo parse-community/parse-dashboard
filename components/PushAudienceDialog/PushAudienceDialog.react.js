@@ -101,7 +101,7 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   handleAudienceName(name) {
-    //TODO: (peterjs) add some client side regex validation for immediate feedback
+    //TODO: add some client side regex validation for immediate feedback
     this.setState({ audienceName: name });
   }
 
@@ -142,15 +142,15 @@ export default class PushAudienceDialog extends React.Component {
     if ((this.state.saveForFuture || this.props.disableNewSegment) && this.state.audienceName.length === 0) { //check that a name is written
       return false;
     }
-    //TODO (peterjs) check if conditions are valid
+    //TODO check if conditions are valid
     return true;
   }
 
   render() {
     let options = [];
     let availableDevices = this.props.availableDevices;
-    // TODO: (peterjs) - handle empty case when 0 devices - should display link to device creation.
-    // TODO: (peterjs) - handle misconfigured device link
+    // TODO: handle empty case when 0 devices - should display link to device creation.
+    // TODO: handle misconfigured device link
     for (let index in availableDevices) {
       options.push(
         <MultiSelectOption
@@ -225,7 +225,7 @@ export default class PushAudienceDialog extends React.Component {
           labelWidth={55}
           label={<Label text='Audience name' />}
           input={<TextInput placeholder='Choose a name...' onChange={this.handleAudienceName.bind(this)} />} />
-      );      
+      );
     }
 
     return (

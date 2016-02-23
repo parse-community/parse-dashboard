@@ -40,12 +40,12 @@
 .tr {
   cursor: pointer;
 
-  //TODO: (peterjs) - add focus styles once tab index is added
+  //TODO: add focus styles once tab index is added
   &:hover {
     background-color: $lightBlue;
   }
 
-  //NOTE: (peterjs) would like to get rid of alternating styles - hard to see for users 
+  //NOTE: would like to get rid of alternating styles - hard to see for users
   &:nth-child(2n) {
     &:hover {
       background-color: $lightBlue;

@@ -73,7 +73,7 @@ export const PresetQueries = [
       }
     ]
   }, {
-    // TODO (hallucinogen): everything here should use real explorer instead.
+    // TODO everything here should use real explorer instead.
     // But I'm not confident since the result of explorer != result of legacy endpoint.
     name: 'Events',
     children: [

@@ -86,7 +86,7 @@ let LocalizedMessageField = ({ monospace, id, onChangeValue, onChangeLocale, onC
           <Label
             text={
               <div>
-                <span>Which locale are you targeting?</span>           
+                <span>Which locale are you targeting?</span>
                 { deviceCount !== undefined ?
                   <div className={styles.localedeviceCount}>{deviceCountSegment}</div> :
                   null
@@ -94,7 +94,7 @@ let LocalizedMessageField = ({ monospace, id, onChangeValue, onChangeLocale, onC
               </div>
             } />
         }
-        input={                
+        input={
           <Dropdown value={currentLocaleOption} onChange={(nextLocaleOption) => onChangeLocale.call(undefined, id, nextLocaleOption, data, currentLocaleOption)}>
             {localeOptions && localeOptions.length > 0 ? localeOptions.map((option, i) => {
               return (<Option value={option}>{option}</Option>);
@@ -164,7 +164,7 @@ export default class PushNew extends DashboardView {
           });
         }).always(() => {
           this.setState({ loadingLocale: false });
-        });   
+        });
       }
     });
   }
@@ -178,7 +178,7 @@ export default class PushNew extends DashboardView {
     });
   }
 
-  //TODO: (peterjs) - scroll audience row into view if req.
+  //TODO: scroll audience row into view if req.
 
   handlePushSubmit(changes) {
     let promise = new Promise();
@@ -187,7 +187,7 @@ export default class PushNew extends DashboardView {
       if (error) {
         promise.reject({ error });
       } else {
-        //TODO: (peterjs) - global success message banner for passing successful creation - store should also be cleared
+        //TODO: global success message banner for passing successful creation - store should also be cleared
         history.pushState(null, this.context.generatePath('push/activity'));
       }
     }, (error) => {
@@ -350,7 +350,7 @@ export default class PushNew extends DashboardView {
       }
     }
 
-    //TODO: (peterjs) disable user selection of invalid date or show error message in footer
+    //TODO: disable user selection of invalid date or show error message in footer
     if (fields.push_time_type !== 'now' || (fields.exp_enable && fields.exp_type === 'time')) {
       return deliveryContent.concat([
         <Field
@@ -488,7 +488,7 @@ export default class PushNew extends DashboardView {
           label={<Label text='Localize your message?' />}
           input={<Toggle value={fields.translation_enable} onChange={(value) => {
             setField('translation_enable', value || null);
-          }} />} /> 
+          }} />} />
       );
       if (fields.translation_enable) {
         translationSegment.push(
@@ -544,7 +544,7 @@ export default class PushNew extends DashboardView {
                       locale,
                       value
                     };
-                    
+
                     availableLocales.splice(availableLocales.indexOf(locale));
                     availableLocales.unshift(prevLocale);
                     setField(`translation[${prevLocale}]`, null);
@@ -582,7 +582,7 @@ export default class PushNew extends DashboardView {
                     promise.then((localeDeviceCountMap) => {
                       this.setState({ localeDeviceCountMap })
                     });
-                    this.xhrs.push(xhr);  
+                    this.xhrs.push(xhr);
                   });
                 }} />
             }
@@ -629,7 +629,7 @@ export default class PushNew extends DashboardView {
               }
               // disable translation if experiment is enabled
               if (fields.translation_enable && value) {
-                setField('translation_enable',null);  
+                setField('translation_enable',null);
               }
               setField('exp_enable', value || null);
             }} />} />

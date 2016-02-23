@@ -96,7 +96,7 @@ export default class HostingSettings extends DashboardView {
 							sslPublicCertUploading: true,
 							sslPublicCertError: '',
 						});
-						//TODO(drewgross): do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
+						//TODO: do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
 						this.context.currentApp.uploadSSLPublicCertificate(file).fail(({ error }) => {
 							this.setState({ sslPublicCertError: error });
 						}).always(() => {
@@ -122,7 +122,7 @@ export default class HostingSettings extends DashboardView {
 							sslPrivateKeyUploading: true,
 							sslPrivateKeyError: '',
 					  });
-						//TODO(drewgross): do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
+						//TODO: do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
 						this.context.currentApp.uploadSSLPrivateKey(file).fail(({ error }) => {
 							this.setState({ sslPrivateKeyError: error });
 						}).always(() => {
@@ -312,7 +312,7 @@ export default class HostingSettings extends DashboardView {
 				});
 				return promise;
 			}}
-			validate={() => '' /*TODO(drewgross): do some validation*/}
+			validate={() => '' /*TODO: do some validation*/}
 			renderForm={this.renderForm.bind(this)}
 		/>;
 	}

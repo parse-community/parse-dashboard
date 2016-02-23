@@ -36,7 +36,6 @@ const APP_VERSIONS_EXPLORER_QUERY = {
   localId: 'slow_query_app_version_query'
 };
 
-// TODO (hallucinogen): t8558833
 let formatQuery = (query) => {
   return query;
 };

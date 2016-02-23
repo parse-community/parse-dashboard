@@ -28,7 +28,7 @@ SvgPrepPlugin.prototype.apply = function(compiler) {
       return callback();
     }
 
-    // TODO: (andrewi) Keep track of file hashes, so we can avoid recompiling when none have changed
+    // TODO: Keep track of file hashes, so we can avoid recompiling when none have changed
     let files = fs.readdirSync(this.options.source).filter((name) => {
       return !!name.match(/\.svg$/);
     }).map((name) => path.join(this.options.source, name));

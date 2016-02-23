@@ -96,7 +96,7 @@ export default class InstallationCondition extends React.Component {
       </div>
     );
 
-    //TODO (peterjs): Shoulse use <Button> and have a link type style without border.
+    //TODO Shoulse use <Button> and have a link type style without border.
     let labelDescription = (
       <a
         href='javascript:;'

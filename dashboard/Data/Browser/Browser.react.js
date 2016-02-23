@@ -17,7 +17,7 @@ import DropClassDialog                    from 'dashboard/Data/Browser/DropClass
 import EmptyState                         from 'components/EmptyState/EmptyState.react';
 import ExportDialog                       from 'dashboard/Data/Browser/ExportDialog.react';
 import history                            from 'dashboard/history';
-import { List, Map }                           from 'immutable';
+import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
 import Parse                              from 'parse';
 import prettyNumber                       from 'lib/prettyNumber';
@@ -93,7 +93,7 @@ export default class Browser extends DashboardView {
         selection: {},
         relation: null
       };
-      //TODO: (peterjs) - url limit issues ( we may want to check for url limit), unlikely but possible to run into
+      //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
       if (nextProps.location.query && nextProps.location.query.filters) {
         let queryFilters = JSON.parse(nextProps.location.query.filters);
         queryFilters.forEach((filter) => {

@@ -6,26 +6,26 @@
  * the root directory of this source tree.
  */
 import AccountLinkField from 'dashboard/Account/AccountLinkField.react.js'
-import AccountManager from 'lib/AccountManager';
-import CreditCardInput from 'components/CreditCardInput/CreditCardInput.react';
-import Field from 'components/Field/Field.react';
-import Fieldset from 'components/Fieldset/Fieldset.react';
-import FlowView from 'components/FlowView/FlowView.react';
-import FormButton from 'components/FormButton/FormButton.react';
-import FormModal from 'components/FormModal/FormModal.react';
-import FormTable from 'components/FormTable/FormTable.react';
-import getSiteDomain from 'lib/getSiteDomain';
-import KeyField from 'components/KeyField/KeyField.react';
-import Label from 'components/Label/Label.react';
-import Modal from 'components/Modal/Modal.react';
-import MoneyInput from 'components/MoneyInput/MoneyInput.react';
-import Parse from 'parse';
-import React from 'react';
+import AccountManager          from 'lib/AccountManager';
+import CreditCardInput         from 'components/CreditCardInput/CreditCardInput.react';
+import Field                   from 'components/Field/Field.react';
+import Fieldset                from 'components/Fieldset/Fieldset.react';
+import FlowView                from 'components/FlowView/FlowView.react';
+import FormButton              from 'components/FormButton/FormButton.react';
+import FormModal               from 'components/FormModal/FormModal.react';
+import FormTable               from 'components/FormTable/FormTable.react';
+import getSiteDomain           from 'lib/getSiteDomain';
+import KeyField                from 'components/KeyField/KeyField.react';
+import Label                   from 'components/Label/Label.react';
+import Modal                   from 'components/Modal/Modal.react';
+import MoneyInput              from 'components/MoneyInput/MoneyInput.react';
+import Parse                   from 'parse';
+import React                   from 'react';
 import renderFlowFooterChanges from 'lib/renderFlowFooterChanges';
-import styles from 'dashboard/Settings/Settings.scss';
-import TextInput from 'components/TextInput/TextInput.react';
-import Toolbar from 'components/Toolbar/Toolbar.react';
-import { dateStringUTC } from 'lib/DateUtils';
+import styles                  from 'dashboard/Settings/Settings.scss';
+import TextInput               from 'components/TextInput/TextInput.react';
+import Toolbar                 from 'components/Toolbar/Toolbar.react';
+import { dateStringUTC }       from 'lib/DateUtils';
 
 const DEFAULT_LABEL_WIDTH = 56;
 const XHR_KEY = 'AccountOverview';
@@ -128,7 +128,7 @@ export default class AccountOverview extends React.Component {
                 showDeleteAccountKeyModal: true,
               });
             },
-            //TODO(drewgross): do fancy colors for (almost) expired keys, like push certs
+            //TODO do fancy colors for (almost) expired keys, like push certs
             color: 'green',
             notes: [
               {
@@ -373,7 +373,7 @@ export default class AccountOverview extends React.Component {
       onSubmit={() => {
         let promiseList = [];
         if (changes.cc !== undefined) {
-          //TODO(drewgross) change credit card number
+          //TODO change credit card number
         }
         return Parse.Promise.when(promiseList);
       }}

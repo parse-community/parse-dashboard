@@ -51,7 +51,7 @@ export default class DashboardView extends React.Component {
       },
     ];
 
-    if (this.context.currentApp.migration && check_gatekeeper('opendb_migration_page')) {
+    if (this.context.currentApp.migration) {
       coreSubsections.push({
         name: 'Migration',
         link: '/migration',

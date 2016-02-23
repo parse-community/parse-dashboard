@@ -5,26 +5,26 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button from 'components/Button/Button.react';
-import DashboardView from 'dashboard/DashboardView.react';
-import Dropdown from 'components/Dropdown/Dropdown.react';
-import DropdownOption from 'components/Dropdown/Option.react';
-import EmptyState from 'components/EmptyState/EmptyState.react';
-import Field from 'components/Field/Field.react';
-import FormModal from 'components/FormModal/FormModal.react';
-import getSiteDomain from 'lib/getSiteDomain';
-import Icon from 'components/Icon/Icon.react';
-import keyMirror from 'lib/keyMirror';
-import Label from 'components/Label/Label.react';
-import Modal from 'components/Modal/Modal.react';
-import React from 'react';
-import SidebarAction from 'components/Sidebar/SidebarAction';
-import subscribeTo from 'lib/subscribeTo';
-import TableHeader from 'components/Table/TableHeader.react';
-import TableView from 'dashboard/TableView.react';
-import TextInput from 'components/TextInput/TextInput.react';
-import Toolbar from 'components/Toolbar/Toolbar.react';
-import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
+import Button                                from 'components/Button/Button.react';
+import DashboardView                         from 'dashboard/DashboardView.react';
+import Dropdown                              from 'components/Dropdown/Dropdown.react';
+import DropdownOption                        from 'components/Dropdown/Option.react';
+import EmptyState                            from 'components/EmptyState/EmptyState.react';
+import Field                                 from 'components/Field/Field.react';
+import FormModal                             from 'components/FormModal/FormModal.react';
+import getSiteDomain                         from 'lib/getSiteDomain';
+import Icon                                  from 'components/Icon/Icon.react';
+import keyMirror                             from 'lib/keyMirror';
+import Label                                 from 'components/Label/Label.react';
+import Modal                                 from 'components/Modal/Modal.react';
+import React                                 from 'react';
+import SidebarAction                         from 'components/Sidebar/SidebarAction';
+import subscribeTo                           from 'lib/subscribeTo';
+import TableHeader                           from 'components/Table/TableHeader.react';
+import TableView                             from 'dashboard/TableView.react';
+import TextInput                             from 'components/TextInput/TextInput.react';
+import Toolbar                               from 'components/Toolbar/Toolbar.react';
+import { ActionTypes as SchemaActionTypes }  from 'lib/stores/SchemaStore';
 import { ActionTypes as WebhookActionTypes } from 'lib/stores/WebhookStore';
 
 let TableWarning = ({ text }) => <div>
@@ -170,7 +170,7 @@ export default class Webhooks extends TableView {
 			submitText='Create Webhook'
 			inProgressText={'Creating\u2026'}
 			clearFields={this.clearFields.bind(this)}
-			enabled={true /* TODO(drewgross): do some validation here */}>
+			enabled={true /* TODO: do some validation here */}>
 			{webhookModalFields}
 		</FormModal>;
 
@@ -188,7 +188,7 @@ export default class Webhooks extends TableView {
 			submitText='Save Webhook'
 			inProgressText={'Saving\u2026'}
 			clearFields={this.clearFields.bind(this)}
-			enabled={true /* TODO(drewgross): do some validation here */}>
+			enabled={true /* TODO: do some validation here */}>
 			{webhookModalFields}
 		</FormModal>;
 
@@ -223,7 +223,7 @@ export default class Webhooks extends TableView {
 					hookURL: 'https://',
 				});
 			}}
-			enabled={true /* TODO(drewgross): do some validation here */}>
+			enabled={true /* TODO: do some validation here */}>
 			{webhookModalFields}
 		</FormModal>;
 		return [newHookModal, editHookModal, deleteHookModal];
