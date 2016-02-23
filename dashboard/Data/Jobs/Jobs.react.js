@@ -57,7 +57,7 @@ function scheduleString(data) {
   return <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>{schedule}</div>;
 }
 
-// TODO: (peterjs) - create scrollable view component that handles lazy fetch container on scroll
+// TODO: create scrollable view component that handles lazy fetch container on scroll
 @subscribeTo('Jobs', 'jobs')
 export default class Jobs extends TableView {
   constructor() {

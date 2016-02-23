@@ -36,7 +36,7 @@ export default class Collaborators extends React.Component {
   }
 
   handleAdd(newEmail) {
-    //TODO(drewgross): Show some in-progress thing while the collaborator is being validated, or maybe have some sort of
+    //TODO: Show some in-progress thing while the collaborator is being validated, or maybe have some sort of
     //async validator in the parent form. Currently if you mash the add button, they same collaborator gets added many times.
     return this.context.currentApp.validateCollaborator(newEmail).then((response) => {
       // lastError logic assumes we only have 1 input field

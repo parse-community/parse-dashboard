@@ -8,7 +8,6 @@
 import { getToken }   from 'lib/CSRFManager';
 import AppsManager    from 'lib/AppsManager';
 import AppsSelector   from 'components/Sidebar/AppsSelector.react';
-import FeedbackDialog from 'components/FeedbackDialog/FeedbackDialog.react';
 import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import getSiteDomain  from 'lib/getSiteDomain';
 import React          from 'react';
@@ -21,7 +20,6 @@ export default class Sidebar extends React.Component {
   constructor() {
     super();
     this.state = {
-      showFeedbackDialog: false,
     };
   }
 
@@ -52,17 +50,6 @@ export default class Sidebar extends React.Component {
   render() {
     let apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
 
-    let feedback = this.state.showFeedbackDialog ? 
-      (
-        <FeedbackDialog
-          onClose={() => {
-            this.setState({
-              showFeedbackDialog: false
-            });
-          }}
-          open={this.state.showFeedbackDialog} />
-      ) : null;
-
     return (
       <div className={styles.sidebar}>
         <SidebarHeader />
@@ -85,28 +72,11 @@ export default class Sidebar extends React.Component {
           })}
         </div>
         <div className={styles.footer}>
-          <form ref='switch' method='post' action={`${getSiteDomain()}/account/swap_dashboard`}>
-            <input type='hidden' name='authenticity_token' value={getToken()} />
-          </form>
-          <a
-            href="javascript:;"
-            role="button"
-            onClick={() => this.refs.switch.submit()}>
-              Leave beta dashboard
-          </a>
-          <a
-            href="javascript:;"
-            role="button"
-            onClick={() => {
-              this.setState({
-                showFeedbackDialog: true
-              });
-            }} >
-              Feedback
-          </a>
+          <a href='https://www.github.com/parseplatform'>Open Source</a>
+          <a href='https://www.parse.com/docs'>Docs</a>
+          <a href='https://www.parse.com/downloads'>Downloads</a>
           <FooterMenu />
         </div>
-        {feedback}
       </div>
     );
   }

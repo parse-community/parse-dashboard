@@ -14,7 +14,7 @@ import VisiblePreview     from 'components/PushPreview/VisiblePreview.react';
 import {
          getDateMethod,
          MONTHS,
-         pad,            
+         pad,
        }                from 'lib/DateUtils';
 
 let Row = ({ label, content }) => (
@@ -102,7 +102,7 @@ export default class PushPreview extends React.Component {
         <Row label='Expiration:' content={expiration} />
       </div>
     );
-    //TODO: (peterjs) - clarify use of UTC or GMT as GMT is time zone and UTC is standard
+    //TODO: clarify use of UTC or GMT as GMT is time zone and UTC is standard
     if (isExperiment && pushState.exp_type === 'time') {
       timePreview = (
         <div className={styles.section}>
@@ -158,7 +158,7 @@ export default class PushPreview extends React.Component {
         </div>
         <div className={styles.right}>
           {previewContent || <div className={styles.noPreview}>No Preview</div>}
-          {previewContent ? 
+          {previewContent ?
             <div className={styles.typeSelect}>
               <SegmentSelect
                 values={['iOS', 'Android', 'OS X', 'Windows']}

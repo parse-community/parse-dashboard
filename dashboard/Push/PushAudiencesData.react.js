@@ -24,7 +24,7 @@ import styles                  from './PushAudiencesData.scss';
 
 const XHR_KEY = 'PushAudiencesData';
 
-//TODO(peterjs): lazy render options - avoid necessary calls for count if user doesn't see the audience
+//TODO: lazy render options - avoid necessary calls for count if user doesn't see the audience
 export default class PushAudiencesData extends React.Component {
   constructor() {
     super();
@@ -227,7 +227,7 @@ export default class PushAudiencesData extends React.Component {
 
     let _current;
 
-    //TODO: (peterjs) should idealy be moved outside render()
+    //TODO: should idealy be moved outside render()
     if (this.newlyCreatedTempSegment) {
       _current = PushConstants.NEW_SEGMENT_ID;
       this.newlyCreatedTempSegment = false;

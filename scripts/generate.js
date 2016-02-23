@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * Copyright (c) 2016-present, Parse, LLC
  * All rights reserved.
@@ -5,7 +6,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-#!/usr/bin/env node
 
 'use strict';
 
@@ -26,9 +26,16 @@ function padding(length) {
 
 function generateReact(name) {
   return (
-`import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/${name}/${name}.scss';
+`/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+import PropTypes                        from 'lib/PropTypes';
+import React                            from 'react';
+import styles                           from 'components/${name}/${name}.scss';
 
 let ${name} = ({prop1}) => {
   return <div />;
@@ -42,7 +49,14 @@ ${name}.propTypes = {
 
 function generateExample(name) {
   return (
-`import React${padding(name.length - 5)} from 'react';
+`/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+import React${padding(name.length - 5)} from 'react';
 import ${name}${padding(5 - name.length)} f`+ 'rom' +` 'components/${name}/${name}.react';
 
 export const component = ${name};
@@ -60,11 +74,18 @@ export const demos = [
 
 function generateTest(name) {
   return (
-`jest.dontMock('../../components/${name}/${name}.react');
+`/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+jest.dontMock('../../components/${name}/${name}.react');
 
-import React     from 'react';
-import ReactDOM  from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
+import React                            from 'react';
+import ReactDOM                         from 'react-dom';
+import TestUtils                        from 'react-addons-test-utils';
 
 const ${name} = require('../../components/${name}/${name}.react');
 

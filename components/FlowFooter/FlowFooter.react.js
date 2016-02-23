@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React      from 'react';
-import PropTypes  from 'lib/PropTypes';
-import styles     from 'components/FlowFooter/FlowFooter.scss';
+import React     from 'react';
+import PropTypes from 'lib/PropTypes';
+import styles    from 'components/FlowFooter/FlowFooter.scss';
 
 let FlowFooter = ({ primary, secondary, errorMessage, borderTop, children }) => (
   <div className={styles.footer} style={borderTop ? { borderTop } : null}>
@@ -36,6 +36,6 @@ FlowFooter.propTypes = {
     'Style override for footer border-top.'
   ),
   children: PropTypes.node.describe(
-    'The text of the footer. <strong> tags will be rendered in blue.'
+    'The text of the footer. <strong> tags will be rendered in bold.'
   ),
 }

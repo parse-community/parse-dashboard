@@ -160,7 +160,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 40px;
-  
+
   &:hover{
       &:after {
         border-top-color: white;
@@ -235,11 +235,11 @@
 
 .active {
   background: #159cee;
-  
+
   .section_header{
     font-weight: 700;
     &:hover{
-      background: #159cee; 
+      background: #159cee;
     }
   }
 }
@@ -255,7 +255,7 @@
   &:hover{
     background-color: #0D5E91;
   }
-  
+
   > span {
     vertical-align: top;
   }
@@ -284,7 +284,7 @@ a.subitem {
   font-weight: 400;
   display: inline-block;
   width: 100%;
-    
+
   &:hover {
     color: white;
   }
@@ -312,35 +312,6 @@ a.subitem {
   float: left;
 }
 
-.header:hover{
-  .version:not(.local) {
-    > *:first-child {
-      top: -2px;
-      opacity: 1;
-      transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-      font-size: 8px;
-    }
-
-    > *:nth-child(2) {
-      top: 8px;
-      opacity: 0.4;
-      transition: all 0.4s 0.1s cubic-bezier(0.77, 0, 0.175, 1);
-      &:hover{
-        opacity: 1;
-      }
-    }
-
-    > *:nth-child(3) {
-      top: 19px;
-      opacity: 0.4;
-      transition: all 0.4s 0.16s cubic-bezier(0.77, 0, 0.175, 1);
-      &:hover{
-        opacity: 1;
-      }        
-    }
-  }
-}
-
 .version {
   @include DIN17Font;
   position: relative;
@@ -359,39 +330,9 @@ a.subitem {
     text-transform: uppercase;
   }
 
-  &:not(.local) {
-
-    > *:first-child {
-      top: 10px;
-      opacity: 0.4;
-      transition: all 0.4s 0.16s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    > *:nth-child(2) {
-      position: absolute;
-      top: 22px;
-      opacity: 0;
-      transition: all 0.4s 0.1s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    > *:nth-child(3) {
-      position: absolute;
-      top: 34px;
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-  }
-
-  &.local {
-    > *:first-child {
-      color: $red;
-      top: 10px;
-    }
-
-    a {
-      display: none;
-    }
+  > *:first-child {
+    top: 10px;
+    transition: all 0.4s 0.16s cubic-bezier(0.77, 0, 0.175, 1);
   }
 }
 
@@ -446,7 +387,7 @@ a.subitem {
       border-bottom: 0;
       border-radius: 0 0 5px 5px;
     }
-    
+
     .emoji{
       padding-left: 4px;
       padding-right: 2px;

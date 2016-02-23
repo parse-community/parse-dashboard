@@ -83,7 +83,7 @@ let isChannelTargeted = (pushData) => {
   let channelClause = false;
   if(!query) {
     return false;
-  } 
+  }
 
   let queryJSON = JSON.parse(query);
   let channels = queryJSON.channels;
@@ -126,7 +126,7 @@ let whereHash = (pushData) => {
   let query = pushData[PushConstants.QUERY_FIELD];
   if(query) {
     return JSON.parse(query);
-  } 
+  }
   return null;
 }
 
@@ -202,7 +202,7 @@ let getPushTime = (pushTime, updatedAt) => {
   let result  = [];
   if (isLocal) {
     result.push(
-      <div key='localTime' className={styles.localTimeLabel}>LOCAL TIME</div> 
+      <div key='localTime' className={styles.localTimeLabel}>LOCAL TIME</div>
     );
   };
   result.push(
@@ -252,13 +252,13 @@ export default class PushIndex extends DashboardView {
 
   componentWillMount() {
     this.handleFetch(this.props.params.category);
-    //TODO: (peterjs) - make xhr map and generic abort for existing xhrs.
+    //TODO: make xhr map and generic abort for existing xhrs.
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
-      this.setState({ 
+      this.setState({
         availableDevices: available_devices
       });
     }, (error) => {
-      this.setState({ 
+      this.setState({
         availableDevices: PushConstants.DEFAULT_DEVICES
       });
     });
@@ -267,7 +267,7 @@ export default class PushIndex extends DashboardView {
   componentWillUnmount() {
     if (this.xhrHandle) {
       this.xhrHandle.abort();
-    } 
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -323,7 +323,7 @@ export default class PushIndex extends DashboardView {
   }
 
   renderRow(push) {
-    //TODO: (peterjs) - special experimentation case for type
+    //TODO: special experimentation case for type
     return (
       <tr onClick={this.navigateToDetails.bind(this, push.objectId)} className={styles.tr}>
         <td className={styles.colType}>{getPushStatusType(push.data)}</td>
@@ -375,7 +375,7 @@ export default class PushIndex extends DashboardView {
     }
 
     let maxPage = Math.ceil(paginationInfo.push_status_display_count/paginationInfo.push_status_per_page);
-    
+
     if(paginationInfo.page_num < maxPage && !this.state.loading){
       return (
         <div className={styles.showMore}>
@@ -439,5 +439,5 @@ export default class PushIndex extends DashboardView {
         <div className={stylesTable.headers}>{headers}</div>
       </div>
     );
-  } 
+  }
 }

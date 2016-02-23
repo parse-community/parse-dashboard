@@ -60,16 +60,16 @@ export default class PushAudiencesIndex extends DashboardView {
         min: PushConstants.INITIAL_PAGE_SIZE,
         xhrKey: XHR_KEY,
       }).then(() => {
-      
+
     }).always(() => {
       this.setState({ loading: false });
     });
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
-      this.setState({ 
+      this.setState({
         availableDevices: available_devices
       });
     }, (error) => {
-      this.setState({ 
+      this.setState({
         availableDevices: PushConstants.DEFAULT_DEVICES
       });
     });
@@ -99,7 +99,7 @@ export default class PushAudiencesIndex extends DashboardView {
     if (pushAudienceData) {
       audiences = pushAudienceData.get('audiences') || new List();;
     }
-    
+
     this.schema = schema;
     return audiences;
   }
@@ -187,7 +187,7 @@ export default class PushAudiencesIndex extends DashboardView {
     }
 
     query.deviceType = { $in: platforms };
-    //TODO: (peterjs) - handle fail case - need to modify/extend <FormModal> to handle custom footer
+    //TODO: handle fail case - need to modify/extend <FormModal> to handle custom footer
     this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.CREATE,{
       query: JSON.stringify(query),
       name,
@@ -216,7 +216,7 @@ export default class PushAudiencesIndex extends DashboardView {
             showCreateAudienceModal: false
           });
         }}/>
-      ) : 
+      ) :
       null;
 
     let deleteSubtitle = (

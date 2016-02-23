@@ -32,7 +32,7 @@ export default class Browser extends DashboardView {
   }
 
   renderSidebar() {
-    //TODO(drewgross): refactor this to share code with Browser.react and actually fetch counts
+    //TODO: refactor this to share code with Browser.react and actually fetch counts
     let classes = this.props.schema.data.get('classes');
     if (!classes) {
       return null;

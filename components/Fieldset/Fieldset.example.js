@@ -18,9 +18,9 @@ export const demos = [
     render: () => (
       <Fieldset
         legend='I am Legend'
-        description='In which Will Smith ruins a profoundly philosophical novel.'>
+        description='I am description.'>
         <Field
-          label={<Label text='Are you a monster hunter?' description='Or have you become the monster' />}
+          label={<Label text='Label Text' description='Label Description' />}
           input={<Toggle value={true} type={Toggle.Types.YES_NO} onChange={function() {}} />} />
       </Fieldset>
     )

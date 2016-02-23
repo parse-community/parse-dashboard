@@ -10,7 +10,6 @@ import marked         from 'marked';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
 import ReactDOMServer from 'react-dom/server';
-import styles         from 'components/Markdown/Markdown.scss';
 
 // Refer to https://github.com/chjj/marked.
 let renderer = new marked.Renderer();

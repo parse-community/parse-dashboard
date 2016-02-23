@@ -32,7 +32,7 @@ function dash(value, content) {
 
 let CloningNote = ({ app, clone_status, clone_progress }) => {
   if (clone_status === 'failed') {
-    //TODO(drewgross): add a way to delete failed clones, like in old dash
+    //TODO: add a way to delete failed clones, like in old dash
     return <div>Clone failed</div>
   }
   let progress = <LiveReload
