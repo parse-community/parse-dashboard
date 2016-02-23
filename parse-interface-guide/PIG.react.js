@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
 import * as ComponentsMap from 'parse-interface-guide/ComponentsMap';
 import { Link }           from 'react-router';
 import PropsTable         from 'parse-interface-guide/PropsTable.react';

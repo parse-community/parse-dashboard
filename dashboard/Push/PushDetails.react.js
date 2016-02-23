@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
 import * as DateUtils         from 'lib/DateUtils';
 import * as PushHelper        from './PushComposerHelper.react';
 import * as SchemaStore       from 'lib/stores/SchemaStore';
