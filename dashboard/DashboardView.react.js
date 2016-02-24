@@ -26,30 +26,56 @@ export default class DashboardView extends React.Component {
       this.context.currentApp.getMigrations().promise.then(() => this.forceUpdate());
     }
 
-    let coreSubsections = [
-      {
+    let coreSubsections = []
+
+    if (this.context.currentApp.enabledFeatures.dataBrowser) {
+      coreSubsections.push({
         name: 'Browser',
         link: '/browser'
-      }, {
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.cloudCode) {
+      coreSubsections.push({
         name: 'Cloud Code',
         link: '/cloud_code'
-      }, {
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.webhooks) {
+      coreSubsections.push({
         name: 'Webhooks',
         link: '/webhooks'
-      }, {
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.jobs) {
+      coreSubsections.push({
         name: 'Jobs',
         link: '/jobs'
-      }, {
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.logs) {
+      coreSubsections.push({
         name: 'Logs',
         link: '/logs'
-      }, {
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.config) {
+      coreSubsections.push({
         name: 'Config',
         link: '/config'
-      }, {
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.apiConsole) {
+      coreSubsections.push({
         name: 'API Console',
         link: '/api_console'
-      },
-    ];
+      });
+    }
 
     if (this.context.currentApp.migration) {
       coreSubsections.push({
@@ -57,73 +83,134 @@ export default class DashboardView extends React.Component {
         link: '/migration',
       });
     }
+    let pushSubsections = [];
 
-    let appSidebarSections = [
-      {
+    if (this.context.currentApp.enabledFeatures.push) {
+      pushSubsections.push({
+        name: 'Activity',
+        link: '/push/activity'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.pushAudiences) {
+      pushSubsections.push({
+        name: 'Audiences',
+        link: '/push/audiences'
+      });
+    }
+
+    let analyticsSidebarSections = [];
+
+    if (this.context.currentApp.enabledFeatures.analyticsOverview) {
+      analyticsSidebarSections.push({
+        name: 'Overview',
+        link: '/analytics/overview'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.explorer) {
+      analyticsSidebarSections.push({
+        name: 'Explorer',
+        link: '/analytics/explorer'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.retention) {
+      analyticsSidebarSections.push({
+        name: 'Retention',
+        link: '/analytics/retention'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.performance) {
+      analyticsSidebarSections.push({
+        name: 'Performance',
+        link: '/analytics/performance'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.slowQueryTool) {
+      analyticsSidebarSections.push({
+        name: 'Slow Queries',
+        link: '/analytics/slow_queries'
+      });
+    }
+
+    let settingsSections = [];
+
+    if (this.context.currentApp.enabledFeatures.generalSettings) {
+      settingsSections.push({
+        name: 'General',
+        link: '/settings/general'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.keysSettings) {
+      settingsSections.push({
+        name: 'Security & Keys',
+        link: '/settings/keys'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.usersSettings) {
+      settingsSections.push({
+        name: 'Users',
+        link: '/settings/users'
+      })
+    }
+
+    if (this.context.currentApp.enabledFeatures.pushSettings) {
+      settingsSections.push({
+        name: 'Push',
+        link: '/settings/push'
+      });
+    }
+
+    if (this.context.currentApp.enabledFeatures.hostingEmailsSettings) {
+      settingsSections.push({
+        name: 'Hosting and Emails',
+        link: '/settings/hosting'
+      });
+    }
+
+    let appSidebarSections = []
+
+    if (coreSubsections.length > 0) {
+      appSidebarSections.push({
         name: 'Core',
         icon: 'core',
         link: '/browser',
         subsections: coreSubsections,
-      }, {
+      });
+    }
+
+    if (pushSubsections.length > 0) {
+      appSidebarSections.push({
         name: 'Push',
         icon: 'push-outline',
         link: '/push',
         style: {paddingLeft: '16px'},
-        subsections: [
-          {
-            name: 'Activity',
-            link: '/push/activity'
-          }, {
-            name: 'Audiences',
-            link: '/push/audiences'
-          }
-        ]
-      }, {
+        subsections: pushSubsections,
+      });
+    }
+
+    if (analyticsSidebarSections.length > 0) {
+      appSidebarSections.push({
         name: 'Analytics',
         icon: 'analytics-outline',
         link: '/analytics',
-        subsections: [
-          {
-            name: 'Overview',
-            link: '/analytics/overview'
-          }, {
-            name: 'Explorer',
-            link: '/analytics/explorer'
-          }, {
-            name: 'Retention',
-            link: '/analytics/retention'
-          }, {
-            name: 'Performance',
-            link: '/analytics/performance'
-          }, {
-            name: 'Slow Queries',
-            link: '/analytics/slow_queries'
-          }
-        ]
-      }, {
+        subsections: analyticsSidebarSections
+      });
+    }
+
+    if (settingsSections.length > 0) {
+      appSidebarSections.push({
         name: 'App Settings',
         icon: 'gear-solid',
         link: '/settings',
-        subsections: [
-          {
-            name: 'General',
-            link: '/settings/general'
-          }, {
-            name: 'Security & Keys',
-            link: '/settings/keys'
-          }, {
-            name: 'Users',
-            link: '/settings/users'
-          }, {
-            name: 'Push',
-            link: '/settings/push'
-          }, {
-            name: 'Hosting and Emails',
-            link: '/settings/hosting'
-          },
-        ]
-      }
-    ];
+        subsections: settingsSections
+      });
+    };
 
     let sidebar = (
     <Sidebar
