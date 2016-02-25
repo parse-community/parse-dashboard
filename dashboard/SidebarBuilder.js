@@ -15,11 +15,11 @@ let accountSidebarSections = [
     name: 'Your Apps',
     icon: 'blank-app-outline',
     link: '/apps'
-  }, {
+  }, /*{
     name: 'Account Settings',
     icon: 'users-solid',
     link: '/account',
-  }
+  }*/
 ];
 
 export function buildAccountSidebar(options) {
