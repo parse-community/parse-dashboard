@@ -11,7 +11,7 @@ import { Link }       from 'react-router';
 import React          from 'react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 
-export default ({}) =>
+let SidebarHeader = ({}) =>
 <div className={styles.header}>
   <Link className={styles.logo} to='/apps'>
     <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
@@ -22,3 +22,5 @@ export default ({}) =>
     </div>
   </Link>
 </div>
+
+export default SidebarHeader
