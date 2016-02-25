@@ -90,7 +90,45 @@ class Dashboard extends React.Component {
   componentDidMount() {
     let promise = get('/parse-dashboard-config.json');
     promise.then(({ apps }) => {
-      AppsManager.seed(apps)
+      apps.forEach(app => {
+        if (app.serverURL.startsWith('https://api.parse.com/1')) {
+          //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
+          //it supports and can hard code them
+          app.enabledFeatures = {
+            dataBrowser: true,
+            cloudCode: true,
+            webhooks: false, //webhooks requires removal of heroku link code, then it should work.
+            jobs: false, //jobs still goes through rails
+            logs: true,
+            config: true,
+            apiConsole: false, //api console needs to be modified to use server url of the app
+            //Other features would be much harder to add, although push console should just need the hiding
+            //of scheduled push related stuff
+            pushConsole: false,
+            pushIndex: false,
+            pushAudiences: false,
+            //Analytics is probably gone for good, but maybe someone will come up with something eventually
+            analyticsOverview: false,
+            explorer: false,
+            retention: false,
+            performance: false,
+            slowQueryTool: false,
+            //Settings seems reasonable to add although it will probably require brand-new endpoints
+            generalSettings: false,
+            keysSettings: false,
+            usersSettings: false,
+            pushSettings: false,
+            hostingEmailsSettings: false,
+          }
+          AppsManager.addApp(app)
+        } else {
+          //get(app.serverURL + '/dashboard_features') TODO: un-stub this once the endpoint exists in parse-server, and adjust config loading success handling.
+          app.enabledFeatures = {
+            dataBrowser: true,
+          }
+          AppsManager.addApp(app)
+        }
+      });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }).fail(error => {
       if (typeof error === 'string') {
