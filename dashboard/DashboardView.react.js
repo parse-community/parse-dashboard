@@ -70,12 +70,10 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.apiConsole) {
-      coreSubsections.push({
-        name: 'API Console',
-        link: '/api_console'
-      });
-    }
+    coreSubsections.push({
+      name: 'API Console',
+      link: '/api_console'
+    });
 
     if (this.context.currentApp.migration) {
       coreSubsections.push({

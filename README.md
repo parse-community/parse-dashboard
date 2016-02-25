@@ -37,13 +37,14 @@ You can also manage your apps that are hosted on Parse.com from the same dashboa
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "javascriptKey": "myJavascriptKey",
-      "appName": "My App"
+      "restKey": "myRestKey",
+      "appName": "My Parse.Com App"
     },
     {
       "serverURL": "http://localhost:1337/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
-      "appName": "My Parse.Com App"
+      "appName": "My Parse Server App"
     }
   ]
 }

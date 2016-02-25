@@ -101,7 +101,6 @@ class Dashboard extends React.Component {
             jobs: false, //jobs still goes through rails
             logs: true,
             config: true,
-            apiConsole: false, //api console needs to be modified to use server url of the app
             //Other features would be much harder to add, although push console should just need the hiding
             //of scheduled push related stuff
             pushConsole: false,
