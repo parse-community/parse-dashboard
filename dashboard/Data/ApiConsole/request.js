@@ -10,15 +10,17 @@ import Parse from 'parse';
 export default function request(app, method, path, body, options) {
   let xhr = new XMLHttpRequest();
   let promise = new Parse.Promise();
-  if (path[0] === '/') {
+  if (path.startsWith('/') && app.serverURL.endsWith('/')) {
     path = path.substr(1);
   }
-  let url = location.protocol + '//' + location.host + '/1/' + path;
-  xhr.open(method, url, true);
+  if (!path.startsWith('/') && !app.serverURL.endsWith('/')) {
+    path = '/' + path;
+  }
+  xhr.open(method, app.serverURL + path, true);
   xhr.setRequestHeader('X-Parse-Application-Id', app.applicationId);
   if (options.useMasterKey) {
     xhr.setRequestHeader('X-Parse-Master-Key', app.masterKey);
-  } else {
+  } else if (app.restKey) {
     xhr.setRequestHeader('X-Parse-REST-API-Key', app.restKey);
   }
   if (options.sessionToken) {
