@@ -37,7 +37,6 @@ You can also manage your apps that are hosted on Parse.com from the same dashboa
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "javascriptKey": "myJavascriptKey",
-      "restKey": "myRestKey",
       "appName": "My Parse.Com App"
     },
     {
