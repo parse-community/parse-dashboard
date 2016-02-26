@@ -5,16 +5,16 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import BrowserFilter  from 'components/BrowserFilter/BrowserFilter.react';
-import BrowserMenu    from 'components/BrowserMenu/BrowserMenu.react';
-import Icon           from 'components/Icon/Icon.react';
-import MenuItem       from 'components/BrowserMenu/MenuItem.react';
-import prettyNumber   from 'lib/prettyNumber';
-import React          from 'react';
+import BrowserFilter from 'components/BrowserFilter/BrowserFilter.react';
+import BrowserMenu   from 'components/BrowserMenu/BrowserMenu.react';
+import Icon          from 'components/Icon/Icon.react';
+import MenuItem      from 'components/BrowserMenu/MenuItem.react';
+import prettyNumber  from 'lib/prettyNumber';
+import React         from 'react';
 import SecurityDialog from 'dashboard/Data/Browser/SecurityDialog.react'
-import Separator      from 'components/BrowserMenu/Separator.react';
-import Toolbar        from 'components/Toolbar/Toolbar.react';
-import styles         from 'dashboard/Data/Browser/Browser.scss';
+import Separator     from 'components/BrowserMenu/Separator.react';
+import Toolbar       from 'components/Toolbar/Toolbar.react';
+import styles        from 'dashboard/Data/Browser/Browser.scss';
 
 let BrowserToolbar = ({
   className,
@@ -32,6 +32,7 @@ let BrowserToolbar = ({
   onAddRow,
   onExport,
   onRemoveColumn,
+  enableDeleteAllRows,
   onDeleteRows,
   onDropClass,
   updateCLP,
@@ -82,7 +83,7 @@ let BrowserToolbar = ({
         <Separator />
         <MenuItem text='Export this data' onClick={onExport} />
         <Separator />
-        <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} />
+        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
         <MenuItem text='Delete this class' onClick={onDropClass} />
       </BrowserMenu>
     );
