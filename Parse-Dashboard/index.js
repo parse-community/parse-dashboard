@@ -21,4 +21,4 @@ app.get('/*', function(req, res) {
 });
 
 // Start the server, listening to port 4040.
-app.listen(4040);
+app.listen(process.env.PORT || 4040);
