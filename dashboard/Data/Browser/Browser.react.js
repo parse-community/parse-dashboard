@@ -61,7 +61,8 @@ export default class Browser extends DashboardView {
   }
 
   componentWillMount() {
-    this.props.schema.dispatch(ActionTypes.FETCH);
+    this.props.schema.dispatch(ActionTypes.FETCH)
+    .then(() => this.fetchCollectionCounts());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -83,7 +84,8 @@ export default class Browser extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      nextProps.schema.dispatch(ActionTypes.FETCH);
+      nextProps.schema.dispatch(ActionTypes.FETCH)
+      .then(() => this.fetchCollectionCounts());
       let changes = {
         filters: new List(),
         data: null,
@@ -218,6 +220,13 @@ export default class Browser extends DashboardView {
       }
       this.setState(state);
     });
+  }
+
+  fetchCollectionCounts() {
+    this.props.schema.data.get('classes').forEach((_, className) => {
+      this.context.currentApp.getClassCount(className)
+      .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
+    })
   }
 
   fetchInfo(app) {

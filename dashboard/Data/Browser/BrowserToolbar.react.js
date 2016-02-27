@@ -5,16 +5,16 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import BrowserFilter from 'components/BrowserFilter/BrowserFilter.react';
-import BrowserMenu   from 'components/BrowserMenu/BrowserMenu.react';
-import Icon          from 'components/Icon/Icon.react';
-import MenuItem      from 'components/BrowserMenu/MenuItem.react';
-import prettyNumber  from 'lib/prettyNumber';
-import React         from 'react';
-import SecurityDialog from 'dashboard/Data/Browser/SecurityDialog.react'
-import Separator     from 'components/BrowserMenu/Separator.react';
-import Toolbar       from 'components/Toolbar/Toolbar.react';
-import styles        from 'dashboard/Data/Browser/Browser.scss';
+import BrowserFilter  from 'components/BrowserFilter/BrowserFilter.react';
+import BrowserMenu    from 'components/BrowserMenu/BrowserMenu.react';
+import Icon           from 'components/Icon/Icon.react';
+import MenuItem       from 'components/BrowserMenu/MenuItem.react';
+import prettyNumber   from 'lib/prettyNumber';
+import React          from 'react';
+import SecurityDialog from 'dashboard/Data/Browser/SecurityDialog.react';
+import Separator      from 'components/BrowserMenu/Separator.react';
+import styles         from 'dashboard/Data/Browser/Browser.scss';
+import Toolbar        from 'components/Toolbar/Toolbar.react';
 
 let BrowserToolbar = ({
   className,
