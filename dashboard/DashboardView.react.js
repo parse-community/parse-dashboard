@@ -26,44 +26,47 @@ export default class DashboardView extends React.Component {
       this.context.currentApp.getMigrations().promise.then(() => this.forceUpdate());
     }
 
-    let coreSubsections = []
+    let features = this.context.currentApp.enabledFeatures;
 
-    if (this.context.currentApp.enabledFeatures.dataBrowser) {
+    let anyTruthyKeys = object => typeof object == 'object' && Object.keys(object).some(key => object[key]);
+
+    let coreSubsections = [];
+    if (anyTruthyKeys(features.schemas)) {
       coreSubsections.push({
         name: 'Browser',
         link: '/browser'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.cloudCode) {
+    if (anyTruthyKeys(features.cloudCode)) {
       coreSubsections.push({
         name: 'Cloud Code',
         link: '/cloud_code'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.webhooks) {
+    if (anyTruthyKeys(features.webhooks)) {
       coreSubsections.push({
         name: 'Webhooks',
         link: '/webhooks'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.jobs) {
+    if (anyTruthyKeys(features.jobs)) {
       coreSubsections.push({
         name: 'Jobs',
         link: '/jobs'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.logs) {
+    if (anyTruthyKeys(features.logs)) {
       coreSubsections.push({
         name: 'Logs',
         link: '/logs'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.config) {
+    if (anyTruthyKeys(features.config)) {
       coreSubsections.push({
         name: 'Config',
         link: '/config'
@@ -83,14 +86,22 @@ export default class DashboardView extends React.Component {
     }
     let pushSubsections = [];
 
-    if (this.context.currentApp.enabledFeatures.push) {
-      pushSubsections.push({
-        name: 'Activity',
+    // The current UI requires instant and scheduled push (and other stuff)
+    if (features.push && features.push.instantPush && features.push.scheduledPush) {
+      pushSubsections({
+        name: 'Send New Push',
         link: '/push/activity'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.pushAudiences) {
+    if (features.push && features.push.storedPushData) {
+      pushSubsections.push({
+        name: 'Past Pushes',
+        link: '/push/activity'
+      });
+    }
+
+    if (features.push && features.push.pushAudiences) {
       pushSubsections.push({
         name: 'Audiences',
         link: '/push/audiences'
@@ -99,35 +110,38 @@ export default class DashboardView extends React.Component {
 
     let analyticsSidebarSections = [];
 
-    if (this.context.currentApp.enabledFeatures.analyticsOverview) {
+    //These analytics pages may never make it into parse server
+    /*
+    if (features.analyticsOverview) {
       analyticsSidebarSections.push({
         name: 'Overview',
         link: '/analytics/overview'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.explorer) {
+    if (features.explorer) {
       analyticsSidebarSections.push({
         name: 'Explorer',
         link: '/analytics/explorer'
       });
-    }
+    }*/
 
-    if (this.context.currentApp.enabledFeatures.retention) {
+    //These ones might
+    if (features.analytics && features.analytics.retentionAnalysis) {
       analyticsSidebarSections.push({
         name: 'Retention',
         link: '/analytics/retention'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.performance) {
+    if (features.analytics && features.analytics.performanceAnalysis) {
       analyticsSidebarSections.push({
         name: 'Performance',
         link: '/analytics/performance'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.slowQueryTool) {
+    if (features.analytics && features.analytics.slowQueries) {
       analyticsSidebarSections.push({
         name: 'Slow Queries',
         link: '/analytics/slow_queries'
@@ -136,40 +150,42 @@ export default class DashboardView extends React.Component {
 
     let settingsSections = [];
 
-    if (this.context.currentApp.enabledFeatures.generalSettings) {
+    // Settings - nothing remotely like this in parse-server yet.
+    /*
+    if (features.generalSettings) {
       settingsSections.push({
         name: 'General',
         link: '/settings/general'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.keysSettings) {
+    if (features.keysSettings) {
       settingsSections.push({
         name: 'Security & Keys',
         link: '/settings/keys'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.usersSettings) {
+    if (features.usersSettings) {
       settingsSections.push({
         name: 'Users',
         link: '/settings/users'
       })
     }
 
-    if (this.context.currentApp.enabledFeatures.pushSettings) {
+    if (features.pushSettings) {
       settingsSections.push({
         name: 'Push',
         link: '/settings/push'
       });
     }
 
-    if (this.context.currentApp.enabledFeatures.hostingEmailsSettings) {
+    if (features.hostingEmailsSettings) {
       settingsSections.push({
         name: 'Hosting and Emails',
         link: '/settings/hosting'
       });
-    }
+    }*/
 
     let appSidebarSections = []
 

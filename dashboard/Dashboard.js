@@ -95,35 +95,87 @@ class Dashboard extends React.Component {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
           app.enabledFeatures = {
-            dataBrowser: true,
-            cloudCode: true,
-            webhooks: false, //webhooks requires removal of heroku link code, then it should work.
-            jobs: false, //jobs still goes through rails
-            logs: true,
-            config: true,
-            //Other features would be much harder to add, although push console should just need the hiding
-            //of scheduled push related stuff
-            pushConsole: false,
-            pushIndex: false,
-            pushAudiences: false,
-            //Analytics is probably gone for good, but maybe someone will come up with something eventually
-            analyticsOverview: false,
-            explorer: false,
-            retention: false,
-            performance: false,
-            slowQueryTool: false,
-            //Settings seems reasonable to add although it will probably require brand-new endpoints
-            generalSettings: false,
-            keysSettings: false,
-            usersSettings: false,
-            pushSettings: false,
-            hostingEmailsSettings: false,
+            schemas: {
+              addField: true,
+              removeField: true,
+              addClass: true,
+              removeClass: true,
+              clearAllDataFromClass: false, //This still goes through ruby
+            },
+            cloudCode: {
+              viewCode: true,
+            },
+            webhooks: {
+              createWebhook: false,
+              readWebhook: false,
+              updateWebhook: false,
+              deleteWebhook: false,
+            }, //webhooks requires removal of heroku link code, then it should work.
+            jobs: {
+              startJob: false,
+              scheduleJob: false,
+              scheduleRecurringJob: false,
+            }, //jobs still goes through rails
+            logs: {
+              info: true,
+              error: true,
+            },
+            config: {
+              createConfig: true,
+              readConfig: true,
+              updateConfig: true,
+              deleteConfig: true,
+            },
+            push: { //These all go through rails
+              instantPush: false,
+              scheduledPush: false,
+              storedPushData: false,
+              pushAudiences: false,
+            },
+            analytics: {
+              slowQueries: false,
+              performanceAnalysis: false,
+              retentionAnalysis: false,
+            },
+            settings: {
+              appName: {
+                type: 'string',
+                read: false,
+                write: false,
+              },
+              // other settings can have arbitrary types and other info
+              // someSetting: {
+              //   type: 'enum',
+              //   read: true,
+              //   write: true,
+              //   values: ['foo', 'bar', 'baz']
+              // },
+              // replyToAddress: {
+              //   type: 'emailAddress',
+              //   read: true,
+              //   write: true,
+              // },
+              // exportData: {
+              //   type: 'trigger',
+              //   dangerous: false,
+              // },
+              // deleteApp: {
+              //   type: 'trigger',
+              //   dangerous: true,
+              // },
+            }
           }
           AppsManager.addApp(app)
         } else {
           //get(app.serverURL + '/dashboard_features') TODO: un-stub this once the endpoint exists in parse-server, and adjust config loading success handling.
           app.enabledFeatures = {
-            dataBrowser: true,
+            schemas: {
+              addField: true,
+              removeField: true,
+              addClass: true,
+              removeClass: true,
+              clearAllDataFromClass: false,
+            },
           }
           AppsManager.addApp(app)
         }
