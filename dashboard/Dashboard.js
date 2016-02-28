@@ -101,6 +101,7 @@ class Dashboard extends React.Component {
               addClass: true,
               removeClass: true,
               clearAllDataFromClass: false, //This still goes through ruby
+              exportClass: false, //Still goes through ruby
             },
             cloudCode: {
               viewCode: true,
