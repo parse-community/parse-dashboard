@@ -5,19 +5,18 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import base             from 'stylesheets/base.scss';
-import Button           from 'components/Button/Button.react';
-import check_gatekeeper from 'lib/check_gatekeeper';
-import ChromeDropdown   from 'components/ChromeDropdown/ChromeDropdown.react';
-import DateTimeEntry    from 'components/DateTimeEntry/DateTimeEntry.react';
+import base           from 'stylesheets/base.scss';
+import Button         from 'components/Button/Button.react';
+import ChromeDropdown from 'components/ChromeDropdown/ChromeDropdown.react';
+import DateTimeEntry  from 'components/DateTimeEntry/DateTimeEntry.react';
 import {
   Constraints,
   FieldConstraints
 }                       from 'components/ExplorerQueryComposer/ExplorerFilter';
-import PropTypes        from 'lib/PropTypes';
-import React            from 'react';
-import ReactDOM         from 'react-dom';
-import styles           from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
+import PropTypes      from 'lib/PropTypes';
+import React          from 'react';
+import ReactDOM       from 'react-dom';
+import styles         from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
 
 const TABLE_SOURCES_LABEL = ['API Event', 'Custom Event'];
 
@@ -67,7 +66,7 @@ const FIELD_TYPE = {
   'Request Type'        : 'String',
   'Class'               : 'String',
   'Event Name'          : 'String',
-  'Dimensions'          : check_gatekeeper('explorer_json_scalar') ? 'JSON' : 'String',
+  'Dimensions'          : false ? 'JSON' : 'String',
   'Installation ID'     : 'String',
   'Parse User ID'       : 'String',
   'Parse SDK'           : 'String',

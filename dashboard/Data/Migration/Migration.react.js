@@ -7,7 +7,6 @@
  */
 import base                                         from 'stylesheets/base.scss';
 import Button                                       from 'components/Button/Button.react';
-import check_gatekeeper                             from 'lib/check_gatekeeper';
 import DashboardView                                from 'dashboard/DashboardView.react';
 import FormNote                                     from 'components/FormNote/FormNote.react';
 import Icon                                         from 'components/Icon/Icon.react';
@@ -126,9 +125,6 @@ export default class Migration extends DashboardView {
   }
 
   renderContent() {
-    if (!check_gatekeeper('opendb_migration_page')) {
-      return null;
-    }
     return <div>
       <LiveReload
         ref={'reloaderView'}

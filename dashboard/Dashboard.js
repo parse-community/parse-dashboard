@@ -13,7 +13,6 @@ import AppData            from './AppData.react';
 import AppsIndex          from './Apps/AppsIndex.react';
 import AppsManager        from 'lib/AppsManager';
 import Browser            from './Data/Browser/Browser.react';
-import check_gatekeeper   from 'lib/check_gatekeeper';
 import CloudCode          from './Data/CloudCode/CloudCode.react';
 import Config             from './Data/Config/Config.react';
 import Explorer           from './Analytics/Explorer/Explorer.react';
@@ -215,7 +214,7 @@ class Dashboard extends React.Component {
     <Route path='apps/:appId' component={AppData}>
       <Route path='getting_started' component={Empty} />
 
-      <Route path='browser' component={check_gatekeeper('schema_overview') ? SchemaOverview : Browser} />
+      <Route path='browser' component={false ? SchemaOverview : Browser} />
       <Route path='browser/:className' component={Browser} />
 
       <Route path='cloud_code' component={CloudCode} />
