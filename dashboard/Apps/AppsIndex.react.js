@@ -12,7 +12,6 @@ import howLongAgo   from 'lib/howLongAgo';
 import html         from 'lib/htmlString';
 import Icon         from 'components/Icon/Icon.react';
 import LiveReload   from 'components/LiveReload/LiveReload.react';
-import NewAppDialog from 'dashboard/Apps/NewAppDialog.react';
 import pluralize    from 'lib/pluralize';
 import prettyNumber from 'lib/prettyNumber';
 import React        from 'react';
@@ -108,7 +107,7 @@ let AppCard = (props) => {
 export default class AppsIndex extends React.Component {
   constructor() {
     super();
-    this.state = { search: '', dialogOpen: false };
+    this.state = { search: '' };
     this.focusField = this.focusField.bind(this);
   }
 
@@ -128,7 +127,7 @@ export default class AppsIndex extends React.Component {
   }
 
   focusField() {
-    if (this.refs.search && !this.state.dialogOpen) {
+    if (this.refs.search) {
       this.refs.search.focus();
     }
   }
@@ -144,9 +143,7 @@ export default class AppsIndex extends React.Component {
               <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
             </div>
             <div className={styles.alert}>You don't have any apps</div>
-            <a href='javascript:;' role='button' className={styles.cta} onClick={() => this.setState({ dialogOpen: true })}>Create a new app</a>
           </div>
-          <NewAppDialog open={this.state.dialogOpen} onCancel={() => this.setState({ dialogOpen: false })} />
         </div>
       );
     }
@@ -161,13 +158,6 @@ export default class AppsIndex extends React.Component {
             onChange={this.updateSearch.bind(this)}
             value={this.state.search}
             placeholder='Start typing to filter&hellip;' />
-          <a
-            href='javascript:;'
-            role='button'
-            className={styles.create}
-            onClick={() => this.setState({ dialogOpen: true })}>
-            Create a new app
-          </a>
         </div>
         <ul className={styles.apps}>
           {apps.map(app =>
@@ -176,7 +166,6 @@ export default class AppsIndex extends React.Component {
               null
           )}
         </ul>
-        <NewAppDialog open={this.state.dialogOpen} onCancel={() => this.setState({ dialogOpen: false })} />
       </div>
     );
   }
