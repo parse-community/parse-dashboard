@@ -32,11 +32,13 @@ let BrowserToolbar = ({
   onAddRow,
   onExport,
   onRemoveColumn,
-  enableDeleteAllRows,
   onDeleteRows,
   onDropClass,
   updateCLP,
   hidePerms,
+
+  enableDeleteAllRows,
+  enableExportClass,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -74,17 +76,17 @@ let BrowserToolbar = ({
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid'>
         <MenuItem text='Add a row' onClick={onAddRow} />
+        <MenuItem text='Add a column' onClick={onAddColumn} />
+        <Separator />
         <MenuItem
           disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)} />
-        <MenuItem text='Add a column' onClick={onAddColumn} />
         <MenuItem text='Delete a column' onClick={onRemoveColumn} />
-        <Separator />
-        <MenuItem text='Export this data' onClick={onExport} />
-        <Separator />
         {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
         <MenuItem text='Delete this class' onClick={onDropClass} />
+        {enableExportClass ? <Separator /> : <noscript />}
+        {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
       </BrowserMenu>
     );
   }
