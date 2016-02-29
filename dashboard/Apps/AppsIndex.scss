@@ -105,7 +105,7 @@
     margin: 14px 0;
     padding: 0 9px;
     height: 74px;
-    
+
     &:hover{
       background: #172C3B;
     }
@@ -124,13 +124,10 @@
 }
 
 .appname {
+  @include ellipsis();
   display: inline-block;
   font-size: 22px;
   color: white;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .details {
