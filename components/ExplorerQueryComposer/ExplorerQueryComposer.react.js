@@ -66,7 +66,7 @@ const FIELD_TYPE = {
   'Request Type'        : 'String',
   'Class'               : 'String',
   'Event Name'          : 'String',
-  'Dimensions'          : false ? 'JSON' : 'String',
+  'Dimensions'          : false ? 'JSON' : 'String', //In progress features. Change false to true to work on this feature.
   'Installation ID'     : 'String',
   'Parse User ID'       : 'String',
   'Parse SDK'           : 'String',
