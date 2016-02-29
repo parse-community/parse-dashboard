@@ -105,7 +105,7 @@
     margin: 14px 0;
     padding: 0 9px;
     height: 74px;
-    
+
     &:hover{
       background: #172C3B;
     }
@@ -124,16 +124,14 @@
 }
 
 .appname {
+  @include ellipsis();
   display: inline-block;
   font-size: 22px;
   color: white;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .details {
+  @include ellipsis();
   padding: 9px 0;
   color: #788c97;
   font-size: 12px;
@@ -153,29 +151,8 @@
 
 .glance {
   float: right;
-  width: 340px;
   padding: 10px 12px;
   border-left: 1px solid #1e3b4d;
-  border-right: 1px solid #1e3b4d;
-}
-
-@media (max-width: 1300px) {
-  .glance {
-    display: none;
-  }
-}
-
-.plan {
-  float: right;
-  width: 300px;
-  padding: 10px 12px;
-  position: relative;
-}
-
-@media (max-width: 640px) {
-  .plan {
-    display: none;
-  }
 }
 
 .section {
@@ -198,6 +175,10 @@
 .label {
   color: #788c97;
   font-size: 11px;
+}
+
+.serverVersion {
+  @include ellipsis();
 }
 
 .edit {
