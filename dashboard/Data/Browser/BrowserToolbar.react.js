@@ -39,6 +39,7 @@ let BrowserToolbar = ({
 
   enableDeleteAllRows,
   enableExportClass,
+  enableSecurityDialog,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -108,14 +109,14 @@ let BrowserToolbar = ({
         filters={filters}
         onChange={onFilterChange} />
       <div className={styles.toolbarSeparator} />
-      <SecurityDialog
+      {enableSecurityDialog ? <SecurityDialog
         setCurrent={setCurrent}
         disabled={!!relation}
         perms={perms}
         className={classNameForPermissionsEditor}
         updateCLP={updateCLP}
-        userPointers={userPointers} />
-      <div className={styles.toolbarSeparator} />
+        userPointers={userPointers} /> : <noscript />}
+      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript/>}
       {menu}
     </Toolbar>
   );
