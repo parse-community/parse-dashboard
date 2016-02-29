@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import check_gatekeeper from 'lib/check_gatekeeper';
-import ParseApp         from 'lib/ParseApp';
-import React            from 'react';
-import Sidebar          from 'components/Sidebar/Sidebar.react';
-import SidebarToggle    from 'components/Sidebar/SidebarToggle.react';
-import styles           from 'dashboard/Dashboard.scss';
+import ParseApp      from 'lib/ParseApp';
+import React         from 'react';
+import Sidebar       from 'components/Sidebar/Sidebar.react';
+import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
+import styles        from 'dashboard/Dashboard.scss';
 
 export default class DashboardView extends React.Component {
 

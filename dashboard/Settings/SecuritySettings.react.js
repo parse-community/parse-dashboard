@@ -5,23 +5,22 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountManager   from 'lib/AccountManager';
-import check_gatekeeper from 'lib/check_gatekeeper';
-import DashboardView    from 'dashboard/DashboardView.react';
-import Field            from 'components/Field/Field.react';
-import Fieldset         from 'components/Fieldset/Fieldset.react';
-import FlowView         from 'components/FlowView/FlowView.react';
-import FormButton       from 'components/FormButton/FormButton.react';
-import FormModal        from 'components/FormModal/FormModal.react';
-import FormNote         from 'components/FormNote/FormNote.react';
-import KeyField         from 'components/KeyField/KeyField.react';
-import Label            from 'components/Label/Label.react';
-import Modal            from 'components/Modal/Modal.react';
-import React            from 'react';
-import styles           from 'dashboard/Settings/Settings.scss';
-import TextInput        from 'components/TextInput/TextInput.react';
-import Toggle           from 'components/Toggle/Toggle.react';
-import Toolbar          from 'components/Toolbar/Toolbar.react';
+import AccountManager from 'lib/AccountManager';
+import DashboardView  from 'dashboard/DashboardView.react';
+import Field          from 'components/Field/Field.react';
+import Fieldset       from 'components/Fieldset/Fieldset.react';
+import FlowView       from 'components/FlowView/FlowView.react';
+import FormButton     from 'components/FormButton/FormButton.react';
+import FormModal      from 'components/FormModal/FormModal.react';
+import FormNote       from 'components/FormNote/FormNote.react';
+import KeyField       from 'components/KeyField/KeyField.react';
+import Label          from 'components/Label/Label.react';
+import Modal          from 'components/Modal/Modal.react';
+import React          from 'react';
+import styles         from 'dashboard/Settings/Settings.scss';
+import TextInput      from 'components/TextInput/TextInput.react';
+import Toggle         from 'components/Toggle/Toggle.react';
+import Toolbar        from 'components/Toolbar/Toolbar.react';
 
 export default class SecuritySettings extends DashboardView {
   constructor() {
@@ -79,9 +78,6 @@ export default class SecuritySettings extends DashboardView {
               onChange={(allow) => setField('client_class_creation_enabled', allow)}/>
           } />
       </Fieldset> : null;
-    let fileKeyField = check_gatekeeper('show_file_key') ? <Field
-      label={<Label text='File key' description='Use this key when migrating to your own Parse Server to ensure your new server has access to existing files.' />}
-      input={<KeyField name='File' hidden={true}>{currentApp.fileKey}</KeyField>} /> : null;
     return (
       <div className={styles.settings_page}>
         <Fieldset legend='App Keys' description='These are the unique identifiers used to access this app.'>
@@ -103,7 +99,9 @@ export default class SecuritySettings extends DashboardView {
           <Field
             label={<Label text='Webhook key' description='Use this when implementing a Cloud Code Webhook. Keep it secret!' />}
             input={<KeyField name='Webhook' hidden={true}>{currentApp.webhookKey}</KeyField>} />
-          {fileKeyField}
+          <Field
+            label={<Label text='File key' description='Use this key when migrating to your own Parse Server to ensure your new server has access to existing files.' />}
+            input={<KeyField name='File' hidden={true}>{currentApp.fileKey}</KeyField>} />
           <Field
             label={<Label text='Master key' description='Using this key overrides all permissions. Not usable on client SDKs. Keep it secret!' />}
             input={<KeyField name='Master' hidden={true}>{currentApp.masterKey}</KeyField>} />

@@ -18,7 +18,6 @@ import renderFlowFooterChanges from 'lib/renderFlowFooterChanges';
 import style                   from 'dashboard/Settings/Settings.scss';
 import TextInput               from 'components/TextInput/TextInput.react';
 import Toggle                  from 'components/Toggle/Toggle.react';
-import check_gatekeeper        from 'lib/check_gatekeeper';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import unique                  from 'lib/unique';
 import { Promise }             from 'parse';

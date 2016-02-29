@@ -7,7 +7,6 @@
  */
 import AccountManager                    from 'lib/AccountManager';
 import AppsManager                       from 'lib/AppsManager';
-import check_gatekeeper                  from 'lib/check_gatekeeper';
 import Collaborators                     from 'dashboard/Settings/Collaborators.react';
 import DashboardView                     from 'dashboard/DashboardView.react';
 import Dropdown                          from 'components/Dropdown/Dropdown.react';
@@ -209,63 +208,61 @@ let ManageAppFields = ({
   deleteApp,
 }) => {
   let migrateAppField = null;
-  if (check_gatekeeper('opendb_migration_page')) {
-    if (!mongoURL && !hasInProgressMigration) {
-      migrateAppField = <Field
-        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-        label={<Label
-          text='Migrate to external database'
-          description='Move your data and queries to your own database.' />
-        }
-        input={<FormButton
-          color='red'
-          onClick={startMigration}
-          value='Migrate' />
-        } />;
-    } else if (hasInProgressMigration) {
-      migrateAppField = <Field
-        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-        label={<Label
-          text='Migrate to external database'
-          description='View your migration progress.' />}
-        input={<FormButton
-          color='blue'
-          onClick={() => history.pushState(null, '/apps/' + appSlug + '/migration')}
-          value='View progress' />} />
-    } else {
-      migrateAppField = [<Field
-        key='show'
-        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-        label={<Label
-          text='Migration complete'
-          description='Your database has been migrated to an external database.'
-        />}
-        //TODO: KeyField bascially does what we want, but is maybe too specialized. Maybe at some point we should have a component dedicated to semi-secret stuff that we want to prevent shoulder surfers from seeing, and emphasizing that stuff something should be secret.
-        input={<KeyField
-          hidden={true}
-          whenHiddenText='Show connection string'
-        >
-          <TextInput
-            value={mongoURL}
-            onChange={() => {}} //Make propTypes happy
-            disabled={true}
-            monospace={true}
-          />
-        </KeyField>}
-      />,
-      <Field
-        key='new'
-        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-        label={<Label
-          text='Change connection string'
-          description='Upgrate or change your database.'/>}
-        input={<FormButton
-          additionalStyles={{fontSize: '13px'}}
-          color='red'
-          onClick={changeConnectionString}
-          value='Change connection string' />} />
-      ];
-    }
+  if (!mongoURL && !hasInProgressMigration) {
+    migrateAppField = <Field
+      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+      label={<Label
+        text='Migrate to external database'
+        description='Move your data and queries to your own database.' />
+      }
+      input={<FormButton
+        color='red'
+        onClick={startMigration}
+        value='Migrate' />
+      } />;
+  } else if (hasInProgressMigration) {
+    migrateAppField = <Field
+      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+      label={<Label
+        text='Migrate to external database'
+        description='View your migration progress.' />}
+      input={<FormButton
+        color='blue'
+        onClick={() => history.pushState(null, '/apps/' + appSlug + '/migration')}
+        value='View progress' />} />
+  } else {
+    migrateAppField = [<Field
+      key='show'
+      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+      label={<Label
+        text='Migration complete'
+        description='Your database has been migrated to an external database.'
+      />}
+      //TODO: KeyField bascially does what we want, but is maybe too specialized. Maybe at some point we should have a component dedicated to semi-secret stuff that we want to prevent shoulder surfers from seeing, and emphasizing that stuff something should be secret.
+      input={<KeyField
+        hidden={true}
+        whenHiddenText='Show connection string'
+      >
+        <TextInput
+          value={mongoURL}
+          onChange={() => {}} //Make propTypes happy
+          disabled={true}
+          monospace={true}
+        />
+      </KeyField>}
+    />,
+    <Field
+      key='new'
+      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+      label={<Label
+        text='Change connection string'
+        description='Upgrate or change your database.'/>}
+      input={<FormButton
+        additionalStyles={{fontSize: '13px'}}
+        color='red'
+        onClick={changeConnectionString}
+        value='Change connection string' />} />
+    ];
   }
   return (
     <Fieldset
