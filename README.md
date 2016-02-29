@@ -12,7 +12,7 @@ cd parse-dashboard
 npm install
 ```
 
-Next add your app info into parse-dashboard/Parse-Dashboard/parse-dashboard-config.json. The file should match the following format:
+Next add your app info into `parse-dashboard/Parse-Dashboard/parse-dashboard-config.json`. The file should match the following format:
 
 ```
 {
