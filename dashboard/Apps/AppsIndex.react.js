@@ -45,6 +45,15 @@ let CloningNote = ({ app, clone_status, clone_progress }) => {
   return <div>Cloning is {progress}% complete</div>
 };
 
+let CountsSection = (props) => {
+  return (
+    <div className={props.className}>
+      <div className={styles.section}>{props.title}</div>
+      {props.children}
+    </div>
+  );
+};
+
 let Metric = (props) => {
   return (
     <div className={styles.count}>
@@ -54,20 +63,46 @@ let Metric = (props) => {
   );
 };
 
-let AppCard = ({
-  app,
-  icon,
-}) => <li onClick={() => history.pushState(null, html`/apps/${app.slug}/browser`)}>
-  {icon ? <a className={styles.icon}><img src={icon} /></a> : null}
-  <div className={styles.details}>
-    <a className={styles.appname}>{app.name}</a>
-    {app.is_cloning ? <CloningNote
-      app={app}
-      clone_status={app.clone_status}
-      clone_progress={app.clone_progress}/> :
-      <div>Server version: <span className={styles.ago}>{app.enabledFeatures.serverVersion || 'unknown'}</span></div>}
-  </div>
-</li>
+let AppCard = (props) => {
+  let sharing = null;
+  if (props.app.collabInfo) {
+    if (props.app.isOwner()) {
+      sharing = 'shared with ' + pluralize(props.app.collaboratorCount, 'person', 'people');
+    } else {
+      sharing = html`shared by ${props.app.owner}`;
+    }
+  }
+  return (
+    <li onClick={() => history.pushState(null, html`/apps/${props.app.slug}/browser`)}>
+      <a className={styles.icon}>
+        {props.icon ? <img src={props.icon} /> : <Icon width={56} height={56} name='blank-app-outline' fill='#1E384D' />}
+      </a>
+      <CountsSection className={styles.plan} title='Current plan'>
+        <Metric number={dash(props.app.requestLimit)} label='requests/s' />
+        <Metric number={dash(props.app.requestLimit, Math.floor(props.app.requestLimit / 20))} label='background job' />
+        <Metric number={dash(props.app.requestLimit, '$' + (props.app.requestLimit - 30) * 10)} label='monthly' />
+        <a href={html`/apps/${props.app.slug}/settings`} className={styles.edit} onClick={(e) => {
+          e.stopPropagation();
+          history.pushState(null, html`/apps/${props.app.slug}/settings`);
+        }}>Edit</a>
+      </CountsSection>
+      <CountsSection className={styles.glance} title='At a glance'>
+        <Metric number={dash(props.app.requests, prettyNumber(props.app.requests))} label='requests' />
+        <Metric number={dash(props.app.users, prettyNumber(props.app.users))} label='total users' />
+        <Metric number={dash(props.app.installations, prettyNumber(props.app.installations))} label='total installations' />
+      </CountsSection>
+      <div className={styles.details}>
+        <a className={styles.appname}>{props.app.name}</a>
+        {props.app.is_cloning ? <CloningNote
+          app={props.app}
+          clone_status={props.app.clone_status}
+          clone_progress={props.app.clone_progress}/> :
+          <div>Created <span className={styles.ago}>{howLongAgo(props.app.createdAt)}</span></div>}
+      </div>
+      {sharing}
+    </li>
+  )
+};
 
 export default class AppsIndex extends React.Component {
   constructor() {
