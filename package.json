@@ -6,7 +6,7 @@
     "history": "~1.9.1",
     "immutable": "~3.7.5",
     "marked": "^0.3.5",
-    "parse": "1.6.13",
+    "parse": "1.6.14",
     "prismjs": "~1.2.0",
     "react": "^0.14.0",
     "react-dnd": "~2.0.2",
