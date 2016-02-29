@@ -12,7 +12,7 @@ import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';
 
-let AppsMenu = ({ apps, current, height, onSelect, showCreateDialog }) => (
+let AppsMenu = ({ apps, current, height, onSelect }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
     <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
       {current.name}
@@ -29,8 +29,6 @@ let AppsMenu = ({ apps, current, height, onSelect, showCreateDialog }) => (
         </Link>
       );
     })}
-
-    <a onClick={showCreateDialog} className={styles.createApp}>Create a new app</a>
   </div>
 );
 

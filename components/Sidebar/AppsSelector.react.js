@@ -9,7 +9,6 @@ import AppsMenu       from 'components/Sidebar/AppsMenu.react';
 import { Directions } from 'lib/Constants';
 import Popover        from 'components/Popover/Popover.react';
 import history        from 'dashboard/history';
-import NewAppDialog   from 'dashboard/Apps/NewAppDialog.react';
 import ParseApp       from 'lib/ParseApp';
 import Position       from 'lib/Position';
 import React          from 'react';
@@ -23,7 +22,6 @@ export default class AppsSelector extends React.Component {
     this.state = {
       open: false,
       position: null,
-      showDialog: false,
     }
   }
 
@@ -35,7 +33,7 @@ export default class AppsSelector extends React.Component {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.setState({ open: false, showDialog: false });
+      this.setState({ open: false });
     }
   }
 
@@ -84,8 +82,7 @@ export default class AppsSelector extends React.Component {
             apps={this.props.apps}
             current={this.context.currentApp}
             height={height}
-            onSelect={this.select.bind(this)}
-            showCreateDialog={() => this.setState({ showDialog: true })} />
+            onSelect={this.select.bind(this)} />
         </Popover>
       );
     }
@@ -95,7 +92,6 @@ export default class AppsSelector extends React.Component {
           {this.context.currentApp.name}
         </div>
         {popover}
-        <NewAppDialog open={this.state.showDialog} onCancel={() => this.setState({ showDialog: false })} />
       </div>
     );
   }
