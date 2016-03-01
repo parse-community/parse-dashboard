@@ -129,8 +129,8 @@ class Dashboard extends React.Component {
             'features',
             {},
             { useMasterKey: true }
-          ).then(({ results }) => {
-            app.enabledFeatures = results;
+          ).then(enabledFeatures => {
+            app.enabledFeatures = enabledFeatures;
             AppsManager.addApp(app)
             this.forceUpdate();
           });
