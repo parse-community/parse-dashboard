@@ -5,6 +5,7 @@
     "express": "^4.13.4",
     "history": "~1.9.1",
     "immutable": "~3.7.5",
+    "json-file-plus": "^3.2.0",
     "marked": "^0.3.5",
     "parse": "1.6.14",
     "prismjs": "~1.2.0",

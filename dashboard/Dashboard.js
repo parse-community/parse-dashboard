@@ -87,8 +87,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    let promise = get('/parse-dashboard-config.json');
-    promise.then(({ apps }) => {
+    get('/parse-dashboard-config.json').then(({ apps }) => {
       apps.forEach(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -181,11 +180,11 @@ class Dashboard extends React.Component {
         }
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }).fail(error => {
-      if (typeof error === 'string') {
-        this.setState({ configLoadingError: 'Your parse-dashboard-config.json file contains invalid JSON.' });
-      }
-      this.setState({ configLoadingState: AsyncStatus.FAILED });
+    }).fail(({ error }) => {
+      this.setState({
+        configLoadingError: error,
+        configLoadingState: AsyncStatus.FAILED
+      });
     });
   }
 
@@ -200,7 +199,8 @@ class Dashboard extends React.Component {
           <div className={styles.cloud}>
             <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
           </div>
-          <div style={{fontSize: '58px', color: '#ffffff'}}>{this.state.configLoadingError}</div>
+          {/* use non-breaking hyphen for the error message to keep the filename on one line */}
+          <div className={styles.loadingError}>{this.state.configLoadingError.replace(/-/g, '\u2011')}</div>
         </div>
       </div>
     }
