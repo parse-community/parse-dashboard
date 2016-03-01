@@ -53,4 +53,24 @@ Then execute `npm run dashboard` and visit http://localhost:4040 and you will be
 
 ## Other options
 
-You can also set `appNameForURL` for each app to control the url of your app within the dashboard.
+You can set `appNameForURL` for each app to control the url of your app within the dashboard.
+
+If you want to require a username and password to access the dashboard, you can do so by adding usernames and passwords for HTTP Basic Auth to your configuration file:
+
+```
+{
+  "apps": [...],
+  "users": [
+    {
+      "user":"user1",
+      "pass":"pass"
+    },
+    {
+      "user":"user2",
+      "pass":"pass"
+    }
+  ]
+}
+```
+
+HTTPS and Basic Auth are mandatory if you are deploying the dashboard to the internet instead of accessing it from `localhost`.
