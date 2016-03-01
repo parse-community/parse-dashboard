@@ -13,17 +13,17 @@ var app = express();
 app.use(express.static('Parse-Dashboard/public'));
 
 app.get('/parse-dashboard-config.json', function(req, res) {
-	jsonFile(__dirname + '/parse-dashboard-config.json')
-	.then(config => res.json(config.data))
-	.catch(error => {
-		if (error instanceof SyntaxError) {
-			res.send({ success: false, error: 'Your parse-dashboard-config.json file contains invalid JSON.' });
-		} else if (error.code === 'ENOENT') {
-			res.send({ success: false, error: 'Your parse-dashboard-config.json file is missing.' });
-		} else {
-			res.send({ success: false, error: 'There was a problem with your parse-dashboard-config.json file.' });
-		}
-	});
+  jsonFile(__dirname + '/parse-dashboard-config.json')
+  .then(config => res.json(config.data))
+  .catch(error => {
+    if (error instanceof SyntaxError) {
+      res.send({ success: false, error: 'Your parse-dashboard-config.json file contains invalid JSON.' });
+    } else if (error.code === 'ENOENT') {
+      res.send({ success: false, error: 'Your parse-dashboard-config.json file is missing.' });
+    } else {
+      res.send({ success: false, error: 'There was a problem with your parse-dashboard-config.json file.' });
+    }
+  });
 });
 
 // For every other request, go to index.html. Let client-side handle the rest.
