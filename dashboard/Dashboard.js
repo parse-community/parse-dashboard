@@ -105,7 +105,7 @@ class Dashboard extends React.Component {
             cloudCode: {
               viewCode: true,
             },
-            webhooks: {
+            hooks: {
               create: true,
               read: true,
               update: true,
