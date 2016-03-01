@@ -27,45 +27,56 @@ export default class DashboardView extends React.Component {
 
     let features = this.context.currentApp.enabledFeatures;
 
-    let anyTruthyKeys = object => typeof object == 'object' && Object.keys(object).some(key => object[key]);
-
     let coreSubsections = [];
-    if (anyTruthyKeys(features.schemas)) {
+    if (features.schemas &&
+      features.schemas.addField &&
+      features.schemas.removeField &&
+      features.schemas.addClass &&
+      features.schemas.removeClass) {
       coreSubsections.push({
         name: 'Browser',
         link: '/browser'
       });
     }
 
-    if (anyTruthyKeys(features.cloudCode)) {
+    if (features.cloudCode && features.cloudCode.viewCode) {
       coreSubsections.push({
         name: 'Cloud Code',
         link: '/cloud_code'
       });
     }
 
-    if (anyTruthyKeys(features.webhooks)) {
+    //webhooks requires removal of heroku link code, then it should work.
+    /*
+    if (features.webhooks && features.webhooks.create && features.webhooks.read && features.webhooks.update && features.webhooks.delete) {
       coreSubsections.push({
         name: 'Webhooks',
         link: '/webhooks'
       });
     }
+    */
 
-    if (anyTruthyKeys(features.jobs)) {
+    /* Jobs not supported
+    if (...) {
       coreSubsections.push({
         name: 'Jobs',
         link: '/jobs'
       });
     }
+    */
 
-    if (anyTruthyKeys(features.logs)) {
+    if (features.logs && features.logs.info && features.logs.error) {
       coreSubsections.push({
         name: 'Logs',
         link: '/logs'
       });
     }
 
-    if (anyTruthyKeys(features.config)) {
+    if (features.globalConfig &&
+      features.globalConfig.create &&
+      features.globalConfig.read &&
+      features.globalConfig.update &&
+      features.globalConfig.delete) {
       coreSubsections.push({
         name: 'Config',
         link: '/config'
@@ -85,8 +96,9 @@ export default class DashboardView extends React.Component {
     }
     let pushSubsections = [];
 
-    // The current UI requires instant and scheduled push (and other stuff)
-    if (features.push && features.push.instantPush && features.push.scheduledPush) {
+    // The push UI requires immediate and scheduled push (and some ruby endpoints that we will have to remove)
+    /*
+    if (features.push && features.push.immediatePush && features.push.scheduledPush) {
       pushSubsections({
         name: 'Send New Push',
         link: '/push/activity'
@@ -105,27 +117,28 @@ export default class DashboardView extends React.Component {
         name: 'Audiences',
         link: '/push/audiences'
       });
-    }
+    }*/
 
     let analyticsSidebarSections = [];
 
     //These analytics pages may never make it into parse server
     /*
-    if (features.analyticsOverview) {
+    if (...) {
       analyticsSidebarSections.push({
         name: 'Overview',
         link: '/analytics/overview'
       });
     }
 
-    if (features.explorer) {
+    if (...) {
       analyticsSidebarSections.push({
         name: 'Explorer',
         link: '/analytics/explorer'
       });
     }*/
 
-    //These ones might
+    //These ones might, but require some endpoints to added to Parse Server
+    /*
     if (features.analytics && features.analytics.retentionAnalysis) {
       analyticsSidebarSections.push({
         name: 'Retention',
@@ -146,10 +159,11 @@ export default class DashboardView extends React.Component {
         link: '/analytics/slow_queries'
       });
     }
+    */
 
     let settingsSections = [];
 
-    // Settings - nothing remotely like this in parse-server yet.
+    // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
     /*
     if (features.generalSettings) {
       settingsSections.push({
