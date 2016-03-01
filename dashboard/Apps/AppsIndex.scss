@@ -7,6 +7,11 @@
  */
 @import 'stylesheets/globals.scss';
 
+.loadingError {
+  font-size: 58px;
+  color: #ffffff;
+}
+
 .index {
   padding: 38px 30px;
   background: #1e3b4d;
@@ -105,7 +110,7 @@
     margin: 14px 0;
     padding: 0 9px;
     height: 74px;
-    
+
     &:hover{
       background: #172C3B;
     }
