@@ -28,6 +28,7 @@ import JobsForm           from 'dashboard/Data/Jobs/JobsForm.react';
 import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
+import ParseApp           from 'lib/ParseApp';
 import Performance        from './Analytics/Performance/Performance.react';
 import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
 import PushDetails        from './Push/PushDetails.react';
@@ -104,79 +105,35 @@ class Dashboard extends React.Component {
             cloudCode: {
               viewCode: true,
             },
-            webhooks: {
-              createWebhook: false,
-              readWebhook: false,
-              updateWebhook: false,
-              deleteWebhook: false,
-            }, //webhooks requires removal of heroku link code, then it should work.
-            jobs: {
-              startJob: false,
-              scheduleJob: false,
-              scheduleRecurringJob: false,
-            }, //jobs still goes through rails
+            hooks: {
+              create: true,
+              read: true,
+              update: true,
+              delete: true,
+            },
             logs: {
               info: true,
               error: true,
             },
-            config: {
-              createConfig: true,
-              readConfig: true,
-              updateConfig: true,
-              deleteConfig: true,
+            globalConfig: {
+              create: true,
+              read: true,
+              update: true,
+              delete: true,
             },
-            push: { //These all go through rails
-              instantPush: false,
-              scheduledPush: false,
-              storedPushData: false,
-              pushAudiences: false,
-            },
-            analytics: {
-              slowQueries: false,
-              performanceAnalysis: false,
-              retentionAnalysis: false,
-            },
-            settings: {
-              appName: {
-                type: 'string',
-                read: false,
-                write: false,
-              },
-              // other settings can have arbitrary types and other info
-              // someSetting: {
-              //   type: 'enum',
-              //   read: true,
-              //   write: true,
-              //   values: ['foo', 'bar', 'baz']
-              // },
-              // replyToAddress: {
-              //   type: 'emailAddress',
-              //   read: true,
-              //   write: true,
-              // },
-              // exportData: {
-              //   type: 'trigger',
-              //   dangerous: false,
-              // },
-              // deleteApp: {
-              //   type: 'trigger',
-              //   dangerous: true,
-              // },
-            }
           }
           AppsManager.addApp(app)
         } else {
-          //get(app.serverURL + '/dashboard_features') TODO: un-stub this once the endpoint exists in parse-server, and adjust config loading success handling.
-          app.enabledFeatures = {
-            schemas: {
-              addField: true,
-              removeField: true,
-              addClass: true,
-              removeClass: true,
-              clearAllDataFromClass: false,
-            },
-          }
-          AppsManager.addApp(app)
+          new ParseApp(app).apiRequest(
+            'GET',
+            'features',
+            {},
+            { useMasterKey: true }
+          ).then(enabledFeatures => {
+            app.enabledFeatures = enabledFeatures;
+            AppsManager.addApp(app)
+            this.forceUpdate();
+          });
         }
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
