@@ -2,6 +2,7 @@
   "private": true,
   "dependencies": {
     "babel-runtime": "~5.8.25",
+    "basic-auth": "^1.0.3",
     "express": "^4.13.4",
     "history": "~1.9.1",
     "immutable": "~3.7.5",
