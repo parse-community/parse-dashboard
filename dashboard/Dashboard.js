@@ -28,6 +28,7 @@ import JobsForm           from 'dashboard/Data/Jobs/JobsForm.react';
 import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
+import Parse              from 'parse';
 import ParseApp           from 'lib/ParseApp';
 import Performance        from './Analytics/Performance/Performance.react';
 import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
@@ -77,6 +78,39 @@ const AccountSettingsPage = () => (
     </AccountView>
   );
 
+const PARSE_DOT_COM_SERVER_INFO = {
+  features: {
+    schemas: {
+      addField: true,
+      removeField: true,
+      addClass: true,
+      removeClass: true,
+      clearAllDataFromClass: false, //This still goes through ruby
+      exportClass: false, //Still goes through ruby
+    },
+    cloudCode: {
+      viewCode: true,
+    },
+    hooks: {
+      create: true,
+      read: true,
+      update: true,
+      delete: true,
+    },
+    logs: {
+      info: true,
+      error: true,
+    },
+    globalConfig: {
+      create: true,
+      read: true,
+      update: true,
+      delete: true,
+    },
+  },
+  parseServerVersion: 'Parse.com',
+}
+
 class Dashboard extends React.Component {
   constructor(props) {
     super();
@@ -89,59 +123,32 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     get('/parse-dashboard-config.json').then(({ apps }) => {
-      apps.forEach(app => {
+      let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
-          app.serverInfo = {
-            features: {
-              schemas: {
-                addField: true,
-                removeField: true,
-                addClass: true,
-                removeClass: true,
-                clearAllDataFromClass: false, //This still goes through ruby
-                exportClass: false, //Still goes through ruby
-              },
-              cloudCode: {
-                viewCode: true,
-              },
-              hooks: {
-                create: true,
-                read: true,
-                update: true,
-                delete: true,
-              },
-              logs: {
-                info: true,
-                error: true,
-              },
-              globalConfig: {
-                create: true,
-                read: true,
-                update: true,
-                delete: true,
-              },
-            },
-            serverVersion: 'Parse.com',
-          }
-          AppsManager.addApp(app)
+          app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
+          return Parse.Promise.as(app);
         } else {
           app.serverInfo = {}
-          new ParseApp(app).apiRequest(
+          return new ParseApp(app).apiRequest(
             'GET',
             'serverInfo',
             {},
             { useMasterKey: true }
           ).then(serverInfo => {
             app.serverInfo = serverInfo;
-            AppsManager.addApp(app)
-            this.forceUpdate();
+            return app;
           });
         }
       });
+      return Parse.Promise.when(appInfoPromises);
+    }).then(function() {
+      Array.prototype.slice.call(arguments).forEach(app => {
+        AppsManager.addApp(app);
+      });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }).fail(({ error }) => {
+    }.bind(this)).fail(({ error }) => {
       this.setState({
         configLoadingError: error,
         configLoadingState: AsyncStatus.FAILED
@@ -154,7 +161,7 @@ class Dashboard extends React.Component {
       return <div className={center}><Loader/></div>;
     }
 
-    if (this.state.configLoadingError.length > 0) {
+    if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
       return <div className={styles.empty}>
         <div className={center}>
           <div className={styles.cloud}>
@@ -167,62 +174,62 @@ class Dashboard extends React.Component {
     }
 
     return <Router history={history}>
-  <Redirect from='/' to='/apps' />
-  <Route path='/' component={App}>
-    <Route path='apps' component={AppsIndexPage} />
+      <Redirect from='/' to='/apps' />
+      <Route path='/' component={App}>
+        <Route path='apps' component={AppsIndexPage} />
 
-    <Redirect from='apps/:appId' to='/apps/:appId/browser' />
-    <Route path='apps/:appId' component={AppData}>
-      <Route path='getting_started' component={Empty} />
+        <Redirect from='apps/:appId' to='/apps/:appId/browser' />
+        <Route path='apps/:appId' component={AppData}>
+          <Route path='getting_started' component={Empty} />
 
-      <Route path='browser' component={false ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
-      <Route path='browser/:className' component={Browser} />
+          <Route path='browser' component={false ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
+          <Route path='browser/:className' component={Browser} />
 
-      <Route path='cloud_code' component={CloudCode} />
-      <Route path='cloud_code/*' component={CloudCode} />
-      <Route path='webhooks' component={Webhooks} />
-      <Redirect from='jobs' to='/apps/:appId/jobs/scheduled' />
-      <Route path='jobs' component={JobsData}>
-        <Route path='new' component={JobEdit} />
-        <Route path='edit/:jobId' component={JobEdit} />
-        <Route path=':section' component={Jobs} />
+          <Route path='cloud_code' component={CloudCode} />
+          <Route path='cloud_code/*' component={CloudCode} />
+          <Route path='webhooks' component={Webhooks} />
+          <Redirect from='jobs' to='/apps/:appId/jobs/scheduled' />
+          <Route path='jobs' component={JobsData}>
+            <Route path='new' component={JobEdit} />
+            <Route path='edit/:jobId' component={JobEdit} />
+            <Route path=':section' component={Jobs} />
+          </Route>
+          <Redirect from='logs' to='/apps/:appId/logs/info' />
+          <Route path='logs/:type' component={Logs} />
+          <Route path='config' component={Config} />
+          <Route path='api_console' component={ApiConsole} />
+          <Route path='migration' component={Migration} />
+          <Redirect from='push' to='/apps/:appId/push/activity/all' />
+          <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
+          <Route path='push/activity/:category' component={PushIndex} />
+          <Route path='push/audiences' component={PushAudiencesIndex} />
+          <Route path='push/new' component={PushNew} />
+          <Route path='push/:pushId' component={PushDetails} />
+
+          <Redirect from='analytics' to='/apps/:appId/analytics/overview' />
+          <Route path='analytics'>
+            <Route path='overview' component={AnalyticsOverview} />
+            <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' />
+            <Route path='explorer/:displayType' component={Explorer} />
+            <Route path='retention' component={Retention} />
+            <Route path='performance' component={Performance} />
+            <Route path='slow_queries' component={SlowQueries} />
+          </Route>
+
+          <Redirect from='settings' to='/apps/:appId/settings/general' />
+          <Route path='settings' component={SettingsData}>
+            <Route path='general' component={GeneralSettings} />
+            <Route path='keys' component={SecuritySettings} />
+            <Route path='users' component={UsersSettings} />
+            <Route path='push' component={PushSettings} />
+            <Route path='hosting' component={HostingSettings} />
+          </Route>
+        </Route>
+
+        <Redirect from='account' to='/account/overview' />
+        <Route path='account/overview' component={AccountSettingsPage} />
       </Route>
-      <Redirect from='logs' to='/apps/:appId/logs/info' />
-      <Route path='logs/:type' component={Logs} />
-      <Route path='config' component={Config} />
-      <Route path='api_console' component={ApiConsole} />
-      <Route path='migration' component={Migration} />
-      <Redirect from='push' to='/apps/:appId/push/activity/all' />
-      <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
-      <Route path='push/activity/:category' component={PushIndex} />
-      <Route path='push/audiences' component={PushAudiencesIndex} />
-      <Route path='push/new' component={PushNew} />
-      <Route path='push/:pushId' component={PushDetails} />
-
-      <Redirect from='analytics' to='/apps/:appId/analytics/overview' />
-      <Route path='analytics'>
-        <Route path='overview' component={AnalyticsOverview} />
-        <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' />
-        <Route path='explorer/:displayType' component={Explorer} />
-        <Route path='retention' component={Retention} />
-        <Route path='performance' component={Performance} />
-        <Route path='slow_queries' component={SlowQueries} />
-      </Route>
-
-      <Redirect from='settings' to='/apps/:appId/settings/general' />
-      <Route path='settings' component={SettingsData}>
-        <Route path='general' component={GeneralSettings} />
-        <Route path='keys' component={SecuritySettings} />
-        <Route path='users' component={UsersSettings} />
-        <Route path='push' component={PushSettings} />
-        <Route path='hosting' component={HostingSettings} />
-      </Route>
-    </Route>
-
-    <Redirect from='account' to='/account/overview' />
-    <Route path='account/overview' component={AccountSettingsPage} />
-  </Route>
-  <Route path='*' component={FourOhFour} />
+      <Route path='*' component={FourOhFour} />
     </Router>
   }
 }
