@@ -93,44 +93,48 @@ class Dashboard extends React.Component {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
-          app.enabledFeatures = {
-            schemas: {
-              addField: true,
-              removeField: true,
-              addClass: true,
-              removeClass: true,
-              clearAllDataFromClass: false, //This still goes through ruby
-              exportClass: false, //Still goes through ruby
+          app.serverInfo = {
+            features: {
+              schemas: {
+                addField: true,
+                removeField: true,
+                addClass: true,
+                removeClass: true,
+                clearAllDataFromClass: false, //This still goes through ruby
+                exportClass: false, //Still goes through ruby
+              },
+              cloudCode: {
+                viewCode: true,
+              },
+              hooks: {
+                create: true,
+                read: true,
+                update: true,
+                delete: true,
+              },
+              logs: {
+                info: true,
+                error: true,
+              },
+              globalConfig: {
+                create: true,
+                read: true,
+                update: true,
+                delete: true,
+              },
             },
-            cloudCode: {
-              viewCode: true,
-            },
-            hooks: {
-              create: true,
-              read: true,
-              update: true,
-              delete: true,
-            },
-            logs: {
-              info: true,
-              error: true,
-            },
-            globalConfig: {
-              create: true,
-              read: true,
-              update: true,
-              delete: true,
-            },
+            serverVersion: 'Parse.com',
           }
           AppsManager.addApp(app)
         } else {
+          app.serverInfo = {}
           new ParseApp(app).apiRequest(
             'GET',
-            'features',
+            'serverInfo',
             {},
             { useMasterKey: true }
-          ).then(enabledFeatures => {
-            app.enabledFeatures = enabledFeatures;
+          ).then(serverInfo => {
+            app.serverInfo = serverInfo;
             AppsManager.addApp(app)
             this.forceUpdate();
           });

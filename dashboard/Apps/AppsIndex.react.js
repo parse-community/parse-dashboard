@@ -71,7 +71,7 @@ let AppCard = ({
   </CountsSection>
   <div className={styles.details}>
     <a className={styles.appname}>{app.name}</a>
-    <div className={styles.serverVersion}>Server version: <span className={styles.ago}>{app.enabledFeatures.serverVersion || 'unknown'}</span></div>
+    <div className={styles.serverVersion}>Server version: <span className={styles.ago}>{app.serverInfo.serverVersion || 'unknown'}</span></div>
   </div>
 </li>
 
