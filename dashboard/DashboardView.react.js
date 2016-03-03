@@ -25,7 +25,7 @@ export default class DashboardView extends React.Component {
       this.context.currentApp.getMigrations().promise.then(() => this.forceUpdate());
     }
 
-    let features = this.context.currentApp.enabledFeatures;
+    let features = this.context.currentApp.serverInfo.features;
 
     let coreSubsections = [];
     if (features.schemas &&
