@@ -42,10 +42,8 @@ export default class FooterMenu extends React.Component {
           position={this.state.position}
           onExternalClick={() => this.setState({ show: false })}>
           <div className={styles.popup}>
-            <a href='https://www.github.com/parseplatform'>Open Source <span className={styles.emoji}>🙏</span></a>
-            <a href='https://www.parse.com/help'>Help + Status <span className={styles.emoji}>💊</span></a>
-            <a href='https://www.parse.com/docs'>Docs <span className={styles.emoji}>📚</span></a>
-            <a href='https://www.parse.com/downloads'>Downloads <span className={styles.emoji}>💾</span></a>
+            <a href='https://www.parse.com/docs/server/guide'>Server Guide <span className={styles.emoji}>📚</span></a>
+            <a href='https://www.parse.com/help'>Help <span className={styles.emoji}>💊</span></a>
           </div>
         </Popover>
       );

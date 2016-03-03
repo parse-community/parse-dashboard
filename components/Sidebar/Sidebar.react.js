@@ -72,7 +72,7 @@ export default class Sidebar extends React.Component {
           })}
         </div>
         <div className={styles.footer}>
-          <a href='https://www.github.com/parseplatform'>Open Source</a>
+          <a href='https://parseplatform.github.io'>Open Source</a>
           <a href='https://www.parse.com/docs'>Docs</a>
           <a href='https://www.parse.com/downloads'>Downloads</a>
           <FooterMenu />
