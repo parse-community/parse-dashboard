@@ -1,14 +1,7 @@
 <!DOCTYPE html>
 <html>
-<body>
-<script>
-function loadFonts(){
-var f=[new FontFace('AlrightSans','url(/fonts/Alright-regular.woff)',{weight:'400'}),new FontFace('AlrightSans','url(/fonts/Alright-bold.woff)',{weight:'700'}),new FontFace('AlrightSans','url(/fonts/Alright-light.woff)',{weight:'100'}),new FontFace('DIN17SBOP','url(/fonts/DIN17SBOP.woff)'),new FontFace('InputMonoNarrow','url(/fonts/InputMono-Narrow.woff)')];
-for(var c=0,i=f.length;i--;){c++;f[i].load().then(function(){if(--c === 0){document.body.className += ' fonts_loaded';}})}}
-if(typeof(FontFace)==='undefined')document.body.className+=' fonts_loaded';
-else loadFonts();
-</script>
-<div id="browser_mount"></div>
-<script src="/bundles/dashboard.bundle.js"></script>
-</body>
+	<body>
+		<div id="browser_mount"></div>
+		<script src="/bundles/dashboard.bundle.js"></script>
+	</body>
 </html>

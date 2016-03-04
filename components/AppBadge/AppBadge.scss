@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .badge {
-  @include DIN17Font;
+  @include DosisFont;
   display: inline-block;
   height: 26px;
   line-height: 26px;

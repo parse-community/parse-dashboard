@@ -15,13 +15,10 @@ html{
 }
 
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  @include NotoSansFont;
   box-sizing: border-box;
   color: $mainTextColor;
   background-color: #110D11;
-  &:global(.fonts_loaded) {
-    font-family: AlrightSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
 }
 
 :global(#browser_mount) {

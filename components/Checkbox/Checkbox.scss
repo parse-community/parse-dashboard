@@ -39,7 +39,7 @@
 }
 
 .label {
-  @include DIN17Font;
+  @include DosisFont;
   color: $mainTextColor;
   font-size: 14px;
   vertical-align: middle;

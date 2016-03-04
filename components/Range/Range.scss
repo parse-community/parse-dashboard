@@ -50,7 +50,7 @@
 }
 
 .tracker {
-  @include DIN17Font;
+  @include DosisFont;
   @include transform(translateX(-50%));
   position: absolute;
   background: $orange;

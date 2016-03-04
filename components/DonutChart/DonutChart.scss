@@ -62,7 +62,7 @@
 .donutValue {
   opacity: 0;
   transition: opacity 0.2s ease;
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 22px;
   font-weight: 500;
   &:first-of-type {

@@ -95,7 +95,7 @@
 
 .days {
   span, a {
-    @include DIN17Font;
+    @include DosisFont;
     display: inline-block;
     vertical-align: bottom;
     width: 26px;

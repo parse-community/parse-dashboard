@@ -37,7 +37,7 @@
 }
 
 .entry, .title {
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 14px;
   color: #ffffff;
   cursor: pointer;

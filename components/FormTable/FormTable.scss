@@ -78,7 +78,7 @@
 }
 
 .label {
-  @include DIN17Font;
+  @include DosisFont;
   display: inline-block;
   text-transform: uppercase;
   color: $secondaryTextColor;
@@ -100,5 +100,5 @@
 }
 
 .din {
-  @include DIN17Font;
+  @include DosisFont;
 }

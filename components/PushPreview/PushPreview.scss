@@ -37,7 +37,7 @@
 }
 
 .title {
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 2px;

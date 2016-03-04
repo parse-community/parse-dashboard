@@ -64,7 +64,7 @@
 }
 
 .footer {
-  @include DIN17Font;
+  @include DosisFont;
   position: absolute;
   background: #05283c;
   height: 36px;
@@ -180,7 +180,7 @@
 }
 
 .menuSection {
-  @include DIN17Font;
+  @include DosisFont;
   height: 24px;
   line-height: 24px;
   background: #0c5582;
@@ -193,7 +193,7 @@
 }
 
 .createApp {
-  @include DIN17Font;
+  @include DosisFont;
   display: block;
   background: $blue;
   color: white;
@@ -276,7 +276,7 @@ a.subitem {
 }
 
 .action {
-  @include DIN17Font;
+  @include DosisFont;
   position: absolute;
   font-size: 12px;
   font-weight: 400;
@@ -298,7 +298,7 @@ a.subitem {
 }
 
 .version {
-  @include DIN17Font;
+  @include DosisFont;
   position: relative;
   width: 75px;
   height: 100%;
@@ -351,7 +351,7 @@ a.subitem {
   }
 
   a {
-    @include DIN17Font;
+    @include DosisFont;
     display: block;
     height: 30px;
     line-height: 31px;
