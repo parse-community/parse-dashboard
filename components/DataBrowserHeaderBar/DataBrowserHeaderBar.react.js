@@ -17,8 +17,10 @@ export default class DataBrowserHeaderBar extends React.Component {
   render() {
     let { headers, onResize, selected, selectAll, onAddColumn, updateOrdering, readonly, handleDragDrop } = this.props;
     let elements = [
+      // Note: bulk checkbox is disabled as all rows are selected (not just visible ones due to current lazy loading implementation)
+      // TODO: add bulk checking only visible rows
       <div key='check' className={[styles.wrap, styles.check].join(' ')}>
-        {readonly ? null : <input type='checkbox' disabled={true} checked={false} onChange={(e) => selectAll(e.target.checked)} />}
+        {readonly ? null : <input className={styles.disabled} type='checkbox' disabled={true} checked={false} onChange={(e) => selectAll(e.target.checked)} />}
       </div>
     ];
 
