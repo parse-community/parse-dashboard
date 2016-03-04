@@ -37,7 +37,7 @@
 }
 
 .entry, .title {
-  @include DosisFont;
+  @include NotoSansFont;
   font-size: 14px;
   color: #ffffff;
   cursor: pointer;
