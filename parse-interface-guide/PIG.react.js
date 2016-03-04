@@ -7,6 +7,7 @@
  */
 import * as ComponentsMap from 'parse-interface-guide/ComponentsMap';
 import { Link }           from 'react-router';
+import Icon               from 'components/Icon/Icon.react';
 import PropsTable         from 'parse-interface-guide/PropsTable.react';
 import React              from 'react';
 import styles             from 'parse-interface-guide/PIG.scss';
@@ -19,11 +20,35 @@ let PIGRow = ({ title, children }) => <div>
 </div>;
 
 export default class PIG extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      query: ''
+    };
+  }
+
   renderSidebar() {
     let components = Object.keys(ComponentsMap);
     return (
       <div className={styles.sidebar}>
-        {components.map((name) => <Link activeClassName={styles.active} key={name} to={`/${name}`}>{name}</Link>)}
+        <div className={styles.iconWrap}>
+          <Icon name='infinity' width={50} height={50} fill='#000000' />
+          <span className={styles.iconLabel}>PIG Explorer</span>
+        </div>
+        <input
+          type='text'
+          placeholder='Filter components...'
+          className={styles.searchField}
+          onChange={(e) => {
+            let query = e.target.value.trim();
+            this.setState({query});
+          }}/>
+        {components.map((name) => {
+          return name.toLowerCase().indexOf(this.state.query.toLowerCase()) !== -1
+            ? <Link activeClassName={styles.active} key={name} to={`/${name}`}>{name}</Link>
+            : null;
+        })}
       </div>
     );
   }
@@ -31,7 +56,7 @@ export default class PIG extends React.Component {
   renderContent() {
     let componentInfo = ComponentsMap[this.props.params.component];
     if (!componentInfo) {
-      return <div>Unknown component</div>;
+      componentInfo = ComponentsMap[Object.keys(ComponentsMap)[0]];
     }
     let demos = componentInfo.demos || [];
     return (

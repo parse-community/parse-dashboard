@@ -11,7 +11,7 @@
 .sidebar {
   position: fixed;
   background: white;
-  width: 200px;
+  width: 300px;
   padding: 10px;
   border-right: 1px solid #b0b8bf;
   top: 0;
@@ -27,12 +27,34 @@
 
   .active {
     color: #1F62B1;
+    font-weight: bold;
   }
 }
 
+.iconWrap {
+  margin: 10px 0 20px 15px;
+}
+
+.iconLabel {
+  vertical-align: top;
+  position: relative;
+  top: 14px;
+  left: 16px;
+  font-size: 25px;
+}
+
+.searchField {
+  width: 230px;
+  height: 44px;
+  font-size: 20px;
+  padding: 0 10px;
+  border-radius: 5px;
+  margin: 0 0 30px 10px;
+}
+
 .content {
-  margin-left: 200px;
-  padding: 10px;
+  margin-left: 300px;
+  padding: 20px 10px 10px 10px;
   min-height: 100vh;
 }
 
