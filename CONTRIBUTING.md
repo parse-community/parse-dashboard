@@ -7,7 +7,7 @@ The standard installation method also clones the git repository, so you can star
 
 When working on the dashboard, use `npm run dashboard` and visit `localhost:4040` to see your dashboard. The `npm` script will automatically re-build your files when you change them, so after making a change, all you need to do is refresh the page.
 
-When working on React components, use `npm run pig` and visit `localhost:4041` to view our component library and documentation (you can have both running at once). The demos for each component are the primary way we test components, although there are also a small number of automated tests you can run with `npm test`. If you would like to create a new component that does not exist in the component library, use `npm run generate yourComponentName` to generate boilerplate code and quickly get started.
+When working on React components, use `npm run pig` and visit `localhost:4041` to view our component library and documentation (you can have both Dashboard and PIG running at once). The demos for each component are the primary way we test components, although there are also a small number of automated tests you can run with `npm test`. If you would like to create a new component that does not exist in the component library, use `npm run generate yourComponentName` to generate boilerplate code and quickly get started.
 
 ## Pull Requests
 We actively welcome your pull requests.
