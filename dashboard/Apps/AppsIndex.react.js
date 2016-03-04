@@ -63,24 +63,17 @@ let Metric = (props) => {
 let AppCard = ({
   app,
   icon,
-}) => {
-  let canBrowse = app.serverInfo.error ? null : () => history.pushState(null, html`/apps/${app.slug}/browser`);
-  let versionMessage = app.serverInfo.error ?
-    <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
-    <div className={styles.serverVersion}>Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span></div>;
-
-  return <li onClick={canBrowse}>
-    {icon ? <a className={styles.icon}><img src={icon} /></a> : null}
-    <CountsSection className={styles.glance} title='At a glance'>
-      <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
-      <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
-    </CountsSection>
-    <div className={styles.details}>
-      <a className={styles.appname}>{app.name}</a>
-      {versionMessage}
-    </div>
-  </li>
-}
+}) => <li onClick={() => history.pushState(null, html`/apps/${app.slug}/browser`)}>
+  {icon ? <a className={styles.icon}><img src={icon} /></a> : null}
+  <CountsSection className={styles.glance} title='At a glance'>
+    <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
+    <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
+  </CountsSection>
+  <div className={styles.details}>
+    <a className={styles.appname}>{app.name}</a>
+    <div className={styles.serverVersion}>Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span></div>
+  </div>
+</li>
 
 export default class AppsIndex extends React.Component {
   constructor() {
