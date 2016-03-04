@@ -34,7 +34,7 @@
     "webpack": "~1.12.0"
   },
   "scripts": {
-    "dashboard": "node ./Parse-Dashboard/index.js & webpack --config dashboard.config.js --progress --watch",
+    "dashboard": "node ./Parse-Dashboard/index.js & webpack --config build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config production.config.js && webpack --config PIG.config.js",
     "test": "NODE_PATH=./node_modules jest",

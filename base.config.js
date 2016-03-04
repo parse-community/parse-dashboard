@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-//This file should be imported by another config file, like dashboard.config.js
+//This file should be imported by another config file, like build.config.js
 
 var path = require('path');
 var SvgPrepPlugin = require('./plugins/svg-prep');
