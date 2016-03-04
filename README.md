@@ -1,6 +1,6 @@
 # Parse Dashboard
 
-A dashboard for managing your Parse apps.
+A standalone dashboard for managing your Parse apps.
 
 ## Getting Started
 
