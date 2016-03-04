@@ -29,7 +29,7 @@ Next add your app info into `parse-dashboard/Parse-Dashboard/parse-dashboard-con
 
 Ensure your Parse Server version is `>= 2.1.4`. The dashboard will not work with Parse Server instances with lower versions.
 
-You can also manage your apps that are hosted on Parse.com from the same dashboard. For these apps, you must specify your javascript key and set your server url to https://api.parse.com/1.
+You can also manage your apps that are hosted on Parse.com from the same dashboard. For these apps, you must specify your rest key and javascript key, and set your server url to https://api.parse.com/1.
 
 ```
 {
@@ -39,6 +39,7 @@ You can also manage your apps that are hosted on Parse.com from the same dashboa
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "javascriptKey": "myJavascriptKey",
+      "restKey": "myRestKey",
       "appName": "My Parse.Com App"
     },
     {
