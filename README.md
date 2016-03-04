@@ -76,4 +76,4 @@ If you want to require a username and password to access the dashboard, you can 
 }
 ```
 
-HTTPS and Basic Auth are mandatory if you are deploying the dashboard to the internet instead of accessing it from `localhost`.
+HTTPS and Basic Auth are mandatory if you are accessing the dashboard remotely instead of accessing it from `localhost`.
