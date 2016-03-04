@@ -18,14 +18,14 @@ $contentPadding: 10px;
 }
 
 .average {
-  @include DIN17Font;
+  @include DosisFont;
   color: $mainTextColor;
   opacity: 0.5;
   font-size: 14px;
   line-height: 15px;
   &:first-of-type {
     //"average" label
-    @include AlrightSansFont;
+    @include NotoSansFont;
   }
 }
 
@@ -45,12 +45,12 @@ $contentPadding: 10px;
     padding-bottom: 15px;
     font-size: 14px;
     line-height: 15px;
-    @include DIN17Font;
+    @include DosisFont;
     &:first-of-type {
       //"Still active after" and "average" labels
-      @include AlrightSansFont;
+      @include NotoSansFont;
       // so "Still active after" hangs over the edge to give better visual spacing
-      max-width: 80px; 
+      max-width: 80px;
       white-space: nowrap;
     }
   }
@@ -60,7 +60,7 @@ table tr:first-of-type {
   .tableHeader:nth-of-type(3) {
     &:after {
       //"1 day" label
-      @include AlrightSansFont;
+      @include NotoSansFont;
       content: " day";
     }
   }
@@ -83,7 +83,7 @@ table tr:first-of-type {
 }
 
 .retentionCell {
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 13px;
   font-weight: 600;
   color: white;
@@ -108,11 +108,11 @@ table tr:first-of-type {
 }
 
 .YaxisLabelNumber {
-  @include DIN17Font;
+  @include DosisFont;
 }
 
 .YaxisLabelUsers {
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 13px;
   line-height: 15px;
   opacity: 0.5;

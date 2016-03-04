@@ -60,7 +60,7 @@ $progressRowPadding: 15px;
 }
 
 .infoText {
-	@include DIN17Font;
+	@include DosisFont;
 	color: $blue;
 }
 
@@ -133,7 +133,7 @@ $progressRowPadding: 15px;
 }
 
 .title {
-	@include DIN17Font;
+	@include DosisFont;
 	margin-bottom: 15px;
 }
 

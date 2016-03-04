@@ -23,7 +23,7 @@
     &.active {
       color: white;
     }
-    
+
     &:hover{
       color: white;
     }
@@ -32,7 +32,7 @@
       display: block;
 
       &:first-of-type {
-        @include DIN17Font;
+        @include DosisFont;
         float: right;
         width: 50px;
         text-align: right;

@@ -25,7 +25,7 @@
     margin: 10px auto;
 
     .rate {
-      @include DIN17Font;
+      @include DosisFont;
       font-size: 40px;
       font-weight: 100;
       padding: 38px 0 0 0;
@@ -35,10 +35,10 @@
 
   .count_wrap {
     color: $mainTextColor;
-  
+
     .count {
       font-size: 30px;
-      @include DIN17Font;
+      @include DosisFont;
     }
   }
 }

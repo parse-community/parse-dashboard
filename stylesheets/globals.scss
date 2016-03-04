@@ -51,28 +51,16 @@ $pushDetailsContent: #66637A;
 $darkPurple: #8D11BA;
 $blueGreen: #11A4BA;
 
-@mixin AlrightSansFont {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-
-  body:global(.fonts_loaded) & {
-    font-family: AlrightSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
+@mixin NotoSansFont {
+  font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-@mixin DIN17Font {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-
-  body:global(.fonts_loaded) & {
-    font-family: 'DIN17SBOP', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
+@mixin DosisFont {
+  font-family: 'Dosis', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 @mixin MonospaceFont {
-  font-family: 'Courier New', monospace;
-
-  body:global(.fonts_loaded) & {
-    font-family: InputMonoNarrow, 'Courier New', monospace;
-  }
+  font-family: 'Source Code Pro', 'Courier New', monospace;
 }
 
 @mixin arrow($direction, $base, $height, $color) {

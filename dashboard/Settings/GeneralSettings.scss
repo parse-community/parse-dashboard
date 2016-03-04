@@ -13,12 +13,12 @@
 	line-height: 18px;
 	padding-right: 18px;
 	padding-top: 16px;
-  @include DIN17Font;
+  @include DosisFont;
   text-transform: uppercase;
 }
 
 .features {
-  @include DIN17Font;
+  @include DosisFont;
 	padding-right: 18px;
 	padding-top: 1px;
 	font-size: 14px;

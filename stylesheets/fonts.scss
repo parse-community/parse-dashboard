@@ -5,33 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-@font-face {
-    font-family: 'AlrightSans';
-    src: url('/fonts/Alright-light.woff') format('woff');
-    font-weight: 100;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'AlrightSans';
-    src: url('/fonts/Alright-regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'AlrightSans';
-    src: url('/fonts/Alright-bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-}
-
-@font-face {
-  font-family: 'DIN17SBOP';
-  src: url(/fonts/DIN17SBOP.woff) format("woff");
-}
-
-@font-face {
-  font-family: 'InputMonoNarrow';
-  src: url(/fonts/InputMono-Narrow.woff) format("woff");
-}
+@import url(https://fonts.googleapis.com/css?family=Dosis);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
+@import url(https://fonts.googleapis.com/css?family=Noto+Sans:400,700);

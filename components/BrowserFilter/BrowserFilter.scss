@@ -48,7 +48,7 @@
 }
 
 .entry, .title {
-  @include DIN17Font;
+  @include DosisFont;
   position: relative;
   bottom: -4px;
   font-size: 14px;

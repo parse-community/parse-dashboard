@@ -78,13 +78,13 @@ h1 {
   vertical-align: bottom;
 }
 .prop_required {
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 14px;
   color: #767580;
   margin-left: 10px;
 }
 .prop_type {
-  @include DIN17Font;
+  @include DosisFont;
   font-size: 14px;
   color: #a5a5b4;
   margin-left: 10px;

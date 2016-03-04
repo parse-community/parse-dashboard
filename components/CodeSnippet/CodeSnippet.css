@@ -14,7 +14,7 @@
 code[class*="language-"],
 pre[class*="language-"] {
   color: #555572;
-  font-family: 'InputMonoNarrow', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 13px;
   direction: ltr;
   text-align: left;
@@ -198,7 +198,7 @@ pre.line-numbers > code {
   color: #343445;
   display: block;
   font-size: 10px;
-  font-family: 'DIN17SBOP';
+  font-family: 'Dosis';
   padding-right: 0;
   text-align: center;
 }

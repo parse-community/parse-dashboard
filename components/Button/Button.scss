@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .button {
-  @include DIN17Font;
+  @include DosisFont;
   display: inline-block;
   height: 30px;
   border: 1px solid $blue;
@@ -33,7 +33,7 @@
 .primary {
   background-color: $blue;
   color: $white;
-  
+
   &:hover, &:focus {
     background-color: $darkBlue;
   }
@@ -79,12 +79,12 @@
   color: $white;
   border-color: $white;
   line-height: 28px;
-  
+
   &:hover, &:focus{
     background-color: $white;
     color: $blue;
   }
-  
+
   &.primary {
     background-color: $white;
     color: $blue;
@@ -119,7 +119,7 @@
   &:hover{
     background-color: #e0e0ea;
     border-color: #e0e0ea;
-    color: white; 
+    color: white;
   }
 }
 
