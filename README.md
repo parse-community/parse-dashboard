@@ -1,6 +1,6 @@
 # Parse Dashboard
 
-A standalone dashboard for managing your Parse apps.
+Parse Dashboard is standalone dashboard for managing your Parse apps. You can use it to manage your [Parse Server](/ParsePlatform/parse-server) apps and your apps that are running on [Parse.com](https://Parse.com).
 
 ## Getting Started
 
