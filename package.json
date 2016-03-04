@@ -38,7 +38,8 @@
     "pig": "http-server ./PIG -p 4041 -s & webpack --config PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config production.config.js && webpack --config PIG.config.js",
     "test": "NODE_PATH=./node_modules jest",
-    "generate": "node scripts/generate.js"
+    "generate": "node scripts/generate.js",
+    "preinstall": "git update-index --skip-worktree Parse-Dashboard/parse-dashboard-config.json"
   },
   "jest": {
     "testPathDirs": [

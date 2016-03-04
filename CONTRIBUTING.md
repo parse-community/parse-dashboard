@@ -3,11 +3,11 @@ We want to make contributing to this project as easy and transparent as
 possible.
 
 ## Our Development Process
-The standard installation method also clones the git repository, so you can start making and submitting changes right away. For convenience, you can use `git update-index --assume-unchanged Parse-Dashboard/parse-dashboard-config.json` to ignore your own personal configuration.
+The standard installation method also clones the git repository, so you can start making and submitting changes right away.
 
-When working on the dashboard, use `npm run dashboard` and visit `localhost:4040` to see your dashboard.
+When working on the dashboard, use `npm run dashboard` and visit `localhost:4040` to see your dashboard. The `npm` script will automatically re-build your files when you change them, so after making a change, all you need to do is refresh the page.
 
-When working on components, use `npm run pig` and visit `localhost:4041` to view our component library and documentation (you can have both running at once). The demos for each component are the primary way we test components, although there are also a small number of automated tests you can run with `npm test`.
+When working on React components, use `npm run pig` and visit `localhost:4041` to view our component library and documentation (you can have both running at once). The demos for each component are the primary way we test components, although there are also a small number of automated tests you can run with `npm test`.
 
 ## Pull Requests
 We actively welcome your pull requests.
