@@ -15,7 +15,7 @@ We actively welcome your pull requests.
 1. Fork the repo and create your branch from `master`.
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
-4. If you've updated/added a UI component, please add a screenshot.
+4. If you've updated/added an UI component, please add a screenshot.
 5. Ensure the test suite passes.
 6. If you haven't already, complete the Contributor License Agreement ("CLA").
 
