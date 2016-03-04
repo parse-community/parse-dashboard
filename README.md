@@ -77,3 +77,7 @@ If you want to require a username and password to access the dashboard, you can 
 ```
 
 HTTPS and Basic Auth are mandatory if you are accessing the dashboard remotely instead of accessing it from `localhost`.
+
+## Contributing
+
+We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
