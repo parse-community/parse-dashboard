@@ -5,6 +5,22 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+// Command line tool for npm start
+
+var DEFAULT_DASHBOARD_CONFIG = __dirname + '/parse-dashboard-config.json';
+
+var program = require("commander");
+program.option('--port [port]', "the port to run parse-dashboard");
+program.option('--config [config]', "the path to the configuration file");
+program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set that flag when parse server is behind an HTTPS load balancer/proxy');
+
+program.parse(process.argv);
+
+// collect the variables
+var configFile = program.config || DEFAULT_DASHBOARD_CONFIG;
+var port = program.port || process.env.PORT;
+var allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
+
 var basicAuth = require('basic-auth');
 var jsonFile = require('json-file-plus');
 var express = require('express');
@@ -14,7 +30,7 @@ var app = express();
 app.use(express.static('Parse-Dashboard/public'));
 
 app.get('/parse-dashboard-config.json', function(req, res) {
-  jsonFile(__dirname + '/parse-dashboard-config.json')
+  jsonFile(configFile)
   .then(config => {
     var response = {apps: config.data.apps};
     var users = config.data.users;
@@ -28,7 +44,7 @@ app.get('/parse-dashboard-config.json', function(req, res) {
       req.connection.remoteAddress === '127.0.0.1' ||
       req.connection.remoteAddress === '::ffff:127.0.0.1' ||
       req.connection.remoteAddress === '::1';
-    if (!requestIsLocal && !req.secure) {
+    if (!requestIsLocal && !req.secure && !allowInsecureHTTP) {
       //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
       return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
     }
@@ -85,4 +101,4 @@ app.get('/*', function(req, res) {
 });
 
 // Start the server, listening to port 4040.
-app.listen(process.env.PORT || 4040);
+app.listen(port || 4040);

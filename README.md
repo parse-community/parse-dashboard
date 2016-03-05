@@ -78,6 +78,31 @@ If you want to require a username and password to access the dashboard, you can 
 
 HTTPS and Basic Auth are mandatory if you are accessing the dashboard remotely instead of accessing it from `localhost`.
 
+## Deploying in production
+
+If you're deploying to a provider like Heroku, or Google App Engine, the SSL endpoint is terminated early and handled by the provider and you may encounter this error `Parse Dashboard can only be remotely accessed via HTTPS`. 
+
+:warning: :warning: Before going further, make sure your server **cannot** be reachable via **HTTP**. See the provider documentation for force HTTPS connections to your deployment.
+
+Set the environment variable to PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1 to tell parse server to skip the secure tests.
+
+To start your server use:
+
+`$ npm start`
+
+
+Optionally you can use the command line arguments:
+
+`$ npm start -- --config path/to/config.json --port 8080 --allowInsecureHTTP=1`
+
+All paramters are optional and their default values are:
+
+
+	config: parse-dashboard/Parse-Dashboard/parse-dashboard-config.json
+	port: 4040
+	allowInsecureHTTP: false
+
+
 ## Contributing
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
