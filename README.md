@@ -52,7 +52,7 @@ You can also manage your apps that are hosted on Parse.com from the same dashboa
 }
 ```
 
-Then execute `npm run dashboard` and visit http://localhost:4040 and you will be able to manage your parse apps.
+Then execute `npm run dashboard` and visit [`http://localhost:4040`](http://localhost:4040) and you will be able to manage your parse apps.
 
 ## Other options
 
