@@ -4,7 +4,7 @@ Parse Dashboard is standalone dashboard for managing your Parse apps. You can us
 
 ## Getting Started
 
-[Node.js](https://nodejs.org) is required to run the dashboard. Once you have Node you can install the dashboard by cloning this repo and running `npm install`.
+[Node.js](https://nodejs.org) version >= 4.3 is required to run the dashboard. Once you have Node you can install the dashboard by cloning this repo and running `npm install`.
 
 ```
 git clone git@github.com:ParsePlatform/parse-dashboard.git
