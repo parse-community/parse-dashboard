@@ -92,16 +92,15 @@ Run the image with your ``config.json`` mounted as a volume
 docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard 
 ```
 
-The container will boot up using the default command ``npm run dashboard``
+By default, the container will start the app at port 4040 inside the container. However, you can run custom command as well (see ``Deploying in production`` for custom setup). 
 
-However, you can run custom command as well (see ``Deploying in production`` for custom setup). 
-
-In this example, we want to run the custom command without HTTPS, which is necessary if you are developing using docker on Mac since docker does not run on localhost.
+In this example, we want to run the application in production mode at port 80 of the host machine.
 
 ```
-docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard npm start -- --allowInsecureHTTP=1
+docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080
 ```
-If you are not familiar with Docker, ``npm start -- --allowInsecureHTTP=1`` is the custom command.
+
+If you are not familiar with Docker, ``--port 8080`` with be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
 
 ## Deploying in production
 
