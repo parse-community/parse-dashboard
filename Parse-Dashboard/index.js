@@ -22,12 +22,13 @@ var port = program.port || process.env.PORT;
 var allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 
 var basicAuth = require('basic-auth');
+var path = require('path');
 var jsonFile = require('json-file-plus');
 var express = require('express');
 var app = express();
 
 // Serve public files.
-app.use(express.static('Parse-Dashboard/public'));
+app.use(express.static(path.join(__dirname,'public')));
 
 app.get('/parse-dashboard-config.json', function(req, res) {
   jsonFile(configFile)
