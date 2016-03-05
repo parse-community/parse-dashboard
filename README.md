@@ -81,19 +81,24 @@ HTTPS and Basic Auth are mandatory if you are accessing the dashboard remotely i
 ## Run with Docker
 
 It is easy to use it with Docker. First build the image:
-  
-  docker build -t parse-dashboard .
+
+```  
+docker build -t parse-dashboard .
+```
 
 Run the image with your ``config.json`` mounted as a volume
 
-  docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard 
+```
+docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard 
+```
 
 The container will boot up using the default command ``npm run dashboard``
 
 However, you can run custom command as well (see ``Deploying in production`` for custom setup)
 
-  docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard npm start -- --allowInsecureHTTP=1
-
+```
+docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard npm start -- --allowInsecureHTTP=1
+```
 If you are not familiar with Docker, ``npm start -- --allowInsecureHTTP=1`` is the custom command.
 
 ## Deploying in production
