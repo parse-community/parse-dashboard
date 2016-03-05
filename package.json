@@ -45,7 +45,7 @@
     "start": "node ./Parse-Dashboard/index.js"
   },
   "engines": {
-    "node": ">=4.3",
+    "node": ">=4.3"
   },
   "jest": {
     "testPathDirs": [
