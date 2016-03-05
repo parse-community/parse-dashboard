@@ -25,7 +25,7 @@
     "immutable-devtools": "~0.0.4",
     "jest-cli": "^0.7.1",
     "js-beautify": "~1.5.0",
-    "node-sass": "~3.3.2",
+    "node-sass": "~3.4.2",
     "react-addons-test-utils": "^0.14.2",
     "sass-loader": "~2.0.1",
     "style-loader": "~0.12.3",
