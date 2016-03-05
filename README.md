@@ -94,7 +94,9 @@ docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/pars
 
 The container will boot up using the default command ``npm run dashboard``
 
-However, you can run custom command as well (see ``Deploying in production`` for custom setup)
+However, you can run custom command as well (see ``Deploying in production`` for custom setup). 
+
+In this example, we want to run the custom command without HTTPS, which is necessary if you are developing using docker on Mac since docker does not run on localhost.
 
 ```
 docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard npm start -- --allowInsecureHTTP=1
