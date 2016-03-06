@@ -110,7 +110,7 @@ For production deployments, it's recommended to use the npm package
 2. run `$ npm init`
 3. Create your dashboard.json in the root ot your project
 4. run `$ npm install --save parse-dashboard`
-5. add a start script in your package.json  `"start": "parse-dashboard --config ./dahsboard.json"` 
+5. add a start script in your package.json  `"start": "parse-dashboard --config ./dashboard.json"` 
 6. run `$ npm start`
 
 
