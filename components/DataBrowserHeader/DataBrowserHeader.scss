@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.header {
+  @include MonospaceFont;
+  position: relative;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 30px;
+  padding: 4px 6px 4px 2px;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+}
+
+.name {
+  color: white;
+  font-size: 12px;
+  height: 22px;
+  line-height: 22px;
+  margin-right: 8px;
+  float: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.type {
+  color: #A2A6B1;
+  font-size: 10px;
+  height: 22px;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ascending {
+  padding-right: 20px;
+
+  &:after {
+    @include arrow('up', 12px, 8px, #A2A6B1);
+    content: '';
+    position: absolute;
+    top: 11px;
+    right: 8px;
+  }
+}
+
+.descending {
+  padding-right: 20px;
+
+  &:after {
+    @include arrow('down', 12px, 8px, #A2A6B1);
+    content: '';
+    position: absolute;
+    top: 11px;
+    right: 8px;
+  }
+}
+
+.over {
+  border-left-color: $white;
+}
+
+.dragging {
+  background: $blue;
+}

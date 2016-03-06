@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.wrap {
+  display: inline-block;
+}
+
+.entry {
+  height: 22px;
+  padding: 8px 8px 0 8px;
+
+  svg {
+    fill: #66637A;
+  }
+
+  &:hover {
+    svg {
+      fill: white;
+    }
+  }
+}
+
+.title {
+  background: #797592;
+  padding: 8px;
+  border-radius: 5px 5px 0 0;
+
+  svg {
+    fill: white;
+  }
+}
+
+.entry, .title {
+  @include NotoSansFont;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  span {
+    vertical-align: middle;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+.body {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  border-radius: 5px 0 5px 5px;
+  background: #797592;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.item {
+  padding: 6px 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  color: white;
+  height: 26px;
+
+  &:hover {
+    background: $blue;
+  }
+
+  &.disabled {
+    color: rgba(0,0,0,0.2);
+    cursor: not-allowed;
+
+    &:hover {
+      background: none;
+    }
+  }
+}
+
+.separator {
+  background: rgba(0,0,0,0.1);
+  height: 1px;
+  margin: 4px 0;
+}

@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+$arrowColor: #343445;
+
+.cascadingView, .contentContainer {
+  position: relative;
+}
+
+.left {
+  position: relative;
+  width: auto;
+  height: 100%;
+}
+
+.right {
+  position: absolute;
+  right: 20px;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+}
+
+.expanded {
+  @include arrow('down', 12px, 10px, $arrowColor);
+  content: '';
+}
+
+.collapsed {
+  @include arrow('right', 12px, 10px, $arrowColor);
+  content: '';
+}
+
+.childrenContainer {
+  position: relative;
+  padding: 15px 0px 15px 18px;
+  background-color: $inputBackgroundColor;
+
+  .children {
+    border-left: 1px solid rgba(52, 52, 69, 0.2);
+    padding-left: 14px;
+  }
+}

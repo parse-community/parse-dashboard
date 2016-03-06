@@ -1,0 +1,78 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.input {
+  width: 100%;
+  height: 80px;
+  padding: 0 10%;
+  background: $inputBackgroundColor;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.button {
+  position: relative;
+  display: inline-block;
+  height: 30px;
+  margin-top: 25px;
+  padding: 0 16px;
+  border: 1px solid $blue;
+  border-radius: 5px;
+  overflow: hidden;
+  color: $blue;
+  transition: background 0.5s, color 0.5s;
+
+  &:hover {
+    background: $blue;
+    color: white;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    left: -100px;
+    bottom: 0;
+    cursor: pointer;
+  }
+
+  > span {
+    line-height: 30px;
+  }
+}
+
+.disabled, .disabled:hover {
+  background: #e0e0ea;
+  border-color: #e0e0ea;
+  color: white;
+  
+  input {
+    cursor: default;
+  }
+}
+
+.withLabel {
+  float: left;
+  margin-right: 10px;
+}
+
+.label {
+  display: block;
+  line-height: 30px;
+  color: $mainTextColor;
+  margin-top: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a.label {
+  color: $blue;
+}

@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+$calloutSize: 10px;
+
+.tooltipWrap {
+  display: inline-block;
+  position: relative;
+
+  .tooltip {
+    display: none;
+    width: 300px;
+    line-height: 16px;
+    background-color: $white;
+    border: 1px solid $mainTextColor;
+    border-radius: 5px;
+    // TODO we don't want to use z-index. But this makes everything easier
+    // since we can do everything in CSS. We need to revisit this in the future
+    z-index: 100;
+  }
+
+  &:hover {
+    .tooltip {
+      position: absolute;
+      display: inline;
+      bottom: $calloutSize * 2 + 10px;
+      left: 0px;
+
+      // Faking arrow with border by making 2 arrows.
+      .callout1 {
+        @include arrow('down', ($calloutSize + 1) * 2, $calloutSize + 1, $mainTextColor);
+        position: absolute;
+        left: 20px;
+      }
+
+      .callout2 {
+        @include arrow('down', $calloutSize * 2, $calloutSize, $white);
+        position: absolute;
+        left: 20px;
+      }
+    }
+  }
+}
+
+.tooltipContent {
+  padding: 15px;
+}

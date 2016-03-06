@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.toggle {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+}
+
+.label {
+  @include DosisFont;
+  font-size: 13px;
+  color: #babac4;
+  transition: color 0.15s ease-out;
+  cursor: pointer;
+  padding: 8px;
+
+  &:last-of-type {
+    color: #555473;
+  }
+}
+
+.switch {
+  display: inline-block;
+  position: relative;
+  width: 40px;
+  height: 18px;
+  border-radius: 8px;
+  background: #159cee;
+  vertical-align: top;
+  margin: 6px 8px 0 8px;
+  cursor: pointer;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: #fdfafb;
+    top: 9px;
+    left: 31px;
+    margin-left: -12px;
+    margin-top: -12px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.4);
+    transition: left 0.15s ease-out;
+  }
+}
+
+.colored {
+  background: linear-gradient(90deg, rgb(0, 219, 124), rgb(0, 219, 124) 50%, rgb(255, 57, 94) 50%, rgb(255, 57, 94));
+  background-size: 200%;
+  background-position: 0;
+  transition: background-position 0.15s ease-out;
+}
+
+.left {
+  .label {
+    &:first-of-type {
+      color: #555473;
+    }
+
+    &:last-of-type {
+      color: #babac4;
+    }
+  }
+
+  .colored {
+    background-position: 100%;
+  }
+
+  .switch:after {
+    left: 9px;
+  }
+}
+
+.darkBg {
+  .label {
+    &:first-of-type {
+      color: #babac4;
+    }
+    &:last-of-type {
+      color: #ffffff;
+    }
+  }
+
+  &.left .label {
+    &:first-of-type {
+      color: #ffffff;
+    }
+    &:last-of-type {
+      color: #babac4;
+    }
+  }
+}

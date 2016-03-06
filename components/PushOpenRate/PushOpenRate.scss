@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.wrapper {
+  width: 320px;
+  text-align: center;
+  padding: 10px;
+  margin: 0 auto;
+
+  .title {
+    height: 20px;
+  }
+
+  .percent {
+    height: 160px;
+    width: 160px;
+    border-radius: 80px;
+    border: 3px solid;
+    margin: 10px auto;
+
+    .rate {
+      @include DosisFont;
+      font-size: 40px;
+      font-weight: 100;
+      padding: 38px 0 0 0;
+      vertical-align: baseline;
+    }
+  }
+
+  .count_wrap {
+    color: $mainTextColor;
+
+    .count {
+      font-size: 30px;
+      @include DosisFont;
+    }
+  }
+}
+
+.blue {
+  color: $blue;
+  background: white;
+}
+
+.blue_inv {
+  color: white;
+  background: $blue;
+}
+
+.pink {
+  color: $pink;
+  background: white;
+}
+
+.pink_inv {
+  color: white;
+  background: $pink;
+}
+
+.yellow {
+  color: $yellow;
+  background: white;
+}
+
+.yellow_inv {
+  color: white;
+  background: $yellow;
+}

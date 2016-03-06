@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.addConditions {
+  text-align: center;
+  padding: 25px 20px;
+  border-style: solid;
+  border-color: $borderGrey;
+  border-width: 1px 1px 0 1px;
+
+  &.nonEmptyConditions {
+    padding: 4px;
+    a {
+     border: none;
+    }
+  }
+}
+
+.footer {
+  padding: 17px 28px;
+  text-align: right;
+
+  &:nth-child(2) {
+    text-align: center;
+  }
+
+  > * {
+    margin: 0 12px 0 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.audienceSize {
+  float: left;
+  text-align: left;
+
+  .audienceSizeText {
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    color: $secondaryTextColor;
+  }
+
+  .audienceSizeDescription {
+    margin-top: 2px;
+    color: $blue;
+  }
+}
+
+.filter {
+  max-height: 50vh;
+  overflow-y: scroll;
+}

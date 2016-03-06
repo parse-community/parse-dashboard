@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.pill {
+  @include MonospaceFont;
+  display: inline-block;
+  background: #D5E5F2;
+  color: #0E69A1;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 10px;
+  font-size: 11px;
+  padding: 0 8px;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background: #BFD4E5;
+  }
+}

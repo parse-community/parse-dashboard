@@ -1,0 +1,204 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #555572;
+  font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 22px;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection,
+pre[class*="language-"]::-moz-selection,
+code[class*="language-"]::-moz-selection,
+code[class*="language-"]::-moz-selection {
+  text-shadow: none;
+  background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection,
+pre[class*="language-"]::selection,
+code[class*="language-"]::selection,
+code[class*="language-"]::selection {
+  text-shadow: none;
+  background: #b3d4fc;
+}
+
+@media print {
+  code[class*="language-"],
+  pre[class*="language-"] {
+    text-shadow: none;
+  }
+}
+
+
+/* Code blocks */
+
+pre[class*="language-"] {
+  padding: 1em;
+  margin: .5em 0;
+  overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  background: #FDFAFB;
+}
+
+
+/* Inline code */
+
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #a3a3c2;
+}
+
+.token.punctuation {
+  color: #555572;
+}
+
+.namespace {
+  opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #FF395E;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #00D275;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #555572;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #169CEE;
+}
+
+.token.function {
+  color: #FF395E;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #F45530;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+pre.line-numbers {
+  position: relative;
+  padding-left: 3.5em;
+  counter-reset: linenumber;
+  padding-top: 0px;
+  padding-bottom: 20px;
+}
+
+pre.line-numbers:before {
+  display: block;
+  content: '';
+  background: #66637A;
+  height: 100%;
+  width: 33px;
+  position: absolute;
+  left: 0;
+}
+
+pre.line-numbers > code {
+  position: relative;
+  top: 10px;
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: -14px;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em;
+  /* works for line-numbers below 1000 lines */
+  padding-top: 10px;
+  margin-bottom: 100px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  pointer-events: none;
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: #343445;
+  display: block;
+  font-size: 10px;
+  font-family: 'Dosis';
+  padding-right: 0;
+  text-align: center;
+}

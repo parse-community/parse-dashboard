@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+#popover_wrapper, #fixed_wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+
+  & > div {
+    position: absolute;
+    pointer-events: all;
+  }
+}
+
+.transition{
+  @include animation('fade-in .2s linear');
+  opacity: 1;
+}
+
+#popover_wrapper {
+  position: absolute;
+}
+
+#fixed_wrapper {
+  position: fixed;
+}
+
+@include keyframes(fade-in) {
+  0% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.footer {
+  @include animation('footer-enter 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)');
+  position: fixed;
+  left: 300px;
+  right: 0;
+  bottom: 0;
+  background: #fbfbfc;
+  border-top: 1px solid #555572;
+  min-height: 49px;
+  padding: 9px 11px;
+  transition: left 0.5s ease-in;
+}
+
+@media (max-width: 980px) {
+  .footer {
+    left: 0;
+  }
+}
+
+.right {
+  float: right;
+
+  & > * {
+    margin-left: 11px;
+  }
+}
+
+.content {
+  color: $mainTextColor;
+  font-size: 13px;
+  line-height: 22px;
+  vertical-align: bottom;
+  margin: 5px 0 3px 0;
+
+  strong {
+    font-weight: 700;
+  }
+
+  &.error {
+    color: $red;
+
+    strong {
+      font-weight: 700;
+      color: $red;
+    }
+  }
+}
+
+@include keyframes(footer-enter) {
+  0% {
+    @include transform(translate(0%, 100%));
+  }
+  100% {
+    @include transform(translate(0%, 0%));
+  }
+}

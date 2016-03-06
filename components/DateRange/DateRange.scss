@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+$dateRangeHeight: 30px;
+
+.wrap {
+  display: inline-block;
+  vertical-align: top;
+  height: $dateRangeHeight;
+}
+
+.range {
+  display: inline-block;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 14px;
+  height: $dateRangeHeight;
+  border: 1px solid $blue;
+  border-radius: 5px;
+  padding: 6px 12px;
+  color: $blue;
+
+  span {
+    display: inline-block;
+    line-height: 18px;
+  }
+
+  svg {
+    vertical-align: top;
+    margin-left: 10px;
+  }
+}
+
+.open .range {
+  position: relative;
+  background: white;
+  border-top: none;
+  padding-top: 7px;
+  border-radius: 0 0 5px 5px;
+}
+
+.calendars {
+  position: absolute;
+  background: white;
+  border: 1px solid $blue;
+  bottom: 29px;
+  left: 0;
+  width: 406px;
+  height: 192px;
+  padding: 10px;
+  border-radius: 5px 5px 5px 0;
+
+  > * {
+    display: inline-block;
+    vertical-align: top;
+
+    &:first-child {
+      margin-right: 20px;
+    }
+  }
+}
+
+.right {
+  &.open {
+    position: absolute;
+    right: 0;
+  }
+
+  .calendars {
+    left: auto;
+    right: 0;
+    border-radius: 5px 5px 0 5px;
+  }
+}

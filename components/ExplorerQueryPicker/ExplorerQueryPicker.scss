@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.queryPicker {
+  background-color: $explorerQueryBackgroundColor;
+  border: 1px solid $explorerQueryBackgroundColor;
+  border-radius: 5px;
+
+  color: white;
+
+  .queryContainer {
+    background-color: white;
+    color: black;
+
+    .queryGroup {
+      padding: 15px 0px 15px 15px;
+      border: 1px solid #efefef;
+    }
+
+    .queryItem {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .queryLabel {
+      color: $mainTextColor;
+    }
+  }
+
+  .del {
+    position: absolute;
+    right: 24px;
+    color: #d8d8d8;
+    font-size: 18px;
+    line-height: 18px;
+  }
+
+  .header {
+    padding: 15px;
+    height: 60px;
+    position: relative;
+  }
+
+  .footer {
+    height: 60px;
+    position: relative;
+  }
+}

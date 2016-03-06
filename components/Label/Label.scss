@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.label {
+  font-size: 13px;
+}
+
+.text {
+  font-weight: 700;
+}
+
+.description {
+  margin-top: 2px;
+  color: $secondaryTextColor;
+  line-height: 13px;
+}

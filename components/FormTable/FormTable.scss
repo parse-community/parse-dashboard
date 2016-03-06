@@ -1,0 +1,104 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.table {
+  text-align: left;
+  white-space: nowrap;
+  min-height: 80px;
+  background: $formTableGrey;
+}
+
+.row {
+  background: $formTableGrey;
+  font-size: 12px;
+  padding-bottom: 4px;
+}
+
+.title {
+  @include ellipsis();
+  display: inline-block;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.header {
+  position: relative;
+  height: 30px;
+  background: #e3ebef;
+  line-height: 14px;
+  font-size: 12px;
+  padding: 9px 32px 9px 6px;
+  margin-bottom: 4px;
+
+  span {
+    vertical-align: top;
+  }
+}
+
+.indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  margin-right: 10px;
+  vertical-align: middle;
+
+  &.blue {
+    background: $blue;
+  }
+  &.green {
+    background: $green;
+  }
+  &.orange {
+    background: $orange;
+  }
+  &.red {
+    background: $red;
+  }
+}
+
+.del {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  color: $secondaryTextColor;
+  font-size: 22px;
+  line-height: 22px;
+}
+
+.info {
+  @include ellipsis();
+  padding: 4px 6px;
+}
+
+.label {
+  @include DosisFont;
+  display: inline-block;
+  text-transform: uppercase;
+  color: $secondaryTextColor;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+
+  &.blue {
+    color: $blue;
+  }
+  &.green {
+    color: $green;
+  }
+  &.orange {
+    color: $orange;
+  }
+  &.red {
+    color: $red;
+  }
+}
+
+.din {
+  @include DosisFont;
+}

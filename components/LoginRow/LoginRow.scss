@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+.row {
+  display: block;
+  position: relative;
+  height: 50px;
+  border-bottom: 1px solid #e0e0e1;
+}
+
+.label {
+  width: 110px;
+  background: #f9f9fa;
+  font-size: 13px;
+  font-weight: 700;
+  height: 49px;
+  line-height: 49px;
+  float: left;
+  padding: 0 0 0 20px;
+  text-align: left;
+}
+
+.input {
+  margin-left: 110px;
+  height: 49px;
+  background: #f0f4f6;
+
+  input {
+    display: block;
+    border: none;
+    outline: none;
+    background: transparent;
+    height: 49px;
+    line-height: 49px;
+    padding: 0 6px;
+    width: 100%;
+    font-size: 13px;
+
+    &:focus {
+      background: rgba(6,40,61,0.1);
+    }
+  }
+}
+
+.extra {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

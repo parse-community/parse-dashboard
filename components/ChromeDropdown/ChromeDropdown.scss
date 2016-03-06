@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+       
+.dropdown {
+  display: inline-block;
+  vertical-align: top;
+  height: 30px;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.current, .menu {
+  background: $purple;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+
+  &.blue {
+    background: $darkBlue;
+  }
+}
+
+.current {
+  position: relative;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 30px 0 10px;
+
+  div {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:after {
+    @include arrow('down', 12px, 8px, rgba(255,255,255,0.3));
+    position: absolute;
+    content: '';
+    top: 12px;
+    right: 10px;
+  }
+}
+
+.menu {
+  max-height: 360px;
+  overflow-y: auto;
+  font-size: 14px;
+
+  div {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}

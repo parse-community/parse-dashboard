@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.status {
+  @include DosisFont;
+  display: inline-block;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 100%;
+    margin-right: 8px;
+  }
+}
+
+.blue {
+  color: $blue;
+
+  &:before {
+    background: $blue;
+  }
+}
+
+.red {
+  color: $red;
+
+  &:before {
+    background: $red;
+  }
+}
+
+.green {
+  color: $green;
+
+  &:before {
+    background: $green;
+  }
+}

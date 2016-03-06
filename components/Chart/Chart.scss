@@ -1,0 +1,118 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.chart {
+  position: relative;
+  background: white;
+  padding: 0 0 40px 40px;
+}
+
+.yAxis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+}
+
+.label {
+  position: absolute;
+  right: 10px;
+  font-size: 10px;
+  margin-top: -6px;
+}
+
+.tick {
+  @include transform(translateX(-50%));
+  position: absolute;
+  bottom: 14px;
+  font-size: 10px;
+}
+
+.grow {
+  @include transform(scale(1));
+  transition: transform 0.2s ease-out;
+  -webkit-transition: -webkit-transform 0.2s ease-out;
+
+  transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+
+  &:hover {
+    @include transform(scale(2));
+  }
+}
+
+.popupWrap {
+  position: absolute;
+}
+
+.popup {
+  @include transform(translateY(-50%));
+  position: absolute;
+  border-radius: 5px;
+  border: 1px solid $blue;
+  background: white;
+  padding: 8px 8px;
+  text-align: center;
+  min-width: 140px;
+}
+
+.popupLeft {
+  right: 14px;
+
+  &:before {
+    @include arrow('right', 12px, 8px, inherit);
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    margin-top: -6px;
+  }
+
+  &:after {
+    @include arrow('right', 12px, 8px, white);
+    content: '';
+    position: absolute;
+    right: -7px;
+    top: 50%;
+    margin-top: -6px;
+  }
+}
+
+.popupRight {
+  left: 14px;
+
+  &:before {
+    @include arrow('left', 12px, 8px, inherit);
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    margin-top: -6px;
+  }
+
+  &:after {
+    @include arrow('left', 12px, 8px, white);
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 50%;
+    margin-top: -6px;
+  }
+}
+
+.popupTime {
+  white-space: nowrap;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.popupValue {
+  font-size: 12px;
+}

@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.wrap {
+  display: inline-block;
+  vertical-align: top;
+  height: 30px;
+}
+
+.queryMenuContainer {
+  width: 700px;
+  position: relative;
+}
+
+.button {
+  display: inline-block;
+  height: 30px;
+  width: 111px;
+  border: 1px solid $mainTextColor;
+  border-radius: 5px;
+  line-height: 30px;
+  text-align: center;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.callout {
+  @include arrow('up', 20px, 10px, $explorerQueryBackgroundColor);
+  width: 20px;
+  height: 10px;
+}
+
+.right {
+  position: absolute;
+  right: 0;
+
+  .button {
+    display: block;
+    margin-left: auto;
+    margin-right: 0px;
+  }
+
+  .callout {
+    margin-left: auto;
+  }
+}
+

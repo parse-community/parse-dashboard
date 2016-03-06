@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.shake {
+  @include transform(translateX(0));
+  @include animation('shake 0.6s');
+}
+
+@include keyframes (shake) {
+  0% {
+    @include transform(translateX(-5px));
+  }
+  20% {
+    @include transform(translateX(5px));
+  }
+  40% {
+    @include transform(translateX(-5px));
+  }
+  60% {
+    @include transform(translateX(5px));
+  }
+  80% {
+    @include transform(translateX(-5px));
+  }
+}

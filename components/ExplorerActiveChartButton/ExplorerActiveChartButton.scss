@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.wrap {
+  display: inline-block;
+  vertical-align: top;
+  height: 30px;
+}
+
+.button {
+  width: 250px;
+  height: 30px;
+  position: relative;
+}
+
+.checkbox {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  padding: 3px;
+  border-radius: 4px;
+  vertical-align: middle;
+  cursor: pointer;
+
+  svg {
+    vertical-align: top;
+  }
+}
+
+.rightArrow {
+  @include arrow('down', 12px, 8px, $greyArrowColor);
+  position: absolute;
+  right: 0px;
+  cursor: pointer;
+}
+
+.label {
+  @include ellipsis;
+  position: absolute;
+  max-width: 200px;
+  left: 30px;
+  top: 8px;
+}
+
+.composerContainer {
+  width: 700px;
+  position: relative;
+}
+
+.callout {
+  @include arrow('up', 20px, 10px, $explorerQueryBackgroundColor);
+  width: 20px;
+  height: 10px;
+}
+
+.right {
+  position: absolute;
+  right: 0;
+
+  .button {
+    margin-left: auto;
+    margin-right: 0px;
+  }
+
+  .callout {
+    margin-left: auto;
+  }
+}
+

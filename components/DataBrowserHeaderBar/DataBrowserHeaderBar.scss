@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  background: #66637a;
+  white-space: nowrap;
+  display: inline-block;
+  min-width: 100%;
+  // to resolve rendering issue with retina displays
+  -webkit-transform: translate3d(0,0,0);
+}
+
+.wrap {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.addColumn {
+  display: inline-block;
+  height: 30px;
+  vertical-align: top;
+  padding: 0 25px;
+}
+
+.addColumnButton {
+  @include DosisFont;
+  display: inline-block;
+  background: #343445;
+  height: 20px;
+  width: 130px;
+  text-align: center;
+  line-height: 20px;
+  margin-top: 5px;
+  color: white;
+  border-radius: 5px;
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.check {
+  line-height: 30px;
+  height: 30px;
+  vertical-align: top;
+  text-align: center;
+  width: 30px;
+  background: rgba(224,224,234,0.10);
+}
+
+.handle {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 30px;
+  margin: 0 -4px;
+  cursor: ew-resize;
+}
+
+.disabled {
+  cursor: not-allowed;
+}

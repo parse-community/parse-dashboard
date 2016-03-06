@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.fieldset {
+  margin: 40px 0;
+}
+
+.legend {
+  text-align: center;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 700;
+  color: $blue;
+  margin-bottom: 4px;
+}
+
+.description {
+  @include DosisFont;
+  text-align: center;
+  font-size: 14px;
+  line-height: 16px;
+  color: $mainTextColor;
+  width: 500px;
+  margin: 0 auto 16px auto;
+}
+
+.fields {
+  width: 650px;
+  margin: 0 auto;
+
+  & > div:first-of-type {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  & > div:last-of-type {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}

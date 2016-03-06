@@ -1,0 +1,134 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.button {
+  @include DosisFont;
+  display: inline-block;
+  height: 30px;
+  border: 1px solid $blue;
+  line-height: 28px;
+  outline: 0;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  min-width: 110px;
+  padding: 0 16px;
+  font-size: 14px;
+
+  color: $blue;
+
+  &:hover, &:focus {
+    background-color: $blue;
+    color: white;
+  }
+}
+
+.primary {
+  background-color: $blue;
+  color: $white;
+
+  &:hover, &:focus {
+    background-color: $darkBlue;
+  }
+}
+
+.green {
+  color: $green;
+  border-color: $green;
+
+  &:hover, &:focus {
+    background-color: $lightGreen;
+  }
+
+  &.primary {
+    background-color: $green;
+    color: $white;
+
+    &:hover, &:focus {
+      background-color: $darkGreen;
+    }
+  }
+}
+
+.red {
+  color: $red;
+  border-color: $red;
+
+  &:hover, &:focus {
+    background-color: $lightRed;
+  }
+
+  &.primary {
+    background-color: $red;
+    color: $white;
+
+    &:hover, &:focus {
+      background-color: $darkRed;
+    }
+  }
+}
+
+.white {
+  color: $white;
+  border-color: $white;
+  line-height: 28px;
+
+  &:hover, &:focus{
+    background-color: $white;
+    color: $blue;
+  }
+
+  &.primary {
+    background-color: $white;
+    color: $blue;
+
+    &:hover, &:focus {
+      background-color: $blue;
+      border-color: $blue;
+      color: white;
+    }
+  }
+
+  &.disabled {
+    background-color: transparent;
+    border-color: white;
+    opacity: 0.2;
+  }
+}
+
+.progress {
+  background-image: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.3));
+  background-size: 40px 100%;
+  background-repeat: no-repeat;
+  cursor: wait;
+  @include animation('progress-bg 0.5s infinite');
+}
+
+.disabled, .disabled.primary {
+  background-color: #e0e0ea;
+  border-color: #e0e0ea;
+  color: white;
+  cursor: default;
+  &:hover{
+    background-color: #e0e0ea;
+    border-color: #e0e0ea;
+    color: white;
+  }
+}
+
+@include keyframes(progress-bg) {
+  0% {
+    background-position: -40 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
+

@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.toolbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 300px;
+  background: #353446;
+  height: 96px;
+  color: white;
+  transition: left 0.5s ease-in;
+}
+
+@media (max-width: 980px) {
+  .toolbar {
+    left: 0;
+  }
+}
+
+
+.title {
+  position: absolute;
+  left: 14px;
+  bottom: 10px;
+}
+
+.section {
+  @include DosisFont;
+  color: #757985;
+  text-transform: uppercase;
+  font-size: 8px;
+  letter-spacing: 1.6px;
+}
+
+.subsection {
+  font-size: 18px;
+  vertical-align: bottom;
+  margin-right: 10px;
+}
+
+.details {
+  color: #80848f;
+  font-size: 12px;
+}
+
+.actions {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+}

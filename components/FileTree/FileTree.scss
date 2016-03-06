@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+.directory, .file {
+  color: #8fb9cf;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.directory {
+  svg {
+    vertical-align: middle;
+    fill: #8fb9cf;
+    margin-right: 6px;
+  }
+
+  > span {
+    vertical-align: middle;
+  }
+
+  &:hover {
+    color: white;
+
+    svg {
+      fill: white;
+    }
+  }
+}
+
+.contents {
+  padding-left: 12px;
+}
+
+.file {
+  display: block;
+  
+  &:hover {
+    color: white;
+  }
+}
+
+.current {
+  color: white;
+}

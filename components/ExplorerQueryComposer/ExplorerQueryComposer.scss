@@ -1,0 +1,153 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+$labelWidth: 100px;
+$placeholderColor: rgba(255, 255, 255, 0.5);
+
+.queryComposer {
+  background-color: $explorerQueryBackgroundColor;
+  border: 1px solid $explorerQueryBackgroundColor;
+  border-radius: 5px;
+  color: white;
+
+  .queryComposerBox {
+    border: 1px solid $explorerQueryBackgroundColor;
+    width: 100%;
+    padding: 10px 0;
+    position: relative;
+    background-color: $blue;
+
+    .queryComposerLabel {
+      height: 100%;
+      background-color: $blue;
+    }
+  }
+
+  .header {
+    height: 60px;
+    position: relative;
+  }
+
+  .footer {
+    padding-top: 15px;
+    height: 60px;
+    position: relative;
+  }
+}
+
+.headerView {
+  display: table;
+  width: 95%;
+  padding-top: 10px;
+
+  .headerLabel {
+    display: table-cell;
+    text-align: left;
+    width: 100%;
+
+    &.textInput {
+      background: none;
+      border: none;    
+      font-size: 1.3em;
+      color: white;
+
+      @include placeholder {
+        color: $placeholderColor;
+      }
+    }
+  }
+
+  .headerButton {
+    display: table-cell;
+    width: 40px;
+    padding-left: 30px;
+    color: white;
+
+    &.secondaryColor {
+      color: $placeholderColor;
+    }
+  }
+}
+
+.boxContent {
+  width: 95%;
+  display: table;
+  margin: 0 auto;
+  table-layout: fixed;
+
+  .formLabel {
+    display: table-cell;
+    width: $labelWidth;
+    vertical-align: middle;
+  }
+
+  .filterInputStyle {
+    width: 47%;
+    margin-left: 2%
+  }
+
+  .halfBox {
+    display: table;
+    float: left;
+    width: 48%;
+    margin-right: 2%;
+
+    &:last-child {
+      width: 50%;
+      margin-right: 0;
+    }
+  }
+
+  .del {
+    display: table-cell;
+    vertical-align: middle;
+    width: 24px;
+    padding-left: 10px;
+    color: #d8d8d8;
+    font-size: 18px;
+    line-height: 18px;
+  }
+
+  .twoButton {
+    display: table-cell;
+    float: left;
+    width: 49%;
+    margin-right: 2%;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .actionButton {
+    display: table-cell;
+    width: auto;
+    padding-right: 2%;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.formLabel {
+  text-align: left;
+  color: #fdfafb;
+}
+
+.formInput, .formInput > input {
+  text-align: left;
+  color: white;
+  background-color: $darkBlue;
+  height: 30px;
+  border-color: transparent;
+  border-radius: 5px;
+  padding: 0 30px 0 10px;
+  overflow: hidden;
+}

@@ -1,0 +1,299 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.dialog {
+  @include modalAnimation();
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 540px;
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: width 0.3s 0.15s ease-out;
+}
+
+.header {
+  height: 50px;
+  background: $blue;
+  position: relative;
+  color: #ffffff;
+  line-height: 50px;
+  font-size: 16px;
+  text-align: center;
+
+  .settings {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+
+    svg {
+      fill: #0E69A1;
+      vertical-align: top;
+    }
+
+    &:hover svg {
+      fill: #094367;
+    }
+  }
+
+  .arrow {
+    position: absolute;
+    @include arrow('up', 12px, 6px, #0E69A1);
+    top: 44px;
+    right: 19px;
+  }
+}
+
+.level {
+  height: 50px;
+  width: 540px;
+  background: #0E69A1;
+  position: relative;
+  color: white;
+  transition: width 0.3s 0.15s ease-out;
+
+  > div {
+    margin: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  > span {
+    display: inline-block;
+    font-size: 12;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
+  }
+}
+
+.tableWrap {
+  height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.second {
+  width: 82px;
+}
+.third {
+  width: 82px;
+}
+.fourth {
+  width: 92px;
+}
+.fifth {
+  width: 92px;
+}
+.sixth {
+  width: 92px;
+}
+.seventh {
+  width: 118px;
+}
+.eighth {
+  width: 44px;
+}
+
+.table {
+  position: relative;
+  min-height: 250px;
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: rgba(0,0,40,0.03);
+
+    &.second {
+      left: 330px;
+    }
+    &.fourth {
+      left: 494px;
+    }
+    &.sixth {
+      left: 678px;
+    }
+    &.eighth {
+      left: 888px;
+    }
+  }
+}
+
+.footer {
+  position: relative;
+  height: 51px;
+  border-top: 1px solid #e3e3ea;
+
+  .details {
+    font-size: 12px;
+    padding-left: 20px;
+
+    a {
+      color: $blue;
+    }
+  }
+
+  .actions {
+    float: right;
+    padding: 10px 15px;
+
+    a {
+      margin-left: 10px;
+    }
+  }
+}
+
+.headers {
+  overflow: hidden;
+  transition: height .3s cubic-bezier(0.645,0.045,0.355,1) .5s;
+  background: #56AEE3;
+  height: 0;
+  padding-left: 330px;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+
+  div {
+    float: left;
+    border-left: 1px solid white;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: top;
+  }
+}
+
+.readHeader {
+  width: 164px;
+}
+
+.writeHeader {
+  width: 276px;
+}
+
+.addHeader {
+  width: 118px;
+  border-right: 1px solid white;
+}
+
+.advanced {
+  width: 930px;
+
+  .level {
+    width: 930px;
+  }
+
+  .headers {
+    height: 20px;
+  }
+}
+
+.row {
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  border-bottom: 1px solid #e3e3ea;
+  white-space: nowrap;
+
+  &:nth-child(odd) {
+    background: rgba(14, 105, 161, 0.03);
+  }
+}
+
+.row.public {
+  background: rgba(22, 156, 238, 0.18);
+  border-bottom: 1px solid #0E69A1;
+  color: $blue;
+}
+
+.label {
+  display: inline-block;
+  width: 330px;
+  padding: 0 20px;
+}
+.check {
+  display: inline-block;
+  text-align: center;
+
+  > svg {
+    fill: $blue;
+    vertical-align: middle;
+  }
+}
+
+.pointerRead {
+  display: inline-block;
+  width: 164px;
+  padding: 5px 10px;
+}
+.pointerWrite {
+  display: inline-block;
+  width: 394px;
+  padding: 5px 10px;
+}
+
+.checkboxWrap {
+  position: relative;
+  vertical-align: top;
+  border: 1px solid #e3e3ea;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 5px;
+  background: white;
+}
+
+.entry {
+  height: 30px;
+  width: 290px;
+  border: 1px solid $mainTextColor;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  padding: 0 6px;
+  margin: 10px 0 0 20px;
+  vertical-align: top;
+}
+
+.error {
+  border-color: $red;
+  color: $red;
+}
+
+.delete {
+  display: inline-block;
+  vertical-align: top;
+  width: 32px;
+  height: 50px;
+  padding-top: 15px;
+  text-align: right;
+
+  svg {
+    vertical-align: top;
+    cursor: pointer;
+    fill: #C1C7CD;
+
+    &:hover {
+      fill: $red;
+    }
+  }
+}
+
+.pillHolder{
+  max-width: 100px;
+  position: relative;
+  display: inline-block;
+  top: 5px;
+}
+
+@include modalKeyframes();

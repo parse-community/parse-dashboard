@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.class_list {
+  position: relative;
+  margin-bottom: 5px;
+
+  a {
+    display: block;
+    padding-left: 12px;
+    height: 20px;
+    line-height: 20px;
+    border-left: 1px solid #3e87b2;
+    color: #8fb9cf;
+    font-size: 12px;
+
+    &.active {
+      color: white;
+    }
+
+    &:hover{
+      color: white;
+    }
+
+    span {
+      display: block;
+
+      &:first-of-type {
+        @include DosisFont;
+        float: right;
+        width: 50px;
+        text-align: right;
+      }
+
+      &:last-of-type {
+        margin-right: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.highlight {
+  position: absolute;
+  width: 1px;
+  height: 20px;
+  background: white;
+  transition: top 0.2s cubic-bezier(1, 0, 0, 1);
+}

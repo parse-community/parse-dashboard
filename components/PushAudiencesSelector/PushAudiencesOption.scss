@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+//select width values are hardcoded
+//current usecase is fixed width container
+.row {
+  width: 100%;
+  display: block;
+  padding: 15px 20px;
+  cursor: pointer;
+  float: left;
+  .radiobutton {
+    float: left;
+    margin-right: 10px;
+  }
+  &:nth-child(even) {
+    background: #f2f6f8;
+  }
+  &:nth-child(odd) {
+    background: #fbfbfc;
+  }
+  &:hover {
+    background: #EAEAEA;
+  }
+  &.everyone {
+    .audienceInfo {
+      margin-top: 7px;
+    }
+  }
+  .cell {
+    display: inline-block;
+    margin-top: 7px;
+  }
+  .col1 {
+    width: 50%;
+    float: left;
+    margin-top: 0;
+  }
+  .col2 {
+    width: 20%;
+    margin-top: 7px;
+  }
+  .input {
+    margin-right: 12px;
+    position: relative;
+    top: -2px;
+  }
+
+  .audienceInfo {
+    margin-left: 30px;
+
+    .headline {
+      font-size: 14px;
+    }
+
+    .subline {
+      font-size: 12px;
+    }
+
+    .shortInfo {
+    	@include ellipsis();
+      margin-right: 5px;
+      max-width: 190px;
+      float: left;
+    }
+
+    .longInfo {
+      overflow: hidden;
+      margin: 10px 10px 0 0;
+
+      .platformInfo {
+        float: left;
+      }
+
+      .installationInfo {
+        float: right;
+        width: 175px;
+      }
+
+      .detailsHeaderListItem {
+        color: $secondaryTextColor;
+      }
+    }
+
+    .moreDetails {
+      color: $blue;
+
+      &.hideMoreDetails {
+        display: none;
+      }
+    }
+  }
+
+  ul, li {
+    list-style: none;
+  }
+
+  .icon {
+    position: relative;
+    top: -2px;
+    display: inline-block;
+  }
+}

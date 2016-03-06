@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.header {
+  display: inline-block;
+  color: white;
+  font-size: 14px;
+  line-height: 30px;
+  padding: 0 16px;
+  background: #66637A;
+  height: 30px;
+}
+
+
+//common table styles that can be imported
+
+.table {
+  background: #fdfafb;
+  width: 100%;
+  text-align: left;
+}
+
+.head {
+  color: white;
+  font-size: 14px;
+  line-height: 30px;
+  padding: 0 16px;
+  background: #66637A;
+  height: 30px;
+}
+
+.tr {
+  background: #fdfafb;
+  border-bottom: 1px solid $borderGrey;
+
+  &:nth-child(2n) {
+    background: #f4f5f7;
+  }
+}
+
+.td {
+  line-height: 30px;
+  padding: 10px 16px;
+  max-width: 0;
+}

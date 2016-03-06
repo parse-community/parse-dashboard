@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+.container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  min-height: 200px;
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    background: #66637A;
+    padding: 8px 20px 6px 20px;
+    font-size: 14px;
+  }
+  .body {
+    padding-top: 31px;
+    max-height: 400px;
+    overflow: auto;
+  }
+  .cell {
+    display: inline-block;
+  }
+  .col1 {
+    width: 50%;
+  }
+  .col2 {
+    width: 20%;
+  }
+}

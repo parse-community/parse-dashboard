@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.entry {
+	@include MonospaceFont;
+  font-size: 14px;
+  list-style: none;
+  margin-bottom: 15px;
+
+  &.error {
+    color: red;
+  }
+
+  .content {
+    white-space: pre-wrap;
+  }
+
+  .time {
+    color: green;
+  }
+
+  //TODO: handle keywords that should be highlighted - use global vars for colors
+  .highlight {
+
+    &.error {
+      color: red;
+    }
+
+    &.info {
+      color: purple;
+    }
+
+    &.warning {
+      color: orange;
+    }
+
+    &.success {
+      color: green;
+    }
+  }
+}

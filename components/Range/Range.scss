@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+@mixin rangeTrack {
+  background-color: #e0e0ea;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  outline: none;
+}
+
+@mixin rangeThumb {
+  background-color: #fdfafb;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  cursor: pointer;
+}
+
+.range {
+  display: inline-block;
+  position: relative;
+  height: 30px;
+  padding: 10px 0;
+
+  input[type=range] {
+    @include rangeTrack;
+    -webkit-appearance: none;
+    vertical-align: top;
+  }
+  ::-moz-range-track {
+    -moz-appearance: none;
+    opacity: 0;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    @include rangeThumb;
+    -webkit-appearance: none;
+  }
+  ::-moz-range-thumb {
+    @include rangeThumb;
+  }
+}
+
+.tracker {
+  @include DosisFont;
+  @include transform(translateX(-50%));
+  position: absolute;
+  background: $orange;
+  color: white;
+  font-size: 11px;
+  border-radius: 4px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 6px;
+  top: -21px;
+  white-space: nowrap;
+
+  &:after {
+    @include arrow('down', 8, 5, inherit);
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    margin-left: -3px;
+  }
+}

@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.row {
+  display: inline-block;
+  height: 24px;
+
+  a {
+    @include DosisFont;
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 12px;
+    font-size: 12px;
+    border-style: solid;
+    border-color: $blue;
+    border-width: 1px 0 1px 1px;
+    color: $blue;
+
+    &:first-child {
+      border-radius: 5px 0 0 5px;
+    }
+    &:last-child {
+      border-radius: 0 5px 5px 0;
+      border-right-width: 1px;
+    }
+
+    &.current {
+      background: $blue;
+      color: white;
+    }
+  }
+}

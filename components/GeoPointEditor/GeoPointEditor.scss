@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+
+  input {
+    @include MonospaceFont;
+    width: 50%;
+    height: 30px;
+    border: none;
+    outline: none;
+    padding: 0 4px;
+    font-size: 12px;
+
+    &:first-child {
+      border-right: 1px solid #e3e3ea;
+    }
+  }
+}

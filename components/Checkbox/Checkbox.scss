@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.input {
+  display: inline-block;
+  cursor: pointer;
+  height: 20px;
+  line-height: 20px;
+}
+
+.checkbox {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  padding: 3px;
+  border-radius: 4px;
+  background: white;
+  vertical-align: middle;
+  border: 1px solid $mainTextColor;
+
+  svg {
+    vertical-align: top;
+  }
+}
+
+.minus {
+  display: block;
+  width: 12px;
+  height: 4px;
+  background: $blue;
+  margin-top: 4px;
+  border-radius: 2px;
+}
+
+.label {
+  @include DosisFont;
+  color: $mainTextColor;
+  font-size: 14px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.checked, .indeterminate {
+  .checkbox {
+    border-color: $blue;
+  }
+
+  .label {
+    color: $blue;
+  }
+}

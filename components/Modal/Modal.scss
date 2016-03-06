@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.modal {
+  @include modalAnimation();
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 540px;
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: width 0.5s cubic-bezier(1, 0, 0, 1);
+
+  > *:not(:first-child):not(:last-child) {
+    border-color: $borderGrey;
+    border-width: 0 0 1px 0;
+  }
+}
+
+.header {
+  height: 90px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.title {
+  position: absolute;
+  font-size: 22px;
+  font-weight: 500;
+  color: white;
+  left: 28px;
+}
+
+.subtitle {
+  @include DosisFont;
+  position: absolute;
+  font-size: 14px;
+  color: white;
+  top: 49px;
+  left: 28px;
+}
+
+.icon {
+  position: absolute;
+  top: 19px;
+  right: 28px;
+  width: 52px;
+  height: 52px;
+  text-align: center;
+  border-radius: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  svg{
+    position: relative;
+    top: 50%;
+    @include transform(translateY(-50%));
+  }
+}
+
+.danger {
+  .header {
+    background: $red;
+  }
+}
+
+.info {
+  .header {
+    background: $blue;
+  }
+}
+
+.valid {
+  .header {
+    background: $green;
+  }
+}
+
+.footer {
+  padding: 17px 28px;
+
+  > * {
+    margin: 0 12px 0 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.textModal {
+  text-align: center;
+  padding: 17px 55px 0 55px;
+}
+
+@include modalKeyframes();

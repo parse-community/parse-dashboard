@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.card {
+  width: 200px;
+  height: 80px;
+  background-color: $lightGrey;
+  border-radius: 5px;
+  padding: 10px;
+  display: table;
+  table-layout: fixed;
+}
+
+.left {
+  display: table-cell;
+  width: 50px;
+  vertical-align: middle;
+}
+
+.right {
+  display: table-cell;
+  padding-left: 20px;
+  vertical-align: middle;
+}
+
+.name {
+  color: $platformCardTextColor;
+}
+
+.subtitle {
+  color: $platformCardSecondaryTextColor;
+}

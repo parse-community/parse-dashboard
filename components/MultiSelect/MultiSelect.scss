@@ -1,0 +1,86 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.dropdown {
+  position: relative;
+  background: $inputBackgroundColor;
+  font-size: 16px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.dropdown, .menu {
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu {
+  max-height: 200px;
+  border: 1px solid $blue;
+  background: white;
+  overflow: auto;
+
+  > *:last-child .option {
+    border-bottom: none;
+  }
+}
+
+.current {
+  text-align: center;
+  min-height: 80px;
+  white-space: normal;
+  padding: 20px;
+  line-height: 40px;
+}
+
+.option {
+  position: relative;
+  height: 48px;
+  line-height: 50px;
+  padding: 0 50px 0 14px;
+  color: $blue;
+  border-bottom: 1px solid $borderGrey;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background: rgba(0,0,0,0.1);
+
+    .unchecked {
+      background: white;
+    }
+  }
+}
+
+.checked, .unchecked {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  top: 8px;
+  right: 8px;
+}
+
+.unchecked {
+  background: #e0e0ea;
+}
+.checked {
+  background: #00dc7c;
+
+  svg {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+  }
+}
+
+.placeholder {
+  color: $secondaryTextColor;
+}

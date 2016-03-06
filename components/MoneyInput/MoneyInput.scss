@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.moneyInput {
+  @include DosisFont;
+  border: 0;
+  outline: 0;
+  background: $inputBackgroundColor;
+  font-size: 22px;
+  width: 100%;
+  padding: 6px;
+  vertical-align: top;
+  resize: none;
+  height: 80px;
+  color: $green;
+  text-align: center;
+
+  &:focus {
+    @include placeholder {
+      opacity: 0;
+    }
+  }
+}

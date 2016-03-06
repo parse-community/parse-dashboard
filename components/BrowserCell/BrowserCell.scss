@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+.cell {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  color: #0E69A1;
+  height: 30px;
+  line-height: 22px;
+  padding: 5px 4px 0;
+  border-right: 1px solid #e3e3ea;
+}
+
+.empty {
+  color: #7D929F;
+}
+
+.current {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border: 2px solid #555572;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}

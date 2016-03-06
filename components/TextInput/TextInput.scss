@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.text_input {
+  @include NotoSansFont;
+  border: 0;
+  outline: 0;
+  background: $inputBackgroundColor;
+  font-size: 16px;
+  width: 100%;
+  padding: 6px;
+  vertical-align: top;
+  resize: vertical;
+
+  &:focus {
+    @include placeholder {
+      opacity: 0;
+    }
+  }
+}
+
+input.monospace, textarea.monospace {
+  @include MonospaceFont;
+}
+
+input.text_input {
+  text-align: center;
+}
+
+textarea.text_input:not(.monospace) {
+  @include placeholder {
+    text-align: center;
+    position: relative;
+    top: 50%;
+    line-height: 9px;
+  }
+}

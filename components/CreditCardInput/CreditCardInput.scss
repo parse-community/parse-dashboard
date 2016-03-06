@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.input {
+  @include NotoSansFont;
+  border: 0;
+  outline: 0;
+  background: $inputBackgroundColor;
+  font-size: 16px;
+  width: 100%;
+  height: 80px;
+  padding: 6px;
+  text-align: center;
+  vertical-align: top;
+  resize: none;
+
+  &:focus {
+    @include placeholder {
+      opacity: 0;
+    }
+  }
+}

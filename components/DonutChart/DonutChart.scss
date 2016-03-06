@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.donutCenter {
+  fill: $pushDetailsHeaderBackground;
+}
+
+.path {
+  -webkit-transform: scale(1.0);
+  transform: scale(1.0);
+  transition: all 0.3s;
+
+  &:hover {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: all 0.3s;
+  }
+
+  &:first-of-type {
+    &:hover ~ .donutValue:first-of-type {
+      opacity: 0;
+    }
+    &:hover ~ .donutValue:nth-of-type(1) {
+      opacity: 1;
+    }
+  }
+
+  &:nth-of-type(2) {
+    &:hover ~ .donutValue:first-of-type {
+      opacity: 0;
+    }
+    &:hover ~ .donutValue:nth-of-type(2) {
+      opacity: 1;
+    }
+  }
+
+  &:nth-of-type(3) {
+    &:hover ~ .donutValue:first-of-type {
+      opacity: 0;
+    }
+    &:hover ~ .donutValue:nth-of-type(3) {
+      opacity: 1;
+    }
+  }
+
+  &:nth-of-type(4) {
+    &:hover ~ .donutValue:first-of-type {
+      opacity: 0;
+    }
+    &:hover ~ .donutValue:nth-of-type(4) {
+      opacity: 1;
+    }
+  }
+}
+
+.donutValue {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  @include DosisFont;
+  font-size: 22px;
+  font-weight: 500;
+  &:first-of-type {
+    opacity: 1;
+  }
+}
+
+.donutLabel{
+  opacity: 0.5;
+  font-weight: 500;
+}
