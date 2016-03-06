@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/Parse-Dashboard');
+require('../Parse-Dashboard');
