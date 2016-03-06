@@ -33,6 +33,11 @@ app.use(express.static(path.join(__dirname,'public')));
 app.get('/parse-dashboard-config.json', function(req, res) {
   jsonFile(configFile)
   .then(config => {
+    config.data.apps.forEach((app) => {
+      if (!app.appName) {
+        return res.send({ success: false, error: 'An application is misconfigured, appName is required' });
+      }
+    });
     var response = {apps: config.data.apps};
     var users = config.data.users;
     //If they provide auth when their config has no users, ignore the auth
