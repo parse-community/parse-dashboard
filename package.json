@@ -39,7 +39,7 @@
     "js-beautify": "~1.5.0",
     "node-sass": "~3.4.2",
     "react-addons-test-utils": "^0.14.2",
-    "sass-loader": "~2.0.1",
+    "sass-loader": "~3.1.2",
     "style-loader": "~0.12.3",
     "svg-prep": "~1.0.0",
     "transform-jest-deps": "^2.1.0",
