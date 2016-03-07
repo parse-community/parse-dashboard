@@ -54,6 +54,8 @@ You can also manage your apps that are hosted on Parse.com from the same dashboa
 
 Then execute `npm run dashboard` and visit [`http://localhost:4040`](http://localhost:4040) and you will be able to manage your parse apps.
 
+![Parse Dashboard](.github/dash-shot.png)
+
 ## Other options
 
 You can set `appNameForURL` for each app to control the url of your app within the dashboard.
