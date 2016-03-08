@@ -6,8 +6,7 @@
  * the root directory of this source tree.
  */
 
+// Use the singleton history in react-router v2
 import { browserHistory } from 'react-router'
-//import createBrowserHistory from 'history/lib/createBrowserHistory';
-//let history = createBrowserHistory();
 
 export default browserHistory;
