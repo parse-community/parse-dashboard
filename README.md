@@ -106,21 +106,11 @@ If you are not familiar with Docker, ``--port 8080`` with be passed in as argume
 
 ## Deploying in production
 
-For production deployments, it's recommended to use the npm package
-
-1. Create a folder for your project
-2. run `$ npm init`
-3. Create your dashboard.json in the root ot your project
-4. run `$ npm install --save parse-dashboard`
-5. add a start script in your package.json  `"start": "parse-dashboard --config ./dashboard.json"` 
-6. run `$ npm start`
-
-
-If you're deploying to a provider like Heroku, or Google App Engine, the SSL endpoint is terminated early and handled by the provider and you may encounter this error `Parse Dashboard can only be remotely accessed via HTTPS`. 
+If you're deploying to a provider like Heroku, or Google App Engine, the SSL endpoint is terminated early and handled by the provider and you may encounter this error: `Parse Dashboard can only be remotely accessed via HTTPS`. 
 
 :warning: :warning: Before going further, make sure your server **cannot** be reachable via **HTTP**. See the provider documentation for force HTTPS connections to your deployment.
 
-Set the environment variable to PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1 to tell parse server to skip the secure tests.
+Set the environment variable `PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1` to tell parse server to skip the secure tests.
 
 To start your server use:
 
