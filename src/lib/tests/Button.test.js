@@ -18,7 +18,6 @@ describe('Button', () => {
     const shallowRenderer = TestUtils.createRenderer();
     shallowRenderer.render(<Button value='A button' />);
     const component = shallowRenderer.getRenderOutput();
-
     expect(component.type).toBe('a');
     expect(component.props.className).toBe('button unselectable');
     expect(component.props.children.type).toBe('span');

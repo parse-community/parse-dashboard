@@ -22,16 +22,22 @@ var port = program.port || process.env.PORT;
 var allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 
 var basicAuth = require('basic-auth');
+var path = require('path');
 var jsonFile = require('json-file-plus');
 var express = require('express');
 var app = express();
 
 // Serve public files.
-app.use(express.static('Parse-Dashboard/public'));
+app.use(express.static(path.join(__dirname,'public')));
 
 app.get('/parse-dashboard-config.json', function(req, res) {
   jsonFile(configFile)
   .then(config => {
+    config.data.apps.forEach((app) => {
+      if (!app.appName) {
+        return res.send({ success: false, error: 'An application is misconfigured, appName is required' });
+      }
+    });
     var response = {apps: config.data.apps};
     var users = config.data.users;
     //If they provide auth when their config has no users, ignore the auth

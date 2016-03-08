@@ -54,6 +54,8 @@ You can also manage your apps that are hosted on Parse.com from the same dashboa
 
 Then execute `npm run dashboard` and visit [`http://localhost:4040`](http://localhost:4040) and you will be able to manage your parse apps.
 
+![Parse Dashboard](.github/dash-shot.png)
+
 ## Other options
 
 You can set `appNameForURL` for each app to control the url of your app within the dashboard.
@@ -78,7 +80,41 @@ If you want to require a username and password to access the dashboard, you can 
 
 HTTPS and Basic Auth are mandatory if you are accessing the dashboard remotely instead of accessing it from `localhost`.
 
+## Run with Docker
+
+It is easy to use it with Docker. First build the image:
+
+```  
+docker build -t parse-dashboard .
+```
+
+Run the image with your ``config.json`` mounted as a volume
+
+```
+docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard 
+```
+
+By default, the container will start the app at port 4040 inside the container. However, you can run custom command as well (see ``Deploying in production`` for custom setup). 
+
+In this example, we want to run the application in production mode at port 80 of the host machine.
+
+```
+docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080
+```
+
+If you are not familiar with Docker, ``--port 8080`` with be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
+
 ## Deploying in production
+
+For production deployments, it's recommended to use the npm package
+
+1. Create a folder for your project
+2. run `$ npm init`
+3. Create your dashboard.json in the root ot your project
+4. run `$ npm install --save parse-dashboard`
+5. add a start script in your package.json  `"start": "parse-dashboard --config ./dashboard.json"` 
+6. run `$ npm start`
+
 
 If you're deploying to a provider like Heroku, or Google App Engine, the SSL endpoint is terminated early and handled by the provider and you may encounter this error `Parse Dashboard can only be remotely accessed via HTTPS`. 
 
@@ -90,10 +126,11 @@ To start your server use:
 
 `$ npm start`
 
-
 Optionally you can use the command line arguments:
 
 `$ npm start -- --config path/to/config.json --port 8080 --allowInsecureHTTP=1`
+
+Or update you start script with the accoring configuration.
 
 All paramters are optional and their default values are:
 

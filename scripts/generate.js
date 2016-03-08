@@ -12,9 +12,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const rootDir = path.join(__dirname, '..', 'components');
-const pigDir = path.join(__dirname, '..', 'parse-interface-guide');
-const testDir = path.join(__dirname, '..', 'lib', 'tests');
+const rootDir = path.join(__dirname, '..', 'src','components');
+const pigDir = path.join(__dirname, '..', 'src','parse-interface-guide');
+const testDir = path.join(__dirname, '..', 'src','lib', 'tests');
 
 function padding(length) {
   let space = [];
