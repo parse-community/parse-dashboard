@@ -92,11 +92,11 @@ export default class Jobs extends TableView {
   }
 
   navigateToNew() {
-    history.pushState(null, this.context.generatePath('jobs/new'));
+    history.push(this.context.generatePath('jobs/new'));
   }
 
   navigateToJob(jobId) {
-    history.pushState(null, this.context.generatePath(`jobs/edit/${jobId}`))
+    history.push(this.context.generatePath(`jobs/edit/${jobId}`))
   }
 
   renderSidebar() {

@@ -188,7 +188,7 @@ export default class PushNew extends DashboardView {
         promise.reject({ error });
       } else {
         //TODO: global success message banner for passing successful creation - store should also be cleared
-        history.pushState(null, this.context.generatePath('push/activity'));
+        history.push(this.context.generatePath('push/activity'));
       }
     }, (error) => {
       promise.reject(error);
@@ -663,7 +663,7 @@ export default class PushNew extends DashboardView {
         <Fieldset
           legend='Preview'
           description='Double check that everything looks good!'>
-          <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
+          <PushPreview push={fields} audiences={this.props.pushaudiences} />
         </Fieldset>
 
         <Toolbar section='Push' subsection='Send a new campaign' />

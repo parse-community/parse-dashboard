@@ -562,7 +562,7 @@ export default class PushDetails extends DashboardView {
       if (error) {
         promise.reject({ error });
       } else {
-        history.pushState(null, this.context.generatePath('push/activity'));
+        history.push(this.context.generatePath('push/activity'));
       }
     }, (error) => {
       promise.reject({ error });

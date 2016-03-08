@@ -228,7 +228,7 @@ let ManageAppFields = ({
         description='View your migration progress.' />}
       input={<FormButton
         color='blue'
-        onClick={() => history.pushState(null, '/apps/' + appSlug + '/migration')}
+        onClick={() => history.push('/apps/' + appSlug + '/migration')}
         value='View progress' />} />
   } else {
     migrateAppField = [<Field
@@ -427,7 +427,7 @@ export default class GeneralSettings extends DashboardView {
         return promise;
       }}
       onClose={closeModalWithConnectionString}
-      onSuccess={() => history.pushState(null, '/apps/' + this.context.currentApp.slug + '/migration')}
+      onSuccess={() => history.push('/apps/' + this.context.currentApp.slug + '/migration')}
       clearFields={() => this.setState({
         migrationMongoURL: '',
         migrationWarnings: [],
@@ -538,7 +538,7 @@ export default class GeneralSettings extends DashboardView {
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
       onSubmit={() => AppsManager.deleteApp(this.context.currentApp.slug, this.state.password)}
-      onSuccess={result => history.pushState(null, '/apps')}
+      onSuccess={result => history.push('/apps')}
       onClose={() => this.setState({showDeleteAppModal: false})}
       clearFields={() => this.setState({password: ''})}>
       {passwordField}
