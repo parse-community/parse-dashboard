@@ -74,7 +74,7 @@ export default class FileTree extends React.Component {
               <Link
                 key={'f_' + f}
                 className={[styles.file, isCurrent ? styles.current : ''].join(' ')}
-                to={this.props.linkPrefix + path}>
+                to={{ pathname: this.props.linkPrefix + path }}>
                 {f}
               </Link>
             );

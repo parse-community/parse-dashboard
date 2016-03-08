@@ -13,7 +13,7 @@ import styles         from 'components/Sidebar/Sidebar.scss';
 
 let SidebarHeader = ({}) =>
 <div className={styles.header}>
-  <Link className={styles.logo} to='/apps'>
+  <Link className={styles.logo} to={{ pathname: '/apps' }}>
     <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
   </Link>
   <Link to='/apps'>

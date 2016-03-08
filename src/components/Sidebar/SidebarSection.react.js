@@ -23,7 +23,7 @@ let SidebarSection = ({ active, children, name, link, icon, style }) => {
     <div className={classes.join(' ')}>
       {active ?
         <div style={style} className={styles.section_header}>{iconContent}{name}</div> :
-        <Link style={style} className={styles.section_header} to={link || ''}>{iconContent}{name}</Link>}
+        <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}{name}</Link>}
 
       {children ? <div className={styles.section_contents}>{children}</div> : null}
     </div>

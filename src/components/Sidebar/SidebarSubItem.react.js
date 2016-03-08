@@ -28,7 +28,7 @@ let SidebarSubItem = ({ active, name, action, link, children }) => {
     <div>
       <Link
         className={styles.subitem}
-        to={link}>
+        to={{ pathname: link }}>
         {name}
       </Link>
     </div>
