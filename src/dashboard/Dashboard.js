@@ -67,16 +67,16 @@ let Empty = React.createClass({
 });
 
 const AppsIndexPage = () => (
-  <AccountView section='Your Apps'>
-    <AppsIndex />
-  </AccountView>
-);
+    <AccountView section='Your Apps'>
+      <AppsIndex />
+    </AccountView>
+  );
 
 const AccountSettingsPage = () => (
-  <AccountView section='Account Settings'>
-    <AccountOverview />
-  </AccountView>
-);
+    <AccountView section='Account Settings'>
+      <AccountOverview />
+    </AccountView>
+  );
 
 const PARSE_DOT_COM_SERVER_INFO = {
   features: {
@@ -137,32 +137,32 @@ class Dashboard extends React.Component {
             {},
             { useMasterKey: true }
           ).then(serverInfo => {
-              app.serverInfo = serverInfo;
-              return app;
-            }, error => {
-              if (error.code === 100) {
-                app.serverInfo = {
-                  error: 'unable to connect to server',
-                  enabledFeatures: {},
-                  parseServerVersion: "unknown"
-                }
-                return Parse.Promise.as(app);
-              } else if (error.code === 107) {
-                app.serverInfo = {
-                  error: 'server version too low',
-                  enabledFeatures: {},
-                  parseServerVersion: "unknown"
-                }
-                return Parse.Promise.as(app);
-              } else {
-                app.serverInfo = {
-                  error: 'unknown error',
-                  enabledFeatures: {},
-                  parseServerVersion: "unknown"
-                }
-                return Parse.Promise.as(app);
+            app.serverInfo = serverInfo;
+            return app;
+          }, error => {
+            if (error.code === 100) {
+              app.serverInfo = {
+                error: 'unable to connect to server',
+                enabledFeatures: {},
+                parseServerVersion: "unknown"
               }
-            });
+              return Parse.Promise.as(app);
+            } else if (error.code === 107) {
+              app.serverInfo = {
+                error: 'server version too low',
+                enabledFeatures: {},
+                parseServerVersion: "unknown"
+              }
+              return Parse.Promise.as(app);
+            } else {
+              app.serverInfo = {
+                error: 'unknown error',
+                enabledFeatures: {},
+                parseServerVersion: "unknown"
+              }
+              return Parse.Promise.as(app);
+            }
+          });
         }
       });
       return Parse.Promise.when(appInfoPromises);
