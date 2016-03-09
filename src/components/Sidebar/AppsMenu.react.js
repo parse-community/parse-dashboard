@@ -12,31 +12,24 @@ import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';
 
-export default class AppsMenu extends React.Component {
-  render() {
-    const { apps, current, height, onSelect } = this.props;
-    return (
-      <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
-        <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
-          {current.name}
-        </div>
-        <div className={styles.menuSection}>All Apps</div>
-        {apps.map((app) => {
-          if (app.slug === current.slug) {
-            return null;
-          }
-          return (
-            <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow} >
-              {app.name}
-              <AppBadge production={app.production} />
-            </Link>
-          );
-        })}
-      </div>
-    );
-  }
-}
+let AppsMenu = ({ apps, current, height, onSelect }) => (
+  <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
+    <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
+      {current.name}
+    </div>
+    <div className={styles.menuSection}>All Apps</div>
+    {apps.map((app) => {
+      if (app.slug === current.slug) {
+        return null;
+      }
+      return (
+        <Link to={html`/apps/${app.slug}/browser`} key={app.slug} className={styles.menuRow}>
+          {app.name}
+          <AppBadge production={app.production} />
+        </Link>
+      );
+    })}
+  </div>
+);
 
-AppsMenu.contextTypes = {
-  router: React.PropTypes.object
-};
+export default AppsMenu;
