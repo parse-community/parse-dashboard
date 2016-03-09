@@ -561,7 +561,8 @@ export default class Browser extends DashboardView {
             onPointerClick={this.handlePointerClick.bind(this)}
             setRelation={this.setRelation.bind(this)}
             onAddColumn={this.showAddColumn.bind(this)}
-            onAddRow={this.addRow.bind(this)} />
+            onAddRow={this.addRow.bind(this)}
+            onAddClass={this.showCreateClass.bind(this)} />
         );
       }
     }
