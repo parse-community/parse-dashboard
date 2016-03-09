@@ -30,6 +30,7 @@ let BrowserToolbar = ({
   onFilterChange,
   onAddColumn,
   onAddRow,
+  onAddClass,
   onExport,
   onRemoveColumn,
   onDeleteRows,
@@ -78,6 +79,7 @@ let BrowserToolbar = ({
       <BrowserMenu title='Edit' icon='edit-solid'>
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a column' onClick={onAddColumn} />
+        <MenuItem text='Add a class' onClick={onAddClass} />
         <Separator />
         <MenuItem
           disabled={selectionLength === 0}
