@@ -61,7 +61,7 @@ export default class CategoryList extends React.Component {
             (this.props.linkPrefix || '') + (c.link || id)
           );
           return (
-            <Link title={c.name} to={link} className={className} key={id} >
+            <Link title={c.name} to={{ pathname: link }} className={className} key={id} >
               <span>{count}</span>
               <span>{c.name}</span>
             </Link>

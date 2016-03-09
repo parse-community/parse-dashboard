@@ -53,7 +53,7 @@ class JobEdit extends React.Component {
     let promise = this.props.params.jobId ?
       this.props.jobs.dispatch(ActionTypes.EDIT, { jobId: this.props.params.jobId, updates: schedule }) :
       this.props.jobs.dispatch(ActionTypes.CREATE, { schedule });
-    promise.then(() => {history.pushState(null, this.context.generatePath('jobs/scheduled'))});
+    promise.then(() => {history.push(this.context.generatePath('jobs/scheduled'))});
     return promise;
   }
 

@@ -54,7 +54,7 @@ export default class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          history.replaceState(null, this.context.generatePath('cloud_code/main.js'))
+          history.replace(this.context.generatePath('cloud_code/main.js'))
         } else {
           // Means we can load /cloud_code/<fileName>
           app.getSource(fileName).then(

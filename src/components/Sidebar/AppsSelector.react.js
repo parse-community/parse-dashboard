@@ -59,7 +59,7 @@ export default class AppsSelector extends React.Component {
         if (sections[0] === '') {
           sections.shift();
         }
-        history.pushState(null, `/apps/${value}/${sections[2]}`);
+        history.push(null, `/apps/${value}/${sections[2]}`);
       }
     });
   }

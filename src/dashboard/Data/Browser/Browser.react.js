@@ -130,7 +130,7 @@ export default class Browser extends DashboardView {
         }
         return a.toUpperCase() < b.toUpperCase() ? -1 : 1;
       });
-      history.replaceState(null, this.context.generatePath('browser/' + classes[0]));
+      history.replace(this.context.generatePath('browser/' + classes[0]));
     }
   }
 
@@ -164,7 +164,7 @@ export default class Browser extends DashboardView {
   createClass(className) {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
-      history.pushState(null, this.context.generatePath('browser/' + className));
+      history.push(this.context.generatePath('browser/' + className));
     }).always(() => {
       this.setState({ showCreateClassDialog: false });
     });
@@ -174,7 +174,7 @@ export default class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(() => {
       this.setState({showDropClassDialog: false });
       delete this.state.counts[className];
-      history.pushState(null, this.context.generatePath('browser'));
+      history.push(this.context.generatePath('browser'));
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
       if (msg) {
@@ -308,7 +308,7 @@ export default class Browser extends DashboardView {
     let _filters = JSON.stringify(filters.toJSON());
     let url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`);
     // filters param change is making the fetch call
-    history.pushState(null, this.context.generatePath(url));
+    history.push(this.context.generatePath(url));
   }
 
   updateOrdering(ordering) {
@@ -332,7 +332,7 @@ export default class Browser extends DashboardView {
         constraint: 'eq',
         compareTo: id
     }]);
-    history.pushState(null, this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
+    history.push(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
   }
 
   updateRow(row, attr, value) {

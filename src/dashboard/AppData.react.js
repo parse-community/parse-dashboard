@@ -38,7 +38,7 @@ let AppData = React.createClass({
     if (current) {
       current.setParseKeys();
     } else {
-      history.replaceState(null, '/apps');
+      history.replace('/apps');
       return <div />;
     }
     return (

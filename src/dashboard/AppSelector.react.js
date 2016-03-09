@@ -26,11 +26,11 @@ export default class AppSelector extends React.Component {
 
   handleConfirm() {
     let newPath = location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
-    history.pushState(null, newPath);
+    history.push(newPath);
   }
 
   handleCancel() {
-    history.pushState(null, '/apps');
+    history.push('/apps');
   }
 
   render() {

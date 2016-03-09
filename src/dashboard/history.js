@@ -5,7 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import createBrowserHistory from 'history/lib/createBrowserHistory';
-let history = createBrowserHistory();
 
-export default history;
+// Use the singleton history in react-router v2
+import { browserHistory } from 'react-router'
+
+export default browserHistory;

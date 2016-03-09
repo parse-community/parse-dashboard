@@ -281,11 +281,11 @@ export default class PushIndex extends DashboardView {
   }
 
   navigateToNew() {
-    history.pushState(null, this.context.generatePath('push/new'));
+    history.push(this.context.generatePath('push/new'));
   }
 
   navigateToDetails(objectId) {
-    history.pushState(null, this.context.generatePath(`push/${objectId}`));
+    history.push(this.context.generatePath(`push/${objectId}`));
   }
 
   handleShowMore(page) {

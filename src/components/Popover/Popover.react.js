@@ -22,7 +22,8 @@ class ContextProxy extends React.Component {
 }
 
 ContextProxy.childContextTypes = {
-  history: React.PropTypes.object
+  history: React.PropTypes.object,
+  router: React.PropTypes.object
 };
 
 export default class Popover extends React.Component {
@@ -93,5 +94,6 @@ export default class Popover extends React.Component {
 }
 
 Popover.contextTypes = {
-  history: React.PropTypes.object
+  history: React.PropTypes.object,
+  router: React.PropTypes.object
 };

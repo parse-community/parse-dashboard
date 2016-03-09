@@ -113,7 +113,7 @@ export default class PushAudiencesIndex extends DashboardView {
   }
 
   handleSendPush(objectId) {
-    history.pushState(null, this.context.generatePath(`push/new?audienceId=${objectId}`));
+    history.push(this.context.generatePath(`push/new?audienceId=${objectId}`));
   }
 
   renderRow(audience) {

@@ -465,7 +465,7 @@ export default class PushDetails extends DashboardView {
       prevLaunchGroup = (
         <div className={styles.header}>
           <div className={styles.headline}>
-            This push is the Launch Group for a previous <Link to={getPushDetailUrl(this.context, pushDetails.experiment_push_id)}>experiment</Link>.
+            This push is the Launch Group for a previous <Link to={{ pathname: getPushDetailUrl(this.context, pushDetails.experiment_push_id) }}>experiment</Link>.
           </div>
         </div>
       );
@@ -562,7 +562,7 @@ export default class PushDetails extends DashboardView {
       if (error) {
         promise.reject({ error });
       } else {
-        history.pushState(null, this.context.generatePath('push/activity'));
+        history.push(this.context.generatePath('push/activity'));
       }
     }, (error) => {
       promise.reject({ error });
