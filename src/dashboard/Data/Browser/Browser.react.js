@@ -84,8 +84,6 @@ export default class Browser extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.fetchCollectionCounts());
       let changes = {
         filters: new List(),
         data: null,
@@ -112,6 +110,8 @@ export default class Browser extends DashboardView {
       if (nextProps.params.className) {
         this.fetchData(nextProps.params.className, nextProps.location.query && nextProps.location.query.filters ? changes.filters : []);
       }
+      nextProps.schema.dispatch(ActionTypes.FETCH)
+      .then(() => this.fetchCollectionCounts());
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
