@@ -74,14 +74,14 @@ let AppCard = ({
 
   return <li onClick={canBrowse}>
     {icon ? <a className={styles.icon}><img src={icon} /></a> : null}
-    <CountsSection className={styles.glance} title='At a glance'>
-      <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
-      <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
-    </CountsSection>
     <div className={styles.details}>
       <a className={styles.appname}>{app.name}</a>
       {versionMessage}
     </div>
+    <CountsSection className={styles.glance} title='At a glance'>
+      <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
+      <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
+    </CountsSection>
   </li>
 }
 

@@ -112,6 +112,7 @@
 }
 
 .currentApp, .menuRow {
+  @include ellipsis();
   display: block;
   background: #094162;
   height: 48px;

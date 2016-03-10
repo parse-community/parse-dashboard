@@ -103,7 +103,7 @@
   margin: 0 auto;
 
   li {
-    display: block;
+    display: flex;
     cursor: pointer;
     background: #193040;
     border-radius: 5px;
@@ -130,13 +130,15 @@
 
 .appname {
   @include ellipsis();
+  width: 100%;
   display: inline-block;
   font-size: 22px;
   color: white;
 }
 
 .details {
-  @include ellipsis();
+  flex: auto;
+  overflow: hidden;
   padding: 9px 0;
   color: #788c97;
   font-size: 12px;
@@ -156,7 +158,7 @@
 }
 
 .glance {
-  float: right;
+  flex: 0 0 auto;
   padding: 10px 12px;
   border-left: 1px solid #1e3b4d;
 }
