@@ -663,7 +663,7 @@ export default class PushNew extends DashboardView {
         <Fieldset
           legend='Preview'
           description='Double check that everything looks good!'>
-          <PushPreview push={fields} audiences={this.props.pushaudiences} />
+          <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
         </Fieldset>
 
         <Toolbar section='Push' subsection='Send a new campaign' />
