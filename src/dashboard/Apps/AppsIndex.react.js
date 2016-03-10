@@ -67,7 +67,10 @@ let AppCard = ({
   let canBrowse = app.serverInfo.error ? null : () => history.push(html`/apps/${app.slug}/browser`);
   let versionMessage = app.serverInfo.error ?
     <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
-    <div className={styles.serverVersion}>Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span></div>;
+    <div className={styles.serverVersion}>
+    Server URL: <span className={styles.ago}>{app.serverURL || 'unknown'}</span>
+    Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>
+    </div>;
 
   return <li onClick={canBrowse}>
     {icon ? <a className={styles.icon}><img src={icon} /></a> : null}
