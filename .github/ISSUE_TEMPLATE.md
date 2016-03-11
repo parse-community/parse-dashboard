@@ -11,4 +11,4 @@ Make sure these boxes are checked before submitting your issue -- thanks for rep
 
 
 #### Logs/Trace
-Note: If you running into a JS error in the browser please run `npm run dev`. This will provide source maps and a much more useful stack trace.
+Note: If you get a browser JS error please run `npm run dev`. This will provide source maps and a much more useful stack trace.
