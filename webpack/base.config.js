@@ -13,7 +13,8 @@ var SvgPrepPlugin = require('./plugins/svg-prep');
 module.exports = {
   context: path.join(__dirname, '../src'),
   output: {
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
+    publicPath: '/bundles/'
   },
   resolve: {
     root: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, 'node_modules')]
@@ -37,6 +38,9 @@ module.exports = {
       }, {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
+      }, {
+        test: /\.png$/,
+        loader: 'file-loader?name=img/[hash].[ext]',
       }
     ]
   },

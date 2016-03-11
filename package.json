@@ -35,6 +35,7 @@
     "babel-loader": "~5.3.0",
     "babel-plugin-remove-proptypes": "~1.0.0",
     "css-loader": "~0.18.0",
+    "file-loader": "^0.8.5",
     "http-server": "~0.8.5",
     "immutable-devtools": "~0.0.4",
     "jest-cli": "^0.7.1",
