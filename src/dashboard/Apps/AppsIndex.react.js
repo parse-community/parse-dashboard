@@ -5,19 +5,21 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountView  from 'dashboard/AccountView.react';
-import AppsManager  from 'lib/AppsManager';
-import history      from 'dashboard/history';
-import howLongAgo   from 'lib/howLongAgo';
-import html         from 'lib/htmlString';
-import Icon         from 'components/Icon/Icon.react';
-import LiveReload   from 'components/LiveReload/LiveReload.react';
-import pluralize    from 'lib/pluralize';
-import prettyNumber from 'lib/prettyNumber';
-import React        from 'react';
-import styles       from 'dashboard/Apps/AppsIndex.scss';
-import { center }   from 'stylesheets/base.scss';
-import { Link }     from 'react-router';
+import AccountView   from 'dashboard/AccountView.react';
+import AppsManager   from 'lib/AppsManager';
+import FlowFooter    from 'components/FlowFooter/FlowFooter.react';
+import history       from 'dashboard/history';
+import howLongAgo    from 'lib/howLongAgo';
+import html          from 'lib/htmlString';
+import Icon          from 'components/Icon/Icon.react';
+import joinWithFinal from 'lib/joinWithFinal';
+import LiveReload    from 'components/LiveReload/LiveReload.react';
+import pluralize     from 'lib/pluralize';
+import prettyNumber  from 'lib/prettyNumber';
+import React         from 'react';
+import styles        from 'dashboard/Apps/AppsIndex.scss';
+import { center }    from 'stylesheets/base.scss';
+import { Link }      from 'react-router';
 
 function dash(value, content) {
   if (value === undefined) {
@@ -129,6 +131,15 @@ export default class AppsIndex extends React.Component {
       );
     }
     apps.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
+    let upgradePrompt = null;
+    if (this.props.newFeaturesInLatestVersion.length > 0) {
+      let newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => <strong>
+        {feature}
+      </strong>);
+      upgradePrompt = <FlowFooter>
+        Upgrade to the <a href='https://www.npmjs.com/package/parse-dashboard' target='_blank'>latest version</a> of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
+      </FlowFooter>
+    }
     return (
       <div className={styles.index}>
         <div className={styles.header}>
@@ -147,6 +158,7 @@ export default class AppsIndex extends React.Component {
               null
           )}
         </ul>
+        {upgradePrompt}
       </div>
     );
   }
