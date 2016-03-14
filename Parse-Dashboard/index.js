@@ -21,14 +21,25 @@ var configFile = program.config || DEFAULT_DASHBOARD_CONFIG;
 var port = program.port || process.env.PORT;
 var allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 
+var packageJson = require('package-json');
 var basicAuth = require('basic-auth');
 var path = require('path');
 var jsonFile = require('json-file-plus');
 var express = require('express');
 var app = express();
+var currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
 // Serve public files.
 app.use(express.static(path.join(__dirname,'public')));
+
+var newFeaturesInLatestVersion = []
+packageJson('parse-dashboard').then(latestPackage => {
+  if (latestPackage.parseDashboardFeatures instanceof Array) {
+    newFeaturesInLatestVersion = parseDashboardFeatures.filter(feature => {
+      return currentVersionFeatures.indexOf(feature) === -1;
+    });
+  }
+});
 
 app.get('/parse-dashboard-config.json', function(req, res) {
   jsonFile(configFile)
@@ -38,7 +49,10 @@ app.get('/parse-dashboard-config.json', function(req, res) {
         return res.send({ success: false, error: 'An application is misconfigured, appName is required' });
       }
     });
-    var response = {apps: config.data.apps};
+    var response = {
+      apps: config.data.apps,
+      newFeaturesInLatestVersion: newFeaturesInLatestVersion,
+    };
     var users = config.data.users;
     //If they provide auth when their config has no users, ignore the auth
     if (users) {

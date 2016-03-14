@@ -66,12 +66,6 @@ let Empty = React.createClass({
   }
 });
 
-const AppsIndexPage = () => (
-    <AccountView section='Your Apps'>
-      <AppsIndex />
-    </AccountView>
-  );
-
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>
       <AccountOverview />
@@ -118,11 +112,13 @@ class Dashboard extends React.Component {
     this.state = {
       configLoadingError: '',
       configLoadingState: AsyncStatus.PROGRESS,
+      newFeaturesInLatestVersion: [],
     };
   }
 
   componentDidMount() {
-    get('/parse-dashboard-config.json').then(({ apps }) => {
+    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
+      this.setState({ newFeaturesInLatestVersion });
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -195,6 +191,14 @@ class Dashboard extends React.Component {
         </div>
       </div>
     }
+
+
+    const AppsIndexPage = () => (
+      <AccountView section='Your Apps'>
+        <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
+      </AccountView>
+    );
+
 
     return <Router history={history}>
       <Redirect from='/' to='/apps' />

@@ -1,6 +1,13 @@
 {
   "name": "parse-dashboard",
   "description": "The parse dashboard",
+  "parseDashboardFeatures": [
+    "Data Browser",
+    "Cloud Code Viewer",
+    "Logs Viewer",
+    "Parse Config",
+    "API Console"
+  ],
   "version": "2.0.0",
   "repository": {
     "type": "git",
@@ -22,6 +29,7 @@
     "immutable": "~3.7.5",
     "json-file-plus": "^3.2.0",
     "marked": "^0.3.5",
+    "package-json": "^2.3.1",
     "parse": "1.6.14",
     "prismjs": "~1.2.0",
     "react": "^0.14.0",
