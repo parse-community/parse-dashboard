@@ -156,7 +156,7 @@ class Dashboard extends React.Component {
               return Parse.Promise.as(app);
             } else {
               app.serverInfo = {
-                error: 'unknown error',
+                error: error.message || 'unknown error',
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
