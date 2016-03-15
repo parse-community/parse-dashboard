@@ -38,6 +38,6 @@ export default function generateCurl(app, method, path, body, options) {
     }
     request += '--data-urlencode "' + _body + '" \\\n';
   }
-  request += 'https://api.parse.com/1/' + path;
+  request += app.serverURL + '/' + path;
   return request;
 }
