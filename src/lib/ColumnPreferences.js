@@ -43,6 +43,19 @@ export function getPreferences(appId, className) {
   }
 }
 
+export function getColumnSort(sortBy, appId, className) {
+  let objectName = className + ':' + 'columnSort';
+  let cachedSort = getPreferences(appId, objectName) || [ { name: '-createdAt' } ];
+  let updated = false;
+  if(cachedSort != sortBy) {
+    updated = true;
+  }
+  if (updated && sortBy) {
+    updatePreferences(sortBy, appId, objectName);
+  }
+  return cachedSort;
+}
+
 export function getOrder(cols, appId, className) {
   let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH } ];
   let order = [].concat(prefs);
