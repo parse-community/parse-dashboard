@@ -51,6 +51,7 @@ export function getColumnSort(sortBy, appId, className) {
     updated = true;
   }
   if (updated && sortBy) {
+    cachedSort = sortBy;  
     updatePreferences(sortBy, appId, objectName);
   }
   return cachedSort;
