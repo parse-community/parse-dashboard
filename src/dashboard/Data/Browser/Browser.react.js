@@ -28,6 +28,7 @@ import SidebarAction                      from 'components/Sidebar/SidebarAction
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
+import * as ColumnPreferences             from 'lib/ColumnPreferences';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -79,6 +80,13 @@ export default class Browser extends DashboardView {
       } else {
         this.fetchData(this.props.params.className, this.state.filters);
       }
+      this.setState({
+        ordering: ColumnPreferences.getColumnSort(
+          false,
+          this.context.currentApp.applicationId,
+          this.props.params.className
+        )
+      });
     }
   }
 
@@ -315,8 +323,13 @@ export default class Browser extends DashboardView {
     let source = this.state.relation || this.props.params.className;
     this.setState({
       ordering: ordering,
-      selection: {},
+      selection: {}
     }, () => this.fetchData(source, this.state.filters));
+    ColumnPreferences.getColumnSort(
+      ordering,
+      this.context.currentApp.applicationId,
+      this.props.params.className
+    );
   }
 
   setRelation(relation) {
