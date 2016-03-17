@@ -120,10 +120,27 @@ And need this config.
 heroku config:set NPM_CONFIG_PRODUCTION=false
 
 heroku config:set PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
-
-heroku config:set CONFIG='{ "apps": [ { "appId": "---", "serverURL": "---", "masterKey": "---", "appName": "---" } ], "users": [ { "user": "---", "pass": "---" } ] }'
-('parse-dashboard-config.json' convert to stringified string)
 ```
+
+Two ways to set up. (If setted a, then b will be ignored.)
+
+A. 'parse-dashboard-config.json' convert to stringified string
+
+```
+heroku config:set CONFIG='{ "apps": [ { "appId": "---", "serverURL": "---", "masterKey": "---", "appName": "---" } ], "users": [ { "user": "---", "pass": "---" } ] }'
+```
+
+B. Add single vars (only single server & single user)
+
+```
+heroku config:set APP_ID=''
+heroku config:set SERVER_URL=''
+heroku config:set MASTER_KEY=''
+heroku config:set APP_NAME=''
+heroku config:set USER_ID=''
+heroku config:set USER_PASSWORD=''
+```
+
 Commit & push to heroku for deploying.
 
 ## Contributing
