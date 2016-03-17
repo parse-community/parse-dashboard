@@ -81,7 +81,11 @@ export default class Browser extends DashboardView {
         this.fetchData(this.props.params.className, this.state.filters);
       }
       this.setState({
-        ordering: ColumnPreferences.getColumnSort(false, this.props.params.appId, this.props.params.className)
+        ordering: ColumnPreferences.getColumnSort(
+          false,
+          this.context.currentApp.applicationId,
+          this.props.params.className
+        )
       });
     }
   }
@@ -319,9 +323,13 @@ export default class Browser extends DashboardView {
     let source = this.state.relation || this.props.params.className;
     this.setState({
       ordering: ordering,
-      selection: {},
+      selection: {}
     }, () => this.fetchData(source, this.state.filters));
-    ColumnPreferences.getColumnSort(ordering, this.props.params.appId, this.props.params.className);
+    ColumnPreferences.getColumnSort(
+      ordering,
+      this.context.currentApp.applicationId,
+      this.props.params.className
+    );
   }
 
   setRelation(relation) {
