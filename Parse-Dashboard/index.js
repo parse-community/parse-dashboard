@@ -40,8 +40,8 @@ const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOA
 
 let configFile = null;
 let configFromCLI = null;
-if (!program.config) {
-  if (!program.appId || !program.masterKey || !program.serverURL) {
+if (!(program.config || process.env.CONFIG)) {
+  if (!(program.appId || process.env.APP_ID) || !(program.masterKey || process.env.MASTER_KEY) || !(program.serverURL || process.env.SERVER_URL)) {
     console.log('You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.');
     process.exit(4);
   }
@@ -49,17 +49,30 @@ if (!program.config) {
     data: {
       apps: [
         {
-          appId: program.appId,
-          serverURL: program.serverURL,
-          masterKey: program.masterKey,
-          appName: program.appName,
+          appId: program.appId || process.env.APP_ID,
+          serverURL: program.serverURL || process.env.SERVER_URL,
+          masterKey: program.masterKey || process.env.MASTER_KEY,
+          appName: program.appName || process.env.APP_NAME,
         }
       ]
     }
   }
+  // user from cli
+  if ((program.userId || process.env.USER_ID) && (program.userPASSWORD || process.env.USER_PASSWORD)) {
+    configFromCLI.data.users = [
+      {
+        user: program.userId || process.env.USER_ID,
+        pass: program.userPASSWORD || process.env.USER_PASSWORD,
+      }
+    ];
+  }
+} else if (process.env.CONFIG) {
+  configFromCLI = {
+    data: JSON.parse(process.env.CONFIG)
+  };
 } else {
   configFile = program.config || path.join(__dirname, 'parse-dashboard-config.json');
-  if (program.appId || program.serverURL || program.masterKey || program.appName) {
+  if (program.appId || program.serverURL || program.masterKey) {
     console.log('You must provide either a config file or app ID, Master Key, and server URL, not both.');
     process.exit(3);
   }
