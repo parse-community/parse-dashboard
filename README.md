@@ -111,6 +111,21 @@ docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-
 
 If you are not familiar with Docker, ``--port 8080`` with be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
 
+## Run with Heroku
+
+Make new heroku app and cloning parse-dashboard repository.
+And need this config.
+
+```
+heroku config:set NPM_CONFIG_PRODUCTION=false
+
+heroku config:set PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
+
+heroku config:set CONFIG='{ "apps": [ { "appId": "---", "serverURL": "---", "masterKey": "---", "appName": "---" } ], "users": [ { "user": "---", "pass": "---" } ] }'
+('parse-dashboard-config.json' convert to stringified string)
+```
+Commit & push to heroku for deploying.
+
 ## Contributing
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
