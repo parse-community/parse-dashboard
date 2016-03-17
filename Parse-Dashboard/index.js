@@ -26,7 +26,7 @@ program.parse(process.argv);
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
-var newFeaturesInLatestVersion = []
+var newFeaturesInLatestVersion = [];
 packageJson('parse-dashboard').then(latestPackage => {
   if (latestPackage.parseDashboardFeatures instanceof Array) {
     newFeaturesInLatestVersion = parseDashboardFeatures.filter(feature => {
@@ -38,34 +38,44 @@ packageJson('parse-dashboard').then(latestPackage => {
 const port = program.port || process.env.PORT || 4040;
 const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 
+let explicitConfigFileProvided = !!program.config;
 let configFile = null;
 let configFromCLI = null;
 if (!program.config) {
-  if (!program.appId || !program.masterKey || !program.serverURL) {
-    console.log('You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.');
-    process.exit(4);
-  }
-  configFromCLI = {
-    data: {
-      apps: [
-        {
-          appId: program.appId,
-          serverURL: program.serverURL,
-          masterKey: program.masterKey,
-          appName: program.appName,
-        }
-      ]
-    }
+  if (program.serverURL && program.masterKey && program.appId) {
+    configFromCLI = {
+      data: {
+        apps: [
+          {
+            appId: program.appId,
+            serverURL: program.serverURL,
+            masterKey: program.masterKey,
+            appName: program.appName,
+          },
+        ]
+      }
+    };
+  } else if (!program.serverURL && !program.masterKey && !program.appName) {
+    configFile = path.join(__dirname, 'parse-dashboard-config.json');
   }
 } else {
-  configFile = program.config || path.join(__dirname, 'parse-dashboard-config.json');
+  configFile = program.config;
   if (program.appId || program.serverURL || program.masterKey || program.appName) {
-    console.log('You must provide either a config file or app ID, Master Key, and server URL, not both.');
+    console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
     process.exit(3);
   }
 }
 
-const p = configFile ? jsonFile(configFile) : Promise.resolve(configFromCLI);
+let p = null;
+if (configFile) {
+  p = jsonFile(configFile);
+} else if (configFromCLI) {
+  p = Promise.resolve(configFromCLI);
+} else {
+  //Failed to load default config file.
+  console.log('You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.');
+  process.exit(4);
+}
 p.then(config => {
   config.data.apps.forEach(app => {
     if (!app.appName) {
@@ -153,10 +163,15 @@ p.then(config => {
     console.log('Your config file contains invalid JSON. Exiting.');
     process.exit(1);
   } else if (error.code === 'ENOENT') {
-    console.log('Your config file is missing. Exiting.');
-    process.exit(2);
+    if (explicitConfigFileProvided) {
+      console.log('Your config file is missing. Exiting.');
+      process.exit(2);
+    } else {
+      console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
+      process.exit(3);
+    }
   } else {
-    console.log('There was a problem with your config file. Exiting.');
+    console.log('There was a problem with your config. Exiting.');
     process.exit(-1);
   }
 })
