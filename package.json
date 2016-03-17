@@ -1,6 +1,5 @@
 {
   "name": "parse-dashboard",
-  "description": "The parse dashboard",
   "parseDashboardFeatures": [
     "Data Browser",
     "Cloud Code Viewer",
@@ -8,12 +7,19 @@
     "Parse Config",
     "API Console"
   ],
-  "version": "2.0.0",
+  "description": "The Parse Dashboard",
+  "keywords": [
+    "parse",
+    "dashboard"
+  ],
+  "homepage": "https://github.com/ParsePlatform/parse-dashboard",
+  "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
   },
-  "license": "LicenseRef-LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "files": [
     "Parse-Dashboard",
     "bin",
