@@ -7,6 +7,8 @@
  */
 const VERSION = 'v1'; // In case we ever need to invalidate these
 const DEFAULT_WIDTH = 150;
+const COLUMN_SORT = '_columnSort'; // Used for storing classes sort field
+const COLUMN_DEFAULT_SORT = '-createdAt'; // Default column sorting
 let cache = {};
 
 export function updatePreferences(prefs, appId, className) {
@@ -41,6 +43,20 @@ export function getPreferences(appId, className) {
   } catch (e) {
     return null;
   }
+}
+
+export function getColumnSort(sortBy, appId, className) {
+  let objectName = className + ':' + COLUMN_SORT;
+  let cachedSort = getPreferences(appId, objectName) || [ { name: COLUMN_DEFAULT_SORT } ];
+  let updated = false;
+  if(cachedSort !== sortBy) {
+    updated = true;
+  }
+  if (updated && sortBy) {
+    cachedSort = sortBy;
+    updatePreferences(sortBy, appId, objectName);
+  }
+  return cachedSort;
 }
 
 export function getOrder(cols, appId, className) {

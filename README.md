@@ -13,7 +13,7 @@ npm install -g parse-dashboard
 You can launch the dashboard for an app with a single command by supplying an app ID, master key, URL, and name like this:
 
 ```
-parse-dashboard --appID yourAppId --masterKey yourMasterKey --serverURL "https://example.com/parse" --appName optionalName
+parse-dashboard --appId yourAppId --masterKey yourMasterKey --serverURL "https://example.com/parse" --appName optionalName
 ```
 
 You can then visit the dashboard in your browser at http://localhost:4040. If you want to use a different port you can supply the --port option to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
