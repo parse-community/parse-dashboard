@@ -66,7 +66,7 @@ if (!(program.config || process.env.CONFIG)) {
   } else if (!(program.serverURL || process.env.SERVER_URL) && !(program.masterKey || process.env.MASTER_KEY) && !(program.appName || process.env.APP_NAME)) {
     configFile = path.join(__dirname, 'parse-dashboard-config.json');
   }
-} else if (process.env.CONFIG) {
+} else if (process.env.CONFIG && !program.config) {
   configFromCLI = {
     data: JSON.parse(process.env.CONFIG)
   };
