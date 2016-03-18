@@ -24,13 +24,12 @@ export const ActionTypes = keyMirror([
 //   - classes: An Immutable Map of class names to Maps of column => type
 
 function SchemaStore(state, action) {
-  action.app.setParseKeys();
   switch (action.type) {
     case ActionTypes.FETCH:
       if (state && new Date() - state.get('lastFetch') < 60000) {
         return Parse.Promise.as(state);
       }
-      return Parse._request(
+      return action.app.apiRequest(
         'GET',
         'schemas',
         {},
@@ -45,7 +44,7 @@ function SchemaStore(state, action) {
         return Map({ lastFetch: new Date(), classes: Map(classes) });
       });
     case ActionTypes.CREATE_CLASS:
-      return Parse._request(
+      return action.app.apiRequest(
         'POST',
         'schemas/' + action.className,
         { className: action.className },
@@ -54,7 +53,7 @@ function SchemaStore(state, action) {
         return state.setIn(['classes', action.className], Map(fields));
       });
     case ActionTypes.DROP_CLASS:
-      return Parse._request(
+      return action.app.apiRequest(
         'DELETE',
         'schemas/' + action.className,
         {},
@@ -71,7 +70,7 @@ function SchemaStore(state, action) {
       if (action.columnType === 'Pointer' || action.columnType === 'Relation') {
         newField[action.name].targetClass = action.targetClass;
       }
-      return Parse._request(
+      return action.app.apiRequest(
         'PUT',
         'schemas/' + action.className,
         { className: action.className, fields: newField },
@@ -85,7 +84,7 @@ function SchemaStore(state, action) {
           __op: 'Delete'
         }
       };
-      return Parse._request(
+      return action.app.apiRequest(
         'PUT',
         'schemas/' + action.className,
         { className: action.className, fields: droppedField },
