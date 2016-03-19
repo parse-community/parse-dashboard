@@ -8,7 +8,7 @@
 import { get, post }     from 'lib/AJAX';
 import keyMirror         from 'lib/keyMirror';
 import Parse             from 'parse';
-import { Map }           from 'immutable';
+import { Map, fromJS }   from 'immutable';
 import { registerStore } from 'lib/stores/StoreManager';
 
 export const ActionTypes = keyMirror([
@@ -22,6 +22,7 @@ export const ActionTypes = keyMirror([
 // Schema state should be an Immutable Map with the following fields:
 //   - lastFetch: the last time all data was fetched from the server
 //   - classes: An Immutable Map of class names to Maps of column => type
+//   - CLPs: An Immutable Map of class names to CLPs
 
 function SchemaStore(state, action) {
   switch (action.type) {
@@ -36,12 +37,18 @@ function SchemaStore(state, action) {
         { useMasterKey: true }
       ).then(({ results }) => {
         let classes = {};
+        let CLPs = {};
         if (results) {
-          results.forEach(({ className, fields }) => {
+          results.forEach(({ className, fields, classLevelPermissions }) => {
             classes[className] = Map(fields);
+            CLPs[className] = Map(classLevelPermissions);
           });
         }
-        return Map({ lastFetch: new Date(), classes: Map(classes) });
+        return Map({
+          lastFetch: new Date(),
+          classes: Map(classes),
+          CLPs: Map(CLPs),
+        });
       });
     case ActionTypes.CREATE_CLASS:
       return action.app.apiRequest(
@@ -50,7 +57,9 @@ function SchemaStore(state, action) {
         { className: action.className },
         { useMasterKey: true }
       ).then(({ fields }) => {
-        return state.setIn(['classes', action.className], Map(fields));
+        return state
+        .setIn(['classes', action.className], Map(fields))
+        .setIn(['CLPs', action.className], Map({}));
       });
     case ActionTypes.DROP_CLASS:
       return action.app.apiRequest(
@@ -59,7 +68,9 @@ function SchemaStore(state, action) {
         {},
         { useMasterKey: true }
       ).then(() => {
-        return state.deleteIn(['classes', action.className]);
+        return state
+        .deleteIn(['classes', action.className])
+        .deleteIn(['CLPs', action.className]);
       });
     case ActionTypes.ADD_COLUMN:
       let newField = {

@@ -354,11 +354,6 @@ export default class ParseApp {
     });
   }
 
-  getCollectionInfo() {
-    let path = '/apps/' + this.slug + '/collections/info';
-    return AJAX.get(path);
-  }
-
   clearCollection(className) {
     let path = `/apps/${this.slug}/collections/${className}/clear`;
     return AJAX.del(path);

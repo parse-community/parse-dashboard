@@ -90,7 +90,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
   let write = create || update || del;
   let readChecked = get && find;
   let writeChecked = create && update && del;
-  
+
   return [
     <div key='second' className={[styles.check, styles.second].join(' ')}>
       {!(perms.get('get').get('*') && perms.get('find').get('*')) || rowId === '*' ?
@@ -224,22 +224,26 @@ function renderPointerCheckboxes(rowId, publicPerms, pointerPerms, advanced, onC
 }
 
 export default class PermissionsDialog extends React.Component {
-  constructor(props) {
+  constructor({
+    enablePointerPermissions = false,
+    permissions,
+    advanced,
+  }) {
     super();
 
     let uniqueKeys = ['*'];
     let perms = {};
-    for (let k in props.permissions) {
+    for (let k in permissions) {
       if (k !== 'readUserFields' && k !== 'writeUserFields') {
-        Object.keys(props.permissions[k]).forEach((key) => {
+        Object.keys(permissions[k]).forEach((key) => {
           if (uniqueKeys.indexOf(key) < 0) {
             uniqueKeys.push(key);
           }
         });
-        perms[k] = Map(props.permissions[k]);
+        perms[k] = Map(permissions[k]);
       }
     }
-    if (props.advanced) {
+    if (advanced) {
       // Fill any missing fields
       perms.get = perms.get || Map();
       perms.find = perms.find || Map();
@@ -250,17 +254,17 @@ export default class PermissionsDialog extends React.Component {
     }
 
     let pointerPerms = {};
-    if (props.permissions.readUserFields) {
-      props.permissions.readUserFields.forEach((f) => {
+    if (permissions.readUserFields) {
+      permissions.readUserFields.forEach((f) => {
         let p = { read: true };
-        if (props.permissions.writeUserFields && props.permissions.writeUserFields.indexOf(f) > -1) {
+        if (permissions.writeUserFields && permissions.writeUserFields.indexOf(f) > -1) {
           p.write = true;
         }
         pointerPerms[f] = Map(p);
       });
     }
-    if (props.permissions.writeUserFields) {
-      props.permissions.writeUserFields.forEach((f) => {
+    if (permissions.writeUserFields) {
+      permissions.writeUserFields.forEach((f) => {
         if (!pointerPerms[f]) {
           pointerPerms[f] = Map({ write: true });
         }
@@ -533,6 +537,7 @@ export default class PermissionsDialog extends React.Component {
     if (this.state.level === 'Advanced') {
       classes.push(styles.advanced);
     }
+
     return (
       <Popover fadeIn={true} fixed={true} position={origin} modal={true} color='rgba(17,13,17,0.8)'>
         <div className={classes.join(' ')}>
@@ -582,7 +587,7 @@ export default class PermissionsDialog extends React.Component {
                 {this.renderPublicCheckboxes()}
               </div>
               {this.state.keys.slice(1).map((key) => this.renderRow(key))}
-              {this.props.advanced ? 
+              {this.props.advanced ?
                 this.state.pointers.map((pointer) => this.renderRow(pointer, true)) :
                 null}
               {this.state.newKeys.map((key) => this.renderRow(key))}

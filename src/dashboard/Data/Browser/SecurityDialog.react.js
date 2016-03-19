@@ -56,6 +56,7 @@ export default class SecurityDialog extends React.Component {
       dialog = (
         <PermissionsDialog
           title='Edit Class Level Permissions'
+          enablePointerPermissions={false /* not supported by Parse Server yet */}
           advanced={true}
           confirmText='Save CLP'
           details={<a href='https://parse.com/docs/ios/guide#security-class-level-permissions'>Learn more about CLPs and app security</a>}
