@@ -97,7 +97,11 @@ export default class Browser extends DashboardView {
         data: null,
         newObject: null,
         lastMax: -1,
-        ordering: this.state.ordering,
+        ordering: ColumnPreferences.getColumnSort(
+            false,
+            nextContext.currentApp.applicationId,
+            nextProps.params.className
+        ),
         selection: {},
         relation: null
       };
@@ -120,6 +124,7 @@ export default class Browser extends DashboardView {
       }
       nextProps.schema.dispatch(ActionTypes.FETCH)
       .then(() => this.fetchCollectionCounts());
+
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
