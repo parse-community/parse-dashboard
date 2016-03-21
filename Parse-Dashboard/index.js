@@ -41,34 +41,40 @@ const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOA
 let explicitConfigFileProvided = !!program.config;
 let configFile = null;
 let configFromCLI = null;
-if (!(program.config || process.env.CONFIG)) {
-  if ((program.serverURL || process.env.SERVER_URL) && (program.masterKey || process.env.MASTER_KEY) && (program.appId || process.env.APP_ID)) {
+let configServerURL = program.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
+let configMasterKey = program.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
+let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
+let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
+let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
+let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
+if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
+  if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
       data: {
         apps: [
           {
-            appId: program.appId || process.env.APP_ID,
-            serverURL: program.serverURL || process.env.SERVER_URL,
-            masterKey: program.masterKey || process.env.MASTER_KEY,
-            appName: program.appName || process.env.APP_NAME,
+            appId: configAppId,
+            serverURL: configServerURL,
+            masterKey: configMasterKey,
+            appName: configAppName,
           },
         ]
       }
     };
-    if ((program.userId || process.env.USER_ID) && (program.userPassword || process.env.USER_PASSWORD)) {
+    if (configUserId && configUserPassword) {
       configFromCLI.data.users = [
         {
-          user: program.userId || process.env.USER_ID,
-          pass: program.userPassword || process.env.USER_PASSWORD,
+          user: configUserId,
+          pass: configUserPassword,
         }
       ];
     }
-  } else if (!(program.serverURL || process.env.SERVER_URL) && !(program.masterKey || process.env.MASTER_KEY) && !(program.appName || process.env.APP_NAME)) {
+  } else if (!configServerURL && !configMasterKey && !configAppName) {
     configFile = path.join(__dirname, 'parse-dashboard-config.json');
   }
-} else if (process.env.CONFIG && !program.config) {
+} else if (!program.config && process.env.PARSE_DASHBOARD_CONFIG) {
   configFromCLI = {
-    data: JSON.parse(process.env.CONFIG)
+    data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG)
   };
 } else {
   configFile = program.config;

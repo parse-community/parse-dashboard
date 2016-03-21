@@ -124,21 +124,23 @@ heroku config:set PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
 
 Two ways to set up. (If setted a, then b will be ignored.)
 
+*** (important) *** Keep Masterkey secret! It's safe only when using HTTPS.
+
 A. 'parse-dashboard-config.json' convert to stringified string
 
 ```
-heroku config:set CONFIG='{ "apps": [ { "appId": "---", "serverURL": "---", "masterKey": "---", "appName": "---" } ], "users": [ { "user": "---", "pass": "---" } ] }'
+heroku config:set PARSE_DASHBOARD_CONFIG='{ "apps": [ { "appId": "---", "serverURL": "---", "masterKey": "---", "appName": "---" } ], "users": [ { "user": "---", "pass": "---" } ] }'
 ```
 
 B. Add single vars (only single server & single user)
 
 ```
-heroku config:set APP_ID=''
-heroku config:set SERVER_URL=''
-heroku config:set MASTER_KEY=''
-heroku config:set APP_NAME=''
-heroku config:set USER_ID=''
-heroku config:set USER_PASSWORD=''
+heroku config:set PARSE_DASHBOARD_APP_ID=''
+heroku config:set PARSE_DASHBOARD_SERVER_URL=''
+heroku config:set PARSE_DASHBOARD_MASTER_KEY=''
+heroku config:set PARSE_DASHBOARD_APP_NAME=''
+heroku config:set PARSE_DASHBOARD_USER_ID=''
+heroku config:set PARSE_DASHBOARD_USER_PASSWORD=''
 ```
 
 Commit & push to heroku for deploying.
