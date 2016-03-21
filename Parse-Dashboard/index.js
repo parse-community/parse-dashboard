@@ -41,23 +41,41 @@ const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOA
 let explicitConfigFileProvided = !!program.config;
 let configFile = null;
 let configFromCLI = null;
-if (!program.config) {
-  if (program.serverURL && program.masterKey && program.appId) {
+let configServerURL = program.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
+let configMasterKey = program.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
+let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
+let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
+let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
+let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
+if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
+  if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
       data: {
         apps: [
           {
-            appId: program.appId,
-            serverURL: program.serverURL,
-            masterKey: program.masterKey,
-            appName: program.appName,
+            appId: configAppId,
+            serverURL: configServerURL,
+            masterKey: configMasterKey,
+            appName: configAppName,
           },
         ]
       }
     };
-  } else if (!program.serverURL && !program.masterKey && !program.appName) {
+    if (configUserId && configUserPassword) {
+      configFromCLI.data.users = [
+        {
+          user: configUserId,
+          pass: configUserPassword,
+        }
+      ];
+    }
+  } else if (!configServerURL && !configMasterKey && !configAppName) {
     configFile = path.join(__dirname, 'parse-dashboard-config.json');
   }
+} else if (!program.config && process.env.PARSE_DASHBOARD_CONFIG) {
+  configFromCLI = {
+    data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG)
+  };
 } else {
   configFile = program.config;
   if (program.appId || program.serverURL || program.masterKey || program.appName) {
