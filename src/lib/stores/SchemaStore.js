@@ -16,7 +16,8 @@ export const ActionTypes = keyMirror([
   'CREATE_CLASS',
   'DROP_CLASS',
   'ADD_COLUMN',
-  'DROP_COLUMN'
+  'DROP_COLUMN',
+  'SET_CLP',
 ]);
 
 // Schema state should be an Immutable Map with the following fields:
@@ -102,6 +103,15 @@ function SchemaStore(state, action) {
         { useMasterKey: true }
       ).then(({ fields }) => {
         return state.setIn(['classes', action.className], Map(fields));
+      });
+    case ActionTypes.SET_CLP:
+      return action.app.apiRequest(
+        'PUT',
+        'schemas/' + action.className,
+        { classLevelPermissions: action.clp },
+        { useMasterKey: true }
+      ).then(({ classLevelPermissions, className }) => {
+        return state.setIn(['CLPs', className], Map(classLevelPermissions));
       });
   }
 }

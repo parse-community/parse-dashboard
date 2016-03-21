@@ -35,7 +35,7 @@ let BrowserToolbar = ({
   onRemoveColumn,
   onDeleteRows,
   onDropClass,
-  updateCLP,
+  onChangeCLP,
   hidePerms,
 
   enableDeleteAllRows,
@@ -116,7 +116,7 @@ let BrowserToolbar = ({
         disabled={!!relation}
         perms={perms}
         className={classNameForPermissionsEditor}
-        updateCLP={updateCLP}
+        onChangeCLP={onChangeCLP}
         userPointers={userPointers} /> : <noscript />}
       {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript/>}
       {menu}

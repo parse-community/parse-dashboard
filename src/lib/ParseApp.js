@@ -359,16 +359,6 @@ export default class ParseApp {
     return AJAX.del(path);
   }
 
-  updateCLP(className, perms) {
-    let path = `/apps/${this.slug}/collections/${className}/save_settings`;
-    return AJAX.put(
-      path,
-      { client_permissions: perms }
-    ).then((response) => {
-      return Parse.Promise.as(response.collection);
-    });
-  }
-
   validateCollaborator(email) {
     let path = '/apps/' + this.slug + '/collaborations/validate?email=' + encodeURIComponent(email);
     return AJAX.get(path);

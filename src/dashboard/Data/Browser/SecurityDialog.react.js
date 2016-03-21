@@ -43,13 +43,6 @@ export default class SecurityDialog extends React.Component {
     this.state = { open: false };
   }
 
-  updateCLP(perms) {
-    return this.context.currentApp.updateCLP(this.props.className, perms).then(({ client_permissions }) => {
-      this.props.updateCLP(client_permissions);
-      this.setState({ open: false });
-    });
-  }
-
   render() {
     let dialog = null;
     if (this.props.perms && this.state.open) {
@@ -65,9 +58,8 @@ export default class SecurityDialog extends React.Component {
           onCancel={() => {
             this.setState({ open: false });
           }}
-          onConfirm={(perms) => {
-            this.updateCLP(perms);
-          }} />
+          onConfirm={perms => this.props.onChangeCLP(perms).then(() => this.setState({ open: false }))}
+        />
       );
     }
     let classes = [styles.toolbarButton];
