@@ -13,8 +13,10 @@ import React             from 'react';
 import styles            from 'dashboard/Data/Browser/Browser.scss';
 
 function validateEntry(pointers, text) {
-  if (pointers.indexOf(text) > -1) {
-    return Parse.Promise.as({ pointer: text });
+  if (false) { //Eventually we will branch on whether or not the server supports pointer permissions
+    if (pointers.indexOf(text) > -1) {
+      return Parse.Promise.as({ pointer: text });
+    }
   }
 
   let userQuery = Parse.Query.or(

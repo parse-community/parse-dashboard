@@ -361,7 +361,7 @@ export default class PermissionsDialog extends React.Component {
           });
         }
       }, () => {
-        if (this.props.advanced) {
+        if (this.props.advanced && this.props.enablePointerPermissions) {
           this.setState({
             entryError: 'Role, User or pointer field not found. Enter a valid Role name, Username, User ID or User pointer field name.'
           });
@@ -538,6 +538,13 @@ export default class PermissionsDialog extends React.Component {
       classes.push(styles.advanced);
     }
 
+    let placeholderText = '';
+    if (this.props.advanced && this.props.enablePointerPermissions) {
+      placeholderText = 'Role, User, or Pointer\u2026';
+    } else {
+      placeholderText = 'Role or User\u2026';
+    }
+
     return (
       <Popover fadeIn={true} fixed={true} position={origin} modal={true} color='rgba(17,13,17,0.8)'>
         <div className={classes.join(' ')}>
@@ -598,7 +605,7 @@ export default class PermissionsDialog extends React.Component {
                   onChange={(e) => this.setState({ newEntry: e.target.value })}
                   onBlur={this.checkEntry.bind(this)}
                   onKeyDown={this.handleKeyDown.bind(this)}
-                  placeholder={this.props.advanced ? 'Role, User, or Pointer\u2026' : 'Role or User\u2026'} />
+                  placeholder={placeholderText} />
               </div>
             </div>
           </div>
