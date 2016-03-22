@@ -120,14 +120,22 @@ p.then(config => {
       auth = basicAuth(req);
     }
 
+    const remoteAddress =
+      req.headers['x-forwarded-for'] ||
+      req.connection.remoteAddress;
+
+    const isSecure =
+      (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === 'https') ||
+      req.secure;
+
     //Based on advice from Doug Wilson here:
     //https://github.com/expressjs/express/issues/2518
     const requestIsLocal =
-      req.connection.remoteAddress === '127.0.0.1' ||
-      req.connection.remoteAddress === '::ffff:127.0.0.1' ||
-      req.connection.remoteAddress === '::1';
+      remoteAddress === '127.0.0.1' ||
+      remoteAddress === '::ffff:127.0.0.1' ||
+      remoteAddress === '::1';
 
-    if (!requestIsLocal && !req.secure && !allowInsecureHTTP) {
+    if (!requestIsLocal && !isSecure && !allowInsecureHTTP) {
       //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
       return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
     }
