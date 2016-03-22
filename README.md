@@ -113,26 +113,19 @@ If you are not familiar with Docker, ``--port 8080`` with be passed in as argume
 
 ## Run with Heroku
 
-Make new heroku app and cloning parse-dashboard repository.
-And need this config.
+Make a new heroku app and clone the parse-dashboard repository. You will need to set some configuration in your heroku app:
 
 ```
 heroku config:set NPM_CONFIG_PRODUCTION=false
-
-heroku config:set PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
 ```
 
-Two ways to set up. (If setted a, then b will be ignored.)
-
-*** (important) *** Keep Masterkey secret! It's safe only when using HTTPS.
-
-A. 'parse-dashboard-config.json' convert to stringified string
+There are two ways to configure your dashboard. You can set one config variable containing your entire configuration, like this:
 
 ```
 heroku config:set PARSE_DASHBOARD_CONFIG='{ "apps": [ { "appId": "---", "serverURL": "---", "masterKey": "---", "appName": "---" } ], "users": [ { "user": "---", "pass": "---" } ] }'
 ```
 
-B. Add single vars (only single server & single user)
+Or you can use one config variable for each piece of configuration:
 
 ```
 heroku config:set PARSE_DASHBOARD_APP_ID=''
@@ -143,7 +136,7 @@ heroku config:set PARSE_DASHBOARD_USER_ID=''
 heroku config:set PARSE_DASHBOARD_USER_PASSWORD=''
 ```
 
-Commit & push to heroku for deploying.
+Push to Heroku to deploy.
 
 ## Contributing
 
