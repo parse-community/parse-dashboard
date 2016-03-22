@@ -120,10 +120,15 @@ p.then(config => {
       auth = basicAuth(req);
     }
 
+    // On platforms with certain routing setups, all requests may appear as
+    // localhost requests. Use the X-FORWARDED-FOR header to obtain the IP
+    // of the original sender of the request.
     const remoteAddress =
       req.headers['x-forwarded-for'] ||
       req.connection.remoteAddress;
 
+    // Similarly as above, TLS termination is somtimes done far before the app server and
+    // so we need to use the original request information via X-FORWARDED-PROTO.
     const isSecure =
       (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === 'https') ||
       req.secure;
