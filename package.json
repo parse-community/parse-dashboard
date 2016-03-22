@@ -37,6 +37,7 @@
     "babel-core": "~5.8.12",
     "babel-loader": "~5.3.0",
     "babel-plugin-remove-proptypes": "~1.0.0",
+    "babel-polyfill": "^6.7.2",
     "babel-runtime": "~5.8.25",
     "css-loader": "~0.18.0",
     "file-loader": "^0.8.5",
