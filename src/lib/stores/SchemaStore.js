@@ -8,7 +8,7 @@
 import { get, post }     from 'lib/AJAX';
 import keyMirror         from 'lib/keyMirror';
 import Parse             from 'parse';
-import { Map, fromJS }   from 'immutable';
+import { Map }           from 'immutable';
 import { registerStore } from 'lib/stores/StoreManager';
 
 export const ActionTypes = keyMirror([

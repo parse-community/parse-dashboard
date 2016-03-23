@@ -63,7 +63,7 @@ export default class Browser extends DashboardView {
 
   componentWillMount() {
     this.props.schema.dispatch(ActionTypes.FETCH)
-    .then(() => this.handleNewSchema());
+    .then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -121,7 +121,7 @@ export default class Browser extends DashboardView {
         this.fetchData(nextProps.params.className, nextProps.location.query && nextProps.location.query.filters ? changes.filters : []);
       }
       nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.handleNewSchema());
+      .then(() => this.handleFetchedSchema());
 
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
@@ -233,7 +233,7 @@ export default class Browser extends DashboardView {
     });
   }
 
-  handleNewSchema() {
+  handleFetchedSchema() {
     this.props.schema.data.get('classes').forEach((_, className) => {
       this.context.currentApp.getClassCount(className)
       .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
@@ -433,7 +433,7 @@ export default class Browser extends DashboardView {
       className: this.props.params.className,
       clp: perms,
     });
-    p.then(() => this.handleNewSchema());
+    p.then(() => this.handleFetchedSchema());
     return p;
   }
 
