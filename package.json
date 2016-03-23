@@ -5,7 +5,8 @@
     "Cloud Code Viewer",
     "Logs Viewer",
     "Parse Config",
-    "API Console"
+    "API Console",
+    "Class Level Permissions Editor"
   ],
   "description": "The Parse Dashboard",
   "keywords": [

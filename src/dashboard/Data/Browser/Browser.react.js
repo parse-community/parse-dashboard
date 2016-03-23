@@ -63,11 +63,10 @@ export default class Browser extends DashboardView {
 
   componentWillMount() {
     this.props.schema.dispatch(ActionTypes.FETCH)
-    .then(() => this.fetchCollectionCounts());
+    .then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
-      this.fetchInfo(this.context.currentApp);
       if (this.props.location.query && this.props.location.query.filters) {
         let filters = new List();
         let queryFilters = JSON.parse(this.props.location.query.filters);
@@ -116,14 +115,13 @@ export default class Browser extends DashboardView {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         changes.counts = {};
         Parse.Object._clearAllState();
-        this.fetchInfo(nextContext.currentApp);
       }
       this.setState(changes);
       if (nextProps.params.className) {
         this.fetchData(nextProps.params.className, nextProps.location.query && nextProps.location.query.filters ? changes.filters : []);
       }
       nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.fetchCollectionCounts());
+      .then(() => this.handleFetchedSchema());
 
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
@@ -235,23 +233,12 @@ export default class Browser extends DashboardView {
     });
   }
 
-  fetchCollectionCounts() {
+  handleFetchedSchema() {
     this.props.schema.data.get('classes').forEach((_, className) => {
       this.context.currentApp.getClassCount(className)
       .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
     })
-  }
-
-  fetchInfo(app) {
-    app.getCollectionInfo().then(({ collections }) => {
-      let counts = {};
-      let clp = {};
-      collections.forEach(({ id, count, client_permissions }) => {
-        counts[id] = count;
-        clp[id] = client_permissions;
-      });
-      this.setState({ counts, clp });
-    });
+    this.setState({clp: this.props.schema.data.get('CLPs').toJS()});
   }
 
   fetchData(source, filters, last) {
@@ -441,10 +428,13 @@ export default class Browser extends DashboardView {
     }
   }
 
-  updateCLP(perms) {
-    let className = this.props.params.className;
-    this.state.clp[className] = perms;
-    this.forceUpdate();
+  onChangeCLP(perms) {
+    let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
+      className: this.props.params.className,
+      clp: perms,
+    });
+    p.then(() => this.handleFetchedSchema());
+    return p;
   }
 
   selectRow(id, checked) {
@@ -561,7 +551,7 @@ export default class Browser extends DashboardView {
             onDeleteRows={this.showDeleteRows.bind(this)}
             onDropClass={this.showDropClass.bind(this)}
             onExport={this.showExport.bind(this)}
-            updateCLP={this.updateCLP.bind(this)}
+            onChangeCLP={this.onChangeCLP.bind(this)}
 
             columns={columns}
             className={className}

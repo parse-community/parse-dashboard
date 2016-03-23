@@ -354,24 +354,9 @@ export default class ParseApp {
     });
   }
 
-  getCollectionInfo() {
-    let path = '/apps/' + this.slug + '/collections/info';
-    return AJAX.get(path);
-  }
-
   clearCollection(className) {
     let path = `/apps/${this.slug}/collections/${className}/clear`;
     return AJAX.del(path);
-  }
-
-  updateCLP(className, perms) {
-    let path = `/apps/${this.slug}/collections/${className}/save_settings`;
-    return AJAX.put(
-      path,
-      { client_permissions: perms }
-    ).then((response) => {
-      return Parse.Promise.as(response.collection);
-    });
   }
 
   validateCollaborator(email) {
