@@ -226,7 +226,7 @@ class Dashboard extends React.Component {
           <Route path='config' component={Config} />
           <Route path='api_console' component={ApiConsole} />
           <Route path='migration' component={Migration} />
-          <Redirect from='push' to='/apps/:appId/push/activity/all' />
+          <Redirect from='push' to='/apps/:appId/push/new' />
           <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
           <Route path='push/activity/:category' component={PushIndex} />
           <Route path='push/audiences' component={PushAudiencesIndex} />

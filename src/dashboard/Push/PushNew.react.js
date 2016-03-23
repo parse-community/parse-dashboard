@@ -36,6 +36,9 @@ import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
 
+const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
+const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = false;
+
 let formatErrorMessage = (emptyInputMessages, key) => {
   let boldMessages = emptyInputMessages.map((message) => {
     return (<strong>{message}</strong>);
@@ -115,7 +118,7 @@ export default class PushNew extends DashboardView {
     super();
     this.xhrs = [];
     this.section = 'Push';
-    this.subsection = '';
+    this.subsection = 'Send New Push';
     this.state = {
       pushAudiencesFetched: false,
       deviceCount: null,
@@ -591,84 +594,88 @@ export default class PushNew extends DashboardView {
       }
     }
 
-    return (
-      <div className={styles.pushFlow}>
-        <Fieldset
-          legend='Choose your recipients.'
-          description='Send to everyone, or use an audience to target the right users.'>
-          <PushAudiencesData
-            loaded={this.state.pushAudiencesFetched}
-            schema={schema}
-            pushAudiencesStore={this.props.pushaudiences}
-            current={fields.audience_id}
-            onChange={(audienceId, query, deviceCount) => {
-              this.setState({ deviceCount });
-              setField('audience_id', audienceId);
-              if (audienceId === PushConstants.NEW_SEGMENT_ID) {
-                setField('target', JSON.stringify(query));
-              }
-            }} />
-        </Fieldset>
-        <Fieldset
-          legend='A/B Testing'
-          description='Experiment with different messages or send times to discover the optimal campaign variables.'>
-          <Field
-            className={FieldStyles.header}
-            label={<Label text='Use A/B Testing' />}
-            input={<Toggle value={fields.exp_enable} onChange={(value) => {
-              if (!this.state.audienceSizeSuggestion) {
-                this.context.currentApp.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
-                  this.setState({
-                    audienceSizeSuggestion: audience_size
-                  });
-                });
-                // calculate initial recipient count
-                this.setState({
-                  recipientCount: Math.floor(this.state.deviceCount * 0.5)
-                });
-              }
-              // disable translation if experiment is enabled
-              if (fields.translation_enable && value) {
-                setField('translation_enable',null);
-              }
-              setField('exp_enable', value || null);
-            }} />} />
-          {this.renderExperimentContent(fields, setField)}
-        </Fieldset>
+    const recipientsFields = <Fieldset
+      legend='Choose your recipients.'
+      description='Send to everyone, or use an audience to target the right users.'>
+      <PushAudiencesData
+        loaded={this.state.pushAudiencesFetched}
+        schema={schema}
+        pushAudiencesStore={this.props.pushaudiences}
+        current={fields.audience_id}
+        onChange={(audienceId, query, deviceCount) => {
+          this.setState({ deviceCount });
+          setField('audience_id', audienceId);
+          if (audienceId === PushConstants.NEW_SEGMENT_ID) {
+            setField('target', JSON.stringify(query));
+          }
+        }} />
+    </Fieldset>
 
-        <Fieldset
-          legend='Choose a delivery time'
-          description='We can send the campaign immediately, or any time in the next 2 weeks.'>
-          {this.renderDeliveryContent(fields, setField)}
-          <Field
-            label={<Label text='Should this notification expire?' />}
-            input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
-          {PushHelper.renderExpirationContent(fields, setField)}
-        </Fieldset>
+    const abTestingFields = PARSE_SERVER_SUPPORTS_AB_TESTING ? <Fieldset
+      legend='A/B Testing'
+      description='Experiment with different messages or send times to discover the optimal campaign variables.'>
+      <Field
+        className={FieldStyles.header}
+        label={<Label text='Use A/B Testing' />}
+        input={<Toggle value={fields.exp_enable} onChange={(value) => {
+          if (!this.state.audienceSizeSuggestion) {
+            this.context.currentApp.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
+              this.setState({
+                audienceSizeSuggestion: audience_size
+              });
+            });
+            // calculate initial recipient count
+            this.setState({
+              recipientCount: Math.floor(this.state.deviceCount * 0.5)
+            });
+          }
+          // disable translation if experiment is enabled
+          if (fields.translation_enable && value) {
+            setField('translation_enable',null);
+          }
+          setField('exp_enable', value || null);
+        }} />} />
+      {this.renderExperimentContent(fields, setField)}
+    </Fieldset> : null;
 
-        <Fieldset
-          legend={'Write your message' + (multiMessage ? 's' : '')}
-          description='The best campaigns use short and direct messaging.'>
-          <div className={styles.messageContentWrap}>
-           {this.renderMessageContent(fields, setField)}
-          </div>
-          <Field
-            label={<Label text='Increment the app badge?' />}
-            input={<Toggle value={fields.increment_badge} onChange={(value) => {
-              setField('increment_badge', value || null);
-            }} />} />
-          {translationSegment}
-        </Fieldset>
+    const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? <Fieldset
+      legend='Choose a delivery time'
+      description='We can send the campaign immediately, or any time in the next 2 weeks.'>
+      {this.renderDeliveryContent(fields, setField)}
+      <Field
+        label={<Label text='Should this notification expire?' />}
+        input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
+      {PushHelper.renderExpirationContent(fields, setField)}
+    </Fieldset> : null;
 
-        <Fieldset
-          legend='Preview'
-          description='Double check that everything looks good!'>
-          <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
-        </Fieldset>
-
-        <Toolbar section='Push' subsection='Send a new campaign' />
+    const messageFields = <Fieldset
+      legend={'Write your message' + (multiMessage ? 's' : '')}
+      description='The best campaigns use short and direct messaging.'>
+      <div className={styles.messageContentWrap}>
+       {this.renderMessageContent(fields, setField)}
       </div>
-    );
+      <Field
+        label={<Label text='Increment the app badge?' />}
+        input={<Toggle value={fields.increment_badge} onChange={(value) => {
+          setField('increment_badge', value || null);
+        }} />} />
+      {translationSegment}
+    </Fieldset>
+
+    const previewFields = <Fieldset
+      legend='Preview'
+      description='Double check that everything looks good!'>
+      <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
+    </Fieldset>
+
+    return <div className={styles.pushFlow}>
+      {recipientsFields}
+      {abTestingFields}
+      {deliveryTimeFields}
+      {messageFields}
+      {previewFields}
+      <Toolbar section='Push' subsection='Send a new campaign' />
+    </div>
   }
 
   valid(changes) {
