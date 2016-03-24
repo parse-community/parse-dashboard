@@ -56,17 +56,23 @@ export default class Sidebar extends React.Component {
         {this.props.appSelector ? <AppsSelector apps={apps} /> : null}
 
         <div className={styles.content}>
-          {this.props.sections.map((section) => {
-            let active = section.name === this.props.section;
+          {this.props.sections.map(({
+            name,
+            icon,
+            style,
+            link,
+            subsections,
+          }) => {
+            let active = name === this.props.section;
             return (
               <SidebarSection
-                key={section.name}
-                name={section.name}
-                icon={section.icon}
-                style={section.style}
-                link={this.props.prefix + section.link}
+                key={name}
+                name={name}
+                icon={icon}
+                style={style}
+                link={this.props.prefix + link}
                 active={active}>
-                {active ? this._subMenu(section.subsections) : null}
+                {active ? this._subMenu(subsections) : null}
               </SidebarSection>
             );
           })}
