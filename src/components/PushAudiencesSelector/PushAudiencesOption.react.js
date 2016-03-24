@@ -58,7 +58,6 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
         </div>
       );
 
-    let countDetails = PushUtils.formatCountDetails(this.state.count, this.state.approximate);
     return (
       <label htmlFor={inputId} className={[styles.row, this.props.id === 'everyone' ? styles.everyone : ''].join(' ')}>
         <div className={[styles.cell, styles.col1].join(' ')}>
@@ -109,7 +108,7 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
           </div>
         </div>
         <div className={[styles.cell, styles.col2].join(' ')}>
-          {countDetails}
+          {PushUtils.formatCountDetails(this.state.count, this.state.approximate)}
         </div>
         <div className={[styles.cell, styles.col3].join(' ')}>
           {yearMonthDayFormatter(this.props.createdAt)}

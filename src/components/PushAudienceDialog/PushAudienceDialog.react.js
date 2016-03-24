@@ -27,6 +27,8 @@ import TextInput             from 'components/TextInput/TextInput.react';
 import Toggle                from 'components/Toggle/Toggle.react';
 import { List, Map }         from 'immutable';
 
+const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = false;
+
 let filterFormatter = (filters, schema) => {
   return filters.map((filter) => {
     let type = schema[filter.get('field')];
@@ -202,12 +204,14 @@ export default class PushAudienceDialog extends React.Component {
     let futureUseSegment = [];
 
     if (!this.props.disableNewSegment) {
-      futureUseSegment.push(
-        <Field
-          key={'saveForFuture'}
-          label={<Label text='Save this audience for future use?'/>}
-          input={<Toggle value={this.state.saveForFuture} type={Toggle.Types.YES_NO} onChange={this.handleSaveForFuture.bind(this)} />} />
-      );
+      if (PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES) {
+        futureUseSegment.push(
+          <Field
+            key={'saveForFuture'}
+            label={<Label text='Save this audience for future use?'/>}
+            input={<Toggle value={this.state.saveForFuture} type={Toggle.Types.YES_NO} onChange={this.handleSaveForFuture.bind(this)} />} />
+        );
+      }
 
       if (this.state.saveForFuture) {
         futureUseSegment.push(
