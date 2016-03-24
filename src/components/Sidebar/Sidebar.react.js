@@ -24,22 +24,29 @@ export default class Sidebar extends React.Component {
   }
 
   _subMenu(subsections) {
+    let {
+      prefix,
+      action,
+      actionHandler,
+      children,
+      subsection,
+    } = this.props;
     if (!subsections) {
       return null;
     }
     return (
       <div className={styles.submenu}>
         {subsections.map((section) => {
-          let active = this.props.subsection === section.name;
+          let active = subsection === section.name;
           return (
             <SidebarSubItem
               key={section.name}
               name={section.name}
-              link={this.props.prefix + section.link}
-              action={this.props.action || null}
-              actionHandler={active ? this.props.actionHandler : null}
+              link={prefix + section.link}
+              action={action || null}
+              actionHandler={active ? actionHandler : null}
               active={active}>
-              {active ? this.props.children : null}
+              {active ? children : null}
             </SidebarSubItem>
           );
         })}
@@ -50,27 +57,34 @@ export default class Sidebar extends React.Component {
   render() {
     let apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
 
+    let {
+      sections,
+      section,
+      prefix,
+      appSelector,
+    } = this.props;
+
     return (
       <div className={styles.sidebar}>
         <SidebarHeader />
-        {this.props.appSelector ? <AppsSelector apps={apps} /> : null}
+        {appSelector ? <AppsSelector apps={apps} /> : null}
 
         <div className={styles.content}>
-          {this.props.sections.map(({
+          {sections.map(({
             name,
             icon,
             style,
             link,
             subsections,
           }) => {
-            let active = name === this.props.section;
+            let active = name === section;
             return (
               <SidebarSection
                 key={name}
                 name={name}
                 icon={icon}
                 style={style}
-                link={this.props.prefix + link}
+                link={prefix + link}
                 active={active}>
                 {active ? this._subMenu(subsections) : null}
               </SidebarSection>
