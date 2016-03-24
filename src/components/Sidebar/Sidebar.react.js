@@ -23,46 +23,42 @@ export default class Sidebar extends React.Component {
     };
   }
 
-  _subMenu(subsections) {
+  render() {
     let {
       prefix,
       action,
       actionHandler,
       children,
       subsection,
-    } = this.props;
-    if (!subsections) {
-      return null;
-    }
-    return (
-      <div className={styles.submenu}>
-        {subsections.map((section) => {
-          let active = subsection === section.name;
-          return (
-            <SidebarSubItem
-              key={section.name}
-              name={section.name}
-              link={prefix + section.link}
-              action={action || null}
-              actionHandler={active ? actionHandler : null}
-              active={active}>
-              {active ? children : null}
-            </SidebarSubItem>
-          );
-        })}
-      </div>
-    );
-  }
-
-  render() {
-    let apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
-
-    let {
       sections,
       section,
-      prefix,
       appSelector,
     } = this.props;
+    let _subMenu = subsections => {
+      if (!subsections) {
+        return null;
+      }
+      return (
+        <div className={styles.submenu}>
+          {subsections.map((section) => {
+            let active = subsection === section.name;
+            return (
+              <SidebarSubItem
+                key={section.name}
+                name={section.name}
+                link={prefix + section.link}
+                action={action || null}
+                actionHandler={active ? actionHandler : null}
+                active={active}>
+                {active ? children : null}
+              </SidebarSubItem>
+            );
+          })}
+        </div>
+      );
+    }
+
+    let apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
 
     return (
       <div className={styles.sidebar}>
@@ -86,7 +82,7 @@ export default class Sidebar extends React.Component {
                 style={style}
                 link={prefix + link}
                 active={active}>
-                {active ? this._subMenu(subsections) : null}
+                {active ? _subMenu(subsections) : null}
               </SidebarSection>
             );
           })}
