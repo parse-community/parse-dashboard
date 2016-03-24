@@ -28,6 +28,7 @@ import Toggle                from 'components/Toggle/Toggle.react';
 import { List, Map }         from 'immutable';
 
 const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = false;
+const AUDIENCE_SIZE_FETCHING_ENABLED = false;
 
 let filterFormatter = (filters, schema) => {
   return filters.map((filter) => {
@@ -176,11 +177,11 @@ export default class PushAudienceDialog extends React.Component {
     let audienceSize = PushUtils.formatCountDetails(this.state.audienceSize, this.state.approximate);
     let customFooter = (
       <div className={styles.footer}>
-        <div
+        {AUDIENCE_SIZE_FETCHING_ENABLED ? <div
           className={styles.audienceSize}>
           <div className={styles.audienceSizeText}>AUDIENCE SIZE</div>
           <div className={styles.audienceSizeDescription}>{audienceSize}</div>
-        </div>
+        </div> : null}
         <Button
           value='Cancel'
           onClick={this.props.secondaryAction}/>
