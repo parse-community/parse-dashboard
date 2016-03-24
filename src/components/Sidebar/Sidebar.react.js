@@ -30,13 +30,13 @@ let Sidebar = ({
     }
     return (
       <div className={styles.submenu}>
-        {subsections.map((section) => {
-          let active = subsection === section.name;
+        {subsections.map(({name, link}) => {
+          let active = subsection === name;
           return (
             <SidebarSubItem
-              key={section.name}
-              name={section.name}
-              link={prefix + section.link}
+              key={name}
+              name={name}
+              link={prefix + link}
               action={action || null}
               actionHandler={active ? actionHandler : null}
               active={active}>
