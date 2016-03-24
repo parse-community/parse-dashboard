@@ -14,7 +14,7 @@ import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 
-let Sidebar = ({
+const Sidebar = ({
   prefix,
   action,
   actionHandler,
@@ -24,14 +24,14 @@ let Sidebar = ({
   section,
   appSelector,
 }) => {
-  let _subMenu = subsections => {
+  const _subMenu = subsections => {
     if (!subsections) {
       return null;
     }
     return (
       <div className={styles.submenu}>
         {subsections.map(({name, link}) => {
-          let active = subsection === name;
+          const active = subsection === name;
           return (
             <SidebarSubItem
               key={name}
@@ -48,7 +48,7 @@ let Sidebar = ({
     );
   }
 
-  let apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+  const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
 
   return <div className={styles.sidebar}>
     <SidebarHeader />
@@ -62,7 +62,7 @@ let Sidebar = ({
         link,
         subsections,
       }) => {
-        let active = name === section;
+        const active = name === section;
         return (
           <SidebarSection
             key={name}
