@@ -10,6 +10,9 @@ import PushAudiencesOption from 'components/PushAudiencesSelector/PushAudiencesO
 import React               from 'react';
 import styles              from 'components/PushAudiencesSelector/PushAudiencesSelector.scss';
 
+const AUDIENCE_SIZE_FETCHING_ENABLED = false;
+const AUDIENCE_CREATED_DATE_ENABLED = false;
+
 let pushAudiencesHelper = ({
   current,
   onChange,
@@ -56,12 +59,12 @@ let PushAudiencesSelector = ({
     <div className={[styles.cell, styles.col1].join(' ')}>
       Audience
     </div>
-    <div className={[styles.cell, styles.col2].join(' ')}>
+    {AUDIENCE_SIZE_FETCHING_ENABLED ? <div className={[styles.cell, styles.col2].join(' ')}>
       Size
-    </div>
-    <div className={[styles.cell, styles.col3].join(' ')}>
+    </div> : null}
+    {AUDIENCE_CREATED_DATE_ENABLED ? <div className={[styles.cell, styles.col3].join(' ')}>
       Created
-    </div>
+    </div> : null}
   </div>
   {children}
 </div>

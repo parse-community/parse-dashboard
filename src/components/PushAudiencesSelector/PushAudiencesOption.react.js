@@ -19,6 +19,9 @@ import PushAudiencesBaseRow      from 'components/PushAudiencesSelector/PushAudi
 
 const FORM_PREFIX = 'audience_radio';
 
+const AUDIENCE_SIZE_FETCHING_ENABLED = false;
+const AUDIENCE_CREATED_DATE_ENABLED = false;
+
 export default class PushAudiencesOption extends PushAudiencesBaseRow {
   constructor() {
     super();
@@ -107,12 +110,12 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
             </div>
           </div>
         </div>
-        <div className={[styles.cell, styles.col2].join(' ')}>
+        {AUDIENCE_SIZE_FETCHING_ENABLED ? <div className={[styles.cell, styles.col2].join(' ')}>
           {PushUtils.formatCountDetails(this.state.count, this.state.approximate)}
-        </div>
-        <div className={[styles.cell, styles.col3].join(' ')}>
+        </div> : null}
+        {AUDIENCE_CREATED_DATE_ENABLED ? <div className={[styles.cell, styles.col3].join(' ')}>
           {yearMonthDayFormatter(this.props.createdAt)}
-        </div>
+        </div> : null}
       </label>
     );
   }
