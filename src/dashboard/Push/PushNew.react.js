@@ -185,13 +185,26 @@ export default class PushNew extends DashboardView {
 
   handlePushSubmit(changes) {
     let promise = new Promise();
-    this.context.currentApp.createPushNotification(changes).then(({ error }) => {
+    let payload = {};
+    payload.alert = changes.data_type === 'json' ? JSON.parse(changes.data) : changes.data;
+    payload.badge = !!changes.increment_badge;
+    Parse.Push.send({
+      where: changes.target ? changes.target : new Parse.Query(Parse.Installation),
+      data: payload,
+    }, {
+      useMasterKey: true,
+    }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
       if (error) {
         promise.reject({ error });
       } else {
         //TODO: global success message banner for passing successful creation - store should also be cleared
-        history.push(this.context.generatePath('push/activity'));
+        const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
+        if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
+          history.push(this.context.generatePath('push/activity'));
+        } else {
+          promise.resolve();
+        }
       }
     }, (error) => {
       promise.reject(error);
@@ -598,15 +611,15 @@ export default class PushNew extends DashboardView {
       legend='Choose your recipients.'
       description='Send to everyone, or use an audience to target the right users.'>
       <PushAudiencesData
-        loaded={true /* Parse Server doesn't support push audiences yet this.state.pushAudiencesFetched */}
+        loaded={true /* Parse Server doesn't support push audiences yet. once it does, pass: this.state.pushAudiencesFetched */}
         schema={schema}
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
-        onChange={(audienceId, query, deviceCount) => {
+        onChange={(audienceId, queryOrFilters, deviceCount) => {
           this.setState({ deviceCount });
           setField('audience_id', audienceId);
           if (audienceId === PushConstants.NEW_SEGMENT_ID) {
-            setField('target', JSON.stringify(query));
+            setField('target', queryFromFilters('_Installation', queryOrFilters));
           }
         }} />
     </Fieldset>
@@ -638,10 +651,18 @@ export default class PushNew extends DashboardView {
       {this.renderExperimentContent(fields, setField)}
     </Fieldset> : null;
 
+    const timeFieldsLegend = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+      'Choose a delivery time' :
+      'Choose exiry';
+
+    const timeFieldsDescription = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+      'We can send the campaign immediately, or any time in the next 2 weeks.' :
+      "If your push hasn't been send by this time, it won't get sent.";
+
     const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? <Fieldset
-      legend='Choose a delivery time'
-      description='We can send the campaign immediately, or any time in the next 2 weeks.'>
-      {this.renderDeliveryContent(fields, setField)}
+      legend={timeFieldsLegend}
+      description={timeFieldsDescription}>
+      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? this.renderDeliveryContent(fields, setField) : null}
       <Field
         label={<Label text='Should this notification expire?' />}
         input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />

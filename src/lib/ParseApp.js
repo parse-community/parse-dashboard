@@ -374,11 +374,6 @@ export default class ParseApp {
     return AJAX.abortableGet(audienceId ? `${path}${urlsSeparator}audienceId=${audienceId}` : path);
   }
 
-  createPushNotification(formData) {
-    let path = '/apps/' + this.slug + '/push_notifications';
-    return AJAX.post(path, formData);
-  }
-
   fetchPushNotifications(type, page) {
     let path = '/apps/' + this.slug + '/push_notifications/' + `?type=${type}`;
     if (page) {

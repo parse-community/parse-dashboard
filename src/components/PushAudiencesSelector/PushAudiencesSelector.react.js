@@ -5,40 +5,54 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import * as PushConstants  from 'dashboard/Push/PushConstants.js';
 import PropTypes           from 'lib/PropTypes';
 import PushAudiencesOption from 'components/PushAudiencesSelector/PushAudiencesOption.react';
 import React               from 'react';
 import styles              from 'components/PushAudiencesSelector/PushAudiencesSelector.scss';
+import { fromJS }          from 'immutable';
 
 const AUDIENCE_SIZE_FETCHING_ENABLED = false;
 const AUDIENCE_CREATED_DATE_ENABLED = false;
 
-let pushAudiencesHelper = ({
+const PushAudiencesOptions = ({
   current,
   onChange,
   onEditAudience,
   schema,
-}, audiences) => {
-  if (!audiences){
-    return null;
-  }
-  let _audiences = [];
-  audiences.map((data) => {
-    _audiences.push(<PushAudiencesOption
-      icon={data.icon}
-      key={data.objectId}
-      id={data.objectId}
-      name={data.name}
-      query={data.query}
-      createdAt={new Date(data.createdAt)}
-      isChecked={current === data.objectId ? true : false}
-      onChange={onChange.bind(undefined, data.objectId, data.query)}
+  audiences,
+}) => <div>
+  {audiences.map(({
+    icon,
+    objectId,
+    name,
+    query,
+    createdAt,
+    filters,
+  }) => {
+    const queryOrFilters = objectId === PushConstants.NEW_SEGMENT_ID ?
+      filters.push(fromJS({
+        field: 'deviceType',
+        constraint: 'containedIn',
+        array: query.deviceType['$in'],
+      })) :
+      query;
+    return <div><PushAudiencesOption
+      icon={icon}
+      key={objectId}
+      id={objectId}
+      name={name}
+      query={query}
+      createdAt={new Date(createdAt)}
+      isChecked={current === objectId ? true : false}
+      //Super janky. Only works because open dashboard doesn't have saved audiences
+      onChange={() => onChange(objectId, queryOrFilters)}
       onEditAudience={onEditAudience}
       schema={schema}
-      filters={data.filters} />);
-  });
-  return _audiences;
-};
+      filters={filters} />
+    </div>
+  })}
+</div>
 
 let PushAudiencesSelector = ({
   defaultAudience,
@@ -51,9 +65,24 @@ let PushAudiencesSelector = ({
   schema,
 }) => <div className={styles.container}>
   <div className={styles.body}>
-    {pushAudiencesHelper({current, onChange, onEditAudience, schema}, defaultAudience ? [defaultAudience] : null)}
-    {pushAudiencesHelper({current, onChange, onEditAudience, schema}, newSegment ? [newSegment] : null)}
-    {pushAudiencesHelper({current, onChange, onEditAudience, schema}, audiences)}
+    <PushAudiencesOptions
+      current={current}
+      onChange={onChange}
+      onEditAudience={onEditAudience}
+      schema={schema}
+      audiences={defaultAudience ? [defaultAudience] : []} />
+    <PushAudiencesOptions
+      current={current}
+      onChange={onChange}
+      onEditAudience={onEditAudience}
+      schema={schema}
+      audiences={newSegment ? [newSegment] : []} />
+    <PushAudiencesOptions
+      current={current}
+      onChange={onChange}
+      onEditAudience={onEditAudience}
+      schema={schema}
+      audiences={audiences} />
   </div>
   <div className={styles.header}>
     <div className={[styles.cell, styles.col1].join(' ')}>
