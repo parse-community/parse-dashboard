@@ -22,9 +22,11 @@ import history                 from 'dashboard/history';
 import joinWithFinal           from 'lib/joinWithFinal';
 import Label                   from 'components/Label/Label.react';
 import Option                  from 'components/Dropdown/Option.react';
+import Parse                   from 'parse';
 import pluralize               from 'lib/pluralize';
 import PushAudiencesData       from './PushAudiencesData.react';
 import PushPreview             from 'components/PushPreview/PushPreview.react';
+import queryFromFilters        from 'lib/queryFromFilters';
 import Range                   from 'components/Range/Range.react';
 import React                   from 'react';
 import SliderWrap              from 'components/SliderWrap/SliderWrap.react';
@@ -59,7 +61,17 @@ let isValidJSON = (input) => {
   }
 }
 
-let LocalizedMessageField = ({ monospace, id, onChangeValue, onChangeLocale, onClickRemove, localeOptions, currentLocaleOption, data, deviceCount }) => {
+let LocalizedMessageField = ({
+  monospace,
+  id,
+  onChangeValue,
+  onChangeLocale,
+  onClickRemove,
+  localeOptions,
+  currentLocaleOption,
+  data,
+  deviceCount,
+}) => {
   let deviceCountSegment =  pluralize(deviceCount, 'device');
   return (
     <div className={styles.localeContainer}>
@@ -619,7 +631,13 @@ export default class PushNew extends DashboardView {
           this.setState({ deviceCount });
           setField('audience_id', audienceId);
           if (audienceId === PushConstants.NEW_SEGMENT_ID) {
-            setField('target', queryFromFilters('_Installation', queryOrFilters));
+            // Horrible code here is due to old rails code that sent pushes through it's own endpoint, while Parse Server sends through Parse.Push.
+            // Ideally, we would pass a Parse.Query around everywhere.
+            if (queryOrFilters instanceof Parse.Query) {
+              setField('target', queryOrFilters);
+            } else {
+              setField('target', queryFromFilters('_Installation', queryOrFilters));
+            }
           }
         }} />
     </Fieldset>
