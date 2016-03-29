@@ -3,6 +3,7 @@
 ### 1.0.6
 
 * Send push notifications from the dashboard
+* Add object count to relation browser, thanks to [Sergey Gavrilyuk](https://github.com/gavrix)
 
 ### 1.0.5
 
