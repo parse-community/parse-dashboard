@@ -7,10 +7,6 @@
  */
 import * as PushAudiencesStore from 'lib/stores/PushAudiencesStore';
 import * as PushConstants      from './PushConstants';
-
-import { center }              from 'stylesheets/base.scss';
-import { List, Map }           from 'immutable';
-
 import Button                  from 'components/Button/Button.react';
 import LoaderContainer         from 'components/LoaderContainer/LoaderContainer.react';
 import ParseApp                from 'lib/ParseApp';
@@ -19,8 +15,9 @@ import PushAudienceDialog      from 'components/PushAudienceDialog/PushAudienceD
 import PushAudiencesSelector   from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
 import queryFromFilters        from 'lib/queryFromFilters';
 import React                   from 'react';
-
 import styles                  from './PushAudiencesData.scss';
+import { center }              from 'stylesheets/base.scss';
+import { List, Map }           from 'immutable';
 
 const XHR_KEY = 'PushAudiencesData';
 
@@ -127,6 +124,11 @@ export default class PushAudiencesData extends React.Component {
     }
 
     query.deviceType = { $in: platforms };
+
+    // Horrible code here is due to old rails code that sent pushes through it's own endpoint, while Parse Server sends through Parse.Push.
+    // Ideally, we would pass a Parse.Query around everywhere.
+    parseQuery.containedIn('deviceType', platforms);
+    this.props.onChange(saveForFuture ? (() => {throw "Audiences not supported"})() : PushConstants.NEW_SEGMENT_ID, parseQuery, 1 /* TODO: get the read device count */);
 
     if (saveForFuture){
       this.props.pushAudiencesStore.dispatch(PushAudiencesStore.ActionTypes.CREATE, {
