@@ -50,10 +50,8 @@ let BrowserToolbar = ({
       } else {
         details.push(prettyNumber(count) + ' objects');
       }
-    }
-    else {
-      details.push('count unknown');
-    }
+  }
+
   if (!relation) {    
     if (perms && !hidePerms) {
       let read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
