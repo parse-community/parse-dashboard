@@ -58,6 +58,7 @@ export default class Browser extends DashboardView {
       newObject: null,
 
       lastError: null,
+      relationCount: 0,
     };
   }
 
@@ -258,6 +259,11 @@ export default class Browser extends DashboardView {
     query.find({ useMasterKey: true }).then((data) => this.setState({ data: data, lastMax: 200 }));
   }
 
+  fetchRelationCount(relation) {
+    let p = this.context.currentApp.getRelationCount(relation);
+    p.then((count) => this.setState({ relationCount: count }));
+  }
+
   fetchNextPage() {
     if (!this.state.data) {
       return null;
@@ -327,8 +333,12 @@ export default class Browser extends DashboardView {
   setRelation(relation) {
     this.setState({
       relation: relation,
+      relationCount: 0,
       selection: {},
-    }, () => this.fetchData(relation, this.state.filters));
+    }, () => { 
+      this.fetchData(relation, this.state.filters);
+      this.fetchRelationCount(relation);      
+    });
   }
 
   handlePointerClick({ className, id }) {
@@ -541,7 +551,7 @@ export default class Browser extends DashboardView {
 
         browser = (
           <DataBrowser
-            count={this.state.counts[className]}
+            count={this.state.relation ? this.state.relationCount : this.state.counts[className]}
             perms={this.state.clp[className]}
             schema={schema}
             userPointers={userPointers}
