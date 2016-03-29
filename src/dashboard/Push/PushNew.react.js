@@ -201,7 +201,7 @@ export default class PushNew extends DashboardView {
     payload.alert = changes.data_type === 'json' ? JSON.parse(changes.data) : changes.data;
     payload.badge = !!changes.increment_badge;
     Parse.Push.send({
-      where: changes.target ? changes.target : new Parse.Query(Parse.Installation),
+      where: changes.target || new Parse.Query(Parse.Installation),
       data: payload,
     }, {
       useMasterKey: true,
