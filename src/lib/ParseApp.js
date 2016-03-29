@@ -202,6 +202,12 @@ export default class ParseApp {
     return p;
   }
 
+  getRelationCount(relation) {
+    this.setParseKeys();
+    let p = relation.query().count({ useMasterKey: true });
+    return p;
+  }
+
   getAnalyticsRetention(time) {
     time = Math.round(time.getTime() / 1000);
     return AJAX.abortableGet('/apps/' + this.slug + '/analytics_retention?at=' + time);
