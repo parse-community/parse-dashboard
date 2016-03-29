@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse from 'parse';
+import Parse             from 'parse';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
-import React from 'react';
+import React             from 'react';
 
 function validateEntry(text) {
   let userQuery = Parse.Query.or(
@@ -68,6 +68,7 @@ function toACL(perms) {
 let ACLEditor = ({ value, onCommit }) => (
   <PermissionsDialog
     title='Edit Access Control List (ACL)'
+    advanced={false}
     confirmText='Save ACL'
     details={<a href='https://parse.com/docs/ios/guide#security-object-level-access-control'>Learn more about ACLs and app security</a>}
     permissions={toPerms(value)}
