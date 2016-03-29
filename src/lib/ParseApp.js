@@ -204,7 +204,6 @@ export default class ParseApp {
 
   getRelationCount(relation) {
     this.setParseKeys();
-    // let p = Parse.Promise.as(123); //
     let p = relation.query().count({ useMasterKey: true });
     return p;
   }
