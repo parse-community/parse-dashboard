@@ -1,5 +1,9 @@
 ## Parse Dashboard Changelog
 
+### 1.0.7
+
+* Fix sending pushes with badge increment
+
 ### 1.0.6
 
 * Send push notifications from the dashboard
