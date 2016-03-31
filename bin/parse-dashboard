@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../Parse-Dashboard');
+require('../Parse-Dashboard/cli');

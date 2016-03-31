@@ -1,0 +1,114 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+"use strict";
+const packageJson = require('package-json');
+const basicAuth = require('basic-auth');
+const path = require('path');
+const jsonFile = require('json-file-plus');
+
+var ParseDashboard = require('../index.js');
+// Command line tool for npm start
+
+const program = require('commander');
+program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
+program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
+program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');
+program.option('--appName [appName]', 'the name of the app you would like to manage. Optional.');
+program.option('--config [config]', 'the path to the configuration file');
+program.option('--port [port]', 'the port to run parse-dashboard');
+program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
+
+program.parse(process.argv);
+
+
+const port = program.port || process.env.PORT || 4040;
+const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
+
+let explicitConfigFileProvided = !!program.config;
+let configFile = null;
+let configFromCLI = null;
+let configServerURL = program.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
+let configMasterKey = program.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
+let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
+let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
+let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
+let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
+if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
+  if (configServerURL && configMasterKey && configAppId) {
+    configFromCLI = {
+      data: {
+        apps: [
+          {
+            appId: configAppId,
+            serverURL: configServerURL,
+            masterKey: configMasterKey,
+            appName: configAppName,
+          },
+        ]
+      }
+    };
+    if (configUserId && configUserPassword) {
+      configFromCLI.data.users = [
+        {
+          user: configUserId,
+          pass: configUserPassword,
+        }
+      ];
+    }
+  } else if (!configServerURL && !configMasterKey && !configAppName) {
+    configFile = path.join(__dirname, '/../parse-dashboard-config.json');
+  }
+} else if (!program.config && process.env.PARSE_DASHBOARD_CONFIG) {
+  configFromCLI = {
+    data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG)
+  };
+} else {
+  configFile = program.config;
+  if (program.appId || program.serverURL || program.masterKey || program.appName) {
+    console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
+    process.exit(3);
+  }
+}
+
+
+
+let p = null;
+if (configFile) {
+  p = jsonFile(configFile);
+} else if (configFromCLI) {
+  p = Promise.resolve(configFromCLI);
+} else {
+  //Failed to load default config file.
+  console.log('You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.');
+  process.exit(4);
+}
+
+p.then(config => {
+  config.data.port = port;
+  ParseDashboard.runServer(config.data);
+}, error => {
+  if (error instanceof SyntaxError) {
+    console.log('Your config file contains invalid JSON. Exiting.');
+    process.exit(1);
+  } else if (error.code === 'ENOENT') {
+    if (explicitConfigFileProvided) {
+      console.log('Your config file is missing. Exiting.');
+      process.exit(2);
+    } else {
+      console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
+      process.exit(3);
+    }
+  } else {
+    console.log('There was a problem with your config. Exiting.');
+    process.exit(-1);
+  }
+})
+.catch(error => {
+  console.log('There was a problem loading the dashboard. Exiting.');
+  process.exit(-1);
+});

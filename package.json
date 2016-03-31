@@ -9,17 +9,20 @@
     "Class Level Permissions Editor",
     "Send Push Notifications"
   ],
+  "main": "./Parse-Dashboard/index.js",
   "description": "The Parse Dashboard",
   "keywords": [
     "parse",
     "dashboard"
   ],
   "homepage": "https://github.com/ParsePlatform/parse-dashboard",
-  "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
+  "bugs": {
+    "url": "https://github.com/ParsePlatform/parse-dashboard/issues"
+  },
   "version": "1.0.6",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ParsePlatform/parse-dashboard"
+    "url": "git+https://github.com/ParsePlatform/parse-dashboard.git"
   },
   "license": "SEE LICENSE IN LICENSE",
   "files": [
@@ -29,6 +32,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "babel-polyfill": "^6.7.2",
     "basic-auth": "^1.0.3",
     "commander": "^2.9.0",
     "express": "^4.13.4",
@@ -73,7 +77,7 @@
     "test": "NODE_PATH=./node_modules jest",
     "generate": "node scripts/generate.js",
     "prepublish": "webpack --config webpack/publish.config.js --progress",
-    "start": "node ./Parse-Dashboard/index.js"
+    "start": "node ./bin/parse-dashboard"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
@@ -96,5 +100,12 @@
       "react-addons-test-utils",
       "fbjs"
     ]
-  }
+  },
+  "readme": "# Parse Dashboard\r\n\r\nParse Dashboard is a standalone dashboard for managing your Parse apps. You can use it to manage your [Parse Server](https://github.com/ParsePlatform/parse-server) apps and your apps that are running on [Parse.com](https://Parse.com).\r\n\r\n# Getting Started\r\n\r\n[Node.js](https://nodejs.org) version >= 4.3 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher. Install the dashboard from `npm`.\r\n\r\n```\r\nnpm install -g parse-dashboard\r\n```\r\n\r\nYou can launch the dashboard for an app with a single command by supplying an app ID, master key, URL, and name like this:\r\n\r\n```\r\nparse-dashboard --appId yourAppId --masterKey yourMasterKey --serverURL \"https://example.com/parse\" --appName optionalName\r\n```\r\n\r\nYou can then visit the dashboard in your browser at http://localhost:4040. If you want to use a different port you can supply the --port option to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.\r\n\r\nIf you want to manage multiple apps from the same dashboard, you can start the dashboard with a config file. For example, you could put your info into a file called `parse-dashboard-config.json` and then start the dashboard using `parse-dashboard --config parse-dashboard-config.json`. The file should match the following format:\r\n\r\n```\r\n{\r\n  \"apps\": [\r\n    {\r\n      \"serverURL\": \"http://localhost:1337/parse\",\r\n      \"appId\": \"myAppId\",\r\n      \"masterKey\": \"myMasterKey\",\r\n      \"appName\": \"MyApp\"\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\nYou can also manage apps that on Parse.com from the same dashboard. In your config file, you will need to add the `restKey` and `javascriptKey` as well as the other paramaters, which you can find on `dashboard.parse.com`. Set the serverURL to `http://api.parse.com/1`:\r\n\r\n```\r\n{\r\n  \"apps\": [\r\n    {\r\n      \"serverURL\": \"https://api.parse.com/1\",\r\n      \"appId\": \"myAppId\",\r\n      \"masterKey\": \"myMasterKey\",\r\n      \"javascriptKey\": \"myJavascriptKey\",\r\n      \"restKey\": \"myRestKey\",\r\n      \"appName\": \"My Parse.Com App\"\r\n    },\r\n    {\r\n      \"serverURL\": \"http://localhost:1337/parse\",\r\n      \"appId\": \"myAppId\",\r\n      \"masterKey\": \"myMasterKey\",\r\n      \"appName\": \"My Parse Server App\"\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\n![Parse Dashboard](.github/dash-shot.png)\r\n\r\n# Advanced Usage\r\n\r\n## Other options\r\n\r\nYou can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.\r\n\r\n## Deploying the dashboard\r\n\r\nMake sure the server URLs for your apps can be accessed by your browser. If you are deploying the dashboard, then `localhost` urls will not work.\r\n\r\nIn order to securely deploy the dashboard without leaking your apps master key, you will need to use HTTPS and Basic Auth. You can do this by adding usernames and passwords for HTTP Basic Auth to your configuration file.\r\n```\r\n{\r\n  \"apps\": [...],\r\n  \"users\": [\r\n    {\r\n      \"user\":\"user1\",\r\n      \"pass\":\"pass\"\r\n    },\r\n    {\r\n      \"user\":\"user2\",\r\n      \"pass\":\"pass\"\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\nThe deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or proxy that does early SSL termination, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--allowInsecureHTTP=1` option. You will then be responsible for ensureing that your proxy or load balancer only allows HTTPS.\r\n\r\n## Run with Docker\r\n\r\nIt is easy to use it with Docker. First build the image:\r\n\r\n```\r\ndocker build -t parse-dashboard .\r\n```\r\n\r\nRun the image with your ``config.json`` mounted as a volume\r\n\r\n```\r\ndocker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard\r\n```\r\n\r\nBy default, the container will start the app at port 4040 inside the container. However, you can run custom command as well (see ``Deploying in production`` for custom setup).\r\n\r\nIn this example, we want to run the application in production mode at port 80 of the host machine.\r\n\r\n```\r\ndocker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080\r\n```\r\n\r\nIf you are not familiar with Docker, ``--port 8080`` with be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.\r\n\r\n## Contributing\r\n\r\nWe really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).\r\n",
+  "readmeFilename": "README.md",
+  "gitHead": "57ca0e003364e16116a92bb4b6ee57a25fecf457",
+  "_id": "parse-dashboard@1.0.6",
+  "_shasum": "3ea82990367a0acebcc0523d8da02c58f7f04e45",
+  "_from": "..\\parse-dashboard",
+  "_resolved": "file:..\\parse-dashboard"
 }
