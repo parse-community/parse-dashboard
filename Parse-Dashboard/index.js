@@ -23,6 +23,7 @@ class ParseDashboard {
     {
       dashboardConfig.apps = [];
     }
+    ParseDashboard.checkConfig(dashboardConfig);
     this.config = { 
       apps : dashboardConfig.apps,
       users: dashboardConfig.users,
@@ -122,6 +123,7 @@ class ParseDashboard {
   
   static runServer(config)
   {
+      ParseDashboard.checkConfig(config);
       var api = express();
 
       // Serve public files.
@@ -143,6 +145,15 @@ class ParseDashboard {
       
       
       console.log('The dashboard is now available at http://localhost:'+config.port);
+  }
+  
+  static checkConfig(config)
+  {
+    config.apps.forEach(app => {
+      if (!app.appName) {
+        app.appName = app.appId;
+      }
+    });
   }
 }
 

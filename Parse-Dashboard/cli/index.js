@@ -75,6 +75,8 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   }
 }
 
+
+
 let p = null;
 if (configFile) {
   p = jsonFile(configFile);
@@ -87,8 +89,8 @@ if (configFile) {
 }
 
 p.then(config => {
-  config.port = port;
-  ParseDashboard.runServer(config);
+  config.data.port = port;
+  ParseDashboard.runServer(config.data);
 }, error => {
   if (error instanceof SyntaxError) {
     console.log('Your config file contains invalid JSON. Exiting.');
@@ -107,6 +109,6 @@ p.then(config => {
   }
 })
 .catch(error => {
-  console.log('There was a problem loading the dashboard: '+error+'. Exiting.');
+  console.log('There was a problem loading the dashboard. Exiting.');
   process.exit(-1);
 });
