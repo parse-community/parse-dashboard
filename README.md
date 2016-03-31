@@ -64,6 +64,35 @@ You can also manage apps that on Parse.com from the same dashboard. In your conf
 
 You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.
 
+## Use as Express middleware
+
+Parse Dashboard can also be mounted as middleware in an express application.
+
+A short example on how to accomplish this is shown below:
+
+```
+var express = require('express');
+var app = express();
+var ParseDashboard = require('parse-dashboard');
+
+var dashboard = new ParseDashboard({
+  apps: [
+    {
+      serverURL: "https://example.com:17030/parse",
+      appId: "YOUR_APP_ID",
+      masterKey: "YOUR_MASTER_KEY",
+      appName: "MyApp"
+    }
+  ]
+});
+
+app.use("/",dashboard.app());
+
+app.listen(4040, function () {
+  console.log('Example Parse Dashboard express app listening on port 4040!');
+});
+```
+
 ## Deploying the dashboard
 
 Make sure the server URLs for your apps can be accessed by your browser. If you are deploying the dashboard, then `localhost` urls will not work.
