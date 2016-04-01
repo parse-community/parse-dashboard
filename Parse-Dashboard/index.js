@@ -120,13 +120,27 @@ p.then(config => {
       auth = basicAuth(req);
     }
 
+    // On platforms with certain routing setups, all requests may appear as
+    // localhost requests. Use the X-FORWARDED-FOR header to obtain the IP
+    // of the original sender of the request.
+    const remoteAddress =
+      req.headers['x-forwarded-for'] ||
+      req.connection.remoteAddress;
+
+    // Similarly as above, TLS termination is somtimes done far before the app server and
+    // so we need to use the original request information via X-FORWARDED-PROTO.
+    const isSecure =
+      (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === 'https') ||
+      req.secure;
+
     //Based on advice from Doug Wilson here:
     //https://github.com/expressjs/express/issues/2518
     const requestIsLocal =
-      req.connection.remoteAddress === '127.0.0.1' ||
-      req.connection.remoteAddress === '::ffff:127.0.0.1' ||
-      req.connection.remoteAddress === '::1';
-    if (!requestIsLocal && !req.secure && !allowInsecureHTTP) {
+      remoteAddress === '127.0.0.1' ||
+      remoteAddress === '::ffff:127.0.0.1' ||
+      remoteAddress === '::1';
+
+    if (!requestIsLocal && !isSecure && !allowInsecureHTTP) {
       //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
       return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
     }
