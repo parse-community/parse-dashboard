@@ -87,6 +87,12 @@ In order to securely deploy the dashboard without leaking your apps master key, 
 
 The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or proxy that does early SSL termination, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--allowInsecureHTTP=1` option. You will then be responsible for ensureing that your proxy or load balancer only allows HTTPS.
 
+### Building on Deploy
+
+In order to build the project while deploying (opposed to locally, prior to deploy), you need to set the `POST_INSTALL_BUILD` environment variable to something on the environment it's being deployed to. This will compile the appropriate assets and copy them into the right place.
+
+Building on deploy has one major advantage, which is that you don't need to commit your built assets into your repo. It does mean, however, that everytime you deploy it will rebuild those assets, whether or not they changed.
+
 ## Run with Docker
 
 It is easy to use it with Docker. First build the image:
