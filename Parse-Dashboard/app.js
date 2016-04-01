@@ -17,6 +17,9 @@ packageJson('parse-dashboard', 'latest').then(latestPackage => {
 
 module.exports = function(config) {
   var app = express();
+  app.set('views', './');
+  app.set('view engine', 'jade');
+
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
 
@@ -83,7 +86,7 @@ module.exports = function(config) {
 
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.render('index', { route: config.route });
   });
 
   return app;

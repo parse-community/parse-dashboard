@@ -14,7 +14,7 @@ module.exports = {
   context: path.join(__dirname, '../src'),
   output: {
     filename: '[name].bundle.js',
-    publicPath: '/bundles/'
+    publicPath: 'bundles/'
   },
   resolve: {
     root: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, 'node_modules')]

@@ -91,11 +91,15 @@ p.then(config => {
 
   const app = express();
 
-  app.use(parseDashboard(config.data));
+  config.data.route = config.data.route || '/';
+  // add trailing slash
+  if (config.data.route.substr(-1) != '/') config.data.route += '/';
+
+  app.use(config.data.route, parseDashboard(config.data));
   // Start the server.
   app.listen(port);
 
-  console.log(`The dashboard is now available at http://localhost:${port}/`);
+  console.log(`The dashboard is now available at http://localhost:${port}${config.data.route}`);
 }, error => {
   if (error instanceof SyntaxError) {
     console.log('Your config file contains invalid JSON. Exiting.');
