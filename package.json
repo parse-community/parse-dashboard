@@ -81,6 +81,7 @@
   "engines": {
     "node": ">=4.3"
   },
+  "main": "Parse-Dashboard/app.js",
   "jest": {
     "testPathDirs": [
       "src/lib"
