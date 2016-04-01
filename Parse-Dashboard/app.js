@@ -15,7 +15,7 @@ packageJson('parse-dashboard', 'latest').then(latestPackage => {
   }
 });
 
-module.exports = function(config) {
+module.exports = function(config, allowInsecureHTTP) {
   var app = express();
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
