@@ -91,7 +91,7 @@ p.then(config => {
 
   const app = express();
 
-  app.use(parseDashboard(config.data));
+  app.use(parseDashboard(config.data, allowInsecureHTTP));
   // Start the server.
   app.listen(port);
 

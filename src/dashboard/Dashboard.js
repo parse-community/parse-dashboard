@@ -108,7 +108,6 @@ const PARSE_DOT_COM_SERVER_INFO = {
 class Dashboard extends React.Component {
   constructor(props) {
     super();
-
     this.state = {
       configLoadingError: '',
       configLoadingState: AsyncStatus.PROGRESS,
@@ -117,7 +116,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
+    get(this.props.configURI).then(({ apps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {

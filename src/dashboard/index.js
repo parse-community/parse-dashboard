@@ -17,4 +17,5 @@ import 'babel-polyfill';
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);
 
-ReactDOM.render(<Dashboard/>, document.getElementById('browser_mount'));
+var configURI = window.PARSE_DASHBOARD_CONFIG_URI || '/parse-dashboard-config.json';
+ReactDOM.render(<Dashboard configURI={configURI}/>, document.getElementById('browser_mount'));
