@@ -93,7 +93,7 @@
 }
 
 .ios {
-  background-image: url(/images/iphone.jpg);
+  background-image: url(components/PushPreview/iphone.jpg);
   background-size: 325px auto;
   font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   color: white;
@@ -159,7 +159,7 @@
 }
 
 .android {
-  background-image: url(/images/android.jpg);
+  background-image: url(components/PushPreview/android.jpg);
   background-size: 325px auto;
   font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 
@@ -229,7 +229,7 @@
 }
 
 .osx {
-  background-image: url(/images/laptop.jpg);
+  background-image: url(components/PushPreview/laptop.jpg);
   background-size: 325px auto;
   font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   color: #555252;
@@ -272,7 +272,7 @@
 }
 
 .windows {
-  background-image: url(/images/windowsphone.jpg);
+  background-image: url(components/PushPreview/windowsphone.jpg);
   background-size: 325px auto;
   font-family: 'Arial', sans-serif;
   color: white;
