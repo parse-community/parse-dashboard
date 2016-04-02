@@ -20,6 +20,7 @@ import React         from 'react';
 import styles        from 'dashboard/Apps/AppsIndex.scss';
 import { center }    from 'stylesheets/base.scss';
 import { Link }      from 'react-router';
+import AppBadge         from 'components/AppBadge/AppBadge.react';
 
 function dash(value, content) {
   if (value === undefined) {
@@ -81,6 +82,7 @@ let AppCard = ({
       {versionMessage}
     </div>
     <CountsSection className={styles.glance} title='At a glance'>
+      <AppBadge production={app.production} />
       <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
       <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
     </CountsSection>
