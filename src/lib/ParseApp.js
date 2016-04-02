@@ -37,6 +37,7 @@ export default class ParseApp {
     apiKey,
     serverURL,
     serverInfo,
+    production,
     ...params,
   }) {
     this.name = appName;
@@ -54,7 +55,7 @@ export default class ParseApp {
     this.windowsKey = windowsKey;
     this.webhookKey = webhookKey;
     this.fileKey =  apiKey;
-    this.production = !!params['is_production?'];
+    this.production = production;
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
 

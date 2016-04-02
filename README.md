@@ -44,7 +44,8 @@ You can also manage apps that on Parse.com from the same dashboard. In your conf
       "masterKey": "myMasterKey",
       "javascriptKey": "myJavascriptKey",
       "restKey": "myRestKey",
-      "appName": "My Parse.Com App"
+      "appName": "My Parse.Com App",
+      "production": true
     },
     {
       "serverURL": "http://localhost:1337/parse",
@@ -62,7 +63,7 @@ You can also manage apps that on Parse.com from the same dashboard. In your conf
 
 ## Other options
 
-You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.
+You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard. To change the app to production, simply set `production` to `true` in your config file. Defaults to false if not specified.
 
 ## Deploying the dashboard
 
