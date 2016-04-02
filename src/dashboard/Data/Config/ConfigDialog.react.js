@@ -98,7 +98,7 @@ const GET_VALUE = {
   Date: (value) => value,
   Object: (value) => JSON.parse(value),
   Array: (value) => JSON.parse(value),
-  GeoPoint: ({ latitude, longitude }) => new Parse.GeoPoint(latitude, longitude),
+  GeoPoint: (value) => new Parse.GeoPoint({latitude: value.latitude, longitude: value.longitude}),
   File: (value) => value
 };
 
@@ -157,6 +157,9 @@ export default class ConfigDialog extends React.Component {
         }
         if (isNaN(parseFloat(val.latitude)) || isNaN(parseFloat(val.longitude))) {
           return false;
+        }
+        if (parseFloat(val.latitude) > 90.0 || parseFloat(val.latitude) < -90.0 || parseFloat(val.longitude) > 180.0 || parseFloat(val.longitude) < -180.0) {
+        	return false;
         }
         return true;
       case 'File':
