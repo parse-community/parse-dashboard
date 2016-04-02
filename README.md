@@ -27,7 +27,7 @@ If you want to manage multiple apps from the same dashboard, you can start the d
       "serverURL": "http://localhost:1337/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
-      "appName": "MyApp",
+      "appName": "MyApp"
     }
   ]
 }
