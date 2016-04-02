@@ -48,6 +48,7 @@ import Webhooks           from './Data/Webhooks/Webhooks.react';
 import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
+import { setBasePath }    from 'lib/AJAX';
 import {
   Router,
   Route,
@@ -108,12 +109,12 @@ const PARSE_DOT_COM_SERVER_INFO = {
 class Dashboard extends React.Component {
   constructor(props) {
     super();
-
     this.state = {
       configLoadingError: '',
       configLoadingState: AsyncStatus.PROGRESS,
       newFeaturesInLatestVersion: [],
     };
+    setBasePath(props.path);
   }
 
   componentDidMount() {

@@ -72,7 +72,7 @@
     "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "NODE_PATH=./node_modules jest",
     "generate": "node scripts/generate.js",
-    "prepublish": "webpack --config webpack/publish.config.js --progress",
+    "prepublish": "webpack --config webpack/publish.config.js",
     "start": "node ./Parse-Dashboard/index.js"
   },
   "bin": {
