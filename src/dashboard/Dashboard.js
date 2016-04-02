@@ -48,6 +48,7 @@ import Webhooks           from './Data/Webhooks/Webhooks.react';
 import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
+import { setBasePath }    from 'lib/AJAX';
 import {
   Router,
   Route,
@@ -113,10 +114,11 @@ class Dashboard extends React.Component {
       configLoadingState: AsyncStatus.PROGRESS,
       newFeaturesInLatestVersion: [],
     };
+    setBasePath(props.path);
   }
 
   componentDidMount() {
-    get(this.props.configURI).then(({ apps, newFeaturesInLatestVersion = [] }) => {
+    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {

@@ -15,6 +15,17 @@ packageJson('parse-dashboard', 'latest').then(latestPackage => {
   }
 });
 
+function getMount(req) {
+  let url = req.url;
+  let originalUrl = req.originalUrl;
+  var mountPathLength = req.originalUrl.length - req.url.length;
+  var mountPath = req.originalUrl.slice(0, mountPathLength);
+  if (!mountPath.endsWith('/')) {
+    mountPath += '/';
+  }
+  return mountPath;
+}
+
 module.exports = function(config, allowInsecureHTTP) {
   var app = express();
   // Serve public files.
@@ -83,18 +94,12 @@ module.exports = function(config, allowInsecureHTTP) {
 
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
-    let url = req.url;
-    let originalUrl = req.originalUrl;
-    var mountPathLength = req.originalUrl.length - req.url.length;
-    var mountPath = req.originalUrl.slice(0, mountPathLength);
-    if (!mountPath.endsWith('/')) {
-      mountPath += '/';
-    }
+    let mountPath = getMount(req);
     res.send(`<!DOCTYPE html>
       <head>
         <base href="${mountPath}"/>
         <script>
-          PARSE_DASHBOARD_CONFIG_URI = "${mountPath}parse-dashboard-config.json";
+          PARSE_DASHBOARD_PATH = "${mountPath}";
         </script>
       </head>
       <html>
