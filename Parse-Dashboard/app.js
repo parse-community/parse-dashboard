@@ -97,6 +97,7 @@ module.exports = function(config, allowInsecureHTTP) {
     let mountPath = getMount(req);
     res.send(`<!DOCTYPE html>
       <head>
+        <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
         <base href="${mountPath}"/>
         <script>
           PARSE_DASHBOARD_PATH = "${mountPath}";
