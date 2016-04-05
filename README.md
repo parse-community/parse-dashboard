@@ -16,7 +16,7 @@ You can launch the dashboard for an app with a single command by supplying an ap
 parse-dashboard --appId yourAppId --masterKey yourMasterKey --serverURL "https://example.com/parse" --appName optionalName
 ```
 
-You can then visit the dashboard in your browser at http://0.0.0.0:4040. You may set the host and port by supplying the --host and --port options to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
+You can then visit the dashboard in your browser at http://localhost:4040. You may set the host and port by supplying the --host and --port options to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
 
 If you want to manage multiple apps from the same dashboard, you can start the dashboard with a config file. For example, you could put your info into a file called `parse-dashboard-config.json` and then start the dashboard using `parse-dashboard --config parse-dashboard-config.json`. The file should match the following format:
 
