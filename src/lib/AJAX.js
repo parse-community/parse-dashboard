@@ -22,7 +22,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
   if (!url.startsWith('http://')
       && !url.startsWith('https://')
       && basePath.length
-      && !url.startsWith(basePath)) {
+      && !url.startsWith(basePath + '/')) {
     url = basePath + url;
   }
   let xhr = new XMLHttpRequest();
