@@ -7,7 +7,8 @@
     "Parse Config",
     "API Console",
     "Class Level Permissions Editor",
-    "Send Push Notifications"
+    "Send Push Notifications",
+    "Logs Viewer"
   ],
   "description": "The Parse Dashboard",
   "keywords": [
