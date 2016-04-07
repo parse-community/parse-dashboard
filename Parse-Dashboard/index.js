@@ -20,12 +20,14 @@ program.option('--appName [appName]', 'the name of the app you would like to man
 program.option('--config [config]', 'the path to the configuration file');
 program.option('--host [host]', 'the host to run parse-dashboard');
 program.option('--port [port]', 'the port to run parse-dashboard');
+program.option('--mountPath [mountPath]', 'the mount path to run parse-dashboard');
 program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
 
 program.parse(process.argv);
 
 const host = program.host || process.env.HOST || '0.0.0.0';
 const port = program.port || process.env.PORT || 4040;
+const mountPath = program.mountPath || process.env.MOUNT_PATH || '/';
 const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 
 let explicitConfigFileProvided = !!program.config;
@@ -93,10 +95,10 @@ p.then(config => {
 
   const app = express();
 
-  app.use(parseDashboard(config.data, allowInsecureHTTP));
+  app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
   // Start the server.
   const server = app.listen(port, host, function () {
-    console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}/`);
+    console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
   });
 }, error => {
   if (error instanceof SyntaxError) {
