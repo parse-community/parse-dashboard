@@ -64,6 +64,9 @@ function addConstraint(query, filter) {
     case 'doesNotContainNumber':
       query.notEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
+    case 'containedIn':
+      query.containedIn(filter.get('field'), filter.get('array'));
+      break;
   }
   return query;
 }

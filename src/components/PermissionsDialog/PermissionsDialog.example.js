@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse from 'parse';
-import React from 'react';
+import Parse             from 'parse';
+import React             from 'react';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
-import Button from 'components/Button/Button.react';
+import Button            from 'components/Button/Button.react';
 
 export const component = PermissionsDialog;
 
@@ -70,6 +70,7 @@ class DialogDemo extends React.Component {
         {this.state.showSimple ?
           <PermissionsDialog
             title='Edit Access Control List (ACL)'
+            advanced={false}
             confirmText='Save ACL'
             details={<a href='#'>Learn more about ACLs and app security</a>}
             permissions={{

@@ -5,19 +5,22 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountView  from 'dashboard/AccountView.react';
-import AppsManager  from 'lib/AppsManager';
-import history      from 'dashboard/history';
-import howLongAgo   from 'lib/howLongAgo';
-import html         from 'lib/htmlString';
-import Icon         from 'components/Icon/Icon.react';
-import LiveReload   from 'components/LiveReload/LiveReload.react';
-import pluralize    from 'lib/pluralize';
-import prettyNumber from 'lib/prettyNumber';
-import React        from 'react';
-import styles       from 'dashboard/Apps/AppsIndex.scss';
-import { center }   from 'stylesheets/base.scss';
-import { Link }     from 'react-router';
+import AccountView   from 'dashboard/AccountView.react';
+import AppsManager   from 'lib/AppsManager';
+import FlowFooter    from 'components/FlowFooter/FlowFooter.react';
+import history       from 'dashboard/history';
+import howLongAgo    from 'lib/howLongAgo';
+import html          from 'lib/htmlString';
+import Icon          from 'components/Icon/Icon.react';
+import joinWithFinal from 'lib/joinWithFinal';
+import LiveReload    from 'components/LiveReload/LiveReload.react';
+import pluralize     from 'lib/pluralize';
+import prettyNumber  from 'lib/prettyNumber';
+import React         from 'react';
+import styles        from 'dashboard/Apps/AppsIndex.scss';
+import { center }    from 'stylesheets/base.scss';
+import { Link }      from 'react-router';
+import AppBadge         from 'components/AppBadge/AppBadge.react';
 
 function dash(value, content) {
   if (value === undefined) {
@@ -67,18 +70,22 @@ let AppCard = ({
   let canBrowse = app.serverInfo.error ? null : () => history.push(html`/apps/${app.slug}/browser`);
   let versionMessage = app.serverInfo.error ?
     <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
-    <div className={styles.serverVersion}>Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span></div>;
+    <div className={styles.serverVersion}>
+    Server URL: <span className={styles.ago}>{app.serverURL || 'unknown'}</span>
+    Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>
+    </div>;
 
   return <li onClick={canBrowse}>
     {icon ? <a className={styles.icon}><img src={icon} /></a> : null}
-    <CountsSection className={styles.glance} title='At a glance'>
-      <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
-      <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
-    </CountsSection>
     <div className={styles.details}>
       <a className={styles.appname}>{app.name}</a>
       {versionMessage}
     </div>
+    <CountsSection className={styles.glance} title='At a glance'>
+      <AppBadge production={app.production} />
+      <Metric number={dash(app.users, prettyNumber(app.users))} label='total users' />
+      <Metric number={dash(app.installations, prettyNumber(app.installations))} label='total installations' />
+    </CountsSection>
   </li>
 }
 
@@ -126,6 +133,15 @@ export default class AppsIndex extends React.Component {
       );
     }
     apps.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
+    let upgradePrompt = null;
+    if (this.props.newFeaturesInLatestVersion.length > 0) {
+      let newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => <strong>
+        {feature}
+      </strong>);
+      upgradePrompt = <FlowFooter>
+        Upgrade to the <a href='https://www.npmjs.com/package/parse-dashboard' target='_blank'>latest version</a> of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
+      </FlowFooter>
+    }
     return (
       <div className={styles.index}>
         <div className={styles.header}>
@@ -144,6 +160,7 @@ export default class AppsIndex extends React.Component {
               null
           )}
         </ul>
+        {upgradePrompt}
       </div>
     );
   }

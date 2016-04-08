@@ -39,16 +39,10 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, on
     content = dateStringUTC(value);
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';
-  } else if (type === 'Array' || type === 'Object') {
-    if (type === 'Array') {
-      let _value = [];
-      value.forEach((val) => {
-        _value.push(val.constructor === Parse.Object ? val.toPointer() : val);
-      });
-      content = JSON.stringify(_value);
-    } else {
-      content = JSON.stringify(value);
-    }
+  } else if (type === 'Array') {
+    content = JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
+  } else if (type === 'Object') {
+    content = JSON.stringify(value);
   } else if (type === 'File') {
     if (value.url()) {
       content = <a href={value.url()} target='_blank'><Pill value={getFileName(value)} /></a>;
@@ -85,7 +79,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, on
       </div>
     );
   }
-  
+
   if (current) {
     classes.push(styles.current);
   }

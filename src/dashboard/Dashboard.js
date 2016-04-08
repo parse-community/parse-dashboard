@@ -48,6 +48,7 @@ import Webhooks           from './Data/Webhooks/Webhooks.react';
 import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
+import { setBasePath }    from 'lib/AJAX';
 import {
   Router,
   Route,
@@ -65,12 +66,6 @@ let Empty = React.createClass({
     return <div>Not yet implemented</div>;
   }
 });
-
-const AppsIndexPage = () => (
-    <AccountView section='Your Apps'>
-      <AppsIndex />
-    </AccountView>
-  );
 
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>
@@ -114,15 +109,17 @@ const PARSE_DOT_COM_SERVER_INFO = {
 class Dashboard extends React.Component {
   constructor(props) {
     super();
-
     this.state = {
       configLoadingError: '',
       configLoadingState: AsyncStatus.PROGRESS,
+      newFeaturesInLatestVersion: [],
     };
+    setBasePath(props.path);
   }
 
   componentDidMount() {
-    get('/parse-dashboard-config.json').then(({ apps }) => {
+    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
+      this.setState({ newFeaturesInLatestVersion });
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -156,7 +153,7 @@ class Dashboard extends React.Component {
               return Parse.Promise.as(app);
             } else {
               app.serverInfo = {
-                error: 'unknown error',
+                error: error.message || 'unknown error',
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
@@ -196,6 +193,14 @@ class Dashboard extends React.Component {
       </div>
     }
 
+
+    const AppsIndexPage = () => (
+      <AccountView section='Your Apps'>
+        <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
+      </AccountView>
+    );
+
+
     return <Router history={history}>
       <Redirect from='/' to='/apps' />
       <Route path='/' component={App}>
@@ -222,7 +227,7 @@ class Dashboard extends React.Component {
           <Route path='config' component={Config} />
           <Route path='api_console' component={ApiConsole} />
           <Route path='migration' component={Migration} />
-          <Redirect from='push' to='/apps/:appId/push/activity/all' />
+          <Redirect from='push' to='/apps/:appId/push/new' />
           <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
           <Route path='push/activity/:category' component={PushIndex} />
           <Route path='push/audiences' component={PushAudiencesIndex} />

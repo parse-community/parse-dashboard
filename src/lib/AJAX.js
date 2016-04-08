@@ -9,8 +9,22 @@ import * as CSRFManager from 'lib/CSRFManager';
 import encodeFormData   from 'lib/encodeFormData';
 import { Promise }      from 'parse';
 
+let basePath = '';
+export function setBasePath(newBasePath) {
+  basePath = newBasePath || '';
+  if (basePath.endsWith('/')) {
+    basePath = basePath.slice(0, basePath.length-1);
+  }
+}
+
 // abortable flag used to pass xhr reference so user can abort accordingly
 export function request(method, url, body, abortable = false, withCredentials = true, useRequestedWith = true) {
+  if (!url.startsWith('http://')
+      && !url.startsWith('https://')
+      && basePath.length
+      && !url.startsWith(basePath + '/')) {
+    url = basePath + url;
+  }
   let xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   if (method === 'POST' || method === 'PUT' || method === 'DELETE') {

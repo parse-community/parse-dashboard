@@ -18,7 +18,7 @@ let Icon = ({ name, fill, width, height }) => {
   }
   return (
     <svg {...props} >
-      <use xlinkHref={`/bundles/sprites.svg#${name}`} />
+      <use xlinkHref={`bundles/sprites.svg#${name}`} />
     </svg>
   );
 };

@@ -22,9 +22,11 @@ import history                 from 'dashboard/history';
 import joinWithFinal           from 'lib/joinWithFinal';
 import Label                   from 'components/Label/Label.react';
 import Option                  from 'components/Dropdown/Option.react';
+import Parse                   from 'parse';
 import pluralize               from 'lib/pluralize';
 import PushAudiencesData       from './PushAudiencesData.react';
 import PushPreview             from 'components/PushPreview/PushPreview.react';
+import queryFromFilters        from 'lib/queryFromFilters';
 import Range                   from 'components/Range/Range.react';
 import React                   from 'react';
 import SliderWrap              from 'components/SliderWrap/SliderWrap.react';
@@ -35,6 +37,9 @@ import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
+
+const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
+const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = false;
 
 let formatErrorMessage = (emptyInputMessages, key) => {
   let boldMessages = emptyInputMessages.map((message) => {
@@ -56,7 +61,17 @@ let isValidJSON = (input) => {
   }
 }
 
-let LocalizedMessageField = ({ monospace, id, onChangeValue, onChangeLocale, onClickRemove, localeOptions, currentLocaleOption, data, deviceCount }) => {
+let LocalizedMessageField = ({
+  monospace,
+  id,
+  onChangeValue,
+  onChangeLocale,
+  onClickRemove,
+  localeOptions,
+  currentLocaleOption,
+  data,
+  deviceCount,
+}) => {
   let deviceCountSegment =  pluralize(deviceCount, 'device');
   return (
     <div className={styles.localeContainer}>
@@ -115,7 +130,7 @@ export default class PushNew extends DashboardView {
     super();
     this.xhrs = [];
     this.section = 'Push';
-    this.subsection = '';
+    this.subsection = 'Send New Push';
     this.state = {
       pushAudiencesFetched: false,
       deviceCount: null,
@@ -182,13 +197,28 @@ export default class PushNew extends DashboardView {
 
   handlePushSubmit(changes) {
     let promise = new Promise();
-    this.context.currentApp.createPushNotification(changes).then(({ error }) => {
+    let payload = {};
+    payload.alert = changes.data_type === 'json' ? JSON.parse(changes.data) : changes.data;
+    if (!!changes.increment_badge) {
+      payload.badge = "Increment";
+    }
+    Parse.Push.send({
+      where: changes.target || new Parse.Query(Parse.Installation),
+      data: payload,
+    }, {
+      useMasterKey: true,
+    }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
       if (error) {
         promise.reject({ error });
       } else {
         //TODO: global success message banner for passing successful creation - store should also be cleared
-        history.push(this.context.generatePath('push/activity'));
+        const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
+        if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
+          history.push(this.context.generatePath('push/activity'));
+        } else {
+          promise.resolve();
+        }
       }
     }, (error) => {
       promise.reject(error);
@@ -591,84 +621,102 @@ export default class PushNew extends DashboardView {
       }
     }
 
-    return (
-      <div className={styles.pushFlow}>
-        <Fieldset
-          legend='Choose your recipients.'
-          description='Send to everyone, or use an audience to target the right users.'>
-          <PushAudiencesData
-            loaded={this.state.pushAudiencesFetched}
-            schema={schema}
-            pushAudiencesStore={this.props.pushaudiences}
-            current={fields.audience_id}
-            onChange={(audienceId, query, deviceCount) => {
-              this.setState({ deviceCount });
-              setField('audience_id', audienceId);
-              if (audienceId === PushConstants.NEW_SEGMENT_ID) {
-                setField('target', JSON.stringify(query));
-              }
-            }} />
-        </Fieldset>
-        <Fieldset
-          legend='A/B Testing'
-          description='Experiment with different messages or send times to discover the optimal campaign variables.'>
-          <Field
-            className={FieldStyles.header}
-            label={<Label text='Use A/B Testing' />}
-            input={<Toggle value={fields.exp_enable} onChange={(value) => {
-              if (!this.state.audienceSizeSuggestion) {
-                this.context.currentApp.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
-                  this.setState({
-                    audienceSizeSuggestion: audience_size
-                  });
-                });
-                // calculate initial recipient count
-                this.setState({
-                  recipientCount: Math.floor(this.state.deviceCount * 0.5)
-                });
-              }
-              // disable translation if experiment is enabled
-              if (fields.translation_enable && value) {
-                setField('translation_enable',null);
-              }
-              setField('exp_enable', value || null);
-            }} />} />
-          {this.renderExperimentContent(fields, setField)}
-        </Fieldset>
+    const recipientsFields = <Fieldset
+      legend='Choose your recipients.'
+      description='Send to everyone, or use an audience to target the right users.'>
+      <PushAudiencesData
+        loaded={true /* Parse Server doesn't support push audiences yet. once it does, pass: this.state.pushAudiencesFetched */}
+        schema={schema}
+        pushAudiencesStore={this.props.pushaudiences}
+        current={fields.audience_id}
+        onChange={(audienceId, queryOrFilters, deviceCount) => {
+          this.setState({ deviceCount });
+          setField('audience_id', audienceId);
+          if (audienceId === PushConstants.NEW_SEGMENT_ID) {
+            // Horrible code here is due to old rails code that sent pushes through it's own endpoint, while Parse Server sends through Parse.Push.
+            // Ideally, we would pass a Parse.Query around everywhere.
+            if (queryOrFilters instanceof Parse.Query) {
+              setField('target', queryOrFilters);
+            } else {
+              setField('target', queryFromFilters('_Installation', queryOrFilters));
+            }
+          }
+        }} />
+    </Fieldset>
 
-        <Fieldset
-          legend='Choose a delivery time'
-          description='We can send the campaign immediately, or any time in the next 2 weeks.'>
-          {this.renderDeliveryContent(fields, setField)}
-          <Field
-            label={<Label text='Should this notification expire?' />}
-            input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
-          {PushHelper.renderExpirationContent(fields, setField)}
-        </Fieldset>
+    const abTestingFields = PARSE_SERVER_SUPPORTS_AB_TESTING ? <Fieldset
+      legend='A/B Testing'
+      description='Experiment with different messages or send times to discover the optimal campaign variables.'>
+      <Field
+        className={FieldStyles.header}
+        label={<Label text='Use A/B Testing' />}
+        input={<Toggle value={fields.exp_enable} onChange={(value) => {
+          if (!this.state.audienceSizeSuggestion) {
+            this.context.currentApp.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
+              this.setState({
+                audienceSizeSuggestion: audience_size
+              });
+            });
+            // calculate initial recipient count
+            this.setState({
+              recipientCount: Math.floor(this.state.deviceCount * 0.5)
+            });
+          }
+          // disable translation if experiment is enabled
+          if (fields.translation_enable && value) {
+            setField('translation_enable',null);
+          }
+          setField('exp_enable', value || null);
+        }} />} />
+      {this.renderExperimentContent(fields, setField)}
+    </Fieldset> : null;
 
-        <Fieldset
-          legend={'Write your message' + (multiMessage ? 's' : '')}
-          description='The best campaigns use short and direct messaging.'>
-          <div className={styles.messageContentWrap}>
-           {this.renderMessageContent(fields, setField)}
-          </div>
-          <Field
-            label={<Label text='Increment the app badge?' />}
-            input={<Toggle value={fields.increment_badge} onChange={(value) => {
-              setField('increment_badge', value || null);
-            }} />} />
-          {translationSegment}
-        </Fieldset>
+    const timeFieldsLegend = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+      'Choose a delivery time' :
+      'Choose exiry';
 
-        <Fieldset
-          legend='Preview'
-          description='Double check that everything looks good!'>
-          <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
-        </Fieldset>
+    const timeFieldsDescription = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+      'We can send the campaign immediately, or any time in the next 2 weeks.' :
+      "If your push hasn't been send by this time, it won't get sent.";
 
-        <Toolbar section='Push' subsection='Send a new campaign' />
+    const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? <Fieldset
+      legend={timeFieldsLegend}
+      description={timeFieldsDescription}>
+      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? this.renderDeliveryContent(fields, setField) : null}
+      <Field
+        label={<Label text='Should this notification expire?' />}
+        input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
+      {PushHelper.renderExpirationContent(fields, setField)}
+    </Fieldset> : null;
+
+    const messageFields = <Fieldset
+      legend={'Write your message' + (multiMessage ? 's' : '')}
+      description='The best campaigns use short and direct messaging.'>
+      <div className={styles.messageContentWrap}>
+       {this.renderMessageContent(fields, setField)}
       </div>
-    );
+      <Field
+        label={<Label text='Increment the app badge?' />}
+        input={<Toggle value={fields.increment_badge} onChange={(value) => {
+          setField('increment_badge', value || null);
+        }} />} />
+      {translationSegment}
+    </Fieldset>
+
+    const previewFields = <Fieldset
+      legend='Preview'
+      description='Double check that everything looks good!'>
+      <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
+    </Fieldset>
+
+    return <div className={styles.pushFlow}>
+      {recipientsFields}
+      {abTestingFields}
+      {deliveryTimeFields}
+      {messageFields}
+      {previewFields}
+      <Toolbar section='Push' subsection='Send a new campaign' />
+    </div>
   }
 
   valid(changes) {

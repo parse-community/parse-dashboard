@@ -12,8 +12,10 @@ import Parse           from 'parse';
 import React           from 'react';
 import ReactDOM        from 'react-dom';
 import Dashboard       from './Dashboard';
+import 'babel-polyfill';
 
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);
 
-ReactDOM.render(<Dashboard/>, document.getElementById('browser_mount'));
+var path = window.PARSE_DASHBOARD_PATH || '/';
+ReactDOM.render(<Dashboard path={path}/>, document.getElementById('browser_mount'));

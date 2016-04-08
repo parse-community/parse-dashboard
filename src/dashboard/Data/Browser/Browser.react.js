@@ -28,6 +28,7 @@ import SidebarAction                      from 'components/Sidebar/SidebarAction
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
+import * as ColumnPreferences             from 'lib/ColumnPreferences';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -57,16 +58,16 @@ export default class Browser extends DashboardView {
       newObject: null,
 
       lastError: null,
+      relationCount: 0,
     };
   }
 
   componentWillMount() {
     this.props.schema.dispatch(ActionTypes.FETCH)
-    .then(() => this.fetchCollectionCounts());
+    .then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
-      this.fetchInfo(this.context.currentApp);
       if (this.props.location.query && this.props.location.query.filters) {
         let filters = new List();
         let queryFilters = JSON.parse(this.props.location.query.filters);
@@ -79,19 +80,28 @@ export default class Browser extends DashboardView {
       } else {
         this.fetchData(this.props.params.className, this.state.filters);
       }
+      this.setState({
+        ordering: ColumnPreferences.getColumnSort(
+          false,
+          this.context.currentApp.applicationId,
+          this.props.params.className
+        )
+      });
     }
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.fetchCollectionCounts());
       let changes = {
         filters: new List(),
         data: null,
         newObject: null,
         lastMax: -1,
-        ordering: this.state.ordering,
+        ordering: ColumnPreferences.getColumnSort(
+            false,
+            nextContext.currentApp.applicationId,
+            nextProps.params.className
+        ),
         selection: {},
         relation: null
       };
@@ -106,12 +116,14 @@ export default class Browser extends DashboardView {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         changes.counts = {};
         Parse.Object._clearAllState();
-        this.fetchInfo(nextContext.currentApp);
       }
       this.setState(changes);
       if (nextProps.params.className) {
         this.fetchData(nextProps.params.className, nextProps.location.query && nextProps.location.query.filters ? changes.filters : []);
       }
+      nextProps.schema.dispatch(ActionTypes.FETCH)
+      .then(() => this.handleFetchedSchema());
+
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
@@ -222,23 +234,12 @@ export default class Browser extends DashboardView {
     });
   }
 
-  fetchCollectionCounts() {
+  handleFetchedSchema() {
     this.props.schema.data.get('classes').forEach((_, className) => {
       this.context.currentApp.getClassCount(className)
       .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
     })
-  }
-
-  fetchInfo(app) {
-    app.getCollectionInfo().then(({ collections }) => {
-      let counts = {};
-      let clp = {};
-      collections.forEach(({ id, count, client_permissions }) => {
-        counts[id] = count;
-        clp[id] = client_permissions;
-      });
-      this.setState({ counts, clp });
-    });
+    this.setState({clp: this.props.schema.data.get('CLPs').toJS()});
   }
 
   fetchData(source, filters, last) {
@@ -256,6 +257,11 @@ export default class Browser extends DashboardView {
       }
     }
     query.find({ useMasterKey: true }).then((data) => this.setState({ data: data, lastMax: 200 }));
+  }
+
+  fetchRelationCount(relation) {
+    let p = this.context.currentApp.getRelationCount(relation);
+    p.then((count) => this.setState({ relationCount: count }));
   }
 
   fetchNextPage() {
@@ -315,15 +321,24 @@ export default class Browser extends DashboardView {
     let source = this.state.relation || this.props.params.className;
     this.setState({
       ordering: ordering,
-      selection: {},
+      selection: {}
     }, () => this.fetchData(source, this.state.filters));
+    ColumnPreferences.getColumnSort(
+      ordering,
+      this.context.currentApp.applicationId,
+      this.props.params.className
+    );
   }
 
   setRelation(relation) {
     this.setState({
       relation: relation,
+      relationCount: 0,
       selection: {},
-    }, () => this.fetchData(relation, this.state.filters));
+    }, () => { 
+      this.fetchData(relation, this.state.filters);
+      this.fetchRelationCount(relation);      
+    });
   }
 
   handlePointerClick({ className, id }) {
@@ -423,10 +438,13 @@ export default class Browser extends DashboardView {
     }
   }
 
-  updateCLP(perms) {
-    let className = this.props.params.className;
-    this.state.clp[className] = perms;
-    this.forceUpdate();
+  onChangeCLP(perms) {
+    let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
+      className: this.props.params.className,
+      clp: perms,
+    });
+    p.then(() => this.handleFetchedSchema());
+    return p;
   }
 
   selectRow(id, checked) {
@@ -533,7 +551,7 @@ export default class Browser extends DashboardView {
 
         browser = (
           <DataBrowser
-            count={this.state.counts[className]}
+            count={this.state.relation ? this.state.relationCount : this.state.counts[className]}
             perms={this.state.clp[className]}
             schema={schema}
             userPointers={userPointers}
@@ -543,7 +561,7 @@ export default class Browser extends DashboardView {
             onDeleteRows={this.showDeleteRows.bind(this)}
             onDropClass={this.showDropClass.bind(this)}
             onExport={this.showExport.bind(this)}
-            updateCLP={this.updateCLP.bind(this)}
+            onChangeCLP={this.onChangeCLP.bind(this)}
 
             columns={columns}
             className={className}
@@ -561,7 +579,8 @@ export default class Browser extends DashboardView {
             onPointerClick={this.handlePointerClick.bind(this)}
             setRelation={this.setRelation.bind(this)}
             onAddColumn={this.showAddColumn.bind(this)}
-            onAddRow={this.addRow.bind(this)} />
+            onAddRow={this.addRow.bind(this)}
+            onAddClass={this.showCreateClass.bind(this)} />
         );
       }
     }
