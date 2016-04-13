@@ -10,6 +10,7 @@ import Icon           from 'components/Icon/Icon.react';
 import { Link }       from 'react-router';
 import React          from 'react';
 import styles         from 'components/Sidebar/Sidebar.scss';
+import packageJson    from './../../../package.json';
 
 let SidebarHeader = ({}) =>
 <div className={styles.header}>
@@ -21,6 +22,7 @@ let SidebarHeader = ({}) =>
       <div>Parse Dashboard</div>
     </div>
   </Link>
+  <div className={styles.number}>{packageJson.version}</div>
 </div>
 
 export default SidebarHeader
