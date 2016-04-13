@@ -49,6 +49,7 @@
     "immutable-devtools": "~0.0.4",
     "jest-cli": "^0.7.1",
     "js-beautify": "~1.5.0",
+    "json-loader": "^0.5.4",
     "marked": "^0.3.5",
     "node-sass": "~3.4.2",
     "parse": "1.6.14",
