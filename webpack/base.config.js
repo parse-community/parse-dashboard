@@ -10,6 +10,12 @@
 var path = require('path');
 var SvgPrepPlugin = require('./plugins/svg-prep');
 
+// pulls in package.json and gets version
+var webpack = require('webpack');
+var fs = require('fs');
+var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+var version = json.version;
+
 module.exports = {
   context: path.join(__dirname, '../src'),
   output: {
@@ -50,6 +56,11 @@ module.exports = {
   plugins: [
     new SvgPrepPlugin({
       source: path.join(__dirname,'../src', 'icons')
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'version' : JSON.stringify(version)
+      }
     })
   ]
 };
