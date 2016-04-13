@@ -56,7 +56,7 @@ module.exports = {
   plugins: [
     new SvgPrepPlugin({
       source: path.join(__dirname,'../src', 'icons')
-    })
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         'version' : JSON.stringify(version)
