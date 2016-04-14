@@ -18,6 +18,10 @@
   &:last-of-type {
     border-bottom-width: 1px;
   }
+
+  > pre[class*="language-"] {
+    border-radius: 5px;
+  }
 }
 
 .left {
