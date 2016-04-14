@@ -36,6 +36,7 @@ let BrowserToolbar = ({
   onDeleteRows,
   onDropClass,
   onChangeCLP,
+  onRefresh,
   hidePerms,
 
   enableDeleteAllRows,
@@ -105,7 +106,13 @@ let BrowserToolbar = ({
     <Toolbar
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
-      details={details.join(' \u2022 ')}>
+      details={details.join(' \u2022 ')}
+    >
+      <a className={styles.toolbarButton} onClick={onRefresh}>
+        <Icon name='refresh-solid' width={14} height={14} />
+        <span>Refresh</span>
+      </a>
+      <div className={styles.toolbarSeparator} />
       <BrowserFilter
         setCurrent={setCurrent}
         schema={schema}
