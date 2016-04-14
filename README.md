@@ -91,6 +91,23 @@ In order to securely deploy the dashboard without leaking your apps master key, 
 
 The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or proxy that does early SSL termination, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--allowInsecureHTTP=1` option. You will then be responsible for ensureing that your proxy or load balancer only allows HTTPS.
 
+## Separating app access based on user identity
+
+If you want to restrict apps based on user identity, you can update your config file to match the following format:
+
+```
+{
+  "apps": [ … ],
+  "users": [
+     {
+       "user":"user1",
+       "pass":"pass1",
+       "apps": [{"appId": "myAppId"}, {"appId": "myAppId"}]
+    }
+  ]
+}
+```
+
 ## Run with Docker
 
 It is easy to use it with Docker. First build the image:
