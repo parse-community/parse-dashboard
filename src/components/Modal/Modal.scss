@@ -59,7 +59,12 @@
   svg{
     position: relative;
     top: 50%;
+    transform-origin: bottom center;
     @include transform(translateY(-50%));
+
+    use {
+      transform: translateY(50%);
+    }
   }
 }
 

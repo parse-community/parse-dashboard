@@ -37,7 +37,7 @@ const PushAudiencesOptions = ({
         array: query.deviceType['$in'],
       })) :
       query;
-    return <div><PushAudiencesOption
+    return <PushAudiencesOption
       icon={icon}
       key={objectId}
       id={objectId}
@@ -50,7 +50,6 @@ const PushAudiencesOptions = ({
       onEditAudience={onEditAudience}
       schema={schema}
       filters={filters} />
-    </div>
   })}
 </div>
 

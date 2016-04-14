@@ -23,29 +23,30 @@
   border-radius: 5px;
   width: 28px;
   height: 28px;
-  top: -999px;
-  left: 14px;
+  top: 10px;
+  left: 310px;
   opacity: 0;
   transition: left 0.5s ease-in, opacity 0.5s 0.5s ease-in;
 }
 
 @media (max-width: 980px) {
   .sidebar {
-    left: -300px;
+    left: 0;
   }
 
   .toggle {
+    left: 310px;
     top: 10px;
     opacity: 1;
   }
 
   body:global(.expanded) {
     .sidebar {
-      left: 0;
+      left: -300px;
     }
 
     .toggle {
-      left: 310px;
+      left: 10px;
     }
   }
 }
