@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes    from 'lib/PropTypes';
-import React        from 'react';
-import styles       from 'components/LogView/LogViewEntry.scss';
+import PropTypes from 'lib/PropTypes';
+import React     from 'react';
+import styles    from 'components/LogView/LogViewEntry.scss';
 
 const TIMESTAMP_REGEX = [
   '([a-z])', // Any Single Word Character (Not Whitespace) 1
@@ -35,12 +35,16 @@ let getLogEntryInfo = (str) => {
 //example timestamp: 'I2015-09-30T00:36:45.522Z]'
 let getTimestampRegex = () => new RegExp(TIMESTAMP_REGEX,['i']);
 
-let LogViewEntry = (props) => {
-  let logEntryInfo = getLogEntryInfo(props.text || '');
+let LogViewEntry = ({
+  text = '',
+  timestamp,
+}) => {
+  let logEntryInfo = getLogEntryInfo(text);
   let classes = [styles.entry, logEntryInfo.error ? styles.error: ''];
   return (
     <li className={classes.join(' ')}>
-      <span className={styles.time}>{logEntryInfo.time} - </span>
+      {/* handle the timestamp format used by both Parse Server and Parse.com */}
+      <span className={styles.time}>{timestamp.iso || timestamp} - </span>
       <span className={styles.content}>{logEntryInfo.content}</span>
     </li>
   );

@@ -64,8 +64,7 @@ export default class DashboardView extends React.Component {
       });
     }
     */
-
-    if (features.logs && features.logs.info && features.logs.error) {
+    if (features.logs && Object.keys(features.logs).some(key => features.logs[key])) {
       coreSubsections.push({
         name: 'Logs',
         link: '/logs'
