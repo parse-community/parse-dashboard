@@ -33,7 +33,7 @@
   font-size: 12px;
 }
 
-// workaround for non standard spec 
+// workaround for non standard spec
 // https://developer.mozilla.org/en-US/docs/Web/CSS/%3A%3A-moz-placeholder
 // using more selective hack to avoid using !important
 .messageContentWrap textarea:not(#foo) {
@@ -47,7 +47,11 @@
   @include placeholder {
     top: 0%;
     line-height: 60px;
-  }  
+  }
+}
+
+.messageContentWrap > div:last-of-type {
+  border-bottom: none;
 }
 
 .invalidMessage {
