@@ -33,7 +33,7 @@ module.exports = function(config, allowInsecureHTTP) {
 
   // Serve the configuration.
   app.get('/parse-dashboard-config.json', function(req, res) {
-    const response = {
+    let response = {
       apps: config.apps,
       newFeaturesInLatestVersion: newFeaturesInLatestVersion,
     };
@@ -61,18 +61,36 @@ module.exports = function(config, allowInsecureHTTP) {
       return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
     }
 
+    let appsUserHasAccess = null;
+
     const successfulAuth =
       //they provided auth
       auth &&
       //there are configured users
       users &&
       //the provided auth matches one of the users
-      users.find(user => {
-        return user.user == auth.name &&
-               user.pass == auth.pass
+       users.find(user => {
+        let isAuthorized = user.user == auth.name &&
+                            user.pass == auth.pass
+        if (isAuthorized) {
+          // User restricted apps
+          appsUserHasAccess = user.apps
+        }
+
+        return isAuthorized
       });
+
     if (successfulAuth) {
-      //They provided correct auth
+      if(appsUserHasAccess) {
+        // Restric access to apps defined in user dictionary
+        // If they didn't supply any app id, user will access all apps
+        response.apps = response.apps.filter(function (app) {
+          return appsUserHasAccess.find(appUserHasAccess => {
+            return app.appId == appUserHasAccess.appId
+          })
+        });
+      }
+      // They provided correct auth
       return res.json(response);
     }
 
