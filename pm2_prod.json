@@ -1,8 +1,8 @@
 [{
-  "name"             : "Parse",
-  "script"           : "./bin/index.js",
-  "error_file"       : "/var/tmp/parse-log/pm2/Parse-err.log",
-  "out_file"         : "/var/tmp/parse-log/pm2/Parse-out.log",
+  "name"             : "Parse-Dashboard",
+  "script"           : "./bin/parse-dashboard",
+  "error_file"       : "/var/tmp/parse-dashboard-log/pm2/Parse-dashboard-err.log",
+  "out_file"         : "/var/tmp/parse-dashboard-log/pm2/Parse-dashboard-out.log",
   "run_as_user"      : "ubuntu",
   "run_as_group"     : "ubuntu",
   "exec_mode"        : "cluster",
@@ -10,11 +10,6 @@
   "log_date_format" :"YYYY-MM-DD HH:mm Z",
   "env": {
     "NODE_ENV": "production",
-    "MONGO_URI":{
-      "us-east-1a":"mongodb://pinssible:Pinssible#1@ds011519-a2.mlab.com:11519,ds011519-a1.mlab.com:11519/server_info?replicaSet=rs-ds011519",
-      "ap-southeast-1b":"mongodb://server_info:Pinssible#1@ds013640-a0.mlab.com:13640,ds013640-a1.mlab.com:13640/server_info?replicaSet=rs-ds013640",
-      "ap-southeast-1a":"mongodb://server_info:Pinssible#1@ds013640-a0.mlab.com:13640,ds013640-a1.mlab.com:13640/server_info?replicaSet=rs-ds013640"
-    },
-    "PORT": 1337
+    "PORT": 4040
   }
 }]
