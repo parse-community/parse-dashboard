@@ -6,6 +6,7 @@
 * Add ability to restrict certain users to certain apps, thanks to [Felipe Andrade](https://github.com/felipemobile)
 * Fix Dockerfile, thanks to [Kakashi Liu](https://github.com/kkc)
 * Display Parse Dashboard version, thanks to [Aayush Kapoor](https://github.com/xeoneux) and [gateway](https://github.com/gateway)
+* Add a refresh button to the data browser, thanks to [TylerBrock](https://github.com/TylerBrock)
 * Add logs viewer
 * Misc. performance improvements and bugfixes, thanks to [Pavel Ivanov](https://github.com/pivanov)
 
