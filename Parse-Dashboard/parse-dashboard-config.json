@@ -1,5 +1,20 @@
 {
   "apps": [
-
+    {
+      "serverURL": "https:///parse.india.histitch.com/parse/ttV1fr9gpsSkqNSBQXwzy3CcHrBAjE60bxGUWNe2",
+      "appId": "ttV1fr9gpsSkqNSBQXwzy3CcHrBAjE60bxGUWNe2",
+      "masterKey": "djBTf7OAgRZrBgdtSF9HcitT6sbAK2dFAwI908YO",
+      "appName": "mPocket"
+    }
+  ],
+  "users": [
+    {
+      "user": "gongchen",
+      "pass": "gongchen"
+    },
+    {
+      "user": "wangzeng",
+      "pass": "wangzeng"
+    }
   ]
 }
