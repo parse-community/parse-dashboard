@@ -1,6 +1,10 @@
-FROM node:4.3.2
-ADD package.json /src/package.json
-RUN cd /src && npm install
-ADD . /src
+FROM node:4.4.2
 WORKDIR /src
-ENTRYPOINT ["npm", "start", "--"]
+ADD . /src
+RUN cd /src \
+ && npm install \
+ && npm run build \
+ && npm cache clear \
+ && rm -rf ~/.npm \
+ && rm -rf /var/lib/apt/lists/*
+ENTRYPOINT ["npm", "run", "dashboard"]
