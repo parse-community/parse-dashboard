@@ -60,6 +60,23 @@ You can also manage apps that on Parse.com from the same dashboard. In your conf
 }
 ```
 
+Parse Dashboard also supports adding an optional icon for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `iconsFolder` in it, and define the `iconName` parameter for each app (including the extension). The path of the `iconsFolder` is relative to the configuration file. To visualize what it means, in the following example `icons` is a directory located under the same directory as the configuration file:
+
+```
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App",
+      "iconName": "MyAppIcon.png",
+    }
+  ],
+  "iconsFolder": "icons"
+}
+```
+
 ![Parse Dashboard](.github/dash-shot.png)
 
 # Advanced Usage
