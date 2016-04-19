@@ -37,6 +37,7 @@ module.exports = function(config, allowInsecureHTTP) {
       apps: config.apps,
       newFeaturesInLatestVersion: newFeaturesInLatestVersion,
     };
+
     const users = config.users;
 
     let auth = null;
@@ -109,6 +110,14 @@ module.exports = function(config, allowInsecureHTTP) {
     //We shouldn't get here. Fail closed.
     res.send({ success: false, error: 'Something went wrong.' });
   });
+
+  // Serve the app icons. Uses the optional `iconsFolder` parameter as
+  // directory name, that was setup in the config file.
+  // We are explicitly not using `__dirpath` here because one may be
+  // running parse-dashboard from globally installed npm.
+  if (config.iconsFolder) {
+    app.use('/appicons', express.static(config.iconsFolder));
+  }
 
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {

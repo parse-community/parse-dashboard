@@ -77,8 +77,10 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
 }
 
 let p = null;
+let configFilePath = null;
 if (configFile) {
   p = jsonFile(configFile);
+  configFilePath = path.dirname(configFile);
 } else if (configFromCLI) {
   p = Promise.resolve(configFromCLI);
 } else {
@@ -92,6 +94,10 @@ p.then(config => {
       app.appName = app.appId;
     }
   });
+
+  if (config.data.iconsFolder && configFilePath) {
+    config.data.iconsFolder = path.join(configFilePath, config.data.iconsFolder);
+  }
 
   const app = express();
 
