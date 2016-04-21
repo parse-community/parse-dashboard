@@ -23,7 +23,7 @@ You can then visit the dashboard in your browser at http://localhost:4040. You m
 
 If you want to manage multiple apps from the same dashboard, you can start the dashboard with a config file. For example, you could put your info into a file called `parse-dashboard-config.json` and then start the dashboard using `parse-dashboard --config parse-dashboard-config.json`. The file should match the following format:
 
-```
+```json
 {
   "apps": [
     {
@@ -38,7 +38,7 @@ If you want to manage multiple apps from the same dashboard, you can start the d
 
 You can also manage apps that on Parse.com from the same dashboard. In your config file, you will need to add the `restKey` and `javascriptKey` as well as the other paramaters, which you can find on `dashboard.parse.com`. Set the serverURL to `http://api.parse.com/1`:
 
-```
+```json
 {
   "apps": [
     {
@@ -62,7 +62,7 @@ You can also manage apps that on Parse.com from the same dashboard. In your conf
 
 Parse Dashboard also supports adding an optional icon for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `iconsFolder` in it, and define the `iconName` parameter for each app (including the extension). The path of the `iconsFolder` is relative to the configuration file. To visualize what it means, in the following example `icons` is a directory located under the same directory as the configuration file:
 
-```
+```json
 {
   "apps": [
     {
@@ -90,7 +90,8 @@ You can set `appNameForURL` in the config file for each app to control the url o
 Make sure the server URLs for your apps can be accessed by your browser. If you are deploying the dashboard, then `localhost` urls will not work.
 
 In order to securely deploy the dashboard without leaking your apps master key, you will need to use HTTPS and Basic Auth. You can do this by adding usernames and passwords for HTTP Basic Auth to your configuration file.
-```
+
+```json
 {
   "apps": [...],
   "users": [
@@ -112,7 +113,7 @@ The deployed dashboard detects if you are using a secure connection. If you are 
 
 If you want to restrict apps based on user identity, you can update your config file to match the following format:
 
-```
+```json
 {
   "apps": [ … ],
   "users": [
