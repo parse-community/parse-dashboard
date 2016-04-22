@@ -93,7 +93,7 @@ In order to securely deploy the dashboard without leaking your apps master key, 
 
 ```json
 {
-  "apps": [...],
+  "apps": [{"...": "..."}],
   "users": [
     {
       "user":"user1",
@@ -115,7 +115,7 @@ If you want to restrict apps based on user identity, you can update your config 
 
 ```json
 {
-  "apps": [ … ],
+  "apps": [{"...": "..."}],
   "users": [
      {
        "user":"user1",
