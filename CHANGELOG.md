@@ -1,5 +1,10 @@
 ## Parse Dashboard Changelog
 
+### 1.0.10
+
+* Add the ability to specify icons for your app, thanks to [Natan Rolnik](https://github.com/natanrolnik)
+* Fix sending push with JSON data
+
 ### 1.0.9
 
 * Add the ability to mount the dashboard express app on a custom mount path, thanks to [hpello](https://github.com/hpello) with bugfixes from [mamaso](https://github.com/mamaso)
