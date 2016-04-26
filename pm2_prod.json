@@ -1,0 +1,15 @@
+[{
+  "name"             : "Parse-Dashboard",
+  "script"           : "./bin/parse-dashboard",
+  "error_file"       : "/var/tmp/parse-dashboard-log/pm2/Parse-dashboard-err.log",
+  "out_file"         : "/var/tmp/parse-dashboard-log/pm2/Parse-dashboard-out.log",
+  "run_as_user"      : "ubuntu",
+  "run_as_group"     : "ubuntu",
+  "exec_mode"        : "cluster",
+  "instances"         : 1,
+  "log_date_format" :"YYYY-MM-DD HH:mm Z",
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": 4040
+  }
+}]
