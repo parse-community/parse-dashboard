@@ -38,6 +38,7 @@ export default class ParseApp {
     serverURL,
     serverInfo,
     production,
+    iconName,
     ...params,
   }) {
     this.name = appName;
@@ -58,6 +59,7 @@ export default class ParseApp {
     this.production = production;
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
+    this.icon = iconName;
 
     this.settings = {
       fields: {},

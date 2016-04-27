@@ -43,7 +43,7 @@ const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = false;
 
 let formatErrorMessage = (emptyInputMessages, key) => {
   let boldMessages = emptyInputMessages.map((message) => {
-    return (<strong>{message}</strong>);
+    return <strong key={message}>{message}</strong>
   });
   return (<div key={key}>Your {joinWithFinal(null, boldMessages, ', ', boldMessages.length < 3 ? ' and ' : ', and ')} can’t be empty.</div>);
 }
@@ -197,8 +197,7 @@ export default class PushNew extends DashboardView {
 
   handlePushSubmit(changes) {
     let promise = new Promise();
-    let payload = {};
-    payload.alert = changes.data_type === 'json' ? JSON.parse(changes.data) : changes.data;
+    let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
     if (!!changes.increment_badge) {
       payload.badge = "Increment";
     }

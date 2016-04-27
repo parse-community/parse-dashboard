@@ -66,13 +66,6 @@ export default class AppsSelector extends React.Component {
 
   render() {
     let position = this.state.position;
-    try {
-      //Workaround for an issue where the apps selector appears in the wrong place when the
-      //window is narrower than the sidebar break when opened.
-      position = Position.inWindow(ReactDOM.findDOMNode(this));
-    } catch (e) {
-      //Use the one from the state
-    }
     let popover = null;
     if (this.state.open) {
       let height = window.innerHeight - position.y;

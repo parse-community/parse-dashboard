@@ -33,10 +33,11 @@ module.exports = function(config, allowInsecureHTTP) {
 
   // Serve the configuration.
   app.get('/parse-dashboard-config.json', function(req, res) {
-    const response = {
+    let response = {
       apps: config.apps,
       newFeaturesInLatestVersion: newFeaturesInLatestVersion,
     };
+
     const users = config.users;
 
     let auth = null;
@@ -61,18 +62,36 @@ module.exports = function(config, allowInsecureHTTP) {
       return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
     }
 
+    let appsUserHasAccess = null;
+
     const successfulAuth =
       //they provided auth
       auth &&
       //there are configured users
       users &&
       //the provided auth matches one of the users
-      users.find(user => {
-        return user.user == auth.name &&
-               user.pass == auth.pass
+       users.find(user => {
+        let isAuthorized = user.user == auth.name &&
+                            user.pass == auth.pass
+        if (isAuthorized) {
+          // User restricted apps
+          appsUserHasAccess = user.apps
+        }
+
+        return isAuthorized
       });
+
     if (successfulAuth) {
-      //They provided correct auth
+      if(appsUserHasAccess) {
+        // Restric access to apps defined in user dictionary
+        // If they didn't supply any app id, user will access all apps
+        response.apps = response.apps.filter(function (app) {
+          return appsUserHasAccess.find(appUserHasAccess => {
+            return app.appId == appUserHasAccess.appId
+          })
+        });
+      }
+      // They provided correct auth
       return res.json(response);
     }
 
@@ -91,6 +110,14 @@ module.exports = function(config, allowInsecureHTTP) {
     //We shouldn't get here. Fail closed.
     res.send({ success: false, error: 'Something went wrong.' });
   });
+
+  // Serve the app icons. Uses the optional `iconsFolder` parameter as
+  // directory name, that was setup in the config file.
+  // We are explicitly not using `__dirpath` here because one may be
+  // running parse-dashboard from globally installed npm.
+  if (config.iconsFolder) {
+    app.use('/appicons', express.static(config.iconsFolder));
+  }
 
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {

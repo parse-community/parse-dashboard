@@ -5,16 +5,16 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import CategoryList from 'components/CategoryList/CategoryList.react';
+import CategoryList  from 'components/CategoryList/CategoryList.react';
 import DashboardView from 'dashboard/DashboardView.react';
-import EmptyState from 'components/EmptyState/EmptyState.react';
-import LogView from 'components/LogView/LogView.react';
-import LogViewEntry from 'components/LogView/LogViewEntry.react';
-import React from 'react';
-import ReleaseInfo from 'components/ReleaseInfo/ReleaseInfo';
-import Toolbar from 'components/Toolbar/Toolbar.react';
+import EmptyState    from 'components/EmptyState/EmptyState.react';
+import LogView       from 'components/LogView/LogView.react';
+import LogViewEntry  from 'components/LogView/LogViewEntry.react';
+import React         from 'react';
+import ReleaseInfo   from 'components/ReleaseInfo/ReleaseInfo';
+import Toolbar       from 'components/Toolbar/Toolbar.react';
 
-import styles from 'dashboard/Data/Logs/Logs.scss';
+import styles        from 'dashboard/Data/Logs/Logs.scss';
 
 let subsections = {
   info: 'Info',
@@ -99,7 +99,9 @@ export default class Logs extends DashboardView {
       content = (
         <div className={styles.content}>
           <LogView>
-            {this.state.logs.map(({ message }) => <LogViewEntry text={message} />)}
+            {this.state.logs.map(({ message, timestamp }) => <LogViewEntry
+              text={message}
+              timestamp={timestamp} />)}
           </LogView>
         </div>
       );

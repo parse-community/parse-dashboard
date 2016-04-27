@@ -1,5 +1,20 @@
 ## Parse Dashboard Changelog
 
+### 1.0.10
+
+* Add the ability to specify icons for your app, thanks to [Natan Rolnik](https://github.com/natanrolnik)
+* Fix sending push with JSON data
+
+### 1.0.9
+
+* Add the ability to mount the dashboard express app on a custom mount path, thanks to [hpello](https://github.com/hpello) with bugfixes from [mamaso](https://github.com/mamaso)
+* Add ability to restrict certain users to certain apps, thanks to [Felipe Andrade](https://github.com/felipemobile)
+* Fix Dockerfile, thanks to [Kakashi Liu](https://github.com/kkc)
+* Display Parse Dashboard version, thanks to [Aayush Kapoor](https://github.com/xeoneux) and [gateway](https://github.com/gateway)
+* Add a refresh button to the data browser, thanks to [TylerBrock](https://github.com/TylerBrock)
+* Add logs viewer
+* Misc. performance improvements and bugfixes, thanks to [Pavel Ivanov](https://github.com/pivanov)
+
 ### 1.0.8
 
 * Allow Dashboard to be mounted as Express middleware, thanks to [Florent Vilmart](https://github.com/flovilmart)

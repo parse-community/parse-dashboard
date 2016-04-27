@@ -10,6 +10,8 @@ import Icon           from 'components/Icon/Icon.react';
 import { Link }       from 'react-router';
 import React          from 'react';
 import styles         from 'components/Sidebar/Sidebar.scss';
+// get the package.json environment variable
+const version = process.env.version;
 
 let SidebarHeader = ({}) =>
 <div className={styles.header}>
@@ -18,7 +20,7 @@ let SidebarHeader = ({}) =>
   </Link>
   <Link to='/apps'>
     <div className={styles.version}>
-      <div>Parse Dashboard</div>
+      <div>Parse Dashboard {version}</div>
     </div>
   </Link>
 </div>
