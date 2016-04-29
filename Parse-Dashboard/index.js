@@ -22,6 +22,8 @@ program.option('--host [host]', 'the host to run parse-dashboard');
 program.option('--port [port]', 'the port to run parse-dashboard');
 program.option('--mountPath [mountPath]', 'the mount path to run parse-dashboard');
 program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
+program.option('--sslKey [sslKey]', 'the path to the SSL private key.');
+program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 
 program.parse(process.argv);
 
@@ -39,6 +41,8 @@ let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
 let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
 let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
 let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
+let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
+let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
@@ -102,10 +106,24 @@ p.then(config => {
   const app = express();
 
   app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
-  // Start the server.
-  const server = app.listen(port, host, function () {
-    console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
-  });
+  if(!configSSLKey || !configSSLCert){
+    // Start the server.
+    const server = app.listen(port, host, function () {
+      console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
+    });
+  } else {
+    // Start the server using SSL.
+    var fs = require('fs');
+    var privateKey = fs.readFileSync(configSSLKey);
+    var certificate = fs.readFileSync(configSSLCert);
+   
+    const server = require('https').createServer({
+      key: privateKey,
+      cert: certificate
+    }, app).listen(port, host, function () {
+      console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
+    });
+  }
 }, error => {
   if (error instanceof SyntaxError) {
     console.log('Your config file contains invalid JSON. Exiting.');
