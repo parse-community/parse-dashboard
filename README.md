@@ -66,7 +66,7 @@ Managing multiple apps from the same dashboard is also possible.  Simply add add
 
 You can manage self-hosted [Parse Server](https://github.com/ParsePlatform/parse-server) apps, *and* apps that are hosted on [Parse.com](http://parse.com/) from the same dashboard. In your config file, you will need to add the `restKey` and `javascriptKey` as well as the other paramaters, which you can find on `dashboard.parse.com`. Set the serverURL to `http://api.parse.com/1`:
 
-```json
+```js
 {
   "apps": [
     {
