@@ -5,13 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React from 'react';
+import React       from 'react';
 
 import AppSelector from 'dashboard/AppSelector.react';
 import AppsManager from 'lib/AppsManager';
-import history from 'dashboard/history';
-import html from 'lib/htmlString';
-import ParseApp from 'lib/ParseApp';
+import history     from 'dashboard/history';
+import html        from 'lib/htmlString';
+import ParseApp    from 'lib/ParseApp';
 
 let AppData = React.createClass({
   childContextTypes: {
@@ -22,7 +22,7 @@ let AppData = React.createClass({
   getChildContext() {
     return {
       generatePath: this.generatePath,
-      currentApp: AppsManager.findAppBySlug(this.props.params.appId)
+      currentApp: AppsManager.findAppBySlugOrName(this.props.params.appId)
     };
   },
 
@@ -34,7 +34,8 @@ let AppData = React.createClass({
     if (this.props.params.appId === '_') {
       return <AppSelector />;
     }
-    let current = AppsManager.findAppBySlug(this.props.params.appId);
+    //Find by name to catch edge cases around escaping apostrophes in URLs
+    let current = AppsManager.findAppBySlugOrName(this.props.params.appId);
     if (current) {
       current.setParseKeys();
     } else {

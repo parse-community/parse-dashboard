@@ -39,7 +39,6 @@ export default class ParseApp {
     serverInfo,
     production,
     iconName,
-    ...params,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
