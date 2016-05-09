@@ -38,6 +38,8 @@ export default class ParseApp {
     serverURL,
     serverInfo,
     production,
+    packageNameAndroid,
+    idAppStore,
     iconName,
     ...params,
   }) {
@@ -60,6 +62,8 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
+    this.packageNameAndroid = packageNameAndroid;
+    this.idAppStore = idAppStore;
 
     this.settings = {
       fields: {},

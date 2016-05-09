@@ -9,3 +9,5 @@ npm-debug.log
 // vim .swp
 *.swp
 .env
+
+Parse-Dashboard/parse-dashboard-config.json
