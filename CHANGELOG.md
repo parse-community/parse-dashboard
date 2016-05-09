@@ -1,5 +1,13 @@
 ## Parse Dashboard Changelog
 
+### 1.0.11
+
+* Add the ability to specify SSL cert and key, thanks to [Cory Imdieke](https://github.com/Vortec4800)
+* Trust proxy when enabling --allowInsecureHTTP, thanks to [Andrew Chen](https://github.com/yongjhih)
+* Fix App index when apps have an apostrophe in the name
+* Fix display of prod/dev flag
+* Support for Node 6
+
 ### 1.0.10
 
 * Add the ability to specify icons for your app, thanks to [Natan Rolnik](https://github.com/natanrolnik)

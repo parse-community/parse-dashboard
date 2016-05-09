@@ -16,7 +16,7 @@
   ],
   "homepage": "https://github.com/ParsePlatform/parse-dashboard",
   "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -47,10 +47,10 @@
     "http-server": "~0.8.5",
     "immutable": "~3.7.5",
     "immutable-devtools": "~0.0.4",
-    "jest-cli": "^0.7.1",
+    "jest-cli": "^12.0.2",
     "js-beautify": "~1.5.0",
     "marked": "^0.3.5",
-    "node-sass": "~3.4.2",
+    "node-sass": "^3.7.0",
     "parse": "1.6.14",
     "prismjs": "~1.2.0",
     "react": "^15.0.1",

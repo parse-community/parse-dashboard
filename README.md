@@ -10,6 +10,7 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
   * [Configuring Parse Dashboard](#configuring-parse-dashboard)
   * [Managing Multiple Apps](#managing-multiple-apps)
   * [Other Configuration Options](#other-configuration-options)
+* [Running as Express Middleware](#running-as-express-middleware)
 * [Deploying Parse Dashboard](#deploying-parse-dashboard)
   * [Preparing for Deployment](#preparing-for-deployment)
   * [Security Considerations](#security-considerations)
@@ -66,7 +67,7 @@ Managing multiple apps from the same dashboard is also possible.  Simply add add
 
 You can manage self-hosted [Parse Server](https://github.com/ParsePlatform/parse-server) apps, *and* apps that are hosted on [Parse.com](http://parse.com/) from the same dashboard. In your config file, you will need to add the `restKey` and `javascriptKey` as well as the other paramaters, which you can find on `dashboard.parse.com`. Set the serverURL to `http://api.parse.com/1`:
 
-```json
+```js
 {
   "apps": [
     {
@@ -112,6 +113,61 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
 You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard. 
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
+
+# Running as Express Middleware
+
+Instead of starting Parse Dashboard with the CLI, you can also run it as an [express](https://github.com/expressjs/express) middleware.
+
+```
+var express = require('express');
+var ParseDashboard = require('parse-dashboard');
+
+var dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+    }
+  ]
+});
+
+var app = express();
+
+// make the Parse Dashboard available at /dashboard
+app.use('/dashboard', dashboard);
+
+var httpServer = require('http').createServer(app);
+httpServer.listen(4040);
+```
+
+If you want to run both [Parse Server](https://github.com/ParsePlatform/parse-server) and Parse Dashboard on the same server/port, you can run them both as express middleware:
+
+```
+var express = require('express');
+var ParseServer = require('parse-server').ParseServer;
+var ParseDashboard = require('parse-dashboard');
+
+var api = new ParseServer({
+	// Parse Server settings
+});
+
+var dashboard = new ParseDashboard({
+	// Parse Dashboard settings
+});
+
+var app = express();
+
+// make the Parse Server available at /parse
+app.use('/parse', api);
+
+// make the Parse Dashboard available at /dashboard
+app.use('/dashboard', dashboard);
+
+var httpServer = require('http').createServer(app);
+httpServer.listen(4040);
+```
 
 # Deploying Parse Dashboard
 

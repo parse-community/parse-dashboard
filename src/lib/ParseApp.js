@@ -41,7 +41,6 @@ export default class ParseApp {
     packageNameAndroid,
     idAppStore,
     iconName,
-    ...params,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
