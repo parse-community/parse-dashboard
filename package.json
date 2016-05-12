@@ -74,7 +74,6 @@
     "generate": "node scripts/generate.js",
     "prepublish": "webpack --config webpack/publish.config.js",
     "start": "node ./index.js --config ./parse-dashboard-config.json --allowInsecureHTTP=1"
-
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
