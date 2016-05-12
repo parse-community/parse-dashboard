@@ -1,7 +1,9 @@
 .DS_Store
+.env
+*.swp
 node_modules/
 PIG/bundles/
 npm-debug.log
 // vim .swp
-*.swp
-.env
+
+
