@@ -568,7 +568,7 @@ export default class Browser extends DashboardView {
             onChangeCLP={clp => {
               let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
                 className: this.props.params.className,
-                clp: perms,
+                clp,
               });
               p.then(() => this.handleFetchedSchema());
               return p;
