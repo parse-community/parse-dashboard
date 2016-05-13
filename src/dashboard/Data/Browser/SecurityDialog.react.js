@@ -13,7 +13,7 @@ import React             from 'react';
 import styles            from 'dashboard/Data/Browser/Browser.scss';
 
 function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
-  if (parseServerSupportsPointerPermissions) { //Eventually we will branch on whether or not the server supports pointer permissions
+  if (parseServerSupportsPointerPermissions) {
     if (pointers.indexOf(text) > -1) {
       return Parse.Promise.as({ pointer: text });
     }
