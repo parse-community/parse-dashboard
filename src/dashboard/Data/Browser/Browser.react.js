@@ -451,15 +451,6 @@ export default class Browser extends DashboardView {
     }
   }
 
-  onChangeCLP(perms) {
-    let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
-      className: this.props.params.className,
-      clp: perms,
-    });
-    p.then(() => this.handleFetchedSchema());
-    return p;
-  }
-
   selectRow(id, checked) {
     this.setState(({ selection }) => {
       if (id === '*') {
@@ -574,7 +565,14 @@ export default class Browser extends DashboardView {
             onDeleteRows={this.showDeleteRows.bind(this)}
             onDropClass={this.showDropClass.bind(this)}
             onExport={this.showExport.bind(this)}
-            onChangeCLP={this.onChangeCLP.bind(this)}
+            onChangeCLP={clp => {
+              let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
+                className: this.props.params.className,
+                clp,
+              });
+              p.then(() => this.handleFetchedSchema());
+              return p;
+            }}
             onRefresh={this.refresh.bind(this)}
 
             columns={columns}
