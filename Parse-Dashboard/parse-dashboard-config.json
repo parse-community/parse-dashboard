@@ -11,6 +11,12 @@
       "appId": "a7CZrog0BlDByToh79OwaW2UyfBkuoiVcQwBBi8I",
       "masterKey": "rOZa6y1jqNpGhTUuHPIjvtQ641VqvODKLh0Gs85L",
       "appName": "voice-translator"
+    },
+    {
+      "serverURL": "https://izocammobile.herokuapp.com/parse",
+      "appId": "gmSADKnh6cyC6At4qp4xtfJ47avjpbGKZ68hzH5t",
+      "masterKey": "k4FPJjIuLh45zTIKWs98EG2mFotnNEK7DXqmymp8",
+      "appName": "izocammobile"
     }
   ],
    "users": [
