@@ -31,7 +31,7 @@ export default class ParseApp {
     dashboardURL,
     javascriptKey,
     masterKey,
-    restKey,
+    restAPIKey,
     windowsKey,
     webhookKey,
     apiKey,
@@ -41,6 +41,7 @@ export default class ParseApp {
     packageNameAndroid,
     idAppStore,
     iconName,
+    masterApp,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -53,7 +54,7 @@ export default class ParseApp {
     this.clientKey = clientKey;
     this.javascriptKey = javascriptKey;
     this.masterKey = masterKey;
-    this.restKey = restKey;
+    this.restKey = restAPIKey;
     this.windowsKey = windowsKey;
     this.webhookKey = webhookKey;
     this.fileKey =  apiKey;
@@ -63,6 +64,7 @@ export default class ParseApp {
     this.icon = iconName;
     this.packageNameAndroid = packageNameAndroid;
     this.idAppStore = idAppStore;
+    this.masterApp = masterApp;
 
     this.settings = {
       fields: {},

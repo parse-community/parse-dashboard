@@ -30,6 +30,8 @@ import Toolbar       from 'components/Toolbar/Toolbar.react';
 import stylesTable   from 'dashboard/TableView.scss';
 import EmptyState    from 'components/EmptyState/EmptyState.react';
 import * as AJAX     from 'lib/AJAX';
+import LoaderContainer  from 'components/LoaderContainer/LoaderContainer.react';
+import AppsManager   from 'lib/AppsManager';
 
 export default class Reviews extends DashboardView {
 
@@ -45,23 +47,35 @@ export default class Reviews extends DashboardView {
       runAsIdentifier: '',
       sessionToken: null,
       parameters: '',
-      response: {results:[]},
+      response: null,
       fetchingUser: false,
       inProgress: false,
       error: false,
       curlModal: false,
+      loading: true,
       maxStars: 5
     };
-    
-    
   }
   
   makeRequest() {
-    let path = 'http://api.colubris.com.br/publiq/classes/Reviews?where={"applicationId":"' + this.context.currentApp.applicationId + '"}';
-    let promise = AJAX.getReviews(path, '');
+    let path = 'https://api.colubris.com.br/publiq/classes/Reviews?where={"applicationId":"' + this.context.currentApp.applicationId + '"}';
+    let apps = AppsManager.apps();
+    let masterApp = apps.filter(function(app) {
+      return app.masterApp == true; // if truthy then keep item
+    });
+    let headers = null;
+    if(masterApp.length > 0) {
+      headers = {
+        'X-Parse-Application-Id': masterApp[0].applicationId,
+        'X-Parse-REST-API-Key': masterApp[0].restKey,
+        'X-Parse-Master-Key': masterApp[0].masterKey,
+        'Content-Type': 'application/json'
+      };
+    }
+    let promise = AJAX.getReviews(path, '', headers);
     promise.then((response) => {
       this.setState({ response });
-      //document.body.scrollTop = 0;
+      this.setState({loading: false})
     });
   }
   
@@ -75,24 +89,24 @@ export default class Reviews extends DashboardView {
   }
   
   renderContent() {
-    if(this.state.response == null || this.state.response.results.length == 0) {
-      this.makeRequest();
-      
-      return (
-        <div style={{ padding: '120px 0 60px 0' }}>
-          {this.renderEmpty()}
-          <Toolbar section='Core' subsection='Reviews' />
-        </div>
-      );  
-    } else {    
-      var legend = 'Results';
-      
-      return (
-        <div style={{ padding: '120px 0 60px 0' }}>
-          <Fieldset
+    let content = (<div style={{ padding: '120px 0 60px 0' }}>
+                  <Toolbar section='Core' subsection='Reviews' /></div>);
+    let legend = 'Results';
+    if(this.state.response == null) {
+      this.makeRequest();  
+    } else {
+      if(this.state.response.results.length == 0) {
+        content = (
+          <div style={{ padding: '120px 0 500px 0' }}>
+            {this.renderEmpty()}
+            <Toolbar section='Core' subsection='Reviews' />
+          </div>
+        );
+      } else {
+        content = (<Fieldset
             legend={legend}
             description=''>
-             
+            
             {this.state.response.results.map((review) =>
               <div key={review.reviewId} style={{ padding: '10px 10px 10px 10px' }} className={fieldStyle.field}>
                 <span><b>{review.reviewAuthor}({review.reviewAppVersion}) </b></span>
@@ -108,11 +122,18 @@ export default class Reviews extends DashboardView {
                 <Icon name={review.device} fill='#00db7c' width={20} height={20} />
               </div>
             )}
-          </Fieldset>
-          <Toolbar section='Core' subsection='Reviews' />
-        </div>
-      );
+          </Fieldset>);
+        }
     }
+    
+    return (
+      <div style={{ padding: '120px 0 60px 0' }}>
+        <LoaderContainer loading={this.state.loading} solid={false}>
+          {content}
+        </LoaderContainer>
+        <Toolbar section='Core' subsection='Reviews' />
+      </div>
+    );
   }
 }
 

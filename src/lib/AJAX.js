@@ -18,7 +18,7 @@ export function setBasePath(newBasePath) {
 }
 
 // abortable flag used to pass xhr reference so user can abort accordingly
-export function request(method, url, body, abortable = false, withCredentials = true, useRequestedWith = true) {
+export function request(method, url, body, abortable = false, withCredentials = false, useRequestedWith = true, useCSRFToken = true, headers = null) {
   if (!url.startsWith('http://')
       && !url.startsWith('https://')
       && basePath.length
@@ -28,7 +28,9 @@ export function request(method, url, body, abortable = false, withCredentials = 
   let xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
-    xhr.setRequestHeader('X-CSRF-Token', CSRFManager.getToken());
+    if(useCSRFToken) {
+      xhr.setRequestHeader('X-CSRF-Token', CSRFManager.getToken());
+    }
   }
   if (useRequestedWith) {
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -108,6 +110,11 @@ export function request(method, url, body, abortable = false, withCredentials = 
       xhr.send(formData.join('&'));
     }
   } else {
+    if(headers != null) {
+      for (let k in headers) {
+        xhr.setRequestHeader(k, headers[k]);
+      }
+    }
     xhr.send(body);
   }
   if (abortable) {
@@ -130,6 +137,10 @@ export function abortableGet(url) {
 
 export function getHerokuAppName(url) {
   return request('GET', url, null, false, false, false);
+}
+
+export function getReviews(url, body, headers) {
+  return request('GET', url, body, false, false, false, false, headers);
 }
 
 export function get(url) {

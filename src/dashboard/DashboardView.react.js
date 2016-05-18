@@ -88,6 +88,11 @@ export default class DashboardView extends React.Component {
     });
     
     coreSubsections.push({
+      name: 'Downloads',
+      link: '/downloads'
+    });
+    
+    coreSubsections.push({
       name: 'API Console',
       link: '/api_console'
     });
