@@ -11,6 +11,7 @@ const path = require('path');
 const jsonFile = require('json-file-plus');
 const express = require('express');
 const parseDashboard = require('./app');
+const fs = require('fs');
 
 const program = require('commander');
 program.option('--appId [appId]',
@@ -108,6 +109,28 @@ p.then(config => {
 
     if (config.data.iconsFolder && configFilePath) {
       config.data.iconsFolder = path.join(configFilePath, config.data.iconsFolder);
+      // Serve the app icons. Uses the optional `iconsFolder` parameter as
+      // directory name, that was setup in the config file.
+      // We are explicitly not using `__dirpath` here because one may be
+      // running parse-dashboard from globally installed npm.
+      if (config.data.iconsFolder) {
+        fs.stat(config.data.iconsFolder, function(err, stats) {
+          if (err) {
+            // Directory doesn't exist or something.
+            console.warn("Iconsfolder at path: " + config.data.iconsFolder +
+              " not found!");
+            return;
+          } else if (!stats.isDirectory()) {
+            // This isn't a directory!
+            console.warn("Iconsfolder at path: " + config.data.iconsFolder +
+              " is not a real directory!");
+          } else {
+            console.info("Iconsfolder at path: " + config.data.iconsFolder +
+              " found!");
+            app.use('/appicons', express.static(config.data.iconsFolder));
+          }
+        });
+      }
     }
 
     const app = express();
@@ -123,7 +146,6 @@ p.then(config => {
       });
     } else {
       // Start the server using SSL.
-      var fs = require('fs');
       var privateKey = fs.readFileSync(configSSLKey);
       var certificate = fs.readFileSync(configSSLCert);
 

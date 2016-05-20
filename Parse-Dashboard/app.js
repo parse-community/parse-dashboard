@@ -126,7 +126,7 @@ module.exports = function(config, allowInsecureHTTP) {
   // directory name, that was setup in the config file.
   // We are explicitly not using `__dirpath` here because one may be
   // running parse-dashboard from globally installed npm.
-  if (config.iconsFolder) {
+  /*if (config.iconsFolder) {
     fs.stat(config.iconsFolder, function(err, stats) {
       if (err) {
         // Directory doesn't exist or something.
@@ -143,7 +143,7 @@ module.exports = function(config, allowInsecureHTTP) {
         app.use('/appicons', express.static(config.iconsFolder));
       }
     });
-  }
+  }*/
 
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
