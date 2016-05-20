@@ -3,6 +3,7 @@ const express = require('express');
 const basicAuth = require('basic-auth');
 const path = require('path');
 const packageJson = require('package-json');
+const fs = require('fs');
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
@@ -25,19 +26,6 @@ function getMount(req) {
     mountPath += '/';
   }
   return mountPath;
-}
-
-function checkDirectory(directory, callback) {
-  fs.stat(directory, function(err, stats) {
-    //Check if error defined and the error code is "not exists"
-    if (err && err.errno === 34) {
-      //Create the directory, call the callback.
-      callback(err)
-    } else {
-      //just in case there was a different error:
-      callback(err)
-    }
-  });
 }
 
 module.exports = function(config, allowInsecureHTTP) {
@@ -139,13 +127,19 @@ module.exports = function(config, allowInsecureHTTP) {
   // We are explicitly not using `__dirpath` here because one may be
   // running parse-dashboard from globally installed npm.
   if (config.iconsFolder) {
-    checkDirectory(express.static(config.iconsFolder), function(error) {
-      if (error) {
-        console.log("Iconsfolder at path:" + express.static(config.iconsFolder) +
-          " not found!", error);
+    fs.stat(config.iconsFolder, function(err, stats) {
+      if (err) {
+        // Directory doesn't exist or something.
+        console.warn("Iconsfolder at path:" + express.static(config.iconsFolder) +
+          " not found!");
+      }
+      if (!stats.isDirectory()) {
+        // This isn't a directory!
+        console.warn("Iconsfolder at path:" + config.iconsFolder +
+          " is not a real directory!");
       } else {
-        console.log();
-        ("Loading icons from path: " + express.static(config.iconsFolder));
+        console.info("Iconsfolder at path:" + config.iconsFolder +
+          " found!");
         app.use('/appicons', express.static(config.iconsFolder));
       }
     });

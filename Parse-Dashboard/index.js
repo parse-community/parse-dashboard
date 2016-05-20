@@ -13,15 +13,22 @@ const express = require('express');
 const parseDashboard = require('./app');
 
 const program = require('commander');
-program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
-program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
-program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');
-program.option('--appName [appName]', 'the name of the app you would like to manage. Optional.');
+program.option('--appId [appId]',
+  'the app Id of the app you would like to manage.');
+program.option('--masterKey [masterKey]',
+  'the master key of the app you would like to manage.');
+program.option('--serverURL [serverURL]',
+  'the server url of the app you would like to manage.');
+program.option('--appName [appName]',
+  'the name of the app you would like to manage. Optional.');
 program.option('--config [config]', 'the path to the configuration file');
 program.option('--host [host]', 'the host to run parse-dashboard');
 program.option('--port [port]', 'the port to run parse-dashboard');
-program.option('--mountPath [mountPath]', 'the mount path to run parse-dashboard');
-program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
+program.option('--mountPath [mountPath]',
+  'the mount path to run parse-dashboard');
+program.option('--allowInsecureHTTP [allowInsecureHTTP]',
+  'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.'
+);
 program.option('--sslKey [sslKey]', 'the path to the SSL private key.');
 program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 
@@ -47,23 +54,19 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
       data: {
-        apps: [
-          {
-            appId: configAppId,
-            serverURL: configServerURL,
-            masterKey: configMasterKey,
-            appName: configAppName,
-          },
-        ]
+        apps: [{
+          appId: configAppId,
+          serverURL: configServerURL,
+          masterKey: configMasterKey,
+          appName: configAppName,
+        }, ]
       }
     };
     if (configUserId && configUserPassword) {
-      configFromCLI.data.users = [
-        {
-          user: configUserId,
-          pass: configUserPassword,
-        }
-      ];
+      configFromCLI.data.users = [{
+        user: configUserId,
+        pass: configUserPassword,
+      }];
     }
   } else if (!configServerURL && !configMasterKey && !configAppName) {
     configFile = path.join(__dirname, 'parse-dashboard-config.json');
@@ -75,7 +78,9 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
 } else {
   configFile = program.config;
   if (program.appId || program.serverURL || program.masterKey || program.appName) {
-    console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
+    console.log(
+      'You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.'
+    );
     process.exit(3);
   }
 }
@@ -89,60 +94,68 @@ if (configFile) {
   p = Promise.resolve(configFromCLI);
 } else {
   //Failed to load default config file.
-  console.log('You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.');
+  console.log(
+    'You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.'
+  );
   process.exit(4);
 }
 p.then(config => {
-  config.data.apps.forEach(app => {
-    if (!app.appName) {
-      app.appName = app.appId;
+    config.data.apps.forEach(app => {
+      if (!app.appName) {
+        app.appName = app.appId;
+      }
+    });
+
+    if (config.data.iconsFolder && configFilePath) {
+      config.data.iconsFolder = path.join(configFilePath, config.data.iconsFolder);
     }
-  });
 
-  if (config.data.iconsFolder && configFilePath) {
-    config.data.iconsFolder = path.join(configFilePath, config.data.iconsFolder);
-  }
+    const app = express();
 
-  const app = express();
-
-  if (allowInsecureHTTP) app.enable('trust proxy');
-  app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
-  if(!configSSLKey || !configSSLCert){
-    // Start the server.
-    const server = app.listen(port, host, function () {
-      console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
-    });
-  } else {
-    // Start the server using SSL.
-    var fs = require('fs');
-    var privateKey = fs.readFileSync(configSSLKey);
-    var certificate = fs.readFileSync(configSSLCert);
-   
-    const server = require('https').createServer({
-      key: privateKey,
-      cert: certificate
-    }, app).listen(port, host, function () {
-      console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
-    });
-  }
-}, error => {
-  if (error instanceof SyntaxError) {
-    console.log('Your config file contains invalid JSON. Exiting.');
-    process.exit(1);
-  } else if (error.code === 'ENOENT') {
-    if (explicitConfigFileProvided) {
-      console.log('Your config file is missing. Exiting.');
-      process.exit(2);
+    if (allowInsecureHTTP) app.enable('trust proxy');
+    app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
+    if (!configSSLKey || !configSSLCert) {
+      // Start the server.
+      const server = app.listen(port, host, function() {
+        console.log(
+          `The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`
+        );
+      });
     } else {
-      console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
-      process.exit(3);
+      // Start the server using SSL.
+      var fs = require('fs');
+      var privateKey = fs.readFileSync(configSSLKey);
+      var certificate = fs.readFileSync(configSSLCert);
+
+      const server = require('https').createServer({
+        key: privateKey,
+        cert: certificate
+      }, app).listen(port, host, function() {
+        console.log(
+          `The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`
+        );
+      });
     }
-  } else {
-    console.log('There was a problem with your config. Exiting.');
+  }, error => {
+    if (error instanceof SyntaxError) {
+      console.log('Your config file contains invalid JSON. Exiting.');
+      process.exit(1);
+    } else if (error.code === 'ENOENT') {
+      if (explicitConfigFileProvided) {
+        console.log('Your config file is missing. Exiting.');
+        process.exit(2);
+      } else {
+        console.log(
+          'You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.'
+        );
+        process.exit(3);
+      }
+    } else {
+      console.log('There was a problem with your config. Exiting.');
+      process.exit(-1);
+    }
+  })
+  .catch(error => {
+    console.log('There was a problem loading the dashboard. Exiting.');
     process.exit(-1);
-  }
-})
-.catch(error => {
-  console.log('There was a problem loading the dashboard. Exiting.');
-  process.exit(-1);
-});
+  });
