@@ -1,5 +1,11 @@
 {
-  "apps": [
-
-  ]
+  "apps": [{
+    "serverURL": "https://parseapi.cornea-apps.com/prayfortheworld",
+    "appId": "EwtgCP0nobrZlDIR11Px00umEHKVPgvPU8FWAgDD",
+    "masterKey": "6fPIgUrnHlNVWlgmjDb6bfx5pPvAzXwL59JoQ7k6",
+    "appName": "PrayfortheWorld",
+    "iconName": "pray.png",
+    "production": true
+  }],
+  "iconsFolder": "../icons"
 }
