@@ -130,7 +130,7 @@ module.exports = function(config, allowInsecureHTTP) {
     fs.stat(config.iconsFolder, function(err, stats) {
       if (err) {
         // Directory doesn't exist or something.
-        console.warn("Iconsfolder at path:" + express.static(config.iconsFolder) +
+        console.warn("Iconsfolder at path:" + config.iconsFolder +
           " not found!");
       }
       if (!stats.isDirectory()) {
