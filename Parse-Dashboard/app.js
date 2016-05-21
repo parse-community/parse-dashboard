@@ -10,10 +10,9 @@ const currentVersionFeatures = require('../package.json').parseDashboardFeatures
 var newFeaturesInLatestVersion = [];
 packageJson('parse-dashboard', 'latest').then(latestPackage => {
   if (latestPackage.parseDashboardFeatures instanceof Array) {
-    newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(
-      feature => {
-        return currentVersionFeatures.indexOf(feature) === -1;
-      });
+    newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
+      return currentVersionFeatures.indexOf(feature) === -1;
+    });
   }
 });
 
@@ -30,7 +29,6 @@ function getMount(req) {
 
 function checkIfIconsExistForApps(apps, iconsFolder) {
   for (var i in apps) {
-    console.log(JSON.stringify(apps[i]));
     var currentApp = apps[i];
     var iconName = currentApp.iconName;
     var path = iconsFolder + "/" + iconName;
@@ -47,13 +45,12 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
       }
     });
   }
-
 }
 
 module.exports = function(config, allowInsecureHTTP) {
   var app = express();
   // Serve public files.
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname,'public')));
 
   // Serve the configuration.
   app.get('/parse-dashboard-config.json', function(req, res) {
@@ -78,18 +75,12 @@ module.exports = function(config, allowInsecureHTTP) {
       req.connection.remoteAddress === '::1';
     if (!requestIsLocal && !req.secure && !allowInsecureHTTP) {
       //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
-      return res.send({
-        success: false,
-        error: 'Parse Dashboard can only be remotely accessed via HTTPS'
-      });
+      return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
     }
 
     if (!requestIsLocal && !users) {
       //Accessing the dashboard over the internet can only be done with username and password
-      return res.send({
-        success: false,
-        error: 'Configure a user to access Parse Dashboard remotely'
-      });
+      return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
     }
 
     let appsUserHasAccess = null;
@@ -100,9 +91,9 @@ module.exports = function(config, allowInsecureHTTP) {
       //there are configured users
       users &&
       //the provided auth matches one of the users
-      users.find(user => {
+       users.find(user => {
         let isAuthorized = user.user == auth.name &&
-          user.pass == auth.pass
+                            user.pass == auth.pass
         if (isAuthorized) {
           // User restricted apps
           appsUserHasAccess = user.apps
@@ -112,10 +103,10 @@ module.exports = function(config, allowInsecureHTTP) {
       });
 
     if (successfulAuth) {
-      if (appsUserHasAccess) {
+      if(appsUserHasAccess) {
         // Restric access to apps defined in user dictionary
         // If they didn't supply any app id, user will access all apps
-        response.apps = response.apps.filter(function(app) {
+        response.apps = response.apps.filter(function (app) {
           return appsUserHasAccess.find(appUserHasAccess => {
             return app.appId == appUserHasAccess.appId
           })
@@ -138,18 +129,15 @@ module.exports = function(config, allowInsecureHTTP) {
       return res.json(response);
     }
     //We shouldn't get here. Fail closed.
-    res.send({
-      success: false,
-      error: 'Something went wrong.'
-    });
+    res.send({ success: false, error: 'Something went wrong.' });
   });
 
   // Serve the app icons. Uses the optional `iconsFolder` parameter as
   // directory name, that was setup in the config file.
   // We are explicitly not using `__dirpath` here because one may be
   // running parse-dashboard from globally installed npm.
-  if (config.iconsFolder) {
-    var stat = fs.statSync(config.iconsFolder);
+  if (config.iconsFolder) {    
+  	var stat = fs.statSync(config.iconsFolder);
     if (stat && stat.isDirectory()) {
       app.use('/appicons', express.static(config.iconsFolder));
       //Check also if the icons really exist
@@ -161,12 +149,10 @@ module.exports = function(config, allowInsecureHTTP) {
     }
   }
 
-
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
     let mountPath = getMount(req);
-    res.send(
-      `<!DOCTYPE html>
+    res.send(`<!DOCTYPE html>
       <head>
         <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
         <base href="${mountPath}"/>
@@ -181,8 +167,7 @@ module.exports = function(config, allowInsecureHTTP) {
           <script src="${mountPath}bundles/dashboard.bundle.js"></script>
         </body>
       </html>
-    `
-    );
+    `);
   });
 
   return app;
