@@ -1,11 +1,10 @@
 {
   "apps": [{
-    "serverURL": "xx",
-    "appId": "xxx",
-    "masterKey": "xxx",
-    "appName": "PrayfortheWorld",
-    "iconName": "pray.png",
-    "production": true
+    "serverURL": "",
+    "appId": "",
+    "masterKey": "",
+    "appName": "",
+    "iconName": ""
   }],
-  "iconsFolder": "../../icons"
+  "iconsFolder": "icons"
 }

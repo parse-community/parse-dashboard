@@ -28,6 +28,28 @@ function getMount(req) {
   return mountPath;
 }
 
+function checkIfIconsExistForApps(apps, iconsFolder) {
+  for (var i in apps) {
+    console.log(JSON.stringify(apps[i]));
+    var currentApp = apps[i];
+    var iconName = currentApp.iconName;
+    var path = iconsFolder + "/" + iconName;
+
+    fs.stat(path, function(err, stat) {
+      if (err != null && err.code == 'ENOENT') {
+        // file does not exist
+        console.warn("Icon with file name: " + iconName +
+          " couldn't be found in icons folder!");
+      } else {
+        console.log(
+          'An error occurd while checking for icons, please check permission: ',
+          err.code);
+      }
+    });
+  }
+
+}
+
 module.exports = function(config, allowInsecureHTTP) {
   var app = express();
   // Serve public files.
@@ -126,24 +148,19 @@ module.exports = function(config, allowInsecureHTTP) {
   // directory name, that was setup in the config file.
   // We are explicitly not using `__dirpath` here because one may be
   // running parse-dashboard from globally installed npm.
-  /*if (config.iconsFolder) {
-    fs.stat(config.iconsFolder, function(err, stats) {
-      if (err) {
-        // Directory doesn't exist or something.
-        console.warn("Iconsfolder at path: " + config.iconsFolder +
-          " not found!");
-        return;
-      } else if (!stats.isDirectory()) {
-        // This isn't a directory!
-        console.warn("Iconsfolder at path: " + config.iconsFolder +
-          " is not a real directory!");
-      } else {
-        console.info("Iconsfolder at path: " + config.iconsFolder +
-          " found!");
-        app.use('/appicons', express.static(config.iconsFolder));
-      }
-    });
-  }*/
+  if (config.iconsFolder) {
+    var stat = fs.statSync(config.iconsFolder);
+    if (stat && stat.isDirectory()) {
+      app.use('/appicons', express.static(config.iconsFolder));
+      //Check also if the icons really exist
+      checkIfIconsExistForApps(config.apps, config.iconsFolder);
+    } else {
+      // Directory doesn't exist or something.
+      console.warn("Iconsfolder at path: " + config.iconsFolder +
+        " not found!");
+    }
+  }
+
 
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
