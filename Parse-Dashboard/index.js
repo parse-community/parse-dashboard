@@ -117,7 +117,7 @@ p.then(config => {
     var fs = require('fs');
     var privateKey = fs.readFileSync(configSSLKey);
     var certificate = fs.readFileSync(configSSLCert);
-   
+
     const server = require('https').createServer({
       key: privateKey,
       cert: certificate
@@ -143,6 +143,6 @@ p.then(config => {
   }
 })
 .catch(error => {
-  console.log('There was a problem loading the dashboard. Exiting.');
+  console.log('There was a problem loading the dashboard. Exiting.', error);
   process.exit(-1);
 });
