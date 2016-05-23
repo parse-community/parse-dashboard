@@ -28,15 +28,10 @@ function getMount(req) {
 }
 
 function checkIfIconsExistForApps(apps, iconsFolder) {
-
-  console.log("iconsFolder: "+iconsFolder);
-
   for (var i in apps) {
     var currentApp = apps[i];
     var iconName = currentApp.iconName;
     var path = iconsFolder + "/" + iconName;
-
-    console.log("Iconpath: "+path);
 
     fs.stat(path, function(err, stat) {
       if (err) {
@@ -50,18 +45,6 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
           //every thing was ok so for example you can read it and send it to client
       }
   } );
-
-/*
-    fs.stat(path, function(err, stat) {
-      if (err != null && err.code == 'ENOENT') {
-        // file does not exist
-        console.warn("Icon with file name: " + iconName +
-          " couldn't be found in icons folder!");
-      } else {
-        console.log(
-          'An error occurd while checking for icons, please check permission!');
-      }
-    });*/
   }
 }
 
