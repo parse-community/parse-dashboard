@@ -40,8 +40,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
           " couldn't be found in icons folder!");
       } else {
         console.log(
-          'An error occurd while checking for icons, please check permission: ',
-          err.code);
+          'An error occurd while checking for icons, please check permission! ');
       }
     });
   }
@@ -148,7 +147,7 @@ module.exports = function(config, allowInsecureHTTP) {
       // Directory doesn't exist or something.
       console.warn("Iconsfolder at path: " + config.iconsFolder +
         " not found!");
-    } 
+    }
   }
 
   // For every other request, go to index.html. Let client-side handle the rest.
