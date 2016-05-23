@@ -28,11 +28,16 @@ function getMount(req) {
 }
 
 function checkIfIconsExistForApps(apps, iconsFolder) {
+
+  console.log("iconsFolder: "+iconsFolder);
+
   for (var i in apps) {
     var currentApp = apps[i];
     var iconName = currentApp.iconName;
     var path = iconsFolder + "/" + iconName;
 
+    console.log("Iconpath: "+path);
+    
     fs.stat(path, function(err, stat) {
       if (err != null && err.code == 'ENOENT') {
         // file does not exist
