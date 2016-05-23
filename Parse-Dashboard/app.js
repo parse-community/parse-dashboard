@@ -39,7 +39,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
         console.warn("Icon with file name: " + iconName +
           " couldn't be found in icons folder!");
       } else {
-        console.log('An error occurd while checking for icons, please check permission: ');
+        console.log('An error occurd while checking for icons, please check permission!');
       }
     });
   }
