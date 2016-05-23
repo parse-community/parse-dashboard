@@ -39,13 +39,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
         console.warn("Icon with file name: " + iconName +
           " couldn't be found in icons folder!");
       } else {
-        console.log(
-<<<<<<< HEAD
-          'An error occurd while checking for icons, please check permission! ');
-=======
-          'An error occurd while checking for icons, please check permission: ',
-          err.code);
->>>>>>> ParsePlatform/master
+        console.log('An error occurd while checking for icons, please check permission: ');
       }
     });
   }
@@ -152,11 +146,7 @@ module.exports = function(config, allowInsecureHTTP) {
       // Directory doesn't exist or something.
       console.warn("Iconsfolder at path: " + config.iconsFolder +
         " not found!");
-<<<<<<< HEAD
     }
-=======
-    } 
->>>>>>> ParsePlatform/master
   }
 
   // For every other request, go to index.html. Let client-side handle the rest.
