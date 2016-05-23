@@ -34,15 +34,17 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
     var path = iconsFolder + "/" + iconName;
 
     fs.stat(path, function(err, stat) {
-      if (err != null && err.code == 'ENOENT') {
-        // file does not exist
-        console.warn("Icon with file name: " + iconName +
-          " couldn't be found in icons folder!");
+      if (err) {
+          if ('ENOENT' == err.code) {// file does not exist
+              console.warn("Icon with file name: " + iconName +" couldn't be found in icons folder!");
+          } else {
+            console.log(
+              'An error occurd while checking for icons, please check permission!');
+          }
       } else {
-        console.log(
-          'An error occurd while checking for icons, please check permission!');
+          //every thing was ok so for example you can read it and send it to client
       }
-    });
+  } );
   }
 }
 
