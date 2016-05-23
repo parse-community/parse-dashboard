@@ -28,6 +28,26 @@ function getMount(req) {
   return mountPath;
 }
 
+function checkIfIconsExistForApps(apps, iconsFolder) {
+  for (var i in apps) {
+    var currentApp = apps[i];
+    var iconName = currentApp.iconName;
+    var path = iconsFolder + "/" + iconName;
+
+    fs.stat(path, function(err, stat) {
+      if (err != null && err.code == 'ENOENT') {
+        // file does not exist
+        console.warn("Icon with file name: " + iconName +
+          " couldn't be found in icons folder!");
+      } else {
+        console.log(
+          'An error occurd while checking for icons, please check permission: ',
+          err.code);
+      }
+    });
+  }
+}
+
 module.exports = function(config, allowInsecureHTTP) {
   var app = express();
   // Serve public files.
@@ -127,6 +147,7 @@ module.exports = function(config, allowInsecureHTTP) {
   // We are explicitly not using `__dirpath` here because one may be
   // running parse-dashboard from globally installed npm.
   if (config.iconsFolder) {
+<<<<<<< HEAD
     fs.stat(config.iconsFolder, function(err, stats) {
       if (err) {
         // Directory doesn't exist or something.
@@ -143,6 +164,20 @@ module.exports = function(config, allowInsecureHTTP) {
         app.use('/appicons', express.static(config.iconsFolder));
       }
     });
+=======
+    try {
+      var stat = fs.statSync(config.iconsFolder);
+      if (stat.isDirectory()) {
+        app.use('/appicons', express.static(config.iconsFolder));
+        //Check also if the icons really exist
+        checkIfIconsExistForApps(config.apps, config.iconsFolder);
+      }
+    } catch (e) {
+      // Directory doesn't exist or something.
+      console.warn("Iconsfolder at path: " + config.iconsFolder +
+        " not found!");
+    } 
+>>>>>>> ParsePlatform/master
   }
 
   // For every other request, go to index.html. Let client-side handle the rest.

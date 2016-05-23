@@ -1,5 +1,6 @@
 {
   "apps": [{
+<<<<<<< HEAD
     "serverURL": "xx",
     "appId": "xxx",
     "masterKey": "xxx",
@@ -8,4 +9,13 @@
     "production": true
   }],
   "iconsFolder": "../../icons"
+=======
+    "serverURL": "",
+    "appId": "",
+    "masterKey": "",
+    "appName": "",
+    "iconName": ""
+  }],
+  "iconsFolder": "icons"
+>>>>>>> ParsePlatform/master
 }

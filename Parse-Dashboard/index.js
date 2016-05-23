@@ -127,6 +127,7 @@ p.then(config => {
       var privateKey = fs.readFileSync(configSSLKey);
       var certificate = fs.readFileSync(configSSLCert);
 
+<<<<<<< HEAD
       const server = require('https').createServer({
         key: privateKey,
         cert: certificate
@@ -150,6 +151,36 @@ p.then(config => {
         );
         process.exit(3);
       }
+=======
+  if (allowInsecureHTTP) app.enable('trust proxy');
+  app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
+  if(!configSSLKey || !configSSLCert){
+    // Start the server.
+    const server = app.listen(port, host, function () {
+      console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
+    });
+  } else {
+    // Start the server using SSL.
+    var fs = require('fs');
+    var privateKey = fs.readFileSync(configSSLKey);
+    var certificate = fs.readFileSync(configSSLCert);
+
+    const server = require('https').createServer({
+      key: privateKey,
+      cert: certificate
+    }, app).listen(port, host, function () {
+      console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
+    });
+  }
+}, error => {
+  if (error instanceof SyntaxError) {
+    console.log('Your config file contains invalid JSON. Exiting.');
+    process.exit(1);
+  } else if (error.code === 'ENOENT') {
+    if (explicitConfigFileProvided) {
+      console.log('Your config file is missing. Exiting.');
+      process.exit(2);
+>>>>>>> ParsePlatform/master
     } else {
       console.log('There was a problem with your config. Exiting.');
       process.exit(-1);
@@ -158,4 +189,13 @@ p.then(config => {
   .catch(error => {
     console.log('There was a problem loading the dashboard. Exiting.');
     process.exit(-1);
+<<<<<<< HEAD
   });
+=======
+  }
+})
+.catch(error => {
+  console.log('There was a problem loading the dashboard. Exiting.', error);
+  process.exit(-1);
+});
+>>>>>>> ParsePlatform/master
