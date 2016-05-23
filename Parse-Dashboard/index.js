@@ -105,6 +105,34 @@ p.then(config => {
 
   const app = express();
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      const server = require('https').createServer({
+        key: privateKey,
+        cert: certificate
+      }, app).listen(port, host, function() {
+        console.log(
+          `The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`
+        );
+      });
+    }
+  }, error => {
+    if (error instanceof SyntaxError) {
+      console.log('Your config file contains invalid JSON. Exiting.');
+      process.exit(1);
+    } else if (error.code === 'ENOENT') {
+      if (explicitConfigFileProvided) {
+        console.log('Your config file is missing. Exiting.');
+        process.exit(2);
+      } else {
+        console.log(
+          'You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.'
+        );
+        process.exit(3);
+      }
+=======
+>>>>>>> master
   if (allowInsecureHTTP) app.enable('trust proxy');
   app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
   if(!configSSLKey || !configSSLCert){
@@ -133,6 +161,10 @@ p.then(config => {
     if (explicitConfigFileProvided) {
       console.log('Your config file is missing. Exiting.');
       process.exit(2);
+<<<<<<< HEAD
+=======
+>>>>>>> ParsePlatform/master
+>>>>>>> master
     } else {
       console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
       process.exit(3);
@@ -140,9 +172,19 @@ p.then(config => {
   } else {
     console.log('There was a problem with your config. Exiting.');
     process.exit(-1);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  });
+=======
+>>>>>>> master
   }
 })
 .catch(error => {
   console.log('There was a problem loading the dashboard. Exiting.', error);
   process.exit(-1);
 });
+<<<<<<< HEAD
+=======
+>>>>>>> ParsePlatform/master
+>>>>>>> master

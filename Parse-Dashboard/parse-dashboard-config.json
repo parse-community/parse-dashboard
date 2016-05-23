@@ -1,5 +1,6 @@
 {
   "apps": [{
+<<<<<<< HEAD
     "serverURL": "",
     "appId": "",
     "masterKey": "",
@@ -7,4 +8,24 @@
     "iconName": ""
   }],
   "iconsFolder": "icons"
+=======
+<<<<<<< HEAD
+    "serverURL": "xx",
+    "appId": "xxx",
+    "masterKey": "xxx",
+    "appName": "PrayfortheWorld",
+    "iconName": "pray.png",
+    "production": true
+  }],
+  "iconsFolder": "../../icons"
+=======
+    "serverURL": "",
+    "appId": "",
+    "masterKey": "",
+    "appName": "",
+    "iconName": ""
+  }],
+  "iconsFolder": "icons"
+>>>>>>> ParsePlatform/master
+>>>>>>> master
 }

@@ -39,7 +39,13 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
         console.warn("Icon with file name: " + iconName +
           " couldn't be found in icons folder!");
       } else {
+<<<<<<< HEAD
         console.log('An error occurd while checking for icons, please check permission!');
+=======
+        console.log(
+          'An error occurd while checking for icons, please check permission: ',
+          err.code);
+>>>>>>> master
       }
     });
   }
@@ -135,6 +141,34 @@ module.exports = function(config, allowInsecureHTTP) {
   // We are explicitly not using `__dirpath` here because one may be
   // running parse-dashboard from globally installed npm.
   if (config.iconsFolder) {
+<<<<<<< HEAD
+    try {
+      var stat = fs.statSync(config.iconsFolder);
+      if (stat.isDirectory()) {
+=======
+<<<<<<< HEAD
+    fs.stat(config.iconsFolder, function(err, stats) {
+      if (err) {
+        // Directory doesn't exist or something.
+        console.warn("Iconsfolder at path: " + config.iconsFolder +
+          " not found!");
+        return;
+      } else if (!stats.isDirectory()) {
+        // This isn't a directory!
+        console.warn("Iconsfolder at path: " + config.iconsFolder +
+          " is not a real directory!");
+      } else {
+        console.info("Iconsfolder at path: " + config.iconsFolder +
+          " found!");
+>>>>>>> master
+        app.use('/appicons', express.static(config.iconsFolder));
+        //Check also if the icons really exist
+        checkIfIconsExistForApps(config.apps, config.iconsFolder);
+      }
+<<<<<<< HEAD
+=======
+    });
+=======
     try {
       var stat = fs.statSync(config.iconsFolder);
       if (stat.isDirectory()) {
@@ -142,11 +176,17 @@ module.exports = function(config, allowInsecureHTTP) {
         //Check also if the icons really exist
         checkIfIconsExistForApps(config.apps, config.iconsFolder);
       }
+>>>>>>> master
     } catch (e) {
       // Directory doesn't exist or something.
       console.warn("Iconsfolder at path: " + config.iconsFolder +
         " not found!");
+<<<<<<< HEAD
     }
+=======
+    } 
+>>>>>>> ParsePlatform/master
+>>>>>>> master
   }
 
   // For every other request, go to index.html. Let client-side handle the rest.
