@@ -99,14 +99,8 @@ export default class ParseApp {
    * since - only fetch lines since this Date
    */
   getLogs(level, since) {
-    let params = {
-      level: level,
-      n: 100,
-    };
-    if (since) {
-      params.startDate = since.getTime();
-    }
-    return this.apiRequest('GET', 'scriptlog', params, { useMasterKey: true });
+    let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase()) + '&n=100' + (since?'&startDate=' + encodeURIComponent(since.getTime()):'');
+    return this.apiRequest('GET', path, {}, { useMasterKey: true });
   }
 
   /**
