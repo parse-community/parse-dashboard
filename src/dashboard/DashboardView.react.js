@@ -26,7 +26,6 @@ export default class DashboardView extends React.Component {
     }
 
     let features = this.context.currentApp.serverInfo.features;
-    let parseServerVersion = this.context.currentApp.serverInfo.parseServerVersion;
 
     let coreSubsections = [];
     if (features.schemas &&
@@ -103,7 +102,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    if (features.push && parseServerVersion >= '2.2.8') {
+    if (features.push && features.push.storedPushData) {
       pushSubsections.push({
         name: 'Past Pushes',
         link: '/push/activity'
