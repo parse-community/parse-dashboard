@@ -29,12 +29,13 @@ const PUSH_TYPE_CAMPAIGN = 'campaign';
 const PUSH_TYPE_EXPERIMENT = 'experiment';
 const PUSH_TYPE_API = 'api';
 const PUSH_TYPE_TRANSLATION = 'translation';
+const PUSH_DEFAULT_LIMIT = 10;
 
 const PUSH_CATEGORIES = {
   all: 'All',
-  campaign: 'Campaigns',
-  experiment: 'Experiments',
-  api: 'sent via API'
+  // campaign: 'Campaigns',
+  // experiment: 'Experiments',
+  // api: 'sent via API'
 };
 
 const PUSH_TYPES = {
@@ -47,12 +48,14 @@ const PUSH_STATUS_COLOR = {
   succeeded: 'green',
   failed: 'red',
   pending: 'blue',
+  running: 'blue',
 };
 
 const PUSH_STATUS_CONTENT = {
   succeeded: 'SENT',
   failed: 'FAILED',
   pending: 'SENDING',
+  running: 'SENDING',
 };
 
 const EXPERIMENT_GROUP = {
@@ -138,10 +141,25 @@ let getPushName = (pushData) => {
     );
   } else {
     let payload = pushData[PushConstants.PAYLOAD_FIELD];
+    try {
+      payload = JSON.parse(payload);
+    } catch(e) { }
     if(payload){
-      let parsedPayload = JSON.parse(payload);
-      return parsedPayload.alert ? parsedPayload.alert : payload;
+      return payload.alert ? payload.alert : payload;
     }
+  }
+}
+
+let getPushCount = (pushData) => {
+  let count = pushData[PushConstants.SENT_FIELD];
+  if(count != undefined){
+    return (
+      <strong>{count}</strong>
+    );
+  } else {
+    return (
+      <strong>N/A</strong>
+    );
   }
 }
 
@@ -190,7 +208,7 @@ let formatStatus = (status) => {
   let color = PUSH_STATUS_COLOR[status];
   let text = PUSH_STATUS_CONTENT[status];
   return (
-    <StatusIndicator status={color} text={text} />
+    <StatusIndicator color={color} text={text} />
   );
 }
 
@@ -215,11 +233,10 @@ export default class PushIndex extends DashboardView {
   constructor() {
     super();
     this.section = 'Push';
-    this.subsection = 'Activity'
+    this.subsection = 'Past Pushes'
     this.action = new SidebarAction('Send a push', this.navigateToNew.bind(this));
     this.state = {
       pushes: [],
-      pushCountMap: {},
       loading: true,
       paginationInfo: undefined,
       availableDevices: undefined,
@@ -227,24 +244,22 @@ export default class PushIndex extends DashboardView {
     this.xhrHandle = null;
   }
 
-  handleFetch(category, page){
-    let {xhr, promise} = this.context.currentApp.fetchPushNotifications(category, page);
-    this.xhrHandle = xhr;
-    promise.then(({ push_status, push_data, pagination_info }) => {
+  handleFetch(category, page, limit){
+    limit = limit || PUSH_DEFAULT_LIMIT;
+    page = page || 0;
+    let promise = this.context.currentApp.fetchPushNotifications(category, page, limit);
+
+    promise.then((pushes) => {
       this.setState({
-        pushes: this.state.pushes.concat(push_status),
-        paginationInfo: pagination_info,
+        paginationInfo: {
+          has_more: (pushes.length == limit),
+          page_num: page
+        },
+        pushes: this.state.pushes.concat(pushes),
       });
-      if(push_status && push_status.length !== 0){
-        this.context.currentApp.fetchPushNotificationsCount(push_data).then((objectIdMap) => {
-          this.setState({
-            pushCountMap: Object.assign(this.state.pushCountMap, objectIdMap),
-          });
-        });
-      }
     }).always(() => {
       this.setState({
-        loading:false,
+        loading: false,
         showMoreLoading: false,
       });
     });
@@ -296,7 +311,6 @@ export default class PushIndex extends DashboardView {
   handleCategoryClick(category) {
     this.setState({
       pushes: [],
-      pushCountMap: {},
       loading: true,
     });
     this.handleFetch(category);
@@ -312,12 +326,12 @@ export default class PushIndex extends DashboardView {
       <CategoryList current={current} linkPrefix={'push/activity/'} categories={[
         { name: PUSH_CATEGORIES[PUSH_TYPE_ALL],
           id: PUSH_TYPE_ALL},
-        { name: PUSH_CATEGORIES[PUSH_TYPE_CAMPAIGN],
-          id: PUSH_TYPE_CAMPAIGN},
-        { name: PUSH_CATEGORIES[PUSH_TYPE_EXPERIMENT],
-          id: PUSH_TYPE_EXPERIMENT},
-        { name: PUSH_CATEGORIES[PUSH_TYPE_API],
-          id: PUSH_TYPE_API},
+        // { name: PUSH_CATEGORIES[PUSH_TYPE_CAMPAIGN],
+        //   id: PUSH_TYPE_CAMPAIGN},
+        // { name: PUSH_CATEGORIES[PUSH_TYPE_EXPERIMENT],
+        //   id: PUSH_TYPE_EXPERIMENT},
+        // { name: PUSH_CATEGORIES[PUSH_TYPE_API],
+        //   id: PUSH_TYPE_API},
         ]} />
     );
   }
@@ -325,21 +339,17 @@ export default class PushIndex extends DashboardView {
   renderRow(push) {
     //TODO: special experimentation case for type
     return (
-      <tr onClick={this.navigateToDetails.bind(this, push.objectId)} className={styles.tr}>
-        <td className={styles.colType}>{getPushStatusType(push.data)}</td>
+      <tr key={push.id} onClick={this.navigateToDetails.bind(this, push.id)} className={styles.tr}>
+        <td className={styles.colType}>{getPushStatusType(push.attributes)}</td>
         <td className={styles.colTarget}>
-          {getTranslationInfo(push.data.translation_locale)}
-          {getExperimentInfo(push.data.experiment)}
-          {getPushTarget(push.data, this.state.availableDevices)}
+          {getTranslationInfo(push.attributes.translation_locale)}
+          {getExperimentInfo(push.attributes.experiment)}
+          {getPushTarget(push.attributes, this.state.availableDevices)}
         </td>
-        <td className={styles.colPushesSent}>
-          {typeof(this.state.pushCountMap[push.objectId]) === 'undefined' ?
-            <LoaderDots /> :
-            this.state.pushCountMap[push.objectId]}
-        </td>
-        <td className={styles.colName}>{getPushName(push.data)}</td>
-        <td className={styles.colTime}>{getPushTime(push.data.pushTime, push.updatedAt)}</td>
-        <td className={styles.colStatus}>{formatStatus(push.data.status)}</td>
+        <td className={styles.colPushesSent}>{getPushCount(push.attributes)}</td>
+        <td className={styles.colName}>{getPushName(push.attributes)}</td>
+        <td className={styles.colTime}>{getPushTime(push.attributes.pushTime, push.updatedAt)}</td>
+        <td className={styles.colStatus}>{formatStatus(push.attributes.status)}</td>
       </tr>
     );
   }
@@ -370,13 +380,11 @@ export default class PushIndex extends DashboardView {
   renderExtras() {
     let paginationInfo = this.state.paginationInfo;
 
-    if(!paginationInfo){
+    if (!paginationInfo) {
       return null;
     }
 
-    let maxPage = Math.ceil(paginationInfo.push_status_display_count/paginationInfo.push_status_per_page);
-
-    if(paginationInfo.page_num < maxPage && !this.state.loading){
+    if(paginationInfo.has_more && !this.state.loading){
       return (
         <div className={styles.showMore}>
           <Button progress={this.state.showMoreLoading} color='blue' value='Show more' onClick={this.handleShowMore.bind(this, paginationInfo.page_num + 1)} />

@@ -57,11 +57,13 @@ let PushOpenRate = ({
         <div style={customStyles[isWinner ? 'standard' : 'inverse']} className={[styles.title, styles[color]].join(' ')}>{isWinner ? 'WINNER' : ''}</div>
         : null}
       <div style={customStyles[isWinner ? 'inverse' : 'standard']} className={[styles.percent, styles[color + (isWinner ? '_inv' : '')]].join(' ')}>
-        <div className={styles.rate}>{rateStr}%</div>
+        { /*<div className={styles.rate}>{rateStr}%</div>*/ }
+        <div className={styles.rate}>N/A</div>
         <div className={styles.rate_label}>Open Rate</div>
       </div>
       <div className={styles.count_wrap} style={{ float: 'left', width: '50%' }}>
-        <div className={styles.count}>{numOpened}</div>
+        { /*<div className={styles.count}>{numOpened}</div>*/ }
+        <div className={styles.count}>N/A</div>
         <div className={styles.count_label}>Push Opens</div>
       </div>
       <div className={styles.count_wrap} style={{ marginLeft: '50%' }}>

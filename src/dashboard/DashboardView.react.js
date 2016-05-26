@@ -26,6 +26,7 @@ export default class DashboardView extends React.Component {
     }
 
     let features = this.context.currentApp.serverInfo.features;
+    let parseServerVersion = this.context.currentApp.serverInfo.parseServerVersion;
 
     let coreSubsections = [];
     if (features.schemas &&
@@ -101,10 +102,8 @@ export default class DashboardView extends React.Component {
         link: '/push/new'
       });
     }
-    // The push UI requires immediate and scheduled push (and some ruby endpoints that we will have to remove)
-    /*
 
-    if (features.push && features.push.storedPushData) {
+    if (features.push && parseServerVersion >= '2.2.8') {
       pushSubsections.push({
         name: 'Past Pushes',
         link: '/push/activity'
@@ -116,7 +115,7 @@ export default class DashboardView extends React.Component {
         name: 'Audiences',
         link: '/push/audiences'
       });
-    }*/
+    }
 
     let analyticsSidebarSections = [];
 

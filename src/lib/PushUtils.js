@@ -307,6 +307,10 @@ export function tableInfoBuilder(query, schema, styles = {}) {
     return;
   }
 
+  try {
+    query = JSON.parse(query);
+  } catch(e) {}
+
   let platforms = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']) : [];
   // special case: ex: {deviceType: "ios"}
   if (query.deviceType && query.deviceType.constructor === String) {
