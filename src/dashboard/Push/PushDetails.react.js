@@ -39,9 +39,7 @@ const EXP_STATS_URL = 'https://www.parse.com/docs/ios/guide#push-notifications-p
 
 let getMessage = (payload) => {
   if(payload) {
-  	console.log(payload);
     let payloadJSON = JSON.parse(payload);
-    console.log(payload);
     return payloadJSON.alert ? payloadJSON.alert : payload;
   }
   return '';
