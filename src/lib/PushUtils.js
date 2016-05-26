@@ -303,13 +303,13 @@ let tableInfoBuilderHelper = (styles, key, description, value) => {
 }
 
 export function tableInfoBuilder(query, schema, styles = {}) {
-  if(!query) {
-    return;
-  }
-
   try {
     query = JSON.parse(query);
   } catch(e) {}
+
+  if(!query) {
+    return;
+  }
 
   let platforms = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']) : [];
   // special case: ex: {deviceType: "ios"}
