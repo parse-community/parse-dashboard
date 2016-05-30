@@ -18,12 +18,14 @@ export default class SettingsData extends React.Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount')
     this.context.currentApp.fetchSettingsFields().then(({ fields }) => {
       this.setState({ fields });
     });
   }
 
   componentWillReceiveProps(props, context) {
+    console.log('componentWillReceiveProps')
     if (this.context !== context) {
       this.setState({ fields: undefined });
       context.currentApp.fetchSettingsFields().then(({ fields }) => {
@@ -33,6 +35,7 @@ export default class SettingsData extends React.Component {
   }
 
   saveChanges(changes) {
+    console.log('saveChanges')
     let promise = this.context.currentApp.saveSettingsFields(changes)
     promise.then(({successes, failures}) => {
       let newFields = {...this.state.fields, ...successes};
@@ -43,6 +46,7 @@ export default class SettingsData extends React.Component {
 
   render() {
     let child = React.Children.only(this.props.children);
+    console.log('render this.state', this.state)
     return React.cloneElement(
       child,
       {

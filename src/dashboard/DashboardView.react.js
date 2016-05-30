@@ -134,7 +134,6 @@ export default class DashboardView extends React.Component {
     }*/
 
     //These ones might, but require some endpoints to added to Parse Server
-    /*
     if (features.analytics && features.analytics.retentionAnalysis) {
       analyticsSidebarSections.push({
         name: 'Retention',
@@ -155,19 +154,23 @@ export default class DashboardView extends React.Component {
         link: '/analytics/slow_queries'
       });
     }
-    */
 
     let settingsSections = [];
 
+    settingsSections.push({
+      name: 'General',
+      link: '/settings/general'
+    });
+    
     // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
-    /*
+    
     if (features.generalSettings) {
       settingsSections.push({
         name: 'General',
         link: '/settings/general'
       });
     }
-
+    /*
     if (features.keysSettings) {
       settingsSections.push({
         name: 'Security & Keys',

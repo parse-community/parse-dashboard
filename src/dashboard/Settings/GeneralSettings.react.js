@@ -46,53 +46,6 @@ const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
 let numJobsFromRequestLimit = (limit) => Math.floor((limit-10)/20);
 
-let CurrentPlan = ({requestLimit}) => {
-  let costString = requestLimit === 30 ?
-    'Free' :
-    '$' + ((requestLimit-30) * 10).toString();
-  return (
-    <div>
-      <div className={cost}>{costString}</div>
-      <div className={features}>{requestLimit.toString() + ' requests per second'}<br/>{numJobsFromRequestLimit(requestLimit).toString() + ' background job' + (numJobsFromRequestLimit(requestLimit) > 1 ? 's' : '')}</div>
-    </div>
-)};
-
-let CurrentPlanFields = ({
-  visible,
-  requestLimit,
-  setRequestLimit,
-}) => visible ? <Fieldset
-  legend='Current Plan'
-  description={'Adjust your pricing and your app\u2019s request limit'}>
-  <Field
-    labelWidth={40}
-    label={<Label
-      text='Scale your app'
-      description='This will take effect as soon as you save your changes.' />}
-    input={<Range
-      min={0}
-      max={600}
-      step={10}
-      color='#169CEE'
-      value={requestLimit}
-      track={true}
-      units={value => {
-        let numJobs = numJobsFromRequestLimit(value);
-        return value + 'req/s & ' + numJobs + ' job' + (numJobs == 1 ? '' : 's')
-      }}
-      width={220}
-      onChange={limit => {
-        if (limit < 30) {
-          limit = 30;
-        }
-        setRequestLimit(limit);
-      }} />} />
-  <Field
-    labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-    label={<Label text='Your plan' />}
-    input={<CurrentPlan requestLimit={requestLimit} />} />
-</Fieldset> : <noscript/>;
-
 let AppInformationFields = ({
   appName,
   setAppName,
@@ -115,61 +68,17 @@ let AppInformationFields = ({
     labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
     label={<Label text='App name' />}
     input={<TextInput
-      value={appName}
-      onChange={setAppName} />
+      value={appName} />
     } />
   <Field
     labelWidth={58}
     label={<Label
       text='In production?'
-      description='Flip this switch when you launch. This will help us track your traffic and allow us to properly scale your app.' />}
+      description='(On back4app, this switch is temporarily disabled)' />}
     input={<Toggle
       value={inProduction}
-      type={Toggle.Types.YES_NO}
-      onChange={setInProduction} />
+      type={Toggle.Types.YES_NO} />
     } />
-  { inProduction ? <div>
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='iTunes App Store URL' />}
-      input={<TextInput
-        value={iTunesURL}
-        placeholder='Where is it?'
-        onChange={setiTunesURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Google Play Store URL' />}
-      input={<TextInput
-        value={googlePlayURL}
-        placeholder='Where is it?'
-        onChange={setGooglePlayURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Windows App Store URL' />}
-      input={<TextInput
-        value={windowsAppStoreURL}
-        placeholder='Where is it?'
-        onChange={setWindowsAppStoreURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Web App URL' />}
-      input={<TextInput
-        value={webAppURL}
-        placeholder='Where is it?'
-        onChange={setWebAppURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Other URL' />}
-      input={<TextInput
-        value={otherURL}
-        placeholder='Where is it?'
-        onChange={setOtherURL} />
-      } />
-  </div> : null }
 </Fieldset>;
 
 let CollaboratorsFields = ({
@@ -490,42 +399,7 @@ export default class GeneralSettings extends DashboardView {
       {this.state.migrationWarnings.map(warning => <FormNote key={warning}show={true} color='orange'>{warning}</FormNote>)}
     </FormModal>
 
-    let transferAppModal = <FormModal
-      title='Transfer App Ownership'
-      subtitle='This is an irreversible action!'
-      icon='users-solid'
-      iconSize={30}
-      type={Modal.Types.DANGER}
-      open={this.state.showTransferAppModal}
-      submitText='Transfer ownership'
-      inProgressText={'Transferring\u2026'}
-      enabled={
-        (this.state.password.length > 0 || !AccountManager.currentUser().has_password)
-        && this.state.transferNewOwner.length > 0
-      }
-      onSubmit={() => AppsManager.transferApp(this.context.currentApp.slug, this.state.transferNewOwner, this.state.password)}
-      onClose={() => this.setState({showTransferAppModal: false})}
-      onSuccess={({ message }) => this.setState({transferAppSuccessMessage: message})}
-      clearFields={() => this.setState({
-        password: '',
-        transferNewOwner: '',
-        })}>
-      <Field
-        labelWidth={60}
-        label={<Label
-          text='Choose new owner'
-          description='The new owner must already be a collaborator.' />
-        }
-        input={<Dropdown
-          fixed={true}
-          value={this.state.transferNewOwner}
-          onChange={(collaborator) => this.setState({transferNewOwner: collaborator})}>
-            {((this.props.initialFields||{}).collaborators||[]).map(collaborator =>
-              <DropdownOption key={collaborator.id.toString()} value={collaborator.userEmail}>{collaborator.userEmail}</DropdownOption>
-            )}
-        </Dropdown>} />
-      {AccountManager.currentUser().has_password ? passwordField : null}
-    </FormModal>;
+    
 
     let deleteAppModal = <FormModal
       title='Delete App'
@@ -681,10 +555,6 @@ export default class GeneralSettings extends DashboardView {
         renderForm={({ changes, fields, setField, resetFields }) => {
           let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
-            <CurrentPlanFields
-              visible={!isCollaborator}
-              requestLimit={fields.requestLimit}
-              setRequestLimit={setField.bind(this, 'requestLimit')}/>
             <AppInformationFields
               appName={fields.appName}
               setAppName={setField.bind(this, 'appName')}
@@ -706,59 +576,8 @@ export default class GeneralSettings extends DashboardView {
               viewerEmail={AccountManager.currentUser().email}
               addCollaborator={setCollaborators.bind(undefined, setField)}
               removeCollaborator={setCollaborators.bind(undefined, setField)}/>
-            <ManageAppFields
-              mongoURL={fields.mongoURL}
-              changeConnectionString={() => this.setState({showChangeConnectionStringModal: true})}
-              isCollaborator={isCollaborator}
-              hasCollaborators={initialFields.collaborators.length > 0}
-              startMigration={() => this.setState({showMigrateAppModal: true})}
-              hasInProgressMigration={!!this.context.currentApp.migration}
-              appSlug={this.context.currentApp.slug}
-              cleanUpFiles={() => this.context.currentApp.cleanUpFiles().then(result => {
-                this.setState({
-                  cleanupFilesMessage: result.notice,
-                  cleanupNoteColor: 'orange',
-                });
-              }).fail((e) => {
-                this.setState({
-                  cleanupFilesMessage: e.error,
-                  cleanupNoteColor: 'red',
-                });
-              })}
-              cleanUpFilesMessage={this.state.cleanupFilesMessage}
-              cleanUpMessageColor={this.state.cleanupNoteColor}
-              exportData={() => this.context.currentApp.exportData().then((result) => {
-                this.setState({
-                  exportDataMessage: result.notice,
-                  exportDataColor: 'orange',
-                });
-              }).fail((e) => {
-                this.setState({
-                  exportDataMessage: e.error,
-                  exportDataColor: 'red',
-                });
-              })}
-              exportDataMessage={this.state.exportDataMessage}
-              exportMessageColor={this.state.exportDataColor}
-              cloneApp={() => this.setState({
-                showCloneAppModal: true,
-                cloneAppMessage: '',
-              })}
-              cloneAppMessage={this.state.cloneAppMessage}
-              transferApp={() => this.setState({
-                showTransferAppModal: true,
-                transferAppSuccessMessage: '',
-              })}
-              transferAppMessage={this.state.transferAppSuccessMessage}
-              deleteApp={() => this.setState({showDeleteAppModal: true})}/>
           </div>;
         }} />
-      {migrateAppModal}
-      {transferAppModal}
-      {deleteAppModal}
-      {cloneAppModal}
-      {collaboratorRemovedWarningModal}
-      {changeConnectionStringModal}
       <Toolbar section='Settings' subsection='General' />
     </div>;
   }
