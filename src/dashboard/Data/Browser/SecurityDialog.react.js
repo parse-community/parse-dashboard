@@ -12,10 +12,8 @@ import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.re
 import React             from 'react';
 import styles            from 'dashboard/Data/Browser/Browser.scss';
 
-const PARSE_SERVER_SUPPORTS_POINTER_PERMISSIONS = false;
-
-function validateEntry(pointers, text) {
-  if (PARSE_SERVER_SUPPORTS_POINTER_PERMISSIONS) { //Eventually we will branch on whether or not the server supports pointer permissions
+function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
+  if (parseServerSupportsPointerPermissions) {
     if (pointers.indexOf(text) > -1) {
       return Parse.Promise.as({ pointer: text });
     }
@@ -49,16 +47,17 @@ export default class SecurityDialog extends React.Component {
 
   render() {
     let dialog = null;
+    let parseServerSupportsPointerPermissions = this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions;
     if (this.props.perms && this.state.open) {
       dialog = (
         <PermissionsDialog
           title='Edit Class Level Permissions'
-          enablePointerPermissions={PARSE_SERVER_SUPPORTS_POINTER_PERMISSIONS /* not supported by Parse Server yet */}
+          enablePointerPermissions={parseServerSupportsPointerPermissions}
           advanced={true}
           confirmText='Save CLP'
           details={<a href='https://parse.com/docs/ios/guide#security-class-level-permissions'>Learn more about CLPs and app security</a>}
           permissions={this.props.perms}
-          validateEntry={validateEntry.bind(null, this.props.userPointers)}
+          validateEntry={entry => validateEntry(this.props.userPointers, entry, parseServerSupportsPointerPermissions)}
           onCancel={() => {
             this.setState({ open: false });
           }}

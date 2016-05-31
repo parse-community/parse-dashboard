@@ -1,5 +1,12 @@
 ## Parse Dashboard Changelog
 
+### 1.0.12
+
+* Fix minor style issues
+* Add pointer permissions editor
+* Allow cancellation of edits in data browser using ESC key, thanks to [Manuel](https://github.com/mtrezza)
+* Show error messages in the console when your app's icons can't be found, thanks to [Saif Al-Dilaimi](https://github.com/deada92)
+
 ### 1.0.11
 
 * Add the ability to specify SSL cert and key, thanks to [Cory Imdieke](https://github.com/Vortec4800)

@@ -106,7 +106,16 @@ export default class DataBrowser extends React.Component {
       return;
     }
     if (this.state.editing) {
-      return;
+      switch (e.keyCode) {
+        case 27: // ESC
+          this.setState({
+            editing: false
+          });
+          e.preventDefault();
+          break;
+        default:
+          return;
+      }
     }
     if (!this.state.current) {
       return;

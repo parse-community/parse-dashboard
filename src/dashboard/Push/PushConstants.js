@@ -21,6 +21,8 @@ export const INITIAL_PAGE_SIZE = 5;
 
 export const QUERY_FIELD = 'query';
 
+export const SENT_FIELD = 'numSent';
+
 export const DEVICE_MAP = {
   ios: 'iOS',
   osx: 'OS X',

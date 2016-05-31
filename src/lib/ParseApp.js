@@ -99,14 +99,8 @@ export default class ParseApp {
    * since - only fetch lines since this Date
    */
   getLogs(level, since) {
-    let params = {
-      level: level,
-      n: 100,
-    };
-    if (since) {
-      params.startDate = since.getTime();
-    }
-    return this.apiRequest('GET', 'scriptlog', params, { useMasterKey: true });
+    let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase()) + '&n=100' + (since?'&startDate=' + encodeURIComponent(since.getTime()):'');
+    return this.apiRequest('GET', path, {}, { useMasterKey: true });
   }
 
   /**
@@ -370,7 +364,7 @@ export default class ParseApp {
   validateCollaborator(email) {
     let path = '/apps/' + this.slug + '/collaborations/validate?email=' + encodeURIComponent(email);
     return AJAX.get(path);
-	}
+  }
 
   fetchPushSubscriberCount(audienceId, query) {
     let path = '/apps/' + this.slug + '/dashboard_ajax/push_subscriber_count';
@@ -382,23 +376,15 @@ export default class ParseApp {
     return AJAX.abortableGet(audienceId ? `${path}${urlsSeparator}audienceId=${audienceId}` : path);
   }
 
-  fetchPushNotifications(type, page) {
-    let path = '/apps/' + this.slug + '/push_notifications/' + `?type=${type}`;
-    if (page) {
-      path += `&page=${page}`;
+  fetchPushNotifications(type, page, limit) {
+    let query = new Parse.Query('_PushStatus');
+    if (type != 'all') {
+      query.equalTo('source', type || 'rest');
     }
-    return AJAX.abortableGet(path);
-  }
-
-  fetchPushNotificationsCount(pushData) {
-    let query = '?';
-    for(let i in pushData){
-      if(pushData.hasOwnProperty(i)){
-        query += `pushes[${i}]=${pushData[i]}&`;
-      }
-    }
-    let path = '/apps/' + this.slug + '/push_notifications/pushes_sent_batch' + encodeURI(query);
-    return AJAX.get(path);
+    query.skip(page*limit);
+    query.limit(limit);
+    query.descending('createdAt');
+    return query.find({ useMasterKey: true });
   }
 
   fetchPushAudienceSizeSuggestion() {
@@ -407,8 +393,9 @@ export default class ParseApp {
   }
 
   fetchPushDetails(objectId) {
-    let path = '/apps/' + this.slug + `/push_notifications/${objectId}/push_details`;
-    return AJAX.abortableGet(path);
+    let query = new Parse.Query('_PushStatus');
+    query.equalTo('objectId', objectId);
+    return query.first({ useMasterKey: true });
   }
 
   isLocalizationAvailable() {

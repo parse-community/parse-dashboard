@@ -303,6 +303,10 @@ let tableInfoBuilderHelper = (styles, key, description, value) => {
 }
 
 export function tableInfoBuilder(query, schema, styles = {}) {
+  try {
+    query = JSON.parse(query);
+  } catch(e) {}
+
   if(!query) {
     return;
   }
