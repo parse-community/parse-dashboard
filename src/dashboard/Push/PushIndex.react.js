@@ -145,7 +145,7 @@ let getPushName = (pushData) => {
       payload = JSON.parse(payload);
     } catch(e) { }
     if(payload){
-      return payload.alert ? payload.alert : payload;
+      return payload.alert ? payload.alert.toString() : payload;
     }
   }
 }
