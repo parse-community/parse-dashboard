@@ -218,7 +218,7 @@ let formatStatus = (status) => {
 let getPushTime = (pushTime, updatedAt) => {
   let time = pushTime || updatedAt;
   let dateTime = new Date(time);
-  let isLocal = time.indexOf('Z') === -1;
+  let isLocal = typeof time === 'string' && time.indexOf('Z') === -1;
   let timeContent = DateUtils.yearMonthDayTimeFormatter(dateTime, !isLocal);
   let result  = [];
   if (isLocal) {
