@@ -1,5 +1,9 @@
 ## Parse Dashboard Changelog
 
+### 1.0.14
+
+* Fix bug in past push page
+
 ### 1.0.13
 
 * Fix log retrieval, thanks to [Jérémy Thiry](https://github.com/poltib)
