@@ -357,8 +357,13 @@ export default class ParseApp {
   }
 
   clearCollection(className) {
-    let path = `/apps/${this.slug}/collections/${className}/clear`;
-    return AJAX.del(path);
+    if (this.serverInfo.parseServerVersion == 'Parse.com') {
+      let path = `/apps/${this.slug}/collections/${className}/clear`;
+      return AJAX.del(path);
+    } else {
+      let path = `classes/${className}`;
+      return this.apiRequest('DELETE', path, {}, { useMasterKey: true });
+    }
   }
 
   validateCollaborator(email) {

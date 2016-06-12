@@ -144,8 +144,11 @@ let getPushName = (pushData) => {
     try {
       payload = JSON.parse(payload);
     } catch(e) { }
-    if(payload){
-      return payload.alert ? payload.alert : payload;
+    if (payload) {
+      if (typeof payload.alert === 'string') {
+        return payload.alert;
+      }
+      return payload.alert ? JSON.stringify(payload.alert) : payload;
     }
   }
 }
@@ -215,7 +218,7 @@ let formatStatus = (status) => {
 let getPushTime = (pushTime, updatedAt) => {
   let time = pushTime || updatedAt;
   let dateTime = new Date(time);
-  let isLocal = time.indexOf('Z') === -1;
+  let isLocal = typeof time === 'string' && time.indexOf('Z') === -1;
   let timeContent = DateUtils.yearMonthDayTimeFormatter(dateTime, !isLocal);
   let result  = [];
   if (isLocal) {

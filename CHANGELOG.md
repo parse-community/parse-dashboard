@@ -1,5 +1,15 @@
 ## Parse Dashboard Changelog
 
+### 1.0.14
+
+* Fix bug in past push page
+
+### 1.0.13
+
+* Fix log retrieval, thanks to [Jérémy Thiry](https://github.com/poltib)
+* Improved GeoPoint editor and ESC button in editors, thanks to [Sam Schooler](https://github.com/samschooler)
+* Add push status page to dashboard, thanks to [Jeremy Pease](https://github.com/JeremyPlease)
+
 ### 1.0.12
 
 * Fix minor style issues
