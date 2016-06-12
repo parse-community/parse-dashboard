@@ -18,6 +18,9 @@ const AppsManager = {
   },
 
   apps() {
+    appsStore.sort(function(app1, app2) {
+      return app1.name.localeCompare(app2.name);
+    });
     return appsStore;
   },
 
