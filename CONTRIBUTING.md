@@ -3,7 +3,7 @@ We want to make contributing to this project as easy and transparent as
 possible.
 
 ## Our Development Process
-Get started by cloning this repository and and running `npm install` inside it. Create a file called `parse-dashboad-config.json` in the Parse-Dashboard folder inside the repo, using the format described in the readme.
+Get started by cloning this repository and and running `npm install` inside it. Create a file called `parse-dashboard-config.json` in the Parse-Dashboard folder inside the repo, using the format described in the readme.
 
 When working on the dashboard, use `npm run dashboard` and visit `localhost:4040` to see your dashboard. The `npm run dashboard` script will automatically re-build your files when you change them, so after making a change, all you need to do is refresh the page.
 

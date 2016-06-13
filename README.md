@@ -21,7 +21,7 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
 
 # Getting Started
 
-[Node.js](https://nodejs.org) version >= 4.3 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher. 
+[Node.js](https://nodejs.org) version >= 4.3 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher.
 
 # Local Installation
 
@@ -91,7 +91,7 @@ You can manage self-hosted [Parse Server](https://github.com/ParsePlatform/parse
 
 ## App Icon Configuration
 
-Parse Dashboard supports adding an optional icon for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `iconsFolder` in it, and define the `iconName` parameter for each app (including the extension). The path of the `iconsFolder` is relative to the configuration file. To visualize what it means, in the following example `icons` is a directory located under the same directory as the configuration file:
+Parse Dashboard supports adding an optional icon for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `iconsFolder` in it, and define the `iconName` parameter for each app (including the extension). The path of the `iconsFolder` is relative to the configuration file. If you have installed ParseDashboard globally you need to use the full path as value for the `iconsFolder`. To visualize what it means, in the following example `icons` is a directory located under the same directory as the configuration file:
 
 ```json
 {
@@ -110,7 +110,7 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
 
 ## Other Configuration Options
 
-You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard. 
+You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
 
@@ -176,7 +176,7 @@ httpServer.listen(4040);
 Make sure the server URLs for your apps can be accessed by your browser. If you are deploying the dashboard, then `localhost` urls will not work.
 
 ## Security Considerations
-In order to securely deploy the dashboard without leaking your apps master key, you will need to use HTTPS and Basic Authentication. 
+In order to securely deploy the dashboard without leaking your apps master key, you will need to use HTTPS and Basic Authentication.
 
 The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or proxy that does early SSL termination, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--allowInsecureHTTP=1` option. You will then be responsible for ensureing that your proxy or load balancer only allows HTTPS.
 

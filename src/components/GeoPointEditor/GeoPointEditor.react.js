@@ -46,7 +46,7 @@ export default class GeoPointEditor extends React.Component {
   }
 
   handleKeyLatitude(e) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 || e.keyCode === 44) {
       this.refs.longitude.focus();
       this.refs.longitude.setSelectionRange(0, String(this.state.longitude).length);
     }
@@ -83,6 +83,32 @@ export default class GeoPointEditor extends React.Component {
   render() {
     let onChange = (target, e) => {
       let value = e.target.value;
+
+      if (!validateNumeric(value)) {
+        var values = value.split(",");
+
+        if (values.length == 2) {
+          values = values.map(val => val.trim());
+
+          if (values[0].length > 0 && validateNumeric(values[0])) {
+
+            if (values[1].length <= 0 || !validateNumeric(values[1])) {
+              this.setState({ latitude: values[0] });
+              this.refs.longitude.focus();
+              this.refs.longitude.setSelectionRange(0, String(this.state.longitude).length);
+              return;
+            }
+
+            if (validateNumeric(values[1])) {
+              this.setState({ latitude: values[0] });
+              this.setState({ longitude: values[1] });
+              this.refs.longitude.focus();
+              return;
+            }
+          }
+        }
+      }
+
       this.setState({ [target]: validateNumeric(value) ? value : this.state[target] });
     };
     return (

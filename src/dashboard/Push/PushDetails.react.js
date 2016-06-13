@@ -59,7 +59,7 @@ let getSentInfo = (sendTime, expiration) => {
     return '';
   }
 
-  let fmtSendTime = getFormattedTime(sendTime);
+  let fmtSendTime = getFormattedTime({time: sendTime});
   let fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
   if (expiration){
     return `Sent ${fmtSendTime} and expires ${fmtExpiration}`;
@@ -118,7 +118,7 @@ let getStatusTable = (pushDetails, deferDeliveries) => {
                 <div className={styles.deliveryName}>Successful Deliveries</div>
                 <div className={styles.deliveryMessage}>Give your test a memorable name so you remember what you were testing when you see the results.</div>
               </td>
-              <td className={tableStyles.td} width={'35%'}>{pushDetails.push_sends}</td>
+              <td className={tableStyles.td} width={'35%'}>{pushDetails.get('numSent')}</td>
             </tr> :
             null
           }
@@ -219,9 +219,11 @@ export default class PushDetails extends DashboardView {
 
   componentWillMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
-    let { xhr, promise } = this.context.currentApp.fetchPushDetails(this.props.params.pushId);
-    this.xhrHandles = [xhr];
+    let promise = this.context.currentApp.fetchPushDetails(this.props.params.pushId);
     promise.then((pushDetails) => {
+      if (!pushDetails) {
+        return null;
+      }
       this.setState({ pushDetails });
       if (pushDetails.statistics && pushDetails.statistics.confidence_interval) {
         this.setState({
@@ -455,6 +457,9 @@ export default class PushDetails extends DashboardView {
 
   renderPushRates(experimentInfo) {
     let pushDetails = this.state.pushDetails;
+    if (!pushDetails.id) {
+      return null;
+    }
     let launchChoice = pushDetails.launch_choice;
     let statistics = pushDetails.statistics;
     let isMessageType = pushDetails.exp_type === 'message';
@@ -511,16 +516,16 @@ export default class PushDetails extends DashboardView {
         <div>
           <div className={styles.groupHeader}>
             <div className={styles.headerTitle}>MESSAGE SENT</div>
-            <div className={styles.headline}>{getMessage(pushDetails.payload)}</div>
+            <div className={styles.headline}>{getMessage(pushDetails.get('payload'))}</div>
             <div className={styles.subline}>
-              {getSentInfo(pushDetails.send_time, pushDetails.expiration)}
+              {getSentInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
             </div>
           </div>
           {prevLaunchGroup}
           {experimentInfo}
           <PushOpenRate
-            numOpened={pushDetails.push_opens}
-            numSent={pushDetails.push_sends}
+            numOpened={pushDetails.get('numOpened') || 0}
+            numSent={pushDetails.get('numSent')}
             customColor={this.state.standardColor} />
         </div>
       );
@@ -547,7 +552,7 @@ export default class PushDetails extends DashboardView {
   }
 
   renderTargetTable() {
-    return getTargetTable(this.state.pushDetails.query, this.props.schema, tableStyles);
+    return getTargetTable(this.state.pushDetails.get('query'), this.props.schema, tableStyles);
   }
 
   renderStatusTable() {
@@ -679,6 +684,9 @@ export default class PushDetails extends DashboardView {
 
   //TODO: (peterjs) PushPreview Component
   renderContent() {
+    if (this.state.loading) {
+  	  return;
+    }
     let { isFlowView, experimentInfo, flowFooterDetails } = this.experimentInfoHelper();
     return (
       <div className={styles.detailsWrapper}>
