@@ -367,7 +367,7 @@ export default class ParseApp {
       let path = `/apps/${this.slug}/collections/${className}/clear`;
       return AJAX.del(path);
     } else {
-      let path = `classes/${className}`;
+      let path = `purge/${className}`;
       return this.apiRequest('DELETE', path, {}, { useMasterKey: true });
     }
   }
