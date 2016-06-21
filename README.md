@@ -211,20 +211,20 @@ To do so, update your `parse-dashboard-config.json` configuration file to match 
      {
        "user":"user1",
        "pass":"pass1",
-       "apps": [{"appId1": "myAppId1"}, {"appId2": "myAppId2"}]
+       "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
      },
      {
        "user":"user2",
        "pass":"pass2",
-       "apps": [{"appId1": "myAppId1"}]
+       "apps": [{"appId": "myAppId1"}]
      }  ]
 }
 ```
 The effect of such a configuration is as follows:
 
-When `user1` logs in, he/she will be able to manage `appId1` and `appId2` from the dashboard.
+When `user1` logs in, he/she will be able to manage `myAppId1` and `myAppId2` from the dashboard.
 
-When *`user2`*  logs in, he/she will only be able to manage *`appId1`* from the dashboard.
+When *`user2`*  logs in, he/she will only be able to manage *`myAppId1`* from the dashboard.
 
 
 ## Run with Docker
