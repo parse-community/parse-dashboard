@@ -145,10 +145,14 @@ let getPushName = (pushData) => {
       payload = JSON.parse(payload);
     } catch(e) { }
     if (payload) {
-      if (typeof payload.alert === 'string') {
-        return payload.alert;
+      if (payload.hasOwnProperty('alert')) {
+        if (typeof payload.alert === 'string') {
+          return payload.alert;
+        }
+        return payload.alert ? JSON.stringify(payload.alert) : payload;
+      } else {
+        return "";
       }
-      return payload.alert ? JSON.stringify(payload.alert) : payload;
     }
   }
 }
