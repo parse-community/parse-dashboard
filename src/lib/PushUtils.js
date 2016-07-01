@@ -190,6 +190,8 @@ export function formatConstraint(key, constraints, schema) {
         break;
       }
     }
+  } else if(constraints.constructor === Boolean) {
+  	rows.push([[key, 'is', constraints ? 'true' : 'false']]);
   } else {
     rows.push([[key, 'is', constraints]]);
   }

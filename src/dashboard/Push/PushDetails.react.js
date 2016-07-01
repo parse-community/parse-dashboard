@@ -552,7 +552,17 @@ export default class PushDetails extends DashboardView {
   }
 
   renderTargetTable() {
-    return getTargetTable(this.state.pushDetails.get('query'), this.props.schema, tableStyles);
+    let classes = this.props.schema.data.get('classes');
+    let schema = {};
+    if(classes){
+      let installations = classes.get('_Installation');
+      if(typeof(installations) !== 'undefined'){
+        installations.forEach((type, col) => {
+          schema[col] = type;
+        });
+      }
+    }
+    return getTargetTable(this.state.pushDetails.get('query'), schema, tableStyles);
   }
 
   renderStatusTable() {
