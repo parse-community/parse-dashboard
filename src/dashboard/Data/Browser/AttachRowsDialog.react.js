@@ -4,9 +4,6 @@ import React from 'react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import TextInput from 'components/TextInput/TextInput.react';
-import { List, Map } from 'immutable';
-
-const BLACKLISTED_FILTERS = [];
 
 const styles = {
   errorList: {

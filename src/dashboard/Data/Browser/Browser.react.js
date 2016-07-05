@@ -74,14 +74,12 @@ export default class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.FETCH)
     .then(() => this.handleFetchedSchema());
 
-    const { className, entityId, relationName } = this.props.params;
-
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
       let filters = new List();
       if (this.props.location.query && this.props.location.query.filters) {
-        let queryFilters = JSON.parse(this.props.location.query.filters);
+        const queryFilters = JSON.parse(this.props.location.query.filters);
         queryFilters.forEach((filter) => {
           filters = filters.push(new Map(filter));
         });
@@ -379,7 +377,7 @@ export default class Browser extends DashboardView {
     } else {
       const source = this.props.params.className;
       const _filters = JSON.stringify(filters.toJSON());
-      const url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${(encodeURIComponent(_filters))}`);
+      const url = `browser/${source}${(filters.size === 0 ? '' : `?filters=${(encodeURIComponent(_filters))}`)}`;
       // filters param change is making the fetch call
       history.push(this.context.generatePath(url));
     }
