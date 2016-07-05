@@ -37,6 +37,7 @@ let BrowserToolbar = ({
   onDropClass,
   onChangeCLP,
   onRefresh,
+  onAttachRows,
   hidePerms,
 
   enableDeleteAllRows,
@@ -73,6 +74,10 @@ let BrowserToolbar = ({
         <MenuItem
           text="Add a row"
           onClick={onAddRow}
+        />
+        <MenuItem
+          text="Add existing row"
+          onClick={onAttachRows}
         />
         <Separator />
         <MenuItem

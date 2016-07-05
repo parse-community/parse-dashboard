@@ -16,6 +16,7 @@ import DeleteRowsDialog                   from 'dashboard/Data/Browser/DeleteRow
 import DropClassDialog                    from 'dashboard/Data/Browser/DropClassDialog.react';
 import EmptyState                         from 'components/EmptyState/EmptyState.react';
 import ExportDialog                       from 'dashboard/Data/Browser/ExportDialog.react';
+import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
@@ -44,6 +45,7 @@ export default class Browser extends DashboardView {
       showRemoveColumnDialog: false,
       showDropClassDialog: false,
       showExportDialog: false,
+      showAttachRowsDialog: false,
       rowsToDelete: null,
 
       relation: null,
@@ -59,7 +61,13 @@ export default class Browser extends DashboardView {
 
       lastError: null,
       relationCount: 0,
+
+      attachRowsErrors: null,
     };
+
+    this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
+    this.cancelAttachRows = this.cancelAttachRows.bind(this);
+    this.confirmAttachRows = this.confirmAttachRows.bind(this);
   }
 
   componentWillMount() {
@@ -130,7 +138,7 @@ export default class Browser extends DashboardView {
         Parse.Object._clearAllState();
       }
       this.setState(changes);
-      const filters = nextProps.location.query && nextProps.location.query.filters ? changes.filters : [];
+      const filters = changes.filters;
       const { className, entityId, relationName } = nextProps.params;
       if (entityId && relationName) {
         let relation = this.state.relation;
@@ -275,8 +283,9 @@ export default class Browser extends DashboardView {
 
   refresh() {
     const relation = this.state.relation;
+    const filters = new List();
     const initialState = {
-      filters: new List(),
+      filters,
       data: null,
       newObject: null,
       lastMax: -1,
@@ -284,7 +293,7 @@ export default class Browser extends DashboardView {
     };
     if (relation) {
       this.setState(initialState);
-      this.setRelation(relation);
+      this.setRelation(relation, filters);
     } else {
       this.setState({
         ...initialState,
@@ -370,7 +379,7 @@ export default class Browser extends DashboardView {
     } else {
       const source = this.props.params.className;
       const _filters = JSON.stringify(filters.toJSON());
-      const url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`);
+      const url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${(encodeURIComponent(_filters))}`);
       // filters param change is making the fetch call
       history.push(this.context.generatePath(url));
     }
@@ -390,25 +399,38 @@ export default class Browser extends DashboardView {
   }
 
   fetchRelation(relation, filters) {
+    const oldRelation = this.relation;
+    const updatedFilters = filters || new List();
     this.setState({
       relation: relation,
       relationCount: 0,
       selection: {},
-      filters: filters,
+      filters: updatedFilters,
+      rowsToAttach: null,
     }, () => {
-      this.fetchData(relation, filters);
+      this.fetchData(relation, updatedFilters);
       this.fetchRelationCount(relation);
     });
   }
 
-  setRelation(relation, filters) {
+  getRelationURL() {
+    const relation = this.state.relation;
     const className = this.props.params.className;
     const entityId = relation.parent.id;
     const relationName = relation.key;
+    return this.context.generatePath(`browser/${className}/${entityId}/${relationName}`);
+  }
+
+  setRelation(relation, filters) {
     this.setState({
       relation: relation,
     }, () => {
-      history.push(this.context.generatePath(`browser/${className}/${entityId}/${relationName}`));
+      let filterQueryString;
+      if (filters && filters.size) {
+        filterQueryString = encodeURIComponent(JSON.stringify(filters.toJSON()));
+      }
+      const url = `${this.getRelationURL()}${filterQueryString ? `?filters=${filterQueryString}` : ''}`;
+      history.push(url);
     });
   }
 
@@ -509,15 +531,18 @@ export default class Browser extends DashboardView {
       let seeking = Object.keys(rows).length;
       for (let i = 0; i < this.state.data.length && indexes.length < seeking; i++) {
         let obj = this.state.data[i];
+        if (!obj || !obj.id) {
+          continue;
+        }
         if (rows[obj.id]) {
           indexes.push(i);
           toDelete.push(this.state.data[i]);
         }
       }
       let relation = this.state.relation;
-      if (relation) {
-        this.state.relation.remove(toDelete);
-        this.state.relation.parent.save(null, { useMasterKey: true }).then(() => {
+      if (relation && toDelete.length) {
+        relation.remove(toDelete);
+        relation.parent.save(null, { useMasterKey: true }).then(() => {
           if (this.state.relation === relation) {
             for (let i = 0; i < indexes.length; i++) {
               this.state.data.splice(indexes[i] - i, 1);
@@ -527,7 +552,7 @@ export default class Browser extends DashboardView {
             });
           }
         });
-      } else {
+      } else if (toDelete.length) {
         Parse.Object.destroyAll(toDelete, { useMasterKey: true }).then(() => {
           if (this.props.params.className === className) {
             for (let i = 0; i < indexes.length; i++) {
@@ -562,8 +587,69 @@ export default class Browser extends DashboardView {
       this.state.showRemoveColumnDialog ||
       this.state.showDropClassDialog ||
       this.state.showExportDialog ||
-      this.state.rowsToDelete
+      this.state.rowsToDelete ||
+      this.state.showAttachRowsDialog
     );
+  }
+
+  showAttachRowsDialog() {
+    this.setState({
+      showAttachRowsDialog: true,
+      rowsToAttach: this.state.rowsToAttach || new List(),
+      attachRowsErrors: [],
+    });
+  }
+
+  cancelAttachRows() {
+    this.setState({
+      showAttachRowsDialog: false,
+    });
+  }
+
+  confirmAttachRows(objectIdsString) {
+    const relation = this.state.relation;
+    const query = new Parse.Query(relation.targetClassName);
+    const parent = relation.parent;
+    this.state.attachRowsErrors = [];
+    const objectIds = objectIdsString.split(',').reduce((resourceIds, targetResourceId) => {
+      const objectId = targetResourceId && targetResourceId.trim();
+      if (!objectId) return;
+      return [...resourceIds, objectId];
+    }, []);
+    query.containedIn('objectId', objectIds);
+    query.find({ useMasterKey: true }).then((objects) => {
+      if (!objects.length) {
+        return this.setState({
+          attachRowsErrors: [...this.state.attachRowsErrors, `No object to attach`],
+        });
+      }
+      parent.relation(relation.key).add(objects);
+      parent.save(null, { useMasterKey: true }).then(() => {
+        this.fetchRelation(relation);
+        this.setState({
+          showAttachRowsDialog: false,
+        });
+      }, (error) => {
+        console.log(error);
+        this.setState({
+          attachRowsErrors: [
+            ...this.state.attachRowsErrors,
+            `Failed to attach objects`,
+            ...(error.message ? [error.message] : []),
+          ],
+        });
+      });
+    },
+    (error) => {
+      console.log(error);
+      this.setState({
+        attachRowsErrors: [
+          ...this.state.attachRowsErrors,
+          `Failed to retrieve objects`,
+          ...(error.message ? [error.message] : []),
+        ],
+      });
+    });
   }
 
   renderSidebar() {
@@ -664,6 +750,7 @@ export default class Browser extends DashboardView {
               return p;
             }}
             onRefresh={this.refresh.bind(this)}
+            onAttachRows={this.showAttachRowsDialog}
 
             columns={columns}
             className={className}
@@ -728,6 +815,7 @@ export default class Browser extends DashboardView {
         <DeleteRowsDialog
           className={SpecialClasses[className] || className}
           selection={this.state.rowsToDelete}
+          relation={this.state.relation}
           onCancel={() => this.setState({ rowsToDelete: null })}
           onConfirm={() => this.deleteRows(this.state.rowsToDelete)} />
       );
@@ -748,6 +836,15 @@ export default class Browser extends DashboardView {
           onCancel={() => this.setState({ showExportDialog: false })}
           onConfirm={() => this.exportClass(className)} />
       );
+    } else if (this.state.showAttachRowsDialog) {
+      extras = (
+        <AttachRowsDialog
+          relation={this.state.relation}
+          onCancel={this.cancelAttachRows}
+          onConfirm={this.confirmAttachRows}
+          errors={this.state.attachRowsErrors}
+        />
+      )
     }
     return (
       <div>
