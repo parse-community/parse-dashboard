@@ -65,20 +65,33 @@ export default class Browser extends DashboardView {
   componentWillMount() {
     this.props.schema.dispatch(ActionTypes.FETCH)
     .then(() => this.handleFetchedSchema());
+
+    const { className, entityId, relationName } = this.props.params;
+
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
+      let filters = new List();
       if (this.props.location.query && this.props.location.query.filters) {
-        let filters = new List();
         let queryFilters = JSON.parse(this.props.location.query.filters);
         queryFilters.forEach((filter) => {
           filters = filters.push(new Map(filter));
         });
+      }
+
+      const { className, entityId, relationName } = this.props.params;
+      if (entityId && relationName) {
+        const parentObjectQuery = new Parse.Query(className);
+        parentObjectQuery.get(entityId, { useMasterKey: true }).then(
+          (parent) => {
+            const relation = parent.relation(relationName);
+            this.fetchRelation(relation, filters);
+          },
+        );
+      } else {
         this.setState({ filters }, () => {
           this.fetchData(this.props.params.className, this.state.filters);
         });
-      } else {
-        this.fetchData(this.props.params.className, this.state.filters);
       }
       this.setState({
         ordering: ColumnPreferences.getColumnSort(
@@ -98,12 +111,12 @@ export default class Browser extends DashboardView {
         newObject: null,
         lastMax: -1,
         ordering: ColumnPreferences.getColumnSort(
-            false,
-            nextContext.currentApp.applicationId,
-            nextProps.params.className
+          false,
+          nextContext.currentApp.applicationId,
+          nextProps.params.className
         ),
         selection: {},
-        relation: null
+        relation: null,
       };
       //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
       if (nextProps.location.query && nextProps.location.query.filters) {
@@ -112,18 +125,31 @@ export default class Browser extends DashboardView {
           changes.filters = changes.filters.push(new Map(filter));
         });
       }
-
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         changes.counts = {};
         Parse.Object._clearAllState();
       }
       this.setState(changes);
-      if (nextProps.params.className) {
-        this.fetchData(nextProps.params.className, nextProps.location.query && nextProps.location.query.filters ? changes.filters : []);
+      const filters = nextProps.location.query && nextProps.location.query.filters ? changes.filters : [];
+      const { className, entityId, relationName } = nextProps.params;
+      if (entityId && relationName) {
+        let relation = this.state.relation;
+        if (!relation) {
+          const parentObjectQuery = new Parse.Query(className);
+          parentObjectQuery.get(entityId, { useMasterKey: true }).then(
+            (parent) => {
+              relation = parent.relation(relationName);
+              this.fetchRelation(relation, filters);
+            },
+          );
+        } else {
+          this.fetchRelation(relation, filters);
+        }
+      } else if (className) {
+        this.fetchData(className, filters);
       }
       nextProps.schema.dispatch(ActionTypes.FETCH)
       .then(() => this.handleFetchedSchema());
-
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
@@ -216,7 +242,12 @@ export default class Browser extends DashboardView {
 
   addRow() {
     if (!this.state.newObject) {
-      this.setState({ newObject: new Parse.Object(this.props.params.className) });
+      const relation = this.state.relation;
+      this.setState({
+        newObject: (relation ?
+          new Parse.Object(relation.targetClassName)
+        : new Parse.Object(this.props.params.className) ),
+      });
     }
   }
 
@@ -243,16 +274,24 @@ export default class Browser extends DashboardView {
   }
 
   refresh() {
-    let initialState = {
+    const relation = this.state.relation;
+    const initialState = {
       filters: new List(),
       data: null,
       newObject: null,
       lastMax: -1,
       selection: {},
-      relation: null
     };
-    this.setState(initialState);
-    this.fetchData(this.props.params.className, this.state.filters)
+    if (relation) {
+      this.setState(initialState);
+      this.setRelation(relation);
+    } else {
+      this.setState({
+        ...initialState,
+        relation: null,
+      });
+      this.fetchData(this.props.params.className, this.state.filters);
+    }
   }
 
   fetchData(source, filters, last) {
@@ -269,7 +308,9 @@ export default class Browser extends DashboardView {
         query.greaterThan(col, last[col]);
       }
     }
-    query.find({ useMasterKey: true }).then((data) => this.setState({ data: data, lastMax: 200 }));
+    query.find({ useMasterKey: true }).then(
+      (data) => this.setState({ data: data, lastMax: 200 }),
+    );
   }
 
   fetchRelationCount(relation) {
@@ -323,11 +364,16 @@ export default class Browser extends DashboardView {
   }
 
   updateFilters(filters) {
-    let source = this.state.relation || this.props.params.className;
-    let _filters = JSON.stringify(filters.toJSON());
-    let url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`);
-    // filters param change is making the fetch call
-    history.push(this.context.generatePath(url));
+    const relation = this.state.relation;
+    if (relation) {
+      this.setRelation(relation, filters);
+    } else {
+      const source = this.props.params.className;
+      const _filters = JSON.stringify(filters.toJSON());
+      const url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`);
+      // filters param change is making the fetch call
+      history.push(this.context.generatePath(url));
+    }
   }
 
   updateOrdering(ordering) {
@@ -343,14 +389,26 @@ export default class Browser extends DashboardView {
     );
   }
 
-  setRelation(relation) {
+  fetchRelation(relation, filters) {
     this.setState({
       relation: relation,
       relationCount: 0,
       selection: {},
+      filters: filters,
     }, () => {
-      this.fetchData(relation, this.state.filters);
+      this.fetchData(relation, filters);
       this.fetchRelationCount(relation);
+    });
+  }
+
+  setRelation(relation, filters) {
+    const className = this.props.params.className;
+    const entityId = relation.parent.id;
+    const relationName = relation.key;
+    this.setState({
+      relation: relation,
+    }, () => {
+      history.push(this.context.generatePath(`browser/${className}/${entityId}/${relationName}`));
     });
   }
 
@@ -364,11 +422,12 @@ export default class Browser extends DashboardView {
   }
 
   updateRow(row, attr, value) {
-    let obj = row < 0 ? this.state.newObject : this.state.data[row];
+    const isNewObject = row < 0;
+    const obj = isNewObject ? this.state.newObject : this.state.data[row];
     if (!obj) {
       return;
     }
-    let prev = obj.get(attr);
+    const prev = obj.get(attr);
     if (value === prev) {
       return;
     }
@@ -378,13 +437,42 @@ export default class Browser extends DashboardView {
       obj.set(attr, value);
     }
     obj.save(null, { useMasterKey: true }).then(() => {
-      let state = { data: this.state.data, lastError: null };
-      if (row < 0) {
-        state.newObject = null;
-        if (this.props.params.className === obj.className) {
-          this.state.data.unshift(obj);
+      const state = { data: this.state.data, lastError: null };
+      if (isNewObject) {
+        const relation = this.state.relation;
+        if (relation) {
+          const parent = relation.parent;
+          const parentRelation = parent.relation(relation.key);
+          parentRelation.add(obj);
+          const targetClassName = relation.targetClassName;
+          parent.save(null, { useMasterKey: true }).then(() => {
+            this.setState({
+              newObject: null,
+              data: [
+                obj,
+                ...this.state.data,
+              ],
+              relationCount: this.state.relationCount + 1,
+              counts: {
+                ...this.state.counts,
+                [targetClassName]: this.state.counts[targetClassName] + 1,
+              },
+            });
+          }, (error) => {
+            let msg = typeof error === 'string' ? error : error.message;
+            if (msg) {
+              msg = msg[0].toUpperCase() + msg.substr(1);
+            }
+            obj.set(attr, prev);
+            this.setState({ data: this.state.data, lastError: msg });
+          });
+        } else {
+          state.newObject = null;
+          if (this.props.params.className === obj.className) {
+            this.state.data.unshift(obj);
+          }
+          this.state.counts[obj.className] += 1;
         }
-        this.state.counts[obj.className] += 1;
       }
       this.setState(state);
     }, (error) => {
@@ -392,7 +480,7 @@ export default class Browser extends DashboardView {
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
-      if (row >= 0) {
+      if (!isNewObject) {
         obj.set(attr, prev);
         this.setState({ data: this.state.data, lastError: msg });
       } else {
@@ -434,7 +522,9 @@ export default class Browser extends DashboardView {
             for (let i = 0; i < indexes.length; i++) {
               this.state.data.splice(indexes[i] - i, 1);
             }
-            this.forceUpdate();
+            this.setState({
+              relationCount: this.state.relationCount - toDelete.length,
+            });
           }
         });
       } else {

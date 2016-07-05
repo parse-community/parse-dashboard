@@ -53,7 +53,7 @@ let BrowserToolbar = ({
       }
   }
 
-  if (!relation) {    
+  if (!relation) {
     if (perms && !hidePerms) {
       let read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
       let write = perms.create && perms.update && perms.delete && perms.create['*'] && perms.update['*'] && perms.delete['*'];
@@ -71,9 +71,15 @@ let BrowserToolbar = ({
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid'>
         <MenuItem
+          text="Add a row"
+          onClick={onAddRow}
+        />
+        <Separator />
+        <MenuItem
           disabled={selectionLength === 0}
-          text={selectionLength === 1 && !selection['*'] ? 'Remove this row' : 'Remove these rows'}
-          onClick={() => onDeleteRows(selection)} />
+          text={selectionLength === 1 && !selection['*'] ? 'Detach this row' : 'Detach these rows'}
+          onClick={() => onDeleteRows(selection)}
+        />
       </BrowserMenu>
     );
   } else {
@@ -104,6 +110,7 @@ let BrowserToolbar = ({
   }
   return (
     <Toolbar
+      relation={relation}
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}

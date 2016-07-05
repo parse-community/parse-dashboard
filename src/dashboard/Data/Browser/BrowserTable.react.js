@@ -270,6 +270,8 @@ export default class BrowserTable extends React.Component {
                 <EmptyState
                   title='No data to display'
                   description='This relation has no rows'
+                  cta='Add a row'
+                  action={this.props.onAddRow}
                   icon='files-solid' /> :
                 <EmptyState
                   title='No data to display'

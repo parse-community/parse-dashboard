@@ -24,11 +24,25 @@
   }
 }
 
-
 .title {
   position: absolute;
   left: 14px;
   bottom: 10px;
+}
+
+.nav {
+  display: inline-block;
+}
+
+.iconButton {
+  display: block;
+  padding-top: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.titleText {
+  display: inline-block;
 }
 
 .section {
