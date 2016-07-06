@@ -604,50 +604,47 @@ export default class Browser extends DashboardView {
     });
   }
 
-  confirmAttachRows(objectIdsString) {
-    const relation = this.state.relation;
-    const query = new Parse.Query(relation.targetClassName);
-    const parent = relation.parent;
-    this.state.attachRowsErrors = [];
-    const objectIds = objectIdsString.split(',').reduce((resourceIds, targetResourceId) => {
-      const objectId = targetResourceId && targetResourceId.trim();
-      if (!objectId) return;
-      return [...resourceIds, objectId];
-    }, []);
-    query.containedIn('objectId', objectIds);
-    query.find({ useMasterKey: true }).then((objects) => {
-      if (!objects.length) {
-        return this.setState({
-          attachRowsErrors: [...this.state.attachRowsErrors, `No object to attach`],
+  async confirmAttachRows(objectIds) {
+    let stateChanges = {
+      attachRowsErrors: [],
+    };
+    try {
+      const relation = this.state.relation;
+      const query = new Parse.Query(relation.targetClassName);
+      const parent = relation.parent;
+      if (!objectIds || !objectIds.length) {
+        throw new Error('No objectId passed');
+      }
+      query.containedIn('objectId', objectIds);
+      let objects = await query.find({ useMasterKey: true });
+      const missedObjectsCount = objectIds.length - objects.length;
+      if (missedObjectsCount) {
+        objectIds.forEach((objectId, idx) => {
+          const object = objects.find(x => x.id === objectId);
+          if (!object) {
+            stateChanges.attachRowsErrors.push(`Failed to bring object '${objectId}'`);
+          }
         });
+        throw new Error(`${missedObjectsCount === 1 ? 'Object is' : 'Objects are'} not found`);
       }
       parent.relation(relation.key).add(objects);
-      parent.save(null, { useMasterKey: true }).then(() => {
-        this.fetchRelation(relation);
-        this.setState({
-          showAttachRowsDialog: false,
-        });
-      }, (error) => {
-        console.log(error);
-        this.setState({
-          attachRowsErrors: [
-            ...this.state.attachRowsErrors,
-            `Failed to attach objects`,
-            ...(error.message ? [error.message] : []),
-          ],
-        });
-      });
-    },
-    (error) => {
-      console.log(error);
-      this.setState({
-        attachRowsErrors: [
-          ...this.state.attachRowsErrors,
-          `Failed to retrieve objects`,
-          ...(error.message ? [error.message] : []),
+      await parent.save(null, { useMasterKey: true });
+      // remove duplication
+      this.state.data.forEach(origin => objects = objects.filter(object => object.id !== origin.id));
+      stateChanges = {
+        ...stateChanges,
+        data: [
+          ...objects,
+          ...this.state.data,
         ],
-      });
-    });
+        relationCount: this.state.relationCount + objects.length,
+        showAttachRowsDialog: false,
+      };
+    } catch (error) {
+      stateChanges.attachRowsErrors.push(error.message ? [error.message] : 'Unknown error happened');
+    } finally {
+      await this.setState(stateChanges);
+    }
   }
 
   renderSidebar() {

@@ -34,7 +34,12 @@ export default class AttachRowsDialog extends React.Component {
   }
 
   handleConfirm() {
-    this.props.onConfirm(this.state.objectIds);
+    const objectIds = this.state.objectIds.split(',').reduce((resourceIds, targetResourceId) => {
+      const objectId = targetResourceId && targetResourceId.trim();
+      if (!objectId) return;
+      return [...resourceIds, objectId];
+    }, []);
+    this.props.onConfirm(objectIds);
   }
 
   render() {
@@ -46,10 +51,10 @@ export default class AttachRowsDialog extends React.Component {
     } = this.props;
     let errorStatus;
     if (errors) {
-      const errorList = [];
+      let errorList = [];
       errors.forEach((error) => {
         errorList.push((
-          <div style={styles.errorText}>
+          <div>
             * {error}
           </div>
         ));
@@ -69,6 +74,7 @@ export default class AttachRowsDialog extends React.Component {
         subtitle={`Bring existing rows from ${relation.targetClassName}`}
         onCancel={this.props.onCancel}
         onConfirm={this.handleConfirm}
+        confirmText="Attach"
       >
         <Field
           label={
