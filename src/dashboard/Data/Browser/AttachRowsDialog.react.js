@@ -1,6 +1,5 @@
-import * as Filters from 'lib/Filters';
-import Modal from 'components/Modal/Modal.react';
 import React from 'react';
+import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import TextInput from 'components/TextInput/TextInput.react';

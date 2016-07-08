@@ -15,7 +15,7 @@ const goBack = () => history.goBack();
 
 let Toolbar = (props) => {
   let backButton;
-  if (props.relation) {
+  if (props.relation || (props.filters && props.filters.size)) {
     backButton = (
       <a
         className={styles.iconButton}

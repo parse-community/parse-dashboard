@@ -62,104 +62,100 @@ export default class Browser extends DashboardView {
       lastError: null,
       relationCount: 0,
 
-      attachRowsErrors: null,
+      attachRowsErrors: [],
     };
 
+    this.prefetchData = this.prefetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.fetchRelation = this.fetchRelation.bind(this);
+    this.fetchRelationCount = this.fetchRelationCount.bind(this);
+    this.fetchNextPage = this.fetchNextPage.bind(this);
+    this.updateFilters = this.updateFilters.bind(this);
+    this.showRemoveColumn = this.showRemoveColumn.bind(this);
+    this.showDeleteRows = this.showDeleteRows.bind(this);
+    this.showDropClass = this.showDropClass.bind(this);
+    this.showExport = this.showExport.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
     this.confirmAttachRows = this.confirmAttachRows.bind(this);
+    this.showCreateClass = this.showCreateClass.bind(this);
+    this.refresh = this.refresh.bind(this);
+    this.selectRow = this.selectRow.bind(this);
+    this.updateRow = this.updateRow.bind(this);
+    this.updateOrdering = this.updateOrdering.bind(this);
+    this.handlePointerClick = this.handlePointerClick.bind(this);
+    this.setRelation = this.setRelation.bind(this);
+    this.showAddColumn = this.showAddColumn.bind(this);
+    this.addRow = this.addRow.bind(this);
+    this.showCreateClass = this.showCreateClass.bind(this);
+    this.createClass = this.createClass.bind(this);
+    this.addColumn = this.addColumn.bind(this);
+    this.removeColumn = this.removeColumn.bind(this);
   }
 
   componentWillMount() {
     this.props.schema.dispatch(ActionTypes.FETCH)
     .then(() => this.handleFetchedSchema());
-
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
-      let filters = new List();
-      if (this.props.location.query && this.props.location.query.filters) {
-        const queryFilters = JSON.parse(this.props.location.query.filters);
-        queryFilters.forEach((filter) => {
-          filters = filters.push(new Map(filter));
-        });
-      }
-
-      const { className, entityId, relationName } = this.props.params;
-      if (entityId && relationName) {
-        const parentObjectQuery = new Parse.Query(className);
-        parentObjectQuery.get(entityId, { useMasterKey: true }).then(
-          (parent) => {
-            const relation = parent.relation(relationName);
-            this.fetchRelation(relation, filters);
-          },
-        );
-      } else {
-        this.setState({ filters }, () => {
-          this.fetchData(this.props.params.className, this.state.filters);
-        });
-      }
-      this.setState({
-        ordering: ColumnPreferences.getColumnSort(
-          false,
-          this.context.currentApp.applicationId,
-          this.props.params.className
-        )
-      });
+      this.prefetchData(this.props, this.context);
     }
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      let changes = {
-        filters: new List(),
-        data: null,
-        newObject: null,
-        lastMax: -1,
-        ordering: ColumnPreferences.getColumnSort(
-          false,
-          nextContext.currentApp.applicationId,
-          nextProps.params.className
-        ),
-        selection: {},
-        relation: null,
-      };
-      //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
-      if (nextProps.location.query && nextProps.location.query.filters) {
-        let queryFilters = JSON.parse(nextProps.location.query.filters);
-        queryFilters.forEach((filter) => {
-          changes.filters = changes.filters.push(new Map(filter));
-        });
-      }
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
-        changes.counts = {};
+        this.setState({ counts: {} });
         Parse.Object._clearAllState();
       }
-      this.setState(changes);
-      const filters = changes.filters;
-      const { className, entityId, relationName } = nextProps.params;
-      if (entityId && relationName) {
-        let relation = this.state.relation;
-        if (!relation) {
-          const parentObjectQuery = new Parse.Query(className);
-          parentObjectQuery.get(entityId, { useMasterKey: true }).then(
-            (parent) => {
-              relation = parent.relation(relationName);
-              this.fetchRelation(relation, filters);
-            },
-          );
-        } else {
-          this.fetchRelation(relation, filters);
-        }
-      } else if (className) {
-        this.fetchData(className, filters);
-      }
+      this.prefetchData(nextProps, nextContext);
       nextProps.schema.dispatch(ActionTypes.FETCH)
       .then(() => this.handleFetchedSchema());
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
     }
+  }
+
+  async prefetchData(props, context) {
+    const filters = this.extractFiltersFromQuery(props);
+    const { className, entityId, relationName } = props.params;
+    const isRelationRoute = entityId && relationName;
+    let relation = this.state.relation;
+    if (isRelationRoute && !relation) {
+      const parentObjectQuery = new Parse.Query(className);
+      const parent = await parentObjectQuery.get(entityId, { useMasterKey: true });
+      relation = parent.relation(relationName);
+    }
+    await this.setState({
+      data: null,
+      newObject: null,
+      lastMax: -1,
+      ordering: ColumnPreferences.getColumnSort(
+        false,
+        context.currentApp.applicationId,
+        className,
+      ),
+      selection: {},
+      relation: isRelationRoute ? relation : null,
+    });
+    if (isRelationRoute) {
+      this.fetchRelation(relation, filters);
+    } else if (className) {
+      this.fetchData(className, filters);
+    }
+  }
+
+  extractFiltersFromQuery(props) {
+    let filters = new List();
+    //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
+    const query = props.location && props.location.query;
+    if (query && query.filters) {
+      const queryFilters = JSON.parse(query.filters);
+      queryFilters.forEach((filter) => filters = filters.push(new Map(filter)));
+    }
+    return filters;
   }
 
   redirectToFirstClass(classList) {
@@ -279,30 +275,29 @@ export default class Browser extends DashboardView {
     this.setState({clp: this.props.schema.data.get('CLPs').toJS()});
   }
 
-  refresh() {
+  async refresh() {
     const relation = this.state.relation;
-    const filters = new List();
+    const prevFilters = this.state.filters || new List();
     const initialState = {
-      filters,
       data: null,
       newObject: null,
       lastMax: -1,
       selection: {},
     };
     if (relation) {
-      this.setState(initialState);
-      this.setRelation(relation, filters);
+      await this.setState(initialState);
+      await this.setRelation(relation, prevFilters);
     } else {
-      this.setState({
+      await this.setState({
         ...initialState,
         relation: null,
       });
-      this.fetchData(this.props.params.className, this.state.filters);
+      await this.fetchData(this.props.params.className, prevFilters);
     }
   }
 
-  fetchData(source, filters, last) {
-    let query = queryFromFilters(source, filters);
+  async fetchParseData(source, filters) {
+    const query = queryFromFilters(source, filters);
     if (this.state.ordering[0] === '-') {
       query.descending(this.state.ordering.substr(1));
     } else {
@@ -310,19 +305,30 @@ export default class Browser extends DashboardView {
     }
     query.addDescending('createdAt');
     query.limit(200);
-    if (last) {
-      for (let col in last) {
-        query.greaterThan(col, last[col]);
-      }
-    }
-    query.find({ useMasterKey: true }).then(
-      (data) => this.setState({ data: data, lastMax: 200 }),
-    );
+    const data = await query.find({ useMasterKey: true });
+    return data;
   }
 
-  fetchRelationCount(relation) {
-    let p = this.context.currentApp.getRelationCount(relation);
-    p.then((count) => this.setState({ relationCount: count }));
+  async fetchData(source, filters = new List(), last) {
+    const data = await this.fetchParseData(source, filters);
+    this.setState({ data: data, filters, lastMax: 200 });
+  }
+
+  async fetchRelation(relation, filters = new List()) {
+    const data = await this.fetchParseData(relation, filters);
+    const relationCount = await this.fetchRelationCount(relation);
+    await this.setState({
+      relation,
+      relationCount,
+      selection: {},
+      data,
+      filters,
+      lastMax: 200,
+    });
+  }
+
+  async fetchRelationCount(relation) {
+    return await this.context.currentApp.getRelationCount(relation);
   }
 
   fetchNextPage() {
@@ -394,21 +400,6 @@ export default class Browser extends DashboardView {
       this.context.currentApp.applicationId,
       this.props.params.className
     );
-  }
-
-  fetchRelation(relation, filters) {
-    const oldRelation = this.relation;
-    const updatedFilters = filters || new List();
-    this.setState({
-      relation: relation,
-      relationCount: 0,
-      selection: {},
-      filters: updatedFilters,
-      rowsToAttach: null,
-    }, () => {
-      this.fetchData(relation, updatedFilters);
-      this.fetchRelationCount(relation);
-    });
   }
 
   getRelationURL() {
@@ -593,7 +584,6 @@ export default class Browser extends DashboardView {
   showAttachRowsDialog() {
     this.setState({
       showAttachRowsDialog: true,
-      rowsToAttach: this.state.rowsToAttach || new List(),
       attachRowsErrors: [],
     });
   }
@@ -643,7 +633,7 @@ export default class Browser extends DashboardView {
     } catch (error) {
       stateChanges.attachRowsErrors.push(error.message ? [error.message] : 'Unknown error happened');
     } finally {
-      await this.setState(stateChanges);
+      this.setState(stateChanges);
     }
   }
 
@@ -694,7 +684,7 @@ export default class Browser extends DashboardView {
               description={'This is where you can view and edit your app\u2019s data'}
               icon='files-solid'
               cta='Create your first class'
-              action={this.showCreateClass.bind(this)} />
+              action={this.showCreateClass} />
           </div>
         );
       } else if (className && classes.get(className)) {
@@ -731,11 +721,11 @@ export default class Browser extends DashboardView {
             schema={schema}
             userPointers={userPointers}
             filters={this.state.filters}
-            onFilterChange={this.updateFilters.bind(this)}
-            onRemoveColumn={this.showRemoveColumn.bind(this)}
-            onDeleteRows={this.showDeleteRows.bind(this)}
-            onDropClass={this.showDropClass.bind(this)}
-            onExport={this.showExport.bind(this)}
+            onFilterChange={this.updateFilters}
+            onRemoveColumn={this.showRemoveColumn}
+            onDeleteRows={this.showDeleteRows}
+            onDropClass={this.showDropClass}
+            onExport={this.showExport}
             onChangeCLP={clp => {
               let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
                 className: this.props.params.className,
@@ -744,27 +734,27 @@ export default class Browser extends DashboardView {
               p.then(() => this.handleFetchedSchema());
               return p;
             }}
-            onRefresh={this.refresh.bind(this)}
+            onRefresh={this.refresh}
             onAttachRows={this.showAttachRowsDialog}
 
             columns={columns}
             className={className}
-            fetchNextPage={this.fetchNextPage.bind(this)}
+            fetchNextPage={this.fetchNextPage}
             maxFetched={this.state.lastMax}
-            selectRow={this.selectRow.bind(this)}
+            selectRow={this.selectRow}
             selection={this.state.selection}
             data={this.state.data}
             ordering={this.state.ordering}
             newObject={this.state.newObject}
             relation={this.state.relation}
             disableKeyControls={this.hasExtras()}
-            updateRow={this.updateRow.bind(this)}
-            updateOrdering={this.updateOrdering.bind(this)}
-            onPointerClick={this.handlePointerClick.bind(this)}
-            setRelation={this.setRelation.bind(this)}
-            onAddColumn={this.showAddColumn.bind(this)}
-            onAddRow={this.addRow.bind(this)}
-            onAddClass={this.showCreateClass.bind(this)} />
+            updateRow={this.updateRow}
+            updateOrdering={this.updateOrdering}
+            onPointerClick={this.handlePointerClick}
+            setRelation={this.setRelation}
+            onAddColumn={this.showAddColumn}
+            onAddRow={this.addRow}
+            onAddClass={this.showCreateClass} />
         );
       }
     }
@@ -774,7 +764,7 @@ export default class Browser extends DashboardView {
         <CreateClassDialog
           currentClasses={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showCreateClassDialog: false })}
-          onConfirm={this.createClass.bind(this)} />
+          onConfirm={this.createClass} />
       );
     } else if (this.state.showAddColumnDialog) {
       let currentColumns = [];
@@ -786,7 +776,7 @@ export default class Browser extends DashboardView {
           currentColumns={currentColumns}
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
-          onConfirm={this.addColumn.bind(this)} />
+          onConfirm={this.addColumn} />
       );
     } else if (this.state.showRemoveColumnDialog) {
       let currentColumns = [];
@@ -803,7 +793,7 @@ export default class Browser extends DashboardView {
         <RemoveColumnDialog
           currentColumns={currentColumns}
           onCancel={() => this.setState({ showRemoveColumnDialog: false })}
-          onConfirm={this.removeColumn.bind(this)} />
+          onConfirm={this.removeColumn} />
       );
     } else if (this.state.rowsToDelete) {
       extras = (
