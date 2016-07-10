@@ -180,7 +180,7 @@ In order to securely deploy the dashboard without leaking your apps master key, 
 
 The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or proxy that does early SSL termination, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--allowInsecureHTTP=1` option. You will then be responsible for ensureing that your proxy or load balancer only allows HTTPS.
 
-Alternatively, if you are behind a front-facing proxy and want to rely on the X-Forwarded-* headers for the client's connection and IP address, you can start the dashboard with the  `--trustProxy=1` option (or PARSE_DASHBOARD_TRUST_PROXY config var).  This is useful for hosting on services like Heroku, where you trust the provided proxy headers.  For Heroku in particular, setting this option allows the dashboard to correctly determine whether you're using HTTP or HTTPS.  You can also turn on this setting when using the dashboard as [express](https://github.com/expressjs/express) middleware:
+Alternatively, if you are behind a front-facing proxy and want to rely on the X-Forwarded-* headers for the client's connection and IP address, you can start the dashboard with the  `--trustProxy=1` option (or set the PARSE_DASHBOARD_TRUST_PROXY config var to 1).  This is useful for hosting on services like Heroku, where you can trust the provided proxy headers.  For Heroku in particular, setting this option allows the dashboard to correctly determine whether you're using HTTP or HTTPS.  You can also turn on this setting when using the dashboard as [express](https://github.com/expressjs/express) middleware:
 
 ```
 var insecureHTTP = false;
