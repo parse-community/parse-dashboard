@@ -48,10 +48,15 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   }
 }
 
-module.exports = function(config, allowInsecureHTTP) {
+module.exports = function(config, allowInsecureHTTP, trustProxy) {
   var app = express();
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
+
+  // Allow setting via middleware
+  if (trustProxy && app.disabled('trust proxy')) {
+    app.enable('trust proxy');
+  }
 
   // Serve the configuration.
   app.get('/parse-dashboard-config.json', function(req, res) {
