@@ -66,6 +66,8 @@ You can then start the dashboard using `parse-dashboard --config parse-dashboard
 
 ### Environment variables
 
+> This only works when starting the app using the `parse-dashboard` command
+
 There are also two methods you can use to configure the dashboard using environment variables.
 
 #### Multiple apps
