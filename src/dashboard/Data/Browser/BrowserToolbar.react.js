@@ -72,11 +72,11 @@ let BrowserToolbar = ({
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid'>
         <MenuItem
-          text="Add a row"
+          text={`Create ${relation.targetClassName} and attach`}
           onClick={onAddRow}
         />
         <MenuItem
-          text="Add existing row"
+          text="Attach existing row"
           onClick={onAttachRows}
         />
         <Separator />

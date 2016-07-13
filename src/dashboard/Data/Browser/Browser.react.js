@@ -61,8 +61,6 @@ export default class Browser extends DashboardView {
 
       lastError: null,
       relationCount: 0,
-
-      attachRowsErrors: [],
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -584,7 +582,6 @@ export default class Browser extends DashboardView {
   showAttachRowsDialog() {
     this.setState({
       showAttachRowsDialog: true,
-      attachRowsErrors: [],
     });
   }
 
@@ -595,46 +592,38 @@ export default class Browser extends DashboardView {
   }
 
   async confirmAttachRows(objectIds) {
-    let stateChanges = {
-      attachRowsErrors: [],
-    };
-    try {
-      const relation = this.state.relation;
-      const query = new Parse.Query(relation.targetClassName);
-      const parent = relation.parent;
-      if (!objectIds || !objectIds.length) {
-        throw new Error('No objectId passed');
-      }
-      query.containedIn('objectId', objectIds);
-      let objects = await query.find({ useMasterKey: true });
-      const missedObjectsCount = objectIds.length - objects.length;
-      if (missedObjectsCount) {
-        objectIds.forEach((objectId, idx) => {
-          const object = objects.find(x => x.id === objectId);
-          if (!object) {
-            stateChanges.attachRowsErrors.push(`Failed to bring object '${objectId}'`);
-          }
-        });
-        throw new Error(`${missedObjectsCount === 1 ? 'Object is' : 'Objects are'} not found`);
-      }
-      parent.relation(relation.key).add(objects);
-      await parent.save(null, { useMasterKey: true });
-      // remove duplication
-      this.state.data.forEach(origin => objects = objects.filter(object => object.id !== origin.id));
-      stateChanges = {
-        ...stateChanges,
-        data: [
-          ...objects,
-          ...this.state.data,
-        ],
-        relationCount: this.state.relationCount + objects.length,
-        showAttachRowsDialog: false,
-      };
-    } catch (error) {
-      stateChanges.attachRowsErrors.push(error.message ? [error.message] : 'Unknown error happened');
-    } finally {
-      this.setState(stateChanges);
+    const relation = this.state.relation;
+    const query = new Parse.Query(relation.targetClassName);
+    const parent = relation.parent;
+    if (!objectIds || !objectIds.length) {
+      throw 'No objectId passed';
     }
+    query.containedIn('objectId', objectIds);
+    let objects = await query.find({ useMasterKey: true });
+    const missedObjectsCount = objectIds.length - objects.length;
+    if (missedObjectsCount) {
+      const missedObjects = [];
+      objectIds.forEach((objectId, idx) => {
+        const object = objects.find(x => x.id === objectId);
+        if (!object) {
+          missedObjects.push(objectId);
+        }
+      });
+      const errorSummary = `${missedObjectsCount === 1 ? 'The object is' : `${missedObjectsCount} Objects are`} not retrieved:`;
+      throw `${errorSummary} ${JSON.stringify(missedObjects)}`;
+    }
+    parent.relation(relation.key).add(objects);
+    await parent.save(null, { useMasterKey: true });
+    // remove duplication
+    this.state.data.forEach(origin => objects = objects.filter(object => object.id !== origin.id));
+    this.setState({
+      data: [
+        ...objects,
+        ...this.state.data,
+      ],
+      relationCount: this.state.relationCount + objects.length,
+      showAttachRowsDialog: false,
+    });
   }
 
   renderSidebar() {
@@ -827,7 +816,6 @@ export default class Browser extends DashboardView {
           relation={this.state.relation}
           onCancel={this.cancelAttachRows}
           onConfirm={this.confirmAttachRows}
-          errors={this.state.attachRowsErrors}
         />
       )
     }

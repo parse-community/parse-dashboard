@@ -1,20 +1,9 @@
 import React from 'react';
-import Modal from 'components/Modal/Modal.react';
+import FormModal from 'components/FormModal/FormModal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import TextInput from 'components/TextInput/TextInput.react';
-
-const styles = {
-  errorList: {
-    margin: '3px 6px',
-    padding: '3px',
-    color: 'red',
-    fontSize: '13px',
-    lineHeight: '1.4',
-    maxHeight: '300px',
-    overflow: 'auto',
-  },
-};
+import Parse from 'parse';
 
 export default class AttachRowsDialog extends React.Component {
   constructor(props) {
@@ -38,7 +27,16 @@ export default class AttachRowsDialog extends React.Component {
       if (!objectId) return;
       return [...resourceIds, objectId];
     }, []);
-    this.props.onConfirm(objectIds);
+    const promise = new Parse.Promise();
+    console.log(promise);
+    this.props.onConfirm(objectIds)
+    .then(promise.resolve)
+    .catch((error) => {
+      promise.reject({
+        error,
+      });
+    });
+    return promise;
   }
 
   render() {
@@ -46,40 +44,24 @@ export default class AttachRowsDialog extends React.Component {
       relation,
       onCancel,
       onConfirm,
-      errors,
     } = this.props;
-    let errorStatus;
-    if (errors) {
-      let errorList = [];
-      errors.forEach((error) => {
-        errorList.push((
-          <div>
-            * {error}
-          </div>
-        ));
-      });
-      errorStatus = (
-        <div style={styles.errorList}>
-          {errorList}
-        </div>
-      );
-    }
     return (
-      <Modal
-        type={Modal.Types.info}
+      <FormModal
         icon="plus"
         iconSize={40}
         title="Attach Rows"
-        subtitle={`Bring existing rows from ${relation.targetClassName}`}
-        onCancel={this.props.onCancel}
-        onConfirm={this.handleConfirm}
-        confirmText="Attach"
+        subtitle={`Attach existing rows from ${relation.targetClassName}`}
+        onClose={this.props.onCancel}
+        onSubmit={this.handleConfirm}
+        open
+        submitText="Attach"
+        inProgressText="Attaching ..."
       >
         <Field
           label={
             <Label
               text="objectIds"
-              description={`ids of ${relation.targetClassName} rows to attach`}
+              description={`IDs of ${relation.targetClassName} rows to attach`}
             />
           }
           input={
@@ -90,8 +72,7 @@ export default class AttachRowsDialog extends React.Component {
             />
           }
         />
-        {errorStatus}
-      </Modal>
+      </FormModal>
     );
   }
 }
