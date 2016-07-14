@@ -44,6 +44,9 @@ After starting the dashboard, you can visit http://localhost:4040 in your browse
 ![Parse Dashboard](.github/dash-shot.png)
 
 ## Configuring Parse Dashboard
+
+### File
+
 You can also start the dashboard from the command line with a config file.  To do this, create a new file called `parse-dashboard-config.json` inside your local Parse Dashboard directory hierarchy.  The file should match the following format:
 
 ```json
@@ -60,6 +63,36 @@ You can also start the dashboard from the command line with a config file.  To d
 ```
 
 You can then start the dashboard using `parse-dashboard --config parse-dashboard-config.json`.
+
+### Environment variables
+
+> This only works when starting the app using the `parse-dashboard` command
+
+There are also two methods you can use to configure the dashboard using environment variables.
+
+#### Multiple apps
+
+Provide the entire JSON configuration in `PARSE_DASHBOARD_CONFIG` and it will be parsed just like the config file.
+
+#### Single app
+
+You can also define each configuration option individually.
+
+```
+HOST: "0.0.0.0"
+PORT: "4040"
+MOUNT_PATH: "/"
+PARSE_DASHBOARD_ALLOW_INSECURE_HTTP: undefined // Or "1" to allow http
+PARSE_DASHBOARD_SERVER_URL: "http://localhost:1337/parse"
+PARSE_DASHBOARD_MASTER_KEY: "myMasterKey"
+PARSE_DASHBOARD_APP_ID: "myAppId"
+PARSE_DASHBOARD_APP_NAME: "MyApp"
+PARSE_DASHBOARD_USER_ID: "user1"
+PARSE_DASHBOARD_USER_PASSWORD: "pass"
+PARSE_DASHBOARD_SSL_KEY: "sslKey"
+PARSE_DASHBOARD_SSL_CERT: "sslCert"
+PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
+```
 
 ## Managing Multiple Apps
 
@@ -149,13 +182,15 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var ParseDashboard = require('parse-dashboard');
 
+var allowInsecureHTTP = false
+
 var api = new ParseServer({
 	// Parse Server settings
 });
 
 var dashboard = new ParseDashboard({
 	// Parse Dashboard settings
-});
+}, allowInsecureHTTP);
 
 var app = express();
 

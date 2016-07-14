@@ -134,7 +134,7 @@ let formatConstraintComponent = (key, operation, value, schema) => {
       if(!value.constructor === Array) {
         res = [key, `constraint is malformed (${operation} operator requires an array)`, ''];
       } else if (!schema[key]) {
-        ['', `Cannot perform operation on non-existent column ${key}`, ''];
+        res = ['', `Cannot perform operation on non-existent column ${key}`, ''];
       } else if (schema[key]['type'] === 'Array'){
         let isAll = operation === '$all';
         res = [key,
@@ -190,6 +190,8 @@ export function formatConstraint(key, constraints, schema) {
         break;
       }
     }
+  } else if(constraints.constructor === Boolean) {
+  	rows.push([[key, 'is', constraints ? 'true' : 'false']]);
   } else {
     rows.push([[key, 'is', constraints]]);
   }
