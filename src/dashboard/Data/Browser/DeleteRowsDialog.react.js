@@ -49,14 +49,15 @@ export default class DeleteRowsDialog extends React.Component {
           } />
       );
     }
+    const deleteText = this.props.relation ? 'Detach' : 'Delete';
     return (
       <Modal
         type={Modal.Types.DANGER}
         icon='warn-outline'
-        title={this.props.selection['*'] ? 'Delete all rows?' : (selectionLength === 1 ? 'Delete this row?' : `Delete ${selectionLength} rows?`)}
-        subtitle='This action cannot be undone!'
+        title={this.props.selection['*'] ? `${deleteText} all rows?` : (selectionLength === 1 ? `${deleteText} this row?` : `${deleteText} ${selectionLength} rows?`)}
+        subtitle={this.props.relation ? 'You need to delete origin record. This is a reference.' : 'This action cannot be undone!'}
         disabled={!this.valid()}
-        confirmText='Yes, delete.'
+        confirmText={`Yes, ${this.props.relation ? 'detach' : 'delete'}`}
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
