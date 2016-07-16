@@ -30,9 +30,7 @@ export default class AttachRowsDialog extends React.Component {
     const promise = new Parse.Promise();
     this.props.onConfirm(objectIds)
     .then(() => promise.resolve())
-    .catch((error) => {
-      promise.reject(error);
-    });
+    .catch((error) => promise.reject(error));
     return promise;
   }
 
