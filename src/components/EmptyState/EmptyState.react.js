@@ -35,7 +35,15 @@ let ctaButton = (cta, action) => {
   }
 }
 
-let EmptyState = ({ icon='', title='', description='', cta='', action=()=>{}}) => (
+let EmptyState = ({
+  icon='',
+  title='',
+  description='',
+  cta='',
+  action=() => {},
+  secondaryCta='',
+  secondaryAction=() => {},
+}) => (
   <div className={center}>
     <div className={styles.icon}>
       <Icon
@@ -47,6 +55,8 @@ let EmptyState = ({ icon='', title='', description='', cta='', action=()=>{}}) =
     <div className={styles.title}>{title}</div>
     <div className={styles.description}>{description}</div>
     {ctaButton(cta, action)}
+    {secondaryCta && ' '}
+    {ctaButton(secondaryCta, secondaryAction)}
   </div>
 );
 
@@ -67,6 +77,12 @@ EmptyState.propTypes = {
   ),
   action: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).describe(
     'An href link or a click handler that is forwarded to the CTA button.'
+  ),
+  secondaryCta: PropTypes.string.describe(
+    'The text that appears in the secondary CTA button.'
+  ),
+  secondaryAction: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).describe(
+    'An href link or a click handler that is forwarded to the secondary CTA button.'
   ),
 };
 

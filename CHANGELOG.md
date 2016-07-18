@@ -1,5 +1,13 @@
 ## Parse Dashboard Changelog
 
+* 1.0.15
+
+* New: Add ability to delete all rows in a class, thanks to [Marco Cheung](https://github.com/Marco129)
+* New: Add relation editor, thanks to [Han BaHwan](https://github.com/Beingbook)
+* Fix: Bug when alert is missing in payload, thanks to [Herman Liang](https://github.com/hermanliang)
+* Fix: Improve target display in Push viewer, thanks to [Herman Liang](https://github.com/hermanliang)
+* Fix: Open docs and other sidebar links in new tab, thanks to [Konstantinos N.](https://github.com/kwstasna)
+
 ### 1.0.14
 
 * Fix bug in past push page

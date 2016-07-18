@@ -140,15 +140,17 @@ let getPushName = (pushData) => {
       <strong>{title}</strong>
     );
   } else {
-    let payload = pushData[PushConstants.PAYLOAD_FIELD];
+    let payload = pushData[PushConstants.PAYLOAD_FIELD] || '';
     try {
       payload = JSON.parse(payload);
     } catch(e) { }
-    if (payload) {
+    if (typeof payload === 'object') {
       if (typeof payload.alert === 'string') {
         return payload.alert;
       }
-      return payload.alert ? JSON.stringify(payload.alert) : payload;
+      return payload.alert ? JSON.stringify(payload.alert) : JSON.stringify(payload);
+    } else {
+      return '';
     }
   }
 }
