@@ -80,7 +80,7 @@ export default class Browser extends DashboardView {
     this.showAttachSelectedRowsDialog = this.showAttachSelectedRowsDialog.bind(this);
     this.confirmAttachSelectedRows = this.confirmAttachSelectedRows.bind(this);
     this.cancelAttachSelectedRows = this.cancelAttachSelectedRows.bind(this);
-    this.getClassTouchableRelationColumns = this.getClassTouchableRelationColumns.bind(this);
+    this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
     this.selectRow = this.selectRow.bind(this);
@@ -667,9 +667,9 @@ export default class Browser extends DashboardView {
     });
   }
 
-  getClassTouchableRelationColumns(className) {
+  getClassRelationColumns(className) {
     const currentClassName = this.props.params.className;
-    return this.getClassTouchableColumns(className)
+    return this.getClassColumns(className, false)
       .map(column => {
         if (column.type === 'Relation' && column.targetClass === currentClassName) {
           return column.name;
@@ -678,21 +678,22 @@ export default class Browser extends DashboardView {
       .filter(column => column);
   }
 
-  getClassTouchableColumns(className) {
-    const columns = [];
-    let untouchable = DefaultColumns.All;
-    if (className[0] === '_' && DefaultColumns[className]) {
-      untouchable = untouchable.concat(DefaultColumns[className]);
-    }
+  getClassColumns(className, onlyTouchable = true) {
+    let columns = [];
     const classes = this.props.schema.data.get('classes');
     classes.get(className).forEach((field, name) => {
-      if (untouchable.indexOf(name) < 0) {
         columns.push({
           ...field,
           name,
         });
-      }
     });
+    if (onlyTouchable) {
+      let untouchable = DefaultColumns.All;
+      if (className[0] === '_' && DefaultColumns[className]) {
+        untouchable = untouchable.concat(DefaultColumns[className]);
+      }
+      columns = columns.filter((column) => untouchable.indexOf(colum.name) === -1);
+    }
     return columns;
   }
 
@@ -832,7 +833,7 @@ export default class Browser extends DashboardView {
           onConfirm={this.addColumn} />
       );
     } else if (this.state.showRemoveColumnDialog) {
-      let currentColumns = this.getClassTouchableColumns(className).map(column => column.name);
+      let currentColumns = this.getClassColumns(className).map(column => column.name);
       extras = (
         <RemoveColumnDialog
           currentColumns={currentColumns}
@@ -877,7 +878,7 @@ export default class Browser extends DashboardView {
       extras = (
         <AttachSelectedRowsDialog
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
-          onSelectClass={this.getClassTouchableRelationColumns}
+          onSelectClass={this.getClassRelationColumns}
           selection={this.state.selection}
           onCancel={this.cancelAttachSelectedRows}
           onConfirm={this.confirmAttachSelectedRows}

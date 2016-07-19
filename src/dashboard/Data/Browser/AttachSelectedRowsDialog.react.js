@@ -56,11 +56,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
       targetObjectId,
       objectIds,
     } = this.state;
-    const promise = new Parse.Promise();
-    this.props.onConfirm(currentClass, targetObjectId, currentColumn, objectIds)
-    .then(() => promise.resolve())
-    .catch((error) => promise.reject(error));
-    return promise;
+    return this.props.onConfirm(currentClass, targetObjectId, currentColumn, objectIds);
   }
 
   handleClassChange(className) {

@@ -27,11 +27,7 @@ export default class AttachRowsDialog extends React.Component {
       if (!objectId) return;
       return [...resourceIds, objectId];
     }, []);
-    const promise = new Parse.Promise();
-    this.props.onConfirm(objectIds)
-    .then(() => promise.resolve())
-    .catch((error) => promise.reject(error));
-    return promise;
+    return this.props.onConfirm(objectIds);
   }
 
   render() {
