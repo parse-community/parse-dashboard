@@ -54,7 +54,7 @@ export default class FormModal extends React.Component {
           clearFields();
           onSuccess(result);
           this.setState({inProgress: false});
-        }).fail(({ message, error, notice, errors = [] }) => {
+        }).catch(({ message, error, notice, errors = [] }) => {
           this.setState({
             errorMessage: errors.join(' ') || message || error || notice || 'An error occurred',
             inProgress: false,

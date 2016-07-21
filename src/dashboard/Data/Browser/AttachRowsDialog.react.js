@@ -27,33 +27,23 @@ export default class AttachRowsDialog extends React.Component {
       if (!objectId) return;
       return [...resourceIds, objectId];
     }, []);
-    const promise = new Parse.Promise();
-    console.log(promise);
-    this.props.onConfirm(objectIds)
-    .then(promise.resolve)
-    .catch((error) => {
-      promise.reject({
-        error,
-      });
-    });
-    return promise;
+    return this.props.onConfirm(objectIds);
   }
 
   render() {
     const {
       relation,
       onCancel,
-      onConfirm,
     } = this.props;
     return (
       <FormModal
+        open
         icon="plus"
         iconSize={40}
-        title="Attach Rows"
+        title="Attach Rows To Relation"
         subtitle={`Attach existing rows from ${relation.targetClassName}`}
         onClose={this.props.onCancel}
         onSubmit={this.handleConfirm}
-        open
         submitText="Attach"
         inProgressText="Attaching ..."
       >
