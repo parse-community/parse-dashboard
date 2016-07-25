@@ -17,6 +17,7 @@ program.option('--appId [appId]', 'the app Id of the app you would like to manag
 program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
 program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');
 program.option('--appName [appName]', 'the name of the app you would like to manage. Optional.');
+program.option('--appIcon [appIcon]', 'the icon of the app you would like to manage. Optional.');
 program.option('--config [config]', 'the path to the configuration file');
 program.option('--host [host]', 'the host to run parse-dashboard');
 program.option('--port [port]', 'the port to run parse-dashboard');
@@ -39,6 +40,7 @@ let configServerURL = program.serverURL || process.env.PARSE_DASHBOARD_SERVER_UR
 let configMasterKey = program.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
 let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
 let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
+let configAppIcon = program.appIcon || process.env.PARSE_DASHBOARD_APP_ICON;
 let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
 let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
