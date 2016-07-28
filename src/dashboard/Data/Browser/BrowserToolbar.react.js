@@ -31,13 +31,14 @@ let BrowserToolbar = ({
   onAddColumn,
   onAddRow,
   onAddClass,
+  onAttachRows,
+  onAttachSelectedRows,
   onExport,
   onRemoveColumn,
   onDeleteRows,
   onDropClass,
   onChangeCLP,
   onRefresh,
-  onAttachRows,
   hidePerms,
 
   enableDeleteAllRows,
@@ -93,6 +94,12 @@ let BrowserToolbar = ({
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a column' onClick={onAddColumn} />
         <MenuItem text='Add a class' onClick={onAddClass} />
+        <Separator />
+        <MenuItem
+          disabled={!selectionLength}
+          text={`Attach ${selectionLength <= 1 ? 'this row' : 'these rows'} to relation`}
+          onClick={onAttachSelectedRows}
+        />
         <Separator />
         <MenuItem
           disabled={selectionLength === 0}
