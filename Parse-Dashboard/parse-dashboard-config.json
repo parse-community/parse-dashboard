@@ -1,10 +1,16 @@
 {
-  "apps": [{
-    "serverURL": "",
-    "appId": "",
-    "masterKey": "",
-    "appName": "",
-    "iconName": ""
-  }],
-  "iconsFolder": "icons"
+  "apps": [
+    {
+        "serverURL": "https://comerate2016.herokuapp.com/parse", // If your Parse Server's endpoint is not at /parse, you need to replace /parse with the correct endpoint
+        "appId": "2016comrate",
+        "masterKey": "2016comrate1",
+        "appName": "comrate"
+    }
+  ],
+  "users": [
+    {
+      "user":"devintosh", // Used to log in to your Parse Dashboard
+      "pass":"wideLand"
+    }
+  ]
 }
