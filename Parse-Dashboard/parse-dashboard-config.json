@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-        "serverURL": "http://comerate2016.herokuapp.com/parse", 
+        "serverURL": "https://comerate2016.herokuapp.com/parse", 
         "appId": "2016comrate",
         "masterKey": "2016comrate1",
         "appName": "comrate"
