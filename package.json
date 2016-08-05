@@ -36,7 +36,8 @@
     "commander": "^2.9.0",
     "express": "^4.13.4",
     "json-file-plus": "^3.2.0",
-    "package-json": "^2.3.1"
+    "package-json": "^2.3.1",
+    "bcryptjs": "^2.3.0"
   },
   "devDependencies": {
     "babel-core": "~5.8.12",
