@@ -692,7 +692,7 @@ export default class Browser extends DashboardView {
       if (className[0] === '_' && DefaultColumns[className]) {
         untouchable = untouchable.concat(DefaultColumns[className]);
       }
-      columns = columns.filter((column) => untouchable.indexOf(colum.name) === -1);
+      columns = columns.filter((column) => untouchable.indexOf(column.name) === -1);
     }
     return columns;
   }
