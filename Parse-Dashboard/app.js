@@ -86,6 +86,7 @@ module.exports = function(config, allowInsecureHTTP) {
     }
 
     let appsUserHasAccess = null;
+    let bcrypt = require('bcryptjs');
 
     const successfulAuth =
       //they provided auth
@@ -93,9 +94,10 @@ module.exports = function(config, allowInsecureHTTP) {
       //there are configured users
       users &&
       //the provided auth matches one of the users
-       users.find(user => {
+      users.find(user => {
         let isAuthorized = user.user == auth.name &&
-                            user.pass == auth.pass
+                          (user.pass == auth.pass ||
+                           bcrypt.compareSync(auth.pass, user.pass));
         if (isAuthorized) {
           // User restricted apps
           appsUserHasAccess = user.apps
