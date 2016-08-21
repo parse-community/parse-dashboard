@@ -1,5 +1,9 @@
 ## Parse Dashboard Changelog
 
+### 1.0.17
+
+* Fix: Revert mount path change that was causing issues when mounting on express
+
 ### 1.0.16
 
 * New: Add options to add selected rows to a relation, thanks to [Han BaHwan](https://github.com/Beingbook)
