@@ -17,15 +17,14 @@ packageJson('parse-dashboard', 'latest').then(latestPackage => {
 });
 
 function getMount(req) {
-  const url = req.url;
-  const originalUrl = req.originalUrl;
-  const mountPath = process.env.MOUNT_PATH || '';
-  const mountPathLength = req.originalUrl.length - req.url.length;
-  let mountPathLocal = req.originalUrl.slice(0, mountPathLength);
-  if (!mountPathLocal.endsWith('/')) {
-    mountPathLocal += '/';
+  let url = req.url;
+  let originalUrl = req.originalUrl;
+  var mountPathLength = req.originalUrl.length - req.url.length;
+  var mountPath = req.originalUrl.slice(0, mountPathLength);
+  if (!mountPath.endsWith('/')) {
+    mountPath += '/';
   }
-  return mountPath + mountPathLocal;
+  return mountPath;
 }
 
 function checkIfIconsExistForApps(apps, iconsFolder) {
