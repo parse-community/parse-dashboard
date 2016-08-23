@@ -1,8 +1,10 @@
 {
   "apps": [{
-    "serverURL": "http://localhost:5051/parse",
-    "appId": "appId",
-    "masterKey": "masterKey",
-    "appName": ""
-  }]
+    "serverURL": "",
+    "appId": "",
+    "masterKey": "",
+    "appName": "",
+    "iconName": ""
+  }],
+  "iconsFolder": "icons"
 }
