@@ -1,6 +1,16 @@
 ## Parse Dashboard Changelog
 
-* 1.0.15
+### 1.0.17
+
+* Fix: Revert mount path change that was causing issues when mounting on express
+
+### 1.0.16
+
+* New: Add options to add selected rows to a relation, thanks to [Han BaHwan](https://github.com/Beingbook)
+* New: Add ability to use bcrypted passwords, thanks to [Dan VanWinkle](https://github.com/dvanwinkle)
+* Fix: Fix deletion of columns, thanks to [Bryan Rhea](https://github.com/brheal)
+
+### 1.0.15
 
 * New: Add ability to delete all rows in a class, thanks to [Marco Cheung](https://github.com/Marco129)
 * New: Add relation editor, thanks to [Han BaHwan](https://github.com/Beingbook)
