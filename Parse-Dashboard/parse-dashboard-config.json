@@ -1,10 +1,4 @@
-{
-  "apps": [{
-    "serverURL": "",
-    "appId": "",
-    "masterKey": "",
-    "appName": "",
-    "iconName": ""
-  }],
-  "iconsFolder": "icons"
-}
+{"apps":[{"serverURL":"https://api.makemeflinch.com/parse","appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ","masterKey":"dWMwJKCs2SJmceoC6v0JtgIOhzj1jjG8ljpZdHYz","appName":"Flinch Prod","production":true},{"serverURL":"https://dev-api.makemeflinch.com/parse","appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx","masterKey":"b8IWnvFxpT5UJ0RN7q5FJOWsupJEr4nAx9JBLzPY","appName":"Flinch Dev"}],"users":[{"user":"dan.vanwinkle","pass":"$2a$08$IfG9qVgAlDvGnEaGrykTqe1t1sFKVQu4B/I4N8Fhq78fyYkJd3vvS","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"matt.farrell","pass":"$2a$08$jrxN4fos3WOGpX2yzAzz3eheEQVGH6l.DlhEtIJ2lLWr/5zR3JVT6","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"ben.beverly","pass":"$2a$08$Bp5bvl1yoBxyH0hVUsMEV.Zktg3C.NXbwlpPrE4Mpl/IEu.GJJYXS","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"robbie.sykes","pass":"$2a$08$aJGhOHKyCKhWwzL68lRm8.AoAtCWZ/QadwovLptK.xDT1WeQ67njm","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"brad.hinegardner","pass":"$2a$08$1Qv0luiTMnWnIV3XcnkFfu4y2whEdvvZJTfBpdrFiXeegEYNWioui","apps":[{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"kurt.prenger","pass":"$2a$08$zdYbzxxI/u0DgWgb5ue.ouz1shq.HsKGahbJVAFpTH/ypXiyLyKpK","apps":[{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"marc.betts","pass":"$2a$08$lGZdxwoopxkDT1yjQYfQJO7i4usaO3RpfnUT0HapClKdYf2KftyfG","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"ryan.radaszewski","pass":"$2a$08$2P5HsABE2fOxdn5.xgDmyONW.Vlj7LhuJkk7PwOwHB6rHbcvzJTS2","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"matt.sparr","pass":"$2a$08$xpmZy5GxcYpJskK6RDWQI.BKnBTg1qNnUBZpSIWCTawi2t2Dal/R6","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"tyler.kirtland","pass":"$2a$08$XcffFC8FI3gha98MjcNVI.ZtlL7U9dEbWF87sYYSCKM.PMItpaIqq","apps":[{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]},{"user":"jordan.doczy","pass":"$2a$08$dBHK7yheN31b.GxeFZzszO4xbSQ2O8KfmrMH8qmfqhiuhkdjowFQ2","apps":[{"appId":"yu1lqxywkkm5gyBMlOb9vPXqf1356oQpry7GfCOJ"},{"appId":"xxYuWmUaiBAUVJ5Fo9XhxXVO0HmS3RVDkUeCwwGx"}]}],
+"options": {
+  "useEncryptedPasswords": false
+}}
