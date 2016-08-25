@@ -61,6 +61,9 @@ module.exports = function(config, allowInsecureHTTP) {
     };
 
     const users = config.users;
+    const options = config.options || {
+      useEncryptedPasswords: false
+    };
 
     let auth = null;
     //If they provide auth when their config has no users, ignore the auth
@@ -95,8 +98,7 @@ module.exports = function(config, allowInsecureHTTP) {
       //the provided auth matches one of the users
       users.find(user => {
         let isAuthorized = user.user == auth.name &&
-                          (user.pass == auth.pass ||
-                           bcrypt.compareSync(auth.pass, user.pass));
+                          (options.useEncryptedPasswords ? bcrypt.compareSync(auth.pass, user.pass) : user.pass == auth.pass);
         if (isAuthorized) {
           // User restricted apps
           appsUserHasAccess = user.apps
