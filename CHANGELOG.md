@@ -1,5 +1,9 @@
 ## Parse Dashboard Changelog
 
+### 1.0.18
+
+* Fix: Revert history change that was causing issues when mounting on express
+
 ### 1.0.17
 
 * Fix: Revert mount path change that was causing issues when mounting on express
