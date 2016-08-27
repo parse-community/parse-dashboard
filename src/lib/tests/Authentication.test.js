@@ -41,6 +41,18 @@ function createAuthenticationResult(isAuthenticated, appsUserHasAccessTo) {
 }
 
 describe('Authentication', () => {
+  it('does not authenticate with no users', () => {
+    let authentication = new Authentication(null, false);
+    expect(authentication.authenticate({name: 'parse.dashboard', pass: 'abc123'}))
+      .toEqual(createAuthenticationResult(false, null));
+  });
+
+  it('does not authenticate with no auth', () => {
+    let authentication = new Authentication(unencryptedUsers, false);
+    expect(authentication.authenticate(null))
+      .toEqual(createAuthenticationResult(false, null));
+  });
+
   it('does not authenticate invalid user', () => {
     let authentication = new Authentication(unencryptedUsers, false);
     expect(authentication.authenticate({name: 'parse.invalid', pass: 'abc123'}))
