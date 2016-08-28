@@ -1,3 +1,4 @@
+"use strict";
 function Authentication(validUsers, useEncryptedPasswords) {
     this.validUsers = validUsers;
     this.useEncryptedPasswords = useEncryptedPasswords || false;
@@ -21,13 +22,13 @@ Authentication.prototype.authenticate = function (userToTest) {
         appsUserHasAccessTo = user.apps || null;
       }
 
-      return isAuthenticated
+      return isAuthenticated;
     }) ? true : false;
   
   return {
     isAuthenticated,
     appsUserHasAccessTo
-  }
-}
+  };
+};
 
 module.exports = Authentication;
