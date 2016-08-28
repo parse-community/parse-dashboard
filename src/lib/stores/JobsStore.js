@@ -29,8 +29,8 @@ function JobsStore(state, action) {
       if (state && new Date() - state.get('lastFetch') < 60000) {
         return Parse.Promise.as(state);
       }
-      path = `/apps/${action.app.slug}/cloud_code/jobs?per_page=50`;
-      return AJAX.get(path).then((results) => {
+      path = `cloud_code/jobs?per_page=50`;
+      return Parse._request('GET', path).then((results) => {
         return Map({ lastFetch: new Date(), jobs: List(results) });
       });
     case ActionTypes.CREATE:
