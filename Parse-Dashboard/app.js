@@ -61,6 +61,7 @@ module.exports = function(config, allowInsecureHTTP) {
     };
 
     const users = config.users;
+    const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
 
     let auth = null;
     //If they provide auth when their config has no users, ignore the auth
@@ -84,27 +85,15 @@ module.exports = function(config, allowInsecureHTTP) {
       return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
     }
 
-    let appsUserHasAccess = null;
-
-    const successfulAuth =
-      //they provided auth
-      auth &&
-      //there are configured users
-      users &&
-      //the provided auth matches one of the users
-       users.find(user => {
-        let isAuthorized = user.user == auth.name &&
-                            user.pass == auth.pass
-        if (isAuthorized) {
-          // User restricted apps
-          appsUserHasAccess = user.apps
-        }
-
-        return isAuthorized
-      });
+    let Authentication = require('./Authentication');
+    const authInstance = new Authentication(users, useEncryptedPasswords);
+    const authentication = authInstance.authenticate(auth);
+    
+    const successfulAuth = authentication.isAuthenticated;
+    const appsUserHasAccess = authentication.appsUserHasAccessTo;
 
     if (successfulAuth) {
-      if(appsUserHasAccess) {
+      if (appsUserHasAccess) {
         // Restric access to apps defined in user dictionary
         // If they didn't supply any app id, user will access all apps
         response.apps = response.apps.filter(function (app) {
