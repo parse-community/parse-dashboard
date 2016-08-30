@@ -1,10 +1,24 @@
 "use strict";
+
+/**
+ * Constructor for Authentication class
+ * 
+ * @class Authentication
+ * @param {Object[]} validUsers
+ * @param {boolean} useEncryptedPasswords
+ */
 function Authentication(validUsers, useEncryptedPasswords) {
     this.validUsers = validUsers;
     this.useEncryptedPasswords = useEncryptedPasswords || false;
 }
 
-Authentication.prototype.authenticate = function (userToTest) {
+/**
+ * Authenticates the `userToTest`
+ * 
+ * @param {Object} userToTest
+ * @returns {Object} Object with `isAuthenticated` and `appsUserHasAccessTo` properties
+ */
+function authenticate(userToTest) {
   let bcrypt = require('bcryptjs');
 
   var appsUserHasAccessTo = null;
@@ -29,6 +43,8 @@ Authentication.prototype.authenticate = function (userToTest) {
     isAuthenticated,
     appsUserHasAccessTo
   };
-};
+}
+
+Authentication.prototype.authenticate = authenticate;
 
 module.exports = Authentication;
