@@ -507,21 +507,21 @@ export default class ParseApp {
 
   getAvailableJobs() {
     let path = '/apps/' + this.slug + '/cloud_code/jobs/data';
-    return AJAX.get(path);
+    return Parse._request('GET', path);
   }
 
   getJobStatus() {
     // Cache it for a minute
-    if (new Date() - this.jobStatus.lastFetched < 60000) {
-      return Parse.Promise.as(this.jobStatus.status);
-    }
-    let path = '/apps/' + this.slug + '/cloud_code/job_status/all';
-    return AJAX.get(path).then((status) => {
+    let query = new Parse.Query('_JobStatus');
+    query.descending('createdAt');
+    return query.find({ useMasterKey: true }).then((status) => {
       this.jobStatus = {
         status: status || null,
         lastFetched: new Date()
       };
-      return status;
+      return status.map((jobStatus) => {
+        return jobStatus.toJSON();
+      });
     });
   }
 

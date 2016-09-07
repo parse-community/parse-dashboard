@@ -217,7 +217,7 @@ class Dashboard extends React.Component {
           <Route path='cloud_code' component={CloudCode} />
           <Route path='cloud_code/*' component={CloudCode} />
           <Route path='webhooks' component={Webhooks} />
-          <Redirect from='jobs' to='/apps/:appId/jobs/scheduled' />
+          <Redirect from='jobs' to='/apps/:appId/jobs/all' />
           <Route path='jobs' component={JobsData}>
             <Route path='new' component={JobEdit} />
             <Route path='edit/:jobId' component={JobEdit} />

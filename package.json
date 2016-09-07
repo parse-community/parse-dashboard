@@ -3,6 +3,7 @@
   "parseDashboardFeatures": [
     "Data Browser",
     "Cloud Code Viewer",
+    "Cloud Code Jobs Viewer and Runner",
     "Parse Config",
     "API Console",
     "Class Level Permissions Editor",
