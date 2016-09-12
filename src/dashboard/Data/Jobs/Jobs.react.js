@@ -20,13 +20,15 @@ import RunNowButton    from 'dashboard/Data/Jobs/RunNowButton.react';
 import SidebarAction   from 'components/Sidebar/SidebarAction';
 import StatusIndicator from 'components/StatusIndicator/StatusIndicator.react';
 import styles          from 'dashboard/Data/Jobs/Jobs.scss';
+import browserStyles   from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo     from 'lib/subscribeTo';
 import TableHeader     from 'components/Table/TableHeader.react';
 import TableView       from 'dashboard/TableView.react';
 import Toolbar         from 'components/Toolbar/Toolbar.react';
 
 let subsections = {
-  scheduled: 'Scheduled Jobs',
+  all: 'All Jobs',
+  /*scheduled: 'Scheduled Jobs',*/
   status: 'Job Status'
 };
 
@@ -73,12 +75,7 @@ export default class Jobs extends TableView {
   }
 
   componentWillMount() {
-    this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
-      this.setState({ loading: false });
-    });
-    this.context.currentApp.getJobStatus().then((status) => {
-      this.setState({ jobStatus: status });
-    });
+    this.loadData();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -89,6 +86,7 @@ export default class Jobs extends TableView {
       }
     }
     this.action = null;
+    this.loadData();
   }
 
   navigateToNew() {
@@ -99,18 +97,37 @@ export default class Jobs extends TableView {
     history.push(this.context.generatePath(`jobs/edit/${jobId}`))
   }
 
+  loadData() {
+    this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
+      this.setState({ loading: false });
+    });
+    this.context.currentApp.getJobStatus().then((status) => {
+      this.setState({ jobStatus: status });
+    });
+  }
+
   renderSidebar() {
     let current = this.props.params.section || '';
     return (
       <CategoryList current={current} linkPrefix={'jobs/'} categories={[
-        { name: 'Scheduled Jobs', id: 'scheduled' },
+       /* { name: 'Scheduled Jobs', id: 'scheduled' }, */
+        { name: 'All Jobs', id: 'all' },
         { name: 'Job Status', id: 'status' }
       ]} />
     );
   }
 
   renderRow(data) {
-    if (this.props.params.section === 'scheduled') {
+    if (this.props.params.section === 'all') {
+      return (
+        <tr key={data.objectId}>
+          <td style={{width: '60%'}}>{data.jobName}</td>
+          <td className={styles.buttonCell}>
+            <RunNowButton job={data} width={'100px'} />
+          </td>
+        </tr>
+      );
+    } else if (this.props.params.section === 'scheduled') {
       return (
         <tr key={data.objectId}>
           <td style={{width: '20%'}}>{data.description}</td>
@@ -142,7 +159,12 @@ export default class Jobs extends TableView {
   }
 
   renderHeaders() {
-    if (this.props.params.section === 'scheduled') {
+    if (this.props.params.section === 'all') {
+      return [
+        <TableHeader key='name' width={60}>Name</TableHeader>,
+        <TableHeader key='actions' width={40}>Actions</TableHeader>,
+      ];
+    } else if (this.props.params.section === 'scheduled') {
       return [
         <TableHeader key='name' width={20}>Name</TableHeader>,
         <TableHeader key='func' width={20}>Function</TableHeader>,
@@ -160,11 +182,18 @@ export default class Jobs extends TableView {
   }
 
   renderEmpty() {
-    if (this.props.params.section === 'scheduled') {
+    if (this.props.params.section === 'all') {
       return (
         <EmptyState
           title='Cloud Jobs'
-          description='Schedule your Cloud Code functions to run at specific times.'
+          description='Define Jobs on parse-server with Parse.Cloud.job()'
+          icon='cloud-happy' />
+      );
+    } else if (this.props.params.section === 'scheduled') {
+      return (
+        <EmptyState
+          title='Cloud Jobs'
+          description='Scheduling jobs is not supported on parse-server'
           icon='cloud-happy' />
       );
     } else {
@@ -197,7 +226,7 @@ export default class Jobs extends TableView {
 
   tableData() {
     let data = undefined;
-    if (this.props.params.section === 'scheduled') {
+    if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
       if (this.props.jobs.data) {
         let jobs = this.props.jobs.data.get('jobs');
         if (jobs) {
@@ -210,6 +239,15 @@ export default class Jobs extends TableView {
     return data;
   }
 
+  onRefresh() {
+    this.setState({
+      toDelete: null,
+      jobStatus: undefined,
+      loading: true,
+    });
+    this.loadData();
+  }
+
   renderToolbar() {
     if (subsections[this.props.params.section]) {
       return (
@@ -217,6 +255,10 @@ export default class Jobs extends TableView {
           section='Jobs'
           subsection={subsections[this.props.params.section]}
           details={ReleaseInfo({ release: this.props.release })}>
+          <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
+            <Icon name='refresh-solid' width={14} height={14} />
+            <span>Refresh</span>
+          </a>
           {this.props.availableJobs && this.props.availableJobs.length > 0 ?
             <Button color='white' value='Schedule a job' onClick={this.navigateToNew.bind(this)} /> : null}
         </Toolbar>

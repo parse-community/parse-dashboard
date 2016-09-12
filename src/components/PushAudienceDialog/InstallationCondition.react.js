@@ -13,6 +13,7 @@ import Field           from 'components/Field/Field.react';
 import Label           from 'components/Label/Label.react';
 import { List }        from 'immutable';
 import Option          from 'components/Dropdown/Option.react';
+import Parse           from 'parse';
 import React           from 'react';
 import ReactDOM        from 'react-dom';
 import styles          from 'components/PushAudienceDialog/InstallationCondition.scss';
@@ -30,18 +31,34 @@ let setFocus = (input) => {
   }
 }
 
-function compareValue(type, value, onChangeCompareTo) {
+function compareValue(info, value, onChangeCompareTo) {
+  let type = info.type;
   switch (type) {
     case null:
       return <div className={styles.empty}>-</div>;
     case 'String':
-      return <TextInput placeholder='value' value={value} onChange={(value) => onChangeCompareTo(value)} ref={setFocus}/>;
+      return <TextInput placeholder='value' value={value} onChange={(_value) => onChangeCompareTo(_value)} ref={setFocus}/>;
+    case 'Pointer':
+      return <TextInput
+        placeholder='value'
+        value={value.objectId || ''}
+        onChange={(_value) => {
+          let obj = new Parse.Object(info.targetClass);
+          obj.id = _value;
+          onChangeCompareTo(Parse._encode(obj));
+        }}
+        ref={setFocus} />
     case 'Boolean':
-      return <Dropdown value={value ? 'True' : 'False'} options={['True', 'False']} onChange={(val) => onChangeCompareTo(val === 'True')} />;
+      return <Dropdown value={value ? 'True' : 'False'} options={['True', 'False']} onChange={(_value) => onChangeCompareTo(_value === 'True')} />;
     case 'Number':
       return <TextInput placeholder='value' className={styles.conditionValue} value={value} onChange={(_value) => onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))} ref={setFocus}/>;
     case 'Date':
-      return <DateTimeEntry fixed={true} className={styles.date} value={value} onChange={onChangeCompareTo} />;
+      return <DateTimeEntry
+        fixed={true}
+        className={styles.date}
+        value={Parse._decode('date', value)}
+        onChange={(_value) => onChangeCompareTo(Parse._encode(_value))}
+        ref={setFocus} />
   }
 }
 
@@ -91,7 +108,7 @@ export default class InstallationCondition extends React.Component {
           </Dropdown>
         </div>
         <div className={[styles.conditionInput, styles.valueInput].join(' ')}>
-          {compareValue(this.props.compareInfo.type, this.props.compareTo, this.props.onChangeCompareTo)}
+          {compareValue(this.props.compareInfo, this.props.compareTo, this.props.onChangeCompareTo)}
         </div>
       </div>
     );
