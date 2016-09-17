@@ -55,7 +55,7 @@ export default class SecurityDialog extends React.Component {
           enablePointerPermissions={parseServerSupportsPointerPermissions}
           advanced={true}
           confirmText='Save CLP'
-          details={<a href='https://parse.com/docs/ios/guide#security-class-level-permissions'>Learn more about CLPs and app security</a>}
+          details={<a target="_blank" href='http://parseplatform.github.io/docs/ios/guide/#security'>Learn more about CLPs and app security</a>}
           permissions={this.props.perms}
           validateEntry={entry => validateEntry(this.props.userPointers, entry, parseServerSupportsPointerPermissions)}
           onCancel={() => {
