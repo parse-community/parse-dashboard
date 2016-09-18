@@ -212,11 +212,12 @@ class Dashboard extends React.Component {
 
           <Route path='browser' component={false ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
           <Route path='browser/:className' component={Browser} />
+          <Route path='browser/:className/:entityId/:relationName' component={Browser} />
 
           <Route path='cloud_code' component={CloudCode} />
           <Route path='cloud_code/*' component={CloudCode} />
           <Route path='webhooks' component={Webhooks} />
-          <Redirect from='jobs' to='/apps/:appId/jobs/scheduled' />
+          <Redirect from='jobs' to='/apps/:appId/jobs/all' />
           <Route path='jobs' component={JobsData}>
             <Route path='new' component={JobEdit} />
             <Route path='edit/:jobId' component={JobEdit} />

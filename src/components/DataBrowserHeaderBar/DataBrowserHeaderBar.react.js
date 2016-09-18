@@ -61,17 +61,17 @@ export default class DataBrowserHeaderBar extends React.Component {
       finalStyle.background = 'rgba(224,224,234,0.10)';
     }
     elements.push(
-      <div key='add' className={styles.addColumn} style={finalStyle}>
-        {readonly ?
-          null :
+      readonly ? null : (
+        <div key='add' className={styles.addColumn} style={finalStyle}>
           <a
             href='javascript:;'
             role='button'
             className={styles.addColumnButton}
             onClick={onAddColumn}>
             Add a new column
-          </a>}
-      </div>
+          </a>
+        </div>
+      )
     );
 
     return <div className={styles.bar}>{elements}</div>;

@@ -68,7 +68,7 @@ export default class DateTimeEntry extends React.Component {
     let date = new Date(this.state.value);
     if (isNaN(date.getTime())) {
       this.setState({ value: this.props.value.toISOString() });
-    } else {
+    } else if (!this.state.value.toLowerCase().endsWith('z')) {
       let utc = new Date(Date.UTC(
         date.getFullYear(),
         date.getMonth(),
@@ -79,6 +79,8 @@ export default class DateTimeEntry extends React.Component {
         date.getMilliseconds()
       ));
       this.props.onChange(utc);
+    } else {
+      this.props.onChange(date);
     }
   }
 
