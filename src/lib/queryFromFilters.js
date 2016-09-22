@@ -50,6 +50,9 @@ function addConstraint(query, filter) {
     case 'starts':
       query.startsWith(filter.get('field'), filter.get('compareTo'));
       break;
+    case 'ends':
+      query.endsWith(filter.get('field'), filter.get('compareTo'));
+      break;
     case 'before':
       query.lessThan(filter.get('field'), filter.get('compareTo'));
       break;
