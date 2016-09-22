@@ -45,6 +45,9 @@ export const Constraints = {
   starts: {
     name: 'starts with',
   },
+  ends: {
+    name: 'ends with',
+  },
   before: {
     name: 'is before',
     field: 'Date',
@@ -89,7 +92,7 @@ export const FieldConstraints = {
   'Pointer': [ 'exists', 'dne', 'eq', 'neq'],
   'Boolean': [ 'exists', 'dne', 'eq' ],
   'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte' ],
-  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts' ],
+  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends' ],
   'Date': [ 'exists', 'dne', 'before', 'after' ],
   'Array': [
     'exists',
