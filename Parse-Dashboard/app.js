@@ -48,13 +48,13 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   }
 }
 
-module.exports = function(config, allowInsecureHTTP, trustProxy) {
+module.exports = function(config, allowInsecureHTTP) {
   var app = express();
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
 
   // Allow setting via middleware
-  if (trustProxy && app.disabled('trust proxy')) {
+  if (config.trustProxy && app.disabled('trust proxy')) {
     app.enable('trust proxy');
   }
 

@@ -34,6 +34,11 @@ const mountPath = program.mountPath || process.env.MOUNT_PATH || '/';
 const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 const trustProxy = program.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
 
+if (trustProxy && allowInsecureHTTP) {
+  console.log("Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.");
+  process.exit(-1);
+}
+
 let explicitConfigFileProvided = !!program.config;
 let configFile = null;
 let configFromCLI = null;
@@ -108,7 +113,9 @@ p.then(config => {
   const app = express();
 
   if (allowInsecureHTTP || trustProxy) app.enable('trust proxy');
-  app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP, trustProxy));
+
+  config.data.trustProxy = trustProxy;
+  app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
   if(!configSSLKey || !configSSLCert){
     // Start the server.
     const server = app.listen(port, host, function () {
