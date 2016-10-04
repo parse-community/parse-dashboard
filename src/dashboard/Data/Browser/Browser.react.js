@@ -302,12 +302,19 @@ export default class Browser extends DashboardView {
 
   async fetchParseData(source, filters) {
     const query = queryFromFilters(source, filters);
-    if (this.state.ordering[0] === '-') {
-      query.descending(this.state.ordering.substr(1));
+    const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
+    const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0)
+
+    if (sortDir === '-') {
+      query.descending(field)
     } else {
-      query.ascending(this.state.ordering);
+      query.ascending(field)
     }
-    query.addDescending('createdAt');
+
+    if (field !== 'createdAt') {
+      query.addDescending('createdAt');
+    }
+
     query.limit(200);
     const data = await query.find({ useMasterKey: true });
     return data;

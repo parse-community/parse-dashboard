@@ -56,14 +56,13 @@ export default class DashboardView extends React.Component {
     }
     */
 
-    /* Jobs not supported
-    if (...) {
+    if (features.cloudCode && features.cloudCode.jobs) {
       coreSubsections.push({
         name: 'Jobs',
         link: '/jobs'
       });
     }
-    */
+
     if (features.logs && Object.keys(features.logs).some(key => features.logs[key])) {
       coreSubsections.push({
         name: 'Logs',
