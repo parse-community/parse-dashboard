@@ -22,14 +22,14 @@ export default class Calendar extends React.Component {
     super();
     let now = props.value || new Date();
     this.state = {
-      currentMonth: new Date(Date.UTC(now[getDateMethod(props.local, 'getFullYear')](), now[getDateMethod(props.local, 'getMonth')](), 1))
+      currentMonth: new Date(now[getDateMethod(props.local, 'getFullYear')](), now[getDateMethod(props.local, 'getMonth')](), 1)
     };
   }
 
   componentWillReceiveProps(props) {
     if (props.value) {
       this.setState({
-        currentMonth: new Date(Date.UTC(props.value[getDateMethod(props.local, 'getFullYear')](), props.value[getDateMethod(props.local, 'getMonth')](), 1))
+        currentMonth: new Date(props.value[getDateMethod(props.local, 'getFullYear')](), props.value[getDateMethod(props.local, 'getMonth')](), 1)
       });
     }
   }
@@ -81,7 +81,9 @@ export default class Calendar extends React.Component {
       let className = isSelected ? styles.selected : '';
       let onChange = this.props.onChange.bind(
         null,
-        new Date(Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i))
+        this.props.local ?
+          new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i) :
+          new Date(Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i))
       );
       labels.push(
         <a href='javascript:;' role='button' key={'day' + i} className={className} onClick={onChange}>{i}</a>
