@@ -1,5 +1,16 @@
 ## Parse Dashboard Changelog
 
+### 1.0.19
+
+* New: Support for trusting proxies w/ HTTPS
+* New: Support for filtering string with `ends with`
+* New: View parse-server based jobs
+* New: Button to add rows from browser toolbar
+* New: Support for encrypted passwords
+* New: Support for sorting by `createdAt`
+* Improvement: Push audiences support
+* Fix: Calendar dates support
+
 ### 1.0.18
 
 * Fix: Revert history change that was causing issues when mounting on express
