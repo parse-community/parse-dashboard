@@ -39,17 +39,6 @@ export default class LoginForm extends React.Component {
             className={styles.submit}
             value={this.props.action} />
         </form>
-        <div className={styles.oauth}>
-          <span>Or, log in with</span>
-          <a className={styles.facebook} href='/auth/facebook'><Icon name='facebook' width={18} height={18} fill='#ffffff' /></a>
-          <a className={styles.github} href='/auth/github'><Icon name='github' width={18} height={18} fill='#ffffff' /></a>
-          <a className={styles.google} href='/auth/google_oauth2'><Icon name='google' width={18} height={18} fill='#ffffff' /></a>
-        </div>
-        <a
-          className={styles.swap}
-          href={this.props.swapTarget}>
-          {this.props.swapText}
-        </a>
       </div>
     );
   }
