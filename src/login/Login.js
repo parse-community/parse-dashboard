@@ -31,14 +31,14 @@ export default class Login extends React.Component {
       <LoginForm
         header='Access your Dashboard'
         action='Log In'
-        endpoint='/user_session'
+        endpoint='/login'
         >
         <LoginRow
           label='Username'
-          input={<input name='user_session[username]' type='username' />} />
+          input={<input name='username' type='username' />} />
         <LoginRow
           label='Password'
-          input={<input name='user_session[password]' type='password' />} />
+          input={<input name='password' type='password' />} />
         {this.errors ?
           <div className={styles.error}>
             {this.errors}
