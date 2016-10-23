@@ -33,7 +33,6 @@
     "LICENSE"
   ],
   "dependencies": {
-    "basic-auth": "^1.0.3",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
     "commander": "^2.9.0",

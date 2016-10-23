@@ -1,6 +1,5 @@
 'use strict';
 const express = require('express');
-const basicAuth = require('basic-auth');
 const path = require('path');
 const packageJson = require('package-json');
 const Authentication = require('./Authentication.js');
