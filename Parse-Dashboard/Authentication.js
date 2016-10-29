@@ -5,7 +5,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 /**
  * Constructor for Authentication class
- *
+ * 
  * @class Authentication
  * @param {Object[]} validUsers
  * @param {boolean} useEncryptedPasswords
@@ -50,7 +50,6 @@ function initialize(app) {
       maxAge: (2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks
     }
   }));
-
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -70,7 +69,7 @@ function initialize(app) {
 
 /**
  * Authenticates the `userToTest`
- *
+ * 
  * @param {Object} userToTest
  * @returns {Object} Object with `isAuthenticated` and `appsUserHasAccessTo` properties
  */
@@ -96,7 +95,7 @@ function authenticate(userToTest, usernameOnly) {
 
       return isAuthenticated;
     }) ? true : false;
-
+  
   return {
     isAuthenticated,
     matchingUsername,
