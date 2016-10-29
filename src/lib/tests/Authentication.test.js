@@ -89,4 +89,16 @@ describe('Authentication', () => {
     expect(authentication.authenticate({name: 'parse.dashboard', pass: 'xyz789'}))
       .toEqual(createAuthenticationResult(false, null, null));
   });
+
+  it('authenticates valid user with valid username and usernameOnly', () => {
+    let authentication = new Authentication(unencryptedUsers, false);
+    expect(authentication.authenticate({name: 'parse.dashboard'}, true))
+      .toEqual(createAuthenticationResult(true, 'parse.dashboard', null));
+  });
+
+  it('does not authenticate valid user with valid username and no usernameOnly', () => {
+    let authentication = new Authentication(unencryptedUsers, false);
+    expect(authentication.authenticate({name: 'parse.dashboard'}))
+      .toEqual(createAuthenticationResult(false, null, null));
+  });
 });
