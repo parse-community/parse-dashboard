@@ -52,8 +52,6 @@
     "babel-polyfill": "^6.7.2",
     "babel-runtime": "~5.8.25",
     "css-loader": "~0.18.0",
-    "eslint": "^3.8.1",
-    "eslint-plugin-react": "^6.4.1",
     "file-loader": "^0.8.5",
     "history": "^2.1.2",
     "http-server": "~0.8.5",
@@ -84,7 +82,6 @@
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "NODE_PATH=./node_modules jest",
-    "lint": "eslint . --ignore-path .gitignore --ignore-pattern *.test.js",
     "generate": "node scripts/generate.js",
     "prepublish": "webpack --config webpack/publish.config.js",
     "start": "node ./Parse-Dashboard/index.js"
