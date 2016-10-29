@@ -1,5 +1,6 @@
 "use strict";
 var bcrypt = require('bcryptjs');
+var csrf = require('csurf');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -54,6 +55,7 @@ function initialize(app) {
   app.use(passport.session());
 
   app.post('/login',
+    csrf(),
     passport.authenticate('local', {
       successRedirect: '/apps',
       failureRedirect: '/login',

@@ -2,6 +2,7 @@
 const express = require('express');
 const path = require('path');
 const packageJson = require('package-json');
+const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 var fs = require('fs');
 
@@ -62,6 +63,15 @@ module.exports = function(config, allowInsecureHTTP) {
   const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
   const authInstance = new Authentication(users, useEncryptedPasswords);
   authInstance.initialize(app);
+
+  // CSRF error handler 
+  app.use(function (err, req, res, next) {
+    if (err.code !== 'EBADCSRFTOKEN') return next(err)
+
+    // handle CSRF token errors here 
+    res.status(403)
+    res.send('form tampered with')
+  });
 
   // Serve the configuration.
   app.get('/parse-dashboard-config.json', function(req, res) {
@@ -139,7 +149,7 @@ module.exports = function(config, allowInsecureHTTP) {
     }
   }
 
-  app.get('/login', function(req, res) {
+  app.get('/login', csrf(), function(req, res) {
     if (!users || (req.user && req.user.isAuthenticated)) {
       return res.redirect('/apps');
     }
@@ -163,6 +173,7 @@ module.exports = function(config, allowInsecureHTTP) {
         <body>
           <div id="login_mount"></div>
           ${errors}
+          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
           <script src="${mountPath}bundles/login.bundle.js"></script>
         </body>
       </html>
