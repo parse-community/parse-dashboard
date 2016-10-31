@@ -1,5 +1,9 @@
 ## Parse Dashboard Changelog
 
+### NEXT RELEASE
+
+* Fix: Can't send push to specific user (#561)
+
 ### 1.0.19
 
 * New: Support for trusting proxies w/ HTTPS
