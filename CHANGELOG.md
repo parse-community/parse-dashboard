@@ -3,6 +3,7 @@
 ### NEXT RELEASE
 
 * Fix: Can't send push to specific user (#561)
+* Fix: Config FETCH results in 401 (#339), thanks to [Matt Simms](https://github.com/brndmg)
 
 ### 1.0.19
 
