@@ -43,6 +43,7 @@ export let LiveReload                = require('components/LiveReload/LiveReload
 export let Loader                    = require('components/Loader/Loader.example');
 export let LoaderContainer           = require('components/LoaderContainer/LoaderContainer.example');
 export let LoaderDots                = require('components/LoaderDots/LoaderDots.example');
+export let LoginForm                 = require('components/LoginForm/LoginForm.example');
 export let LogView                   = require('components/LogView/LogView.example');
 export let LogViewEntry              = require('components/LogView/LogViewEntry.example');
 export let Markdown                  = require('components/Markdown/Markdown.example');

@@ -1,8 +1,9 @@
 'use strict';
 const express = require('express');
-const basicAuth = require('basic-auth');
 const path = require('path');
 const packageJson = require('package-json');
+const csrf = require('csurf');
+const Authentication = require('./Authentication.js');
 var fs = require('fs');
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
@@ -58,21 +59,26 @@ module.exports = function(config, allowInsecureHTTP) {
     app.enable('trust proxy');
   }
 
+  const users = config.users;
+  const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
+  const authInstance = new Authentication(users, useEncryptedPasswords);
+  authInstance.initialize(app);
+
+  // CSRF error handler 
+  app.use(function (err, req, res, next) {
+    if (err.code !== 'EBADCSRFTOKEN') return next(err)
+
+    // handle CSRF token errors here 
+    res.status(403)
+    res.send('form tampered with')
+  });
+
   // Serve the configuration.
   app.get('/parse-dashboard-config.json', function(req, res) {
     let response = {
       apps: config.apps,
       newFeaturesInLatestVersion: newFeaturesInLatestVersion,
     };
-
-    const users = config.users;
-    const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
-
-    let auth = null;
-    //If they provide auth when their config has no users, ignore the auth
-    if (users) {
-      auth = basicAuth(req);
-    }
 
     //Based on advice from Doug Wilson here:
     //https://github.com/expressjs/express/issues/2518
@@ -90,12 +96,10 @@ module.exports = function(config, allowInsecureHTTP) {
       return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
     }
 
-    let Authentication = require('./Authentication');
-    const authInstance = new Authentication(users, useEncryptedPasswords);
-    const authentication = authInstance.authenticate(auth);
-    
-    const successfulAuth = authentication.isAuthenticated;
-    const appsUserHasAccess = authentication.appsUserHasAccessTo;
+    const authentication = req.user;
+
+    const successfulAuth = authentication && authentication.isAuthenticated;
+    const appsUserHasAccess = authentication && authentication.appsUserHasAccessTo;
 
     if (successfulAuth) {
       if (appsUserHasAccess) {
@@ -111,9 +115,8 @@ module.exports = function(config, allowInsecureHTTP) {
       return res.json(response);
     }
 
-    if (users || auth) {
+    if (users) {
       //They provided incorrect auth
-      res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
       return res.sendStatus(401);
     }
 
@@ -146,8 +149,42 @@ module.exports = function(config, allowInsecureHTTP) {
     }
   }
 
+  app.get('/login', csrf(), function(req, res) {
+    if (!users || (req.user && req.user.isAuthenticated)) {
+      return res.redirect('/apps');
+    }
+    let mountPath = getMount(req);
+    let errors = req.flash('error');
+    if (errors && errors.length) {
+      errors = `<div id="login_errors" style="display: none;">
+        ${errors.join(' ')}
+      </div>`
+    }
+    res.send(`<!DOCTYPE html>
+      <head>
+        <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
+        <base href="${mountPath}"/>
+        <script>
+          PARSE_DASHBOARD_PATH = "${mountPath}";
+        </script>
+      </head>
+      <html>
+        <title>Parse Dashboard</title>
+        <body>
+          <div id="login_mount"></div>
+          ${errors}
+          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
+          <script src="${mountPath}bundles/login.bundle.js"></script>
+        </body>
+      </html>
+    `);
+  });
+
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
+    if (users && (!req.user || !req.user.isAuthenticated)) {
+      return res.redirect('/login');
+    }
     let mountPath = getMount(req);
     res.send(`<!DOCTYPE html>
       <head>
