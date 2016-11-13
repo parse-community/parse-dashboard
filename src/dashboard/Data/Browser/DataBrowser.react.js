@@ -207,6 +207,7 @@ export default class DataBrowser extends React.Component {
           setCurrent={this.setCurrent.bind(this)}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass}
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass}
+          enableImport={this.context.currentApp.serverInfo.features.schemas.import}
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions}
           {...other}/>
       </div>

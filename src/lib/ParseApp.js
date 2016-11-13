@@ -39,8 +39,10 @@ export default class ParseApp {
     serverInfo,
     production,
     iconName,
+    feedbackEmail
   }) {
     this.name = appName;
+    this.feedbackEmail = feedbackEmail;
     this.createdAt = created_at ? new Date(created_at) : new Date();
     this.applicationId = appId;
     this.slug = appNameForURL || appName;
@@ -342,6 +344,45 @@ export default class ParseApp {
     return AJAX.put(path);
   }
 
+  normalizePath(path) {
+    path = path.replace(/([^:\s])\/+/g, '$1/');
+    return path;
+  }
+
+  importData(className, file) {
+    let path = this.normalizePath(this.serverURL + '/import_data/' + className);
+    var formData = new FormData();
+    formData.append('importFile', file);
+    if (this.feedbackEmail) {
+      formData.append('feedbackEmail', this.feedbackEmail);
+    }
+    return fetch(path, {
+      method: 'POST',
+      headers: {
+        'X-Parse-Application-Id': this.applicationId,
+        'X-Parse-Master-Key': this.masterKey
+      },
+      body: formData
+    });
+  }
+
+  importRelationData(className, relationName,  file) {
+    let path = this.normalizePath(this.serverURL + '/import_relation_data/' + className + '/' + relationName);
+    var formData = new FormData();
+    formData.append('importFile', file);
+    if (this.feedbackEmail) {
+      formData.append('feedbackEmail', this.feedbackEmail);
+    }
+    return fetch(path, {
+      method: 'POST',
+      headers: {
+        'X-Parse-Application-Id': this.applicationId,
+        'X-Parse-Master-Key': this.masterKey
+      },
+      body: formData
+    });
+  }
+
   exportData() {
     let path = '/apps/' + this.slug + '/export_data';
     return AJAX.put(path);
@@ -503,13 +544,17 @@ export default class ParseApp {
     if (!where) {
       where = {};
     }
-    let path = '/apps/' + this.slug + '/export_data';
-    return AJAX.put(path, { name: className, where: where });
+    let path = 'export_data';
+    return this.apiRequest('PUT', path, {
+      name: className,
+      where: where,
+      feedbackEmail: this.feedbackEmail
+    }, {useMasterKey:true});
   }
 
   getExportProgress() {
-    let path = '/apps/' + this.slug + '/export_progress';
-    return AJAX.get(path);
+    let path = 'export_progress';
+    return this.apiRequest('GET', path, {}, {useMasterKey:true});
   }
 
   getAvailableJobs() {
