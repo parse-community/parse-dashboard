@@ -1,10 +1,16 @@
 {
-  "apps": [{
-    "serverURL": "",
-    "appId": "",
-    "masterKey": "",
-    "appName": "",
-    "iconName": ""
-  }],
-  "iconsFolder": "icons"
+  "apps": [
+    {
+        "serverURL": "https://lblfantasy.herokuapp.com/parse", 
+        "appId": "LBL_FANTASY",
+        "masterKey": "LBL_MASTER_KEY",
+        "appName": "fantasy"
+    }
+  ],
+  "users": [
+    {
+      "user":"lblfantasy", 
+      "pass":"FantasyLBL_9"
+    }
+  ]
 }
