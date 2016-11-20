@@ -5,9 +5,9 @@
         "appId": "LBL_FANTASY",
         "masterKey": "LBL_MASTER_KEY",
         "appName": "fantasy"
-        "iconName": ""
+        "iconName": "",
         "javascriptKey": "NOT USED",
-         "restKey": "NOT USED",
+         "restKey": "NOT USED"
       
     }
   ],
