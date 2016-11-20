@@ -4,7 +4,7 @@
         "serverURL": "https://lblfantasy.herokuapp.com/parse", 
         "appId": "LBL_FANTASY",
         "masterKey": "LBL_MASTER_KEY",
-        "appName": "fantasy"
+        "appName": "fantasy",
         "javascriptKey": "NOT USED",
          "restKey": "NOT USED"
       
