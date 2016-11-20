@@ -1,5 +1,5 @@
 .DS_Store
-node_modules/
+
 bundles/
 PIG/bundles/
 Parse-Dashboard/public/bundles/
