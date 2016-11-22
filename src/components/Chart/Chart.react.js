@@ -84,7 +84,7 @@ export default class Chart extends React.Component {
       plotting[key] = { data: ordered, index: data[key].index };
     }
     let timeBuckets = Charting.timeAxisBuckets(minX, maxX);
-    let valueBuckets = Charting.valueAxisBuckets(maxY || 10);
+    let valueBuckets = Charting.valueAxisBuckets(Number(maxY) || 10);
     let groups = [];
     for (let key in plotting) {
       let color = data[key].color;
