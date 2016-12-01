@@ -1,6 +1,6 @@
 Make sure these boxes are checked before submitting your issue -- thanks for reporting issues back to Parse Dashboard!
 
-- [ ] You're running version >=1.0.19 of Parse Dashboard.
+- [ ] You're running version >=1.0.20 of Parse Dashboard.
 
 - [ ] You're running version >=2.2.24 of Parse Server.
 
