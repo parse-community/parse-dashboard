@@ -21,7 +21,8 @@ var dashboard = ParseDashboard({
       "masterKey": "masterKey",
       "appName": "MyApp"
     }
-  ]
+  ],
+  "mountPath": "/dashboard"
 });
 
 app.use('/dashboard', dashboard);
