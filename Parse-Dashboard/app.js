@@ -18,10 +18,6 @@ packageJson('parse-dashboard', 'latest').then(latestPackage => {
 });
 
 function getMount(mountPath) {
-  // let url = req.url;
-  // let originalUrl = req.originalUrl;
-  // var mountPathLength = originalUrl.length - url.length;
-  // var mountPath = originalUrl.slice(0, mountPathLength);
   mountPath = mountPath || '';
   if (!mountPath.endsWith('/')) {
     mountPath += '/';
