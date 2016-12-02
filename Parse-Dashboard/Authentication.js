@@ -6,14 +6,15 @@ var LocalStrategy = require('passport-local').Strategy;
 
 /**
  * Constructor for Authentication class
- * 
+ *
  * @class Authentication
  * @param {Object[]} validUsers
  * @param {boolean} useEncryptedPasswords
  */
-function Authentication(validUsers, useEncryptedPasswords) {
+function Authentication(validUsers, useEncryptedPasswords, mountPath) {
   this.validUsers = validUsers;
   this.useEncryptedPasswords = useEncryptedPasswords || false;
+  this.mountPath = mountPath;
 }
 
 function initialize(app) {
@@ -57,21 +58,21 @@ function initialize(app) {
   app.post('/login',
     csrf(),
     passport.authenticate('local', {
-      successRedirect: '/apps',
-      failureRedirect: '/login',
+      successRedirect: `${self.mountPath}apps`,
+      failureRedirect: `${self.mountPath}login`,
       failureFlash : true
     })
   );
 
   app.get('/logout', function(req, res){
     req.logout();
-    res.redirect('/login');
+    res.redirect(`${self.mountPath}login`);
   });
 }
 
 /**
  * Authenticates the `userToTest`
- * 
+ *
  * @param {Object} userToTest
  * @returns {Object} Object with `isAuthenticated` and `appsUserHasAccessTo` properties
  */
@@ -97,7 +98,7 @@ function authenticate(userToTest, usernameOnly) {
 
       return isAuthenticated;
     }) ? true : false;
-  
+
   return {
     isAuthenticated,
     matchingUsername,

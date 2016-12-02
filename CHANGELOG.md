@@ -2,6 +2,7 @@
 
 ### NEXT RELEASE
 
+* Fix: Use mountPath for all log in and log out redirects
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
 ### 1.0.20
