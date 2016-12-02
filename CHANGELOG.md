@@ -2,7 +2,14 @@
 
 ### NEXT RELEASE
 
-* Fix: Can't send push to specific user (#561)
+* _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 1.0.20
+
+* New: Form based login page instead of basic auth (#562), thanks to [Jeremy Louie](https://github.com/JeremyPlease)
+* Fix: Can't send push to specific user (#570), thanks to [Dan VanWinkle](https://github.com/dvanwinkle)
+* Fix: Download link in footer menu (#567), thanks to [Pavel Ivanov](https://github.com/pivanov)
+
 
 ### 1.0.19
 
