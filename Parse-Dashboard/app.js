@@ -17,11 +17,8 @@ packageJson('parse-dashboard', 'latest').then(latestPackage => {
   }
 });
 
-function getMount(req) {
-  let url = req.url;
-  let originalUrl = req.originalUrl;
-  var mountPathLength = req.originalUrl.length - req.url.length;
-  var mountPath = req.originalUrl.slice(0, mountPathLength);
+function getMount(mountPath) {
+  mountPath = mountPath || '';
   if (!mountPath.endsWith('/')) {
     mountPath += '/';
   }
@@ -59,16 +56,17 @@ module.exports = function(config, allowInsecureHTTP) {
     app.enable('trust proxy');
   }
 
+  const mountPath = getMount(config.mountPath);
   const users = config.users;
   const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
-  const authInstance = new Authentication(users, useEncryptedPasswords);
+  const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
   authInstance.initialize(app);
 
-  // CSRF error handler 
+  // CSRF error handler
   app.use(function (err, req, res, next) {
     if (err.code !== 'EBADCSRFTOKEN') return next(err)
 
-    // handle CSRF token errors here 
+    // handle CSRF token errors here
     res.status(403)
     res.send('form tampered with')
   });
@@ -151,9 +149,9 @@ module.exports = function(config, allowInsecureHTTP) {
 
   app.get('/login', csrf(), function(req, res) {
     if (!users || (req.user && req.user.isAuthenticated)) {
-      return res.redirect('/apps');
+      return res.redirect(`${mountPath}apps`);
     }
-    let mountPath = getMount(req);
+
     let errors = req.flash('error');
     if (errors && errors.length) {
       errors = `<div id="login_errors" style="display: none;">
@@ -183,9 +181,8 @@ module.exports = function(config, allowInsecureHTTP) {
   // For every other request, go to index.html. Let client-side handle the rest.
   app.get('/*', function(req, res) {
     if (users && (!req.user || !req.user.isAuthenticated)) {
-      return res.redirect('/login');
+      return res.redirect(`${mountPath}login`);
     }
-    let mountPath = getMount(req);
     res.send(`<!DOCTYPE html>
       <head>
         <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
