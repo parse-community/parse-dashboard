@@ -101,4 +101,10 @@ describe('Authentication', () => {
     expect(authentication.authenticate({name: 'parse.dashboard'}))
       .toEqual(createAuthenticationResult(false, null, null));
   });
+
+  it('authenticates valid user with valid username and usernameOnly and encrypted password', () => {
+    let authentication = new Authentication(encryptedUsers, true);
+    expect(authentication.authenticate({name: 'parse.dashboard'}, true))
+      .toEqual(createAuthenticationResult(true, 'parse.dashboard', null));
+  });
 });

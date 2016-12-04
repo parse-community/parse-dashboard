@@ -88,7 +88,7 @@ function authenticate(userToTest, usernameOnly) {
     this.validUsers.find(user => {
       let isAuthenticated = false;
       let usernameMatches = userToTest.name == user.user;
-      let passwordMatches = this.useEncryptedPasswords ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
+      let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
       if (usernameMatches && (usernameOnly || passwordMatches)) {
         isAuthenticated = true;
         matchingUsername = user.user;
