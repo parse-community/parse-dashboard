@@ -4,6 +4,10 @@
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
+### 1.0.22
+
+* Fix issue affecting logging screen with encrypted passwords, thanks to [lsohn](https://github.com/lsohn)
+
 ### 1.0.21
 
 * Fix: Use mountPath for all log in and log out redirects
