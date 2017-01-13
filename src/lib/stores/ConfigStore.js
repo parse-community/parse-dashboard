@@ -22,8 +22,13 @@ function ConfigStore(state, action) {
   action.app.setParseKeys();
   switch (action.type) {
     case ActionTypes.FETCH:
-      return Parse.Config.get().then(({ attributes }) => {
-        return Map({ lastFetch: new Date(), params: Map(attributes) });
+      return Parse._request(
+        'GET',
+        'config',
+        {},
+        { useMasterKey: true }
+      ).then(({ params }) => {
+        return Map({ lastFetch: new Date(), params: Map(params) });
       });
     case ActionTypes.SET:
       return Parse._request(
