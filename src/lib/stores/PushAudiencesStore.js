@@ -20,12 +20,10 @@ const LASTFETCHTIMEOUT = 60000;
 //   - showMore: Flag to show/hide button to fetch all audiences
 
 // xhr map, key value pair of xhrKey, xhr reference
-let xhrMap = {};
+//let xhrMap = {};
 
 function PushAudiencesStore(state, action) {
   action.app.setParseKeys();
-  let urlPrefix = `/apps/${action.app.slug}/dashboard_ajax/push_audiences`;
-  let legacyUrlPrefix = `/apps/${action.app.slug}/push_audiences`;
   switch (action.type) {
     case ActionTypes.FETCH:
       if (state && new Date() - state.get('lastFetch') < LASTFETCHTIMEOUT) { //check for stale store
@@ -33,16 +31,28 @@ function PushAudiencesStore(state, action) {
           return Parse.Promise.as(state);
         }
       }
-      let {xhr, promise} = abortableGet(action.limit ? urlPrefix + `?audience_limit=${action.limit}` : urlPrefix, action.xhrKey !== null);
-      xhrMap[action.xhrKey] = xhr;
-      return promise.then(({ audiences, showMore }) => {
-        return Map({ lastFetch: new Date(), audiences: List(audiences) , showMore: showMore});
+      let promise = action.app.apiRequest(
+      'GET',
+      action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences', 
+      {},
+      { useMasterKey: true }
+      );
+
+      //xhrMap[action.xhrKey] = xhr;
+      //
+      return promise.then(({ results, showMore }) => {
+        return Map({ lastFetch: new Date(), audiences: List(results), showMore: showMore});
       });
     case ActionTypes.CREATE:
-      return post(legacyUrlPrefix, {
+      return action.app.apiRequest(
+      'POST',
+      'push_audiences',
+      {
         query: action.query,
         name: action.name,
-      }).then(({ new_audience }) => {
+      },
+      { useMasterKey: true }
+      ).then(({ new_audience }) => {
         return state.update('audiences',(audiences) => {
           return audiences.unshift({
             createdAt: new Date(),
@@ -54,7 +64,12 @@ function PushAudiencesStore(state, action) {
         });
       });
     case ActionTypes.DESTROY:
-      return del(legacyUrlPrefix + `/${action.objectId}`).then(() => {
+      return action.app.apiRequest(
+      'DELETE',
+      `push_audiences/${action.objectId}`,
+      {},
+      { useMasterKey: true }
+      ).then(() => {
         return state.update('audiences',(audiences) => {
           let index = audiences.findIndex(function(audience) {
             return audience.objectId === action.objectId;
@@ -63,10 +78,12 @@ function PushAudiencesStore(state, action) {
         });
       });
     case ActionTypes.ABORT_FETCH:
-      let xhrKey = action.xhrKey;
+
+      /*let xhrKey = action.xhrKey;
       if (xhrMap[xhrKey]) {
         xhrMap[xhrKey].abort();
-      }
+      }*/
+
       return Parse.Promise.as(state);
   }
 }
