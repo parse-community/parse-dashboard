@@ -7,4 +7,4 @@ RUN cd /src \
  && npm cache clear \
  && rm -rf ~/.npm \
  && rm -rf /var/lib/apt/lists/*
-ENTRYPOINT ["npm", "run", "dashboard"]
+ENTRYPOINT ["parse-dashboard"]
