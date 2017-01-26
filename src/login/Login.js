@@ -37,7 +37,7 @@ export default class Login extends React.Component {
         >
         <LoginRow
           label='Username'
-          input={<input name='username' type='username' />} />
+          input={<input name='username' type='username' autoFocus />} />
         <LoginRow
           label='Password'
           input={<input name='password' type='password' />} />
