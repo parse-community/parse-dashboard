@@ -3,6 +3,7 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: Config FETCH results in 401 (#339), thanks to [Matt Simms](https://github.com/brndmg)
 
 ### 1.0.22
 
@@ -17,7 +18,6 @@
 * New: Form based login page instead of basic auth (#562), thanks to [Jeremy Louie](https://github.com/JeremyPlease)
 * Fix: Can't send push to specific user (#570), thanks to [Dan VanWinkle](https://github.com/dvanwinkle)
 * Fix: Download link in footer menu (#567), thanks to [Pavel Ivanov](https://github.com/pivanov)
-
 
 ### 1.0.19
 
