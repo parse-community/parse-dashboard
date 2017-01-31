@@ -3,7 +3,12 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
-* Fix: Config FETCH results in 401 (#339), thanks to [Matt Simms](https://github.com/brndmg)
+
+### 1.0.23
+* Improvement: Enabling web hooks (#584), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* Improvement: Set autofocus on the username input field (#644), thanks to [Herman Liang](https://github.com/hermanliang)
+* Fix: Browser won't render class table with field that contains an object (#623), thanks to [Jordan Haven](https://github.com/jordanhaven)
+* Fix: Config FETCH results in 401 (#575), thanks to [Matt Simms](https://github.com/brndmg)
 
 ### 1.0.22
 
