@@ -41,7 +41,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, on
     content = value ? 'True' : 'False';
   } else if (type === 'Array') {
     content = JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
-  } else if (type === 'Object') {
+  } else if (type === 'Object' || type === 'Bytes') {
     content = JSON.stringify(value);
   } else if (type === 'File') {
     if (value.url()) {

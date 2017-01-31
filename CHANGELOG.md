@@ -2,8 +2,22 @@
 
 ### NEXT RELEASE
 
-* Fix: Can't send push to specific user (#561)
+* _Contributing to this repo? Add info about your change here to be included in next release_
 * Fix: Config FETCH results in 401 (#339), thanks to [Matt Simms](https://github.com/brndmg)
+
+### 1.0.22
+
+* Fix issue affecting logging screen with encrypted passwords, thanks to [lsohn](https://github.com/lsohn)
+
+### 1.0.21
+
+* Fix: Use mountPath for all log in and log out redirects
+
+### 1.0.20
+
+* New: Form based login page instead of basic auth (#562), thanks to [Jeremy Louie](https://github.com/JeremyPlease)
+* Fix: Can't send push to specific user (#570), thanks to [Dan VanWinkle](https://github.com/dvanwinkle)
+* Fix: Download link in footer menu (#567), thanks to [Pavel Ivanov](https://github.com/pivanov)
 
 ### 1.0.19
 
