@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -175px;
+  text-align: center;
+  width: 350px;
+}
+
+.form {
+  margin-top: 30px;
+}
+
+.header {
+  height: 50px;
+  line-height: 50px;
+  border-radius: 5px 5px 0 0;
+  color: $blue;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  background: white;
+  border-bottom: 1px solid #e0e0e1;
+}
+
+.footer {
+  @include NotoSansFont;
+  position: relative;
+  height: 40px;
+  padding: 10px 0;
+  width: 100%;
+  background: white;
+  border-radius: 0 0 5px 5px;
+  color: #c1c0c9;
+  font-size: 12px;
+  text-align: center;
+
+  a {
+    color: #c1c0c9;
+
+    &:hover {
+      color: $mainTextColor;
+    }
+  }
+}
+
+.submit {
+  @include NotoSansFont;
+  display: block;
+  background: $green;
+  height: 42px;
+  width: 100%;
+  font-size: 16px;
+  line-height: 42px;
+  border-radius: 5px;
+  color: white;
+  margin-top: 15px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover, &:focus {
+    background: $darkGreen;
+  }
+
+  &:disabled {
+    background: #dadada;
+    cursor: default;
+  }
+}

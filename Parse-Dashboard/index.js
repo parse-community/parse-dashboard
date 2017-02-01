@@ -24,6 +24,7 @@ program.option('--mountPath [mountPath]', 'the mount path to run parse-dashboard
 program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
 program.option('--sslKey [sslKey]', 'the path to the SSL private key.');
 program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
+program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
 
 program.parse(process.argv);
 
@@ -31,6 +32,12 @@ const host = program.host || process.env.HOST || '0.0.0.0';
 const port = program.port || process.env.PORT || 4040;
 const mountPath = program.mountPath || process.env.MOUNT_PATH || '/';
 const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
+const trustProxy = program.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
+
+if (trustProxy && allowInsecureHTTP) {
+  console.log("Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.");
+  process.exit(-1);
+}
 
 let explicitConfigFileProvided = !!program.config;
 let configFile = null;
@@ -105,7 +112,9 @@ p.then(config => {
 
   const app = express();
 
-  if (allowInsecureHTTP) app.enable('trust proxy');
+  if (allowInsecureHTTP || trustProxy) app.enable('trust proxy');
+
+  config.data.trustProxy = trustProxy;
   app.use(mountPath, parseDashboard(config.data, allowInsecureHTTP));
   if(!configSSLKey || !configSSLCert){
     // Start the server.

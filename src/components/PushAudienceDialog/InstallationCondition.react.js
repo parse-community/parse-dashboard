@@ -45,7 +45,7 @@ function compareValue(info, value, onChangeCompareTo) {
         onChange={(_value) => {
           let obj = new Parse.Object(info.targetClass);
           obj.id = _value;
-          onChangeCompareTo(Parse._encode(obj));
+          onChangeCompareTo(Parse._encode(obj.toPointer()));
         }}
         ref={setFocus} />
     case 'Boolean':

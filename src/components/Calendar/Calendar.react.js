@@ -51,7 +51,7 @@ export default class Calendar extends React.Component {
       <div className={styles.month}>
         <a href='javascript:;' role='button' onClick={this.handlePrev.bind(this)} />
         <a href='javascript:;' role='button' onClick={this.handleNext.bind(this)} />
-        <div>{getMonth(this.state.currentMonth[getDateMethod(this.props.local, 'getMonth')]()) + ' ' + this.state.currentMonth[getDateMethod(this.props.local, 'getFullYear')]()}</div>
+        <div>{getMonth(this.state.currentMonth.getMonth()) + ' ' + this.state.currentMonth.getFullYear()}</div>
       </div>
     );
   }
@@ -67,10 +67,10 @@ export default class Calendar extends React.Component {
   renderDays() {
     let isValueMonth = (
       this.props.value &&
-      this.props.value[getDateMethod(this.props.local, 'getFullYear')]() === this.state.currentMonth[getDateMethod(this.props.local, 'getFullYear')]() &&
-      this.props.value[getDateMethod(this.props.local, 'getMonth')]() === this.state.currentMonth[getDateMethod(this.props.local, 'getMonth')]()
+      this.props.value[getDateMethod(this.props.local, 'getFullYear')]() === this.state.currentMonth.getFullYear() &&
+      this.props.value[getDateMethod(this.props.local, 'getMonth')]() === this.state.currentMonth.getMonth()
     );
-    let offset = this.state.currentMonth[getDateMethod(this.props.local, 'getDay')]();
+    let offset = this.state.currentMonth.getDay();
     let days = daysInMonth(this.state.currentMonth);
     let labels = [];
     for (let i = 0; i < offset; i++) {
@@ -81,7 +81,9 @@ export default class Calendar extends React.Component {
       let className = isSelected ? styles.selected : '';
       let onChange = this.props.onChange.bind(
         null,
-        new Date(this.state.currentMonth[getDateMethod(this.props.local, 'getFullYear')](), this.state.currentMonth[getDateMethod(this.props.local, 'getMonth')](), i)
+        this.props.local ?
+          new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i) :
+          new Date(Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i))
       );
       labels.push(
         <a href='javascript:;' role='button' key={'day' + i} className={className} onClick={onChange}>{i}</a>

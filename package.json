@@ -20,7 +20,7 @@
   ],
   "homepage": "https://github.com/ParsePlatform/parse-dashboard",
   "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
-  "version": "1.0.18",
+  "version": "1.0.23",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -33,12 +33,17 @@
     "LICENSE"
   ],
   "dependencies": {
-    "basic-auth": "^1.0.3",
+    "bcryptjs": "^2.3.0",
+    "body-parser": "^1.15.2",
     "commander": "^2.9.0",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^2.0.0-alpha.1",
+    "csurf": "^1.9.0",
     "express": "^4.13.4",
     "json-file-plus": "^3.2.0",
     "package-json": "^2.3.1",
-    "bcryptjs": "^2.3.0"
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "~5.8.12",

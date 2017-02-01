@@ -58,7 +58,7 @@ export default class Reviews extends DashboardView {
   }
   
   makeRequest() {
-    let path = 'https://api.colubris.com.br/publiq/classes/Reviews?where={"applicationId":"' + this.context.currentApp.applicationId + '"}';
+    let path = 'http://api.colubris.com.br/publiq/classes/Reviews?where={"applicationId":"' + this.context.currentApp.applicationId + '"}';
     let apps = AppsManager.apps();
     let masterApp = apps.filter(function(app) {
       return app.masterApp == true; // if truthy then keep item

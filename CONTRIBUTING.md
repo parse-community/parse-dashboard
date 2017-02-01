@@ -3,7 +3,7 @@ We want to make contributing to this project as easy and transparent as
 possible.
 
 ## Our Development Process
-Get started by cloning this repository and and running `npm install` inside it. Create a file called `parse-dashboard-config.json` in the Parse-Dashboard folder inside the repo, using the format described in the readme.
+Get started by cloning this repository and and running `npm install` inside it. Update `parse-dashboard-config.json` in the `Parse-Dashboard` folder inside the repo, using the format described in the `README.md`.
 
 When working on the dashboard, use `npm run dashboard` and visit `localhost:4040` to see your dashboard. The `npm run dashboard` script will automatically re-build your files when you change them, so after making a change, all you need to do is refresh the page.
 
@@ -16,8 +16,9 @@ We actively welcome your pull requests.
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
 4. If you've updated/added an UI component, please add a screenshot.
-5. Ensure the test suite passes.
-6. If you haven't already, complete the Contributor License Agreement ("CLA").
+5. If you've fixed an issue or added features, add what you've changed to the CHANGELOG.
+6. Ensure the test suite passes.
+7. If you haven't already, complete the Contributor License Agreement ("CLA").
 
 ## Contributor License Agreement ("CLA")
 In order to accept your pull request, we need you to submit a CLA. You only need

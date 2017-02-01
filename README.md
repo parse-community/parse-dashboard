@@ -82,7 +82,7 @@ You can also define each configuration option individually.
 HOST: "0.0.0.0"
 PORT: "4040"
 MOUNT_PATH: "/"
-PARSE_DASHBOARD_ALLOW_INSECURE_HTTP: undefined // Or "1" to allow http
+PARSE_DASHBOARD_TRUST_PROXY: undefined // Or "1" to trust connection info from a proxy's X-Forwarded-* headers
 PARSE_DASHBOARD_SERVER_URL: "http://localhost:1337/parse"
 PARSE_DASHBOARD_MASTER_KEY: "myMasterKey"
 PARSE_DASHBOARD_APP_ID: "myAppId"
@@ -213,7 +213,24 @@ Make sure the server URLs for your apps can be accessed by your browser. If you 
 ## Security Considerations
 In order to securely deploy the dashboard without leaking your apps master key, you will need to use HTTPS and Basic Authentication.
 
-The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or proxy that does early SSL termination, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--allowInsecureHTTP=1` option. You will then be responsible for ensureing that your proxy or load balancer only allows HTTPS.
+The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or front-facing proxy, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--trustProxy=1` option (or set the PARSE_DASHBOARD_TRUST_PROXY config var to 1) to rely on the X-Forwarded-* headers for the client's connection security.  This is useful for hosting on services like Heroku, where you can trust the provided proxy headers to correctly determine whether you're using HTTP or HTTPS.  You can also turn on this setting when using the dashboard as [express](https://github.com/expressjs/express) middleware:
+
+```
+var trustProxy = true;
+var dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+    }
+  ],
+  "trustProxy": 1
+});
+```
+
+
 
 ### Configuring Basic Authentication
 You can configure your dashboard for Basic Authentication by adding usernames and passwords your `parse-dashboard-config.json` configuration file:
