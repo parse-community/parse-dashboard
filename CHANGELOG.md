@@ -4,7 +4,7 @@
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
-* Improvement: Data browser updates object count when table is filtered (#334).
+* Improvement: Data browser updates object count when table is filtered (#652), thanks to [Mike Rizzo](https://github.com/rizzomichaelg)
 
 ### 1.0.23
 * Improvement: Enabling web hooks (#584), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
