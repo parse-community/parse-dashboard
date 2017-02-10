@@ -13,7 +13,6 @@ import AppData            from './AppData.react';
 import AppsIndex          from './Apps/AppsIndex.react';
 import AppsManager        from 'lib/AppsManager';
 import Browser            from './Data/Browser/Browser.react';
-import CloudCode          from './Data/CloudCode/CloudCode.react';
 import Config             from './Data/Config/Config.react';
 import Explorer           from './Analytics/Explorer/Explorer.react';
 import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
@@ -21,10 +20,7 @@ import GeneralSettings    from './Settings/GeneralSettings.react';
 import history            from 'dashboard/history';
 import HostingSettings    from './Settings/HostingSettings.react';
 import Icon               from 'components/Icon/Icon.react';
-import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
 import Jobs               from './Data/Jobs/Jobs.react';
-import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
-import JobsForm           from 'dashboard/Data/Jobs/JobsForm.react';
 import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
@@ -213,16 +209,9 @@ class Dashboard extends React.Component {
           <Route path='browser' component={false ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
           <Route path='browser/:className' component={Browser} />
           <Route path='browser/:className/:entityId/:relationName' component={Browser} />
-
-          <Route path='cloud_code' component={CloudCode} />
-          <Route path='cloud_code/*' component={CloudCode} />
           <Route path='webhooks' component={Webhooks} />
           <Redirect from='jobs' to='/apps/:appId/jobs/all' />
-          <Route path='jobs' component={JobsData}>
-            <Route path='new' component={JobEdit} />
-            <Route path='edit/:jobId' component={JobEdit} />
-            <Route path=':section' component={Jobs} />
-          </Route>
+          <Route path='jobs/:section' component={Jobs} />
           <Redirect from='logs' to='/apps/:appId/logs/info' />
           <Route path='logs/:type' component={Logs} />
           <Route path='config' component={Config} />

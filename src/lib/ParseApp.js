@@ -79,8 +79,6 @@ export default class ParseApp {
       counts: {},
       lastFetched: {},
     }
-
-    this.hasCheckedForMigraton = false;
   }
 
   setParseKeys() {
@@ -101,85 +99,6 @@ export default class ParseApp {
   getLogs(level, since) {
     let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase()) + '&n=100' + (since?'&startDate=' + encodeURIComponent(since.getTime()):'');
     return this.apiRequest('GET', path, {}, { useMasterKey: true });
-  }
-
-  /**
-   * Fetches source of a Cloud Code hosted file from api.parse.com
-   * fileName - the name of the file to be fetched
-   */
-  getSource(fileName) {
-    return this.getLatestRelease().then((release) => {
-      if (release.files === null) {
-        // No release yet
-        return Parse.Promise.as(null);
-      }
-
-      let fileMetaData = release.files[fileName];
-      if (fileMetaData && fileMetaData.source) {
-        return Parse.Promise.as(fileMetaData.source);
-      }
-
-      let params = {
-        version: fileMetaData.version,
-        checksum: fileMetaData.checksum
-      }
-      return this.apiRequest('GET', `scripts/${fileName}`, params, { useMasterKey: true });
-    }).then((source) => {
-      if (this.latestRelease.files) {
-        this.latestRelease.files[fileName].source = source;
-      }
-
-      return Parse.Promise.as(source);
-    });
-  }
-
-  getLatestRelease() {
-    // Cache it for a minute
-    if (new Date() - this.latestRelease.lastFetched < 60000) {
-      return Parse.Promise.as(this.latestRelease);
-    }
-    return this.apiRequest(
-      'GET',
-      'releases/latest',
-      {},
-      { useMasterKey: true }
-    ).then((release) => {
-      this.latestRelease.lastFetched = new Date();
-      this.latestRelease.files = null;
-
-      if (release.length === 0) {
-        this.latestRelease.release = null;
-      } else {
-        let latestRelease = release[0];
-
-        this.latestRelease.release = {
-          version: latestRelease.version,
-          parseVersion: latestRelease.parseVersion,
-          deployedAt: new Date(latestRelease.timestamp)
-        };
-
-        let checksums = JSON.parse(latestRelease.checksums);
-        let versions = JSON.parse(latestRelease.userFiles);
-        this.latestRelease.files = {};
-
-        // The scripts can be in `/` or in `/cloud`. Let's check for both.
-        if (checksums.cloud) {
-          checksums = checksums.cloud;
-        }
-        if (versions.cloud) {
-          versions = versions.cloud;
-        }
-        for (let c in checksums) {
-          this.latestRelease.files[c] = {
-            checksum: checksums[c],
-            version: versions[c],
-            source: null
-          };
-        }
-      }
-
-      return Parse.Promise.as(this.latestRelease);
-    });
   }
 
   getClassCount(className) {
@@ -505,11 +424,6 @@ export default class ParseApp {
     return AJAX.get(path);
   }
 
-  getAvailableJobs() {
-    let path = '/apps/' + this.slug + '/cloud_code/jobs/data';
-    return Parse._request('GET', path);
-  }
-
   getJobStatus() {
     // Cache it for a minute
     let query = new Parse.Query('_JobStatus');
@@ -537,44 +451,6 @@ export default class ParseApp {
       },
       { useMasterKey: true }
     );
-  }
-
-  getMigrations() {
-    let path = '/apps/' + this.slug + '/migrations';
-    let obj = AJAX.abortableGet(path);
-    this.hasCheckedForMigraton = true
-    obj.promise.then(({ migration }) => {
-      this.migration = migration;
-    });
-    return obj;
-  }
-
-  beginMigration(connectionString) {
-    this.hasCheckedForMigraton = false;
-    let path = '/apps/' + this.slug + '/migrations';
-    return AJAX.post(path, {connection_string: connectionString});
-  }
-
-  changeConnectionString(newConnectionString) {
-    let path = '/apps/' + this.slug + '/change_connection_string';
-    let promise = AJAX.post(path, {connection_string: newConnectionString});
-    promise.then(() => {
-      this.settings.fields.fields.opendb_connection_string = newConnectionString;
-    });
-    return promise;
-  }
-
-  stopMigration() {
-    //We will need to pass the real ID here if we decide to have migrations deletable by id. For now, from the users point of view, there is only one migration per app.
-    let path = '/apps/' + this.slug + '/migrations/0';
-    return AJAX.del(path);
-  }
-
-  commitMigration() {
-    //Migration IDs are not to be exposed, so pass 0 as ID and let rails fetch the correct ID
-    let path = '/apps/' + this.slug + '/migrations/0/commit';
-    //No need to update anything, UI will autorefresh once request goes through and mowgli enters FINISH/DONE state
-    return AJAX.post(path);
   }
 
   setRequireRevocableSessions(require) {

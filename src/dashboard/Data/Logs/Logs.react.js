@@ -35,13 +35,11 @@ export default class Logs extends DashboardView {
 
   componentDidMount() {
     this.fetchLogs(this.context.currentApp, this.props.params.type);
-    this.fetchRelease(this.context.currentApp);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchLogs(nextContext.currentApp, nextProps.params.type);
-      this.fetchRelease(nextContext.currentApp);
     }
   }
 
@@ -50,13 +48,6 @@ export default class Logs extends DashboardView {
     app.getLogs(typeParam).then(
       (logs) => this.setState({ logs }),
       () => this.setState({ logs: [] })
-    );
-  }
-
-  fetchRelease(app) {
-    app.getLatestRelease().then(
-      ({ release }) => this.setState({ release }),
-      () => this.setState({ release: null })
     );
   }
 
