@@ -51,6 +51,7 @@ export default class Browser extends DashboardView {
 
       relation: null,
       counts: {},
+      filteredCounts: {},
       clp: {},
       filters: new List(),
       ordering: '-createdAt',
@@ -320,9 +321,21 @@ export default class Browser extends DashboardView {
     return data;
   }
 
+  async fetchParseDataCount(source, filters) {
+    const query = queryFromFilters(source, filters);
+    const count = await query.count({ useMasterKey: true });
+    return count;
+  }
+
   async fetchData(source, filters = new List(), last) {
     const data = await this.fetchParseData(source, filters);
-    this.setState({ data: data, filters, lastMax: 200 });
+    var filteredCounts = { ...this.state.filteredCounts };
+    if (filters.length > 0) {
+      filteredCounts[source] = await this.fetchParseDataCount(source,filters);
+    } else {
+      delete filteredCounts[source];
+    }
+    this.setState({ data: data, filters, lastMax: 200 , filteredCounts: filteredCounts});
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -781,9 +794,19 @@ export default class Browser extends DashboardView {
           columns[name] = info;
         });
 
+        var count;
+        if (this.state.relation) {
+          count = this.state.relationCount;
+        } else {
+          if (className in this.state.filteredCounts) {
+            count = this.state.filteredCounts[className];
+          } else {
+            count = this.state.counts[className];
+          }
+        }
         browser = (
           <DataBrowser
-            count={this.state.relation ? this.state.relationCount : this.state.counts[className]}
+            count={count}
             perms={this.state.clp[className]}
             schema={schema}
             userPointers={userPointers}
