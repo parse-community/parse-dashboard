@@ -16,7 +16,6 @@ import Browser            from './Data/Browser/Browser.react';
 import CloudCode          from './Data/CloudCode/CloudCode.react';
 import Config             from './Data/Config/Config.react';
 import Reviews            from './Data/Reviews/Reviews.react';
-import Downloads          from './Data/Downloads/Downloads.react';
 import Explorer           from './Analytics/Explorer/Explorer.react';
 import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
 import GeneralSettings    from './Settings/GeneralSettings.react';
@@ -229,7 +228,6 @@ class Dashboard extends React.Component {
           <Route path='logs/:type' component={Logs} />
           <Route path='config' component={Config} />
           <Route path='reviews' component={Reviews} />
-          <Route path='downloads' component={Downloads} />
           <Route path='api_console' component={ApiConsole} />
           <Route path='migration' component={Migration} />
           <Redirect from='push' to='/apps/:appId/push/new' />

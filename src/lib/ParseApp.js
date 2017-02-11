@@ -409,6 +409,35 @@ export default class ParseApp {
     return query.first({ useMasterKey: true });
   }
 
+  cancelPushSchedule(objectId) {
+    var query = new Parse.Query("_PushStatus");
+    query.equalTo('objectId', objectId);
+    return query.first({ useMasterKey: true });
+  }
+
+  schedulePush(changes) {
+    var pushTime = changes.push_time_iso.toISOString();
+    var query = changes.target;
+    let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
+    if(query == undefined) {
+      query = "{}";
+    } else {
+      query = JSON.stringify(query);
+    }
+
+    let PushStatus = Parse.Object.extend("_PushStatus");
+    let pushStatus = new PushStatus();
+    pushStatus.set("query", query);
+    pushStatus.set("payload", JSON.stringify(payload));
+    pushStatus.set("pushTime", pushTime);
+    pushStatus.set("numSent", 0);
+    pushStatus.set("numFailed", 0);
+    pushStatus.set("status", "scheduled");
+    pushStatus.set("source", "rest");
+    pushStatus.setACL(new Parse.ACL());
+    return pushStatus.save(null, { useMasterKey: true });
+  }
+
   isLocalizationAvailable() {
     let path = '/apps/' + this.slug + '/is_localization_available';
     return AJAX.abortableGet(path);

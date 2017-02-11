@@ -58,25 +58,27 @@ export default class Reviews extends DashboardView {
   }
   
   makeRequest() {
-    let path = 'http://api.colubris.com.br/publiq/classes/Reviews?where={"applicationId":"' + this.context.currentApp.applicationId + '"}';
     let apps = AppsManager.apps();
     let masterApp = apps.filter(function(app) {
       return app.masterApp == true; // if truthy then keep item
     });
     let headers = null;
+    
     if(masterApp.length > 0) {
+      let path = masterApp[0].serverURL + '/classes/Reviews?where={"applicationId":"' + this.context.currentApp.applicationId + '"}';
       headers = {
         'X-Parse-Application-Id': masterApp[0].applicationId,
         'X-Parse-REST-API-Key': masterApp[0].restKey,
         'X-Parse-Master-Key': masterApp[0].masterKey,
         'Content-Type': 'application/json'
       };
+
+      let promise = AJAX.getReviews(path, '', headers);
+      promise.then((response) => {
+        this.setState({ response });
+        this.setState({loading: false})
+      });
     }
-    let promise = AJAX.getReviews(path, '', headers);
-    promise.then((response) => {
-      this.setState({ response });
-      this.setState({loading: false})
-    });
   }
   
   renderEmpty() {
@@ -119,7 +121,7 @@ export default class Reviews extends DashboardView {
                 <br/>
                 <span>{review.reviewTitle}</span><br/>
                 <span>{review.reviewContent}</span><br/><br/>
-                <Icon name={review.device} fill='#00db7c' width={20} height={20} />
+                <Icon name={review.device} fill='#999999' width={20} height={20} />
               </div>
             )}
           </Fieldset>);
