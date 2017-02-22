@@ -76,6 +76,7 @@ export default class BrowserTable extends React.Component {
       }
       if (this.state.offset !== offset) {
         this.setState({ offset });
+        this.refs.table.scrollTop = rowsAbove * ROW_HEIGHT;
       }
       if (this.props.maxFetched - offset < 100) {
         this.props.fetchNextPage();
