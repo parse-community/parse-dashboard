@@ -1,9 +1,9 @@
 {
   "apps": [{
-    "serverURL": "",
-    "appId": "",
-    "masterKey": "",
-    "appName": "",
+    "serverURL": "http://onlinebusinesscard.herokuapp.com/parse",
+    "appId": "businesscards",
+    "masterKey": "1234509876abcdef",
+    "appName": "Business cards",
     "iconName": ""
   }],
   "iconsFolder": "icons"
