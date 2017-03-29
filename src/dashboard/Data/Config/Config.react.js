@@ -72,6 +72,7 @@ class Config extends TableView {
     let value = data.value;
     let modalValue = value;
     let type = typeof value;
+
     if (type === 'object') {
       if (isDate(value)) {
         type = 'Date';
@@ -84,9 +85,9 @@ class Config extends TableView {
         type = 'GeoPoint';
         value = `(${value.latitude}, ${value.longitude})`;
         modalValue = data.value.toJSON();
-      } else if (value instanceof Parse.File) {
+      } else if (data.value instanceof Parse.File) {
         type = 'File';
-        value = <a target='_blank' href={value.url()}>Open in new window</a>;
+        value = <a target='_blank' href={data.value.url()}>Open in new window</a>;
       } else {
         type = 'Object';
         value = JSON.stringify(value);
@@ -105,11 +106,19 @@ class Config extends TableView {
       modalValue: modalValue
     });
     let columnStyle = { width: '30%', cursor: 'pointer' };
+
+    let openModalValueColumn = () => {
+      if (data.value instanceof Parse.File) {
+        return
+      }
+      openModal()
+    }
+
     return (
       <tr key={data.param}>
         <td style={columnStyle} onClick={openModal}>{data.param}</td>
         <td style={columnStyle} onClick={openModal}>{type}</td>
-        <td style={columnStyle} onClick={openModal}>{value}</td>
+        <td style={columnStyle} onClick={openModalValueColumn}>{value}</td>
         <td style={{ textAlign: 'center' }}>
           <a onClick={this.deleteParam.bind(this, data.param)}>
             <Icon width={16} height={16} name='trash-solid' fill='#ff395e' />
@@ -145,7 +154,15 @@ class Config extends TableView {
       if (params) {
         data = [];
         params.forEach((value, param) => {
-          data.push({ param, value });
+          let type = typeof value;
+          if (type === 'object' && value.__type == 'File') {
+            value = Parse.File.fromJSON(value);
+          }
+          else if (type === 'object' && value.__type == 'GeoPoint') {
+            value = new Parse.GeoPoint(value);
+          }
+
+          data.push({ param: param, value: value })
         });
       }
     }

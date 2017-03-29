@@ -27,15 +27,17 @@ export default class Login extends React.Component {
   }
 
   render() {
+    const {path} = this.props;
+
     return (
       <LoginForm
         header='Access your Dashboard'
         action='Log In'
-        endpoint='/login'
+        endpoint={`${path}login`}
         >
         <LoginRow
           label='Username'
-          input={<input name='username' type='username' />} />
+          input={<input name='username' type='username' autoFocus />} />
         <LoginRow
           label='Password'
           input={<input name='password' type='password' />} />

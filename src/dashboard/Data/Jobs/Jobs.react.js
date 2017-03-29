@@ -120,7 +120,7 @@ export default class Jobs extends TableView {
   renderRow(data) {
     if (this.props.params.section === 'all') {
       return (
-        <tr key={data.objectId}>
+        <tr key={data.jobName}>
           <td style={{width: '60%'}}>{data.jobName}</td>
           <td className={styles.buttonCell}>
             <RunNowButton job={data} width={'100px'} />
