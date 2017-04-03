@@ -134,7 +134,6 @@ export default class AppsIndex extends React.Component {
         </div>
       );
     }
-    apps.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
     let upgradePrompt = null;
     if (this.props.newFeaturesInLatestVersion.length > 0) {
       let newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => <strong>

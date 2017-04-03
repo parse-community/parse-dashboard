@@ -30,7 +30,7 @@ function JobsStore(state, action) {
         return Parse.Promise.as(state);
       }
       path = `cloud_code/jobs?per_page=50`;
-      return Parse._request('GET', path).then((results) => {
+      return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {
         return Map({ lastFetch: new Date(), jobs: List(results) });
       });
     case ActionTypes.CREATE:

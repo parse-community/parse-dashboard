@@ -77,9 +77,9 @@ const Sidebar = ({
       })}
     </div>
     <div className={styles.footer}>
-      <a target='_blank' href='https://parseplatform.github.io'>Open Source</a>
-      <a target='_blank' href='https://www.parse.com/docs'>Docs</a>
-      <a target='_blank' href='https://parseplatform.github.io'>Downloads</a>
+      <a target='_blank' href='https://parseplatform.github.io'>Open Source Hub</a>
+      <a target='_blank' href='https://www.github.com/parseplatform'>GitHub</a>
+      <a target='_blank' href='https://parseplatform.github.io/docs'>Docs</a>
       <FooterMenu />
     </div>
   </div>
