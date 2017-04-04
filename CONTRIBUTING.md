@@ -16,8 +16,9 @@ We actively welcome your pull requests.
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
 4. If you've updated/added an UI component, please add a screenshot.
-5. Ensure the test suite passes.
-6. If you haven't already, complete the Contributor License Agreement ("CLA").
+5. If you've fixed an issue or added features, add what you've changed to the CHANGELOG.
+6. Ensure the test suite passes.
+7. If you haven't already, complete the Contributor License Agreement ("CLA").
 
 ## Contributor License Agreement ("CLA")
 In order to accept your pull request, we need you to submit a CLA. You only need

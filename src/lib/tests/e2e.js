@@ -9,11 +9,10 @@
 jest.disableAutomock();
 
 var express = require('express');
-var app = express();
 var rp = require('request-promise');
 var ParseDashboard = require('../../../Parse-Dashboard/app');
 
-var dashboard = ParseDashboard({
+var dashboardSettings = {
   "apps": [
     {
       "serverURL": "http://localhost:5051/parse",
@@ -22,17 +21,17 @@ var dashboard = ParseDashboard({
       "appName": "MyApp"
     }
   ]
-});
-
-app.use('/dashboard', dashboard);
-
-var p = new Promise(resolve => {
-  app.listen(5051, resolve);
-});
+};
 
 describe('e2e', () => {
-  it('loads the dashboard', () => {
-    return p.then(() => {
+  it('loads the dashboard on /dashboard', (done) => {
+    let app = express();
+    let server;
+    var p = new Promise(resolve => {
+      app.use('/dashboard', ParseDashboard(dashboardSettings));
+      server = app.listen(5051, resolve);
+    });
+    return p.then(result => {
       return rp('http://localhost:5051/dashboard');
     })
     .then(result => {
@@ -41,6 +40,27 @@ describe('e2e', () => {
     })
     .then(bundleText => {
       expect(bundleText.length).toBeGreaterThan(1000000);
+      server.close(done);
+    });
+  });
+
+  it('loads the dashboard on /', (done) => {
+    let app = express();
+    let server;
+    var p = new Promise(resolve => {
+      app.use('/', ParseDashboard(dashboardSettings));
+      server = app.listen(5051, resolve);
+    });
+    return p.then(result => {
+      return rp('http://localhost:5051');
+    })
+    .then(result => {
+      let bundleLocation = result.match(/<script src=\"([^\"]*)\">/)[1]
+      return rp('http://localhost:5051' + bundleLocation);
+    })
+    .then(bundleText => {
+      expect(bundleText.length).toBeGreaterThan(1000000);
+      server.close(done);
     });
   });
 });

@@ -5,5 +5,6 @@ node_modules/
 PIG/bundles/
 npm-debug.log
 // vim .swp
-
-
+*.swp
+.env
+.idea/

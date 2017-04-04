@@ -40,7 +40,7 @@ export default class FileInput extends React.Component {
   render() {
     let inputProps = {
       type: 'file',
-      value: null,
+      value: '',
       disabled: this.props.disabled,
       onChange: this.handleChange.bind(this),
     };
@@ -55,7 +55,7 @@ export default class FileInput extends React.Component {
     if (label) {
       buttonStyles.push(styles.withLabel)
     }
-    
+
     return (
       <div className={styles.input}>
         <div className={buttonStyles.join(' ')}>
