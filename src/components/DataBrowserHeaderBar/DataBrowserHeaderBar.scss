@@ -12,10 +12,11 @@
   top: 0;
   left: 0;
   height: 30px;
-  background: #66637a;
+  background-color: #66637a;
   white-space: nowrap;
   display: inline-block;
   min-width: 100%;
+  width: 100%;
   // to resolve rendering issue with retina displays
   -webkit-transform: translate3d(0,0,0);
 }
@@ -48,6 +49,7 @@
 }
 
 .check {
+  display: inline-block;
   line-height: 30px;
   height: 30px;
   vertical-align: top;
