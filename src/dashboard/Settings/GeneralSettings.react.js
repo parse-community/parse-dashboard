@@ -173,6 +173,7 @@ let ManageAppFields = ({
         value='Change connection string' />} />
     ];
   }
+  let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
   return (
     <Fieldset
     legend='App Management'
@@ -576,6 +577,24 @@ export default class GeneralSettings extends DashboardView {
               viewerEmail={AccountManager.currentUser().email}
               addCollaborator={setCollaborators.bind(undefined, setField)}
               removeCollaborator={setCollaborators.bind(undefined, setField)}/>
+            <ManageAppFields
+              mongoURL={fields.mongoURL}
+              isCollaborator={isCollaborator}
+              hasCollaborators={fields.collaborators.length > 0}
+              appSlug={this.context.currentApp.slug}
+              cleanUpFiles={() => this.context.currentApp.cleanUpFiles().then(result => {
+                this.setState({
+                  cleanupFilesMessage: result.notice,
+                  cleanupNoteColor: 'orange',
+                });
+              }).fail((e) => {
+                this.setState({
+                  cleanupFilesMessage: e.error,
+                  cleanupNoteColor: 'red',
+                });
+              })}
+              cleanUpFilesMessage={this.state.cleanupFilesMessage}
+              cleanUpMessageColor={this.state.cleanupNoteColor}
           </div>;
         }} />
       <Toolbar section='Settings' subsection='General' />
