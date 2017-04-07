@@ -340,8 +340,14 @@ export default class ParseApp {
   }
 
   cleanUpFiles() {
-    let path = '/apps/' + this.slug + '/cleanup_files';
-    return AJAX.put(path);
+    let path = '/apps/' + this.slug + '/orphan_files';
+    return fetch(path, {
+      method: 'POST',
+      headers: {
+        'X-Parse-Application-Id': this.applicationId,
+        'X-Parse-Master-Key': this.masterKey
+      }
+    });
   }
 
   normalizePath(path) {
