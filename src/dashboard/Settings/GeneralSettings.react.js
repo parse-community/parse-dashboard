@@ -173,7 +173,7 @@ let ManageAppFields = ({
         value='Change connection string' />} />
     ];
   }
-  let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
+  isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
   return (
     <Fieldset
     legend='App Management'
@@ -554,7 +554,7 @@ export default class GeneralSettings extends DashboardView {
           return promise;
         }}
         renderForm={({ changes, fields, setField, resetFields }) => {
-          let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
+          isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
             <AppInformationFields
               appName={fields.appName}
@@ -594,7 +594,7 @@ export default class GeneralSettings extends DashboardView {
                 });
               })}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
-              cleanUpMessageColor={this.state.cleanupNoteColor}
+              cleanUpMessageColor={this.state.cleanupNoteColor} />
           </div>;
         }} />
       <Toolbar section='Settings' subsection='General' />
