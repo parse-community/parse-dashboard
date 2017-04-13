@@ -35,7 +35,7 @@ import { Link }               from 'react-router';
 import { Promise }            from 'parse';
 import { tableInfoBuilder }   from 'lib/PushUtils';
 
-const EXP_STATS_URL = 'https://www.parse.com/docs/ios/guide#push-notifications-push-experiments';
+const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments';
 
 let getMessage = (payload) => {
   if(payload) {

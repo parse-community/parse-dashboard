@@ -215,7 +215,7 @@ export default class SlowQueries extends TableView {
         description={'You haven\'t executed any queries.'}
         icon='gears'
         cta='Get started with Query'
-        action={() => window.location = getSiteDomain() + '/docs/rest/guide#queries'} />
+        action={() => window.location = 'http://docs.parseplatform.org/rest/guide/#queries'} />
     );
   }
 
