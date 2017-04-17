@@ -259,7 +259,7 @@ export default class BrowserTable extends React.Component {
         } else {
           addRow = (
             <div className={styles.addRow}>
-              <a onClick={this.props.onAddRow}>
+              <a title='Add Row' onClick={this.props.onAddRow}>
                 <Icon
                   name='plus-outline'
                   width={14}
