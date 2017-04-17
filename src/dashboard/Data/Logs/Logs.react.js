@@ -97,7 +97,7 @@ export default class Logs extends DashboardView {
             title='No logs in the last 30 days'
             description='When you start using Cloud Code, your logs will show up here.'
             cta='Learn more'
-            action={() => window.location = 'https://parse.com/docs/cloudcode/guide'} />
+            action={() => window.location = 'http://docs.parseplatform.org/cloudcode/guide'} />
         </div>
       );
     } else {
