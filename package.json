@@ -61,7 +61,7 @@
     "js-beautify": "~1.5.0",
     "marked": "^0.3.5",
     "node-sass": "^3.7.0",
-    "parse": "1.6.14",
+    "parse": "1.9.1",
     "prismjs": "~1.2.0",
     "react": "^15.0.1",
     "react-addons-test-utils": "^15.0.1",

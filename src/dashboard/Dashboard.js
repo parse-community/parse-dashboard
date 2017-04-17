@@ -163,8 +163,8 @@ class Dashboard extends React.Component {
         }
       });
       return Parse.Promise.when(appInfoPromises);
-    }).then(function() {
-      Array.prototype.slice.call(arguments).forEach(app => {
+    }).then(function(resolvedApps) {
+      resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
