@@ -173,7 +173,6 @@ let ManageAppFields = ({
         value='Change connection string' />} />
     ];
   }
-  isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
   return (
     <Fieldset
     legend='App Management'
@@ -191,61 +190,6 @@ let ManageAppFields = ({
       color={cleanUpMessageColor}>
       <div>{cleanUpFilesMessage}</div>
     </FormNote> : null}
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Export app data'
-        description={'We firmly believe in data portability.'} />}
-      //TODO: Add export progress view when designs are ready.
-      input={<FormButton
-        onClick={exportData}
-        value='Export Data'/>} />
-    {exportDataMessage ? <FormNote
-      show={true}
-      color={exportMessageColor}>
-      <div>{exportDataMessage}</div>
-    </FormNote> : null}
-    {migrateAppField}
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Clone app'
-        description={<span>Choose what you want to carry over <br/>and create a copy of this Parse app.</span>} />}
-      input={<FormButton
-        value='Clone this app'
-        onClick={cloneApp} />
-      } />
-    {cloneAppMessage ? <FormNote
-      show={true}
-      color='green'>
-      <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: '/apps' }}>apps page</Link>!</div>
-    </FormNote> : null}
-    {!isCollaborator ? <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Transfer app'
-        description={<span>Give an existing collaborator <br/>ownership over this app.</span>} />
-      }
-      input={<FormButton
-        value='Transfer this app'
-        color='red'
-        disabled={!hasCollaborators}
-        onClick={transferApp} />
-      } /> : null}
-    {transferAppMessage ? <FormNote
-      color='green'>
-      {transferAppMessage}
-    </FormNote> : null}
-    {!isCollaborator ? <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Delete app'
-        description={<span>Completely remove any trace <br/>of this app's existence.</span>} />}
-      input={<FormButton
-        color='red'
-        value='Delete this app'
-        onClick={deleteApp} />
-      } /> : null}
   </Fieldset>);
 }
 
@@ -285,6 +229,7 @@ export default class GeneralSettings extends DashboardView {
       newConnectionString: '',
 
       removedCollaborators: [],
+      showPurgeFilesModal: false,
     };
   }
 
@@ -554,7 +499,7 @@ export default class GeneralSettings extends DashboardView {
           return promise;
         }}
         renderForm={({ changes, fields, setField, resetFields }) => {
-          isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
+          //let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
             <AppInformationFields
               appName={fields.appName}
@@ -579,22 +524,35 @@ export default class GeneralSettings extends DashboardView {
               removeCollaborator={setCollaborators.bind(undefined, setField)}/>
             <ManageAppFields
               mongoURL={fields.mongoURL}
-              isCollaborator={isCollaborator}
+              isCollaborator={AccountManager.currentUser().email !== this.props.initialFields.owner_email}
               hasCollaborators={fields.collaborators.length > 0}
               appSlug={this.context.currentApp.slug}
-              cleanUpFiles={() => this.context.currentApp.cleanUpFiles().then(result => {
+              cleanUpFiles={() => this.setState({showPurgeFilesModal: true})}
+              cleanUpFilesMessage={this.state.cleanupFilesMessage}
+              cleanUpMessageColor={this.state.cleanupNoteColor} />
+            {this.state.showPurgeFilesModal ? <Modal
+              type={Modal.Types.INFO}
+              icon='down-outline'
+              iconSize={40}
+              title='Clean Orphan Files'
+              subtitle={'The files without DB references will be removed!'}
+              confirmText='Purge Files'
+              cancelText='Cancel'
+              buttonsInCenter={true}
+              onCancel={() => this.setState({showPurgeFilesModal: false})}
+              onConfirm={() => this.context.currentApp.cleanUpFiles().then(result => {
                 this.setState({
-                  cleanupFilesMessage: result.notice,
+                  cleanupFilesMessage: result.notice || 'Files will be deleted soon...',
                   cleanupNoteColor: 'orange',
+                  showPurgeFilesModal: false,
                 });
-              }).fail((e) => {
+              }).catch((e) => {
                 this.setState({
                   cleanupFilesMessage: e.error,
                   cleanupNoteColor: 'red',
+                  showPurgeFilesModal: false,
                 });
-              })}
-              cleanUpFilesMessage={this.state.cleanupFilesMessage}
-              cleanUpMessageColor={this.state.cleanupNoteColor} />
+              })} /> : null }
           </div>;
         }} />
       <Toolbar section='Settings' subsection='General' />
