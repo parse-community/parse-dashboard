@@ -546,7 +546,7 @@ export default class GeneralSettings extends DashboardView {
                   cleanupNoteColor: 'orange',
                   showPurgeFilesModal: false,
                 });
-              }).catch((e) => {
+              }).fail((e) => {
                 this.setState({
                   cleanupFilesMessage: e.error,
                   cleanupNoteColor: 'red',
