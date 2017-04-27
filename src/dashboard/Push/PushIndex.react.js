@@ -408,7 +408,7 @@ export default class PushIndex extends DashboardView {
         description={emptyStateContent[type].description}
         icon='push-solid'
         cta={emptyStateContent[type].cta}
-        action={'https://www.parse.com/docs/push_guide'} />
+        action={'http://docs.parseplatform.org/ios/guide/#push-notifications'} />
     );
   }
 

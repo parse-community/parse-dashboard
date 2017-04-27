@@ -102,7 +102,7 @@ export default class CloudCode extends DashboardView {
             icon='folder-outline'
             description={'When you deploy your cloud code, you\u2019ll be able to see your files here'}
             cta='Get started with Cloud Code'
-            action={() => window.location = 'https://parse.com/docs/cloudcode/guide'} />
+            action={() => window.location = 'http://docs.parseplatform.org/cloudcode/guide'} />
         </div>
       );
     } else {

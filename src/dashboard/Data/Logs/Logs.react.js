@@ -35,13 +35,13 @@ export default class Logs extends DashboardView {
 
   componentDidMount() {
     this.fetchLogs(this.context.currentApp, this.props.params.type);
-    this.fetchRelease(this.context.currentApp);
+    // this.fetchRelease(this.context.currentApp);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchLogs(nextContext.currentApp, nextProps.params.type);
-      this.fetchRelease(nextContext.currentApp);
+      // this.fetchRelease(nextContext.currentApp);
     }
   }
 
@@ -53,12 +53,17 @@ export default class Logs extends DashboardView {
     );
   }
 
+  // As parse-server doesn't support (yet?) versioning, we are disabling
+  // this call in the meantime.
+
+  /*
   fetchRelease(app) {
     app.getLatestRelease().then(
       ({ release }) => this.setState({ release }),
       () => this.setState({ release: null })
     );
   }
+  */
 
   renderSidebar() {
     let current = this.props.params.type || '';
@@ -92,7 +97,7 @@ export default class Logs extends DashboardView {
             title='No logs in the last 30 days'
             description='When you start using Cloud Code, your logs will show up here.'
             cta='Learn more'
-            action={() => window.location = 'https://parse.com/docs/cloudcode/guide'} />
+            action={() => window.location = 'http://docs.parseplatform.org/cloudcode/guide'} />
         </div>
       );
     } else {
@@ -100,6 +105,7 @@ export default class Logs extends DashboardView {
         <div className={styles.content}>
           <LogView>
             {this.state.logs.map(({ message, timestamp }) => <LogViewEntry
+              key={timestamp}
               text={message}
               timestamp={timestamp} />)}
           </LogView>
