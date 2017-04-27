@@ -1,3 +1,10 @@
 FROM node:4.4.2
-RUN npm install -g parse-dashboard
-ENTRYPOINT ["parse-dashboard"]
+WORKDIR /src
+ADD . /src
+RUN cd /src \
+ && npm install \
+ && npm run build \
+ && npm cache clear \
+ && rm -rf ~/.npm \
+ && rm -rf /var/lib/apt/lists/*
+ENTRYPOINT ["npm", "run", "dashboard"]
