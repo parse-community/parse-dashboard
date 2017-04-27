@@ -181,7 +181,9 @@ let ManageAppFields = ({
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
       label={<Label
         text='Clean up app'
-        description={<span>This will delete any files that <br/>are not referenced by any objects.</span>} />}
+        description={<span>This will delete any files that are not referenced by any objects. 
+        (Don't use the feature if you have Arrays of Files,<br/>or Files inside Object columns!)
+        </span>} />}
       input={<FormButton
         onClick={cleanUpFiles}
         value='Clean Up Files'/>} />
@@ -542,7 +544,7 @@ export default class GeneralSettings extends DashboardView {
               onCancel={() => this.setState({showPurgeFilesModal: false})}
               onConfirm={() => this.context.currentApp.cleanUpFiles().then(result => {
                 this.setState({
-                  cleanupFilesMessage: result.notice || 'Files will be deleted soon...',
+                  cleanupFilesMessage: 'All set! Your files will be deleted soon.',
                   cleanupNoteColor: 'orange',
                   showPurgeFilesModal: false,
                 });
