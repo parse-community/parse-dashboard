@@ -107,6 +107,8 @@ let ManageAppFields = ({
   cleanUpFiles,
   cleanUpFilesMessage,
   cleanUpMessageColor = 'orange',
+  cleanUpSystemLog,
+  cleanUpSystemLogMessage,
   exportData,
   exportDataMessage,
   exportMessageColor = 'orange',
@@ -181,7 +183,7 @@ let ManageAppFields = ({
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
       label={<Label
         text='Clean up app'
-        description={<span>This will delete any files that are not referenced by any objects. 
+        description={<span>This will delete any files that are not referenced by any objects.
         (Don't use the feature if you have Arrays of Files,<br/>or Files inside Object columns!)
         </span>} />}
       input={<FormButton
@@ -191,6 +193,20 @@ let ManageAppFields = ({
       show={true}
       color={cleanUpMessageColor}>
       <div>{cleanUpFilesMessage}</div>
+    </FormNote> : null}
+    <Field
+      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+      label={<Label
+        text='Clean up log'
+        description={<span>This will purge your System Log.
+        </span>} />}
+      input={<FormButton
+        onClick={cleanUpSystemLog}
+        value='Clean Up System Log'/>} />
+        {cleanUpSystemLogMessage ? <FormNote
+          show={true}
+          color={cleanUpMessageColor}>
+          <div>{cleanUpSystemLogMessage}</div>
     </FormNote> : null}
   </Fieldset>);
 }
@@ -202,6 +218,7 @@ export default class GeneralSettings extends DashboardView {
     this.subsection = 'General';
 
     this.state = {
+      cleanupSystemLogMessage: '',
       cleanupFilesMessage: '',
       cleanupNoteColor: '',
 
@@ -232,6 +249,7 @@ export default class GeneralSettings extends DashboardView {
 
       removedCollaborators: [],
       showPurgeFilesModal: false,
+      showPurgeSystemLog: false
     };
   }
 
@@ -347,7 +365,7 @@ export default class GeneralSettings extends DashboardView {
       {this.state.migrationWarnings.map(warning => <FormNote key={warning}show={true} color='orange'>{warning}</FormNote>)}
     </FormModal>
 
-    
+
 
     let deleteAppModal = <FormModal
       title='Delete App'
@@ -531,7 +549,9 @@ export default class GeneralSettings extends DashboardView {
               appSlug={this.context.currentApp.slug}
               cleanUpFiles={() => this.setState({showPurgeFilesModal: true})}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
-              cleanUpMessageColor={this.state.cleanupNoteColor} />
+              cleanUpMessageColor={this.state.cleanupNoteColor}
+              cleanUpSystemLog={() => this.setState({showPurgeSystemLog: true})}
+              cleanUpSystemLogMessage={this.state.cleanupSystemLogMessage} />
             {this.state.showPurgeFilesModal ? <Modal
               type={Modal.Types.INFO}
               icon='down-outline'
@@ -555,6 +575,29 @@ export default class GeneralSettings extends DashboardView {
                   showPurgeFilesModal: false,
                 });
               })} /> : null }
+              {this.state.showPurgeSystemLog ? <Modal
+                type={Modal.Types.INFO}
+                icon='down-outline'
+                iconSize={40}
+                title='Clean System Log'
+                subtitle={'The System log will be removed!'}
+                confirmText='Purge System Log'
+                cancelText='Cancel'
+                buttonsInCenter={true}
+                onCancel={() => this.setState({showPurgeSystemLog: false})}
+                onConfirm={() => this.context.currentApp.cleanUpSystemLog().then(result => {
+                  this.setState({
+                    cleanupSystemLogMessage: 'Your System log was deleted.',
+                    cleanupNoteColor: 'orange',
+                    showPurgeSystemLogModal: false,
+                  });
+                }).fail((e) => {
+                  this.setState({
+                    cleanupSystemLogMessage: e.error,
+                    cleanupNoteColor: 'red',
+                    showPurgeSystemLogModal: false,
+                  });
+                })} /> : null }
           </div>;
         }} />
       <Toolbar section='Settings' subsection='General' />
