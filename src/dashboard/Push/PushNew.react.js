@@ -39,10 +39,7 @@ import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
-
 const PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA = false;
-
-const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = true;
 const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_EXPIRATION = false;
 const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_TIMEZONE = false;
 
@@ -170,7 +167,7 @@ export default class PushNew extends DashboardView {
       options).then(() => {
       this.setState({ pushAudiencesFetched :true });
     });
-
+    
     let {xhr, promise} = this.context.currentApp.isLocalizationAvailable();
     this.xhrs.push(xhr);
     promise.then(({ available }) => {
@@ -213,39 +210,27 @@ export default class PushNew extends DashboardView {
     if (!!changes.increment_badge) {
       payload.badge = "Increment";
     }
-    
-    if(changes.push_time_type === 'now') {
-      Parse.Push.send({
-        where: changes.target || new Parse.Query(Parse.Installation),
-        data: payload,
-      }, {
-        useMasterKey: true,
-      }).then(({ error }) => {
-        //navigate to push index page and clear cache once push store is created
-        if (error) {
-          promise.reject({ error });
+    Parse.Push.send({
+      where: changes.target || new Parse.Query(Parse.Installation),
+      data: payload,
+    }, {
+      useMasterKey: true,
+    }).then(({ error }) => {
+      //navigate to push index page and clear cache once push store is created
+      if (error) {
+        promise.reject({ error });
+      } else {
+        //TODO: global success message banner for passing successful creation - store should also be cleared
+        const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
+        if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
+          history.push(this.context.generatePath('push/activity'));
         } else {
-          //TODO: global success message banner for passing successful creation - store should also be cleared
-          const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
-          if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
-            history.push(this.context.generatePath('push/activity'));
-          } else {
-            promise.resolve();
-          }
-        }
-      }, (error) => {
-        promise.reject(error);
-      });
-    } else {
-      if(changes.push_time_type === 'time' && changes.push_time !== null) {
-        let schedulePromise = this.context.currentApp.schedulePush(changes);
-        schedulePromise.then(pushStatus => {
           promise.resolve();
-        }, (error) => {
-          promise.reject(error);
-        });
+        }
       }
-    }
+    }, (error) => {
+      promise.reject(error);
+    });
     return promise;
   }
 
@@ -720,7 +705,7 @@ export default class PushNew extends DashboardView {
 
     const richmediaFieldsDescription = PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA ?
       'We can send images and videos directly to your app.' :
-      "If your push hasn't been send with rich media, it won't get setup by your dev.";
+      'Rich media is not currently supported.';
 
     const richmediaTimeFields = PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA? <Fieldset
       legend={richmediaFieldsLegend}
@@ -731,18 +716,21 @@ export default class PushNew extends DashboardView {
       {PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA ? this.renderRichMediaContent(fields, setField) : null}
     </Fieldset> : null;
 
-    const timeFieldsLegend = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+    let features = this.context.currentApp.serverInfo.features;
+    let hasScheduledPush = features.push.scheduledPush;
+
+    const timeFieldsLegend = hasScheduledPush ?
       'Choose a delivery time' :
       'Choose exiry';
 
-    const timeFieldsDescription = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
-      'We can send the campaign immediately, or any time in the next weeks.' :
-      "If your push hasn't been send by this time, it won't get sent.";
+    const timeFieldsDescription = hasScheduledPush ?
+      'We can send the campaign immediately, or any time in the future.' :
+      'Push schedule is not currently supported.';
 
-    const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH? <Fieldset
+    const deliveryTimeFields = hasScheduledPush? <Fieldset
       legend={timeFieldsLegend}
       description={timeFieldsDescription}>
-      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? this.renderDeliveryContent(fields, setField) : null}
+      {hasScheduledPush ? this.renderDeliveryContent(fields, setField) : null}
       {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_EXPIRATION ?
         <Field
           label={<Label text='Should this notification expire?' />}
@@ -943,7 +931,7 @@ export default class PushNew extends DashboardView {
           );
         }
         let timeNote = null;
-        if(changes.push_time_type === 'time' && changes.push_time !== null || changes.push_time_type === 'now') {
+        if (changes.push_time_type === 'time' && changes.push_time !== null || changes.push_time_type === 'now') {
           timeNote = (
             <span>
               It will be sent <strong>{changes.push_time_type === 'now' ? 'immediately' : String(changes.push_time)}</strong>.&nbsp;
