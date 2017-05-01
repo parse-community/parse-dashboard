@@ -544,7 +544,7 @@ export default class GeneralSettings extends DashboardView {
               onCancel={() => this.setState({showPurgeFilesModal: false})}
               onConfirm={() => this.context.currentApp.cleanUpFiles().then(result => {
                 this.setState({
-                  cleanupFilesMessage: 'All set! Your files will be deleted soon.',
+                  cleanupFilesMessage: 'All set! You\'ll receive an email when the process is over.',
                   cleanupNoteColor: 'orange',
                   showPurgeFilesModal: false,
                 });
