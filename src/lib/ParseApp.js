@@ -345,7 +345,7 @@ export default class ParseApp {
   }
 
   cleanUpSystemLog() {
-    let path = '/apps/' + this.slug + '/purge-logs';
+    let path = '/parse-app/' + this.slug + '/purge-logs';
     return AJAX.post(path);
  }
 
