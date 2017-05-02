@@ -167,7 +167,6 @@ export default class PushNew extends DashboardView {
       options).then(() => {
       this.setState({ pushAudiencesFetched :true });
     });
-    
     let {xhr, promise} = this.context.currentApp.isLocalizationAvailable();
     this.xhrs.push(xhr);
     promise.then(({ available }) => {

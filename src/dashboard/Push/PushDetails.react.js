@@ -58,7 +58,7 @@ let getFormattedTime = ({ time, is_local }) => {
   return formattedTime;
 }
 
-let getScheduleInfo = (sendTime, expiration) => {
+const getScheduleInfo = (sendTime, expiration) => {
   //expiration unit is in seconds :(
   if (!sendTime){
     return '';
@@ -79,8 +79,8 @@ let getSentScheduleInfo = (sendTime, expiration) => {
     return '';
   }
 
-  let fmtSendTime = getFormattedTime({time: sendTime});
-  let fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
+  const fmtSendTime = getFormattedTime({time: sendTime});
+  const fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
   if (expiration){
     return `It will be sent ${fmtSendTime} and expires ${fmtExpiration}`;
   } else {
@@ -94,8 +94,8 @@ let getSentInfo = (sendTime, expiration) => {
     return '';
   }
 
-  let fmtSendTime = getFormattedTime({time: sendTime});
-  let fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
+  const fmtSendTime = getFormattedTime({time: sendTime});
+  const fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
   if (expiration){
     return `Sent ${fmtSendTime} and expires ${fmtExpiration}`;
   } else {

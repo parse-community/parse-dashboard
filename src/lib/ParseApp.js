@@ -406,7 +406,7 @@ export default class ParseApp {
   cancelPushSchedule(objectId) {
     var query = new Parse.Query("_PushStatus");
     query.equalTo('objectId', objectId);
-    return query.first({ useMasterKey: true });
+    return query.first({ useMasterKey: true }).destroy({ useMasterKey: true });
   }
 
   isLocalizationAvailable() {
