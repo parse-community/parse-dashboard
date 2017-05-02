@@ -249,7 +249,7 @@ export default class GeneralSettings extends DashboardView {
 
       removedCollaborators: [],
       showPurgeFilesModal: false,
-      showPurgeSystemLog: false
+      showPurgeSystemLogModal: false
     };
   }
 
@@ -550,7 +550,7 @@ export default class GeneralSettings extends DashboardView {
               cleanUpFiles={() => this.setState({showPurgeFilesModal: true})}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
               cleanUpMessageColor={this.state.cleanupNoteColor}
-              cleanUpSystemLog={() => this.setState({showPurgeSystemLog: true})}
+              cleanUpSystemLog={() => this.setState({showPurgeSystemLogModal: true})}
               cleanUpSystemLogMessage={this.state.cleanupSystemLogMessage} />
             {this.state.showPurgeFilesModal ? <Modal
               type={Modal.Types.INFO}
@@ -575,7 +575,7 @@ export default class GeneralSettings extends DashboardView {
                   showPurgeFilesModal: false,
                 });
               })} /> : null }
-              {this.state.showPurgeSystemLog ? <Modal
+              {this.state.showPurgeSystemLogModal ? <Modal
                 type={Modal.Types.INFO}
                 icon='down-outline'
                 iconSize={40}
@@ -584,7 +584,7 @@ export default class GeneralSettings extends DashboardView {
                 confirmText='Purge System Log'
                 cancelText='Cancel'
                 buttonsInCenter={true}
-                onCancel={() => this.setState({showPurgeSystemLog: false})}
+                onCancel={() => this.setState({showPurgeSystemLogModal: false})}
                 onConfirm={() => this.context.currentApp.cleanUpSystemLog().then(result => {
                   this.setState({
                     cleanupSystemLogMessage: 'Your System log was deleted.',
