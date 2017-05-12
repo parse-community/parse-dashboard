@@ -404,9 +404,9 @@ export default class ParseApp {
   }
 
   cancelPushSchedule(objectId) {
-    var query = new Parse.Query("_PushStatus");
-    query.equalTo('objectId', objectId);
-    return query.first({ useMasterKey: true }).destroy({ useMasterKey: true });
+    const pushStatus = new Parse.Object('_PushStatus');
+    pushStatus.id = objectId;
+    return pushStatus.destroy({ useMasterKey: true });
   }
 
   isLocalizationAvailable() {
