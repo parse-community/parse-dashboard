@@ -561,9 +561,7 @@ export default class PushDetails extends DashboardView {
                       onClick={() => {
                           let promise = this.context.currentApp.cancelPushSchedule(this.state.pushDetails.id);
                           promise.then((push) => {
-                            push.destroy({ useMasterKey: true }).then(() => {
-                              history.push(this.context.generatePath('push/activity'));
-                            });
+                            history.push(this.context.generatePath('push/activity'));
                           });
                       }}>
                     </Button>

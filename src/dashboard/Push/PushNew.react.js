@@ -209,10 +209,12 @@ export default class PushNew extends DashboardView {
     if (!!changes.increment_badge) {
       payload.badge = "Increment";
     }
-    Parse.Push.send({
+    let push_data = {
       where: changes.target || new Parse.Query(Parse.Installation),
       data: payload,
-    }, {
+    }
+    if (changes.push_time_type !== 'now' && changes.push_time) push_data.push_time = changes.push_time;
+    Parse.Push.send(push_data, {
       useMasterKey: true,
     }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
