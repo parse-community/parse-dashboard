@@ -1,11 +1,9 @@
 .DS_Store
+.env
+*.swp
 node_modules/
-bundles/
 PIG/bundles/
-Parse-Dashboard/public/bundles/
-Parse-Dashboard/parse-dashboard-config.json
 npm-debug.log
-
 // vim .swp
 *.swp
 .env
