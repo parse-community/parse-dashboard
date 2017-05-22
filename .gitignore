@@ -9,4 +9,10 @@ npm-debug.log
 // vim .swp
 *.swp
 .env
+<<<<<<< HEAD
+
+Parse-Dashboard/parse-dashboard-config.json
+||||||| merged common ancestors
+=======
 .idea/
+>>>>>>> ParsePlatform/master

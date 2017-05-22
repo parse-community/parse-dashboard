@@ -31,14 +31,17 @@ export default class ParseApp {
     dashboardURL,
     javascriptKey,
     masterKey,
-    restKey,
+    restAPIKey,
     windowsKey,
     webhookKey,
     apiKey,
     serverURL,
     serverInfo,
     production,
+    packageNameAndroid,
+    idAppStore,
     iconName,
+    masterApp,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -51,7 +54,7 @@ export default class ParseApp {
     this.clientKey = clientKey;
     this.javascriptKey = javascriptKey;
     this.masterKey = masterKey;
-    this.restKey = restKey;
+    this.restKey = restAPIKey;
     this.windowsKey = windowsKey;
     this.webhookKey = webhookKey;
     this.fileKey =  apiKey;
@@ -59,6 +62,9 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
+    this.packageNameAndroid = packageNameAndroid;
+    this.idAppStore = idAppStore;
+    this.masterApp = masterApp;
 
     this.settings = {
       fields: {},
@@ -401,6 +407,35 @@ export default class ParseApp {
     let query = new Parse.Query('_PushStatus');
     query.equalTo('objectId', objectId);
     return query.first({ useMasterKey: true });
+  }
+
+  cancelPushSchedule(objectId) {
+    var query = new Parse.Query("_PushStatus");
+    query.equalTo('objectId', objectId);
+    return query.first({ useMasterKey: true });
+  }
+
+  schedulePush(changes) {
+    var pushTime = changes.push_time_iso.toISOString();
+    var query = changes.target;
+    let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
+    if(query == undefined) {
+      query = "{}";
+    } else {
+      query = JSON.stringify(query);
+    }
+
+    let PushStatus = Parse.Object.extend("_PushStatus");
+    let pushStatus = new PushStatus();
+    pushStatus.set("query", query);
+    pushStatus.set("payload", JSON.stringify(payload));
+    pushStatus.set("pushTime", pushTime);
+    pushStatus.set("numSent", 0);
+    pushStatus.set("numFailed", 0);
+    pushStatus.set("status", "scheduled");
+    pushStatus.set("source", "rest");
+    pushStatus.setACL(new Parse.ACL());
+    return pushStatus.save(null, { useMasterKey: true });
   }
 
   isLocalizationAvailable() {
