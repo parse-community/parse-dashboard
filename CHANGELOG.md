@@ -4,6 +4,13 @@
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
+### 1.0.26
+* Improvement: Fixes broken links, thanks to [Arthur Cinader](https://github.com/acinader)
+* Improvement: Title on the add row button, thanks to [Abdul Basit](https://github.com/basitsattar)
+* Improvement: Use slim docker image, thanks to [Tyler Brock](https://github.com/tbrock)
+* Fix: table scrolling on google chrome (#671), thanks to [Jacer Omri](https://github.com/JacerOmri)
+* Various: adds eslint, thanks to [Jeremy Louie](https://github.com/JeremyPlease)
+
 ### 1.0.25
 
 * Improvement: Update and add links to sidebar footer (#661), thanks to [Natan Rolnik](https://github.com/natanrolnik)
