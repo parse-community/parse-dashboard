@@ -9,6 +9,21 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/PushOpenRate/PushOpenRate.scss';
 
+function getRateString(rateNum) {
+  let rateStr;
+  if (rateNum % 1 === 0) {
+    // Integer rate
+    rateStr = rateNum.toFixed(0);
+  } else if (rateNum < 10) {
+    // e.g. 0.01%, 1.23%
+    rateStr = rateNum.toFixed(2);
+  } else {
+    // e.g. 34.9%, 100%
+    rateStr = rateNum.toPrecision(3);
+  }
+  return rateStr;
+}
+
 let PushOpenRate = ({
     numOpened,
     numSent,
@@ -21,17 +36,9 @@ let PushOpenRate = ({
   if(isNaN(rateNum)){ //check for case when numSent is 0
     rateNum = 0;
   }
-  let rateStr;
-  if (rateNum % 1 === 0) {
-    // Integer rate
-    rateStr = rateNum.toFixed(0);
-  } else if (rateNum < 10) {
-    // e.g. 0.01%, 1.23%
-    rateStr = rateNum.toFixed(2);
-  } else {
-    // e.g. 34.9%, 100%
-    rateStr = rateNum.toPrecision(3);
-  }
+  /* eslint-disable no-unused-vars */
+  let rateStr = getRateString(rateNum);
+  /* eslint-enable */
 
   let customStyles = {
     standardColor: {},

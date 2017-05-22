@@ -7,11 +7,7 @@
  */
 import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
 import hasAncestor    from 'lib/hasAncestor';
-import { MONTHS }     from 'lib/DateUtils';
-import Popover        from 'components/Popover/Popover.react';
-import Position       from 'lib/Position';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import styles         from 'components/DateTimeEditor/DateTimeEditor.scss';
 
 export default class DateTimeEditor extends React.Component {

@@ -10,7 +10,6 @@ import DashboardView             from 'dashboard/DashboardView.react';
 import DonutChart                from 'components/DonutChart/DonutChart.react';
 import Icon                      from 'components/Icon/Icon.react';
 import LoaderContainer           from 'components/LoaderContainer/LoaderContainer.react'
-import pluralize                 from 'lib/pluralize'
 import prettyNumber              from 'lib/prettyNumber'
 import React                     from 'react';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';

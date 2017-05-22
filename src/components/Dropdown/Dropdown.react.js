@@ -28,7 +28,7 @@ export default class Dropdown extends React.Component {
   }
 
   toggle() {
-    this.setState((state) => {
+    this.setState(() => {
       if (this.state.open) {
         return { open: false };
       }

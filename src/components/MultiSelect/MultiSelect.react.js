@@ -11,10 +11,8 @@ import Position       from 'lib/Position';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
 import ReactDOM       from 'react-dom';
-import SliderWrap     from 'components/SliderWrap/SliderWrap.react';
 import stringList     from 'lib/stringList';
 import styles         from 'components/MultiSelect/MultiSelect.scss';
-import { Directions } from 'lib/Constants';
 
 export default class MultiSelect extends React.Component {
   constructor() {

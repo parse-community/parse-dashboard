@@ -22,7 +22,6 @@ import Parse                  from 'parse';
 import prettyNumber           from 'lib/prettyNumber';
 import PushExperimentDropdown from 'components/PushExperimentDropdown/PushExperimentDropdown.react';
 import PushOpenRate           from 'components/PushOpenRate/PushOpenRate.react';
-import PushPreview            from 'components/PushPreview/PushPreview.react';
 import React                  from 'react';
 import SliderWrap             from 'components/SliderWrap/SliderWrap.react';
 import styles                 from './PushDetails.scss';
@@ -303,7 +302,7 @@ export default class PushDetails extends DashboardView {
           ...query,
           pushStatusID: pushStatusID,
         });
-        promise = promise.then((data) => {
+        promise.then((data) => {
           let chartData = formatAnalyticsData(data);
           if (chartData.length > 0) {
             this.setState({
@@ -344,8 +343,6 @@ export default class PushDetails extends DashboardView {
 
     let pushDetails = this.state.pushDetails;
     let statistics = pushDetails.statistics;
-
-    let isMessageType = pushDetails.exp_type === 'message';
 
     let learnMore = (
       <a href={EXP_STATS_URL} target='_blank'>Learn more</a>
@@ -461,7 +458,6 @@ export default class PushDetails extends DashboardView {
       return null;
     }
     let launchChoice = pushDetails.launch_choice;
-    let statistics = pushDetails.statistics;
     let isMessageType = pushDetails.exp_type === 'message';
     let res = null;
     let prevLaunchGroup = null;
@@ -663,9 +659,7 @@ export default class PushDetails extends DashboardView {
         {key: DROPDOWN_KEY_GROUP_B, style: { color: this.state.groupColorB }}]} />
   }
 
- renderForm(flowFooterDetails, { fields, changes, setField, resetFields }) {
-    let multiMessage = (fields.exp_enable && fields.exp_type === 'message');
-
+ renderForm(flowFooterDetails, { fields, setField }) {
     let classes = this.props.schema.data.get('classes');
     let schema = {};
     if(classes){
@@ -695,7 +689,7 @@ export default class PushDetails extends DashboardView {
   //TODO: (peterjs) PushPreview Component
   renderContent() {
     if (this.state.loading) {
-  	  return;
+      return;
     }
     let { isFlowView, experimentInfo, flowFooterDetails } = this.experimentInfoHelper();
     return (

@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { Anchors, Directions } from 'lib/Constants';
+import { Directions } from 'lib/Constants';
 import React                   from 'react';
 import SliderWrap              from 'components/SliderWrap/SliderWrap.react';
 
@@ -32,7 +32,7 @@ class Toggler extends React.Component {
   }
 
   render() {
-    let { expanded, children, ...otherProps } = this.props;
+    let { children, ...otherProps } = this.props;
 
     return (
       <div style={{ padding: '10px 0', width: '400px' }}>

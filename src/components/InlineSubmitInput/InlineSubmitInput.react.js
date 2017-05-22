@@ -11,7 +11,7 @@ import TextInput from 'components/TextInput/TextInput.react';
 import styles from 'components/InlineSubmitInput/InlineSubmitInput.scss';
 
 export default class InlineSubmitInput extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = { value: '', showButton: false };

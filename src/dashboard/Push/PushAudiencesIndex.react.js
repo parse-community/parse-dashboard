@@ -9,27 +9,23 @@ import * as PushAudiencesStore  from 'lib/stores/PushAudiencesStore';
 import * as SchemaStore         from 'lib/stores/SchemaStore';
 import * as PushConstants       from './PushConstants';
 import Button                   from 'components/Button/Button.react';
-import CategoryList             from 'components/CategoryList/CategoryList.react';
 import DashboardView            from 'dashboard/DashboardView.react';
 import EmptyState               from 'components/EmptyState/EmptyState.react';
 import FormModal                from 'components/FormModal/FormModal.react';
 import history                  from 'dashboard/history';
 import LoaderContainer          from 'components/LoaderContainer/LoaderContainer.react';
 import Modal                    from 'components/Modal/Modal.react';
-import pluralize                from 'lib/pluralize';
 import PushAudienceDialog       from 'components/PushAudienceDialog/PushAudienceDialog.react';
 import PushAudiencesIndexRow    from './PushAudiencesIndexRow.react';
 import queryFromFilters         from 'lib/queryFromFilters';
 import React                    from 'react';
 import SidebarAction            from 'components/Sidebar/SidebarAction';
-import StatusIndicator          from 'components/StatusIndicator/StatusIndicator.react';
 import stylesTable              from 'dashboard/TableView.scss';
 import subscribeTo              from 'lib/subscribeTo';
 import TableHeader              from 'components/Table/TableHeader.react';
 import Toolbar                  from 'components/Toolbar/Toolbar.react';
 import { formatAudienceSchema } from 'lib/PushUtils';
-import { List, Map }            from 'immutable';
-import { SpecialPushes }        from 'lib/Constants';
+import { List }                 from 'immutable';
 
 const XHR_KEY = 'PushAudiencesIndex';
 
@@ -68,7 +64,7 @@ export default class PushAudiencesIndex extends DashboardView {
       this.setState({
         availableDevices: available_devices
       });
-    }, (error) => {
+    }, () => {
       this.setState({
         availableDevices: PushConstants.DEFAULT_DEVICES
       });
@@ -97,7 +93,7 @@ export default class PushAudiencesIndex extends DashboardView {
     let audiences = undefined;
 
     if (pushAudienceData) {
-      audiences = pushAudienceData.get('audiences') || new List();;
+      audiences = pushAudienceData.get('audiences') || new List();
     }
 
     this.schema = schema;

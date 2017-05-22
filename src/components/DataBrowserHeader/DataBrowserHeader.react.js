@@ -7,7 +7,6 @@
  */
 import PropTypes                  from 'lib/PropTypes';
 import React                      from 'react';
-import ReactDOM                   from 'react-dom';
 import styles                     from 'components/DataBrowserHeader/DataBrowserHeader.scss';
 import { unselectable }           from 'stylesheets/base.scss';
 import { DragSource, DropTarget } from 'react-dnd';
@@ -17,7 +16,7 @@ const Types = {
 };
 
 const dataBrowserHeaderTarget = {
-  drop(props, monitor, components) {
+  drop(props, monitor) {
     const item = monitor.getItem();
 
     if (!item) {
@@ -55,7 +54,7 @@ const dataBrowserHeaderSource = {
 }))
 export default class DataBrowserHeader extends React.Component {
   render() {
-    let { connectDragSource, connectDropTarget, connectDragPreview, name, type, targetClass, order, style, isDragging, isOver, index } = this.props;
+    let { connectDragSource, connectDropTarget, name, type, targetClass, order, style, isDragging, isOver } = this.props;
     let classes = [styles.header, unselectable];
     if (order) {
       classes.push(styles[order]);

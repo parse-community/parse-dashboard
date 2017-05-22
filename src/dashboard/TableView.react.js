@@ -9,7 +9,6 @@ import DashboardView   from 'dashboard/DashboardView.react';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import React           from 'react';
 import styles          from 'dashboard/TableView.scss';
-import Toolbar         from 'components/Toolbar/Toolbar.react';
 
 export default class TableView extends DashboardView {
   columnWidths(keys) {

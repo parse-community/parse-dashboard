@@ -514,12 +514,12 @@ export default class ParseApp {
     // Cache it for a minute
     let query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
-    return query.find({ useMasterKey: true }).then((status) => {
+    return query.find({ useMasterKey: true }).then((status) => {
       this.jobStatus = {
         status: status || null,
         lastFetched: new Date()
       };
-      return status.map((jobStatus) => {
+      return status.map((jobStatus) => {
         return jobStatus.toJSON();
       });
     });

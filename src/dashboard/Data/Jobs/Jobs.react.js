@@ -8,7 +8,6 @@
 import { ActionTypes } from 'lib/stores/JobsStore';
 import Button          from 'components/Button/Button.react';
 import * as DateUtils  from 'lib/DateUtils';
-import DashboardView   from 'dashboard/DashboardView.react';
 import CategoryList    from 'components/CategoryList/CategoryList.react';
 import EmptyState      from 'components/EmptyState/EmptyState.react';
 import history         from 'dashboard/history';
