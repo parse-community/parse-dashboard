@@ -26,7 +26,6 @@ import Modal                             from 'components/Modal/Modal.react';
 import MultiSelect                       from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption                 from 'components/MultiSelect/MultiSelectOption.react';
 import Parse                             from 'parse';
-import ParseApp                          from 'lib/ParseApp';
 import pluck                             from 'lib/pluck';
 import Range                             from 'components/Range/Range.react';
 import React                             from 'react';
@@ -39,7 +38,6 @@ import Toolbar                           from 'components/Toolbar/Toolbar.react'
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
-import { get }                           from 'lib/AJAX';
 import { Link }                          from 'react-router';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
@@ -538,7 +536,7 @@ export default class GeneralSettings extends DashboardView {
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
       onSubmit={() => AppsManager.deleteApp(this.context.currentApp.slug, this.state.password)}
-      onSuccess={result => history.push('/apps')}
+      onSuccess={() => history.push('/apps')}
       onClose={() => this.setState({showDeleteAppModal: false})}
       clearFields={() => this.setState({password: ''})}>
       {passwordField}
@@ -678,7 +676,7 @@ export default class GeneralSettings extends DashboardView {
           });
           return promise;
         }}
-        renderForm={({ changes, fields, setField, resetFields }) => {
+        renderForm={({ fields, setField }) => {
           let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
             <CurrentPlanFields

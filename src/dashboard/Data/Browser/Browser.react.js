@@ -327,7 +327,7 @@ export default class Browser extends DashboardView {
     return count;
   }
 
-  async fetchData(source, filters = new List(), last) {
+  async fetchData(source, filters = new List()) {
     const data = await this.fetchParseData(source, filters);
     var filteredCounts = { ...this.state.filteredCounts };
     if (filters.length > 0) {
@@ -639,7 +639,7 @@ export default class Browser extends DashboardView {
     const missedObjectsCount = objectIds.length - objects.length;
     if (missedObjectsCount) {
       const missedObjects = [];
-      objectIds.forEach((objectId, idx) => {
+      objectIds.forEach((objectId) => {
         const object = objects.find(x => x.id === objectId);
         if (!object) {
           missedObjects.push(objectId);

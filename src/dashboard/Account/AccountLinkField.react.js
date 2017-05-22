@@ -15,7 +15,7 @@ import React from 'react';
 const DEFAULT_LABEL_WIDTH = 56;
 
 // We use refs, so can't be stateless component
-export default class AccountLinkField extends React.Component {
+export class AccountLinkField extends React.Component {
   render() {
     return (
       <div>
@@ -37,7 +37,7 @@ export default class AccountLinkField extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default AccountLinkField;
 

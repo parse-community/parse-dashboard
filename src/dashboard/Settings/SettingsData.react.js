@@ -34,7 +34,7 @@ export default class SettingsData extends React.Component {
 
   saveChanges(changes) {
     let promise = this.context.currentApp.saveSettingsFields(changes)
-    promise.then(({successes, failures}) => {
+    promise.then(({successes}) => {
       let newFields = {...this.state.fields, ...successes};
       this.setState({fields: newFields});
     });

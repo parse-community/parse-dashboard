@@ -37,7 +37,7 @@ export default class HostingSettings extends DashboardView {
 		};
 	}
 
-	renderForm({changes, fields, setField, resetFields}) {
+	renderForm({fields, setField}) {
 		let hostingSubdomainFields = <Fieldset
 			legend="Hosting Subdomain"
 			description="Content from your public directory will be served to users that visit this address.">
@@ -121,7 +121,7 @@ export default class HostingSettings extends DashboardView {
 						this.setState({
 							sslPrivateKeyUploading: true,
 							sslPrivateKeyError: '',
-					  });
+						});
 						//TODO: do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
 						this.context.currentApp.uploadSSLPrivateKey(file).fail(({ error }) => {
 							this.setState({ sslPrivateKeyError: error });

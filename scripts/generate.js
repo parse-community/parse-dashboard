@@ -131,7 +131,7 @@ if (!name) {
     '',
     '  name - The name of the component you wish to create a scaffold for'
   ].join('\n'));
-  return;
+  process.exit(1);
 }
 
 if (name[0] < 'A' || name[0] > 'Z') {
@@ -144,7 +144,7 @@ try {
   // If we don't error, the file exists
   console.log('Error: A component with that name already exists!');
   process.exit(1);
-} catch (e) {}
+} catch (e) {/**/}
 
 try {
   fs.mkdirSync(path.join(rootDir, name));

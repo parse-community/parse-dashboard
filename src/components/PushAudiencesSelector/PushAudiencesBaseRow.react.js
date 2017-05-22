@@ -6,9 +6,7 @@
  * the root directory of this source tree.
  */
 import ParseApp          from 'lib/ParseApp';
-import PropTypes         from 'lib/PropTypes';
 import React             from 'react';
-import styles            from 'components/PushAudiencesSelector/PushAudiencesOption.scss';
 import { NEW_SEGMENT_ID} from 'dashboard/Push/PushConstants';
 
 export default class PushAudiencesBaseRow extends React.Component {

@@ -4,6 +4,7 @@
         "node": true,
         "browser": true
     },
+    "parser": "babel-eslint",
     "extends": "eslint:recommended",
     "installedESLint": true,
     "parserOptions": {

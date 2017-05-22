@@ -11,9 +11,7 @@ import EmptyState    from 'components/EmptyState/EmptyState.react';
 import FileTree      from 'components/FileTree/FileTree.react';
 import history       from 'dashboard/history';
 import React         from 'react';
-import stringCompare from 'lib/stringCompare';
 import styles        from 'dashboard/Data/CloudCode/CloudCode.scss';
-import subscribeTo   from 'lib/subscribeTo';
 import Toolbar       from 'components/Toolbar/Toolbar.react';
 
 function getPath(params) {
@@ -90,7 +88,7 @@ export default class CloudCode extends DashboardView {
   }
 
   renderContent() {
-  	let toolbar = null;
+    let toolbar = null;
     let content = null;
     let fileName = getPath(this.props.params);
 
@@ -108,8 +106,8 @@ export default class CloudCode extends DashboardView {
     } else {
       if (fileName) {
         toolbar = <Toolbar
-  	      section='Cloud Code'
-  	      subsection={fileName} />;
+          section='Cloud Code'
+          subsection={fileName} />;
 
         let source = this.state.files[fileName];
         if (source && source.source) {
