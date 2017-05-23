@@ -9,7 +9,7 @@ deploy:
     tags: true
     all_branches: true
     condition: "$TRAVIS_JOB_NUMBER = $TRAVIS_BUILD_NUMBER.1"
-    repo: ParsePlatform/parse-dashboard
+    repo: parse-community/parse-dashboard
   email:
     secure: NVlNLZh4bsCUaO1qYdXp6DpYnISQIXqz0xIaMfPI06CqFErkqlodWD7aOOYT2LyKos1f9QbQBbURl27drtJLudNqIXfMFbWMc0MwDJp4fJBa6vRFdn1jYNDcrqTbdAAoH5z6SU4r7YdiPz5pIJ7XjMajryaB7dAZLNiuZaTeTboF6QEQj+j+bw9IMcuiDIxQt3t+5f9Raah1HwZX5h5CBXS8voE97deCpf6jdVt3gaKvnZGvTvnDfYBsvmDE2ueqFK/xjt240PMArxqTbkEVFl/7Gti5jurLIKtX7StNsEZZZiGJS2+E9Px5nSFMM3JKnfD5Cj6IZxqobL9mQ4KueaL3tX5BOnbHfSpJs2t3Lp8TO0hnpmn8w/d7pekOjH3LihgC7AbZ3/ark9ZvPvP63XKhivKL4NuvNa+8yHeQNOLIzOjTPZl7ZS6XkibwxsOtgasMQWK4/Ttg6/jHHPjaXbnqn7ZoIM2GPZBv22xaReIWSRJdgW8G9ceSBEIIZFONkKsH0apDDq3eHg0vNEI4R3oEmV6t/R9yvpCzarfNLn5+l80ztMM+rX91eXT8B5V8Mpy+7urbQwIoFLUGRPDxbofEqEm8S6sLsjyYe7VnxBC4Lhir3DFxYL0+q5YLfhq64AejA4BM65+v5SyvXCUvyakzsRsydU230sJyaONHD5I=
   api_key:
