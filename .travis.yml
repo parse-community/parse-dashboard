@@ -1,8 +1,7 @@
 language: node_js
 node_js:
-- '4.4'
-- '5.7'
-- '6.1'
+- '6.10'
+- '7.10'
 deploy:
   provider: npm
   on:
