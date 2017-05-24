@@ -35,7 +35,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
   }
   xhr.withCredentials = withCredentials;
   let p = new Promise();
-  xhr.onerror = (e) => {
+  xhr.onerror = () => {
     p.reject({
       success: false,
       message: 'Network Error',
@@ -44,7 +44,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
       notice: 'Network Error',
     });
   };
-  xhr.onload = function(e) {
+  xhr.onload = function() {
     if (this.status === 200) {
       let json = {};
       try {

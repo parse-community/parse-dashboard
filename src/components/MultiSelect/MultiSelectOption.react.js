@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import Icon      from 'components/Icon/Icon.react';
-import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/MultiSelect/MultiSelect.scss';
 

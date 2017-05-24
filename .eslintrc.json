@@ -1,0 +1,27 @@
+{
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true
+    },
+    "parser": "babel-eslint",
+    "extends": "eslint:recommended",
+    "installedESLint": true,
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "react/jsx-uses-vars": 1,
+        "react/jsx-uses-react": 1,
+        "react/react-in-jsx-scope": 1,
+        "no-console": 0,
+        "no-case-declarations": 0
+    }
+}

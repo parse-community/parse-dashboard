@@ -20,7 +20,7 @@ import { List, Map } from 'immutable';
 const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];
 
 export default class BrowserFilter extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = {
@@ -33,7 +33,7 @@ export default class BrowserFilter extends React.Component {
     this.node = ReactDOM.findDOMNode(this);
   }
 
-  componentWillReceiveProps(props, context) {
+  componentWillReceiveProps(props) {
     if (props.schema !== this.props.schema) {
       this.setState({ open: false });
     }
@@ -69,10 +69,11 @@ export default class BrowserFilter extends React.Component {
 
   apply() {
     let formatted = this.state.filters.map((filter) => {
-      let type = this.props.schema[filter.get('field')].type;
+      // TODO: type is unused?
+      /*let type = this.props.schema[filter.get('field')].type;
       if (Filters.Constraints[filter.get('constraint')].hasOwnProperty('field')) {
         type = Filters.Constraints[filter.get('constraint')].field;
-      }
+      }*/
       return filter;
     })
     this.setState({ open: false }, () => {

@@ -20,7 +20,7 @@
   ],
   "homepage": "https://github.com/ParsePlatform/parse-dashboard",
   "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -47,11 +47,15 @@
   },
   "devDependencies": {
     "babel-core": "~5.8.12",
+    "babel-eslint": "^7.2.3",
     "babel-loader": "~5.3.0",
     "babel-plugin-remove-proptypes": "~1.0.0",
     "babel-polyfill": "^6.7.2",
     "babel-runtime": "~5.8.25",
     "css-loader": "~0.18.0",
+    "eslint": "^3.8.1",
+    "eslint-plugin-jest": "^20.0.3",
+    "eslint-plugin-react": "^6.4.1",
     "file-loader": "^0.8.5",
     "history": "^2.1.2",
     "http-server": "~0.8.5",
@@ -82,6 +86,8 @@
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "NODE_PATH=./node_modules jest",
+    "lint": "eslint . --ignore-path .gitignore --cache",
+    "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
     "prepublish": "webpack --config webpack/publish.config.js",
     "start": "node ./Parse-Dashboard/index.js"

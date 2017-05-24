@@ -12,7 +12,7 @@ export const component = CodeSnippet;
 
 export const demos = [
   {
-  	render() {
+    render() {
       let source = `// Some comment here
 Parse.Cloud.define('hello', function(req, resp) {
   let someVariable = "<div>";

@@ -231,7 +231,7 @@ export default class DashboardView extends React.Component {
         link: '/settings',
         subsections: settingsSections
       });
-    };
+    }
 
     let sidebar = (
     <Sidebar

@@ -173,10 +173,10 @@ class Config extends TableView {
     this.props.config.dispatch(
       ActionTypes.SET,
       { param: name, value: value }
-    ).then((r) => {
+    ).then(() => {
       this.setState({ modalOpen: false });
-    }, (error) => {
-
+    }, () => {
+      // Catch the error
     });
   }
 

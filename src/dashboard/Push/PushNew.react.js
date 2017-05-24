@@ -54,7 +54,7 @@ let isValidJSON = (input) => {
   let parsedJSON = null;
   try {
     parsedJSON = JSON.parse(input);
-  } catch (e) {}
+  } catch (e) {/**/}
 
   if (parsedJSON !== null) {
     return true;
@@ -120,7 +120,7 @@ let LocalizedMessageField = ({
         }
         input={
           <Dropdown value={currentLocaleOption} onChange={(nextLocaleOption) => onChangeLocale.call(undefined, id, nextLocaleOption, data, currentLocaleOption)}>
-            {localeOptions && localeOptions.length > 0 ? localeOptions.map((option, i) => {
+            {localeOptions && localeOptions.length > 0 ? localeOptions.map((option) => {
               return (<Option value={option}>{option}</Option>);
             }) : null}
           </Dropdown>
@@ -206,7 +206,7 @@ export default class PushNew extends DashboardView {
   handlePushSubmit(changes) {
     let promise = new Promise();
     let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
-    if (!!changes.increment_badge) {
+    if (changes.increment_badge) {
       payload.badge = "Increment";
     }
     let push_data = {
@@ -238,7 +238,7 @@ export default class PushNew extends DashboardView {
   renderExperimentContent(fields, setField) {
     if (!fields.exp_enable) {
       return null;
-    };
+    }
     let experimentContent = [
       <Field
         key='testName'
@@ -524,7 +524,7 @@ export default class PushNew extends DashboardView {
     ];
   }
 
-  renderForm({ fields, changes, setField, resetFields }) {
+  renderForm({ fields, setField }) {
     let multiMessage = (fields.exp_enable && fields.exp_type === 'message');
 
     let classes = this.props.schema.data.get('classes');

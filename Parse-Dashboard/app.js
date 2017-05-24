@@ -31,7 +31,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
     var iconName = currentApp.iconName;
     var path = iconsFolder + "/" + iconName;
 
-    fs.stat(path, function(err, stat) {
+    fs.stat(path, function(err) {
       if (err) {
           if ('ENOENT' == err.code) {// file does not exist
               console.warn("Icon with file name: " + iconName +" couldn't be found in icons folder!");

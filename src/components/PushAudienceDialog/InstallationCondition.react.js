@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { centered }    from 'components/Field/Field.scss';
 import { Constraints } from 'lib/Filters';
 import DateTimeEntry   from 'components/DateTimeEntry/DateTimeEntry.react';
 import Dropdown        from 'components/Dropdown/Dropdown.react';
@@ -89,7 +88,6 @@ export default class InstallationCondition extends React.Component {
             placeHolder='field'
             className={styles.conditionDropdown}>
             {this.props.fields.map(function(object, i){
-              let id = `fieldOpt{i}`;
               return <Option value={object} key={`fieldOpt${i}`}>{object}</Option>;
             })}
           </Dropdown>

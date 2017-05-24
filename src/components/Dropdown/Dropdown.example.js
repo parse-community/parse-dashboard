@@ -7,7 +7,6 @@
  */
 import Dropdown   from 'components/Dropdown/Dropdown.react';
 import Field    from 'components/Field/Field.react';
-import Fieldset from 'components/Fieldset/Fieldset.react';
 import Label    from 'components/Label/Label.react';
 import Option from 'components/Dropdown/Option.react';
 import React    from 'react';

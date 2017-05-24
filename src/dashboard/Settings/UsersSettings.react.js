@@ -58,7 +58,7 @@ export default class UsersSettings extends DashboardView {
 
 			twitterConsumerKey: '',
 		};
-		let renderForm = ({changes, fields, setField, resetFields}) => {
+		let renderForm = ({fields, setField}) => {
 				let userSessionsFields = <Fieldset
 					legend='User Sessions'
 					description={<div>This feature allows for better security and management <br/>of sessions for users.<a>Learn more</a></div>}>

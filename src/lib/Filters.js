@@ -140,4 +140,4 @@ export function availableFilters(schema, currentFilters, blacklist) {
     available[col] = FieldConstraints[type].filter((c) => blacklist.indexOf(c) < 0);
   }
   return available;
-};
+}

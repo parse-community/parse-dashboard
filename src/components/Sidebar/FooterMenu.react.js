@@ -11,7 +11,6 @@ import Position from 'lib/Position';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
 
-let host = location.host.split('.');
 let mountPath = window.PARSE_DASHBOARD_PATH;
 
 export default class FooterMenu extends React.Component {

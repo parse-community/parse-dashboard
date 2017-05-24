@@ -15,7 +15,7 @@ import ReactDOM       from 'react-dom';
 import styles         from 'components/SlowQueriesFilter/SlowQueriesFilter.scss';
 
 export default class SlowQueriesFilter extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = {
@@ -27,7 +27,7 @@ export default class SlowQueriesFilter extends React.Component {
     this.node = ReactDOM.findDOMNode(this);
   }
 
-  componentWillReceiveProps(props, context) {
+  componentWillReceiveProps(props) {
     if (props.schema !== this.props.schema) {
       this.setState({ open: false });
     }

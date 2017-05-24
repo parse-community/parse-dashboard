@@ -54,7 +54,7 @@ let SaveButton = ({
 
 SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED']);
 
-let {primary, width, progress, color, onClick, value, ...forwardedButtonProps} = Button.propTypes;
+let {...forwardedButtonProps} = Button.propTypes;
 delete forwardedButtonProps.value;
 SaveButton.propTypes = {
   state: PropTypes.string.describe('SaveButton.States.(SAVING|SUCCEEDED|FAILED|WAITING). Defaults to WAITING.'),
