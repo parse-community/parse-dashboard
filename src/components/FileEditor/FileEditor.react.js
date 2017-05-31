@@ -52,7 +52,7 @@ export default class FileEditor extends React.Component {
   }
 
   render() {
-    let file = this.props.value;
+    const file = this.props.value;
     return (
       <div ref='input' style={{ minWidth: this.props.width }} className={styles.editor}>
         {file && file.url() ? <a href={file.url()} target='_blank' role='button' className={styles.download}>Download</a> : null}
