@@ -45,7 +45,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
     content = JSON.stringify(value);
   } else if (type === 'File') {
     if (value.url()) {
-      content = <a href={value.url()} target='_blank'><Pill value={getFileName(value)} /></a>;
+      content = <Pill value={getFileName(value)} />;
     } else {
       content = <Pill value={'Uploading\u2026'} />;
     }
