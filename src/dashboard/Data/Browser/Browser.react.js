@@ -39,6 +39,7 @@ export default class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser'
     this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+    this.noteTimeout = null;
 
     this.state = {
       showCreateClassDialog: false,
@@ -62,6 +63,8 @@ export default class Browser extends DashboardView {
       newObject: null,
 
       lastError: null,
+      lastNote: null,
+
       relationCount: 0,
     };
 
@@ -225,7 +228,8 @@ export default class Browser extends DashboardView {
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
-      this.setState({ lastError: msg });
+
+      this.showNote(msg, true);
     });
   }
 
@@ -480,8 +484,13 @@ export default class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
-    obj.save(null, { useMasterKey: true }).then(() => {
-      const state = { data: this.state.data, lastError: null };
+    obj.save(null, { useMasterKey: true }).then((objectSaved) => {
+      const createdOrUpdated = isNewObject ? "created" : "updated";
+      let msg = objectSaved.className + " with id '" + objectSaved.id + "' " + createdOrUpdated;
+      this.showNote(msg, false);
+
+      const state = { data: this.state.data };
+
       if (isNewObject) {
         const relation = this.state.relation;
         if (relation) {
@@ -508,7 +517,8 @@ export default class Browser extends DashboardView {
               msg = msg[0].toUpperCase() + msg.substr(1);
             }
             obj.set(attr, prev);
-            this.setState({ data: this.state.data, lastError: msg });
+            this.setState({ data: this.state.data });
+            this.showNote(msg, true);
           });
         } else {
           state.newObject = null;
@@ -526,10 +536,10 @@ export default class Browser extends DashboardView {
       }
       if (!isNewObject) {
         obj.set(attr, prev);
-        this.setState({ data: this.state.data, lastError: msg });
-      } else {
-        this.setState({ lastError: msg });
+        this.setState({ data: this.state.data });
       }
+
+      this.showNote(msg, true);
     });
   }
 
@@ -561,6 +571,10 @@ export default class Browser extends DashboardView {
           toDelete.push(this.state.data[i]);
         }
       }
+
+      const toDeleteObjectIds = [];
+      toDelete.forEach((obj) => { toDeleteObjectIds.push(obj.id); });
+
       let relation = this.state.relation;
       if (relation && toDelete.length) {
         relation.remove(toDelete);
@@ -576,6 +590,16 @@ export default class Browser extends DashboardView {
         });
       } else if (toDelete.length) {
         Parse.Object.destroyAll(toDelete, { useMasterKey: true }).then(() => {
+          let deletedNote;
+
+          if (toDeleteObjectIds.length == 1) {
+            deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
+          } else {
+            deletedNote = toDeleteObjectIds.length + " " + className + " objects deleted";
+          }
+
+          this.showNote(deletedNote, false);
+
           if (this.props.params.className === className) {
             for (let i = 0; i < indexes.length; i++) {
               this.state.data.splice(indexes[i] - i, 1);
@@ -583,6 +607,26 @@ export default class Browser extends DashboardView {
             this.state.counts[className] -= indexes.length;
             this.forceUpdate();
           }
+        }, (error) => {
+          let errorDeletingNote = null;
+
+          if (error.code === Parse.Error.AGGREGATE_ERROR) {
+            if (error.errors.length == 1) {
+              errorDeletingNote = "Error deleting " + className + " with id '" + error.errors[0].object.id + "'";
+            } else if (error.errors.length < toDeleteObjectIds.length) {
+              errorDeletingNote = "Error deleting " + error.errors.length + " out of " + toDeleteObjectIds.length + " " + className + " objects";
+            } else {
+              errorDeletingNote = "Error deleting all " + error.errors.length + " " + className + " objects";
+            }
+          } else {
+            if (toDeleteObjectIds.length == 1) {
+              errorDeletingNote = "Error deleting " + className + " with id '" + toDeleteObjectIds[0] + "'";
+            } else {
+              errorDeletingNote = "Error deleting " + toDeleteObjectIds.length + " " + className + " objects";
+            }
+          }
+
+          this.showNote(errorDeletingNote, true);
         });
       }
     }
@@ -748,6 +792,24 @@ export default class Browser extends DashboardView {
     );
   }
 
+  showNote(message, isError) {
+    if (!message) {
+      return;
+    }
+
+    clearTimeout(this.noteTimeout);
+
+    if (isError) {
+      this.setState({ lastError: message, lastNote: null });
+    } else {
+      this.setState({ lastNote: message, lastError: null });
+    }
+
+    this.noteTimeout = setTimeout(() => {
+      this.setState({ lastError: null, lastNote: null });
+    }, 3500);
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -886,6 +948,7 @@ export default class Browser extends DashboardView {
           onCancel={() => this.setState({
             showDropClassDialog: false,
             lastError: null,
+            lastNote: null,
           })}
           onConfirm={() => this.dropClass(className)} />
       );
@@ -915,10 +978,22 @@ export default class Browser extends DashboardView {
         />
       );
     }
+
+    let notification = null;
+
+    if (this.state.lastError) {
+      notification = (
+        <Notification note={this.state.lastError} isErrorNote={true}/>
+      );
+    } else if (this.state.lastNote) {
+      notification = (
+        <Notification note={this.state.lastNote} isErrorNote={false}/>
+      );
+    }
     return (
       <div>
         {browser}
-        <Notification note={this.state.lastError} />
+        {notification}
         {extras}
       </div>
     );
