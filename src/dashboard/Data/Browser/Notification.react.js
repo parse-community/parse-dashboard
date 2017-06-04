@@ -11,11 +11,12 @@ import React    from 'react';
 import styles   from 'dashboard/Data/Browser/Browser.scss';
 
 export default class Notification extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
 
     this.state = {
-      lastNote: null,
+      lastNote: props.note,
+      isErrorNote: props.isErrorNote,
       hiding: false,
     };
 
@@ -30,9 +31,9 @@ export default class Notification extends React.Component {
     if (this.state.lastNote !== nextProps.note) {
       clearTimeout(this.timeout);
       if (this.state.hiding) {
-        this.setState({ lastNote: nextProps.note, hiding: false })
+        this.setState({ lastNote: nextProps.note, isErrorNote: nextProps.isErrorNote, hiding: false })
       } else {
-        this.setState({ lastNote: nextProps.note });
+        this.setState({ lastNote: nextProps.note, isErrorNote: nextProps.isErrorNote });
       }
     }
     if (!nextProps.note) {
@@ -50,8 +51,16 @@ export default class Notification extends React.Component {
     if (!this.state.lastNote) {
       return null;
     }
+
     let bottomRight = new Position(window.innerWidth, window.innerHeight);
-    let classes = [styles.notification];
+    let classes = [];
+
+    if (this.state.isErrorNote) {
+      classes.push(styles.notificationError);
+    } else {
+      classes.push(styles.notificationMessage);
+    }
+
     if (this.state.hiding) {
       classes.push(styles.notificationHide);
     }
