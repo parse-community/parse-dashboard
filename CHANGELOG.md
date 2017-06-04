@@ -4,6 +4,10 @@
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
+### 1.0.27
+* Improvement: Show notifications upon success or failure of save and delete objects (#718), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+* Improvement: Moves download option into file editor (#716), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+
 ### 1.0.26
 * Improvement: Fixes broken links, thanks to [Arthur Cinader](https://github.com/acinader)
 * Improvement: Title on the add row button, thanks to [Abdul Basit](https://github.com/basitsattar)
