@@ -1,10 +1,16 @@
 {
-  "apps": [{
-    "serverURL": "",
-    "appId": "",
-    "masterKey": "",
-    "appName": "",
-    "iconName": ""
-  }],
-  "iconsFolder": "icons"
+  "apps": [
+    {
+        "serverURL": "https://comerate2016.herokuapp.com/parse", 
+        "appId": "2016comrate",
+        "masterKey": "2016comrate1",
+        "appName": "comrate"
+    }
+  ],
+  "users": [
+    {
+      "user":"devintosh", 
+      "pass":"wideLand"
+    }
+  ]
 }
