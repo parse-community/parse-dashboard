@@ -164,6 +164,10 @@ class Config extends TableView {
 
           data.push({ param: param, value: value })
         });
+
+        data.sort((object1, object2) => {
+          return object1.param.localeCompare(object2.param);
+        });
       }
     }
     return data;
