@@ -60,6 +60,8 @@ function addConstraint(query, filter) {
       query.greaterThan(filter.get('field'), filter.get('compareTo'));
       break;
     case 'containsString':
+      query.matches(filter.get('field'), filter.get('compareTo'), 'i');
+      break;
     case 'containsNumber':
       query.equalTo(filter.get('field'), filter.get('compareTo'));
       break;
