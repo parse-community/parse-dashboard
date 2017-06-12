@@ -149,6 +149,8 @@ class Config extends TableView {
 
   tableData() {
     let data = undefined;
+    let orderedData = undefined;
+
     if (this.props.config.data) {
       let params = this.props.config.data.get('params');
       if (params) {
@@ -164,9 +166,14 @@ class Config extends TableView {
 
           data.push({ param: param, value: value })
         });
+
+        Object.keys(data).sort().forEach(function(key) {
+          orderedData[key] = data[key];
+        });
       }
     }
-    return data;
+    
+    return orderedData;
   }
 
   saveParam({ name, value }) {
