@@ -3,6 +3,7 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Improvement: Added/fixed a filtering option "contains string" for String fields. Case insensitive for now.
 
 ### 1.0.27
 * Improvement: Show notifications upon success or failure of save and delete objects (#718), thanks to [Natan Rolnik](https://github.com/natanrolnik)

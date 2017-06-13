@@ -70,6 +70,9 @@ function addConstraint(query, filter) {
     case 'containedIn':
       query.containedIn(filter.get('field'), filter.get('array'));
       break;
+    case 'stringContainsString':
+      query.matches(filter.get('field'), filter.get('compareTo'), 'i');
+      break;
   }
   return query;
 }
