@@ -48,6 +48,11 @@ export const Constraints = {
   ends: {
     name: 'ends with',
   },
+  stringContainsString: {
+    name: 'string contains string',
+    field: 'String',
+    composable: true,
+  },
   before: {
     name: 'is before',
     field: 'Date',
@@ -92,7 +97,7 @@ export const FieldConstraints = {
   'Pointer': [ 'exists', 'dne', 'eq', 'neq'],
   'Boolean': [ 'exists', 'dne', 'eq' ],
   'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte' ],
-  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'containsString' ],
+  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString' ],
   'Date': [ 'exists', 'dne', 'before', 'after' ],
   'Array': [
     'exists',
