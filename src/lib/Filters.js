@@ -90,6 +90,11 @@ export const Constraints = {
   doesNotContainAny: {
     name: 'does not contain',
     field: 'Array',
+  },
+  objectContains: {
+    name: 'contains key/value',
+    field: 'Object',
+    composable: true
   }
 };
 
@@ -99,6 +104,7 @@ export const FieldConstraints = {
   'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte' ],
   'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString' ],
   'Date': [ 'exists', 'dne', 'before', 'after' ],
+  'Object': [ 'objectContains' ],
   'Array': [
     'exists',
     'dne',
@@ -116,6 +122,7 @@ export const DefaultComparisons = {
   'Boolean': false,
   'Number': '',
   'String': '',
+  'Object': '',
   'Date': Parse._encode(new Date()),
 };
 

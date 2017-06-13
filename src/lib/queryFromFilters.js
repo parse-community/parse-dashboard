@@ -73,6 +73,12 @@ function addConstraint(query, filter) {
     case 'stringContainsString':
       query.matches(filter.get('field'), filter.get('compareTo'), 'i');
       break;
+    case 'objectContains':
+      let compareTo = JSON.parse(filter.get('compareTo'));
+      for (let key of Object.keys(compareTo)) {
+        query.equalTo(filter.get('field')+'.'+key, compareTo[key]);
+      }
+      break;
   }
   return query;
 }
