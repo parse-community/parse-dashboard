@@ -91,11 +91,46 @@ export const Constraints = {
     name: 'does not contain',
     field: 'Array',
   },
-  objectContains: {
-    name: 'contains key/value',
+  keyExists: {
+    name: 'key exists',
     field: 'Object',
     composable: true
-  }
+  },
+  keyDne: {
+    name: 'key does not exist',
+    field: 'Object',
+    composable: true
+  },
+  keyEq: {
+    name: 'key equals',
+    field: 'Object',
+    composable: true
+  },
+  keyNeq: {
+    name: 'key does not equal',
+    field: 'Object',
+    composable: true
+  },
+  keyGt: {
+    name: 'key greater than',
+    field: 'Object',
+    composable: true
+  },
+  keyGte: {
+    name: 'key greater than/equal',
+    field: 'Object',
+    composable: true
+  },
+  keyLt: {
+    name: 'key less than',
+    field: 'Object',
+    composable: true
+  },
+  keyLte: {
+    name: 'key less than/equal',
+    field: 'Object',
+    composable: true
+  },
 };
 
 export const FieldConstraints = {
@@ -104,7 +139,16 @@ export const FieldConstraints = {
   'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte' ],
   'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString' ],
   'Date': [ 'exists', 'dne', 'before', 'after' ],
-  'Object': [ 'objectContains' ],
+  'Object': [
+    'keyExists',
+    'keyDne',
+    'keyEq',
+    'keyNeq',
+    'keyGt',
+    'keyGte',
+    'keyLt',
+    'keyLte'
+  ],
   'Array': [
     'exists',
     'dne',
