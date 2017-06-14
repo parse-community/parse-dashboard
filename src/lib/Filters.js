@@ -140,6 +140,8 @@ export const FieldConstraints = {
   'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString' ],
   'Date': [ 'exists', 'dne', 'before', 'after' ],
   'Object': [
+    'exists',
+    'dne',
     'keyExists',
     'keyDne',
     'keyEq',
