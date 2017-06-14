@@ -31,6 +31,7 @@ function compareValue(info, value, onChangeCompareTo, active) {
   switch (info.type) {
     case null:
       return null;
+    case 'Object':
     case 'String':
       return <input type='text' value={value} onChange={(e) => onChangeCompareTo(e.target.value)} ref={setFocus}/>;
     case 'Pointer':
