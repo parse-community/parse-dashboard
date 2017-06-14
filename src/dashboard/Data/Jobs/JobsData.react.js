@@ -29,7 +29,7 @@ export default class JobsData extends React.Component {
       () => this.setState({ release: null })
     );
   }
-
+  */
   fetchJobs(app) {
     app.getAvailableJobs().then(
       ({ jobs, in_use }) => {
@@ -43,17 +43,15 @@ export default class JobsData extends React.Component {
       }, () => this.setState({ jobs: [], inUse: [] })
     );
   }
-  */
 
   componentDidMount() {
-    // this.fetchJobs(this.context.currentApp);
+    this.fetchJobs(this.context.currentApp);
     // this.fetchRelease(this.context.currentApp);
   }
 
   componentWillReceiveProps(props, context) {
     if (this.context !== context) {
-      this.setState({ release: undefined, jobs: undefined, inUse: undefined });
-      // this.fetchJobs(context.currentApp);
+      this.fetchJobs(context.currentApp);
       // this.fetchRelease(context.currentApp);
     }
   }
