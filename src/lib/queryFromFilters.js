@@ -81,10 +81,10 @@ function addConstraint(query, filter) {
       query.matches(filter.get('field'), filter.get('compareTo'), 'i');
       break;
     case 'keyExists':
-      addQueryConstraintFromObject(query, filter, 'exists');
+      query.exists(filter.get('field') + '.' + filter.get('compareTo'));
       break;
     case 'keyDne':
-      addQueryConstraintFromObject(query, filter, 'doesNotExist');
+      query.doesNotExist(filter.get('field') + '.' + filter.get('compareTo'));
       break;
     case 'keyEq':
       addQueryConstraintFromObject(query, filter, 'equalTo');
