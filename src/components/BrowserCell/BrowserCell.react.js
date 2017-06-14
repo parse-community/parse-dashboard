@@ -29,6 +29,9 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
   } else if (value === null) {
     content = '(null)';
     classes.push(styles.empty);
+  } else if (value === '') {
+    content = <span>&nbsp;</span>;
+    classes.push(styles.empty);
   } else if (type === 'Pointer') {
     content = (
       <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
