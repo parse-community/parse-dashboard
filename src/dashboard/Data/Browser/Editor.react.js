@@ -37,7 +37,8 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
     }
     content = (
       <StringEditor
-        value={JSON.stringify(value)}
+        value={JSON.stringify(value, null, 2)}
+        resizable={true}
         multiline={true}
         width={width}
         onCommit={encodeCommit} />
