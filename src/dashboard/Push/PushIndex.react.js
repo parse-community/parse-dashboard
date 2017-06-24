@@ -137,6 +137,8 @@ let getPushName = (pushData) => {
     if (typeof payload === 'object') {
       if (typeof payload.alert === 'string') {
         return payload.alert;
+			} else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
+				return payload.alert.title;
       }
       return payload.alert ? JSON.stringify(payload.alert) : JSON.stringify(payload);
     } else {

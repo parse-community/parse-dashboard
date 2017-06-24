@@ -39,7 +39,13 @@ const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments
 let getMessage = (payload) => {
   if(payload) {
     let payloadJSON = JSON.parse(payload);
-    return payloadJSON.alert ? payloadJSON.alert : payload;
+		if (payloadJSON.alert.body) {
+			return payloadJSON.alert.body;
+		} else if (payloadJSON.alert) {
+			return payloadJSON.alert;
+		} else {
+			return payload;
+		}
   }
   return '';
 }
