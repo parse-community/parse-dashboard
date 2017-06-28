@@ -6,6 +6,7 @@
 * Feature: When editing Object or Array fields the data is displayed in a prettier format and the textarea is resizable
 * Fix: Display bug on safari when table has empty cells ('')
 * Feature: UI for managing push audiences, thanks to [Davi Macedo](https://github.com/davimacedo)
+* Fix: Addresses issue related to displaying iOS alert object containing title and body keys (#539), thanks to [Robert Martin del Campo](https://github.com/repertus)
 
 ### 1.0.28
 * Feature: Add ability to search Object columns (#727), thanks to [Samuli Siivinen](https://github.com/ssamuli)
