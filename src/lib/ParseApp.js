@@ -506,22 +506,26 @@ export default class ParseApp {
   }
 
   getAvailableJobs() {
-    let path = '/apps/' + this.slug + '/cloud_code/jobs/data';
-    return Parse._request('GET', path);
+    let path = 'cloud_code/jobs/data';
+    return this.apiRequest('GET', path, {}, { useMasterKey: true });
   }
 
   getJobStatus() {
-    // Cache it for a minute
+    // Cache it for a 30s
+    if (new Date() - this.jobStatus.lastFetched < 30000) {
+      return Parse.Promise.as(this.jobStatus.status);
+    }
     let query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
     return query.find({ useMasterKey: true }).then((status) => {
+      status = status.map((jobStatus) => {
+        return jobStatus.toJSON();
+      });
       this.jobStatus = {
         status: status || null,
         lastFetched: new Date()
       };
-      return status.map((jobStatus) => {
-        return jobStatus.toJSON();
-      });
+      return status;
     });
   }
 
