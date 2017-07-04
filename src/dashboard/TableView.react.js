@@ -21,9 +21,14 @@ export default class TableView extends DashboardView {
     return widths;
   }
 
+  renderFooter() {
+    return null;
+  }
+
   renderContent() {
     let toolbar = this.renderToolbar();
     let data = this.tableData();
+    let footer = this.renderFooter();
     let content = null;
     let headers = null;
     if (data !== undefined) {
@@ -40,6 +45,7 @@ export default class TableView extends DashboardView {
                   {data.map((row) => this.renderRow(row))}
                 </tbody>
               </table>
+              {footer}
             </div>
           );
           headers = this.renderHeaders();
