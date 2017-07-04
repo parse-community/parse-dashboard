@@ -2,6 +2,8 @@
 
 ### NEXT RELEASE
 
+### 1.1.0
+
 * _Contributing to this repo? Add info about your change here to be included in next release_
 * Feature: UI for managing push audiences (#712), thanks to [Davi Macedo](https://github.com/davimacedo)
 * Feature: When editing Object or Array fields the data is displayed in a prettier format and the textarea is resizable (#734), thanks to [Samuli Siivinen](https://github.com/ssamuli)
