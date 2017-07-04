@@ -2,6 +2,8 @@
 
 ### NEXT RELEASE
 
+### 1.1.0
+
 * _Contributing to this repo? Add info about your change here to be included in next release_
 * Fix: Added on the empty Scheduled Jobs page a message that notifies about jobs not being run by parse-server but requires further setup
 * Feature: When editing Object or Array fields the data is displayed in a prettier format and the textarea is resizable
