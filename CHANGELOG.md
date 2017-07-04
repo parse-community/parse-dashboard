@@ -3,6 +3,7 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: Added on the empty Scheduled Jobs page a message that notifies about jobs not being run by parse-server but requires further setup
 * Feature: When editing Object or Array fields the data is displayed in a prettier format and the textarea is resizable
 * Fix: Display bug on safari when table has empty cells ('')
 * Feature: UI for managing push audiences, thanks to [Davi Macedo](https://github.com/davimacedo)

@@ -192,7 +192,18 @@ export default class Jobs extends TableView {
       return (
         <EmptyState
           title='Cloud Jobs'
-          description='Scheduling jobs is not supported on parse-server'
+          description=
+            <div>
+              <p>{'On this page you can create JobSchedule objects.'}</p>
+              <br/>
+              <p>
+                {"Be noted that "}
+                <b>{"parse-server doesn't schedule or run them. "}</b>
+                {"Please take a look at the "}
+                <a href="http://docs.parseplatform.org/parse-server/guide/#jobs">{'docs'}</a>
+                {" on how to do that."}
+              </p>
+            </div>
           icon='cloud-happy' />
       );
     } else {
