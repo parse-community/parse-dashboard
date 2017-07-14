@@ -55,9 +55,13 @@ function compareValue(info, value, onChangeCompareTo, active) {
           value={value}
           onChange={(e) => {
             let val = value;
-            if (!e.target.value.length) val = '';
-            else if (e.target.value.length === 1) val = validateNumeric(e.target.value) ? e.target.value : value;
-            else val = validateNumeric(e.target.value) ? parseFloat(e.target.value) : value;
+            if (!e.target.value.length) {
+              val = '';
+            } else if (e.target.value.length === 1) {
+              val = validateNumeric(e.target.value) ? e.target.value : value;
+            } else {
+              val = validateNumeric(e.target.value) ? parseFloat(e.target.value) : value;
+            }
             onChangeCompareTo(val);
           }} />
       );
