@@ -3,6 +3,7 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: NaN displayed when filter input is empty or negative number (#749), thanks to [Miguel Serrrano](https://github.com/miguel-s)
 
 ### 1.1.0
 

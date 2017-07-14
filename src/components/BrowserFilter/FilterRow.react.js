@@ -49,7 +49,22 @@ function compareValue(info, value, onChangeCompareTo, active) {
     case 'Boolean':
       return <ChromeDropdown color={active ? 'blue' : 'purple'} value={value ? 'True' : 'False'} options={['True', 'False']} onChange={(val) => onChangeCompareTo(val === 'True')} />;
     case 'Number':
-      return <input type='text' value={value} onChange={(e) => onChangeCompareTo(validateNumeric(e.target.value) ? parseFloat(e.target.value) : (parseFloat(value) || ''))} />;
+      return (
+        <input
+          type='text'
+          value={value}
+          onChange={(e) => {
+            let val = value;
+            if (!e.target.value.length) {
+              val = '';
+            } else if (e.target.value.length === 1) {
+              val = validateNumeric(e.target.value) ? e.target.value : value;
+            } else {
+              val = validateNumeric(e.target.value) ? parseFloat(e.target.value) : value;
+            }
+            onChangeCompareTo(val);
+          }} />
+      );
     case 'Date':
       return (
         <DateTimeEntry
