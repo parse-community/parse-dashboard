@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import { dateStringUTC }         from 'lib/DateUtils';
+import { dateStringLocale }      from 'lib/DateUtils';
 import getFileName               from 'lib/getFileName';
 import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
@@ -39,7 +40,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
       </a>
     );
   } else if (type === 'Date') {
-    content = dateStringUTC(value);
+      content = dateStringLocale(value)
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';
   } else if (type === 'Array') {

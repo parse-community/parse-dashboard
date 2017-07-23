@@ -128,6 +128,25 @@ export function dateStringUTC(date) {
   return full;
 }
 
+export function dateStringLocale(date) {
+  let full = String(date.getDate()) + ' ' +
+    shortMonth(date.getMonth()) + ' ' +
+    String(date.getFullYear()) + ' at ';
+  let time = {
+    hours: String(date.getHours()),
+    minutes: String(date.getMinutes()),
+    seconds: String(date.getSeconds())
+  };
+  for (let k in time) {
+    if (time[k].length < 2) {
+      time[k] = '0' + time[k];
+    }
+  }
+  full += time.hours + ':' + time.minutes + ':' + time.seconds;
+  return full;
+}
+
+
 export function monthDayStringUTC(date) {
   return `${shortMonth(date.getUTCMonth())} ${date.getUTCDate()}`;
 }
