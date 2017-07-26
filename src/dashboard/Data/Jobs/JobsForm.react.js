@@ -5,23 +5,24 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import DashboardView  from 'dashboard/DashboardView.react';
-import DateTimeInput  from 'components/DateTimeInput/DateTimeInput.react';
-import Dropdown       from 'components/Dropdown/Dropdown.react';
-import Field          from 'components/Field/Field.react';
-import Fieldset       from 'components/Fieldset/Fieldset.react';
-import FlowView       from 'components/FlowView/FlowView.react';
-import IntervalInput  from 'components/IntervalInput/IntervalInput.react';
-import Label          from 'components/Label/Label.react';
-import Option         from 'components/Dropdown/Option.react';
-import pluralize      from 'lib/pluralize';
-import React          from 'react';
-import ReleaseInfo    from 'components/ReleaseInfo/ReleaseInfo';
-import styles         from 'dashboard/Data/Jobs/Jobs.scss';
-import TextInput      from 'components/TextInput/TextInput.react';
-import TimeInput      from 'components/TimeInput/TimeInput.react';
-import Toggle         from 'components/Toggle/Toggle.react';
-import Toolbar        from 'components/Toolbar/Toolbar.react';
+import DashboardView          from 'dashboard/DashboardView.react';
+import DateTimeInput          from 'components/DateTimeInput/DateTimeInput.react';
+import Dropdown               from 'components/Dropdown/Dropdown.react';
+import Field                  from 'components/Field/Field.react';
+import Fieldset               from 'components/Fieldset/Fieldset.react';
+import FlowView               from 'components/FlowView/FlowView.react';
+import IntervalInput          from 'components/IntervalInput/IntervalInput.react';
+import JobScheduleReminder    from 'dashboard/Data/Jobs/JobScheduleReminder.react';
+import Label                  from 'components/Label/Label.react';
+import Option                 from 'components/Dropdown/Option.react';
+import pluralize              from 'lib/pluralize';
+import React                  from 'react';
+import ReleaseInfo            from 'components/ReleaseInfo/ReleaseInfo';
+import styles                 from 'dashboard/Data/Jobs/Jobs.scss';
+import TextInput              from 'components/TextInput/TextInput.react';
+import TimeInput              from 'components/TimeInput/TimeInput.react';
+import Toggle                 from 'components/Toggle/Toggle.react';
+import Toolbar                from 'components/Toolbar/Toolbar.react';
 import { hoursFrom, dateStringUTC }  from 'lib/DateUtils';
 
 export default class JobsForm extends DashboardView {
@@ -139,6 +140,7 @@ export default class JobsForm extends DashboardView {
     }
     return (
       <div className={styles.jobsFlow}>
+        <JobScheduleReminder />
         <Fieldset
           legend='Pick a Job'
           description='Choose a job from your cloud code, and specify the parameters to run it with'>
