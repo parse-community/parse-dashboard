@@ -58,7 +58,7 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
     }
     content = (
       <StringEditor
-        value={JSON.stringify(value.coordinates, null, 2)}
+        value={JSON.stringify(value && value.coordinates || [['lat', 'lon']], null, 2)}
         resizable={true}
         multiline={true}
         width={width}
