@@ -75,6 +75,8 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
     content = pieces.join(', ');
   } else if (type === 'GeoPoint') {
     content = `(${value.latitude}, ${value.longitude})`;
+  } else if (type === 'Polygon') {
+    content = value.coordinates.map(coord => `(${coord})`)
   } else if (type === 'Relation') {
     content = (
       <div style={{ textAlign: 'center', cursor: 'pointer' }}>

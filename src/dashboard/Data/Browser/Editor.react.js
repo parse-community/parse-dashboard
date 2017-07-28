@@ -43,6 +43,27 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
         width={width}
         onCommit={encodeCommit} />
     );
+  } else if (type === 'Polygon') {
+    let encodeCommit = (json) => {
+      try {
+        let coordinates = JSON.parse(json);
+        let obj = {
+          '__type': 'Polygon',
+          coordinates
+        }
+        onCommit(obj);
+      } catch (e) {
+        onCommit(value);
+      }
+    }
+    content = (
+      <StringEditor
+        value={JSON.stringify(value.coordinates, null, 2)}
+        resizable={true}
+        multiline={true}
+        width={width}
+        onCommit={encodeCommit} />
+    );
   } else if (type === 'Date') {
     if (readonly) {
       content = (
