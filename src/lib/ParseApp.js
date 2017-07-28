@@ -403,6 +403,12 @@ export default class ParseApp {
     return query.first({ useMasterKey: true });
   }
 
+  cancelPushSchedule(objectId) {
+    const pushStatus = new Parse.Object('_PushStatus');
+    pushStatus.id = objectId;
+    return pushStatus.destroy({ useMasterKey: true });
+  }
+
   isLocalizationAvailable() {
     let path = '/apps/' + this.slug + '/is_localization_available';
     return AJAX.abortableGet(path);

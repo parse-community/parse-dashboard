@@ -29,6 +29,7 @@ import subscribeTo            from 'lib/subscribeTo';
 import tableStyles            from 'components/Table/Table.scss';
 import Toggle                 from 'components/Toggle/Toggle.react';
 import Toolbar                from 'components/Toolbar/Toolbar.react';
+import Button                 from 'components/Button/Button.react';
 import { Directions }         from 'lib/Constants';
 import { Link }               from 'react-router';
 import { Promise }            from 'parse';
@@ -44,6 +45,10 @@ let getMessage = (payload) => {
   return '';
 }
 
+let getScheduleStatus = (status) => {
+  return status == "scheduled";
+}
+
 let getFormattedTime = ({ time, is_local }) => {
   let formattedTime = DateUtils.yearMonthDayTimeFormatter(new Date(time), !is_local);
   if(is_local){
@@ -52,7 +57,7 @@ let getFormattedTime = ({ time, is_local }) => {
   return formattedTime;
 }
 
-let getSentInfo = (sendTime, expiration) => {
+const getScheduleInfo = (sendTime, expiration) => {
   //expiration unit is in seconds :(
   if (!sendTime){
     return '';
@@ -60,6 +65,36 @@ let getSentInfo = (sendTime, expiration) => {
 
   let fmtSendTime = getFormattedTime({time: sendTime});
   let fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
+  if (expiration){
+    return `Sent ${fmtSendTime} and expires ${fmtExpiration}`;
+  } else {
+    return `Sent ${fmtSendTime}`;
+  }
+}
+
+let getSentScheduleInfo = (sendTime, expiration) => {
+  //expiration unit is in seconds :(
+  if (!sendTime){
+    return '';
+  }
+
+  const fmtSendTime = getFormattedTime({time: sendTime});
+  const fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
+  if (expiration){
+    return `It will be sent ${fmtSendTime} and expires ${fmtExpiration}`;
+  } else {
+    return `It will be sent ${fmtSendTime}`;
+  }
+}
+
+let getSentInfo = (sendTime, expiration) => {
+  //expiration unit is in seconds :(
+  if (!sendTime){
+    return '';
+  }
+
+  const fmtSendTime = getFormattedTime({time: sendTime});
+  const fmtExpiration = expiration ? getFormattedTime({time: expiration * 1000}) : null;
   if (expiration){
     return `Sent ${fmtSendTime} and expires ${fmtExpiration}`;
   } else {
@@ -508,27 +543,51 @@ export default class PushDetails extends DashboardView {
         </div>
       );
     } else {
-      res = (
-        <div>
-          <div className={styles.groupHeader}>
-            <div className={styles.headerTitle}>MESSAGE SENT</div>
-            <div className={styles.headline}>{getMessage(pushDetails.get('payload'))}</div>
-            <div className={styles.subline}>
-              {getSentInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
+      if(getScheduleStatus(pushDetails.get('status'))) {
+        res = (<div className={styles.groupHeader}>
+                  <div className={styles.headerTitle}>MESSAGE SCHEDULED</div>
+                  <div className={styles.headline}>{getMessage(pushDetails.get('payload'))}</div>
+                  <div className={styles.subline}>
+                      {getSentScheduleInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
+                  </div>
+                  <div className={styles.headline}>
+                    <Button
+                      value='Cancel schedule'
+                      primary={true}
+                      onClick={() => {
+                          let promise = this.context.currentApp.cancelPushSchedule(this.state.pushDetails.id);
+                          promise.then((push) => {
+                            history.push(this.context.generatePath('push/activity'));
+                          });
+                      }}>
+                    </Button>
+                  </div>
+              </div>
+          );
+      } else {
+        res = (
+          <div>
+            <div className={styles.groupHeader}>
+                <div className={styles.headerTitle}>MESSAGE SENT</div>
+                <div className={styles.headline}>{getMessage(pushDetails.get('payload'))}</div>
+                <div className={styles.subline}>
+                    {getSentInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
+                </div>
             </div>
+            {prevLaunchGroup}
+            {experimentInfo}
+            <PushOpenRate
+              numOpened={pushDetails.get('numOpened') || 0}
+              numSent={pushDetails.get('numSent')}
+              customColor={this.state.standardColor} />
           </div>
-          {prevLaunchGroup}
-          {experimentInfo}
-          <PushOpenRate
-            numOpened={pushDetails.get('numOpened') || 0}
-            numSent={pushDetails.get('numSent')}
-            customColor={this.state.standardColor} />
-        </div>
-      );
+        );
+      }
     }
 
     return res;
   }
+
 
   renderAnalytics() {
     if (Object.keys(this.state.chartData).length > 0) {

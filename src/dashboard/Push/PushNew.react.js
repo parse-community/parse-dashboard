@@ -39,7 +39,9 @@ import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
-const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = false;
+const PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA = false;
+const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_EXPIRATION = false;
+const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_TIMEZONE = false;
 
 let formatErrorMessage = (emptyInputMessages, key) => {
   let boldMessages = emptyInputMessages.map((message) => {
@@ -59,6 +61,13 @@ let isValidJSON = (input) => {
   } else {
     return false;
   }
+}
+
+let isValidURL = (input) => {
+  var urlPattern = "(https?|ftp)://(www\\.)?(((([a-zA-Z0-9.-]+\\.){1,}[a-zA-Z]{2,4}|localhost))|((\\d{1,3}\\.){3}(\\d{1,3})))(:(\\d+))?(/([a-zA-Z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?(\\?([a-zA-Z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*)?(#([a-zA-Z0-9._-]|%[0-9A-F]{2})*)?";
+  urlPattern = "^" + urlPattern + "$";
+  var regex = new RegExp(urlPattern);
+  return regex.test(input);
 }
 
 let LocalizedMessageField = ({
@@ -158,7 +167,6 @@ export default class PushNew extends DashboardView {
       options).then(() => {
       this.setState({ pushAudiencesFetched :true });
     });
-
     let {xhr, promise} = this.context.currentApp.isLocalizationAvailable();
     this.xhrs.push(xhr);
     promise.then(({ available }) => {
@@ -201,10 +209,12 @@ export default class PushNew extends DashboardView {
     if (changes.increment_badge) {
       payload.badge = "Increment";
     }
-    Parse.Push.send({
+    let push_data = {
       where: changes.target || new Parse.Query(Parse.Installation),
       data: payload,
-    }, {
+    }
+    if (changes.push_time_type !== 'now' && changes.push_time) push_data.push_time = changes.push_time;
+    Parse.Push.send(push_data, {
       useMasterKey: true,
     }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
@@ -309,6 +319,26 @@ export default class PushNew extends DashboardView {
     return experimentContent;
   }
 
+  renderRichMediaContent(fields, setField) {
+    let deliveryContent = [];
+    if(fields.media_attachment) {
+      deliveryContent.push(
+            <Field
+              key='media_attachment'
+              labelWidth={30}
+              label={<Label text='Rich media URL' />}
+              input={<TextInput
+              multiline={false}
+              height={80}
+              placeholder='Type URL'
+              value={fields.media_attachment_url}
+              onChange={setField.bind(null, 'media_attachment_url')} />
+              } />
+      );
+    }
+    return deliveryContent;
+  }
+
   renderDeliveryContent(fields, setField) {
     let deliveryContent = [];
     if (fields.exp_enable && fields.exp_type === 'time') {
@@ -380,7 +410,7 @@ export default class PushNew extends DashboardView {
     }
 
     //TODO: disable user selection of invalid date or show error message in footer
-    if (fields.push_time_type !== 'now' || (fields.exp_enable && fields.exp_type === 'time')) {
+    if (PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_TIMEZONE && fields.push_time_type !== 'now' || (fields.exp_enable && fields.exp_type === 'time')) {
       return deliveryContent.concat([
         <Field
           key='local_time'
@@ -670,21 +700,43 @@ export default class PushNew extends DashboardView {
       {this.renderExperimentContent(fields, setField)}
     </Fieldset> : null;
 
-    const timeFieldsLegend = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+    const richmediaFieldsLegend = PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA ?
+      'Rich media push notification' :
+      'Rich notifications';
+
+    const richmediaFieldsDescription = PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA ?
+      'We can send images and videos directly to your app.' :
+      'Rich media is not currently supported.';
+
+    const richmediaTimeFields = PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA? <Fieldset
+      legend={richmediaFieldsLegend}
+      description={richmediaFieldsDescription}>
+      <Field
+          label={<Label text='Send media attachment?' />}
+          input={<Toggle value={fields.media_attachment} onChange={setField.bind(null, 'media_attachment')} />} />
+      {PARSE_SERVER_SUPPORTS_PUSH_RICH_MEDIA ? this.renderRichMediaContent(fields, setField) : null}
+    </Fieldset> : null;
+
+    let features = this.context.currentApp.serverInfo.features;
+    let hasScheduledPush = features.push.scheduledPush;
+
+    const timeFieldsLegend = hasScheduledPush ?
       'Choose a delivery time' :
       'Choose exiry';
 
-    const timeFieldsDescription = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
-      'We can send the campaign immediately, or any time in the next 2 weeks.' :
-      "If your push hasn't been send by this time, it won't get sent.";
+    const timeFieldsDescription = hasScheduledPush ?
+      'We can send the campaign immediately, or any time in the future.' :
+      'Push schedule is not currently supported.';
 
-    const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? <Fieldset
+    const deliveryTimeFields = hasScheduledPush? <Fieldset
       legend={timeFieldsLegend}
       description={timeFieldsDescription}>
-      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? this.renderDeliveryContent(fields, setField) : null}
-      <Field
-        label={<Label text='Should this notification expire?' />}
-        input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
+      {hasScheduledPush ? this.renderDeliveryContent(fields, setField) : null}
+      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH_EXPIRATION ?
+        <Field
+          label={<Label text='Should this notification expire?' />}
+          input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
+      : null}
       {PushHelper.renderExpirationContent(fields, setField)}
     </Fieldset> : null;
 
@@ -713,6 +765,7 @@ export default class PushNew extends DashboardView {
       {abTestingFields}
       {deliveryTimeFields}
       {messageFields}
+      {richmediaTimeFields}
       {previewFields}
       <Toolbar section='Push' subsection='Send a new campaign' />
     </div>
@@ -724,6 +777,12 @@ export default class PushNew extends DashboardView {
     // when number audience size is 0
     if (this.state.deviceCount === 0) {
       emptyInputMessages.push('recipient count for this campaign');
+    }
+
+    if(changes.media_attachment) {
+      if (!isValidURL(changes.media_attachment_url)) {
+        emptyInputMessages.push('media attachment for this campaign');
+      }
     }
 
     // push expiration date
@@ -833,6 +892,8 @@ export default class PushNew extends DashboardView {
         deliveryTime: null,
         local_time: false,
         push_expires: false,
+        media_attachment: false,
+        media_attachment_url: '',
         expiration_time: null,
         expiration_time_type: 'time',
         expiration_interval_num: '24',
@@ -871,7 +932,7 @@ export default class PushNew extends DashboardView {
           );
         }
         let timeNote = null;
-        if(changes.push_time_type === 'time' && changes.push_time !== null || changes.push_time_type === 'now') {
+        if (changes.push_time_type === 'time' && changes.push_time !== null || changes.push_time_type === 'now') {
           timeNote = (
             <span>
               It will be sent <strong>{changes.push_time_type === 'now' ? 'immediately' : String(changes.push_time)}</strong>.&nbsp;
