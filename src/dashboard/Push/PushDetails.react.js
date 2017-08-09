@@ -522,7 +522,7 @@ export default class PushDetails extends DashboardView {
 							{
 								(typeof alert === 'object') ?
 									<div>
-								 		<div className={styles.headline}>{alert.title}</div>
+										<div className={styles.headline}>{alert.title}</div>
 										<div className={styles.headline}>{alert.body}</div>
 									</div>:
 									<div className={styles.headline}>{alert}</div>
