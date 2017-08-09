@@ -467,6 +467,7 @@ export default class PushDetails extends DashboardView {
     let isMessageType = pushDetails.exp_type === 'message';
     let res = null;
     let prevLaunchGroup = null;
+		let alert = getMessage(pushDetails.get('payload'));
 
     if (pushDetails && pushDetails.experiment_push_id) {
       prevLaunchGroup = (
@@ -518,7 +519,14 @@ export default class PushDetails extends DashboardView {
         <div>
           <div className={styles.groupHeader}>
             <div className={styles.headerTitle}>MESSAGE SENT</div>
-            <div className={styles.headline}>{getMessage(pushDetails.get('payload'))}</div>
+							{
+								(typeof alert === 'object') ?
+									<div>
+								 		<div className={styles.headline}>{alert.title}</div>
+										<div className={styles.headline}>{alert.body}</div>
+									</div>:
+									<div className={styles.headline}>{alert}</div>
+							}
             <div className={styles.subline}>
               {getSentInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
             </div>
