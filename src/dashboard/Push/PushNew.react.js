@@ -17,7 +17,6 @@ import Field                   from 'components/Field/Field.react';
 import Fieldset                from 'components/Fieldset/Fieldset.react';
 import FieldStyles             from 'components/Field/Field.scss';
 import FlowView                from 'components/FlowView/FlowView.react';
-import getSiteDomain           from 'lib/getSiteDomain';
 import history                 from 'dashboard/history';
 import joinWithFinal           from 'lib/joinWithFinal';
 import Label                   from 'components/Label/Label.react';
@@ -121,7 +120,6 @@ let LocalizedMessageField = ({
 }
 
 const XHR_KEY = 'PushNew';
-const TRANSLATE_MORE_INFO_URL = '/docs/android/guide#push-notifications-push-localization';
 
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
