@@ -359,6 +359,27 @@ You can give read only access to a user on a per-app basis:
 
 With this configuration, user1 will have read only access to `myAppId1` and read/write access to `myAppId2`.
 
+## Configuring Localized Push Notifications
+
+With the latest version of the dashboard, it is possible to send localized messages for push notifications.
+You can provide a list of locales or languages you want to support for your dashboard users.
+
+```json
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App",
+      "iconName": "MyAppIcon.png",
+      "supportedPushLocales": ["en", "ru", "fr"]
+    }
+  ],
+  "iconsFolder": "icons"
+}
+```
+
 ## Run with Docker
 
 It is easy to use it with Docker. First build the image:
