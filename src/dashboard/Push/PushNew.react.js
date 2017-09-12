@@ -201,10 +201,17 @@ export default class PushNew extends DashboardView {
     if (changes.increment_badge) {
       payload.badge = "Increment";
     }
-    Parse.Push.send({
+
+    let body = {
       where: changes.target || new Parse.Query(Parse.Installation),
-      data: payload,
-    }, {
+      data: payload
+    }
+    let audience_id = changes.audience_id;
+    // Only set the audience ID if it is a saved audience.
+    if (audience_id != PushConstants.NEW_SEGMENT_ID && audience_id != "everyone") {
+      body.audience_id = audience_id;
+    }
+    Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
