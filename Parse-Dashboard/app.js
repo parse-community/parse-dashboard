@@ -61,8 +61,11 @@ module.exports = function(config, allowInsecureHTTP) {
     const mountPath = getMount(app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
-    const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
-    authInstance.initialize(app);
+
+    if (!config.noAuthentication) {
+      const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
+      authInstance.initialize(app);
+    }
 
     // CSRF error handler
     app.use(function (err, req, res, next) {

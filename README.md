@@ -145,6 +145,8 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
 
 You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.
 
+If you wish to use a custom authentication system, then you can disable Parse Dashboard's built-in authentication system by setting `noAuthentication` to `false`. The default value is false if not specified.
+
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
 
 # Running as Express Middleware
