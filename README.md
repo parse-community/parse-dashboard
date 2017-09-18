@@ -257,6 +257,8 @@ You can configure your dashboard for Basic Authentication by adding usernames an
 You can store the password in either `plain text` or `bcrypt` formats. To use the `bcrypt` format, you must set the config `useEncryptedPasswords` parameter to `true`.
 You can encrypt the password using any online bcrypt tool e.g. [https://www.bcrypt-generator.com](https://www.bcrypt-generator.com).
 
+You can disable the Basic Authentication by setting the config `noAuthentication` to `true`, in case you want to implement your own Authentication middleware.
+
 ### Separating App Access Based on User Identity
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.
 
