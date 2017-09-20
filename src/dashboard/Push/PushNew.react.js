@@ -37,7 +37,7 @@ import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
-import {extractExpirationTime, extractPushTime} from "../../lib/extractTime";
+import { extractExpirationTime, extractPushTime } from 'lib/extractTime';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
