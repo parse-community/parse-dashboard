@@ -89,42 +89,84 @@ describe('extractPushTime', () => {
 describe('extractExpirationTime', () => {
   describe('With expiration interval', () => {
     describe('In user\'s local timezone', () => {
-      const changes = {
-        "experiment_name": "",
-        "exp_size_in_percent": 50,
-        "push_time_type": "time",
-        "push_time": "2017-09-28T19:40:00.000",
-        "push_time_1": null,
-        "push_time_2": null,
-        "push_time_iso": "2017-09-28T23:40:00.000Z",
-        "push_time_1_iso": null,
-        "push_time_2_iso": null,
-        "deliveryTime": null,
-        "local_time": true,
-        "push_expires": true,
-        "expiration_time": null,
-        "expiration_time_type": "interval",
-        "expiration_interval_num": "3",
-        "expiration_interval_unit": "hours",
-        "expirationInterval": null,
-        "exp_type": "message",
-        "exp_enable": null,
-        "increment_badge": null,
-        "audience_id": "everyone",
-        "data": "asdsada",
-        "data_type": "text",
-        "data1": "",
-        "data_type_1": "text",
-        "data2": "",
-        "data_type_2": "text",
-        "translation_enable": null
-      };
+      describe('In hours', () => {
+        const changes = {
+          "experiment_name": "",
+          "exp_size_in_percent": 50,
+          "push_time_type": "time",
+          "push_time": "2017-09-28T19:40:00.000",
+          "push_time_1": null,
+          "push_time_2": null,
+          "push_time_iso": "2017-09-28T23:40:00.000Z",
+          "push_time_1_iso": null,
+          "push_time_2_iso": null,
+          "deliveryTime": null,
+          "local_time": true,
+          "push_expires": true,
+          "expiration_time": null,
+          "expiration_time_type": "interval",
+          "expiration_interval_num": "3",
+          "expiration_interval_unit": "hours",
+          "expirationInterval": null,
+          "exp_type": "message",
+          "exp_enable": null,
+          "increment_badge": null,
+          "audience_id": "everyone",
+          "data": "asdsada",
+          "data_type": "text",
+          "data1": "",
+          "data_type_1": "text",
+          "data2": "",
+          "data_type_2": "text",
+          "translation_enable": null
+        };
 
-      it('should return a relative time in seconds', () => {
-        const push_time = extractPushTime(changes);
-        const expiration_time = extractExpirationTime(changes, push_time);
+        it('should return a relative time in seconds', () => {
+          const push_time = extractPushTime(changes);
+          const expiration_time = extractExpirationTime(changes, push_time);
 
-        expect(expiration_time).toBe(3 * 60 * 60);
+          expect(expiration_time).toBe(3 * 60 * 60); // 3 hours in seconds
+        });
+      });
+
+      describe('In days', () => {
+        const changes = {
+          "experiment_name": "",
+          "exp_size_in_percent": 50,
+          "push_time_type": "time",
+          "push_time": "2017-09-28T19:40:00.000",
+          "push_time_1": null,
+          "push_time_2": null,
+          "push_time_iso": "2017-09-28T23:40:00.000Z",
+          "push_time_1_iso": null,
+          "push_time_2_iso": null,
+          "deliveryTime": null,
+          "local_time": true,
+          "push_expires": true,
+          "expiration_time": null,
+          "expiration_time_type": "interval",
+          "expiration_interval_num": "2",
+          "expiration_interval_unit": "days",
+          "expirationInterval": null,
+          "exp_type": "message",
+          "exp_enable": null,
+          "increment_badge": null,
+          "audience_id": "everyone",
+          "data": "asdsada",
+          "data_type": "text",
+          "data1": "",
+          "data_type_1": "text",
+          "data2": "",
+          "data_type_2": "text",
+          "translation_enable": null
+        };
+
+        it('should return a relative time in seconds', () => {
+          const push_time = extractPushTime(changes);
+          const expiration_time = extractExpirationTime(changes, push_time);
+
+          expect(expiration_time).toBe(2 * 24 * 3600); // 2 days in seconds
+        });
       });
     });
 
