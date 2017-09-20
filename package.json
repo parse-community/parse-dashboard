@@ -81,7 +81,7 @@
     "webpack": "~1.12.0"
   },
   "scripts": {
-    "dev": "node ./Parse-Dashboard/index.js --config=config.json & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+    "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
