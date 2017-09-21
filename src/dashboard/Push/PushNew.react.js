@@ -204,6 +204,7 @@ export default class PushNew extends DashboardView {
 
     const push_time = extractPushTime(changes);
     let body = {
+      data: payload,
       where: changes.target || new Parse.Query(Parse.Installation),
       push_time,
       expiration_time: extractExpirationTime(changes, push_time),
