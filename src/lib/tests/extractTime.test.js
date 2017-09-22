@@ -1,5 +1,5 @@
 jest.dontMock('../extractTime');
-const {extractExpirationTime, extractPushTime} = require('../extractTime');
+const {extractExpiration, extractPushTime} = require('../extractTime');
 
 describe('extractPushTime', () => {
   describe('in user\'s timezone', () => {
@@ -86,7 +86,7 @@ describe('extractPushTime', () => {
   });
 });
 
-describe('extractExpirationTime', () => {
+describe('extractExpiration', () => {
   describe('With expiration interval', () => {
     describe('In user\'s local timezone', () => {
       describe('In hours', () => {
@@ -121,11 +121,9 @@ describe('extractExpirationTime', () => {
           "translation_enable": null
         };
 
-        it('should return a relative time in seconds', () => {
-          const push_time = extractPushTime(changes);
-          const expiration_time = extractExpirationTime(changes, push_time);
-
-          expect(expiration_time).toBe(3 * 60 * 60); // 3 hours in seconds
+        it('should return the interval in seconds', () => {
+          const { expiration_interval } = extractExpiration(changes);
+          expect(expiration_interval).toBe(3 * 60 * 60); // 3 hours in seconds
         });
       });
 
@@ -161,11 +159,9 @@ describe('extractExpirationTime', () => {
           "translation_enable": null
         };
 
-        it('should return a relative time in seconds', () => {
-          const push_time = extractPushTime(changes);
-          const expiration_time = extractExpirationTime(changes, push_time);
-
-          expect(expiration_time).toBe(2 * 24 * 3600); // 2 days in seconds
+        it('should return the interval in seconds', () => {
+          const { expiration_interval } = extractExpiration(changes);
+          expect(expiration_interval).toBe(2 * 24 * 3600); // 2 days in seconds
         });
       });
     });
@@ -203,12 +199,8 @@ describe('extractExpirationTime', () => {
       };
 
       it('should return a UTC time in seconds', () => {
-        const push_time = extractPushTime(changes);
-        const expiration_time = extractExpirationTime(changes, push_time);
-
-        expect(expiration_time).toBe(1506638400);
-        expect((new Date(expiration_time * 1000)).toISOString())
-          .toBe('2017-09-28T22:40:00.000Z');
+        const { expiration_interval } = extractExpiration(changes);
+        expect(expiration_interval).toBe(3 * 60 * 60);
       });
     });
 
@@ -245,9 +237,8 @@ describe('extractExpirationTime', () => {
       };
 
       it('should return 24 hours in seconds', () => {
-        const push_time = extractPushTime(changes);
-        const expiration_time = extractExpirationTime(changes, push_time);
-        expect(expiration_time).toBe(86400);
+        const { expiration_interval } = extractExpiration(changes);
+        expect(expiration_interval).toBe(60 * 60 * 24);
       });
     });
   });
@@ -287,9 +278,7 @@ describe('extractExpirationTime', () => {
       };
 
       it('should return a relative date', () => {
-        const push_time = extractPushTime(changes);
-        const expiration_time = extractExpirationTime(changes, push_time);
-
+        const { expiration_time } = extractExpiration(changes);
         expect(expiration_time).toBe('2017-09-30T15:47:00.000');
       });
     });
@@ -328,9 +317,7 @@ describe('extractExpirationTime', () => {
       };
 
       it('should return a relative date', () => {
-        const push_time = extractPushTime(changes);
-        const expiration_time = extractExpirationTime(changes, push_time);
-
+        const { expiration_time } = extractExpiration(changes);
         expect(expiration_time).toBe('2017-09-30T15:47:00.000Z');
       });
     });
@@ -369,9 +356,7 @@ describe('extractExpirationTime', () => {
       };
 
       it('should return an absolute time', () => {
-        const push_time = extractPushTime(changes);
-        const expiration_time = extractExpirationTime(changes, push_time);
-
+        const { expiration_time } = extractExpiration(changes);
         expect(expiration_time).toBe('2017-09-30T15:47:00.000Z');
       });
     });

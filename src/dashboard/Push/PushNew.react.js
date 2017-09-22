@@ -37,7 +37,7 @@ import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
-import { extractExpirationTime, extractPushTime } from 'lib/extractTime';
+import { extractExpiration, extractPushTime } from 'lib/extractTime';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
@@ -207,8 +207,8 @@ export default class PushNew extends DashboardView {
       data: payload,
       where: changes.target || new Parse.Query(Parse.Installation),
       push_time,
-      expiration_time: extractExpirationTime(changes, push_time),
     };
+    Object.assign(body, extractExpiration(changes));
 
     let audience_id = changes.audience_id;
     // Only set the audience ID if it is a saved audience.
