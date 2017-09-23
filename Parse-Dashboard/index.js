@@ -117,7 +117,8 @@ p.then(config => {
   if (allowInsecureHTTP || trustProxy) app.enable('trust proxy');
 
   config.data.trustProxy = trustProxy;
-  app.use(mountPath, parseDashboard(config.data, { allowInsecureHTTP, cookieSessionSecret }));
+  let dashboardOptions = { allowInsecureHTTP: allowInsecureHTTP, cookieSessionSecret: cookieSessionSecret };
+  app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   if(!configSSLKey || !configSSLCert){
     // Start the server.
     const server = app.listen(port, host, function () {
