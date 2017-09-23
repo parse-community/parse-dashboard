@@ -17,7 +17,7 @@ function Authentication(validUsers, useEncryptedPasswords, mountPath) {
   this.mountPath = mountPath;
 }
 
-function initialize(app) {
+function initialize(app, options = {}) {
   var self = this;
   passport.use('local', new LocalStrategy(
     function(username, password, cb) {
@@ -43,11 +43,12 @@ function initialize(app) {
     cb(null, user);
   });
 
+  const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   app.use(require('connect-flash')());
   app.use(require('body-parser').urlencoded({ extended: true }));
   app.use(require('cookie-session')({
     key    : 'parse_dash',
-    secret : 'magic',
+    secret : cookieSessionSecret,
     cookie : {
       maxAge: (2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks
     }

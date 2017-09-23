@@ -46,7 +46,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   }
 }
 
-module.exports = function(config, allowInsecureHTTP) {
+module.exports = function(config, { allowInsecureHTTP, cookieSessionSecret }) {
   var app = express();
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
@@ -62,7 +62,7 @@ module.exports = function(config, allowInsecureHTTP) {
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
-    authInstance.initialize(app);
+    authInstance.initialize(app, { cookieSessionSecret });
 
     // CSRF error handler
     app.use(function (err, req, res, next) {
