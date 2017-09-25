@@ -277,9 +277,9 @@ describe('extractExpiration', () => {
         "expiration_time_iso": "2017-09-30T19:47:00.000Z"
       };
 
-      it('should return a relative date', () => {
-        const { expiration_time } = extractExpiration(changes);
-        expect(expiration_time).toBe('2017-09-30T15:47:00.000');
+      it('should return an expiration interval', () => {
+        const { expiration_interval } = extractExpiration(changes);
+        expect(expiration_interval).toBe(158820);
       });
     });
 

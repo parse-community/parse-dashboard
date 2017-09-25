@@ -16,6 +16,8 @@ export function extractPushTime(changes) {
 
 export function extractExpiration(changes) {
   const {
+    local_time: isLocalTime,
+    push_time,
     push_expires,
     expiration_time_type,
     expiration_interval_unit,
@@ -34,6 +36,13 @@ export function extractExpiration(changes) {
 
       return { expiration_interval: time };
     } else if (expiration_time_type === 'time') {
+      if (isLocalTime) {
+        const pushTime = new Date(push_time);
+        const expirationTime = new Date(expiration_time);
+        const diffSeconds = Math.floor((expirationTime - pushTime) / 1000);
+        return { expiration_interval: diffSeconds };
+      }
+
       return { expiration_time };
     }
   }
