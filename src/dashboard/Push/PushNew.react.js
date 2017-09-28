@@ -635,7 +635,7 @@ export default class PushNew extends DashboardView {
       legend='Choose your recipients.'
       description='Send to everyone, or use an audience to target the right users.'>
       <PushAudiencesData
-        loaded={true /* Parse Server doesn't support push audiences yet. once it does, pass: this.state.pushAudiencesFetched */}
+        loaded={this.state.pushAudiencesFetched}
         schema={schema}
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
