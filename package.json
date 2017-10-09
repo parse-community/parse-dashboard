@@ -43,7 +43,8 @@
     "json-file-plus": "^3.2.0",
     "package-json": "^2.3.1",
     "passport": "^0.3.2",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "babel-core": "~5.8.12",
@@ -89,8 +90,9 @@
     "lint": "eslint . --ignore-path .gitignore --cache",
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
-    "prepublish": "webpack --config webpack/publish.config.js",
-    "start": "node ./Parse-Dashboard/index.js"
+    "prepublish": "npm run snyk-protect; webpack --config webpack/publish.config.js",
+    "start": "node ./Parse-Dashboard/index.js",
+    "snyk-protect": "snyk protect"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
@@ -114,5 +116,6 @@
       "react-addons-test-utils",
       "fbjs"
     ]
-  }
+  },
+  "snyk": true
 }
