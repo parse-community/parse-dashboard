@@ -81,6 +81,7 @@ function initialize(app, options) {
 function authenticate(userToTest, usernameOnly) {
   var appsUserHasAccessTo = null;
   var matchingUsername = null;
+  var isReadOnly = false;
 
   //they provided auth
   let isAuthenticated = userToTest &&
@@ -96,12 +97,14 @@ function authenticate(userToTest, usernameOnly) {
         matchingUsername = user.user;
         // User restricted apps
         appsUserHasAccessTo = user.apps || null;
+        isReadOnly = user.readOnly;
       }
 
       return isAuthenticated;
     }) ? true : false;
 
   return {
+    isReadOnly,
     isAuthenticated,
     matchingUsername,
     appsUserHasAccessTo
