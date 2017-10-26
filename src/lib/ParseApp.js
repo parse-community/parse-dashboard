@@ -39,6 +39,7 @@ export default class ParseApp {
     serverInfo,
     production,
     iconName,
+    supportedPushLocales,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -59,6 +60,7 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
+    this.supportedPushLocales = supportedPushLocales;
 
     this.settings = {
       fields: {},
@@ -404,13 +406,11 @@ export default class ParseApp {
   }
 
   isLocalizationAvailable() {
-    let path = '/apps/' + this.slug + '/is_localization_available';
-    return AJAX.abortableGet(path);
+    return !!this.serverInfo.features.push.localization;
   }
 
   fetchPushLocales() {
-    let path = '/apps/' + this.slug + '/installation_column_options?column=localeIdentifier';
-    return AJAX.abortableGet(path);
+    return this.supportedPushLocales;
   }
 
   fetchPushLocaleDeviceCount(audienceId, where, locales) {

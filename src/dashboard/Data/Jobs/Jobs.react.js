@@ -202,11 +202,11 @@ export default class Jobs extends TableView {
         <EmptyState
           title='Cloud Jobs'
           description=
-            <div>
+            {<div>
               <p>{'On this page you can create JobSchedule objects.'}</p>
               <br/>
               <JobScheduleReminder />
-            </div>
+            </div>}
           icon='cloud-happy' />
       );
     } else {
