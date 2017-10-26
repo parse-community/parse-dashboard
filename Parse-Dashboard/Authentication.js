@@ -101,7 +101,7 @@ function authenticate(userToTest, usernameOnly) {
       }
 
       return isAuthenticated;
-    }) ? true : false ;
+    }) ? true : false;
 
   return {
     isAuthenticated,
