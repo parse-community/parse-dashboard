@@ -406,7 +406,7 @@ export default class ParseApp {
   }
 
   isLocalizationAvailable() {
-    return this.serverInfo.features.push.localization === true;
+    return !!this.serverInfo.features.push.localization;
   }
 
   fetchPushLocales() {

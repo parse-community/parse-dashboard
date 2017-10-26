@@ -160,12 +160,7 @@ export default class PushNew extends DashboardView {
     const available = this.context.currentApp.isLocalizationAvailable();
     if (available) {
       const locales = this.context.currentApp.fetchPushLocales();
-      let filteredLocales = locales.filter((locale) => {
-        if (locale === '' || locale === undefined) {
-          return false;
-        }
-        return true;
-      });
+      const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
       this.setState({
         isLocalizationAvailable: true,
         locales: filteredLocales,
@@ -199,6 +194,8 @@ export default class PushNew extends DashboardView {
 
     // Gather the translations, and inject into the payload
     Object.keys(changes).forEach((key) => {
+      // translations are stored as `tranlation[lang]` strings as keys,
+      // this is why we slice it this way
       if (key.indexOf('translation[') === 0) {
         const locale = key.slice(12, key.length - 1);
         payload[`alert-${locale}`] = changes[key];

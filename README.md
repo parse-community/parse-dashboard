@@ -361,7 +361,7 @@ With this configuration, user1 will have read only access to `myAppId1` and read
 
 ## Configuring Localized Push Notifications
 
-With the latest version of the dashboard, it is possible to send localized messages for push notifications.
+With the latest version of the [dashboard](https://www.npmjs.com/package/parse-dashboard), it is possible to send localized messages for push notifications.
 You can provide a list of locales or languages you want to support for your dashboard users.
 
 ```json
