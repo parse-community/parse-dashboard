@@ -37,9 +37,9 @@ import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
+import { extractExpiration, extractPushTime } from 'lib/extractTime';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
-const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = false;
 
 let formatErrorMessage = (emptyInputMessages, key) => {
   let boldMessages = emptyInputMessages.map((message) => {
@@ -202,10 +202,14 @@ export default class PushNew extends DashboardView {
       payload.badge = "Increment";
     }
 
+    const push_time = extractPushTime(changes);
     let body = {
+      data: payload,
       where: changes.target || new Parse.Query(Parse.Installation),
-      data: payload
-    }
+      push_time,
+    };
+    Object.assign(body, extractExpiration(changes));
+
     let audience_id = changes.audience_id;
     // Only set the audience ID if it is a saved audience.
     if (audience_id != PushConstants.NEW_SEGMENT_ID && audience_id != "everyone") {
@@ -631,7 +635,7 @@ export default class PushNew extends DashboardView {
       legend='Choose your recipients.'
       description='Send to everyone, or use an audience to target the right users.'>
       <PushAudiencesData
-        loaded={true /* Parse Server doesn't support push audiences yet. once it does, pass: this.state.pushAudiencesFetched */}
+        loaded={this.state.pushAudiencesFetched}
         schema={schema}
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
@@ -677,18 +681,21 @@ export default class PushNew extends DashboardView {
       {this.renderExperimentContent(fields, setField)}
     </Fieldset> : null;
 
-    const timeFieldsLegend = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
-      'Choose a delivery time' :
-      'Choose exiry';
+    const {push} = this.context.currentApp.serverInfo.features;
+    const hasScheduledPushSupport = push && push.scheduledPush;
 
-    const timeFieldsDescription = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+    const timeFieldsLegend = hasScheduledPushSupport ?
+      'Choose a delivery time' :
+      'Choose expiry';
+
+    const timeFieldsDescription = hasScheduledPushSupport ?
       'We can send the campaign immediately, or any time in the next 2 weeks.' :
       "If your push hasn't been send by this time, it won't get sent.";
 
-    const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? <Fieldset
+    const deliveryTimeFields = hasScheduledPushSupport ? <Fieldset
       legend={timeFieldsLegend}
       description={timeFieldsDescription}>
-      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? this.renderDeliveryContent(fields, setField) : null}
+      {hasScheduledPushSupport ? this.renderDeliveryContent(fields, setField) : null}
       <Field
         label={<Label text='Should this notification expire?' />}
         input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
