@@ -3,6 +3,9 @@ node_js:
 - '4.4'
 - '5.7'
 - '6.1'
+cache:
+  directories:
+    - node_modules
 deploy:
   provider: npm
   on:

@@ -17,7 +17,6 @@ import Field                   from 'components/Field/Field.react';
 import Fieldset                from 'components/Fieldset/Fieldset.react';
 import FieldStyles             from 'components/Field/Field.scss';
 import FlowView                from 'components/FlowView/FlowView.react';
-import getSiteDomain           from 'lib/getSiteDomain';
 import history                 from 'dashboard/history';
 import joinWithFinal           from 'lib/joinWithFinal';
 import Label                   from 'components/Label/Label.react';
@@ -121,7 +120,6 @@ let LocalizedMessageField = ({
 }
 
 const XHR_KEY = 'PushNew';
-const TRANSLATE_MORE_INFO_URL = '/docs/android/guide#push-notifications-push-localization';
 
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
@@ -159,28 +157,18 @@ export default class PushNew extends DashboardView {
       this.setState({ pushAudiencesFetched :true });
     });
 
-    let {xhr, promise} = this.context.currentApp.isLocalizationAvailable();
-    this.xhrs.push(xhr);
-    promise.then(({ available }) => {
-      if (available) {
-        this.setState({ isLocalizationAvailable : true });
-        let {xhr, promise} = this.context.currentApp.fetchPushLocales();
-        this.xhrs.push(xhr);
-        promise.then(({ options }) => {
-          let filteredLocales = options.filter((locale) => {
-            if (locale === '' || locale === undefined) {
-              return false;
-            }
-            return true;
-          });
-          this.setState({
-            locales: filteredLocales,
-            availableLocales: filteredLocales
-          });
-        }).always(() => {
-          this.setState({ loadingLocale: false });
-        });
-      }
+    const available = this.context.currentApp.isLocalizationAvailable();
+    if (available) {
+      const locales = this.context.currentApp.fetchPushLocales();
+      const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
+      this.setState({
+        isLocalizationAvailable: true,
+        locales: filteredLocales,
+        availableLocales: filteredLocales
+      });
+    }
+    this.setState({
+      loadingLocale: false
     });
   }
 
@@ -203,6 +191,18 @@ export default class PushNew extends DashboardView {
     }
 
     const push_time = extractPushTime(changes);
+
+    // Gather the translations, and inject into the payload
+    const needle = 'translation[';
+    Object.keys(changes).forEach((key) => {
+      // translations are stored as `tranlation[lang]` strings as keys,
+      // this is why we slice it this way
+      if (key.indexOf(needle) === 0) {
+        const locale = key.slice(needle.length, key.length - 1);
+        payload[`alert-${locale}`] = changes[key];
+      }
+    });
+
     let body = {
       data: payload,
       where: changes.target || new Parse.Query(Parse.Installation),
@@ -531,16 +531,6 @@ export default class PushNew extends DashboardView {
           }} />} />
       );
       if (fields.translation_enable) {
-        translationSegment.push(
-          <SliderWrap key='warning' direction={Directions.DOWN} expanded={fields.translation_enable} block={true}>
-            <div className={styles.warning}>
-              <span>In some cases a locale may not be available for a user, either because they are running an earlier version of the SDK or their client has sent up an invalid locale. In those cases, they will receive the default message.</span>
-              <a target='_blank' style={{ paddingLeft: '5px' }}href={getSiteDomain() + TRANSLATE_MORE_INFO_URL}>More info.</a>
-            </div>
-          </SliderWrap>
-        );
-      }
-      if (fields.translation_enable) {
         //locales change based on existing selection
 
         // may want to move this section to another file
@@ -759,14 +749,9 @@ export default class PushNew extends DashboardView {
       // localized message is empty
       if (changes.translation_enable) {
         this.state.localizedMessages.forEach((message) => {
-          if (changes.data_type === 'json') {
-            if (!isValidJSON(message.value)) {
-              invalidInputMessages.push(<span key='invalid-json'>Your <strong>message for {message.locale}</strong> is not valid JSON.</span>);
-            }
-          } else if (!message.value || message.value.trim() === '') {
+          if (!message.value || message.value.trim() === '') {
             emptyInputMessages.push(`message for ${message.locale} locale`);
           }
-
         });
       }
 
