@@ -119,7 +119,7 @@ module.exports = function(config, options) {
           // If they didn't supply any app id, user will access all apps
           response.apps = response.apps.filter(function (app) {
             return appsUserHasAccess.find(appUserHasAccess => {
-              const isSame = app.appId == appUserHasAccess.appId;
+              const isSame = app.appId === appUserHasAccess.appId;
               if (isSame && appUserHasAccess.readOnly) {
                 app.masterKey = app.readOnlyMasterKey;
               }

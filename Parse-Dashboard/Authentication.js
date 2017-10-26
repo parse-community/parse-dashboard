@@ -79,9 +79,9 @@ function initialize(app, options) {
  * @returns {Object} Object with `isAuthenticated` and `appsUserHasAccessTo` properties
  */
 function authenticate(userToTest, usernameOnly) {
-  var appsUserHasAccessTo = null;
-  var matchingUsername = null;
-  var isReadOnly = false;
+  let appsUserHasAccessTo = null;
+  let matchingUsername = null;
+  let isReadOnly = false;
 
   //they provided auth
   let isAuthenticated = userToTest &&
@@ -101,7 +101,7 @@ function authenticate(userToTest, usernameOnly) {
       }
 
       return isAuthenticated;
-    }) ? true : false;
+    });
 
   return {
     isReadOnly,
