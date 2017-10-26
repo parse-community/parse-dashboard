@@ -282,6 +282,80 @@ When `user1` logs in, he/she will be able to manage `myAppId1` and `myAppId2` fr
 
 When *`user2`*  logs in, he/she will only be able to manage *`myAppId1`* from the dashboard.
 
+## Use Read-Only masterKey
+
+Starting parse-server 2.6.5, it is possible to provide a `readOnlyMasterKey` to parse-server to prevent mutations on objects from a client.
+If you want to protect your dashboard with this feature, just use the `readOnlyMasterKey` instead of the `masterKey`. All write calls will fail.
+
+### Making an app read-only for all users
+
+Start your `parse-server` with
+
+```json
+{
+"masterKey": "YOUR_MASTER_KEY_HERE",
+"readOnlyMasterKey": "YOUR_READ_ONLY_MASTER_KEY",
+}
+```
+
+Then in your dashboard configuration:
+
+```
+var trustProxy = true;
+var dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "YOUR_READ_ONLY_MASTER_KEY",
+      "appName": "MyApp"
+    }
+  ],
+  "trustProxy": 1
+});
+```
+
+### Makings users read-only
+
+You can mark a user as a read-only user:
+
+```json
+{
+  "apps": [{"...": "..."}],
+  "users": [
+     {
+       "user":"user1",
+       "pass":"pass1",
+       "readOnly": true,
+       "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
+     },
+     {
+       "user":"user2",
+       "pass":"pass2",
+       "apps": [{"appId": "myAppId1"}]
+     }  ]
+}
+```
+
+This way `user1` will have a readOnly access to `myAppId1` and `myAppId2`
+
+### Making user's apps readOnly
+
+You can give read only access to a user on a per-app basis:
+
+```json
+{
+  "apps": [{"...": "..."}],
+  "users": [
+     {
+       "user":"user1",
+       "pass":"pass1",
+       "apps": [{"appId": "myAppId1", "readOnly": true}, {"appId": "myAppId2"}]
+     } ]
+}
+```
+
+With this configuration, user1 will have read only access to `myAppId1` and read/write access to `myAppId2`.
 
 ## Run with Docker
 
