@@ -97,17 +97,17 @@ function authenticate(userToTest, usernameOnly) {
         matchingUsername = user.user;
         // User restricted apps
         appsUserHasAccessTo = user.apps || null;
-        isReadOnly = user.readOnly;
+        isReadOnly = !!user.readOnly; // make it true/false
       }
 
       return isAuthenticated;
-    });
+    }) ? true : false ;
 
   return {
-    isReadOnly,
     isAuthenticated,
     matchingUsername,
-    appsUserHasAccessTo
+    appsUserHasAccessTo,
+    isReadOnly,
   };
 }
 
