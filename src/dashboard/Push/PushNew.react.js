@@ -193,11 +193,12 @@ export default class PushNew extends DashboardView {
     const push_time = extractPushTime(changes);
 
     // Gather the translations, and inject into the payload
+    const needle = 'translation[';
     Object.keys(changes).forEach((key) => {
       // translations are stored as `tranlation[lang]` strings as keys,
       // this is why we slice it this way
-      if (key.indexOf('translation[') === 0) {
-        const locale = key.slice(12, key.length - 1);
+      if (key.indexOf(needle) === 0) {
+        const locale = key.slice(needle.length, key.length - 1);
         payload[`alert-${locale}`] = changes[key];
       }
     });
