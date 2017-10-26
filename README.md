@@ -284,12 +284,13 @@ When *`user2`*  logs in, he/she will only be able to manage *`myAppId1`* from th
 
 ## Use Read-Only masterKey
 
-Starting parse-server 2.6.5, it is possible to provide a readOnlyMasterKey to parse-server to prevent mutations on objects from a client.
-If you want to protect your dashboard with this feature, just use the readOnlyMasterKey instead of the masterKey. All write calls will fail.
+Starting parse-server 2.6.5, it is possible to provide a `readOnlyMasterKey` to parse-server to prevent mutations on objects from a client.
+If you want to protect your dashboard with this feature, just use the `readOnlyMasterKey` instead of the `masterKey`. All write calls will fail.
 
 ### Making an app read-only for all users
 
-Start your parse server with
+Start your `parse-server` with
+
 ```json
 {
 "masterKey": "YOUR_MASTER_KEY_HERE",
@@ -297,6 +298,22 @@ Start your parse server with
 }
 ```
 
+Then in your dashboard configuration:
+
+```
+var trustProxy = true;
+var dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "YOUR_READ_ONLY_MASTER_KEY",
+      "appName": "MyApp"
+    }
+  ],
+  "trustProxy": 1
+});
+```
 
 ### Makings users read-only
 
