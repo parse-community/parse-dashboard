@@ -23,36 +23,33 @@ module.exports = {
     publicPath: 'bundles/'
   },
   resolve: {
-    modules: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')]
+    root: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, 'node_modules')]
   },
   resolveLoader: {
-    modules: [path.join(__dirname, '../node_modules')]
+    root: path.join(__dirname, '../node_modules')
   },
   module: {
-    rules: [
+    loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: { 
-          loader: 'babel-loader', 
-          query: {
-            plugins: ['transform-decorators-legacy'],
-            presets: ['react', 'es2015', 'stage-0'] 
-          }
-        },
+        loader: 'babel-loader',
+        query: {
+          optional: ['runtime', 'es7.decorators']
+        }
       }, {
         test: /\.scss$/,
-        use: [ "style-loader", "css-loader?modules&localIdentName=[local]__[hash:base64:5]!sass-loader?includePaths[]=" +
-          encodeURIComponent(path.resolve(__dirname, '../src')) ]
+        loader: "style-loader!css-loader?modules&localIdentName=[local]__[hash:base64:5]!sass-loader?includePaths[]=" +
+          encodeURIComponent(path.resolve(__dirname, '../src'))
       }, {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
+        loader: 'style-loader!css-loader'
       }, {
         test: /\.png$/,
-        use: { loader: 'file-loader?name=img/[hash].[ext]' }
+        loader: 'file-loader?name=img/[hash].[ext]',
       }, {
         test: /\.jpg$/,
-        use: { loader: 'file-loader?name=img/[hash].[ext]' }
+        loader: 'file-loader?name=img/[hash].[ext]',
       }
     ]
   },

@@ -11,6 +11,6 @@ configuration.entry = {
   dashboard: './dashboard/index.js',
   login: './login/index.js'
 };
-configuration.output.path = __dirname + '/Parse-Dashboard/public/bundles';
+configuration.output.path = './Parse-Dashboard/public/bundles';
 
 module.exports = configuration;

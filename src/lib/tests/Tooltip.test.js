@@ -8,5 +8,5 @@
 jest.dontMock('../../components/Tooltip/Tooltip.react');
 
 describe('Tooltip', () => {
-  it('does nothing', () => {});
+  // test suite goes here
 });
