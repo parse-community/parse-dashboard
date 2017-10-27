@@ -14,6 +14,6 @@ configuration.entry = {
   PIG: './parse-interface-guide/index.js',
   quickstart: './quickstart/index.js',
 };
-configuration.output.path = './bundles';
+configuration.output.path = __dirname + '/bundles';
 
 module.exports = configuration;
