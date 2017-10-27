@@ -76,9 +76,11 @@ module.exports = function(config, options) {
 
     // Serve the configuration.
     app.get('/parse-dashboard-config.json', function(req, res) {
+      // Copy the apps
+      const apps = config.apps.map((app) => Object.assign({}, app));
       let response = {
-        apps: [...config.apps], // make a copy
-        newFeaturesInLatestVersion: newFeaturesInLatestVersion,
+        apps, 
+        newFeaturesInLatestVersion,
       };
 
       //Based on advice from Doug Wilson here:
