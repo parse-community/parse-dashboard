@@ -316,10 +316,6 @@ export default class Browser extends DashboardView {
       query.ascending(field)
     }
 
-    if (field !== 'createdAt') {
-      query.addDescending('createdAt');
-    }
-
     query.limit(200);
     const data = await query.find({ useMasterKey: true });
     return data;
