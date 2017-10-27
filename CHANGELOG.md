@@ -4,6 +4,11 @@
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
+### 1.1.2
+
+* Fix: An issue introduced when using readOnlyMasterKey would make all users readOnly after one has logged in.
+* Reverts: Dependency updates that would render the build unstable / broken.
+
 ### 1.1.1
 
 * Fix: Updating array of Dates now keeps it's type (was changing to array of ISO strings, issue #590), thanks to [David Riha](https://github.com/rihadavid)
