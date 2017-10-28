@@ -11,7 +11,7 @@ configuration.entry = {
   dashboard: './dashboard/index.js',
   login: './login/index.js'
 };
-configuration.output.path = __dirname + '/Parse-Dashboard/public/bundles';
+configuration.output.path = require('path').resolve('./Parse-Dashboard/public/bundles');
 
 var webpack = require('webpack');
 
