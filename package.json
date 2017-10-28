@@ -94,7 +94,7 @@
     "lint": "eslint . --ignore-path .gitignore --cache",
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
-    "prepublish": "webpack --config webpack/publish.config.js",
+    "prepublish": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js"
   },
   "bin": {
