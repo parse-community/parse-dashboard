@@ -317,6 +317,7 @@ var dashboard = new ParseDashboard({
 
 ### Makings users read-only
 
+Make sure you specify the `readOnlyMasterKey` for the apps that you want to use read-only feature in "apps" configuration.
 You can mark a user as a read-only user:
 
 ```json
@@ -341,6 +342,7 @@ This way `user1` will have a readOnly access to `myAppId1` and `myAppId2`
 
 ### Making user's apps readOnly
 
+Make sure you specify the `readOnlyMasterKey` for the apps that you want to use read-only feature in "apps" configuration.
 You can give read only access to a user on a per-app basis:
 
 ```json
