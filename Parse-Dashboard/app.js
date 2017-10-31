@@ -166,59 +166,66 @@ module.exports = function(config, options) {
       }
     }
 
-    app.get('/login', csrf(), function(req, res) {
-      if (!users || (req.user && req.user.isAuthenticated)) {
-        return res.redirect(`${mountPath}apps`);
-      }
+    let payload = {users, options, config, mountPath, csrf}
+    if (typeof options.onGenerateApp !== 'function') {
+      options.onGenerateApp = function (app, payload) {
+        app.get('/login', csrf(), function(req, res) {
+          if (!users || (req.user && req.user.isAuthenticated)) {
+            return res.redirect(`${mountPath}apps`);
+          }
 
-      let errors = req.flash('error');
-      if (errors && errors.length) {
-        errors = `<div id="login_errors" style="display: none;">
-          ${errors.join(' ')}
-        </div>`
-      }
-      res.send(`<!DOCTYPE html>
-        <head>
-          <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
-          <base href="${mountPath}"/>
-          <script>
-            PARSE_DASHBOARD_PATH = "${mountPath}";
-          </script>
-        </head>
-        <html>
-          <title>Parse Dashboard</title>
-          <body>
-            <div id="login_mount"></div>
-            ${errors}
-            <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
-            <script src="${mountPath}bundles/login.bundle.js"></script>
-          </body>
-        </html>
-      `);
-    });
+          let errors = req.flash('error');
+          if (errors && errors.length) {
+            errors = `<div id="login_errors" style="display: none;">
+              ${errors.join(' ')}
+            </div>`
+          }
+          res.send(`<!DOCTYPE html>
+            <head>
+              <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
+              <base href="${mountPath}"/>
+              <script>
+                PARSE_DASHBOARD_PATH = "${mountPath}";
+              </script>
+            </head>
+            <html>
+              <title>Parse Dashboard</title>
+              <body>
+                <div id="login_mount"></div>
+                ${errors}
+                <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
+                <script src="${mountPath}bundles/login.bundle.js"></script>
+              </body>
+            </html>
+          `);
+        });
 
-    // For every other request, go to index.html. Let client-side handle the rest.
-    app.get('/*', function(req, res) {
-      if (users && (!req.user || !req.user.isAuthenticated)) {
-        return res.redirect(`${mountPath}login`);
+        // For every other request, go to index.html. Let client-side handle the rest.
+        app.get('/*', function(req, res) {
+          if (users && (!req.user || !req.user.isAuthenticated)) {
+            return res.redirect(`${mountPath}login`);
+          }
+          res.send(`<!DOCTYPE html>
+            <head>
+              <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
+              <base href="${mountPath}"/>
+              <script>
+                PARSE_DASHBOARD_PATH = "${mountPath}";
+              </script>
+            </head>
+            <html>
+              <title>Parse Dashboard</title>
+              <body>
+                <div id="browser_mount"></div>
+                <script src="${mountPath}bundles/dashboard.bundle.js"></script>
+              </body>
+            </html>
+          `);
+        });
       }
-      res.send(`<!DOCTYPE html>
-        <head>
-          <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
-          <base href="${mountPath}"/>
-          <script>
-            PARSE_DASHBOARD_PATH = "${mountPath}";
-          </script>
-        </head>
-        <html>
-          <title>Parse Dashboard</title>
-          <body>
-            <div id="browser_mount"></div>
-            <script src="${mountPath}bundles/dashboard.bundle.js"></script>
-          </body>
-        </html>
-      `);
-    });
+    }
+
+    options.onGenerateApp (app, payload)
   });
 
   return app;
