@@ -111,7 +111,7 @@ export default class SecuritySettings extends DashboardView {
             {/*label={<Label text='Reset master key' description={<span>This will permanently reset the master <br/>key to a newly generated key.</span>} />}*/}
             {/*input={<FormButton color='red' value='Reset Master Key' onClick={() => this.setState({ showResetDialog: true })} />} />*/}
         {/*</Fieldset>*/}
-        {permissions}
+        {/*{permissions}*/}
         {/*{resetDialog}*/}
         <Toolbar section='Settings' subsection='Security & Keys' />
       </div>
