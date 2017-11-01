@@ -322,19 +322,37 @@ You can mark a user as a read-only user:
 
 ```json
 {
-  "apps": [{"...": "..."}],
+  "apps": [
+    {
+      "appId": "myAppId1",
+      "masterKey": "myMasterKey1",
+      "readOnlyMasterKey": "myReadOnlyMasterKey1",
+      "serverURL": "myURL1",      
+      "port": 4040,
+      "production": true
+    },
+    {
+      "appId": "myAppId2",
+      "masterKey": "myMasterKey2",
+      "readOnlyMasterKey": "myReadOnlyMasterKey2",
+      "serverURL": "myURL2",      
+      "port": 4041,
+      "production": true
+    }
+  ],
   "users": [
-     {
-       "user":"user1",
-       "pass":"pass1",
-       "readOnly": true,
-       "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
-     },
-     {
-       "user":"user2",
-       "pass":"pass2",
-       "apps": [{"appId": "myAppId1"}]
-     }  ]
+    {
+      "user":"user1",
+      "pass":"pass1",
+      "readOnly": true,
+      "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
+    },
+    {
+      "user":"user2",
+      "pass":"pass2",
+      "apps": [{"appId": "myAppId1"}]
+    }
+  ]
 }
 ```
 
@@ -347,13 +365,24 @@ You can give read only access to a user on a per-app basis:
 
 ```json
 {
-  "apps": [{"...": "..."}],
+  "apps": [
+    {
+      "appId": "myAppId1",
+      "masterKey": "myMasterKey1",
+      "readOnlyMasterKey": "myReadOnlyMasterKey1",
+      "serverURL": "myURL",      
+      "port": 4040,
+      "production": true
+    },
+    {"...": "..."}
+  ],
   "users": [
-     {
-       "user":"user1",
-       "pass":"pass1",
-       "apps": [{"appId": "myAppId1", "readOnly": true}, {"appId": "myAppId2"}]
-     } ]
+    {
+      "user":"user",
+      "pass":"pass",
+      "apps": [{"appId": "myAppId", "readOnly": true}, {"appId": "myAppId2"}]
+    }
+  ]
 }
 ```
 
