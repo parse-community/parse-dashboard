@@ -11,3 +11,6 @@ npm-debug.log
 .env
 
 .idea/
+
+npm-debug.log.*
+/parse-dashboard-config.json

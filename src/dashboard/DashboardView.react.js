@@ -168,14 +168,13 @@ export default class DashboardView extends React.Component {
         link: '/settings/general'
       });
     }
-    /*
-    if (features.keysSettings) {
+    // if (features.keysSettings) {
       settingsSections.push({
         name: 'Security & Keys',
         link: '/settings/keys'
       });
-    }
-
+    // }
+    /*
     if (features.usersSettings) {
       settingsSections.push({
         name: 'Users',
