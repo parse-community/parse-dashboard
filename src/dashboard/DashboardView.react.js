@@ -226,6 +226,16 @@ export default class DashboardView extends React.Component {
       });
     }
 
+    appSidebarSections.push({
+      name: 'Server Settings',
+      icon: 'mt-design-icon-apps',
+      link: '/server-settings',
+      subsections: [ {
+        name: 'General',
+        link: '/server-settings/general'
+      } ]
+    });
+
     if (settingsSections.length > 0) {
       appSidebarSections.push({
         name: 'App Settings',

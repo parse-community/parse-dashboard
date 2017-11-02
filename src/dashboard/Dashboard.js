@@ -55,6 +55,7 @@ import {
   Route,
   Redirect
 } from 'react-router';
+import ServerSettings from 'dashboard/ServerSettings/ServerSettings.react';
 
 let App = React.createClass({
   render() {
@@ -245,6 +246,11 @@ class Dashboard extends React.Component {
             <Route path='retention' component={Retention} />
             <Route path='performance' component={Performance} />
             <Route path='slow_queries' component={SlowQueries} />
+          </Route>
+
+          <Redirect from='server-settings' to='/apps/:appId/server-settings/general' />
+          <Route path='server-settings'>
+            <Route path='general' component={ServerSettings} />
           </Route>
 
           <Redirect from='settings' to='/apps/:appId/settings/general' />
