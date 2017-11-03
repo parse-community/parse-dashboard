@@ -1,10 +1,15 @@
 {
   "apps": [{
-    "serverURL": "",
-    "appId": "",
-    "masterKey": "",
-    "appName": "",
-    "iconName": ""
+    "serverURL": "https://parseapi.back4app.com",
+    "appId": "D4jj50955Pxk161fg1UiOvoLd1IgAN7WxBq5HLT0",
+    "masterKey": "dL7TbZk56teGrV6siaJOuGZAx3xXozcRP8pEztt6",
+    "appName": "seiji",
+    "feedbackEmail": "ricardo@back4app.com"
   }],
-  "iconsFolder": "icons"
+  "user": {
+    "email": "community@back4app.com",
+    "has_password": false,
+    "account_keys": [],
+    "name": "Seiji"
+  }
 }
