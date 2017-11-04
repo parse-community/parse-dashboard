@@ -56,6 +56,9 @@ import {
   Redirect
 } from 'react-router';
 
+import Bootstrap from 'bootstrap/dist/js/bootstrap.js'
+import 'bootstrap/dist/css/bootstrap.css';
+
 let App = React.createClass({
   render() {
     return this.props.children;

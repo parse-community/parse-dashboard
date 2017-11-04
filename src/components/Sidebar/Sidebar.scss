@@ -10,7 +10,7 @@
 .sidebar {
   position: fixed;
   width: 300px;
-  top: 0;
+  top: $header-height;
   left: 0;
   bottom: 0;
   background: #0c5582;

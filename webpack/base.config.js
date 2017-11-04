@@ -61,6 +61,12 @@ module.exports = {
       'process.env': {
         'version' : JSON.stringify(version)
       }
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Tether: 'tether'
     })
   ]
 };
