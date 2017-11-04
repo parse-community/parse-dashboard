@@ -1,0 +1,22 @@
+.logo {
+  display: flex;
+  width: 100px;
+  height: 80px;
+
+  outline: 1px solid red;
+
+  width: 270px;
+
+  .face {
+    width: 50px;
+    height: 80px;
+    background-color: green;
+  }
+
+  .text {
+    width: 120px;
+    height: 80px;
+    background-color: blue;
+  }
+
+}

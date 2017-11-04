@@ -1,0 +1,11 @@
+@import 'stylesheets/globals.scss';
+
+.header {
+  position: fixed;
+  display: flex;
+  z-index: 100;
+  top: 0;
+  width: 100vw;
+  height: $header-height;
+  background-color: #FFF;
+}

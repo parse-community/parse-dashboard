@@ -1,0 +1,16 @@
+@import 'stylesheets/globals.scss';
+
+.nav {
+  height: $header-height;
+
+  .menu {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    
+    .dropdown:hover .dropdown-menu {
+      display: block;
+      margin-top: 0px;
+    }
+  }
+}
