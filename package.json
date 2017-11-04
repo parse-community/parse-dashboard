@@ -41,44 +41,49 @@
     "csurf": "^1.9.0",
     "express": "^4.13.4",
     "json-file-plus": "^3.2.0",
-    "package-json": "^2.3.1",
+    "package-json": "^4.0.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "~5.8.12",
+    "babel-core": "~6.24.1",
     "babel-eslint": "^7.2.3",
-    "babel-loader": "~5.3.0",
-    "babel-plugin-remove-proptypes": "~1.0.0",
-    "babel-polyfill": "^6.7.2",
-    "babel-runtime": "~5.8.25",
-    "css-loader": "~0.18.0",
+    "babel-loader": "~7.0.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-runtime": "~6.23.0",
+    "css-loader": "~0.28.2",
     "eslint": "^3.8.1",
     "eslint-plugin-jest": "^20.0.3",
-    "eslint-plugin-react": "^6.4.1",
-    "file-loader": "^0.8.5",
+    "eslint-plugin-react": "^7.0.1",
+    "file-loader": "^0.11.1",
     "history": "^2.1.2",
-    "http-server": "~0.8.5",
-    "immutable": "~3.7.5",
+    "http-server": "~0.10.0",
+    "immutable": "~3.8.1",
     "immutable-devtools": "~0.0.4",
-    "jest-cli": "^12.0.2",
-    "js-beautify": "~1.5.0",
+    "jest-cli": "^20.0.3",
+    "js-beautify": "~1.6.14",
     "marked": "^0.3.5",
-    "node-sass": "^3.7.0",
-    "parse": "1.9.1",
-    "prismjs": "~1.2.0",
+    "node-sass": "^4.5.3",
+    "parse": "1.9.2",
+    "prismjs": "~1.6.0",
     "react": "^15.0.1",
     "react-addons-test-utils": "^15.0.1",
-    "react-dnd": "~2.1.4",
-    "react-dnd-html5-backend": "~2.0.0",
+    "react-dnd": "~2.4.0",
+    "react-dnd-html5-backend": "~2.4.1",
     "react-dom": "^15.0.1",
     "react-router": "^2.6.0",
     "request-promise": "^4.1.1",
-    "sass-loader": "~3.1.2",
-    "style-loader": "~0.12.3",
+    "sass-loader": "~6.0.5",
+    "style-loader": "~0.18.0",
     "svg-prep": "~1.0.0",
     "transform-jest-deps": "^2.1.0",
-    "webpack": "~1.12.0"
+    "webpack": "~2.5.1"
   },
   "scripts": {
     "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
@@ -89,7 +94,7 @@
     "lint": "eslint . --ignore-path .gitignore --cache",
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
-    "prepublish": "webpack --config webpack/publish.config.js",
+    "prepublish": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js"
   },
   "bin": {
@@ -100,14 +105,12 @@
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
-    "testPathDirs": [
+    "roots": [
       "src/lib"
     ],
-    "scriptPreprocessor": "<rootDir>/testing/preprocessor.js",
-    "testDirectoryName": "tests",
-    "testFileExtensions": [
-      "test.js"
-    ],
+    "transform": {
+      ".*": "<rootDir>/testing/preprocessor.js"
+    },
     "unmockedModulePathPatterns": [
       "react",
       "react-dom",

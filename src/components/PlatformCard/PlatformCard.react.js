@@ -32,7 +32,7 @@ export default PlatformCard;
 
 PlatformCard.propTypes = {
   platform: PropTypes.oneOf([
-    'ios', 'android', 'xamarin', 'unity', 'php', 'windows', 'dotnet', 'arduino', 'rpi', 'rtos'
+    'apple', 'android', 'xamarin', 'unity', 'php', 'windows', 'dotnet', 'arduino', 'rpi', 'rtos'
   ]).isRequired.describe(
     'The platform name. This will determine the icon.'
   ),

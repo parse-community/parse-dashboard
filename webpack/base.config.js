@@ -23,33 +23,36 @@ module.exports = {
     publicPath: 'bundles/'
   },
   resolve: {
-    root: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, 'node_modules')]
+    modules: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')]
   },
   resolveLoader: {
-    root: path.join(__dirname, '../node_modules')
+    modules: [path.join(__dirname, '../node_modules')]
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          optional: ['runtime', 'es7.decorators']
-        }
+        use: { 
+          loader: 'babel-loader', 
+          query: {
+            plugins: ['transform-decorators-legacy', 'transform-object-rest-spread', 'transform-regenerator', 'transform-runtime'],
+            presets: ['react', 'env'] 
+          }
+        },
       }, {
         test: /\.scss$/,
-        loader: "style-loader!css-loader?modules&localIdentName=[local]__[hash:base64:5]!sass-loader?includePaths[]=" +
-          encodeURIComponent(path.resolve(__dirname, '../src'))
+        use: [ "style-loader", "css-loader?modules&localIdentName=[local]__[hash:base64:5]!sass-loader?includePaths[]=" +
+          encodeURIComponent(path.resolve(__dirname, '../src')) ]
       }, {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: [ 'style-loader', 'css-loader' ]
       }, {
         test: /\.png$/,
-        loader: 'file-loader?name=img/[hash].[ext]',
+        use: { loader: 'file-loader?name=img/[hash].[ext]' }
       }, {
         test: /\.jpg$/,
-        loader: 'file-loader?name=img/[hash].[ext]',
+        use: { loader: 'file-loader?name=img/[hash].[ext]' }
       }
     ]
   },
