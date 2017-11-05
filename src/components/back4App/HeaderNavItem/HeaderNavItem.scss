@@ -1,0 +1,21 @@
+@import 'stylesheets/back4app.scss';
+
+.item {
+  margin-top: 6px;
+  &:not(:first-child) {
+    margin-left: 24px;
+  }
+
+  .label {
+    text-decoration: none;
+    color: $dark-gray;
+    font-weight: 300;
+  }
+
+  .icon {
+    display: none;
+    text-align: center;
+    color: blue;
+  }
+
+}

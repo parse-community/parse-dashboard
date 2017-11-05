@@ -1,4 +1,4 @@
-@import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
 
 .header {
   position: fixed;
@@ -8,4 +8,29 @@
   width: 100vw;
   height: $header-height;
   background-color: #FFF;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .2);
+
+  font-family: 'Raleway';
+  font-size: 16px;
+
+  padding-right: 45px;
+
+  .left-side {
+    display: flex;
+    width: 300px;
+    padding-left: 8px;
+
+    .hamburger-wrapper {
+      display: flex;
+      padding-left: 10px;
+      padding-right: 20px;
+    }
+
+  }
+
+  .right-side {
+    display: flex;
+    width: 100%;
+    padding: 23px 0 0 10px;
+  }
 }

@@ -1,6 +1,9 @@
-@import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
 
 .hamburgerButton {
   font-size: 30px;
   color: $light-blue;
+
+  border: none;
+  background-color: transparent;
 }
