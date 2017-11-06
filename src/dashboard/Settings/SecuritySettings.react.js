@@ -106,13 +106,13 @@ export default class SecuritySettings extends DashboardView {
             label={<Label text='Master key' description='Using this key overrides all permissions. Not usable on client SDKs. Keep it secret!' />}
             input={<KeyField name='Master' hidden={true}>{currentApp.masterKey}</KeyField>} />
         </Fieldset>
-        <Fieldset legend='Reset Master Key' description='Use this when your key has been compromised.'>
-          <Field
-            label={<Label text='Reset master key' description={<span>This will permanently reset the master <br/>key to a newly generated key.</span>} />}
-            input={<FormButton color='red' value='Reset Master Key' onClick={() => this.setState({ showResetDialog: true })} />} />
-        </Fieldset>
-        {permissions}
-        {resetDialog}
+        {/*<Fieldset legend='Reset Master Key' description='Use this when your key has been compromised.'>*/}
+          {/*<Field*/}
+            {/*label={<Label text='Reset master key' description={<span>This will permanently reset the master <br/>key to a newly generated key.</span>} />}*/}
+            {/*input={<FormButton color='red' value='Reset Master Key' onClick={() => this.setState({ showResetDialog: true })} />} />*/}
+        {/*</Fieldset>*/}
+        {/*{permissions}*/}
+        {/*{resetDialog}*/}
         <Toolbar section='Settings' subsection='Security & Keys' />
       </div>
     );
