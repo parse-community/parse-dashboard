@@ -20,7 +20,7 @@ export default ({
 }) => {
   if (isNaN(percentComplete) || percentComplete < 0 || percentComplete > 100) {
     percentComplete = 0;
-  };
+  }
   let progressClass = '';
   let titleClass = '';
   let descriptionClass = '';

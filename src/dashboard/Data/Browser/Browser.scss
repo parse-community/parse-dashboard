@@ -190,7 +190,7 @@
   }
 }
 
-.notification {
+.notificationMessage, .notificationError {
   @include animation('fade-in 0.2s ease-out');
   position: absolute;
   bottom: 20px;
@@ -198,11 +198,19 @@
   opacity: 1;
   background: white;
   padding: 10px;
-  border: 2px solid $red;
-  color: $red;
   font-size: 14px;
   border-radius: 5px;
   width: 260px;
+}
+
+.notificationError {
+  border: 2px solid $red;
+  color: $red;
+}
+
+.notificationMessage {
+  border: 2px solid $blue;
+  color: $blue;
 }
 
 .notificationHide {

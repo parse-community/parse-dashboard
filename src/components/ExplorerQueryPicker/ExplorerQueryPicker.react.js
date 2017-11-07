@@ -19,7 +19,7 @@ let ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
         <h3 className={base.verticalCenter}>Choose a query to visualize</h3>
       </div>
       <div className={styles.queryContainer}>
-        {queries.map((queryGroup, i) => {
+        {queries.map((queryGroup) => {
           let childrenView = null;
           if (queryGroup.children.length > 0) {
             childrenView = queryGroup.children.map((query, j) => {

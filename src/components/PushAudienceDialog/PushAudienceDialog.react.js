@@ -17,7 +17,6 @@ import Label                 from 'components/Label/Label.react';
 import Modal                 from 'components/Modal/Modal.react';
 import MultiSelect           from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption     from 'components/MultiSelect/MultiSelectOption.react';
-import prettyNumber          from 'lib/prettyNumber';
 import ParseApp              from 'lib/ParseApp';
 import PropTypes             from 'lib/PropTypes';
 import queryFromFilters      from 'lib/queryFromFilters';
@@ -44,10 +43,6 @@ let filterFormatter = (filters, schema) => {
   });
 }
 
-let constraintFormatter = (constraint) => {
-  return constraint.replace('$','');
-}
-
 export default class PushAudienceDialog extends React.Component {
   constructor() {
     super();
@@ -69,7 +64,7 @@ export default class PushAudienceDialog extends React.Component {
     //this case is only for 'New Segment' to prepopulate existing audience
     if (audienceInfo) {
       if (audienceInfo.query) {
-        let { deviceType, ...query} = audienceInfo.query;
+        let { deviceType } = audienceInfo.query;
         stateSettings.platforms = deviceType.$in || [];
       }
       if (audienceInfo.filters) {

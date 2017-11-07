@@ -5,8 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React from 'react';
-
 // Combines an array into a human-friendly array:
 //   joinWithFinal(<any>, [], <any>, <any>): []
 //   joinWithFinal('your items: ', ['item1'], <any>, <any>): ['your items: ', 'item1']

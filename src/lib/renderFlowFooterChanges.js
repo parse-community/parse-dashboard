@@ -71,7 +71,7 @@ export default (changes, initial, fieldOptions) => {
 
       }
     }
-  };
+  }
 
   let renderChangeList = (prefix, changes, isLastList) => {
     return joinWithFinal(prefix, changes, ', ', isLastList ? ' and ' : ', ');

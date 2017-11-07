@@ -17,7 +17,6 @@ import Field                   from 'components/Field/Field.react';
 import Fieldset                from 'components/Fieldset/Fieldset.react';
 import FieldStyles             from 'components/Field/Field.scss';
 import FlowView                from 'components/FlowView/FlowView.react';
-import getSiteDomain           from 'lib/getSiteDomain';
 import history                 from 'dashboard/history';
 import joinWithFinal           from 'lib/joinWithFinal';
 import Label                   from 'components/Label/Label.react';
@@ -37,9 +36,9 @@ import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
+import { extractExpiration, extractPushTime } from 'lib/extractTime';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
-const PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH = false;
 
 let formatErrorMessage = (emptyInputMessages, key) => {
   let boldMessages = emptyInputMessages.map((message) => {
@@ -52,7 +51,7 @@ let isValidJSON = (input) => {
   let parsedJSON = null;
   try {
     parsedJSON = JSON.parse(input);
-  } catch (e) {}
+  } catch (e) {/**/}
 
   if (parsedJSON !== null) {
     return true;
@@ -111,7 +110,7 @@ let LocalizedMessageField = ({
         }
         input={
           <Dropdown value={currentLocaleOption} onChange={(nextLocaleOption) => onChangeLocale.call(undefined, id, nextLocaleOption, data, currentLocaleOption)}>
-            {localeOptions && localeOptions.length > 0 ? localeOptions.map((option, i) => {
+            {localeOptions && localeOptions.length > 0 ? localeOptions.map((option) => {
               return (<Option value={option}>{option}</Option>);
             }) : null}
           </Dropdown>
@@ -121,7 +120,6 @@ let LocalizedMessageField = ({
 }
 
 const XHR_KEY = 'PushNew';
-const TRANSLATE_MORE_INFO_URL = '/docs/android/guide#push-notifications-push-localization';
 
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
@@ -159,28 +157,18 @@ export default class PushNew extends DashboardView {
       this.setState({ pushAudiencesFetched :true });
     });
 
-    let {xhr, promise} = this.context.currentApp.isLocalizationAvailable();
-    this.xhrs.push(xhr);
-    promise.then(({ available }) => {
-      if (available) {
-        this.setState({ isLocalizationAvailable : true });
-        let {xhr, promise} = this.context.currentApp.fetchPushLocales();
-        this.xhrs.push(xhr);
-        promise.then(({ options }) => {
-          let filteredLocales = options.filter((locale) => {
-            if (locale === '' || locale === undefined) {
-              return false;
-            }
-            return true;
-          });
-          this.setState({
-            locales: filteredLocales,
-            availableLocales: filteredLocales
-          });
-        }).always(() => {
-          this.setState({ loadingLocale: false });
-        });
-      }
+    const available = this.context.currentApp.isLocalizationAvailable();
+    if (available) {
+      const locales = this.context.currentApp.fetchPushLocales();
+      const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
+      this.setState({
+        isLocalizationAvailable: true,
+        locales: filteredLocales,
+        availableLocales: filteredLocales
+      });
+    }
+    this.setState({
+      loadingLocale: false
     });
   }
 
@@ -198,13 +186,36 @@ export default class PushNew extends DashboardView {
   handlePushSubmit(changes) {
     let promise = new Promise();
     let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
-    if (!!changes.increment_badge) {
+    if (changes.increment_badge) {
       payload.badge = "Increment";
     }
-    Parse.Push.send({
-      where: changes.target || new Parse.Query(Parse.Installation),
+
+    const push_time = extractPushTime(changes);
+
+    // Gather the translations, and inject into the payload
+    const needle = 'translation[';
+    Object.keys(changes).forEach((key) => {
+      // translations are stored as `tranlation[lang]` strings as keys,
+      // this is why we slice it this way
+      if (key.indexOf(needle) === 0) {
+        const locale = key.slice(needle.length, key.length - 1);
+        payload[`alert-${locale}`] = changes[key];
+      }
+    });
+
+    let body = {
       data: payload,
-    }, {
+      where: changes.target || new Parse.Query(Parse.Installation),
+      push_time,
+    };
+    Object.assign(body, extractExpiration(changes));
+
+    let audience_id = changes.audience_id;
+    // Only set the audience ID if it is a saved audience.
+    if (audience_id != PushConstants.NEW_SEGMENT_ID && audience_id != "everyone") {
+      body.audience_id = audience_id;
+    }
+    Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
@@ -228,7 +239,7 @@ export default class PushNew extends DashboardView {
   renderExperimentContent(fields, setField) {
     if (!fields.exp_enable) {
       return null;
-    };
+    }
     let experimentContent = [
       <Field
         key='testName'
@@ -494,7 +505,7 @@ export default class PushNew extends DashboardView {
     ];
   }
 
-  renderForm({ fields, changes, setField, resetFields }) {
+  renderForm({ fields, setField }) {
     let multiMessage = (fields.exp_enable && fields.exp_type === 'message');
 
     let classes = this.props.schema.data.get('classes');
@@ -519,16 +530,6 @@ export default class PushNew extends DashboardView {
             setField('translation_enable', value || null);
           }} />} />
       );
-      if (fields.translation_enable) {
-        translationSegment.push(
-          <SliderWrap key='warning' direction={Directions.DOWN} expanded={fields.translation_enable} block={true}>
-            <div className={styles.warning}>
-              <span>In some cases a locale may not be available for a user, either because they are running an earlier version of the SDK or their client has sent up an invalid locale. In those cases, they will receive the default message.</span>
-              <a target='_blank' style={{ paddingLeft: '5px' }}href={getSiteDomain() + TRANSLATE_MORE_INFO_URL}>More info.</a>
-            </div>
-          </SliderWrap>
-        );
-      }
       if (fields.translation_enable) {
         //locales change based on existing selection
 
@@ -624,7 +625,7 @@ export default class PushNew extends DashboardView {
       legend='Choose your recipients.'
       description='Send to everyone, or use an audience to target the right users.'>
       <PushAudiencesData
-        loaded={true /* Parse Server doesn't support push audiences yet. once it does, pass: this.state.pushAudiencesFetched */}
+        loaded={this.state.pushAudiencesFetched}
         schema={schema}
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
@@ -670,18 +671,21 @@ export default class PushNew extends DashboardView {
       {this.renderExperimentContent(fields, setField)}
     </Fieldset> : null;
 
-    const timeFieldsLegend = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
-      'Choose a delivery time' :
-      'Choose exiry';
+    const {push} = this.context.currentApp.serverInfo.features;
+    const hasScheduledPushSupport = push && push.scheduledPush;
 
-    const timeFieldsDescription = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ?
+    const timeFieldsLegend = hasScheduledPushSupport ?
+      'Choose a delivery time' :
+      'Choose expiry';
+
+    const timeFieldsDescription = hasScheduledPushSupport ?
       'We can send the campaign immediately, or any time in the next 2 weeks.' :
       "If your push hasn't been send by this time, it won't get sent.";
 
-    const deliveryTimeFields = PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? <Fieldset
+    const deliveryTimeFields = hasScheduledPushSupport ? <Fieldset
       legend={timeFieldsLegend}
       description={timeFieldsDescription}>
-      {PARSE_SERVER_SUPPORTS_SCHEDULE_PUSH ? this.renderDeliveryContent(fields, setField) : null}
+      {hasScheduledPushSupport ? this.renderDeliveryContent(fields, setField) : null}
       <Field
         label={<Label text='Should this notification expire?' />}
         input={<Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />} />
@@ -745,14 +749,9 @@ export default class PushNew extends DashboardView {
       // localized message is empty
       if (changes.translation_enable) {
         this.state.localizedMessages.forEach((message) => {
-          if (changes.data_type === 'json') {
-            if (!isValidJSON(message.value)) {
-              invalidInputMessages.push(<span key='invalid-json'>Your <strong>message for {message.locale}</strong> is not valid JSON.</span>);
-            }
-          } else if (!message.value || message.value.trim() === '') {
+          if (!message.value || message.value.trim() === '') {
             emptyInputMessages.push(`message for ${message.locale} locale`);
           }
-
         });
       }
 

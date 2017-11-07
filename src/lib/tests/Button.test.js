@@ -8,7 +8,6 @@
 jest.dontMock('../../components/Button/Button.react');
 
 import React     from 'react';
-import ReactDOM  from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
 const Button = require('../../components/Button/Button.react');

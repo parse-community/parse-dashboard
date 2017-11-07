@@ -6,14 +6,12 @@
  * the root directory of this source tree.
  */
 import AppsMenu       from 'components/Sidebar/AppsMenu.react';
-import { Directions } from 'lib/Constants';
 import Popover        from 'components/Popover/Popover.react';
 import history        from 'dashboard/history';
 import ParseApp       from 'lib/ParseApp';
 import Position       from 'lib/Position';
 import React          from 'react';
 import ReactDOM       from 'react-dom';
-import SliderWrap     from 'components/SliderWrap/SliderWrap.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 
 export default class AppsSelector extends React.Component {

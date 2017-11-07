@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as PushConstants from 'dashboard/Push/PushConstants';
 import ParseApp           from 'lib/ParseApp';
 import React              from 'react';
 import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
