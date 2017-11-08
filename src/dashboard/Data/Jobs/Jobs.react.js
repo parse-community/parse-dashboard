@@ -12,7 +12,6 @@ import CategoryList           from 'components/CategoryList/CategoryList.react';
 import EmptyState             from 'components/EmptyState/EmptyState.react';
 import history                from 'dashboard/history';
 import Icon                   from 'components/Icon/Icon.react';
-import JobScheduleReminder    from 'dashboard/Data/Jobs/JobScheduleReminder.react';
 import Modal                  from 'components/Modal/Modal.react';
 import React                  from 'react';
 import ReleaseInfo            from 'components/ReleaseInfo/ReleaseInfo';
@@ -28,7 +27,7 @@ import Toolbar                from 'components/Toolbar/Toolbar.react';
 
 let subsections = {
   all: 'All Jobs',
-  scheduled: 'Scheduled Jobs',
+  /*scheduled: 'Scheduled Jobs',*/
   status: 'Job Status'
 };
 
@@ -110,8 +109,8 @@ export default class Jobs extends TableView {
     let current = this.props.params.section || '';
     return (
       <CategoryList current={current} linkPrefix={'jobs/'} categories={[
+       /* { name: 'Scheduled Jobs', id: 'scheduled' }, */
         { name: 'All Jobs', id: 'all' },
-        { name: 'Scheduled Jobs', id: 'scheduled' },
         { name: 'Job Status', id: 'status' }
       ]} />
     );
@@ -181,14 +180,6 @@ export default class Jobs extends TableView {
     }
   }
 
-  renderFooter() {
-    if (this.props.params.section === 'scheduled') {
-      return <JobScheduleReminder />
-    }
-
-    return null;
-  }
-
   renderEmpty() {
     if (this.props.params.section === 'all') {
       return (
@@ -201,12 +192,7 @@ export default class Jobs extends TableView {
       return (
         <EmptyState
           title='Cloud Jobs'
-          description=
-            {<div>
-              <p>{'On this page you can create JobSchedule objects.'}</p>
-              <br/>
-              <JobScheduleReminder />
-            </div>}
+          description='Scheduling jobs is not supported on parse-server'
           icon='cloud-happy' />
       );
     } else {
@@ -239,23 +225,7 @@ export default class Jobs extends TableView {
 
   tableData() {
     let data = undefined;
-    if (this.props.params.section === 'all') {
-      if (this.props.availableJobs) {
-        data = this.props.availableJobs;
-      }
-      if (this.props.jobsInUse) {
-        if (data) {
-          data = data.concat(this.props.jobsInUse);
-        } else {
-          data = this.props.jobsInUse;
-        }
-      }
-      if (data) {
-        data = data.map((jobName) => {
-          return { jobName };
-        });
-      }
-    } else if (this.props.params.section === 'scheduled' ) {
+    if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
       if (this.props.jobs.data) {
         let jobs = this.props.jobs.data.get('jobs');
         if (jobs) {

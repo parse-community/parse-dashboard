@@ -561,8 +561,8 @@ export default class ParseApp {
   }
 
   getAvailableJobs() {
-    let path = '/apps/' + this.slug + '/cloud_code/jobs/data';
-    return Parse._request('GET', path);
+    let path = 'cloud_code/jobs';
+    return this.apiRequest('GET', path, {}, {useMasterKey:true});
   }
 
   getJobStatus() {

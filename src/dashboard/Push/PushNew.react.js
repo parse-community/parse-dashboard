@@ -159,17 +159,20 @@ export default class PushNew extends DashboardView {
 
     const available = this.context.currentApp.isLocalizationAvailable();
     if (available) {
-      const locales = this.context.currentApp.fetchPushLocales();
-      const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
-      this.setState({
-        isLocalizationAvailable: true,
-        locales: filteredLocales,
-        availableLocales: filteredLocales
-      });
+      this.context.currentApp.fetchPushLocales().promise
+        .then((locales) => {
+          console.log(locales);
+          const filteredLocales = (locales || []).filter((locale) => !(locale === '' || locale === undefined));
+          this.setState({
+            isLocalizationAvailable: true,
+            locales: filteredLocales,
+            availableLocales: filteredLocales
+          });
+          this.setState({
+            loadingLocale: false
+          });
+        });
     }
-    this.setState({
-      loadingLocale: false
-    });
   }
 
   componentWillUnmount() {

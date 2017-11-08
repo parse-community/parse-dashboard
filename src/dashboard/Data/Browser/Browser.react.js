@@ -966,6 +966,7 @@ export default class Browser extends DashboardView {
       });
       extras = (
         <AddColumnDialog
+          app={this.context.currentApp}
           currentColumns={currentColumns}
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
