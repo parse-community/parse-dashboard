@@ -184,15 +184,15 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var ParseDashboard = require('parse-dashboard');
 
-var allowInsecureHTTP = false
-
 var api = new ParseServer({
 	// Parse Server settings
 });
 
+var options = { allowInsecureHTTP: false };
+
 var dashboard = new ParseDashboard({
 	// Parse Dashboard settings
-}, allowInsecureHTTP);
+}, options);
 
 var app = express();
 
