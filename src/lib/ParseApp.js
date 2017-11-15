@@ -60,7 +60,7 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
-    this.supportedPushLocales = supportedPushLocales;
+    this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
 
     this.settings = {
       fields: {},
