@@ -56,14 +56,25 @@ import {
   Redirect
 } from 'react-router';
 
+import Header from 'components/back4App/Header/Header.react';
+
 import Bootstrap from 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap/dist/css/bootstrap.css';
 
-let App = React.createClass({
-  render() {
-    return this.props.children;
-  }
-});
+let App = props => {
+  return (
+    <div>
+      <Header />
+      {props.children}
+    </div>
+  );
+};
+
+// let App = React.createClass({
+//   render() {
+//     return this.props.children;
+//   }
+// });
 
 let Empty = React.createClass({
   render() {

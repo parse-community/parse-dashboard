@@ -4,11 +4,7 @@ import HeaderNavItem from 'components/back4App/HeaderNavItem/HeaderNavItem.react
 
 import styles from 'components/back4App/HeaderNav/HeaderNav.scss';
 
-const _renderHeaderMenuItems = items => items.map((item, index) => (
-  item.url ?
-  <HeaderNavItem key={index} label={item.label} url={item.url} /> :
-  <HeaderNavItem key={index} label={item.label} items={item.items} />
-));
+const _renderHeaderMenuItems = items => items.map((item, index) => <HeaderNavItem key={index} {...item} />);
 
 let HeaderNav = props => (
   <nav className={styles.nav}>

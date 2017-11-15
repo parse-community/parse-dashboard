@@ -1,34 +1,53 @@
-import React from 'react';
+import React, { Component } from 'react';
+
+import { Link } from 'react-router';
+
+import history from 'dashboard/history';
 
 import styles from 'components/back4App/HeaderNavItem/HeaderNavItem.scss';
 
-let NavItem = props => (
-  <li className={styles.item}>
-    <a className={styles.label} href={props.url}>{props.label}</a>
-    <i className={`${styles.icon} zmdi zmdi-caret-up`}></i>
-  </li>
-);
+let NavItem = props => {
 
-const _renderDropdownItems = items => items.map((item, index) => (
-  <a key={index}className="dropdown-item" href={item.url}>{item.label}</a>
-));
-
-let DropdownItem = props => {
   return (
-    <li className={styles.item}>
-      <div className="dropdown">
-        <button type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{props.label}
-          <i className="dropdown-icon zmdi zmdi-caret-down"></i>
-        </button>
-        <i className="icon zmdi zmdi-caret-up"></i>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {_renderDropdownItems(props.items)}
-        </div>
-      </div>
+    <li className={`${styles.item} ${props.isCurrent ? styles.active : ''}`}>
+      {
+        props.url ? <a className={styles.label} href={props.url}>{props.label}</a> :
+        props.pathname ? <Link className={styles.label} to={{ pathname:props.pathname }}>{props.label}</Link>:
+        null
+      }
+      <i className={`${styles.icon} zmdi zmdi-caret-up`}></i>
     </li>
   );
 }
 
-let HeaderNavItem = props => props.url ? NavItem(props) : DropdownItem(props);
+export default class HeaderNavItem extends Component {
+  constructor(props) {
+    super(props);
 
-export default HeaderNavItem;
+    this.state = {
+      isCurrent: false
+    }
+  }
+
+  checkIfIsCurrent(currentUrl, itemUrl) {
+    return currentUrl === itemUrl;
+  }
+
+  componentWillMount() {
+    history.listen(location => {
+      let isCurrent = this.checkIfIsCurrent(`${location.basename}${location.pathname}`, this.props.url) ||
+      this.checkIfIsCurrent(`${location.basename}${location.pathname}`, this.props.pathname);
+
+      if(this.state.isCurrent !== isCurrent) {
+        this.setState({
+          isCurrent
+        });
+      }
+    });
+  }
+
+  render() {
+    let { isCurrent } = this.state;
+    return NavItem({...this.props, isCurrent});
+  }
+}

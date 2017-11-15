@@ -8,7 +8,6 @@
 import React from 'react';
 import { buildAccountSidebar } from './SidebarBuilder';
 import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
-import Header from 'components/back4App/Header/Header.react';
 import styles from 'dashboard/Dashboard.scss';
 
 export default class AccountView extends React.Component {
@@ -20,7 +19,6 @@ export default class AccountView extends React.Component {
 
     return (
       <div className={styles.dashboard}>
-        <Header />
         <div className={styles.content}>
           {this.props.children}
         </div>

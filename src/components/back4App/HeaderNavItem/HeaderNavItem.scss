@@ -1,15 +1,27 @@
 @import 'stylesheets/back4app.scss';
 
 .item {
+
   margin-top: 6px;
+
   &:not(:first-child) {
-    margin-left: 24px;
+    margin-left: 26px;
+  }
+
+  &.active {
+    * {
+      font-weight: 700 !important;
+    }
+    i {
+      display: block;
+    }
   }
 
   .label {
     text-decoration: none;
     color: $dark-gray;
     font-weight: 300;
+    white-space: nowrap;
   }
 
   .icon {

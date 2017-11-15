@@ -1,6 +1,6 @@
 const headerNavData = {
   items: [
-    {label: 'My Apps', url: '/apps'},
+    {label: 'My Apps', pathname: '/apps', putaquepariu: false},
     // {label: 'Product', items: [
     //   {label: 'Parse Server', url:'/product/parse-server'},
     //   {label: 'Add-ons', url:'/product/addons'},

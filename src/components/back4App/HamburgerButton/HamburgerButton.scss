@@ -3,6 +3,9 @@
 .hamburgerButton {
   font-size: 30px;
   color: $light-blue;
+  outline: 0 !important;
+  border: 0;
+  cursor: pointer;
 
   border: none;
   background-color: transparent;
