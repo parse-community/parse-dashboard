@@ -62,6 +62,10 @@ export default class ParseApp {
     this.icon = iconName;
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
 
+    if(!supportedPushLocales) {
+      console.warn(`Missing push locales for '` + appName + `', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications`);
+    }
+
     this.settings = {
       fields: {},
       lastFetched: new Date(0)
