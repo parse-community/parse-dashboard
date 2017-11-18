@@ -16,8 +16,8 @@ import PushAudiencesBaseRow      from 'components/PushAudiencesSelector/PushAudi
 
 const FORM_PREFIX = 'audience_radio';
 
-const AUDIENCE_SIZE_FETCHING_ENABLED = false;
-const AUDIENCE_CREATED_DATE_ENABLED = false;
+const AUDIENCE_SIZE_FETCHING_ENABLED = true;
+const AUDIENCE_CREATED_DATE_ENABLED = true;
 
 export default class PushAudiencesOption extends PushAudiencesBaseRow {
   constructor() {

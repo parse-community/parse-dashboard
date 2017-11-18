@@ -374,13 +374,17 @@ export default class ParseApp {
   }
 
   fetchPushSubscriberCount(audienceId, query) {
-    let path = '/apps/' + this.slug + '/dashboard_ajax/push_subscriber_count';
-    let urlsSeparator = '?';
-    if (query){
-      path += `?where=${encodeURI(JSON.stringify(query))}`;
-      urlsSeparator = '&';
+    let promise;
+    if (!query) {
+      promise = new Parse.Query('_Audience').get(audienceId, { useMasterKey: true }).then(function(audience) {
+        return Parse.Query.fromJSON('_Installation', { where: audience.get('query') }).count({ useMasterKey: true })
+      });
+    } else {
+      promise = Parse.Query.fromJSON('_Installation', { where: query }).count({ useMasterKey: true })
     }
-    return AJAX.abortableGet(audienceId ? `${path}${urlsSeparator}audienceId=${audienceId}` : path);
+    return { xhr: undefined, promise: promise.then(function (count) {
+      return { count: count };
+    }) };
   }
 
   fetchPushNotifications(type, page, limit) {

@@ -12,8 +12,8 @@ import React               from 'react';
 import styles              from 'components/PushAudiencesSelector/PushAudiencesSelector.scss';
 import { fromJS }          from 'immutable';
 
-const AUDIENCE_SIZE_FETCHING_ENABLED = false;
-const AUDIENCE_CREATED_DATE_ENABLED = false;
+const AUDIENCE_SIZE_FETCHING_ENABLED = true;
+const AUDIENCE_CREATED_DATE_ENABLED = true;
 
 const PushAudiencesOptions = ({
   current,
