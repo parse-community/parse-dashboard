@@ -29,7 +29,7 @@ function PushAudiencesStore(state, action) {
           return Parse.Promise.as(state);
         }
       }
-      const path = action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences';
+      const path = action.limit ? `push_audiences?limit=${action.limit}` : 'push_audiences';
       const promise = Parse._request('GET', path, {}, { useMasterKey: true });
 
       return promise.then(({ results, showMore }) => {
