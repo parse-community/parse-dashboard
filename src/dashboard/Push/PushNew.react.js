@@ -214,7 +214,11 @@ export default class PushNew extends DashboardView {
     // Only set the audience ID if it is a saved audience.
     if (audience_id != PushConstants.NEW_SEGMENT_ID && audience_id != "everyone") {
       body.audience_id = audience_id;
+      const pushAudience = this.props.pushaudiences.data.get('audiences').toJS()
+        .find((a) => a.objectId === audience_id);
+      body.where = pushAudience.query;
     }
+
     Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {
