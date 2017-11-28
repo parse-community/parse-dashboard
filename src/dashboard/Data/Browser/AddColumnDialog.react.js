@@ -55,11 +55,34 @@ export default class AddColumnDialog extends React.Component {
   }
 
   render() {
+    function checkVersion(t, props) {
+      if (t === 'Polygon') {
+        if (
+          typeof props.app !== 'undefined' && typeof props.app.serverInfo.parseServerVersion !== 'undefined' &&
+          props.app.serverInfo.parseServerVersion > '2.6'
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true
+      }
+    }
+    function renderOptions(props) {
+      return DataTypes.map((t) => {
+        if (checkVersion(t, props)) {
+          return <Option key={t} value={t}>{t}</Option>
+        } else {
+          return null;
+        }
+      }).filter((t => t !== null))
+    }
     let typeDropdown = (
       <Dropdown
         value={this.state.type}
         onChange={(type) => this.setState({ type: type })}>
-        {DataTypes.map((t) => <Option key={t} value={t}>{t}</Option>)}
+        {renderOptions(this.props)}
       </Dropdown>
     );
     return (

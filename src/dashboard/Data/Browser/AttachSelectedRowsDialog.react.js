@@ -5,7 +5,6 @@ import Label from 'components/Label/Label.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
 import Option from 'components/Dropdown/Option.react';
-import Parse from 'parse';
 import { SpecialClasses } from 'lib/Constants';
 
 export default class AttachSelectedRowsDialog extends React.Component {
@@ -76,8 +75,6 @@ export default class AttachSelectedRowsDialog extends React.Component {
 
   render() {
     const {
-      relation,
-      onCancel,
       classes,
     } = this.props;
     let targetRelationSelector;

@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as AJAX         from 'lib/AJAX';
 import keyMirror         from 'lib/keyMirror';
 import Parse             from 'parse';
 import { Map, List }     from 'immutable';
@@ -34,16 +33,16 @@ function JobsStore(state, action) {
         return Map({ lastFetch: new Date(), jobs: List(results) });
       });
     case ActionTypes.CREATE:
-      path = `/apps/${action.app.slug}/cloud_code/jobs`;
-      return AJAX.post(path, action.schedule).then((result) => {
+      path = `cloud_code/jobs`;
+      return Parse._request('POST', path, action.schedule, {useMasterKey: true}).then((result) => {
         let { ...schedule } = action.schedule.job_schedule;
         schedule.objectId = result.objectId;
         schedule.startAfter = schedule.startAfter || new Date().toISOString();
         return state.set('jobs', state.get('jobs').push(schedule));
       });
     case ActionTypes.EDIT:
-      path = `/apps/${action.app.slug}/cloud_code/jobs/${action.jobId}`;
-      return AJAX.put(path, action.updates).then(() => {
+      path = `cloud_code/jobs/${action.jobId}`;
+      return Parse._request('PUT', path, action.updates, {useMasterKey: true}).then(() => {
         let index = state.get('jobs').findIndex((j) => j.objectId === action.jobId);
         let current = state.get('jobs').get(index);
         let { ...update } = action.updates.job_schedule;
@@ -52,8 +51,8 @@ function JobsStore(state, action) {
         return state.set('jobs', state.get('jobs').set(index, update));
       });
     case ActionTypes.DELETE:
-      path = `/apps/${action.app.slug}/cloud_code/jobs/${action.jobId}`;
-      return AJAX.del(path).then(() => {
+      path = `cloud_code/jobs/${action.jobId}`;
+      return Parse._request('DELETE', path, {}, {useMasterKey: true}).then(() => {
         let index = state.get('jobs').findIndex((j) => j.objectId === action.jobId);
         return state.set('jobs', state.get('jobs').delete(index));
       }, () => {

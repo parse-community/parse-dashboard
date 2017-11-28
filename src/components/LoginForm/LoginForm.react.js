@@ -7,7 +7,6 @@
  */
 import CSRFInput from 'components/CSRFInput/CSRFInput.react';
 import Icon               from 'components/Icon/Icon.react';
-import PropTypes          from 'lib/PropTypes';
 import React              from 'react';
 import styles             from 'components/LoginForm/LoginForm.scss';
 import { verticalCenter } from 'stylesheets/base.scss';

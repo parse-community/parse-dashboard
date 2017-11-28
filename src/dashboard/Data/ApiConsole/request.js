@@ -26,11 +26,11 @@ export default function request(app, method, path, body, options) {
   if (options.sessionToken) {
     xhr.setRequestHeader('X-Parse-Session-Token', options.sessionToken);
   }
-  xhr.onload = function(e) {
+  xhr.onload = function() {
     let response = xhr.responseText;
     try {
       response = JSON.parse(response);
-    } catch (e) {}
+    } catch (e) {/**/}
     promise.resolve(response);
   }
   xhr.send(body);

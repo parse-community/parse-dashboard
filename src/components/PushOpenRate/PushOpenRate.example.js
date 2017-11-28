@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import React from 'react';
-import Field from 'components/Field/Field.react';
 import PushOpenRate from 'components/PushOpenRate/PushOpenRate.react';
 
 export const component = PushOpenRate;

@@ -145,7 +145,7 @@ export default class Performance extends DashboardView {
       promises.push(promise);
       this.xhrHandles.push(xhr);
     });
-    Parse.Promise.when(promises).then((results) => {
+    Parse.Promise.when(promises).then(() => {
       this.setState({
         loading: false,
         mutated: false

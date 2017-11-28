@@ -7,7 +7,6 @@
  */
 import React from 'react';
 import PushAudiencesSelector from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
-import PushAudiencesOption from 'components/PushAudiencesSelector/PushAudiencesOption.react';
 
 export const component = PushAudiencesSelector;
 
