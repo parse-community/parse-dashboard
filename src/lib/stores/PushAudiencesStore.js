@@ -31,18 +31,22 @@ function PushAudiencesStore(state, action) {
           return Parse.Promise.as(state);
         }
       }
-      let promise = action.app.apiRequest(
-        'GET',
-        action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences',
-        {},
-        { useMasterKey: true }
-      );
+      if (action.app.serverInfo.parseServerVersion > '2.2.24') {
+        let promise = action.app.apiRequest(
+          'GET',
+          action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences',
+          {},
+          { useMasterKey: true }
+        );
 
-      //xhrMap[action.xhrKey] = xhr;
-      //
-      return promise.then(({ results, showMore }) => {
-        return Map({ lastFetch: new Date(), audiences: List(results), showMore: showMore});
-      });
+        //xhrMap[action.xhrKey] = xhr;
+        //
+        return promise.then(({ results, showMore }) => {
+          return Map({ lastFetch: new Date(), audiences: List(results), showMore: showMore});
+        });
+      } else {
+        return Parse.Promise.as(state);
+      }
     case ActionTypes.CREATE:
       return action.app.apiRequest(
         'POST',
