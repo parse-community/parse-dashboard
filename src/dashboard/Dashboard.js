@@ -25,7 +25,6 @@ import Icon               from 'components/Icon/Icon.react';
 import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
 import Jobs               from './Data/Jobs/Jobs.react';
 import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
-import JobsForm           from 'dashboard/Data/Jobs/JobsForm.react';
 import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
@@ -56,6 +55,8 @@ import {
   Redirect
 } from 'react-router';
 import ServerSettings from 'dashboard/ServerSettings/ServerSettings.react';
+
+const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
 let App = React.createClass({
   render() {
@@ -166,8 +167,8 @@ class Dashboard extends React.Component {
         }
       });
       return Parse.Promise.when(appInfoPromises);
-    }).then(function() {
-      Array.prototype.slice.call(arguments).forEach(app => {
+    }).then(function(resolvedApps) {
+      resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
@@ -213,7 +214,7 @@ class Dashboard extends React.Component {
         <Route path='apps/:appId' component={AppData}>
           <Route path='getting_started' component={Empty} />
 
-          <Route path='browser' component={false ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
+          <Route path='browser' component={ShowSchemaOverview ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
           <Route path='browser/:className' component={Browser} />
           <Route path='browser/:className/:entityId/:relationName' component={Browser} />
 

@@ -5,11 +5,11 @@ PIG/bundles/
 Parse-Dashboard/public/bundles/
 Parse-Dashboard/parse-dashboard-config.json
 npm-debug.log
+.eslintcache
 
 // vim .swp
 *.swp
 .env
-
 .idea/
 
 npm-debug.log.*

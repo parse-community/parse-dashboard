@@ -29,7 +29,7 @@ import validateEmailFormat from 'lib/validateEmailFormat';
 // The parent also is responsible for passing onRemove, which is called when the
 // users removes a collaborator.
 export default class Collaborators extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = { lastError: '' };

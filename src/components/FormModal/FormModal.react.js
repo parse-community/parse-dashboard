@@ -81,7 +81,7 @@ export default class FormModal extends React.Component {
   }
 }
 
-let { confirmText, onConfirm, onCancel, disabled, canCancel, progress, ...forwardedModalProps} = Modal.propTypes;
+let { ...forwardedModalProps} = Modal.propTypes;
 FormModal.propTypes = {
   ...forwardedModalProps,
   children: PropTypes.node.describe('The form elements to be rendered in the modal.'),

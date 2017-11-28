@@ -21,6 +21,13 @@ export default function queryFromFilters(className, filters) {
   return query;
 }
 
+function addQueryConstraintFromObject(query, filter, constraintType) {
+  let compareTo = JSON.parse(filter.get('compareTo'));
+  for (let key of Object.keys(compareTo)) {
+    query[constraintType](filter.get('field')+'.'+key, compareTo[key]);
+  }
+}
+
 function addConstraint(query, filter) {
   switch (filter.get('constraint')) {
     case 'exists':
@@ -69,6 +76,33 @@ function addConstraint(query, filter) {
       break;
     case 'containedIn':
       query.containedIn(filter.get('field'), filter.get('array'));
+      break;
+    case 'stringContainsString':
+      query.matches(filter.get('field'), filter.get('compareTo'), 'i');
+      break;
+    case 'keyExists':
+      query.exists(filter.get('field') + '.' + filter.get('compareTo'));
+      break;
+    case 'keyDne':
+      query.doesNotExist(filter.get('field') + '.' + filter.get('compareTo'));
+      break;
+    case 'keyEq':
+      addQueryConstraintFromObject(query, filter, 'equalTo');
+      break;
+    case 'keyNeq':
+      addQueryConstraintFromObject(query, filter, 'notEqualTo');
+      break;
+    case 'keyGt':
+      addQueryConstraintFromObject(query, filter, 'greaterThan');
+      break;
+    case 'keyGte':
+      addQueryConstraintFromObject(query, filter, 'greaterThanOrEqualTo');
+      break;
+    case 'keyLt':
+      addQueryConstraintFromObject(query, filter, 'lessThan');
+      break;
+    case 'keyLte':
+      addQueryConstraintFromObject(query, filter, 'lessThanOrEqualTo');
       break;
   }
   return query;

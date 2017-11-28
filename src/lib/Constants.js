@@ -71,6 +71,7 @@ export const DataTypes = [
   'Object',
   'Array',
   'GeoPoint',
+  'Polygon',
   'File',
   'Pointer',
   'Relation',

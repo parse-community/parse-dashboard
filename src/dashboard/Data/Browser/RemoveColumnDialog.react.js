@@ -13,8 +13,6 @@ import Label              from 'components/Label/Label.react';
 import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
-import { DataTypes } from 'lib/Constants';
-import TextInput          from 'components/TextInput/TextInput.react';
 
 export default class RemoveColumnDialog extends React.Component {
   constructor(props) {

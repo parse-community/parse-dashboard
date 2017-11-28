@@ -10,14 +10,12 @@ import * as PushConstants      from './PushConstants';
 import Button                  from 'components/Button/Button.react';
 import LoaderContainer         from 'components/LoaderContainer/LoaderContainer.react';
 import ParseApp                from 'lib/ParseApp';
-import PropTypes               from 'lib/PropTypes';
 import PushAudienceDialog      from 'components/PushAudienceDialog/PushAudienceDialog.react';
 import PushAudiencesSelector   from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
 import queryFromFilters        from 'lib/queryFromFilters';
 import React                   from 'react';
 import styles                  from './PushAudiencesData.scss';
-import { center }              from 'stylesheets/base.scss';
-import { List, Map }           from 'immutable';
+import { List }           from 'immutable';
 
 const XHR_KEY = 'PushAudiencesData';
 
@@ -59,7 +57,7 @@ export default class PushAudiencesData extends React.Component {
       this.setState({
         availableDevices: available_devices
       });
-    }, (error) => {
+    }, () => {
       this.setState({
         availableDevices: PushConstants.DEFAULT_DEVICES
       });
@@ -165,7 +163,7 @@ export default class PushAudiencesData extends React.Component {
   }
 
   render() {
-    let { pushAudiencesStore, loaded, current, ...otherProps } = this.props;
+    let { pushAudiencesStore, current, ...otherProps } = this.props;
 
     let pushAudienceData = pushAudiencesStore.data;
     let audiences = null;

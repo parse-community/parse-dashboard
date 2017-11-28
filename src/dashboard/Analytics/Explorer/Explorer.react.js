@@ -27,11 +27,8 @@ import ReactDOM                  from 'react-dom';
 import styles                    from 'dashboard/Analytics/Explorer/Explorer.scss';
 import stylesTable               from 'components/Table/Table.scss';
 import subscribeTo               from 'lib/subscribeTo';
-import TableHeader               from 'components/Table/TableHeader.react';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import { verticalCenter }        from 'stylesheets/base.scss';
-
-const XHR_KEY = 'Explorer';
 
 let buildFriendlyName = (query) => {
   let name = [query.source];
