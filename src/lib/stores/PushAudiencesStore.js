@@ -31,7 +31,7 @@ function PushAudiencesStore(state, action) {
           return Parse.Promise.as(state);
         }
       }
-      if (action.app.serverInfo.parseServerVersion > '2.2.24') {
+      if (action.app.serverInfo.features.push.pushAudiences) {
         let promise = action.app.apiRequest(
           'GET',
           action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences',
