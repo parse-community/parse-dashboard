@@ -9,7 +9,6 @@ import Field        from 'components/Field/Field.react';
 import FormTable    from 'components/FormTable/FormTable.react';
 import Label        from 'components/Label/Label.react';
 import React        from 'react';
-import { daysFrom } from 'lib/DateUtils';
 
 export const component = FormTable;
 

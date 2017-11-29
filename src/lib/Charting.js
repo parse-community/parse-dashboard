@@ -75,8 +75,6 @@ export function getDataPoints(chartWidth, chartHeight, timeBuckets, valueBuckets
   let xLength = timeBuckets[timeBuckets.length - 1] - timeBuckets[0];
   let yLength = valueBuckets[valueBuckets.length - 1] - valueBuckets[0];
   return dataPoints.map(([x, y]) => {
-    let dx = x / xLength;
-    let dy = y / yLength;
     return [chartWidth * (x - timeBuckets[0]) / xLength, chartHeight - (chartHeight * y / yLength)];
   });
 }

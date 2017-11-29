@@ -164,6 +164,10 @@ class Config extends TableView {
 
           data.push({ param: param, value: value })
         });
+
+        data.sort((object1, object2) => {
+          return object1.param.localeCompare(object2.param);
+        });
       }
     }
     return data;
@@ -173,10 +177,10 @@ class Config extends TableView {
     this.props.config.dispatch(
       ActionTypes.SET,
       { param: name, value: value }
-    ).then((r) => {
+    ).then(() => {
       this.setState({ modalOpen: false });
-    }, (error) => {
-
+    }, () => {
+      // Catch the error
     });
   }
 

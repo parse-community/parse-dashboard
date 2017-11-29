@@ -31,8 +31,6 @@ const MIGRATION_DONE = 6;
 const MIGRATION_FATALED = 7;
 const MIGRATION_STOPPED = 8;
 
-const MONGO_KEY_PREFIX_LENGTH = 41;
-
 let StatusBarNote = ({note, value}) => <span className={styles.statusNote}>
   {note}<span className={styles.infoText}>{value}</span>
 </span>;
@@ -181,7 +179,6 @@ export default class Migration extends DashboardView {
               showFinalizeButton = true;
               break;
             case MIGRATION_STOPPED:
-            case MIGRATION_NOTSTARTED:
             case MIGRATION_INITIALSYNC:
               longStateDescription =
               <div>

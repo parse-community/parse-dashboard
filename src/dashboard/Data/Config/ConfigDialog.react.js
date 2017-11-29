@@ -159,7 +159,7 @@ export default class ConfigDialog extends React.Component {
           return false;
         }
         if (parseFloat(val.latitude) > 90.0 || parseFloat(val.latitude) < -90.0 || parseFloat(val.longitude) > 180.0 || parseFloat(val.longitude) < -180.0) {
-        	return false;
+          return false;
         }
         return true;
       case 'File':

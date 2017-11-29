@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import Field             from 'components/Field/Field.react';
-import Fieldset          from 'components/Fieldset/Fieldset.react';
 import Label             from 'components/Label/Label.react';
 import MultiSelect       from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';

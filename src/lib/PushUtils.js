@@ -191,7 +191,7 @@ export function formatConstraint(key, constraints, schema) {
       }
     }
   } else if(constraints.constructor === Boolean) {
-  	rows.push([[key, 'is', constraints ? 'true' : 'false']]);
+    rows.push([[key, 'is', constraints ? 'true' : 'false']]);
   } else {
     rows.push([[key, 'is', constraints]]);
   }
@@ -307,7 +307,7 @@ let tableInfoBuilderHelper = (styles, key, description, value) => {
 export function tableInfoBuilder(query, schema, styles = {}) {
   try {
     query = JSON.parse(query);
-  } catch(e) {}
+  } catch(e) {/**/} 
 
   if(!query) {
     return;
@@ -339,7 +339,7 @@ export function tableInfoBuilder(query, schema, styles = {}) {
           if (constraint && Array.isArray(constraint[0])) {
             // case 1: contraint = [[key, description, value]]
             constraint.forEach(
-              ([key, description, value], i) => {
+              ([key, description, value]) => {
                 tableInfoRows.push(tableInfoBuilderHelper(styles, key, description, value));
               }
             );

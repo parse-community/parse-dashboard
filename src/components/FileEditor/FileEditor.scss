@@ -14,7 +14,7 @@
   padding: 6px;
 }
 
-.delete, .upload {
+.delete, .upload, .download {
   @include DosisFont;
   display: block;
   cursor: pointer;
@@ -28,13 +28,13 @@
 
 .delete {
   background: $red;
-  margin-bottom: 6px;
 }
 
-.upload {
+.upload, .download {
   position: relative;
   overflow: hidden;
   background: $blue;
+  margin-bottom: 6px;
 
   input {
     position: absolute;

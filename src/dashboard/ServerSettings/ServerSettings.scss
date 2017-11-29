@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.content {
+  min-height: 100vh;
+  margin-top: 42px;
+}
+
+.iframeContent {
+  min-height: 100vh;
+  width: 100%;
+
+  iframe {
+    outline: 5px solid red;
+  }
+}
+
+

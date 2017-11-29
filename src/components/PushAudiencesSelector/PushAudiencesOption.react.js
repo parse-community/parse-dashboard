@@ -6,10 +6,7 @@
  * the root directory of this source tree.
  */
 import * as PushUtils            from 'lib/PushUtils';
-import { formatConstraint }      from 'lib/PushUtils';
 import Icon                      from 'components/Icon/Icon.react';
-import ParseApp                  from 'lib/ParseApp';
-import prettyNumber              from 'lib/prettyNumber';
 import PropTypes                 from 'lib/PropTypes';
 import RadioButton               from 'components/RadioButton/RadioButton.react';
 import React                     from 'react';

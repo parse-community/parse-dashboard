@@ -22,10 +22,6 @@
   &.safari {
     -webkit-transform: translate3d(0,0,0);
   }
-
-  &.showAddRow {
-    bottom: 36px;
-  }
 }
 
 @media (max-width: 980px) {
@@ -93,7 +89,6 @@
   top: 30px;
   bottom: 0;
   left: 0;
-  width: 100%;
   min-width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -101,15 +96,6 @@
 
 .table .empty {
   top: 126px;
-}
-
-.rowsHolder {
-  position: absolute;
-  top: 0;
-  right:0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
 }
 
 .tableRow {
@@ -135,15 +121,13 @@
 }
 
 .addRow {
-  position: fixed;
-  left: 300px;
-  right: 0;
-  bottom: 0;
-  height: 36px;
+  height: 30px;
   padding: 8px;
-  display: inline-flex;
-  align-items: center;
-  border-top: 1px solid #ccc;
+
+  a {
+    cursor: pointer;
+    display: inline-block;
+  }
 
   svg {
     fill: $blue;
@@ -152,45 +136,9 @@
       fill: $darkBlue;
     }
   }
-
-  a {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 14px;
-    font-size: 12px;
-    font-weight: 700;
-    height: 24px;
-    padding: 0 10px;
-    border-radius: 2px;
-    border: 1px solid transparent;
-  }
-
-  + .rowsHolder {
-    bottom: 60px;
-  }
 }
 
-.addNewRow {
-  position: relative;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #169CEE;
-
-  &:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
-    border-bottom: 2px solid #0092ff;
-  }
-
-  + .rowsHolder {
-    position: relative;
-  }
-}
-
-.notification {
+.notificationMessage, .notificationError {
   @include animation('fade-in 0.2s ease-out');
   position: absolute;
   bottom: 20px;
@@ -198,11 +146,19 @@
   opacity: 1;
   background: white;
   padding: 10px;
-  border: 2px solid $red;
-  color: $red;
   font-size: 14px;
   border-radius: 5px;
   width: 260px;
+}
+
+.notificationError {
+  border: 2px solid $red;
+  color: $red;
+}
+
+.notificationMessage {
+  border: 2px solid $blue;
+  color: $blue;
 }
 
 .notificationHide {

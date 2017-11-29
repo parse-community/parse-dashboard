@@ -31,27 +31,31 @@ function PushAudiencesStore(state, action) {
           return Parse.Promise.as(state);
         }
       }
-      let promise = action.app.apiRequest(
-      'GET',
-      action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences', 
-      {},
-      { useMasterKey: true }
-      );
+      if (action.app.serverInfo.features.push.pushAudiences) {
+        let promise = action.app.apiRequest(
+          'GET',
+          action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences',
+          {},
+          { useMasterKey: true }
+        );
 
-      //xhrMap[action.xhrKey] = xhr;
-      //
-      return promise.then(({ results, showMore }) => {
-        return Map({ lastFetch: new Date(), audiences: List(results), showMore: showMore});
-      });
+        //xhrMap[action.xhrKey] = xhr;
+        //
+        return promise.then(({ results, showMore }) => {
+          return Map({ lastFetch: new Date(), audiences: List(results), showMore: showMore});
+        });
+      } else {
+        return Parse.Promise.as(state);
+      }
     case ActionTypes.CREATE:
       return action.app.apiRequest(
-      'POST',
-      'push_audiences',
-      {
-        query: action.query,
-        name: action.name,
-      },
-      { useMasterKey: true }
+        'POST',
+        'push_audiences',
+        {
+          query: action.query,
+          name: action.name,
+        },
+        { useMasterKey: true }
       ).then(({ new_audience }) => {
         return state.update('audiences',(audiences) => {
           return audiences.unshift({
@@ -65,10 +69,10 @@ function PushAudiencesStore(state, action) {
       });
     case ActionTypes.DESTROY:
       return action.app.apiRequest(
-      'DELETE',
-      `push_audiences/${action.objectId}`,
-      {},
-      { useMasterKey: true }
+        'DELETE',
+        `push_audiences/${action.objectId}`,
+        {},
+        { useMasterKey: true }
       ).then(() => {
         return state.update('audiences',(audiences) => {
           let index = audiences.findIndex(function(audience) {
@@ -80,9 +84,9 @@ function PushAudiencesStore(state, action) {
     case ActionTypes.ABORT_FETCH:
 
       /*let xhrKey = action.xhrKey;
-      if (xhrMap[xhrKey]) {
-        xhrMap[xhrKey].abort();
-      }*/
+       if (xhrMap[xhrKey]) {
+       xhrMap[xhrKey].abort();
+       }*/
 
       return Parse.Promise.as(state);
   }

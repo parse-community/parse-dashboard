@@ -22,7 +22,7 @@ export default class FlowView extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props, context) {
+  componentWillReceiveProps(props) {
     let newChanges = {...this.state.changes};
     for (let k in props.initialFields) {
       if (this.state.changes[k] === props.initialFields[k]) {

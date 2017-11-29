@@ -32,4 +32,4 @@ export default function stringList(strings, endDelineator = 'and') {
     progress.push(s);
   });
   return progress.join('');
-};
+}

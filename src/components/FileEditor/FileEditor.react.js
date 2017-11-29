@@ -52,13 +52,15 @@ export default class FileEditor extends React.Component {
   }
 
   render() {
+    const file = this.props.value;
     return (
       <div ref='input' style={{ minWidth: this.props.width }} className={styles.editor}>
-        {this.props.value ? <a href='javascript:;' role='button' className={styles.delete} onClick={() => this.props.onCommit(undefined)}>Delete</a> : null}
+        {file && file.url() ? <a href={file.url()} target='_blank' role='button' className={styles.download}>Download</a> : null}
         <a className={styles.upload}>
           <input type='file' onChange={this.handleChange.bind(this)} />
-          <span>{this.props.value ? 'Replace file' : 'Upload file'}</span>
+          <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
+        {file ? <a href='javascript:;' role='button' className={styles.delete} onClick={() => this.props.onCommit(undefined)}>Delete</a> : null}
       </div>
     );
   }

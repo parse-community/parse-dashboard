@@ -37,10 +37,6 @@ export function getStore(name) {
     StateManager.getGlobalState :
     StateManager.getAppState
   );
-  let stateSetter = (storeData.isGlobal ?
-    StateManager.setGlobalState :
-    StateManager.setAppState
-  );
 
   return {
     getData: stateGetter.bind(null, name),
