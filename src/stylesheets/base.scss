@@ -11,15 +11,11 @@
 html, body {
   min-height: 100vh;
 }
-html{
-  background-color: #110D11;
-}
 
 body {
   @include NotoSansFont;
   box-sizing: border-box;
   color: $mainTextColor;
-  background-color: #110D11;
   padding-top: $header-height;
 }
 

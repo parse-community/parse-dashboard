@@ -58,9 +58,6 @@ import {
 
 import Header from 'components/back4App/Header/Header.react';
 
-import Bootstrap from 'bootstrap/dist/js/bootstrap.js'
-import 'bootstrap/dist/css/bootstrap.css';
-
 let App = props => {
   return (
     <div>
