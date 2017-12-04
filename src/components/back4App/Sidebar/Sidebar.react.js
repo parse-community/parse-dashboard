@@ -63,6 +63,25 @@ class Sidebar extends Component {
       isOpen: props.isOpen
     };
   }
+
+  getStateByScreenSize() {
+    return window.innerWidth < 1100;
+  }
+
+  componentDidMount() {
+    let { sidebarToggle } = this.props;
+    window.addEventListener('resize', () => {
+      if(this.state.isOpen) {
+        sidebarToggle(this.getStateByScreenSize());
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', () => {
+      this.getStateByScreenSize()
+    });
+  }
   
   componentWillReceiveProps(nextProps) {
     this.setState({

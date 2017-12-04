@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router';
 
-import history from 'dashboard/history';
-
 import styles from 'components/back4App/HeaderNavItem/HeaderNavItem.scss';
 
 let NavItem = props => {
@@ -25,25 +23,12 @@ export default class HeaderNavItem extends Component {
     super(props);
 
     this.state = {
-      isCurrent: false
+      isCurrent: !!(props.index === 1)
     }
   }
 
   checkIfIsCurrent(currentUrl, itemUrl) {
     return currentUrl === itemUrl;
-  }
-
-  componentWillMount() {
-    history.listen(location => {
-      let isCurrent = this.checkIfIsCurrent(`${location.basename}${location.pathname}`, this.props.url) ||
-      this.checkIfIsCurrent(`${location.basename}${location.pathname}`, this.props.pathname);
-
-      if(this.state.isCurrent !== isCurrent) {
-        this.setState({
-          isCurrent
-        });
-      }
-    });
   }
 
   render() {

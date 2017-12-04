@@ -66,8 +66,10 @@ class App extends React.Component {
     };
   }
 
-  handleSidebarToggle() {
-    this.setState({sidebarIsOpen: !this.state.sidebarIsOpen});
+  handleSidebarToggle(isOpen) {
+    this.setState({
+      sidebarIsOpen: typeof isOpen !== 'undefined' ? isOpen : !this.state.sidebarIsOpen
+    });
   }
 
   render() {
