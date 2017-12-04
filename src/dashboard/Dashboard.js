@@ -50,6 +50,8 @@ import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
+import Header             from 'components/back4App/Header/Header.react';
+import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
 import {
   Router,
   Route,
@@ -57,17 +59,43 @@ import {
 } from 'react-router';
 import ServerSettings from 'dashboard/ServerSettings/ServerSettings.react';
 
-let App = React.createClass({
-  render() {
-    return this.props.children;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sidebarIsOpen: false
+    };
   }
-});
 
-let Empty = React.createClass({
-  render() {
-    return <div>Not yet implemented</div>;
+  handleSidebarToggle(isOpen) {
+    this.setState({
+      sidebarIsOpen: typeof isOpen !== 'undefined' ? isOpen : !this.state.sidebarIsOpen
+    });
   }
-});
+
+  render() {
+    return (
+      <div>
+        <Header
+          sidebarToggle={() => {
+            this.handleSidebarToggle();
+          }}
+        />
+        <Sidebar
+          isOpen={this.state.sidebarIsOpen}
+          sidebarToggle={() => {
+            this.handleSidebarToggle();
+          }}
+        />
+        {this.props.children}
+      </div>
+    );      
+  }
+}
+
+let Empty = () => (
+  <div>Not yet implemented</div>
+);
 
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>
