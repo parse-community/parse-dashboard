@@ -50,34 +50,49 @@ import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
+import Header             from 'components/back4App/Header/Header.react';
+import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
 import {
   Router,
   Route,
   Redirect
 } from 'react-router';
 
-import Header from 'components/back4App/Header/Header.react';
-
-let App = props => {
-  return (
-    <div>
-      <Header />
-      {props.children}
-    </div>
-  );
-};
-
-// let App = React.createClass({
-//   render() {
-//     return this.props.children;
-//   }
-// });
-
-let Empty = React.createClass({
-  render() {
-    return <div>Not yet implemented</div>;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sidebarIsOpen: true
+    };
   }
-});
+
+  handleSidebarToggle() {
+    this.setState({sidebarIsOpen: !this.state.sidebarIsOpen});
+  }
+
+  render() {
+    return (
+      <div>
+        <Header
+          sidebarToggle={() => {
+            this.handleSidebarToggle();
+          }}
+        />
+        <Sidebar
+          isOpen={this.state.sidebarIsOpen}
+          sidebarToggle={() => {
+            this.handleSidebarToggle();
+          }}
+        />
+        {this.props.children}
+      </div>
+    );      
+  }
+}
+
+let Empty = () => (
+  <div>Not yet implemented</div>
+);
 
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>

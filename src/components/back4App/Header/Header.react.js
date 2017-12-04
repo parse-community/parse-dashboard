@@ -19,7 +19,9 @@ let Header = props => (
     <div className={styles['left-side']}>
       <Media query="(max-width: 1099px)">
         <div className={styles['hamburger-wrapper']}>
-          <HamburgerButton />
+          <HamburgerButton onClick={() => {
+            props.sidebarToggle();
+          }} />
         </div>
       </Media>
       <Media query="(min-width: 1100px)">
