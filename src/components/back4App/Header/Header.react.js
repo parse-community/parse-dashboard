@@ -12,7 +12,7 @@ import Button from 'components/back4App/Button/Button.react';
 
 import styles from 'components/back4App/Header/Header.scss';
 
-import headerNavData from 'components/back4App/Header/headerNavData.js';
+import navData from 'components/back4App/Header/headerNavData.js';
 
 let Header = props => (
   <header className={styles.header}>
@@ -36,13 +36,13 @@ let Header = props => (
 
     <div className={styles['right-side']}>
       <Media query="(min-width: 1100px)">
-        <Nav items={headerNavData.items} />
+        <Nav items={navData.items} />
       </Media>
 
       <Media query="(min-width: 1100px)">
         <div className="ml-auto">
-          <Dropdown items={headerNavData.dropdownItems}>Hello, TBrayner!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
-          <Button color="green" weight="700" url="http://localhost:8090/apps/#!/apps/new">NEW APP</Button>
+          <Dropdown items={navData.dropdownItems}>Hello, TBrayner!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
+          <Button color="green" weight="700" url="/apps/#!/apps/new">NEW APP</Button>
         </div>
       </Media>
     </div>

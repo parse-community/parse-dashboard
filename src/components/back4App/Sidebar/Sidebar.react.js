@@ -2,79 +2,52 @@ import React, { Component } from 'react';
 
 import Icon  from 'components/Icon/Icon.react';
 
+import Button from 'components/back4App/Button/Button.react';
+
 import styles from 'components/back4App/Sidebar/Sidebar.scss';
+
+import navData from 'components/back4App/Header/headerNavData.js';
+
+const _renderHeaderMenuItems = items => items.map(({label, pathname, url}, index) => (
+  <div key={index} className={styles['menu-item']}>
+    <div className={`${styles['menu-item-header']} ${index === 1 && styles.active}`} role="tab">
+      <a className={styles.link} href={pathname || url} title="Edit email">
+        <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
+        {label}
+      </a>
+      <i className={`${styles['icon-caret']} zmdi zmdi-caret-left`}></i>
+    </div>
+  </div>
+));
+
+let SidebarNav = props => {
+  return (
+    <nav className={styles.menu} id="accordion" role="tablist" aria-multiselectable="true">
+      {_renderHeaderMenuItems(navData.items)}
+    </nav>
+  );
+};
 
 let sidebarContent = (
   <div>
     <header>
-      <a className={styles.brand } href="//dashboard.back4app.com">
-        <div className={styles['face']}>
+      <a className={styles.brand} href="//dashboard.back4app.com">
+        <div className={styles.face}>
           <Icon width={46} height={47} name="back4app-logo-face-blue" fill="#208AEC" />
         </div>
-        <div className={styles['text']}>
+        <div className={styles.text}>
           <Icon width={134} height={53} name="back4app-logo-text-blue" fill="#208AEC" />
         </div>
       </a>
     </header>
 
     <div className={styles['menu-wrapper']}>
-      <nav className={styles['menu'] } id="accordion" role="tablist" aria-multiselectable="true">
-
-        <div className={styles['menu-item']}>
-          <div className={styles['menu-item-header']} role="tab">
-            <a className={styles['link']} href="https://dashboard.back4app.com/email/change" title="Edit email">
-              <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
-              My Apps
-            </a>
-            <i className={`${styles['icon-caret']} ${styles['active']} zmdi zmdi-caret-left`}></i>
-          </div>
-        </div>
-
-        <div className={styles['menu-item']}>
-          <div className={styles['menu-item-header']} role="tab">
-            <a className={styles['link']} href="https://dashboard.back4app.com/email/change" title="Edit email">
-              <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
-              Dashboard
-            </a>
-            <i className={`${styles['icon-caret']} ${styles['active']} zmdi zmdi-caret-left`}></i>
-          </div>
-        </div>
-
-        <div className={styles['menu-item']}>
-          <div className={styles['menu-item-header']} role="tab">
-            <a className={styles['link']} href="https://dashboard.back4app.com/email/change" title="Edit email">
-              <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
-              Docs
-            </a>
-            <i className={`${styles['icon-caret']} ${styles['active']} zmdi zmdi-caret-left`}></i>
-          </div>
-        </div>
-
-        <div className={styles['menu-item']}>
-          <div className={styles['menu-item-header']} role="tab">
-            <a className={styles['link']} href="https://dashboard.back4app.com/email/change" title="Edit email">
-              <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
-              Community
-            </a>
-            <i className={`${styles['icon-caret']} ${styles['active']} zmdi zmdi-caret-left`}></i>
-          </div>
-        </div>
-
-        <div className={styles['menu-item']}>
-          <div className={styles['menu-item-header']} role="tab">
-            <a className={styles['link']} href="https://dashboard.back4app.com/email/change" title="Edit email">
-              <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
-              Blog
-            </a>
-            <i className={`${styles['icon-caret']} ${styles['active']} zmdi zmdi-caret-left`}></i>
-          </div>
-        </div>
-
-      </nav>
+      { <SidebarNav items={navData.items} /> }
     </div>
 
     <footer className={styles.footer}>
-      <a className={styles['create-new']} href="/apps/#!/apps/new">NEW APP</a>
+      <Button customClasses={styles['new-app-button']} color="green" weight="700" url="http://localhost:8090/apps/#!/apps/new">NEW APP</Button>
+
       <div className={styles.account}>
         <a href="https://dashboard.back4app.com/logout" className={styles['sign-out']}>Sign Out</a>
       </div>

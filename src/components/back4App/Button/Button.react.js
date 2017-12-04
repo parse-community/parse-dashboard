@@ -22,12 +22,13 @@ let Button = props => {
   let {
     type = 'button',
     color = 'default',
-    weight = '400'
+    weight = '400',
+    customClasses = ''
   } = props;
 
   let colorClass = `color-${color}`;
   let weightClass = `weight-${weight}`;
-  let classes = `${styles.button} ${styles[colorClass]} ${styles[weightClass]}`;
+  let classes = `${styles.button} ${styles[colorClass]} ${styles[weightClass]} ${customClasses}`;
   let _render = !!props.url || type === 'link' ? _renderLink : _renderButton;
   
   return _render(props, classes);
