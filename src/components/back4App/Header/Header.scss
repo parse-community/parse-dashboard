@@ -15,20 +15,23 @@
 
   .left-side {
     display: flex;
-    min-width: 280px;
-    max-width: 280px;
-    padding-left: 28px;
+    min-width: 247px;
+    max-width: 247px;
+    margin-left: 33px;
 
     .hamburger-wrapper {
-      display: none;
       height: 40px;
       margin: auto;
       margin-left: 10px;
-      margin-right: 20px;
+      margin-right: 11px;
     }
 
-    .logo-wrapper {
-      width: 270px;
+    .logo-face {
+      margin-top: 16px;
+    }
+    
+    .logo-text {
+      margin-top: 16px;
     }
   }
 

@@ -1,12 +1,11 @@
 .logo {
-  display: inline-flex;
-  align-items: center;
-
+  display: inline-block;
+  
   .face {
     outline: 1px solid green;
   }
 
   .text {
-    // outline: 1px solid blue;
+    outline: 1px solid blue;
   }
 }

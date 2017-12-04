@@ -17,17 +17,26 @@ import headerNavData from 'components/back4App/Header/headerNavData.js';
 let Header = props => (
   <header className={styles.header}>
     <div className={styles['left-side']}>
-      <div className={styles['hamburger-wrapper']}>
-        <HamburgerButton />
-      </div>
-      <a className={styles['logo-wrapper']} href="http://www.back4app.com/">
-        {/* <Logo width={46} height={46} symbol /> */}
-        <Logo width={124} height={80} text />
+      <Media query="(max-width: 1099px)">
+        <div className={styles['hamburger-wrapper']}>
+          <HamburgerButton />
+        </div>
+      </Media>
+      <Media query="(min-width: 1100px)">
+        <a className={styles['logo-face']} href="http://www.back4app.com/">
+          <Icon width={46} height={47} name='back4app-logo-face-blue' fill='#208AEC' />
+        </a>
+      </Media>
+      <a className={styles['logo-text']} href="http://www.back4app.com/">
+        <Icon width={134} height={53} name='back4app-logo-text-blue' fill='#208AEC' />
       </a>
     </div>
 
     <div className={styles['right-side']}>
-      <Nav items={headerNavData.items} />
+      <Media query="(min-width: 1100px)">
+        <Nav items={headerNavData.items} />
+      </Media>
+
       <Media query="(min-width: 1100px)">
         <div className="ml-auto">
           <Dropdown items={headerNavData.dropdownItems}>Hello, TBrayner!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>

@@ -17,5 +17,11 @@ import 'babel-polyfill';
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);
 
+// import 'bootstrap/js/dist/dropdown';
+// import 'bootstrap';
+
+// import css from 'bootstrap/scss/bootstrap.scss'
+// console.log('css', css)
+
 var path = window.PARSE_DASHBOARD_PATH || '/';
 ReactDOM.render(<Dashboard path={path}/>, document.getElementById('browser_mount'));

@@ -7,9 +7,12 @@
  */
 @import 'globals.scss';
 @import 'back4app.scss';
+@import 'bootstrap-custom.scss';
+@import "~bootstrap/scss/bootstrap";
 
 html, body {
   min-height: 100vh;
+  background-color: #fdf9fb;
 }
 
 body {

@@ -35,6 +35,7 @@
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
+    "bootstrap": "4.0.0-alpha.6",
     "commander": "^2.9.0",
     "connect-flash": "^0.1.1",
     "cookie-session": "^2.0.0-alpha.1",
