@@ -51,12 +51,13 @@ import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
 import Header             from 'components/back4App/Header/Header.react';
 import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
+import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
+
 import {
   Router,
   Route,
   Redirect
 } from 'react-router';
-import ServerSettings from 'dashboard/ServerSettings/ServerSettings.react';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -196,9 +197,11 @@ class Dashboard extends React.Component {
       });
       return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {
-      resolvedApps.forEach(app => {
-        AppsManager.addApp(app);
-      });
+      if(resolvedApps && resolvedApps.length) {
+        resolvedApps.forEach(app => {
+          AppsManager.addApp(app);
+        });
+      }
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
