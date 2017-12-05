@@ -1,0 +1,12 @@
+@import 'stylesheets/back4app.scss';
+
+.nav {
+  .menu {
+    display: flex;
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+      margin-top: 0px;
+    }
+  }
+}
