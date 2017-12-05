@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import Field               from 'components/Field/Field.react';
-import Fieldset            from 'components/Fieldset/Fieldset.react';
 import ExpirationDateInput from 'components/ExpirationDateInput/ExpirationDateInput.react';
 import Label               from 'components/Label/Label.react';
 import React               from 'react';

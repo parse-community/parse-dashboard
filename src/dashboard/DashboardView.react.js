@@ -228,12 +228,8 @@ export default class DashboardView extends React.Component {
 
     appSidebarSections.push({
       name: 'Server Settings',
-      icon: 'mt-design-icon-apps',
+      icon: 'server-settings-icon',
       link: '/server-settings',
-      subsections: [ {
-        name: 'General',
-        link: '/server-settings/general'
-      } ]
     });
 
     if (settingsSections.length > 0) {
@@ -243,7 +239,7 @@ export default class DashboardView extends React.Component {
         link: '/settings',
         subsections: settingsSections
       });
-    };
+    }
 
     let sidebar = (
     <Sidebar

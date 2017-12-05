@@ -9,7 +9,6 @@ import Button       from 'components/Button/Button.react';
 import Field        from 'components/Field/Field.react';
 import Icon         from 'components/Icon/Icon.react';
 import Popover      from 'components/Popover/Popover.react';
-import Label        from 'components/Label/Label.react';
 import Position     from 'lib/Position';
 import React        from 'react';
 import PropTypes    from 'lib/PropTypes';

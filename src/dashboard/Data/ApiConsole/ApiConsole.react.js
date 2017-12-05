@@ -166,7 +166,7 @@ export default class ApiConsole extends DashboardView {
             label={<Label text='What type of request?' />}
             input={methodDropdown} />
           <Field
-            label={<Label text='Which endpoint?' description={<span>Not sure what endpoint you need?<br />Take a look at our <a href="https://parse.com/docs/rest/guide">REST API guide</a>.</span>} />}
+            label={<Label text='Which endpoint?' description={<span>Not sure what endpoint you need?<br />Take a look at our <a href="http://docs.parseplatform.org/rest/guide/">REST API guide</a>.</span>} />}
             input={<TextInput value={this.state.endpoint} monospace={true} placeholder={'classes/_User'} onChange={(endpoint) => this.setState({endpoint})} />} />
           <Field
             label={<Label text='Use Master Key?' description={'This will bypass any ACL/CLPs.'} />}
@@ -176,7 +176,7 @@ export default class ApiConsole extends DashboardView {
             input={<TextInput value={this.state.runAsIdentifier} monospace={true} placeholder={'Username or ID'} onChange={(runAsIdentifier) => this.setState({runAsIdentifier})} onBlur={this.fetchUser.bind(this)} />} />
           <FormNote color='red' show={!!this.state.error}>{this.state.error}</FormNote>
           <Field
-            label={<Label text='Query parameters' description={<span>Learn more about query parameters in our <a href="https://parse.com/docs/rest/guide#queries">REST API guide</a>.</span>} />}
+            label={<Label text='Query parameters' description={<span>Learn more about query parameters in our <a href="http://docs.parseplatform.org/rest/guide/#queries">REST API guide</a>.</span>} />}
             input={<TextInput value={this.state.parameters} monospace={true} multiline={true} placeholder={parameterPlaceholder} onChange={(parameters) => this.setState({parameters})} />} />
         </Fieldset>
         <Fieldset

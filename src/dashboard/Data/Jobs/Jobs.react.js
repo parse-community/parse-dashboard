@@ -5,26 +5,25 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { ActionTypes } from 'lib/stores/JobsStore';
-import Button          from 'components/Button/Button.react';
-import * as DateUtils  from 'lib/DateUtils';
-import DashboardView   from 'dashboard/DashboardView.react';
-import CategoryList    from 'components/CategoryList/CategoryList.react';
-import EmptyState      from 'components/EmptyState/EmptyState.react';
-import history         from 'dashboard/history';
-import Icon            from 'components/Icon/Icon.react';
-import Modal           from 'components/Modal/Modal.react';
-import React           from 'react';
-import ReleaseInfo     from 'components/ReleaseInfo/ReleaseInfo';
-import RunNowButton    from 'dashboard/Data/Jobs/RunNowButton.react';
-import SidebarAction   from 'components/Sidebar/SidebarAction';
-import StatusIndicator from 'components/StatusIndicator/StatusIndicator.react';
-import styles          from 'dashboard/Data/Jobs/Jobs.scss';
-import browserStyles   from 'dashboard/Data/Browser/Browser.scss';
-import subscribeTo     from 'lib/subscribeTo';
-import TableHeader     from 'components/Table/TableHeader.react';
-import TableView       from 'dashboard/TableView.react';
-import Toolbar         from 'components/Toolbar/Toolbar.react';
+import { ActionTypes }        from 'lib/stores/JobsStore';
+import Button                 from 'components/Button/Button.react';
+import * as DateUtils         from 'lib/DateUtils';
+import CategoryList           from 'components/CategoryList/CategoryList.react';
+import EmptyState             from 'components/EmptyState/EmptyState.react';
+import history                from 'dashboard/history';
+import Icon                   from 'components/Icon/Icon.react';
+import Modal                  from 'components/Modal/Modal.react';
+import React                  from 'react';
+import ReleaseInfo            from 'components/ReleaseInfo/ReleaseInfo';
+import RunNowButton           from 'dashboard/Data/Jobs/RunNowButton.react';
+import SidebarAction          from 'components/Sidebar/SidebarAction';
+import StatusIndicator        from 'components/StatusIndicator/StatusIndicator.react';
+import styles                 from 'dashboard/Data/Jobs/Jobs.scss';
+import browserStyles          from 'dashboard/Data/Browser/Browser.scss';
+import subscribeTo            from 'lib/subscribeTo';
+import TableHeader            from 'components/Table/TableHeader.react';
+import TableView              from 'dashboard/TableView.react';
+import Toolbar                from 'components/Toolbar/Toolbar.react';
 
 let subsections = {
   all: 'All Jobs',

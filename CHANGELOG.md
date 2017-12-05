@@ -4,6 +4,44 @@
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
 
+### 1.1.2
+
+* Fix: An issue introduced when using readOnlyMasterKey would make all users readOnly after one has logged in.
+* Reverts: Dependency updates that would render the build unstable / broken.
+
+### 1.1.1
+
+* Fix: Updating array of Dates now keeps it's type (was changing to array of ISO strings, issue #590), thanks to [David Riha](https://github.com/rihadavid)
+* Fix: NaN displayed when filter input is empty or negative number (#749), thanks to [Miguel Serrrano](https://github.com/miguel-s)
+* Fix: Addresses issue related to displaying iOS alert object containing title and body keys (#539), thanks to [Robert Martin del Campo](https://github.com/repertus)
+* Feature: Adds support for localized push notifications if server version is high enough, thanks to [Florent Vilmart](https://github.com/flovilmart)
+* Feature: Adds support for readOnly masterKey, thanks to [Florent Vilmart](https://github.com/flovilmart)
+* Feature: Adds support for polygon types, thansk to [Mads Bjerre](https://github.com/madsb)
+* Feature: Adds support for push time, expiration time, and expiration interval, thanks to [Marvel Mathew](https://github.com/marvelm)
+
+### 1.1.0
+
+* Feature: UI for managing push audiences (#712), thanks to [Davi Macedo](https://github.com/davimacedo)
+* Feature: When editing Object or Array fields the data is displayed in a prettier format and the textarea is resizable (#734), thanks to [Samuli Siivinen](https://github.com/ssamuli)
+* Fix: Display bug on safari when table has empty cells ('') (#731), thanks to [Samuli Siivinen](https://github.com/ssamuli)
+* Fix: Added message that notifies Background Jobs requiring additional setup (#740 & #741), thanks to [Samuli Siivinen](https://github.com/ssamuli) and [Natan Rolnik](https://github.com/natanrolnik)
+
+### 1.0.28
+* Feature: Add ability to search Object columns (#727), thanks to [Samuli Siivinen](https://github.com/ssamuli)
+* Improvement: Added/fixed a filtering option "contains string" for String fields. Case insensitive for now (#728), thanks to [Samuli Siivinen](https://github.com/ssamuli)
+* Improvement: Sort config data according to parameter names (#726), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+
+### 1.0.27
+* Improvement: Show notifications upon success or failure of save and delete objects (#718), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+* Improvement: Moves download option into file editor (#716), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+
+### 1.0.26
+* Improvement: Fixes broken links, thanks to [Arthur Cinader](https://github.com/acinader)
+* Improvement: Title on the add row button, thanks to [Abdul Basit](https://github.com/basitsattar)
+* Improvement: Use slim docker image, thanks to [Tyler Brock](https://github.com/tbrock)
+* Fix: table scrolling on google chrome (#671), thanks to [Jacer Omri](https://github.com/JacerOmri)
+* Various: adds eslint, thanks to [Jeremy Louie](https://github.com/JeremyPlease)
+
 ### 1.0.25
 
 * Improvement: Update and add links to sidebar footer (#661), thanks to [Natan Rolnik](https://github.com/natanrolnik)

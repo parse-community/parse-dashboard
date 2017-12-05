@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { dateStringUTC, isDate } from 'lib/DateUtils';
+import { dateStringUTC }         from 'lib/DateUtils';
 import getFileName               from 'lib/getFileName';
 import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
@@ -13,7 +13,7 @@ import React                     from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 
-let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, onEditChange, setRelation,  onPointerClick }) => {
+let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick }) => {
   let content = value;
   let classes = [styles.cell, unselectable];
   if (hidden) {
@@ -28,6 +28,9 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, on
     }
   } else if (value === null) {
     content = '(null)';
+    classes.push(styles.empty);
+  } else if (value === '') {
+    content = <span>&nbsp;</span>;
     classes.push(styles.empty);
   } else if (type === 'Pointer') {
     content = (
@@ -45,7 +48,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, on
     content = JSON.stringify(value);
   } else if (type === 'File') {
     if (value.url()) {
-      content = <a href={value.url()} target='_blank'><Pill value={getFileName(value)} /></a>;
+      content = <Pill value={getFileName(value)} />;
     } else {
       content = <Pill value={'Uploading\u2026'} />;
     }
@@ -72,6 +75,8 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, readonly, on
     content = pieces.join(', ');
   } else if (type === 'GeoPoint') {
     content = `(${value.latitude}, ${value.longitude})`;
+  } else if (type === 'Polygon') {
+    content = value.coordinates.map(coord => `(${coord})`)
   } else if (type === 'Relation') {
     content = (
       <div style={{ textAlign: 'center', cursor: 'pointer' }}>

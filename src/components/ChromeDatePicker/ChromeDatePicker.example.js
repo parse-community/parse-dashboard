@@ -7,10 +7,6 @@
  */
 import ChromeDatePicker from 'components/ChromeDatePicker/ChromeDatePicker.react';
 import { Directions }   from 'lib/Constants';
-import Field            from 'components/Field/Field.react';
-import Fieldset         from 'components/Fieldset/Fieldset.react';
-import Label            from 'components/Label/Label.react';
-import Option           from 'components/Dropdown/Option.react';
 import React            from 'react';
 
 export const component = ChromeDatePicker;

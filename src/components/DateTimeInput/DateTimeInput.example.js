@@ -7,9 +7,7 @@
  */
 import DateTimeInput from 'components/DateTimeInput/DateTimeInput.react';
 import Field      from 'components/Field/Field.react';
-import Fieldset   from 'components/Fieldset/Fieldset.react';
 import Label      from 'components/Label/Label.react';
-import Option     from 'components/Dropdown/Option.react';
 import React      from 'react';
 
 export const component = DateTimeInput;

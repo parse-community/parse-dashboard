@@ -7,7 +7,6 @@
  */
 import Button   from 'components/Button/Button.react';
 import ParseApp from 'lib/ParseApp';
-import Parse    from 'parse';
 import React    from 'react';
 
 export default class RunNowButton extends React.Component {
@@ -38,7 +37,7 @@ export default class RunNowButton extends React.Component {
   }
 
   render() {
-    let { job, ...other } = this.props;
+    let { ...other } = this.props;
     let value = 'Run now';
     if (this.state.result === 'error') {
       value = 'Failed.';

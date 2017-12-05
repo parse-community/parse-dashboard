@@ -37,7 +37,42 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
     }
     content = (
       <StringEditor
-        value={JSON.stringify(value)}
+        value={JSON.stringify(value, null, 2)}
+        resizable={true}
+        multiline={true}
+        width={width}
+        onCommit={encodeCommit} />
+    );
+  } else if (type === 'Polygon') {
+    let encodeCommit = (json) => {
+      try {
+        let coordinates = JSON.parse(json);
+        if (coordinates.length < 3) {
+          throw 'Polygon must have at least 3 coordinates';
+        }
+        if (value && value.coordinates && value.coordinates.length === coordinates.length) {
+          let dirty = coordinates.some((coord, index) => {
+            if (value.coordinates[index][0] !== coord[0] || value.coordinates[index][1] !== coord[1]) {
+              return true;
+            }
+          });
+          if (!dirty) {
+            throw 'No change in coordinates';
+          }
+        }
+        let obj = {
+          '__type': 'Polygon',
+          coordinates
+        }
+        onCommit(obj);
+      } catch (e) {
+        onCommit(value);
+      }
+    }
+    content = (
+      <StringEditor
+        value={JSON.stringify(value && value.coordinates || [['lat', 'lon']], null, 2)}
+        resizable={true}
         multiline={true}
         width={width}
         onCommit={encodeCommit} />

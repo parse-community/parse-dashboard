@@ -76,6 +76,7 @@ export default class BrowserTable extends React.Component {
       }
       if (this.state.offset !== offset) {
         this.setState({ offset });
+        this.refs.table.scrollTop = rowsAbove * ROW_HEIGHT;
       }
       if (this.props.maxFetched - offset < 100) {
         this.props.fetchNextPage();
@@ -87,7 +88,7 @@ export default class BrowserTable extends React.Component {
     let attributes = obj.attributes;
     let index = row - this.state.offset;
     return (
-      <div key={`row${index}`} className={styles.tableRow}>
+      <div key={`row${index}`} className={styles.tableRow} style={{ minWidth: rowWidth }}>
         <span className={styles.checkCell}>
           <input
             type='checkbox'
@@ -159,14 +160,14 @@ export default class BrowserTable extends React.Component {
     let rowWidth = 0;
 
     if (this.props.data) {
-      rowWidth = 210;
+      let rowWidth = 210;
       for (let i = 0; i < this.props.order.length; i++) {
         rowWidth += this.props.order[i].width;
       }
       let newRow = null;
       if (this.props.newObject && this.state.offset <= 0) {
         newRow = (
-          <div className={styles.addNewRow}>
+          <div style={{ marginBottom: 30, borderBottom: '1px solid #169CEE' }}>
             {this.renderRow({ row: -1, obj: this.props.newObject, rowWidth: rowWidth })}
           </div>
         );
@@ -207,7 +208,15 @@ export default class BrowserTable extends React.Component {
             value = '';
           } else if (type === 'Array') {
             if (value) {
-              value = value.map(val => val instanceof Parse.Object ? val.toPointer() : val);
+              value = value.map(val => {
+                  if (val instanceof Parse.Object) {
+                      return val.toPointer();
+                  } else if (typeof val.getMonth === 'function') {
+                      return { __type: "Date", iso: val.toISOString() };
+                  }
+
+                  return val;
+              });
             }
           }
           let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);
@@ -242,30 +251,46 @@ export default class BrowserTable extends React.Component {
         }
       }
 
-      if (!this.props.newObject && this.props.relation) {
-        classes.push(styles.showAddRow);
-
-        addRow = (
-          <div className={styles.addRow}>
-            <Button
-              onClick={this.props.onAddRow}
-              primary
-              value={`Create a ${this.props.relation.targetClassName} and attach`}
-            />
-            {' '}
-            <Button
-              onClick={this.props.onAttachRows}
-              primary
-              value={`Attach existing rows from ${this.props.relation.targetClassName}`}
-            />
-          </div>
-        );
+      let addRow = null;
+      if (!this.props.newObject) {
+        if (this.props.relation) {
+          addRow = (
+            <div className={styles.addRow}>
+              <Button
+                onClick={this.props.onAddRow}
+                primary
+                value={`Create a ${this.props.relation.targetClassName} and attach`}
+              />
+              {' '}
+              <Button
+                onClick={this.props.onAttachRows}
+                primary
+                value={`Attach existing rows from ${this.props.relation.targetClassName}`}
+              />
+            </div>
+          );
+        } else {
+          addRow = (
+            <div className={styles.addRow}>
+              <a title='Add Row' onClick={this.props.onAddRow}>
+                <Icon
+                  name='plus-outline'
+                  width={14}
+                  height={14}
+                />
+              </a>
+            </div>
+          );
+        }
       }
 
       if (this.props.newObject || this.props.data.length > 0) {
         table = (
-          <div className={styles.table} ref='table' style={{ minWidth: rowWidth }}>
+          <div className={styles.table} ref='table'>
+            <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
             {newRow}
+            {rows}
+            <div style={{ height: Math.max(0, (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT) }} />
             {addRow}
             <div className={styles.rowsHolder} style={{ top: Math.max(0, this.state.offset * ROW_HEIGHT) }}>
               {rows}
@@ -300,7 +325,7 @@ export default class BrowserTable extends React.Component {
     }
 
     return (
-      <div className={classes.join(' ')}>
+      <div className={[styles.browser, browserUtils.isSafari() ? styles.safari : ''].join(' ')}>
         {table}
         <DataBrowserHeaderBar
           selected={this.props.selection['*']}

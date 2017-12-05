@@ -8,13 +8,10 @@
 import * as AnalyticsQueryStore from 'lib/stores/AnalyticsQueryStore';
 import * as SchemaStore         from 'lib/stores/SchemaStore';
 import Button                   from 'components/Button/Button.react';
-import DashboardView            from 'dashboard/DashboardView.react';
 import DateRange                from 'components/DateRange/DateRange.react';
 import EmptyState               from 'components/EmptyState/EmptyState.react';
 import FlowFooter               from 'components/FlowFooter/FlowFooter.react';
-import getSiteDomain            from 'lib/getSiteDomain';
 import Icon                     from 'components/Icon/Icon.react';
-import LoaderContainer          from 'components/LoaderContainer/LoaderContainer.react';
 import React                    from 'react';
 import SlowQueriesFilter        from 'components/SlowQueriesFilter/SlowQueriesFilter.react';
 import styles                   from 'dashboard/Analytics/SlowQueries/SlowQueries.scss';
@@ -23,7 +20,6 @@ import TableHeader              from 'components/Table/TableHeader.react';
 import TableView                from 'dashboard/TableView.react';
 import Toolbar                  from 'components/Toolbar/Toolbar.react';
 import { Directions }           from 'lib/Constants';
-import { verticalCenter }       from 'stylesheets/base.scss';
 
 const SLOW_QUERIES_HEADERS = ['Class', 'Normalized Query', 'Count', 'Slow%', 'Timeouts', 'Scanned (Avg)', 'Median (ms)', 'P90 (ms)'];
 const TABLE_WIDTH = [15, 25, 7, 8, 10, 15, 11, 9];
@@ -106,7 +102,7 @@ export default class SlowQueries extends TableView {
 
     this.setState({ loading: true }, () => {
       let { promise, xhr } = app.getAnalyticsSlowQueries(className, os, version, dateRange.start, dateRange.end);
-      promise = promise.then(
+      promise.then(
         (result) => this.setState({ slowQueries: result || [], loading: false, mutated: false }),
         () => this.setState({ slowQueries: [], loading: false, mutated: false })
       );
@@ -215,7 +211,7 @@ export default class SlowQueries extends TableView {
         description={'You haven\'t executed any queries.'}
         icon='gears'
         cta='Get started with Query'
-        action={() => window.location = getSiteDomain() + '/docs/rest/guide#queries'} />
+        action={() => window.location = 'http://docs.parseplatform.org/rest/guide/#queries'} />
     );
   }
 
