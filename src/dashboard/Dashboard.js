@@ -201,6 +201,8 @@ class Dashboard extends React.Component {
         resolvedApps.forEach(app => {
           AppsManager.addApp(app);
         });
+      } else {
+        throw new Error('There is no apps');
       }
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
