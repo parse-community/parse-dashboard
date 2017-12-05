@@ -46,7 +46,7 @@ let sidebarContent = (
     </div>
 
     <footer className={styles.footer}>
-      <Button customClasses={styles['new-app-button']} color="green" weight="700" url="http://localhost:8090/apps/#!/apps/new">NEW APP</Button>
+      <Button customClasses={styles['new-app-button']} color="green" weight="700" url="https://dashboard.back4app.com/apps/#!/apps/new">NEW APP</Button>
 
       <div className={styles.account}>
         <a href="https://dashboard.back4app.com/logout" className={styles['sign-out']}>Sign Out</a>
