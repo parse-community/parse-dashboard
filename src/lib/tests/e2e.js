@@ -31,7 +31,7 @@ describe('e2e', () => {
       app.use('/dashboard', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
-    return p.then(result => {
+    return p.then(() => {
       return rp('http://localhost:5051/dashboard');
     })
     .then(result => {
@@ -51,7 +51,7 @@ describe('e2e', () => {
       app.use('/', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
-    return p.then(result => {
+    return p.then(() => {
       return rp('http://localhost:5051');
     })
     .then(result => {

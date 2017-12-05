@@ -89,16 +89,6 @@ class HeadersDemo extends React.Component {
   }
 
   render() {
-    let handleStyle = {
-      position: 'relative',
-      display: 'inline-block',
-      width: 4,
-      height: 30,
-      marginLeft: -2,
-      marginRight: -2,
-      cursor: 'ew-resize'
-    };
-
     return (
       <div style={{ height: 30, background: '#66637A', whiteSpace: 'nowrap' }}>
         <div style={{ display: 'inline-block', width: this.state.widths[0] }}>

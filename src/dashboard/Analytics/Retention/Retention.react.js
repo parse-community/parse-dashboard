@@ -69,7 +69,7 @@ export default class Retention extends DashboardView {
   fetchRetention(app) {
     this.setState({ loading: true }, () => {
       let { promise, xhr } = app.getAnalyticsRetention(this.state.date);
-      promise = promise.then(
+      promise.then(
         (result) => this.setState({ retentions: result.content, loading: false }),
         () => this.setState({ retentions: null, loading: false })
       );

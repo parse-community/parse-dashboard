@@ -70,7 +70,7 @@ let ACLEditor = ({ value, onCommit }) => (
     title='Edit Access Control List (ACL)'
     advanced={false}
     confirmText='Save ACL'
-    details={<a href='https://parse.com/docs/ios/guide#security-object-level-access-control'>Learn more about ACLs and app security</a>}
+    details={<a href='http://docs.parseplatform.org/ios/guide/#object-level-access-control'>Learn more about ACLs and app security</a>}
     permissions={toPerms(value)}
     validateEntry={validateEntry}
     onCancel={() => {

@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Loader                from 'components/Loader/Loader.react';
 import LoaderContainer       from 'components/LoaderContainer/LoaderContainer.react';
 import PushAudiencesSelector from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
 import React                 from 'react';
@@ -90,7 +89,7 @@ class LoaderContainerDemo extends React.Component {
     return (
       <div>
         <LoaderContainer loading={ this.state.loading }>
-	        <PushAudiencesSelectorDemo audiences={mockData}/>
+          <PushAudiencesSelectorDemo audiences={mockData}/>
         </LoaderContainer>
       </div>
     );
@@ -101,7 +100,7 @@ export const demos = [
   {
     render() {
       return (
-      	<LoaderContainerDemo />
+        <LoaderContainerDemo />
       );
     }
   }
