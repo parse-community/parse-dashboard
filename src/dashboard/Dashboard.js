@@ -197,6 +197,7 @@ class Dashboard extends React.Component {
       });
       return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {
+      console.log('Parse.Promise:then:resolvedApps', resolvedApps);
       if(resolvedApps && resolvedApps.length) {
         resolvedApps.forEach(app => {
           AppsManager.addApp(app);
