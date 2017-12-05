@@ -202,22 +202,7 @@ module.exports = function(config, options) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         return res.redirect(`${mountPath}login`);
       }
-      res.send(`<!DOCTYPE html>
-        <head>
-          <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
-          <base href="${mountPath}"/>
-          <script>
-            PARSE_DASHBOARD_PATH = "${mountPath}";
-          </script>
-        </head>
-        <html>
-          <title>Parse Dashboard</title>
-          <body>
-            <div id="browser_mount"></div>
-            <script src="${mountPath}bundles/dashboard.bundle.js"></script>
-          </body>
-        </html>
-      `);
+      res.sendFile(path.join(`${__dirname}/index.html`));
     });
   });
 

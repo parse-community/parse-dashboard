@@ -40,7 +40,7 @@ module.exports = {
       }, {
         test: /\.scss$/,
         loader: "style-loader!css-loader?modules&localIdentName=[local]__[hash:base64:5]!sass-loader?includePaths[]=" +
-          encodeURIComponent(path.resolve(__dirname, '../src'))
+        encodeURIComponent(path.resolve(__dirname, '../src'))
       }, {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
@@ -61,6 +61,14 @@ module.exports = {
       'process.env': {
         'version' : JSON.stringify(version)
       }
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default'],
+      Tether: 'tether',
+      Dropdown: "exports-loader?Dropdown!bootstrap/js/dist/dropdown",
     })
   ]
 };
