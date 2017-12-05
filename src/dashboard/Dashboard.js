@@ -197,12 +197,12 @@ class Dashboard extends React.Component {
       });
       return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {
-      if(resolvedApps.length) {
+      if(resolvedApps && resolvedApps.length) {
         resolvedApps.forEach(app => {
           AppsManager.addApp(app);
         });
-        this.setState({ configLoadingState: AsyncStatus.SUCCESS });
       }
+      this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
         configLoadingError: error,
