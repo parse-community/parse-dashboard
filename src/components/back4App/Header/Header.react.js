@@ -41,7 +41,7 @@ let Header = props => (
 
       <Media query="(min-width: 1100px)">
         <div className="ml-auto">
-          <Dropdown items={navData.dropdownItems}>Hello, TBrayner!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
+          <Dropdown items={navData.dropdownItems}>Hello, User!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
           <Button color="green" weight="700" url="https://dashboard.back4app.com/apps/#!/apps/new">NEW APP</Button>
         </div>
       </Media>

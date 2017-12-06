@@ -213,7 +213,7 @@ class Dashboard extends React.Component {
         configLoadingError: error,
         configLoadingState: AsyncStatus.FAILED
       });
-    });
+    })
   }
 
   render() {
