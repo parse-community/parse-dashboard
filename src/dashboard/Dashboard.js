@@ -204,17 +204,9 @@ class Dashboard extends React.Component {
       });
       return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {
-<<<<<<< HEAD
-      if(resolvedApps && resolvedApps.length) {
-        resolvedApps.forEach(app => {
-          AppsManager.addApp(app);
-        });
-      }
-=======
       resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
->>>>>>> apps-notification
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
