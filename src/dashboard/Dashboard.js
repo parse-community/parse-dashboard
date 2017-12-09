@@ -52,7 +52,8 @@ import { setBasePath }    from 'lib/AJAX';
 import Header             from 'components/back4App/Header/Header.react';
 import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
 import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
-import { ActionTypes }    from 'lib/stores/back4App/AppsStore';
+import 'whatwg-fetch';
+
 import subscribeTo        from 'lib/subscribeTo';
 
 import {
@@ -72,8 +73,6 @@ class App extends React.Component {
     this.state = {
       sidebarIsOpen: false
     };
-
-    console.log(this.props.apps)
   }
 
   handleSidebarToggle(isOpen) {
