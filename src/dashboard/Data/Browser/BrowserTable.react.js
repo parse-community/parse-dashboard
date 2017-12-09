@@ -292,9 +292,6 @@ export default class BrowserTable extends React.Component {
             {rows}
             <div style={{ height: Math.max(0, (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT) }} />
             {addRow}
-            <div className={styles.rowsHolder} style={{ top: Math.max(0, this.state.offset * ROW_HEIGHT) }}>
-              {rows}
-            </div>
             {editor}
           </div>
         );
