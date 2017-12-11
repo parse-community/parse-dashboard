@@ -1,6 +1,6 @@
 const headerNavData = {
   items: [
-    {label: 'My Apps', pathname: '/apps'},
+    {label: 'My Apps', url: 'https://dashboard.back4app.com/apps/#!/admin'},
     {label: 'Dashboard', url: 'https://dashboard.back4app.com/'},
     {label: 'Docs', url: 'http://docs.back4app.com/'},
     {label: 'Community', url: 'https://groups.google.com/forum/#!forum/back4app'},

@@ -52,7 +52,8 @@ import { setBasePath }    from 'lib/AJAX';
 import Header             from 'components/back4App/Header/Header.react';
 import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
 import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
-import { ActionTypes }    from 'lib/stores/back4App/AppsStore';
+import 'whatwg-fetch';
+
 import subscribeTo        from 'lib/subscribeTo';
 
 import {
@@ -63,17 +64,12 @@ import {
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-// @subscribeTo('Apps', 'apps')
-// @subscribeTo('Schema', 'schema')
-// @subscribeTo('Jobs', 'jobs')
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       sidebarIsOpen: false
     };
-
-    console.log(this.props.apps)
   }
 
   handleSidebarToggle(isOpen) {
@@ -204,9 +200,15 @@ class Dashboard extends React.Component {
       });
       return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {
-      resolvedApps.forEach(app => {
-        AppsManager.addApp(app);
-      });
+      if(resolvedApps && Array.isArray(resolvedApps)) {
+        resolvedApps.forEach(app => {
+          AppsManager.addApp(app);
+        });
+      } else {
+        Array.prototype.slice.call(arguments).forEach(app => {
+          AppsManager.addApp(app);
+        });
+      }
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
