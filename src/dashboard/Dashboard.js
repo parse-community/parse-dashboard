@@ -64,9 +64,6 @@ import {
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-// @subscribeTo('Apps', 'apps')
-// @subscribeTo('Schema', 'schema')
-// @subscribeTo('Jobs', 'jobs')
 class App extends React.Component {
   constructor(props) {
     super(props);
