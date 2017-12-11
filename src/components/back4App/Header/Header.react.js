@@ -45,7 +45,7 @@ export default class Header extends React.Component {
           <Media query="(max-width: 1099px)">
             <div className={styles['hamburger-wrapper']}>
               <HamburgerButton onClick={() => {
-                props.sidebarToggle();
+                this.props.sidebarToggle();
               }} />
             </div>
           </Media>
