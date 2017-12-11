@@ -47,6 +47,7 @@ export default class Header extends React.Component {
         </div>
 
         <div className={styles['right-side']}>
+
           <Media query="(min-width: 1100px)">
             <Nav items={navData.items} />
           </Media>
@@ -57,6 +58,7 @@ export default class Header extends React.Component {
               <Button color="green" weight="700" url="https://dashboard.back4app.com/apps/#!/apps/new">NEW APP</Button>
             </div>
           </Media>
+
         </div>
       </header>
     );
