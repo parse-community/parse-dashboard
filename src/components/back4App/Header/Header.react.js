@@ -11,6 +11,13 @@ import styles from 'components/back4App/Header/Header.scss';
 import navData from 'components/back4App/Header/headerNavData';
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: null
+    };
+  } 
   componentWillMount() {
     /*
       - Thi-s resource should be implemented following parse-dashboard community standards (using flux).
@@ -21,8 +28,14 @@ export default class Header extends React.Component {
       method: 'GET',
       credentials: 'include'
     })
+    .then(response => response.json())
     .then(response => {
-      console.log(response.json());
+      this.setState({
+        username: response.username.split('@')[0]
+      });
+    })
+    .catch(error => {
+      console.log("Error", error);
     });
   }
   render() {
@@ -54,7 +67,7 @@ export default class Header extends React.Component {
 
           <Media query="(min-width: 1100px)">
             <div className="ml-auto">
-              <Dropdown items={navData.dropdownItems}>Hello, TBrayner!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
+              <Dropdown items={navData.dropdownItems}>{this.state.username && `Hello, ${this.state.username}`}<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
               <Button color="green" weight="700" url="https://dashboard.back4app.com/apps/#!/apps/new">NEW APP</Button>
             </div>
           </Media>
