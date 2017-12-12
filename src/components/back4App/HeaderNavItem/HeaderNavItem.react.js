@@ -5,7 +5,6 @@ import { Link } from 'react-router';
 import styles from 'components/back4App/HeaderNavItem/HeaderNavItem.scss';
 
 let NavItem = props => {
-
   return (
     <li className={`${styles.item} ${props.isCurrent ? styles.active : ''}`}>
       {
@@ -21,7 +20,6 @@ let NavItem = props => {
 export default class HeaderNavItem extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isCurrent: !!(props.index === 1)
     }

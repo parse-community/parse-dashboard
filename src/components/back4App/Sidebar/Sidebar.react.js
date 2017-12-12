@@ -23,7 +23,7 @@ const _renderHeaderMenuItems = items => items.map(({label, pathname, url}, index
 let SidebarNav = props => {
   return (
     <nav className={styles.menu} id="accordion" role="tablist" aria-multiselectable="true">
-      {_renderHeaderMenuItems(navData.items)}
+      {_renderHeaderMenuItems(navData.sidebarItems)}
     </nav>
   );
 };
@@ -42,7 +42,7 @@ let sidebarContent = (
     </header>
 
     <div className={styles['menu-wrapper']}>
-      { <SidebarNav items={navData.items} /> }
+      { <SidebarNav items={navData.sidebarItems} /> }
     </div>
 
     <footer className={styles.footer}>

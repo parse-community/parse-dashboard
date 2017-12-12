@@ -1,7 +1,6 @@
 @import 'stylesheets/back4app.scss';
 
 .item {
-
   margin-top: 6px;
 
   &:not(:first-child) {
@@ -22,6 +21,10 @@
     color: $dark-gray;
     font-weight: 300;
     white-space: nowrap;
+
+    &:hover {
+      color: #208ADB;
+    }
   }
 
   .icon {
@@ -30,4 +33,15 @@
     color: blue;
   }
 
+
+  // Responsive
+  @media(max-width: 1100px) {
+    &:not(:first-child) {
+      margin-left: 0;
+    }
+
+    &:not(.active) {
+      display: none;
+    }
+  }
 }
