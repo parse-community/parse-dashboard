@@ -37,6 +37,23 @@ export default class Header extends React.Component {
     .catch(error => {
       console.log("Error", error);
     });
+
+    fetch('https://dashboard.back4app.com/listApps', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(apps => {
+      let amountAppsWithExpiredPlans = apps.reduce((accumulator, currentValue, currentIndex, array) => {
+        return accumulator + ( currentValue.planCloudColor === 'red' ? 1 : 0 );
+      }, 0);
+      this.setState({
+        amountAppsWithExpiredPlans
+      });
+    })
+    .catch(function (error) {
+      console.log('error', error);
+    });
   }
   render() {
     return (
@@ -49,11 +66,9 @@ export default class Header extends React.Component {
               }} />
             </div>
           </Media>
-
           <a className={styles['logo-face']} href="http://www.back4app.com/">
             <Icon width={46} height={47} name='back4app-logo-face-blue' fill='#208AEC' />
           </a>
-          
           <Media query="(min-width: 680px)">
             <a className={styles['logo-text']} href="http://www.back4app.com/">
               <Icon width={134} height={53} name='back4app-logo-text-blue' fill='#208AEC' />
@@ -62,7 +77,7 @@ export default class Header extends React.Component {
 
         </div>
         <div className={styles['right-side']}>
-          <Nav items={navData.items} />
+          <Nav items={navData.items} amountAppsWithExpiredPlans={this.state.amountAppsWithExpiredPlans} />
           <Media query="(min-width: 1100px)">
             <div className="ml-auto">
               <Dropdown items={navData.dropdownItems}>{this.state.username && `Hello, ${this.state.username}`}<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>

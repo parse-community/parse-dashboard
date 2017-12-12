@@ -1,0 +1,17 @@
+.notification-bullet {
+  $size: 18px;
+  position: absolute;
+  display: block;
+  cursor: default;
+  background-color: red;
+  width: $size;
+  height: $size;
+  border-radius: $size / 2;
+  color: #FFF;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 1px;
+  margin-top: -12px;
+  margin-left: 64px;
+}
