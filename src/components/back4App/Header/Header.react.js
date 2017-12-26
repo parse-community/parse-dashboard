@@ -11,9 +11,16 @@ import styles from 'components/back4App/Header/Header.scss';
 import navData from 'components/back4App/Header/headerNavData';
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: null
+    };
+  } 
   componentWillMount() {
     /*
-      - Thi-s resource should be implemented following parse-dashboard community standards (using flux).
+      - This resource should be implemented following parse-dashboard community standards (using flux).
       But it was actualy not possible to use the subscribeTo decorator in the Header component 
       before the App was injected in the router. This is a simple temporary solution.
     */
@@ -21,8 +28,31 @@ export default class Header extends React.Component {
       method: 'GET',
       credentials: 'include'
     })
+    .then(response => response.json())
     .then(response => {
-      console.log(response.json());
+      this.setState({
+        username: response.username.split('@')[0]
+      });
+    })
+    .catch(error => {
+      console.log("Error", error);
+    });
+
+    fetch('https://dashboard.back4app.com/listApps', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(apps => {
+      let amountAppsWithExpiredPlans = apps.reduce((accumulator, currentValue, currentIndex, array) => {
+        return accumulator + ( currentValue.planCloudColor === 'red' ? 1 : 0 );
+      }, 0);
+      this.setState({
+        amountAppsWithExpiredPlans
+      });
+    })
+    .catch(function (error) {
+      console.log('error', error);
     });
   }
   render() {
@@ -32,33 +62,28 @@ export default class Header extends React.Component {
           <Media query="(max-width: 1099px)">
             <div className={styles['hamburger-wrapper']}>
               <HamburgerButton onClick={() => {
-                props.sidebarToggle();
+                this.props.sidebarToggle();
               }} />
             </div>
           </Media>
-          <Media query="(min-width: 1100px)">
-            <a className={styles['logo-face']} href="http://www.back4app.com/">
-              <Icon width={46} height={47} name='back4app-logo-face-blue' fill='#208AEC' />
+          <a className={styles['logo-face']} href="http://www.back4app.com/">
+            <Icon width={46} height={47} name='back4app-logo-face-blue' fill='#208AEC' />
+          </a>
+          <Media query="(min-width: 680px)">
+            <a className={styles['logo-text']} href="http://www.back4app.com/">
+              <Icon width={134} height={53} name='back4app-logo-text-blue' fill='#208AEC' />
             </a>
           </Media>
-          <a className={styles['logo-text']} href="http://www.back4app.com/">
-            <Icon width={134} height={53} name='back4app-logo-text-blue' fill='#208AEC' />
-          </a>
+
         </div>
-
         <div className={styles['right-side']}>
-
-          <Media query="(min-width: 1100px)">
-            <Nav items={navData.items} />
-          </Media>
-
+          <Nav items={navData.items} amountAppsWithExpiredPlans={this.state.amountAppsWithExpiredPlans} />
           <Media query="(min-width: 1100px)">
             <div className="ml-auto">
-              <Dropdown items={navData.dropdownItems}>Hello, TBrayner!<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
+              <Dropdown items={navData.dropdownItems}>{this.state.username && `Hello, ${this.state.username}`}<i className="dropdown-icon zmdi zmdi-caret-down"></i></Dropdown>
               <Button color="green" weight="700" url="https://dashboard.back4app.com/apps/#!/apps/new">NEW APP</Button>
             </div>
           </Media>
-
         </div>
       </header>
     );

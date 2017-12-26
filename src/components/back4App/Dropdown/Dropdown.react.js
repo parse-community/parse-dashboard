@@ -24,7 +24,7 @@ export default class Dropdown extends Component {
             "aria-haspopup": "true",
             "aria-expanded": "false",
           }}
-          >Hello, TBrayner<i className="dropdown-icon zmdi zmdi-caret-down" /></Button>
+          >{this.props.children}</Button>
 
         <div className={`dropdown-menu ${styles['dropdown-menu']} ${styles.menu}`} aria-labelledby="dropdownMenuButton">
           <i className={`${styles['icon-caret']} zmdi zmdi-caret-up`}></i>

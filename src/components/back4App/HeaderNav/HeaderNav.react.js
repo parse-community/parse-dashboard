@@ -4,14 +4,29 @@ import HeaderNavItem from 'components/back4App/HeaderNavItem/HeaderNavItem.react
 
 import styles from 'components/back4App/HeaderNav/HeaderNav.scss';
 
-const _renderHeaderMenuItems = items => items.map((item, index) => <HeaderNavItem key={index} index={index} {...item} />);
+class HeaderNav extends React.Component {
+  
+  constructor(props) {
+    super(props);
+  }
+  
+  renderHeaderMenuItems(items) {
+    return items.map((item, index) => (index == 0) ?
+      <HeaderNavItem key={index} index={index} {...item} notification={this.props.amountAppsWithExpiredPlans} /> :
+      <HeaderNavItem key={index} index={index} {...item} />
+    );
+  }
 
-let HeaderNav = props => (
-  <nav className={styles.nav}>
-    <ul className={styles.menu}>
-      {_renderHeaderMenuItems(props.items)}
-    </ul>
-  </nav>
-);
+  render() {
+    return (
+      <nav className={styles.nav}>
+        <ul className={styles.menu}>
+          {this.renderHeaderMenuItems(this.props.items)}
+        </ul>
+      </nav>
+    );
+  }
+
+}
 
 export default HeaderNav;
