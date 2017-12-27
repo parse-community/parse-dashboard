@@ -6,19 +6,20 @@
  * the root directory of this source tree.
  */
 @import 'globals.scss';
+@import 'back4app.scss';
+@import 'bootstrap-custom.scss';
+@import "~bootstrap/scss/bootstrap";
 
 html, body {
   min-height: 100vh;
-}
-html{
-  background-color: #110D11;
+  background-color: #fdf9fb;
 }
 
 body {
   @include NotoSansFont;
   box-sizing: border-box;
   color: $mainTextColor;
-  background-color: #110D11;
+  padding-top: $header-height;
 }
 
 :global(#browser_mount) {

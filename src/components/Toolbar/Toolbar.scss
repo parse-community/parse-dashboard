@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 @import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
 
 .toolbar {
   position: fixed;
@@ -16,6 +17,7 @@
   height: 96px;
   color: white;
   transition: left 0.5s ease-in;
+  margin-top: $header-height;
 }
 
 @media (max-width: 980px) {

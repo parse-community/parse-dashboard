@@ -1,0 +1,20 @@
+@import 'stylesheets/back4app.scss';
+
+.nav {
+  display: flex;
+  flex-basis: 100%;
+  
+  .menu {
+    display: flex;
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+      margin-top: 0px;
+    }
+  }
+
+  // Responsive
+  @media(max-width: 1100px) {
+    justify-content: center;
+  }
+}
