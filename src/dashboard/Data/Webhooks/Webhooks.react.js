@@ -11,7 +11,6 @@ import DropdownOption                        from 'components/Dropdown/Option.re
 import EmptyState                            from 'components/EmptyState/EmptyState.react';
 import Field                                 from 'components/Field/Field.react';
 import FormModal                             from 'components/FormModal/FormModal.react';
-import getSiteDomain                         from 'lib/getSiteDomain';
 import Icon                                  from 'components/Icon/Icon.react';
 import Label                                 from 'components/Label/Label.react';
 import Modal                                 from 'components/Modal/Modal.react';
