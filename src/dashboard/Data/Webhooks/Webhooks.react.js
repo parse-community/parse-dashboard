@@ -284,7 +284,7 @@ export default class Webhooks extends TableView {
   renderEmpty() {
     return <EmptyState
       title='Webhooks'
-      description={<span>Use webhooks to run Cloud Code or connect Parse to your own server. <a href={getSiteDomain() + '/docs/cloudcode/guide'} target='_blank'>Learn more</a>.</span>}
+      description={<span>Use webhooks to run Cloud Code or connect Parse to your own server. <a href='http://docs.parseplatform.org/cloudcode/guide/' target='_blank'>Learn more</a>.</span>}
       icon='gears'
       cta='Create a Webhook'
       action={this.openNewWebhookModal.bind(this)} />
