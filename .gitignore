@@ -3,7 +3,6 @@ node_modules/
 bundles/
 PIG/bundles/
 Parse-Dashboard/public/bundles/
-Parse-Dashboard/parse-dashboard-config.json
 npm-debug.log
 .eslintcache
 
@@ -13,4 +12,3 @@ npm-debug.log
 .idea/
 
 npm-debug.log.*
-/parse-dashboard-config.json
