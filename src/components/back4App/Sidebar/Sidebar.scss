@@ -1,0 +1,172 @@
+// Fonts
+$custom-font-size: 16px;
+// Colors
+$lightBlue: #208AEC;
+$darkBlue: #155690;
+$white: #FFFFFF;
+$purle: #5C6BC0;
+$lightGray: #CFCFCF;
+$mediumGray: #9b9b9b;
+$green: #4CAF50;
+$darkGray: #424242;
+//
+$header-height: 80px;
+$footer-height: 510px;
+
+$sidebar-scroll-width: 5px;
+$sidebar-scroll-color: #e0e5e8;
+
+$sidebar-width: 280px;
+$sidebar-menus-width: ($sidebar-width * 2) - $sidebar-scroll-width;
+
+$sidebar-width: 280px;
+$sidebar-retreat: ($sidebar-width + 20) * -1;
+$sidebar-scroll-width: 5px;
+$sidebar-scroll-color: #e0e5e8;
+
+
+.sidebar-wrapper {
+  display: flex;
+  position: fixed;
+  top: 0;
+	z-index: 101;
+
+  .sidebar {
+    width: $sidebar-width;
+    height: 100vh;
+    padding-bottom: 100px;
+    box-shadow: 4px 4px 6px 0px rgba(0, 0, 0, 0.3);
+    background-color: #FFF;
+    margin-left: $sidebar-retreat;
+		transition: margin .4s;
+
+    &.open {
+      margin-left: 0px;
+
+      & + .sidebar-outside {
+        display: block;
+        width: 100vw !important;
+      }
+    }
+
+    header {
+      height: 81px;
+      padding: 17px 20px 20px 20px;
+      border-bottom: 1px solid #E0E0E0;
+
+      .brand {
+				display: flex;
+				justify-content: center;
+      }
+    }
+
+    .menu-wrapper {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      overflow-x: hidden;
+      height: calc(100vh - 225px);
+      
+      &::-webkit-scrollbar {
+        width: $sidebar-scroll-width;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: $sidebar-scroll-color;
+        outline: 1px solid $sidebar-scroll-color;
+      }
+
+      .menu {
+        font-family: 'Raleway';
+        height: 162px;
+
+        .menu-item {
+          padding-left: 30px;
+          margin-bottom: 9px;
+
+          .menu-item-header {
+            i {
+              color: #208AEC;
+              vertical-align: middle;
+              margin-top: -2.5px;
+            }
+
+            .icon-circle {
+              font-size: 8px;
+              margin-right: 10px;
+            }
+
+            .icon-plus {
+              font-size: 20px;
+              margin-left: -4px;
+              margin-right: 4px;
+            }
+
+            .icon-caret {
+              display: none;
+              position: relative;
+              float: right;
+              padding-right: 10px;
+              font-size: 24px;
+            }
+
+            .link {
+              text-decoration: none;
+              font-weight: normal;
+              font-size: 16px;
+              color: #292b2c;
+            }
+
+            &.active {
+              .link {
+                font-weight: 700;
+              }
+              .icon-caret {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .footer {
+    width: 100%;
+    background-color: #fff;
+    text-align: center;
+    
+    .new-app-button {
+      display: block;
+  		height: 40px;
+  		padding: 10px 16px 0 16px;
+      margin: 20px 30px 20px 30px;
+  	}
+
+    .account {
+      border-top: 1px solid #E0E0E0;
+
+      .sign-out {
+        display: block;
+        text-decoration: none;
+        white-space: nowrap;
+        font-weight: 300;
+        border: none;
+        color: $darkGray;
+        padding-top: 18px;
+      }
+    }
+  }
+
+
+  .sidebar-outside {
+    cursor: default;
+    width: 0px;
+		background-color: black !important;
+    opacity: .7;
+    transition: opacity .4s;
+    @media (min-width: 1100px) {
+      display: none;
+    }
+  }
+
+}
