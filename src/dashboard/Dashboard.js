@@ -49,12 +49,9 @@ import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
-import Header             from 'components/back4App/Header/Header.react';
-import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
 import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
-import 'whatwg-fetch';
 
-import subscribeTo        from 'lib/subscribeTo';
+import { Header, Sidebar, LoginModal, SignupModal } from "@back4app/back4app-react-components";
 
 import {
   Router,
@@ -92,6 +89,7 @@ class App extends React.Component {
             this.handleSidebarToggle();
           }}
         />
+        
         {this.props.children}
       </div>
     );      

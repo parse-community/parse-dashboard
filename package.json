@@ -33,6 +33,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "@back4app/back4app-react-components": "0.0.6",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
     "bootstrap": "4.0.0-alpha.6",
@@ -47,8 +48,7 @@
     "package-json": "^2.3.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "popper.js": "^1.12.9",
-    "whatwg-fetch": "^2.0.3"
+    "popper.js": "^1.12.9"
   },
   "devDependencies": {
     "babel-core": "~5.8.12",
