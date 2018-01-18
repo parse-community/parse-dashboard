@@ -3,6 +3,7 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: Filtering with a 1-digit number (#831), thanks to [Pascal Giguère](https://github.com/pgiguere1)
 
 ### 1.1.2
 
