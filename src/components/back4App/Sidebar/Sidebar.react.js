@@ -11,7 +11,7 @@ import navData from 'components/back4App/Header/headerNavData.js';
 const _renderHeaderMenuItems = items => items.map(({label, pathname, url}, index) => (
   <div key={index} className={styles['menu-item']}>
     <div className={`${styles['menu-item-header']} ${index === 1 && styles.active}`} role="tab">
-      <a className={styles.link} href={pathname || url} title="Edit email">
+      <a className={styles.link} href={pathname || url} title={label}>
         <i className={`${styles['icon-circle']} zmdi zmdi-circle`}></i>
         {label}
       </a>
@@ -55,7 +55,7 @@ let sidebarContent = (
   </div>
 );
 
-class Sidebar extends Component { 
+class Sidebar extends Component {
   constructor(props) {
     super(props);
 
@@ -82,13 +82,13 @@ class Sidebar extends Component {
       this.getStateByScreenSize()
     });
   }
-  
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       isOpen: nextProps.isOpen
     });
   }
-   
+
   render() {
     let { isOpen } = this.state;
     let { sidebarToggle } = this.props;
