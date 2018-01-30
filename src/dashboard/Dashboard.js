@@ -94,7 +94,7 @@ class App extends React.Component {
         />
         {this.props.children}
       </div>
-    );      
+    );
   }
 }
 
@@ -237,7 +237,7 @@ class Dashboard extends React.Component {
 
 
     const AppsIndexPage = () => (
-      <AccountView section='Your Apps'>
+      <AccountView section='Your Apps' style={{top: '0px'}}>
         <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
       </AccountView>
     );

@@ -9,7 +9,7 @@ import AppsManager    from 'lib/AppsManager';
 import AppsSelector   from 'components/Sidebar/AppsSelector.react';
 import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import React          from 'react';
-import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
+// import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
@@ -23,6 +23,7 @@ const Sidebar = ({
   sections,
   section,
   appSelector,
+  contentStyle
 }) => {
   const _subMenu = subsections => {
     if (!subsections) {
@@ -51,10 +52,10 @@ const Sidebar = ({
   const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
 
   return <div className={styles.sidebar}>
-    <SidebarHeader />
+    {/*<SidebarHeader />*/}
     {appSelector ? <AppsSelector apps={apps} /> : null}
 
-    <div className={styles.content}>
+    <div className={styles.content} style={contentStyle}>
       {sections.map(({
         name,
         icon,
