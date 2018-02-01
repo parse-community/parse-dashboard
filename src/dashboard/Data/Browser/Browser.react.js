@@ -330,7 +330,7 @@ export default class Browser extends DashboardView {
   async fetchData(source, filters = new List()) {
     const data = await this.fetchParseData(source, filters);
     var filteredCounts = { ...this.state.filteredCounts };
-    if (filters.length > 0) {
+    if (filters.size > 0) {
       filteredCounts[source] = await this.fetchParseDataCount(source,filters);
     } else {
       delete filteredCounts[source];
