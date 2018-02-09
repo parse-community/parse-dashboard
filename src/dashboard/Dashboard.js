@@ -49,8 +49,7 @@ import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
-import Header             from 'components/back4App/Header/Header.react';
-import Sidebar            from 'components/back4App/Sidebar/Sidebar.react';
+import {Header, Sidebar}  from '@back4app/back4app-react-components';
 import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
 import 'whatwg-fetch';
 
