@@ -2,7 +2,7 @@ const headerNavData = {
   items: [
     {label: 'My Apps', url: 'https://dashboard.back4app.com/apps/#!/admin'},
     {label: 'Dashboard', url: '/apps'},
-    {label: 'Docs', url: 'http://docs.back4app.com/'},
+    {label: 'Docs', url: 'https://www.back4app.com/docs'},
     {label: 'Community', url: 'https://groups.google.com/forum/#!forum/back4app'},
     {label: 'Blog', url: 'http://blog.back4app.com/'}
   ],
