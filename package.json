@@ -33,7 +33,6 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@back4app/back4app-react-components": "^1.0.3",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
     "bootstrap": "4.0.0-alpha.6",

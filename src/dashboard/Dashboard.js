@@ -49,7 +49,6 @@ import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
-import {Header, Sidebar}  from '@back4app/back4app-react-components';
 import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
 import 'whatwg-fetch';
 
@@ -71,26 +70,9 @@ class App extends React.Component {
     };
   }
 
-  handleSidebarToggle(isOpen) {
-    this.setState({
-      sidebarIsOpen: typeof isOpen !== 'undefined' ? isOpen : !this.state.sidebarIsOpen
-    });
-  }
-
   render() {
     return (
       <div>
-        <Header
-          sidebarToggle={() => {
-            this.handleSidebarToggle();
-          }}
-        />
-        <Sidebar
-          isOpen={this.state.sidebarIsOpen}
-          sidebarToggle={() => {
-            this.handleSidebarToggle();
-          }}
-        />
         {this.props.children}
       </div>
     );
