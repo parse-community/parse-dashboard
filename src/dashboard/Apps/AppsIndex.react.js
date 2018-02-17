@@ -73,7 +73,7 @@ let AppCard = ({
     </div>;
 
   return <li onClick={canBrowse} style={{ background: app.backgroundColor }}>
-    <a className={styles.icon} >
+    <a className={styles.icon}>
       {icon ? <img src={'appicons/' + icon} width={56} height={56}/> : <Icon width={56} height={56} name='blank-app-outline' fill='#1E384D' />}
     </a>
     <div className={styles.details}>

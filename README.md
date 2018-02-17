@@ -16,6 +16,7 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
       * [Single app](#single-app)
   * [Managing Multiple Apps](#managing-multiple-apps)
   * [App Icon Configuration](#app-icon-configuration)
+  * [App Background Color Configuration](#app-background-color-configuration)
   * [Other Configuration Options](#other-configuration-options)
 * [Running as Express Middleware](#running-as-express-middleware)
 * [Deploying Parse Dashboard](#deploying-parse-dashboard)
@@ -150,6 +151,31 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
     }
   ],
   "iconsFolder": "icons"
+}
+```
+
+## App Background Color Configuration
+
+Parse Dashboard supports adding an optional background color for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `backgroundColor` in it, parameter for each app. It is `CSS style`. To visualize what it means, in the following example `backgroundColor` is a configuration file:
+
+```json
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App",
+      "backgroundColor": "#FFA500" // Orange
+    },
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App [2]",
+      "backgroundColor": "rgb(255, 0, 0)" // Red
+    }
+  ]
 }
 ```
 
