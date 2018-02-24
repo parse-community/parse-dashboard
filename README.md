@@ -156,7 +156,7 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
 
 ## App Background Color Configuration
 
-Parse Dashboard supports adding an optional background color for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `backgroundColor` in it, parameter for each app. It is `CSS style`. To visualize what it means, in the following example `backgroundColor` is a configuration file:
+Parse Dashboard supports adding an optional background color for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `primaryBackgroundColor` and `secondaryBackgroundColor` in it, parameter for each app. It is `CSS style`. To visualize what it means, in the following example `backgroundColor` is a configuration file:
 
 ```json
 {
@@ -166,14 +166,16 @@ Parse Dashboard supports adding an optional background color for each app, so yo
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App",
-      "backgroundColor": "#FFA500" // Orange
+      "primaryBackgroundColor": "#FFA500", // Orange
+      "secondaryBackgroundColor": "#FF4500" // OrangeRed
     },
     {
       "serverURL": "http://localhost:1337/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App [2]",
-      "backgroundColor": "rgb(255, 0, 0)" // Red
+      "primaryBackgroundColor": "rgb(255, 0, 0)", // Red
+      "secondaryBackgroundColor": "rgb(204, 0, 0)" // DarkRed
     }
   ]
 }

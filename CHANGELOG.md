@@ -7,7 +7,7 @@
 * Fix: Databrowser shows correct count of filtered objects, thanks to [Tom Engelbrecht](https://github.com/engel)
 
 ### 1.1.3
-* Feature: Add background color in AppCard, thanks to [AreyouHappy](https://github.com/AreyouHappy)
+* Feature: Add primaryBackgroundColor and secondaryBackgroundColor in AppCard, thanks to [AreyouHappy](https://github.com/AreyouHappy)
 
 ### 1.1.2
 

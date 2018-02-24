@@ -240,7 +240,10 @@ export default class DashboardView extends React.Component {
       section={this.section}
       subsection={this.subsection}
       prefix={'/apps/' + appSlug}
-      action={this.action}>
+      action={this.action}
+      primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
+      secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
+      >
       {sidebarChildren}
     </Sidebar>);
 
