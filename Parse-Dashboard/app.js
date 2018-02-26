@@ -217,6 +217,7 @@ module.exports = function(config, options) {
           <body>
             <div id="browser_mount"></div>
             <script src="${mountPath}bundles/dashboard.bundle.js"></script>
+            <script src="https://static.back4app.com/back4app-navigation.bundle.js"></script>
           </body>
         </html>
       `);
