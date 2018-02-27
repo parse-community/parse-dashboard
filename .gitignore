@@ -12,3 +12,5 @@ npm-debug.log
 .idea/
 
 npm-debug.log.*
+
+*.orig
