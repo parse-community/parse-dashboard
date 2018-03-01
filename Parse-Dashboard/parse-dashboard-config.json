@@ -5,7 +5,8 @@
     "masterKey": "",
     "appName": "",
     "iconName": "",
-    "backgroundColor":"#000000"
+    "primaryBackgroundColor": "",
+    "secondaryBackgroundColor": ""
   }],
   "iconsFolder": "icons"
 }
