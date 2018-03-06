@@ -97,7 +97,9 @@
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
     "prepublish": "webpack --config webpack/publish.config.js",
-    "start": "node ./Parse-Dashboard/index.js"
+    "start": "node ./Parse-Dashboard/index.js",
+    "deploy-homolog": "sh deploy-homolog.sh",
+    "deploy-prod": "sh deploy-prod.sh"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
