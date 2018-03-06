@@ -4,7 +4,9 @@
     "appId": "",
     "masterKey": "",
     "appName": "",
-    "iconName": ""
+    "iconName": "",
+    "primaryBackgroundColor": "",
+    "secondaryBackgroundColor": ""
   }],
   "iconsFolder": "icons"
 }

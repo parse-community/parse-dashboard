@@ -39,6 +39,8 @@ export default class ParseApp {
     serverInfo,
     production,
     iconName,
+    primaryBackgroundColor,
+    secondaryBackgroundColor,
     supportedPushLocales,
   }) {
     this.name = appName;
@@ -60,6 +62,8 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
+    this.primaryBackgroundColor=primaryBackgroundColor;
+    this.secondaryBackgroundColor=secondaryBackgroundColor;
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
 
     if(!supportedPushLocales) {

@@ -23,6 +23,8 @@ const Sidebar = ({
   sections,
   section,
   appSelector,
+  primaryBackgroundColor,
+  secondaryBackgroundColor
 }) => {
   const _subMenu = subsections => {
     if (!subsections) {
@@ -70,7 +72,10 @@ const Sidebar = ({
             icon={icon}
             style={style}
             link={prefix + link}
-            active={active}>
+            active={active}
+            primaryBackgroundColor={primaryBackgroundColor}
+            secondaryBackgroundColor={secondaryBackgroundColor}
+            >
             {active ? _subMenu(subsections) : null}
           </SidebarSection>
         );

@@ -6,6 +6,9 @@
 * Fix: Filtering with a 1-digit number (#831), thanks to [Pascal Giguère](https://github.com/pgiguere1)
 * Fix: Databrowser shows correct count of filtered objects, thanks to [Tom Engelbrecht](https://github.com/engel)
 
+### 1.1.3
+* Feature: Add primaryBackgroundColor and secondaryBackgroundColor in AppCard, thanks to [AreyouHappy](https://github.com/AreyouHappy)
+
 ### 1.1.2
 
 * Fix: An issue introduced when using readOnlyMasterKey would make all users readOnly after one has logged in.
