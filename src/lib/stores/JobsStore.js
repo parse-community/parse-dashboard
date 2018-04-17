@@ -28,12 +28,10 @@ function JobsStore(state, action) {
       if (state && new Date() - state.get('lastFetch') < 60000) {
         return Parse.Promise.as(state);
       }
-
-      let serverInfo = Parse._request('GET', 'serverInfo', {})
-
-      return serverInfo.then(response => {
-        let serverVersionPrefix = response.parseServerVersion.substring(0,3)
-        if (serverVersionPrefix === '2.2' || serverVersionPrefix === '2.3'){
+      
+      return Parse._request('GET', 'serverInfo', {}).then(serverInfo => {
+        let serverVersionPrefix = serverInfo.parseServerVersion.substring(0,3)
+        if (serverVersionPrefix === '2.2' || serverVersionPrefix === '2.3') {
           path = 'cloud_code/jobs?per_page=50'
           return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {
             return Map({ lastFetch: new Date(), jobs: List(results) });
@@ -45,8 +43,7 @@ function JobsStore(state, action) {
             return Map({ lastFetch: new Date(), jobs: List(results.jobs.map(job => ({ 'jobName': job })))});
           });
         }
-
-      })
+      });
     case ActionTypes.CREATE:
       path = `cloud_code/jobs`;
       return Parse._request('POST', path, action.schedule, {useMasterKey: true}).then((result) => {
