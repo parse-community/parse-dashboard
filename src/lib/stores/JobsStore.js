@@ -29,10 +29,8 @@ function JobsStore(state, action) {
         return Parse.Promise.as(state);
       }
 
-      let serverInfo = Parse._request('GET', 'serverInfo', {})
-
-      return serverInfo.then(response => {
-        let serverVersionPrefix = response.parseServerVersion.substring(0,3)
+      return Parse._request('GET', 'serverInfo', {}).then(serverInfo => {
+        let serverVersionPrefix = serverInfo.parseServerVersion.substring(0,3)
         if (serverVersionPrefix === '2.2' || serverVersionPrefix === '2.3') {
           path = 'cloud_code/jobs?per_page=50'
           return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {
