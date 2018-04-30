@@ -51,6 +51,7 @@ export const SpecialClasses = {
   _Role: 'Role',
   _Product: 'Product',
   _Session: 'Session',
+  _PushStatus: 'PushStatus',
 };
 
 export const DefaultColumns = {
@@ -61,6 +62,7 @@ export const DefaultColumns = {
   _Role: [ 'name', 'users', 'roles' ],
   _Product: [ 'order', 'productIdentifier', 'icon', 'title', 'subtitle', 'download', 'downloadName' ],
   _Session: [ 'restricted', 'user', 'installationId', 'sessionToken', 'expiresAt', 'createdWith' ],
+  _PushStatus: [ 'pushTime', 'query', 'pushHash', 'payload', 'status', 'sentPerType', 'failedPerType', 'numSent', 'numFailed', 'errorMessage', 'source' ],
 };
 
 export const DataTypes = [

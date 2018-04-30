@@ -159,9 +159,9 @@ export default class DashboardView extends React.Component {
       name: 'General',
       link: '/settings/general'
     });
-    
+
     // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
-    
+
     if (features.generalSettings) {
       settingsSections.push({
         name: 'General',
@@ -248,7 +248,10 @@ export default class DashboardView extends React.Component {
       section={this.section}
       subsection={this.subsection}
       prefix={'/apps/' + appSlug}
-      action={this.action}>
+      action={this.action}
+      primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor || '#169CEE'}
+      secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor || '#29475D'}
+      >
       {sidebarChildren}
     </Sidebar>);
 
