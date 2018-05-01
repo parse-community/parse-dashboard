@@ -23,7 +23,9 @@ const Sidebar = ({
   sections,
   section,
   appSelector,
-  contentStyle
+  contentStyle,
+  primaryBackgroundColor,
+  secondaryBackgroundColor
 }) => {
   const _subMenu = subsections => {
     if (!subsections) {
@@ -33,6 +35,7 @@ const Sidebar = ({
       <div className={styles.submenu}>
         {subsections.map(({name, link}) => {
           const active = subsection === name;
+          console.log('sub item name', name);
           return (
             <SidebarSubItem
               key={name}
@@ -40,7 +43,8 @@ const Sidebar = ({
               link={prefix + link}
               action={action || null}
               actionHandler={active ? actionHandler : null}
-              active={active}>
+              active={active}
+              >
               {active ? children : null}
             </SidebarSubItem>
           );
@@ -64,6 +68,7 @@ const Sidebar = ({
         subsections,
       }) => {
         const active = name === section;
+        console.log('name', name);
         return (
           <SidebarSection
             key={name}
@@ -71,7 +76,10 @@ const Sidebar = ({
             icon={icon}
             style={style}
             link={prefix + link}
-            active={active}>
+            active={active}
+            primaryBackgroundColor={primaryBackgroundColor}
+            secondaryBackgroundColor={secondaryBackgroundColor}
+            >
             {active ? _subMenu(subsections) : null}
           </SidebarSection>
         );

@@ -221,6 +221,7 @@ export default class PushNew extends DashboardView {
         .find((a) => a.objectId === audience_id);
       body.where = pushAudience.query;
     }
+
     Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {

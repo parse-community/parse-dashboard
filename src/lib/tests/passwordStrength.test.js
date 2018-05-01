@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 jest.dontMock('../passwordStrength');
-const passwordStrength = require('../passwordStrength');
+const passwordStrength = require('../passwordStrength').default;
 
 describe('passwordStrength', () => {
   it('returns 0 for passwords that are too short', () => {
