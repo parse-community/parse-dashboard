@@ -35,7 +35,6 @@ const Sidebar = ({
       <div className={styles.submenu}>
         {subsections.map(({name, link}) => {
           const active = subsection === name;
-          console.log('sub item name', name);
           return (
             <SidebarSubItem
               key={name}
@@ -68,7 +67,6 @@ const Sidebar = ({
         subsections,
       }) => {
         const active = name === section;
-        console.log('name', name);
         return (
           <SidebarSection
             key={name}
