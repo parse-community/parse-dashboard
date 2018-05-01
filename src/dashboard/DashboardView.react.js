@@ -249,8 +249,8 @@ export default class DashboardView extends React.Component {
       subsection={this.subsection}
       prefix={'/apps/' + appSlug}
       action={this.action}
-      primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor || '#169CEE'}
-      secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor || '#29475D'}
+      primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
+      secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
       >
       {sidebarChildren}
     </Sidebar>);

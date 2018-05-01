@@ -64,8 +64,8 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
-    this.primaryBackgroundColor=primaryBackgroundColor || '#169CEE';
-    this.secondaryBackgroundColor=secondaryBackgroundColor || '#29475D';
+    this.primaryBackgroundColor=primaryBackgroundColor;
+    this.secondaryBackgroundColor=secondaryBackgroundColor;
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
 
     if(!supportedPushLocales) {

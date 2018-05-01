@@ -35,6 +35,7 @@ const Sidebar = ({
       <div className={styles.submenu}>
         {subsections.map(({name, link}) => {
           const active = subsection === name;
+          console.log('sub item name', name);
           return (
             <SidebarSubItem
               key={name}
@@ -67,6 +68,7 @@ const Sidebar = ({
         subsections,
       }) => {
         const active = name === section;
+        console.log('name', name);
         return (
           <SidebarSection
             key={name}
@@ -75,8 +77,8 @@ const Sidebar = ({
             style={style}
             link={prefix + link}
             active={active}
-            primaryBackgroundColor={primaryBackgroundColor || '#169CEE'}
-            secondaryBackgroundColor={secondaryBackgroundColor || '#29475D'}
+            primaryBackgroundColor={primaryBackgroundColor}
+            secondaryBackgroundColor={secondaryBackgroundColor}
             >
             {active ? _subMenu(subsections) : null}
           </SidebarSection>

@@ -22,10 +22,10 @@ let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgr
   return (
     <div className={classes.join(' ')}>
       {active ?
-        <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor || '#169CEE' }}>{iconContent}<span>{name}</span></div> :
+        <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor}}>{iconContent}<span>{name}</span></div> :
         <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}<span>{name}</span></Link>}
 
-      {children ? <div className={styles.section_contents} style={{ background: secondaryBackgroundColor || '#29475D' }}>{children}</div> : null}
+      {children ? <div className={styles.section_contents} style={{ background: secondaryBackgroundColor}}>{children}</div> : null}
     </div>
   );
 };
