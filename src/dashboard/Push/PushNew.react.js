@@ -221,7 +221,6 @@ export default class PushNew extends DashboardView {
         .find((a) => a.objectId === audience_id);
       body.where = pushAudience.query;
     }
-
     Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {
@@ -637,6 +636,9 @@ export default class PushNew extends DashboardView {
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
         onChange={(audienceId, queryOrFilters, deviceCount) => {
+          console.log('audienceId', audienceId);
+          console.log('PushConstants.NEW_SEGMENT_ID', PushConstants.NEW_SEGMENT_ID);
+          PushConstants.NEW_SEGMENT_ID
           this.setState({ deviceCount });
           setField('audience_id', audienceId);
           if (audienceId === PushConstants.NEW_SEGMENT_ID) {
