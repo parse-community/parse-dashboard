@@ -48,16 +48,21 @@ export default class PushAudiencesIndex extends DashboardView {
     }
   }
 
-  componentWillMount() {
+  getAudienceData() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
-    this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
+    return this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
       {
         limit: PushConstants.SHOW_MORE_LIMIT,
         min: PushConstants.INITIAL_PAGE_SIZE,
         xhrKey: XHR_KEY,
-      }).then(() => {
+      })
+  }
 
-    }).always(() => {
+  componentWillMount() {
+    this.getAudienceData().then(() => {
+      this.setState({ loading: false });
+    }).catch((err) => {
+      console.error(err)
       this.setState({ loading: false });
     });
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
@@ -109,6 +114,7 @@ export default class PushAudiencesIndex extends DashboardView {
   }
 
   handleSendPush(objectId) {
+
     history.push(this.context.generatePath(`push/new?audienceId=${objectId}`));
   }
 
@@ -192,6 +198,14 @@ export default class PushAudiencesIndex extends DashboardView {
       this.setState({
         showCreateAudienceModal: false,
       });
+      // After create the new audience update audience's list to get the new objectId
+      this.setState({ loading: true });
+      this.getAudienceData().then(() => {
+        this.setState({ loading: false });
+      }).catch(err => {
+        console.error(err)
+        this.setState({ loading: false });
+      })
     });
   }
 
