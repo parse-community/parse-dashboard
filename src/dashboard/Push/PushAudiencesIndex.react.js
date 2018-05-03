@@ -48,12 +48,12 @@ export default class PushAudiencesIndex extends DashboardView {
     }
   }
 
-  getAudienceData() {
+  getAudienceData(createdAudiences = 0) {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     return this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
       {
         limit: PushConstants.SHOW_MORE_LIMIT,
-        min: PushConstants.INITIAL_PAGE_SIZE,
+        min: PushConstants.INITIAL_PAGE_SIZE + createdAudiences,
         xhrKey: XHR_KEY,
       })
   }
@@ -198,9 +198,10 @@ export default class PushAudiencesIndex extends DashboardView {
       this.setState({
         showCreateAudienceModal: false,
       });
-      // After create the new audience update audience's list to get the new objectId
+      // After create the new audience update audience's list to get the
+      // new objectId
       this.setState({ loading: true });
-      this.getAudienceData().then(() => {
+      this.getAudienceData(1).then(() => {
         this.setState({ loading: false });
       }).catch(err => {
         console.error(err)
