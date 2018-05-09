@@ -10,7 +10,7 @@ jest.dontMock('../../components/Button/Button.react');
 import React     from 'react';
 import TestUtils from 'react-addons-test-utils';
 
-const Button = require('../../components/Button/Button.react');
+const Button = require('../../components/Button/Button.react').default;
 
 describe('Button', () => {
   it('has a default state', () => {

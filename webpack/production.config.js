@@ -13,21 +13,9 @@ configuration.entry = {
   PIG: './parse-interface-guide/index.js',
   quickstart: './quickstart/index.js',
 };
-configuration.output.path = './production/bundles';
+configuration.output.path = require('path').resolve('./production/bundles');
 
 var webpack = require('webpack');
-
-// Add propType removal to Babel
-var loaders = configuration.module.loaders;
-for (var i = 0; i < loaders.length; i++) {
-  if (loaders[i].loader === 'babel-loader') {
-    if (!loaders[i].query.plugins) {
-      loaders[i].query.plugins = [];
-    }
-    loaders[i].query.plugins.push('babel-plugin-remove-proptypes');
-    break;
-  }
-}
 
 // Enable minification
 configuration.plugins.push(
@@ -41,7 +29,7 @@ configuration.plugins.push(
       warnings: false
     }
   }),
-  new webpack.optimize.OccurenceOrderPlugin(),
+  new webpack.optimize.OccurrenceOrderPlugin(),
   function() {
     this.plugin('done', function(stats) {
       if (stats.compilation.errors && stats.compilation.errors.length) {

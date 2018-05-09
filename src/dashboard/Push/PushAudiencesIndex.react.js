@@ -48,16 +48,21 @@ export default class PushAudiencesIndex extends DashboardView {
     }
   }
 
-  componentWillMount() {
+  getAudienceData(createdAudiences = 0) {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
-    this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
+    return this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
       {
         limit: PushConstants.SHOW_MORE_LIMIT,
-        min: PushConstants.INITIAL_PAGE_SIZE,
+        min: PushConstants.INITIAL_PAGE_SIZE + createdAudiences,
         xhrKey: XHR_KEY,
-      }).then(() => {
+      })
+  }
 
-    }).always(() => {
+  componentWillMount() {
+    this.getAudienceData().then(() => {
+      this.setState({ loading: false });
+    }).catch((err) => {
+      console.error(err)
       this.setState({ loading: false });
     });
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
@@ -109,10 +114,12 @@ export default class PushAudiencesIndex extends DashboardView {
   }
 
   handleSendPush(objectId) {
+
     history.push(this.context.generatePath(`push/new?audienceId=${objectId}`));
   }
 
   renderRow(audience) {
+    console.log('audience', audience)
     return (
       <PushAudiencesIndexRow
         key={audience.objectId}
@@ -191,6 +198,15 @@ export default class PushAudiencesIndex extends DashboardView {
       this.setState({
         showCreateAudienceModal: false,
       });
+      // After create the new audience update audience's list to get the
+      // new objectId
+      this.setState({ loading: true });
+      this.getAudienceData(1).then(() => {
+        this.setState({ loading: false });
+      }).catch(err => {
+        console.error(err)
+        this.setState({ loading: false });
+      })
     });
   }
 
