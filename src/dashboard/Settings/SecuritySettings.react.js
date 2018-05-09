@@ -101,7 +101,7 @@ export default class SecuritySettings extends DashboardView {
           <Field
             label={<Label text='File key' description='Use this key when migrating to your own Parse Server to ensure your new server has access to existing files.' />}
             input={<KeyField name='File' hidden={true}>{currentApp.fileKey}</KeyField>} />
-          {(!currentApp.isGDPR || currentApp.forceShowGDPRFields) &&
+          {(!currentApp.custom.isGDPR || currentApp.custom.forceShowGDPRFields) &&
             <Field
               label={<Label text='Master key' description='Using this key overrides all permissions. Not usable on client SDKs. Keep it secret!' />}
               input={<KeyField name='Master' hidden={true}>{currentApp.masterKey}</KeyField>} />

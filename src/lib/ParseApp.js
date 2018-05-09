@@ -40,7 +40,8 @@ export default class ParseApp {
     production,
     iconName,
     supportedPushLocales,
-    feedbackEmail
+    feedbackEmail,
+    custom
   }) {
     this.name = appName;
     this.feedbackEmail = feedbackEmail;
@@ -63,6 +64,7 @@ export default class ParseApp {
     this.serverInfo = serverInfo;
     this.icon = iconName;
     this.supportedPushLocales = supportedPushLocales;
+    this.custom = custom;
 
     this.settings = {
       fields: {},
