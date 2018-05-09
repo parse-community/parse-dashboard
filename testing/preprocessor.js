@@ -22,14 +22,15 @@ module.exports = {
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6
-    if (filename.indexOf('node_modules') < 0 && babel.canCompile(filename)) {
+    if (filename.indexOf('node_modules') < 0) {
       return babel.transform(src, {
         filename: filename,
-        stage: 0,
         retainLines: true,
+        plugins: ['transform-decorators-legacy', 'transform-object-rest-spread', 'transform-regenerator', 'transform-runtime'],
+        presets: ['react', 'env'] 
         // Remove propTypes for tests so we don't have to keep unmocking lib/PropTypes
         // Also it's more representative of the production environment
-        plugins: [ 'babel-plugin-remove-proptypes' ]
+        //plugins: [ 'babel-plugin-remove-proptypes' ]
       }).code;
     }
 

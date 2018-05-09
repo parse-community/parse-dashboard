@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 jest.dontMock('../prettyNumber');
-const prettyNumber = require('../prettyNumber');
+const prettyNumber = require('../prettyNumber').default;
 
 describe('prettyNumber', () => {
   it('does not change small numbers', () => {

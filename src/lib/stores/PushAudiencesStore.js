@@ -34,7 +34,7 @@ function PushAudiencesStore(state, action) {
       if (action.app.serverInfo.features.push.pushAudiences) {
         let promise = action.app.apiRequest(
           'GET',
-          action.limit ? `push_audiences?audience_limit=${action.limit}` : 'push_audiences',
+          action.limit ? `push_audiences?limit=${action.limit}` : 'push_audiences',
           {},
           { useMasterKey: true }
         );
@@ -43,6 +43,8 @@ function PushAudiencesStore(state, action) {
         //
         return promise.then(({ results, showMore }) => {
           return Map({ lastFetch: new Date(), audiences: List(results), showMore: showMore});
+        }).catch(err => {
+          console.error(err);
         });
       } else {
         return Parse.Promise.as(state);
