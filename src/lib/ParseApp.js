@@ -42,7 +42,8 @@ export default class ParseApp {
     primaryBackgroundColor,
     secondaryBackgroundColor,
     supportedPushLocales,
-    feedbackEmail
+    feedbackEmail,
+    custom
   }) {
     this.name = appName;
     this.feedbackEmail = feedbackEmail;
@@ -67,6 +68,7 @@ export default class ParseApp {
     this.primaryBackgroundColor=primaryBackgroundColor;
     this.secondaryBackgroundColor=secondaryBackgroundColor;
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
+    this.custom = custom;
 
     if(!supportedPushLocales) {
       console.warn(`Missing push locales for '` + appName + `', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications`);
