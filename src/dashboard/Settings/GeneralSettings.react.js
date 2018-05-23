@@ -126,7 +126,7 @@ let AppInformationFields = ({
       value={inProduction}
       type={Toggle.Types.YES_NO} />
     } />
-  
+
 </Fieldset>;
 
 let CollaboratorsFields = ({
@@ -516,6 +516,10 @@ export default class GeneralSettings extends DashboardView {
       setField('collaborators', allCollabs);
     };
 
+    let editCollaborators = (toEdit, unused, allCollabs) => {
+
+    }
+
     return <div>
       <FlowView
         initialFields={initialFields}
@@ -589,7 +593,8 @@ export default class GeneralSettings extends DashboardView {
               ownerEmail={this.props.initialFields.owner_email}
               viewerEmail={AccountManager.currentUser().email}
               addCollaborator={setCollaborators.bind(undefined, setField)}
-              removeCollaborator={setCollaborators.bind(undefined, setField)}/>
+              removeCollaborator={setCollaborators.bind(undefined, setField)}
+              editCollaborator={setCollaborators.bind(undefined, setField)}/>
             <ManageAppFields
               mongoURL={fields.mongoURL}
               isCollaborator={AccountManager.currentUser().email !== this.props.initialFields.owner_email}

@@ -68,3 +68,5 @@ export let StatusIndicator           = require('components/StatusIndicator/Statu
 export let TextInput                 = require('components/TextInput/TextInput.example');
 export let Toggle                    = require('components/Toggle/Toggle.example');
 export let Tooltip                   = require('components/Tooltip/Tooltip.example');
+export let FormTableCollab           = require('components/FormTableCollab/FormTableCollab.example');
+export let PermissionsCollaboratorDialog = require('components/PermissionsCollaboratorDialog/PermissionsCollaboratorDialog.example');

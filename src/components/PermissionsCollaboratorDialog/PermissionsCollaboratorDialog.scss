@@ -77,7 +77,7 @@
 }
 
 .tableWrap {
-  height: 450px;
+  height: 550px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -226,10 +226,9 @@ p.description {
 }
 
 .row.public {
-  background: rgba(22, 156, 238, 0.18);
-  border-bottom: 1px solid #0E69A1;
-  height: 30px;
-  line-height: 30px;
+  background: #f6fafb;
+  height: 50px;
+  line-height: 50px;
   font-weight: bold;
   color: #555572;
 }
@@ -246,6 +245,7 @@ p.description {
 .permission {
   line-height: 100px;
   text-align: center;
+  background-color: #f6fafb;
 }
 .check {
   display: inline-block;
@@ -322,6 +322,66 @@ p.description {
   top: 5px;
 }
 
+
+.radiobutton {
+  display: inline-block;
+  margin-right: 12px;
+  input[type=radio] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+  }
+  span {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: #d0d0d0;
+    border-radius: 10px;
+    cursor: pointer;
+    top: 4px;
+
+    &:hover {
+      background: #b0b0b0;
+    }
+
+    &:after {
+      position: absolute;
+      content: '';
+      width: 0;
+      height: 0;
+      border-radius: 100%;
+      background: white;
+
+      top: 50%;
+      left: 50%;
+      @include transform(translate(-50%, -50%));
+
+      transition: all 0.2s cubic-bezier(0, 0, 0.74, 2.2);
+    }
+  }
+
+  input:checked + span {
+    background: #5298fc;
+
+    &:after {
+      width: 8px;
+      height: 8px;
+    }
+  }
+}
+
+.customTabList {
+  width: 50%;
+  margin-bottom: 0;
+}
+
+.subHeader {
+  display: inline-flex;
+}
 
 
 @include modalKeyframes();

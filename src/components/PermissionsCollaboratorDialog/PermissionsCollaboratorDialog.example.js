@@ -49,10 +49,19 @@ class DialogDemo extends React.Component {
             email='ramalho@email.com'
             description='Configure how this user can access the App features.'
             advanced={false}
-            confirmText='Save ACL'
+            confirmText='Save'
             permissions={{
-              read: {'*': true, 'LOL': true, 'LOL1': true, 'LOL2': true, 'LOL3': true, 'LOL4': true, 'LOL5': true},
-              write: {'*': true, 'LOL': true, 'LOL1': true, 'LOL2': true, 'LOL3': true, 'LOL4': true, 'LOL5': true}
+              "pushAndroidSettings" : "Write",
+              "pushIOSSettings" : "Read",
+              "oauth" : "None",
+              "cloudCode" : "Write",
+              "coreSettings" : "Read",
+              "manageParseServer" : "None",
+              "logs" : "Write",
+              "jobs" : "Read",
+              "webHostLiveQuery" : "None",
+              "verificationEmails" : "Write",
+              "twitterOauth" : "Read"
             }}
             features={{
               label: [

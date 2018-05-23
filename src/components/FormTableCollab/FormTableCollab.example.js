@@ -16,11 +16,24 @@ export const demos = [
   {
     render: () => (
       <Field
+        labelWidth={62}
         label={<Label text='Label' />}
         input={<FormTableCollab
           items={[
             {
               title: 'Title'
+            },
+            {
+              title: 'Title',
+              color: 'green',
+              onDelete: () => {alert("Delete button clicked.")},
+              onEdit: () => {alert("Edit button clicked.")}
+            },
+            {
+              title: 'Title',
+              color: 'red',
+              onDelete: () => {alert("Delete button clicked.")},
+              onEdit: () => {alert("Edit button clicked.")}
             },
             {
               title: 'Title',

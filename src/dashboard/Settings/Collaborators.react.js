@@ -8,7 +8,7 @@
 import AccountManager      from 'lib/AccountManager';
 import Field               from 'components/Field/Field.react';
 import Fieldset            from 'components/Fieldset/Fieldset.react';
-import FormTable           from 'components/FormTable/FormTable.react';
+import FormTableCollab           from 'components/FormTableCollab/FormTableCollab.react';
 import FormNote            from 'components/FormNote/FormNote.react';
 import InlineSubmitInput   from 'components/InlineSubmitInput/InlineSubmitInput.react';
 import Label               from 'components/Label/Label.react';
@@ -17,6 +17,7 @@ import PropTypes           from 'lib/PropTypes';
 import React               from 'react';
 import TextInput           from 'components/TextInput/TextInput.react';
 import validateEmailFormat from 'lib/validateEmailFormat';
+import PermissionsCollaboratorDialog from 'components/PermissionsCollaboratorDialog/PermissionsCollaboratorDialog.react';
 
 // Component for displaying and modifying an app's collaborator emails.
 // There is a single input field for new collaborator emails. As soon as the
@@ -32,7 +33,11 @@ export default class Collaborators extends React.Component {
   constructor() {
     super();
 
-    this.state = { lastError: '' };
+    this.state = {
+      lastError: '',
+      currentEmail: '',
+      showDialog: false
+    };
   }
 
   handleAdd(newEmail) {
@@ -43,9 +48,10 @@ export default class Collaborators extends React.Component {
       // lastError logic assumes we only have 1 input field
       console.log(2, response);
       if (response.success) {
-        let newCollaborators = this.props.collaborators.concat({ userEmail: newEmail })
-        this.setState({ lastError: '' });
-        this.props.onAdd(newEmail, newCollaborators);
+        this.setState({
+          currentEmail: newEmail,
+          showDialog: true
+        });
         return true;
       } else if (response.error) {
         this.setState({ lastError: response.error });
@@ -60,6 +66,11 @@ export default class Collaborators extends React.Component {
     console.log('this.props.collaborators', this.props.collaborators);
     let newCollaborators = this.props.collaborators.filter(oldCollaborator => oldCollaborator.userEmail !== collaborator.userEmail);
     this.props.onRemove(collaborator, newCollaborators);
+  }
+
+  handleEdit(collaborator) {
+    console.log('this.props.collaborators', this.props.collaborators);
+    this.props.onEdit(collaborator, this.props.collaborators);
   }
 
   validateEmail(email) {
@@ -102,27 +113,83 @@ export default class Collaborators extends React.Component {
           <Field
             label={<Label text='Existing collaborators' />}
             labelWidth={62}
-            input={<FormTable
+            input={<FormTableCollab
               items={
                 this.props.collaborators.map(collaborator => {
                   let canDelete = this.props.viewer_email === this.props.owner_email || collaborator.userEmail === this.props.viewer_email;
+                  let canEdit = this.props.viewer_email === this.props.owner_email;
                   //TODO(drewgross): add a warning modal for when you are removing yourself as a collaborator, as that is irreversable
-                  return {
+                  return ({
                     title: collaborator.userName || collaborator.userEmail,
                     color: 'green',
                     onDelete: canDelete ? this.handleDelete.bind(this, collaborator) : undefined,
-                    notes: [
-                      {
-                        key: 'Email',
-                        value: collaborator.userEmail,
-                      }
-                    ],
-                  };
+                    onEdit: canEdit ? this.handleEdit.bind(this, collaborator) : undefined,
+                  });
                 })
               }/>} />
 
           : null}
+        {this.state.showDialog ?
+          <PermissionsCollaboratorDialog
+            role='User'
+            email={this.state.currentEmail}
+            description='Configure how this user can access the App features.'
+            advanced={false}
+            confirmText='Save'
+            permissions={{
+              "pushAndroidSettings" : "Write",
+              "pushIOSSettings" : "Read",
+              "oauth" : "None",
+              "cloudCode" : "Write",
+              "coreSettings" : "Read",
+              "manageParseServer" : "None",
+              "logs" : "Write",
+              "jobs" : "Read",
+              "webHostLiveQuery" : "None",
+              "verificationEmails" : "Write",
+              "twitterOauth" : "Read"
+            }}
+            features={{
+              label: [
+                'Core Settings',
+                'Manage Parse Server',
+                'Logs',
+                'Cloud Code',
+                'Background Jobs',
+                'Web Hosting and Live Query',
+                'Verification Emails',
+                'Facebook Login',
+                'Twitter Login',
+                'Android Push notification',
+                'iOS Push notification'
+              ],
+              description: [
+                'Edit your keys, delete, transfer, clone and restart your app',
+                'Change the Parse Server version',
+                'See server, accesses and cloud code logs',
+                'Deploy your own JavaScript functions',
+                'Schedule and run background jobs',
+                'Host your web-site without all the hassle\nBuild real time apps',
+                'Send automatic emails',
+                'Make your app social using Facebook',
+                'Make your app social using Twitter',
+                'Get your message across with Android push',
+                'Get your message across with iOS push'
+              ]
+            }}
+            onCancel={() => {
+              this.setState({
+                showDialog: false,
+              });
+            }}
+            onConfirm={(featuresPermission) => {
+              let newCollaborators = this.props.collaborators.concat({ userEmail: this.state.currentEmail })
+              this.setState({ lastError: '' });
+              this.props.onAdd(this.state.currentEmail, newCollaborators);
+              console.log(featuresPermission);
+            }} /> : null}
       </Fieldset>
+
     )
   }
 }
