@@ -537,9 +537,9 @@ export default class GeneralSettings extends DashboardView {
           }
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
-          addedCollaborators.forEach(({ userEmail }) => {
-            console.log('userEmail', userEmail);
-            promiseList.push(this.context.currentApp.addCollaborator(userEmail));
+          addedCollaborators.forEach(({ userEmail, featuresPermission }) => {
+            console.log('userEmail featuresPermission', userEmail, featuresPermission);
+            promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission));
           });
 
           let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
