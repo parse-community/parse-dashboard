@@ -184,7 +184,7 @@ export default class Collaborators extends React.Component {
             }}
             onConfirm={(featuresPermission) => {
               let newCollaborators = this.props.collaborators.concat({ userEmail: this.state.currentEmail })
-              this.setState({ lastError: '' });
+              this.setState({ lastError: '', showDialog: false });
               this.props.onAdd(this.state.currentEmail, newCollaborators);
               console.log(featuresPermission);
             }} /> : null}
