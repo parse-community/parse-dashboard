@@ -538,6 +538,7 @@ export default class GeneralSettings extends DashboardView {
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
           addedCollaborators.forEach(({ userEmail }) => {
+            console.log('userEmail', userEmail);
             promiseList.push(this.context.currentApp.addCollaborator(userEmail));
           });
 
