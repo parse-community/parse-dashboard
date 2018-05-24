@@ -8,6 +8,8 @@
 import * as AJAX      from 'lib/AJAX';
 import encodeFormData from 'lib/encodeFormData';
 import Parse          from 'parse';
+import axios from 'axios';
+
 
 function setEnablePushSource(setting, enable) {
   let path = `/apps/${this.slug}/update_push_notifications`;
@@ -499,7 +501,7 @@ export default class ParseApp {
 
   addCollaborator(email, featuresPermission) {
     let path = '/apps/' + this.slug + '/collaborations';
-    let promise = AJAX.post(path, {'collaboration[email]': email, featuresPermission});
+    let promise = axios.post(path, {'collaboration[email]': email, featuresPermission});
     promise.then(({ data }) => {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators

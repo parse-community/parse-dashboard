@@ -33,6 +33,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
     "bootstrap": "4.0.0-alpha.6",
