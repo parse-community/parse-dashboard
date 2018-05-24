@@ -24,7 +24,7 @@ let Row = ({
         {typeof onDelete === 'function' ? <a href='javascript:;' role='button' className={styles.icon} onClick={onDelete}><Icon name='trash-solid' fill='#59596e' width={18} height={18} role='button'/></a> : null}
         {typeof onEdit === 'function' ? <a href='javascript:;' role='button' className={styles.firstIcon} onClick={onEdit}><Icon name='gear-solid' fill='#59596e' width={18} height={18} role='button'/></a> : null}
       </div>
-      <hr />
+      <hr className={styles.hrTableDivisor}/>
     </div>
 
   );

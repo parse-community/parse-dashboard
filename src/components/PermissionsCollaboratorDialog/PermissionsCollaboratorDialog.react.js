@@ -80,15 +80,14 @@ export default class PermissionsCollaboratorDialog extends React.Component {
       showLevels: false,
       level: 'Simple', // 'Simple' | 'Advanced'
       customPermissions,
-      features
+      features,
+      selectedTab: 'Default' // 'Default' | 'Custom'
     };
   }
 
   setPermissions(feature, permission, customPermissions) {
     customPermissions[feature] = permission;
     this.setState({ customPermissions });
-    console.log('state', this.state.customPermissions)
-    console.log('props', this.props.permissions)
   }
 
   renderRows(isDefault) {
@@ -157,6 +156,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                           className={styles.radiobutton}
                           defaultChecked={true}
                           disabled={false}
+                          onClick={() => this.setState({ selectedTab: 'Default' })}
                         />
                         Default
                       </label>
@@ -167,6 +167,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                           id='tab2'
                           name='Tab'
                           disabled={false}
+                          onClick={() => this.setState({ selectedTab: 'Custom' })}
                         />
                         Custom
                       </label>
@@ -191,8 +192,16 @@ export default class PermissionsCollaboratorDialog extends React.Component {
               <Button
                 primary={true}
                 value={this.props.confirmText}
-                onClick={() => console.log('lol')} />
-            </div>
+                onClick={() => {
+                  this.props.onConfirm(
+                    (this.state.selectedTab === 'Default' ?
+                      this.props.permissions :
+                      this.state.customPermissions
+                    )
+                  )
+                }}
+              />
+              </div>
           </div>
         </div>
       </Popover>

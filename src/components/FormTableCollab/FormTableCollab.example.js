@@ -24,22 +24,13 @@ export const demos = [
               title: 'Title'
             },
             {
-              title: 'Title',
-              color: 'green',
-              onDelete: () => {alert("Delete button clicked.")},
-              onEdit: () => {alert("Edit button clicked.")}
+              title: 'Title'
             },
             {
-              title: 'Title',
-              color: 'red',
-              onDelete: () => {alert("Delete button clicked.")},
-              onEdit: () => {alert("Edit button clicked.")}
+              title: 'Title'
             },
             {
-              title: 'Title',
-              color: 'red',
-              onDelete: () => {alert("Delete button clicked.")},
-              onEdit: () => {alert("Edit button clicked.")}
+              title: 'Title'
             }
           ]} />
         }

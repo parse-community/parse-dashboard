@@ -10,7 +10,7 @@
 .table {
   text-align: left;
   white-space: nowrap;
-  min-height: 80px;
+  min-height: 40px;
   background: $formTableGrey;
 }
 
@@ -39,7 +39,7 @@
   }
 }
 
-hr {
+.hrTableDivisor {
   display: block;
   border: 0;
   border-top: 1px solid #ccc;
