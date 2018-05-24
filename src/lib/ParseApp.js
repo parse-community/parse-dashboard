@@ -337,8 +337,10 @@ export default class ParseApp {
     // if (new Date() - this.settings.lastFetched < 60000) {
     //   return Parse.Promise.as(this.settings.fields);
     // }
+    //TODO: UNCOMMENT BELOW LINES BEFORE DEPLOY
     let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
     return AJAX.get(path).then((fields) => {
+      //const fields = {"fields":{"owner_email":"charles@back4app.com","owner_name":"charles@back4app.com","collaborators":[{"id":"5ed78cb2-29f5-4edb-9d3f-0ee2bcd2a73c","userName":null,"userEmail":"community@back4app.com"}],"urls":[],"gcm_credentials":[],"pricing_plan":{}}};
       for (let f in fields) {
         this.settings.fields[f] = fields[f];
         this.settings.lastFetched = new Date();
@@ -495,9 +497,9 @@ export default class ParseApp {
     return promise;
   }
 
-  addCollaborator(email) {
+  addCollaborator(email, featuresPermission) {
     let path = '/apps/' + this.slug + '/collaborations';
-    let promise = AJAX.post(path, {'collaboration[email]': email});
+    let promise = AJAX.post(path, {'collaboration[email]': email, featuresPermission});
     promise.then(({ data }) => {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators
