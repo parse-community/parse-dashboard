@@ -75,7 +75,7 @@
     "js-beautify": "~1.6.14",
     "marked": "^0.3.5",
     "node-sass": "^4.5.3",
-    "parse": "git+https://github.com/back4app/Parse-SDK-JS.git#3872ad6404ba0d18729de9b9be221ef2d91634a5",
+    "parse": "git+https://github.com/back4app/Parse-SDK-JS.git",
     "prismjs": "~1.6.0",
     "react": "^15.0.1",
     "react-addons-test-utils": "^15.0.1",
