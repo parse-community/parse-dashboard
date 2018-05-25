@@ -511,10 +511,14 @@ export default class GeneralSettings extends DashboardView {
     let setCollaborators = (setField, unused, allCollabs) => {
       let addedCollaborators = setDifference(allCollabs, initialFields.collaborators, compareCollaborators);
       let removedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
-      let editedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
-      if (addedCollaborators.length === 0 && removedCollaborators.length === 0 && editedCollaborators.length === 0) {
-        //This is neccessary because the footer computes whether or not show a change by reference equality.
-        allCollabs = initialFields.collaborators;
+      if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
+        //If there isn't a added or removed collaborator verify if there is a edited one.
+        let editedCollaborators = setDifference(allCollabs, initialFields.collaborators, verifyEditedCollaborators);
+        console.log('editedCollaborators.length', editedCollaborators.length);
+        if (editedCollaborators.length === 0) {
+          //This is neccessary because the footer computes whether or not show a change by reference equality.
+          allCollabs = initialFields.collaborators;
+        }
       }
       console.log(allCollabs)
       setField('collaborators', allCollabs);
@@ -664,7 +668,8 @@ export default class GeneralSettings extends DashboardView {
   }
 }
 
-let compareCollaborators = (collab1, collab2) => (collab1.userEmail === collab2.userEmail && collab1.featuresPermission === collab2.featuresPermission);
+let compareCollaborators = (collab1, collab2) => (collab1.userEmail === collab2.userEmail);
+let verifyEditedCollaborators = (collab1, collab2) => (collab1.featuresPermission === collab2.featuresPermission);
 
 let generalFieldsOptions = {
   requestLimit: {
