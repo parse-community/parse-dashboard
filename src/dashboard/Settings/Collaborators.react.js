@@ -125,7 +125,7 @@ export default class Collaborators extends React.Component {
         {this.props.collaborators.length > 0 ?
           <Field
             label={<Label text='Existing collaborators' />}
-            labelWidth={62}
+            labelWidth={55}
             input={<FormTableCollab
               items={
                 this.props.collaborators.map(collaborator => {
@@ -216,7 +216,7 @@ export default class Collaborators extends React.Component {
                 );
               }
               else if (this.state.toEdit) {
-                console.log('editing');
+                console.log('editing', this.state.currentCollab);
                 this.props.onEdit(this.state.currentCollab, this.props.collaborators);
                 this.setState(
                   {
