@@ -54,7 +54,8 @@ export default class Collaborators extends React.Component {
       if (response.success) {
         this.setState({
           currentEmail: newEmail,
-          showDialog: true
+          showDialog: true,
+          toAdd: true
         });
         return true;
       } else if (response.error) {
