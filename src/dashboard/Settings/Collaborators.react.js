@@ -78,6 +78,7 @@ export default class Collaborators extends React.Component {
       {
         toEdit: true,
         currentPermission: collaborator.featuresPermission,
+        currentEmail: collaborator.userEmail,
         currentCollab: collaborator,
         showDialog: true
       }
@@ -97,7 +98,7 @@ export default class Collaborators extends React.Component {
     return (
       <Fieldset legend={this.props.legend} description={this.props.description}>
         {this.props.viewer_email === this.props.owner_email ? <Field
-          labelWidth={62}
+          labelWidth={55}
           label={<Label
             text='Add new collaborator'
             description={<span>Collaborators will have read/write access but cannot <br/> delete the app or add more collaborators.</span>}/>}
@@ -106,7 +107,7 @@ export default class Collaborators extends React.Component {
             placeholder='What&#39;s their email?'
             onSubmit={this.handleAdd.bind(this)}
             submitButtonText='ADD' />} /> : <Field
-          labelWidth={62}
+          labelWidth={55}
           label={<Label text='App Owner' />}
           input={<TextInput
             value={this.props.owner_email}
