@@ -516,6 +516,7 @@ export default class GeneralSettings extends DashboardView {
         //This is neccessary because the footer computes whether or not show a change by reference equality.
         allCollabs = initialFields.collaborators;
       }
+      console.log(allCollabs)
       setField('collaborators', allCollabs);
     };
 
