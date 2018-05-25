@@ -495,6 +495,20 @@ export default class ParseApp {
       // happens to re-render after this call anyway, but really the collaborators
       // should be updated properly in a store or AppsManager or something
       this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.filter(c => c.id != id);
+      console.log('this.settings.fields.fields.collaborators', this.settings.fields.fields.collaborators);
+    });
+    return promise;
+  }
+
+  editCollaboratorById(id, featurePermission) {
+    let path = '/apps/' + this.slug + '/collaborations/edit/' + id.toString();
+    let promise = axios.post(path, { featurePermission })
+    promise.then(() => {
+      //TODO: this currently works because everything that uses collaborators
+      // happens to re-render after this call anyway, but really the collaborators
+      // should be updated properly in a store or AppsManager or something
+      this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.filter(c => c.id != id);
+
     });
     return promise;
   }

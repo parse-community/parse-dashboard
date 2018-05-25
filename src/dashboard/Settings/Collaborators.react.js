@@ -36,7 +36,11 @@ export default class Collaborators extends React.Component {
     this.state = {
       lastError: '',
       currentEmail: '',
-      showDialog: false
+      currentPermission: {},
+      currentCollab: {},
+      showDialog: false,
+      toAdd: false,
+      toEdit: false,
     };
   }
 
@@ -69,8 +73,15 @@ export default class Collaborators extends React.Component {
   }
 
   handleEdit(collaborator) {
-    console.log('this.props.collaborators', this.props.collaborators);
-    this.props.onEdit(collaborator, this.props.collaborators);
+    console.log('this.props.collaborators EDIT', this.props.collaborators);
+    this.setState(
+      {
+        toEdit: true,
+        currentPermission: collaborator.featuresPermission,
+        currentCollab: collaborator,
+        showDialog: true
+      }
+    )
   }
 
   validateEmail(email) {
@@ -136,19 +147,25 @@ export default class Collaborators extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
-            permissions={{
-              "pushAndroidSettings" : "Write",
-              "pushIOSSettings" : "Read",
-              "oauth" : "None",
-              "cloudCode" : "Write",
-              "coreSettings" : "Read",
-              "manageParseServer" : "None",
-              "logs" : "Write",
-              "jobs" : "Read",
-              "webHostLiveQuery" : "None",
-              "verificationEmails" : "Write",
-              "twitterOauth" : "Read"
-            }}
+            permissions={
+              (
+                (this.state.toEdit && this.state.currentPermission) ?
+                this.state.currentPermission :
+                {
+                  "pushAndroidSettings" : "Write",
+                  "pushIOSSettings" : "Read",
+                  "oauth" : "None",
+                  "cloudCode" : "Write",
+                  "coreSettings" : "Read",
+                  "manageParseServer" : "None",
+                  "logs" : "Write",
+                  "jobs" : "Read",
+                  "webHostLiveQuery" : "None",
+                  "verificationEmails" : "Write",
+                  "twitterOauth" : "Read"
+                }
+              )
+            }
             features={{
               label: [
                 'Core Settings',
@@ -183,11 +200,31 @@ export default class Collaborators extends React.Component {
               });
             }}
             onConfirm={(featuresPermission) => {
-              let newCollaborators = this.props.collaborators.concat({ userEmail: this.state.currentEmail, featuresPermission })
-              this.setState({ lastError: '', showDialog: false });
-              console.log('newCollaborators', newCollaborators);
-              this.props.onAdd(this.state.currentEmail, newCollaborators);
-              console.log(featuresPermission);
+              if (this.state.toAdd) {
+                let newCollaborators = this.props.collaborators.concat(
+                  {userEmail: this.state.currentEmail, featuresPermission})
+                this.props.onAdd(this.state.currentEmail, newCollaborators);
+                this.setState(
+                  {
+                    lastError: '',
+                    showDialog: false,
+                    toAdd: false,
+                    currentEmail: ''
+                  }
+                );
+              }
+              else if (this.state.toEdit) {
+                console.log('editing');
+                this.props.onEdit(this.state.currentCollab, this.props.collaborators);
+                this.setState(
+                  {
+                    lastError: '',
+                    showDialog: false,
+                    toEdit: false,
+                    currentCollab: {}
+                  }
+                );
+              }
             }} /> : null}
       </Fieldset>
 
