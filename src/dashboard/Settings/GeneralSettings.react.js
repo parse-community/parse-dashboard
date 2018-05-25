@@ -41,6 +41,7 @@ import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionSt
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
 import { get }                           from 'lib/AJAX';
 import { Link }                          from 'react-router';
+import lodash                            from 'lodash'
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 55;
 
@@ -513,7 +514,7 @@ export default class GeneralSettings extends DashboardView {
       let removedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
       if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
         //If there isn't a added or removed collaborator verify if there is a edited one.
-        let editedCollaborators = setDifference(allCollabs, initialFields.collaborators, verifyEditedCollaborators);
+        let editedCollaborators = verifyEditedCollaborators(allCollabs, initialFields.collaborators);
         console.log('editedCollaborators.length', editedCollaborators.length);
         if (editedCollaborators.length === 0) {
           //This is neccessary because the footer computes whether or not show a change by reference equality.
@@ -541,16 +542,18 @@ export default class GeneralSettings extends DashboardView {
           }
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
+          console.log('addedCollaborators', addedCollaborators);
           addedCollaborators.forEach(({ userEmail, featuresPermission }) => {
             promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission));
           });
 
           let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
+          console.log('removedCollaborators', removedCollaborators);
           removedCollaborators.forEach(({ id }) => {
             promiseList.push(this.context.currentApp.removeCollaboratorById(id));
           });
 
-          let editedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
+          let editedCollaborators = verifyEditedCollaborators(changes.collaborators, initialFields.collaborators);
           console.log('editedCollaborators', editedCollaborators);
           editedCollaborators.forEach(({ id, featuresPermission }) => {
             promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission));
@@ -669,7 +672,20 @@ export default class GeneralSettings extends DashboardView {
 }
 
 let compareCollaborators = (collab1, collab2) => (collab1.userEmail === collab2.userEmail);
-let verifyEditedCollaborators = (collab1, collab2) => (collab1.featuresPermission === collab2.featuresPermission);
+let verifyEditedCollaborators = (modified, initial) => {
+  console.log('verifyEditedCollaborators', modified, initial)
+  let editedCollabs = []
+  if (modified.length === initial.length)
+    modified.forEach((modifiedCollab) => {
+      initial.forEach((initialCollab) => {
+        if (modifiedCollab.userEmail === initialCollab.userEmail &&
+            !lodash.isEqual(modifiedCollab, initialCollab))
+          editedCollabs.push(modifiedCollab);
+      })
+    })
+  console.log(editedCollabs)
+  return editedCollabs;
+}
 
 let generalFieldsOptions = {
   requestLimit: {

@@ -488,6 +488,7 @@ export default class ParseApp {
   }
 
   removeCollaboratorById(id) {
+    console.log('removeCollaboratorById', id);
     let path = '/apps/' + this.slug + '/collaborations/' + id.toString();
     let promise = AJAX.del(path)
     promise.then(() => {
@@ -501,6 +502,7 @@ export default class ParseApp {
   }
 
   editCollaboratorById(id, featurePermission) {
+    console.log('editCollaboratorById', id);
     let path = '/apps/' + this.slug + '/collaborations/edit/' + id.toString();
     let promise = axios.post(path, { featurePermission })
     promise.then(() => {

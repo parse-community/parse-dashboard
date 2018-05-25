@@ -68,13 +68,11 @@ export default class Collaborators extends React.Component {
   }
 
   handleDelete(collaborator) {
-    console.log('this.props.collaborators', this.props.collaborators);
     let newCollaborators = this.props.collaborators.filter(oldCollaborator => oldCollaborator.userEmail !== collaborator.userEmail);
     this.props.onRemove(collaborator, newCollaborators);
   }
 
   handleEdit(collaborator) {
-    console.log('this.props.collaborators EDIT', this.props.collaborators);
     this.setState(
       {
         toEdit: true,

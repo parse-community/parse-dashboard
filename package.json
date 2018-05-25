@@ -44,6 +44,7 @@
     "express": "^4.13.4",
     "jquery": "^3.2.1",
     "json-file-plus": "^3.2.0",
+    "lodash": "^4.17.10",
     "material-design-iconic-font": "^2.2.0",
     "package-json": "^4.0.1",
     "passport": "^0.3.2",
