@@ -15,7 +15,7 @@ let Field = ({label, input, labelWidth = 50, labelPadding, height, className, mi
     classes.push(className);
   }
   labelWidth = labelWidth || 50;
-  minHeight = minHeight || 80;
+  minHeight = minHeight || '';
   if (label && labelPadding) {
     label = React.cloneElement(
       label,
