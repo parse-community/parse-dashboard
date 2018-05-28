@@ -123,6 +123,7 @@ export default class Collaborators extends React.Component {
         {this.props.collaborators.length > 0 ?
           <Field
             label={<Label text='Existing collaborators' />}
+            minHeight={40}
             labelWidth={55}
             input={<FormTableCollab
               items={
