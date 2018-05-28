@@ -214,8 +214,10 @@ export default class Collaborators extends React.Component {
                 );
               }
               else if (this.state.toEdit) {
-                console.log('editing', this.state.currentCollab);
-                this.props.onEdit(this.state.currentCollab, this.props.collaborators);
+                let editedCollab = Object.assign({}, this.state.currentCollab);
+                editedCollab.featuresPermission = featuresPermission;
+                console.log('editedCollab', editedCollab)
+                this.props.onEdit(editedCollab, this.props.collaborators);
                 this.setState(
                   {
                     lastError: '',
