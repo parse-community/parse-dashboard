@@ -511,6 +511,7 @@ export default class ParseApp {
       // should be updated properly in a store or AppsManager or something
       this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.map(c => {
         if (c.id === id) c.featuresPermission = featuresPermission
+        return c
       });
     });
     return promise;

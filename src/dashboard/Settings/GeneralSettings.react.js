@@ -521,7 +521,7 @@ export default class GeneralSettings extends DashboardView {
           allCollabs = initialFields.collaborators;
         }
       }
-      console.log(allCollabs)
+      console.log('allCollabs', allCollabs)
       setField('collaborators', allCollabs);
     };
 
