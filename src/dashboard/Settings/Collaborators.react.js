@@ -47,6 +47,8 @@ export default class Collaborators extends React.Component {
       "pushIOSSettings" : "Write",
     }
 
+    this.defaultPermissions = defaultPermissions
+
     this.state = {
       lastError: '',
       currentEmail: '',
