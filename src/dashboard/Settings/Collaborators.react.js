@@ -44,6 +44,20 @@ export default class Collaborators extends React.Component {
     };
   }
 
+  defaultPermissions = {
+    "coreSettings" : "Read",
+    "manageParseServer" : "Read",
+    "logs" : "Read",
+    "cloudCode" : "Write",
+    "jobs" : "Write",
+    "webHostLiveQuery" : "Write",
+    "verificationEmails" : "Write",
+    "oauth" : "Write",
+    "twitterOauth" : "Write",
+    "pushAndroidSettings" : "Write",
+    "pushIOSSettings" : "Write",
+  }
+
   handleAdd(newEmail) {
     console.log(1, newEmail);
     //TODO: Show some in-progress thing while the collaborator is being validated, or maybe have some sort of
@@ -148,26 +162,14 @@ export default class Collaborators extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
-            permissions={
+            customPermissions={
               (
                 (this.state.toEdit && this.state.currentPermission) ?
-                this.state.currentPermission :
-                {
-                  "coreSettings" : "Read",
-                  "manageParseServer" : "Read",
-                  "logs" : "Read",
-                  "cloudCode" : "Write",
-                  "jobs" : "Write",
-                  "webHostLiveQuery" : "Write",
-                  "verificationEmails" : "Write",
-                  "oauth" : "Write",
-                  "twitterOauth" : "Write",
-                  "pushAndroidSettings" : "Write",
-                  "pushIOSSettings" : "Write",
-                }
+                this.state.currentPermission : this.defaultPermissions
               )
             }
-            features={{
+            defaultPermissions={this.defaultPermissions}
+              features={{
               label: [
                 'Core Settings',
                 'Manage Parse Server',

@@ -50,7 +50,20 @@ class DialogDemo extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
-            permissions={{
+            customPermissions={{
+              "pushAndroidSettings" : "None",
+              "pushIOSSettings" : "None",
+              "oauth" : "None",
+              "cloudCode" : "None",
+              "coreSettings" : "None",
+              "manageParseServer" : "None",
+              "logs" : "None",
+              "jobs" : "None",
+              "webHostLiveQuery" : "None",
+              "verificationEmails" : "None",
+              "twitterOauth" : "None"
+            }}
+            defaultPermissions={{
               "pushAndroidSettings" : "Write",
               "pushIOSSettings" : "Read",
               "oauth" : "None",

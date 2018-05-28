@@ -69,31 +69,17 @@ function renderSimpleLabels(permission) {
 
 export default class PermissionsCollaboratorDialog extends React.Component {
   constructor({
-                permissions,
+                customPermissions,
+                defaultPermissions,
                 features
               }) {
     super();
-
-    let customPermissions = Object.assign({}, permissions);
 
     this.state = {
       transitioning: false,
       showLevels: false,
       level: 'Simple', // 'Simple' | 'Advanced'
       customPermissions,
-      defaultPermissions: {
-        "coreSettings" : "Read",
-        "manageParseServer" : "Read",
-        "logs" : "Read",
-        "cloudCode" : "Write",
-        "jobs" : "Write",
-        "webHostLiveQuery" : "Write",
-        "verificationEmails" : "Write",
-        "oauth" : "Write",
-        "twitterOauth" : "Write",
-        "pushAndroidSettings" : "Write",
-        "pushIOSSettings" : "Write",
-      },
       features,
       selectedTab: 'Default' // 'Default' | 'Custom'
     };
@@ -107,13 +93,13 @@ export default class PermissionsCollaboratorDialog extends React.Component {
   renderRows(isDefault) {
     let rows = [];
     let index = 0;
-    for (let feature in this.state.defaultPermissions) {
+    for (let feature in this.props.defaultPermissions) {
       let text = this.state.features.label[index]
       let description = this.state.features.description[index]
       let collaboratorsCanWrite = this.state.features.collaboratorsCanWrite[index]
       let label = <Label key={text  + (isDefault ? 'Label' : 'Input')} text={text} description={description}/>
       let content = null;
-      if (isDefault) content = renderSimpleLabels(this.state.defaultPermissions[feature]);
+      if (isDefault) content = renderSimpleLabels(this.props.defaultPermissions[feature]);
       else content = renderSimpleCheckboxes(feature, this.state.customPermissions, collaboratorsCanWrite, this.setPermissions.bind(this));
       rows.push((<div key={feature + (isDefault ? 'Label' : 'Input')} className={styles.row}>
           <Field labelWidth={100} className={styles.label} label={label} />
@@ -209,7 +195,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                 onClick={() => {
                   this.props.onConfirm(
                     (this.state.selectedTab === 'Default' ?
-                      this.state.defaultPermissions :
+                      this.props.defaultPermissions :
                       this.state.customPermissions
                     )
                   )
