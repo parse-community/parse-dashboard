@@ -216,7 +216,6 @@ export default class Collaborators extends React.Component {
               else if (this.state.toEdit) {
                 let editedCollab = Object.assign({}, this.state.currentCollab);
                 editedCollab.featuresPermission = featuresPermission;
-                console.log('editedCollab', editedCollab)
                 let newCollabs = this.props.collaborators.map(c => {
                   if (c.userEmail === editedCollab.userEmail) c = editedCollab
                   return c

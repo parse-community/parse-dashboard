@@ -515,13 +515,12 @@ export default class GeneralSettings extends DashboardView {
       if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
         //If there isn't a added or removed collaborator verify if there is a edited one.
         let editedCollaborators = verifyEditedCollaborators(allCollabs, initialFields.collaborators);
-        console.log('editedCollaborators.length', editedCollaborators.length);
+
         if (editedCollaborators.length === 0) {
           //This is neccessary because the footer computes whether or not show a change by reference equality.
           allCollabs = initialFields.collaborators;
         }
       }
-      console.log('allCollabs', allCollabs)
       setField('collaborators', allCollabs);
     };
 
@@ -542,19 +541,16 @@ export default class GeneralSettings extends DashboardView {
           }
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
-          console.log('addedCollaborators', addedCollaborators);
           addedCollaborators.forEach(({ userEmail, featuresPermission }) => {
             promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission));
           });
 
           let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
-          console.log('removedCollaborators', removedCollaborators);
           removedCollaborators.forEach(({ id }) => {
             promiseList.push(this.context.currentApp.removeCollaboratorById(id));
           });
 
           let editedCollaborators = verifyEditedCollaborators(changes.collaborators, initialFields.collaborators);
-          console.log('editedCollaborators', editedCollaborators);
           editedCollaborators.forEach(({ id, featuresPermission }) => {
             promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission));
           });
@@ -673,7 +669,6 @@ export default class GeneralSettings extends DashboardView {
 
 let compareCollaborators = (collab1, collab2) => (collab1.userEmail === collab2.userEmail);
 let verifyEditedCollaborators = (modified, initial) => {
-  console.log('verifyEditedCollaborators', modified, initial)
   let editedCollabs = []
   if (modified.length === initial.length)
     modified.forEach((modifiedCollab) => {
@@ -683,7 +678,6 @@ let verifyEditedCollaborators = (modified, initial) => {
           editedCollabs.push(modifiedCollab);
       })
     })
-  console.log(editedCollabs)
   return editedCollabs;
 }
 
