@@ -18,7 +18,7 @@ import { unselectable }                 from 'stylesheets/base.scss';
 import Label     from 'components/Label/Label.react';
 import Field from '../Field/Field.react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
+import 'components/PermissionsCollaboratorDialog/Tabs.css'
 
 let origin = new Position(0, 0);
 
@@ -149,7 +149,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                   </div>
                   <TabList className={styles.customTabList}>
                     <Tab>
-                      <label>
+                      <label className={ styles.labelTab }>
                         <RadioButton
                           id='tab1'
                           name='Tab'
@@ -162,7 +162,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                       </label>
                     </Tab>
                     <Tab>
-                      <label htmlFor='tab2'>
+                      <label className={ styles.labelTab } htmlFor='tab2'>
                         <RadioButton
                           id='tab2'
                           name='Tab'
@@ -181,7 +181,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                   {this.renderRows()}
                 </TabPanel>
               </Tabs>
-
             </div>
           </div>
           <div className={styles.footer}>
