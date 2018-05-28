@@ -22,7 +22,7 @@ import 'components/PermissionsCollaboratorDialog/Tabs.css'
 
 let origin = new Position(0, 0);
 
-function renderSimpleCheckboxes(feature, permissions, onChange) {
+function renderSimpleCheckboxes(feature, permissions, collaboratorsCanWrite, onChange) {
   return [
     <label key={feature + 'None' + 'label'} htmlFor={feature + 'None'}>
       <div key={feature + 'None' + 'div'} className={[styles.check, styles.second].join(' ')}>
@@ -46,7 +46,7 @@ function renderSimpleCheckboxes(feature, permissions, onChange) {
           />Read
       </div>
     </label>,
-    <label key={feature + 'Write' + 'label'} htmlFor={feature + 'Write'}>
+    <label key={feature + 'Write' + 'label'} htmlFor={feature + 'Write'} style={(!collaboratorsCanWrite ? {opacity: 0.3} : {opacity: 1})}>
       <div key={feature + 'Write' + 'div'} className={[styles.check, styles.third].join(' ')}>
         <RadioButton
           id={feature + 'Write'}
@@ -54,6 +54,7 @@ function renderSimpleCheckboxes(feature, permissions, onChange) {
           className={styles.input}
           defaultChecked={permissions[feature] === 'Write'}
           onChange={() => onChange(feature, 'Write', permissions)}
+          disabled={!collaboratorsCanWrite}
         />Write
       </div>
     </label>,
@@ -96,10 +97,11 @@ export default class PermissionsCollaboratorDialog extends React.Component {
     for (let feature in this.props.permissions) {
       let text = this.state.features.label[index]
       let description = this.state.features.description[index]
+      let collaboratorsCanWrite = this.state.features.collaboratorsCanWrite[index]
       let label = <Label key={text  + (isDefault ? 'Label' : 'Input')} text={text} description={description}/>
       let content = null;
       if (isDefault) content = renderSimpleLabels(this.props.permissions[feature]);
-      else content = renderSimpleCheckboxes(feature, this.state.customPermissions, this.setPermissions.bind(this));
+      else content = renderSimpleCheckboxes(feature, this.state.customPermissions, collaboratorsCanWrite, this.setPermissions.bind(this));
       rows.push((<div key={feature + (isDefault ? 'Label' : 'Input')} className={styles.row}>
           <Field labelWidth={100} className={styles.label} label={label} />
           <Field labelWidth={100} className={[styles.label, styles.permission].join(' ')} label={content} />

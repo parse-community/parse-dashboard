@@ -153,17 +153,17 @@ export default class Collaborators extends React.Component {
                 (this.state.toEdit && this.state.currentPermission) ?
                 this.state.currentPermission :
                 {
-                  "pushAndroidSettings" : "Write",
-                  "pushIOSSettings" : "Read",
-                  "oauth" : "None",
-                  "cloudCode" : "Write",
                   "coreSettings" : "Read",
-                  "manageParseServer" : "None",
-                  "logs" : "Write",
-                  "jobs" : "Read",
-                  "webHostLiveQuery" : "None",
+                  "manageParseServer" : "Read",
+                  "logs" : "Read",
+                  "cloudCode" : "Write",
+                  "jobs" : "Write",
+                  "webHostLiveQuery" : "Write",
                   "verificationEmails" : "Write",
-                  "twitterOauth" : "Read"
+                  "oauth" : "Write",
+                  "twitterOauth" : "Write",
+                  "pushAndroidSettings" : "Write",
+                  "pushIOSSettings" : "Write",
                 }
               )
             }
@@ -193,6 +193,19 @@ export default class Collaborators extends React.Component {
                 'Make your app social using Twitter',
                 'Get your message across with Android push',
                 'Get your message across with iOS push'
+              ],
+              collaboratorsCanWrite: [
+                false,
+                false,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
               ]
             }}
             onCancel={() => {

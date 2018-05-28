@@ -89,6 +89,18 @@ class DialogDemo extends React.Component {
                 'Make your app social using Twitter',
                 'Get your message across with Android push',
                 'Get your message across with iOS push'
+              ],
+              collaboratorsCanWrite: [
+                false,
+                false,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
               ]
             }}
             validateEntry={validateSimple}
