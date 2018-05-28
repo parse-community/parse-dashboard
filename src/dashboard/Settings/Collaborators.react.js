@@ -33,6 +33,20 @@ export default class Collaborators extends React.Component {
   constructor() {
     super();
 
+    const defaultPermissions = {
+      "coreSettings" : "Read",
+      "manageParseServer" : "Read",
+      "logs" : "Read",
+      "cloudCode" : "Write",
+      "jobs" : "Write",
+      "webHostLiveQuery" : "Write",
+      "verificationEmails" : "Write",
+      "oauth" : "Write",
+      "twitterOauth" : "Write",
+      "pushAndroidSettings" : "Write",
+      "pushIOSSettings" : "Write",
+    }
+
     this.state = {
       lastError: '',
       currentEmail: '',
@@ -42,20 +56,6 @@ export default class Collaborators extends React.Component {
       toAdd: false,
       toEdit: false,
     };
-  }
-
-  defaultPermissions = {
-    "coreSettings" : "Read",
-    "manageParseServer" : "Read",
-    "logs" : "Read",
-    "cloudCode" : "Write",
-    "jobs" : "Write",
-    "webHostLiveQuery" : "Write",
-    "verificationEmails" : "Write",
-    "oauth" : "Write",
-    "twitterOauth" : "Write",
-    "pushAndroidSettings" : "Write",
-    "pushIOSSettings" : "Write",
   }
 
   handleAdd(newEmail) {
