@@ -515,7 +515,7 @@ export default class GeneralSettings extends DashboardView {
       if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
         //If there isn't a added or removed collaborator verify if there is a edited one.
         let editedCollaborators = verifyEditedCollaborators(allCollabs, initialFields.collaborators);
-
+        console.log('setCollaborators', allCollabs, initialFields.collaborators)
         if (editedCollaborators.length === 0) {
           //This is neccessary because the footer computes whether or not show a change by reference equality.
           allCollabs = initialFields.collaborators;
