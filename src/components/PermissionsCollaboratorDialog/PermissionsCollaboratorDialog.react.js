@@ -207,7 +207,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                     permissions = this.state.customPermissions
                     this.setState({ isDefault: false })
                   }
-                  console.log('permissions', permissions)
                   this.props.onConfirm(permissions)
                 }}
               />

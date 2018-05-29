@@ -339,10 +339,8 @@ export default class ParseApp {
     // if (new Date() - this.settings.lastFetched < 60000) {
     //   return Parse.Promise.as(this.settings.fields);
     // }
-    //TODO: UNCOMMENT BELOW LINES BEFORE DEPLOY
     let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
     return AJAX.get(path).then((fields) => {
-      //const fields = {"fields":{"owner_email":"charles@back4app.com","owner_name":"charles@back4app.com","collaborators":[{"id":"5ed78cb2-29f5-4edb-9d3f-0ee2bcd2a73c","userName":null,"userEmail":"community@back4app.com"}],"urls":[],"gcm_credentials":[],"pricing_plan":{}}};
       for (let f in fields) {
         this.settings.fields[f] = fields[f];
         this.settings.lastFetched = new Date();
@@ -488,7 +486,6 @@ export default class ParseApp {
   }
 
   removeCollaboratorById(id) {
-    console.log('removeCollaboratorById', id);
     let path = '/apps/' + this.slug + '/collaborations/' + id.toString();
     let promise = AJAX.del(path)
     promise.then(() => {
@@ -496,13 +493,11 @@ export default class ParseApp {
       // happens to re-render after this call anyway, but really the collaborators
       // should be updated properly in a store or AppsManager or something
       this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.filter(c => c.id != id);
-      console.log('this.settings.fields.fields.collaborators', this.settings.fields.fields.collaborators);
     });
     return promise;
   }
 
   editCollaboratorById(id, featuresPermission) {
-    console.log('editCollaboratorById', id);
     let path = '/apps/' + this.slug + '/collaborations/edit/' + id.toString();
     let promise = axios.post(path, { featuresPermission })
     promise.then(() => {
