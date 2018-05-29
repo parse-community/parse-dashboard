@@ -78,7 +78,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
     super();
 
     const isDefault = lodash.isEqual(customPermissions, defaultPermissions)
-    this.isDefault = isDefault
 
     this.state = {
       transitioning: false,
@@ -86,6 +85,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
       level: 'Simple', // 'Simple' | 'Advanced'
       customPermissions,
       features,
+      isDefault,
       selectedTab: (isDefault ? 'Default' : 'Custom')
     };
   }
@@ -146,7 +146,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
           </SliderWrap>
           <div className={styles.tableWrap}>
             <div className={styles.table}>
-              <Tabs>
+              <Tabs defaultIndex={(this.state.isDefault ? 0 : 1)}>
                 <div className={styles.subHeader}>
                   <div className={[styles.public, styles.row].join(' ')}>
                     <div className={styles.label}>
@@ -160,7 +160,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                           id='tab1'
                           name='Tab'
                           className={styles.radiobutton}
-                          defaultChecked={this.isDefault}
+                          defaultChecked={this.state.isDefault}
                           disabled={false}
                           onClick={() => this.setState({ selectedTab: 'Default' })}
                         />
@@ -172,7 +172,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                         <RadioButton
                           id='tab2'
                           name='Tab'
-                          defaultChecked={!this.isDefault}
+                          defaultChecked={!this.state.isDefault}
                           disabled={false}
                           onClick={() => this.setState({ selectedTab: 'Custom' })}
                         />
@@ -199,12 +199,16 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                 primary={true}
                 value={this.props.confirmText}
                 onClick={() => {
-                  this.props.onConfirm(
-                    (this.state.selectedTab === 'Default' ?
-                      this.props.defaultPermissions :
-                      this.state.customPermissions
-                    )
-                  )
+                  let permissions = {}
+                  if (this.state.selectedTab === 'Default') {
+                    permissions = this.props.defaultPermissions
+                    this.setState({ isDefault: true })
+                  } else {
+                    permissions = this.state.customPermissions
+                    this.setState({ isDefault: false })
+                  }
+                  console.log('permissions', permissions)
+                  this.props.onConfirm(permissions)
                 }}
               />
               </div>
