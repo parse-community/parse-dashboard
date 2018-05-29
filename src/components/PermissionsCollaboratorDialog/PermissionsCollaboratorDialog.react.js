@@ -19,6 +19,8 @@ import Label     from 'components/Label/Label.react';
 import Field from '../Field/Field.react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'components/PermissionsCollaboratorDialog/Tabs.css'
+import lodash from 'lodash'
+
 
 let origin = new Position(0, 0);
 
@@ -75,13 +77,16 @@ export default class PermissionsCollaboratorDialog extends React.Component {
               }) {
     super();
 
+    const isDefault = lodash.isEqual(customPermissions, defaultPermissions)
+    this.isDefault = isDefault
+
     this.state = {
       transitioning: false,
       showLevels: false,
       level: 'Simple', // 'Simple' | 'Advanced'
       customPermissions,
       features,
-      selectedTab: 'Default' // 'Default' | 'Custom'
+      selectedTab: (isDefault ? 'Default' : 'Custom')
     };
   }
 
@@ -155,7 +160,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                           id='tab1'
                           name='Tab'
                           className={styles.radiobutton}
-                          defaultChecked={true}
+                          defaultChecked={this.isDefault}
                           disabled={false}
                           onClick={() => this.setState({ selectedTab: 'Default' })}
                         />
@@ -167,6 +172,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                         <RadioButton
                           id='tab2'
                           name='Tab'
+                          defaultChecked={!this.isDefault}
                           disabled={false}
                           onClick={() => this.setState({ selectedTab: 'Custom' })}
                         />

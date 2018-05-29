@@ -41,7 +41,6 @@ import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionSt
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
 import { get }                           from 'lib/AJAX';
 import { Link }                          from 'react-router';
-import lodash                            from 'lodash'
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 55;
 
@@ -514,8 +513,7 @@ export default class GeneralSettings extends DashboardView {
       let removedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
       if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
         //If there isn't a added or removed collaborator verify if there is a edited one.
-        let editedCollaborators = verifyEditedCollaborators(allCollabs, initialFields.collaborators);
-        console.log('setCollaborators', allCollabs, initialFields.collaborators)
+        let editedCollaborators = verifyEditedCollaborators(allCollabs);
         if (editedCollaborators.length === 0) {
           //This is neccessary because the footer computes whether or not show a change by reference equality.
           allCollabs = initialFields.collaborators;
@@ -550,7 +548,7 @@ export default class GeneralSettings extends DashboardView {
             promiseList.push(this.context.currentApp.removeCollaboratorById(id));
           });
 
-          let editedCollaborators = verifyEditedCollaborators(changes.collaborators, initialFields.collaborators);
+          let editedCollaborators = verifyEditedCollaborators(changes.collaborators);
           editedCollaborators.forEach(({ id, featuresPermission }) => {
             promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission));
           });
@@ -668,19 +666,11 @@ export default class GeneralSettings extends DashboardView {
 }
 
 let compareCollaborators = (collab1, collab2) => (collab1.userEmail === collab2.userEmail);
-let verifyEditedCollaborators = (modified, initial) => {
+let verifyEditedCollaborators = (modified) => {
   let editedCollabs = []
-  if (modified.length === initial.length)
-    modified.forEach((modifiedCollab) => {
-      initial.forEach((initialCollab) => {
-        console.log('verifyEditedCollaborators step', modifiedCollab, initialCollab);
-        //if (modifiedCollab.userEmail === initialCollab.userEmail &&
-          //  !lodash.isEqual(modifiedCollab, initialCollab))
-          if (modifiedCollab.isEdited)
-          editedCollabs.push(modifiedCollab);
-      })
-    })
-  console.log('editedCollabs', editedCollabs)
+  modified.forEach((modifiedCollab) => {
+    if (modifiedCollab.isEdited) editedCollabs.push(modifiedCollab);
+  })
   return editedCollabs;
 }
 
