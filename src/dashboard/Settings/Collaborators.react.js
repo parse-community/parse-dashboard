@@ -236,6 +236,7 @@ export default class Collaborators extends React.Component {
                 let newCollabs = []
 
                 editedCollab.featuresPermission = featuresPermission;
+                editedCollab.isEdited = true;
                 this.props.collaborators.forEach(c => {
                   if (c.userEmail === editedCollab.userEmail) c = editedCollab
                   newCollabs.push(c)

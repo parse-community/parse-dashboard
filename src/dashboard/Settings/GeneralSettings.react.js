@@ -673,9 +673,10 @@ let verifyEditedCollaborators = (modified, initial) => {
   if (modified.length === initial.length)
     modified.forEach((modifiedCollab) => {
       initial.forEach((initialCollab) => {
-        console.log('verifyEditedCollaborators step', modifiedCollab, modifiedCollab);
-        if (modifiedCollab.userEmail === initialCollab.userEmail &&
-            !lodash.isEqual(modifiedCollab, initialCollab))
+        console.log('verifyEditedCollaborators step', modifiedCollab, initialCollab);
+        //if (modifiedCollab.userEmail === initialCollab.userEmail &&
+          //  !lodash.isEqual(modifiedCollab, initialCollab))
+          if (modifiedCollab.isEdited)
           editedCollabs.push(modifiedCollab);
       })
     })
