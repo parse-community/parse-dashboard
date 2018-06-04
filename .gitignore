@@ -2,6 +2,7 @@
 node_modules/
 bundles/
 PIG/bundles/
+production/
 Parse-Dashboard/public/bundles/
 npm-debug.log
 .eslintcache

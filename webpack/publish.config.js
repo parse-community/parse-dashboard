@@ -12,6 +12,7 @@ configuration.entry = {
   login: './login/index.js'
 };
 configuration.output.path = require('path').resolve('./Parse-Dashboard/public/bundles');
+configuration.output.filename = "[name].[chunkhash].js";
 
 var webpack = require('webpack');
 
