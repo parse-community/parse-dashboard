@@ -33,7 +33,7 @@ configuration.plugins.push(
   new webpack.optimize.OccurrenceOrderPlugin(),
   new HtmlWebpackPlugin({
     template: '../Parse-Dashboard/index.template.html',
-    filename: path.resolve('./Parse-Dashboard/index.html')
+    filename: path.resolve('./Parse-Dashboard/public/index.html')
   }),
   function() {
     this.plugin('done', function(stats) {
