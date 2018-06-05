@@ -6,8 +6,6 @@
  * the root directory of this source tree.
  */
 var configuration = require('./base.config.js');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var path = require('path');
 
 configuration.entry = {
   dashboard: './dashboard/index.js',
@@ -15,8 +13,7 @@ configuration.entry = {
   PIG: './parse-interface-guide/index.js',
   quickstart: './quickstart/index.js',
 };
-configuration.output.path = path.resolve('./production/bundles');
-configuration.output.filename = "[name].[chunkhash].js";
+configuration.output.path = require('path').resolve('./production/bundles');
 
 var webpack = require('webpack');
 
@@ -33,10 +30,6 @@ configuration.plugins.push(
     }
   }),
   new webpack.optimize.OccurrenceOrderPlugin(),
-  new HtmlWebpackPlugin({
-    template: '../Parse-Dashboard/index.template.html',
-    filename: path.resolve('./Parse-Dashboard/index.html')
-  }),
   function() {
     this.plugin('done', function(stats) {
       if (stats.compilation.errors && stats.compilation.errors.length) {
