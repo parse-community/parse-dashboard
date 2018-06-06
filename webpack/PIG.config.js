@@ -6,8 +6,18 @@
  * the root directory of this source tree.
  */
 var configuration = require('./base.config.js');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path');
 
 configuration.entry = {PIG: './parse-interface-guide/index.js'};
 configuration.output.path = require('path').resolve('./PIG/bundles');
+configuration.output.filename = "[name].[chunkhash].js";
+
+configuration.plugins.push(
+  new HtmlWebpackPlugin({
+    template: '../PIG/index.template.html',
+    filename: path.resolve('./PIG/index.html')
+  }),
+);
 
 module.exports = configuration;

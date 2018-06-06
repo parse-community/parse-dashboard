@@ -60,6 +60,15 @@ module.exports = function(config, options) {
   // wait for app to mount in order to get mountpath
   app.on('mount', function() {
     const mountPath = getMount(app.mountpath);
+    let dashboardUrl = '';
+    let loginUrl = '';
+
+    // Reads files from public/bundles folder, looking for dashboard.<hash>.js and login.<hash>.js
+    fs.readdir(path.join(__dirname, 'public', 'bundles'), function(err, items) {
+      dashboardUrl = items.filter(file => file.indexOf('dashboard.') === 0)[0] || 'dashboard.bundle.js';
+      loginUrl = items.filter(file => file.indexOf('login.') === 0)[0] || 'login.bundle.js';
+    });
+
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
@@ -180,7 +189,6 @@ module.exports = function(config, options) {
       res.send(`<!DOCTYPE html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
-          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
@@ -192,7 +200,7 @@ module.exports = function(config, options) {
             <div id="login_mount"></div>
             ${errors}
             <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
-            <script src="${mountPath}bundles/login.bundle.js"></script>
+            <script src="${mountPath}bundles/${loginUrl}"></script>
           </body>
         </html>
       `);
@@ -206,7 +214,6 @@ module.exports = function(config, options) {
       res.send(`<!DOCTYPE html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
-          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
@@ -216,7 +223,7 @@ module.exports = function(config, options) {
           <title>Parse Dashboard</title>
           <body>
             <div id="browser_mount"></div>
-            <script src="${mountPath}bundles/dashboard.bundle.js"></script>
+            <script src="${mountPath}bundles/${dashboardUrl}"></script>
             <script src="https://static.back4app.com/back4app-navigation.bundle.js"></script>
           </body>
         </html>
