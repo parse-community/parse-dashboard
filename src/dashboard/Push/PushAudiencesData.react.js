@@ -126,7 +126,9 @@ export default class PushAudiencesData extends React.Component {
     // Horrible code here is due to old rails code that sent pushes through it's own endpoint, while Parse Server sends through Parse.Push.
     // Ideally, we would pass a Parse.Query around everywhere.
     parseQuery.containedIn('deviceType', platforms);
-    this.props.onChange(saveForFuture ? (() => {throw "Audiences not supported"})() : PushConstants.NEW_SEGMENT_ID, parseQuery, 1 /* TODO: get the read device count */);
+    if (!saveForFuture) {
+      this.props.onChange(PushConstants.NEW_SEGMENT_ID, parseQuery, 1 /* TODO: get the read device count */);
+    }    
 
     if (saveForFuture){
       this.props.pushAudiencesStore.dispatch(PushAudiencesStore.ActionTypes.CREATE, {
