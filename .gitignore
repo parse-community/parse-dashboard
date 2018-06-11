@@ -1,7 +1,10 @@
 .DS_Store
 node_modules/
 bundles/
+PIG/index.html
 PIG/bundles/
+production/
+Parse-Dashboard/public/index.html
 Parse-Dashboard/public/bundles/
 npm-debug.log
 .eslintcache
