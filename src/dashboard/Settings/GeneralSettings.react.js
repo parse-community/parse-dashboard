@@ -42,7 +42,7 @@ import { cost, features }                from 'dashboard/Settings/GeneralSetting
 import { get }                           from 'lib/AJAX';
 import { Link }                          from 'react-router';
 
-const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
+const DEFAULT_SETTINGS_LABEL_WIDTH = 55;
 
 let numJobsFromRequestLimit = (limit) => Math.floor((limit-10)/20);
 
@@ -126,7 +126,7 @@ let AppInformationFields = ({
       value={inProduction}
       type={Toggle.Types.YES_NO} />
     } />
-  
+
 </Fieldset>;
 
 let CollaboratorsFields = ({
@@ -135,6 +135,7 @@ let CollaboratorsFields = ({
   viewerEmail,
   addCollaborator,
   removeCollaborator,
+  editCollaborator,
 }) => <Collaborators
   legend='Collaborators'
   description='Team up and work together with other people.'
@@ -142,7 +143,8 @@ let CollaboratorsFields = ({
   owner_email={ownerEmail}
   viewer_email={viewerEmail}
   onAdd={addCollaborator}
-  onRemove={removeCollaborator} />;
+  onRemove={removeCollaborator}
+  onEdit={editCollaborator} />;
 
 let ManageAppFields = ({
   isCollaborator,
@@ -510,8 +512,12 @@ export default class GeneralSettings extends DashboardView {
       let addedCollaborators = setDifference(allCollabs, initialFields.collaborators, compareCollaborators);
       let removedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
       if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
-        //This is neccessary because the footer computes whether or not show a change by reference equality.
-        allCollabs = initialFields.collaborators;
+        //If there isn't a added or removed collaborator verify if there is a edited one.
+        let editedCollaborators = verifyEditedCollaborators(allCollabs);
+        if (editedCollaborators.length === 0) {
+          //This is neccessary because the footer computes whether or not show a change by reference equality.
+          allCollabs = initialFields.collaborators;
+        }
       }
       setField('collaborators', allCollabs);
     };
@@ -533,13 +539,18 @@ export default class GeneralSettings extends DashboardView {
           }
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
-          addedCollaborators.forEach(({ userEmail }) => {
-            promiseList.push(this.context.currentApp.addCollaborator(userEmail));
+          addedCollaborators.forEach(({ userEmail, featuresPermission }) => {
+            promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission));
           });
 
           let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
           removedCollaborators.forEach(({ id }) => {
             promiseList.push(this.context.currentApp.removeCollaboratorById(id));
+          });
+
+          let editedCollaborators = verifyEditedCollaborators(changes.collaborators);
+          editedCollaborators.forEach(({ id, featuresPermission }) => {
+            promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission));
           });
 
           let urlKeys = {
@@ -589,7 +600,8 @@ export default class GeneralSettings extends DashboardView {
               ownerEmail={this.props.initialFields.owner_email}
               viewerEmail={AccountManager.currentUser().email}
               addCollaborator={setCollaborators.bind(undefined, setField)}
-              removeCollaborator={setCollaborators.bind(undefined, setField)}/>
+              removeCollaborator={setCollaborators.bind(undefined, setField)}
+              editCollaborator={setCollaborators.bind(undefined, setField)}/>
             <ManageAppFields
               mongoURL={fields.mongoURL}
               isCollaborator={AccountManager.currentUser().email !== this.props.initialFields.owner_email}
@@ -653,7 +665,14 @@ export default class GeneralSettings extends DashboardView {
   }
 }
 
-let compareCollaborators = (collab1, collab2) => collab1.userEmail === collab2.userEmail;
+let compareCollaborators = (collab1, collab2) => (collab1.userEmail === collab2.userEmail);
+let verifyEditedCollaborators = (modified) => {
+  let editedCollabs = []
+  modified.forEach((modifiedCollab) => {
+    if (modifiedCollab.isEdited) editedCollabs.push(modifiedCollab);
+  })
+  return editedCollabs;
+}
 
 let generalFieldsOptions = {
   requestLimit: {

@@ -8,6 +8,8 @@
 import * as AJAX      from 'lib/AJAX';
 import encodeFormData from 'lib/encodeFormData';
 import Parse          from 'parse';
+import axios from 'axios';
+
 
 function setEnablePushSource(setting, enable) {
   let path = `/apps/${this.slug}/update_push_notifications`;
@@ -497,9 +499,24 @@ export default class ParseApp {
     return promise;
   }
 
-  addCollaborator(email) {
+  editCollaboratorById(id, featuresPermission) {
+    let path = '/apps/' + this.slug + '/collaborations/edit/' + id.toString();
+    let promise = axios.post(path, { featuresPermission })
+    promise.then(() => {
+      //TODO: this currently works because everything that uses collaborators
+      // happens to re-render after this call anyway, but really the collaborators
+      // should be updated properly in a store or AppsManager or something
+      this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.map(c => {
+        if (c.id === id) c.featuresPermission = featuresPermission
+        return c
+      });
+    });
+    return promise;
+  }
+
+  addCollaborator(email, featuresPermission) {
     let path = '/apps/' + this.slug + '/collaborations';
-    let promise = AJAX.post(path, {'collaboration[email]': email});
+    let promise = axios.post(path, {'collaboration[email]': email, featuresPermission});
     promise.then(({ data }) => {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators
@@ -507,7 +524,7 @@ export default class ParseApp {
       this.settings.fields.fields.collaborators =
         Array.isArray(this.settings.fields.fields.collaborators) ?
           this.settings.fields.fields.collaborators : [];
-      this.settings.fields.fields.collaborators.unshift(data);
+      this.settings.fields.fields.collaborators.unshift(data.data);
     });
     return promise;
   }

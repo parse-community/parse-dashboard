@@ -33,6 +33,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
     "bootstrap": "4.0.0-alpha.6",
@@ -44,11 +45,13 @@
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.2.1",
     "json-file-plus": "^3.2.0",
+    "lodash": "^4.17.10",
     "material-design-iconic-font": "^2.2.0",
     "package-json": "^4.0.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "popper.js": "^1.12.9",
+    "react-tabs": "^2.2.2",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
