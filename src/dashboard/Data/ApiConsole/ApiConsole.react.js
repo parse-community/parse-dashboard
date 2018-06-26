@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import PropTypes     from 'lib/PropTypes'; 
 import Button        from 'components/Button/Button.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import Dropdown      from 'components/Dropdown/Dropdown.react';
@@ -197,5 +198,5 @@ export default class ApiConsole extends DashboardView {
 }
 
 ApiConsole.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

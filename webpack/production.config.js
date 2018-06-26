@@ -7,6 +7,7 @@
  */
 var configuration = require('./base.config.js');
 
+configuration.mode = 'production';
 configuration.entry = {
   dashboard: './dashboard/index.js',
   login: './login/index.js',
@@ -19,16 +20,6 @@ var webpack = require('webpack');
 
 // Enable minification
 configuration.plugins.push(
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV': '"production"'
-    }
-  }),
-  new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    }
-  }),
   new webpack.optimize.OccurrenceOrderPlugin(),
   function() {
     this.plugin('done', function(stats) {

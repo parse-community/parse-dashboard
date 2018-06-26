@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import PropTypes   from 'lib/PropTypes';
 import AppsManager    from 'lib/AppsManager';
 import AppsSelector   from 'components/Sidebar/AppsSelector.react';
 import FooterMenu     from 'components/Sidebar/FooterMenu.react';
@@ -91,7 +92,7 @@ const Sidebar = ({
 }
 
 Sidebar.contextTypes = {
-  generatePath: React.PropTypes.func
+  generatePath: PropTypes.func
 };
 
 export default Sidebar;

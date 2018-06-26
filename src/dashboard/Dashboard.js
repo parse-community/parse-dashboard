@@ -53,16 +53,18 @@ import {
   Route,
   Redirect
 } from 'react-router';
+import createClass from 'create-react-class';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-let App = React.createClass({
+// TODO: Fix me an make it a real component :)
+let App = createClass({
   render() {
     return this.props.children;
   }
 });
 
-let Empty = React.createClass({
+let Empty = createClass({
   render() {
     return <div>Not yet implemented</div>;
   }
@@ -201,6 +203,7 @@ class Dashboard extends React.Component {
       </AccountView>
     );
 
+    console.log(history);
 
     return <Router history={history}>
       <Redirect from='/' to='/apps' />

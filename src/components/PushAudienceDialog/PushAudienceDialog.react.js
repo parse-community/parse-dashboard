@@ -268,7 +268,7 @@ export default class PushAudienceDialog extends React.Component {
 }
 
 PushAudienceDialog.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };
 
 PushAudienceDialog.propTypes = {

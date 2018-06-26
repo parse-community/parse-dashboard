@@ -17,6 +17,7 @@ var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 var version = json.version;
 
 module.exports = {
+  mode: 'none',
   context: path.join(__dirname, '../src'),
   output: {
     filename: '[name].bundle.js',
@@ -65,5 +66,5 @@ module.exports = {
         'version' : JSON.stringify(version)
       }
     })
-  ]
+  ]  
 };

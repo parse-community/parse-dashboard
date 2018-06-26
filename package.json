@@ -38,12 +38,14 @@
     "commander": "^2.9.0",
     "connect-flash": "^0.1.1",
     "cookie-session": "^2.0.0-alpha.1",
+    "create-react-class": "^15.6.3",
     "csurf": "^1.9.0",
     "express": "^4.13.4",
     "json-file-plus": "^3.2.0",
     "package-json": "^5.0.0",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "prop-types": "^15.6.2"
   },
   "devDependencies": {
     "babel-core": "~6.26.3",
@@ -83,7 +85,8 @@
     "style-loader": "~0.21.0",
     "svg-prep": "~1.0.0",
     "transform-jest-deps": "^2.1.0",
-    "webpack": "~4.12.1"
+    "webpack": "~4.12.1",
+    "webpack-cli": "^3.0.8"
   },
   "scripts": {
     "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",

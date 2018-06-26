@@ -79,5 +79,5 @@ CategoryList.propTypes = {
 };
 
 CategoryList.contextTypes = {
-  generatePath: React.PropTypes.func
+  generatePath: PropTypes.func
 };

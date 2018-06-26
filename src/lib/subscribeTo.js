@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import PropTypes from 'lib/PropTypes';
 import ParseApp from 'lib/ParseApp';
 import React from 'react';
 import * as StoreManager from 'lib/stores/StoreManager';
@@ -61,8 +62,8 @@ export default function subscribeTo(name, prop) {
 
     SubscribedComponent.displayName = `subscribeTo(${displayName})`;
     SubscribedComponent.contextTypes = {
-      currentApp: React.PropTypes.instanceOf(ParseApp),
-      generatePath: React.PropTypes.func,
+      currentApp: PropTypes.instanceOf(ParseApp),
+      generatePath: PropTypes.func,
     };
 
     // In case you need to add static properties to the original Component
