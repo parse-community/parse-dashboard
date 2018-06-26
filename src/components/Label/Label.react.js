@@ -24,7 +24,7 @@ let Label = (props) => {
 
 export default Label;
 
-Label.PropTypes = {
+Label.propTypes = {
   text: PropTypes.node.describe(
     'The main text/node of the label.'
   ),

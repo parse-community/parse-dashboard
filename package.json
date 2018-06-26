@@ -44,8 +44,7 @@
     "json-file-plus": "^3.2.0",
     "package-json": "^5.0.0",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
-    "prop-types": "^15.6.2"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "~6.26.3",
@@ -73,13 +72,17 @@
     "marked": "^0.4.0",
     "node-sass": "^4.5.3",
     "parse": "^1.10.2",
+    "path-to-regexp": "^2.2.1",
     "prismjs": "~1.15.0",
+    "prop-types": "^15.6.2",
+    "query-string": "^6.1.0",
     "react": "^16.4.1",
     "react-addons-test-utils": "^15.0.1",
     "react-dnd": "~5.0.0",
     "react-dnd-html5-backend": "~5.0.1",
     "react-dom": "^16.4.1",
     "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "request-promise": "^4.1.1",
     "sass-loader": "~7.0.3",
     "style-loader": "~0.21.0",

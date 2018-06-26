@@ -37,6 +37,7 @@ import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { Promise }             from 'parse';
 import { extractExpiration, extractPushTime } from 'lib/extractTime';
+import * as queryString        from 'query-string';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
@@ -147,10 +148,11 @@ export default class PushNew extends DashboardView {
   componentWillMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     let options = { xhrKey: XHR_KEY };
-    if (this.props.location.query.audienceId) {
+    const query = queryString.parse(this.props.location.search);
+    if (query.audienceId) {
       options.limit = PushConstants.SHOW_MORE_LIMIT;
       options.min = PushConstants.INITIAL_PAGE_SIZE;
-      this.setState({ initialAudienceId: this.props.location.query.audienceId });
+      this.setState({ initialAudienceId: query.audienceId });
     }
     this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
       options).then(() => {

@@ -11,7 +11,9 @@ import { browserHistory, Router, Route } from 'react-router';
 
 module.exports = (
 <Router history={browserHistory}>
-  <Route path='/' component={PIG} />
-  <Route path='/:component' component={PIG} />
+  <div>
+    <Route path='/' component={PIG} />
+    <Route path='/:component' component={PIG} />
+  </div>
 </Router>
 );

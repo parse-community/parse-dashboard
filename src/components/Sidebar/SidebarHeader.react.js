@@ -6,13 +6,13 @@
  * the root directory of this source tree.
  */
 import Icon           from 'components/Icon/Icon.react';
-import { Link }       from 'react-router';
+import { Link }       from 'react-router-dom';
 import React          from 'react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 // get the package.json environment variable
 const version = process.env.version;
 
-let SidebarHeader = () =>
+let SidebarHeader = () => (
 <div className={styles.header}>
   <Link className={styles.logo} to={{ pathname: '/apps' }}>
     <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
@@ -22,6 +22,6 @@ let SidebarHeader = () =>
       <div>Parse Dashboard {version}</div>
     </div>
   </Link>
-</div>
+</div> );
 
 export default SidebarHeader

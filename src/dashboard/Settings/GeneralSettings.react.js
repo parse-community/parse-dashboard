@@ -38,7 +38,7 @@ import Toolbar                           from 'components/Toolbar/Toolbar.react'
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
-import { Link }                          from 'react-router';
+import { Link }                          from 'react-router-dom';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 

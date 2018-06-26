@@ -31,6 +31,7 @@ import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
+import * as queryString                   from 'query-string';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -158,8 +159,11 @@ export default class Browser extends DashboardView {
   extractFiltersFromQuery(props) {
     let filters = new List();
     //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
-    const query = props.location && props.location.query;
-    if (query && query.filters) {
+    if (!props || !props.location || !props.location.search) {
+      return filters;
+    }
+    const query = queryString.parse(props.location.search);
+    if (query.filters) {
       const queryFilters = JSON.parse(query.filters);
       queryFilters.forEach((filter) => filters = filters.push(new Map(filter)));
     }
