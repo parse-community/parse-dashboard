@@ -230,12 +230,12 @@ class Dashboard extends React.Component {
 
     const AnalyticsRoute = ({ match }) => (
       <Switch>
-        <Route path={ match.url + '/overview' } component={AnalyticsOverview} />
-        {/* <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' /> */}
-        <Route path={ match.url + '/explorer/:displayType' } component={Explorer} />
-        <Route path={ match.url + '/retention' } component={Retention} />
-        <Route path={ match.url + '/performance' } component={Performance} />
-        <Route path={ match.url + '/slow_queries' } component={SlowQueries} />
+        <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
+        <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
+        <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
+        <Route path={ match.path + '/retention' } component={Retention} />
+        <Route path={ match.path + '/performance' } component={Performance} />
+        <Route path={ match.path + '/slow_queries' } component={SlowQueries} />
       </Switch>
     );
 
@@ -281,14 +281,11 @@ class Dashboard extends React.Component {
             <PushDetails {...props} params={props.match.params} />
           )} />
 
-          {/* <Redirect from='analytics' to='/apps/:appId/analytics/overview' /> */}
+          {/* Unused routes... */}
+          <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/overview' />
           <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
-          {/* <Redirect from='settings' to='/apps/:appId/settings/general' /> */}
+          <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
           <Route path={ match.path + '/settings' } component={SettingsRoute}/>
-          <Route render={() => (<div>
-            App ROUTE!!
-            {match.url}
-          </div>)}/> 
         </Switch>
       </AppData>
     )
@@ -307,6 +304,7 @@ class Dashboard extends React.Component {
         <div>
           <Switch>
             <Route path='/apps' component={Index} />
+            <Route path='/account/overview' component={AccountSettingsPage} />
             <Redirect from='/account' to='/account/overview' />
             <Redirect from='/' to='/apps' />
             <Route path='*' component={FourOhFour} />
