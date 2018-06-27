@@ -16,7 +16,7 @@ let Types = null;
 
 function wrapType(type, id) {
   type._id = id;
-  if (type.isRequired) {
+  if (type.isRequired && type.isRequired != type) {
     type.isRequired = wrapType(type.isRequired, id);
     type.isRequired._required = true;
     type.isRequired._classes = type._classes;
