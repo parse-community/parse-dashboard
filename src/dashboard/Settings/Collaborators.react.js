@@ -124,7 +124,7 @@ export default class Collaborators extends React.Component {
 }
 
 Collaborators.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };
 
 Collaborators.propTypes = {

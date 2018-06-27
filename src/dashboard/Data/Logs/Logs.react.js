@@ -87,7 +87,7 @@ export default class Logs extends DashboardView {
       );
     }
     let content = null;
-    if (this.state.logs === undefined) {
+    if (!Array.isArray(this.state.logs)) {
       // loading
     } else if (this.state.logs.length === 0) {
       content = (

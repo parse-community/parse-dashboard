@@ -16,9 +16,9 @@ module.exports = {
     }
 
     // Let Jest handle our custom module resolution
-    src = src.replace(/from \'stylesheets/g, "from '../../stylesheets");
-    src = src.replace(/from \'lib/g, "from '../../lib");
-    src = src.replace(/from \'components/g, "from '../../components");
+    src = src.replace(/from 'stylesheets/g, "from '../../stylesheets");
+    src = src.replace(/from 'lib/g, "from '../../lib");
+    src = src.replace(/from 'components/g, "from '../../components");
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6

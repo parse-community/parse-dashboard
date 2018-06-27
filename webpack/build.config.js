@@ -7,6 +7,7 @@
  */
 var configuration = require('./base.config.js');
 
+configuration.mode = 'development';
 configuration.entry = {
   dashboard: './dashboard/index.js',
   login: './login/index.js'

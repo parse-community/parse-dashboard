@@ -9,9 +9,11 @@ import React        from 'react';
 import styles       from 'components/RadioButton/RadioButton.scss';
 
 let RadioButton = (props) => {
-
+  const parentClassName = props.parentClassName || '';
+  props = Object.assign({}, props);
+  delete props.parentClassName;
   return (
-    <div className={[styles.radiobutton, props.parentClassName || ''].join(' ')}>
+    <div className={[styles.radiobutton, parentClassName].join(' ')}>
       <input {...props} type="radio"/>
       <span></span>
     </div>

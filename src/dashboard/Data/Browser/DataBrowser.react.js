@@ -10,6 +10,7 @@ import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react'
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
+import PropTypes   from 'lib/PropTypes'; 
 import { SpecialClasses }     from 'lib/Constants';
 
 /**
@@ -215,5 +216,5 @@ export default class DataBrowser extends React.Component {
 }
 
 DataBrowser.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

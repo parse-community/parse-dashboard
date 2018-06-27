@@ -6,6 +6,5 @@
  * the root directory of this source tree.
  */
 
-import { browserHistory } from 'react-router';
-
-export default browserHistory;
+import { createBrowserHistory } from 'history';
+export default createBrowserHistory({});

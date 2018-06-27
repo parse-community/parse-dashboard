@@ -85,7 +85,6 @@ jest.dontMock('../../components/${name}/${name}.react');
 
 import React                            from 'react';
 import ReactDOM                         from 'react-dom';
-import TestUtils                        from 'react-addons-test-utils';
 
 const ${name} = require('../../components/${name}/${name}.react');
 

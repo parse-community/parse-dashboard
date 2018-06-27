@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import PropTypes       from 'lib/PropTypes'; 
 import { ActionTypes } from 'lib/stores/JobsStore';
 import history         from 'dashboard/history';
 import JobsForm        from 'dashboard/Data/Jobs/JobsForm.react';
@@ -119,8 +120,8 @@ class JobEdit extends React.Component {
 }
 
 JobEdit.original.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp),
-  generatePath: React.PropTypes.func,
+  currentApp: PropTypes.instanceOf(ParseApp),
+  generatePath: PropTypes.func,
 };
 
 export default JobEdit;

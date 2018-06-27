@@ -50,19 +50,14 @@ import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
 import {
   Router,
-  Route,
-  Redirect
+  Switch,
 } from 'react-router';
+import { Route, Redirect } from 'react-router-dom';
+import createClass from 'create-react-class';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-let App = React.createClass({
-  render() {
-    return this.props.children;
-  }
-});
-
-let Empty = React.createClass({
+let Empty = createClass({
   render() {
     return <div>Not yet implemented</div>;
   }
@@ -194,74 +189,131 @@ class Dashboard extends React.Component {
       </div>
     }
 
-
     const AppsIndexPage = () => (
       <AccountView section='Your Apps'>
         <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
       </AccountView>
     );
 
+    const SettingsRoute = ({ match }) => (
+      <SettingsData params={ match.params }>
+        <Switch>
+          <Route path={ match.url + '/general' } component={GeneralSettings} />
+          <Route path={ match.url + '/keys' } component={SecuritySettings} />
+          <Route path={ match.url + '/users' } component={UsersSettings} />
+          <Route path={ match.url + '/push' } component={PushSettings} />
+          <Route path={ match.url + '/hosting' } component={HostingSettings} />
+        </Switch>
+      </SettingsData>
+    )
 
-    return <Router history={history}>
-      <Redirect from='/' to='/apps' />
-      <Route path='/' component={App}>
-        <Route path='apps' component={AppsIndexPage} />
+    const JobsRoute = (props) => (
+      <Switch>
+        <Route exact path={ props.match.path + '/new' } render={(props) => (
+          <JobsData {...props} params={props.match.params}>
+            <JobEdit params={props.match.params}/>
+          </JobsData>
+        )} />
+        <Route path={ props.match.path + '/edit/:jobId' } render={(props) => (
+          <JobsData {...props} params={props.match.params}>
+            <JobEdit params={props.match.params}/>
+          </JobsData>
+        )} />
+        <Route path={ props.match.path + '/:section' } render={(props) => (
+          <JobsData {...props} params={props.match.params}>
+            <Jobs {...props} params={props.match.params}/>
+          </JobsData>
+        )} />
+        <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' />
+      </Switch>
+    )
 
-        <Redirect from='apps/:appId' to='/apps/:appId/browser' />
-        <Route path='apps/:appId' component={AppData}>
-          <Route path='getting_started' component={Empty} />
+    const AnalyticsRoute = ({ match }) => (
+      <Switch>
+        <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
+        <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
+        <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
+        <Route path={ match.path + '/retention' } component={Retention} />
+        <Route path={ match.path + '/performance' } component={Performance} />
+        <Route path={ match.path + '/slow_queries' } component={SlowQueries} />
+      </Switch>
+    );
 
-          <Route path='browser' component={ShowSchemaOverview ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
-          <Route path='browser/:className' component={Browser} />
-          <Route path='browser/:className/:entityId/:relationName' component={Browser} />
+    const BrowserRoute = (props) => {
+      if (ShowSchemaOverview) {
+        return <SchemaOverview {...props} params={props.match.params} />
+      }
+      return <Browser {...props} params={ props.match.params } />
+    }
 
-          <Route path='cloud_code' component={CloudCode} />
-          <Route path='cloud_code/*' component={CloudCode} />
-          <Route path='webhooks' component={Webhooks} />
-          <Redirect from='jobs' to='/apps/:appId/jobs/all' />
-          <Route path='jobs' component={JobsData}>
-            <Route path='new' component={JobEdit} />
-            <Route path='edit/:jobId' component={JobEdit} />
-            <Route path=':section' component={Jobs} />
-          </Route>
-          <Redirect from='logs' to='/apps/:appId/logs/info' />
-          <Route path='logs/:type' component={Logs} />
-          <Route path='config' component={Config} />
-          <Route path='api_console' component={ApiConsole} />
-          <Route path='migration' component={Migration} />
-          <Redirect from='push' to='/apps/:appId/push/new' />
-          <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
-          <Route path='push/activity/:category' component={PushIndex} />
-          <Route path='push/audiences' component={PushAudiencesIndex} />
-          <Route path='push/new' component={PushNew} />
-          <Route path='push/:pushId' component={PushDetails} />
+    const AppRoute = ({ match }) => (
+      <AppData params={ match.params }>
+        <Switch>
+          <Route path={ match.path + '/getting_started' } component={Empty} />
+          <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
+          <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
+          <Route path={ match.path + '/browser' } component={BrowserRoute} />
+          <Route path={ match.path + '/cloud_code' } component={CloudCode} />
+          <Route path={ match.path + '/cloud_code/*' } component={CloudCode} />
+          <Route path={ match.path + '/webhooks' } component={Webhooks} />
 
-          <Redirect from='analytics' to='/apps/:appId/analytics/overview' />
-          <Route path='analytics'>
-            <Route path='overview' component={AnalyticsOverview} />
-            <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' />
-            <Route path='explorer/:displayType' component={Explorer} />
-            <Route path='retention' component={Retention} />
-            <Route path='performance' component={Performance} />
-            <Route path='slow_queries' component={SlowQueries} />
-          </Route>
+          <Route path={ match.path + '/jobs' } component={JobsRoute}/>
+          
+          <Route path={ match.path + '/logs/:type' } render={(props) => (
+            <Logs {...props} params={props.match.params} />
+          )} />
+          <Redirect from={ match.path + '/logs' } to='/apps/:appId/logs/info' />
 
-          <Redirect from='settings' to='/apps/:appId/settings/general' />
-          <Route path='settings' component={SettingsData}>
-            <Route path='general' component={GeneralSettings} />
-            <Route path='keys' component={SecuritySettings} />
-            <Route path='users' component={UsersSettings} />
-            <Route path='push' component={PushSettings} />
-            <Route path='hosting' component={HostingSettings} />
-          </Route>
-        </Route>
+          <Route path={ match.path + '/config' } component={Config} />
+          <Route path={ match.path + '/api_console' } component={ApiConsole} />
+          <Route path={ match.path + '/migration' } component={Migration} />/>
+          
 
-        <Redirect from='account' to='/account/overview' />
-        <Route path='account/overview' component={AccountSettingsPage} />
-      </Route>
-      <Route path='*' component={FourOhFour} />
-    </Router>
+          <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
+          <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
+
+          <Route path={ match.path + '/push/activity/:category' } render={(props) => (
+            <PushIndex {...props} params={props.match.params} />
+          )} />
+          <Route path={ match.path + '/push/audiences' } component={PushAudiencesIndex} />
+          <Route path={ match.path + '/push/new' } component={PushNew} />
+          <Route path={ match.path + '/push/:pushId' } render={(props) => (
+            <PushDetails {...props} params={props.match.params} />
+          )} />
+
+          {/* Unused routes... */}
+          <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/overview' />
+          <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
+          <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
+          <Route path={ match.path + '/settings' } component={SettingsRoute}/>
+        </Switch>
+      </AppData>
+    )
+
+    const Index = () => (
+      <div>
+        <Switch>
+          <Redirect exact from='/apps/:appId' to='/apps/:appId/browser' />
+          <Route exact path='/apps' component={AppsIndexPage} />
+          <Route path='/apps/:appId' component={AppRoute} />
+        </Switch>
+      </div>
+    )
+    return (
+      <Router history={history}>
+        <div>
+          <Switch>
+            <Route path='/apps' component={Index} />
+            <Route path='/account/overview' component={AccountSettingsPage} />
+            <Redirect from='/account' to='/account/overview' />
+            <Redirect from='/' to='/apps' />
+            <Route path='*' component={FourOhFour} />
+          </Switch>
+        </div>
+      </Router>
+    );
   }
 }
+
 
 module.exports = Dashboard;

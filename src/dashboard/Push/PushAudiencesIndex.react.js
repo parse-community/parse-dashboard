@@ -116,7 +116,7 @@ export default class PushAudiencesIndex extends DashboardView {
     return (
       <PushAudiencesIndexRow
         key={audience.objectId}
-        id={audience.objectId}
+        id={`${audience.objectId}`}
         name={audience.name}
         query={audience.query}
         createdAt={new Date(audience.createdAt)}

@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import Icon     from 'components/Icon/Icon.react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import React    from 'react';
 import styles   from 'components/FileTree/FileTree.scss';
 
