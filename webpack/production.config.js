@@ -16,19 +16,4 @@ configuration.entry = {
 };
 configuration.output.path = require('path').resolve('./production/bundles');
 
-var webpack = require('webpack');
-
-// Enable minification
-configuration.plugins.push(
-  new webpack.optimize.OccurrenceOrderPlugin(),
-  function() {
-    this.plugin('done', function(stats) {
-      if (stats.compilation.errors && stats.compilation.errors.length) {
-        console.log(stats.compilation.errors);
-        process.exit(1);
-      }
-    });
-  }
-);
-
 module.exports = configuration;
