@@ -85,7 +85,7 @@ module.exports = function(config, options) {
 
     // Serve the configuration.
     app.get('/parse-dashboard-config.json', function(req, res) {
-      let apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
+      let apps = config.apps.map((app) => Object.assign({ masterKey: "" }, app)); // make a copy
       let response = {
         apps: apps,
         newFeaturesInLatestVersion: newFeaturesInLatestVersion,
