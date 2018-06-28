@@ -138,6 +138,7 @@ class Dashboard extends React.Component {
       AccountManager.setCurrentUser({ user });
       this.setState({ newFeaturesInLatestVersion });
       let appInfoPromises = apps.map(app => {
+        if (!app.masterKey) app.masterKey = "******"
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
