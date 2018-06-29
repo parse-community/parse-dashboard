@@ -8,7 +8,7 @@
 import AccountManager      from 'lib/AccountManager';
 import Field               from 'components/Field/Field.react';
 import Fieldset            from 'components/Fieldset/Fieldset.react';
-import FormTable           from 'components/FormTable/FormTable.react';
+import FormTableCollab           from 'components/FormTableCollab/FormTableCollab.react';
 import FormNote            from 'components/FormNote/FormNote.react';
 import InlineSubmitInput   from 'components/InlineSubmitInput/InlineSubmitInput.react';
 import Label               from 'components/Label/Label.react';
@@ -17,6 +17,7 @@ import PropTypes           from 'lib/PropTypes';
 import React               from 'react';
 import TextInput           from 'components/TextInput/TextInput.react';
 import validateEmailFormat from 'lib/validateEmailFormat';
+import PermissionsCollaboratorDialog from 'components/PermissionsCollaboratorDialog/PermissionsCollaboratorDialog.react';
 
 // Component for displaying and modifying an app's collaborator emails.
 // There is a single input field for new collaborator emails. As soon as the
@@ -32,7 +33,31 @@ export default class Collaborators extends React.Component {
   constructor() {
     super();
 
-    this.state = { lastError: '' };
+    const defaultPermissions = {
+      "coreSettings" : "Read",
+      "manageParseServer" : "Read",
+      "logs" : "Read",
+      "cloudCode" : "Write",
+      "jobs" : "Write",
+      "webHostLiveQuery" : "Write",
+      "verificationEmails" : "Write",
+      "oauth" : "Write",
+      "twitterOauth" : "Write",
+      "pushAndroidSettings" : "Write",
+      "pushIOSSettings" : "Write",
+    }
+
+    this.defaultPermissions = defaultPermissions
+
+    this.state = {
+      lastError: '',
+      currentEmail: '',
+      currentPermission: {},
+      currentCollab: {},
+      showDialog: false,
+      toAdd: false,
+      toEdit: false,
+    };
   }
 
   handleAdd(newEmail) {
@@ -43,9 +68,11 @@ export default class Collaborators extends React.Component {
       // lastError logic assumes we only have 1 input field
       console.log(2, response);
       if (response.success) {
-        let newCollaborators = this.props.collaborators.concat({ userEmail: newEmail })
-        this.setState({ lastError: '' });
-        this.props.onAdd(newEmail, newCollaborators);
+        this.setState({
+          currentEmail: newEmail,
+          showDialog: true,
+          toAdd: true
+        });
         return true;
       } else if (response.error) {
         this.setState({ lastError: response.error });
@@ -62,6 +89,18 @@ export default class Collaborators extends React.Component {
     this.props.onRemove(collaborator, newCollaborators);
   }
 
+  handleEdit(collaborator) {
+    this.setState(
+      {
+        toEdit: true,
+        currentPermission: collaborator.featuresPermission,
+        currentEmail: collaborator.userEmail,
+        currentCollab: collaborator,
+        showDialog: true
+      }
+    )
+  }
+
   validateEmail(email) {
     console.log('validateEmail', email, AccountManager.currentUser());
     // We allow mixed-case emails for Parse accounts
@@ -75,7 +114,7 @@ export default class Collaborators extends React.Component {
     return (
       <Fieldset legend={this.props.legend} description={this.props.description}>
         {this.props.viewer_email === this.props.owner_email ? <Field
-          labelWidth={62}
+          labelWidth={55}
           label={<Label
             text='Add new collaborator'
             description={<span>Collaborators will have read/write access but cannot <br/> delete the app or add more collaborators.</span>}/>}
@@ -84,7 +123,7 @@ export default class Collaborators extends React.Component {
             placeholder='What&#39;s their email?'
             onSubmit={this.handleAdd.bind(this)}
             submitButtonText='ADD' />} /> : <Field
-          labelWidth={62}
+          labelWidth={55}
           label={<Label text='App Owner' />}
           input={<TextInput
             value={this.props.owner_email}
@@ -101,28 +140,121 @@ export default class Collaborators extends React.Component {
         {this.props.collaborators.length > 0 ?
           <Field
             label={<Label text='Existing collaborators' />}
-            labelWidth={62}
-            input={<FormTable
+            minHeight={40}
+            labelWidth={55}
+            input={<FormTableCollab
               items={
                 this.props.collaborators.map(collaborator => {
                   let canDelete = this.props.viewer_email === this.props.owner_email || collaborator.userEmail === this.props.viewer_email;
+                  let canEdit = this.props.viewer_email === this.props.owner_email;
                   //TODO(drewgross): add a warning modal for when you are removing yourself as a collaborator, as that is irreversable
-                  return {
+                  return ({
                     title: collaborator.userName || collaborator.userEmail,
                     color: 'green',
                     onDelete: canDelete ? this.handleDelete.bind(this, collaborator) : undefined,
-                    notes: [
-                      {
-                        key: 'Email',
-                        value: collaborator.userEmail,
-                      }
-                    ],
-                  };
+                    onEdit: canEdit ? this.handleEdit.bind(this, collaborator) : undefined,
+                  });
                 })
               }/>} />
 
           : null}
+        {this.state.showDialog ?
+          <PermissionsCollaboratorDialog
+            role='User'
+            email={this.state.currentEmail}
+            description='Configure how this user can access the App features.'
+            advanced={false}
+            confirmText='Save'
+            customPermissions={
+              (
+                (this.state.toEdit && this.state.currentPermission) ?
+                this.state.currentPermission : this.defaultPermissions
+              )
+            }
+            defaultPermissions={this.defaultPermissions}
+              features={{
+              label: [
+                'Core Settings',
+                'Manage Parse Server',
+                'Logs',
+                'Cloud Code',
+                'Background Jobs',
+                'Web Hosting and Live Query',
+                'Verification Emails',
+                'Facebook Login',
+                'Twitter Login',
+                'Android Push notification',
+                'iOS Push notification'
+              ],
+              description: [
+                'Edit your keys, delete, transfer, clone and restart your app',
+                'Change the Parse Server version',
+                'See server, accesses and cloud code logs',
+                'Deploy your own JavaScript functions',
+                'Schedule and run background jobs',
+                'Host your web-site without all the hassle\nBuild real time apps',
+                'Send automatic emails',
+                'Make your app social using Facebook',
+                'Make your app social using Twitter',
+                'Get your message across with Android push',
+                'Get your message across with iOS push'
+              ],
+              collaboratorsCanWrite: [
+                false,
+                false,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            }}
+            onCancel={() => {
+              this.setState({
+                showDialog: false,
+              });
+            }}
+            onConfirm={(featuresPermission) => {
+              if (this.state.toAdd) {
+                let newCollaborators = this.props.collaborators.concat(
+                  {userEmail: this.state.currentEmail, featuresPermission})
+                this.props.onAdd(this.state.currentEmail, newCollaborators);
+                this.setState(
+                  {
+                    lastError: '',
+                    showDialog: false,
+                    toAdd: false,
+                    currentEmail: ''
+                  }
+                );
+              }
+              else if (this.state.toEdit) {
+                let editedCollab = Object.assign({}, this.state.currentCollab);
+                let newCollabs = []
+
+                editedCollab.featuresPermission = featuresPermission;
+                editedCollab.isEdited = true;
+                this.props.collaborators.forEach(c => {
+                  if (c.userEmail === editedCollab.userEmail) c = editedCollab
+                  newCollabs.push(c)
+                })
+                this.props.onEdit(editedCollab, newCollabs);
+                this.setState(
+                  {
+                    lastError: '',
+                    showDialog: false,
+                    toEdit: false,
+                    currentCollab: {}
+                  }
+                );
+              }
+            }} /> : null}
       </Fieldset>
+
     )
   }
 }

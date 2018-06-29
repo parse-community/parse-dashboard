@@ -9,12 +9,13 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/Field/Field.scss';
 
-let Field = ({label, input, labelWidth = 50, labelPadding, height, className}) => {
+let Field = ({label, input, labelWidth = 50, labelPadding, height, className, minHeight}) => {
   let classes = [styles.field];
   if (className) {
     classes.push(className);
   }
   labelWidth = labelWidth || 50;
+  minHeight = minHeight || '';
   if (label && labelPadding) {
     label = React.cloneElement(
       label,
@@ -22,11 +23,11 @@ let Field = ({label, input, labelWidth = 50, labelPadding, height, className}) =
     );
   }
   return (
-    <div className={classes.join(' ')}>
-      <div className={styles.left} style={{ width: labelWidth + '% ', height: height }}>
+    <div className={classes.join(' ')} style={{minHeight}}>
+      <div className={styles.left} style={{ width: labelWidth + '% ', height: height, minHeight }}>
         {label}
       </div>
-      <div className={styles.right} style={{ marginLeft: labelWidth + '%', height: height }}>
+      <div className={styles.right} style={{ marginLeft: labelWidth + '%', height: height, minHeight }}>
         {input}
       </div>
     </div>
