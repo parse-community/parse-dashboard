@@ -33,15 +33,23 @@ function JobsStore(state, action) {
         let serverVersionPrefix = serverInfo.parseServerVersion.substring(0,3)
         if (serverVersionPrefix === '2.2' || serverVersionPrefix === '2.3') {
           path = 'cloud_code/jobs?per_page=50'
-          return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {
-            return Map({ lastFetch: new Date(), jobs: List(results) });
-          });
+          return Parse._request('GET', path, {}, { useMasterKey: true})
+            .then((results) => {
+              return Map({ lastFetch: new Date(), jobs: List(results) });
+            })
+            // In error case return a map with a empty array and the error message
+            // used to control collaborators permissions
+            .catch(err => Map({ lastFetch: new Date(), jobs: [], err }));
         }
         else {
           path = 'cloud_code/jobs/data?per_page=50';
-          return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {
-            return Map({ lastFetch: new Date(), jobs: List(results.jobs.map(job => ({ 'jobName': job })))});
-          });
+          return Parse._request('GET', path, {}, { useMasterKey: true})
+            .then((results) => {
+              return Map({ lastFetch: new Date(), jobs: List(results.jobs.map(job => ({ 'jobName': job })))});
+            })
+            // In error case return a map with a empty array and the error message
+            // used to control collaborators permissions
+            .catch(err => Map({ lastFetch: new Date(), jobs: [], err }));
         }
 
       })

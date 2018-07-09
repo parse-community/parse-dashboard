@@ -70,7 +70,11 @@ export default class Jobs extends TableView {
       toDelete: null,
       jobStatus: undefined,
       loading: true,
+      // Properties used to control data access
+      hasPermission: true,
+      errorMessage: ""
     };
+
   }
 
   componentWillMount() {
@@ -97,11 +101,25 @@ export default class Jobs extends TableView {
   }
 
   loadData() {
-    this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
+    this.props.jobs.dispatch(ActionTypes.FETCH).then(() => {
       this.setState({ loading: false });
+    }).catch(() => {
+      let err
+      err = this.props.jobs.data && this.props.jobs.data.get('err')
+      // Verify error message, used to control collaborators permissions
+      if (err && err.code === 403)
+        this.setState({
+          loading: false,
+          hasPermission: false,
+          errorMessage: err.message
+        });
+      // If is a unexpected error just finish loading state
+      else this.setState({ loading: false });
     });
     this.context.currentApp.getJobStatus().then((status) => {
       this.setState({ jobStatus: status });
+    }).catch(() => {
+      this.setState({ jobStatus: [] });
     });
   }
 
@@ -117,43 +135,55 @@ export default class Jobs extends TableView {
   }
 
   renderRow(data) {
-    if (this.props.params.section === 'all') {
-      return (
-        <tr key={data.jobName}>
-          <td style={{width: '60%'}}>{data.jobName}</td>
-          <td className={styles.buttonCell}>
-            <RunNowButton job={data} width={'100px'} />
-          </td>
-        </tr>
-      );
-    } else if (this.props.params.section === 'scheduled') {
-      return (
-        <tr key={data.objectId}>
-          <td style={{width: '20%'}}>{data.description}</td>
-          <td style={{width: '20%'}}>{data.jobName}</td>
-          <td style={{width: '20%'}}>{scheduleString(data)}</td>
-          <td className={styles.buttonCell}>
-            <RunNowButton job={data} width={'100px'} />
-            <Button width={'80px'} value='Edit' onClick={() => this.navigateToJob(data.objectId)} />
-            <Button width={'80px'} color='red' value='Delete' onClick={() => this.setState({ toDelete: data.objectId })} />
-          </td>
-        </tr>
-      );
-    } else if (this.props.params.section === 'status') {
-      return (
-        <tr key={data.objectId}>
-          <td style={{width: '20%'}}>{data.jobName}</td>
-          <td style={{width: '20%'}}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
-          <td style={{width: '40%'}}>
-            <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
-              {data.message}
-            </div>
-          </td>
-          <td style={{width: '20%'}}>
-            <StatusIndicator text={data.status} color={statusColors[data.status]} />
-          </td>
-        </tr>
-      );
+    // Just render rows if user has permission to access data
+    if (this.state.hasPermission) {
+      if (this.props.params.section === 'all') {
+        return (
+          <tr key={data.jobName}>
+            <td style={{width: '60%'}}>{data.jobName}</td>
+            <td className={styles.buttonCell}>
+              <RunNowButton job={data} width={'100px'}/>
+            </td>
+          </tr>
+        );
+      } else if (this.props.params.section === 'scheduled') {
+        return (
+          <tr key={data.objectId}>
+            <td style={{width: '20%'}}>{data.description}</td>
+            <td style={{width: '20%'}}>{data.jobName}</td>
+            <td style={{width: '20%'}}>{scheduleString(data)}</td>
+            <td className={styles.buttonCell}>
+              <RunNowButton job={data} width={'100px'}/>
+              <Button width={'80px'} value='Edit'
+                      onClick={() => this.navigateToJob(data.objectId)}/>
+              <Button width={'80px'} color='red' value='Delete'
+                      onClick={() => this.setState(
+                        {toDelete: data.objectId})}/>
+            </td>
+          </tr>
+        );
+      } else if (this.props.params.section === 'status') {
+        return (
+          <tr key={data.objectId}>
+            <td style={{width: '20%'}}>{data.jobName}</td>
+            <td style={{width: '20%'}}>{DateUtils.dateStringUTC(
+              new Date(data.createdAt))}</td>
+            <td style={{width: '40%'}}>
+              <div style={{
+                fontSize: 12,
+                whiteSpace: 'normal',
+                lineHeight: '16px'
+              }}>
+                {data.message}
+              </div>
+            </td>
+            <td style={{width: '20%'}}>
+              <StatusIndicator text={data.status}
+                               color={statusColors[data.status]}/>
+            </td>
+          </tr>
+        );
+      }
     }
   }
 
@@ -181,7 +211,15 @@ export default class Jobs extends TableView {
   }
 
   renderEmpty() {
-    if (this.props.params.section === 'all') {
+    if (!this.state.hasPermission) {
+      // Permission denied state
+      return (
+        <EmptyState
+          title='Cloud Jobs'
+          description={this.state.errorMessage}
+          icon='cloud-unsure' />
+      )
+    } else if (this.props.params.section === 'all') {
       return (
         <EmptyState
           title='Cloud Jobs'
@@ -224,18 +262,23 @@ export default class Jobs extends TableView {
   }
 
   tableData() {
-    let data = undefined;
-    if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
-      if (this.props.jobs.data) {
-        let jobs = this.props.jobs.data.get('jobs');
-        if (jobs) {
-          data = jobs.toArray();
+    if (this.state.hasPermission) {
+      let data = undefined;
+      if (this.props.params.section === 'scheduled' ||
+        this.props.params.section === 'all') {
+        if (this.props.jobs.data) {
+          let jobs = this.props.jobs.data.get('jobs');
+          if (jobs) {
+            data = jobs.toArray();
+          }
         }
+      } else {
+        return this.state.jobStatus;
       }
-    } else {
-      return this.state.jobStatus;
+      return data;
     }
-    return data;
+    // Return a empty array if user don't have permission to read scheduled jobs
+    else return []
   }
 
   onRefresh() {
