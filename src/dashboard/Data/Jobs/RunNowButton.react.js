@@ -45,15 +45,14 @@ export default class RunNowButton extends React.Component {
     let { ...other } = this.props;
     let value = 'Run now';
     if (this.state.result === 'error') {
-      // Verify error message, used to control collaborators permissions
-      if (this.state.error && this.state.error.code === 403) {
-        value = 'Permission denied'
-        other.width = '150px'
-      }
-      else
-        value = 'Failed.';
+      value = 'Failed.';
     } else if (this.state.result === 'success') {
       value = 'Success!';
+    }
+    // Verify error message, used to control collaborators permissions
+    if (this.state && this.state.error && this.state.error.code === 403) {
+      value = 'Permission denied'
+      other.width = '150px'
     }
     return (
       <Button
