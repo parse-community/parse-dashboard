@@ -163,15 +163,14 @@ export default class Jobs extends TableView {
       return (
         <tr key={data.objectId}>
           <td style={{width: '20%'}}>{data.jobName}</td>
-          <td style={{width: '20%'}}>{DateUtils.dateStringUTC(
-            new Date(data.createdAt))}</td>
+          <td style={{width: '20%'}}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
           <td style={{width: '40%'}}>
             <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
               {data.message}
             </div>
           </td>
           <td style={{width: '20%'}}>
-            <StatusIndicator text={data.status} color={statusColors[data.status]}/>
+            <StatusIndicator text={data.status} color={statusColors[data.status]} />
           </td>
         </tr>
       );
@@ -210,7 +209,8 @@ export default class Jobs extends TableView {
           description={this.state.errorMessage}
           icon='cloud-unsure' />
       )
-    } else if (this.props.params.section === 'all') {
+    }
+    if (this.props.params.section === 'all') {
       return (
         <EmptyState
           title='Cloud Jobs'
@@ -256,7 +256,7 @@ export default class Jobs extends TableView {
     // Return a empty array if user don't have permission to read scheduled jobs
     if (this.state.hasPermission) return []
     let data = undefined;
-    if (this.props.params.section === 'scheduled' || this.props.params.section === 'all') {
+    if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
       if (this.props.jobs.data) {
         let jobs = this.props.jobs.data.get('jobs');
         if (jobs) {

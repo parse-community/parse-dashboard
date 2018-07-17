@@ -34,7 +34,7 @@ function JobsStore(state, action) {
         if (serverVersionPrefix === '2.2' || serverVersionPrefix === '2.3') {
           path = 'cloud_code/jobs?per_page=50'
           return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {
-              return Map({ lastFetch: new Date(), jobs: List(results) });
+            return Map({ lastFetch: new Date(), jobs: List(results) });
           })
           // In error case return a map with a empty array and the error message
           // used to control collaborators permissions
