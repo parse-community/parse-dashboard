@@ -33,6 +33,7 @@
     "LICENSE"
   ],
   "dependencies": {
+    "@back4app/back4app-settings": "^1.0.1",
     "axios": "^0.18.0",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
@@ -42,6 +43,7 @@
     "cookie-session": "^2.0.0-alpha.1",
     "csurf": "^1.9.0",
     "express": "^4.13.4",
+    "html-webpack-externals-plugin": "^3.8.0",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.2.1",
     "json-file-plus": "^3.2.0",
@@ -96,10 +98,11 @@
     "webpack": "~2.5.1"
   },
   "scripts": {
-    "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+    "dev": "NODE_ENV=dev webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
+    "build-homolog": "NODE_ENV=homolog webpack --config webpack/homolog.config.js && webpack --config webpack/PIG.config.js",
     "test": "NODE_PATH=./node_modules jest",
     "lint": "eslint . --ignore-path .gitignore --cache",
     "pretest": "npm run lint",

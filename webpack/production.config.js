@@ -6,6 +6,8 @@
  * the root directory of this source tree.
  */
 var configuration = require('./base.config.js');
+var HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
+var settings = require('@back4app/back4app-settings');
 
 configuration.entry = {
   dashboard: './dashboard/index.js',
@@ -37,7 +39,13 @@ configuration.plugins.push(
         process.exit(1);
       }
     });
-  }
+  },
+  new HtmlWebpackExternalsPlugin({
+    externals: [{
+      module: '@back4app/back4app-navigation',
+      entry: settings.BACK4APP_NAVIGATION_PATH + '/back4app-navigation.bundle.js'
+    }]
+  })
 );
 
 module.exports = configuration;
