@@ -4,7 +4,8 @@ const path = require('path');
 const packageJson = require('package-json');
 const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
-var fs = require('fs');
+const fs = require('fs');
+const settings = require('@back4app/back4app-settings');
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
@@ -201,6 +202,7 @@ module.exports = function(config, options) {
             ${errors}
             <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
             <script src="${mountPath}bundles/${loginUrl}"></script>
+            <script src="${settings.BACK4APP_NAVIGATION_PATH}/back4app-navigation.bundle.js"></script>
           </body>
         </html>
       `);
@@ -224,7 +226,7 @@ module.exports = function(config, options) {
           <body>
             <div id="browser_mount"></div>
             <script src="${mountPath}bundles/${dashboardUrl}"></script>
-            <script src="https://static.back4app.com/back4app-navigation.bundle.js"></script>
+            <script src="${settings.BACK4APP_NAVIGATION_PATH}/back4app-navigation.bundle.js"></script>
           </body>
         </html>
       `);
