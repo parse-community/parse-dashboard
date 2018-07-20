@@ -101,9 +101,7 @@ export default class Jobs extends TableView {
   }
 
   loadData() {
-    this.props.jobs.dispatch(ActionTypes.FETCH).then(() => {
-      this.setState({ loading: false });
-    }).catch(() => {
+    this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
       let err
       err = this.props.jobs.data && this.props.jobs.data.get('err')
       // Verify error message, used to control collaborators permissions
@@ -115,6 +113,7 @@ export default class Jobs extends TableView {
         });
       // If is a unexpected error just finish loading state
       else this.setState({ loading: false });
+      this.renderEmpty()
     });
     this.context.currentApp.getJobStatus().then((status) => {
       this.setState({ jobStatus: status });
@@ -254,7 +253,7 @@ export default class Jobs extends TableView {
 
   tableData() {
     // Return a empty array if user don't have permission to read scheduled jobs
-    if (this.state.hasPermission) return []
+    if (!this.state.hasPermission) return []
     let data = undefined;
     if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
       if (this.props.jobs.data) {
