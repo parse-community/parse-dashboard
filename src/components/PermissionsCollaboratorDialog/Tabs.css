@@ -14,17 +14,20 @@
   position: relative;
   list-style: none;
   cursor: pointer;
+  padding: 5px 35px;
+  height: 90%;
+  color: white;
+  font-weight: bold;
 }
 
 .react-tabs__tab--selected {
   background: #f6fafb;
   border-color: #aaa;
-  color: black;
+  color: #56AEE3;
   border-radius: 5px 5px 0 0;
 }
 
 .react-tabs__tab--disabled {
-  color: GrayText;
   cursor: default;
 }
 

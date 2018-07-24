@@ -319,6 +319,16 @@ export default class BrowserTable extends React.Component {
           </div>
         );
       }
+      if (this.props.err && this.props.err.code === 403) {
+        table = (<div className={styles.table} ref='table'>
+          <div className={styles.empty}>
+              <EmptyState
+                title='No data to display'
+                description={this.props.err.message}
+                icon='files-solid' />
+          </div>
+        </div>)
+      }
     }
 
     return (

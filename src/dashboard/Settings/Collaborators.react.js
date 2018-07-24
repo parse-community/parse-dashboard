@@ -33,7 +33,7 @@ export default class Collaborators extends React.Component {
   constructor() {
     super();
 
-    const defaultPermissions = {
+    const defaultFeaturesPermissions = {
       "coreSettings" : "Read",
       "manageParseServer" : "Read",
       "logs" : "Read",
@@ -45,9 +45,10 @@ export default class Collaborators extends React.Component {
       "twitterOauth" : "Write",
       "pushAndroidSettings" : "Write",
       "pushIOSSettings" : "Write",
+      "classes" : "Write"
     }
 
-    this.defaultPermissions = defaultPermissions
+    this.defaultFeaturesPermissions = defaultFeaturesPermissions
 
     this.state = {
       lastError: '',
@@ -93,7 +94,8 @@ export default class Collaborators extends React.Component {
     this.setState(
       {
         toEdit: true,
-        currentPermission: collaborator.featuresPermission,
+        currentFeaturesPermissions: collaborator.featuresPermission,
+        currentClassesPermissions: collaborator.classesPermission || {},
         currentEmail: collaborator.userEmail,
         currentCollab: collaborator,
         showDialog: true
@@ -165,13 +167,13 @@ export default class Collaborators extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
-            customPermissions={
+            customFeaturesPermissions={
               (
-                (this.state.toEdit && this.state.currentPermission) ?
-                this.state.currentPermission : this.defaultPermissions
+                (this.state.toEdit && this.state.currentFeaturesPermissions) ?
+                this.state.currentFeaturesPermissions : this.defaultFeaturesPermissions
               )
             }
-            defaultPermissions={this.defaultPermissions}
+            defaultFeaturesPermissions={this.defaultFeaturesPermissions}
               features={{
               label: [
                 'Core Settings',
@@ -184,7 +186,8 @@ export default class Collaborators extends React.Component {
                 'Facebook Login',
                 'Twitter Login',
                 'Android Push notification',
-                'iOS Push notification'
+                'iOS Push notification',
+                'Data Browser'
               ],
               description: [
                 'Edit your keys, delete, transfer, clone and restart your app',
@@ -197,7 +200,8 @@ export default class Collaborators extends React.Component {
                 'Make your app social using Facebook',
                 'Make your app social using Twitter',
                 'Get your message across with Android push',
-                'Get your message across with iOS push'
+                'Get your message across with iOS push',
+                'Create, edit, read and delete data from your classes'
               ],
               collaboratorsCanWrite: [
                 false,
@@ -210,18 +214,20 @@ export default class Collaborators extends React.Component {
                 true,
                 true,
                 true,
+                true,
                 true
               ]
             }}
+            classesPermissions = {this.state.currentClassesPermissions}
             onCancel={() => {
               this.setState({
                 showDialog: false,
               });
             }}
-            onConfirm={(featuresPermission) => {
+            onConfirm={(featuresPermission, classesPermission) => {
               if (this.state.toAdd) {
                 let newCollaborators = this.props.collaborators.concat(
-                  {userEmail: this.state.currentEmail, featuresPermission})
+                  {userEmail: this.state.currentEmail, featuresPermission, classesPermission})
                 this.props.onAdd(this.state.currentEmail, newCollaborators);
                 this.setState(
                   {
@@ -237,6 +243,7 @@ export default class Collaborators extends React.Component {
                 let newCollabs = []
 
                 editedCollab.featuresPermission = featuresPermission;
+                editedCollab.classesPermission = classesPermission;
                 editedCollab.isEdited = true;
                 this.props.collaborators.forEach(c => {
                   if (c.userEmail === editedCollab.userEmail) c = editedCollab
