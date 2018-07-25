@@ -34,10 +34,10 @@ export default class ServerSettings extends DashboardView {
     let content = (
       this.state.appId ?
         <div className={styles.content}>
-          <iframe src={`https://dashboard.back4app.com/apps/settings/${this.state.appId}?showCardsOnly=true`} className={styles.iframeContent}>
+          <iframe src={`${b4aSettings.DASHBOARD_PATH}/apps/settings/${this.state.appId}?showCardsOnly=true`} className={styles.iframeContent}>
           </iframe>
         </div> :
-        <div>Carregando ...</div>
+        <div>Loading ...</div>
     );
 
     return (

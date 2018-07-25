@@ -8,5 +8,5 @@ pem=AppContainers.pem
 
 branch=$(git symbolic-ref --short HEAD)
 git='~/bin/git-parse-dashboard'
-ssh -t -i $b4a_certs_path/$pem $user@$host "sudo su back4app -c '. ~/.nvm/nvm.sh && nvm use 9 && cd ~/scm/parse-dashboard && $git reset --hard && $git remote update && $git checkout $branch && $git merge origin/$branch && npm install && npm run prepublish && npm run build'"
+ssh -t -i $b4a_certs_path/$pem $user@$host "sudo su back4app -c '. ~/.nvm/nvm.sh && nvm use 9 && cd ~/scm/parse-dashboard && $git reset --hard && $git remote update && $git checkout $branch && $git merge origin/$branch && npm install && npm run prepublish && npm run build-homolog'"
 #ssh -t aws_B4ANFS_Homolog "sudo su back4app -c '. ~/.nvm/nvm.sh && nvm use 9 && cd ~/scm/back4app-site && yarn install && npm run build && pm2 reload site'"
