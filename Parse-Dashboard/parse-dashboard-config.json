@@ -1,3 +1,86 @@
 {
-  "apps": []
+  "apps": [
+    {
+      "serverURL": "https://parseapi-homolog.back4app.com",
+      "appId": "B4MprrExKS1cZdZsqgqbHsIpD5wSku0xzVEwDovI",
+      "javascriptKey": "n0uumU3kdnlPWIpSzrlPG4f9RvryWPydqzJrMT5q",
+      "restKey": "qm1SMib2Hl2JnP8NK4s2kmeAoSZ2Bq4tD7Bt8tSm",
+      "clientKey": "CVTh8sJmWlyk5YVIE6EoKOudFsEnUtt0oMd8ctP3",
+      "windowsKey": "YVMud5pSL04LEsAnnUJDW22oaqCHwN2RCdVswXtM",
+      "webhookKey": "uw6gTP2u5fWLtcu0Q66sK3c3Fj9nAzZIGCvNfD9F",
+      "apiKey": "44390877-63d1-441e-95b8-675c6a34173f",
+      "appName": "homolog",
+      "production": true,
+      "appNameForURL": "26bafa7d-9683-4a13-a972-66463e8bb99c",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": false,
+        "forceShowGDPRFields": false
+      },
+      "masterKey": "6xq7QdDGIs1D8vdQRzKDbAPZ2K3RRgqLLb0nbJkI"
+    },
+    {
+      "serverURL": "https://parseapi-homolog.back4app.com",
+      "appId": "srDKlHRBjr2iwIaZvySBBmCp4obeXK60V4eGbRfj",
+      "javascriptKey": "JFnu9AxlPXzkVlwDkm03wdZeQ6Lpdlg0BhojcbkY",
+      "restKey": "S8f2sdo3i6fdzvEBCus3t1nD69CtZmIeBbWfhLvC",
+      "clientKey": "mR8Zmw5THCGULRMGmoXsmAAWpuhK2cOrLzkS2IsX",
+      "windowsKey": "3cPT4E067loCphMJz9PtMgxMf6K1jL2nh89UbFn6",
+      "webhookKey": "lt9sTGzADCxFKKbTfhooQH7JYAM75aMJ9eFuFstR",
+      "apiKey": "abd5d9f6-c3a4-4772-a8f8-cd3b531f4da3",
+      "appName": "lol",
+      "production": true,
+      "appNameForURL": "fce019a1-dae1-4e93-bd0c-76691cdbed08",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": false,
+        "forceShowGDPRFields": false
+      },
+      "masterKey": "9Amrht99xPLz0iLAGC8zdvPslkjvgsT8GW7QL2F3"
+    },
+    {
+      "serverURL": "https://parseapi-homolog.back4app.com",
+      "appId": "tdoPfIlE79zfq1jcUmTTwZ8TmUSyqcCEjsi8qhNi",
+      "javascriptKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "restKey": "Y03ibO09MbhBsCVxkr3MzRpAZSJGZA5eYnsP4IHO",
+      "clientKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "windowsKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "webhookKey": "3cjNfbWIJqVvkrBR6LeOwLmMDmDx3DH9YzbVyqnY",
+      "apiKey": "B3qb0bwje69vGlnzCDTYPplMNHnvnT8KJWoYYPwo",
+      "appName": "Teste Collaborators",
+      "production": true,
+      "appNameForURL": "22748d7c-da97-4ff2-9901-ca8d813ee3f7",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": false,
+        "forceShowGDPRFields": false
+      },
+      "masterKey": "92E6ehqnal1gqb4PaIWCyRwnxFzOcDTBL55agPWk"
+    },
+    {
+      "serverURL": "https://dashboard-homolog.back4app.com/parseapi",
+      "appId": "lEvxBjeqRXDuy3hIRahKOSy7xicOTyDZTUeuwXxn",
+      "javascriptKey": "aHBVBjzn9oPhyh2iR9S3MwecRqM3Qks2NoYjsMIK",
+      "restKey": "RCIwulPmxIsXTxbnsCwHCokUmJdHwdsvAmsNAJfh",
+      "clientKey": "m2FwYC4dAWZ8xDG39o4am429VeytJYrZ0JzzLm0Z",
+      "windowsKey": "o0JjegT4Q3QtaOUSWvsSUvphdImHBp9JVJNVKgUI",
+      "webhookKey": "Afye94oQXpbRL88c1QupI3tw5enRGEe9oiOqJ86O",
+      "apiKey": "21b39159-7ab7-496a-9e5a-46d7148b31c5",
+      "appName": "test 02/05",
+      "production": true,
+      "appNameForURL": "331adb3b-cdc8-4e70-873e-0c5a3034cd7f",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": true,
+        "forceShowGDPRFields": false
+      }
+    }
+  ],
+  "newFeaturesInLatestVersion": [],
+  "user": {
+    "email": "lucas@back4app.com",
+    "has_password": false,
+    "account_keys": [],
+    "name": "lucas@back4app.com"
+  }
 }
