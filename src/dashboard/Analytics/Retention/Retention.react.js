@@ -19,6 +19,8 @@ import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import Tooltip                 from 'components/Tooltip/Tooltip.react';
 import { verticalCenter }      from 'stylesheets/base.scss';
 
+import SlowQueryMock from '../../../../testing/slowQuery.test.js'
+
 const RETENTION_DAYS = [1, 2, 3, 4, 5, 6, 7, 8, 14, 21, 28];
 const REVERSED_RETENTION_DAYS = RETENTION_DAYS.slice().reverse();
 
@@ -71,7 +73,7 @@ export default class Retention extends DashboardView {
       let { promise, xhr } = app.getAnalyticsRetention(this.state.date);
       promise.then(
         (result) => this.setState({ retentions: result.content, loading: false }),
-        () => this.setState({ retentions: null, loading: false })
+        () => this.setState({ retentions: SlowQueryMock.RETENTION_MOCK_DATA, loading: false })
       );
       this.xhrHandles = [xhr];
     });
@@ -136,7 +138,7 @@ export default class Retention extends DashboardView {
 
   renderDayAndTotalUser(daysAgo) {
     // We can assume this.state.retentions has correct data here. Otherwise let it crash.
-    let dayData = this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
+    let dayData = this.state.retentions['days_old_' + daysAgo] && this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
     let date = DateUtils.daysFrom(this.state.date, -daysAgo);
     let formattedDate = DateUtils.monthDayStringUTC(date);
     let formattedDateSplit = formattedDate.split(" ");
@@ -145,12 +147,12 @@ export default class Retention extends DashboardView {
 
     return (
       <td key={'header_' + daysAgo} className={styles.YaxisLabel}>
-        <div className={styles.YaxisLabelDate}> 
-          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')} 
+        <div className={styles.YaxisLabelDate}>
+          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')}
           <span className={styles.YaxisLabelNumber}> {formattedDateDay}</span>
         </div>
         <div className={styles.YaxisLabelUsers}>
-          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')} 
+          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')}
           <span className={styles.YaxisLabelNumber}>{prettyNumber(dayData.total)}</span>
         </div>
       </td>

@@ -21,6 +21,8 @@ import TableView                from 'dashboard/TableView.react';
 import Toolbar                  from 'components/Toolbar/Toolbar.react';
 import { Directions }           from 'lib/Constants';
 
+import SlowQueryMock from '../../../../testing/slowQuery.test.js'
+
 const SLOW_QUERIES_HEADERS = ['Class', 'Normalized Query', 'Count', 'Slow%', 'Timeouts', 'Scanned (Avg)', 'Median (ms)', 'P90 (ms)'];
 const TABLE_WIDTH = [15, 25, 7, 8, 10, 15, 11, 9];
 
@@ -104,7 +106,7 @@ export default class SlowQueries extends TableView {
       let { promise, xhr } = app.getAnalyticsSlowQueries(className, os, version, dateRange.start, dateRange.end);
       promise.then(
         (result) => this.setState({ slowQueries: result || [], loading: false, mutated: false }),
-        () => this.setState({ slowQueries: [['class', 'B4a.find()', '20', '12', '32', '42', '51', '13']], loading: false, mutated: false })
+        () => this.setState({ slowQueries: SlowQueryMock.SLOW_QUERY_MOCK_DATA, loading: false, mutated: false })
       );
       this.xhrHandles = [xhr];
     });

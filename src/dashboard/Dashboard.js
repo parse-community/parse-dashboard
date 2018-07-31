@@ -185,6 +185,17 @@ class Dashboard extends React.Component {
     }).then(function(resolvedApps) {
       if(resolvedApps && Array.isArray(resolvedApps)) {
         resolvedApps.forEach(app => {
+
+          // Mock applied to test analytics features
+          // TODO: remove this before open the PR
+          console.log('MOCK')
+          if (app.serverInfo.features && app.serverInfo.features.analytics) {
+            app.serverInfo.features.analytics.slowQueries = true
+            app.serverInfo.features.analytics.retentionAnalysis = true
+            app.serverInfo.features.analytics.overviewAnalysis = true
+            app.serverInfo.features.analytics.explorerAnalysis = true
+          }
+
           AppsManager.addApp(app);
         });
       } else {
