@@ -15,6 +15,7 @@ var webpack = require('webpack');
 var fs = require('fs');
 var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 var version = json.version;
+var settings = require('@back4app/back4app-settings');
 
 module.exports = {
   context: path.join(__dirname, '../src'),
@@ -61,9 +62,8 @@ module.exports = {
       source: path.join(__dirname,'../src', 'icons')
     }),
     new webpack.DefinePlugin({
-      'process.env': {
-        'version' : JSON.stringify(version)
-      }
+      'process.env': { 'version' : JSON.stringify(version) },
+      b4aSettings: JSON.stringify(settings)
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
