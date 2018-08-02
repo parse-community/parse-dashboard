@@ -19,6 +19,8 @@ import TextInput           from 'components/TextInput/TextInput.react';
 import validateEmailFormat from 'lib/validateEmailFormat';
 import PermissionsCollaboratorDialog from 'components/PermissionsCollaboratorDialog/PermissionsCollaboratorDialog.react';
 
+import lodash from 'lodash'
+
 // Component for displaying and modifying an app's collaborator emails.
 // There is a single input field for new collaborator emails. As soon as the
 // user types a valid email format (and not already existing collaborator), we
@@ -48,7 +50,11 @@ export default class Collaborators extends React.Component {
       "classes" : "Write"
     }
 
+
+    const defaultClassesPermissions = this.context.currentApp.classCounts && this.context.currentApp.classCounts.counts && lodash.mapValues(this.context.currentApp.classCounts.counts, () => 'Write' )
+
     this.defaultFeaturesPermissions = defaultFeaturesPermissions
+    this.defaultClassesPermissions = defaultClassesPermissions
 
     this.state = {
       lastError: '',
@@ -95,7 +101,7 @@ export default class Collaborators extends React.Component {
       {
         toEdit: true,
         currentFeaturesPermissions: collaborator.featuresPermission,
-        currentClassesPermissions: collaborator.classesPermission || {},
+        currentClassesPermissions: collaborator.classesPermission || this.defaultClassesPermissions,
         currentEmail: collaborator.userEmail,
         currentCollab: collaborator,
         showDialog: true
