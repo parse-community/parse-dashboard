@@ -50,11 +50,7 @@ export default class Collaborators extends React.Component {
       "classes" : "Write"
     }
 
-
-    const defaultClassesPermissions = this.context.currentApp.classCounts && this.context.currentApp.classCounts.counts && lodash.mapValues(this.context.currentApp.classCounts.counts, () => 'Write' )
-
     this.defaultFeaturesPermissions = defaultFeaturesPermissions
-    this.defaultClassesPermissions = defaultClassesPermissions
 
     this.state = {
       lastError: '',
@@ -65,6 +61,13 @@ export default class Collaborators extends React.Component {
       toAdd: false,
       toEdit: false,
     };
+  }
+
+  getDefaultClasses() {
+    return this.context.currentApp.classCounts &&
+      this.context.currentApp.classCounts.counts &&
+      lodash.mapValues(this.context.currentApp.classCounts.counts, () => 'Write' )
+
   }
 
   handleAdd(newEmail) {
@@ -101,7 +104,7 @@ export default class Collaborators extends React.Component {
       {
         toEdit: true,
         currentFeaturesPermissions: collaborator.featuresPermission,
-        currentClassesPermissions: collaborator.classesPermission || this.defaultClassesPermissions,
+        currentClassesPermissions: collaborator.classesPermission || this.getDefaultClasses(),
         currentEmail: collaborator.userEmail,
         currentCollab: collaborator,
         showDialog: true
@@ -224,7 +227,7 @@ export default class Collaborators extends React.Component {
                 true
               ]
             }}
-            classesPermissions = {this.state.currentClassesPermissions}
+            classesPermissions = { this.state.currentClassesPermissions ? this.state.currentClassesPermissions : this.getDefaultClasses() }
             onCancel={() => {
               this.setState({
                 showDialog: false,
