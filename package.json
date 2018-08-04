@@ -71,7 +71,7 @@
     "js-beautify": "~1.7.5",
     "marked": "^0.4.0",
     "node-sass": "^4.9.0",
-    "parse": "^1.11.1",
+    "parse": "^2.0.0",
     "path-to-regexp": "^2.2.1",
     "prismjs": "~1.15.0",
     "prop-types": "^15.6.2",
