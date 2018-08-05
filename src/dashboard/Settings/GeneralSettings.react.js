@@ -25,7 +25,6 @@ import Label                             from 'components/Label/Label.react';
 import Modal                             from 'components/Modal/Modal.react';
 import MultiSelect                       from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption                 from 'components/MultiSelect/MultiSelectOption.react';
-import Parse                             from 'parse';
 import pluck                             from 'lib/pluck';
 import Range                             from 'components/Range/Range.react';
 import React                             from 'react';
@@ -421,7 +420,7 @@ export default class GeneralSettings extends DashboardView {
           warnings => this.setState({migrationWarnings: warnings}),
           connectionString => this.context.currentApp.beginMigration(connectionString)
         );
-        promise.fail(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
+        promise.catch(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
         return promise;
       }}
       onClose={closeModalWithConnectionString}
@@ -459,7 +458,7 @@ export default class GeneralSettings extends DashboardView {
           warnings => this.setState({migrationWarnings: warnings}),
           connectionString => this.context.currentApp.changeConnectionString(connectionString)
         );
-        promise.fail(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
+        promise.catch(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
         return promise;
       }}
       onClose={closeModalWithConnectionString}
@@ -666,15 +665,12 @@ export default class GeneralSettings extends DashboardView {
             }
           });
 
-          let promise = new Parse.Promise();
-          Parse.Promise.when(promiseList).then(() => {
-            promise.resolve();
+          return Promise.all(promiseList).then(() => {
             this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
             this.setState({ removedCollaborators: removedCollaborators });
-          }).fail(errors => {
-            promise.reject({ error: unique(pluck(errors, 'error')).join(' ')});
+          }).catch(errors => {
+            return Promise.reject({ error: unique(pluck(errors, 'error')).join(' ')});
           });
-          return promise;
         }}
         renderForm={({ fields, setField }) => {
           let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
@@ -717,7 +713,7 @@ export default class GeneralSettings extends DashboardView {
                   cleanupFilesMessage: result.notice,
                   cleanupNoteColor: 'orange',
                 });
-              }).fail((e) => {
+              }).catch((e) => {
                 this.setState({
                   cleanupFilesMessage: e.error,
                   cleanupNoteColor: 'red',
@@ -730,7 +726,7 @@ export default class GeneralSettings extends DashboardView {
                   exportDataMessage: result.notice,
                   exportDataColor: 'orange',
                 });
-              }).fail((e) => {
+              }).catch((e) => {
                 this.setState({
                   exportDataMessage: e.error,
                   exportDataColor: 'red',

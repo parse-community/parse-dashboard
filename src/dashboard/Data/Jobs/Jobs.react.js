@@ -98,7 +98,7 @@ export default class Jobs extends TableView {
   }
 
   loadData() {
-    this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
+    this.props.jobs.dispatch(ActionTypes.FETCH).finally(() => {
       this.setState({ loading: false });
     });
     this.context.currentApp.getJobStatus().then((status) => {

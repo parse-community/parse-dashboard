@@ -5,11 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse from 'parse';
-
 export default function request(app, method, path, body, options) {
   let xhr = new XMLHttpRequest();
-  let promise = new Parse.Promise();
   if (path.startsWith('/') && app.serverURL.endsWith('/')) {
     path = path.substr(1);
   }
@@ -26,13 +23,14 @@ export default function request(app, method, path, body, options) {
   if (options.sessionToken) {
     xhr.setRequestHeader('X-Parse-Session-Token', options.sessionToken);
   }
-  xhr.onload = function() {
-    let response = xhr.responseText;
-    try {
-      response = JSON.parse(response);
-    } catch (e) {/**/}
-    promise.resolve(response);
-  }
-  xhr.send(body);
-  return promise;
+  return new Promise((resolve) => {
+    xhr.onload = function() {
+      let response = xhr.responseText;
+      try {
+        response = JSON.parse(response);
+      } catch (e) {/**/}
+      resolve(response);
+    }
+    xhr.send(body);
+  });
 }

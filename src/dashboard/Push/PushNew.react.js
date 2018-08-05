@@ -35,7 +35,6 @@ import TextInput               from 'components/TextInput/TextInput.react';
 import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
-import { Promise }             from 'parse';
 import { extractExpiration, extractPushTime } from 'lib/extractTime';
 import * as queryString        from 'query-string';
 
@@ -186,7 +185,6 @@ export default class PushNew extends DashboardView {
   //TODO: scroll audience row into view if req.
 
   handlePushSubmit(changes) {
-    let promise = new Promise();
     let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
     if (changes.increment_badge) {
       payload.badge = "Increment";
@@ -221,25 +219,22 @@ export default class PushNew extends DashboardView {
       body.where = pushAudience.query;
     }
 
-    Parse.Push.send(body, {
+    return Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
       if (error) {
-        promise.reject({ error });
+        throw { error };
       } else {
         //TODO: global success message banner for passing successful creation - store should also be cleared
         const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
         if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
           history.push(this.context.generatePath('push/activity'));
         } else {
-          promise.resolve();
+          return;
         }
       }
-    }, (error) => {
-      promise.reject(error);
     });
-    return promise;
   }
 
   renderExperimentContent(fields, setField) {

@@ -70,7 +70,7 @@
     "jest-cli": "^23.2.0",
     "js-beautify": "~1.7.5",
     "marked": "^0.4.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.2",
     "parse": "^2.0.0",
     "path-to-regexp": "^2.2.1",
     "prismjs": "~1.15.0",

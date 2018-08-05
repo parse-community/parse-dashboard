@@ -121,12 +121,12 @@ export default class ParseApp {
     return this.getLatestRelease().then((release) => {
       if (release.files === null) {
         // No release yet
-        return Parse.Promise.as(null);
+        return Promise.resolve(null);
       }
 
       let fileMetaData = release.files[fileName];
       if (fileMetaData && fileMetaData.source) {
-        return Parse.Promise.as(fileMetaData.source);
+        return Promise.resolve(fileMetaData.source);
       }
 
       let params = {
@@ -139,14 +139,14 @@ export default class ParseApp {
         this.latestRelease.files[fileName].source = source;
       }
 
-      return Parse.Promise.as(source);
+      return Promise.resolve(source);
     });
   }
 
   getLatestRelease() {
     // Cache it for a minute
     if (new Date() - this.latestRelease.lastFetched < 60000) {
-      return Parse.Promise.as(this.latestRelease);
+      return Promise.resolve(this.latestRelease);
     }
     return this.apiRequest(
       'GET',
@@ -188,7 +188,7 @@ export default class ParseApp {
         }
       }
 
-      return Parse.Promise.as(this.latestRelease);
+      return Promise.resolve(this.latestRelease);
     });
   }
 
@@ -197,7 +197,7 @@ export default class ParseApp {
     if (this.classCounts.counts[className] !== undefined) {
       // Cache it for a minute
       if (new Date() - this.classCounts.lastFetched[className] < 60000) {
-        return Parse.Promise.as(this.classCounts.counts[className]);
+        return Promise.resolve(this.classCounts.counts[className]);
       }
     }
     let p = new Parse.Query(className).count({ useMasterKey: true });
@@ -333,7 +333,7 @@ export default class ParseApp {
   fetchSettingsFields() {
     // Cache it for a minute
     if (new Date() - this.settings.lastFetched < 60000) {
-      return Parse.Promise.as(this.settings.fields);
+      return Promise.resolve(this.settings.fields);
     }
     let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
     return AJAX.get(path).then((fields) => {
@@ -341,7 +341,7 @@ export default class ParseApp {
         this.settings.fields[f] = fields[f];
         this.settings.lastFetched = new Date();
       }
-      return Parse.Promise.as(fields);
+      return Promise.resolve(fields);
     });
   }
 
@@ -362,7 +362,7 @@ export default class ParseApp {
       { password_confirm_reset_master_key: password }
     ).then(({ new_key }) => {
       this.masterKey = new_key;
-      return Parse.Promise.as();
+      return Promise.resolve();
     });
   }
 
@@ -383,6 +383,9 @@ export default class ParseApp {
 
   fetchPushSubscriberCount(audienceId, query) {
     let promise;
+    if (audienceId === 'everyone') {
+      query = {};
+    }
     if (!query) {
       promise = new Parse.Query('_Audience').get(audienceId, { useMasterKey: true }).then(function(audience) {
         return Parse.Query.fromJSON('_Installation', { where: audience.get('query') }).count({ useMasterKey: true })
@@ -525,7 +528,7 @@ export default class ParseApp {
   getJobStatus() {
     // Cache it for a 30s
     if (new Date() - this.jobStatus.lastFetched < 30000) {
-      return Parse.Promise.as(this.jobStatus.status);
+      return Promise.resolve(this.jobStatus.status);
     }
     let query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
@@ -561,7 +564,7 @@ export default class ParseApp {
     this.hasCheckedForMigraton = true
     obj.promise.then(({ migration }) => {
       this.migration = migration;
-    });
+    }).catch(() => {}); // swallow errors
     return obj;
   }
 
