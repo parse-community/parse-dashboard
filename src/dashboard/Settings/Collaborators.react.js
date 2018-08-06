@@ -46,8 +46,7 @@ export default class Collaborators extends React.Component {
       "oauth" : "Write",
       "twitterOauth" : "Write",
       "pushAndroidSettings" : "Write",
-      "pushIOSSettings" : "Write",
-      "classes" : "Write"
+      "pushIOSSettings" : "Write"
     }
 
     this.defaultFeaturesPermissions = defaultFeaturesPermissions
@@ -195,8 +194,7 @@ export default class Collaborators extends React.Component {
                 'Facebook Login',
                 'Twitter Login',
                 'Android Push notification',
-                'iOS Push notification',
-                'Data Browser'
+                'iOS Push notification'
               ],
               description: [
                 'Edit your keys, delete, transfer, clone and restart your app',
@@ -209,14 +207,12 @@ export default class Collaborators extends React.Component {
                 'Make your app social using Facebook',
                 'Make your app social using Twitter',
                 'Get your message across with Android push',
-                'Get your message across with iOS push',
-                'Create, edit, read and delete data from your classes'
+                'Get your message across with iOS push'
               ],
               collaboratorsCanWrite: [
                 false,
                 false,
                 false,
-                true,
                 true,
                 true,
                 true,
