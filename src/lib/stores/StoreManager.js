@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse from 'parse';
 import * as StateManager from 'lib/stores/StateManager';
 
 let stores = {};
@@ -44,7 +43,7 @@ export function getStore(name) {
     dispatch(type, params, app) {
       let action = {...params, type, app};
       let newState = storeData.store(stateGetter(name, app), action);
-      if (newState instanceof Parse.Promise) {
+      if (newState instanceof Promise) {
         return newState.then((result) => {
           if (storeData.isGlobal) {
             StateManager.setGlobalState(name, result);

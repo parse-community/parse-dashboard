@@ -14,31 +14,31 @@ export const component = PermissionsDialog;
 
 function validateSimple(text) {
   if (text.startsWith('i')) {
-    return Parse.Promise.as({ user: { id: text } });
+    return Promise.resolve({ user: { id: text } });
   }
   if (text.startsWith('r')) {
-    return Parse.Promise.as({ role: new Parse.Role(text, new Parse.ACL()) });
+    return Promise.resolve({ role: new Parse.Role(text, new Parse.ACL()) });
   }
   if (text.startsWith('u')) {
-    return Parse.Promise.as({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
+    return Promise.resolve({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
   }
-  return Parse.Promise.error();
+  return Promise.reject();
 }
 
 function validateAdvanced(text) {
   if (text.startsWith('i')) {
-    return Parse.Promise.as({ user: { id: text } });
+    return Promise.resolve({ user: { id: text } });
   }
   if (text.startsWith('r')) {
-    return Parse.Promise.as({ role: new Parse.Role(text, new Parse.ACL()) });
+    return Promise.resolve({ role: new Parse.Role(text, new Parse.ACL()) });
   }
   if (text.startsWith('u')) {
-    return Parse.Promise.as({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
+    return Promise.resolve({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
   }
   if (text.startsWith('p')) {
-    return Parse.Promise.as({ pointer: text });
+    return Promise.resolve({ pointer: text });
   }
-  return Parse.Promise.error();
+  return Promise.reject();
 }
 
 class DialogDemo extends React.Component {

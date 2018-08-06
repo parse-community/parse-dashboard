@@ -7,7 +7,6 @@
  */
 import { get, post, put } from 'lib/AJAX';
 import keyMirror          from 'lib/keyMirror';
-import Parse              from 'parse';
 import { Map }            from 'immutable';
 import { registerStore }  from 'lib/stores/StoreManager';
 
@@ -174,7 +173,7 @@ function AnalyticsQueryStore(state, action) {
     case ActionTypes.LIST:
     case ActionTypes.LIST_RECENT:
       if (state && new Date() - state.get('lastFetch') < LAST_FETCH_TIMEOUT) {
-        return Parse.Promise.as(state);
+        return Promise.resolve(state);
       }
       let type = null;
       if (action.type === ActionTypes.LIST) {

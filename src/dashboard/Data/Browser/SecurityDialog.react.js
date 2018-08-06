@@ -16,7 +16,7 @@ import styles            from 'dashboard/Data/Browser/Browser.scss';
 function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
   if (parseServerSupportsPointerPermissions) {
     if (pointers.indexOf(text) > -1) {
-      return Parse.Promise.as({ pointer: text });
+      return Promise.resolve({ pointer: text });
     }
   }
 
@@ -25,18 +25,15 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
     new Parse.Query(Parse.User).equalTo('objectId', text)
   );
   let roleQuery = new Parse.Query(Parse.Role).equalTo('name', text);
-  let promise = new Parse.Promise();
-  Parse.Promise.when(userQuery.find({ useMasterKey: true }), roleQuery.find({ useMasterKey: true })).then((user, role) => {
+  return Promise.all([userQuery.find({ useMasterKey: true }), roleQuery.find({ useMasterKey: true })]).then(([user, role]) => {
     if (user.length > 0) {
-      promise.resolve({ user: user[0] });
+      return { user: user[0] };
     } else if (role.length > 0) {
-      promise.resolve({ role: role[0] });
+      return { role: role[0] };
     } else {
-      promise.reject();
+      return Promise.reject();
     }
   });
-
-  return promise;
 }
 
 export default class SecurityDialog extends React.Component {

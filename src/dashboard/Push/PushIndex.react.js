@@ -254,7 +254,7 @@ export default class PushIndex extends DashboardView {
         },
         pushes: this.state.pushes.concat(pushes),
       });
-    }).always(() => {
+    }).finally(() => {
       this.setState({
         loading: false,
         showMoreLoading: false,

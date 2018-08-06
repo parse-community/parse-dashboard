@@ -40,7 +40,7 @@ export default class PushAudiencesBaseRow extends React.Component {
     this.xhrHandle = xhr;
     promise.then(({ approximate, count }) => {
       this.setState({ approximate, count });
-    });
+    }, () => {});
   }
 
   componentWillMount() {
