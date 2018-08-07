@@ -294,30 +294,26 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                 primary={true}
                 value={this.props.confirmText}
                 onClick={() => {
-                  let feturesPermissions = {}
+                  let featuresPermissions = {}
                   let classesPermissions = {}
+                  // Set features permissions
                   if (this.state.selectedFeaturesTab === 'Default') {
-                    feturesPermissions = this.props.defaultFeaturesPermissions
+                    featuresPermissions = this.props.defaultFeaturesPermissions
                     this.setState({ isDefaultFeatures: true })
                   } else {
-                    feturesPermissions = this.state.customFeaturesPermissions
+                    featuresPermissions = this.state.customFeaturesPermissions
                     this.setState({ isDefaultFeatures: false })
                   }
-                  switch (this.state.selectedClassesTab) {
-                    case 'None':
-                      classesPermissions = lodash.mapValues(this.state.classesPermissions, () => 'None')
-                      break;
-                    case 'Read':
-                      classesPermissions = lodash.mapValues(this.state.classesPermissions, () => 'Read')
-                      break;
-                    case 'Write':
-                      classesPermissions = lodash.mapValues(this.state.classesPermissions, () => 'Write')
-                      break;
-                    default:
-                      classesPermissions = Object.assign(this.state.classesPermissions)
+                  // Set classes permissions
+                  if (this.state.selectedClassesTab === 'CustomClasses') {
+                    classesPermissions = Object.assign(this.state.classesPermissions)
+                    featuresPermissions['classes'] = 'Custom'
+                  } else {
+                    classesPermissions = lodash.mapValues(this.state.classesPermissions, () => this.state.selectedClassesTab)
+                    featuresPermissions['classes'] = this.state.selectedClassesTab
                   }
-                  console.log(feturesPermissions, classesPermissions)
-                  this.props.onConfirm(feturesPermissions, classesPermissions)
+                  console.log(featuresPermissions, classesPermissions)
+                  this.props.onConfirm(featuresPermissions, classesPermissions)
                 }}
               />
               </div>
