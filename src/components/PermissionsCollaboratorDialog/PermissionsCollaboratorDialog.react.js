@@ -78,11 +78,6 @@ function renderSimpleLabels(permission) {
   else return (<span>None</span>)
 }
 
-function setClassesPermissionTab (permissions) {
-  let uniqueValues = lodash.uniq(lodash.values(permissions))
-  return uniqueValues.length === 1 ? uniqueValues[0] : 'CustomClasses'
-}
-
 export default class PermissionsCollaboratorDialog extends React.Component {
   constructor({
                 customFeaturesPermissions,
@@ -93,7 +88,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
     super();
 
     const isDefaultFeatures = lodash.isEqual(customFeaturesPermissions, defaultFeaturesPermissions)
-    const selectedClassesTab = setClassesPermissionTab(classesPermissions)
+    const selectedClassesTab = customFeaturesPermissions['classes'] === 'Custom' ? 'CustomClasses' :  customFeaturesPermissions['classes']
 
     this.state = {
       transitioning: false,
