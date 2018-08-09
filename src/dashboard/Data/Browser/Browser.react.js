@@ -229,6 +229,8 @@ export default class Browser extends DashboardView {
       history.push(this.context.generatePath('browser/' + className));
     }).always(() => {
       this.setState({ showCreateClassDialog: false });
+      // Send track event
+      back4AppNavigation && back4AppNavigation.createClassClickEvent()
     });
   }
 

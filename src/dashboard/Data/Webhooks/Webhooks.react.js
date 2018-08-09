@@ -159,6 +159,8 @@ export default class Webhooks extends TableView {
       iconSize={30}
       open={this.state.showNewWebhookModal}
       onSubmit={() => {
+        // Send track event
+        back4AppNavigation && back4AppNavigation.createWebhookEvent()
         return this.props.webhooks.dispatch(WebhookActionTypes.CREATE, hookRequestData(this.state));
       }}
       onClose={() => {

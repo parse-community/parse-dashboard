@@ -154,9 +154,12 @@ export default class Performance extends DashboardView {
   }
 
   renderContent() {
+    // Send track event
+    back4AppNavigation && back4AppNavigation.atAnalyticsPerformanceEvent()
+
     let toolbar = (
       <Toolbar
-        section='Analytics'       
+        section='Analytics'
         subsection='Performance' />
     );
 
