@@ -89,7 +89,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
     super();
 
     const isDefaultFeatures = lodash.isEqual(customFeaturesPermissions, defaultFeaturesPermissions)
-    const selectedClassesTab = customFeaturesPermissions['classes'] === 'Custom' ? 'CustomClasses' :  customFeaturesPermissions['classes']
+    const selectedClassesTab = ((!customFeaturesPermissions['classes'] || customFeaturesPermissions['classes'] === 'Custom') ? 'CustomClasses' :  customFeaturesPermissions['classes'])
 
     this.state = {
       transitioning: false,
