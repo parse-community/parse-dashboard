@@ -175,6 +175,7 @@ export default class Collaborators extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
+            isGDPR={this.context.currentApp.custom && this.context.currentApp.custom.isGDPR}
             customFeaturesPermissions={
               (
                 (this.state.toEdit && this.state.currentFeaturesPermissions) ?
