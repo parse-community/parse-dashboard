@@ -83,12 +83,13 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                 customFeaturesPermissions,
                 defaultFeaturesPermissions,
                 features,
-                classesPermissions
+                classesPermissions,
+                isGDPR
               }) {
     super();
 
     const isDefaultFeatures = lodash.isEqual(customFeaturesPermissions, defaultFeaturesPermissions)
-    const selectedClassesTab = customFeaturesPermissions['classes'] === 'Custom' ? 'CustomClasses' :  customFeaturesPermissions['classes']
+    const selectedClassesTab = !customFeaturesPermissions['classes'] ? 'Write' : (customFeaturesPermissions['classes'] === 'Custom' ? 'CustomClasses' :  customFeaturesPermissions['classes'])
 
     this.state = {
       transitioning: false,
@@ -96,6 +97,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
       level: 'Simple', // 'Simple' | 'Advanced'
       customFeaturesPermissions,
       features,
+      isGDPR,
       isDefaultFeatures,
       isFeaturesSelected: true,
       selectedFeaturesTab: (isDefaultFeatures ? 'Default' : 'CustomFeatures'),
@@ -189,7 +191,7 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                     <Tab onClick={() => this.setState({ isFeaturesSelected: true })}>
                       Features
                     </Tab>
-                    <Tab onClick={() => this.setState({ isFeaturesSelected: false })}>
+                    <Tab style={ this.state.isGDPR ? {} : {display: 'none'}} onClick={() => this.setState({ isFeaturesSelected: false })}>
                       Classes
                     </Tab>
                   </TabList>
