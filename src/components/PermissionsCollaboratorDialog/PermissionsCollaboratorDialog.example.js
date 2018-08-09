@@ -50,7 +50,7 @@ class DialogDemo extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
-            customPermissions={{
+            customFeaturesPermissions={{
               "pushAndroidSettings" : "None",
               "pushIOSSettings" : "None",
               "oauth" : "None",
@@ -61,9 +61,10 @@ class DialogDemo extends React.Component {
               "jobs" : "None",
               "webHostLiveQuery" : "None",
               "verificationEmails" : "None",
-              "twitterOauth" : "None"
+              "twitterOauth" : "None",
+              "classes" : "None"
             }}
-            defaultPermissions={{
+            defaultFeaturesPermissions={{
               "pushAndroidSettings" : "Write",
               "pushIOSSettings" : "Read",
               "oauth" : "None",
@@ -74,7 +75,8 @@ class DialogDemo extends React.Component {
               "jobs" : "Read",
               "webHostLiveQuery" : "None",
               "verificationEmails" : "Write",
-              "twitterOauth" : "Read"
+              "twitterOauth" : "Read",
+              "classes" : "Write"
             }}
             features={{
               label: [
@@ -88,7 +90,8 @@ class DialogDemo extends React.Component {
                 'Facebook Login',
                 'Twitter Login',
                 'Android Push notification',
-                'iOS Push notification'
+                'iOS Push notification',
+                'Data Browser'
               ],
               description: [
                 'Edit your keys, delete, transfer, clone and restart your app',
@@ -101,7 +104,8 @@ class DialogDemo extends React.Component {
                 'Make your app social using Facebook',
                 'Make your app social using Twitter',
                 'Get your message across with Android push',
-                'Get your message across with iOS push'
+                'Get your message across with iOS push',
+                'Create, edit, read and delete data from your classes'
               ],
               collaboratorsCanWrite: [
                 false,
@@ -113,8 +117,16 @@ class DialogDemo extends React.Component {
                 true,
                 true,
                 true,
+                true,
+                true,
                 true
               ]
+            }}
+            classesPermissions={{
+              'User': 'Read',
+              'Book': 'Read',
+              'Score': 'None',
+              'Misc': 'Read'
             }}
             validateEntry={validateSimple}
             onCancel={() => {

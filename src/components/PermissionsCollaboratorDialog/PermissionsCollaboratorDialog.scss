@@ -12,11 +12,38 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 675px;
+  width: 725px;
   background: white;
   border-radius: 5px;
   overflow: hidden;
   transition: width 0.3s 0.15s ease-out;
+  /* width */
+  ::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #169cee;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 6px solid rgba(0, 0, 0, 0);
+
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #0076ae
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
 }
 
 .header {
@@ -27,6 +54,7 @@
   line-height: 50px;
   font-size: 16px;
   text-align: center;
+  margin-bottom: -1px;
 
   .settings {
     position: absolute;
@@ -80,13 +108,14 @@
   height: 550px;
   overflow-y: auto;
   overflow-x: hidden;
+  background: #f6fafb;
 }
 
 .second {
-  width: 82px;
+  width: 87px;
 }
 .third {
-  width: 82px;
+  width: 87px;
 }
 .fourth {
   width: 92px;
@@ -182,14 +211,17 @@ p {
 
 p.role {
   font-size: 10px;
+  margin-bottom: 0.4rem;
 }
 
 p.email {
   font-size: 18px;
+  margin-bottom: 0.4rem;
 }
 
 p.description {
   font-size: 12px;
+  margin-bottom: 0.4rem;
 }
 
 .readHeader {
@@ -221,7 +253,6 @@ p.description {
   height: 100px;
   line-height: 100px;
   font-size: 15px;
-  border-bottom: 1px solid #e3e3ea;
   white-space: nowrap;
 }
 
@@ -235,7 +266,7 @@ p.description {
 
 .label {
   display: inline-block;
-  width: 330px;
+  width: 50%;
   padding: 0 20px;
   line-height: 25px;
   white-space: initial;
@@ -358,7 +389,10 @@ p.description {
 
       top: 50%;
       left: 50%;
-      @include transform(translate(-50%, -50%));
+      -webkit-transform: translateX(-50%) translateY(-50%);
+      -moz-transform: translateX(-50%) translateY(-50%);
+      -ms-transform: translateX(-50%) translateY(-50%);
+      transform: translateX(-50%) translateY(-50%);
 
       transition: all 0.2s cubic-bezier(0, 0, 0.74, 2.2);
     }
@@ -375,17 +409,36 @@ p.description {
 }
 
 .customTabList {
-  width: 50%;
+  height: 100%;
   margin-bottom: 0;
+  padding: 0 10px;
 }
 
 .subHeader {
-  display: inline-flex;
+  min-width: 100%;
+  height: 35px;
+  background-color: #0076ae
 }
 
 
 .labelTab {
   padding: 6px 20px;
+  margin-bottom: 0;
 }
 
 @include modalKeyframes();
+
+.labelSubHeader {
+  width: 100%;
+  background-color: white;
+  padding: 0 30%;
+}
+
+.classesSubHeader {
+  padding: 0 10%;
+}
+
+.centralizedText {
+  text-align: center
+}
+

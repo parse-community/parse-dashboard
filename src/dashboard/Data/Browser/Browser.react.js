@@ -391,14 +391,22 @@ export default class Browser extends DashboardView {
   }
 
   async fetchData(source, filters = new List()) {
-    const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      filteredCounts[source] = await this.fetchParseDataCount(source,filters);
-    } else {
-      delete filteredCounts[source];
+    try {
+      const data = await this.fetchParseData(source, filters);
+      var filteredCounts = {...this.state.filteredCounts};
+      if (filters.size > 0) {
+        filteredCounts[source] = await this.fetchParseDataCount(source,
+          filters);
+      } else {
+        delete filteredCounts[source];
+      }
+      this.setState(
+        {data: data, filters, lastMax: 200, filteredCounts: filteredCounts});
     }
-    this.setState({ data: data, filters, lastMax: 200 , filteredCounts: filteredCounts});
+    catch(err) {
+      this.setState(
+        { data: [], filters, err });
+    }
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -968,7 +976,8 @@ export default class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
-            onAddClass={this.showCreateClass} />
+            onAddClass={this.showCreateClass}
+            err={this.state.err}/>
         );
       }
     }
