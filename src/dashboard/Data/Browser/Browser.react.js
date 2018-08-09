@@ -227,9 +227,15 @@ export default class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
       history.push(this.context.generatePath('browser/' + className));
-    }).always(() => {
+    }).then(() => {
       this.setState({ showCreateClassDialog: false });
-    });
+    }).catch(error => {
+      let errorDeletingNote = 'Internal server error'
+      if (error.code === 403) errorDeletingNote = error.message;
+
+      this.showNote(errorDeletingNote, true);
+      this.setState({ showCreateClassDialog: false });
+    })
   }
 
   dropClass(className) {
@@ -242,6 +248,9 @@ export default class Browser extends DashboardView {
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
+
+      if (error.code === 403) msg = error.message;
+      this.setState({showDropClassDialog: false });
 
       this.showNote(msg, true);
     });
@@ -286,9 +295,15 @@ export default class Browser extends DashboardView {
       name: name,
       targetClass: target
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).always(() => {
+    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).then(() => {
       this.setState({ showAddColumnDialog: false });
-    });
+    }).catch(error => {
+      let errorDeletingNote = 'Internal server error'
+      if (error.code === 403) errorDeletingNote = error.message;
+
+      this.showNote(errorDeletingNote, true);
+      this.setState({ showAddColumnDialog: false });
+    })
   }
 
   addRow() {
@@ -307,13 +322,20 @@ export default class Browser extends DashboardView {
       className: this.props.params.className,
       name: name
     };
-    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).always(() => {
+    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).then(() => {
       let state = { showRemoveColumnDialog: false };
       if (this.state.ordering === name || this.state.ordering === '-' + name) {
         state.ordering = '-createdAt';
       }
       this.setState(state);
-    });
+    }).catch(error => {
+      let errorDeletingNote = 'Internal server error'
+      if (error.code === 403) errorDeletingNote = error.message;
+
+      this.showNote(errorDeletingNote, true);
+      this.setState({ showRemoveColumnDialog: false });
+
+    })
   }
 
   handleFetchedSchema() {
@@ -664,6 +686,9 @@ export default class Browser extends DashboardView {
               errorDeletingNote = "Error deleting " + toDeleteObjectIds.length + " " + className + " objects";
             }
           }
+
+          if (error.code === 403) errorDeletingNote = error.message;
+
 
           this.showNote(errorDeletingNote, true);
         });
