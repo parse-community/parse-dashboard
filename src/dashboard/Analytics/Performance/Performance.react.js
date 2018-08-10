@@ -102,6 +102,9 @@ export default class Performance extends DashboardView {
   }
 
   componentWillMount() {
+    // Send track event
+    back4AppNavigation && back4AppNavigation.atAnalyticsPerformanceEvent()
+
     this.handleRunQuery(this.context.currentApp);
   }
 
@@ -154,9 +157,6 @@ export default class Performance extends DashboardView {
   }
 
   renderContent() {
-    // Send track event
-    back4AppNavigation && back4AppNavigation.atAnalyticsPerformanceEvent()
-
     let toolbar = (
       <Toolbar
         section='Analytics'
