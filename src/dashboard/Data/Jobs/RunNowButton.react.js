@@ -15,7 +15,8 @@ export default class RunNowButton extends React.Component {
 
     this.state = {
       progress: null,
-      result: null
+      result: null,
+      error: null
     };
 
     this.timeout = null;
@@ -30,9 +31,13 @@ export default class RunNowButton extends React.Component {
     this.context.currentApp.runJob(this.props.job).then(() => {
       this.setState({ progress: false, result: 'success' });
       this.timeout = setTimeout(() => this.setState({ result: null }), 3000);
-    }, () => {
-      this.setState({ progress: false, result: 'error' });
-      this.timeout = setTimeout(() => this.setState({ result: null }), 3000);
+    }, err => {
+      // Verify error message, used to control collaborators permissions
+      if(err && err.message)
+        this.setState({ progress: false, result: 'error', error: err });
+      else
+        this.setState({ progress: false, result: 'error', error: null });
+      this.timeout = setTimeout(() => this.setState({ result: null, error: null }), 3000);
     });
   }
 
@@ -43,6 +48,11 @@ export default class RunNowButton extends React.Component {
       value = 'Failed.';
     } else if (this.state.result === 'success') {
       value = 'Success!';
+    }
+    // Verify error message, used to control collaborators permissions
+    if (this.state && this.state.error && this.state.error.code === 403) {
+      value = 'Permission denied'
+      other.width = '150px'
     }
     return (
       <Button

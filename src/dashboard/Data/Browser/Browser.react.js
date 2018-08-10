@@ -227,11 +227,17 @@ export default class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
       history.push(this.context.generatePath('browser/' + className));
-    }).always(() => {
-      this.setState({ showCreateClassDialog: false });
+    }).then(() => {
       // Send track event
       back4AppNavigation && back4AppNavigation.createClassClickEvent()
-    });
+      this.setState({ showCreateClassDialog: false });
+    }).catch(error => {
+      let errorDeletingNote = 'Internal server error'
+      if (error.code === 403) errorDeletingNote = error.message;
+
+      this.showNote(errorDeletingNote, true);
+      this.setState({ showCreateClassDialog: false });
+    })
   }
 
   dropClass(className) {
@@ -244,6 +250,9 @@ export default class Browser extends DashboardView {
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
+
+      if (error.code === 403) msg = error.message;
+      this.setState({showDropClassDialog: false });
 
       this.showNote(msg, true);
     });
@@ -288,9 +297,15 @@ export default class Browser extends DashboardView {
       name: name,
       targetClass: target
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).always(() => {
+    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).then(() => {
       this.setState({ showAddColumnDialog: false });
-    });
+    }).catch(error => {
+      let errorDeletingNote = 'Internal server error'
+      if (error.code === 403) errorDeletingNote = error.message;
+
+      this.showNote(errorDeletingNote, true);
+      this.setState({ showAddColumnDialog: false });
+    })
   }
 
   addRow() {
@@ -309,13 +324,20 @@ export default class Browser extends DashboardView {
       className: this.props.params.className,
       name: name
     };
-    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).always(() => {
+    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).then(() => {
       let state = { showRemoveColumnDialog: false };
       if (this.state.ordering === name || this.state.ordering === '-' + name) {
         state.ordering = '-createdAt';
       }
       this.setState(state);
-    });
+    }).catch(error => {
+      let errorDeletingNote = 'Internal server error'
+      if (error.code === 403) errorDeletingNote = error.message;
+
+      this.showNote(errorDeletingNote, true);
+      this.setState({ showRemoveColumnDialog: false });
+
+    })
   }
 
   handleFetchedSchema() {
@@ -371,14 +393,22 @@ export default class Browser extends DashboardView {
   }
 
   async fetchData(source, filters = new List()) {
-    const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      filteredCounts[source] = await this.fetchParseDataCount(source,filters);
-    } else {
-      delete filteredCounts[source];
+    try {
+      const data = await this.fetchParseData(source, filters);
+      var filteredCounts = {...this.state.filteredCounts};
+      if (filters.size > 0) {
+        filteredCounts[source] = await this.fetchParseDataCount(source,
+          filters);
+      } else {
+        delete filteredCounts[source];
+      }
+      this.setState(
+        {data: data, filters, lastMax: 200, filteredCounts: filteredCounts});
     }
-    this.setState({ data: data, filters, lastMax: 200 , filteredCounts: filteredCounts});
+    catch(err) {
+      this.setState(
+        { data: [], filters, err });
+    }
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -667,6 +697,9 @@ export default class Browser extends DashboardView {
             }
           }
 
+          if (error.code === 403) errorDeletingNote = error.message;
+
+
           this.showNote(errorDeletingNote, true);
         });
       }
@@ -945,7 +978,8 @@ export default class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
-            onAddClass={this.showCreateClass} />
+            onAddClass={this.showCreateClass}
+            err={this.state.err}/>
         );
       }
     }

@@ -499,24 +499,27 @@ export default class ParseApp {
     return promise;
   }
 
-  editCollaboratorById(id, featuresPermission) {
+  editCollaboratorById(id, featuresPermission, classesPermission) {
     let path = '/apps/' + this.slug + '/collaborations/edit/' + id.toString();
-    let promise = axios.post(path, { featuresPermission })
+    let promise = axios.post(path, { featuresPermission, classesPermission })
     promise.then(() => {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators
       // should be updated properly in a store or AppsManager or something
       this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.map(c => {
-        if (c.id === id) c.featuresPermission = featuresPermission
+        if (c.id === id) {
+          c.featuresPermission = featuresPermission
+          c.classesPermission = classesPermission
+        }
         return c
       });
     });
     return promise;
   }
 
-  addCollaborator(email, featuresPermission) {
+  addCollaborator(email, featuresPermission, classesPermission) {
     let path = '/apps/' + this.slug + '/collaborations';
-    let promise = axios.post(path, {'collaboration[email]': email, featuresPermission});
+    let promise = axios.post(path, {'collaboration[email]': email, featuresPermission, classesPermission});
     promise.then(({ data }) => {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators
