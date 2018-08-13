@@ -156,7 +156,7 @@ export default class Performance extends DashboardView {
   renderContent() {
     let toolbar = (
       <Toolbar
-        section='Analytics'       
+        section='Analytics'
         subsection='Performance' />
     );
 
@@ -232,7 +232,8 @@ export default class Performance extends DashboardView {
         <Chart
           width={this.displaySize.width}
           height={this.displaySize.height}
-          data={chartData} />
+          data={chartData}
+          formatter={(value) => value + ' requests/min'}/>
       );
     }
 
