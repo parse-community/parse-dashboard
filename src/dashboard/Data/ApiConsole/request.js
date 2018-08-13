@@ -26,6 +26,7 @@ export default function request(app, method, path, body, options) {
   if (options.sessionToken) {
     xhr.setRequestHeader('X-Parse-Session-Token', options.sessionToken);
   }
+  xhr.withCredentials = app.custom && app.custom.isGDPR;
   xhr.onload = function() {
     let response = xhr.responseText;
     try {
