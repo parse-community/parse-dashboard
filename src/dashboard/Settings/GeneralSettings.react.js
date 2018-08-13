@@ -539,8 +539,8 @@ export default class GeneralSettings extends DashboardView {
           }
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
-          addedCollaborators.forEach(({ userEmail, featuresPermission }) => {
-            promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission));
+          addedCollaborators.forEach(({ userEmail, featuresPermission, classesPermission }) => {
+            promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission, classesPermission));
           });
 
           let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
@@ -549,8 +549,8 @@ export default class GeneralSettings extends DashboardView {
           });
 
           let editedCollaborators = verifyEditedCollaborators(changes.collaborators);
-          editedCollaborators.forEach(({ id, featuresPermission }) => {
-            promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission));
+          editedCollaborators.forEach(({ id, featuresPermission, classesPermission }) => {
+            promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission, classesPermission));
           });
 
           let urlKeys = {

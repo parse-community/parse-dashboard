@@ -182,7 +182,10 @@ $blueGreen: #11A4BA;
 
 @mixin modalAnimation(){
   @include animation('modal-intro 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1)');
-  @include transform(translate3D(-50%, -50%, 0) scale(1));
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -ms-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
 }
 
 @mixin modalKeyframes(){
