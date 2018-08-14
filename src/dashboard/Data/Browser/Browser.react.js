@@ -228,6 +228,8 @@ export default class Browser extends DashboardView {
       this.state.counts[className] = 0;
       history.push(this.context.generatePath('browser/' + className));
     }).then(() => {
+      // Send track event
+      back4AppNavigation && back4AppNavigation.createClassClickEvent()
       this.setState({ showCreateClassDialog: false });
     }).catch(error => {
       let errorDeletingNote = 'Internal server error'

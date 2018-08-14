@@ -76,6 +76,9 @@ export default class Logs extends DashboardView {
   }
 
   renderContent() {
+    // Send track event
+    back4AppNavigation && back4AppNavigation.atParseLogsEvent()
+
     let toolbar = null;
     if (subsections[this.props.params.type]) {
       toolbar = (
