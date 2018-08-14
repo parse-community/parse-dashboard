@@ -182,7 +182,8 @@ export default class Performance extends DashboardView {
             <DateRange
               value={this.state.dateRange}
               onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
-              align={Directions.RIGHT} />
+              align={Directions.RIGHT}
+              maxRange={30} />
           </span>
           <Button
             primary={true}
