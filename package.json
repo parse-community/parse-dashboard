@@ -33,7 +33,6 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@back4app/back4app-settings": "^1.0.1",
     "axios": "^0.18.0",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
@@ -57,6 +56,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "@back4app/back4app-settings": "^1.0.1",
     "babel-core": "~6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "~7.0.0",

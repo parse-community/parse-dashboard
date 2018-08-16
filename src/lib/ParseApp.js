@@ -277,7 +277,7 @@ export default class ParseApp {
   }
 
   getAnalyticsSlowQueries(className, os, version, from, to) {
-    let path = '/apps/' + this.slug + '/slow_queries?' + encodeFormData(null, {
+    let path = '/apps/' + this.slug + '/slow_requests?' + encodeFormData(null, {
       className: className || '',
       os: os || '',
       version: version || '',
