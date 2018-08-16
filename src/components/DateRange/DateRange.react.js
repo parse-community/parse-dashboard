@@ -11,7 +11,8 @@ import Icon                             from 'components/Icon/Icon.react';
 import {
   monthDayStringUTC,
   monthsFrom,
-  daysFrom
+  daysFrom,
+  daysToMilli
 }                                       from 'lib/DateUtils';
 import Popover                          from 'components/Popover/Popover.react';
 import Position                         from 'lib/Position';
@@ -30,7 +31,8 @@ export default class DateRange extends React.Component {
       open: false,
       position: null,
       start: val.start || monthsFrom(new Date(), -1),
-      end: val.end || new Date()
+      end: val.end || new Date(),
+      maxRange: props.maxRange,
     };
   }
 
@@ -59,6 +61,7 @@ export default class DateRange extends React.Component {
     if (start > end) {
       end = daysFrom(start, 1);
     }
+    if (this.state.maxRange && end - start > daysToMilli(this.state.maxRange)) end = daysFrom(start, this.state.maxRange)
     this.setState({ start, end });
   }
 
@@ -67,6 +70,7 @@ export default class DateRange extends React.Component {
     if (start > end) {
       start = daysFrom(end, -1);
     }
+    if (this.state.maxRange && end - start > daysToMilli(this.state.maxRange)) start = daysFrom(end, -this.state.maxRange)
     this.setState({ start, end });
   }
 
@@ -143,4 +147,7 @@ DateRange.propTypes = {
   align: PropTypes.string.describe(
     'The side to align the range selector with. Possible options are Constants.Directions.LEFT or Constants.Directions.RIGHT.'
   ),
+  maxRange: PropTypes.number.describe(
+    'The maximum range in days that can be seted in the date range. If is null, any range can be seted.'
+  )
 };
