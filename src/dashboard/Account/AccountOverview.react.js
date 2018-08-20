@@ -18,7 +18,6 @@ import KeyField                from 'components/KeyField/KeyField.react';
 import Label                   from 'components/Label/Label.react';
 import Modal                   from 'components/Modal/Modal.react';
 import MoneyInput              from 'components/MoneyInput/MoneyInput.react';
-import Parse                   from 'parse';
 import React                   from 'react';
 import renderFlowFooterChanges from 'lib/renderFlowFooterChanges';
 import styles                  from 'dashboard/Settings/Settings.scss';
@@ -376,7 +375,7 @@ export default class AccountOverview extends React.Component {
           //TODO change credit card number
         }
         /* eslint-enable */
-        return Parse.Promise.when(promiseList);
+        return Promise.all(promiseList);
       }}
       renderForm={this.renderForm.bind(this)} />;
   }

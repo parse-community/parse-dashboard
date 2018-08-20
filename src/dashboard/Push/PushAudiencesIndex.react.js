@@ -57,7 +57,7 @@ export default class PushAudiencesIndex extends DashboardView {
         xhrKey: XHR_KEY,
       }).then(() => {
 
-    }).always(() => {
+    }).finally(() => {
       this.setState({ loading: false });
     });
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {

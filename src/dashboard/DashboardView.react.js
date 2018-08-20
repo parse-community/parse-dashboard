@@ -23,7 +23,8 @@ export default class DashboardView extends React.Component {
     let appSlug = (this.context.currentApp ? this.context.currentApp.slug : '');
 
     if (!this.context.currentApp.hasCheckedForMigraton) {
-      this.context.currentApp.getMigrations().promise.then(() => this.forceUpdate());
+      this.context.currentApp.getMigrations().promise
+        .then(() => this.forceUpdate(), () => {});
     }
 
     let features = this.context.currentApp.serverInfo.features;

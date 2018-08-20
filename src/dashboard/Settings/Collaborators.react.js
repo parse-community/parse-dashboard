@@ -49,7 +49,7 @@ export default class Collaborators extends React.Component {
         this.setState({ lastError: response.error });
         return false;
       }
-    }).fail(({ error }) => {
+    }).catch(({ error }) => {
       this.setState({ lastError: error });
     });
   }

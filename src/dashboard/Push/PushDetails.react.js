@@ -31,7 +31,6 @@ import Toggle                 from 'components/Toggle/Toggle.react';
 import Toolbar                from 'components/Toolbar/Toolbar.react';
 import { Directions }         from 'lib/Constants';
 import { Link }               from 'react-router-dom';
-import { Promise }            from 'parse';
 import { tableInfoBuilder }   from 'lib/PushUtils';
 
 const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments';
@@ -284,7 +283,7 @@ export default class PushDetails extends DashboardView {
         this.xhrHandles.push(abortableRequestA.xhr);
         this.xhrHandles.push(abortableRequestB.xhr);
 
-        Parse.Promise.when(promiseList).then((dataA, dataB) => {
+        Promise.all(promiseList).then(([dataA, dataB]) => {
           let chartDataA = formatAnalyticsData(dataA);
           let chartDataB = formatAnalyticsData(dataB);
           if (chartDataA.length > 0 || chartDataB.length > 0) {
@@ -300,7 +299,7 @@ export default class PushDetails extends DashboardView {
                 }
               }});
           }
-        }).always(() => {
+        }).finally(() => {
           this.setState({ loading: false })
         });
       } else {
@@ -319,7 +318,7 @@ export default class PushDetails extends DashboardView {
                 }
               }});
           }
-        }).always(() => {
+        }).finally(() => {
           this.setState({ loading: false })
         });
         this.xhrHandles = [xhr];
@@ -336,7 +335,7 @@ export default class PushDetails extends DashboardView {
       this.setState( {loading: true });
       this.context.currentApp.fetchPushDetails(nextProps.params.pushId).then((pushDetails) => {
         this.setState({ pushDetails });
-      }).always(() => {
+      }).finally(() => {
         this.setState({ loading: false })
       });
     }

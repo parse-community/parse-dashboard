@@ -26,7 +26,7 @@ function JobsStore(state, action) {
   switch (action.type) {
     case ActionTypes.FETCH:
       if (state && new Date() - state.get('lastFetch') < 60000) {
-        return Parse.Promise.as(state);
+        return Promise.resolve(state);
       }
       path = `cloud_code/jobs?per_page=50`;
       return Parse._request('GET', path, {}, { useMasterKey: true}).then((results) => {

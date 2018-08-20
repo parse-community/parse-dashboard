@@ -11,7 +11,6 @@ import Fieldset                from 'components/Fieldset/Fieldset.react';
 import FlowView                from 'components/FlowView/FlowView.react';
 import FormTable               from 'components/FormTable/FormTable.react';
 import Label                   from 'components/Label/Label.react';
-import Parse                   from 'parse';
 import pluck                   from 'lib/pluck';
 import React                   from 'react';
 import renderFlowFooterChanges from 'lib/renderFlowFooterChanges';
@@ -20,7 +19,6 @@ import TextInput               from 'components/TextInput/TextInput.react';
 import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import unique                  from 'lib/unique';
-import { Promise }             from 'parse';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
@@ -306,14 +304,11 @@ export default class UsersSettings extends DashboardView {
 					promiseList.push(this.context.currentApp.setAllowTwitterAuth(changes.allowTwitterAuthentication));
 				}
 
-				let promise = new Promise();
-				Parse.Promise.when(promiseList).then(() => {
-					promise.resolve();
+				return Promise.all(promiseList).then(() => {
           this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
-				}).fail(errors => {
-					promise.reject({ error: unique(pluck(errors, 'error')).join(' ') });
+				}).catch(errors => {
+					return Promise.reject({ error: unique(pluck(errors, 'error')).join(' ') });
 				});
-				return promise;
 			}}
 		/>;
   }

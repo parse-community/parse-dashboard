@@ -217,7 +217,7 @@ export default class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
       history.push(this.context.generatePath('browser/' + className));
-    }).always(() => {
+    }).finally(() => {
       this.setState({ showCreateClassDialog: false });
     });
   }
@@ -238,7 +238,7 @@ export default class Browser extends DashboardView {
   }
 
   exportClass(className) {
-    this.context.currentApp.exportClass(className).always(() => {
+    this.context.currentApp.exportClass(className).finally(() => {
       this.setState({ showExportDialog: false });
     });
   }
@@ -250,7 +250,7 @@ export default class Browser extends DashboardView {
       name: name,
       targetClass: target
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).always(() => {
+    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).finally(() => {
       this.setState({ showAddColumnDialog: false });
     });
   }
@@ -271,7 +271,7 @@ export default class Browser extends DashboardView {
       className: this.props.params.className,
       name: name
     };
-    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).always(() => {
+    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).finally(() => {
       let state = { showRemoveColumnDialog: false };
       if (this.state.ordering === name || this.state.ordering === '-' + name) {
         state.ordering = '-createdAt';

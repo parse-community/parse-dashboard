@@ -220,7 +220,7 @@ export default class Explorer extends DashboardView {
       promises.push(promise);
       this.xhrHandles.push(xhr);
     });
-    Parse.Promise.when(promises).then(() => this.setState({
+    Promise.all(promises).then(() => this.setState({
       loading: false,
       mutated: false
     }));

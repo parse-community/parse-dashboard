@@ -27,7 +27,6 @@ import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
 import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
-import Parse              from 'parse';
 import ParseApp           from 'lib/ParseApp';
 import Performance        from './Analytics/Performance/Performance.react';
 import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
@@ -121,7 +120,7 @@ class Dashboard extends React.Component {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
           app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
-          return Parse.Promise.as(app);
+          return Promise.resolve(app);
         } else {
           app.serverInfo = {}
           return new ParseApp(app).apiRequest(
@@ -139,32 +138,32 @@ class Dashboard extends React.Component {
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
-              return Parse.Promise.as(app);
+              return Promise.resolve(app);
             } else if (error.code === 107) {
               app.serverInfo = {
                 error: 'server version too low',
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
-              return Parse.Promise.as(app);
+              return Promise.resolve(app);
             } else {
               app.serverInfo = {
                 error: error.message || 'unknown error',
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
-              return Parse.Promise.as(app);
+              return Promise.resolve(app);
             }
           });
         }
       });
-      return Parse.Promise.when(appInfoPromises);
+      return Promise.all(appInfoPromises);
     }).then(function(resolvedApps) {
       resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }.bind(this)).fail(({ error }) => {
+    }.bind(this)).catch(({ error }) => {
       this.setState({
         configLoadingError: error,
         configLoadingState: AsyncStatus.FAILED
