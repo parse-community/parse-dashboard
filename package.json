@@ -86,7 +86,7 @@
     "request": "^2.87.0",
     "request-promise": "~4.2.2",
     "sass-loader": "~7.0.3",
-    "style-loader": "~0.21.0",
+    "style-loader": "~0.22.0",
     "svg-prep": "~1.0.0",
     "webpack": "~4.12.1",
     "webpack-cli": "^3.0.8"
