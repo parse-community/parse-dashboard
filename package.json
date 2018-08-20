@@ -88,7 +88,7 @@
     "sass-loader": "~7.0.3",
     "style-loader": "~0.21.0",
     "svg-prep": "~1.0.0",
-    "webpack": "~4.12.1",
+    "webpack": "~4.16.5",
     "webpack-cli": "^3.0.8"
   },
   "scripts": {
