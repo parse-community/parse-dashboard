@@ -154,6 +154,7 @@ class Dashboard extends React.Component {
             { useMasterKey: true }
           ).then(serverInfo => {
             app.serverInfo = serverInfo;
+            app.serverInfo.features.analytics.explorerAnalysis = true
             return app;
           }, error => {
             if (error.code === 100) {
