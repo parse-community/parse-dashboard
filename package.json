@@ -68,6 +68,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "~6.23.0",
+    "clean-webpack-plugin": "^0.1.19",
     "css-loader": "~0.28.2",
     "eslint": "^3.8.1",
     "eslint-plugin-jest": "^20.0.3",
@@ -81,6 +82,7 @@
     "js-beautify": "~1.6.14",
     "marked": "^0.3.5",
     "node-sass": "^4.5.3",
+    "nodemon": "^1.18.3",
     "parse": "git+https://github.com/back4app/Parse-SDK-JS.git",
     "prismjs": "~1.6.0",
     "react": "^15.0.1",
@@ -98,8 +100,8 @@
     "webpack": "~2.5.1"
   },
   "scripts": {
-    "dev": "NODE_ENV=dev webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
-    "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
+    "watch": "NODE_ENV=dev webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+    "dev": "nodemon ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "build-homolog": "NODE_ENV=homolog webpack --config webpack/homolog.config.js && webpack --config webpack/PIG.config.js",

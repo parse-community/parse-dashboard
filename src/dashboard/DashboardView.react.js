@@ -148,7 +148,7 @@ export default class DashboardView extends React.Component {
 
     if (features.analytics && features.analytics.slowQueries) {
       analyticsSidebarSections.push({
-        name: 'Slow Queries',
+        name: 'Slow Requests',
         link: '/analytics/slow_requests'
       });
     }

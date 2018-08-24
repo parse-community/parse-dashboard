@@ -34,9 +34,9 @@ export default class SlowQueriesFilter extends React.Component {
   }
 
   render() {
-    let { className, os, version } = this.props;
+    let { method, path, respStatus, respTime } = this.props;
     let popover = null;
-    let active = className || os || version;
+    let active = method || path || respStatus || respTime;
     if (this.state.open) {
       let position = Position.inDocument(this.node);
       let popoverStyle = [styles.popover];
@@ -54,19 +54,25 @@ export default class SlowQueriesFilter extends React.Component {
               <div className={styles.row}>
                 <ChromeDropdown
                   color={active ? 'blue' : 'purple'}
-                  value={className || 'Class'}
-                  options={this.props.classNameOptions}
-                  onChange={className => this.props.onChange({ className })} />
+                  value={method || 'Method'}
+                  options={this.props.methodOptions}
+                  onChange={method => this.props.onChange({ method })} />
                 <ChromeDropdown
                   color={active ? 'blue' : 'purple'}
-                  value={os || 'OS'}
-                  options={this.props.osOptions}
-                  onChange={os => this.props.onChange({ os })} />
+                  value={path || 'Path'}
+                  options={this.props.pathOptions}
+                  onChange={path => this.props.onChange({ path })}
+                  width={'340'} />
                 <ChromeDropdown
                   color={active ? 'blue' : 'purple'}
-                  value={version || 'Version'}
-                  options={this.props.versionOptions}
-                  onChange={version => this.props.onChange({ version })} />
+                  value={respStatus || 'Resp. Status'}
+                  options={this.props.respStatusOptions}
+                  onChange={respStatus => this.props.onChange({ respStatus })} />
+                {/*<ChromeDropdown*/}
+                  {/*color={active ? 'blue' : 'purple'}*/}
+                  {/*value={respTime || 'Res. Time'}*/}
+                  {/*options={this.props.respTimeOptions}*/}
+                  {/*onChange={respTime => this.props.onChange({ respTime })} />*/}
               </div>
             </div>
           </div>
@@ -107,6 +113,18 @@ SlowQueriesFilter.propTypes = {
   ),
   versionOptions: PropTypes.arrayOf(PropTypes.string).describe(
     'Options for app versions.'
+  ),
+  methodOptions: PropTypes.arrayOf(PropTypes.string).describe(
+    'Request methods.'
+  ),
+  pathOptions: PropTypes.arrayOf(PropTypes.string).describe(
+    'Request paths.'
+  ),
+  respStatusOptions: PropTypes.arrayOf(PropTypes.string).describe(
+    'Response status options.'
+  ),
+  respTimeOptions: PropTypes.arrayOf(PropTypes.string).describe(
+    'Response time options.'
   ),
   onChange: PropTypes.func.isRequired.describe(
     'Function to be called when the filter is changed.'

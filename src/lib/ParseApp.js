@@ -276,15 +276,20 @@ export default class ParseApp {
     return { promise, xhr };
   }
 
-  getAnalyticsSlowQueries(className, os, version, from, to) {
-    let path = '/apps/' + this.slug + '/slow_requests?' + encodeFormData(null, {
-      className: className || '',
-      os: os || '',
-      version: version || '',
+  getAnalyticsSlowQueries({path, method, respStatus, respTime, from, to, distinct}) {
+    let appsPath = b4aSettings.BACK4APP_API_PATH.indexOf('http://localhost:') === 0 ? 'parse-app' : 'apps';
+    let urlPrefix = `${b4aSettings.BACK4APP_API_PATH}/${appsPath}/${this.slug}/slow_requests?`;
+
+    let url = urlPrefix + encodeFormData(null, {
+      path: path || '',
+      method: method || '',
+      status: respStatus || '',
+      time: respTime || '',
+      distinct: distinct || '',
       from: from.getTime() / 1000,
       to: to.getTime() / 1000
     });
-    let { promise, xhr } = AJAX.abortableGet(path);
+    let { promise, xhr } = AJAX.abortableGet(url);
     promise = promise.then(({ result }) => result);
 
     return { promise, xhr };
