@@ -19,6 +19,8 @@ import TextInput           from 'components/TextInput/TextInput.react';
 import validateEmailFormat from 'lib/validateEmailFormat';
 import PermissionsCollaboratorDialog from 'components/PermissionsCollaboratorDialog/PermissionsCollaboratorDialog.react';
 
+import lodash from 'lodash'
+
 // Component for displaying and modifying an app's collaborator emails.
 // There is a single input field for new collaborator emails. As soon as the
 // user types a valid email format (and not already existing collaborator), we
@@ -33,7 +35,7 @@ export default class Collaborators extends React.Component {
   constructor() {
     super();
 
-    const defaultPermissions = {
+    const defaultFeaturesPermissions = {
       "coreSettings" : "Read",
       "manageParseServer" : "Read",
       "logs" : "Read",
@@ -44,10 +46,10 @@ export default class Collaborators extends React.Component {
       "oauth" : "Write",
       "twitterOauth" : "Write",
       "pushAndroidSettings" : "Write",
-      "pushIOSSettings" : "Write",
+      "pushIOSSettings" : "Write"
     }
 
-    this.defaultPermissions = defaultPermissions
+    this.defaultFeaturesPermissions = defaultFeaturesPermissions
 
     this.state = {
       lastError: '',
@@ -58,6 +60,13 @@ export default class Collaborators extends React.Component {
       toAdd: false,
       toEdit: false,
     };
+  }
+
+  getDefaultClasses() {
+    return this.context.currentApp.classCounts &&
+      this.context.currentApp.classCounts.counts &&
+      lodash.mapValues(this.context.currentApp.classCounts.counts, () => 'Write' )
+
   }
 
   handleAdd(newEmail) {
@@ -93,7 +102,8 @@ export default class Collaborators extends React.Component {
     this.setState(
       {
         toEdit: true,
-        currentPermission: collaborator.featuresPermission,
+        currentFeaturesPermissions: collaborator.featuresPermission,
+        currentClassesPermissions: collaborator.classesPermission || this.getDefaultClasses(),
         currentEmail: collaborator.userEmail,
         currentCollab: collaborator,
         showDialog: true
@@ -165,13 +175,14 @@ export default class Collaborators extends React.Component {
             description='Configure how this user can access the App features.'
             advanced={false}
             confirmText='Save'
-            customPermissions={
+            isGDPR={this.context.currentApp.custom && this.context.currentApp.custom.isGDPR}
+            customFeaturesPermissions={
               (
-                (this.state.toEdit && this.state.currentPermission) ?
-                this.state.currentPermission : this.defaultPermissions
+                (this.state.toEdit && this.state.currentFeaturesPermissions) ?
+                this.state.currentFeaturesPermissions : this.defaultFeaturesPermissions
               )
             }
-            defaultPermissions={this.defaultPermissions}
+            defaultFeaturesPermissions={this.defaultFeaturesPermissions}
               features={{
               label: [
                 'Core Settings',
@@ -213,15 +224,16 @@ export default class Collaborators extends React.Component {
                 true
               ]
             }}
+            classesPermissions = { this.state.currentClassesPermissions ? this.state.currentClassesPermissions : this.getDefaultClasses() }
             onCancel={() => {
               this.setState({
                 showDialog: false,
               });
             }}
-            onConfirm={(featuresPermission) => {
+            onConfirm={(featuresPermission, classesPermission) => {
               if (this.state.toAdd) {
                 let newCollaborators = this.props.collaborators.concat(
-                  {userEmail: this.state.currentEmail, featuresPermission})
+                  {userEmail: this.state.currentEmail, featuresPermission, classesPermission})
                 this.props.onAdd(this.state.currentEmail, newCollaborators);
                 this.setState(
                   {
@@ -237,6 +249,7 @@ export default class Collaborators extends React.Component {
                 let newCollabs = []
 
                 editedCollab.featuresPermission = featuresPermission;
+                editedCollab.classesPermission = classesPermission;
                 editedCollab.isEdited = true;
                 this.props.collaborators.forEach(c => {
                   if (c.userEmail === editedCollab.userEmail) c = editedCollab

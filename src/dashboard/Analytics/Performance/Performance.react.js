@@ -102,6 +102,9 @@ export default class Performance extends DashboardView {
   }
 
   componentWillMount() {
+    // Send track event
+    back4AppNavigation && back4AppNavigation.atAnalyticsPerformanceEvent()
+
     this.handleRunQuery(this.context.currentApp);
   }
 
@@ -156,7 +159,7 @@ export default class Performance extends DashboardView {
   renderContent() {
     let toolbar = (
       <Toolbar
-        section='Analytics'       
+        section='Analytics'
         subsection='Performance' />
     );
 
@@ -182,7 +185,8 @@ export default class Performance extends DashboardView {
             <DateRange
               value={this.state.dateRange}
               onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
-              align={Directions.RIGHT} />
+              align={Directions.RIGHT}
+              maxRange={30} />
           </span>
           <Button
             primary={true}
@@ -232,7 +236,8 @@ export default class Performance extends DashboardView {
         <Chart
           width={this.displaySize.width}
           height={this.displaySize.height}
-          data={chartData} />
+          data={chartData}
+          formatter={(value) => value + ' requests/min'}/>
       );
     }
 

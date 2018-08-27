@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2016-present, Parse, LLC
- * All rights reserved.
- *
- * This source code is licensed under the license found in the LICENSE file in
- * the root directory of this source tree.
- */
 var configuration = require('./base.config.js');
 var HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 var settings = require('@back4app/back4app-settings');
@@ -23,7 +16,7 @@ var webpack = require('webpack');
 configuration.plugins.push(
   new webpack.DefinePlugin({
     'process.env': {
-      'NODE_ENV': '"production"'
+      'NODE_ENV': '"homolog"'
     }
   }),
   new webpack.optimize.UglifyJsPlugin({

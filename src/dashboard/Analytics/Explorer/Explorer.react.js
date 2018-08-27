@@ -30,6 +30,8 @@ import subscribeTo               from 'lib/subscribeTo';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import { verticalCenter }        from 'stylesheets/base.scss';
 
+import SlowQueryMock from '../../../../testing/slowQuery.test.js'
+
 let buildFriendlyName = (query) => {
   let name = [query.source];
   if (query.groups && query.groups.length > 0) {
@@ -131,7 +133,7 @@ export default class Explorer extends DashboardView {
       // Update
       activeQueries[existingQueryIndex] = query;
     }
-    
+
     // Update the state to trigger rendering pipeline.
     this.setState({
       activeQueries,
@@ -173,18 +175,19 @@ export default class Explorer extends DashboardView {
         };
 
         let abortableRequest = this.context.currentApp.getAnalyticsTimeSeries(payload);
-        promise = abortableRequest.promise.then((result) => {
-          let activeQueries = this.state.activeQueries;
+        //promise = abortableRequest.promise.then((result) => {
+          let activeQueries = this.state.activeQueries
+          let result = SlowQueryMock.EXPLORER_MOCK_DATA.result;
           activeQueries[i].result = result.map((point) => (
             [Parse._decode('date', point[0]).getTime(), point[1]]
           ));
           this.setState({ activeQueries });
-        });
-        xhr = abortableRequest.xhr;
+        //});
+        //xhr = abortableRequest.xhr;
       } else {
         // Custom query
         let payload = this.buildCustomQueryPayload(query);
-        promise = this.props.customQueries.dispatch(ActionTypes.FETCH, payload).then(() => {
+        //promise = this.props.customQueries.dispatch(ActionTypes.FETCH, payload).then(() => {
           let activeQueries = this.state.activeQueries;
           // Update the result based on store in background.
           let customQueries = this.getCustomQueriesFromProps(this.props);
@@ -205,7 +208,7 @@ export default class Explorer extends DashboardView {
             if (!serverResult) {
               serverResult = query;
             }
-
+            serverResult = SlowQueryMock.EXPLORER_CUSTOM_MOCK_DATA
             return {
               ...query,
               result: serverResult.result
@@ -214,16 +217,17 @@ export default class Explorer extends DashboardView {
 
           // Trigger rendering pipeline
           this.setState({ activeQueries });
-        });
+        //});
       }
 
-      promises.push(promise);
-      this.xhrHandles.push(xhr);
+      //promises.push(promise);
+      //this.xhrHandles.push(xhr);
     });
-    Parse.Promise.when(promises).then(() => this.setState({
+    //Parse.Promise.when(promises).then(() =>
+     this.setState({
       loading: false,
       mutated: false
-    }));
+    })//);
   }
 
   handleDownload() {

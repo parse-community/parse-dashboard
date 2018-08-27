@@ -178,6 +178,8 @@ class Config extends TableView {
       ActionTypes.SET,
       { param: name, value: value }
     ).then(() => {
+      // Send track event
+      back4AppNavigation && back4AppNavigation.createConfigParameterEvent()
       this.setState({ modalOpen: false });
     }, () => {
       // Catch the error

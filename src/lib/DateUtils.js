@@ -164,3 +164,8 @@ export function pad(number) {
   }
   return r;
 }
+
+export function daysToMilli(days) {
+  if (!days) return days
+  return days * (1000 * 60 * 60 * 24)
+}

@@ -70,7 +70,11 @@ export default class Jobs extends TableView {
       toDelete: null,
       jobStatus: undefined,
       loading: true,
+      // Properties used to control data access
+      hasPermission: true,
+      errorMessage: ""
     };
+
   }
 
   componentWillMount() {
@@ -98,10 +102,23 @@ export default class Jobs extends TableView {
 
   loadData() {
     this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
-      this.setState({ loading: false });
+      let err
+      err = this.props.jobs.data && this.props.jobs.data.get('err')
+      // Verify error message, used to control collaborators permissions
+      if (err && err.code === 403)
+        this.setState({
+          loading: false,
+          hasPermission: false,
+          errorMessage: err.message
+        });
+      // If is a unexpected error just finish loading state
+      else this.setState({ loading: false });
+      this.renderEmpty()
     });
     this.context.currentApp.getJobStatus().then((status) => {
       this.setState({ jobStatus: status });
+    }).catch(() => {
+      this.setState({ jobStatus: [] });
     });
   }
 
@@ -117,6 +134,8 @@ export default class Jobs extends TableView {
   }
 
   renderRow(data) {
+    // Just render rows if user has permission to access data
+    if (!this.state.hasPermission) return
     if (this.props.params.section === 'all') {
       return (
         <tr key={data.jobName}>
@@ -181,6 +200,15 @@ export default class Jobs extends TableView {
   }
 
   renderEmpty() {
+    if (!this.state.hasPermission) {
+      // Permission denied state
+      return (
+        <EmptyState
+          title='Cloud Jobs'
+          description={this.state.errorMessage}
+          icon='cloud-unsure' />
+      )
+    }
     if (this.props.params.section === 'all') {
       return (
         <EmptyState
@@ -224,6 +252,8 @@ export default class Jobs extends TableView {
   }
 
   tableData() {
+    // Return a empty array if user don't have permission to read scheduled jobs
+    if (!this.state.hasPermission) return []
     let data = undefined;
     if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
       if (this.props.jobs.data) {
