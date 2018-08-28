@@ -29,9 +29,10 @@ import { List }                 from 'immutable';
 
 const XHR_KEY = 'PushAudiencesIndex';
 
+export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
-export default class PushAudiencesIndex extends DashboardView {
+class PushAudiencesIndex extends DashboardView {
   constructor() {
     super();
     this.section = 'Push';

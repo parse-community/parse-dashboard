@@ -16,9 +16,9 @@ import { SpecialClasses }                 from 'lib/Constants';
 import stringCompare                      from 'lib/stringCompare';
 import prettyNumber                       from 'lib/prettyNumber';
 
-
+export default
 @subscribeTo('Schema', 'schema')
-export default class Browser extends DashboardView {
+class Browser extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';

@@ -33,8 +33,9 @@ import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import * as queryString                   from 'query-string';
 
+export default
 @subscribeTo('Schema', 'schema')
-export default class Browser extends DashboardView {
+class Browser extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';

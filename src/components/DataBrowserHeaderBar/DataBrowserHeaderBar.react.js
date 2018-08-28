@@ -12,8 +12,9 @@ import React               from 'react';
 import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
 import { DragDropContext } from 'react-dnd';
 
+export default
 @DragDropContext(HTML5Backend)
-export default class DataBrowserHeaderBar extends React.Component {
+class DataBrowserHeaderBar extends React.Component {
   render() {
     let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly } = this.props;
     let elements = [

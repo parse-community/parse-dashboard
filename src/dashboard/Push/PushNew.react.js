@@ -121,9 +121,10 @@ let LocalizedMessageField = ({
 
 const XHR_KEY = 'PushNew';
 
+export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
-export default class PushNew extends DashboardView {
+class PushNew extends DashboardView {
   constructor() {
     super();
     this.xhrs = [];

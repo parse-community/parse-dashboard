@@ -201,8 +201,9 @@ const COLOR_MAP = {
 const DROPDOWN_KEY_GROUP_A = 'Group A';
 const DROPDOWN_KEY_GROUP_B = 'Group B';
 
+export default
 @subscribeTo('Schema', 'schema')
-export default class PushDetails extends DashboardView {
+class PushDetails extends DashboardView {
   constructor() {
     super();
     this.section = 'Push';
