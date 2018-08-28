@@ -50,4 +50,4 @@ let AppData = createClass({
   }
 });
 
-module.exports = AppData;
+export default AppData;

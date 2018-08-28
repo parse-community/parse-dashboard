@@ -62,5 +62,3 @@ export default class SliderWrap extends React.Component {
     );
   }
 }
-
-module.exports = SliderWrap;
