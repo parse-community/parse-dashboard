@@ -277,7 +277,7 @@ export default class ParseApp {
   }
 
   getAnalyticsSlowQueries({path, method, respStatus, respTime, from, to, distinct}) {
-    let appsPath = b4aSettings.BACK4APP_API_PATH.indexOf('http://localhost:') === 0 ? 'parse-app' : 'apps';
+    let appsPath = 'parse-app';
     let urlPrefix = `${b4aSettings.BACK4APP_API_PATH}/${appsPath}/${this.slug}/slow_requests?`;
 
     let url = urlPrefix + encodeFormData(null, {
