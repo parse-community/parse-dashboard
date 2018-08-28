@@ -39,8 +39,9 @@ let buildFriendlyName = (query) => {
   return name.join(' ');
 };
 
+export default
 @subscribeTo('AnalyticsQuery', 'customQueries')
-export default class Explorer extends DashboardView {
+class Explorer extends DashboardView {
   constructor() {
     super();
     this.section = 'Analytics';
