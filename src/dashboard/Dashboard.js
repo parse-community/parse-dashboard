@@ -101,7 +101,7 @@ const PARSE_DOT_COM_SERVER_INFO = {
   parseServerVersion: 'Parse.com',
 }
 
-class Dashboard extends React.Component {
+export default class Dashboard extends React.Component {
   constructor(props) {
     super();
     this.state = {
@@ -313,6 +313,3 @@ class Dashboard extends React.Component {
     );
   }
 }
-
-
-module.exports = Dashboard;

@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-var babel = require('babel-core');
+var babel = require('@babel/core');
 var extractClassnames = require('./extractClassnames');
 
 module.exports = {
@@ -26,8 +26,8 @@ module.exports = {
       return babel.transform(src, {
         filename: filename,
         retainLines: true,
-        plugins: ['transform-decorators-legacy', 'transform-object-rest-spread', 'transform-regenerator', 'transform-runtime'],
-        presets: ['react', 'env'] 
+        plugins: [["@babel/plugin-proposal-decorators", { "legacy": true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
+        presets: ['@babel/preset-react', '@babel/preset-env']
         // Remove propTypes for tests so we don't have to keep unmocking lib/PropTypes
         // Also it's more representative of the production environment
         //plugins: [ 'babel-plugin-remove-proptypes' ]

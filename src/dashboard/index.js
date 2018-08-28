@@ -10,7 +10,7 @@ import installDevTools from 'immutable-devtools';
 import React           from 'react';
 import ReactDOM        from 'react-dom';
 import Dashboard       from './Dashboard';
-import 'babel-polyfill';
+import '@babel/polyfill';
 
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);

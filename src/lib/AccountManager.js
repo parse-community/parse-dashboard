@@ -78,4 +78,4 @@ let AccountManager = {
   },
 };
 
-module.exports = AccountManager;
+export default AccountManager;
