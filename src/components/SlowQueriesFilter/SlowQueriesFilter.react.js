@@ -13,6 +13,7 @@ import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
 import ReactDOM       from 'react-dom';
 import styles         from 'components/SlowQueriesFilter/SlowQueriesFilter.scss';
+import Button         from 'components/Button/Button.react';
 
 export default class SlowQueriesFilter extends React.Component {
   constructor() {
@@ -31,6 +32,12 @@ export default class SlowQueriesFilter extends React.Component {
     if (props.schema !== this.props.schema) {
       this.setState({ open: false });
     }
+  }
+
+  clear() {
+    this.setState({ open: false }, () => {
+      this.props.onChange({ method: undefined, path: undefined, respStatus: undefined, respTime: undefined });
+    });
   }
 
   render() {
@@ -62,7 +69,7 @@ export default class SlowQueriesFilter extends React.Component {
                   value={path || 'Path'}
                   options={this.props.pathOptions}
                   onChange={path => this.props.onChange({ path })}
-                  width={'340'} />
+                  width={340} />
                 <ChromeDropdown
                   color={active ? 'blue' : 'purple'}
                   value={respStatus || 'Resp. Status'}
@@ -73,6 +80,14 @@ export default class SlowQueriesFilter extends React.Component {
                   {/*value={respTime || 'Res. Time'}*/}
                   {/*options={this.props.respTimeOptions}*/}
                   {/*onChange={respTime => this.props.onChange({ respTime })} />*/}
+              </div>
+              <div className={styles.footer}>
+                <Button
+                  color='white'
+                  value='Clear all'
+                  disabled={!active}
+                  width='120px'
+                  onClick={this.clear.bind(this)} />
               </div>
             </div>
           </div>
