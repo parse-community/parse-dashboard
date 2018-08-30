@@ -147,8 +147,6 @@ export default class SlowQueries extends TableView {
   }
 
   renderToolbar() {
-    let respTimeOptions = ['less than 100 ms', 'less than 300 ms', 'less than 500 ms', 'less than 1s', 'less than 5s', 'less than 20s']
-
     // Get app versions using Explorer endpoint
     // let queries = this.props.customQueries.data.get('queries') || [];
     // let appVersionExplorerQuery = queries.find((query) => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId);
@@ -190,7 +188,6 @@ export default class SlowQueries extends TableView {
             methodOptions={this.state.methodOptions}
             pathOptions={this.state.pathOptions}
             respStatusOptions={this.state.statusOptions}
-            respTimeOptions={respTimeOptions}
             onChange={(newValue) => this.setState({
               ...newValue,
               mutated: true
@@ -251,14 +248,14 @@ export default class SlowQueries extends TableView {
     return (
       <FlowFooter
         borderTop='1px solid rgba(151, 151, 151, 0.27)'
-        secondary={(
-          <span style={{ marginRight: '10px' }}>
-            <DateRange
-              value={this.state.dateRange}
-              onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
-              align={Directions.RIGHT} />
-          </span>
-        )}
+        // secondary={(
+        //   <span style={{ marginRight: '10px' }}>
+        //     <DateRange
+        //       value={this.state.dateRange}
+        //       onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
+        //       align={Directions.RIGHT} />
+        //   </span>
+        // )}
         primary={(
           <Button
             primary={true}
