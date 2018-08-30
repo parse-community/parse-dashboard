@@ -168,7 +168,9 @@ export const ActionTypes = keyMirror([
 
 function AnalyticsQueryStore(state, action) {
   action.app.setParseKeys();
-  let urlPrefix = `/apps/${action.app.slug}/explorer`;
+  return;
+  let appsPath = 'parse-app';
+  let urlPrefix = `${b4aSettings.BACK4APP_API_PATH}/${appsPath}/${action.app.slug}/explorer`;
 
   switch (action.type) {
     case ActionTypes.LIST:
