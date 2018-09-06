@@ -182,6 +182,7 @@ class Dashboard extends React.Component {
           });
         }
       });
+      Parse.Analytics.track('test', { key: 'value' })
       return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {
       if(resolvedApps && Array.isArray(resolvedApps)) {

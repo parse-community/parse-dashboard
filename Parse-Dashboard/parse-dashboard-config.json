@@ -189,6 +189,25 @@
         "forceShowGDPRFields": false
       },
       "masterKey": "3NG0wfMouZ3wpriDigFe8KSgXtTxndSOP5ZGg4Pd"
+    },
+    {
+      "serverURL": "http://localhost:3300",
+      "appId": "srDKlHRBjr2iwIaZvySBBmCp4obeXK60V4eGbRfj",
+      "restAPIKey": "S8f2sdo3i6fdzvEBCus3t1nD69CtZmIeBbWfhLvC",
+      "javascriptKey": "JFnu9AxlPXzkVlwDkm03wdZeQ6Lpdlg0BhojcbkY",
+      "clientKey": "mR8Zmw5THCGULRMGmoXsmAAWpuhK2cOrLzkS2IsX",
+      "fileKey": "abd5d9f6-c3a4-4772-a8f8-cd3b531f4da3",
+      "dotNetKey": "3cPT4E067loCphMJz9PtMgxMf6K1jL2nh89UbFn6",
+      "webhookKey": "wwQGHsvnKZLoWMrzoEZbvynkIw0BmZpzpM3JjsAi",
+      "appName": "lol",
+      "production": true,
+      "appNameForURL": "fce019a1-dae1-4e93-bd0c-76691cdbed08",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": false,
+        "forceShowGDPRFields": false
+      },
+      "masterKey": "9Amrht99xPLz0iLAGC8zdvPslkjvgsT8GW7QL2F3"
     }
   ],
   "newFeaturesInLatestVersion": [],
