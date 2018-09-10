@@ -61,7 +61,7 @@ export default class SlowQueries extends TableView {
         end: new Date(
           date.getFullYear(),
           date.getMonth(),
-          date.getDate()
+          date.getDate() + 1
         )
       },
       className: undefined,
