@@ -1,6 +1,7 @@
 {
   "apps": [
     {
+<<<<<<< HEAD
       "serverURL": "https://parseapi.back4app.com",
       "appId": "EtXNcokaQWvOFSUwGnpFynJDs5KZIrWoHuKUUIs7",
       "javascriptKey": "jC4d9fdpx7MVr4QU6eeLo1XIzZzZZMlJAnC8DtjE",
@@ -217,4 +218,82 @@
     "account_keys": [],
     "name": "lucas@back4app.com"
   }
+=======
+      "apiKey": "33234033-ff53-4857-9822-7c095b29d1a1",
+      "appNameForURL": "33234033-ff53-4857-9822-7c095b29d1a1",
+      "id": "33234033-ff53-4857-9822-7c095b29d1a1",
+      "loggerAdapter": {
+        "module": "@back4app/back4app-logger-adapter",
+        "options": {
+          "udp": true,
+          "logBody": true,
+          "logBodyMillis": 100,
+          "checkMasterKey": false,
+          "defaults": {
+            "timeout": 1000
+          },
+          "logServer": true,
+          "logServerUrl": "http://loggerproxy.back4app.com:9900/apps_server",
+          "logServerUdpHost": "loggerproxy.back4app.com",
+          "logServerUdpPort": 49003,
+          "logRequests": true,
+          "logRequestsUrl": "http://loggerproxy.back4app.com:9900/apps_requests",
+          "logRequestsUdpHost": "loggerproxy.back4app.com",
+          "logRequestsUdpPort": 49002,
+          "logConsole": true,
+          "logConsoleUrl": "http://loggerproxy.back4app.com:9900/apps_console",
+          "logConsoleUdpHost": "loggerproxy.back4app.com",
+          "logConsoleUdpPort": 49001
+        }
+      },
+      "databaseURI": "mongodb://admin:Oj3gQwqcxZX7iqk0c01jqcVN@mongodb.back4app.com/1092c422a65f4601b4853eca907e5f2d?connectTimeoutMS=30000",
+      "appId": "DrcS4pwOkxngrYsikDRAbfCZjZMq6ZruzvdM2y7M",
+      "masterKey": "rBWuaMCFiZzPy4IjkVFQVaeZPWb3ES3jdxIp5x8s",
+      "restAPIKey": "w2iCq0AeshoUU8NbVjTGowFMFv1YvQ478EvEgueK",
+      "javascriptKey": "0F2x31ceRPn871tO3Wc5Ua8a3mShFjb3V1kz3SrN",
+      "clientKey": "hPjnbxiI6c0QVpJWzG5iUMerF1DXIuMlHIxhAWbE",
+      "fileKey": "c71eb128-0e57-4cde-af58-808f90e397a1",
+      "dotNetKey": "JH8AS3LO6GlogstmWevuKbs72UrRRJldnfIG9EIK4Vwc",
+      "webhookKey": "QhO0QZZM9pJ632rzCqEYWSp4A9fO3vCah045ZNe7",
+      "cloud": "cloudCodeWrapper.js",
+      "logsFolder": "./data/parseLogs/",
+      "verbose": false,
+      "serverURL": "http://localhost:3333",
+      "publicServerURL": "http://localhost:3333",
+      "appName": "teste queijo",
+      "emailAdapter": {
+        "module": "parse-server-mandrill-adapter",
+        "options": {
+          "apiKey": "C6rFORDBBMHYgdPQZYxKqQ",
+          "fromEmail": "no-reply@back4app.com",
+          "replyTo": "no-reply@back4app.com",
+          "displayName": "",
+          "verificationSubject": "",
+          "verificationBody": "",
+          "passwordResetSubject": "",
+          "passwordResetBody": ""
+        }
+      },
+      "push": {
+        "osx": [
+          {
+            "_id": "c5ecc30c-415d-4feb-885e-93d59eadd7c0",
+            "pfx": "/Users/paiva/b4a/com.back4app.macos.p12",
+            "bundleId": "com.back4app.macos",
+            "production": true,
+            "expiresAt": "2019-07-19T12:37:17.000Z"
+          },
+          {
+            "_id": "c5ecc30c-415d-4feb-885e-93d59eadd7c1",
+            "pfx": "/Users/paiva/b4a/com.back4app.macos_developer.p12",
+            "bundleId": "com.back4app.macos",
+            "production": false,
+            "expiresAt": "2019-07-19T12:37:17.000Z"
+          }
+        ]
+      },
+      "production": true
+    }
+  ]
+>>>>>>> origin/master
 }

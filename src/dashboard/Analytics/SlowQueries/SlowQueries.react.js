@@ -21,10 +21,8 @@ import TableView                from 'dashboard/TableView.react';
 import Toolbar                  from 'components/Toolbar/Toolbar.react';
 import { Directions }           from 'lib/Constants';
 
-import SlowQueryMock from '../../../../testing/slowQuery.test.js'
-
-const SLOW_QUERIES_HEADERS = ['Class', 'Normalized Query', 'Count', 'Slow%', 'Timeouts', 'Scanned (Avg)', 'Median (ms)', 'P90 (ms)'];
-const TABLE_WIDTH = [15, 25, 7, 8, 10, 15, 11, 9];
+const SLOW_QUERIES_HEADERS = ['#', 'Date Time', 'Method', 'Path', 'Parameters', 'Resp. Status', 'Resp. Time (ms)'];
+const TABLE_WIDTH = [5, 17, 8, 25, 25, 10, 10];
 
 const APP_VERSIONS_EXPLORER_QUERY = {
   type: 'json',
@@ -44,24 +42,35 @@ export default class SlowQueries extends TableView {
   constructor() {
     super();
     this.section = 'Analytics';
-    this.subsection = 'Slow Queries';
+    this.subsection = 'Slow Requests';
 
     let date = new Date();
     this.state = {
       slowQueries: [],
+      pathOptions: [],
+      statusOptions: [],
+      methodOptions: [],
       loading: true,
       mutated: false,
       dateRange: {
         start: new Date(
           date.getFullYear(),
           date.getMonth(),
-          date.getDate() - 1
+          date.getDate() - 31
         ),
-        end: date
+        end: new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + 1
+        )
       },
       className: undefined,
       os: undefined,
-      version: undefined
+      version: undefined,
+      method: undefined,
+      path: undefined,
+      respStatus: undefined,
+      respTime: undefined
     };
     this.xhrHandles = [];
   }
@@ -100,15 +109,32 @@ export default class SlowQueries extends TableView {
   }
 
   fetchSlowQueries(app) {
-    let { className, os, version, dateRange } = this.state;
+    let { path, method, respStatus, respTime, dateRange } = this.state;
 
     this.setState({ loading: true }, () => {
-      let { promise, xhr } = app.getAnalyticsSlowQueries(className, os, version, dateRange.start, dateRange.end);
+      let { promise, xhr } = app.getAnalyticsSlowQueries({path, method, respStatus, respTime, from: dateRange.start, to: dateRange.end});
+      let pathsResult = app.getAnalyticsSlowQueries({distinct: 'href', path, method, respStatus, respTime, from: dateRange.start, to: dateRange.end});
+      let statusResult = app.getAnalyticsSlowQueries({distinct: 'statusCode', path, method, respStatus, respTime, from: dateRange.start, to: dateRange.end});
+      let methodsResult = app.getAnalyticsSlowQueries({distinct: 'method', path, method, respStatus, respTime, from: dateRange.start, to: dateRange.end});
       promise.then(
-        (result) => this.setState({ slowQueries: result || [], loading: false, mutated: false }),
-        () => this.setState({ slowQueries: SlowQueryMock.SLOW_QUERY_MOCK_DATA, loading: false, mutated: false })
+        (result) => this.setState({ slowQueries: result && result.concat([[],[]]) || [] }),
+        () => this.setState({ slowQueries: [] })
       );
-      this.xhrHandles = [xhr];
+      pathsResult.promise.then(
+        result => this.setState({ pathOptions: result || [] }),
+        () => this.setState({ pathOptions: [] })
+      );
+      statusResult.promise.then(
+        result => this.setState({ statusOptions: result && result.map(r => `${r}`) || [] }),
+        () => this.setState({ statusOptions: [] })
+      );
+      methodsResult.promise.then(
+        result => this.setState({ methodOptions: result || [] }),
+        () => this.setState({ methodOptions: [] })
+      );
+      Promise.all([promise, pathsResult.promise, statusResult.promise, methodsResult.promise])
+        .finally(() => this.setState({ loading: false, mutated: false }))
+      this.xhrHandles = [xhr, pathsResult.xhr, statusResult.xhr, methodsResult.xhr];
     });
   }
 
@@ -122,45 +148,46 @@ export default class SlowQueries extends TableView {
 
   renderToolbar() {
     // Get app versions using Explorer endpoint
-    let queries = this.props.customQueries.data.get('queries') || [];
-    let appVersionExplorerQuery = queries.find((query) => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId);
-    let appVersions = {};
-    if (appVersionExplorerQuery && appVersionExplorerQuery.result) {
-      appVersionExplorerQuery.result.forEach((value) => {
-        let os = value['OS'];
-        let version = value['App Display Version'];
-        if (os === null || version === null) return;
-        if (appVersions.hasOwnProperty(os)) {
-          appVersions[os].push(version);
-        } else {
-          appVersions[os] = [version];
-        }
-      });
-    }
-
-    let osOptions = ['OS'];
-    if (Object.keys(appVersions) && Object.keys(appVersions).length > 0) {
-      osOptions = Object.keys(appVersions);
-    }
-
-    // Get class names using Schema endpoint
-    let classOptions = ['Class'];
-    let classList = this.props.schema.data.get('classes');
-    if (classList && !classList.isEmpty()) {
-      classOptions = Object.keys(classList.toObject());
-    }
+    // let queries = this.props.customQueries.data.get('queries') || [];
+    // let appVersionExplorerQuery = queries.find((query) => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId);
+    // let appVersions = {};
+    // if (appVersionExplorerQuery && appVersionExplorerQuery.result) {
+    //   appVersionExplorerQuery.result.forEach((value) => {
+    //     let os = value['OS'];
+    //     let version = value['App Display Version'];
+    //     if (os === null || version === null) return;
+    //     if (appVersions.hasOwnProperty(os)) {
+    //       appVersions[os].push(version);
+    //     } else {
+    //       appVersions[os] = [version];
+    //     }
+    //   });
+    // }
+    //
+    // let osOptions = ['OS'];
+    // if (Object.keys(appVersions) && Object.keys(appVersions).length > 0) {
+    //   osOptions = Object.keys(appVersions);
+    // }
+    //
+    // // Get class names using Schema endpoint
+    // let classOptions = ['Class'];
+    // let classList = this.props.schema.data.get('classes');
+    // if (classList && !classList.isEmpty()) {
+    //   classOptions = Object.keys(classList.toObject());
+    // }
 
     let actions = null;
     if (!this.state.loading) {
       actions = (
         <div>
           <SlowQueriesFilter
-            className={this.state.className}
-            os={this.state.os}
-            version={this.state.version}
-            classNameOptions={classOptions}
-            osOptions={osOptions}
-            versionOptions={appVersions[this.state.os] || ['Version']}
+            method={this.state.method}
+            path={this.state.path}
+            respStatus={this.state.respStatus}
+            respTime={this.state.respTime}
+            methodOptions={this.state.methodOptions}
+            pathOptions={this.state.pathOptions}
+            respStatusOptions={this.state.statusOptions}
             onChange={(newValue) => this.setState({
               ...newValue,
               mutated: true
@@ -180,7 +207,7 @@ export default class SlowQueries extends TableView {
     return (
        <Toolbar
         section='Analytics'
-        subsection='Slow Queries'>
+        subsection='Slow Requests'>
         {actions}
       </Toolbar>
     );
@@ -198,7 +225,7 @@ export default class SlowQueries extends TableView {
 
   renderRow(query) {
     return (
-      <tr key={query[1]}>
+      <tr key={query[0]}>
         {TABLE_WIDTH.map((width, index) => (
           <td key={'column_' + index} width={width + '%'}>{index === 1 ? formatQuery(query[index]) : query[index]}</td>
         ))}
@@ -209,7 +236,7 @@ export default class SlowQueries extends TableView {
   renderEmpty() {
     return (
       <EmptyState
-        title='Slow Queries'
+        title='Slow Requests'
         description={'You haven\'t executed any queries.'}
         icon='gears'
         cta='Get started with Query'
@@ -221,14 +248,14 @@ export default class SlowQueries extends TableView {
     return (
       <FlowFooter
         borderTop='1px solid rgba(151, 151, 151, 0.27)'
-        secondary={(
-          <span style={{ marginRight: '10px' }}>
-            <DateRange
-              value={this.state.dateRange}
-              onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
-              align={Directions.RIGHT} />
-          </span>
-        )}
+        // secondary={(
+        //   <span style={{ marginRight: '10px' }}>
+        //     <DateRange
+        //       value={this.state.dateRange}
+        //       onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
+        //       align={Directions.RIGHT} />
+        //   </span>
+        // )}
         primary={(
           <Button
             primary={true}

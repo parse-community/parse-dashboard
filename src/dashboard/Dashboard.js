@@ -280,7 +280,7 @@ class Dashboard extends React.Component {
             <Route path='explorer/:displayType' component={Explorer} />
             <Route path='retention' component={Retention} />
             <Route path='performance' component={Performance} />
-            <Route path='slow_queries' component={SlowQueries} />
+            <Route path='slow_requests' component={SlowQueries} />
           </Route>
 
           <Route path='server-settings' component={ServerSettings} />

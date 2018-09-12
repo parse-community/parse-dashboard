@@ -34,7 +34,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
 
     fs.stat(path, function(err) {
       if (err) {
-          if ('ENOENT' == err.code) {// file does not exist
+          if ('ENOENT' === err.code) {// file does not exist
               console.warn("Icon with file name: " + iconName +" couldn't be found in icons folder!");
           } else {
             console.log(
@@ -66,12 +66,12 @@ module.exports = function(config, options) {
 
     // Reads files from public/bundles folder, looking for dashboard.<hash>.js and login.<hash>.js
     fs.readdir(path.join(__dirname, 'public', 'bundles'), function(err, items) {
-      dashboardUrl = items.filter(file => file.indexOf('dashboard.') === 0)[0] || 'dashboard.bundle.js';
-      loginUrl = items.filter(file => file.indexOf('login.') === 0)[0] || 'login.bundle.js';
+      dashboardUrl = items && items.filter(file => file.indexOf('dashboard.') === 0)[0] || 'dashboard.bundle.js';
+      loginUrl = items && items.filter(file => file.indexOf('login.') === 0)[0] || 'login.bundle.js';
     });
 
     const users = config.users;
-    const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
+    const useEncryptedPasswords = !!config.useEncryptedPasswords;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
     authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret });
 
