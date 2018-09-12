@@ -16,8 +16,6 @@ import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import styles                    from 'dashboard/Analytics/Overview/Overview.scss';
 import { yearMonthDayFormatter } from 'lib/DateUtils';
 
-import SlowQueryMock from '../../../../testing/slowQuery.test.js'
-
 const AUDIENCE_META = [
   // Users
   [
@@ -131,7 +129,6 @@ export default class Overview extends DashboardView {
     let overview = app.getAnalyticsOverview(new Date());
     this.setState(overview);
 
-    console.log('overview', overview)
     for (let key in overview) {
       let item = overview[key];
       item.promise.then(
@@ -147,8 +144,7 @@ export default class Overview extends DashboardView {
           this.setState({
             [key]: {
               promise: item.promise,
-              //error: error
-              value: SlowQueryMock.OVERVIEW_MOCK_DATA[key] && SlowQueryMock.OVERVIEW_MOCK_DATA[key].value
+              error: error
             }
           });
         }
