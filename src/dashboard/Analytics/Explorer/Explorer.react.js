@@ -95,7 +95,7 @@ export default class Explorer extends DashboardView {
   }
 
   getCustomQueriesFromProps(props) {
-    let customQueries = props.customQueries.data.get('queries');
+    let customQueries = props.customQueries.data && props.customQueries.data.get('queries');
     return (customQueries && customQueries.toArray()) || [];
   }
 
@@ -301,8 +301,9 @@ export default class Explorer extends DashboardView {
     return (
       <CategoryList current={current} linkPrefix={'analytics/explorer/'} categories={[
         { name: 'Chart', id: 'chart' },
-        { name: 'Table', id: 'table' },
-        { name: 'JSON', id: 'json' }
+        // TODO: Enable table and json as data representation model
+        //{ name: 'Table', id: 'table' },
+        //{ name: 'JSON', id: 'json' }
       ]} />
     );
   }
@@ -319,15 +320,16 @@ export default class Explorer extends DashboardView {
       // We don't allow preset queries on Table/JSON
       queries = queries.concat(AnalyticsConstants.PresetQueries);
     }
-    queries = queries.concat({
-      name: 'Saved Queries',
-      children: savedQueries,
-      emptyMessage: 'You have not saved any queries yet.'
-    }, {
-      name: 'Recent Queries',
-      children: recentQueries,
-      emptyMessage: 'You have no recent custom queries yet.'
-    });
+    // TODO: Enable saved and recent queries
+    // queries = queries.concat({
+    //   name: 'Saved Queries',
+    //   children: savedQueries,
+    //   emptyMessage: 'You have not saved any queries yet.'
+    // }, {
+    //   name: 'Recent Queries',
+    //   children: recentQueries,
+    //   emptyMessage: 'You have no recent custom queries yet.'
+    // });
 
     let toolbar = (
       <Toolbar
