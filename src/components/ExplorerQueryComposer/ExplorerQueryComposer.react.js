@@ -18,67 +18,67 @@ import React          from 'react';
 import ReactDOM       from 'react-dom';
 import styles         from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
 
-const TABLE_SOURCES_LABEL = ['API Event', 'Custom Event'];
+const TABLE_SOURCES_LABEL = [/* 'API Event',*/ 'Custom Event'];
 
 const FIELD_LABELS = {
-  'API Event': [
-    'Request Type',
-    'Class',
-    'Installation ID',
-    'Parse User ID',
-    'Parse SDK',
-    'Parse SDK Version',
-    'OS',
-    'OS Version',
-    'App Build Version',
-    'App Display Version',
-    'Timestamp (s)',
-    'Latency (s)'
-  ],
+  // 'API Event': [
+  //   'Request Type',
+  //   'Class',
+  //   'Installation ID',
+  //   'Parse User ID',
+  //   'Parse SDK',
+  //   'Parse SDK Version',
+  //   'OS',
+  //   'OS Version',
+  //   'App Build Version',
+  //   'App Display Version',
+  //   'Timestamp (s)',
+  //   'Latency (s)'
+  // ],
   'Custom Event': [
-    'Event Name',
-    'Dimensions',
-    'Installation ID',
-    'Parse User ID',
-    'Parse SDK',
-    'Parse SDK Version',
-    'OS',
-    'OS Version',
-    'App Build Version',
-    'App Display Version',
-    'Timestamp (s)'
+    'Event Name'
+    // 'Dimensions',
+    // 'Installation ID',
+    // 'Parse User ID',
+    // 'Parse SDK',
+    // 'Parse SDK Version',
+    // 'OS',
+    // 'OS Version',
+    // 'App Build Version',
+    // 'App Display Version',
+    // 'Timestamp (s)'
   ]
 };
 
 const AGGREGATE_TYPE_LABELS = [
-  'Count', 'Count Distinct', 'Sum', 'Minimum', 'Median', '99th Percentile', 'Average'
-];
+  'Count' /*, 'Count Distinct', 'Sum', 'Minimum', 'Median', '99th Percentile', 'Average'
+*/];
 
 const REQUIRED_GROUPING_LABELS = [
-  'Time (day)', 'Time (hour)'
-];
+  'Time (day)' /*, 'Time (hour)'
+*/];
 
 const ORDER_LABELS = [
   'Ascending', 'Descending'
 ];
 
 const FIELD_TYPE = {
-  'Request Type'        : 'String',
-  'Class'               : 'String',
-  'Event Name'          : 'String',
-  /* eslint-disable no-constant-condition */
-  'Dimensions'          : false ? 'JSON' : 'String', //In progress features. Change false to true to work on this feature.
-  /* eslint-enable */
-  'Installation ID'     : 'String',
-  'Parse User ID'       : 'String',
-  'Parse SDK'           : 'String',
-  'Parse SDK Version'   : 'String',
-  'OS'                  : 'String',
-  'OS Version'          : 'String',
-  'App Build Version'   : 'String',
-  'App Display Version' : 'String',
-  'Timestamp (s)'       : 'Date',
-  'Latency (s)'         : 'Number',
+  // 'Request Type'        : 'String',
+  // 'Class'               : 'String',
+  'Event Name'          : 'String'
+  // /* eslint-disable no-constant-condition */
+  // 'Dimensions'          : false ? 'JSON' : 'String', //In progress features. Change false to true to work on this feature.
+  // /* eslint-enable */
+  // 'Installation ID'     : 'String',
+  // 'Parse User ID'       : 'String',
+  // 'Parse SDK'           : 'String',
+  // 'Parse SDK Version'   : 'String',
+  // 'OS'                  : 'String',
+  // 'OS Version'          : 'String',
+  // 'App Build Version'   : 'String',
+  // 'App Display Version' : 'String',
+  // 'Timestamp (s)'       : 'Date',
+  // 'Latency (s)'         : 'Number',
 };
 
 let availableFilters = {};
@@ -780,20 +780,20 @@ export default class ExplorerQueryComposer extends React.Component {
 
         <div className={styles.queryComposerBox}>
           <div className={styles.boxContent}>
-            <span className={styles.actionButton}>
-              <Button
-                width='100%'
-                value='Add aggregate'
-                color='white'
-                onClick={this.handleAddAggregate.bind(this)} />
-            </span>
-            <span className={styles.actionButton}>
-              <Button
-                width='100%'
-                value='Add grouping'
-                color='white'
-                onClick={this.handleAddGroup.bind(this)} />
-            </span>
+            {/*<span className={styles.actionButton}>*/}
+              {/*<Button*/}
+                {/*width='100%'*/}
+                {/*value='Add aggregate'*/}
+                {/*color='white'*/}
+                {/*onClick={this.handleAddAggregate.bind(this)} />*/}
+            {/*</span>*/}
+            {/*<span className={styles.actionButton}>*/}
+              {/*<Button*/}
+                {/*width='100%'*/}
+                {/*value='Add grouping'*/}
+                {/*color='white'*/}
+                {/*onClick={this.handleAddGroup.bind(this)} />*/}
+            {/*</span>*/}
             <span className={styles.actionButton}>
               <Button
                 width='100%'

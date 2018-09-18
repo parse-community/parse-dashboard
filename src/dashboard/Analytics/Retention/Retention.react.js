@@ -145,12 +145,12 @@ export default class Retention extends DashboardView {
 
     return (
       <td key={'header_' + daysAgo} className={styles.YaxisLabel}>
-        <div className={styles.YaxisLabelDate}> 
-          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')} 
+        <div className={styles.YaxisLabelDate}>
+          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')}
           <span className={styles.YaxisLabelNumber}> {formattedDateDay}</span>
         </div>
         <div className={styles.YaxisLabelUsers}>
-          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')} 
+          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')}
           <span className={styles.YaxisLabelNumber}>{prettyNumber(dayData.total)}</span>
         </div>
       </td>

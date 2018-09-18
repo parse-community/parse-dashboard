@@ -11,7 +11,7 @@ export const PresetQueries = [
     name: 'Audience',
     children: [
       {
-        name: 'Daily Active Installations',
+        name: 'Daily Installations',
         query: {
           endpoint: 'audience',
           audienceType: 'daily_installations',
@@ -21,7 +21,7 @@ export const PresetQueries = [
         nonComposable: true
       },
       {
-        name: 'Daily Active Users',
+        name: 'Daily Users',
         query: {
           endpoint: 'audience',
           audienceType: 'daily_users',
@@ -31,7 +31,7 @@ export const PresetQueries = [
         nonComposable: true
       },
       {
-        name: 'Weekly Active Installations',
+        name: 'Weekly Installations',
         query: {
           endpoint: 'audience',
           audienceType: 'weekly_installations',
@@ -41,7 +41,7 @@ export const PresetQueries = [
         nonComposable: true
       },
       {
-        name: 'Weekly Active Users',
+        name: 'Weekly Users',
         query: {
           endpoint: 'audience',
           audienceType: 'weekly_users',
@@ -51,7 +51,7 @@ export const PresetQueries = [
         nonComposable: true
       },
       {
-        name: 'Monthly Active Installations',
+        name: 'Monthly Installations',
         query: {
           endpoint: 'audience',
           audienceType: 'monthly_installations',
@@ -61,7 +61,7 @@ export const PresetQueries = [
         nonComposable: true
       },
       {
-        name: 'Monthly Active Users',
+        name: 'Monthly Users',
         query: {
           endpoint: 'audience',
           audienceType: 'monthly_users',
@@ -94,15 +94,15 @@ export const PresetQueries = [
         preset: true,
         nonComposable: true
       },
-      {
-        name: 'File Requests',
-        query: {
-          endpoint: 'file_request',
-          stride: 'day'
-        },
-        preset: true,
-        nonComposable: true
-      },
+      // {
+      //   name: 'File Requests',
+      //   query: {
+      //     endpoint: 'file_request',
+      //     stride: 'day'
+      //   },
+      //   preset: true,
+      //   nonComposable: true
+      // },
       {
         name: 'Push Notifications',
         query: {
@@ -121,15 +121,15 @@ export const PresetQueries = [
         preset: true,
         nonComposable: true
       },
-      {
-        name: 'Push Opens',
-        query: {
-          endpoint: 'app_opened_from_push',
-          stride: 'day'
-        },
-        preset: true,
-        nonComposable: true
-      }
+      // {
+      //   name: 'Push Opens',
+      //   query: {
+      //     endpoint: 'app_opened_from_push',
+      //     stride: 'day'
+      //   },
+      //   preset: true,
+      //   nonComposable: true
+      // }
     ]
   }
 ];

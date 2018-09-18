@@ -17,3 +17,4 @@ npm-debug.log
 npm-debug.log.*
 
 *.orig
+Parse-Dashboard/parse-dashboard-config.json
