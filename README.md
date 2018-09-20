@@ -19,6 +19,7 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
   * [App Background Color Configuration](#app-background-color-configuration)
   * [Other Configuration Options](#other-configuration-options)
 * [Running as Express Middleware](#running-as-express-middleware)
+  * [Sails.js HOOK](#sailsjs-hook)
 * [Deploying Parse Dashboard](#deploying-parse-dashboard)
   * [Preparing for Deployment](#preparing-for-deployment)
   * [Security Considerations](#security-considerations)
@@ -243,6 +244,10 @@ app.use('/dashboard', dashboard);
 var httpServer = require('http').createServer(app);
 httpServer.listen(4040);
 ```
+
+## Sails.js HOOK
+
+Integrate Parse Dashboard as Express Middleware inside of Sails.js framework as [sails-hook-parse-dashboard](https://www.npmjs.com/package/sails-hook-parse-dashboard)
 
 # Deploying Parse Dashboard
 
