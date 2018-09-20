@@ -380,6 +380,7 @@ export default class ParseApp {
     }
     return fetch(path, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'X-Parse-Application-Id': this.applicationId,
         'X-Parse-Master-Key': this.masterKey
@@ -397,6 +398,7 @@ export default class ParseApp {
     }
     return fetch(path, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'X-Parse-Application-Id': this.applicationId,
         'X-Parse-Master-Key': this.masterKey
