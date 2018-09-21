@@ -30,11 +30,14 @@ import subscribeTo               from 'lib/subscribeTo';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import { verticalCenter }        from 'stylesheets/base.scss';
 
+let currentCustomQueryIndex = 1
+
 let buildFriendlyName = (query) => {
   let name = [query.source];
   if (query.groups && query.groups.length > 0) {
     name.push('grouped by');
     name.push(...query.groups);
+    name.push('#' + currentCustomQueryIndex++)
   }
   return name.join(' ');
 };
