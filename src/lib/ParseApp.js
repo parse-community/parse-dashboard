@@ -378,15 +378,17 @@ export default class ParseApp {
     if (this.feedbackEmail) {
       formData.append('feedbackEmail', this.feedbackEmail);
     }
-    return fetch(path, {
+    let options = {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'X-Parse-Application-Id': this.applicationId,
         'X-Parse-Master-Key': this.masterKey
       },
       body: formData
-    });
+    }
+    // if is GDPR
+    if (this.custom && this.custom.isGDPR) options.credentials = 'include'
+    return fetch(path, options);
   }
 
   importRelationData(className, relationName,  file) {
@@ -396,15 +398,17 @@ export default class ParseApp {
     if (this.feedbackEmail) {
       formData.append('feedbackEmail', this.feedbackEmail);
     }
-    return fetch(path, {
+    let options = {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'X-Parse-Application-Id': this.applicationId,
         'X-Parse-Master-Key': this.masterKey
       },
       body: formData
-    });
+    }
+    // if is GDPR
+    if (this.custom && this.custom.isGDPR) options.credentials = 'include'
+    return fetch(path, options);
   }
 
   exportData() {
