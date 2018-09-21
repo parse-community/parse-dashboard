@@ -270,7 +270,8 @@ export default class ParseApp {
   }
 
   getAnalyticsTimeSeries(query) {
-    let path = '/apps/' + this.slug + '/analytics?' + encodeFormData(null, query);
+    //TODO: Undo this before commit
+    let path = 'http://localhost:4000/apps/' + this.slug + '/analytics?' + encodeFormData(null, query);
     let { promise, xhr } = AJAX.abortableGet(path);
     promise = promise.then(( requested_data ) => requested_data);
     return { promise, xhr };
@@ -378,15 +379,17 @@ export default class ParseApp {
     if (this.feedbackEmail) {
       formData.append('feedbackEmail', this.feedbackEmail);
     }
-    return fetch(path, {
+    let options = {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'X-Parse-Application-Id': this.applicationId,
         'X-Parse-Master-Key': this.masterKey
       },
       body: formData
-    });
+    }
+    // if is GDPR
+    if (this.serverURL.match(/\/parseapi/)) options.credentials = 'include'
+    return fetch(path, options);
   }
 
   importRelationData(className, relationName,  file) {
@@ -396,15 +399,17 @@ export default class ParseApp {
     if (this.feedbackEmail) {
       formData.append('feedbackEmail', this.feedbackEmail);
     }
-    return fetch(path, {
+    let options = {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'X-Parse-Application-Id': this.applicationId,
         'X-Parse-Master-Key': this.masterKey
       },
       body: formData
-    });
+    }
+    // if is GDPR
+    if (this.serverURL.match(/\/parseapi/)) options.credentials = 'include'
+    return fetch(path, options);
   }
 
   exportData() {
