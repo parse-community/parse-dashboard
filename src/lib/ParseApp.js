@@ -388,7 +388,7 @@ export default class ParseApp {
       body: formData
     }
     // if is GDPR
-    if (this.serverURL.match(/\/parseapi/)) options.credentials = 'include'
+    if (this.custom && this.custom.isGDPR) options.credentials = 'include'
     return fetch(path, options);
   }
 
@@ -408,7 +408,7 @@ export default class ParseApp {
       body: formData
     }
     // if is GDPR
-    if (this.serverURL.match(/\/parseapi/)) options.credentials = 'include'
+    if (this.custom && this.custom.isGDPR) options.credentials = 'include'
     return fetch(path, options);
   }
 
