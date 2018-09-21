@@ -49,8 +49,11 @@ const LABEL_TO_KEY_MAPPING = {
   'Average'             : 'avg',
 
   // Grouping
-  'Time (day)'          : 'day',
-  'Time (hour)'         : 'hour',
+  'Time (day)'          : 'daily',
+  'Time (hour)'         : 'hourly',
+  'Time (minute)'       : 'minutely',
+  'Time (week)'         : 'weekly',
+  'Time (month)'        : 'monthly',
 
   // Order
   'Ascending'           : true,

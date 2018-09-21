@@ -1,3 +1,103 @@
 {
-  "apps": []
+  "apps": [
+    {
+      "serverURL": "http://localhost:4000/parseapi",
+      "appId": "B4MprrExKS1cZdZsqgqbHsIpD5wSku0xzVEwDovI",
+      "javascriptKey": "n0uumU3kdnlPWIpSzrlPG4f9RvryWPydqzJrMT5q",
+      "restKey": "qm1SMib2Hl2JnP8NK4s2kmeAoSZ2Bq4tD7Bt8tSm",
+      "clientKey": "CVTh8sJmWlyk5YVIE6EoKOudFsEnUtt0oMd8ctP3",
+      "windowsKey": "YVMud5pSL04LEsAnnUJDW22oaqCHwN2RCdVswXtM",
+      "webhookKey": "uw6gTP2u5fWLtcu0Q66sK3c3Fj9nAzZIGCvNfD9F",
+      "apiKey": "44390877-63d1-441e-95b8-675c6a34173f",
+      "appName": "homolog",
+      "production": true,
+      "appNameForURL": "26bafa7d-9683-4a13-a972-66463e8bb99c",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": true,
+        "forceShowGDPRFields": false
+      }
+    },
+    {
+      "serverURL": "https://parseapi-homolog.back4app.com",
+      "appId": "1IMlU6IGcS4BaTghSUk59Uz4k1TprHVNM6PiEl5M",
+      "javascriptKey": "X8EUnCsB4gklAoi7pAnnf4VlXXcdCDBzZRCO38rl",
+      "restKey": "IZt2SD91YIoyBjLc1SCaWCBv591KBDlr8Jv8GsVB",
+      "clientKey": "vFwRdP2K7FOoiMA3TUc9Ju19OqSJ0ccIT1FaBm2F",
+      "windowsKey": "PIm739RVWYCbWucjHWNLAMrVc1yu5Tc6oh7rQG2t",
+      "webhookKey": "WsUJRDplwA9C0I0xCIKWgILM1zmKKc2k0SKdqaQA",
+      "apiKey": "7b58f3af-fb33-4e4d-8dc4-e6ffe3df7987",
+      "appName": "new-App",
+      "production": true,
+      "appNameForURL": "b9521c6d-b2dc-45a8-90fe-3e6e90540430",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": false,
+        "forceShowGDPRFields": false
+      },
+      "masterKey": "pO7J6isXdum8VvefjNOfdNierDyr2oo3jHyuuDj5"
+    },
+    {
+      "serverURL": "https://parseapi-homolog.back4app.com",
+      "appId": "srDKlHRBjr2iwIaZvySBBmCp4obeXK60V4eGbRfj",
+      "javascriptKey": "JFnu9AxlPXzkVlwDkm03wdZeQ6Lpdlg0BhojcbkY",
+      "restKey": "S8f2sdo3i6fdzvEBCus3t1nD69CtZmIeBbWfhLvC",
+      "clientKey": "mR8Zmw5THCGULRMGmoXsmAAWpuhK2cOrLzkS2IsX",
+      "windowsKey": "3cPT4E067loCphMJz9PtMgxMf6K1jL2nh89UbFn6",
+      "webhookKey": "lt9sTGzADCxFKKbTfhooQH7JYAM75aMJ9eFuFstR",
+      "apiKey": "abd5d9f6-c3a4-4772-a8f8-cd3b531f4da3",
+      "appName": "eventos",
+      "production": true,
+      "appNameForURL": "fce019a1-dae1-4e93-bd0c-76691cdbed08",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": false,
+        "forceShowGDPRFields": false
+      },
+      "masterKey": "9Amrht99xPLz0iLAGC8zdvPslkjvgsT8GW7QL2F3"
+    },
+    {
+      "serverURL": "https://dashboard-homolog.back4app.com/parseapi",
+      "appId": "tdoPfIlE79zfq1jcUmTTwZ8TmUSyqcCEjsi8qhNi",
+      "javascriptKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "restKey": "Y03ibO09MbhBsCVxkr3MzRpAZSJGZA5eYnsP4IHO",
+      "clientKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "windowsKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "webhookKey": "3cjNfbWIJqVvkrBR6LeOwLmMDmDx3DH9YzbVyqnY",
+      "apiKey": "B3qb0bwje69vGlnzCDTYPplMNHnvnT8KJWoYYPwo",
+      "appName": "Teste Collaborators",
+      "production": true,
+      "appNameForURL": "22748d7c-da97-4ff2-9901-ca8d813ee3f7",
+      "feedbackEmail": "lucas@back4app.com",
+      "custom": {
+        "isGDPR": true,
+        "forceShowGDPRFields": false
+      }
+    },
+    {
+      "serverURL": "https://dashboard.back4app.com/parseapi",
+      "apiKey": "268da4bf-1ce6-4250-85c7-61f9952bcfab",
+      "appId": "qDy5I496r5vqoh013LYHVvzbx6obg2gbH4Zxhd9T",
+      "appName": "FCMAPP",
+      "appNameForURL": "d72816e9-d99a-4ba5-8195-8c230835aa2c",
+      "clientKey": "EaAgoXynkOiA67gk8Dfq5o7oBOtVIFGHqZ1XNse2",
+      "custom": {
+        "isGDPR": true,
+        "forceShowGDPRFields": false
+      },
+      "feedbackEmail": "lucas@back4app.com",
+      "javascriptKey": "VImrOSsybFKY5Q1Ju4LBcO8c5qYoJ2CiQZ1KCkcI",
+      "production": true,
+      "restKey": "XjbIRy6oFbT0IQeN97Z04cUMb2J0T1UyvxT9nhTL",
+      "webhookKey": "pq9HTHy5SlYPg4Q1rv7FiYI3GHZSupqHpRe4JPBb",
+      "windowsKey": "BDXEBOzOrb9uvk4KStI4fgmBbT5txcybTETDU1ck"
+    }
+  ],
+  "newFeaturesInLatestVersion": [],
+  "user": {
+    "email": "lucas@back4app.com",
+    "has_password": false,
+    "account_keys": [],
+    "name": "lucas@back4app.com"
+  }
 }

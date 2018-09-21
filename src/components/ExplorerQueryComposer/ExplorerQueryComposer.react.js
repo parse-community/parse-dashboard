@@ -55,8 +55,8 @@ const AGGREGATE_TYPE_LABELS = [
 */];
 
 const REQUIRED_GROUPING_LABELS = [
-  'Time (day)' /*, 'Time (hour)'
-*/];
+  'Time (day)', 'Time (hour)', 'Time (minute)', 'Time (week)', 'Time (month)'
+];
 
 const ORDER_LABELS = [
   'Ascending', 'Descending'
