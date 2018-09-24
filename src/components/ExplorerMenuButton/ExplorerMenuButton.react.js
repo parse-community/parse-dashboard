@@ -45,8 +45,9 @@ export default class ExplorerMenuButton extends React.Component {
   handleClick(e) {
     // Verify if the click is outside the picker
     if (this.state.currentView && this.parentNode && !this.parentNode.contains(e.target)) {
-      // Close picker
-      this.toggle()
+      // Click target is not inside the configuration dropdown
+      if (e.target.parentNode && e.target.parentNode.className.match('menu'))
+        this.toggle() // Close picker
     }
   }
 
