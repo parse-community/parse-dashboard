@@ -68,7 +68,7 @@
 .footer {
   @include NotoSansFont;
   position: absolute;
-  background: #05283c;
+  background: #353446;
   height: 36px;
   line-height: 18px;
   padding: 9px 0;
@@ -99,6 +99,12 @@
   svg {
     margin-top: -2px;
   }
+}
+
+.help {
+  @extend .footer;
+  bottom: 36px;
+  height: 61px;
 }
 
 .header {
