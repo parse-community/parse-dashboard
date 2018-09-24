@@ -7,7 +7,6 @@
  */
 import AppsManager    from 'lib/AppsManager';
 import AppsSelector   from 'components/Sidebar/AppsSelector.react';
-import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import React          from 'react';
 // import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
@@ -91,7 +90,6 @@ const Sidebar = ({
       <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
       <a target='_blank' href='https://github.com/parse-community'>GitHub</a>
       <a target='_blank' href='http://docs.parseplatform.org/'>Docs</a>
-      <FooterMenu />
     </div>
   </div>
 }
