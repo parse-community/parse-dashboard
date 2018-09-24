@@ -44,7 +44,7 @@ const Sidebar = ({
               action={action || null}
               actionHandler={active ? actionHandler : null}
               active={active}
-            >
+              >
               {active ? children : null}
             </SidebarSubItem>
           );
@@ -61,12 +61,12 @@ const Sidebar = ({
 
     <div className={styles.content} style={contentStyle}>
       {sections.map(({
-                       name,
-                       icon,
-                       style,
-                       link,
-                       subsections,
-                     }) => {
+        name,
+        icon,
+        style,
+        link,
+        subsections,
+      }) => {
         const active = name === section;
         return (
           <SidebarSection
@@ -78,7 +78,7 @@ const Sidebar = ({
             active={active}
             primaryBackgroundColor={primaryBackgroundColor}
             secondaryBackgroundColor={secondaryBackgroundColor}
-          >
+            >
             {active ? _subMenu(subsections) : null}
           </SidebarSection>
         );
