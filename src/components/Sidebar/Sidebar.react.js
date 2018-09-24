@@ -13,6 +13,7 @@ import React          from 'react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
+import zendeskSettings from 'components/Sidebar/zendeskSettings'
 
 const Sidebar = ({
   prefix,
@@ -43,7 +44,7 @@ const Sidebar = ({
               action={action || null}
               actionHandler={active ? actionHandler : null}
               active={active}
-              >
+            >
               {active ? children : null}
             </SidebarSubItem>
           );
@@ -60,12 +61,12 @@ const Sidebar = ({
 
     <div className={styles.content} style={contentStyle}>
       {sections.map(({
-        name,
-        icon,
-        style,
-        link,
-        subsections,
-      }) => {
+                       name,
+                       icon,
+                       style,
+                       link,
+                       subsections,
+                     }) => {
         const active = name === section;
         return (
           <SidebarSection
@@ -77,11 +78,14 @@ const Sidebar = ({
             active={active}
             primaryBackgroundColor={primaryBackgroundColor}
             secondaryBackgroundColor={secondaryBackgroundColor}
-            >
+          >
             {active ? _subMenu(subsections) : null}
           </SidebarSection>
         );
       })}
+    </div>
+    <div className={styles.help}>
+      {/* div to add the zendesk help widget*/}
     </div>
     <div className={styles.footer}>
       <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
