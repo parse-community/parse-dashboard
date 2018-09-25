@@ -103,15 +103,14 @@
     "watch": "NODE_ENV=dev webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "dev": "nodemon ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
-    "build": "NODE_ENV=production webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
-    "build-homolog": "NODE_ENV=homolog webpack --config webpack/homolog.config.js && webpack --config webpack/PIG.config.js",
+    "build": "webpack --config webpack/publish.config.js --progress && webpack --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
+    "build-homolog": "webpack --config webpack/homolog.config.js",
     "test": "NODE_PATH=./node_modules jest",
     "lint": "eslint . --ignore-path .gitignore --cache",
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
     "deploy-homolog": "sh deploy-homolog.sh",
     "deploy-prod": "sh deploy-prod.sh",
-    "prepublish": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js"
   },
   "bin": {
