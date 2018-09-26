@@ -36,8 +36,8 @@ const FIELD_LABELS = {
   //   'Latency (s)'
   // ],
   'Custom Event': [
-    'Event Name'
-    // 'Dimensions',
+    'Event Name',
+    'Dimensions'
     // 'Installation ID',
     // 'Parse User ID',
     // 'Parse SDK',
@@ -65,9 +65,9 @@ const ORDER_LABELS = [
 const FIELD_TYPE = {
   // 'Request Type'        : 'String',
   // 'Class'               : 'String',
-  'Event Name'          : 'String'
+  'Event Name'          : 'String',
   // /* eslint-disable no-constant-condition */
-  // 'Dimensions'          : false ? 'JSON' : 'String', //In progress features. Change false to true to work on this feature.
+  'Dimensions'          : true ? 'JSON' : 'String' //In progress features. Change false to true to work on this feature.
   // /* eslint-enable */
   // 'Installation ID'     : 'String',
   // 'Parse User ID'       : 'String',
@@ -123,6 +123,8 @@ let fieldView = (type, value, onChangeValue) => {
       return <input type='number' className={styles.formInput} style={fieldStyle} value={value} onChange={(e) => onChangeValue(validateNumeric(e.target.value) ? e.target.value : (value || ''))} />;
     case 'Date':
       return <div style={fieldStyle}><DateTimeEntry fixed={true} className={styles.formInput} value={value || new Date()} onChange={onChangeValue} ref={setFocus}/></div>;
+    case 'JSON':
+      return <input type='text' className={styles.formInput} style={fieldStyle} value={value} onChange={(e) => onChangeValue(e.target.value)} ref={setFocus}/>;
     default:
       throw new Error('Incompatible type ' + type + ' used to render fieldView.');
   }
@@ -199,9 +201,15 @@ export default class ExplorerQueryComposer extends React.Component {
     });
   }
 
-  handleSave() {
+  async handleSaveOnDatabase() {
+    // update query name
+    await this.setState({ name: this.state.newName });
+    await this.handleSave(true)
+  }
+
+  async handleSave(saveOnDatabase = false) {
     let query = this.props.query || {};
-    this.props.onSave({
+    await this.props.onSave({
       source: this.state.source,
       name: this.state.name,
       aggregates: this.state.aggregates,
@@ -212,12 +220,12 @@ export default class ExplorerQueryComposer extends React.Component {
       orders: this.state.orders.filter((order) => order.col !== null && order.col !== undefined),
       localId: query.localId,
       objectId: query.objectId
-    });
+    }, saveOnDatabase);
 
-    this.setState({
+    await this.setState({
       editing: false,
       name: this.state.newName,
-      isSaved: !!this.state.newName
+      isSaved: !!this.state.newName,
     });
   }
 
@@ -247,7 +255,8 @@ export default class ExplorerQueryComposer extends React.Component {
       filters: this.state.filters.concat([{
         op: '$eq',
         col: FIELD_LABELS[this.state.source][0],
-        val: null
+        val: null,
+        key: null // used to filter dimensions properties
       }])
     });
   }
@@ -371,34 +380,30 @@ export default class ExplorerQueryComposer extends React.Component {
 
   renderFilter(filter, index=0) {
     let type = Constraints[filter.op].hasOwnProperty('field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
-
     let constraintView = null;
     if (type === 'JSON') {
-      let isJSONView = filter.op === 'json_extract_scalar';
+      filter.json_scalar_op = filter.json_scalar_op || '$eq';
 
-      let jsonView = null;
-      if (isJSONView) {
-        filter.json_scalar_op = filter.json_scalar_op || '$eq';
-
-        jsonView = (
-          <div style={{ marginTop: '10px' }}>
-            <ChromeDropdown
-              width='51%'
-              color='blue'
-              value={Constraints[filter.json_scalar_op].name}
-              options={FieldConstraints['JSONValue'].map((c) => Constraints[c].name)}
-              onChange={(val) => {
+      constraintView = (
+        <div style={{ width: '65%', display: 'inline-block' }}>
+          <div>
+            <input
+              className={[styles.formInput, styles.filterInputStyle].join(' ')}
+              value={filter.key}
+              onChange={(e) => {
                 let filters = this.state.filters;
-                filters[index] = {
+                let newFilter = null;
+                newFilter = {
                   col: filter.col,
-                  op: filter.op,
-                  json_path: filter.json_path,
-                  json_scalar_op: constraintLookup[val],
+                  op:  filter.op,
+                  key: e.target.value,
                   val: filter.val
                 };
+                filters[index] = newFilter;
                 this.setState({ filters });
-              }} />
-
+                filter = filters[index]
+              }}
+              ref={setFocus} />
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={filter.val}
@@ -409,61 +414,12 @@ export default class ExplorerQueryComposer extends React.Component {
                   op: filter.op,
                   json_path: filter.json_path,
                   json_scalar_op: filter.json_scalar_op,
+                  key: filter.key,
                   val: e.target.value
                 };
                 this.setState({ filters });
               }} />
           </div>
-        );
-      }
-
-      let constraintInputValue = isJSONView ? filter.json_path : filter.val;
-      constraintView = (
-        <div style={{ width: '65%', display: 'inline-block' }}>
-          <div>
-            <ChromeDropdown
-              width='51%'
-              color='blue'
-              value={Constraints[filter.op].name}
-              options={availableFilters[filter.col].map((c) => Constraints[c].name)}
-              onChange={(val) => {
-                let filters = this.state.filters;
-                filters[index] = {
-                  col: filter.col,
-                  op: constraintLookup[val],
-                  val: filter.val
-                };
-                this.setState({ filters });
-              }} />
-
-            <input
-              className={[styles.formInput, styles.filterInputStyle].join(' ')}
-              value={constraintInputValue}
-              onChange={(e) => {
-                let filters = this.state.filters;
-                let newFilter = null;
-                if (isJSONView) {
-                  newFilter = {
-                    col: filter.col,
-                    op: filter.op,
-                    val: filter.val,
-                    json_path: e.target.value,
-                    json_scalar_op: filter.json_scalar_op
-                  };
-                } else {
-                  newFilter = {
-                    col: filter.col,
-                    op: filter.op,
-                    val: e.target.value
-                  }
-                }
-                filters[index] = newFilter;
-                this.setState({ filters });
-              }}
-              ref={setFocus} />
-          </div>
-
-          {jsonView}
         </div>
       );
     } else {
@@ -496,7 +452,6 @@ export default class ExplorerQueryComposer extends React.Component {
         </span>
       );
     }
-
     return (
       <div className={styles.boxContent}>
         <div className={styles.formLabel}>Filter</div>
@@ -516,9 +471,7 @@ export default class ExplorerQueryComposer extends React.Component {
               this.setState({ filters });
             }} />
         </span>
-
         {constraintView}
-
         <a
           href='javascript:;'
           role='button'
@@ -617,7 +570,7 @@ export default class ExplorerQueryComposer extends React.Component {
             href='javascript:;'
             role='button'
             className={styles.headerButton}
-            onClick={this.handleSave.bind(this)}>
+            onClick={this.handleSaveOnDatabase.bind(this)}>
             { this.state.isSaved ? 'Rename' : 'Save' }
           </a>
           <a

@@ -40,9 +40,9 @@ export default class ExplorerActiveChartButton extends React.Component {
     });
   }
 
-  handleSave(query) {
+  handleSave(query, saveOnDatabase) {
     this.setState({ open: false });
-    this.props.onSave(query);
+    this.props.onSave(query, saveOnDatabase);
   }
 
   handleDismiss() {
