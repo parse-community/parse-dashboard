@@ -67,6 +67,8 @@ export default class ExplorerMenuButton extends React.Component {
         position.x += this.node.clientWidth;
         align = Directions.RIGHT;
       }
+      // Add the button height to the picker appear on the bottom
+      position.y += this.node.clientHeight
       return {
         currentView: 'picker',
         position,
@@ -135,11 +137,10 @@ export default class ExplorerMenuButton extends React.Component {
 
       popover = (
         <Popover
-          fixed={false}
+          fixed={true}
           position={this.state.position}>
           <div ref={this.setParentNode.bind(this)}
             className={classes.join(' ')}>
-            {content}
             <div className={styles.callout} style={calloutStyle}></div>
             {queryMenu}
           </div>

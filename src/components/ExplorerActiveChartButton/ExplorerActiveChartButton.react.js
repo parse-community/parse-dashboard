@@ -32,6 +32,31 @@ export default class ExplorerActiveChartButton extends React.Component {
     this.node = ReactDOM.findDOMNode(this);
   }
 
+  componentWillMount() {
+    // Used to close query picker
+    document.addEventListener('mousedown', this.handleClick.bind(this), false)
+  }
+
+  componentWillUnmount() {
+    // Used to close query picker
+    document.removeEventListener('mousedown', this.handleClick.bind(this), false)
+  }
+
+  // Intercept all click events
+  handleClick(e) {
+    // Verify if the click is outside the picker
+    if (this.state.open && this.parentNode && !this.parentNode.contains(e.target)) {
+      // Click target is not inside the configuration dropdown
+      if (e.target.parentNode && !e.target.parentNode.className.match('menu'))
+        this.handleDismiss() // Close picker
+    }
+  }
+
+  // Set parent node
+  setParentNode(node) {
+    this.parentNode = node
+  }
+
   handleCheckbox() {
     let nextActiveState = !this.state.active;
     this.props.onToggle(nextActiveState);
@@ -50,6 +75,22 @@ export default class ExplorerActiveChartButton extends React.Component {
     this.props.onDismiss();
   }
 
+  handleOpenPopover() {
+    let position = Position.inDocument(this.node);
+    let align = Directions.LEFT;
+    if (position.x > 700) {
+      position.x += this.node.clientWidth;
+      align = Directions.RIGHT;
+    }
+    // Add the button height to the picker appear on the bottom
+    position.y += this.node.clientHeight
+    this.setState({
+      open: !this.state.open,
+      position,
+      align
+    });
+  }
+
   renderButton() {
     let checkMark = null;
     let color = '#343445';
@@ -63,19 +104,7 @@ export default class ExplorerActiveChartButton extends React.Component {
       dropdown = (
         <div
           className={[styles.rightArrow, verticalCenter].join(' ')}
-          onClick={() => {
-            let position = Position.inDocument(this.node);
-            let align = Directions.LEFT;
-            if (position.x > 700) {
-              position.x += this.node.clientWidth;
-              align = Directions.RIGHT;
-            }
-            this.setState({
-              open: !this.state.open,
-              position,
-              align
-            });
-          }} />
+          onClick={this.handleOpenPopover.bind(this)} />
       );
     }
 
@@ -90,7 +119,11 @@ export default class ExplorerActiveChartButton extends React.Component {
           }}>
           {checkMark}
         </div>
-        <div className={styles.label}>{this.props.query.name}</div>
+        <div
+          className={styles.label}
+          onClick={this.handleOpenPopover.bind(this)}>
+          {this.props.query.name}
+        </div>
         {dropdown}
       </div>
     );
@@ -110,11 +143,14 @@ export default class ExplorerActiveChartButton extends React.Component {
 
       popover = (
         <Popover
-          fixed={false}
+          fixed={true}
           position={this.state.position}>
           <div className={classes.join(' ')}>
-            {content}
-            <div className={styles.callout} style={calloutStyle}></div>
+            <div
+              ref={this.setParentNode.bind(this)}
+              className={styles.callout}
+              style={calloutStyle}>
+            </div>
             <ExplorerQueryComposer
               isNew={false}
               query={this.props.query}
