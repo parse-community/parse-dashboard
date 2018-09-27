@@ -48,7 +48,7 @@ export default class ExplorerActiveChartButton extends React.Component {
     if (this.state.open && this.parentNode && !this.parentNode.contains(e.target)) {
       // Click target is not inside the configuration dropdown
       if (e.target.parentNode && !e.target.parentNode.className.match('menu'))
-        this.handleDismiss() // Close picker
+        this.handleClosePopover() // Close picker
     }
   }
 
@@ -89,6 +89,10 @@ export default class ExplorerActiveChartButton extends React.Component {
       position,
       align
     });
+  }
+
+  handleClosePopover() {
+    this.setState({ open: false });
   }
 
   renderButton() {
