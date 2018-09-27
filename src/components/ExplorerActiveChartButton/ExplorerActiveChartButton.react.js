@@ -149,9 +149,10 @@ export default class ExplorerActiveChartButton extends React.Component {
         <Popover
           fixed={true}
           position={this.state.position}>
-          <div className={classes.join(' ')}>
+          <div
+            ref={this.setParentNode.bind(this)}
+            className={classes.join(' ')}>
             <div
-              ref={this.setParentNode.bind(this)}
               className={styles.callout}
               style={calloutStyle}>
             </div>
