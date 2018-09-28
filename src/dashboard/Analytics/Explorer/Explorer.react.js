@@ -37,7 +37,7 @@ let buildFriendlyName = (query) => {
   if (query.groups && query.groups.length > 0) {
     name.push('grouped by');
     name.push(...query.groups);
-    name.push('#' + currentCustomQueryIndex++)
+    name.unshift('#' + currentCustomQueryIndex++)
   }
   return name.join(' ');
 };

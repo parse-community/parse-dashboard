@@ -565,7 +565,8 @@ export default class ExplorerQueryComposer extends React.Component {
             className={[styles.headerLabel, styles.textInput].join(' ')}
             value={this.state.newName}
             onChange={this.handleNameChange.bind(this)}
-            placeholder={'Give your query a name'} />
+            placeholder={'Give your query a name'}
+            autoFocus/>
           <a
             href='javascript:;'
             role='button'
