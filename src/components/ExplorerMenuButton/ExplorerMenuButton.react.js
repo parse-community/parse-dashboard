@@ -130,7 +130,8 @@ export default class ExplorerMenuButton extends React.Component {
             <ExplorerQueryComposer
               isNew={true}
               isTimeSeries={this.props.isTimeSeries}
-              onSave={this.handleSave.bind(this)} />
+              onSave={this.handleSave.bind(this)}
+              index={this.props.index || 0}/>
           );
           break;
       }

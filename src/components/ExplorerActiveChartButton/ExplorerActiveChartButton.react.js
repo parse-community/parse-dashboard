@@ -157,6 +157,7 @@ export default class ExplorerActiveChartButton extends React.Component {
               style={calloutStyle}>
             </div>
             <ExplorerQueryComposer
+              index={this.props.index || 0}
               isNew={false}
               query={this.props.query}
               isTimeSeries={this.props.isTimeSeries}

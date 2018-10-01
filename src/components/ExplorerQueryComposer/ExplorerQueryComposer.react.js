@@ -36,8 +36,8 @@ const FIELD_LABELS = {
   //   'Latency (s)'
   // ],
   'Custom Event': [
-    'Event Name',
-    'Dimensions'
+    'Event Name'
+    // 'Dimensions'
     // 'Installation ID',
     // 'Parse User ID',
     // 'Parse SDK',
@@ -147,6 +147,7 @@ export default class ExplorerQueryComposer extends React.Component {
   getInitialStateFromProps(props) {
     let query = props.query || {};
     let defaultState = {};
+    let index = props.index
     if (props.isTimeSeries) {
       defaultState = {
         ...TIMESERIES_DEFAULT_STATE,
@@ -163,7 +164,7 @@ export default class ExplorerQueryComposer extends React.Component {
       name: query.name || '',
       source: query.source || TABLE_SOURCES_LABEL[0],
       aggregates: query.aggregates || defaultState.aggregates,
-      groups: query.groups || defaultState.groups,
+      groups: query.groups && query.groups[index]  || defaultState.groups,
       limit: query.limit || defaultState.limit,
       filters: query.filters || [],
       orders: query.orders || []
@@ -213,7 +214,7 @@ export default class ExplorerQueryComposer extends React.Component {
       source: this.state.source,
       name: this.state.name,
       aggregates: this.state.aggregates,
-      groups: this.state.groups,
+      groups: [ this.state.groups[this.props.index || 0] ],
       limit: this.state.limit,
       filters: this.state.filters,
       // Only pass them if order is valid
@@ -346,7 +347,9 @@ export default class ExplorerQueryComposer extends React.Component {
 
   renderGroup(grouping, index=0) {
     let deleteButton = null;
-    let specialGroup = this.props.isTimeSeries && index === 0;
+    let specialGroup = this.props.isTimeSeries && index;
+    let options = specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]
+    let defaultValue = Array.isArray(options) ? options[0] : options
     if (!specialGroup) {
       deleteButton = (
         <a
@@ -363,8 +366,8 @@ export default class ExplorerQueryComposer extends React.Component {
       <div className={styles.boxContent}>
         <div className={styles.formLabel}>Grouping</div>
         <ChromeDropdown
-          value={grouping}
-          options={specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]}
+          value={grouping || defaultValue}
+          options={options}
           onChange={(val) => {
             let groups = this.state.groups;
             groups[index] = val;
@@ -529,7 +532,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   render() {
-    let { query, isNew, isTimeSeries, onDismiss } = this.props;
+    let { query, isNew, isTimeSeries, onDismiss, index } = this.props;
     query = query || {};
 
     // First and foremost, let's not waste time if the query itself is not composable.
@@ -612,7 +615,7 @@ export default class ExplorerQueryComposer extends React.Component {
 
       group = (
         <div className={styles.queryComposerBox}>
-          {this.renderGroup(this.state.groups[0])}
+          {this.renderGroup(this.state.groups[index], index)}
         </div>
       );
     } else {
@@ -646,12 +649,12 @@ export default class ExplorerQueryComposer extends React.Component {
       </div>
     ));
 
-    let extraGroupModels = isTimeSeries ? this.state.groups.slice(1) : this.state.groups;
-    let extraGroups = extraGroupModels.map((group, i) => (
-      <div className={styles.queryComposerBox} key={`group_${i + 1}`}>
-        {this.renderGroup(group, i + offset)}
-      </div>
-    ));
+    // let extraGroupModels = isTimeSeries ? this.state.groups.slice(1) : this.state.groups;
+    // let extraGroups = extraGroupModels.map((group, i) => (
+    //   <div className={styles.queryComposerBox} key={`group_${i + 1}`}>
+    //     {this.renderGroup(group, i + offset)}
+    //   </div>
+    // ));
 
     let filters = this.state.filters.map((filter, i) => (
       <div className={styles.queryComposerBox} key={`filter_${i}`}>
@@ -728,7 +731,6 @@ export default class ExplorerQueryComposer extends React.Component {
         {group}
         {limit}
         {extraAggregates}
-        {extraGroups}
         {filters}
         {orders}
 

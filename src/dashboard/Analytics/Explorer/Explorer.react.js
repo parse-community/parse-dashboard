@@ -383,7 +383,8 @@ export default class Explorer extends DashboardView {
           isTimeSeries={isTimeSeries}
           query={query}
           color={ChartColorSchemes[i]}
-          queries={queries} />
+          queries={queries}
+          index={i}/>
       </div>
     ));
 
@@ -395,7 +396,8 @@ export default class Explorer extends DashboardView {
           onDelete={this.handleQueryDelete.bind(this)}
           isTimeSeries={isTimeSeries}
           value='Add query'
-          queries={queries} />
+          queries={queries}
+          index={this.state.activeQueries.length}/>
       </div>
     );
 
