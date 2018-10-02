@@ -164,7 +164,7 @@ export default class ExplorerQueryComposer extends React.Component {
       name: query.name || '',
       source: query.source || TABLE_SOURCES_LABEL[0],
       aggregates: query.aggregates || defaultState.aggregates,
-      groups: query.groups && query.groups[index]  || defaultState.groups,
+      groups: query.groups || defaultState.groups,
       limit: query.limit || defaultState.limit,
       filters: query.filters || [],
       orders: query.orders || []
@@ -214,7 +214,7 @@ export default class ExplorerQueryComposer extends React.Component {
       source: this.state.source,
       name: this.state.name,
       aggregates: this.state.aggregates,
-      groups: [ this.state.groups[this.props.index || 0] ],
+      groups: [ this.state.groups[0] ],
       limit: this.state.limit,
       filters: this.state.filters,
       // Only pass them if order is valid
@@ -347,9 +347,12 @@ export default class ExplorerQueryComposer extends React.Component {
 
   renderGroup(grouping, index=0) {
     let deleteButton = null;
-    let specialGroup = this.props.isTimeSeries && index;
+    let specialGroup = this.props.isTimeSeries;
     let options = specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]
     let defaultValue = Array.isArray(options) ? options[0] : options
+
+    if (!grouping) this.setState({ groups: [ defaultValue ] })
+
     if (!specialGroup) {
       deleteButton = (
         <a
@@ -369,9 +372,9 @@ export default class ExplorerQueryComposer extends React.Component {
           value={grouping || defaultValue}
           options={options}
           onChange={(val) => {
-            let groups = this.state.groups;
-            groups[index] = val;
-            this.setState({ groups });
+            let groups = this.state.groups || []
+            groups[index] = val
+            this.setState({ groups })
           }}
           color='blue'
           width='100%' />
@@ -615,7 +618,7 @@ export default class ExplorerQueryComposer extends React.Component {
 
       group = (
         <div className={styles.queryComposerBox}>
-          {this.renderGroup(this.state.groups[index], index)}
+          {this.renderGroup(this.state.groups)}
         </div>
       );
     } else {
