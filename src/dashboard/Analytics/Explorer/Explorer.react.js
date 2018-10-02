@@ -30,11 +30,14 @@ import subscribeTo               from 'lib/subscribeTo';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import { verticalCenter }        from 'stylesheets/base.scss';
 
+let currentCustomQueryIndex = 1
+
 let buildFriendlyName = (query) => {
   let name = [query.source];
   if (query.groups && query.groups.length > 0) {
     name.push('grouped by');
     name.push(...query.groups);
+    name.unshift('#' + currentCustomQueryIndex++)
   }
   return name.join(' ');
 };
@@ -77,7 +80,7 @@ export default class Explorer extends DashboardView {
 
   componentWillMount() {
     this.props.customQueries.dispatch(ActionTypes.LIST);
-    this.props.customQueries.dispatch(ActionTypes.LIST_RECENT);
+    //this.props.customQueries.dispatch(ActionTypes.LIST_RECENT);
   }
 
   componentWillUnmount() {
@@ -90,7 +93,7 @@ export default class Explorer extends DashboardView {
         this.setState({ activeQueries: [], mutated: false });
       }
       nextProps.customQueries.dispatch(ActionTypes.LIST);
-      nextProps.customQueries.dispatch(ActionTypes.LIST_RECENT);
+      //nextProps.customQueries.dispatch(ActionTypes.LIST_RECENT);
     }
   }
 
@@ -105,7 +108,7 @@ export default class Explorer extends DashboardView {
     this.setState({ activeQueries: activeQueries });
   }
 
-  handleQuerySave(query) {
+  handleQuerySave(query, saveOnDatabase) {
     // Push new save result
     let activeQueries = this.state.activeQueries;
     let existingQueryIndex = activeQueries.findIndex((activeQuery) => {
@@ -118,6 +121,7 @@ export default class Explorer extends DashboardView {
       return false;
     });
 
+    query.isSaved = saveOnDatabase
     query.enabled = true;
     if (existingQueryIndex === -1) {
       // Push new
@@ -130,6 +134,15 @@ export default class Explorer extends DashboardView {
     } else {
       // Update
       activeQueries[existingQueryIndex] = query;
+    }
+
+    // save query
+    if (saveOnDatabase) {
+      query.isSaved = true
+      this.props.customQueries.dispatch(ActionTypes.CREATE, {query}).then(query => {
+        if (existingQueryIndex === -1) existingQueryIndex = activeQueries.length
+        activeQueries[existingQueryIndex] = query
+      })
     }
 
     // Update the state to trigger rendering pipeline.
@@ -312,24 +325,27 @@ export default class Explorer extends DashboardView {
     let { displayType } = this.props.params;
     let isTimeSeries = displayType === 'chart';
     let explorerQueries = this.getCustomQueriesFromProps(this.props);
-    let savedQueries = explorerQueries.filter((query) => query.type === displayType && query.isSaved);
-    let recentQueries = explorerQueries.filter((query) => query.type === displayType && !query.isSaved);
+    let savedQueries = explorerQueries.filter((query) => {
+      return (query.type === displayType || true) && query.isSaved
+    });
+    //let recentQueries = explorerQueries.filter((query) => query.type === displayType && !query.isSaved);
 
     let queries = [];
     if (isTimeSeries) {
       // We don't allow preset queries on Table/JSON
       queries = queries.concat(AnalyticsConstants.PresetQueries);
     }
-    // TODO: Enable saved and recent queries
-    // queries = queries.concat({
-    //   name: 'Saved Queries',
-    //   children: savedQueries,
-    //   emptyMessage: 'You have not saved any queries yet.'
-    // }, {
+    queries = queries.concat({
+      name: 'Saved Queries',
+      children: savedQueries,
+      emptyMessage: 'You have not saved any queries yet.'
+    }
+    // {
     //   name: 'Recent Queries',
     //   children: recentQueries,
     //   emptyMessage: 'You have no recent custom queries yet.'
-    // });
+    // }
+    );
 
     let toolbar = (
       <Toolbar
@@ -367,7 +383,8 @@ export default class Explorer extends DashboardView {
           isTimeSeries={isTimeSeries}
           query={query}
           color={ChartColorSchemes[i]}
-          queries={queries} />
+          queries={queries}
+          index={i}/>
       </div>
     ));
 
@@ -379,7 +396,8 @@ export default class Explorer extends DashboardView {
           onDelete={this.handleQueryDelete.bind(this)}
           isTimeSeries={isTimeSeries}
           value='Add query'
-          queries={queries} />
+          queries={queries}
+          index={this.state.activeQueries.length}/>
       </div>
     );
 

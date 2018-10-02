@@ -24,10 +24,36 @@ export default class ExplorerMenuButton extends React.Component {
       position: null,
       align: Directions.LEFT
     };
+    this.parentNode = {}
   }
 
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
+  }
+
+  componentWillMount() {
+    // Used to close query picker
+    document.addEventListener('mousedown', this.handleClick.bind(this), false)
+  }
+
+  componentWillUnmount() {
+    // Used to close query picker
+    document.removeEventListener('mousedown', this.handleClick.bind(this), false)
+  }
+
+  // Intercept all click events
+  handleClick(e) {
+    // Verify if the click is outside the picker
+    if (this.state.currentView && this.parentNode && !this.parentNode.contains(e.target)) {
+      // Click target is not inside the configuration dropdown
+      if (e.target.parentNode && !e.target.parentNode.className.match('menu'))
+        this.toggle() // Close picker
+    }
+  }
+
+  // Set parent node
+  setParentNode(node) {
+    this.parentNode = node
   }
 
   toggle() {
@@ -41,6 +67,8 @@ export default class ExplorerMenuButton extends React.Component {
         position.x += this.node.clientWidth;
         align = Directions.RIGHT;
       }
+      // Add the button height to the picker appear on the bottom
+      position.y += this.node.clientHeight
       return {
         currentView: 'picker',
         position,
@@ -102,17 +130,18 @@ export default class ExplorerMenuButton extends React.Component {
             <ExplorerQueryComposer
               isNew={true}
               isTimeSeries={this.props.isTimeSeries}
-              onSave={this.handleSave.bind(this)} />
+              onSave={this.handleSave.bind(this)}
+              index={this.props.index || 0}/>
           );
           break;
       }
 
       popover = (
         <Popover
-          fixed={false}
+          fixed={true}
           position={this.state.position}>
-          <div className={classes.join(' ')}>
-            {content}
+          <div ref={this.setParentNode.bind(this)}
+            className={classes.join(' ')}>
             <div className={styles.callout} style={calloutStyle}></div>
             {queryMenu}
           </div>

@@ -149,7 +149,8 @@ export default class AppsIndex extends React.Component {
             className={styles.search}
             onChange={this.updateSearch.bind(this)}
             value={this.state.search}
-            placeholder='Start typing to filter&hellip;' />
+            placeholder='Start typing to
+            filter&hellip;' />
         </div>
         <ul className={styles.apps}>
           {apps.map(app =>

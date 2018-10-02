@@ -49,8 +49,11 @@ const LABEL_TO_KEY_MAPPING = {
   'Average'             : 'avg',
 
   // Grouping
-  'Time (day)'          : 'day',
-  'Time (hour)'         : 'hour',
+  'Time (day)'          : 'daily',
+  'Time (hour)'         : 'hourly',
+  'Time (minute)'       : 'minutely',
+  'Time (week)'         : 'weekly',
+  'Time (month)'        : 'monthly',
 
   // Order
   'Ascending'           : true,
@@ -71,7 +74,8 @@ let queryToPayload = (query) => {
     enabled: query.enabled,
     type: LABEL_TO_KEY_MAPPING[query.type],
     from: query.from,
-    to: query.to
+    to: query.to,
+    name: query.name
   }
   if (query.limit) {
     payload.limit = query.limit;
@@ -86,10 +90,11 @@ let queryToPayload = (query) => {
     payload.groups = query.groups.map((group) => LABEL_TO_KEY_MAPPING[group]);
   }
   if (query.filters && query.filters.length > 0) {
-    payload.filters = query.filters.map(({col, op, val}) => ({
+    payload.filters = query.filters.map(({col, op, val, key}) => ({
       col: LABEL_TO_KEY_MAPPING[col],
       op,
-      val
+      val,
+      key
     }));
   }
   if (query.orders && query.orders.length > 0) {
@@ -106,6 +111,9 @@ let queryToPayload = (query) => {
   }
   if (window.DEVELOPMENT) {
     payload.appID = 16155;
+  }
+  if (query.isSaved) {
+    payload.isSaved = query.isSaved
   }
 
   return payload;
@@ -131,10 +139,11 @@ let payloadToQuery = (payload) => {
     query.groups = payload.groups.map((group) => KEY_TO_LABEL_MAPPING[group]);
   }
   if (payload.filters) {
-    query.filters = payload.filters.map(({col, op, val}) => ({
+    query.filters = payload.filters.map(({col, op, val, key}) => ({
       col: KEY_TO_LABEL_MAPPING[col],
       op,
-      val
+      val,
+      key
     }));
   }
   if (payload.orders) {
@@ -149,7 +158,9 @@ let payloadToQuery = (payload) => {
   if (payload.localId) {
     query.localId = payload.localId;
   }
-
+  if (payload.isSaved) {
+    query.isSaved = payload.isSaved
+  }
   return query;
 };
 
@@ -193,12 +204,15 @@ function AnalyticsQueryStore(state, action) {
         return Map({ lastFetch: new Date(), queries: Map(queries) });
       });
     case ActionTypes.FETCH:
-    case ActionTypes.CREATE:
       return post(urlPrefix, queryToPayload(action.query)).then((result) => {
         result.objectId = result.id;
 
         let realResult = result[LABEL_TO_KEY_MAPPING[action.query.source]];
         return state.setIn(['queries', result.id], { ...action.query, result: realResult });
+      });
+    case ActionTypes.CREATE:
+      return post(`${urlPrefix}/saveQuery`, queryToPayload(action.query)).then(() => {
+        return state.setIn(['queries', action.query.objectId], action.query);
       });
     case ActionTypes.UPDATE:
       return put(`${urlPrefix}/${action.query.objectId}`, queryToPayload(action.query)).then(() => {

@@ -14,7 +14,7 @@
 }
 
 .header, .footer {
-  position: absolute;
+  position: fixed;
   left: 0px;
   right: 0px;
   min-height: 50px;
@@ -22,8 +22,9 @@
 }
 
 .header {
-  top: 50px;
+  top: 100px;
   border-bottom: 1px solid $translucentGrey;
+  margin-left: 300px;
 }
 
 .display {
@@ -31,7 +32,7 @@
   overflow: auto;
   left: 0px;
   right: 0px;
-  top: 146px;
+  top: 100px;
   bottom: 50px;
 }
 
