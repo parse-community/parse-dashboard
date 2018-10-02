@@ -12,8 +12,7 @@ var HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 var settings = require('@back4app/back4app-settings');
 
 configuration.entry = {
-  dashboard: './dashboard/index.js',
-  login: './login/index.js'
+  dashboard: './dashboard/index.js'
 };
 configuration.output.path = path.resolve('./Parse-Dashboard/public/bundles');
 configuration.output.filename = "[name].[chunkhash].js";
