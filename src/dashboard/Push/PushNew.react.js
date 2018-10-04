@@ -133,7 +133,7 @@ class PushNew extends DashboardView {
     this.state = {
       pushAudiencesFetched: false,
       deviceCount: null,
-      initialAudienceId: 'everyone',
+      initialAudienceId: null,
       audienceSizeSuggestion: null,
       recipientCount: null,
       isLocalizationAvailable: false,
@@ -632,7 +632,7 @@ class PushNew extends DashboardView {
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
         onChange={(audienceId, queryOrFilters, deviceCount) => {
-          this.setState({ deviceCount });
+          this.setState({ deviceCount, audienceId });
           setField('audience_id', audienceId);
           if (audienceId === PushConstants.NEW_SEGMENT_ID) {
             // Horrible code here is due to old rails code that sent pushes through it's own endpoint, while Parse Server sends through Parse.Push.
@@ -727,6 +727,11 @@ class PushNew extends DashboardView {
   valid(changes) {
     let emptyInputMessages = [];
     let invalidInputMessages = [];
+
+    if (!this.state.audienceId) {
+      emptyInputMessages.push('you need select an audience');
+    }
+
     // when number audience size is 0
     if (this.state.deviceCount === 0) {
       emptyInputMessages.push('recipient count for this campaign');
