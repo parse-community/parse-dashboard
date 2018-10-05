@@ -71,6 +71,7 @@ export default class Explorer extends DashboardView {
   }
 
   componentDidMount() {
+    back4AppNavigation && back4AppNavigation.atExplorerReportEvent()
     let display = ReactDOM.findDOMNode(this.refs.display);
     this.displaySize = {
       width: display.offsetWidth,
@@ -175,6 +176,7 @@ export default class Explorer extends DashboardView {
     this.xhrHandles = [];
     this.setState({ loading: true });
     this.state.activeQueries.forEach((query, i) => {
+      back4AppNavigation && back4AppNavigation.runExplorerQueryEvent(query)
       let promise = null;
       let xhr = null;
       if (query.preset && query.nonComposable) {
