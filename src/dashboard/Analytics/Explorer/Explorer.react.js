@@ -474,6 +474,15 @@ export default class Explorer extends DashboardView {
                 formatter={(value, label) => (`${label} ${prettyNumber(value, 3)}`)} />
             );
           }
+          else if (!this.state.mutated)
+            currentDisplay = (
+              <EmptyState
+                title={'No data to display.'}
+                icon='analytics-outline'
+                description={'These queries didn\'t retrieve any result.'}
+                cta='Get started with Analytics Explorer'
+                action={() => window.open('https://www.back4app.com/docs/analytics/mobile-app-engagement-metrics', '_blank') } />
+            );
           break;
         case 'table':
           // Render table
