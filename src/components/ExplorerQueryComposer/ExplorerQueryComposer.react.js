@@ -50,6 +50,13 @@ const FIELD_LABELS = {
   ]
 };
 
+const FILTER_LABELS = {
+  'Custom Event': [
+    'Event Name',
+    'Dimensions'
+  ]
+};
+
 const AGGREGATE_TYPE_LABELS = [
   'Count' /*, 'Count Distinct', 'Sum', 'Minimum', 'Median', '99th Percentile', 'Average'
 */];
@@ -255,7 +262,7 @@ export default class ExplorerQueryComposer extends React.Component {
     this.setState({
       filters: this.state.filters.concat([{
         op: '$eq',
-        col: FIELD_LABELS[this.state.source][0],
+        col: FILTER_LABELS[this.state.source][0],
         val: null,
         key: null // used to filter dimensions properties
       }])
@@ -396,6 +403,7 @@ export default class ExplorerQueryComposer extends React.Component {
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={filter.key}
+              placeholder={'key'}
               onChange={(e) => {
                 let filters = this.state.filters;
                 let newFilter = null;
@@ -413,6 +421,7 @@ export default class ExplorerQueryComposer extends React.Component {
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={filter.val}
+              placeholder={'value'}
               onChange={(e) => {
                 let filters = this.state.filters;
                 filters[index] = {
@@ -466,7 +475,7 @@ export default class ExplorerQueryComposer extends React.Component {
             width='33%'
             color='blue'
             value={filter.col}
-            options={FIELD_LABELS[this.state.source]}
+            options={FILTER_LABELS[this.state.source]}
             onChange={(val) => {
               let filters = this.state.filters;
               filters[index] = {

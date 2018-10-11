@@ -53,7 +53,7 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
 
     &.textInput {
       background: none;
-      border: none;    
+      border: none;
       font-size: 1.3em;
       color: white;
 
@@ -150,4 +150,8 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   padding: 0 30px 0 10px;
   overflow: hidden;
+
+  @include placeholder {
+    color: $placeholderColor;
+  }
 }
