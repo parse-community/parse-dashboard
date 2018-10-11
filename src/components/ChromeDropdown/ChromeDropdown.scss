@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 @import 'stylesheets/globals.scss';
-       
+
 .dropdown {
   display: inline-block;
   vertical-align: top;
@@ -47,6 +47,21 @@
   }
 }
 
+
+.withoutArrow {
+  position: relative;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 30px 0 10px;
+  background: $darkBlue;
+  border-radius: 5px;
+
+  div {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 .menu {
   max-height: 360px;
   overflow-y: auto;
@@ -61,4 +76,9 @@
       background: rgba(255, 255, 255, 0.1);
     }
   }
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: .65;
 }
