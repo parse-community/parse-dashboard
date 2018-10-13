@@ -37,6 +37,7 @@ export default class ParseApp {
     apiKey,
     serverURL,
     serverInfo,
+    timezone,
     production,
     iconName,
     primaryBackgroundColor,
@@ -61,6 +62,7 @@ export default class ParseApp {
     this.production = production;
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
+    this.timezone = timezone;
     this.icon = iconName;
     this.primaryBackgroundColor=primaryBackgroundColor;
     this.secondaryBackgroundColor=secondaryBackgroundColor;

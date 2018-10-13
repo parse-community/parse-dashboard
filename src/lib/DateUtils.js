@@ -1,10 +1,13 @@
 /*
+import { native } from '../../Parse-Dashboard/public/bundles/dashboard.bundle';
  * Copyright (c) 2016-present, Parse, LLC
  * All rights reserved.
  *
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import { findTimeZone, getZonedTime } from 'timezone-support';
+
 export const MONTHS = [
   'January',
   'February',
@@ -110,21 +113,32 @@ export function monthsFrom(date, delta) {
   );
 }
 
-export function dateStringUTC(date) {
-  let full = String(date.getUTCDate()) + ' ' +
-    shortMonth(date.getUTCMonth()) + ' ' +
-    String(date.getUTCFullYear()) + ' at ';
-  let time = {
-    hours: String(date.getUTCHours()),
-    minutes: String(date.getUTCMinutes()),
-    seconds: String(date.getUTCSeconds())
+export function dateStringUTC(nativeDate, timezone = null) {
+  let date = {
+    year: nativeDate.getUTCFullYear(),
+    month: nativeDate.getUTCMonth(),
+    day: nativeDate.getUTCDate(),
+    hours: nativeDate.getUTCHours(),
+    minutes: nativeDate.getUTCMinutes(),
+    seconds: nativeDate.getUTCSeconds(),
   };
-  for (let k in time) {
-    if (time[k].length < 2) {
-      time[k] = '0' + time[k];
-    }
+
+  if (timezone) {
+    date = getZonedTime(nativeDate, findTimeZone(timezone));
   }
-  full += time.hours + ':' + time.minutes + ':' + time.seconds + ' UTC';
+
+  let full = String(date.day) + ' ' +
+    shortMonth(date.month) + ' ' +
+    String(date.year) + ' at ';
+
+  ['hours', 'minutes', 'seconds'].forEach(key => {
+    date[key] = String(date[key]);
+    if (date[key].length < 2) {
+      date[key] = '0' + date[key];
+    }
+  });
+
+  full += date.hours + ':' + date.minutes + ':' + date.seconds + ' UTC';
   return full;
 }
 

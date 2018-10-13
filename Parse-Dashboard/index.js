@@ -52,6 +52,7 @@ let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
 let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+let configTimezone = program.timezone || process.env.PARSE_DASHBOARD_TIMEZONE;
 if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
@@ -62,6 +63,7 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
             serverURL: configServerURL,
             masterKey: configMasterKey,
             appName: configAppName,
+            timezone: configTimezone,
           },
         ]
       }

@@ -13,7 +13,7 @@ import React                     from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 
-let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick }) => {
+let BrowserCell = ({ type, value, hidden, width, current, timezone, onSelect, onEditChange, setRelation,  onPointerClick }) => {
   let content = value;
   let classes = [styles.cell, unselectable];
   if (hidden) {
@@ -39,7 +39,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
       </a>
     );
   } else if (type === 'Date') {
-    content = dateStringUTC(value);
+    content = dateStringUTC(value, timezone);
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';
   } else if (type === 'Array') {
