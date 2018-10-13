@@ -113,7 +113,7 @@ export function monthsFrom(date, delta) {
   );
 }
 
-export function dateStringUTC(nativeDate, timezone = null) {
+export function dateString(nativeDate, timezone = null) {
   let date = {
     year: nativeDate.getUTCFullYear(),
     month: nativeDate.getUTCMonth(),

@@ -57,6 +57,7 @@ PushCerts.propTypes = {
   onDelete: PropTypes.func.isRequired.describe(
     'A handler for when a Push has been deleted from the server'
   ),
+  timezone: PropTypes.string,
 };
 
 export default PushCerts;

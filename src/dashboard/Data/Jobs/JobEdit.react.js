@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes       from 'lib/PropTypes'; 
+import PropTypes       from 'lib/PropTypes';
 import { ActionTypes } from 'lib/stores/JobsStore';
 import history         from 'dashboard/history';
 import JobsForm        from 'dashboard/Data/Jobs/JobsForm.react';
@@ -113,6 +113,7 @@ class JobEdit extends React.Component {
     return (
       <JobsForm
         {...this.props}
+        timezone={this.context.currentApp.timezone}
         submitForm={this.submitForm.bind(this)}
         initialFields={{}} />
     );

@@ -23,7 +23,7 @@ import renderFlowFooterChanges from 'lib/renderFlowFooterChanges';
 import styles                  from 'dashboard/Settings/Settings.scss';
 import TextInput               from 'components/TextInput/TextInput.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
-import { dateStringUTC }       from 'lib/DateUtils';
+import { dateString }       from 'lib/DateUtils';
 
 const DEFAULT_LABEL_WIDTH = 56;
 const XHR_KEY = 'AccountOverview';
@@ -136,7 +136,7 @@ export default class AccountOverview extends React.Component {
               },
               {
                 key: 'Expires',
-                value: dateStringUTC(new Date(key.expiresAt)),
+                value: dateString(new Date(key.expiresAt)),
               },
             ],
           }))} />
