@@ -53,6 +53,7 @@ import {
 } from 'react-router';
 import { Route, Redirect } from 'react-router-dom';
 import createClass from 'create-react-class';
+import { Helmet } from 'react-helmet';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -257,7 +258,7 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/webhooks' } component={Webhooks} />
 
           <Route path={ match.path + '/jobs' } component={JobsRoute}/>
-          
+
           <Route path={ match.path + '/logs/:type' } render={(props) => (
             <Logs {...props} params={props.match.params} />
           )} />
@@ -266,7 +267,7 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/config' } component={Config} />
           <Route path={ match.path + '/api_console' } component={ApiConsole} />
           <Route path={ match.path + '/migration' } component={Migration} />/>
-          
+
 
           <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
           <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
@@ -301,6 +302,9 @@ export default class Dashboard extends React.Component {
     return (
       <Router history={history}>
         <div>
+          <Helmet>
+            <title>Parse Dashboard</title>
+          </Helmet>
           <Switch>
             <Route path='/apps' component={Index} />
             <Route path='/account/overview' component={AccountSettingsPage} />
