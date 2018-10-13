@@ -10,7 +10,7 @@ import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react'
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
-import PropTypes   from 'lib/PropTypes';
+import PropTypes              from 'lib/PropTypes';
 import { SpecialClasses }     from 'lib/Constants';
 
 /**
