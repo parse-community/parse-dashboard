@@ -1032,7 +1032,7 @@ class Browser extends DashboardView {
     }
 
     let notification = null;
-    const pageTitle = `${this.props.params} - Parse Dashboard`;
+    const pageTitle = `${this.props.params.className} - Parse Dashboard`;
 
     if (this.state.lastError) {
       notification = (
