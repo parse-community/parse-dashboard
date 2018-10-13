@@ -15,6 +15,7 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
       * [Multiple apps](#multiple-apps)
       * [Single app](#single-app)
   * [Managing Multiple Apps](#managing-multiple-apps)
+  * [Timezone configuration](#timezone-configuration)
   * [App Icon Configuration](#app-icon-configuration)
   * [App Background Color Configuration](#app-background-color-configuration)
   * [Other Configuration Options](#other-configuration-options)
@@ -69,7 +70,8 @@ You can also start the dashboard from the command line with a config file.  To d
       "serverURL": "http://localhost:1337/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
-      "appName": "MyApp"
+      "appName": "MyApp",
+      "timezone": "America/Bahia"
     }
   ]
 }
@@ -100,6 +102,7 @@ PARSE_DASHBOARD_SERVER_URL: "http://localhost:1337/parse"
 PARSE_DASHBOARD_MASTER_KEY: "myMasterKey"
 PARSE_DASHBOARD_APP_ID: "myAppId"
 PARSE_DASHBOARD_APP_NAME: "MyApp"
+PARSE_DASHBOARD_TIMEZONE: "America/Bahia"
 PARSE_DASHBOARD_USER_ID: "user1"
 PARSE_DASHBOARD_USER_PASSWORD: "pass"
 PARSE_DASHBOARD_SSL_KEY: "sslKey"
@@ -129,7 +132,26 @@ You can manage self-hosted [Parse Server](https://github.com/ParsePlatform/parse
       "serverURL": "http://localhost:1337/parse", // Self-hosted Parse Server
       "appId": "myAppId",
       "masterKey": "myMasterKey",
-      "appName": "My Parse Server App"
+      "appName": "My Parse Server App",
+      "timezone": "America/Chicago",
+    }
+  ]
+}
+```
+
+## Timezone Configuration
+
+Parse Dashboard supports adding an optional timezone for each app, if you dont set any timezone, the UTC will be used like default. Just set a `timezone` with a valid timezone name.
+
+```json
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App",
+      "timezone": "America/Bahia",
     }
   ]
 }
@@ -367,7 +389,7 @@ You can mark a user as a read-only user:
       "appId": "myAppId1",
       "masterKey": "myMasterKey1",
       "readOnlyMasterKey": "myReadOnlyMasterKey1",
-      "serverURL": "myURL1",      
+      "serverURL": "myURL1",
       "port": 4040,
       "production": true
     },
@@ -375,7 +397,7 @@ You can mark a user as a read-only user:
       "appId": "myAppId2",
       "masterKey": "myMasterKey2",
       "readOnlyMasterKey": "myReadOnlyMasterKey2",
-      "serverURL": "myURL2",      
+      "serverURL": "myURL2",
       "port": 4041,
       "production": true
     }
@@ -410,7 +432,7 @@ You can give read only access to a user on a per-app basis:
       "appId": "myAppId1",
       "masterKey": "myMasterKey1",
       "readOnlyMasterKey": "myReadOnlyMasterKey1",
-      "serverURL": "myURL",      
+      "serverURL": "myURL",
       "port": 4040,
       "production": true
     },

@@ -7,11 +7,11 @@
  */
 import FormTable from 'components/FormTable/FormTable.react';
 import React from 'react';
-import { dateStringUTC } from 'lib/DateUtils';
+import { dateString } from 'lib/DateUtils';
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
-let CertsTable = ({ certs, onDelete, uploadPending }) => {
+let CertsTable = ({ certs, timezone, onDelete, uploadPending }) => {
   let tableData = certs.map(c => {
     let color = '';
     let expiresKeyColor = '';
@@ -36,7 +36,7 @@ let CertsTable = ({ certs, onDelete, uploadPending }) => {
         {
           key: isExpired ? 'Expired' : 'Expires',
           keyColor: expiresKeyColor,
-          value: dateStringUTC(new Date(c.expiration)),
+          value: dateString(new Date(c.expiration), timezone),
         }
       ]
     };

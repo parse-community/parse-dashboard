@@ -142,10 +142,11 @@ class Jobs extends TableView {
         </tr>
       );
     } else if (this.props.params.section === 'status') {
+      let { timezone } = this.context.currentApp;
       return (
         <tr key={data.objectId}>
           <td style={{width: '20%'}}>{data.jobName}</td>
-          <td style={{width: '20%'}}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
+          <td style={{width: '20%'}}>{DateUtils.dateString(new Date(data.createdAt), timezone)}</td>
           <td style={{width: '40%'}}>
             <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
               {data.message}

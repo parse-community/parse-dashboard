@@ -4,6 +4,7 @@
     "appId": "hello",
     "masterKey": "world",
     "appName": "",
+    "timezone": null,
     "iconName": "",
     "primaryBackgroundColor": "",
     "secondaryBackgroundColor": ""

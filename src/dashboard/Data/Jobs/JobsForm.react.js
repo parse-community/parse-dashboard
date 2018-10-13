@@ -23,7 +23,7 @@ import TextInput              from 'components/TextInput/TextInput.react';
 import TimeInput              from 'components/TimeInput/TimeInput.react';
 import Toggle                 from 'components/Toggle/Toggle.react';
 import Toolbar                from 'components/Toolbar/Toolbar.react';
-import { hoursFrom, dateStringUTC }  from 'lib/DateUtils';
+import { hoursFrom, dateString }  from 'lib/DateUtils';
 
 export default class JobsForm extends DashboardView {
   constructor(props) {
@@ -235,7 +235,7 @@ export default class JobsForm extends DashboardView {
         if (fields.immediate) {
           pieces.push(<strong>immediately</strong>, '.')
         } else {
-          pieces.push('on ', <strong>{dateStringUTC(fields.runAt)}</strong>, '.');
+          pieces.push('on ', <strong>{dateString(fields.runAt, this.props.timezone)}</strong>, '.');
         }
         if (fields.repeat) {
           pieces.push(' It will repeat ');

@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { dateStringUTC }         from 'lib/DateUtils';
+import { dateString }            from 'lib/DateUtils';
 import getFileName               from 'lib/getFileName';
 import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
@@ -13,7 +13,7 @@ import React                     from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 
-let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick }) => {
+let BrowserCell = ({ type, value, hidden, width, current, timezone, onSelect, onEditChange, setRelation,  onPointerClick }) => {
   let content = value;
   let classes = [styles.cell, unselectable];
   if (hidden) {
@@ -39,7 +39,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
       </a>
     );
   } else if (type === 'Date') {
-    content = dateStringUTC(value);
+    content = dateString(value, timezone);
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';
   } else if (type === 'Array') {

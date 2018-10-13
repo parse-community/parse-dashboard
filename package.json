@@ -44,7 +44,8 @@
     "json-file-plus": "^3.2.0",
     "package-json": "^5.0.0",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "timezone-support": "^1.5.5"
   },
   "devDependencies": {
     "@babel/core": "7.1.2",

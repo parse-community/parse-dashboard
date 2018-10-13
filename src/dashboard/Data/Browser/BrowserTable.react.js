@@ -124,6 +124,7 @@ export default class BrowserTable extends React.Component {
               onPointerClick={this.props.onPointerClick}
               setRelation={this.props.setRelation}
               value={attr}
+              timezone={this.props.timezone}
               hidden={hidden} />
           );
         })}
