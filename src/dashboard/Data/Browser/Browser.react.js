@@ -33,6 +33,7 @@ import styles                             from 'dashboard/Data/Browser/Browser.s
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import * as queryString                   from 'query-string';
+import DocumentTitle                      from 'react-document-title';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -851,6 +852,11 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
+  title() {
+    const { className } = this.props.params;
+    return `${className} - Parse Dashboard`;
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1042,11 +1048,13 @@ class Browser extends DashboardView {
       );
     }
     return (
-      <div>
-        {browser}
-        {notification}
-        {extras}
-      </div>
+      <DocumentTitle title={this.title()}>
+        <div>
+          {browser}
+          {notification}
+          {extras}
+        </div>
+      </DocumentTitle>
     );
   }
 }
