@@ -83,7 +83,7 @@ export default class ExplorerActiveChartButton extends React.Component {
       align = Directions.RIGHT;
     }
     // Add the button height to the picker appear on the bottom
-    position.y += this.node.clientHeight
+    position.y += this.node.clientHeight - window.pageYOffset
     this.setState({
       open: !this.state.open,
       position,
