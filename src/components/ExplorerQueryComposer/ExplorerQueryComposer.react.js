@@ -174,7 +174,8 @@ export default class ExplorerQueryComposer extends React.Component {
       groups: query.groups || defaultState.groups,
       limit: query.limit || defaultState.limit,
       filters: query.filters || [],
-      orders: query.orders || []
+      orders: query.orders || [],
+      isSaved: query.isSaved || false
     };
   }
 
@@ -602,13 +603,14 @@ export default class ExplorerQueryComposer extends React.Component {
       headerView = (
         <div className={[base.center, styles.headerView].join(' ')}>
           <h3 className={styles.headerLabel}>{ this.state.name || 'Build a custom query' }</h3>
-          { isNew ? null : <a
-            href='javascript:;'
-            role='button'
-            className={[styles.headerButton, styles.secondaryColor].join(' ')}
-            onClick={this.toggleEditing.bind(this)}>
-            { this.state.isSaved ? 'Rename' : 'Save' }
-          </a> }
+          { isNew ? null :
+            <Button
+              color='white'
+              primary={true}
+              value={ this.state.isSaved ? 'Rename' : 'Save' }
+              onClick={this.toggleEditing.bind(this)}>
+            </Button>
+           }
         </div>
       );
     }
