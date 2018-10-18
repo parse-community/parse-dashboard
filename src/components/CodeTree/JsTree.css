@@ -1,0 +1,29 @@
+@import url('https://static.back4app.com/fonts/fonts.css');
+
+.jstree-default {
+  font-family: Menlo;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 2;
+  letter-spacing: normal;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.jstree-themeicon-custom {
+  background: transparent none 0 0;
+  font-family: Material-Design-Iconic-Font;
+  font-size: 20px!important;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #208aec;
+}
+
+.new {
+  color: #4caf50;
+}

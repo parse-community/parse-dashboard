@@ -13,6 +13,7 @@ export let Checkbox                  = require('components/Checkbox/Checkbox.exa
 export let ChromeDatePicker          = require('components/ChromeDatePicker/ChromeDatePicker.example');
 export let ChromeDropdown            = require('components/ChromeDropdown/ChromeDropdown.example');
 export let CodeSnippet               = require('components/CodeSnippet/CodeSnippet.example');
+export let CodeTree                  = require('components/CodeTree/CodeTree.example');
 export let CreditCardInput           = require('components/CreditCardInput/CreditCardInput.example');
 export let DataBrowserHeader         = require('components/DataBrowserHeader/DataBrowserHeader.example');
 export let DatePicker                = require('components/DatePicker/DatePicker.example');
