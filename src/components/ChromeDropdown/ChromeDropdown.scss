@@ -53,13 +53,18 @@
   height: 30px;
   line-height: 30px;
   padding: 0 30px 0 10px;
-  background: $darkBlue;
+  background: $purple;
   border-radius: 5px;
   color: white;
-
+  cursor: pointer;
+  
   div {
     overflow-x: hidden;
     text-overflow: ellipsis;
+  }
+
+  &.blue {
+    background: $darkBlue;
   }
 }
 
