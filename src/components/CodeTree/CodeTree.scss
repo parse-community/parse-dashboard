@@ -1,7 +1,7 @@
 @import 'stylesheets/globals.scss';
+@import 'stylesheets/bootstrap-custom.scss';
 
 .files-box{
-  width: 300px;
   border-radius: 4px;
   background-color: #ffffff;
   border: solid 1px rgba(0, 0, 0, 0.15);
@@ -37,12 +37,13 @@
       letter-spacing: normal;
       text-align: center;
       color: #ffffff;
-    }
+      float: right;
+      margin-right: 15px;
 
-    //a:before {
-    //  content: "+ ";
-    //  font-size: 18px;
-    //}
+      span:before {
+        font-family: Material-Design-Iconic-Font;
+      }
+    }
 
   }
 
@@ -50,5 +51,11 @@
     height: 367px;
   }
 
+  .files-text {
+    height: 367px;
+    border-radius: 5px;
+    background-color: #0c2337;
+    border: none;
+  }
 }
 
