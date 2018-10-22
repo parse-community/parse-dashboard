@@ -23,7 +23,7 @@
       letter-spacing: normal;
       color: #224969;
       float:left;
-      width: 70%;
+      width: 30%;
       overflow: hidden;
     }
 
@@ -38,7 +38,7 @@
       text-align: center;
       color: #ffffff;
       float: right;
-      margin-right: 15px;
+      margin-right: 10px;
 
       span:before {
         font-family: Material-Design-Iconic-Font;
@@ -49,6 +49,7 @@
 
   .files-tree {
     height: 367px;
+    overflow: overlay;
   }
 
   .files-text {
