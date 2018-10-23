@@ -40,7 +40,9 @@ export default class B4ACloudCode extends CloudCode {
   createFolder(folder, parent) {
     for (var i = 0; i < folder.length; i++) {
       var file = folder[i];
-      var currentFile = { text: file.text, type: file.type };
+
+      var currentFile = { text: file.text, type: file.type.split('new-').pop() };
+      currentFile.type = (currentFile.type === 'folder' ? 'default' : currentFile.type)
       parent.push(currentFile);
       if (file.children && file.children.length > 0) {
         currentFile.children = [];
