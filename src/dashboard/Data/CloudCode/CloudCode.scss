@@ -6,10 +6,17 @@
  * the root directory of this source tree.
  */
 @import 'stylesheets/globals.scss';
+@import 'stylesheets/bootstrap-custom.scss';
+
+.loading {
+  position: relative;
+  min-height: 100vh;
+}
 
 .source {
   position: relative;
   min-height: 100vh;
+  background-color: #f9f9f9;
 }
 
 .content {
@@ -23,4 +30,57 @@
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.title {
+  padding-top: 41px;
+  margin-bottom: 21px;
+
+  div {
+    float: left;
+  }
+
+  p {
+    font-family: Noto Sans;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #224969;
+  }
+
+  a {
+    margin-top: 7px;
+  }
+
+  span {
+    font-family: Raleway;
+    font-size: 12px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffffff;
+  }
+}
+
+.footer {
+  margin-top: 28px;
+  float: right;
+
+  span {
+    font-family: Raleway;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffffff;
+  }
 }

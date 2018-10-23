@@ -39,7 +39,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    if (features.cloudCode && features.cloudCode.viewCode) {
+    if (features.cloudCode && features.cloudCode.viewCode || true) {
       coreSubsections.push({
         name: 'Cloud Code',
         link: '/cloud_code'

@@ -14,7 +14,7 @@ import AppData            from './AppData.react';
 import AppsIndex          from './Apps/AppsIndex.react';
 import AppsManager        from 'lib/AppsManager';
 import Browser            from './Data/Browser/Browser.react';
-import CloudCode          from './Data/CloudCode/CloudCode.react';
+import CloudCode          from './Data/CloudCode/B4ACloudCode.react';
 import Config             from './Data/Config/Config.react';
 import Explorer           from './Analytics/Explorer/Explorer.react';
 import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
