@@ -1,19 +1,17 @@
-import React from 'react';
-import jstree from 'jstree';
+import React           from 'react';
+import $               from 'jquery'
+import jstree          from 'jstree';
+import ReactFileReader from 'react-file-reader';
+import styles          from 'components/CodeTree/CodeTree.scss'
+import Button          from 'components/Button/Button.react';
+import CloudCodeView   from 'components/CloudCodeView/CloudCodeView.react';
+import treeAction      from 'components/CodeTree/TreeActions';
 import 'jstree/dist/themes/default/style.css'
 import 'components/CodeTree/JsTree.css'
-import styles from 'components/CodeTree/CodeTree.scss'
-import Button from 'components/Button/Button.react';
-import CloudCodeView from 'components/CloudCodeView/CloudCodeView.react';
-import $ from 'jquery'
-import treeAction from 'components/CodeTree/TreeActions';
-import ReactFileReader from 'react-file-reader';
 
 export default class CodeTree extends React.Component {
   constructor(props){
     super(props);
-
-    const originalFiles = this.props.files
 
     this.state = {
       selectedFile: '',
@@ -23,15 +21,10 @@ export default class CodeTree extends React.Component {
     }
   }
 
-  async updateReference() {
-    let files = treeAction.getFiles()
-  }
-
   async handleFiles(files) {
     console.log(files)
     await this.setState({ newFile: files })
     await this.loadFile()
-    this.updateReference()
   }
 
   async loadFile() {
@@ -67,8 +60,6 @@ export default class CodeTree extends React.Component {
       }
     })
   }
-
-
 
   componentDidMount() {
     let config = treeAction.getConfig(this.state.files)

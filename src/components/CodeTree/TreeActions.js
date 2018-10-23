@@ -3,7 +3,7 @@ import jstree from 'jstree';
 
 let source = []
 
-const create = (data, file, index) => {
+const create = (data, file) => {
   console.log('source massa', source)
   let inst = $.jstree.reference(data),
     obj = inst.get_node(data);
@@ -104,7 +104,6 @@ const addFilesOnTree = (files, currentCode) => {
 }
 
 const customMenu = node => {
-  // The default set of all items
   let items = $.jstree.defaults.contextmenu.items();
   items.create.action = function (data) {
     create(data.reference)

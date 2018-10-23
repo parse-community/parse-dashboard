@@ -41,7 +41,7 @@ export default class DashboardView extends React.Component {
 
     if (features.cloudCode && features.cloudCode.viewCode || true) {
       coreSubsections.push({
-        name: 'Cloud Code',
+        name: 'Cloud Code Functions',
         link: '/cloud_code'
       });
     }
