@@ -43,7 +43,7 @@
   position: absolute;
   font-size: 14px;
   color: white;
-  top: 49px;
+  top: 54px;
   left: 28px;
 }
 
@@ -61,10 +61,6 @@
     top: 50%;
     transform-origin: bottom center;
     @include transform(translateY(-50%));
-
-    use {
-      transform: translateY(50%);
-    }
   }
 }
 
