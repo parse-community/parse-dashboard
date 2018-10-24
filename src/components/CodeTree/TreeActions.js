@@ -3,8 +3,9 @@ import jstree from 'jstree';
 
 let source = []
 
-const updateTreeContent = () => {
-  $('#tree').jstree(true).refresh();
+const updateTreeContent = async (files) => {
+  $('#tree').jstree(true).settings.core.data = files;
+  await $('#tree').jstree(true).refresh();
 }
 
 const create = (data, file) => {
@@ -131,17 +132,12 @@ const customMenu = node => {
   return items;
 }
 
-const getData = () => {
-  return source
-}
-
 const getConfig = (files) => {
-  source = files
   return {
     plugins: ['contextmenu', 'dnd', 'sort', 'types', 'unique', 'changed'],
     core: {
       "check_callback": true,
-      'data': getData()
+      'data': files
     },
     contextmenu: {items: customMenu},
     types: {
@@ -175,7 +171,6 @@ const getFiles = () => {
 }
 
 module.exports = {
-  getData,
   getConfig,
   remove,
   addFilesOnTree,

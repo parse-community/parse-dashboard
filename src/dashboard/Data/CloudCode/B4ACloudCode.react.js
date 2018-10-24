@@ -129,6 +129,7 @@ class B4ACloudCode extends CloudCode {
         withCredentials: true
       })
       await this.fetchSource()
+      await updateTreeContent(this.state.files)
       const successModal = <Modal
         type={Modal.Types.VALID}
         icon='check'
@@ -138,7 +139,6 @@ class B4ACloudCode extends CloudCode {
         confirmText='Ok, got it'
         onConfirm={() => this.setState({ modal: null })}
         />;
-        updateTreeContent()
       this.setState({ unsavedChanges: false, modal: successModal })
     } catch (err) {
       const errorModal = <Modal
@@ -156,7 +156,6 @@ class B4ACloudCode extends CloudCode {
       this.setState({
         modal: errorModal
       });
-      updateTreeContent()
     }
   }
 
