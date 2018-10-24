@@ -22,20 +22,31 @@ export default class B4ACloudCode extends CloudCode {
     this.subsection = 'Cloud Code Functions';
 
     this.appsPath = 'parse-app'
-    this.param = this.props.params
-    this.path = `${b4aSettings.BACK4APP_API_PATH}/${this.appsPath}/${this.params.appId}/cloud`
 
     this.state = {
       files: undefined,
-      source: undefined,
       loading: true,
+      unsavedChanges: false
     };
+  }
+
+  getPath() {
+    return `${b4aSettings.BACK4APP_API_PATH}/${this.appsPath}/${this.props.params.appId}/cloud`
   }
 
   async componentWillMount() {
     await this.fetchSource()
   }
 
+  // method used to verify if exist unsaved changes before leave the page
+  componentWillUnmount() {
+    if (this.state.unsavedChanges) {
+      console.log("Show leave modal")
+      // TODO: Show leave modal here
+    }
+  }
+
+  // Format object to expected backend format
   createFolder(folders, parent) {
     folders.forEach(folder => {
       let file = folder;
@@ -61,12 +72,13 @@ export default class B4ACloudCode extends CloudCode {
     this.createFolder(currentCode, tree);
     // TODO: Show 'loading' modal
     try{
-      await axios(this.path, {
+      await axios(this.getPath(), {
         method: "post",
         data: { tree },
         withCredentials: true
       })
       await this.fetchSource()
+      await this.setState({ unsavedChanges: true })
       // TODO: Show success modal
     } catch (err) {
       console.error(err)
@@ -77,7 +89,7 @@ export default class B4ACloudCode extends CloudCode {
   // method used to fetch the cloud code from app
   async fetchSource() {
     try {
-      let response = await axios.get(this.path, { withCredentials: true })
+      let response = await axios.get(this.getPath(), { withCredentials: true })
       if (response.data && response.data.tree)
         this.setState({ files: response.data.tree, loading: false })
     } catch(err) {
@@ -96,6 +108,7 @@ export default class B4ACloudCode extends CloudCode {
     let title = null;
     let footer = null;
 
+    // Show loading page before fetch data
     if (this.state.loading) {
       content = <LoaderContainer loading={true} solid={false}>
         <div className={styles.loading}></div>
@@ -111,7 +124,7 @@ export default class B4ACloudCode extends CloudCode {
             action={() => window.open('https://www.back4app.com/docs/cloud-code-functions/unit-tests', '_blank')} />
         </div>
       );
-    } else {
+    } else { // render cloud code page
       title = <div className={styles.title}>
         <div><p>Cloud Code Functions</p></div>
         <Button
@@ -119,7 +132,7 @@ export default class B4ACloudCode extends CloudCode {
           primary={true}
           onClick={() => window.open('https://www.back4app.com/docs/cloud-code-functions/unit-tests', '_blank')} />
       </div>
-      content = <CodeTree files={this.state.files} />
+      content = <CodeTree files={this.state.files} parentState={this.setState.bind(this)} />
       footer = <div className={styles.container}>
         <div className={`${styles.footer}`}>
           <Button

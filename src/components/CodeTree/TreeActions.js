@@ -4,7 +4,6 @@ import jstree from 'jstree';
 let source = []
 
 const create = (data, file) => {
-  console.log('source massa', source)
   let inst = $.jstree.reference(data),
     obj = inst.get_node(data);
   if (!file) {
@@ -84,7 +83,6 @@ const addFilesOnTree = (files, currentCode) => {
 
   newTreeNodes.forEach(node => {
     extension = re.exec(node.text.name)[1];
-    console.log('ext', extension)
     if (currentCode === '#') {
       let inst = $.jstree.reference(currentCode)
       let obj = inst.get_node(currentCode);
