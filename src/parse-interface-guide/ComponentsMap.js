@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+export let B4AAlert                  = require('components/B4AAlert/B4AAlert.example');
 export let Button                    = require('components/Button/Button.example');
 export let Calendar                  = require('components/Calendar/Calendar.example');
 export let CascadingView             = require('components/CascadingView/CascadingView.example');

@@ -17,7 +17,7 @@ class Demo extends React.Component {
   }
 
   render() {
-    return <CodeTree files={source} />
+    return <CodeTree files={source.tree} />
   }
 }
 

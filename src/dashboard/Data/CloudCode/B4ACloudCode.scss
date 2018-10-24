@@ -1,3 +1,8 @@
+.b4a-source {
+  margin: 0 38px;
+  background-color: #f9f9f9;
+}
+
 .loading {
   position: relative;
   min-height: 100vh;
@@ -20,6 +25,7 @@
     line-height: normal;
     letter-spacing: normal;
     color: #224969;
+    padding-left: 0px;
   }
 
   a {
@@ -41,6 +47,7 @@
 
 .footer {
   margin-top: 28px;
+  margin-right: 0px;
   float: right;
 
   span {
@@ -53,5 +60,14 @@
     letter-spacing: normal;
     text-align: center;
     color: #ffffff;
+
+    svg {
+      margin-right: 7px;
+    }
+  }
+
+  a {
+    height: 47px;
+    padding: 10px 16px;
   }
 }

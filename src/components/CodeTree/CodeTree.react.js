@@ -74,47 +74,45 @@ export default class CodeTree extends React.Component {
 
   render(){
     return (
-      <div className={styles.container}>
-        <div className={styles.row}>
-          <div className={styles['col-4']}>
-            <div className={`${styles['files-box']}`}>
-              <div className={styles['files-header']} >
-                <p>Files</p>
-                <ReactFileReader
-                  fileTypes={'*/*'}
-                  base64={true}
-                  multipleFiles={true}
-                  handleFiles={this.handleFiles.bind(this)} >
-                  <Button
-                    value={'ADD'}
-                    primary={true}
-                    width='68'
-                  />
-                </ReactFileReader>
-              </div>
-              <div className={styles['files-tree']}>
-                <div id={'tree'} onClick={this.watchSelectedNode.bind(this)}></div>
-              </div>
+      <div className={styles.row}>
+        <div className={styles['col-4']}>
+          <div className={`${styles['files-box']}`}>
+            <div className={styles['files-header']} >
+              <p>Files</p>
+              <ReactFileReader
+                fileTypes={'*/*'}
+                base64={true}
+                multipleFiles={true}
+                handleFiles={this.handleFiles.bind(this)} >
+                <Button
+                  value={<div><i className="zmdi zmdi-plus"></i> ADD</div>}
+                  primary={true}
+                  width='68'
+                />
+              </ReactFileReader>
+            </div>
+            <div className={styles['files-tree']}>
+              <div id={'tree'} onClick={this.watchSelectedNode.bind(this)}></div>
             </div>
           </div>
-          <div className={styles['col-8']}>
-            <div className={`${styles['files-box']}`}>
-              <div className={styles['files-header']} >
-                <p>{this.state.selectedFile}</p>
-                <Button
-                  value={'REMOVE'}
-                  primary={true}
-                  color={'red'}
-                  width='93'
-                  disabled={!this.state.nodeId}
-                  onClick={this.deleteFile.bind(this)}
-                />
-              </div>
-              <div className={styles['files-text']}>
-                <CloudCodeView
-                  source={this.state.source}
-                  language='javascript'/>
-              </div>
+        </div>
+        <div className={styles['col-8']}>
+          <div className={`${styles['files-box']}`}>
+            <div className={styles['files-header']} >
+              <p>{this.state.selectedFile}</p>
+              <Button
+                value={<div><i className="zmdi zmdi-minus"></i> REMOVE</div>}
+                primary={true}
+                color={'red'}
+                width='93'
+                disabled={!this.state.nodeId}
+                onClick={this.deleteFile.bind(this)}
+              />
+            </div>
+            <div className={styles['files-text']}>
+              <CloudCodeView
+                source={this.state.source}
+                language='javascript'/>
             </div>
           </div>
         </div>

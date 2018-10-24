@@ -1,8 +1,8 @@
 @import url('https://static.back4app.com/fonts/fonts.css');
 
 .jstree-default {
-  font-family: Menlo;
-  font-size: 12px;
+  font-family: Inconsolata;
+  font-size: 14px!important;
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
