@@ -45,7 +45,7 @@ class B4ACloudCode extends CloudCode {
         const warningModal = <Modal
           type={Modal.Types.WARNING}
           icon='warn-triangle-solid'
-          title="You haven't deployed the uploaded files!"
+          title="Undeployed changes!"
           buttonsInCenter={true}
           textModal={true}
           confirmText='Continue anyway'
@@ -54,7 +54,7 @@ class B4ACloudCode extends CloudCode {
             history.push(nextLocation);
           }}
           onCancel={() => { this.setState({ modal: null }); }}
-          children='If you continue you will lose any changes.'
+          children='There are undeployed changes, if you leave the page you will lose it.'
           />;
         this.setState({ modal: warningModal });
         return false;
@@ -62,14 +62,6 @@ class B4ACloudCode extends CloudCode {
         unbindHook();
       }
     });
-  }
-
-  // method used to verify if exist unsaved changes before leave the page
-  componentWillUnmount() {
-    if (this.state.unsavedChanges) {
-      console.log("Show leave modal")
-      // TODO: Show leave modal here
-    }
   }
 
   // Format object to expected backend format
@@ -99,7 +91,7 @@ class B4ACloudCode extends CloudCode {
     const loadingModal = <Modal
       type={Modal.Types.INFO}
       icon='files-outline'
-      title='Loading your files'
+      title='Deploying...'
       textModal={true}
       children={
         <div>
@@ -122,7 +114,7 @@ class B4ACloudCode extends CloudCode {
       const successModal = <Modal
         type={Modal.Types.VALID}
         icon='check'
-        title='Success on uploading your files!'
+        title='Success on deploying your changes!'
         showCancel={false}
         buttonsInCenter={true}
         confirmText='Ok, got it'
@@ -134,7 +126,7 @@ class B4ACloudCode extends CloudCode {
         type={Modal.Types.DANGER}
         icon='warn-triangle-solid'
         title='Something went wrong'
-        children='Please try uploading your files again.'
+        children='Please try to deploy your changes again.'
         showCancel={false}
         textModal={true}
         confirmText='Ok, got it'
