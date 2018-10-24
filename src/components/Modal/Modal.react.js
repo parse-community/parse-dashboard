@@ -17,6 +17,7 @@ import styles       from 'components/Modal/Modal.scss';
 let origin = new Position(0, 0);
 let buttonColors = {
   danger: 'red',
+  warning: 'yellow',
   info: 'blue',
   valid: 'green'
 };
@@ -90,6 +91,7 @@ let Modal = (({
 
 Modal.Types = {
   DANGER: 'danger',
+  WARNING: 'warning',
   INFO: 'info',
   VALID: 'valid'
 };

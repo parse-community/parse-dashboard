@@ -6,6 +6,8 @@
  * the root directory of this source tree.
  */
 import React           from 'react';
+import { withRouter }  from 'react-router';
+import history         from 'dashboard/history';
 import axios           from 'axios'
 import B4AAlert        from 'components/B4AAlert/B4AAlert.react';
 import Button          from 'components/Button/Button.react';
@@ -14,9 +16,11 @@ import { getFiles }    from 'components/CodeTree/TreeActions';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import styles          from 'dashboard/Data/CloudCode/CloudCode.scss';
 import CloudCode       from 'dashboard/Data/CloudCode/CloudCode.react';
+import LoaderDots      from 'components/LoaderDots/LoaderDots.react';
+import Modal           from 'components/Modal/Modal.react';
 import Icon            from 'components/Icon/Icon.react';
 
-export default class B4ACloudCode extends CloudCode {
+class B4ACloudCode extends CloudCode {
   constructor() {
     super();
     this.section = 'Core';
@@ -32,7 +36,8 @@ export default class B4ACloudCode extends CloudCode {
       files: undefined,
       loading: true,
       unsavedChanges: false,
-
+      modal: null,
+      
       // Parameters used to on/off alerts
       showTips: localStorage.getItem(this.alertTips) !== 'false',
       showWhatIs: localStorage.getItem(this.alertWhatIs) !== 'false'
@@ -50,6 +55,28 @@ export default class B4ACloudCode extends CloudCode {
 
   async componentWillMount() {
     await this.fetchSource()
+    const unbindHook = this.props.router.setRouteLeaveHook(this.props.route, nextLocation => {
+      if (this.state.unsavedChanges) {
+        const warningModal = <Modal
+          type={Modal.Types.WARNING}
+          icon='warn-triangle-solid'
+          title="Undeployed changes!"
+          buttonsInCenter={true}
+          textModal={true}
+          confirmText='Continue anyway'
+          onConfirm={() => {
+            unbindHook();
+            history.push(nextLocation);
+          }}
+          onCancel={() => { this.setState({ modal: null }); }}
+          children='There are undeployed changes, if you leave the page you will lose it.'
+          />;
+        this.setState({ modal: warningModal });
+        return false;
+      } else {
+        unbindHook();
+      }
+    });
   }
 
   // method used to verify if exist unsaved changes before leave the page
@@ -84,7 +111,22 @@ export default class B4ACloudCode extends CloudCode {
     let tree = [];
     let currentCode = getFiles()
     this.createFolder(currentCode, tree);
-    // TODO: Show 'loading' modal
+    const loadingModal = <Modal
+      type={Modal.Types.INFO}
+      icon='files-outline'
+      title='Deploying...'
+      textModal={true}
+      children={
+        <div>
+          <LoaderDots />
+          <div>
+            Please wait, deploying in progress...
+          </div>
+        </div>
+      }
+      customFooter={<div style={{ padding: '10px 0 20px' }}></div>}
+      />;
+    this.setState({ modal: loadingModal });
     try{
       await axios(this.getPath(), {
         method: "post",
@@ -92,11 +134,32 @@ export default class B4ACloudCode extends CloudCode {
         withCredentials: true
       })
       await this.fetchSource()
-      await this.setState({ unsavedChanges: true })
-      // TODO: Show success modal
+      const successModal = <Modal
+        type={Modal.Types.VALID}
+        icon='check'
+        title='Success on deploying your changes!'
+        showCancel={false}
+        buttonsInCenter={true}
+        confirmText='Ok, got it'
+        onConfirm={() => this.setState({ modal: null })}
+        />;
+      this.setState({ unsavedChanges: false, modal: successModal })
     } catch (err) {
-      console.error(err)
-      // TODO: Show error modal
+      const errorModal = <Modal
+        type={Modal.Types.DANGER}
+        icon='warn-triangle-solid'
+        title='Something went wrong'
+        children='Please try to deploy your changes again.'
+        showCancel={false}
+        textModal={true}
+        confirmText='Ok, got it'
+        buttonsInCenter={true}
+        onConfirm={() => {
+          this.setState({ modal: null });
+        }} />;
+      this.setState({
+        modal: errorModal
+      });
     }
   }
 
@@ -182,7 +245,10 @@ export default class B4ACloudCode extends CloudCode {
         {alertTips}
         {content}
         {footer}
+        {this.state.modal}
       </div>
     );
   }
 }
+
+export default withRouter(B4ACloudCode);
