@@ -12,7 +12,10 @@ import axios           from 'axios'
 import B4AAlert        from 'components/B4AAlert/B4AAlert.react';
 import Button          from 'components/Button/Button.react';
 import CodeTree        from 'components/CodeTree/CodeTree.react';
-import { getFiles }    from 'components/CodeTree/TreeActions';
+import {
+  getFiles,
+  updateTreeContent
+}                      from 'components/CodeTree/TreeActions';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import styles          from 'dashboard/Data/CloudCode/CloudCode.scss';
 import CloudCode       from 'dashboard/Data/CloudCode/CloudCode.react';
@@ -37,7 +40,7 @@ class B4ACloudCode extends CloudCode {
       loading: true,
       unsavedChanges: false,
       modal: null,
-      
+
       // Parameters used to on/off alerts
       showTips: localStorage.getItem(this.alertTips) !== 'false',
       showWhatIs: localStorage.getItem(this.alertWhatIs) !== 'false'
@@ -77,14 +80,6 @@ class B4ACloudCode extends CloudCode {
         unbindHook();
       }
     });
-  }
-
-  // method used to verify if exist unsaved changes before leave the page
-  componentWillUnmount() {
-    if (this.state.unsavedChanges) {
-      console.log("Show leave modal")
-      // TODO: Show leave modal here
-    }
   }
 
   // Format object to expected backend format
@@ -143,6 +138,7 @@ class B4ACloudCode extends CloudCode {
         confirmText='Ok, got it'
         onConfirm={() => this.setState({ modal: null })}
         />;
+        updateTreeContent()
       this.setState({ unsavedChanges: false, modal: successModal })
     } catch (err) {
       const errorModal = <Modal
@@ -160,6 +156,7 @@ class B4ACloudCode extends CloudCode {
       this.setState({
         modal: errorModal
       });
+      updateTreeContent()
     }
   }
 
@@ -181,6 +178,7 @@ class B4ACloudCode extends CloudCode {
   }
 
   renderContent() {
+    console.log("RENDER CONTENT", this.state.files)
     let content = null;
     let title = null;
     let footer = null;
@@ -188,7 +186,7 @@ class B4ACloudCode extends CloudCode {
     let alertTips = null;
 
     let alertTipsMessage = <div>
-      <p><b>0</b> - Using the Cloud Code tool you can deploy and run your Node.js functions on the Back4App cloud via SDK or calling the <a href="https://www.backapp.com/docs/\" target="_blank">REST API</a></p>
+      <p><b>0</b> - Using the Cloud Code tool you can deploy and run your Node.js functions on the Back4App cloud via SDK or calling the <a href="https://www.back4app.com/docs/platform/command-line-tool/how-to-use" target="_blank">REST API</a></p>
       <p><b>1</b> - To upload your code you should first click on <b>ADD</b> button and choose what files and folders you want to upload.</p>
       <p><b>2</b> - The first file MUST BE called <b>main.js</b> and any other file or folder MUST BE referenced more in this file.</p>
       <p><b>3</b> - After ADD and REMOVE all files you want, click on the <b>DEPLOY</b> button and commit your operation;</p>

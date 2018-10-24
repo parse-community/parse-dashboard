@@ -3,6 +3,10 @@ import jstree from 'jstree';
 
 let source = []
 
+const updateTreeContent = () => {
+  $('#tree').jstree(true).refresh();
+}
+
 const create = (data, file) => {
   let inst = $.jstree.reference(data),
     obj = inst.get_node(data);
@@ -127,13 +131,7 @@ const customMenu = node => {
   return items;
 }
 
-const iterateOverFolders = folder => {
-  if (folder.type === 'folder') folder.children.forEach(iterateOverFolders)
-  if (folder.data && folder.data.code) folder.data.code = folder.data.code
-}
-
 const getData = () => {
-  source.forEach(iterateOverFolders)
   return source
 }
 
@@ -183,5 +181,6 @@ module.exports = {
   addFilesOnTree,
   readFile,
   getFiles,
-  decodeFile
+  decodeFile,
+  updateTreeContent
 }
