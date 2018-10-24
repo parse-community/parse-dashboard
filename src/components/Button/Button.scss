@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 @import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
 
 .button {
   @include DosisFont;
@@ -100,6 +101,24 @@
     background-color: transparent;
     border-color: white;
     opacity: 0.2;
+  }
+}
+
+.yellow {
+  color: $yellow;
+  border-color: $yellow;
+
+  &:hover, &:focus {
+    background-color: $lightYellow;
+  }
+
+  &.primary {
+    background-color: $yellow;
+    color: $white;
+
+    &:hover, &:focus {
+      background-color: $darkYellow;
+    }
   }
 }
 

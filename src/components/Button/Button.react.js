@@ -62,7 +62,7 @@ Button.propTypes = {
     'Determines whether a button can be clicked. Disabled buttons will ' +
     'appear grayed out, and will not fire onClick events.'
   ),
-  color: PropTypes.oneOf(['blue', 'green', 'red', 'white']).describe(
+  color: PropTypes.oneOf(['blue', 'green', 'red', 'white', 'yellow']).describe(
     'The color of the button.'
   ),
   onClick: PropTypes.func.describe(

@@ -6,16 +6,19 @@
  * the root directory of this source tree.
  */
 import React           from 'react';
+import { withRouter }  from 'react-router';
+import history         from 'dashboard/history';
 import axios           from 'axios'
 import Button          from 'components/Button/Button.react';
-import EmptyState      from 'components/EmptyState/EmptyState.react';
 import CodeTree        from 'components/CodeTree/CodeTree.react';
 import { getFiles }    from 'components/CodeTree/TreeActions';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import styles          from 'dashboard/Data/CloudCode/CloudCode.scss';
 import CloudCode       from 'dashboard/Data/CloudCode/CloudCode.react';
+import LoaderDots      from 'components/LoaderDots/LoaderDots.react';
+import Modal           from 'components/Modal/Modal.react';
 
-export default class B4ACloudCode extends CloudCode {
+class B4ACloudCode extends CloudCode {
   constructor() {
     super();
     this.section = 'Core';
@@ -26,7 +29,8 @@ export default class B4ACloudCode extends CloudCode {
     this.state = {
       files: undefined,
       loading: true,
-      unsavedChanges: false
+      unsavedChanges: false,
+      modal: null
     };
   }
 
@@ -36,6 +40,28 @@ export default class B4ACloudCode extends CloudCode {
 
   async componentWillMount() {
     await this.fetchSource()
+    const unbindHook = this.props.router.setRouteLeaveHook(this.props.route, nextLocation => {
+      if (this.state.unsavedChanges) {
+        const warningModal = <Modal
+          type={Modal.Types.WARNING}
+          icon='warn-triangle-solid'
+          title="You haven't deployed the uploaded files!"
+          buttonsInCenter={true}
+          textModal={true}
+          confirmText='Continue anyway'
+          onConfirm={() => {
+            unbindHook();
+            history.push(nextLocation);
+          }}
+          onCancel={() => { this.setState({ modal: null }); }}
+          children='If you continue you will lose any changes.'
+          />;
+        this.setState({ modal: warningModal });
+        return false;
+      } else {
+        unbindHook();
+      }
+    });
   }
 
   // method used to verify if exist unsaved changes before leave the page
@@ -70,7 +96,22 @@ export default class B4ACloudCode extends CloudCode {
     let tree = [];
     let currentCode = getFiles()
     this.createFolder(currentCode, tree);
-    // TODO: Show 'loading' modal
+    const loadingModal = <Modal
+      type={Modal.Types.INFO}
+      icon='files-outline'
+      title='Loading your files'
+      textModal={true}
+      children={
+        <div>
+          <LoaderDots />
+          <div>
+            Please wait, deploying in progress...
+          </div>
+        </div>
+      }
+      customFooter={<div style={{ padding: '10px 0 20px' }}></div>}
+      />;
+    this.setState({ modal: loadingModal });
     try{
       await axios(this.getPath(), {
         method: "post",
@@ -78,11 +119,32 @@ export default class B4ACloudCode extends CloudCode {
         withCredentials: true
       })
       await this.fetchSource()
-      await this.setState({ unsavedChanges: true })
-      // TODO: Show success modal
+      const successModal = <Modal
+        type={Modal.Types.VALID}
+        icon='check'
+        title='Success on uploading your files!'
+        showCancel={false}
+        buttonsInCenter={true}
+        confirmText='Ok, got it'
+        onConfirm={() => this.setState({ modal: null })}
+        />;
+      this.setState({ unsavedChanges: false, modal: successModal })
     } catch (err) {
-      console.error(err)
-      // TODO: Show error modal
+      const errorModal = <Modal
+        type={Modal.Types.DANGER}
+        icon='warn-triangle-solid'
+        title='Something went wrong'
+        children='Please try uploading your files again.'
+        showCancel={false}
+        textModal={true}
+        confirmText='Ok, got it'
+        buttonsInCenter={true}
+        onConfirm={() => {
+          this.setState({ modal: null });
+        }} />;
+      this.setState({
+        modal: errorModal
+      });
     }
   }
 
@@ -113,17 +175,6 @@ export default class B4ACloudCode extends CloudCode {
       content = <LoaderContainer loading={true} solid={false}>
         <div className={styles.loading}></div>
       </LoaderContainer>
-    } else if (!this.state.files || Object.keys(this.state.files).length === 0) {
-      content = (
-        <div className={styles.empty}>
-          <EmptyState
-            title={'You haven\u2019t deployed any code yet.'}
-            icon='folder-outline'
-            description={'When you deploy your cloud code, you\u2019ll be able to see your files here'}
-            cta='Get started with Cloud Code'
-            action={() => window.open('https://www.back4app.com/docs/cloud-code-functions/unit-tests', '_blank')} />
-        </div>
-      );
     } else { // render cloud code page
       title = <div className={styles.title}>
         <div><p>Cloud Code Functions</p></div>
@@ -150,7 +201,10 @@ export default class B4ACloudCode extends CloudCode {
         {title}
         {content}
         {footer}
+        {this.state.modal}
       </div>
     );
   }
 }
+
+export default withRouter(B4ACloudCode);
