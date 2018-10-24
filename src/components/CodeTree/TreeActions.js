@@ -76,31 +76,32 @@ const verifyFileNames = (data, newTreeNodes) => {
   }
 }
 
+const getExtension = (fileName) => {
+  let re = /(?:\.([^.]+))?$/
+  return re.exec(fileName)[1]
+}
+
 const addFilesOnTree = (files, currentCode) => {
   let newTreeNodes = [];
   for (let i = 0; i < files.fileList.length; i++) {
     newTreeNodes = readFile({ name: files.fileList[i], code: files.base64[i] }, newTreeNodes);
   }
-  let re = /(?:\.([^.]+))?$/
   let extension
-  let index
   verifyFileNames(currentCode, newTreeNodes);
 
   newTreeNodes.forEach(node => {
-    extension = re.exec(node.text.name)[1];
+    extension = getExtension(node.text.name);
     if (currentCode === '#') {
       let inst = $.jstree.reference(currentCode)
       let obj = inst.get_node(currentCode);
       if (extension === 'js') {
         currentCode += obj.children[0]
-        index = 0
       }
       else {
         currentCode += obj.children[1]
-        index = 1
       }
     }
-    create(currentCode, node, index)
+    create(currentCode, node)
   })
 
   return currentCode;
@@ -177,5 +178,6 @@ module.exports = {
   readFile,
   getFiles,
   decodeFile,
-  updateTreeContent
+  updateTreeContent,
+  getExtension
 }

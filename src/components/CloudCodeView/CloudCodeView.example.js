@@ -14,7 +14,7 @@ export const demos = [
   {
     render() {
       return (
-        <CloudCodeView source={this.props.source} language='javascript' />
+        <CloudCodeView source={this.props.source} extension='js' />
       )
     }
   }

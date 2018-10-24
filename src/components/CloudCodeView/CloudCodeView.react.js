@@ -7,11 +7,26 @@ export default class CodeTree extends React.Component {
     super(props);
   }
 
+  extensionDecoder() {
+    if (this.props.extension)
+      switch (this.props.extension) {
+        case 'js':
+          return 'javascript'
+        case 'ejs':
+          return 'html'
+        default:
+          // css, html, ...
+          return this.props.extension
+      }
+    return 'javascript'
+  }
+
+
   render() {
     if (androidstudio.hljs) {
       androidstudio.hljs.background = "#0c2337"
       androidstudio.hljs.height = '100%'
     }
-    return <SyntaxHighlighter wrapLines={true} language='javascript' style={androidstudio}>{this.props.source}</SyntaxHighlighter>;
+    return <SyntaxHighlighter wrapLines={true} language={this.extensionDecoder()} style={androidstudio}>{this.props.source}</SyntaxHighlighter>;
   }
 }

@@ -15,10 +15,21 @@ export default class CodeTree extends React.Component {
 
     this.state = {
       selectedFile: '',
+      extension: '',
       source: 'Select a file to view your Cloud Code',
       nodeId: '',
-      files: this.props.files
+      files: this.props.files,
+      isImage: false
     }
+  }
+
+  getFileType(file) {
+    try {
+      return file.split(',')[0].indexOf('image') >= 0
+    } catch (err) {
+      console.error(err)
+    }
+    return false
   }
 
   async handleFiles(files) {
@@ -51,13 +62,17 @@ export default class CodeTree extends React.Component {
         let source = ''
         let selectedFile = ''
         let nodeId = ''
+        let extension = ''
+        let isImage = false
         // if is code
         if (selected.data && selected.data.code && selected.type != 'folder') {
-          source = treeAction.decodeFile(selected.data.code)
+          isImage = this.getFileType(selected.data.code)
+          source = isImage ? selected.data.code : treeAction.decodeFile(selected.data.code)
           selectedFile = selected.text
           nodeId = selected.id
+          extension = treeAction.getExtension(selectedFile)
         }
-        this.setState({ source, selectedFile, nodeId })
+        this.setState({ source, selectedFile, nodeId, extension, isImage })
       }
     })
   }
@@ -110,9 +125,13 @@ export default class CodeTree extends React.Component {
               />
             </div>
             <div className={styles['files-text']}>
-              <CloudCodeView
-                source={this.state.source}
-                language='javascript'/>
+              {
+                this.state.isImage ?
+                  <img src={this.state.source} /> :
+                  <CloudCodeView
+                  source={this.state.source}
+                  extension={this.state.extension} />
+              }
             </div>
           </div>
         </div>

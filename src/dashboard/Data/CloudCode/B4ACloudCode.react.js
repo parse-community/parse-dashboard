@@ -177,7 +177,6 @@ class B4ACloudCode extends CloudCode {
   }
 
   renderContent() {
-    console.log("RENDER CONTENT", this.state.files)
     let content = null;
     let title = null;
     let footer = null;
@@ -207,7 +206,7 @@ class B4ACloudCode extends CloudCode {
         <Button
           value='LEARN MORE'
           primary={true}
-          onClick={() => window.open('https://www.back4app.com/docs/cloud-code-functions/unit-tests', '_blank')} />
+          onClick={() => window.open('https://docs.parseplatform.org/cloudcode/guide/', '_blank')} />
       </div>
 
       alertWhatIs = <B4AAlert
