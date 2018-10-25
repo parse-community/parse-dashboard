@@ -193,10 +193,10 @@ class B4ACloudCode extends CloudCode {
     let alertTips = null;
 
     let alertTipsMessage = <div>
-      <p><b>0</b> - Using the Cloud Code tool you can deploy and run your Node.js functions on the Back4App cloud via SDK or calling the <a href="https://www.back4app.com/docs/platform/command-line-tool/how-to-use" target="_blank">REST API</a></p>
-      <p><b>1</b> - To upload your code you should first click on <b>ADD</b> button and choose what files and folders you want to upload.</p>
-      <p><b>2</b> - The first file MUST BE called <b>main.js</b> and any other file or folder MUST BE referenced more in this file.</p>
-      <p><b>3</b> - After ADD and REMOVE all files you want, click on the <b>DEPLOY</b> button and commit your operation;</p>
+      <p><b>•</b> Using the Cloud Code tool you can deploy and run your Node.js functions on the Back4App cloud via SDK or calling the <a href="https://www.back4app.com/docs/platform/command-line-tool/how-to-use" target="_blank">REST API</a></p>
+      <p><b>•</b> To upload your code you should first click on <b>ADD</b> button and choose what files and folders you want to upload.</p>
+      <p><b>•</b> The first file MUST BE called <b>main.js</b> and any other file or folder MUST BE referenced more in this file.</p>
+      <p><b>•</b> After ADD and REMOVE all files you want, click on the <b>DEPLOY</b> button and commit your operation;</p>
     </div>
 
     let alertWhatIsMessage = <div>

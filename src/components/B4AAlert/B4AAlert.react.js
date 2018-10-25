@@ -35,7 +35,7 @@ export default class B4AAlert extends React.Component {
     return this.state.show && (
       <div
         className={styles.label}
-        style={{ padding: '0 ' + padding }}>
+        style={{ padding }}>
         <div
           className={styles.title} >
           {this.props.title}
