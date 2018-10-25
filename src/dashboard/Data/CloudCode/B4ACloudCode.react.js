@@ -36,6 +36,7 @@ class B4ACloudCode extends CloudCode {
     this.alertWhatIs= 'showWhatIs'
 
     this.state = {
+      // property to keep the persisted cloud code files
       files: undefined,
       loading: true,
       unsavedChanges: false,
@@ -47,17 +48,22 @@ class B4ACloudCode extends CloudCode {
     };
   }
 
+  // Method used to handler the B4AAlerts closed (that divs with some tips) and
+  // save this action at Local Storage to persist data.
   handlerCloseAlert(alertTitle) {
+    // identify the alert name based on received alert title
     let alertName = (alertTitle.indexOf('Tips') >= 0 ? this.alertTips : this.alertWhatIs)
     localStorage.setItem(alertName, 'false')
   }
 
+  // Return the cloud code API path
   getPath() {
     return `${b4aSettings.BACK4APP_API_PATH}/${this.appsPath}/${this.props.params.appId}/cloud`
   }
 
   async componentWillMount() {
     await this.fetchSource()
+    // define the parameters to show unsaved changes warning modal
     const unbindHook = this.props.router.setRouteLeaveHook(this.props.route, nextLocation => {
       if (this.state.unsavedChanges) {
         const warningModal = <Modal
@@ -82,8 +88,8 @@ class B4ACloudCode extends CloudCode {
     });
   }
 
-  // Format object to expected backend format
-  createFolder(folders, parent) {
+  // Format object to expected backend pattern
+  formatFiles(folders, parent) {
     folders.forEach(folder => {
       let file = folder;
 
@@ -94,8 +100,8 @@ class B4ACloudCode extends CloudCode {
       parent.push(currentFile);
       if (file.children && file.children.length > 0) {
         currentFile.children = [];
-        // If is a folder, call createFolder recursively
-        this.createFolder(file.children, currentFile.children);
+        // If is a folder, call formatFiles recursively
+        this.formatFiles(file.children, currentFile.children);
       } else {
         currentFile.data = file.data;
       }
@@ -104,8 +110,9 @@ class B4ACloudCode extends CloudCode {
 
   async uploadCode() {
     let tree = [];
+    // Get current files on tree
     let currentCode = getFiles()
-    this.createFolder(currentCode, tree);
+    this.formatFiles(currentCode, tree);
     const loadingModal = <Modal
       type={Modal.Types.INFO}
       icon='files-outline'
@@ -121,6 +128,7 @@ class B4ACloudCode extends CloudCode {
       }
       customFooter={<div style={{ padding: '10px 0 20px' }}></div>}
       />;
+    // show 'loading' modal
     this.setState({ modal: loadingModal });
     try{
       await axios(this.getPath(), {
@@ -129,6 +137,7 @@ class B4ACloudCode extends CloudCode {
         withCredentials: true
       })
       await this.fetchSource()
+      // force jstree component to upload
       await updateTreeContent(this.state.files)
       const successModal = <Modal
         type={Modal.Types.VALID}

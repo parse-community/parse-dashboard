@@ -37,13 +37,14 @@ export default class CodeTree extends React.Component {
     await this.loadFile()
   }
 
+  // load file and add on tree
   async loadFile() {
     let file = this.state.newFile
     if (file) {
       let currentTree = '#'
       treeAction.addFilesOnTree(file, currentTree)
       await this.setState({ newFile: '' })
-      this.watchTreeChanges()
+      this.handleTreeChanges()
     }
   }
 
@@ -51,10 +52,11 @@ export default class CodeTree extends React.Component {
     if (this.state.nodeId) {
       treeAction.remove(`#${this.state.nodeId}`)
       this.setState({ source: '', selectedFile: '', nodeId: '' })
-      this.watchTreeChanges()
+      this.handleTreeChanges()
     }
   }
 
+  // method to identify the selected tree node
   watchSelectedNode() {
     $('#tree').on('select_node.jstree', (e, data) => {
       if (data.selected && data.selected.length === 1) {
@@ -77,7 +79,7 @@ export default class CodeTree extends React.Component {
     })
   }
 
-  watchTreeChanges() {
+  handleTreeChanges() {
     return this.props.parentState({ unsavedChanges: true })
   }
 
