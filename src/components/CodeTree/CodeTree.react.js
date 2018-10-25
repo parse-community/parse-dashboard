@@ -57,13 +57,14 @@ export default class CodeTree extends React.Component {
   }
 
   selectNode(data) {
+    let selected = ''
+    let source = ''
+    let selectedFile = ''
+    let nodeId = ''
+    let extension = ''
+    let isImage = false
     if (data.selected && data.selected.length === 1) {
-      let selected = data.instance.get_node(data.selected[0]);
-      let source = ''
-      let selectedFile = ''
-      let nodeId = ''
-      let extension = ''
-      let isImage = false
+      selected = data.instance.get_node(data.selected[0])
       // if is code
       if (selected.data && selected.data.code && selected.type != 'folder') {
         isImage = this.getFileType(selected.data.code)
@@ -72,8 +73,8 @@ export default class CodeTree extends React.Component {
         nodeId = selected.id
         extension = treeAction.getExtension(selectedFile)
       }
-      this.setState({ source, selectedFile, nodeId, extension, isImage })
     }
+    this.setState({ source, selectedFile, nodeId, extension, isImage })
   }
 
   // method to identify the selected tree node
