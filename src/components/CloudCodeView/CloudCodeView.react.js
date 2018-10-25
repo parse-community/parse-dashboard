@@ -1,6 +1,6 @@
-import React from 'react';
+import React             from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { androidstudio } from 'react-syntax-highlighter/styles/hljs';
+import style             from 'react-syntax-highlighter/styles/hljs/tomorrow-night-eighties';
 
 export default class CodeTree extends React.Component {
   constructor(props){
@@ -23,10 +23,21 @@ export default class CodeTree extends React.Component {
 
 
   render() {
-    if (androidstudio.hljs) {
-      androidstudio.hljs.background = "#0c2337"
-      androidstudio.hljs.height = '100%'
+    if (style.hljs) {
+      style.hljs.background = "#0c2337"
+      style.hljs.height = '100%'
+      style.hljs.padding = '1em 0.5em'
     }
-    return <SyntaxHighlighter wrapLines={true} language={this.extensionDecoder()} style={androidstudio}>{this.props.source}</SyntaxHighlighter>;
+    return <SyntaxHighlighter
+      showLineNumbers={true}
+      lineNumberStyle={{
+        "padding-right": 10,
+        "color": "rgb(169, 183, 198, 0.3)"
+      }}
+      wrapLines={true}
+      language={this.extensionDecoder()}
+      style={style}>
+        {this.props.source}
+      </SyntaxHighlighter>;
   }
 }
