@@ -77,19 +77,18 @@ const readFile = (file, newTreeNodes) => {
 
 // Iterate over current files on the tree to verify if exist a file with the
 // same name at the new files to insert and ask the user if he wants to overwrite it
-const verifyFileNames = async (data, newTreeNodes) => {
+const verifyFileNames = async (data, newNode) => {
   let currentCode = getFiles(data)
   currentCode = currentCode && currentCode.children
 
   for (let i = 0; i < currentCode.length; i++) {
-    for (let j = 0; j < newTreeNodes.length; j++) {
-      if (newTreeNodes[j].text && currentCode[i].text === newTreeNodes[j].text.name) {
-        overwriteFileModal.text = currentCode[i].text + ' file already exists. Do you want to overwrite?'
-        // Show alert and wait for the user response
-        let alertResponse = await MySwal.fire(overwriteFileModal)
-        if (alertResponse) {
-          await remove(`#${currentCode[i].id}`)
-        }
+    if (newNode.text && currentCode[i].text === newNode.text.name) {
+      overwriteFileModal.text = currentCode[i].text + ' file already exists. Do you want to overwrite?'
+      let currentId = currentCode[i].id
+      // Show alert and wait for the user response
+      let alertResponse = await MySwal.fire(overwriteFileModal)
+      if (alertResponse.value) {
+        await remove(`#${currentId}`)
       }
     }
   }
@@ -103,13 +102,15 @@ const getExtension = (fileName) => {
 // Function used to add files on tree.
 const addFilesOnTree = async (files, currentCode) => {
   let newTreeNodes = [];
+  let folder
   for (let i = 0; i < files.fileList.length; i++) {
     newTreeNodes = readFile({ name: files.fileList[i], code: files.base64[i] }, newTreeNodes);
   }
+
   let extension
 
-  newTreeNodes.forEach(async node => {
-    extension = getExtension(node.text.name);
+  for (let j = 0; j < newTreeNodes.length; j++ ) {
+    extension = getExtension(newTreeNodes[j].text.name);
     if (currentCode === '#') {
       let inst = $.jstree.reference(currentCode)
       let obj = inst.get_node(currentCode);
@@ -118,15 +119,14 @@ const addFilesOnTree = async (files, currentCode) => {
       // insert on "cloud" folder, else insert on "public" folder. This logic is
       // a legacy from the old Cloud Code page
       if (extension === 'js') {
-        currentCode += obj.children[0]
+        folder = obj.children[0]
       } else {
-        currentCode += obj.children[1]
+        folder = obj.children[1]
       }
     }
-    await verifyFileNames(currentCode, newTreeNodes);
-    create(currentCode, node)
-  })
-
+    await verifyFileNames(folder, newTreeNodes[j]);
+    create(`#${folder}`, newTreeNodes[j])
+  }
   return currentCode;
 }
 
