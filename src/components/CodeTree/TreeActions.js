@@ -6,7 +6,7 @@ import withReactContent from 'sweetalert2-react-content'
 
 // Alert parameters
 const MySwal = withReactContent(Swal)
-const rewriteFileModal = {
+const overwriteFileModal = {
   title: 'Are you sure?',
   text: "",
   type: 'warning',
@@ -81,18 +81,18 @@ const verifyFileNames = async (data, newTreeNodes) => {
   let currentCode = getFiles(data)
   currentCode = currentCode && currentCode.children
 
-  currentCode.forEach(node => {
-    newTreeNodes.forEach(async newNode => {
-      if (newNode.text && node.text === newNode.text.name) {
-        rewriteFileModal.text = node.text + ' file already exists. Do you want to overwrite?'
+  for (let i = 0; i < currentCode.length; i++) {
+    for (let j = 0; j < newTreeNodes.length; j++) {
+      if (newTreeNodes[j].text && currentCode[i].text === newTreeNodes[j].text.name) {
+        overwriteFileModal.text = currentCode[i].text + ' file already exists. Do you want to overwrite?'
         // Show alert and wait for the user response
-        let alertResponse = await MySwal.fire(rewriteFileModal)
+        let alertResponse = await MySwal.fire(overwriteFileModal)
         if (alertResponse) {
-          await remove(`#${node.id}`)
+          await remove(`#${currentCode[i].id}`)
         }
       }
-    })
-  })
+    }
+  }
 }
 
 const getExtension = (fileName) => {
@@ -101,7 +101,7 @@ const getExtension = (fileName) => {
 }
 
 // Function used to add files on tree.
-const addFilesOnTree = (files, currentCode) => {
+const addFilesOnTree = async (files, currentCode) => {
   let newTreeNodes = [];
   for (let i = 0; i < files.fileList.length; i++) {
     newTreeNodes = readFile({ name: files.fileList[i], code: files.base64[i] }, newTreeNodes);
@@ -119,12 +119,11 @@ const addFilesOnTree = (files, currentCode) => {
       // a legacy from the old Cloud Code page
       if (extension === 'js') {
         currentCode += obj.children[0]
-        await verifyFileNames(currentCode, newTreeNodes);
       } else {
         currentCode += obj.children[1]
-        await verifyFileNames(currentCode, newTreeNodes);
       }
     }
+    await verifyFileNames(currentCode, newTreeNodes);
     create(currentCode, node)
   })
 
