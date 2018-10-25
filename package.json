@@ -56,6 +56,8 @@
     "react-file-reader": "^1.1.4",
     "react-syntax-highlighter": "^9.0.0",
     "react-tabs": "^2.2.2",
+    "sweetalert2": "^7.28.10",
+    "sweetalert2-react-content": "^1.0.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
