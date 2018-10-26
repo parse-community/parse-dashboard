@@ -5,18 +5,18 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../components/CodeTree/CodeTree.react');
+jest.dontMock('../../components/B4ACodeTree/B4ACodeTree.react');
 
 import React                            from 'react';
 import ReactDOM                         from 'react-dom';
 import TestUtils                        from 'react-addons-test-utils';
 
-const CodeTree = require('../../components/CodeTree/CodeTree.react');
+const B4ACodeTree = require('../../components/B4ACodeTree/B4ACodeTree.react');
 
-describe('CodeTree', () => {
+describe('B4ACodeTree', () => {
   it('can render examples', () => {
-    jest.dontMock('../../components/CodeTree/CodeTree.example');
-    const example = require('../../components/CodeTree/CodeTree.example');
+    jest.dontMock('../../components/B4ACodeTree/B4ACodeTree.example');
+    const example = require('../../components/B4ACodeTree/B4ACodeTree.example');
     example.demos.forEach((example, i) => {
       example.render();
     });

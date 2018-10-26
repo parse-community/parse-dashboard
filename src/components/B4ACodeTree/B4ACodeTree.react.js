@@ -1,15 +1,15 @@
-import React           from 'react';
-import $               from 'jquery'
-import jstree          from 'jstree';
-import ReactFileReader from 'react-file-reader';
-import styles          from 'components/CodeTree/CodeTree.scss'
-import Button          from 'components/Button/Button.react';
-import CloudCodeView   from 'components/CloudCodeView/CloudCodeView.react';
-import treeAction      from 'components/CodeTree/TreeActions';
+import React            from 'react';
+import $                from 'jquery'
+import jstree           from 'jstree';
+import ReactFileReader  from 'react-file-reader';
+import styles           from 'components/B4ACodeTree/B4ACodeTree.scss'
+import Button           from 'components/Button/Button.react';
+import B4ACloudCodeView from 'components/B4ACloudCodeView/B4ACloudCodeView.react';
+import B4ATreeActions   from 'components/B4ACodeTree/B4ATreeActions';
 import 'jstree/dist/themes/default/style.css'
-import 'components/CodeTree/JsTree.css'
+import 'components/B4ACodeTree/B4AJsTree.css'
 
-export default class CodeTree extends React.Component {
+export default class B4ACodeTree extends React.Component {
   constructor(props){
     super(props);
 
@@ -42,7 +42,7 @@ export default class CodeTree extends React.Component {
     let file = this.state.newFile
     if (file) {
       let currentTree = '#'
-      treeAction.addFilesOnTree(file, currentTree)
+      B4ATreeActions.addFilesOnTree(file, currentTree)
       await this.setState({ newFile: '' })
       this.handleTreeChanges()
     }
@@ -50,7 +50,7 @@ export default class CodeTree extends React.Component {
 
   deleteFile() {
     if (this.state.nodeId) {
-      treeAction.remove(`#${this.state.nodeId}`)
+      B4ATreeActions.remove(`#${this.state.nodeId}`)
       this.setState({ source: '', selectedFile: '', nodeId: '' })
       this.handleTreeChanges()
     }
@@ -68,10 +68,10 @@ export default class CodeTree extends React.Component {
       // if is code
       if (selected.data && selected.data.code && selected.type != 'folder') {
         isImage = this.getFileType(selected.data.code)
-        source = isImage ? selected.data.code : treeAction.decodeFile(selected.data.code)
+        source = isImage ? selected.data.code : B4ATreeActions.decodeFile(selected.data.code)
         selectedFile = selected.text
         nodeId = selected.id
-        extension = treeAction.getExtension(selectedFile)
+        extension = B4ATreeActions.getExtension(selectedFile)
       }
     }
     this.setState({ source, selectedFile, nodeId, extension, isImage })
@@ -88,7 +88,7 @@ export default class CodeTree extends React.Component {
   }
 
   componentDidMount() {
-    let config = treeAction.getConfig(this.state.files)
+    let config = B4ATreeActions.getConfig(this.state.files)
     $('#tree').jstree(config)
     this.watchSelectedNode()
   }
@@ -134,7 +134,7 @@ export default class CodeTree extends React.Component {
               {
                 this.state.isImage ?
                   <img src={this.state.source} /> :
-                  <CloudCodeView
+                  <B4ACloudCodeView
                   source={this.state.source || "Select a file to view your Cloud Code"}
                   extension={this.state.extension} />
               }

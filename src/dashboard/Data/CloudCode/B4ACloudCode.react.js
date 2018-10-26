@@ -11,11 +11,11 @@ import history         from 'dashboard/history';
 import axios           from 'axios'
 import B4AAlert        from 'components/B4AAlert/B4AAlert.react';
 import Button          from 'components/Button/Button.react';
-import CodeTree        from 'components/CodeTree/CodeTree.react';
+import B4ACodeTree     from 'components/B4ACodeTree/B4ACodeTree.react';
 import {
   getFiles,
   updateTreeContent
-}                      from 'components/CodeTree/TreeActions';
+}                      from 'components/B4ACodeTree/B4ATreeActions';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import styles          from 'dashboard/Data/CloudCode/CloudCode.scss';
 import CloudCode       from 'dashboard/Data/CloudCode/CloudCode.react';
@@ -230,7 +230,7 @@ class B4ACloudCode extends CloudCode {
         title="Back4App Tips"
         description={alertTipsMessage} />
 
-      content = <CodeTree files={this.state.files} parentState={this.setState.bind(this)} />
+      content = <B4ACodeTree files={this.state.files} parentState={this.setState.bind(this)} />
 
       footer = <div className={`${styles.row} ${styles.footer}`}>
         <Button

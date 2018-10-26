@@ -5,18 +5,18 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../components/CloudCodeView/CloudCodeView.react');
+jest.dontMock('../../components/B4ACloudCodeView/B4ACloudCodeView.react');
 
 import React                            from 'react';
 import ReactDOM                         from 'react-dom';
 import TestUtils                        from 'react-addons-test-utils';
 
-const CloudCodeView = require('../../components/CloudCodeView/CloudCodeView.react');
+const B4ACloudCodeView = require('../../components/B4ACloudCodeView/B4ACloudCodeView.react');
 
-describe('CloudCodeView', () => {
+describe('B4ACloudCodeView', () => {
   it('can render examples', () => {
-    jest.dontMock('../../components/CloudCodeView/CloudCodeView.example');
-    const example = require('../../components/CloudCodeView/CloudCodeView.example');
+    jest.dontMock('../../components/B4ACloudCodeView/B4ACloudCodeView.example');
+    const example = require('../../components/B4ACloudCodeView/B4ACloudCodeView.example');
     example.demos.forEach((example, i) => {
       example.render();
     });

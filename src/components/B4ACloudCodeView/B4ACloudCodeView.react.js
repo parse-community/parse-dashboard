@@ -2,7 +2,7 @@ import React             from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import style             from 'react-syntax-highlighter/styles/hljs/tomorrow-night-eighties';
 
-export default class CodeTree extends React.Component {
+export default class B4ACloudCodeView extends React.Component {
   constructor(props){
     super(props);
   }

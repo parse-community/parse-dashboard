@@ -6,15 +6,15 @@
  * the root directory of this source tree.
  */
 import React       from 'react';
-import CloudCodeView from 'components/CloudCodeView/CloudCodeView.react';
+import B4ACloudCodeView from 'components/B4ACloudCodeView/B4ACloudCodeView.react';
 
-export const component = CloudCodeView;
+export const component = B4ACloudCodeView;
 
 export const demos = [
   {
     render() {
       return (
-        <CloudCodeView source={this.props.source} extension='js' />
+        <B4ACloudCodeView source={this.props.source} extension='js' />
       )
     }
   }
