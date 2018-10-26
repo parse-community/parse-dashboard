@@ -71,6 +71,7 @@ export default class Explorer extends DashboardView {
   }
 
   componentDidMount() {
+    back4AppNavigation && back4AppNavigation.atExplorerReportEvent()
     let display = ReactDOM.findDOMNode(this.refs.display);
     this.displaySize = {
       width: display.offsetWidth,
@@ -175,6 +176,7 @@ export default class Explorer extends DashboardView {
     this.xhrHandles = [];
     this.setState({ loading: true });
     this.state.activeQueries.forEach((query, i) => {
+      back4AppNavigation && back4AppNavigation.runExplorerQueryEvent(query)
       let promise = null;
       let xhr = null;
       if (query.preset && query.nonComposable) {
@@ -354,6 +356,7 @@ export default class Explorer extends DashboardView {
         <a
           href='javascript:;'
           role='button'
+          onClick={() => window.open('https://www.back4app.com/docs/analytics/mobile-app-analytics', '_blank') }
           className={styles.toolbarAction}
           style={{ borderRight: '1px solid #66637a' }}>
           <Icon name='question-solid' width={14} height={14} fill='#66637a' />
@@ -472,6 +475,15 @@ export default class Explorer extends DashboardView {
                 formatter={(value, label) => (`${label} ${prettyNumber(value, 3)}`)} />
             );
           }
+          else if (!this.state.mutated)
+            currentDisplay = (
+              <EmptyState
+                title={'No data to display.'}
+                icon='analytics-outline'
+                description={'These queries didn\'t retrieve any result.'}
+                cta='Get started with Analytics Explorer'
+                action={() => window.open('https://www.back4app.com/docs/analytics/mobile-app-analytics', '_blank') } />
+            );
           break;
         case 'table':
           // Render table

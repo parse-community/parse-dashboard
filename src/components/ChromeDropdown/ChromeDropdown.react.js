@@ -16,7 +16,7 @@ export default class ChromeDropdown extends React.Component {
   constructor() {
     super();
 
-    this.state = { 
+    this.state = {
       open: false,
       selected: false,
     };
@@ -44,7 +44,7 @@ export default class ChromeDropdown extends React.Component {
 
   select(value, e) {
     e.stopPropagation();
-    this.setState({ 
+    this.setState({
       open: false,
       selected: true,
     }, () => {
@@ -56,6 +56,9 @@ export default class ChromeDropdown extends React.Component {
     let widthStyle = { width: this.props.width || 140 };
     let styles = this.styles;
     let color = this.props.color || 'purple';
+    let isMultipleOptions = this.props.options.length > 1
+
+    let labelDivStyle = isMultipleOptions ? [styles.current, styles[color]] : [ styles.withoutArrow, styles.disabled, styles[color]]
 
     let label = this.props.value;
     if (this.keyValueMap) {
@@ -66,7 +69,12 @@ export default class ChromeDropdown extends React.Component {
       label = this.props.placeholder;
     }
     let content = (
-      <div className={[styles.current, styles[color]].join(' ')} onClick={() => this.setState({ open: true })}>
+      <div
+        className={labelDivStyle.join(' ')}
+        onClick={() => {
+          if (isMultipleOptions) this.setState({ open: true })
+        }
+      }>
         <div>{label}</div>
       </div>
     );

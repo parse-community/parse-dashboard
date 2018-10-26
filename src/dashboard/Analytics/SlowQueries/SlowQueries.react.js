@@ -240,7 +240,7 @@ export default class SlowQueries extends TableView {
         description={'You haven\'t executed any queries.'}
         icon='gears'
         cta='Get started with Query'
-        action={() => window.location = 'http://docs.parseplatform.org/rest/guide/#queries'} />
+        action={() => window.open('https://www.back4app.com/docs/analytics/slow-query-tool', '_blank') } />
     );
   }
 
