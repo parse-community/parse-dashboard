@@ -270,7 +270,7 @@ export default class BrowserTable extends React.Component {
               />
             </div>
           );
-        } else {
+        } else if (!this.props.isUnique) {
           addRow = (
             <div className={styles.addRow}>
               <a title='Add Row' onClick={this.props.onAddRow}>
