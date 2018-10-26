@@ -94,14 +94,17 @@ export default class BrowserTable extends React.Component {
         </span>
         {this.props.order.map(({ name, width }, j) => {
           let type = this.props.columns[name].type;
-          let attr = attributes[name];
-          if (name === 'objectId') {
-            attr = obj.id;
-          } else if (name === 'ACL' && this.props.className === '_User' && !attr) {
-            attr = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
-          } else if (type === 'Relation' && !attr && obj.id) {
-            attr = new Parse.Relation(obj, name);
-            attr.targetClassName = this.props.columns[name].targetClass;
+          let attr = obj;
+          if (!this.props.isUnique) {
+              attr = attributes[name];
+            if (name === 'objectId') {
+              attr = obj.id;
+            } else if (name === 'ACL' && this.props.className === '_User' && !attr) {
+              attr = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
+            } else if (type === 'Relation' && !attr && obj.id) {
+              attr = new Parse.Relation(obj, name);
+              attr.targetClassName = this.props.columns[name].targetClass;
+            }
           }
           let current = this.props.current && this.props.current.row === row && this.props.current.col === j;
           let hidden = false;
@@ -116,7 +119,7 @@ export default class BrowserTable extends React.Component {
             <BrowserCell
               key={name}
               type={type}
-              readonly={READ_ONLY.indexOf(name) > -1}
+              readonly={this.props.isUnique || READ_ONLY.indexOf(name) > -1}
               width={width}
               current={current}
               onSelect={() => this.props.setCurrent({ row: row, col: j })}
@@ -185,16 +188,21 @@ export default class BrowserTable extends React.Component {
         if (visible) {
           let { name, width } = this.props.order[this.props.current.col];
           let { type, targetClass } = this.props.columns[name];
-          let readonly = READ_ONLY.indexOf(name) > -1;
+          let readonly = this.props.isUnique || READ_ONLY.indexOf(name) > -1;
           if (name === 'sessionToken') {
             if (this.props.className === '_User' || this.props.className === '_Session') {
               readonly = true;
             }
           }
           let obj = this.props.current.row < 0 ? this.props.newObject : this.props.data[this.props.current.row];
-          let value = obj.get(name);
+          let value = obj;
+          if (!this.props.isUnique) {
+            value = obj.get(name);
+          }
           if (name === 'objectId') {
-            value = obj.id;
+            if (!this.props.isUnique) {
+              value = obj.id;
+            }
           } else if (name === 'ACL' && this.props.className === '_User' && !value) {
             value = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
           } else if (name === 'password' && this.props.className === '_User') {

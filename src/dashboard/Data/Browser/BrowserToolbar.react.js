@@ -44,6 +44,8 @@ let BrowserToolbar = ({
   enableDeleteAllRows,
   enableExportClass,
   enableSecurityDialog,
+
+  isUnique,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -91,7 +93,7 @@ let BrowserToolbar = ({
   } else {
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid'>
-        <MenuItem text='Add a row' onClick={onAddRow} />
+        <MenuItem text='Add a row' onClick={onAddRow} disabled={isUnique} />
         <MenuItem text='Add a column' onClick={onAddColumn} />
         <MenuItem text='Add a class' onClick={onAddClass} />
         <Separator />
@@ -102,11 +104,11 @@ let BrowserToolbar = ({
         />
         <Separator />
         <MenuItem
-          disabled={selectionLength === 0}
+          disabled={selectionLength === 0 || isUnique}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)} />
         <MenuItem text='Delete a column' onClick={onRemoveColumn} />
-        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
+        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} disabled={isUnique} /> : <noscript />}
         <MenuItem text='Delete this class' onClick={onDropClass} />
         {enableExportClass ? <Separator /> : <noscript />}
         {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
@@ -120,6 +122,10 @@ let BrowserToolbar = ({
   } else if (subsection.length > 30) {
     subsection = subsection.substr(0, 30) + '\u2026';
   }
+  let classes = [styles.toolbarButton];
+  if (isUnique) {
+    classes.push(styles.toolbarButtonDisabled);
+  }
   return (
     <Toolbar
       relation={relation}
@@ -128,7 +134,7 @@ let BrowserToolbar = ({
       subsection={subsection}
       details={details.join(' \u2022 ')}
     >
-      <a className={styles.toolbarButton} onClick={onAddRow}>
+      <a className={classes.join(' ')} onClick={onAddRow}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>
       </a>
