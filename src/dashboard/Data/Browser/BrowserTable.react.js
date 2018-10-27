@@ -204,7 +204,7 @@ export default class BrowserTable extends React.Component {
               value = value.map(val => {
                   if (val instanceof Parse.Object) {
                       return val.toPointer();
-                  } else if (typeof val.getMonth === 'function') {
+                  } else if (val && typeof val.getMonth === 'function') {
                       return { __type: "Date", iso: val.toISOString() };
                   }
 
