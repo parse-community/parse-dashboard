@@ -46,6 +46,8 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
   } else if (type === 'Date') {
     if (typeof value === 'object' && value.__type) {
       value = new Date(value.iso);
+    } else if (typeof value === 'string') {
+      value = new Date(value);
     }
     content = dateStringUTC(value);
   } else if (type === 'Boolean') {
