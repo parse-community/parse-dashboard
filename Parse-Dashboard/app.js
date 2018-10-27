@@ -202,6 +202,9 @@ module.exports = function(config, options) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         return res.redirect(`${mountPath}login`);
       }
+      if (users && req.user && req.user.matchingUsername ) {
+        res.append('username', req.user.matchingUsername);
+      }
       res.send(`<!DOCTYPE html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
