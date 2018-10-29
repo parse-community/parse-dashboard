@@ -62,6 +62,7 @@ class B4ACloudCode extends CloudCode {
   }
 
   async componentWillMount() {
+    back4AppNavigation && back4AppNavigation.atCloudCodePageEvent()
     await this.fetchSource()
     // define the parameters to show unsaved changes warning modal
     const unbindHook = this.props.router.setRouteLeaveHook(this.props.route, nextLocation => {
@@ -136,6 +137,7 @@ class B4ACloudCode extends CloudCode {
         data: { tree },
         withCredentials: true
       })
+      back4AppNavigation && back4AppNavigation.deployCloudCodeEvent()
       await this.fetchSource()
       // force jstree component to upload
       await updateTreeContent(this.state.files)
