@@ -346,7 +346,7 @@ export default class ParseApp {
     // if (new Date() - this.settings.lastFetched < 60000) {
     //   return Parse.Promise.as(this.settings.fields);
     // }
-    let path = 'http://localhost:4000/apps/' + this.slug + '/dashboard_ajax/settings';
+    let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
     return AJAX.get(path).then((fields) => {
       for (let f in fields) {
         this.settings.fields[f] = fields[f];
