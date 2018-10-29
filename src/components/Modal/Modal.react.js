@@ -74,7 +74,7 @@ let Modal = (({
     <Popover fadeIn={true} fixed={true} position={origin} modal={true} color='rgba(17,13,17,0.8)'>
       <div className={[styles.modal, styles[type]].join(' ')} style={{ width }}>
         <div className={styles.header}>
-          <div style={{top: React.Children.count(subtitle) === 0 ? '37px' : '25px'}} className={styles.title}>{title}</div>
+          <div style={{top: React.Children.count(subtitle) === 0 ? '29px' : '25px'}} className={styles.title}>{title}</div>
           <div className={styles.subtitle}>{subtitle}</div>
           {icon ?
             <div className={styles.icon}>
