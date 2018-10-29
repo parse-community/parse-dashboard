@@ -346,7 +346,7 @@ export default class ParseApp {
     // if (new Date() - this.settings.lastFetched < 60000) {
     //   return Parse.Promise.as(this.settings.fields);
     // }
-    let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
+    let path = 'http://localhost:4000/apps/' + this.slug + '/dashboard_ajax/settings';
     return AJAX.get(path).then((fields) => {
       for (let f in fields) {
         this.settings.fields[f] = fields[f];
@@ -553,8 +553,8 @@ export default class ParseApp {
   }
 
   setAppName(name) {
-    let path = '/apps/' + this.slug;
-    let promise = AJAX.put(path, {'parse_app[name]': name});
+    let path = `${b4aSettings.BACK4APP_API_PATH}/parse-app/${this.slug}`;
+    let promise = AJAX.patch(path, {'appName': name});
     promise.then(() => {
       this.name = name;
     });
