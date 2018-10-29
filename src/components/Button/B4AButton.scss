@@ -1,0 +1,17 @@
+.b4a-green {
+  color: #4caf50;
+  border-color: #4caf50!important;
+
+  &:hover, &:focus {
+    background-color: #81c784;
+  }
+
+  &.primary {
+    background-color: #4caf50;
+    color: $white;
+
+    &:hover, &:focus {
+      background-color: #357a38;
+    }
+  }
+}

@@ -63,6 +63,10 @@ $blueGreen: #11A4BA;
   font-family: 'Source Code Pro', 'Courier New', monospace;
 }
 
+@mixin MaterialDesignFont {
+  font-family: Material-Design-Iconic-Font;
+}
+
 @mixin arrow($direction, $base, $height, $color) {
   border-style: solid;
 

@@ -54,6 +54,9 @@ module.exports = {
       }, {
         test: /\.jpg$/,
         use: { loader: 'file-loader?name=img/[hash].[ext]' }
+      }, {
+        test: /\.gif$/,
+        use: { loader: 'file-loader?name=img/[hash].[ext]' }
       }
     ]
   },

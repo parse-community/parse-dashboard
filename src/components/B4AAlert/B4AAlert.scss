@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.label {
+  font-family: Noto Sans;
+  font-size: 14px;
+  line-height: 32px;
+  margin-bottom: 22px;
+  border-radius: 4px;
+  border: solid 1px #bcdff1;
+  background-color: #d9edf7;
+  color: #31708f;
+
+  .close {
+    float: right;
+    width: 14px;
+    height: 14px;
+    font-size: 16px;
+    margin-top: -10px;
+    margin-right: -10px;
+  }
+
+  p {
+    height: fit-content;
+    margin-bottom: 0px;
+  }
+}
+
+.title {
+  font-weight: bold;
+}
+
+
+

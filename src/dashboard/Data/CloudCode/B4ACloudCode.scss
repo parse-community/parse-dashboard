@@ -1,0 +1,73 @@
+.b4a-source {
+  margin: 0 38px;
+  background-color: #f9f9f9;
+}
+
+.loading {
+  position: relative;
+  min-height: 100vh;
+}
+
+.title {
+  padding-top: 41px;
+  margin-bottom: 21px;
+
+  div {
+    float: left;
+  }
+
+  p {
+    font-family: Noto Sans;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #224969;
+    padding-left: 0px;
+  }
+
+  a {
+    margin-top: 7px;
+  }
+
+  span {
+    font-family: Raleway;
+    font-size: 12px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffffff;
+  }
+}
+
+.footer {
+  margin-top: 28px;
+  margin-right: 0px;
+  float: right;
+
+  span {
+    font-family: Raleway;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffffff;
+
+    svg {
+      margin-right: 7px;
+    }
+  }
+
+  a {
+    height: 47px;
+    padding: 10px 16px;
+  }
+}

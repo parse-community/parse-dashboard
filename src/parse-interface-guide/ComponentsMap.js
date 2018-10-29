@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+export let B4AAlert                  = require('components/B4AAlert/B4AAlert.example');
 export let Button                    = require('components/Button/Button.example');
 export let Calendar                  = require('components/Calendar/Calendar.example');
 export let CascadingView             = require('components/CascadingView/CascadingView.example');
@@ -12,7 +13,9 @@ export let Chart                     = require('components/Chart/Chart.example')
 export let Checkbox                  = require('components/Checkbox/Checkbox.example');
 export let ChromeDatePicker          = require('components/ChromeDatePicker/ChromeDatePicker.example');
 export let ChromeDropdown            = require('components/ChromeDropdown/ChromeDropdown.example');
+export let B4ACloudCodeView             = require('components/B4ACloudCodeView/B4ACloudCodeView.example');
 export let CodeSnippet               = require('components/CodeSnippet/CodeSnippet.example');
+export let B4ACodeTree                  = require('components/B4ACodeTree/B4ACodeTree.example');
 export let CreditCardInput           = require('components/CreditCardInput/CreditCardInput.example');
 export let DataBrowserHeader         = require('components/DataBrowserHeader/DataBrowserHeader.example');
 export let DatePicker                = require('components/DatePicker/DatePicker.example');

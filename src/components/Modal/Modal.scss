@@ -70,6 +70,12 @@
   }
 }
 
+.warning {
+  .header {
+    background: $yellow
+  }
+}
+
 .info {
   .header {
     background: $blue;
