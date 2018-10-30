@@ -195,14 +195,14 @@ class B4ACloudCode extends CloudCode {
     let alertTips = null;
 
     let alertTipsMessage = <div>
-      <p><b>•</b> Using the Cloud Code tool you can deploy and run your Node.js functions on the Back4App cloud via SDK or calling the <a href="https://www.back4app.com/docs/platform/command-line-tool/how-to-use" target="_blank">REST API</a></p>
-      <p><b>•</b> To upload your code you should first click on <b>ADD</b> button and choose what files and folders you want to upload.</p>
-      <p><b>•</b> The first file MUST BE called <b>main.js</b> and any other file or folder MUST BE referenced more in this file.</p>
-      <p><b>•</b> After ADD and REMOVE all files you want, click on the <b>DEPLOY</b> button and commit your operation;</p>
+      <p><b>•</b> To deploy your Cloud Code Functions you can use the Dashboard bellow or the <a href="https://www.back4app.com/docs/platform/command-line-tool/parse-server-setup" target="_blank">Back4App CLI.</a></p>
+      <p><b>•</b> To upload your code you should first click on ADD button and choose what files you want to upload.</p>
+      <p><b>•</b> The first file MUST BE called main.js and any other file or folder MUST BE referenced more in this file.</p>
+      <p><b>•</b> After ADD and REMOVE all files you want, click on the DEPLOY button and commit your operation;</p>
     </div>
 
     let alertWhatIsMessage = <div>
-      <p>To make long short, Cloud code isn’t anything else than a script that runs on the server side instead of the device that is running your app. It is more commonly used on Apps that need of a little more of complexity to its execution but isn’t mandatory.</p>
+      <p>Cloud code functions is a tool that lets you run a NodeJS function in Back4App Cloud. Back4App executes your code only when you call the function via API or via SDK. It is also possible to create functions that are triggered by your app events. When you update your Cloud Code Functions, it becomes available to all mobile/web/IoT environments instantly. You don’t have to wait for a new release of your application. This lets you change app behavior on the fly and add new features faster.</p>
     </div>
 
     // Show loading page before fetch data
