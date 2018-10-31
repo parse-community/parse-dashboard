@@ -553,8 +553,8 @@ export default class ParseApp {
   }
 
   setAppName(name) {
-    let path = '/apps/' + this.slug;
-    let promise = AJAX.put(path, {'parse_app[name]': name});
+    let path = `${b4aSettings.BACK4APP_API_PATH}/parse-app/${this.slug}`;
+    let promise = AJAX.patch(path, {'appName': name});
     promise.then(() => {
       this.name = name;
     });

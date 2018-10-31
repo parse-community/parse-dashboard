@@ -115,7 +115,8 @@ let AppInformationFields = ({
     labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
     label={<Label text='App name' />}
     input={<TextInput
-      value={appName} />
+      value={appName}
+      onChange={(newValue) => setAppName(newValue)} />
     } />
   <Field
     labelWidth={58}
@@ -538,20 +539,22 @@ export default class GeneralSettings extends DashboardView {
             promiseList.push(this.context.currentApp.setInProduction(changes.inProduction));
           }
 
-          let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
-          addedCollaborators.forEach(({ userEmail, featuresPermission, classesPermission }) => {
-            promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission, classesPermission));
-          });
+          if (changes.collaborators !== undefined) {
+            let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
+            addedCollaborators.forEach(({ userEmail, featuresPermission, classesPermission }) => {
+              promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission, classesPermission));
+            });
 
-          let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
-          removedCollaborators.forEach(({ id }) => {
-            promiseList.push(this.context.currentApp.removeCollaboratorById(id));
-          });
+            let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
+            removedCollaborators.forEach(({ id }) => {
+              promiseList.push(this.context.currentApp.removeCollaboratorById(id));
+            });
 
-          let editedCollaborators = verifyEditedCollaborators(changes.collaborators);
-          editedCollaborators.forEach(({ id, featuresPermission, classesPermission }) => {
-            promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission, classesPermission));
-          });
+            let editedCollaborators = verifyEditedCollaborators(changes.collaborators);
+            editedCollaborators.forEach(({ id, featuresPermission, classesPermission }) => {
+              promiseList.push(this.context.currentApp.editCollaboratorById(id, featuresPermission, classesPermission));
+            });
+          }
 
           let urlKeys = {
             iTunesURL: 'ios',
@@ -571,7 +574,7 @@ export default class GeneralSettings extends DashboardView {
           Parse.Promise.when(promiseList).then(() => {
             promise.resolve();
             this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
-            this.setState({ removedCollaborators: removedCollaborators });
+            this.setState({ removedCollaborators: removedCollaborators || [] });
           }).fail(errors => {
             promise.reject({ error: unique(pluck(errors, 'error')).join(' ')});
           });

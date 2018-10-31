@@ -145,6 +145,10 @@ export function put(url, body) {
   return request('PUT', url, body);
 }
 
+export function patch(url, body) {
+  return request('PATCH', url, body);
+}
+
 // `delete` is a keyword
 export function del(url) {
   return request('DELETE', url);
