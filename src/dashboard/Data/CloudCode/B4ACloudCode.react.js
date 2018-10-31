@@ -102,11 +102,10 @@ class B4ACloudCode extends CloudCode {
       if (file.children && file.children.length > 0) {
         currentFile.children = [];
         // If is a folder, call formatFiles recursively
-        currentFile.children = this.formatFiles(file.children, currentFile.children);
+        this.formatFiles(file.children, currentFile.children);
       } else {
         currentFile.data = file.data;
       }
-      return currentFile
     })
   }
 
