@@ -9,6 +9,19 @@ import B4ATreeActions   from 'components/B4ACodeTree/B4ATreeActions';
 import 'jstree/dist/themes/default/style.css'
 import 'components/B4ACodeTree/B4AJsTree.css'
 
+const cloudFolderPlaceholder = "// The first deployed file must be named main.js and must be placed on the root of the cloud folder.\n" +
+  "// The example below shows you how a cloud code function looks like.\n\n" +
+  "/*\n* Parse.Cloud.define(\"hello\", function(request, response){\n" +
+  "* \tresponse.success(\"Hello world!\");\n" +
+  "* });\n*/\n" +
+  "\n// If you have set a function in another cloud code file, called \"test.js\" (for example)\n" +
+  "// you need to refer it in your main.js, as you can see below:\n" +
+  "\n/* require(\"./test.js\"); */"
+
+const publicFolderPlaceholder = "// Public folder can be used to deploy public static content as html, images, css, etc.\n" +
+  "\n" +
+  "// You have to setup a custom domain or subdomain at Back4App to access the public static content"
+
 export default class B4ACodeTree extends React.Component {
   constructor(props){
     super(props);
@@ -72,6 +85,9 @@ export default class B4ACodeTree extends React.Component {
         selectedFile = selected.text
         nodeId = selected.id
         extension = B4ATreeActions.getExtension(selectedFile)
+      } else {
+        if (selected.text === 'cloud') source = cloudFolderPlaceholder
+        else if (selected.text === 'public') source = publicFolderPlaceholder
       }
     }
     this.setState({ source, selectedFile, nodeId, extension, isImage })
