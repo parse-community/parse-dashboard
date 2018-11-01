@@ -99,7 +99,7 @@ class B4ACloudCode extends CloudCode {
       currentFile.type = (currentFile.type === 'file' ? 'default' : currentFile.type)
 
       parent.push(currentFile);
-      if (file.children && file.children.length > 0) {
+      if (file.type === 'folder') {
         currentFile.children = [];
         // If is a folder, call formatFiles recursively
         this.formatFiles(file.children, currentFile.children);
