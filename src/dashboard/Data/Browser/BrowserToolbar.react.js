@@ -132,7 +132,7 @@ let BrowserToolbar = ({
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}
-    >
+      helplink={''}>
       <a className={styles.toolbarButton} onClick={onAddRow}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>

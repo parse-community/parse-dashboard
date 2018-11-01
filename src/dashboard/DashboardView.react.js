@@ -196,6 +196,11 @@ export default class DashboardView extends React.Component {
 
     if (coreSubsections.length > 0) {
       appSidebarSections.push({
+        name: 'API Reference',
+        icon: 'api-reference',
+        link: `https://dashboard.back4app.com/apidocs/${this.context.currentApp.applicationId}`,
+      });
+      appSidebarSections.push({
         name: 'Core',
         icon: 'core',
         link: '/browser',

@@ -19,11 +19,14 @@ let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgr
   if (icon) {
     iconContent = <Icon width={25} height={25} name={icon} fill='#ffffff' />;
   }
+  const linkComponent = link.startsWith('/')
+    ? <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}<span>{name}</span></Link>
+    : <a style={style} className={styles.section_header} href={link} target="_blank">{iconContent}<span>{name}</span></a>;
   return (
     <div className={classes.join(' ')}>
       {active ?
         <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor}}>{iconContent}<span>{name}</span></div> :
-        <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}<span>{name}</span></Link>}
+        linkComponent}
 
       {children ? <div className={styles.section_contents} style={{ background: secondaryBackgroundColor}}>{children}</div> : null}
     </div>
