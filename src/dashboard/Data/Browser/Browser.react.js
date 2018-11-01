@@ -327,14 +327,18 @@ class Browser extends DashboardView {
     query.limit(200);
 
     let promise = query.find({ useMasterKey: true });
-    await this.setState({ isUnique: false });
+    let isUnique = false;
+    let uniqueField = null;
     filters.forEach(async (filter) => {
       if (filter.get('constraint') == 'unique') {
         const field = filter.get('field');
         promise = query.distinct(field);
-        await this.setState({ isUnique: true, uniqueField: field });
+        isUnique = true;
+        uniqueField = field;
       }
     });
+    await this.setState({ isUnique, uniqueField });
+
     const data = await promise;
     return data;
   }

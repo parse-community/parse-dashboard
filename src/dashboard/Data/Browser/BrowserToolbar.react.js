@@ -57,7 +57,7 @@ let BrowserToolbar = ({
       }
   }
 
-  if (!relation) {
+  if (!relation && !isUnique) {
     if (perms && !hidePerms) {
       let read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
       let write = perms.create && perms.update && perms.delete && perms.create['*'] && perms.update['*'] && perms.delete['*'];
@@ -92,8 +92,8 @@ let BrowserToolbar = ({
     );
   } else {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
-        <MenuItem text='Add a row' onClick={onAddRow} disabled={isUnique} />
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
+        <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a column' onClick={onAddColumn} />
         <MenuItem text='Add a class' onClick={onAddClass} />
         <Separator />
@@ -104,11 +104,11 @@ let BrowserToolbar = ({
         />
         <Separator />
         <MenuItem
-          disabled={selectionLength === 0 || isUnique}
+          disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)} />
         <MenuItem text='Delete a column' onClick={onRemoveColumn} />
-        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} disabled={isUnique} /> : <noscript />}
+        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
         <MenuItem text='Delete this class' onClick={onDropClass} />
         {enableExportClass ? <Separator /> : <noscript />}
         {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
@@ -122,9 +122,11 @@ let BrowserToolbar = ({
   } else if (subsection.length > 30) {
     subsection = subsection.substr(0, 30) + '\u2026';
   }
-  let classes = [styles.toolbarButton];
+  const classes = [styles.toolbarButton];
+  let onClick = onAddRow;
   if (isUnique) {
     classes.push(styles.toolbarButtonDisabled);
+    onClick = null;
   }
   return (
     <Toolbar
@@ -134,7 +136,7 @@ let BrowserToolbar = ({
       subsection={subsection}
       details={details.join(' \u2022 ')}
     >
-      <a className={classes.join(' ')} onClick={onAddRow}>
+      <a className={classes.join(' ')} onClick={onClick}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>
       </a>
@@ -152,7 +154,7 @@ let BrowserToolbar = ({
       <div className={styles.toolbarSeparator} />
       {enableSecurityDialog ? <SecurityDialog
         setCurrent={setCurrent}
-        disabled={!!relation}
+        disabled={!!relation || !!isUnique}
         perms={perms}
         className={classNameForPermissionsEditor}
         onChangeCLP={onChangeCLP}

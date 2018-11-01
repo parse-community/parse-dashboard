@@ -330,7 +330,7 @@ export default class BrowserTable extends React.Component {
           selectAll={this.props.selectRow.bind(null, '*')}
           headers={headers}
           updateOrdering={this.props.updateOrdering}
-          readonly={!!this.props.relation}
+          readonly={!!this.props.relation || !!this.props.isUnique}
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn} />
