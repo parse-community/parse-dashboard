@@ -90,16 +90,16 @@ class B4ACloudCode extends CloudCode {
   }
 
   // Format object to expected backend pattern
-  formatFiles(folders, parent) {
-    folders.forEach(folder => {
-      let file = folder;
+  formatFiles(nodes, parent) {
+    nodes.forEach(node => {
+      let file = node;
 
       // Remove 'new-' prefix from files that will be deployed
       let currentFile = { text: file.text, type: file.type.split('new-').pop() };
       currentFile.type = (currentFile.type === 'file' ? 'default' : currentFile.type)
 
       parent.push(currentFile);
-      if (file.type === 'folder') {
+      if (currentFile.type === 'folder') {
         currentFile.children = [];
         // If is a folder, call formatFiles recursively
         this.formatFiles(file.children, currentFile.children);
