@@ -142,9 +142,12 @@ let B4ABrowserToolbar = ({
   let apiDocsButton = className
     ? <Button value='API Reference'
         primary={true}
-        onClick={() => window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}/#${className}`, '_blank')}
         width={90}
-        additionalStyles={apiDocsButtonStyle}/>
+        additionalStyles={apiDocsButtonStyle}
+        onClick={() => {
+          back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
+          window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}/#${className}`, '_blank')
+        }}/>
     : ''
 
   return (
