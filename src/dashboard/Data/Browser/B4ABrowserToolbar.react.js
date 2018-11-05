@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2016-present, Parse, LLC
- * All rights reserved.
- *
- * This source code is licensed under the license found in the LICENSE file in
- * the root directory of this source tree.
- */
 import BrowserFilter  from 'components/BrowserFilter/BrowserFilter.react';
 import BrowserMenu    from 'components/BrowserMenu/BrowserMenu.react';
 import Icon           from 'components/Icon/Icon.react';
@@ -15,47 +8,67 @@ import SecurityDialog from 'dashboard/Data/Browser/SecurityDialog.react';
 import Separator      from 'components/BrowserMenu/Separator.react';
 import styles         from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar        from 'components/Toolbar/Toolbar.react';
+import Button         from 'components/Button/Button.react'
 
-let BrowserToolbar = ({
-  className,
-  classNameForPermissionsEditor,
-  count,
-  perms,
-  schema,
-  userPointers,
-  filters,
-  selection,
-  relation,
-  setCurrent,
-  onFilterChange,
-  onAddColumn,
-  onAddRow,
-  onAddClass,
-  onAttachRows,
-  onAttachSelectedRows,
-  onImport,
-  onImportRelation,
-  onExport,
-  onRemoveColumn,
-  onDeleteRows,
-  onDropClass,
-  onChangeCLP,
-  onRefresh,
-  hidePerms,
+const apiDocsButtonStyle = {
+  display: 'inline-block',
+  height: '20px',
+  border: '1px solid #169cee',
+  'line-height': '20px',
+  outline: '0',
+  'text-decoration': 'none',
+  'text-align': 'center',
+  'border-radius': '5px',
+  cursor: 'pointer',
+  'min-width': '90px',
+  padding: '0 5px',
+  'font-size': '12px',
+  'font-weight': 'bold',
+  'margin-bottom': '4px',
+}
 
-  enableDeleteAllRows,
-  enableImport,
-  enableExportClass,
-  enableSecurityDialog,
-}) => {
+let B4ABrowserToolbar = ({
+    className,
+    classNameForPermissionsEditor,
+    count,
+    perms,
+    schema,
+    userPointers,
+    filters,
+    selection,
+    relation,
+    setCurrent,
+    onFilterChange,
+    onAddColumn,
+    onAddRow,
+    onAddClass,
+    onAttachRows,
+    onAttachSelectedRows,
+    onImport,
+    onImportRelation,
+    onExport,
+    onRemoveColumn,
+    onDeleteRows,
+    onDropClass,
+    onChangeCLP,
+    onRefresh,
+    hidePerms,
+
+    enableDeleteAllRows,
+    enableImport,
+    enableExportClass,
+    enableSecurityDialog,
+
+    applicationId
+  }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
   if (count !== undefined) {
-      if (count === 1) {
-        details.push('1 object');
-      } else {
-        details.push(prettyNumber(count) + ' objects');
-      }
+    if (count === 1) {
+      details.push('1 object');
+    } else {
+      details.push(prettyNumber(count) + ' objects');
+    }
   }
 
   if (!relation) {
@@ -125,14 +138,23 @@ let BrowserToolbar = ({
   } else if (subsection.length > 30) {
     subsection = subsection.substr(0, 30) + '\u2026';
   }
+
+  let apiDocsButton = className
+    ? <Button value='API Reference'
+        primary={true}
+        onClick={() => window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}/#${className}`, '_blank')}
+        width={90}
+        additionalStyles={apiDocsButtonStyle}/>
+    : ''
+
   return (
     <Toolbar
       relation={relation}
       filters={filters}
-      section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
+      section={relation ? `Relation <${relation.targetClassName}>` : `Class | ${details.join(' \u2022 ')}`}
       subsection={subsection}
-      details={details.join(' \u2022 ')}
-    >
+      details={relation ? details.join(' \u2022 ') : ''}
+      helplink={apiDocsButton}>
       <a className={styles.toolbarButton} onClick={onAddRow}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>
@@ -162,4 +184,4 @@ let BrowserToolbar = ({
   );
 };
 
-export default BrowserToolbar;
+export default B4ABrowserToolbar;
