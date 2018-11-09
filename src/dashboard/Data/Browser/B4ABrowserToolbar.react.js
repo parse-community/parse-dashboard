@@ -153,7 +153,7 @@ let B4ABrowserToolbar = ({
       additionalStyles={apiDocsButtonStyle}
       onClick={() => {
         back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
-        window.open(`${b4aSettings.DASHBOARD_PATH}/${applicationId}/${classApiId}`, '_blank')
+        window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}${classApiId}`, '_blank')
       }}
     />
   }
