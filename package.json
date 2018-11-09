@@ -78,7 +78,7 @@
     "query-string": "^6.1.0",
     "react": "^16.4.1",
     "react-dnd": "~6.0.0",
-    "react-dnd-html5-backend": "~5.0.1",
+    "react-dnd-html5-backend": "~6.0.0",
     "react-dom": "^16.4.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
