@@ -139,16 +139,24 @@ let B4ABrowserToolbar = ({
     subsection = subsection.substr(0, 30) + '\u2026';
   }
 
-  let apiDocsButton = className
-    ? <Button value='API Reference'
-        primary={true}
-        width={90}
-        additionalStyles={apiDocsButtonStyle}
-        onClick={() => {
-          back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
-          window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}/#${className}`, '_blank')
-        }}/>
-    : ''
+  // variables used to define an API reference button on browser toolbar
+  let classApiId = ''
+  let apiDocsButton = ''
+  let isCustomCLass = classNameForPermissionsEditor && classNameForPermissionsEditor.indexOf('_') === -1
+
+  if (className && (className === 'User' || isCustomCLass)) {
+    // set classApiId taking into count the User class special condition
+    classApiId = `#${className.toLowerCase()}${className === 'User' ? '-api' : '-class-api'}`
+    apiDocsButton = <Button value='API Reference'
+      primary={true}
+      width={90}
+      additionalStyles={apiDocsButtonStyle}
+      onClick={() => {
+        //back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
+        window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}/${classApiId}`, '_blank')
+      }}
+    />
+  }
 
   return (
     <Toolbar
