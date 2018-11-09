@@ -146,14 +146,14 @@ let B4ABrowserToolbar = ({
 
   if (className && (className === 'User' || isCustomCLass)) {
     // set classApiId taking into count the User class special condition
-    classApiId = `#${className.toLowerCase()}${className === 'User' ? '-api' : '-class-api'}`
+    classApiId = `#${className === 'User' ? 'user-api' : `${className}-custom-class`}`
     apiDocsButton = <Button value='API Reference'
       primary={true}
       width={90}
       additionalStyles={apiDocsButtonStyle}
       onClick={() => {
         //back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
-        window.open(`${b4aSettings.DASHBOARD_PATH}/apidocs/${applicationId}/${classApiId}`, '_blank')
+        window.open(`${b4aSettings.DASHBOARD_PATH}/${applicationId}/${classApiId}`, '_blank')
       }}
     />
   }
