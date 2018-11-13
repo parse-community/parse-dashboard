@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
-import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
+import B4ABrowserToolbar      from 'dashboard/Data/Browser/B4ABrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
@@ -188,6 +188,7 @@ export default class DataBrowser extends React.Component {
 
   render() {
     let { className, ...other } = this.props;
+    let { applicationId } = this.context.currentApp
     return (
       <div>
         <BrowserTable
@@ -200,7 +201,7 @@ export default class DataBrowser extends React.Component {
           setEditing={this.setEditing.bind(this)}
           setCurrent={this.setCurrent.bind(this)}
           {...other} />
-        <BrowserToolbar
+        <B4ABrowserToolbar
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}
@@ -209,7 +210,8 @@ export default class DataBrowser extends React.Component {
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass}
           enableImport={this.context.currentApp.serverInfo.features.schemas.import}
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions}
-          {...other}/>
+          {...other}
+          applicationId={applicationId}/>
       </div>
     );
   }

@@ -67,13 +67,16 @@ const Sidebar = ({
         subsections,
       }) => {
         const active = name === section;
+
+        // If link points to another component, adds the prefix
+        link = link.startsWith('/') ? prefix + link : link;
         return (
           <SidebarSection
             key={name}
             name={name}
             icon={icon}
             style={style}
-            link={prefix + link}
+            link={link}
             active={active}
             primaryBackgroundColor={primaryBackgroundColor}
             secondaryBackgroundColor={secondaryBackgroundColor}
