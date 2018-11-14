@@ -217,7 +217,7 @@ class B4ACloudCode extends CloudCode {
         <Button
           value='LEARN MORE'
           primary={true}
-          onClick={() => window.open('https://docs.parseplatform.org/cloudcode/guide/', '_blank')} />
+          onClick={() => window.open('https://back4app.com/docs/platform/get-started/cloud-functions', '_blank')} />
       </div>
 
       alertWhatIs = <B4AAlert
