@@ -232,7 +232,11 @@ class B4ACloudCode extends CloudCode {
         title="Back4App Tips"
         description={alertTipsMessage} />
 
-      content = <B4ACodeTree files={this.state.files} parentState={this.setState.bind(this)} />
+      content = <B4ACodeTree
+        files={this.state.files}
+        parentState={this.setState.bind(this)}
+        currentApp={this.context.currentApp}
+      />
 
       footer = <div className={`${styles.row} ${styles.footer}`}>
         <Button
