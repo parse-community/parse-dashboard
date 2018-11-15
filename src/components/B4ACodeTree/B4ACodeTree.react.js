@@ -21,7 +21,7 @@ const getCloudFolderPlaceholder = (appId, restKey) => "// The first deployed fil
   `* -H \"X-Parse-REST-API-Key: ${restKey}\" \\\n` +
   "* -H \"Content-Type: application/json\" \\\n" +
   "* -d \"{}\" \\\n" +
-  "* https://parseapi.back4app.com/functions/hello\n*/\n" +
+  `* ${b4aSettings.PARSE_API_URL}/functions/hello\n*/\n` +
   "\n// If you have set a function in another cloud code file, called \"test.js\" (for example)\n" +
   "// you need to refer it in your main.js, as you can see below:\n" +
   "\n/* require(\"./test.js\"); */"
