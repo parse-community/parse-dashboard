@@ -217,7 +217,7 @@ class B4ACloudCode extends CloudCode {
         <Button
           value='LEARN MORE'
           primary={true}
-          onClick={() => window.open('https://docs.parseplatform.org/cloudcode/guide/', '_blank')} />
+          onClick={() => window.open('https://back4app.com/docs/platform/get-started/cloud-functions', '_blank')} />
       </div>
 
       alertWhatIs = <B4AAlert
@@ -232,7 +232,11 @@ class B4ACloudCode extends CloudCode {
         title="Back4App Tips"
         description={alertTipsMessage} />
 
-      content = <B4ACodeTree files={this.state.files} parentState={this.setState.bind(this)} />
+      content = <B4ACodeTree
+        files={this.state.files}
+        parentState={this.setState.bind(this)}
+        currentApp={this.context.currentApp}
+      />
 
       footer = <div className={`${styles.row} ${styles.footer}`}>
         <Button
