@@ -158,10 +158,12 @@ let B4ABrowserToolbar = ({
       }}
     />
   }
+  // TODO: Set the videoTutorialUrl
+  // const videoTutorialUrl = '';
   const helpsection = (
     <span>
       {apiDocsButton}
-      <VideoTutorialButton url="lmgtfy/how-to-write-properly" additionalStyles={ { marginLeft: '8px' } } />
+      {/* <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px' } } /> */}
     </span>
   );
 

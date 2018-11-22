@@ -1,24 +1,59 @@
-import React            from 'react';
-import PropTypes        from 'lib/PropTypes';
-import styles           from 'components/VideoTutorialButton/VideoTutorialButton.scss';
+import React, { Component } from 'react';
+import PropTypes from 'lib/PropTypes';
+import styles from 'components/VideoTutorialButton/VideoTutorialButton.scss';
+import Position from 'lib/Position';
+import Popover from 'components/Popover/Popover.react';
+import ReactPlayer from 'react-player';
 
-const VideoTutorialButton = props => {
-  const classes = [styles.button, styles['b4a-green'], styles.unselectable];
-  const clickHandler = () => {
-    const { url } = props;
-    // openVideoTutorialModal(url);
-    console.log("SHOULD OPEN MODAL WITH URL " + url);
-  };
-  return (
-    <a
-      href='javascript:;'
-      role='button'
-      className={classes.join(' ')}
-      style={props.additionalStyles}
-      onClick={clickHandler}>
-      <span>Video Tutorial</span>
-    </a>
-  );
+export default class VideoTutorialButton extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      videoTutorialModal: null
+    };
+  }
+
+  openVideoTutorialModal() {
+    const { url } = this.props;
+    this.setState({
+      videoTutorialModal: (
+        <Popover
+          fadeIn={true}
+          fixed={true}
+          position={new Position(0, 0)}
+          modal={true}
+          color='rgba(17,13,17,0.8)'
+          onExternalClick={() => this.setState({ videoTutorialModal: null })}>
+          <div className={styles.modal}>
+            <ReactPlayer
+              url={url}
+              controls
+              width="100%"
+              height="500px"
+              playing
+            />
+          </div>
+        </Popover>
+      )
+    });
+  }
+
+  render() {
+    const classes = [styles.button, styles['b4a-green'], styles.unselectable];
+    return (
+      <a
+        href='javascript:;'
+        role='button'
+        className={classes.join(' ')}
+        style={this.props.additionalStyles}
+        onClick={() => this.openVideoTutorialModal()}>
+        <span>Video Tutorial</span>
+        {this.state.videoTutorialModal}
+      </a>
+    );
+  }
 }
 
 // Props validations
@@ -28,5 +63,3 @@ VideoTutorialButton.propTypes = {
     'Additional styles for <a> tag.'
   )
 };
-
-export default VideoTutorialButton;
