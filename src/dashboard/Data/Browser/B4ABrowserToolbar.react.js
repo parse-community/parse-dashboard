@@ -9,6 +9,7 @@ import Separator      from 'components/BrowserMenu/Separator.react';
 import styles         from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar        from 'components/Toolbar/Toolbar.react';
 import Button         from 'components/Button/Button.react'
+import VideoTutorialButton from 'components/VideoTutorialButton/VideoTutorialButton.react';
 
 const apiDocsButtonStyle = {
   display: 'inline-block',
@@ -157,6 +158,12 @@ let B4ABrowserToolbar = ({
       }}
     />
   }
+  const helpsection = (
+    <span>
+      {apiDocsButton}
+      <VideoTutorialButton url="lmgtfy/how-to-write-properly" additionalStyles={ { marginLeft: '8px' } } />
+    </span>
+  );
 
   return (
     <Toolbar
@@ -165,7 +172,7 @@ let B4ABrowserToolbar = ({
       section={relation ? `Relation <${relation.targetClassName}>` : `Class | ${details.join(' \u2022 ')}`}
       subsection={subsection}
       details={relation ? details.join(' \u2022 ') : ''}
-      helplink={apiDocsButton}>
+      helpsection={helpsection}>
       <a className={styles.toolbarButton} onClick={onAddRow}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>
