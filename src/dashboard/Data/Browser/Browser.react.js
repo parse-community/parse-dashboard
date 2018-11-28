@@ -382,7 +382,7 @@ class Browser extends DashboardView {
   }
 
   fetchNextPage() {
-    if (!this.state.data) {
+    if (!this.state.data || this.state.isUnique) {
       return null;
     }
     let className = this.props.params.className;
@@ -417,11 +417,8 @@ class Browser extends DashboardView {
     }
     query.addDescending('createdAt');
     query.limit(200);
-    let promise = query.find({ useMasterKey: true });
-    if (this.state.isUnique) {
-      promise = query.distinct(this.state.uniqueField);
-    }
-    promise.then((nextPage) => {
+
+    query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
         this.setState((state) => ({ data: state.data.concat(nextPage)}));
       }
