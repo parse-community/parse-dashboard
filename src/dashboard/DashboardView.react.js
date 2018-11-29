@@ -34,7 +34,7 @@ export default class DashboardView extends React.Component {
       features.schemas.addClass &&
       features.schemas.removeClass) {
       coreSubsections.push({
-        name: 'Browser',
+        name: 'Database Browser',
         link: '/browser'
       });
     }
