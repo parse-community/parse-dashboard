@@ -39,7 +39,7 @@ export default class Browser extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';
-    this.subsection = 'Browser'
+    this.subsection = 'Database Browser'
     this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
 
