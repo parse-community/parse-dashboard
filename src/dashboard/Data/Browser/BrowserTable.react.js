@@ -228,27 +228,28 @@ export default class BrowserTable extends React.Component {
           for (let i = 0; i < this.props.current.col; i++) {
             wrapLeft += this.props.order[i].width;
           }
-
-          editor = (
-            <Editor
-              top={wrapTop}
-              left={wrapLeft}
-              type={type}
-              targetClass={targetClass}
-              value={value}
-              readonly={readonly}
-              width={width}
-              onCommit={(newValue) => {
-                if (newValue !== value) {
-                  this.props.updateRow(
-                    this.props.current.row,
-                    name,
-                    newValue
-                  );
-                }
-                this.props.setEditing(false);
-              }} />
-          );
+          if (!this.props.isUnique) {
+            editor = (
+              <Editor
+                top={wrapTop}
+                left={wrapLeft}
+                type={type}
+                targetClass={targetClass}
+                value={value}
+                readonly={readonly}
+                width={width}
+                onCommit={(newValue) => {
+                  if (newValue !== value) {
+                    this.props.updateRow(
+                      this.props.current.row,
+                      name,
+                      newValue
+                    );
+                  }
+                  this.props.setEditing(false);
+                }} />
+            );
+          }
         }
       }
 
