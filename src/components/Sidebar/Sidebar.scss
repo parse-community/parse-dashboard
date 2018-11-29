@@ -162,7 +162,7 @@
   }
 
   &:after {
-    @include arrow('down', 10px, 7px, #132B39);
+    @include arrow('down', 10px, 7px, #fff);
     position: absolute;
     content: '';
     top: 20px;
@@ -247,7 +247,9 @@
   color: white;
 
   &:hover{
-    background-color: #0D5E91;
+    background-color: #1184ca;
+    text-decoration: underline;
+    color: white;
   }
 
   > span {
