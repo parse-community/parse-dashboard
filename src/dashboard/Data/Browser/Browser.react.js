@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import { ActionTypes }                    from 'lib/stores/SchemaStore';
-import axios                              from 'axios';
+import { post }                            from 'lib/AJAX';
 import AccountManager                     from 'lib/AccountManager';
 import AddColumnDialog                    from 'dashboard/Data/Browser/AddColumnDialog.react';
 import CategoryList                       from 'components/CategoryList/CategoryList.react';
@@ -947,7 +947,7 @@ export default class Browser extends DashboardView {
         const user = AccountManager.currentUser();
         let playVideoTutorial = user && user.playDatabaseBrowserTutorial;
         if (playVideoTutorial) {
-          axios.post(`${b4aSettings.BACK4APP_API_PATH}/tutorial`, { databaseBrowser: true });
+          post(`${b4aSettings.BACK4APP_API_PATH}/tutorial`, { databaseBrowser: true });
         }
         browser = (
           <DataBrowser
