@@ -947,7 +947,7 @@ export default class Browser extends DashboardView {
         const user = AccountManager.currentUser();
         let playVideoTutorial = user && user.playDatabaseBrowserTutorial;
         if (playVideoTutorial) {
-          post(`${b4aSettings.BACK4APP_API_PATH}/tutorial`, { databaseBrowser: true });
+          post(`/tutorial`, { databaseBrowser: true });
         }
         browser = (
           <DataBrowser
