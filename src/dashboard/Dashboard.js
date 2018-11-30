@@ -237,7 +237,6 @@ class Dashboard extends React.Component {
 
           <Route path='browser' component={ShowSchemaOverview ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
           <Route path='browser/:className' component={Browser} />
-          <Route path='browser/:className/new' component={Browser} />
           <Route path='browser/:className/:entityId/:relationName' component={Browser} />
 
           <Route path='cloud_code' component={CloudCode} />
