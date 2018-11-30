@@ -160,7 +160,7 @@ let B4ABrowserToolbar = ({
     />
   }
   // TODO: Set the videoTutorialUrl
-  const videoTutorialUrl = 'https://www.youtube.com/watch?v=Em5grOlQNFQ';
+  const videoTutorialUrl = 'https://youtu.be/0Ym9-BHI8Fg';
   const helpsection = (
     <span>
       {apiDocsButton}
