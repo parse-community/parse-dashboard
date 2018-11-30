@@ -60,7 +60,8 @@ let B4ABrowserToolbar = ({
     enableExportClass,
     enableSecurityDialog,
 
-    applicationId
+    applicationId,
+    playVideoTutorial
   }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -163,7 +164,7 @@ let B4ABrowserToolbar = ({
   const helpsection = (
     <span>
       {apiDocsButton}
-      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px' } } />
+      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px' } } playing={playVideoTutorial} />
     </span>
   );
 

@@ -942,6 +942,7 @@ export default class Browser extends DashboardView {
             count = this.state.counts[className];
           }
         }
+        let playVideoTutorial = this.props.location.pathname.endsWith('/new');
         browser = (
           <DataBrowser
             count={count}
@@ -979,7 +980,8 @@ export default class Browser extends DashboardView {
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
             onAddClass={this.showCreateClass}
-            err={this.state.err}/>
+            err={this.state.err}
+            playVideoTutorial={playVideoTutorial}/>
         );
       }
     }

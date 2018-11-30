@@ -211,7 +211,8 @@ export default class DataBrowser extends React.Component {
           enableImport={this.context.currentApp.serverInfo.features.schemas.import}
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions}
           {...other}
-          applicationId={applicationId}/>
+          applicationId={applicationId}
+          playVideoTutorial={this.props.playVideoTutorial}/>
       </div>
     );
   }

@@ -15,6 +15,12 @@ export default class VideoTutorialButton extends Component {
     };
   }
 
+  componentWillMount() {
+    if (this.props.playing) {
+      this.openVideoTutorialModal();
+    }
+  }
+
   openVideoTutorialModal() {
     const { url } = this.props;
     this.setState({
