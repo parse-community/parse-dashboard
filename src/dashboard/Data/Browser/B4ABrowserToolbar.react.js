@@ -164,7 +164,7 @@ let B4ABrowserToolbar = ({
   const helpsection = (
     <span>
       {apiDocsButton}
-      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px' } } playing={playVideoTutorial} />
+      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px', marginBottom: '4px' } } playing={playVideoTutorial} />
     </span>
   );
 
