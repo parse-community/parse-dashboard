@@ -174,7 +174,8 @@ export default class Browser extends DashboardView {
 
   redirectToFirstClass(classList) {
     if (!classList.isEmpty()) {
-      let classes = Object.keys(classList.toObject()).filter(className => className !== '_Role' && className !== '_User' && className !== '_Installation');
+      classList = Object.keys(classList.toObject());
+      let classes = classList.filter(className => className !== '_Role' && className !== '_User' && className !== '_Installation');
       classes.sort((a, b) => {
         if (a[0] === '_' && b[0] !== '_') {
           return -1;
