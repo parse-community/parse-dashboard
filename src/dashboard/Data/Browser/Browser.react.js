@@ -174,7 +174,7 @@ export default class Browser extends DashboardView {
 
   redirectToFirstClass(classList) {
     if (!classList.isEmpty()) {
-      let classes = Object.keys(classList.toObject()).filter(className => className !== '_Role' && className !== '_User');
+      let classes = Object.keys(classList.toObject()).filter(className => className !== '_Role' && className !== '_User' && className !== '_Installation');
       classes.sort((a, b) => {
         if (a[0] === '_' && b[0] !== '_') {
           return -1;
@@ -184,7 +184,15 @@ export default class Browser extends DashboardView {
         }
         return a.toUpperCase() < b.toUpperCase() ? -1 : 1;
       });
-      history.replace(this.context.generatePath('browser/' + classes[0]));
+      if (classes[0]) {
+        history.replace(this.context.generatePath(`browser/${classes[0]}`));
+      } else {
+        if (classList.indexOf('_User') !== -1) {
+          history.replace(this.context.generatePath('browser/_User'));
+        } else {
+          history.replace(this.context.generatePath(`browser/${classList[0]}`));
+        }
+      }
     }
   }
 
