@@ -6,6 +6,8 @@
  * the root directory of this source tree.
  */
 import { ActionTypes }                    from 'lib/stores/SchemaStore';
+import { post }                            from 'lib/AJAX';
+import AccountManager                     from 'lib/AccountManager';
 import AddColumnDialog                    from 'dashboard/Data/Browser/AddColumnDialog.react';
 import CategoryList                       from 'components/CategoryList/CategoryList.react';
 import CreateClassDialog                  from 'dashboard/Data/Browser/CreateClassDialog.react';
@@ -942,6 +944,11 @@ export default class Browser extends DashboardView {
             count = this.state.counts[className];
           }
         }
+        const user = AccountManager.currentUser();
+        let playVideoTutorial = user && user.playDatabaseBrowserTutorial;
+        if (playVideoTutorial) {
+          post(`/tutorial`, { databaseBrowser: true });
+        }
         browser = (
           <DataBrowser
             count={count}
@@ -979,7 +986,8 @@ export default class Browser extends DashboardView {
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
             onAddClass={this.showCreateClass}
-            err={this.state.err}/>
+            err={this.state.err}
+            playVideoTutorial={playVideoTutorial}/>
         );
       }
     }

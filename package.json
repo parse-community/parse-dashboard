@@ -54,6 +54,7 @@
     "passport-local": "^1.0.0",
     "popper.js": "^1.12.9",
     "react-file-reader": "^1.1.4",
+    "react-player": "^1.7.0",
     "react-syntax-highlighter": "^9.0.0",
     "react-tabs": "^2.2.2",
     "sweetalert2": "^7.28.10",

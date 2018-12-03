@@ -9,6 +9,7 @@ import Separator      from 'components/BrowserMenu/Separator.react';
 import styles         from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar        from 'components/Toolbar/Toolbar.react';
 import Button         from 'components/Button/Button.react'
+import VideoTutorialButton from 'components/VideoTutorialButton/VideoTutorialButton.react';
 
 const apiDocsButtonStyle = {
   display: 'inline-block',
@@ -59,7 +60,8 @@ let B4ABrowserToolbar = ({
     enableExportClass,
     enableSecurityDialog,
 
-    applicationId
+    applicationId,
+    playVideoTutorial
   }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -157,6 +159,14 @@ let B4ABrowserToolbar = ({
       }}
     />
   }
+  // TODO: Set the videoTutorialUrl
+  const videoTutorialUrl = 'https://youtu.be/0Ym9-BHI8Fg';
+  const helpsection = (
+    <span>
+      {apiDocsButton}
+      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px', marginBottom: '4px' } } playing={playVideoTutorial} />
+    </span>
+  );
 
   return (
     <Toolbar
@@ -165,7 +175,7 @@ let B4ABrowserToolbar = ({
       section={relation ? `Relation <${relation.targetClassName}>` : `Class | ${details.join(' \u2022 ')}`}
       subsection={subsection}
       details={relation ? details.join(' \u2022 ') : ''}
-      helplink={apiDocsButton}>
+      helpsection={helpsection}>
       <a className={styles.toolbarButton} onClick={onAddRow}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>

@@ -45,7 +45,7 @@ let Toolbar = (props) => {
             <span className={styles.details}>
               {props.details}
             </span>
-            {props.helplink}
+            {props.helpsection}
           </div>
         </div>
       </div>
