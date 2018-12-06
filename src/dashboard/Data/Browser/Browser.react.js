@@ -957,6 +957,7 @@ export default class Browser extends DashboardView {
         let playVideoTutorial = user && user.playDatabaseBrowserTutorial;
         if (playVideoTutorial) {
           post(`/tutorial`, { databaseBrowser: true });
+          user.playDatabaseBrowserTutorial = false;
         }
         browser = (
           <DataBrowser
