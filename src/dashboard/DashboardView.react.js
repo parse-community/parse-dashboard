@@ -196,9 +196,9 @@ export default class DashboardView extends React.Component {
 
     if (coreSubsections.length > 0) {
       appSidebarSections.push({
-        name: 'API Reference',
-        icon: 'api-reference',
-        link: `${b4aSettings.DASHBOARD_PATH}/apidocs/${this.context.currentApp.applicationId}`,
+        name: 'Get Started!',
+        icon: 'get-started',
+        link: `${b4aSettings.DASHBOARD_PATH}/apidocs/${this.context.currentApp.applicationId}`
       });
       appSidebarSections.push({
         name: 'Core',
