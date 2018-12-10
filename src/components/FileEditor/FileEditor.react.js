@@ -57,7 +57,7 @@ export default class FileEditor extends React.Component {
     let file = e.target.files[0];
     if (file) {
       let base64 = await this.getBase64(file);
-      this.props.onCommit(new Parse.File(file.name, {base64}));
+      this.props.onCommit(new Parse.File(file.name, { base64 }));
     }
   }
 
