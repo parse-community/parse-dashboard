@@ -178,12 +178,12 @@ const getConfig = (files) => {
       folder: {
         icon: 'zmdi zmdi-folder',
         max_depth: 10,
-        max_children: 100
+        max_children: 200
       },
       "new-folder": {
         icon: 'zmdi zmdi-folder new',
         max_depth: 10,
-        max_children: 100
+        max_children: 200
       },
       "new-file": {
         icon: 'zmdi zmdi-file new',
