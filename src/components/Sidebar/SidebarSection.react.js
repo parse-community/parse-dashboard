@@ -27,7 +27,7 @@ let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgr
 
   const linkComponent = link.startsWith('/')
     ? <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}<span>{name}</span></Link>
-    : <a style={style} className={styles.section_header} href={link} target="_blank" onClick={() => sendEvent(name)}>{iconContent}<span>{name}</span></a>;
+    : <a style={style} className={styles.section_header_external_link} href={link} target="_blank" onClick={() => sendEvent(name)}>{iconContent}<span>{name}</span></a>;
   return (
     <div className={classes.join(' ')}>
       {active ?
