@@ -57,7 +57,7 @@
   overflow-y: auto;
   top: 48px;
   right: 0;
-  bottom: 96px;
+  bottom: 61px;
   left: 0;
 }
 
@@ -103,7 +103,6 @@
 
 .help {
   @extend .footer;
-  bottom: 36px;
   height: 61px;
 }
 

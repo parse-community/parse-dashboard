@@ -89,11 +89,6 @@ const Sidebar = ({
     <div className={styles.help}>
       {/* div to add the zendesk help widget*/}
     </div>
-    <div className={styles.footer}>
-      <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
-      <a target='_blank' href='https://github.com/parse-community'>GitHub</a>
-      <a target='_blank' href='http://docs.parseplatform.org/'>Docs</a>
-    </div>
   </div>
 }
 
