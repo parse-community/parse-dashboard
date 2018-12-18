@@ -260,31 +260,6 @@
   }
 }
 
-.section_header_external_link {
-  color: white;
-  margin: 10px;
-  height: 40px;
-  background-color: #4caf50;
-  border-radius: 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: normal;
-  font-family: Raleway;
-
-  &:hover {
-    color: white;
-    background-color: #57c55b;
-  }
-
-  &:focus {
-    color: white;
-    text-decoration: none;
-  }
-}
-
 .section_contents {
   background: #0e69a0;
   padding: 16px 14px 16px 50px;
