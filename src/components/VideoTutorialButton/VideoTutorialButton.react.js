@@ -13,6 +13,32 @@ export default class VideoTutorialButton extends Component {
     this.state = {
       videoTutorialModal: null
     };
+    this.dispatchOnStartEvent = this.dispatchOnStartEvent.bind(this);
+    this.dispatchOnProgressEvent = this.dispatchOnProgressEvent.bind(this);
+  }
+
+  dispatchOnStartEvent() {
+    back4AppNavigation && back4AppNavigation.onStartDatabaseBrowserVideoEvent();
+    this.dispatched = {};
+  }
+
+  dispatchOnFinishEvent() {
+    back4AppNavigation && back4AppNavigation.onFinishDatabaseBrowserVideoEvent();
+  }
+
+  dispatchOnProgressEvent({ played }) {
+    if (this.dispatched) {
+      if (!this.dispatched[75] && played >= 0.75) {
+        back4AppNavigation && back4AppNavigation.onThreeQuartersDatabaseBrowserVideoEvent();
+        this.dispatched[75] = true;
+      } else if (!this.dispatched[50] && played >= 0.5) {
+        back4AppNavigation && back4AppNavigation.onHalfDatabaseBrowserVideoEvent();
+        this.dispatched[50] = true;
+      } else if (!this.dispatched[25] && played >= 0.25) {
+        back4AppNavigation && back4AppNavigation.onQuarterDatabaseBrowserVideoEvent();
+        this.dispatched[25] = true;
+      }
+    }
   }
 
   componentWillMount() {
@@ -38,6 +64,9 @@ export default class VideoTutorialButton extends Component {
               controls
               width="100%"
               height="100%"
+              onStart={this.dispatchOnStartEvent}
+              onEnded={this.dispatchOnFinishEvent}
+              onProgress={this.dispatchOnProgressEvent}
             />
           </div>
         </Popover>
