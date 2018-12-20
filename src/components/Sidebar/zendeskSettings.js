@@ -4,7 +4,7 @@ const zendeskSettings = () => {
       position: {
         horizontal: 'left',
       },
-      offset: { vertical: '25px', horizontal: '69.5px' }
+      offset: { vertical: '-6px', horizontal: '69.5px' }
     }
   };
 }
