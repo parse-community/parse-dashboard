@@ -1,0 +1,349 @@
+.introjs-overlay {
+  position: absolute;
+  box-sizing: content-box;
+  z-index: 999999;
+  background-color: #000;
+  opacity: 0;
+  background: -moz-radial-gradient(center,ellipse farthest-corner,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
+  background: -webkit-gradient(radial,center center,0px,center center,100%,color-stop(0%,rgba(0,0,0,0.4)),color-stop(100%,rgba(0,0,0,0.9)));
+  background: -webkit-radial-gradient(center,ellipse farthest-corner,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
+  background: -o-radial-gradient(center,ellipse farthest-corner,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
+  background: -ms-radial-gradient(center,ellipse farthest-corner,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
+  background: radial-gradient(center,ellipse farthest-corner,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#66000000',endColorstr='#e6000000',GradientType=1)";
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+  -webkit-transition: all 0.3s ease-out;
+     -moz-transition: all 0.3s ease-out;
+      -ms-transition: all 0.3s ease-out;
+       -o-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out;
+}
+
+.introjs-fixParent {
+  z-index: auto !important;
+  opacity: 1.0 !important;
+  -webkit-transform: none !important;
+     -moz-transform: none !important;
+      -ms-transform: none !important;
+       -o-transform: none !important;
+          transform: none !important;
+}
+
+.introjs-showElement,
+tr.introjs-showElement > td,
+tr.introjs-showElement > th {
+  z-index: 9999999 !important;
+}
+
+.introjs-disableInteraction {
+  z-index: 99999999 !important;
+  position: absolute;
+  background-color: white;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
+.introjs-relativePosition,
+tr.introjs-showElement > td,
+tr.introjs-showElement > th {
+  position: relative;
+}
+
+.introjs-helperLayer {
+  box-sizing: content-box;
+  position: absolute;
+  z-index: 9999998;
+  background-color: #FFF;
+  background-color: rgba(255,255,255,.9);
+  border: 1px solid #777;
+  border: 1px solid rgba(0,0,0,.5);
+  border-radius: 4px;
+  box-shadow: 0 2px 15px rgba(0,0,0,.4);
+  -webkit-transition: all 0.3s ease-out;
+     -moz-transition: all 0.3s ease-out;
+      -ms-transition: all 0.3s ease-out;
+       -o-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out;
+}
+
+.introjs-tooltipReferenceLayer {
+  box-sizing: content-box;
+  position: absolute;
+  visibility: hidden;
+  z-index: 100000000;
+  background-color: transparent;
+  -webkit-transition: all 0.3s ease-out;
+     -moz-transition: all 0.3s ease-out;
+      -ms-transition: all 0.3s ease-out;
+       -o-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out;
+}
+
+.introjs-helperLayer *,
+.introjs-helperLayer *:before,
+.introjs-helperLayer *:after {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+      -ms-box-sizing: content-box;
+       -o-box-sizing: content-box;
+          box-sizing: content-box;
+}
+
+.introjs-helperNumberLayer {
+  box-sizing: content-box;
+  position: absolute;
+  visibility: visible;
+  top: -16px;
+  left: -16px;
+  z-index: 9999999999 !important;
+  padding: 2px;
+  font-family: Arial, verdana, tahoma;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  text-shadow: 1px 1px 1px rgba(0,0,0,.3);
+  background: #2fec0d; /* Old browsers */
+  background: -webkit-linear-gradient(top, #2fec0d 0%, #54ab06 100%); /* Chrome10+,Safari5.1+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2fec0d), color-stop(100%, #54ab06)); /* Chrome,Safari4+ */
+  background:    -moz-linear-gradient(top, #2fec0d 0%, #54ab06 100%); /* FF3.6+ */
+  background:     -ms-linear-gradient(top, #2fec0d 0%, #54ab06 100%); /* IE10+ */
+  background:      -o-linear-gradient(top, #2fec0d 0%, #54ab06 100%); /* Opera 11.10+ */
+  background:         linear-gradient(to bottom, #2fec0d 0%, #54ab06 100%);  /* W3C */
+  width: 20px;
+  height:20px;
+  line-height: 20px;
+  border: 3px solid white;
+  border-radius: 50%;
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#2fec0d', endColorstr='#54ab06', GradientType=0)"; /* IE6-9 */
+  filter: "progid:DXImageTransform.Microsoft.Shadow(direction=135, strength=2, color=ff0000)"; /* IE10 text shadows */
+  box-shadow: 0 2px 5px rgba(0,0,0,.4);
+}
+
+.introjs-arrow {
+  border: 5px solid transparent;
+  content:'';
+  position: absolute;
+}
+.introjs-arrow.top {
+  top: -10px;
+  border-bottom-color:white;
+}
+.introjs-arrow.top-right {
+  top: -10px;
+  right: 10px;
+  border-bottom-color:white;
+}
+.introjs-arrow.top-middle {
+  top: -10px;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-color:white;
+}
+.introjs-arrow.right {
+  right: -10px;
+  top: 10px;
+  border-left-color:white;
+}
+.introjs-arrow.right-bottom {
+  bottom:10px;
+  right: -10px;
+  border-left-color:white;
+}
+.introjs-arrow.bottom {
+  bottom: -10px;
+  border-top-color:white;
+}
+.introjs-arrow.bottom-right {
+  bottom: -10px;
+  right: 10px;
+  border-top-color:white;
+}
+.introjs-arrow.bottom-middle {
+  bottom: -10px;
+  left: 50%;
+  margin-left: -5px;
+  border-top-color:white;
+}
+.introjs-arrow.left {
+  left: -10px;
+  top: 10px;
+  border-right-color:white;
+}
+.introjs-arrow.left-bottom {
+  left: -10px;
+  bottom:10px;
+  border-right-color:white;
+}
+
+.introjs-tooltip {
+  box-sizing: content-box;
+  position: absolute;
+  visibility: visible;
+  padding: 10px;
+  background-color: white;
+  min-width: 400px;
+  max-width: 400px;
+  border-radius: 3px;
+  box-shadow: 0 1px 10px rgba(0,0,0,.4);
+  transition: opacity 0.1s ease-out;
+}
+
+.introjs-tooltip > * {
+  height: unset;
+  font-size: 14px;
+  font-family: Raleway;
+  padding: 0;
+}
+
+.introjs-tooltipbuttons {
+  display: flex;
+}
+
+/*
+ Buttons style by http://nicolasgallagher.com/lab/css3-github-buttons/
+ Changed by Afshin Mehrabani
+*/
+.introjs-button {
+  box-sizing: content-box;
+  position: relative;
+  overflow: visible;
+  display: inline-block;
+  padding: 0.5em 1.3em;
+  margin: 0;
+  text-decoration: none;
+  font: bold 11px/normal sans-serif;
+  color: white;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  background-color: #004d90;
+  border-radius: 4px;
+  /* IE hacks */
+  zoom: 1;
+  *display: inline;
+  margin-top: 10px;
+}
+
+.introjs-button:focus {
+  color: white;
+  text-decoration: none;
+}
+
+.introjs-button:hover {
+  background-color: #3987cc;
+}
+
+.introjs-button:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.introjs-skipbutton {
+  box-sizing: content-box;
+  margin-right: 5px;
+  background-color: #c30000;
+}
+
+.introjs-skipbutton:hover {
+  background-color: red;
+}
+
+.introjs-prevbutton {
+  margin-left: auto;
+}
+
+.introjs-disabled, .introjs-disabled:hover, .introjs-disabled:focus {
+  color: #9a9a9a;
+  border-color: #d4d4d4;
+  box-shadow: none;
+  cursor: default;
+  background-color: #f4f4f4;
+  background-image: none;
+  text-decoration: none;
+}
+
+.introjs-hidden {
+  display: none;
+}
+
+.introjs-bullets {
+  text-align: center;
+}
+
+.introjs-bullets ul {
+  box-sizing: content-box;
+  clear: both;
+  margin: 15px auto 0;
+  padding: 0;
+  display: inline-block;
+}
+
+.introjs-bullets ul li {
+  box-sizing: content-box;
+  list-style: none;
+  float: left;
+  margin: 0 2px;
+}
+
+.introjs-bullets ul li a {
+  box-sizing: content-box;
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: #ccc;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.introjs-bullets ul li a:hover {
+  background: #999;
+}
+
+.introjs-bullets ul li a.active {
+  background: #999;
+}
+
+.introjsFloatingElement {
+  position: absolute;
+  height: 0;
+  width: 0;
+  left: 50%;
+  top: 50%;
+}
+
+.introjs-fixedTooltip {
+  position: fixed;
+}
+
+.intro-code {
+  margin: 20px 5px 0px 5px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #182634;
+}
+
+.intro-code > pre {
+  margin: 0;
+  color: white;
+}
+
+.intro-code-keyword {
+  color: aqua;
+}
+
+.intro-code-string {
+  color: #2fec0d;
+}
+
+.intro-code-number {
+  color: gold;
+}
+
+.intro-code-comment {
+  color: darkgrey;
+}

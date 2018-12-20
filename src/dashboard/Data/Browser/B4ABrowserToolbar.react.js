@@ -13,19 +13,19 @@ import VideoTutorialButton from 'components/VideoTutorialButton/VideoTutorialBut
 
 const apiDocsButtonStyle = {
   display: 'inline-block',
-  height: '20px',
+  height: 20,
   border: '1px solid #169cee',
-  'line-height': '20px',
-  outline: '0',
-  'text-decoration': 'none',
-  'text-align': 'center',
-  'border-radius': '5px',
+  lineHeight: '20px',
+  outline: 0,
+  textDecoration: 'none',
+  textAlign: 'center',
+  borderRadius: '5px',
   cursor: 'pointer',
-  'min-width': '90px',
+  width: 90,
   padding: '0 5px',
-  'font-size': '12px',
-  'font-weight': 'bold',
-  'margin-bottom': '4px',
+  fontSize: '12px',
+  fontWeight: 'bold',
+  marginBottom: 4,
 }
 
 let B4ABrowserToolbar = ({
@@ -60,8 +60,7 @@ let B4ABrowserToolbar = ({
     enableExportClass,
     enableSecurityDialog,
 
-    applicationId,
-    playVideoTutorial
+    applicationId
   }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -151,7 +150,7 @@ let B4ABrowserToolbar = ({
     classApiId = `#${className === 'User' ? 'user-api' : `${className}-custom-class`}`
     apiDocsButton = <Button value='API Reference'
       primary={true}
-      width={90}
+      width='90px'
       additionalStyles={apiDocsButtonStyle}
       onClick={() => {
         back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()
@@ -162,9 +161,9 @@ let B4ABrowserToolbar = ({
   // TODO: Set the videoTutorialUrl
   const videoTutorialUrl = 'https://youtu.be/0Ym9-BHI8Fg';
   const helpsection = (
-    <span>
+    <span className="toolbar-help-section">
       {apiDocsButton}
-      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px', marginBottom: '4px' } } playing={playVideoTutorial} />
+      <VideoTutorialButton url={videoTutorialUrl} additionalStyles={ { marginLeft: '8px', marginBottom: '4px' } } />
     </span>
   );
 

@@ -35,6 +35,10 @@ import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
+import introJs from 'intro.js'
+import introStyle from 'stylesheets/introjs.css';
+
+import Tour from 'components/Tour/Tour.react';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -953,11 +957,6 @@ export default class Browser extends DashboardView {
             count = this.state.counts[className];
           }
         }
-        const user = AccountManager.currentUser();
-        let playVideoTutorial = user && user.playDatabaseBrowserTutorial;
-        if (playVideoTutorial) {
-          post(`/tutorial`, { databaseBrowser: true });
-        }
         browser = (
           <DataBrowser
             count={count}
@@ -995,8 +994,7 @@ export default class Browser extends DashboardView {
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
             onAddClass={this.showCreateClass}
-            err={this.state.err}
-            playVideoTutorial={playVideoTutorial}/>
+            err={this.state.err} />
         );
       }
     }
@@ -1088,6 +1086,19 @@ export default class Browser extends DashboardView {
           onConfirm={this.confirmAttachSelectedRows}
         />
       );
+    }
+    const user = AccountManager.currentUser();
+    if (user && user.playDatabaseBrowserTutorial) {
+      if (extras) {
+        extras = (
+          <div>
+            {extras}
+            <Tour context={this.context} schema={this.props.schema} />
+          </div>
+        );
+      } else {
+        extras = <Tour context={this.context} schema={this.props.schema} />;
+      }
     }
 
     let notification = null;
