@@ -18,6 +18,7 @@ import EmptyState                         from 'components/EmptyState/EmptyState
 import ExportDialog                       from 'dashboard/Data/Browser/ExportDialog.react';
 import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
+import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
@@ -86,6 +87,9 @@ class Browser extends DashboardView {
     this.showAttachSelectedRowsDialog = this.showAttachSelectedRowsDialog.bind(this);
     this.confirmAttachSelectedRows = this.confirmAttachSelectedRows.bind(this);
     this.cancelAttachSelectedRows = this.cancelAttachSelectedRows.bind(this);
+    this.showCloneSelectedRowsDialog = this.showCloneSelectedRowsDialog.bind(this);
+    this.confirmCloneSelectedRows = this.confirmCloneSelectedRows.bind(this);
+    this.cancelCloneSelectedRows = this.cancelCloneSelectedRows.bind(this);
     this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -656,7 +660,8 @@ class Browser extends DashboardView {
       this.state.showExportDialog ||
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
-      this.state.showAttachSelectedRowsDialog
+      this.state.showAttachSelectedRowsDialog ||
+      this.state.showCloneSelectedRowsDialog
     );
   }
 
@@ -729,6 +734,41 @@ class Browser extends DashboardView {
     await parent.save(null, { useMasterKey: true });
     this.setState({
       selection: {},
+    });
+  }
+
+  showCloneSelectedRowsDialog() {
+    this.setState({
+      showCloneSelectedRowsDialog: true,
+    });
+  }
+
+  cancelCloneSelectedRows() {
+    this.setState({
+      showCloneSelectedRowsDialog: false,
+    });
+  }
+
+  async confirmCloneSelectedRows() {
+    const objectIds = [];
+    for (const objectId in this.state.selection) {
+      objectIds.push(objectId);
+    }
+    const query = new Parse.Query(this.props.params.className);
+    query.containedIn('objectId', objectIds);
+    const objects = await query.find({ useMasterKey: true });
+    const toClone = [];
+    for (const object of objects) {
+      toClone.push(object.clone());
+    }
+    await Parse.Object.saveAll(toClone, { useMasterKey: true });
+    this.setState({
+      selection: {},
+      data: [
+        ...toClone,
+        ...this.state.data,
+      ],
+      showCloneSelectedRowsDialog: false,
     });
   }
 
@@ -883,6 +923,7 @@ class Browser extends DashboardView {
             onRefresh={this.refresh}
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
+            onCloneSelectedRows={this.showCloneSelectedRowsDialog}
 
             columns={columns}
             className={className}
@@ -976,6 +1017,15 @@ class Browser extends DashboardView {
           selection={this.state.selection}
           onCancel={this.cancelAttachSelectedRows}
           onConfirm={this.confirmAttachSelectedRows}
+        />
+      );
+    } else if (this.state.showCloneSelectedRowsDialog) {
+      extras = (
+        <CloneSelectedRowsDialog
+          className={className}
+          selection={this.state.selection}
+          onCancel={this.cancelCloneSelectedRows}
+          onConfirm={this.confirmCloneSelectedRows}
         />
       );
     }

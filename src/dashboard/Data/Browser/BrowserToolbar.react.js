@@ -33,6 +33,7 @@ let BrowserToolbar = ({
   onAddClass,
   onAttachRows,
   onAttachSelectedRows,
+  onCloneSelectedRows,
   onExport,
   onRemoveColumn,
   onDeleteRows,
@@ -99,6 +100,12 @@ let BrowserToolbar = ({
           disabled={!selectionLength}
           text={`Attach ${selectionLength <= 1 ? 'this row' : 'these rows'} to relation`}
           onClick={onAttachSelectedRows}
+        />
+        <Separator />
+        <MenuItem
+          disabled={!selectionLength}
+          text={`Clone ${selectionLength <= 1 ? 'this row' : 'these rows'}`}
+          onClick={onCloneSelectedRows}
         />
         <Separator />
         <MenuItem
