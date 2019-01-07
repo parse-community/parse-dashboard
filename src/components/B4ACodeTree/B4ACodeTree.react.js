@@ -9,7 +9,6 @@ import B4ACloudCodeView             from 'components/B4ACloudCodeView/B4ACloudCo
 import B4ATreeActions               from 'components/B4ACodeTree/B4ATreeActions';
 import 'jstree/dist/themes/default/style.css'
 import 'components/B4ACodeTree/B4AJsTree.css'
-import 'react-resizable/css/styles.css'
 
 const getCloudFolderPlaceholder = (appId, restKey) => "// The first deployed file must be named main.js and must be placed on the root of the cloud folder.\n" +
   "// The example below shows you how a cloud code function looks like.\n\n" +
