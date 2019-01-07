@@ -147,8 +147,8 @@ export default class Browser extends DashboardView {
     const createClassCode = `
       <p><br/></p>
       <section class="intro-code">
-        <pre><span class="intro-code-keyword">const</span> Vehicle = Parse.Object.extend(<span class="intro-code-string">'Vehicle'</span>);</pre>
-        <pre><span class="intro-code-keyword">const</span> vehicle = <span class="intro-code-keyword">new</span> Vehicle();</pre>
+        <pre><span class="intro-code-keyword">const</span> B4aVehicle = Parse.Object.extend(<span class="intro-code-string">'B4aVehicle'</span>);</pre>
+        <pre><span class="intro-code-keyword">const</span> vehicle = <span class="intro-code-keyword">new</span> B4aVehicle();</pre>
         <br/>
         <pre>vehicle.set('name', <span class="intro-code-string">'Corolla'</span>);</pre>
         <pre>vehicle.set('price', <span class="intro-code-number">19499</span>);</pre>
@@ -176,7 +176,7 @@ export default class Browser extends DashboardView {
       },
       {
         element: () => document.querySelector('[class^=class_list] a:last-of-type'),
-        intro: `Here is the <b>Vehicle</b> class that you have just created!`,
+        intro: `Here is the <b>B4aVehicle</b> class that you have just created!`,
         position: 'bottom'
       },
       {
@@ -211,14 +211,14 @@ export default class Browser extends DashboardView {
       onBeforeChange: function(targetElement) {
         switch(this._currentStep) {
           case 1:
-            schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'Vehicle' }).then(() => {
+            schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aVehicle' }).then(() => {
               const lastClassLink = document.querySelector('[class^=class_list] a:last-of-type');
               this._introItems[2].element = lastClassLink;
-              return context.currentApp.apiRequest('POST', '/classes/Vehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
+              return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
             }).catch(console.error);
             break;
           case 2:
-            history.push(context.generatePath('browser/Vehicle'));
+            history.push(context.generatePath('browser/B4aVehicle'));
             break;
           case 3:
             this._introItems[3].element = document.querySelector('[class^=browser] [class^=tableRow] > :nth-child(2)');
