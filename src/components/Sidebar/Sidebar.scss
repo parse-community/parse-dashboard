@@ -68,24 +68,35 @@
 .footer {
   @include NotoSansFont;
   position: absolute;
-  background: #353446;
-  height: 36px;
+  background: #094162;
+  height: 61px;
   line-height: 18px;
-  padding: 9px 0;
+  padding: 10px;
   text-align: center;
   bottom: 0;
   left: 0;
   right: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 
   a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
     color: white;
     text-decoration: none;
     border-right: 1px solid #385261;
-    height: 18px;
+    height: 29px;
     line-height: 18px;
-    font-size: 13px;
-    padding: 0 12px;
+    font-size: 12px;
+    margin-left: 7px;
     vertical-align: top;
+    font-family: inherit;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 0;
 
     &:first-child {
       padding-left: 0;
@@ -333,7 +344,8 @@ a.subitem {
 
 .more {
   svg {
-    fill: #0C5582;
+    fill: $white;
+    transform: rotate(90deg);
     transition: fill 0.2s ease-in;
   }
 
@@ -368,20 +380,21 @@ a.subitem {
     font-size: 13px;
     text-align: right;
     border-bottom: 1px solid #e0e0ea;
+    border-radius: 5px;
     color: $mainTextColor;
     padding-right: 8px;
     &:hover{
       background-color: darken(white,4%)
     }
 
-    &:first-child {
-      border-radius: 5px 5px 0 0;
-    }
+    // &:first-child {
+    //   border-radius: 5px 5px 0 0;
+    // }
 
-    &:last-child {
-      border-bottom: 0;
-      border-radius: 0 0 5px 5px;
-    }
+    // &:last-child {
+    //   border-bottom: 0;
+    //   border-radius: 0 0 5px 5px;
+    // }
 
     .emoji{
       padding-left: 4px;

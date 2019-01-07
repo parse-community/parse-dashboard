@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import { ActionTypes }                    from 'lib/stores/SchemaStore';
-import { post }                            from 'lib/AJAX';
+import { post }                           from 'lib/AJAX';
 import AccountManager                     from 'lib/AccountManager';
 import AddColumnDialog                    from 'dashboard/Data/Browser/AddColumnDialog.react';
 import CategoryList                       from 'components/CategoryList/CategoryList.react';
@@ -37,7 +37,6 @@ import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import introJs from 'intro.js'
 import introStyle from 'stylesheets/introjs.css';
-
 import Tour from 'components/Tour/Tour.react';
 
 @subscribeTo('Schema', 'schema')
@@ -48,6 +47,11 @@ export default class Browser extends DashboardView {
     this.subsection = 'Database Browser'
     this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
+    this.footerMenuButtons = [
+      <a key={0} onClick={() => this.setState({ showTour: true })}>Play intro</a>
+    ];
+
+    const user = AccountManager.currentUser();
 
     this.state = {
       showCreateClassDialog: false,
@@ -76,6 +80,7 @@ export default class Browser extends DashboardView {
       lastNote: null,
 
       relationCount: 0,
+      showTour: user && user.playDatabaseBrowserTutorial
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -136,6 +141,101 @@ export default class Browser extends DashboardView {
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
     }
+  }
+
+  getTourConfig() {
+    const createClassCode = `
+      <p><br/></p>
+      <section class="intro-code">
+        <pre><span class="intro-code-keyword">const</span> Vehicle = Parse.Object.extend(<span class="intro-code-string">'Vehicle'</span>);</pre>
+        <pre><span class="intro-code-keyword">const</span> vehicle = <span class="intro-code-keyword">new</span> Vehicle();</pre>
+        <br/>
+        <pre>vehicle.set('name', <span class="intro-code-string">'Corolla'</span>);</pre>
+        <pre>vehicle.set('price', <span class="intro-code-number">19499</span>);</pre>
+        <pre>vehicle.set('color' <span class="intro-code-string">'black'</span>);</pre>
+        <br/>
+        <pre>vehicle.save().then(savedObject => {</pre>
+        <pre>  <span class="intro-code-comment">// The class is automatically created on</span></pre>
+        <pre>  <span class="intro-code-comment">// the back-end when saving the object!</span></pre>
+        <pre>  console.log(savedObject);</pre>
+        <pre>},</pre>
+        <pre>error => {</pre>
+        <pre>  console.error(error);</pre>
+        <pre>});</pre>
+      </section>
+    `;
+    const steps = [
+      {
+        element: () => document.querySelector('[class^="section_contents"] > div > div'),
+        intro: `This is the <b>Database Browser</b> where you can create and access your classes through the Back4pp's Dashboard.`,
+        position: 'right'
+      },
+      {
+        element: null, // This should render in the center of the page
+        intro: `<p>We got this piece of code from the <b>API Reference</b> to help you create your first class as a sample and save data on Back4app.</p>${createClassCode}`,
+      },
+      {
+        element: () => document.querySelector('[class^=class_list] a:last-of-type'),
+        intro: `Here is the <b>Vehicle</b> class that you have just created!`,
+        position: 'bottom'
+      },
+      {
+        element: () => document.querySelector('[class^=browser]'),
+        intro: `Congratulations! As you can see, you just created a new class and saved data on it.`,
+        position: 'right'
+      },
+      {
+        element: () => document.querySelector('[class^="section_contents"] [class^=subitem] a[class^=action]'),
+        intro: `If you preffer, you can create your classes and data directly through the dashboard.`,
+        position: 'bottom'
+      },
+      {
+        element: () => document.querySelector('.toolbar-help-section'),
+        intro: `If you need some help besides the Help section on the top menu, you also have this contextual help, which provides a specific assistance for the section you are exploring.`,
+        position: 'bottom'
+      },
+      {
+        element: document.querySelector('[class^="footer"] [class^="more"]'),
+        intro: `You can find this tour and play it again by pressing this button and selecting <b>"Play intro again"</b>.`,
+        position: 'right'
+      }
+    ];
+    const { context } = this;
+    const { schema } = this.props;
+    return {
+      steps,
+      onBeforeStart: () => {
+        document.querySelector('[class^="section_contents"] > div > div').style.backgroundColor = "#0e69a0";
+        post(`/tutorial`, { databaseBrowser: true });
+      },
+      onBeforeChange: function(targetElement) {
+        switch(this._currentStep) {
+          case 1:
+            schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'Vehicle' }).then(() => {
+              const lastClassLink = document.querySelector('[class^=class_list] a:last-of-type');
+              this._introItems[2].element = lastClassLink;
+              return context.currentApp.apiRequest('POST', '/classes/Vehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
+            }).catch(console.error);
+            break;
+          case 2:
+            history.push(context.generatePath('browser/Vehicle'));
+            break;
+          case 3:
+            this._introItems[3].element = document.querySelector('[class^=browser] [class^=tableRow] > :nth-child(2)');
+            break;
+          case 6:
+            targetElement.style.backgroundColor = 'inherit';
+            break;
+        }
+      },
+      onAfterChange: function(targetElement) {
+        switch(this._currentStep) {
+          case 2:
+            targetElement.style.backgroundColor = "#0e69a0";
+            break;
+        }
+      }
+    };
   }
 
   async prefetchData(props, context) {
@@ -1087,19 +1187,6 @@ export default class Browser extends DashboardView {
         />
       );
     }
-    const user = AccountManager.currentUser();
-    if (user && user.playDatabaseBrowserTutorial) {
-      if (extras) {
-        extras = (
-          <div>
-            {extras}
-            <Tour context={this.context} schema={this.props.schema} />
-          </div>
-        );
-      } else {
-        extras = <Tour context={this.context} schema={this.props.schema} />;
-      }
-    }
 
     let notification = null;
 
@@ -1112,11 +1199,19 @@ export default class Browser extends DashboardView {
         <Notification note={this.state.lastNote} isErrorNote={false}/>
       );
     }
+
+    let tour = null;
+    if (this.state.showTour) {
+      const tourConfig = this.getTourConfig();
+      tour = <Tour {...tourConfig} onExit={() => this.setState({ showTour: false })} />;
+    }
+
     return (
       <div>
         {browser}
         {notification}
         {extras}
+        {tour}
       </div>
     );
   }

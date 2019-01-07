@@ -11,6 +11,16 @@ import Sidebar       from 'components/Sidebar/Sidebar.react';
 import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
 import styles        from 'dashboard/Dashboard.scss';
 
+// Hides the zendesk button as soon as possible
+const hideZendesk = () => {
+  if (typeof zE !== 'undefined' && typeof zE.hide === 'function') {
+    zE.hide();
+  } else{
+    setTimeout(hideZendesk, 50);
+  }
+};
+hideZendesk();
+
 export default class DashboardView extends React.Component {
 
   /* A DashboardView renders two pieces: the sidebar, and the app itself */
@@ -252,6 +262,7 @@ export default class DashboardView extends React.Component {
       action={this.action}
       primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
       secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
+      footerMenuButtons={this.footerMenuButtons}
       >
       {sidebarChildren}
     </Sidebar>);
