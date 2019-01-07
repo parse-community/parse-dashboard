@@ -175,7 +175,7 @@ export default class Browser extends DashboardView {
         intro: `<p>We got this piece of code from the <b>API Reference</b> to help you create your first class as a sample and save data on Back4app.</p>${createClassCode}`,
       },
       {
-        element: () => document.querySelector('[class^=class_list] [title="B4aVehicle"]'),
+        element: () => document.querySelector('[class^=class_list] a:last-of-type'),
         intro: `Here is the <b>B4aVehicle</b> class that you have just created!`,
         position: 'right'
       },
@@ -215,7 +215,14 @@ export default class Browser extends DashboardView {
               const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
               this._introItems[2].element = vehicleClassLink;
               return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
-            }).catch(console.error);
+            }).catch(e => {
+              // Class already exists
+              if (e.code === 103) {
+                this._introItems[2].element = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+              } else {
+                console.error(e);
+              }
+            });
             break;
           case 2:
             history.push(context.generatePath('browser/B4aVehicle'));
