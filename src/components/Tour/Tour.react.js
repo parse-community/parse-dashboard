@@ -51,6 +51,9 @@ export default class Tour extends Component {
       dataBrowser.style.position = 'absolute';
 
       intro.onexit(() => {
+        // Fires analytics event when tour finishes
+        back4AppNavigation && back4AppNavigation.onFinishDatabaseBrowserTour && back4AppNavigation.onFinishDatabaseBrowserTour();
+
         sidebar.style.position = 'fixed';
         toolbar.style.position = 'fixed';
         dataBrowser.style.position = 'fixed';
@@ -62,7 +65,11 @@ export default class Tour extends Component {
       intro.onafterchange(this.props.onAfterChange);
 
       this.props.onBeforeStart && this.props.onBeforeStart();
+
       intro.start();
+
+      // Fires analytics event when tour begins
+      back4AppNavigation && back4AppNavigation.onStartDatabaseBrowserTour && back4AppNavigation.onStartDatabaseBrowserTour();
     });
   }
 
