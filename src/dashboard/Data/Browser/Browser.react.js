@@ -175,7 +175,7 @@ export default class Browser extends DashboardView {
         intro: `<p>We got this piece of code from the <b>API Reference</b> to help you create your first class as a sample and save data on Back4app.</p>${createClassCode}`,
       },
       {
-        element: () => document.querySelector('[class^=class_list] a:last-of-type'),
+        element: () => document.querySelector('[class^=class_list] [title="B4aVehicle"]'),
         intro: `Here is the <b>B4aVehicle</b> class that you have just created!`,
         position: 'bottom'
       },
