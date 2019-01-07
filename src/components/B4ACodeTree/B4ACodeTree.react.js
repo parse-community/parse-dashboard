@@ -1,13 +1,15 @@
-import React            from 'react';
-import $                from 'jquery'
-import jstree           from 'jstree';
-import ReactFileReader  from 'react-file-reader';
-import styles           from 'components/B4ACodeTree/B4ACodeTree.scss'
-import Button           from 'components/Button/Button.react';
-import B4ACloudCodeView from 'components/B4ACloudCodeView/B4ACloudCodeView.react';
-import B4ATreeActions   from 'components/B4ACodeTree/B4ATreeActions';
+import React                        from 'react';
+import $                            from 'jquery'
+import Resizable                    from 're-resizable';
+import jstree                       from 'jstree';
+import ReactFileReader              from 'react-file-reader';
+import styles                       from 'components/B4ACodeTree/B4ACodeTree.scss'
+import Button                       from 'components/Button/Button.react';
+import B4ACloudCodeView             from 'components/B4ACloudCodeView/B4ACloudCodeView.react';
+import B4ATreeActions               from 'components/B4ACodeTree/B4ATreeActions';
 import 'jstree/dist/themes/default/style.css'
 import 'components/B4ACodeTree/B4AJsTree.css'
+import 'react-resizable/css/styles.css'
 
 const getCloudFolderPlaceholder = (appId, restKey) => "// The first deployed file must be named main.js and must be placed on the root of the cloud folder.\n" +
   "// The example below shows you how a cloud code function looks like.\n\n" +
@@ -127,6 +129,7 @@ export default class B4ACodeTree extends React.Component {
   }
 
   render(){
+    console.log(styles)
     return (
       <div className={styles.row}>
         <div className={styles['col-4']}>
@@ -145,9 +148,20 @@ export default class B4ACodeTree extends React.Component {
                 />
               </ReactFileReader>
             </div>
-            <div className={styles['files-tree']}>
+            <Resizable className={styles['files-tree']}
+              defaultSize={{ height: '367px', width: '100%' }}
+              enable={{
+                top:false,
+                right:false,
+                bottom:true,
+                left:false,
+                topRight:false,
+                bottomRight:false,
+                bottomLeft:false,
+                topLeft:false
+              }}>
               <div id={'tree'} onClick={this.watchSelectedNode.bind(this)}></div>
-            </div>
+            </Resizable>
           </div>
         </div>
         <div className={styles['col-8']}>
