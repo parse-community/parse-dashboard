@@ -177,7 +177,7 @@ export default class Browser extends DashboardView {
       {
         element: () => document.querySelector('[class^=class_list] [title="B4aVehicle"]'),
         intro: `Here is the <b>B4aVehicle</b> class that you have just created!`,
-        position: 'bottom'
+        position: 'right'
       },
       {
         element: () => document.querySelector('[class^=browser]'),
