@@ -212,8 +212,8 @@ export default class Browser extends DashboardView {
         switch(this._currentStep) {
           case 1:
             schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aVehicle' }).then(() => {
-              const lastClassLink = document.querySelector('[class^=class_list] a:last-of-type');
-              this._introItems[2].element = lastClassLink;
+              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+              this._introItems[2].element = vehicleClassLink;
               return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
             }).catch(console.error);
             break;
