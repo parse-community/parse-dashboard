@@ -129,7 +129,6 @@ export default class B4ACodeTree extends React.Component {
   }
 
   render(){
-    console.log(styles)
     return (
       <div className={styles.row}>
         <div className={styles['col-4']}>
