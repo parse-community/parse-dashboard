@@ -196,7 +196,7 @@ export default class Browser extends DashboardView {
       },
       {
         element: document.querySelector('[class^="footer"] [class^="more"]'),
-        intro: `You can find this tour and play it again by pressing this button and selecting <b>"Play intro again"</b>.`,
+        intro: `You can find this tour and play it again by pressing this button and selecting <b>"Play intro"</b>.`,
         position: 'right'
       }
     ];
