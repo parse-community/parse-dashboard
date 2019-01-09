@@ -52,7 +52,7 @@ export default class Tour extends Component {
 
       intro.onexit(() => {
         // Fires analytics event when tour finishes
-        back4AppNavigation && back4AppNavigation.onFinishDatabaseBrowserTour && back4AppNavigation.onFinishDatabaseBrowserTour();
+        typeof back4AppNavigation === 'object' && back4AppNavigation.onFinishDatabaseBrowserTour && back4AppNavigation.onFinishDatabaseBrowserTour();
 
         sidebar.style.position = 'fixed';
         toolbar.style.position = 'fixed';
@@ -69,7 +69,7 @@ export default class Tour extends Component {
       intro.start();
 
       // Fires analytics event when tour begins
-      back4AppNavigation && back4AppNavigation.onStartDatabaseBrowserTour && back4AppNavigation.onStartDatabaseBrowserTour();
+      typeof back4AppNavigation === 'object' && back4AppNavigation.onStartDatabaseBrowserTour && back4AppNavigation.onStartDatabaseBrowserTour();
     });
   }
 

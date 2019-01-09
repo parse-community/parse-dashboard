@@ -205,6 +205,8 @@ export default class Browser extends DashboardView {
     const { schema } = this.props;
     const user = AccountManager.currentUser();
 
+    let unexpectedErrorThrown = false;
+
     return {
       steps,
       onBeforeStart: () => {
@@ -220,26 +222,43 @@ export default class Browser extends DashboardView {
       onBeforeChange: function(targetElement) {
         switch(this._currentStep) {
           case 1:
+            const introItems = this._introItems;
             schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aVehicle' }).then(() => {
               const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-              this._introItems[2].element = vehicleClassLink;
+              introItems[2].element = vehicleClassLink;
               return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
             }).catch(e => {
               const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
               if (vehicleClassLink) {
-                this._introItems[2].element = vehicleClassLink;
+                introItems[2].element = vehicleClassLink;
               }
               // Class already exists error
               if (e.code !== 103) {
+                if (!unexpectedErrorThrown) {
+                  introItems.splice(2, 2);
+                  for (let i=2; i<introItems.length; i++) {
+                    introItems[i].step -= 2;
+                  }
+                  unexpectedErrorThrown = true;
+                }
                 console.error(e);
               }
             });
             break;
           case 2:
-            history.push(context.generatePath('browser/B4aVehicle'));
+            if (!unexpectedErrorThrown) {
+              history.push(context.generatePath('browser/B4aVehicle'));
+            }
             break;
           case 3:
-            this._introItems[3].element = document.querySelector('[class^=browser] [class^=tableRow] > :nth-child(2)');
+            if (!unexpectedErrorThrown) {
+              this._introItems[3].element = document.querySelector('[class^=browser] [class^=tableRow] > :nth-child(2)');
+            }
+            break;
+          case 4:
+            if(unexpectedErrorThrown) {
+              targetElement.style.backgroundColor = 'inherit';
+            }
             break;
           case 6:
             targetElement.style.backgroundColor = 'inherit';
@@ -249,7 +268,9 @@ export default class Browser extends DashboardView {
       onAfterChange: function(targetElement) {
         switch(this._currentStep) {
           case 2:
-            targetElement.style.backgroundColor = "#0e69a0";
+            if (!unexpectedErrorThrown) {
+              targetElement.style.backgroundColor = "#0e69a0";
+            }
             break;
         }
       }
