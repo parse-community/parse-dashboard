@@ -183,8 +183,8 @@ tr.introjs-showElement > th {
   visibility: visible;
   padding: 10px;
   background-color: white;
-  min-width: 445px;
-  max-width: 445px;
+  min-width: 470px;
+  max-width: 470px;
   border-radius: 3px;
   box-shadow: 0 1px 10px rgba(0,0,0,.4);
   transition: opacity 0.1s ease-out;
@@ -192,7 +192,7 @@ tr.introjs-showElement > th {
 
 .introjs-tooltip > * {
   height: unset;
-  font-size: 14px;
+  font-size: 16px;
   font-family: Raleway;
   padding: 0;
 }
@@ -321,10 +321,11 @@ tr.introjs-showElement > th {
 }
 
 .intro-code {
-  margin: 20px 5px 0px 5px;
+  margin-top: 20px;
   padding: 15px;
   border-radius: 5px;
   background-color: #182634;
+  font-size: 15px;
 }
 
 .intro-code > pre {

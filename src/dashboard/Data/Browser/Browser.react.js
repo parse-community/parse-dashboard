@@ -145,7 +145,6 @@ export default class Browser extends DashboardView {
 
   getTourConfig() {
     const createClassCode = `
-      <p><br/></p>
       <section class="intro-code">
         <pre><span class="intro-code-keyword">const</span> B4aVehicle = Parse.Object.extend(<span class="intro-code-string">'B4aVehicle'</span>);</pre>
         <pre><span class="intro-code-keyword">const</span> vehicle = <span class="intro-code-keyword">new</span> B4aVehicle();</pre>
@@ -167,31 +166,33 @@ export default class Browser extends DashboardView {
     const steps = [
       {
         element: () => document.querySelector('[class^="section_contents"] > div > div'),
-        intro: `This is the <b>Database Browser</b> where you can create and access your classes through the Back4pp's Dashboard.`,
+        intro: `To better understand how Back4App works let’s create a class and persist data on it.
+        At this <b>Database Browser</b> section, you can create and access your classes using this Dashboard.`,
         position: 'right'
       },
       {
         element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
-        intro: `<p>We got this piece of code from the <b>API Reference</b> to help you create your first class as a sample and save data on Back4app.</p>${createClassCode}`,
+        intro: `Now we’ve executed the code bellow extracted from the <b>API Reference</b> section to create and persist a sample data in your App.${createClassCode}`,
+        position: 'right'
       },
       {
-        element: () => document.querySelector('[class^=class_list] a:last-of-type'),
-        intro: `Here is the <b>B4aVehicle</b> class that you have just created!`,
+        element: () => document.querySelector('[class^=class_list]'),
+        intro: `This is the new <b>B4aVehicle</b> class just created!`,
         position: 'right'
       },
       {
         element: () => document.querySelector('[class^=browser]'),
-        intro: `Congratulations! As you can see, you just created a new class and saved data on it.`,
+        intro: `As you can see the <b>B4aVehicle</b> class already has its first data.`,
         position: 'right'
       },
       {
         element: () => document.querySelector('[class^="section_contents"] [class^=subitem] a[class^=action]'),
-        intro: `If you preffer, you can create your classes and data directly through the dashboard.`,
+        intro: `You can also create classes and manage your data directly through the Dashboard.`,
         position: 'bottom'
       },
       {
         element: () => document.querySelector('.toolbar-help-section'),
-        intro: `If you need some help besides the Help section on the top menu, you also have this contextual help, which provides a specific assistance for the section you are exploring.`,
+        intro: `At any time, you can get help by accessing this contextual help section. Here you will find specific assistance for the section you are exploring.`,
         position: 'bottom'
       },
       {
@@ -224,10 +225,12 @@ export default class Browser extends DashboardView {
               this._introItems[2].element = vehicleClassLink;
               return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
             }).catch(e => {
-              // Class already exists
-              if (e.code === 103) {
-                this._introItems[2].element = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-              } else {
+              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+              if (vehicleClassLink) {
+                this._introItems[2].element = vehicleClassLink;
+              }
+              // Class already exists error
+              if (e.code !== 103) {
                 console.error(e);
               }
             });
