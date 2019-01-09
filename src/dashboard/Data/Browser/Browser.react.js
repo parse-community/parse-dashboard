@@ -171,7 +171,7 @@ export default class Browser extends DashboardView {
         position: 'right'
       },
       {
-        element: null, // This should render in the center of the page
+        element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
         intro: `<p>We got this piece of code from the <b>API Reference</b> to help you create your first class as a sample and save data on Back4app.</p>${createClassCode}`,
       },
       {
@@ -208,6 +208,7 @@ export default class Browser extends DashboardView {
       steps,
       onBeforeStart: () => {
         document.querySelector('[class^="section_contents"] > div > div').style.backgroundColor = "#0e69a0";
+        document.querySelector('[class^="section_header"][href*="/apidocs"]').style.backgroundColor = "#0c5582";
         post(`/tutorial`, { databaseBrowser: true });
 
         // Updates the current logged user so that the tutorial won't be played
