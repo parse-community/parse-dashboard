@@ -175,7 +175,18 @@ export default class B4ACodeTree extends React.Component {
                 onClick={this.deleteFile.bind(this)}
               />
             </div>
-            <div className={styles['files-text']}>
+            <Resizable className={styles['files-text']}
+               defaultSize={{ height: '367px', width: '100%' }}
+               enable={{
+                top:false,
+                right:false,
+                bottom:true,
+                left:false,
+                topRight:false,
+                bottomRight:false,
+                bottomLeft:false,
+                topLeft:false
+              }}>
               {
                 this.state.isImage ?
                   <img src={this.state.source} /> :
@@ -183,7 +194,7 @@ export default class B4ACodeTree extends React.Component {
                   source={this.state.source || "Select a file to view your Cloud Code"}
                   extension={this.state.extension} />
               }
-            </div>
+            </Resizable>
           </div>
         </div>
       </div>
