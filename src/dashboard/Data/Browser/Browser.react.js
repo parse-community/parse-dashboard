@@ -202,11 +202,18 @@ export default class Browser extends DashboardView {
     ];
     const { context } = this;
     const { schema } = this.props;
+    const user = AccountManager.currentUser();
+
     return {
       steps,
       onBeforeStart: () => {
         document.querySelector('[class^="section_contents"] > div > div').style.backgroundColor = "#0e69a0";
         post(`/tutorial`, { databaseBrowser: true });
+
+        // Updates the current logged user so that the tutorial won't be played
+        // again when the user switches to another page
+        user.playDatabaseBrowserTutorial = false;
+        AccountManager.setCurrentUser({ user });
       },
       onBeforeChange: function(targetElement) {
         switch(this._currentStep) {
