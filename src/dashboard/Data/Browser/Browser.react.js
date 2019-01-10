@@ -287,6 +287,16 @@ export default class Browser extends DashboardView {
             }
             break;
         }
+      },
+      onBeforeExit: function() {
+        // If is exiting before the last step, avoid exit and shows the last step
+        if (this._currentStep < this._introItems.length - 1) {
+          this.goToStep(this._introItems.length);
+          return false;
+        }
+      },
+      onExit: () => {
+        this.setState({ showTour: false });
       }
     };
   }
@@ -1256,7 +1266,7 @@ export default class Browser extends DashboardView {
     let tour = null;
     if (this.state.showTour) {
       const tourConfig = this.getTourConfig();
-      tour = <Tour {...tourConfig} onExit={() => this.setState({ showTour: false })} />;
+      tour = <Tour {...tourConfig} />;
     }
 
     return (

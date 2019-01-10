@@ -51,7 +51,8 @@ export default class Tour extends Component {
       const dataBrowser = document.querySelector("[class^='browser']");
       dataBrowser.style.position = 'absolute';
 
-      intro.onexit(() => {
+      const onExit = this.props.onExit;
+      intro.onexit(function () {
         // Fires analytics event when tour finishes
         typeof back4AppNavigation === 'object' && back4AppNavigation.onFinishDatabaseBrowserTour && back4AppNavigation.onFinishDatabaseBrowserTour();
 
@@ -59,11 +60,12 @@ export default class Tour extends Component {
         toolbar.style.position = 'fixed';
         dataBrowser.style.position = 'fixed';
 
-        this.props.onExit && this.props.onExit();
+        typeof onExit === 'function' && onExit.bind(this)();
       });
 
       intro.onbeforechange(this.props.onBeforeChange);
       intro.onafterchange(this.props.onAfterChange);
+      intro.onbeforeexit(this.props.onBeforeExit);
 
       this.props.onBeforeStart && this.props.onBeforeStart();
 
