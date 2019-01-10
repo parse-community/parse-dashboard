@@ -54,7 +54,7 @@ function SchemaStore(state, action) {
       return action.app.apiRequest(
         'POST',
         'schemas/' + action.className,
-        { className: action.className },
+        { className: action.className, fields: action.fields },
         { useMasterKey: true }
       ).then(({ fields }) => {
         return state
