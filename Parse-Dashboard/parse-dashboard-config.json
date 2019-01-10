@@ -6,7 +6,8 @@
     "appName": "",
     "iconName": "",
     "primaryBackgroundColor": "",
-    "secondaryBackgroundColor": ""
+    "secondaryBackgroundColor": "",
+    "supportedPushLocales": ["en"]
   }],
   "iconsFolder": "icons"
 }

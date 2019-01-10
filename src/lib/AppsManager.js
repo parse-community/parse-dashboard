@@ -60,8 +60,11 @@ const AppsManager = {
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
     return Promise.all(this.apps().map(app => {
+      if (app.serverInfo.error) {
+        return;
+      }
       return Promise.all(
-        [ 
+        [
           app.getClassCount('_Installation').then(count => app.installations = count),
           app.getClassCount('_User').then(count => app.users = count)
         ]
