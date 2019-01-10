@@ -165,37 +165,44 @@ export default class Browser extends DashboardView {
     `;
     const steps = [
       {
+        eventId: 'Database Browser Section',
         element: () => document.querySelector('[class^="section_contents"] > div > div'),
         intro: `To better understand how Back4App works let’s create a class and persist data on it.<br />
         At this <b>Database Browser</b> section, you can create and access your classes using this Dashboard.`,
         position: 'right'
       },
       {
+        eventId: 'Custom Class and Object Creation',
         element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
         intro: `Now we’ve executed the code below extracted from the <b>API Reference</b> section to create a class and persist a sample data in your App.${createClassCode}`,
         position: 'right'
       },
       {
+        eventId: 'Custom Class Link',
         element: () => document.querySelector('[class^=class_list]'),
         intro: `This is the new <b>B4aVehicle</b> class just created!`,
         position: 'right'
       },
       {
+        eventId: 'Custom Class Data Table',
         element: () => document.querySelector('[class^=browser]'),
         intro: `As you can see the <b>B4aVehicle</b> class already has its first data.`,
         position: 'right'
       },
       {
+        eventId: 'Create a Class Button',
         element: () => document.querySelector('[class^="section_contents"] [class^=subitem] a[class^=action]'),
         intro: `You can also create classes and manage your data directly through the Dashboard.`,
         position: 'bottom'
       },
       {
+        eventId: 'Contextual Help',
         element: () => document.querySelector('.toolbar-help-section'),
         intro: `At any time, you can get specific help accessing this contextual section.`,
         position: 'bottom'
       },
       {
+        eventId: 'Play Intro Button',
         element: document.querySelector('[class^="footer"] [class^="more"]'),
         intro: `You can find this tour and play it again by pressing this button and selecting <b>"Play intro"</b>.`,
         position: 'right'
@@ -220,10 +227,16 @@ export default class Browser extends DashboardView {
         AccountManager.setCurrentUser({ user });
       },
       onBeforeChange: function(targetElement) {
+        const introItems = this._introItems;
+
+        // Fires event if it's not a forced transition
+        if (!this._forcedStep && typeof back4AppNavigation === 'object' && typeof back4AppNavigation.onDatabaseBrowserTourStep === 'function') {
+          back4AppNavigation.onDatabaseBrowserTourStep(introItems[this._currentStep].eventId);
+        } else {
+          this._forcedStep = false;
+        }
         switch(this._currentStep) {
           case 1:
-            const introItems = this._introItems;
-
             schema.dispatch(ActionTypes.CREATE_CLASS, {
               className: 'B4aVehicle',
               fields: {
@@ -291,6 +304,7 @@ export default class Browser extends DashboardView {
       onBeforeExit: function() {
         // If is exiting before the last step, avoid exit and shows the last step
         if (this._currentStep < this._introItems.length - 1) {
+          this._forcedStep = true;
           this.goToStep(this._introItems.length);
           return false;
         }
