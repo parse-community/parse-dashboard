@@ -181,7 +181,7 @@ tr.introjs-showElement > th {
   box-sizing: content-box;
   position: absolute;
   visibility: visible;
-  padding: 10px;
+  padding: 15px;
   background-color: white;
   min-width: 470px;
   max-width: 470px;
@@ -210,20 +210,24 @@ tr.introjs-showElement > th {
   position: relative;
   overflow: visible;
   display: inline-block;
-  padding: 0.5em 1.3em;
+  padding: 0.6em 1.6em;
   margin: 0;
   text-decoration: none;
-  font: bold 11px/normal sans-serif;
+  font: bold 12px/normal Raleway;
   color: white;
   white-space: nowrap;
   cursor: pointer;
   outline: none;
-  background-color: #004d90;
+  background-color: #094162;
   border-radius: 4px;
   /* IE hacks */
   zoom: 1;
   *display: inline;
   margin-top: 10px;
+}
+
+.introjs-nextbutton {
+  margin-left: 5px;
 }
 
 .introjs-button:focus {

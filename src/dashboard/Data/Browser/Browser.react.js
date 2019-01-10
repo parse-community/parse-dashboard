@@ -166,13 +166,13 @@ export default class Browser extends DashboardView {
     const steps = [
       {
         element: () => document.querySelector('[class^="section_contents"] > div > div'),
-        intro: `To better understand how Back4App works let’s create a class and persist data on it.
+        intro: `To better understand how Back4App works let’s create a class and persist data on it.<br />
         At this <b>Database Browser</b> section, you can create and access your classes using this Dashboard.`,
         position: 'right'
       },
       {
         element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
-        intro: `Now we’ve executed the code bellow extracted from the <b>API Reference</b> section to create and persist a sample data in your App.${createClassCode}`,
+        intro: `Now we’ve executed the code below extracted from the <b>API Reference</b> section to create a class and persist a sample data in your App.${createClassCode}`,
         position: 'right'
       },
       {
@@ -192,7 +192,7 @@ export default class Browser extends DashboardView {
       },
       {
         element: () => document.querySelector('.toolbar-help-section'),
-        intro: `At any time, you can get help by accessing this contextual help section. Here you will find specific assistance for the section you are exploring.`,
+        intro: `At any time, you can get specific help accessing this contextual section.`,
         position: 'bottom'
       },
       {
@@ -246,6 +246,8 @@ export default class Browser extends DashboardView {
             });
             break;
           case 2:
+            const numberLayer = document.querySelector('.introjs-helperNumberLayer');
+            numberLayer.style.marginLeft = 0;
             if (!unexpectedErrorThrown) {
               history.push(context.generatePath('browser/B4aVehicle'));
             }
@@ -267,6 +269,10 @@ export default class Browser extends DashboardView {
       },
       onAfterChange: function(targetElement) {
         switch(this._currentStep) {
+          case 1:
+            const numberLayer = document.querySelector('.introjs-helperNumberLayer');
+            numberLayer.style.marginLeft = '20px';
+            break;
           case 2:
             if (!unexpectedErrorThrown) {
               targetElement.style.backgroundColor = "#0e69a0";

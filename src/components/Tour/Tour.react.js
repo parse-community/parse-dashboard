@@ -31,8 +31,9 @@ export default class Tour extends Component {
     Promise.all([sidebarPromise, toolbarPromise, dataBrowserPromise]).then(() => {
       const intro = introJs();
       intro.setOptions({
-        prevLabel: '&larr; Prev',
-        skipLabel: '&#10060; Cancel'
+        nextLabel: 'Next',
+        prevLabel: 'Prev',
+        skipLabel: 'Cancel'
       });
       this.props.steps.forEach(step => {
         if (typeof step.element === 'function') {
