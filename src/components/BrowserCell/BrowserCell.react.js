@@ -5,29 +5,34 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { dateStringUTC }         from 'lib/DateUtils';
-import getFileName               from 'lib/getFileName';
-import Parse                     from 'parse';
-import Pill                      from 'components/Pill/Pill.react';
-import React                     from 'react';
-import styles                    from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }          from 'stylesheets/base.scss';
+import { dateStringUTC }  from 'lib/DateUtils';
+import getFileName        from 'lib/getFileName';
+import Parse              from 'parse';
+import Pill               from 'components/Pill/Pill.react';
+import React              from 'react';
+import styles             from 'components/BrowserCell/BrowserCell.scss';
+import { unselectable }   from 'stylesheets/base.scss';
+import ReactTooltip       from 'react-tooltip'
 
-let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick }) => {
+let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick, readonly, currentCopied }) => {
   let content = value;
   let classes = [styles.cell, unselectable];
+  let readableValue = value
+
+  // Set read only style
+  readonly && classes.push(styles.readonly)
   if (hidden) {
     content = '(hidden)';
     classes.push(styles.empty);
   } else if (value === undefined) {
     if (type === 'ACL') {
-      content = 'Public Read + Write';
+      readableValue = content = 'Public Read + Write';
     } else {
-      content = '(undefined)';
+      readableValue = content = '(undefined)';
       classes.push(styles.empty);
     }
   } else if (value === null) {
-    content = '(null)';
+    readableValue = content = '(null)';
     classes.push(styles.empty);
   } else if (value === '') {
     content = <span>&nbsp;</span>;
@@ -38,20 +43,22 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
         <Pill value={value.id} />
       </a>
     );
+    readableValue = value.id;
   } else if (type === 'Date') {
-    content = dateStringUTC(value);
+    readableValue = content = dateStringUTC(value);
   } else if (type === 'Boolean') {
-    content = value ? 'True' : 'False';
+    readableValue = content = value ? 'True' : 'False';
   } else if (type === 'Array') {
-    content = JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
+    readableValue = content = JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
   } else if (type === 'Object' || type === 'Bytes') {
-    content = JSON.stringify(value);
+    readableValue = content = JSON.stringify(value);
   } else if (type === 'File') {
     if (value.url()) {
       content = <Pill value={getFileName(value)} />;
     } else {
       content = <Pill value={'Uploading\u2026'} />;
     }
+    readableValue = getFileName(value)
   } else if (type === 'ACL') {
     let pieces = [];
     let json = value.toJSON();
@@ -72,34 +79,45 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
     if (pieces.length === 0) {
       pieces.push('Master Key Only');
     }
-    content = pieces.join(', ');
+    readableValue = content = pieces.join(', ');
   } else if (type === 'GeoPoint') {
-    content = `(${value.latitude}, ${value.longitude})`;
+    readableValue = content = `(${value.latitude}, ${value.longitude})`;
   } else if (type === 'Polygon') {
-    content = value.coordinates.map(coord => `(${coord})`)
+    readableValue = content = value.coordinates.map(coord => `(${coord})`)
   } else if (type === 'Relation') {
     content = (
       <div style={{ textAlign: 'center', cursor: 'pointer' }}>
         <Pill onClick={() => setRelation(value)} value='View relation' />
       </div>
     );
+    readableValue = value
   }
 
   if (current) {
     classes.push(styles.current);
   }
   return (
-    <span
-      className={classes.join(' ')}
-      style={{ width }}
-      onClick={onSelect}
-      onDoubleClick={() => {
-        if (type !== 'Relation') {
-          onEditChange(true)
-        }
-      }}>
-      {content}
-    </span>
+    readonly ?
+      <span
+        className={classes.join(' ')}
+        style={{ width }}
+        data-tip='Read Only'
+        onClick={() => onSelect(readableValue)} >
+        {content}
+        <ReactTooltip event={'dblclick'} place={'bottom'} afterShow={() => setTimeout(ReactTooltip.hide, 2000)} />
+      </span> :
+      <span
+        className={classes.join(' ')}
+        style={{ width }}
+        onClick={() => onSelect(readableValue)}
+        onDoubleClick={() => {
+          if (type !== 'Relation') {
+            onEditChange(true)
+          }
+        }}>
+        {content}
+      </span>
+
   );
 };
 

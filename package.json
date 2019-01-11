@@ -40,6 +40,7 @@
     "commander": "^2.9.0",
     "connect-flash": "^0.1.1",
     "cookie-session": "^2.0.0-alpha.1",
+    "copy-to-clipboard": "^3.0.8",
     "csurf": "^1.9.0",
     "express": "^4.13.4",
     "html-webpack-externals-plugin": "^3.8.0",
@@ -57,6 +58,7 @@
     "react-player": "^1.7.0",
     "react-syntax-highlighter": "^9.0.0",
     "react-tabs": "^2.2.2",
+    "react-tooltip": "^3.9.2",
     "sweetalert2": "^7.28.10",
     "sweetalert2-react-content": "^1.0.1",
     "whatwg-fetch": "^2.0.3"
