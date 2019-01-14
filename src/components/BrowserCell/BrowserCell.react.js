@@ -14,7 +14,7 @@ import styles             from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }   from 'stylesheets/base.scss';
 import ReactTooltip       from 'react-tooltip'
 
-let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick, readonly, currentCopied }) => {
+let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick, readonly }) => {
   let content = value;
   let classes = [styles.cell, unselectable];
   let readableValue = value
