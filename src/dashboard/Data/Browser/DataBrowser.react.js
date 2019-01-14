@@ -11,6 +11,7 @@ import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
 import { SpecialClasses }     from 'lib/Constants';
+import copy                   from 'copy-to-clipboard';
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -30,7 +31,7 @@ export default class DataBrowser extends React.Component {
     this.state = {
       order: order,
       current: null,
-      editing: false,
+      editing: false
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -171,6 +172,13 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
+      case 67: // c key
+        if (e.ctrlKey || e.metaKey) {
+          copy(this.state.currentValue) // copy current value to clipboard
+          this.props.showNote('Value copied to clipboard', false)
+          e.preventDefault()
+        }
+        break;
     }
   }
 
@@ -180,9 +188,9 @@ export default class DataBrowser extends React.Component {
     }
   }
 
-  setCurrent(current) {
+  setCurrent(current, currentValue) {
     if (this.state.current !== current) {
-      this.setState({ current: current });
+      this.setState({ current, currentValue });
     }
   }
 

@@ -107,6 +107,7 @@ export default class Browser extends DashboardView {
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
+    this.showNote = this.showNote.bind(this);
   }
 
   componentWillMount() {
@@ -997,7 +998,8 @@ export default class Browser extends DashboardView {
             onAddRow={this.addRow}
             onAddClass={this.showCreateClass}
             err={this.state.err}
-            playVideoTutorial={playVideoTutorial}/>
+            playVideoTutorial={playVideoTutorial}
+            showNote={this.showNote}/>
         );
       }
     }
