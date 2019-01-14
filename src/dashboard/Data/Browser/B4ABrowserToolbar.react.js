@@ -13,19 +13,19 @@ import VideoTutorialButton from 'components/VideoTutorialButton/VideoTutorialBut
 
 const apiDocsButtonStyle = {
   display: 'inline-block',
-  height: 20,
+  height: '20px',
   border: '1px solid #169cee',
-  lineHeight: '20px',
-  outline: 0,
-  textDecoration: 'none',
-  textAlign: 'center',
-  borderRadius: '5px',
+  'lineHeight': '20px',
+  outline: '0',
+  'textDecoration': 'none',
+  'textAlign': 'center',
+  'borderRadius': '5px',
   cursor: 'pointer',
-  width: 90,
+  'minWidth': '90px',
   padding: '0 5px',
-  fontSize: '12px',
-  fontWeight: 'bold',
-  marginBottom: 4,
+  'fontSize': '12px',
+  'fontWeight': 'bold',
+  'marginBottom': '4px',
 }
 
 let B4ABrowserToolbar = ({
@@ -150,7 +150,7 @@ let B4ABrowserToolbar = ({
     classApiId = `#${className === 'User' ? 'user-api' : `${className}-custom-class`}`
     apiDocsButton = <Button value='API Reference'
       primary={true}
-      width='90px'
+      width={'90px'}
       additionalStyles={apiDocsButtonStyle}
       onClick={() => {
         back4AppNavigation && back4AppNavigation.atApiReferenceClassesEvent()

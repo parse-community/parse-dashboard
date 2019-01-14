@@ -62,7 +62,7 @@ class B4ACloudCode extends CloudCode {
   }
 
   async componentWillMount() {
-    back4AppNavigation && back4AppNavigation.atCloudCodePageEvent()
+    typeof back4AppNavigation === 'object' && back4AppNavigation.atCloudCodePageEvent()
     await this.fetchSource()
     // define the parameters to show unsaved changes warning modal
     const unbindHook = this.props.router.setRouteLeaveHook(this.props.route, nextLocation => {
@@ -240,7 +240,7 @@ class B4ACloudCode extends CloudCode {
 
       footer = <div className={`${styles.row} ${styles.footer}`}>
         <Button
-          value={<div><Icon name='icon-deploy' fill='#fff' width={17} height={30} /> DEPLOY</div>}
+          value={<div className={styles['b4a-cc-deploy-btn']}><Icon name='icon-deploy' fill='#fff' width={17} height={30} /> DEPLOY</div>}
           primary={true}
           color='b4a-green'
           onClick={this.uploadCode.bind(this)}

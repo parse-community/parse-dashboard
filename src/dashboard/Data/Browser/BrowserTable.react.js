@@ -122,7 +122,7 @@ export default class BrowserTable extends React.Component {
               readonly={READ_ONLY.indexOf(name) > -1}
               width={width}
               current={current}
-              onSelect={() => this.props.setCurrent({ row: row, col: j })}
+              onSelect={(readableValue) => this.props.setCurrent({ row: row, col: j }, readableValue)}
               onEditChange={(state) => this.props.setEditing(state)}
               onPointerClick={this.props.onPointerClick}
               setRelation={this.props.setRelation}
