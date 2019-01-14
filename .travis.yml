@@ -8,9 +8,6 @@ before_script:
   - greenkeeper-lockfile-update
 after_script:
   - greenkeeper-lockfile-upload
-cache:
-  directories:
-    - node_modules
 deploy:
   provider: npm
   on:
