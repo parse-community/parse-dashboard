@@ -13,9 +13,6 @@ import React                  from 'react';
 import { SpecialClasses }     from 'lib/Constants';
 import copy                   from 'copy-to-clipboard';
 
-const CTRL_KEY = 17,
-      CMD_KEY = 91
-
 /**
  * DataBrowser renders the browser toolbar and data table
  * It also manages the fetching / updating of column size prefs,
@@ -34,12 +31,10 @@ export default class DataBrowser extends React.Component {
     this.state = {
       order: order,
       current: null,
-      editing: false,
-      ctrlCmdPressed: false
+      editing: false
     };
 
     this.handleKey = this.handleKey.bind(this);
-    this.upKey = this.upKey.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -68,12 +63,10 @@ export default class DataBrowser extends React.Component {
 
   componentDidMount() {
     document.body.addEventListener('keydown', this.handleKey);
-    document.body.addEventListener('keyup', this.upKey);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.handleKey);
-    document.body.removeEventListener('keyup', this.upKey);
   }
 
   updatePreferences(order) {
@@ -107,13 +100,6 @@ export default class DataBrowser extends React.Component {
     this.setState({ order: newOrder }, () => {
       this.updatePreferences(newOrder);
     });
-  }
-
-  upKey(e) {
-    if (e.keyCode) {
-      if (e.keyCode == CTRL_KEY || e.keyCode == CMD_KEY) this.setState({ ctrlCmdPressed: false })
-      e.preventDefault();
-    }
   }
 
   handleKey(e) {
@@ -186,14 +172,12 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case CMD_KEY:
-      case CTRL_KEY:
-        this.setState({ ctrlCmdPressed: true });
-        break;
       case 67: // c key
-        copy(this.state.currentValue) // copy current value to clipboard
-        this.props.showNote('Value copied to clipboard', false)
-        e.preventDefault()
+        if (e.ctrlKey || e.metaKey) {
+          copy(this.state.currentValue) // copy current value to clipboard
+          this.props.showNote('Value copied to clipboard', false)
+          e.preventDefault()
+        }
         break;
     }
   }
