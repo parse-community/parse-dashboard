@@ -73,7 +73,7 @@
     "marked": "0.6.0",
     "node-sass": "4.9.3",
     "parse": "2.0.0",
-    "path-to-regexp": "2.2.1",
+    "path-to-regexp": "3.0.0",
     "prismjs": "1.15.0",
     "prop-types": "15.6.2",
     "query-string": "6.1.0",
