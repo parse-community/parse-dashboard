@@ -53,6 +53,7 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "popper.js": "^1.12.9",
+    "re-resizable": "^4.11.0",
     "react-file-reader": "^1.1.4",
     "react-player": "^1.7.0",
     "react-syntax-highlighter": "^9.0.0",

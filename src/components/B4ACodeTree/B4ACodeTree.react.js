@@ -1,11 +1,12 @@
-import React            from 'react';
-import $                from 'jquery'
-import jstree           from 'jstree';
-import ReactFileReader  from 'react-file-reader';
-import styles           from 'components/B4ACodeTree/B4ACodeTree.scss'
-import Button           from 'components/Button/Button.react';
-import B4ACloudCodeView from 'components/B4ACloudCodeView/B4ACloudCodeView.react';
-import B4ATreeActions   from 'components/B4ACodeTree/B4ATreeActions';
+import React                        from 'react';
+import $                            from 'jquery'
+import Resizable                    from 're-resizable';
+import jstree                       from 'jstree';
+import ReactFileReader              from 'react-file-reader';
+import styles                       from 'components/B4ACodeTree/B4ACodeTree.scss'
+import Button                       from 'components/Button/Button.react';
+import B4ACloudCodeView             from 'components/B4ACloudCodeView/B4ACloudCodeView.react';
+import B4ATreeActions               from 'components/B4ACodeTree/B4ATreeActions';
 import 'jstree/dist/themes/default/style.css'
 import 'components/B4ACodeTree/B4AJsTree.css'
 
@@ -145,9 +146,20 @@ export default class B4ACodeTree extends React.Component {
                 />
               </ReactFileReader>
             </div>
-            <div className={styles['files-tree']}>
+            <Resizable className={styles['files-tree']}
+              defaultSize={{ height: '367px', width: '100%' }}
+              enable={{
+                top:false,
+                right:false,
+                bottom:true,
+                left:false,
+                topRight:false,
+                bottomRight:false,
+                bottomLeft:false,
+                topLeft:false
+              }}>
               <div id={'tree'} onClick={this.watchSelectedNode.bind(this)}></div>
-            </div>
+            </Resizable>
           </div>
         </div>
         <div className={styles['col-8']}>
@@ -163,7 +175,18 @@ export default class B4ACodeTree extends React.Component {
                 onClick={this.deleteFile.bind(this)}
               />
             </div>
-            <div className={styles['files-text']}>
+            <Resizable className={styles['files-text']}
+               defaultSize={{ height: '367px', width: '100%' }}
+               enable={{
+                top:false,
+                right:false,
+                bottom:true,
+                left:false,
+                topRight:false,
+                bottomRight:false,
+                bottomLeft:false,
+                topLeft:false
+              }}>
               {
                 this.state.isImage ?
                   <img src={this.state.source} /> :
@@ -171,7 +194,7 @@ export default class B4ACodeTree extends React.Component {
                   source={this.state.source || "Select a file to view your Cloud Code"}
                   extension={this.state.extension} />
               }
-            </div>
+            </Resizable>
           </div>
         </div>
       </div>
