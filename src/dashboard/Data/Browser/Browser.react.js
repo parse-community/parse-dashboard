@@ -33,6 +33,7 @@ import styles                             from 'dashboard/Data/Browser/Browser.s
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import * as queryString                   from 'query-string';
+import { Helmet }                         from 'react-helmet';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -1031,6 +1032,7 @@ class Browser extends DashboardView {
     }
 
     let notification = null;
+    const pageTitle = `${this.props.params.className} - Parse Dashboard`;
 
     if (this.state.lastError) {
       notification = (
@@ -1043,6 +1045,9 @@ class Browser extends DashboardView {
     }
     return (
       <div>
+        <Helmet>
+          <title>{pageTitle}</title>
+        </Helmet>
         {browser}
         {notification}
         {extras}
