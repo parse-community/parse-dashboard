@@ -10,11 +10,6 @@ import Popover  from 'components/Popover/Popover.react';
 import Position from 'lib/Position';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
-import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
-
-let host = location.host.split('.');
-let urlRoot = location.protocol + '//' + host.slice(host.length - 2).join('.');
-let mountPath = window.PARSE_DASHBOARD_PATH;
 
 export default class FooterMenu extends React.Component {
   constructor() {
@@ -28,7 +23,8 @@ export default class FooterMenu extends React.Component {
 
   toggle() {
     let pos = Position.inWindow(this.refs.more);
-    pos.x += 24;
+    pos.x += 9;
+    pos.y -= 12;
     this.setState({
       show: true,
       position: pos
@@ -44,19 +40,14 @@ export default class FooterMenu extends React.Component {
           position={this.state.position}
           onExternalClick={() => this.setState({ show: false })}>
           <div className={styles.popup}>
-            <SidebarHeader />
-            <a href={`${mountPath}logout`}>Log Out <span className={styles.emoji}>👋</span></a>
-            <a target='_blank' href='http://docs.parseplatform.org/parse-server/guide/'>Server Guide <span className={styles.emoji}>📚</span></a>
-            <a target='_blank' href='http://stackoverflow.com/questions/tagged/parse.com'>Code-level Questions <span className={styles.emoji}>❓</span></a>
-            <a target='_blank' href='http://stackoverflow.com/questions/tagged/parse-server'>Server Questions <span className={styles.emoji}>❓</span></a>
-            <a target='_blank' href='http://serverfault.com/tags/parse'>Deployment/Maintenance <span className={styles.emoji}>⚡️</span></a>
+            {this.props.children}
           </div>
         </Popover>
       );
     }
     return (
       <a onClick={this.toggle.bind(this)} ref='more' className={styles.more}>
-        <Icon height={24} width={24} name='ellipses' />
+        <Icon height={18} width={18} name='ellipses' />
         {content}
       </a>
     );

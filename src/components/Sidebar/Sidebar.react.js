@@ -7,12 +7,14 @@
  */
 import AppsManager    from 'lib/AppsManager';
 import AppsSelector   from 'components/Sidebar/AppsSelector.react';
+import FooterMenu from 'components/Sidebar/FooterMenu.react';
 import React          from 'react';
 // import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import zendeskSettings from 'components/Sidebar/zendeskSettings'
+import Button from 'components/Button/Button.react'
 
 const Sidebar = ({
   prefix,
@@ -25,7 +27,8 @@ const Sidebar = ({
   appSelector,
   contentStyle,
   primaryBackgroundColor,
-  secondaryBackgroundColor
+  secondaryBackgroundColor,
+  footerMenuButtons
 }) => {
   const _subMenu = subsections => {
     if (!subsections) {
@@ -53,6 +56,17 @@ const Sidebar = ({
   }
 
   const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+  let footerButtons = [
+    <Button value='Support'
+      primary={true}
+      width='75px'
+      onClick={() => zE.activate()}
+      key={0}
+    />
+  ];
+  if (footerMenuButtons) {
+    footerButtons.push(<FooterMenu key={1}>{footerMenuButtons}</FooterMenu>);
+  }
 
   return <div className={styles.sidebar}>
     {/*<SidebarHeader />*/}
@@ -89,6 +103,7 @@ const Sidebar = ({
     <div className={styles.help}>
       {/* div to add the zendesk help widget*/}
     </div>
+    <div className={styles.footer}>{footerButtons}</div>
   </div>
 }
 

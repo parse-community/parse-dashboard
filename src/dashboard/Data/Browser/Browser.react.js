@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import { ActionTypes }                    from 'lib/stores/SchemaStore';
-import { post }                            from 'lib/AJAX';
+import { post }                           from 'lib/AJAX';
 import AccountManager                     from 'lib/AccountManager';
 import AddColumnDialog                    from 'dashboard/Data/Browser/AddColumnDialog.react';
 import CategoryList                       from 'components/CategoryList/CategoryList.react';
@@ -35,6 +35,9 @@ import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
+import introJs from 'intro.js'
+import introStyle from 'stylesheets/introjs.css';
+import Tour from 'components/Tour/Tour.react';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -44,6 +47,11 @@ export default class Browser extends DashboardView {
     this.subsection = 'Database Browser'
     this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
+    this.footerMenuButtons = [
+      <a key={0} onClick={() => this.setState({ showTour: true })}>Play intro</a>
+    ];
+
+    const user = AccountManager.currentUser();
 
     this.state = {
       showCreateClassDialog: false,
@@ -72,6 +80,7 @@ export default class Browser extends DashboardView {
       lastNote: null,
 
       relationCount: 0,
+      showTour: user && user.playDatabaseBrowserTutorial
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -133,6 +142,178 @@ export default class Browser extends DashboardView {
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
     }
+  }
+
+  getTourConfig() {
+    const createClassCode = `
+      <section class="intro-code">
+        <pre><span class="intro-code-keyword">const</span> B4aVehicle = Parse.Object.extend(<span class="intro-code-string">'B4aVehicle'</span>);</pre>
+        <pre><span class="intro-code-keyword">const</span> vehicle = <span class="intro-code-keyword">new</span> B4aVehicle();</pre>
+        <br/>
+        <pre>vehicle.set('name', <span class="intro-code-string">'Corolla'</span>);</pre>
+        <pre>vehicle.set('price', <span class="intro-code-number">19499</span>);</pre>
+        <pre>vehicle.set('color' <span class="intro-code-string">'black'</span>);</pre>
+        <br/>
+        <pre>vehicle.save().then(savedObject => {</pre>
+        <pre>  <span class="intro-code-comment">// The class is automatically created on</span></pre>
+        <pre>  <span class="intro-code-comment">// the back-end when saving the object!</span></pre>
+        <pre>  console.log(savedObject);</pre>
+        <pre>},</pre>
+        <pre>error => {</pre>
+        <pre>  console.error(error);</pre>
+        <pre>});</pre>
+      </section>
+    `;
+    const steps = [
+      {
+        eventId: 'Database Browser Section',
+        element: () => document.querySelector('[class^="section_contents"] > div > div'),
+        intro: `To better understand how Back4App works let’s create a class and persist data on it.<br />
+        At this <b>Database Browser</b> section, you can create and access your classes using this Dashboard.`,
+        position: 'right'
+      },
+      {
+        eventId: 'Custom Class and Object Creation',
+        element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
+        intro: `Now we’ve executed the code below extracted from the <b>API Reference</b> section to create a class and persist a sample data in your App.${createClassCode}`,
+        position: 'right'
+      },
+      {
+        eventId: 'Custom Class Link',
+        element: () => document.querySelector('[class^=class_list]'),
+        intro: `This is the new <b>B4aVehicle</b> class just created!`,
+        position: 'right'
+      },
+      {
+        eventId: 'Custom Class Data Table',
+        element: () => document.querySelector('[class^=browser]'),
+        intro: `As you can see the <b>B4aVehicle</b> class already has its first data.`,
+        position: 'right'
+      },
+      {
+        eventId: 'Create a Class Button',
+        element: () => document.querySelector('[class^="section_contents"] [class^=subitem] a[class^=action]'),
+        intro: `You can also create classes and manage your data directly through the Dashboard.`,
+        position: 'bottom'
+      },
+      {
+        eventId: 'Contextual Help',
+        element: () => document.querySelector('.toolbar-help-section'),
+        intro: `At any time, you can get specific help accessing this contextual section.`,
+        position: 'bottom'
+      },
+      {
+        eventId: 'Play Intro Button',
+        element: document.querySelector('[class^="footer"] [class^="more"]'),
+        intro: `You can find this tour and play it again by pressing this button and selecting <b>"Play intro"</b>.`,
+        position: 'right'
+      }
+    ];
+    const { context } = this;
+    const { schema } = this.props;
+    const user = AccountManager.currentUser();
+
+    let unexpectedErrorThrown = false;
+
+    return {
+      steps,
+      onBeforeStart: () => {
+        document.querySelector('[class^="section_contents"] > div > div').style.backgroundColor = "#0e69a0";
+        document.querySelector('[class^="section_header"][href*="/apidocs"]').style.backgroundColor = "#0c5582";
+        post(`/tutorial`, { databaseBrowser: true });
+
+        // Updates the current logged user so that the tutorial won't be played
+        // again when the user switches to another page
+        user.playDatabaseBrowserTutorial = false;
+        AccountManager.setCurrentUser({ user });
+      },
+      onBeforeChange: function(targetElement) {
+        const introItems = this._introItems;
+
+        // Fires event if it's not a forced transition
+        if (!this._forcedStep && typeof back4AppNavigation === 'object' && typeof back4AppNavigation.onDatabaseBrowserTourStep === 'function') {
+          back4AppNavigation.onDatabaseBrowserTourStep(introItems[this._currentStep].eventId);
+        } else {
+          this._forcedStep = false;
+        }
+        switch(this._currentStep) {
+          case 1:
+            schema.dispatch(ActionTypes.CREATE_CLASS, {
+              className: 'B4aVehicle',
+              fields: {
+                name: { type: 'String' },
+                price: { type: 'Number' },
+                color: { type: 'String' },
+              }
+            }).then(() => {
+              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+              introItems[2].element = vehicleClassLink;
+              return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
+            }).catch(e => {
+              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+              if (vehicleClassLink) {
+                introItems[2].element = vehicleClassLink;
+              }
+              // Class already exists error
+              if (e.code !== 103) {
+                if (!unexpectedErrorThrown) {
+                  introItems.splice(2, 2);
+                  for (let i=2; i<introItems.length; i++) {
+                    introItems[i].step -= 2;
+                  }
+                  unexpectedErrorThrown = true;
+                }
+                console.error(e);
+              }
+            });
+            break;
+          case 2:
+            const numberLayer = document.querySelector('.introjs-helperNumberLayer');
+            numberLayer.style.marginLeft = 0;
+            if (!unexpectedErrorThrown) {
+              history.push(context.generatePath('browser/B4aVehicle'));
+            }
+            break;
+          case 3:
+            if (!unexpectedErrorThrown) {
+              this._introItems[3].element = document.querySelector('[class^=browser] [class^=tableRow] > :nth-child(2)');
+            }
+            break;
+          case 4:
+            if(unexpectedErrorThrown) {
+              targetElement.style.backgroundColor = 'inherit';
+            }
+            break;
+          case 6:
+            targetElement.style.backgroundColor = 'inherit';
+            break;
+        }
+      },
+      onAfterChange: function(targetElement) {
+        switch(this._currentStep) {
+          case 1:
+            const numberLayer = document.querySelector('.introjs-helperNumberLayer');
+            numberLayer.style.marginLeft = '20px';
+            break;
+          case 2:
+            if (!unexpectedErrorThrown) {
+              targetElement.style.backgroundColor = "#0e69a0";
+            }
+            break;
+        }
+      },
+      onBeforeExit: function() {
+        // If is exiting before the last step, avoid exit and shows the last step
+        if (this._currentStep < this._introItems.length - 1) {
+          this._forcedStep = true;
+          this.goToStep(this._introItems.length);
+          return false;
+        }
+      },
+      onExit: () => {
+        this.setState({ showTour: false });
+      }
+    };
   }
 
   async prefetchData(props, context) {
@@ -954,12 +1135,6 @@ export default class Browser extends DashboardView {
             count = this.state.counts[className];
           }
         }
-        const user = AccountManager.currentUser();
-        let playVideoTutorial = user && user.playDatabaseBrowserTutorial;
-        if (playVideoTutorial) {
-          post(`/tutorial`, { databaseBrowser: true });
-          user.playDatabaseBrowserTutorial = false;
-        }
         browser = (
           <DataBrowser
             count={count}
@@ -998,7 +1173,6 @@ export default class Browser extends DashboardView {
             onAddRow={this.addRow}
             onAddClass={this.showCreateClass}
             err={this.state.err}
-            playVideoTutorial={playVideoTutorial}
             showNote={this.showNote}/>
         );
       }
@@ -1104,11 +1278,19 @@ export default class Browser extends DashboardView {
         <Notification note={this.state.lastNote} isErrorNote={false}/>
       );
     }
+
+    let tour = null;
+    if (this.state.showTour) {
+      const tourConfig = this.getTourConfig();
+      tour = <Tour {...tourConfig} />;
+    }
+
     return (
       <div>
         {browser}
         {notification}
         {extras}
+        {tour}
       </div>
     );
   }
