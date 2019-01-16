@@ -101,7 +101,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
       <span
         className={classes.join(' ')}
         style={{ width }}
-        data-tip='Read Only'
+        data-tip='Read only (CTRL+C to copy)'
         onClick={() => onSelect(readableValue)} >
         {content}
         <ReactTooltip event={'dblclick'} place={'bottom'} afterShow={() => setTimeout(ReactTooltip.hide, 2000)} />
