@@ -15,96 +15,203 @@ import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import zendeskSettings from 'components/Sidebar/zendeskSettings'
 import Button from 'components/Button/Button.react'
+import Icon from 'components/Icon/Icon.react';
 
-const Sidebar = ({
-  prefix,
-  action,
-  actionHandler,
-  children,
-  subsection,
-  sections,
-  section,
-  appSelector,
-  contentStyle,
-  primaryBackgroundColor,
-  secondaryBackgroundColor,
-  footerMenuButtons
-}) => {
-  const _subMenu = subsections => {
-    if (!subsections) {
-      return null;
+const isInsidePopover = node => {
+  let cur = node.parentNode;
+  while (cur && cur.nodeType === 1) {
+    // If id starts with "fixed_wrapper", we consider it as the
+    // root element of the Popover component
+    if (/^fixed_wrapper/g.test(cur.id)) {
+      return true;
     }
-    return (
-      <div className={styles.submenu}>
-        {subsections.map(({name, link}) => {
-          const active = subsection === name;
+    cur = cur.parentNode;
+  }
+  return false;
+}
+
+let isSidebarFixed = window.innerWidth > 980;
+
+class Sidebar extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      collapsed: !isSidebarFixed,
+      fixed: isSidebarFixed
+    };
+    this.windowResizeHandler = this.windowResizeHandler.bind(this);
+  }
+
+  componentWillMount() {
+    window.addEventListener('resize', this.windowResizeHandler);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.windowResizeHandler);
+    isSidebarFixed = this.state.fixed;
+  }
+
+  windowResizeHandler() {
+    if (window.innerWidth <= 980) {
+      if (document.body.className.indexOf(' expanded') === -1) {
+        document.body.className += ' expanded';
+      }
+      this.setState({
+        collapsed: true,
+        fixed: false
+      });
+    } else {
+      document.body.className = document.body.className.replace(' expanded', '');
+      this.setState({
+        collapsed: false,
+        fixed: true
+      });
+    }
+  }
+
+  render () {
+    const {
+      prefix,
+      action,
+      actionHandler,
+      children,
+      subsection,
+      sections,
+      section,
+      appSelector,
+      contentStyle,
+      primaryBackgroundColor,
+      secondaryBackgroundColor,
+      footerMenuButtons
+    } = this.props;
+
+    const sidebarClasses = [styles.sidebar];
+
+    if (!this.state.fixed && this.state.collapsed) {
+      sidebarClasses.push(styles.collapsed);
+      if (document.body.className.indexOf(' expanded') === -1) {
+        document.body.className += ' expanded';
+      }
+
+      return <div className={sidebarClasses.join(' ')} onMouseEnter={() => this.setState({ collapsed: false })}>
+        <div className={styles.pinContainer}>
+          <Icon className={styles.sidebarPin} name='pin' width={20} height={20} fill='white' />
+        </div>
+        <div className={styles.content} style={contentStyle}>
+          {sections.map(({
+            name,
+            icon,
+            style
+          }) => {
+            const active = name === section;
+            return (
+              <SidebarSection
+                key={name}
+                icon={icon}
+                style={style}
+                active={active}
+                primaryBackgroundColor={primaryBackgroundColor}
+                isCollapsed={true}
+                >
+              </SidebarSection>
+            );
+          })}
+        </div>
+        <div className={styles.footer}>
+          <Icon height={18} width={18} name='ellipses' fill='white' />
+        </div>
+      </div>
+    }
+
+    if (this.state.fixed) {
+      document.body.className = document.body.className.replace(' expanded', '');
+    }
+    const _subMenu = subsections => {
+      if (!subsections) {
+        return null;
+      }
+      return (
+        <div className={styles.submenu}>
+          {subsections.map(({name, link}) => {
+            const active = subsection === name;
+            return (
+              <SidebarSubItem
+                key={name}
+                name={name}
+                link={prefix + link}
+                action={action || null}
+                actionHandler={active ? actionHandler : null}
+                active={active}
+                >
+                {active ? children : null}
+              </SidebarSubItem>
+            );
+          })}
+        </div>
+      );
+    }
+
+    const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+    let footerButtons = [
+      <Button value='Support'
+        primary={true}
+        width='75px'
+        onClick={() => zE.activate()}
+        key={0}
+      />
+    ];
+    if (footerMenuButtons) {
+      footerButtons.push(<FooterMenu key={1}>{footerMenuButtons}</FooterMenu>);
+    }
+
+    const onMouseLeave = !this.state.collapsed && !this.state.fixed && (
+      e => {
+        if (!isInsidePopover(e.relatedTarget)) {
+          this.setState({ collapsed: true });
+        }
+      }
+    );
+    const onPinClick = this.state.fixed
+      ? () => this.setState({ collapsed: true, fixed: false })
+      : () => this.setState({ collapsed: false, fixed: true })
+
+    return <div className={sidebarClasses.join(' ')} onMouseLeave={onMouseLeave}>
+      {appSelector ? <AppsSelector apps={apps} onPinClick={onPinClick} /> : null}
+
+      <div className={styles.content} style={contentStyle}>
+        {sections.map(({
+          name,
+          icon,
+          style,
+          link,
+          subsections,
+        }) => {
+          const active = name === section;
+
+          // If link points to another component, adds the prefix
+          link = link.startsWith('/') ? prefix + link : link;
           return (
-            <SidebarSubItem
+            <SidebarSection
               key={name}
               name={name}
-              link={prefix + link}
-              action={action || null}
-              actionHandler={active ? actionHandler : null}
+              icon={icon}
+              style={style}
+              link={link}
               active={active}
+              primaryBackgroundColor={primaryBackgroundColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
               >
-              {active ? children : null}
-            </SidebarSubItem>
+              {active ? _subMenu(subsections) : null}
+            </SidebarSection>
           );
         })}
       </div>
-    );
-  }
-
-  const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
-  let footerButtons = [
-    <Button value='Support'
-      primary={true}
-      width='75px'
-      onClick={() => zE.activate()}
-      key={0}
-    />
-  ];
-  if (footerMenuButtons) {
-    footerButtons.push(<FooterMenu key={1}>{footerMenuButtons}</FooterMenu>);
-  }
-
-  return <div className={styles.sidebar}>
-    {/*<SidebarHeader />*/}
-    {appSelector ? <AppsSelector apps={apps} /> : null}
-
-    <div className={styles.content} style={contentStyle}>
-      {sections.map(({
-        name,
-        icon,
-        style,
-        link,
-        subsections,
-      }) => {
-        const active = name === section;
-
-        // If link points to another component, adds the prefix
-        link = link.startsWith('/') ? prefix + link : link;
-        return (
-          <SidebarSection
-            key={name}
-            name={name}
-            icon={icon}
-            style={style}
-            link={link}
-            active={active}
-            primaryBackgroundColor={primaryBackgroundColor}
-            secondaryBackgroundColor={secondaryBackgroundColor}
-            >
-            {active ? _subMenu(subsections) : null}
-          </SidebarSection>
-        );
-      })}
+      <div className={styles.help}>
+        {/* div to add the zendesk help widget*/}
+      </div>
+      <div className={styles.footer}>{footerButtons}</div>
     </div>
-    <div className={styles.help}>
-      {/* div to add the zendesk help widget*/}
-    </div>
-    <div className={styles.footer}>{footerButtons}</div>
-  </div>
+  }
 }
 
 Sidebar.contextTypes = {

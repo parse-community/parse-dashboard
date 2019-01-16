@@ -11,11 +11,15 @@ import { Link }         from 'react-router';
 import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';
+import Icon from 'components/Icon/Icon.react';
 
-let AppsMenu = ({ apps, current, height, onSelect }) => (
+let AppsMenu = ({ apps, current, height, onSelect, onPinClick }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
-    <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
-      {current.name}
+    <div className={styles.currentApp}>
+      <div className={styles.currentAppName} onClick={onSelect.bind(null, current.slug)}>
+        {current.name}
+      </div>
+      <Icon className={styles.sidebarPin} name='pin' width={18} height={18} fill='white' onClick={onPinClick} />
     </div>
     <div className={styles.menuSection}>All Apps</div>
     {apps.map((app) => {

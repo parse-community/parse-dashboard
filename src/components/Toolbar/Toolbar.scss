@@ -16,13 +16,12 @@
   background: #353446;
   height: 48px;
   color: white;
-  transition: left 0.5s ease-in;
   margin-top: $header-height;
 }
 
-@media (max-width: 980px) {
+body:global(.expanded) {
   .toolbar {
-    left: 0;
+    left: 54px;
   }
 }
 

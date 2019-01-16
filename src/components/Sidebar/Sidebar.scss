@@ -17,37 +17,28 @@
   background: #0c5582;
   color: #fff;
   transition: left 0.5s ease-in;
-}
 
-.toggle {
-  position: fixed;
-  border-radius: 5px;
-  width: 28px;
-  height: 28px;
-  top: 10px;
-  left: 310px;
-  opacity: 0;
-  transition: left 0.5s ease-in, opacity 0.5s 0.5s ease-in;
-}
-
-@media (max-width: 980px) {
-  .sidebar {
+  &.collapsed {
     left: 0;
-  }
+    width: 54px;
 
-  .toggle {
-    left: 310px;
-    top: 10px;
-    opacity: 1;
-  }
+    .pinContainer {
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #094162;
 
-  body:global(.expanded) {
-    .sidebar {
-      left: -300px;
+      svg {
+        padding: 14px;
+        height: 48px;
+        width: 54px;
+      }
     }
 
-    .toggle {
-      left: 10px;
+    .footer {
+      height: 48px;
+      justify-content: center;
     }
   }
 }
@@ -59,10 +50,6 @@
   right: 0;
   bottom: 61px;
   left: 0;
-}
-
-.apps + .content {
-  //top: 96px;
 }
 
 .footer {
@@ -140,10 +127,10 @@
   font-size: 18px;
   font-weight: 700;
   line-height: 30px;
-  cursor: pointer;
 }
 
 .menuRow {
+  cursor: pointer;
   border-bottom: 1px solid #0c5582;
 
   > *:first-child {
@@ -163,7 +150,9 @@
   position: relative;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:hover{
       &:after {
@@ -171,21 +160,24 @@
       }
   }
 
-  &:after {
-    @include arrow('down', 10px, 7px, #fff);
-    position: absolute;
-    content: '';
-    top: 20px;
-    right: 15px;
-  }
-}
+  .currentAppName {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 
-.appsMenu .currentApp:after {
-  @include arrow('up', 10px, 7px, #ffffff);
-  position: absolute;
-  content: '';
-  top: 20px;
-  right: 15px;
+    &:after {
+      @include arrow('down', 10px, 7px, #fff);
+      content: '';
+      margin-left: 10px;
+    }
+  }
+
+  .sidebarPin {
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    padding: 6px;
+  }
 }
 
 .appsMenu {
@@ -195,6 +187,10 @@
 
   .menuRow:hover {
     background: #0c5582;
+  }
+
+  .currentApp .currentAppName:after {
+    @include arrow('up', 10px, 7px, #ffffff);
   }
 }
 
@@ -234,6 +230,10 @@
 
   :global(.icon) {
     margin-right: 14px;
+  }
+
+  &.collapsed .section_header > svg {
+    margin: 0;
   }
 }
 

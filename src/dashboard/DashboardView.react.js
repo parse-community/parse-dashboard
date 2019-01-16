@@ -8,7 +8,6 @@
 import ParseApp      from 'lib/ParseApp';
 import React         from 'react';
 import Sidebar       from 'components/Sidebar/Sidebar.react';
-import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
 import styles        from 'dashboard/Dashboard.scss';
 
 // Hides the zendesk button as soon as possible
@@ -273,7 +272,6 @@ export default class DashboardView extends React.Component {
           {this.renderContent()}
         </div>
         {sidebar}
-        <SidebarToggle />
       </div>
     );
   }
