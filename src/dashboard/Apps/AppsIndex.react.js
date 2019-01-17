@@ -97,8 +97,8 @@ export default class AppsIndex extends React.Component {
 
   componentWillMount() {
     if (AppsManager.apps().length === 1) {
-      const singleApp = AppsManager.apps()[0];
-      history.push(`/apps/${singleApp.slug}/browser`);
+      const [app] = AppsManager.apps();
+      history.push(`/apps/${app.slug}/browser`);
       return;
     }
     document.body.addEventListener('keydown', this.focusField);
