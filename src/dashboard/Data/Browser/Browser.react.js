@@ -34,6 +34,8 @@ import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import * as queryString                   from 'query-string';
 import { Helmet }                         from 'react-helmet';
+import PropTypes                          from 'lib/PropTypes';
+import ParseApp                           from 'lib/ParseApp';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -41,8 +43,7 @@ class Browser extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';
-    this.subsection = 'Browser'
-    this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+    this.subsection = 'Browser';
     this.noteTimeout = null;
 
     this.state = {
@@ -109,6 +110,11 @@ class Browser extends DashboardView {
   }
 
   componentWillMount() {
+    const { currentApp } = this.context;
+    if (!currentApp.preventSchemaEdits) {
+      this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+    }
+
     this.props.schema.dispatch(ActionTypes.FETCH)
     .then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
@@ -1055,3 +1061,7 @@ class Browser extends DashboardView {
     );
   }
 }
+
+Browser.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
+};
