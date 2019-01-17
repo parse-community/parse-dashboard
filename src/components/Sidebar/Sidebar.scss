@@ -28,17 +28,11 @@
       justify-content: center;
       align-items: center;
       background-color: #094162;
+      cursor: pointer;
+      padding: 18px;
 
-      svg {
-        padding: 14px;
-        height: 48px;
-        width: 54px;
-      }
-
-      @media screen and (max-width: 980px) {
-        svg {
-          display: none;
-        }
+      &:hover {
+        background-color: #1184ca;
       }
     }
 
@@ -185,14 +179,16 @@
     padding: 6px;
     fill: lightgrey;
 
+    &:hover {
+      fill: white;
+    }
+
     &.fixed {
       fill: white;
     }
-  }
 
-  @media screen and (max-width: 980px) {
-    .sidebarPin {
-      display: none;
+    &.inverseIcon {
+      transform: rotate(180deg);
     }
   }
 }
@@ -249,8 +245,12 @@
     margin-right: 14px;
   }
 
-  &.collapsed .section_header > svg {
-    margin: 0;
+  &.collapsed {
+    cursor: pointer;
+
+    .section_header > svg {
+      margin: 0;
+    }
   }
 }
 

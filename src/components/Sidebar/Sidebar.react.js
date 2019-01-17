@@ -37,7 +37,8 @@ class Sidebar extends React.Component {
     super();
     this.state = {
       collapsed: !isSidebarFixed,
-      fixed: isSidebarFixed
+      fixed: isSidebarFixed,
+      mobileFriendly: !isSidebarFixed
     };
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
   }
@@ -58,13 +59,15 @@ class Sidebar extends React.Component {
       }
       this.setState({
         collapsed: true,
-        fixed: false
+        fixed: false,
+        mobileFriendly: true
       });
     } else {
       document.body.className = document.body.className.replace(' expanded', '');
       this.setState({
         collapsed: false,
-        fixed: true
+        fixed: true,
+        mobileFriendly: false
       });
     }
   }
@@ -93,9 +96,14 @@ class Sidebar extends React.Component {
         document.body.className += ' expanded';
       }
 
-      return <div className={sidebarClasses.join(' ')} onMouseEnter={() => this.setState({ collapsed: false })}>
+      return <div className={sidebarClasses.join(' ')} onMouseEnter={!this.state.mobileFriendly && (() => this.setState({ collapsed: false }))}>
         <div className={styles.pinContainer}>
-          <Icon className={styles.sidebarPin} name='pin' width={20} height={20} fill='white' />
+          <Icon className={styles.sidebarPin}
+            name={this.state.mobileFriendly ? 'expand' : 'pin'}
+            width={20}
+            height={20}
+            fill={this.state.mobileFriendly ? 'white' : 'lightgrey'}
+            onClick={this.state.mobileFriendly && (() => this.setState({ collapsed: false }))} />
         </div>
         <div className={styles.content} style={contentStyle}>
           {sections.map(({
@@ -164,7 +172,7 @@ class Sidebar extends React.Component {
       footerButtons.push(<FooterMenu key={1}>{footerMenuButtons}</FooterMenu>);
     }
 
-    const onMouseLeave = !this.state.collapsed && !this.state.fixed && (
+    const onMouseLeave = !this.state.mobileFriendly && !this.state.collapsed && !this.state.fixed && (
       e => {
         if (!isInsidePopover(e.relatedTarget)) {
           this.setState({ collapsed: true });
@@ -172,14 +180,18 @@ class Sidebar extends React.Component {
       }
     );
 
-    const onPinClick = this.state.fixed
-      ? () => this.setState({ collapsed: true, fixed: false })
-      : () => this.setState({ collapsed: false, fixed: true })
     const pinClasses = [styles.sidebarPin];
     if (this.state.fixed) {
       pinClasses.push(styles.fixed);
     }
-    const pin = <Icon className={pinClasses.join(' ')} name='pin' width={18} height={18} onClick={onPinClick} />;
+    let onPinClick;
+    if (this.state.mobileFriendly) {
+      pinClasses.push(styles.inverseIcon)
+      onPinClick = () => this.setState({ collapsed: !this.state.collapsed })
+    } else {
+      onPinClick = () => this.setState({ collapsed: this.state.fixed, fixed: !this.state.fixed });
+    }
+    const pin = <Icon className={pinClasses.join(' ')} name={this.state.mobileFriendly ? 'expand' : 'pin'} width={18} height={18} onClick={onPinClick} />;
 
     return <div className={sidebarClasses.join(' ')} onMouseLeave={onMouseLeave}>
       {appSelector ? <AppsSelector apps={apps} pin={pin} /> : null}
