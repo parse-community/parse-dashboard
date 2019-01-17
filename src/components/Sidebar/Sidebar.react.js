@@ -31,14 +31,15 @@ const isInsidePopover = node => {
 }
 
 let isSidebarFixed = window.innerWidth > 980;
+let isSidebarCollapsed = !isSidebarFixed;
 
 class Sidebar extends React.Component {
   constructor() {
     super();
     this.state = {
-      collapsed: !isSidebarFixed,
+      collapsed: isSidebarCollapsed,
       fixed: isSidebarFixed,
-      mobileFriendly: !isSidebarFixed
+      mobileFriendly: window.innerWidth <= 980
     };
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
   }
@@ -97,30 +98,35 @@ class Sidebar extends React.Component {
       }
 
       return <div className={sidebarClasses.join(' ')} onMouseEnter={!this.state.mobileFriendly && (() => this.setState({ collapsed: false }))}>
-        <div className={styles.pinContainer}>
+        <div className={styles.pinContainer} onClick={this.state.mobileFriendly && (() => this.setState({ collapsed: false }))}>
           <Icon className={styles.sidebarPin}
             name={this.state.mobileFriendly ? 'expand' : 'pin'}
             width={20}
             height={20}
-            fill={this.state.mobileFriendly ? 'white' : 'lightgrey'}
-            onClick={this.state.mobileFriendly && (() => this.setState({ collapsed: false }))} />
+            fill={this.state.mobileFriendly ? 'white' : 'lightgrey'} />
         </div>
         <div className={styles.content} style={contentStyle}>
           {sections.map(({
             name,
             icon,
-            style
+            style,
+            link
           }) => {
             const active = name === section;
+
+            // If link points to another component, adds the prefix
+            link = link.startsWith('/') ? prefix + link : link;
             return (
               <SidebarSection
                 key={name}
+                name={name}
+                link={link}
                 icon={icon}
                 style={style}
                 active={active}
                 primaryBackgroundColor={primaryBackgroundColor}
                 isCollapsed={true}
-                >
+                onClick={() => isSidebarCollapsed = false}>
               </SidebarSection>
             );
           })}

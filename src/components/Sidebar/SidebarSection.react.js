@@ -14,37 +14,26 @@ const sendEvent = () => {
   back4AppNavigation && back4AppNavigation.atApiReferenceIntroEvent && back4AppNavigation.atApiReferenceIntroEvent()
 }
 
-let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor, isCollapsed }) => {
+let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor, isCollapsed, onClick }) => {
   let classes = [styles.section];
   if (active) {
     classes.push(styles.active);
   }
-  let iconContent = null;
-  if (icon) {
-    iconContent = <Icon width={25} height={25} name={icon} fill='#ffffff' />;
-  }
-
   if (isCollapsed) {
     classes.push(styles.collapsed);
-    return (
-      <div className={classes.join(' ')}>
-        <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor}}>
-          {iconContent}
-        </div>
-      </div>
-    );
   }
 
-  const linkComponent = link.startsWith('/')
-    ? <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}<span>{name}</span></Link>
-    : <a style={style} className={styles.section_header} href={link} target="_blank" onClick={() => sendEvent()}>{iconContent}<span>{name}</span></a>;
+  const iconContent = icon && <Icon width={25} height={25} name={icon} fill='#ffffff' />;
+  const textContent = !isCollapsed && <span>{name}</span>;
+  const sectionContent = active
+    ? <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor}} onClick={onClick}>{iconContent}{textContent}</div>
+    : link.startsWith('/')
+      ? <Link style={style} className={styles.section_header} to={{ pathname: link || '' }} onClick={onClick}>{iconContent}{textContent}</Link>
+      : <a style={style} className={styles.section_header} href={link} target="_blank" onClick={() => sendEvent()}>{iconContent}{textContent}</a>;
   return (
-    <div className={classes.join(' ')}>
-      {active ?
-        <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor}}>{iconContent}<span>{name}</span></div> :
-        linkComponent}
-
-      {children ? <div className={styles.section_contents} style={{ background: secondaryBackgroundColor}}>{children}</div> : null}
+    <div className={classes.join(' ')} title={isCollapsed && name}>
+      {sectionContent}
+      {!isCollapsed && children && <div className={styles.section_contents} style={{ background: secondaryBackgroundColor}}>{children}</div>}
     </div>
   );
 };
