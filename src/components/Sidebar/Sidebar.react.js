@@ -171,12 +171,18 @@ class Sidebar extends React.Component {
         }
       }
     );
+
     const onPinClick = this.state.fixed
       ? () => this.setState({ collapsed: true, fixed: false })
       : () => this.setState({ collapsed: false, fixed: true })
+    const pinClasses = [styles.sidebarPin];
+    if (this.state.fixed) {
+      pinClasses.push(styles.fixed);
+    }
+    const pin = <Icon className={pinClasses.join(' ')} name='pin' width={18} height={18} onClick={onPinClick} />;
 
     return <div className={sidebarClasses.join(' ')} onMouseLeave={onMouseLeave}>
-      {appSelector ? <AppsSelector apps={apps} onPinClick={onPinClick} /> : null}
+      {appSelector ? <AppsSelector apps={apps} pin={pin} /> : null}
 
       <div className={styles.content} style={contentStyle}>
         {sections.map(({

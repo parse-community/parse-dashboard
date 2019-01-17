@@ -34,6 +34,12 @@
         height: 48px;
         width: 54px;
       }
+
+      @media screen and (max-width: 980px) {
+        svg {
+          display: none;
+        }
+      }
     }
 
     .footer {
@@ -177,6 +183,17 @@
     height: 30px;
     width: 30px;
     padding: 6px;
+    fill: lightgrey;
+
+    &.fixed {
+      fill: white;
+    }
+  }
+
+  @media screen and (max-width: 980px) {
+    .sidebarPin {
+      display: none;
+    }
   }
 }
 

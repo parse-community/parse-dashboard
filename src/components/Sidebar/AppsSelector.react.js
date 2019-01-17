@@ -13,7 +13,6 @@ import Position       from 'lib/Position';
 import React          from 'react';
 import ReactDOM       from 'react-dom';
 import styles         from 'components/Sidebar/Sidebar.scss';
-import Icon from 'components/Icon/Icon.react';
 
 export default class AppsSelector extends React.Component {
   constructor() {
@@ -75,7 +74,7 @@ export default class AppsSelector extends React.Component {
             current={this.context.currentApp}
             height={height}
             onSelect={this.select.bind(this)}
-            onPinClick={this.props.onPinClick} />
+            pin={this.props.pin} />
         </Popover>
       );
     }
@@ -85,7 +84,7 @@ export default class AppsSelector extends React.Component {
           <div className={styles.currentAppName} onClick={this.toggle.bind(this)}>
             {this.context.currentApp.name}
           </div>
-          <Icon className={styles.sidebarPin} name='pin' width={18} height={18} fill='white' onClick={this.props.onPinClick} />
+          {this.props.pin}
         </div>
         {popover}
       </div>
