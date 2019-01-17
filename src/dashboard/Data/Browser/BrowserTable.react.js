@@ -15,6 +15,8 @@ import Parse                  from 'parse';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import Button                 from 'components/Button/Button.react';
+import ParseApp               from 'lib/ParseApp';
+import PropTypes              from 'lib/PropTypes';
 
 const MAX_ROWS = 60; // Number of rows to render at any time
 const ROW_HEIGHT = 31;
@@ -325,8 +327,14 @@ export default class BrowserTable extends React.Component {
           readonly={!!this.props.relation}
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
-          onAddColumn={this.props.onAddColumn} />
+          onAddColumn={this.props.onAddColumn}
+          preventSchemaEdits={this.context.currentApp.preventSchemaEdits} />
       </div>
     );
   }
 }
+
+BrowserTable.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
+};
+

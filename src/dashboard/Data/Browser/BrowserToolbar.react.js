@@ -45,6 +45,8 @@ let BrowserToolbar = ({
   enableDeleteAllRows,
   enableExportClass,
   enableSecurityDialog,
+  enableColumnManipulation,
+  enableClassManipulation
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -93,8 +95,8 @@ let BrowserToolbar = ({
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid'>
         <MenuItem text='Add a row' onClick={onAddRow} />
-        <MenuItem text='Add a column' onClick={onAddColumn} />
-        <MenuItem text='Add a class' onClick={onAddClass} />
+        {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
+        {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
         <Separator />
         <MenuItem
           disabled={!selectionLength}
@@ -112,9 +114,9 @@ let BrowserToolbar = ({
           disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)} />
-        <MenuItem text='Delete a column' onClick={onRemoveColumn} />
+        {enableColumnManipulation ? <MenuItem text='Delete a column' onClick={onRemoveColumn} /> : <noscript />}
         {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
-        <MenuItem text='Delete this class' onClick={onDropClass} />
+        {enableClassManipulation ? <MenuItem text='Delete this class' onClick={onDropClass} /> : <noscript />}
         {enableExportClass ? <Separator /> : <noscript />}
         {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
       </BrowserMenu>
