@@ -39,6 +39,15 @@
     .footer {
       height: 48px;
       justify-content: center;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #1184ca;
+      }
+    }
+
+    .content {
+      bottom: 48px;
     }
   }
 }

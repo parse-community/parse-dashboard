@@ -126,12 +126,14 @@ class Sidebar extends React.Component {
                 active={active}
                 primaryBackgroundColor={primaryBackgroundColor}
                 isCollapsed={true}
-                onClick={() => isSidebarCollapsed = false}>
+                onClick={active
+                  ? (() => this.setState({ collapsed: false }))
+                  : (() => isSidebarCollapsed = false)}>
               </SidebarSection>
             );
           })}
         </div>
-        <div className={styles.footer}>
+        <div className={styles.footer} onClick={() => this.setState({ collapsed: false })}>
           <Icon height={18} width={18} name='ellipses' fill='white' />
         </div>
       </div>
@@ -170,7 +172,7 @@ class Sidebar extends React.Component {
       <Button value='Support'
         primary={true}
         width='75px'
-        onClick={() => zE.activate()}
+        onClick={() => ze && zE.activate()}
         key={0}
       />
     ];
