@@ -138,6 +138,12 @@
   line-height: 30px;
 }
 
+.currentAppNameGroup {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
 .menuRow {
   cursor: pointer;
   border-bottom: 1px solid #0c5582;
@@ -157,8 +163,6 @@
 
 .currentApp {
   position: relative;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -170,15 +174,15 @@
   }
 
   .currentAppName {
-    display: flex;
-    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 215px;
     cursor: pointer;
+  }
 
-    &:after {
-      @include arrow('down', 10px, 7px, #fff);
-      content: '';
-      margin-left: 10px;
-    }
+  .appsSelectorArrow {
+    @include arrow('down', 10px, 7px, #fff);
+    margin-left: 8px;
   }
 
   .sidebarPin {
@@ -211,7 +215,7 @@
     background: #0c5582;
   }
 
-  .currentApp .currentAppName:after {
+  .currentApp .appsSelectorArrow {
     @include arrow('up', 10px, 7px, #ffffff);
   }
 }

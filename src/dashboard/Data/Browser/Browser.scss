@@ -32,11 +32,10 @@ body:global(.expanded) {
 }
 
 .empty {
-  position: fixed;
-  left: 300px;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
 }
 
 .toolbarSeparator {
@@ -93,10 +92,6 @@ body:global(.expanded) {
   min-width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.table .empty {
-  top: 126px;
 }
 
 .tableRow {
