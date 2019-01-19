@@ -47,10 +47,12 @@ npm install -g parse-dashboard
 You can launch the dashboard for an app with a single command by supplying an app ID, master key, URL, and name like this:
 
 ```
-parse-dashboard --appId yourAppId --masterKey yourMasterKey --serverURL "https://example.com/parse" --appName optionalName
+parse-dashboard --dev --appId yourAppId --masterKey yourMasterKey --serverURL "https://example.com/parse" --appName optionalName
 ```
 
 You may set the host, port and mount path by supplying the `--host`, `--port` and `--mountPath` options to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
+
+NB: the `--dev` parameter is disabling production-ready security features, do not use this parameter when starting the dashboard in production. This parameter is useful is you are running on docker. 
 
 After starting the dashboard, you can visit http://localhost:4040 in your browser:
 
@@ -451,16 +453,18 @@ You can provide a list of locales or languages you want to support for your dash
 
 ## Run with Docker
 
-It is easy to use it with Docker. First build the image:
-
-```
-docker build -t parse-dashboard .
-```
+The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard) 
 
 Run the image with your ``config.json`` mounted as a volume
 
 ```
-docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard
+docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parseplatform/parse-dashboard --dev
+```
+
+You can also pass the appId, masterKey and serverURL as arguments:
+
+```
+docker run -d -p 4040:4040 parseplatform/parse-dashboard --dev --appId $APP_ID --masterKey $MASTER_KEY --serverURL $SERVER_URL
 ```
 
 By default, the container will start the app at port 4040 inside the container. However, you can run custom command as well (see ``Deploying in production`` for custom setup).
@@ -468,7 +472,7 @@ By default, the container will start the app at port 4040 inside the container. 
 In this example, we want to run the application in production mode at port 80 of the host machine.
 
 ```
-docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080
+docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080 --dev
 ```
 
 If you are not familiar with Docker, ``--port 8080`` will be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
