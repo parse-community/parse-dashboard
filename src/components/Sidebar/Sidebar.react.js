@@ -172,7 +172,7 @@ class Sidebar extends React.Component {
       <Button value='Support'
         primary={true}
         width='75px'
-        onClick={() => ze && zE.activate()}
+        onClick={() => zE && zE.activate()}
         key={0}
       />
     ];
