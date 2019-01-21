@@ -175,22 +175,20 @@ let B4ABrowserToolbar = ({
       subsection={subsection}
       details={relation ? details.join(' \u2022 ') : ''}
       helpsection={helpsection}>
-      <a className={styles.toolbarButton} onClick={onAddRow}>
-        <Icon name='plus-solid' width={14} height={14} />
-        <span>Add Row</span>
+      <a className={styles.toolbarButton} onClick={onAddRow} title='Add a row'>
+        <Icon name='add-row' width={32} height={28} />
       </a>
-      <div className={styles.toolbarSeparator} />
-      <a className={styles.toolbarButton} onClick={onRefresh}>
-        <Icon name='refresh-solid' width={14} height={14} />
-        <span>Refresh</span>
+      <a className={styles.toolbarButton} onClick={onAddColumn} title='Add a column'>
+        <Icon name='add-column' width={32} height={28} />
       </a>
-      <div className={styles.toolbarSeparator} />
+      <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
+        <Icon name='refresh' width={30} height={28} />
+      </a>
       <BrowserFilter
         setCurrent={setCurrent}
         schema={schema}
         filters={filters}
         onChange={onFilterChange} />
-      <div className={styles.toolbarSeparator} />
       {enableSecurityDialog ? <SecurityDialog
         setCurrent={setCurrent}
         disabled={!!relation}
@@ -198,7 +196,7 @@ let B4ABrowserToolbar = ({
         className={classNameForPermissionsEditor}
         onChangeCLP={onChangeCLP}
         userPointers={userPointers} /> : <noscript />}
-      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript/>}
+      {enableSecurityDialog ? null : <noscript/>}
       {menu}
     </Toolbar>
   );

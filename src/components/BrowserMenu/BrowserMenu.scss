@@ -8,27 +8,25 @@
 @import 'stylesheets/globals.scss';
 
 .wrap {
-  display: inline-block;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+  height: 30px;
+  width: 32px;
+  margin: 0 10px;
 }
 
 .entry {
-  height: 22px;
-  padding: 8px 8px 0 8px;
+  padding: 0 8px;
 
   svg {
-    fill: #66637A;
-  }
-
-  &:hover {
-    svg {
-      fill: white;
-    }
+    fill: white;
   }
 }
 
 .title {
   background: #797592;
-  padding: 8px;
+  padding: 3px 8px;
   border-radius: 5px 5px 0 0;
 
   svg {
@@ -44,7 +42,6 @@
 
   svg {
     vertical-align: middle;
-    margin-right: 4px;
   }
 
   span {

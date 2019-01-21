@@ -69,5 +69,7 @@
 .actions {
   position: absolute;
   right: 14px;
-  bottom: 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }

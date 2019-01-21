@@ -85,6 +85,7 @@ export default class BrowserFilter extends React.Component {
     let popover = null;
     if (this.state.open) {
       let position = Position.inDocument(this.node);
+      position.x -= 3;
       let popoverStyle = [styles.popover];
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
@@ -93,9 +94,8 @@ export default class BrowserFilter extends React.Component {
       popover = (
         <Popover fixed={true} position={position}>
           <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)}>
-            <div className={styles.title} onClick={() => this.setState({ open: false })}>
-              <Icon name='filter-solid' width={14} height={14} />
-              <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
+            <div className={styles.title} onClick={() => this.setState({ open: false })} title='Filter'>
+              <Icon name='filter-solid' width={32} height={26} />
             </div>
             <div className={styles.body}>
               <Filter
@@ -136,8 +136,7 @@ export default class BrowserFilter extends React.Component {
     return (
       <div className={styles.wrap}>
         <div className={buttonStyle.join(' ')} onClick={this.open.bind(this)}>
-          <Icon name='filter-solid' width={14} height={14} />
-          <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
+          <Icon name='filter-solid' width={32} height={26} />
         </div>
         {popover}
       </div>

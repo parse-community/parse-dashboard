@@ -50,24 +50,16 @@
 }
 
 .toolbarButton {
-  @include NotoSansFont;
-  display: inline-block;
-  font-size: 14px;
-  color: #ffffff;
+  display: flex;
+  align-items: flex-end;
   cursor: pointer;
-  height: 14px;
-  padding: 0 8px;
+  height: 30px;
+  width: 32px;
+  margin: 0 10px;
 
   svg {
     vertical-align: middle;
-    margin-right: 4px;
-    fill: #66637A;
-  }
-
-  &:hover {
-    svg {
-      fill: white;
-    }
+    fill: white;
   }
 
   span {
