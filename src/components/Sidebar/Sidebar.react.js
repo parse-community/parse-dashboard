@@ -42,14 +42,17 @@ class Sidebar extends React.Component {
       mobileFriendly: window.innerWidth <= 980
     };
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
+    this.checkExternalClick = this.checkExternalClick.bind(this);
   }
 
   componentWillMount() {
     window.addEventListener('resize', this.windowResizeHandler);
+    document.body.addEventListener('click', this.checkExternalClick);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.windowResizeHandler);
+    document.body.removeEventListener('click', this.checkExternalClick);
     isSidebarFixed = this.state.fixed;
   }
 
@@ -70,6 +73,17 @@ class Sidebar extends React.Component {
         fixed: true,
         mobileFriendly: false
       });
+    }
+  }
+
+  checkExternalClick({ target }) {
+    if (this.state.mobileFriendly && !this.state.isCollapsed) {
+      for (let current = target; current && current.id !== 'browser_mount'; current = current.parentNode) {
+        if (/^sidebar/g.test(current.className) || /^introjs-tooltipReferenceLayer/g.test(current.className) || /^fixed_wrapper/g.test(current.id)) {
+          return;
+        }
+      }
+      this.setState({ collapsed: true });
     }
   }
 
