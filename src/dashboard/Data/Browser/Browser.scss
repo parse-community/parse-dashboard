@@ -51,11 +51,18 @@
 
 .toolbarButton {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  height: 30px;
-  width: 32px;
-  margin: 0 10px;
+  height: 38px;
+  width: 38px;
+  margin: 0 6px;
+  padding: 4px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 
   svg {
     vertical-align: middle;

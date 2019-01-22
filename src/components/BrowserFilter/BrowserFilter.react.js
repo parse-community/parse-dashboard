@@ -85,7 +85,6 @@ export default class BrowserFilter extends React.Component {
     let popover = null;
     if (this.state.open) {
       let position = Position.inDocument(this.node);
-      position.x -= 3;
       let popoverStyle = [styles.popover];
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);

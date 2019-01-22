@@ -9,11 +9,18 @@
 
 .wrap {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  height: 30px;
-  width: 32px;
-  margin: 0 10px;
+  height: 38px;
+  width: 38px;
+  margin: 0 6px;
+  padding: 4px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .entry {
@@ -24,8 +31,7 @@
 
 .title {
   background: #797592;
-  padding: 6px 3px;
-  margin-left: -3px;
+  padding: 7px 2px 1px 2px;
   border-radius: 5px 5px 0 0;
 
   svg {
@@ -52,7 +58,7 @@
 
 .body {
   position: absolute;
-  top: 30px;
+  top: 31px;
   right: 0;
   border-radius: 5px 0 5px 5px;
   background: #797592;

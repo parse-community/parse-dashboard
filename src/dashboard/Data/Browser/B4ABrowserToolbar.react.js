@@ -175,10 +175,10 @@ let B4ABrowserToolbar = ({
       subsection={subsection}
       details={relation ? details.join(' \u2022 ') : ''}
       helpsection={helpsection}>
-      <a className={styles.toolbarButton} onClick={onAddRow} title='Add a row'>
+      <a className={styles.toolbarButton} onClick={onAddRow} title='Add a row' style={{ padding: '4px 4px 6px 4px' }}>
         <Icon name='add-row' width={32} height={26} />
       </a>
-      <a className={styles.toolbarButton} onClick={onAddColumn} title='Add a column'>
+      <a className={styles.toolbarButton} onClick={onAddColumn} title='Add a column' style={{ padding: '4px 4px 6px 4px' }}>
         <Icon name='add-column' width={32} height={26} />
       </a>
       <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
