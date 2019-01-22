@@ -261,7 +261,7 @@ export default class DashboardView extends React.Component {
       action={this.action}
       primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
       secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
-      footerMenuButtons={this.footerMenuButtons}
+      footerMenuButtons={this.getFooterMenuButtons && this.getFooterMenuButtons()}
       >
       {sidebarChildren}
     </Sidebar>);

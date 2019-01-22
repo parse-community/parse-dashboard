@@ -16,6 +16,7 @@ import styles         from 'components/Sidebar/Sidebar.scss';
 import zendeskSettings from 'components/Sidebar/zendeskSettings'
 import Button from 'components/Button/Button.react'
 import Icon from 'components/Icon/Icon.react';
+import { isMobile } from 'lib/browserUtils';
 
 const isInsidePopover = node => {
   let cur = node.parentNode;
@@ -30,7 +31,7 @@ const isInsidePopover = node => {
   return false;
 }
 
-let isSidebarFixed = window.innerWidth > 980;
+let isSidebarFixed = !isMobile();
 let isSidebarCollapsed = !isSidebarFixed;
 
 class Sidebar extends React.Component {
@@ -39,7 +40,7 @@ class Sidebar extends React.Component {
     this.state = {
       collapsed: isSidebarCollapsed,
       fixed: isSidebarFixed,
-      mobileFriendly: window.innerWidth <= 980
+      mobileFriendly: isMobile()
     };
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
     this.checkExternalClick = this.checkExternalClick.bind(this);
@@ -57,7 +58,7 @@ class Sidebar extends React.Component {
   }
 
   windowResizeHandler() {
-    if (window.innerWidth <= 980) {
+    if (isMobile()) {
       if (document.body.className.indexOf(' expanded') === -1) {
         document.body.className += ' expanded';
       }
