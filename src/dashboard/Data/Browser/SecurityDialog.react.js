@@ -78,7 +78,7 @@ export default class SecurityDialog extends React.Component {
     }
     return (
       <div className={classes.join(' ')} onClick={onClick} title='Security'>
-        <Icon width={32} height={28} name='security' />
+        <Icon width={32} height={26} name='security' />
         {dialog}
       </div>
     );

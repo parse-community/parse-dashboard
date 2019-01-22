@@ -176,13 +176,13 @@ let B4ABrowserToolbar = ({
       details={relation ? details.join(' \u2022 ') : ''}
       helpsection={helpsection}>
       <a className={styles.toolbarButton} onClick={onAddRow} title='Add a row'>
-        <Icon name='add-row' width={32} height={28} />
+        <Icon name='add-row' width={32} height={26} />
       </a>
       <a className={styles.toolbarButton} onClick={onAddColumn} title='Add a column'>
-        <Icon name='add-column' width={32} height={28} />
+        <Icon name='add-column' width={32} height={26} />
       </a>
       <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
-        <Icon name='refresh' width={30} height={28} />
+        <Icon name='refresh' width={30} height={26} />
       </a>
       <BrowserFilter
         setCurrent={setCurrent}

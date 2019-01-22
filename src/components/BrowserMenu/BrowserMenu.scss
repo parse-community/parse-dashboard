@@ -17,8 +17,6 @@
 }
 
 .entry {
-  padding: 0 8px;
-
   svg {
     fill: white;
   }
@@ -26,7 +24,8 @@
 
 .title {
   background: #797592;
-  padding: 3px 8px;
+  padding: 6px 3px;
+  margin-left: -3px;
   border-radius: 5px 5px 0 0;
 
   svg {
