@@ -31,6 +31,8 @@ export default class GeoPointEditor extends React.Component {
     document.body.addEventListener('click', this.checkExternalClick);
     this.refs.latitude.addEventListener('keypress', this.handleKeyLatitude);
     this.refs.longitude.addEventListener('keypress', this.handleKeyLongitude);
+    this.props.setFocus && this.refs.latitude.focus();
+
   }
 
   componentWillUnmount() {

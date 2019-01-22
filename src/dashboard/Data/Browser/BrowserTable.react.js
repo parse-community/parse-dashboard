@@ -9,13 +9,11 @@ import BrowserCell            from 'components/BrowserCell/BrowserCell.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as browserUtils      from 'lib/browserUtils';
 import DataBrowserHeaderBar   from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
-import DateTimeEditor         from 'components/DateTimeEditor/DateTimeEditor.react';
 import Editor                 from 'dashboard/Data/Browser/Editor.react';
 import EmptyState             from 'components/EmptyState/EmptyState.react';
 import Icon                   from 'components/Icon/Icon.react';
 import Parse                  from 'parse';
 import React                  from 'react';
-import StringEditor           from 'components/StringEditor/StringEditor.react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import Button                 from 'components/Button/Button.react';
 
@@ -31,7 +29,7 @@ export default class BrowserTable extends React.Component {
     super();
 
     this.state = {
-      offset: 0,
+      offset: 0
     };
     this.handleScroll = this.handleScroll.bind(this);
   }
@@ -98,6 +96,7 @@ export default class BrowserTable extends React.Component {
         {this.props.order.map(({ name, width }, j) => {
           let type = this.props.columns[name].type;
           let attr = attributes[name];
+          let readonly = READ_ONLY.indexOf(name) > -1
           if (name === 'objectId') {
             attr = obj.id;
           } else if (name === 'ACL' && this.props.className === '_User' && !attr) {
@@ -112,22 +111,26 @@ export default class BrowserTable extends React.Component {
             hidden = true;
           } else if (name === 'sessionToken') {
             if (this.props.className === '_User' || this.props.className === '_Session') {
-              hidden = true;
+              readonly = hidden = true;
             }
           }
+          let id = row * this.props.numberOfColumns + j
           return (
             <BrowserCell
               key={name}
               type={type}
-              readonly={READ_ONLY.indexOf(name) > -1}
+              readonly={readonly}
               width={width}
               current={current}
-              onSelect={(readableValue) => this.props.setCurrent({ row: row, col: j }, readableValue)}
+              onSelect={(readableValue) => this.props.setCurrent({ row: row, col: j, readonly: readonly, id: `cell-${id}` }, readableValue)}
               onEditChange={(state) => this.props.setEditing(state)}
               onPointerClick={this.props.onPointerClick}
               setRelation={this.props.setRelation}
               value={attr}
-              hidden={hidden} />
+              hidden={hidden}
+              id={`cell-${id}`}
+              currentTooltip={this.props.currentTooltip}
+              unsetTooltip={() => this.props.unsetTooltip()} />
           );
         })}
       </div>
@@ -228,26 +231,27 @@ export default class BrowserTable extends React.Component {
             wrapLeft += this.props.order[i].width;
           }
 
-          editor = (
-            <Editor
-              top={wrapTop}
-              left={wrapLeft}
-              type={type}
-              targetClass={targetClass}
-              value={value}
-              readonly={readonly}
-              width={width}
-              onCommit={(newValue) => {
-                if (newValue !== value) {
-                  this.props.updateRow(
-                    this.props.current.row,
-                    name,
-                    newValue
-                  );
-                }
-                this.props.setEditing(false);
-              }} />
-          );
+          !readonly ?
+            editor = (
+              <Editor
+                top={wrapTop}
+                left={wrapLeft}
+                type={type}
+                targetClass={targetClass}
+                value={value}
+                readonly={readonly}
+                width={width}
+                onCommit={(newValue) => {
+                  if (newValue !== value) {
+                    this.props.updateRow(
+                      this.props.current.row,
+                      name,
+                      newValue
+                    );
+                  }
+                  this.props.setEditing(false);
+                }} />
+            ) : null
         }
       }
 

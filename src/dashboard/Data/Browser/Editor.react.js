@@ -24,7 +24,8 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
         readonly={readonly}
         multiline={!readonly}
         width={width}
-        onCommit={onCommit} />
+        onCommit={onCommit}
+        setFocus={true} />
     );
   } else if (type === 'Array' || type === 'Object') {
     let encodeCommit = (json) => {
@@ -41,7 +42,8 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
         resizable={true}
         multiline={true}
         width={width}
-        onCommit={encodeCommit} />
+        onCommit={encodeCommit}
+        setFocus={true} />
     );
   } else if (type === 'Polygon') {
     let encodeCommit = (json) => {
@@ -75,7 +77,8 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
         resizable={true}
         multiline={true}
         width={width}
-        onCommit={encodeCommit} />
+        onCommit={encodeCommit}
+        setFocus={true} />
     );
   } else if (type === 'Date') {
     if (readonly) {
@@ -84,14 +87,16 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
           value={value ? value.toISOString() : ''}
           readonly={true}
           width={width}
-          onCommit={() => onCommit(value)} />
+          onCommit={() => onCommit(value)}
+          setFocus={true} />
       );
     } else {
       content = (
         <DateTimeEditor
           value={value || new Date()}
           width={width}
-          onCommit={onCommit} />
+          onCommit={onCommit}
+          setFocus={true} />
       );
     }
   } else if (type === 'Boolean') {
@@ -103,21 +108,24 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
       <NumberEditor
         value={value}
         width={width}
-        onCommit={onCommit} />
+        onCommit={onCommit}
+        setFocus={true} />
     );
   } else if (type === 'GeoPoint') {
     content = (
       <GeoPointEditor
         value={value}
         width={width}
-        onCommit={onCommit} />
+        onCommit={onCommit}
+        setFocus={true} />
     );
   } else if (type === 'File') {
     content = (
       <FileEditor
         value={value}
         width={width}
-        onCommit={onCommit} />
+        onCommit={onCommit}
+        setFocus={true} />
     );
   } else if (type === 'ACL') {
     content = (
@@ -140,7 +148,8 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
       <StringEditor
         value={value ? value.id : ''}
         width={width}
-        onCommit={encodeCommit} />
+        onCommit={encodeCommit}
+        setFocus={true} />
     );
   }
 

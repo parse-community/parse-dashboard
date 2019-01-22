@@ -112,6 +112,7 @@ export default class Browser extends DashboardView {
     this.setRelation = this.setRelation.bind(this);
     this.showAddColumn = this.showAddColumn.bind(this);
     this.addRow = this.addRow.bind(this);
+    this.abortAddRow = this.abortAddRow.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
@@ -508,6 +509,14 @@ export default class Browser extends DashboardView {
         newObject: (relation ?
           new Parse.Object(relation.targetClassName)
         : new Parse.Object(this.props.params.className) ),
+      });
+    }
+  }
+
+  abortAddRow() {
+    if (this.state.newObject) {
+      this.setState({
+        newObject: null,
       });
     }
   }
@@ -1171,6 +1180,7 @@ export default class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
+            onAbortAddRow={this.abortAddRow}
             onAddClass={this.showCreateClass}
             err={this.state.err}
             showNote={this.showNote}/>

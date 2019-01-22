@@ -32,6 +32,7 @@ export default class DateTimeEditor extends React.Component {
   componentDidMount() {
     document.body.addEventListener('click', this.checkExternalClick);
     this.refs.input.addEventListener('keypress', this.handleKey);
+    this.props.setFocus && this.toggle();
   }
 
   componentWillUnmount() {
@@ -98,7 +99,7 @@ export default class DateTimeEditor extends React.Component {
         </div>
       );
     }
-    
+
     return (
       <div ref='editor' style={{ width: this.props.width }} className={styles.editor}>
         <input
