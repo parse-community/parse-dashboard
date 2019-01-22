@@ -279,11 +279,11 @@
 }
 
 .section_header {
-  display: block;
+  display: flex;
+  align-items: center;
   height: 48px;
   font-size: 18px;
-  line-height: 28px;
-  padding: 12px 14px;
+  padding: 9px 14px;
   color: white;
 
   &:hover{
