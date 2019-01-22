@@ -236,36 +236,53 @@ export default class Browser extends DashboardView {
         } else {
           this._forcedStep = false;
         }
+        let nextButton;
+        let originalNextButtonOnClick;
+
         switch(this._currentStep) {
           case 1:
-            schema.dispatch(ActionTypes.CREATE_CLASS, {
-              className: 'B4aVehicle',
-              fields: {
-                name: { type: 'String' },
-                price: { type: 'Number' },
-                color: { type: 'String' },
-              }
-            }).then(() => {
-              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-              introItems[2].element = vehicleClassLink;
-              return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
-            }).catch(e => {
-              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-              if (vehicleClassLink) {
-                introItems[2].element = vehicleClassLink;
-              }
-              // Class already exists error
-              if (e.code !== 103) {
-                if (!unexpectedErrorThrown) {
-                  introItems.splice(2, 2);
-                  for (let i=2; i<introItems.length; i++) {
-                    introItems[i].step -= 2;
-                  }
-                  unexpectedErrorThrown = true;
+            nextButton = document.querySelector('.introjs-button.introjs-nextbutton');
+            originalNextButtonOnClick = nextButton.onclick;
+            nextButton.innerHTML = "Run";
+            nextButton.onclick = () => {
+              schema.dispatch(ActionTypes.CREATE_CLASS, {
+                className: 'B4aVehicle',
+                fields: {
+                  name: { type: 'String' },
+                  price: { type: 'Number' },
+                  color: { type: 'String' },
                 }
-                console.error(e);
-              }
-            });
+              }).then(() => {
+                const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+                introItems[2].element = vehicleClassLink;
+                return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
+              }).then(() => {
+                nextButton.innerHTML = 'Next';
+                nextButton.onclick = originalNextButtonOnClick;
+
+                originalNextButtonOnClick();
+              }).catch(e => {
+                const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+                if (vehicleClassLink) {
+                  introItems[2].element = vehicleClassLink;
+                }
+                // Class already exists error
+                if (e.code !== 103) {
+                  if (!unexpectedErrorThrown) {
+                    introItems.splice(2, 2);
+                    for (let i=2; i<introItems.length; i++) {
+                      introItems[i].step -= 2;
+                    }
+                    unexpectedErrorThrown = true;
+                  }
+                  console.error(e);
+                }
+                nextButton.innerHTML = 'Next';
+                nextButton.onclick = originalNextButtonOnClick;
+
+                originalNextButtonOnClick();
+              });
+            };
             break;
           case 2:
             const numberLayer = document.querySelector('.introjs-helperNumberLayer');
