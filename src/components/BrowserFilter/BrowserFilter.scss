@@ -8,18 +8,23 @@
 @import 'stylesheets/globals.scss';
 
 .wrap {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 38px;
+  width: 38px;
+  margin: 0 6px;
+  padding: 4px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .entry {
-  height: 30px;
-  padding: 8px;
-
   svg {
-    fill: #66637A;
-  }
-
-  &:hover svg {
     fill: white;
   }
 }
@@ -39,7 +44,7 @@
 
 .title {
   background: #797691;
-  padding: 8px;
+  padding: 7px 3px;
   border-radius: 5px 5px 0 0;
 
   svg {
@@ -50,14 +55,12 @@
 .entry, .title {
   @include NotoSansFont;
   position: relative;
-  bottom: -4px;
   font-size: 14px;
   color: #ffffff;
   cursor: pointer;
 
   svg {
     vertical-align: top;
-    margin-right: 6px;
   }
 
   span {
@@ -70,7 +73,7 @@
 
 .body {
   position: absolute;
-  top: 30px;
+  top: 31px;
   right: 0;
   border-radius: 5px 0 5px 5px;
   background: #797691;
