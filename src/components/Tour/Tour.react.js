@@ -33,7 +33,8 @@ export default class Tour extends Component {
       intro.setOptions({
         nextLabel: 'Next',
         prevLabel: 'Prev',
-        skipLabel: 'Cancel'
+        skipLabel: 'Cancel',
+        showBullets: false
       });
       this.props.steps.forEach(step => {
         if (typeof step.element === 'function') {

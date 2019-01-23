@@ -180,7 +180,7 @@ export default class Browser extends DashboardView {
       },
       {
         eventId: 'Custom Class Link',
-        element: () => document.querySelector('[class^=class_list]'),
+        element: () => document.querySelector('[class^=class_list] [title="B4aVehicle"]') || document.querySelector('[class^=class_list]'),
         intro: `This is the new <b>B4aVehicle</b> class just created!`,
         position: 'right'
       },
@@ -215,6 +215,13 @@ export default class Browser extends DashboardView {
 
     let unexpectedErrorThrown = false;
 
+    const getNextButton = () => {
+      return document.querySelector('.introjs-button.introjs-nextbutton');
+    };
+    const getCustomVehicleClassLink = () => {
+      return document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+    };
+
     return {
       steps,
       onBeforeStart: () => {
@@ -236,15 +243,20 @@ export default class Browser extends DashboardView {
         } else {
           this._forcedStep = false;
         }
-        let nextButton;
-        let originalNextButtonOnClick;
 
         switch(this._currentStep) {
+          case 0:
+            let nextButton = getNextButton();
+            if (nextButton) {
+              nextButton.innerHTML = "Next";
+            }
+            break;
           case 1:
-            nextButton = document.querySelector('.introjs-button.introjs-nextbutton');
-            originalNextButtonOnClick = nextButton.onclick;
+            nextButton = getNextButton();
             nextButton.innerHTML = "Run";
-            nextButton.onclick = () => {
+            break;
+          case 2:
+            if (!getCustomVehicleClassLink() && !unexpectedErrorThrown) {
               schema.dispatch(ActionTypes.CREATE_CLASS, {
                 className: 'B4aVehicle',
                 fields: {
@@ -253,38 +265,26 @@ export default class Browser extends DashboardView {
                   color: { type: 'String' },
                 }
               }).then(() => {
-                const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-                introItems[2].element = vehicleClassLink;
                 return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
               }).then(() => {
-                nextButton.innerHTML = 'Next';
-                nextButton.onclick = originalNextButtonOnClick;
-
-                originalNextButtonOnClick();
+                introItems[2].element = getCustomVehicleClassLink();
+                this.nextStep();
               }).catch(e => {
-                const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-                if (vehicleClassLink) {
-                  introItems[2].element = vehicleClassLink;
-                }
-                // Class already exists error
-                if (e.code !== 103) {
-                  if (!unexpectedErrorThrown) {
-                    introItems.splice(2, 2);
-                    for (let i=2; i<introItems.length; i++) {
-                      introItems[i].step -= 2;
-                    }
-                    unexpectedErrorThrown = true;
+                if (!unexpectedErrorThrown) {
+                  introItems.splice(2, 2);
+                  for (let i=2; i<introItems.length; i++) {
+                    introItems[i].step -= 2;
                   }
-                  console.error(e);
+                  unexpectedErrorThrown = true;
                 }
-                nextButton.innerHTML = 'Next';
-                nextButton.onclick = originalNextButtonOnClick;
-
-                originalNextButtonOnClick();
+                console.error(e);
+                this.nextStep();
               });
-            };
-            break;
-          case 2:
+              return false;
+            }
+            nextButton = getNextButton();
+            nextButton.innerHTML = 'Next';
+
             const numberLayer = document.querySelector('.introjs-helperNumberLayer');
             numberLayer.style.marginLeft = 0;
             if (!unexpectedErrorThrown) {
@@ -308,6 +308,13 @@ export default class Browser extends DashboardView {
       },
       onAfterChange: function(targetElement) {
         switch(this._currentStep) {
+          case 0:
+            if (this._introItems.length === 1) {
+              // Disables the Prev button
+              document.querySelector('.introjs-button.introjs-prevbutton').classList.add('introjs-disabled');
+              targetElement.style.backgroundColor = 'inherit';
+            }
+            break;
           case 1:
             const numberLayer = document.querySelector('.introjs-helperNumberLayer');
             numberLayer.style.marginLeft = '20px';
@@ -323,6 +330,11 @@ export default class Browser extends DashboardView {
         // If is exiting before the last step, avoid exit and shows the last step
         if (this._currentStep < this._introItems.length - 1) {
           this._forcedStep = true;
+          const elementsRemoved = this._introItems.length - 1;
+          this._introItems.splice(0, elementsRemoved);
+          for (let i=0; i<this._introItems.length; i++) {
+            this._introItems[i].step -= elementsRemoved;
+          }
           this.goToStep(this._introItems.length);
           return false;
         }
