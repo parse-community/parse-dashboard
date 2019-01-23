@@ -18,6 +18,9 @@ import copy                   from 'copy-to-clipboard';
  * It also manages the fetching / updating of column size prefs,
  * and the keyboard interactions for the data table.
  */
+
+const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt', 'sessionToken' ];
+
 export default class DataBrowser extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -31,7 +34,9 @@ export default class DataBrowser extends React.Component {
     this.state = {
       order: order,
       current: null,
-      editing: false
+      editing: false,
+      currentTooltip: null,
+      numberOfColumns: 0
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -50,6 +55,7 @@ export default class DataBrowser extends React.Component {
         order: order,
         current: null,
         editing: false,
+        currentTooltip: null
       });
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length) {
       let order = ColumnPreferences.getOrder(
@@ -59,6 +65,8 @@ export default class DataBrowser extends React.Component {
       );
       this.setState({ order });
     }
+    if (this.props.columns)
+      this.setState({ numberOfColumns: Object.keys(this.props.columns).length })
   }
 
   componentDidMount() {
@@ -88,6 +96,14 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  setTooltip(ref) {
+    this.setState({ currentTooltip: ref })
+  }
+
+  unsetTooltip() {
+    setTimeout(() => this.setState({ currentTooltip: null }), 2000)
+  }
+
   /**
    * drag and drop callback when header is dropped into valid location
    * @param  {Number} dragIndex  - index of  headerbar moved from
@@ -103,8 +119,15 @@ export default class DataBrowser extends React.Component {
   }
 
   handleKey(e) {
+    let row, col, colName
     if (this.props.disableKeyControls) {
       return;
+    }
+    if (this.props.newObject) { // creating new row
+      if (e.keyCode === 27) { // ESC
+        this.props.onAbortAddRow();
+        e.preventDefault();
+      }
     }
     if (this.state.editing) {
       switch (e.keyCode) {
@@ -125,8 +148,8 @@ export default class DataBrowser extends React.Component {
       case 8:
       case 46:
         // Backspace or Delete
-        let colName = this.state.order[this.state.current.col].name;
-        let col = this.props.columns[colName];
+        colName = this.state.order[this.state.current.col].name;
+        col = this.props.columns[colName];
         if (col.type !== 'Relation') {
           this.props.updateRow(
             this.state.current.row,
@@ -137,37 +160,57 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
       case 37: // Left
+        row = this.state.current.row
+        col = Math.max(this.state.current.col - 1, 0)
+        colName = this.state.order[col].name;
         this.setState({
           current: {
-            row: this.state.current.row,
-            col: Math.max(this.state.current.col - 1, 0)
+            row,
+            col,
+            readonly: READ_ONLY.indexOf(colName) > -1,
+            id: `cell-${row * this.state.numberOfColumns + col}`
           }
         });
         e.preventDefault();
         break;
       case 38: // Up
+        row = Math.max(this.state.current.row - 1, 0)
+        col = this.state.current.col
+        colName = this.state.order[col].name;
         this.setState({
           current: {
-            row: Math.max(this.state.current.row - 1, 0),
-            col: this.state.current.col
+            row,
+            col,
+            readonly: READ_ONLY.indexOf(colName) > -1,
+            id: `cell-${row * this.state.numberOfColumns + col}`
           }
         });
         e.preventDefault();
         break;
       case 39: // Right
+        row = this.state.current.row
+        col = Math.min(this.state.current.col + 1, this.state.order.length - 1)
+        colName = this.state.order[col].name;
         this.setState({
           current: {
-            row: this.state.current.row,
-            col: Math.min(this.state.current.col + 1, this.state.order.length - 1)
+            row,
+            col,
+            readonly: READ_ONLY.indexOf(colName) > -1,
+            id: `cell-${row * this.state.numberOfColumns + col}`
           }
         });
         e.preventDefault();
         break;
       case 40: // Down
+        row = Math.min(this.state.current.row + 1, this.props.data.length - 1)
+        col = this.state.current.col
+        colName = this.state.order[col].name;
         this.setState({
           current: {
-            row: Math.min(this.state.current.row + 1, this.props.data.length - 1),
-            col: this.state.current.col
+            row,
+            col,
+            readonly: READ_ONLY.indexOf(colName) > -1,
+            id: `cell-${row * this.state.numberOfColumns + col}`
           }
         });
         e.preventDefault();
@@ -178,6 +221,14 @@ export default class DataBrowser extends React.Component {
           this.props.showNote('Value copied to clipboard', false)
           e.preventDefault()
         }
+        break;
+      case 13: // Enter
+        if (!this.state.current.readonly) {
+          this.setState({ editing: true });
+        } else {
+          this.setTooltip(this.state.current.id)
+        }
+        e.preventDefault();
         break;
     }
   }
@@ -208,6 +259,9 @@ export default class DataBrowser extends React.Component {
           handleResize={this.handleResize.bind(this)}
           setEditing={this.setEditing.bind(this)}
           setCurrent={this.setCurrent.bind(this)}
+          currentTooltip={this.state.currentTooltip}
+          unsetTooltip={this.unsetTooltip.bind(this)}
+          numberOfColumns={this.state.numberOfColumns}
           {...other} />
         <B4ABrowserToolbar
           hidePerms={className === '_Installation'}

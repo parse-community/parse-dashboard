@@ -25,6 +25,7 @@ export default class NumberEditor extends React.Component {
     this.refs.input.setSelectionRange(0, String(this.state.value).length);
     document.body.addEventListener('click', this.checkExternalClick);
     document.body.addEventListener('keypress', this.handleKey);
+    this.props.setFocus && this.refs.input.focus();
   }
 
   componentWillUnmount() {
