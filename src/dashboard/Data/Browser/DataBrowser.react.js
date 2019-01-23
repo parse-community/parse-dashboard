@@ -124,7 +124,7 @@ export default class DataBrowser extends React.Component {
       return;
     }
     if (this.props.newObject) { // creating new row
-      if (e.keyCode === 27) {
+      if (e.keyCode === 27) { // ESC
         this.props.onAbortAddRow();
         e.preventDefault();
       }
