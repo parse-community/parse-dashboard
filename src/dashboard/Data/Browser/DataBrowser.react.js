@@ -119,7 +119,7 @@ export default class DataBrowser extends React.Component {
   }
 
   handleKey(e) {
-    let row, col, colName, id
+    let row, col, colName
     if (this.props.disableKeyControls) {
       return;
     }
@@ -231,7 +231,6 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
     }
-    console.log(this.state.current)
   }
 
   setEditing(editing) {

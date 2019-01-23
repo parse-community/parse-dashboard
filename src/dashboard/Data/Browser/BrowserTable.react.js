@@ -20,7 +20,7 @@ import Button                 from 'components/Button/Button.react';
 const MAX_ROWS = 60; // Number of rows to render at any time
 const ROW_HEIGHT = 31;
 
-const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
+const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt', 'sessionToken' ];
 
 let scrolling = false;
 

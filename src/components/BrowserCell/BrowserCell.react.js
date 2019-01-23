@@ -5,16 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { dateStringUTC }  from 'lib/DateUtils';
-import getFileName        from 'lib/getFileName';
-import Parse              from 'parse';
-import Pill               from 'components/Pill/Pill.react';
-import React              from 'react';
-import styles             from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }   from 'stylesheets/base.scss';
-import B4ATooltip         from 'dashboard/Data/Browser/B4ATooltip.react';
-import {findDOMNode}      from 'react-dom'
-import ReactTooltip       from 'react-tooltip'
+import { dateStringUTC }    from 'lib/DateUtils';
+import getFileName          from 'lib/getFileName';
+import Parse                from 'parse';
+import Pill                 from 'components/Pill/Pill.react';
+import React                from 'react';
+import styles               from 'components/BrowserCell/BrowserCell.scss';
+import { unselectable }     from 'stylesheets/base.scss';
+import { findDOMNode }      from 'react-dom'
+import ReactTooltip         from 'react-tooltip'
 
 class BrowserCell extends React.Component {
   constructor (){
@@ -27,7 +26,6 @@ class BrowserCell extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(nextProps.currentTooltip, this.props.currentTooltip, nextProps.currentTooltip)
     // show the next currentTooltip
     if (nextProps.currentTooltip !== this.props.currentTooltip && nextProps.currentTooltip) {
       this.showTooltip(nextProps.currentTooltip)
@@ -135,7 +133,7 @@ class BrowserCell extends React.Component {
           data-tip='Read only (CTRL+C to copy)'
           onClick={() => onSelect(readableValue)} >
           {content}
-          < B4ATooltip />
+          <ReactTooltip event={'dblclick'} place={'bottom'} afterShow={() => setTimeout(ReactTooltip.hide, 2000)} />
         </span> :
         <span
           className={classes.join(' ')}
