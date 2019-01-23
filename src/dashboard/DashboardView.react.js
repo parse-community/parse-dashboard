@@ -8,7 +8,6 @@
 import ParseApp      from 'lib/ParseApp';
 import React         from 'react';
 import Sidebar       from 'components/Sidebar/Sidebar.react';
-import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
 import styles        from 'dashboard/Dashboard.scss';
 
 // Hides the zendesk button as soon as possible
@@ -262,7 +261,7 @@ export default class DashboardView extends React.Component {
       action={this.action}
       primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
       secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
-      footerMenuButtons={this.footerMenuButtons}
+      footerMenuButtons={this.getFooterMenuButtons && this.getFooterMenuButtons()}
       >
       {sidebarChildren}
     </Sidebar>);
@@ -273,7 +272,6 @@ export default class DashboardView extends React.Component {
           {this.renderContent()}
         </div>
         {sidebar}
-        <SidebarToggle />
       </div>
     );
   }

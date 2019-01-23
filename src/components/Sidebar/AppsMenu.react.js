@@ -11,12 +11,11 @@ import { Link }         from 'react-router';
 import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';
+import AppName from 'components/Sidebar/AppName.react';
 
-let AppsMenu = ({ apps, current, height, onSelect }) => (
+let AppsMenu = ({ apps, current, height, onSelect, pin }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
-    <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
-      {current.name}
-    </div>
+    <AppName name={current.name} pin={pin} onClick={onSelect.bind(null, current.slug)} />
     <div className={styles.menuSection}>All Apps</div>
     {apps.map((app) => {
       if (app.slug === current.slug) {
