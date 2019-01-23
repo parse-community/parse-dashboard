@@ -7,11 +7,10 @@
  */
 .content {
   margin-left: 300px;
-  transition: margin-left 0.5s ease-in;
 }
 
-@media (max-width: 980px) {
+body:global(.expanded) {
   .content {
-    margin-left: 0;
+    margin-left: 54px;
   }
 }

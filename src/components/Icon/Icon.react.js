@@ -8,10 +8,12 @@
 import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 
-let Icon = ({ name, fill, width, height }) => {
+let Icon = ({ name, fill, width, height, className, onClick }) => {
   let props = {
     width: width,
-    height: height
+    height: height,
+    className,
+    onClick
   };
   if (fill) {
     props.fill = fill;
@@ -37,5 +39,8 @@ Icon.propTypes = {
   ),
   fill: PropTypes.string.describe(
     'A valid color, used as the fill property for the SVG.'
+  ),
+  className: PropTypes.string.describe(
+    'The icon class name'
   )
 };

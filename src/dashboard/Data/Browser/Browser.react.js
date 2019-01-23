@@ -38,6 +38,7 @@ import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import introJs from 'intro.js'
 import introStyle from 'stylesheets/introjs.css';
 import Tour from 'components/Tour/Tour.react';
+import { isMobile } from 'lib/browserUtils';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -47,9 +48,6 @@ export default class Browser extends DashboardView {
     this.subsection = 'Database Browser'
     this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
-    this.footerMenuButtons = [
-      <a key={0} onClick={() => this.setState({ showTour: true })}>Play intro</a>
-    ];
 
     const user = AccountManager.currentUser();
 
@@ -80,7 +78,8 @@ export default class Browser extends DashboardView {
       lastNote: null,
 
       relationCount: 0,
-      showTour: user && user.playDatabaseBrowserTutorial
+      showTour: !isMobile() && user && user.playDatabaseBrowserTutorial,
+      renderFooterMenu: !isMobile()
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -118,6 +117,22 @@ export default class Browser extends DashboardView {
     this.addColumn = this.addColumn.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
+    this.getFooterMenuButtons = this.getFooterMenuButtons.bind(this);
+    this.windowResizeHandler = this.windowResizeHandler.bind(this);
+  }
+
+  getFooterMenuButtons() {
+    return this.state.renderFooterMenu ? [
+      <a key={0} onClick={() => this.setState({ showTour: true })}>Play intro</a>
+    ] : null;
+  }
+
+  windowResizeHandler() {
+    if (isMobile()) {
+      this.setState({ renderFooterMenu: false });
+    } else {
+      this.setState({ renderFooterMenu: true });
+    }
   }
 
   componentWillMount() {
@@ -128,6 +143,11 @@ export default class Browser extends DashboardView {
     } else if (this.props.params.className) {
       this.prefetchData(this.props, this.context);
     }
+    window.addEventListener('resize', this.windowResizeHandler);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.windowResizeHandler);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {

@@ -13,6 +13,7 @@ import Position       from 'lib/Position';
 import React          from 'react';
 import ReactDOM       from 'react-dom';
 import styles         from 'components/Sidebar/Sidebar.scss';
+import AppName from 'components/Sidebar/AppName.react';
 
 export default class AppsSelector extends React.Component {
   constructor() {
@@ -73,15 +74,14 @@ export default class AppsSelector extends React.Component {
             apps={this.props.apps}
             current={this.context.currentApp}
             height={height}
-            onSelect={this.select.bind(this)} />
+            onSelect={this.select.bind(this)}
+            pin={this.props.pin} />
         </Popover>
       );
     }
     return (
       <div className={styles.apps}>
-        <div className={styles.currentApp} onClick={this.toggle.bind(this)}>
-          {this.context.currentApp.name}
-        </div>
+        <AppName name={this.context.currentApp.name} pin={this.props.pin} onClick={this.toggle.bind(this)} />
         {popover}
       </div>
     );

@@ -13,3 +13,7 @@ export function isSafari() {
 export function isChrome() {
   return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 }
+
+export function isMobile() {
+  return window.innerWidth <= 980;
+}
