@@ -38,7 +38,7 @@ export default class DashboardView extends React.Component {
 
   componentDidMount() {
     // Current window size is lesser than Bootstrap's medium size
-    if (!mobileCompatibilityAlertShown && window.innerWidth < 768) {
+    if (!mobileCompatibilityAlertShown && window.innerWidth < 760) {
       mobileCompatibilityAlertShown = true;
       MySwal.fire(mobileCompatibilityAlert);
     }
