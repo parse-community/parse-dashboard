@@ -769,7 +769,7 @@ export default class Browser extends DashboardView {
   updateRow(row, attr, value) {
     let isNewObject = row < 0;
     let obj = isNewObject ? this.state.newObject : this.state.data[row];
-    if (!obj) {
+    if (!obj && isNewObject) {
       obj = this.getLastCreatedObject(this.state.data)
       isNewObject = !isNewObject
     }
