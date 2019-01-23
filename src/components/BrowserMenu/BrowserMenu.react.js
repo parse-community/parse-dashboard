@@ -32,8 +32,7 @@ export default class BrowserMenu extends React.Component {
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
           <div className={styles.menu}>
             <div className={styles.title} onClick={() => this.setState({ open: false })}>
-              <Icon name={this.props.icon} width={14} height={14} />
-              <span>{this.props.title}</span>
+              <Icon name={this.props.icon} width={35} height={24} />
             </div>
             <div className={styles.body} style={{ minWidth: this.node.clientWidth }}>
               {React.Children.map(this.props.children, (child) => (
@@ -49,9 +48,8 @@ export default class BrowserMenu extends React.Component {
     }
     return (
       <div className={styles.wrap}>
-        <div className={styles.entry} onClick={() => this.setState({ open: true })}>
-          <Icon name={this.props.icon} width={14} height={14} />
-          <span>{this.props.title}</span>
+        <div className={styles.entry} onClick={() => this.setState({ open: true })} title={this.props.title}>
+          <Icon name={this.props.icon} width={35} height={24} />
         </div>
         {menu}
       </div>
