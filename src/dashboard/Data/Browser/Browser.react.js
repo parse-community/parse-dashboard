@@ -168,14 +168,16 @@ export default class Browser extends DashboardView {
       {
         eventId: 'Database Browser Section',
         element: () => document.querySelector('[class^="section_contents"] > div > div'),
-        intro: `To better understand how Back4App works let’s create a class and persist data on it.<br />
-        At this <b>Database Browser</b> section, you can create and access your classes using this Dashboard.`,
+        intro: `This is the <b>Database Browser</b> section where you can create classes and manage your data using this Dashboard.`,
         position: 'right'
       },
       {
         eventId: 'Custom Class and Object Creation',
         element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
-        intro: `Now we’ve executed the code below extracted from the <b>API Reference</b> section to create a class and persist a sample data in your App.${createClassCode}`,
+        intro: `It’s very simple to save data on Back4App from your front-end.<br /><br />
+        On the <b>API Reference</b> section, you can find the auto-generated code below that creates a class and persist data on it.<br />
+        ${createClassCode}
+        <p class="intro-code-run">Click on the <b>Run</b> button to execute this code.</p>`,
         position: 'right'
       },
       {
