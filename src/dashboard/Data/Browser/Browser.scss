@@ -48,24 +48,23 @@ body:global(.expanded) {
 }
 
 .toolbarButton {
-  @include NotoSansFont;
-  display: inline-block;
-  font-size: 14px;
-  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  height: 14px;
-  padding: 0 8px;
+  height: 38px;
+  width: 38px;
+  margin: 0 6px;
+  padding: 4px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 
   svg {
     vertical-align: middle;
-    margin-right: 4px;
-    fill: #66637A;
-  }
-
-  &:hover {
-    svg {
-      fill: white;
-    }
+    fill: white;
   }
 
   span {

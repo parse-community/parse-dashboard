@@ -8,27 +8,30 @@
 @import 'stylesheets/globals.scss';
 
 .wrap {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 38px;
+  width: 38px;
+  margin: 0 6px;
+  padding: 4px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .entry {
-  height: 22px;
-  padding: 8px 8px 0 8px;
-
   svg {
-    fill: #66637A;
-  }
-
-  &:hover {
-    svg {
-      fill: white;
-    }
+    fill: white;
   }
 }
 
 .title {
   background: #797592;
-  padding: 8px;
+  padding: 7px 2px 1px 2px;
   border-radius: 5px 5px 0 0;
 
   svg {
@@ -44,7 +47,6 @@
 
   svg {
     vertical-align: middle;
-    margin-right: 4px;
   }
 
   span {
@@ -56,7 +58,7 @@
 
 .body {
   position: absolute;
-  top: 30px;
+  top: 31px;
   right: 0;
   border-radius: 5px 0 5px 5px;
   background: #797592;
