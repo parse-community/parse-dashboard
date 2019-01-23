@@ -9,6 +9,20 @@ import ParseApp      from 'lib/ParseApp';
 import React         from 'react';
 import Sidebar       from 'components/Sidebar/Sidebar.react';
 import styles        from 'dashboard/Dashboard.scss';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+// Alert parameters
+const MySwal = withReactContent(Swal)
+const mobileCompatibilityAlert = {
+  title: 'Mobile Advice',
+  text: "For a better experience, we recommend using Parse Dashboard on large screen devices, such as desktops or tablets",
+  type: 'info',
+  confirmButtonColor: '#208aec',
+  confirmButtonText: 'Understood'
+};
+
+let mobileCompatibilityAlertShown = false;
 
 // Hides the zendesk button as soon as possible
 const hideZendesk = () => {
@@ -21,6 +35,14 @@ const hideZendesk = () => {
 hideZendesk();
 
 export default class DashboardView extends React.Component {
+
+  componentDidMount() {
+    // Current window size is lesser than Bootstrap's medium size
+    if (!mobileCompatibilityAlertShown && window.innerWidth < 768) {
+      mobileCompatibilityAlertShown = true;
+      MySwal.fire(mobileCompatibilityAlert);
+    }
+  }
 
   /* A DashboardView renders two pieces: the sidebar, and the app itself */
   render() {
