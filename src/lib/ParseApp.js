@@ -835,7 +835,7 @@ export default class ParseApp {
   }
 
   deleteGCMPushCredentials(GCMSenderID) {
-    let path = '/parse-app/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id='+GCMSenderID;
+    let path = '/apps/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id='+GCMSenderID;
     let promise = AJAX.get(path);
     promise.then(() => {
       this.settings.fields.fields.gcm_credentials = this.settings.fields.fields.gcm_credentials.filter(cred =>
@@ -846,7 +846,7 @@ export default class ParseApp {
   }
 
   addAdminHost(adminHost) {
-    let path = '/apps/' + this.slug + '/adminhost';
+    let path = '/parse-app/' + this.slug + '/adminhost';
     return axios.post(path, { adminHost }).then(console.log).catch(console.error)
   }
 }
