@@ -217,6 +217,12 @@ export default class DashboardView extends React.Component {
       });
     }
 
+    appSidebarSections.push({
+      name: 'Admin Page',
+      icon: 'core',
+      link: '/admin'
+    })
+
     if (pushSubsections.length > 0) {
       appSidebarSections.push({
         name: 'Push',

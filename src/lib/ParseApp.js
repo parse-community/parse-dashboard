@@ -8,7 +8,7 @@
 import * as AJAX      from 'lib/AJAX';
 import encodeFormData from 'lib/encodeFormData';
 import Parse          from 'parse';
-import axios from 'axios';
+import axios          from 'axios';
 
 
 function setEnablePushSource(setting, enable) {
@@ -843,5 +843,10 @@ export default class ParseApp {
       );
     });
     return promise;
+  }
+
+  addAdminHost(adminHost) {
+    let path = '/apps/' + this.slug + '/adminhost';
+    return axios.post(path, { adminHost }).then(console.log).catch(console.error)
   }
 }
