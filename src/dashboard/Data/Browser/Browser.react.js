@@ -762,11 +762,16 @@ export default class Browser extends DashboardView {
     return p;
   }
 
+  getLastCreatedObject(rows) {
+    return rows.filter(row => row._objCount === rows.length - 1).pop()
+  }
+
   updateRow(row, attr, value) {
-    const isNewObject = row < 0;
-    const obj = isNewObject ? this.state.newObject : this.state.data[row];
-    if (!obj) {
-      return;
+    let isNewObject = row < 0;
+    let obj = isNewObject ? this.state.newObject : this.state.data[row];
+    if (!obj && isNewObject) {
+      obj = this.getLastCreatedObject(this.state.data)
+      isNewObject = !isNewObject
     }
     const prev = obj.get(attr);
     if (value === prev) {
