@@ -16,6 +16,7 @@ const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
 program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
 program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');
+program.option('--dev', 'Enable development mode. This will disable authentication and allow non HTTPS connections. DO NOT ENABLE IN PRODUCTION SERVERS');
 program.option('--appName [appName]', 'the name of the app you would like to manage. Optional.');
 program.option('--config [config]', 'the path to the configuration file');
 program.option('--host [host]', 'the host to run parse-dashboard');
@@ -35,6 +36,7 @@ const mountPath = program.mountPath || process.env.MOUNT_PATH || '/';
 const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
 const cookieSessionSecret = program.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
 const trustProxy = program.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
+const dev = program.dev;
 
 if (trustProxy && allowInsecureHTTP) {
   console.log("Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.");
@@ -52,6 +54,25 @@ let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
 let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+
+function handleSIGs(server) {
+  const signals = {
+    'SIGINT': 2,
+    'SIGTERM': 15
+  };
+  function shutdown(signal, value) {
+    server.close(function () {
+      console.log('server stopped by ' + signal);
+      process.exit(128 + value);
+    });
+  }
+  Object.keys(signals).forEach(function (signal) {
+    process.on(signal, function () {
+      shutdown(signal, signals[signal]);
+    });
+  });
+}
+
 if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
@@ -114,14 +135,15 @@ p.then(config => {
 
   const app = express();
 
-  if (allowInsecureHTTP || trustProxy) app.enable('trust proxy');
+  if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
 
   config.data.trustProxy = trustProxy;
-  let dashboardOptions = { allowInsecureHTTP: allowInsecureHTTP, cookieSessionSecret: cookieSessionSecret };
+  let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
+  let server;
   if(!configSSLKey || !configSSLCert){
     // Start the server.
-    const server = app.listen(port, host, function () {
+    server = app.listen(port, host, function () {
       console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
     });
   } else {
@@ -130,13 +152,14 @@ p.then(config => {
     var privateKey = fs.readFileSync(configSSLKey);
     var certificate = fs.readFileSync(configSSLCert);
 
-    const server = require('https').createServer({
+    server = require('https').createServer({
       key: privateKey,
       cert: certificate
     }, app).listen(port, host, function () {
       console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
     });
   }
+  handleSIGs(server);
 }, error => {
   if (error instanceof SyntaxError) {
     console.log('Your config file contains invalid JSON. Exiting.');
