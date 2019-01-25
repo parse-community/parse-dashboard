@@ -37,7 +37,6 @@ const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOA
 const cookieSessionSecret = program.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
 const trustProxy = program.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
 const dev = program.dev;
-console.log(dev);
 
 if (trustProxy && allowInsecureHTTP) {
   console.log("Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.");
