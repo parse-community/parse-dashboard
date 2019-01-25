@@ -182,7 +182,7 @@ class Sidebar extends React.Component {
       );
     }
 
-    const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+    const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : (a.name > b.name ? 1 : 0)));
     let footerButtons = [
       <Button value='Support'
         primary={true}
