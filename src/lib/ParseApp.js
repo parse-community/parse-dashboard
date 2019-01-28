@@ -847,7 +847,7 @@ export default class ParseApp {
 
   addAdminHost(adminHost) {
     let path = '/parse-app/' + this.slug + '/adminhost';
-    return axios.post(path, { adminHost }).then(console.log).catch(console.error)
+    return axios.post(path, { adminHost })
   }
 
   getAdminHost() {
