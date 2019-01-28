@@ -59,7 +59,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
           const host = document.getElementById('adminHost').value
 
-          await setState({adminHost: `${host}${this.domain}`})
+          await setState({adminHost: `${host}${domain}`})
           await createAdminHost()
         } catch(err) {
           Swal.showValidationMessage(
