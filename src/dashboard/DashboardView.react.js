@@ -15,7 +15,7 @@ import withReactContent from 'sweetalert2-react-content';
 // Alert parameters
 const MySwal = withReactContent(Swal)
 const mobileCompatibilityAlert = {
-  title: 'Mobile Advice',
+  title: '<span style="font-size: 2.25rem">Mobile Advice</span>',
   html: '<span style="font-size: 2.25rem">For a better experience, we recommend using Parse Dashboard on large screen devices, such as desktops or tablets</span>',
   type: 'info',
   confirmButtonColor: '#208aec',
