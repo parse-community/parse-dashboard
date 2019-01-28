@@ -325,11 +325,15 @@ tr.introjs-showElement > th {
 }
 
 .intro-code {
-  margin-top: 20px;
+  margin: 20px 0 15px 0;
   padding: 15px;
   border-radius: 5px;
   background-color: #182634;
   font-size: 15px;
+}
+
+.intro-code-run {
+  text-align: center;
 }
 
 .intro-code > pre {

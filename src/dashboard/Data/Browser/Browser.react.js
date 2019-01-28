@@ -189,19 +189,21 @@ export default class Browser extends DashboardView {
       {
         eventId: 'Database Browser Section',
         element: () => document.querySelector('[class^="section_contents"] > div > div'),
-        intro: `To better understand how Back4App works let’s create a class and persist data on it.<br />
-        At this <b>Database Browser</b> section, you can create and access your classes using this Dashboard.`,
+        intro: `This is the <b>Database Browser</b> section where you can create classes and manage your data using this Dashboard.`,
         position: 'right'
       },
       {
         eventId: 'Custom Class and Object Creation',
         element: () => document.querySelector('[class^="section_header"][href*="/apidocs"]'),
-        intro: `Now we’ve executed the code below extracted from the <b>API Reference</b> section to create a class and persist a sample data in your App.${createClassCode}`,
+        intro: `It’s very simple to save data on Back4App from your front-end.<br /><br />
+        On the <b>API Reference</b> section, you can find the auto-generated code below that creates a class and persist data on it.<br />
+        ${createClassCode}
+        <p class="intro-code-run">Click on the <b>Run</b> button to execute this code.</p>`,
         position: 'right'
       },
       {
         eventId: 'Custom Class Link',
-        element: () => document.querySelector('[class^=class_list]'),
+        element: () => document.querySelector('[class^=class_list] [title="B4aVehicle"]') || document.querySelector('[class^=class_list]'),
         intro: `This is the new <b>B4aVehicle</b> class just created!`,
         position: 'right'
       },
@@ -236,6 +238,13 @@ export default class Browser extends DashboardView {
 
     let unexpectedErrorThrown = false;
 
+    const getNextButton = () => {
+      return document.querySelector('.introjs-button.introjs-nextbutton');
+    };
+    const getCustomVehicleClassLink = () => {
+      return document.querySelector('[class^=class_list] [title="B4aVehicle"]');
+    };
+
     return {
       steps,
       onBeforeStart: () => {
@@ -257,26 +266,33 @@ export default class Browser extends DashboardView {
         } else {
           this._forcedStep = false;
         }
+
         switch(this._currentStep) {
+          case 0:
+            let nextButton = getNextButton();
+            if (nextButton) {
+              nextButton.innerHTML = "Next";
+            }
+            break;
           case 1:
-            schema.dispatch(ActionTypes.CREATE_CLASS, {
-              className: 'B4aVehicle',
-              fields: {
-                name: { type: 'String' },
-                price: { type: 'Number' },
-                color: { type: 'String' },
-              }
-            }).then(() => {
-              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-              introItems[2].element = vehicleClassLink;
-              return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
-            }).catch(e => {
-              const vehicleClassLink = document.querySelector('[class^=class_list] [title="B4aVehicle"]');
-              if (vehicleClassLink) {
-                introItems[2].element = vehicleClassLink;
-              }
-              // Class already exists error
-              if (e.code !== 103) {
+            nextButton = getNextButton();
+            nextButton.innerHTML = "Run";
+            break;
+          case 2:
+            if (!getCustomVehicleClassLink() && !unexpectedErrorThrown) {
+              schema.dispatch(ActionTypes.CREATE_CLASS, {
+                className: 'B4aVehicle',
+                fields: {
+                  name: { type: 'String' },
+                  price: { type: 'Number' },
+                  color: { type: 'String' },
+                }
+              }).then(() => {
+                return context.currentApp.apiRequest('POST', '/classes/B4aVehicle', { name: 'Corolla', price: 19499, color: 'black' }, { useMasterKey: true });
+              }).then(() => {
+                introItems[2].element = getCustomVehicleClassLink();
+                this.nextStep();
+              }).catch(e => {
                 if (!unexpectedErrorThrown) {
                   introItems.splice(2, 2);
                   for (let i=2; i<introItems.length; i++) {
@@ -285,10 +301,13 @@ export default class Browser extends DashboardView {
                   unexpectedErrorThrown = true;
                 }
                 console.error(e);
-              }
-            });
-            break;
-          case 2:
+                this.nextStep();
+              });
+              return false;
+            }
+            nextButton = getNextButton();
+            nextButton.innerHTML = 'Next';
+
             const numberLayer = document.querySelector('.introjs-helperNumberLayer');
             numberLayer.style.marginLeft = 0;
             if (!unexpectedErrorThrown) {
@@ -312,6 +331,13 @@ export default class Browser extends DashboardView {
       },
       onAfterChange: function(targetElement) {
         switch(this._currentStep) {
+          case 0:
+            if (this._introItems.length === 1) {
+              // Disables the Prev button
+              document.querySelector('.introjs-button.introjs-prevbutton').classList.add('introjs-disabled');
+              targetElement.style.backgroundColor = 'inherit';
+            }
+            break;
           case 1:
             const numberLayer = document.querySelector('.introjs-helperNumberLayer');
             numberLayer.style.marginLeft = '20px';
@@ -327,6 +353,11 @@ export default class Browser extends DashboardView {
         // If is exiting before the last step, avoid exit and shows the last step
         if (this._currentStep < this._introItems.length - 1) {
           this._forcedStep = true;
+          const elementsRemoved = this._introItems.length - 1;
+          this._introItems.splice(0, elementsRemoved);
+          for (let i=0; i<this._introItems.length; i++) {
+            this._introItems[i].step -= elementsRemoved;
+          }
           this.goToStep(this._introItems.length);
           return false;
         }
