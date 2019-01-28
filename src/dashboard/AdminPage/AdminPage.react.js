@@ -25,7 +25,8 @@ class AdminPage extends DashboardView {
       loading: true,
       username: '',
       password: '',
-      adminHost: ''
+      adminHost: '',
+      adminURL: ''
     }
 
     this.legend = 'Admin App Setup'
@@ -34,7 +35,8 @@ class AdminPage extends DashboardView {
 
   async componentDidMount() {
     const adminHost = await this.context.currentApp.getAdminHost()
-    this.setState({ adminHost, loading: false })
+    const adminURL = adminHost ? this.protocol + adminHost : ''
+    this.setState({ adminHost, adminURL, loading: false })
   }
 
   async createRole(admin) {
@@ -63,6 +65,8 @@ class AdminPage extends DashboardView {
     const { adminHost } = this.state
     // Create admin host
     await this.context.currentApp.addAdminHost(adminHost)
+    const adminURL = this.protocol + adminHost
+    this.setState({ adminURL })
   }
 
   async createClasses() {
@@ -95,8 +99,8 @@ class AdminPage extends DashboardView {
   }
 
   renderContent() {
-    const isAdminHostEnabled = this.state.adminHost || false
-    const adminURL = this.protocol + this.state.adminHost
+    const isAdminHostEnabled = this.state.adminURL || false
+    const adminURL = this.state.adminURL
 
     const toolbar = (
       <Toolbar
