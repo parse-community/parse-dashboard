@@ -135,7 +135,7 @@ class AdminPage extends DashboardView {
     </Fieldset>
 
     return (
-      <LoaderContainer className={styles.loading} loading={this.state.loading} hideAnimation={true} solid={false}>
+      <LoaderContainer className={styles.loading} loading={this.state.loading} hideAnimation={false} solid={false}>
         <div className={styles['admin-page']}>
           {toolbar}
           {fields}
