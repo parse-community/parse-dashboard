@@ -32,6 +32,9 @@ let Button = (props) => {
     if (props.progress) {
       classes.push(styles.progress);
     }
+    if (props.className) {
+      classes.push(props.className)
+    }
   }
   let clickHandler = hasOnClick ? props.onClick : noop;
   let styleOverride = null;
@@ -78,4 +81,7 @@ Button.propTypes = {
     'Optionally have in progress button styles. Defaults to false.'
   ),
   additionalStyles: PropTypes.object.describe('Additional styles for <a> tag.'),
+  className: PropTypes.string.describe(
+    'Custom class name'
+  )
 };

@@ -1,0 +1,38 @@
+
+.elements-wrapper {
+  float: left;
+  width: 100%;
+}
+
+.inline-elements {
+  width: 40%!important;
+  margin: 0 5px!important;
+}
+
+.loading {
+  position: relative;
+  min-height: 100vh;
+}
+
+.admin-page {
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  padding-top: 70px;
+  overflow: hidden;
+}
+
+.input {
+  background-color: #f6fafb;
+  min-height: -webkit-fill-available;
+  min-height: -moz-fill-available;
+  min-height: fill-available;
+  border: 0 solid #e3e3e3;
+  border-left-width: 1px;
+
+  .input-child {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

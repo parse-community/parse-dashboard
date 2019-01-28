@@ -219,7 +219,7 @@ export default class DashboardView extends React.Component {
 
     appSidebarSections.push({
       name: 'Admin Page',
-      icon: 'core',
+      icon: 'admin-app',
       link: '/admin'
     })
 
