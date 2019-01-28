@@ -16,10 +16,10 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal)
 const mobileCompatibilityAlert = {
   title: 'Mobile Advice',
-  html: '<span style="font-size: 2rem">For a better experience, we recommend using Parse Dashboard on large screen devices, such as desktops or tablets</span>',
+  html: '<span style="font-size: 2.25rem">For a better experience, we recommend using Parse Dashboard on large screen devices, such as desktops or tablets</span>',
   type: 'info',
   confirmButtonColor: '#208aec',
-  confirmButtonText: 'Understood'
+  confirmButtonText: '<span style="font-size: 2.25rem">Understood</span>'
 };
 
 let mobileCompatibilityAlertShown = false;
