@@ -60,7 +60,7 @@ class AdminPage extends DashboardView {
   async createSetting() {
     const Setting = Parse.Object.extend('Setting');
     const newSetting = new Setting();
-    newSetting.set('appName', this.props.appName);
+    newSetting.set('appName', this.context.currentApp.name);
     return await newSetting.save()
   }
 
@@ -123,7 +123,7 @@ class AdminPage extends DashboardView {
   }
 
   renderContent() {
-    const isAdminHostEnabled = this.state.host || false
+    const isAdminHostEnabled = this.state.adminURL || false
     const adminURL = this.state.adminURL
 
     const toolbar = (
