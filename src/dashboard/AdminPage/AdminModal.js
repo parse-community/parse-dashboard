@@ -26,7 +26,7 @@ const renderHostInput = (domain) => {
   </div>)
 }
 
-const show = async ({domain, setState, createAdmin, createClasses, createAdminHost}) => {
+const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery}) => {
   const steps = await Swal.mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
@@ -59,8 +59,9 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
           const host = document.getElementById('adminHost').value
 
-          await setState({adminHost: `${host}${domain}`})
+          await setState({host: host})
           await createAdminHost()
+          await activateLiveQuery()
         } catch(err) {
           Swal.showValidationMessage(
             `Request failed: ${err}`

@@ -18,15 +18,17 @@ class AdminPage extends DashboardView {
   constructor() {
     super()
     this.section = 'Admin Page';
-    this.domain = '.admin-homolog.back4app.com'
+    this.adminDomain = '.admin.back4app.com'
+    this.webHostDomain = '.back4app.io'
     this.protocol = 'https://'
 
     this.state = {
       loading: true,
       username: '',
       password: '',
-      adminHost: '',
-      adminURL: ''
+      host: '',
+      adminURL: '',
+      webHost: ''
     }
 
     this.legend = 'Admin App Setup'
@@ -35,8 +37,9 @@ class AdminPage extends DashboardView {
 
   async componentDidMount() {
     const adminHost = await this.context.currentApp.getAdminHost()
+    const webHost = await this.context.currentApp.getWebHost()
     const adminURL = adminHost ? this.protocol + adminHost : ''
-    this.setState({ adminHost, adminURL, loading: false })
+    this.setState({ adminHost, adminURL, webHost, loading: false })
   }
 
   async createRole(admin) {
@@ -61,11 +64,31 @@ class AdminPage extends DashboardView {
     return await newSetting.save()
   }
 
+  async activateLiveQuery() {
+    await this.props.schema.dispatch(ActionTypes.FETCH)
+    const schemasChoose = {}
+
+    this.props.schema.data.get('classes').filter((key, className) => {
+      return className.indexOf('_') > -1 || className === '_User'
+    }).forEach((key, className) => schemasChoose[className] = true)
+
+    await this.context.currentApp.setLiveQuery({ schemasChoose , statusLiveQuery: true })
+  }
+
   async createHost() {
-    const { adminHost } = this.state
+    const { host, webHost } = this.state
+
+    // Activate webHost
+    if (webHost && !webHost.activated) {
+      const subdomainName = webHost.subdomainName || host + this.webHostDomain
+      const hostSettings = { subdomainName, activated: true }
+      await this.context.currentApp.setWebHost(hostSettings)
+      this.setState({ webHost: hostSettings })
+    }
+
     // Create admin host
-    await this.context.currentApp.addAdminHost(adminHost)
-    const adminURL = this.protocol + adminHost
+    await this.context.currentApp.addAdminHost(host + this.adminDomain)
+    const adminURL = this.protocol + host + this.adminDomain
     this.setState({ adminURL })
   }
 
@@ -94,12 +117,13 @@ class AdminPage extends DashboardView {
       createAdmin: this.createAdmin.bind(this),
       createClasses: this.createClasses.bind(this),
       createAdminHost: this.createHost.bind(this),
+      activateLiveQuery: this.activateLiveQuery.bind(this),
       ...this.state
     })
   }
 
   renderContent() {
-    const isAdminHostEnabled = this.state.adminURL || false
+    const isAdminHostEnabled = this.state.host || false
     const adminURL = this.state.adminURL
 
     const toolbar = (

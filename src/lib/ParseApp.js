@@ -854,6 +854,29 @@ export default class ParseApp {
 
   getAdminHost() {
     let path = '/parse-app/' + this.slug + '/adminhost';
-    return axios.get(path).then(({ data }) => data.adminHost).catch(err => console.error(err))
+    return axios.get(path).then(({ data }) => data.adminHost).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  getWebHost() {
+    let path = '/parse-app/' + this.slug + '/webhost';
+    return axios.get(path).then(({ data }) => data.webhost).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  setWebHost(hostSettings) {
+    let path = '/parse-app/' + this.slug + '/webhost';
+    return axios.get(path, { hostSettings }).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  setLiveQuery(params) {
+    let path = '/parse-app/' + this.slug + '/live-query';
+    return axios.get(path, params).then(({ data }) => data.webhost).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
   }
 }
