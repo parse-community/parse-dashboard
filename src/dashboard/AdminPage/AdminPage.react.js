@@ -18,7 +18,7 @@ class AdminPage extends DashboardView {
   constructor() {
     super()
     this.section = 'Admin Page';
-    this.adminDomain = '.admin.back4app.com'
+    this.adminDomain = '.admin-homolog.back4app.com'
     this.webHostDomain = '.back4app.io'
     this.protocol = 'https://'
 
@@ -112,7 +112,7 @@ class AdminPage extends DashboardView {
 
   async renderModal() {
     await AdminModal.show({
-      domain: this.domain,
+      domain: this.adminDomain,
       setState: this.setState.bind(this),
       createAdmin: this.createAdmin.bind(this),
       createClasses: this.createClasses.bind(this),
