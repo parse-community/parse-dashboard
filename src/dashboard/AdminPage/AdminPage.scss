@@ -36,3 +36,13 @@
     transform: translate(-50%, -50%);
   }
 }
+
+.congrats-box {
+  margin-bottom: 30px;
+
+  .congrats-message {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+}

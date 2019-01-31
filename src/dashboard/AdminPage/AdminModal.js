@@ -9,7 +9,10 @@ const MySwal = withReactContent(Swal)
 const modalOptions = {
   confirmButtonText: 'Next &rarr;',
   showCancelButton: true,
-  progressSteps: ['1', '2', '3']
+  progressSteps: ['1', '2', '3'],
+  reverseButtons: true,
+  width: '42rem',
+  padding: '2.5em'
 }
 
 const renderUserInputs = () => {
@@ -26,11 +29,18 @@ const renderHostInput = (domain) => {
   </div>)
 }
 
+const renderConfirmStep = (adminHost) => {
+  return ReactDOMServer.renderToString(<div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
+    <p className={styles['congrats-message']}>Congratulations, your Admin Page is active!</p>
+    <a target='_blank' href={adminHost}>{adminHost}</a>
+  </div>)
+}
+
 const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery}) => {
+  let confirmedHost = ''
   const steps = await Swal.mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
-      text: '',
       html: renderUserInputs(setState),
       preConfirm: async () => {
         try {
@@ -60,7 +70,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           const host = document.getElementById('adminHost').value
 
           await setState({host: host})
-          await createAdminHost()
+          confirmedHost = await createAdminHost()
           await activateLiveQuery()
         } catch(err) {
           Swal.showValidationMessage(
@@ -68,15 +78,16 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           )
         }
       }
+    },
+    {
+      type: 'success',
+      html: renderConfirmStep(confirmedHost),
+      showCancelButton: false,
+      confirmButtonText: 'Got it!'
     }
   ])
 
-  return steps.value && steps.value[0] && steps.value[1]
-    ? await Swal.fire({
-        title: 'Congratulations, your Admin Page is active!',
-        confirmButtonText: 'Got it!'
-      })
-    : false
+  return steps.value && steps.value[0] && steps.value[1] && steps.value[2]
 }
 
 const AdminModal = { show }

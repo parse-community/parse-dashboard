@@ -89,7 +89,8 @@ class AdminPage extends DashboardView {
     // Create admin host
     await this.context.currentApp.addAdminHost(host + this.adminDomain)
     const adminURL = this.protocol + host + this.adminDomain
-    this.setState({ adminURL })
+    await this.setState({ adminURL })
+    return adminURL
   }
 
   async createClasses() {
