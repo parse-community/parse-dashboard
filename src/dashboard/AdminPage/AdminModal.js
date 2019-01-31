@@ -29,10 +29,10 @@ const renderHostInput = (domain) => {
   </div>)
 }
 
-const renderConfirmStep = (adminHost) => {
+const renderConfirmStep = () => {
   return ReactDOMServer.renderToString(<div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
     <p className={styles['congrats-message']}>Congratulations, your Admin Page is active!</p>
-    <a target='_blank' href={adminHost}>{adminHost}</a>
+    <a target='_blank'></a>
   </div>)
 }
 
@@ -81,9 +81,13 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
     },
     {
       type: 'success',
-      html: renderConfirmStep(confirmedHost),
+      html: renderConfirmStep(),
       showCancelButton: false,
-      confirmButtonText: 'Got it!'
+      confirmButtonText: 'Got it!',
+      onBeforeOpen: () => {
+        const a = Swal.getContent().querySelector('a')
+        a.href = a.text = confirmedHost
+      }
     }
   ])
 
