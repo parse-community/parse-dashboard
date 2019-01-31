@@ -45,7 +45,7 @@ class AdminPage extends DashboardView {
   async createRole(admin) {
     const roleACL = new Parse.ACL();
     roleACL.setPublicReadAccess(true);
-    const role = new Parse.Role("AdminUser", roleACL);
+    const role = new Parse.Role("B4aAdminUser", roleACL);
     role.getUsers().add([admin])
     return await role.save();
   }
@@ -58,9 +58,10 @@ class AdminPage extends DashboardView {
   }
 
   async createSetting() {
-    const Setting = Parse.Object.extend('Setting');
+    const Setting = Parse.Object.extend('B4aSetting');
     const newSetting = new Setting();
-    newSetting.set('appName', this.context.currentApp.name);
+    newSetting.set('key', 'appName');
+    newSetting.set('value', this.context.currentApp.name);
     return await newSetting.save()
   }
 
@@ -95,9 +96,9 @@ class AdminPage extends DashboardView {
 
   async createClasses() {
     // Create default admin classes
-    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'Setting' })
-    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'CustomField' })
-    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'MenuItem' })
+    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aSetting' })
+    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aCustomField' })
+    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aMenuItem' })
 
     // Create setting class
     await this.createSetting()
