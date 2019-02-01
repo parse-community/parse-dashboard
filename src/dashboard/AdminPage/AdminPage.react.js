@@ -127,7 +127,7 @@ class AdminPage extends DashboardView {
     })
 
     if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onShowAdminModalEvent === 'function')
-      back4AppNavigation.showAdminModalEvent()
+      back4AppNavigation.onShowAdminModalEvent()
   }
 
   renderContent() {
