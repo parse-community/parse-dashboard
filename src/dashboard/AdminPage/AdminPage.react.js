@@ -18,7 +18,7 @@ class AdminPage extends DashboardView {
   constructor() {
     super()
     this.section = 'Admin Page';
-    this.adminDomain = '.admin-homolog.back4app.com'
+    this.adminDomain = b4aSettings.ADMIN_DOMAIN
     this.webHostDomain = '.back4app.io'
     this.protocol = 'https://'
 
