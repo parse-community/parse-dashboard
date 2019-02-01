@@ -87,6 +87,10 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       onBeforeOpen: () => {
         const a = Swal.getContent().querySelector('a')
         a.href = a.text = confirmedHost
+      },
+      preConfirm: () => {
+        if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onCreateAdminHostEvent === 'function')
+          back4AppNavigation.onCreateAdminHostEvent()
       }
     }
   ])

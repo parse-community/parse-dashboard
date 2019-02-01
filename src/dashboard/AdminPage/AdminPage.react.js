@@ -40,6 +40,9 @@ class AdminPage extends DashboardView {
     const webHost = await this.context.currentApp.getWebHost()
     const adminURL = adminHost ? this.protocol + adminHost : ''
     this.setState({ adminHost, adminURL, webHost, loading: false })
+
+    if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.atAdminPageEvent === 'function')
+      back4AppNavigation.atAdminPageEvent()
   }
 
   async createRole(admin) {
@@ -122,6 +125,9 @@ class AdminPage extends DashboardView {
       activateLiveQuery: this.activateLiveQuery.bind(this),
       ...this.state
     })
+
+    if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onShowAdminModalEvent === 'function')
+      back4AppNavigation.showAdminModalEvent()
   }
 
   renderContent() {
