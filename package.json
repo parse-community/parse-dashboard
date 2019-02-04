@@ -66,7 +66,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
-    "@back4app/back4app-settings": "^1.0.1",
+    "@back4app/back4app-settings": "^1.1.0",
     "babel-core": "~6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "~7.0.0",
