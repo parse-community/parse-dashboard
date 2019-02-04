@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 73 73" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>.cls-1{fill:#4caf50;}.cls-2{opacity:0.5;}</style>
+</defs>
+<title>admin-app-check</title>
+<g data-name="Camada 2">
+<polygon class="cls-1" points="29.19 45.31 53.41 21.5 56.5 24.65 29.19 51.5 16.5 39.02 19.7 35.87"/>
+<g class="cls-2">
+<path class="cls-1" d="M36.5,73A36.5,36.5,0,1,1,73,36.5,36.54,36.54,0,0,1,36.5,73Zm0-68A31.5,31.5,0,1,0,68,36.5,31.54,31.54,0,0,0,36.5,5Z"/>
+</g>
+</g>
+</svg>

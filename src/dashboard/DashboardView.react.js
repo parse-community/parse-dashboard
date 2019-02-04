@@ -36,6 +36,8 @@ export default class DashboardView extends React.Component {
 
     let features = this.context.currentApp.serverInfo.features;
 
+    const { showAdminPage } = this.context.currentApp.custom
+
     let coreSubsections = [];
     if (features.schemas &&
       features.schemas.addField &&
@@ -215,6 +217,14 @@ export default class DashboardView extends React.Component {
         link: '/browser',
         subsections: coreSubsections,
       });
+    }
+
+    if (showAdminPage) {
+      appSidebarSections.push({
+        name: 'Admin App',
+        icon: 'admin-app',
+        link: '/admin'
+      })
     }
 
     if (pushSubsections.length > 0) {

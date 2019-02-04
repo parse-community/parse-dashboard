@@ -8,7 +8,7 @@
 import * as AJAX      from 'lib/AJAX';
 import encodeFormData from 'lib/encodeFormData';
 import Parse          from 'parse';
-import axios from 'axios';
+import axios          from 'axios';
 
 
 function setEnablePushSource(setting, enable) {
@@ -843,5 +843,40 @@ export default class ParseApp {
       );
     });
     return promise;
+  }
+
+  addAdminHost(adminHost) {
+    let path = '/parse-app/' + this.slug + '/adminhost';
+    return axios.post(path, { adminHost }).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  getAdminHost() {
+    let path = '/parse-app/' + this.slug + '/adminhost';
+    return axios.get(path).then(({ data }) => data.adminHost).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  getWebHost() {
+    let path = '/parse-app/' + this.slug + '/webhost';
+    return axios.get(path).then(({ data }) => data.webhost).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  setWebHost(hostSettings) {
+    let path = '/parse-app/' + this.slug + '/webhost';
+    return axios.get(path, { hostSettings }).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  setLiveQuery(params) {
+    let path = '/parse-app/' + this.slug + '/live-query';
+    return axios.get(path, params).then(({ data }) => data.webhost).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
   }
 }

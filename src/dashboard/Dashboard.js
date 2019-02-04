@@ -45,6 +45,7 @@ import SlowQueries        from './Analytics/SlowQueries/SlowQueries.react';
 import styles             from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings      from './Settings/UsersSettings.react';
 import Webhooks           from './Data/Webhooks/Webhooks.react';
+import B4aAdminPage       from './B4aAdminPage/B4aAdminPage.react';
 import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
@@ -253,6 +254,7 @@ class Dashboard extends React.Component {
           <Route path='config' component={Config} />
           <Route path='api_console' component={ApiConsole} />
           <Route path='migration' component={Migration} />
+          <Route path='admin' component={B4aAdminPage} />
           <Redirect from='push' to='/apps/:appId/push/new' />
           <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
           <Route path='push/activity/:category' component={PushIndex} />
