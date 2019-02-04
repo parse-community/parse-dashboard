@@ -8,16 +8,16 @@ import Field            from 'components/Field/Field.react';
 import Fieldset         from 'components/Fieldset/Fieldset.react';
 import Label            from 'components/Label/Label.react';
 import Button           from 'components/Button/Button.react';
-import styles           from 'dashboard/AdminPage/AdminPage.scss'
-import AdminModal       from 'dashboard/AdminPage/AdminModal'
+import styles           from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
+import AdminModal       from 'dashboard/B4aAdminPage/B4aAdminModal'
 import Toolbar          from 'components/Toolbar/Toolbar.react';
 import Icon             from 'components/Icon/Icon.react';
 
 @subscribeTo('Schema', 'schema')
-class AdminPage extends DashboardView {
+class B4aAdminPage extends DashboardView {
   constructor() {
     super()
-    this.section = 'Admin Page';
+    this.section = 'Admin App';
     this.adminDomain = b4aSettings.ADMIN_DOMAIN
     this.webHostDomain = '.back4app.io'
     this.protocol = 'https://'
@@ -181,4 +181,4 @@ class AdminPage extends DashboardView {
   }
 }
 
-export default AdminPage
+export default B4aAdminPage

@@ -2,7 +2,7 @@ import Swal                 from 'sweetalert2'
 import withReactContent     from 'sweetalert2-react-content'
 import React                from 'react'
 import ReactDOMServer       from 'react-dom/server';
-import styles               from 'dashboard/AdminPage/AdminPage.scss'
+import styles               from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
 
 // Modal parameters
 const MySwal = withReactContent(Swal)
@@ -98,6 +98,6 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
   return steps.value && steps.value[0] && steps.value[1] && steps.value[2]
 }
 
-const AdminModal = { show }
+const B4aAdminModal = { show }
 
-export default AdminModal
+export default B4aAdminModal
