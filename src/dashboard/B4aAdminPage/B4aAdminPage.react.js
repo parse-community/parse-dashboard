@@ -9,9 +9,11 @@ import Fieldset         from 'components/Fieldset/Fieldset.react';
 import Label            from 'components/Label/Label.react';
 import Button           from 'components/Button/Button.react';
 import styles           from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
-import AdminModal       from 'dashboard/B4aAdminPage/B4aAdminModal'
+import B4aAdminModal    from 'dashboard/B4aAdminPage/B4aAdminModal'
+import B4aAdminParams   from 'dashboard/B4aAdminPage/B4aAdminParams'
 import Toolbar          from 'components/Toolbar/Toolbar.react';
 import Icon             from 'components/Icon/Icon.react';
+
 
 @subscribeTo('Schema', 'schema')
 class B4aAdminPage extends DashboardView {
@@ -28,44 +30,70 @@ class B4aAdminPage extends DashboardView {
       password: '',
       host: '',
       adminURL: '',
-      webHost: ''
+      webHost: '',
+      isRoleCreated: false,
+      adminParams: {}
     }
 
     this.legend = 'Admin App Setup'
-    this.description = 'The Admin App allow users from your app to have some level of access to your app data without have access to some critical features which if wrong configured could create some instability or even break it.'
+    this.description = 'The Back4App automatic Admin App is one of the most powerful features of the platform. When enabled, Back4App automatically reads your app\'s schema and generates a user-friendly admin application through which trusted users can manage the content of your app.'
   }
 
   async componentDidMount() {
+    const adminParams = B4aAdminParams({ appName: this.context.currentApp.name })
+    await this.setState({ adminParams })
+
     const adminHost = await this.context.currentApp.getAdminHost()
     const webHost = await this.context.currentApp.getWebHost()
     const adminURL = adminHost ? this.protocol + adminHost : ''
-    this.setState({ adminHost, adminURL, webHost, loading: false })
+    const isRoleCreated = await this.checkRole()
+    this.setState({ isRoleCreated, adminHost, adminURL, webHost, loading: false })
 
     if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.atAdminPageEvent === 'function')
       back4AppNavigation.atAdminPageEvent()
   }
 
+  async checkRole() {
+    const { adminParams } = this.state
+
+    const queryRole = new Parse.Query(Parse.Role)
+    queryRole.equalTo('name', adminParams.adminRole)
+    const result = await queryRole.first()
+    return !!result
+  }
+
   async createRole(admin) {
-    const roleACL = new Parse.ACL();
-    roleACL.setPublicReadAccess(true);
-    const role = new Parse.Role("B4aAdminUser", roleACL);
+    const { adminParams } = this.state
+
+    const roleACL = new Parse.ACL()
+    roleACL.setPublicReadAccess(true)
+    roleACL.setPublicWriteAccess(true)
+    const role = new Parse.Role(adminParams.adminRole, roleACL)
     role.getUsers().add([admin])
-    return await role.save();
+    return await role.save()
   }
 
   async createUser(user) {
     const admin = new Parse.User()
-    admin.set('username', user.username);
-    admin.set('password', user.password);
+    admin.set('username', user.username)
+    admin.set('password', user.password)
     return await admin.signUp()
   }
 
-  async createSetting() {
-    const Setting = Parse.Object.extend('B4aSetting');
-    const newSetting = new Setting();
-    newSetting.set('key', 'appName');
-    newSetting.set('value', this.context.currentApp.name);
-    return await newSetting.save()
+  async createClasses() {
+    const { adminParams } = this.state
+    const adminObjects = []
+    for (let { name, rows } of adminParams.classes) {
+      const ParseObject = Parse.Object.extend(name)
+      for (let row of rows) {
+        const newObject = new ParseObject()
+        Object.entries(row).forEach(([key, value]) => {
+          newObject.set(key, value)
+        })
+        adminObjects.push(newObject.save())
+      }
+    }
+    await Parse.Object.saveAll(adminObjects)
   }
 
   async activateLiveQuery() {
@@ -97,16 +125,6 @@ class B4aAdminPage extends DashboardView {
     return adminURL
   }
 
-  async createClasses() {
-    // Create default admin classes
-    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aSetting' })
-    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aCustomField' })
-    await this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className: 'B4aMenuItem' })
-
-    // Create setting class
-    await this.createSetting()
-  }
-
   async createAdmin() {
     const { username, password } = this.state
     const admin = await this.createUser({ username, password })
@@ -116,7 +134,7 @@ class B4aAdminPage extends DashboardView {
   }
 
   async renderModal() {
-    await AdminModal.show({
+    await B4aAdminModal.show({
       domain: this.adminDomain,
       setState: this.setState.bind(this),
       createAdmin: this.createAdmin.bind(this),
@@ -136,7 +154,7 @@ class B4aAdminPage extends DashboardView {
 
     const toolbar = (
       <Toolbar
-        section='Admin Page'>
+        section='Admin App'>
       </Toolbar>
     );
 
@@ -144,13 +162,13 @@ class B4aAdminPage extends DashboardView {
       <Field
         height='120px'
         textAlign='center'
-        label={<Label text='Enable Admin Page' description='Once the Admin Page were enabled some classes will be created on your App to allow it work' />}
+        label={<Label text='Enable Admin App' description="When enabled, Back4App will automatically create in your app's schema a role called B4aAdminUser and the following classes: B4aSetting, B4aMenuItem, and B4aCustomField. In the setup wizard, you will also be required to create your first admin user" />}
         input={<div className={styles['input']}>
           {
             isAdminHostEnabled
               ? <Icon name='admin-app-check' width={50} height={50}
                       fill='#4CAF50' className={styles['input-child']}></Icon>
-              : <Button value='Enable Admin Page'
+              : <Button value='Enable Admin App'
                         onClick={this.renderModal.bind(this)}
                         primary={true}
                         className={styles['input-child']}/>
@@ -163,7 +181,7 @@ class B4aAdminPage extends DashboardView {
         ? <Field
             height='120px'
             textAlign='center'
-            label={<Label text='Admin Page Public URL' description='Share your Admin Page URL with users you want to have access to it. Only users associated with the role AdminUser will be able to login into the Admin Page' />}
+            label={<Label text='Admin App Address' description='Use this address to access your Admin App and share it to your trusted users. Only users with the B4aAdminUser role will be allowed to log in.' />}
             input={<div className={styles['input']}><a target='_blank' href={adminURL} className={styles['input-child']}>{adminURL}</a></div>}>
           </Field>
         : ''
