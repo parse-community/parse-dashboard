@@ -11,6 +11,8 @@ import Sidebar       from 'components/Sidebar/Sidebar.react';
 import styles        from 'dashboard/Dashboard.scss';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import AccountManager from 'lib/AccountManager';
+import { post } from 'lib/AJAX';
 
 // Alert parameters
 const MySwal = withReactContent(Swal)
@@ -21,8 +23,6 @@ const mobileCompatibilityAlert = {
   confirmButtonColor: '#208aec',
   confirmButtonText: '<span style="font-size: 2.25rem">Understood</span>'
 };
-
-let mobileCompatibilityAlertShown = false;
 
 // Hides the zendesk button as soon as possible
 const hideZendesk = () => {
@@ -45,10 +45,13 @@ const isMobile = function() {
 export default class DashboardView extends React.Component {
 
   componentDidMount() {
+    const user = AccountManager.currentUser();
     // Current window size is lesser than Bootstrap's medium size
-    if (!mobileCompatibilityAlertShown && isMobile()) {
-      mobileCompatibilityAlertShown = true;
+    if (user && !user.mobileAlertShown && isMobile()) {
+      user.mobileAlertShown = true;
       MySwal.fire(mobileCompatibilityAlert);
+      AccountManager.setCurrentUser({ user });
+      post(`/b4aUser/parseDashboardMobileAlertShown`);
     }
   }
 
