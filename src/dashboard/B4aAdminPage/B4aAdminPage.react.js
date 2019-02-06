@@ -80,9 +80,20 @@ class B4aAdminPage extends DashboardView {
     return await admin.signUp()
   }
 
+  async setClassLevelPermission() {
+    const { adminParams } = this.state
+    const promises = []
+    for (let { name } of adminParams.classes)
+      promises.push(this.props.schema.dispatch(ActionTypes.SET_CLP, {
+        className: name,
+        clp: adminParams.defaultCLP
+      }))
+    await Promise.all(promises)
+  }
+
   async createClasses() {
     const { adminParams } = this.state
-    const adminObjects = []
+    const promises = []
     for (let { name, rows } of adminParams.classes) {
       const ParseObject = Parse.Object.extend(name)
       for (let row of rows) {
@@ -90,10 +101,12 @@ class B4aAdminPage extends DashboardView {
         Object.entries(row).forEach(([key, value]) => {
           newObject.set(key, value)
         })
-        adminObjects.push(newObject.save())
+        promises.push(newObject.save())
       }
     }
-    await Parse.Object.saveAll(adminObjects)
+    // wait until each object has been saved properly
+    await Promise.all(promises)
+    await this.setClassLevelPermission()
   }
 
   async activateLiveQuery() {
