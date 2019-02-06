@@ -77,7 +77,7 @@
     "prismjs": "1.15.0",
     "prop-types": "15.6.2",
     "query-string": "6.1.0",
-    "react": "16.8.0",
+    "react": "16.8.1",
     "react-dnd": "5.0.0",
     "react-dnd-html5-backend": "5.0.1",
     "react-dom": "16.8.0",
