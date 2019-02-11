@@ -221,7 +221,7 @@ const B4aAdminParams = ({appName}) => ({
   ],
   adminRole: ADMIN_ROLE,
   customCLP: {
-    SETTING_CLASS: {
+    [SETTING_CLASS]: {
       find: {
         '*': true,
       },
