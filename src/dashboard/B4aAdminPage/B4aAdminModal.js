@@ -57,6 +57,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
             await setState({ username, password })
             await createAdmin()
+            await createClasses()
           }
         } catch(err) {
           Swal.showValidationMessage(
@@ -72,8 +73,6 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       preConfirm: async () => {
         try {
           Swal.showLoading()
-
-          await createClasses()
 
           const host = document.getElementById('adminHost').value
           await setState({host: host})
