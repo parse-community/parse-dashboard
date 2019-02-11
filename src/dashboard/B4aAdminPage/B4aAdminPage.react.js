@@ -144,6 +144,7 @@ class B4aAdminPage extends DashboardView {
 
     // Create role and a relation with admin
     await this.createRole(admin)
+    await this.setState({ isRoleCreated: true })
   }
 
   async renderModal() {
