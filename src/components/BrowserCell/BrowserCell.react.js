@@ -43,7 +43,31 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';
   } else if (type === 'Array') {
-    content = JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
+    //recursive function to check the array and object children.
+    const detectObject = (value)=>{
+      //Check if the value is an array
+      if(Array.isArray(value)){
+        //Return the processed list of items
+        return value.map(detectObject)
+      }else if(value instanceof Parse.Object){
+        //Transform the value to Parse.Pointer
+        return value.toPointer()
+      }else if (typeof value === 'object'){
+        //Check the object's children
+        Object.keys(value).forEach( key => {
+          //Overwrite the original value to keep the changes
+          value[key] = detectObject(value[key])
+        })
+        //Return the processed object
+        return value;
+      }else{
+        //Return raw value
+        return value
+      }
+      
+    }
+    //Transform the value to json
+    content = JSON.stringify(detectObject(value));
   } else if (type === 'Object' || type === 'Bytes') {
     content = JSON.stringify(value);
   } else if (type === 'File') {
