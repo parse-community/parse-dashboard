@@ -75,7 +75,7 @@
     "parse": "2.0.0",
     "path-to-regexp": "3.0.0",
     "prismjs": "1.15.0",
-    "prop-types": "15.7.0",
+    "prop-types": "15.7.1",
     "query-string": "6.1.0",
     "react": "16.8.1",
     "react-dnd": "5.0.0",
