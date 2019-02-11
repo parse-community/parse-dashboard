@@ -96,7 +96,7 @@ const B4aAdminParams = ({appName}) => ({
         {
           objectClassName: 'B4aMenuItem',
           objectClassFieldName: 'relevance',
-          title: 'Relevance2',
+          title: 'Relevance',
           isRequired: true,
           defaultValue: '0',
           isTableHidden: false,
@@ -190,7 +190,7 @@ const B4aAdminParams = ({appName}) => ({
         {
           objectClassName: 'B4aCustomField',
           objectClassFieldName: 'relevance',
-          title: 'Relevance2',
+          title: 'Relevance',
           isRequired: true,
           options: '',
           defaultValue: '0',
@@ -203,7 +203,7 @@ const B4aAdminParams = ({appName}) => ({
           title: 'Key',
           subType: 'SELECT',
           isRequired: true,
-          options: ['appName'],
+          options: '["appName"]',
           isTableHidden: false,
           relevance: -1000,
         },
