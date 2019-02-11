@@ -57,7 +57,6 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
             await setState({ username, password })
             await createAdmin()
-            await createClasses()
           }
         } catch(err) {
           Swal.showValidationMessage(
@@ -74,8 +73,9 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
         try {
           Swal.showLoading()
 
-          const host = document.getElementById('adminHost').value
+          await createClasses()
 
+          const host = document.getElementById('adminHost').value
           await setState({host: host})
           confirmedHost = await createAdminHost()
           await activateLiveQuery()

@@ -86,7 +86,7 @@ class B4aAdminPage extends DashboardView {
     for (let { name } of adminParams.classes)
       promises.push(this.props.schema.dispatch(ActionTypes.SET_CLP, {
         className: name,
-        clp: adminParams.defaultCLP
+        clp: adminParams.customCLP[name] || adminParams.defaultCLP
       }))
     await Promise.all(promises)
   }
