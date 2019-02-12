@@ -31,27 +31,34 @@ const renderHostInput = (domain) => {
 
 const renderConfirmStep = () => {
   return ReactDOMServer.renderToString(<div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
-    <p className={styles['congrats-message']}>Congratulations, your Admin Page is active!</p>
+    <p className={styles['congrats-message']}>Congratulations, your Admin App is active!</p>
     <a target='_blank'></a>
   </div>)
 }
 
-const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery}) => {
+const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
   let confirmedHost = ''
+
   const steps = await Swal.mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
       html: renderUserInputs(setState),
+      onBeforeOpen: () => {
+        // If there is a admin user, bypass the first step
+        isRoleCreated && Swal.clickConfirm()
+      },
       preConfirm: async () => {
         try {
-          Swal.showLoading()
+          if (!isRoleCreated){
+            Swal.showLoading()
 
-          const username = document.getElementById('adminUser').value
-          const password = document.getElementById('adminPass').value
+            const username = document.getElementById('adminUser').value
+            const password = document.getElementById('adminPass').value
 
-          await setState({ username, password })
-          await createAdmin()
-          await createClasses()
+            await setState({ username, password })
+            await createAdmin()
+            await createClasses()
+          }
         } catch(err) {
           Swal.showValidationMessage(
             `Request failed: ${err}`
@@ -68,7 +75,6 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           Swal.showLoading()
 
           const host = document.getElementById('adminHost').value
-
           await setState({host: host})
           confirmedHost = await createAdminHost()
           await activateLiveQuery()
