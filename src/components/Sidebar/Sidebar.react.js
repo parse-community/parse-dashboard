@@ -14,9 +14,10 @@ import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import zendeskSettings from 'components/Sidebar/zendeskSettings'
-import Button from 'components/Button/Button.react'
-import Icon from 'components/Icon/Icon.react';
-import { isMobile } from 'lib/browserUtils';
+import Button         from 'components/Button/Button.react'
+import Icon           from 'components/Icon/Icon.react';
+import { isMobile }   from 'lib/browserUtils';
+import B4aBadge       from 'components/B4aBadge/B4aBadge.react';
 
 const isInsidePopover = node => {
   let cur = node.parentNode;
@@ -128,7 +129,6 @@ class Sidebar extends React.Component {
             link
           }) => {
             const active = name === section;
-
             // If link points to another component, adds the prefix
             link = link.startsWith('/') ? prefix + link : link;
             return (
@@ -226,9 +226,10 @@ class Sidebar extends React.Component {
           style,
           link,
           subsections,
+          badgeParams
         }) => {
           const active = name === section;
-
+          const badge = badgeParams && <B4aBadge {...badgeParams} /> || ''
           // If link points to another component, adds the prefix
           link = link.startsWith('/') ? prefix + link : link;
           return (
@@ -241,6 +242,7 @@ class Sidebar extends React.Component {
               active={active}
               primaryBackgroundColor={primaryBackgroundColor}
               secondaryBackgroundColor={secondaryBackgroundColor}
+              badge={badge}
               >
               {active ? _subMenu(subsections) : null}
             </SidebarSection>
