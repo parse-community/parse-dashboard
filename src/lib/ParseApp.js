@@ -868,14 +868,14 @@ export default class ParseApp {
 
   setWebHost(hostSettings) {
     let path = '/parse-app/' + this.slug + '/webhost';
-    return axios.get(path, { hostSettings }).catch(err => {
+    return axios.post(path, { hostSettings }).catch(err => {
       throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
     })
   }
 
   setLiveQuery(params) {
     let path = '/parse-app/' + this.slug + '/live-query';
-    return axios.get(path, params).then(({ data }) => data.webhost).catch(err => {
+    return axios.post(path, params).then(({ data }) => data.webhost).catch(err => {
       throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
     })
   }
