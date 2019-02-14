@@ -36,7 +36,7 @@ class B4aAdminPage extends DashboardView {
     }
 
     this.legend = 'Admin App Setup'
-    this.description = 'The Back4App automatic Admin App is one of the most powerful features of the platform. When enabled, Back4App automatically reads your app\'s schema and generates a user-friendly admin application through which trusted users can manage the content of your app.'
+    this.description = 'Admin App is a web browser-based tool designed to manage the app data using a non-tech user interface.'
   }
 
   async componentDidMount() {
@@ -174,7 +174,7 @@ class B4aAdminPage extends DashboardView {
       <Field
         height='120px'
         textAlign='center'
-        label={<Label text='Enable Admin App' description="When enabled, Back4App will automatically create in your app's schema a role called B4aAdminUser and the following classes: B4aSetting, B4aMenuItem, and B4aCustomField. In the setup wizard, you will also be required to create your first admin user" />}
+        label={<Label text='Is Enabled?' description="Enabling will automatically add to your app’s schema a new role and three new classes." />}
         input={<div className={styles['input']}>
           {
             isAdminHostEnabled
@@ -193,7 +193,7 @@ class B4aAdminPage extends DashboardView {
         ? <Field
             height='120px'
             textAlign='center'
-            label={<Label text='Admin App Address' description='Use this address to access your Admin App and share it to your trusted users. Only users with the B4aAdminUser role will be allowed to log in.' />}
+            label={<Label text='Admin App URL' description='Use this address to share your Admin App with trusted users. Only users with the B4aAdminUser role will be allowed to log in.' />}
             input={<div className={styles['input']}><a target='_blank' href={adminURL} className={styles['input-child']}>{adminURL}</a></div>}>
           </Field>
         : ''
