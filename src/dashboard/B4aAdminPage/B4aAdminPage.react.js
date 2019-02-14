@@ -114,7 +114,7 @@ class B4aAdminPage extends DashboardView {
     const schemasChoose = {}
 
     this.props.schema.data.get('classes').filter((key, className) => {
-      return className.indexOf('_') > -1 || className === '_User'
+      return className.indexOf('_') !== 0 || className === '_User'
     }).forEach((key, className) => schemasChoose[className] = true)
 
     await this.context.currentApp.setLiveQuery({ schemasChoose , statusLiveQuery: true })
@@ -124,8 +124,8 @@ class B4aAdminPage extends DashboardView {
     const { host, webHost } = this.state
 
     // Activate webHost
-    if (webHost && !webHost.activated) {
-      const subdomainName = webHost.subdomainName || host + this.webHostDomain
+    if (!webHost || !webHost.activated) {
+      const subdomainName = webHost && webHost.subdomainName || host + this.webHostDomain
       const hostSettings = { subdomainName, activated: true }
       await this.context.currentApp.setWebHost(hostSettings)
       this.setState({ webHost: hostSettings })
