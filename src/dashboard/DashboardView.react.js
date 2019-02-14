@@ -256,7 +256,11 @@ export default class DashboardView extends React.Component {
       appSidebarSections.push({
         name: 'Admin App',
         icon: 'admin-app',
-        link: '/admin'
+        link: '/admin',
+        badgeParams: {
+          label: 'new',
+          color: 'green'
+        }
       })
     }
 

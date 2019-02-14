@@ -1,0 +1,33 @@
+@import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
+
+.badge {
+  margin-top: 5px;
+  display: inline-block;
+  height: 18px;
+  line-height: 16px;
+  text-align: center;
+  border: 1px solid;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  width: 45px;
+  font-size: 12px;
+  float: right;
+  font-weight: bold;
+  color: $white;
+}
+
+.green {
+  background-color: $green;
+  border-color: $green;
+}
+
+.blue {
+  background-color: $light-blue;
+  border-color: $light-blue;
+}
+
+.red {
+  background-color: $red;
+  border-color: $red;
+}
