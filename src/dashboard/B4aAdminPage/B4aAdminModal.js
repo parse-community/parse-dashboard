@@ -37,7 +37,7 @@ const renderConfirmStep = () => {
 }
 
 const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
-  let confirmedHost = ''
+  let adminURL = ''
 
   const steps = await Swal.mixin(modalOptions).queue([
     {
@@ -76,8 +76,9 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
           const host = document.getElementById('adminHost').value
           await setState({host: host})
-          confirmedHost = await createAdminHost()
+          adminURL = await createAdminHost()
           await activateLiveQuery()
+          await setState({ adminURL })
         } catch(err) {
           Swal.showValidationMessage(
             `Request failed: ${err}`
@@ -92,7 +93,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       confirmButtonText: 'Got it!',
       onBeforeOpen: () => {
         const a = Swal.getContent().querySelector('a')
-        a.href = a.text = confirmedHost
+        a.href = a.text = adminURL
       },
       preConfirm: () => {
         if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onCreateAdminHostEvent === 'function')

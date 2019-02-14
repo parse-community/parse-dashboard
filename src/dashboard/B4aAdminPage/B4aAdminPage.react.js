@@ -133,9 +133,7 @@ class B4aAdminPage extends DashboardView {
 
     // Create admin host
     await this.context.currentApp.addAdminHost(host + this.adminDomain)
-    const adminURL = this.protocol + host + this.adminDomain
-    await this.setState({ adminURL })
-    return adminURL
+    return this.protocol + host + this.adminDomain
   }
 
   async createAdmin() {
