@@ -85,7 +85,7 @@
     "react-router-dom": "4.3.1",
     "react-test-renderer": "16.8.2",
     "request": "2.87.0",
-    "request-promise": "4.2.2",
+    "request-promise": "4.2.3",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
     "svg-prep": "1.0.4",
