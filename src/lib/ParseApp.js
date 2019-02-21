@@ -861,7 +861,7 @@ export default class ParseApp {
 
   getWebHost() {
     let path = '/parse-app/' + this.slug + '/webhost';
-    return axios.get(path).then(({ data }) => data.webhost).catch(err => {
+    return axios.get(path).then(({ data }) => data.hostSettings).catch(err => {
       throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
     })
   }
