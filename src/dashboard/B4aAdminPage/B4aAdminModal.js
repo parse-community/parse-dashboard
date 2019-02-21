@@ -75,7 +75,8 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           Swal.showLoading()
 
           const host = document.getElementById('adminHost').value
-          await setState({host: host})
+          if (!host) throw new Error("Missing admin host")
+          await setState({host: host.toLowerCase()})
           adminURL = await createAdminHost()
           await activateLiveQuery()
           await setState({ adminURL })
