@@ -252,17 +252,15 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    if (showAdminPage) {
-      appSidebarSections.push({
-        name: 'Admin App',
-        icon: 'admin-app',
-        link: '/admin',
-        badgeParams: {
-          label: 'new',
-          color: 'green'
-        }
-      })
-    }
+    appSidebarSections.push({
+      name: 'Admin App',
+      icon: 'admin-app',
+      link: '/admin',
+      badgeParams: {
+        label: 'new',
+        color: 'green'
+      }
+    })
 
     if (pushSubsections.length > 0) {
       appSidebarSections.push({
