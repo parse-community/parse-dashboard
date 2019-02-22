@@ -69,15 +69,15 @@ class B4aAdminPage extends DashboardView {
     roleACL.setPublicReadAccess(true)
     roleACL.setPublicWriteAccess(true)
     const role = new Parse.Role(adminParams.adminRole, roleACL)
-    role.getUsers({ useMasterKey: true }).add([admin])
-    return await role.save({ useMasterKey: true })
+    role.getUsers().add([admin])
+    return await role.save(undefined, { useMasterKey: true })
   }
 
   async createUser(user) {
     const admin = new Parse.User()
     admin.set('username', user.username)
     admin.set('password', user.password)
-    return await admin.signUp({}, { useMasterKey: true })
+    return await admin.signUp(undefined, { useMasterKey: true })
   }
 
   async setClassLevelPermission() {
