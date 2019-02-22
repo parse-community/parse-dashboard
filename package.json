@@ -72,7 +72,7 @@
     "js-beautify": "1.8.0",
     "marked": "0.6.1",
     "node-sass": "4.9.3",
-    "parse": "2.2.0",
+    "parse": "2.2.1",
     "path-to-regexp": "3.0.0",
     "prismjs": "1.15.0",
     "prop-types": "15.7.2",
