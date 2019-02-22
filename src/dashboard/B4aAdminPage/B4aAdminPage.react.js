@@ -101,7 +101,7 @@ class B4aAdminPage extends DashboardView {
         Object.entries(row).forEach(([key, value]) => {
           newObject.set(key, value)
         })
-        promises.push(newObject.save({ useMasterKey: true }))
+        promises.push(newObject.save(undefined, { useMasterKey: true }))
       }
     }
     // wait until each object has been saved properly
