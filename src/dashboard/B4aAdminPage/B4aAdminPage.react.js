@@ -58,7 +58,7 @@ class B4aAdminPage extends DashboardView {
 
     const queryRole = new Parse.Query(Parse.Role)
     queryRole.equalTo('name', adminParams.adminRole)
-    const result = await queryRole.first()
+    const result = await queryRole.first({ useMasterKey: true })
     return !!result
   }
 
@@ -69,15 +69,15 @@ class B4aAdminPage extends DashboardView {
     roleACL.setPublicReadAccess(true)
     roleACL.setPublicWriteAccess(true)
     const role = new Parse.Role(adminParams.adminRole, roleACL)
-    role.getUsers().add([admin])
-    return await role.save()
+    role.getUsers({ useMasterKey: true }).add([admin])
+    return await role.save({ useMasterKey: true })
   }
 
   async createUser(user) {
     const admin = new Parse.User()
     admin.set('username', user.username)
     admin.set('password', user.password)
-    return await admin.signUp()
+    return await admin.signUp({}, { useMasterKey: true })
   }
 
   async setClassLevelPermission() {
@@ -101,7 +101,7 @@ class B4aAdminPage extends DashboardView {
         Object.entries(row).forEach(([key, value]) => {
           newObject.set(key, value)
         })
-        promises.push(newObject.save())
+        promises.push(newObject.save({ useMasterKey: true }))
       }
     }
     // wait until each object has been saved properly
