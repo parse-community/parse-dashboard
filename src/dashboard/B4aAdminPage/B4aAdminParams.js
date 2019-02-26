@@ -138,6 +138,7 @@ const B4aAdminParams = ({appName}) => ({
           options: '((objectClasses.find(objectClass => objectClass.name === objectEntity.objectClassName) || { fields: [] }).fields.find(objectClassField => objectClassField.name === objectEntity.objectClassFieldName) || { type: \'\' }).type === \'STRING\' ? [\'PASSWORD\', \'SELECT\'] : []',
           isRequired: false,
           isTableHidden: false,
+          isFormHidden: "((objectClasses.find(objectClass => objectClass.name === objectEntity.objectClassName) || { fields: [] }).fields.find(objectClassField => objectClassField.name === objectEntity.objectClassFieldName) || { type: '' }).type !== 'STRING'",
           relevance: -4000,
         },
         {
