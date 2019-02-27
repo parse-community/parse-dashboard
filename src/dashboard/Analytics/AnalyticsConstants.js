@@ -80,7 +80,9 @@ export const PresetQueries = [
         name: 'API Requests',
         query: {
           endpoint: 'api_request',
-          stride: 'day'
+          stride: 'day',
+          calcType: 'sum',
+          dots: '180'
         },
         preset: true,
         nonComposable: true
