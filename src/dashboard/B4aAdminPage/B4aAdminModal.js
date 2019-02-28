@@ -1,11 +1,9 @@
 import Swal                 from 'sweetalert2'
 import withReactContent     from 'sweetalert2-react-content'
 import React                from 'react'
-import ReactDOMServer       from 'react-dom/server';
 import styles               from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
 
 // Modal parameters
-const MySwal = withReactContent(Swal)
 const modalOptions = {
   confirmButtonText: 'Next &rarr;',
   showCancelButton: true,
@@ -15,31 +13,37 @@ const modalOptions = {
   padding: '2.5em'
 }
 
+const onKeyUp = (event) => {
+  if (event.key === 'Enter') {
+    Swal.clickConfirm();
+  }
+}
+
 const renderUserInputs = () => {
-  return ReactDOMServer.renderToString(<div className={styles['elements-wrapper']}>
+  return <div className={styles['elements-wrapper']}>
     <input name='adminUser' id='adminUser' type='text' placeholder='username' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
-    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
-  </div>)
+    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onKeyUp={onKeyUp} />
+  </div>
 }
 
 const renderHostInput = (domain) => {
-  return ReactDOMServer.renderToString(<div className={styles['elements-wrapper']}>
-    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
+  return <div className={styles['elements-wrapper']}>
+    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onKeyUp={onKeyUp} />
     <span className={styles['inline-elements']}>{domain}</span>
-  </div>)
+  </div>
 }
 
 const renderConfirmStep = () => {
-  return ReactDOMServer.renderToString(<div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
+  return <div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
     <p className={styles['congrats-message']}>Congratulations, your Admin App is active!</p>
     <a target='_blank'></a>
-  </div>)
+  </div>
 }
 
 const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
   let adminURL = ''
 
-  const steps = await Swal.mixin(modalOptions).queue([
+  const steps = await withReactContent(Swal).mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
       html: renderUserInputs(setState),
