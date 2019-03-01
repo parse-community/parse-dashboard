@@ -1,7 +1,7 @@
 
 .elements-wrapper {
-  float: left;
-  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .inline-elements {
