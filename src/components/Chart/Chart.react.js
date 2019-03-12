@@ -24,7 +24,7 @@ function sortPoints(a, b) {
 }
 
 function formatDate(date) {
-  return moment.utc(date).format('MMM DD HH:mm');
+  return moment.utc(date).format('MMM DD HH:mm UTC');
 }
 
 export default class Chart extends React.Component {
