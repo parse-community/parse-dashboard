@@ -199,6 +199,26 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -10000,
         },
         {
+          objectClassName: 'B4aCustomField',
+          objectClassFieldName: 'referencesLinkText',
+          title: 'References Link Text',
+          isRequired: false,
+          options: '',
+          defaultValue: '0',
+          isTableHidden: false,
+          relevance: -11000
+        },
+        {
+          objectClassName: 'B4aCustomField',
+          objectClassFieldName: 'referencesLinkTitle',
+          title: 'References Link Title',
+          isRequired: false,
+          options: '',
+          defaultValue: '0',
+          isTableHidden: false,
+          relevance: -12000
+        },
+        {
           objectClassName: 'B4aSetting',
           objectClassFieldName: 'key',
           title: 'Key',
