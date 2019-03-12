@@ -206,7 +206,8 @@ export default class Performance extends DashboardView {
       if (Array.isArray(data)) {
         // Handle Request Limit
         let points = data.map((point) => (
-          [Parse._decode('date', point[0]).getTime(), point[1]]
+          // [Parse._decode('date', point[0]).getTime(), point[1]]
+          [point[0].getTime(), point[1]]
         ));
 
         chartData[PERFORMANCE_QUERIES[i].name] = {
@@ -218,7 +219,8 @@ export default class Performance extends DashboardView {
         for (let key in data.cached) {
           let cachedPoints = data.cached[key];
           points = points.concat(cachedPoints.map((point) => (
-            [Parse._decode('date', point[0]).getTime(), point[1]]
+            // [Parse._decode('date', point[0]).getTime(), point[1]]
+            [point[0].getTime(), point[1]]
           )));
         }
 

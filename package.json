@@ -51,6 +51,7 @@
     "jstree": "^3.3.5",
     "lodash": "^4.17.10",
     "material-design-iconic-font": "^2.2.0",
+    "moment": "^2.24.0",
     "package-json": "^4.0.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",

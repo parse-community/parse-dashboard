@@ -14,6 +14,7 @@ import React             from 'react';
 import Shape             from 'components/Chart/Shape.react';
 import { shortMonth }    from 'lib/DateUtils';
 import styles            from 'components/Chart/Chart.scss';
+import moment from 'moment'
 
 const MARGIN_TOP = 10;
 const MARGIN_RIGHT = 20;
@@ -25,11 +26,12 @@ function sortPoints(a, b) {
 }
 
 function formatDate(date) {
-  let str = DateUtils.getMonth(date.getUTCMonth()) + ' ' + date.getUTCDate();
-  if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
-    return str;
-  }
-  return str + ' ' + date.getHours() + (date.getMinutes() < 10 ? ':0' : ':') + date.getMinutes();
+  // let str = DateUtils.getMonth(date.getUTCMonth()) + ' ' + date.getUTCDate();
+  // if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
+  //   return str;
+  // }
+  // return str + ' ' + date.getHours() + (date.getMinutes() < 10 ? ':0' : ':') + date.getMinutes();
+  return moment.utc(date).format('MMM DD HH:mm');
 }
 
 export default class Chart extends React.Component {
@@ -116,12 +118,15 @@ export default class Chart extends React.Component {
         return '';
       }
       if (!last || t.getMonth() !== last.getMonth()) {
-        text += shortMonth(t.getMonth()) + ' ';
+        // text += shortMonth(t.getMonth()) + ' ';
+        text += moment.utc(t).format('MMM')
       }
       if (!last || t.getDate() !== last.getDate()) {
-        text += t.getDate();
+        // text += t.getDate();
+        text += moment.utc(t).format('DD')
       } else if (last && t.getHours() !== last.getHours()) {
-        text += t.getHours() + ':00';
+        // text += t.getHours() + ':00';
+        text += moment.utc(t).format('HH:mm')
       }
       last = t;
       return text;
