@@ -6,15 +6,13 @@
  * the root directory of this source tree.
  */
 import * as Charting     from 'lib/Charting.js'
-import * as DateUtils    from 'lib/DateUtils';
 import Position          from 'lib/Position';
 import prettyNumber      from 'lib/prettyNumber';
 import PropTypes         from 'lib/PropTypes';
 import React             from 'react';
 import Shape             from 'components/Chart/Shape.react';
-import { shortMonth }    from 'lib/DateUtils';
 import styles            from 'components/Chart/Chart.scss';
-import moment from 'moment'
+import moment            from 'moment'
 
 const MARGIN_TOP = 10;
 const MARGIN_RIGHT = 20;
@@ -26,11 +24,6 @@ function sortPoints(a, b) {
 }
 
 function formatDate(date) {
-  // let str = DateUtils.getMonth(date.getUTCMonth()) + ' ' + date.getUTCDate();
-  // if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
-  //   return str;
-  // }
-  // return str + ' ' + date.getHours() + (date.getMinutes() < 10 ? ':0' : ':') + date.getMinutes();
   return moment.utc(date).format('MMM DD HH:mm');
 }
 
@@ -113,20 +106,18 @@ export default class Chart extends React.Component {
     let tickPoints = timeBuckets.map((t) => chartWidth * (t - timeBuckets[0]) / (timeBuckets[timeBuckets.length - 1] - timeBuckets[0]));
     let last = null;
     let tickLabels = timeBuckets.map((t, i) => {
+      t = moment.utc(t)
       let text = '';
       if (timeBuckets.length > 20 && i % 2 === 0) {
         return '';
       }
-      if (!last || t.getMonth() !== last.getMonth()) {
-        // text += shortMonth(t.getMonth()) + ' ';
-        text += moment.utc(t).format('MMM')
+      if (!last || t.month() !== last.month()) {
+        text += t.format('MMM')
       }
-      if (!last || t.getDate() !== last.getDate()) {
-        // text += t.getDate();
-        text += moment.utc(t).format('DD')
-      } else if (last && t.getHours() !== last.getHours()) {
-        // text += t.getHours() + ':00';
-        text += moment.utc(t).format('HH:mm')
+      if (!last || t.day() !== last.day()) {
+        text += t.format(' DD')
+      } else if (last && t.hours() !== last.hours()) {
+        text += t.format(' HH:mm')
       }
       last = t;
       return text;
