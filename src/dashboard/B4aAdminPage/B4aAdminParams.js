@@ -41,8 +41,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: false,
           isTableHidden: false,
           relevance: -1000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: '_User',
@@ -52,8 +52,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: false,
           isTableHidden: true,
           relevance: -2000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: '_User',
@@ -62,8 +62,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: false,
           isTableHidden: false,
           relevance: -3000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: '_User',
@@ -72,8 +72,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: false,
           isTableHidden: false,
           relevance: -4000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: '_User',
@@ -82,8 +82,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: false,
           isTableHidden: false,
           relevance: -5000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -92,8 +92,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: true,
           isTableHidden: false,
           relevance: -1000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -104,8 +104,8 @@ const B4aAdminParams = ({appName}) => ({
           options: 'objectClasses.map(objectClass => objectClass.name).sort()',
           isTableHidden: false,
           relevance: -2000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -115,8 +115,8 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: '0',
           isTableHidden: false,
           relevance: -3000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -127,8 +127,8 @@ const B4aAdminParams = ({appName}) => ({
           options: 'objectClasses.map(objectClass => objectClass.name).sort()',
           isTableHidden: false,
           relevance: -1000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -139,8 +139,8 @@ const B4aAdminParams = ({appName}) => ({
           options: '(objectClasses.find(objectClass => objectClass.name === objectEntity.objectClassName) || { fields: [] }).fields.map(objectClassField => objectClassField.name).sort()',
           isTableHidden: false,
           relevance: -2000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -149,8 +149,8 @@ const B4aAdminParams = ({appName}) => ({
           isRequired: true,
           isTableHidden: false,
           relevance: -3000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -162,8 +162,8 @@ const B4aAdminParams = ({appName}) => ({
           isTableHidden: false,
           isFormHidden: "((objectClasses.find(objectClass => objectClass.name === objectEntity.objectClassName) || { fields: [] }).fields.find(objectClassField => objectClassField.name === objectEntity.objectClassFieldName) || { type: '' }).type !== 'STRING'",
           relevance: -4000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -173,8 +173,8 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: 'false',
           isTableHidden: false,
           relevance: -8000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -185,8 +185,8 @@ const B4aAdminParams = ({appName}) => ({
           isTableHidden: true,
           isFormHidden: 'objectEntity.subType !== \'SELECT\'',
           relevance: -5000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -197,8 +197,8 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: 'false',
           isTableHidden: false,
           relevance: -6000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -208,8 +208,8 @@ const B4aAdminParams = ({appName}) => ({
           options: '',
           isTableHidden: false,
           relevance: -7000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -219,8 +219,8 @@ const B4aAdminParams = ({appName}) => ({
           options: '',
           isTableHidden: false,
           relevance: -9000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -231,8 +231,8 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: '0',
           isTableHidden: false,
           relevance: -10000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -243,8 +243,8 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: '0',
           isTableHidden: false,
           relevance: -11000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -255,8 +255,8 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: '0',
           isTableHidden: false,
           relevance: -12000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aSetting',
@@ -267,8 +267,8 @@ const B4aAdminParams = ({appName}) => ({
           options: '["appName"]',
           isTableHidden: false,
           relevance: -1000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
         {
           objectClassName: 'B4aSetting',
@@ -278,8 +278,8 @@ const B4aAdminParams = ({appName}) => ({
           options: '["Option A", "Option B"]',
           isTableHidden: false,
           relevance: -2000,
-          referencesLinkText: null,
-          referencesLinkTitle: null
+          referencesLinkText: '',
+          referencesLinkTitle: ''
         },
       ],
     },
