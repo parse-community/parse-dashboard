@@ -47,7 +47,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
     {
       title: 'Create an Admin User',
       html: renderUserInputs(setState),
-      onBeforeOpen: () => {
+      onOpen: () => {
         // If there is a admin user, bypass the first step
         isRoleCreated && Swal.clickConfirm()
       },
