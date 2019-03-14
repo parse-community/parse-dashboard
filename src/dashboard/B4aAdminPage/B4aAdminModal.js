@@ -36,7 +36,7 @@ const renderHostInput = (domain) => {
 const renderConfirmStep = () => {
   return <div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
     <p className={styles['congrats-message']}>Congratulations, your Admin App is active!</p>
-    <a target='_blank'></a>
+    <a className={styles['anchor-url']} target='_blank'></a>
   </div>
 }
 
@@ -96,9 +96,9 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       html: renderConfirmStep(),
       showCancelButton: false,
       confirmButtonText: 'Got it!',
-      onBeforeOpen: () => {
-        const a = Swal.getContent().getElementsByTagName('a') // return an array with all anchor elements in Swal content
-        if (a && a[0]) a[0].href = a[0].text = adminURL
+      onOpen: () => {
+        const a = Swal.getContent().querySelector('a')
+        if (a) a.href = a.text = adminURL
       },
       preConfirm: () => {
         if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onCreateAdminHostEvent === 'function')
