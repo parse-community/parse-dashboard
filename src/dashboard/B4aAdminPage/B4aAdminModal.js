@@ -97,8 +97,8 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       showCancelButton: false,
       confirmButtonText: 'Got it!',
       onBeforeOpen: () => {
-        const a = Swal.getContent().querySelector('a')
-        a.href = a.text = adminURL
+        const a = Swal.getContent().getElementsByTagName('a') // return an array with all anchor elements in Swal content
+        if (a && a[0]) a[0].href = a[0].text = adminURL
       },
       preConfirm: () => {
         if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onCreateAdminHostEvent === 'function')
