@@ -2,6 +2,12 @@
 .elements-wrapper {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+}
+
+.anchor-url {
+  flex-basis: 100%;
+  text-align: center;
 }
 
 .inline-elements {
