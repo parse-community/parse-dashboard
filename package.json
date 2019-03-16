@@ -90,7 +90,7 @@
     "style-loader": "0.23.0",
     "svg-prep": "1.0.4",
     "webpack": "4.29.6",
-    "webpack-cli": "3.2.3"
+    "webpack-cli": "3.3.0"
   },
   "scripts": {
     "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
