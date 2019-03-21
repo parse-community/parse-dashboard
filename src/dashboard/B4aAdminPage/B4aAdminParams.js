@@ -295,7 +295,7 @@ const B4aAdminParams = ({appName}) => ({
           title: 'Key',
           subType: 'SELECT',
           isRequired: true,
-          options: '["appName"]',
+          options: '["appName", "brandColor", "logo"]',
           isTableHidden: false,
           relevance: -1000,
           referencesLinkText: '',
