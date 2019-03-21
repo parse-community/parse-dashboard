@@ -130,6 +130,18 @@ const B4aAdminParams = ({appName}) => ({
           inputMask: ''
         },
         {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'isHidden',
+          title: 'Is Hidden?',
+          isRequired: false,
+          defaultValue: false,
+          isTableHidden: false,
+          relevance: -4000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: ''
+        },
+        {
           objectClassName: 'B4aCustomField',
           objectClassFieldName: 'objectClassName',
           title: 'Class',
