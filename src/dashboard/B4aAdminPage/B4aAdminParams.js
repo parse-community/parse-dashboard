@@ -134,7 +134,7 @@ const B4aAdminParams = ({appName}) => ({
           objectClassFieldName: 'isHidden',
           title: 'Is Hidden?',
           isRequired: false,
-          defaultValue: false,
+          defaultValue: 'false',
           isTableHidden: false,
           relevance: -4000,
           referencesLinkText: '',
