@@ -18,16 +18,19 @@ const B4aAdminParams = ({appName}) => ({
           title: 'Menu Item',
           objectClassName: MENU_ITEM_CLASS,
           relevance: '-1000',
+          isHidden: false
         },
         {
           title: 'Custom Field',
           objectClassName: CUSTOM_FIELD_CLASS,
           relevance: '-2000',
+          isHidden: false
         },
         {
           title: 'Setting',
           objectClassName: SETTING_CLASS,
           relevance: '-3000',
+          isHidden: false
         },
       ],
     },
