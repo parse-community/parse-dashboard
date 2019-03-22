@@ -1,9 +1,7 @@
 import Swal                 from 'sweetalert2'
-import withReactContent     from 'sweetalert2-react-content'
 import React                from 'react'
+import ReactDOMServer       from 'react-dom/server';
 import styles               from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
-
-const reactSwal = withReactContent(Swal);
 
 // Modal parameters
 const modalOptions = {
@@ -17,46 +15,46 @@ const modalOptions = {
 
 const onKeyUp = (event) => {
   if (event.key === 'Enter') {
-    reactSwal.clickConfirm();
+    Swal.clickConfirm();
   }
 }
 
 const renderUserInputs = () => {
-  return <div className={styles['elements-wrapper']}>
+  return ReactDOMServer.renderToString(<div className={styles['elements-wrapper']}>
     <input name='adminUser' id='adminUser' type='text' placeholder='username' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
-    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onKeyUp={onKeyUp} />
-  </div>
+    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onkeyup={onKeyUp} />
+  </div>);
 }
 
 const renderHostInput = (domain) => {
-  return <div className={styles['elements-wrapper']}>
-    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onKeyUp={onKeyUp} />
+  return ReactDOMServer.renderToString(<div className={styles['elements-wrapper']}>
+    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onkeyup={onKeyUp} />
     <span className={styles['inline-elements']}>{domain}</span>
-  </div>
+  </div>);
 }
 
 const renderConfirmStep = () => {
-  return <div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
+  return ReactDOMServer.renderToString(<div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
     <p className={styles['congrats-message']}>Congratulations, your Admin App is active!</p>
     <a className={styles['anchor-url']} target='_blank'></a>
-  </div>
+  </div>);
 }
 
 const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
   let adminURL = ''
 
-  const steps = await .mixin(modalOptions).queue([
+  const steps = await Swal.mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
       html: renderUserInputs(setState),
-      onOpen: () => {
+      onBeforeOpen: () => {
         // If there is a admin user, bypass the first step
-        isRoleCreated && reactSwal.clickConfirm()
+        isRoleCreated && Swal.clickConfirm()
       },
       preConfirm: async () => {
         try {
           if (!isRoleCreated){
-            reactSwal.showLoading()
+            Swal.showLoading()
 
             const username = document.getElementById('adminUser').value
             const password = document.getElementById('adminPass').value
@@ -66,7 +64,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
             await createClasses()
           }
         } catch(err) {
-          reactSwal.showValidationMessage(
+          Swal.showValidationMessage(
             `Request failed: ${err}`
           )
         }
@@ -78,7 +76,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       html: renderHostInput(domain, setState),
       preConfirm: async () => {
         try {
-          reactSwal.showLoading()
+          Swal.showLoading()
 
           const host = document.getElementById('adminHost').value
           if (!host) throw new Error("Missing admin host")
@@ -87,7 +85,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           await activateLiveQuery()
           await setState({ adminURL })
         } catch(err) {
-          reactSwal.showValidationMessage(
+          Swal.showValidationMessage(
             `Request failed: ${err}`
           )
         }
@@ -98,8 +96,8 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       html: renderConfirmStep(),
       showCancelButton: false,
       confirmButtonText: 'Got it!',
-      onOpen: () => {
-        const a = reactSwal.getContent().querySelector('a')
+      onBeforeOpen: () => {
+        const a = Swal.getContent().querySelector('a')
         if (a) a.href = a.text = adminURL
       },
       preConfirm: () => {
