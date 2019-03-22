@@ -1,6 +1,6 @@
 import Swal                 from 'sweetalert2'
-import withReactContent     from 'sweetalert2-react-content'
 import React                from 'react'
+import ReactDOMServer       from 'react-dom/server';
 import styles               from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
 
 // Modal parameters
@@ -20,34 +20,37 @@ const onKeyUp = (event) => {
 }
 
 const renderUserInputs = () => {
-  return <div className={styles['elements-wrapper']}>
+  return ReactDOMServer.renderToStaticMarkup(<div className={styles['elements-wrapper']}>
     <input name='adminUser' id='adminUser' type='text' placeholder='username' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
-    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onKeyUp={onKeyUp} />
-  </div>
+    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
+  </div>);
 }
 
 const renderHostInput = (domain) => {
-  return <div className={styles['elements-wrapper']}>
-    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onKeyUp={onKeyUp} />
+  return ReactDOMServer.renderToStaticMarkup(<div className={styles['elements-wrapper']}>
+    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
     <span className={styles['inline-elements']}>{domain}</span>
-  </div>
+  </div>);
 }
 
 const renderConfirmStep = () => {
-  return <div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
+  return ReactDOMServer.renderToStaticMarkup(<div className={`${styles['elements-wrapper']} ${styles['congrats-box']}`}>
     <p className={styles['congrats-message']}>Congratulations, your Admin App is active!</p>
     <a className={styles['anchor-url']} target='_blank'></a>
-  </div>
+  </div>);
 }
 
 const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
   let adminURL = ''
 
-  const steps = await withReactContent(Swal).mixin(modalOptions).queue([
+  const steps = await Swal.mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
       html: renderUserInputs(setState),
-      onOpen: () => {
+      onBeforeOpen: () => {
+        // Attaches keyUp event listener on password input
+        document.getElementById('adminPass').addEventListener('keyup', onKeyUp);
+
         // If there is a admin user, bypass the first step
         isRoleCreated && Swal.clickConfirm()
       },
@@ -74,6 +77,10 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       title: 'Choose your Admin App subdomain',
       text: '',
       html: renderHostInput(domain, setState),
+      onBeforeOpen: () => {
+        // Attaches keyUp event listener on admin host input
+        document.getElementById('adminHost').addEventListener('keyup', onKeyUp);
+      },
       preConfirm: async () => {
         try {
           Swal.showLoading()
@@ -96,7 +103,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       html: renderConfirmStep(),
       showCancelButton: false,
       confirmButtonText: 'Got it!',
-      onOpen: () => {
+      onBeforeOpen: () => {
         const a = Swal.getContent().querySelector('a')
         if (a) a.href = a.text = adminURL
       },
