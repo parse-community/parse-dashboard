@@ -4,6 +4,7 @@
   justify-content: center;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .anchor-url {
@@ -42,10 +43,6 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-}
-
-.swal2-popup .swal2-validation-message {
-  margin-top: 20px;
 }
 
 .congrats-box {
