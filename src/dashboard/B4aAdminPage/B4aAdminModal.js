@@ -22,13 +22,13 @@ const onKeyUp = (event) => {
 const renderUserInputs = () => {
   return ReactDOMServer.renderToString(<div className={styles['elements-wrapper']}>
     <input name='adminUser' id='adminUser' type='text' placeholder='username' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} />
-    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onkeyup={onKeyUp} />
+    <input name='adminPass' id='adminPass' type='password' placeholder='password' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onkeyup={onKeyUp.toString()} />
   </div>);
 }
 
 const renderHostInput = (domain) => {
   return ReactDOMServer.renderToString(<div className={styles['elements-wrapper']}>
-    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onkeyup={onKeyUp} />
+    <input name='adminHost' id='adminHost' type='text' placeholder='Admin Host' autoComplete='off' className={[`swal2-input ${styles['inline-elements']}`].join('')} onkeyup={onKeyUp.toString()} />
     <span className={styles['inline-elements']}>{domain}</span>
   </div>);
 }
