@@ -3,6 +3,8 @@ import withReactContent     from 'sweetalert2-react-content'
 import React                from 'react'
 import styles               from 'dashboard/B4aAdminPage/B4aAdminPage.scss'
 
+const reactSwal = withReactContent(Swal);
+
 // Modal parameters
 const modalOptions = {
   confirmButtonText: 'Next &rarr;',
@@ -15,7 +17,7 @@ const modalOptions = {
 
 const onKeyUp = (event) => {
   if (event.key === 'Enter') {
-    Swal.clickConfirm();
+    reactSwal.clickConfirm();
   }
 }
 
@@ -43,18 +45,18 @@ const renderConfirmStep = () => {
 const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
   let adminURL = ''
 
-  const steps = await withReactContent(Swal).mixin(modalOptions).queue([
+  const steps = await .mixin(modalOptions).queue([
     {
       title: 'Create an Admin User',
       html: renderUserInputs(setState),
       onOpen: () => {
         // If there is a admin user, bypass the first step
-        isRoleCreated && Swal.clickConfirm()
+        isRoleCreated && reactSwal.clickConfirm()
       },
       preConfirm: async () => {
         try {
           if (!isRoleCreated){
-            Swal.showLoading()
+            reactSwal.showLoading()
 
             const username = document.getElementById('adminUser').value
             const password = document.getElementById('adminPass').value
@@ -64,7 +66,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
             await createClasses()
           }
         } catch(err) {
-          Swal.showValidationMessage(
+          reactSwal.showValidationMessage(
             `Request failed: ${err}`
           )
         }
@@ -76,7 +78,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       html: renderHostInput(domain, setState),
       preConfirm: async () => {
         try {
-          Swal.showLoading()
+          reactSwal.showLoading()
 
           const host = document.getElementById('adminHost').value
           if (!host) throw new Error("Missing admin host")
@@ -85,7 +87,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           await activateLiveQuery()
           await setState({ adminURL })
         } catch(err) {
-          Swal.showValidationMessage(
+          reactSwal.showValidationMessage(
             `Request failed: ${err}`
           )
         }
@@ -97,7 +99,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       showCancelButton: false,
       confirmButtonText: 'Got it!',
       onOpen: () => {
-        const a = Swal.getContent().querySelector('a')
+        const a = reactSwal.getContent().querySelector('a')
         if (a) a.href = a.text = adminURL
       },
       preConfirm: () => {
