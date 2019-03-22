@@ -83,7 +83,7 @@
     "react-dom": "16.8.5",
     "react-router": "4.4.0",
     "react-router-dom": "4.4.0",
-    "react-test-renderer": "16.8.4",
+    "react-test-renderer": "16.8.5",
     "request": "2.87.0",
     "request-promise": "4.2.4",
     "sass-loader": "7.1.0",
