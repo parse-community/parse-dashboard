@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/parse-community/parse-dashboard/master.svg?style=flat)](https://travis-ci.org/parse-community/parse-dashboard)
 [![npm version](https://img.shields.io/npm/v/parse-dashboard.svg?style=flat)](https://www.npmjs.com/package/parse-dashboard)
 
-Parse Dashboard is a standalone dashboard for managing your Parse apps. You can use it to manage your [Parse Server](https://github.com/ParsePlatform/parse-server) apps and your apps that are running on [Parse.com](https://Parse.com).
+Parse Dashboard is a standalone dashboard for managing your [Parse Server](https://github.com/ParsePlatform/parse-server) apps.
 
 * [Getting Started](#getting-started)
 * [Local Installation](#local-installation)
@@ -111,27 +111,22 @@ PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
 
 ## Managing Multiple Apps
 
-Managing multiple apps from the same dashboard is also possible.  Simply add additional entries into the `parse-dashboard-config.json` file's `"apps"` array.
-
-You can manage self-hosted [Parse Server](https://github.com/ParsePlatform/parse-server) apps, *and* apps that are hosted on [Parse.com](http://parse.com/) from the same dashboard. In your config file, you will need to add the `restKey` and `javascriptKey` as well as the other paramaters, which you can find on `dashboard.parse.com`. Set the serverURL to `http://api.parse.com/1`:
+Managing multiple apps from the same dashboard is also possible. Simply add additional entries into the `parse-dashboard-config.json` file's `"apps"` array:
 
 ```json
 {
   "apps": [
     {
-      "serverURL": "https://api.parse.com/1", // Hosted on Parse.com
-      "appId": "myAppId",
-      "masterKey": "myMasterKey",
-      "javascriptKey": "myJavascriptKey",
-      "restKey": "myRestKey",
-      "appName": "My Parse.Com App",
-      "production": true
-    },
-    {
       "serverURL": "http://localhost:1337/parse", // Self-hosted Parse Server
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App"
+    },
+    {
+      "serverURL": "http://localhost:1337/parse2", // Self-hosted Parse Server
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App 2"
     }
   ]
 }
