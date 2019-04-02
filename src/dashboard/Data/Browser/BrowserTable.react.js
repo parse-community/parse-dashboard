@@ -25,6 +25,18 @@ const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
 
 let scrolling = false;
 
+const detectArray = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(detectArray);
+  } else if (value instanceof Parse.Object) {
+    return value.toPointer();
+  } else if (value && typeof value.getMonth === 'function') {
+    return { __type: 'Date', iso: value.toISOString() };
+  } else {
+    return value;
+  }
+};
+
 export default class BrowserTable extends React.Component {
   constructor() {
     super();
@@ -203,18 +215,7 @@ export default class BrowserTable extends React.Component {
             value = '';
           } else if (type === 'Array') {
             if (value) {
-              const detectObject = (value) => {
-                if (Array.isArray(value)) {
-                  return value.map(detectObject);
-                } else if (value instanceof Parse.Object) {
-                  return value.toPointer();
-                } else if (value && typeof value.getMonth === 'function') {
-                  return { __type: "Date", iso: value.toISOString() };
-                } else {
-                  return value;
-                }
-              };
-              value = detectObject(value);
+              value = detectArray(value);
             }
           }
           let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);

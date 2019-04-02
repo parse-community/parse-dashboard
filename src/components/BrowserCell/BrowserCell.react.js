@@ -13,6 +13,21 @@ import React                     from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 
+const detectArray = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(detectArray);
+  } else if (value instanceof Parse.Object) {
+    return value.toPointer();
+  } else if (typeof value === 'object') {
+    Object.keys(value).forEach(key => {
+      value[key] = detectArray(value[key]);
+    });
+    return value;
+  } else {
+    return value;
+  }
+};
+
 let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick }) => {
   let content = value;
   let classes = [styles.cell, unselectable];
@@ -43,21 +58,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';
   } else if (type === 'Array') {
-    const detectObject = (value) => {
-      if (Array.isArray(value)) {
-        return value.map(detectObject);
-      } else if (value instanceof Parse.Object) {
-        return value.toPointer();
-      } else if (typeof value === 'object') {
-        Object.keys(value).forEach(key => {
-          value[key] = detectObject(value[key]);
-        });
-        return value;
-      } else {
-        return value;
-      }
-    };
-    content = JSON.stringify(detectObject(value));
+    content = JSON.stringify(detectArray(value));
   } else if (type === 'Object' || type === 'Bytes') {
     content = JSON.stringify(value);
   } else if (type === 'File') {
