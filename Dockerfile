@@ -30,4 +30,6 @@ COPY --from=base /src/package*.json /src/
 # Copy compiled src dirs
 COPY --from=base /src/Parse-Dashboard/ /src/Parse-Dashboard/
 
+USER node
+
 ENTRYPOINT ["node", "Parse-Dashboard/index.js"]

@@ -15,6 +15,8 @@ import Parse                  from 'parse';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import Button                 from 'components/Button/Button.react';
+import ParseApp               from 'lib/ParseApp';
+import PropTypes              from 'lib/PropTypes';
 
 const MAX_ROWS = 60; // Number of rows to render at any time
 const ROW_HEIGHT = 31;
@@ -212,7 +214,7 @@ export default class BrowserTable extends React.Component {
               value = value.map(val => {
                   if (val instanceof Parse.Object) {
                       return val.toPointer();
-                  } else if (typeof val.getMonth === 'function') {
+                  } else if (val && typeof val.getMonth === 'function') {
                       return { __type: "Date", iso: val.toISOString() };
                   }
 
@@ -334,8 +336,14 @@ export default class BrowserTable extends React.Component {
           readonly={!!this.props.relation || !!this.props.isUnique}
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
-          onAddColumn={this.props.onAddColumn} />
+          onAddColumn={this.props.onAddColumn}
+          preventSchemaEdits={this.context.currentApp.preventSchemaEdits} />
       </div>
     );
   }
 }
+
+BrowserTable.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
+};
+

@@ -88,16 +88,17 @@ module.exports = function(config, options) {
         req.connection.remoteAddress === '127.0.0.1' ||
         req.connection.remoteAddress === '::ffff:127.0.0.1' ||
         req.connection.remoteAddress === '::1';
-      if (!requestIsLocal && !req.secure && !options.allowInsecureHTTP) {
-        //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
-        return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
-      }
+      if (!options.dev && !requestIsLocal) {
+        if (!req.secure && !options.allowInsecureHTTP) {
+          //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
+          return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
+        }
 
-      if (!requestIsLocal && !users) {
-        //Accessing the dashboard over the internet can only be done with username and password
-        return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
+        if (!users) {
+          //Accessing the dashboard over the internet can only be done with username and password
+          return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
+        }
       }
-
       const authentication = req.user;
 
       const successfulAuth = authentication && authentication.isAuthenticated;
@@ -139,7 +140,7 @@ module.exports = function(config, options) {
 
       //They didn't provide auth, and have configured the dashboard to not need auth
       //(ie. didn't supply usernames and passwords)
-      if (requestIsLocal) {
+      if (requestIsLocal || options.dev) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
         return res.json(response);
       }
@@ -201,6 +202,9 @@ module.exports = function(config, options) {
     app.get('/*', function(req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         return res.redirect(`${mountPath}login`);
+      }
+      if (users && req.user && req.user.matchingUsername ) {
+        res.append('username', req.user.matchingUsername);
       }
       res.send(`<!DOCTYPE html>
         <head>
