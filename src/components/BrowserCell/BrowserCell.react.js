@@ -56,7 +56,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
       } else {
         return value;
       }
-    }
+    };
     content = JSON.stringify(detectObject(value));
   } else if (type === 'Object' || type === 'Bytes') {
     content = JSON.stringify(value);

@@ -203,15 +203,18 @@ export default class BrowserTable extends React.Component {
             value = '';
           } else if (type === 'Array') {
             if (value) {
-              value = value.map(val => {
-                  if (val instanceof Parse.Object) {
-                      return val.toPointer();
-                  } else if (val && typeof val.getMonth === 'function') {
-                      return { __type: "Date", iso: val.toISOString() };
-                  }
-
-                  return val;
-              });
+              const detectObject = (value) => {
+                if (Array.isArray(value)) {
+                  return value.map(detectObject);
+                } else if (value instanceof Parse.Object) {
+                  return value.toPointer();
+                } else if (value && typeof value.getMonth === 'function') {
+                  return { __type: "Date", iso: value.toISOString() };
+                } else {
+                  return value;
+                }
+              };
+              value = detectObject(value);
             }
           }
           let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);
