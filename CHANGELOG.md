@@ -1,8 +1,12 @@
 ## Parse Dashboard Changelog
-
-### NEXT RELEASE
-
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### master
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.2.1...master)
+
+
+### 1.2.1
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.2.0...1.2.0)
 * When using username to login, display dashboard username(#800).
 
 ### 1.2.0
