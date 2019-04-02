@@ -138,10 +138,8 @@ class B4aAdminPage extends DashboardView {
 
   async createAdmin() {
     const { username, password } = this.state
-    const admin = await this.createUser({ username, password })
+    await this.context.currentApp.addAdminUser({ username, password })
 
-    // Create role and a relation with admin
-    await this.createRole(admin)
     await this.setState({ isRoleCreated: true })
   }
 
