@@ -4,7 +4,6 @@
 ### master
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.0...master)
 
-
 ### 1.3.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.2.0...1.3.0)
 
