@@ -40,7 +40,7 @@ const renderConfirmStep = () => {
   </div>);
 }
 
-const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated}) => {
+const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated, createIndexes }) => {
   let adminURL = ''
 
   const steps = await Swal.mixin(modalOptions).queue([
@@ -106,10 +106,12 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
       onBeforeOpen: () => {
         const a = Swal.getContent().querySelector('a')
         if (a) a.href = a.text = adminURL
-      },
-      preConfirm: () => {
         if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onCreateAdminHostEvent === 'function')
           back4AppNavigation.onCreateAdminHostEvent()
+
+        // Dispatches the request to the back-end in order to create the text indexes
+        // and enable the full-text search
+        createIndexes()
       }
     }
   ])

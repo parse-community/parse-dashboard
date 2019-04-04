@@ -153,6 +153,7 @@ class B4aAdminPage extends DashboardView {
       createClasses: this.createClasses.bind(this),
       createAdminHost: this.createHost.bind(this),
       activateLiveQuery: this.activateLiveQuery.bind(this),
+      createIndexes: this.context.currentApp.createIndexes,
       ...this.state
     })
 
