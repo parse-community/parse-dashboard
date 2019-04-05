@@ -145,7 +145,7 @@ class B4aAdminPage extends DashboardView {
     await this.setState({ isRoleCreated: true })
   }
 
-  createIndexes = async () => {
+  async createIndexes() {
     await this.context.currentApp.createIndexes()
   }
 
@@ -157,7 +157,7 @@ class B4aAdminPage extends DashboardView {
       createClasses: this.createClasses.bind(this),
       createAdminHost: this.createHost.bind(this),
       activateLiveQuery: this.activateLiveQuery.bind(this),
-      createIndexes: this.createIndexes,
+      createIndexes: this.createIndexes.bind(this),
       ...this.state
     })
 
