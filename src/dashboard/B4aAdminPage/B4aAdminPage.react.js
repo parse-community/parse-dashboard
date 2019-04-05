@@ -145,6 +145,10 @@ class B4aAdminPage extends DashboardView {
     await this.setState({ isRoleCreated: true })
   }
 
+  createIndexes = async () => {
+    await this.context.currentApp.createIndexes()
+  }
+
   async renderModal() {
     await B4aAdminModal.show({
       domain: this.adminDomain,
@@ -153,7 +157,7 @@ class B4aAdminPage extends DashboardView {
       createClasses: this.createClasses.bind(this),
       createAdminHost: this.createHost.bind(this),
       activateLiveQuery: this.activateLiveQuery.bind(this),
-      createIndexes: this.context.currentApp.createIndexes,
+      createIndexes: this.createIndexes,
       ...this.state
     })
 
