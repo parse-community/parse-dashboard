@@ -1,5 +1,5 @@
 ## Parse Dashboard Changelog
-* _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: Correct inappropriate error message when no target audience is selected.
 
 ### master
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.0...master)
