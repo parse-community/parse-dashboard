@@ -310,7 +310,7 @@ const B4aAdminParams = ({appName}) => ({
           title: 'Key',
           subType: 'SELECT',
           isRequired: true,
-          options: '["appName", "brandColor", "logo"]',
+          options: '["appName", "brandColor", "logo", "isHomeHidden", "isFeedbackHidden", "isSupportButtonHidden"]',
           isTableHidden: false,
           relevance: -1000,
           referencesLinkText: '',
