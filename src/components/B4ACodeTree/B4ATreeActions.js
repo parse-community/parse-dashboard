@@ -3,6 +3,7 @@ import $                from 'jquery'
 import jstree           from 'jstree';
 import Swal             from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { Base64 }       from 'js-base64'
 
 // Alert parameters
 const MySwal = withReactContent(Swal)
@@ -56,7 +57,7 @@ const decodeFile = code => {
     if (code) {
       // Expected format data:[<mediatype>][;base64],<data>
       let encodedCode = code.split(',')[1]
-      let decodedCode = atob(encodedCode)
+      let decodedCode = Base64.decode(encodedCode)
       code = decodedCode
     }
   } catch (err) {
