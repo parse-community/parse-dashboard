@@ -7,6 +7,7 @@
  */
 import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import B4ABrowserToolbar      from 'dashboard/Data/Browser/B4ABrowserToolbar.react';
+import IndexForm              from 'dashboard/IndexManager/IndexForm.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
@@ -36,10 +37,13 @@ export default class DataBrowser extends React.Component {
       current: null,
       editing: false,
       currentTooltip: null,
-      numberOfColumns: 0
+      numberOfColumns: 0,
+      showIndexManager: false
     };
 
     this.handleKey = this.handleKey.bind(this);
+    this.onOpenIndexManager = this.onOpenIndexManager.bind(this);
+    this.onCloseIndexManager = this.onCloseIndexManager.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -245,6 +249,25 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  onOpenIndexManager() {
+    this.setState({ showIndexManager: true })
+  }
+
+  onCloseIndexManager() {
+    this.setState({ showIndexManager: false })
+  }
+
+  renderIndexManager() {
+    if (this.state.showIndexManager) {
+      const classes = {
+        [this.props.className]: Object.keys(this.props.columns).filter(column => column !== 'ACL')
+      }
+      // FIXME: Replace IndexForm with IndexManager !!!
+      return <IndexForm classes={classes} onConfirm={this.onCloseIndexManager} onCancel={this.onCloseIndexManager} />
+    }
+    return null
+  }
+
   render() {
     let { className, ...other } = this.props;
     let { applicationId } = this.context.currentApp
@@ -273,7 +296,9 @@ export default class DataBrowser extends React.Component {
           enableImport={this.context.currentApp.serverInfo.features.schemas.import}
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions}
           {...other}
-          applicationId={applicationId} />
+          applicationId={applicationId}
+          onOpenIndexManager={this.onOpenIndexManager} />
+        {this.renderIndexManager()}
       </div>
     );
   }

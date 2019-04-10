@@ -60,7 +60,8 @@ let B4ABrowserToolbar = ({
     enableExportClass,
     enableSecurityDialog,
 
-    applicationId
+    applicationId,
+    onOpenIndexManager
   }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -182,6 +183,9 @@ let B4ABrowserToolbar = ({
         <Icon name='add-column' width={32} height={26} />
       </a>
       <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
+        <Icon name='refresh' width={30} height={26} />
+      </a>
+      <a className={styles.toolbarButton} onClick={onOpenIndexManager} title='Index Manager'>
         <Icon name='refresh' width={30} height={26} />
       </a>
       <BrowserFilter

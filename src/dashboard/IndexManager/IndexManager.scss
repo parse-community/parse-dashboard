@@ -1,0 +1,39 @@
+.indexManagerContainer {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+
+  .indexManagerTable {
+    margin-top: 10px;
+    font-size: 14px;
+
+    th {
+      padding: 7px;
+      text-align: center;
+    }
+
+    td {
+      &:first-of-type, &:nth-of-type(2) {
+        min-width: 171px;
+      }
+
+      &:nth-of-type(3) {
+        max-width: 50px;
+      }
+
+      &:nth-of-type(4) {
+        min-width: 50px;
+        text-align: center;
+      }
+    }
+
+    .disabled {
+      text-align: center;
+      pointer-events: none;
+      background-color: #f6fafb;
+    }
+
+    .deleteIndexBtn {
+      cursor: pointer;
+    }
+  }
+}
