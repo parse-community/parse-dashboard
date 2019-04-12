@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
+
+.description {
+  height: 100%;
+
+  div:nth-child(1) {
+    height: 70%;
+  }
+
+  .text {
+    text-align: left;
+    padding: 20px 0;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    color: rgba(0, 0, 0, .5)
+  }
+
+  .button {
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+
+
