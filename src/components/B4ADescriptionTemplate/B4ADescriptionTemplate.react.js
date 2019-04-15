@@ -12,12 +12,6 @@ import styles       from 'components/B4ADescriptionTemplate/B4ADescriptionTempla
 
 const DESCRIPTION_LIMIT_OF_CHARACTERS = 300;
 
-const openLink = (link, title) => {
-  window.open(link, "_blank")
-  if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onClickAppTemplate === 'function')
-    back4AppNavigation.onClickAppTemplate(title)
-}
-
 const truncateDescription = (text = '') => {
   if (text.length > DESCRIPTION_LIMIT_OF_CHARACTERS) {
     const lastSpaceInRange = text.indexOf(' ', DESCRIPTION_LIMIT_OF_CHARACTERS - 10);
@@ -34,7 +28,7 @@ let B4ADescriptionTemplate = (props) => {
       style={{ padding: '0 ' + padding }}>
         <div className={styles.text}>{truncateDescription(props.description)}</div>
         <div className={styles.button}>
-          <Button value={"Buy externally"} primary={true} color="green" onClick={() => openLink(props.link, props.title)}/>
+          <Button value={"Buy externally"} primary={true} color="green" onClick={props.onOpenLink}/>
         </div>
     </div>
   );
