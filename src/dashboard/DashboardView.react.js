@@ -262,6 +262,16 @@ export default class DashboardView extends React.Component {
       }
     })
 
+    appSidebarSections.push({
+      name: 'App Templates',
+      icon: 'app-templates',
+      link: '/app-templates',
+      badgeParams: {
+        label: 'new',
+        color: 'green'
+      }
+    })
+
     if (pushSubsections.length > 0) {
       appSidebarSections.push({
         name: 'Push',
