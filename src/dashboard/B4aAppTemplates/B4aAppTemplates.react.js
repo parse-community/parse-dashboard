@@ -14,7 +14,7 @@ import Icon             from 'components/Icon/Icon.react';
 
 
 const APP_TEMPLATES_URL = `${b4aSettings.BACK4APP_API_PATH}/app-templates`
-const LEGEND = 'You don’t need to start from the scratch'
+const LEGEND = 'App Templates'
 const DESCRIPTION = 'Before starting your project, you can find out if someone has not already done it for you. Along with Back4app, the application code templates help you accelerate the app development cycle, saving months of development.'
 
 
