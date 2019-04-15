@@ -15,7 +15,7 @@ export const demos = [
   {
     render: () => (
       <Field
-        height="200px"
+        height="150px"
         label={<B4ALabelTemplate
           imageSource="https://www.back4app.com/assets/images/illustrations/back4app-platform-desktop.jpg"
           title='Radio'
