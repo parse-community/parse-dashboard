@@ -21,6 +21,7 @@ export const demos = [
           title='Radio'
           subtitle='iOS Social Listings Shopping Application'
           author='xscoder in Full Applications'
+          technologies={["IOS"]}
         />}
         input={null} />
     )

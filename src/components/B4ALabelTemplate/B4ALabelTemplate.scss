@@ -38,6 +38,15 @@
       font-size: 12px;
       color: rgba(0, 0, 0, .35);
     }
+
+    .technologies {
+      display: flex;
+      margin-top: 10px;
+
+      * {
+        margin-right: 10px;
+      }
+    }
 }
 
 

@@ -9,6 +9,20 @@ import { centered } from 'components/Field/Field.scss';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
 import styles       from 'components/B4ALabelTemplate/B4ALabelTemplate.scss';
+import B4aBadge     from 'components/B4aBadge/B4aBadge.react'
+
+const TECHNOLOGIES = {
+  ANDROID: "android",
+  IOS: "ios"
+}
+
+const getBadgeColor = (label = '') => {
+  return (
+    label.indexOf(TECHNOLOGIES.ANDROID) > -1 && TECHNOLOGIES.ANDROID ||
+    label.indexOf(TECHNOLOGIES.IOS) > -1 && TECHNOLOGIES.IOS ||
+    'blue'
+  )
+}
 
 let B4ALabelTemplate = (props) => {
   let padding = (props.padding || 20) + 'px';
@@ -24,7 +38,21 @@ let B4ALabelTemplate = (props) => {
         <div className={styles.infoWrapper}>
           <div className={styles.title}>{props.title}</div>
           <div className={styles.subtitle}>{props.subtitle}</div>
-          <div className={styles.author}>{`by ${props.author}`}</div>
+          <div className={styles.author}>{props.author && `by ${props.author}`}</div>
+          <div className={styles.technologies}>
+            {
+              props.technologies ?
+                props.technologies.map((technology, index) => (
+                  technology && <B4aBadge
+                    key={index}
+                    label={technology}
+                    color={getBadgeColor(technology.toLowerCase())}
+                    additionalStyles={{fontSize: '11px', fontWeight: 'normal', padding:'0 5px'}}
+                  />)
+                ) :
+                null
+            }
+          </div>
         </div>
     </div>
   );
