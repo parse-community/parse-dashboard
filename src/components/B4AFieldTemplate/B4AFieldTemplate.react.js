@@ -27,6 +27,7 @@ let B4AFieldTemplate = ({imageSource, title, subtitle, author, description, link
       </div>
       <div className={styles.right}>
       <B4ADescriptionTemplate
+        title={title}
         description={description}
         link={link}
       />
