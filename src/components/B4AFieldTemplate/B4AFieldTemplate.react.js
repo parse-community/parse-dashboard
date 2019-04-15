@@ -11,7 +11,7 @@ import styles    from 'components/B4AFieldTemplate/B4AFieldTemplate.scss';
 import B4ALabelTemplate    from 'components/B4ALabelTemplate/B4ALabelTemplate.react';
 import B4ADescriptionTemplate    from 'components/B4ADescriptionTemplate/B4ADescriptionTemplate.react';
 
-let B4AFieldTemplate = ({imageSource, title, subtitle, author, text, link}) => {
+let B4AFieldTemplate = ({imageSource, title, subtitle, author, description, link, technologies}) => {
   let classes = [styles.field];
 
   return (
@@ -22,11 +22,12 @@ let B4AFieldTemplate = ({imageSource, title, subtitle, author, text, link}) => {
           title={title}
           subtitle={subtitle}
           author={author}
+          technologies={technologies}
         />
       </div>
       <div className={styles.right}>
       <B4ADescriptionTemplate
-        text={text}
+        description={description}
         link={link}
       />
       </div>
