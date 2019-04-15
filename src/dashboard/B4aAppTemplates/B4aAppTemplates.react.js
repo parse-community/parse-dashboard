@@ -47,7 +47,7 @@ class B4aAppTemplates extends DashboardView {
 
   async componentDidMount() {
     await this.fetchTemplates()
-    if (back4AppNavigation && typeof back4AppNavigation.onOpenAppTemplatePage === 'function')
+    if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.onOpenAppTemplatePage === 'function')
       back4AppNavigation.onOpenAppTemplatePage()
   }
 
