@@ -17,11 +17,10 @@ const TECHNOLOGIES = {
 }
 
 const getBadgeColor = (label = '') => {
-  return (
-    label.indexOf(TECHNOLOGIES.ANDROID) > -1 && TECHNOLOGIES.ANDROID ||
-    label.indexOf(TECHNOLOGIES.IOS) > -1 && TECHNOLOGIES.IOS ||
-    'blue'
-  )
+  for (let technology in TECHNOLOGIES)
+    if (TECHNOLOGIES.hasOwnProperty(technology) && label.indexOf(TECHNOLOGIES[technology]) > -1)
+      return TECHNOLOGIES[technology]
+  return 'blue'
 }
 
 let B4ALabelTemplate = (props) => {
