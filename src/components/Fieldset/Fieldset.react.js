@@ -9,11 +9,11 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/Fieldset/Fieldset.scss';
 
-let Fieldset = ({ legend, description, children }) => (
+let Fieldset = ({ legend, description, children, width = '' }) => (
   <div className={styles.fieldset}>
     <div className={styles.legend}>{legend}</div>
     <div className={styles.description}>{description}</div>
-    <div className={styles.fields}>
+    <div className={styles.fields} style={{ width: width }}>
       {children}
     </div>
   </div>
@@ -27,5 +27,8 @@ Fieldset.propTypes = {
   ),
   description: PropTypes.node.describe(
     'The secondary header of the Fieldset. It can be any renderable content.'
+  ),
+  width: PropTypes.string.describe(
+    'Optionally sets the explicit width of the FieldSet. This can be any valid CSS size.'
   )
 };
