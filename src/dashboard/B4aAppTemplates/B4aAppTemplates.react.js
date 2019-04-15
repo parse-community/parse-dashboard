@@ -1,5 +1,6 @@
 import React            from 'react'
 import axios            from 'axios'
+import InfiniteScroll   from 'react-infinite-scroller';
 import DashboardView    from 'dashboard/DashboardView.react';
 import subscribeTo      from 'lib/subscribeTo';
 import LoaderContainer  from 'components/LoaderContainer/LoaderContainer.react'
@@ -24,16 +25,19 @@ class B4aAppTemplates extends DashboardView {
 
     this.state = {
       loading: true,
-      templates: [],
+      appTemplates: [],
+      hasMore: false,
       error: undefined
     }
 
   }
 
-  async fetchTemplates() {
+  async fetchTemplates(currentPage = 1) {
+    console.log(currentPage)
     try {
-      const response = await axios.get(APP_TEMPLATES_URL)
-      await this.setState({ templates: response && response.data || [] })
+      const response = await axios.get(`${APP_TEMPLATES_URL}?page=${currentPage}`)
+      const { appTemplates = [], hasMore = false } = response && response.data
+      await this.setState(prevState => ({ appTemplates: prevState.appTemplates.concat(appTemplates), hasMore }))
     } catch (err) {
       await this.setState({ error: err.response && err.response.data && err.response.data.error || err })
     } finally {
@@ -46,7 +50,7 @@ class B4aAppTemplates extends DashboardView {
   }
 
   renderContent() {
-    const { templates = [] } = this.state
+    const { appTemplates = [] } = this.state
 
     const toolbar = (
       <Toolbar
@@ -59,20 +63,28 @@ class B4aAppTemplates extends DashboardView {
         legend={LEGEND}
         description={DESCRIPTION}
         width= '90%'>
-        {
-          templates.map(template => {
-            return template ?
-              <B4AFieldTemplate
-                imageSource={template.imageSource}
-                title={template.title}
-                subtitle={template.subtitle}
-                author={template.author}
-                text={template.description}
-                link={template.link}
-              /> :
-              null
-          })
-        }
+        <InfiniteScroll
+          pageStart={1}
+          loadMore={this.fetchTemplates.bind(this)}
+          hasMore={this.state.hasMore}
+          loader={<div className="loader" key={0}>Loading ...</div>}>
+          {
+            appTemplates.map((template, index) => {
+              return template ?
+                <B4AFieldTemplate
+                  key={index}
+                  imageSource={template.imageSource}
+                  title={template.title}
+                  subtitle={template.subtitle}
+                  author={template.author}
+                  description={template.description}
+                  link={template.link}
+                  technologies={template.technologies}
+                /> :
+                null
+            })
+          }
+        </InfiniteScroll>
       </Fieldset>
     )
 
