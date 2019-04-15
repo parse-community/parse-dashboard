@@ -33,9 +33,8 @@ class B4aAppTemplates extends DashboardView {
   }
 
   async fetchTemplates(currentPage = 1) {
-    console.log(currentPage)
     try {
-      const response = await axios.get(`${APP_TEMPLATES_URL}?page=${currentPage}`)
+      const response = await axios.get(`${APP_TEMPLATES_URL}?page=${currentPage}`, { withCredentials: true })
       const { appTemplates = [], hasMore = false } = response && response.data
       await this.setState(prevState => ({ appTemplates: prevState.appTemplates.concat(appTemplates), hasMore }))
     } catch (err) {
@@ -89,8 +88,6 @@ class B4aAppTemplates extends DashboardView {
         </InfiniteScroll>
       </Fieldset>
     )
-
-    console.log('state', fieldSet)
 
     return (
       <LoaderContainer className={styles.loading} loading={this.state.loading} hideAnimation={false} solid={true}>
