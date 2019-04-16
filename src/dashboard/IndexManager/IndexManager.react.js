@@ -35,13 +35,14 @@ class IndexManager extends DashboardView {
   }
 
   componentWillMount() {
+    const { className } = this.props.params
     this.props.schema.dispatch(ActionTypes.FETCH).then(() => {
-      if (!this.props.params.className && this.props.schema.data.get('classes')) {
+      if (!className && this.props.schema.data.get('classes')) {
         this.redirectToFirstClass(this.props.schema.data.get('classes'));
       }
     })
-    if (this.props.params.className) {
-      this.context.currentApp.getIndexes(this.props.className).then(data => {
+    if (className) {
+      this.context.currentApp.getIndexes(className).then(data => {
         this.setState({
           data,
           loading: false
@@ -76,11 +77,12 @@ class IndexManager extends DashboardView {
   }
 
   componentWillReceiveProps(props, context) {
-    if (props.className !== this.props.className) {
+    const { className } = this.props.params
+    if (props.className !== className) {
       this.setState({
         loading: true
       });
-      context.currentApp.getIndexes(this.props.className).then(data => {
+      context.currentApp.getIndexes(className).then(data => {
         this.setState({
           data,
           loading: false
