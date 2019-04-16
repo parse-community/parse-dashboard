@@ -15,6 +15,7 @@
   float: right;
   font-weight: bold;
   color: $white;
+  min-width: fit-content;
 }
 
 .green {
@@ -30,4 +31,14 @@
 .red {
   background-color: $red;
   border-color: $red;
+}
+
+.ios {
+  background-color: $iosColor;
+  border-color: $iosColor;
+}
+
+.android {
+  background-color: $androidColor;
+  border-color: $androidColor;
 }
