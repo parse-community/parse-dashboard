@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+@import 'stylesheets/back4app.scss';
+
+.labelTemplate {
+  display: flex;
+
+  .imageWrapper {
+    img {
+      height: 80px;
+      width: 80px;
+      object-fit: contain;
+    }
+  }
+
+  .infoWrapper {
+    margin-left: 30px;
+
+    .title {
+      font-size: 20px;
+      color: $darkBlue;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      font-size: 14px;
+    }
+
+    .author {
+      font-size: 12px;
+      color: rgba(0, 0, 0, .35);
+    }
+
+    .technologies {
+      display: flex;
+      margin-top: 10px;
+
+      * {
+        margin-right: 10px;
+      }
+    }
+}
+
+
+}
+

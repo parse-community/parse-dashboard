@@ -13,9 +13,13 @@ export let Chart                     = require('components/Chart/Chart.example')
 export let Checkbox                  = require('components/Checkbox/Checkbox.example');
 export let ChromeDatePicker          = require('components/ChromeDatePicker/ChromeDatePicker.example');
 export let ChromeDropdown            = require('components/ChromeDropdown/ChromeDropdown.example');
-export let B4ACloudCodeView             = require('components/B4ACloudCodeView/B4ACloudCodeView.example');
+export let B4ACloudCodeView          = require('components/B4ACloudCodeView/B4ACloudCodeView.example');
 export let CodeSnippet               = require('components/CodeSnippet/CodeSnippet.example');
-export let B4ACodeTree                  = require('components/B4ACodeTree/B4ACodeTree.example');
+export let B4ACodeTree               = require('components/B4ACodeTree/B4ACodeTree.example');
+export let B4AFieldTemplate          = require('components/B4AFieldTemplate/B4AFieldTemplate.example');
+export let B4ALabelTemplate          = require('components/B4ALabelTemplate/B4ALabelTemplate.example');
+export let B4ADescriptionTemplate    = require('components/B4ADescriptionTemplate/B4ADescriptionTemplate.example');
+
 export let CreditCardInput           = require('components/CreditCardInput/CreditCardInput.example');
 export let DataBrowserHeader         = require('components/DataBrowserHeader/DataBrowserHeader.example');
 export let DatePicker                = require('components/DatePicker/DatePicker.example');
