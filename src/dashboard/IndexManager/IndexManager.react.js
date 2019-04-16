@@ -92,13 +92,14 @@ class IndexManager extends DashboardView {
   }
 
   refresh() {
+    const { className } = this.props.params
     this.setState({
       loading: true,
       selected: {},
       data: null,
       showIndexManager: false
     })
-    this.context.currentApp.getIndexes(this.props.className).then(data => {
+    this.context.currentApp.getIndexes(className).then(data => {
       this.setState({
         data,
         loading: false
