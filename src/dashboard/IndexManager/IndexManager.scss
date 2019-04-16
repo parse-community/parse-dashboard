@@ -1,39 +1,95 @@
-.indexManagerContainer {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
+.indexManager {
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    height: 48px;
+    padding: 0 20px;
+    background-color: #353445;
 
-  .indexManagerTable {
-    margin-top: 10px;
-    font-size: 14px;
+    .header {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
-    th {
-      padding: 7px;
-      text-align: center;
-    }
-
-    td {
-      &:first-of-type, &:nth-of-type(2) {
-        min-width: 171px;
+      .subtitle {
+        font-size: 10px;
+        color: rgba(255, 255, 255, .5);
       }
 
-      &:nth-of-type(3) {
-        max-width: 50px;
-      }
-
-      &:nth-of-type(4) {
-        min-width: 50px;
-        text-align: center;
+      .title {
+        font-size: 16px;
+        color: #F4F5F7;
       }
     }
 
-    .disabled {
-      text-align: center;
-      pointer-events: none;
-      background-color: #f6fafb;
+    .toolbar {
+      display: flex;
+      align-items: center;
+
+      a {
+        margin-right: 10px;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+      }
+
+      svg {
+        vertical-align: middle;
+        fill: white;
+      }
+    }
+  }
+
+  .indexTable {
+    width: 100%;
+
+    thead {
+      font-size: 12px;
+      color: white;
+      background-color: #66637A;
+
+      tr {
+        height: 30px;
+      }
+
+      th {
+        font-weight: 400;
+      }
     }
 
-    .deleteIndexBtn {
-      cursor: pointer;
+    tbody {
+      font-size: 14px;
+
+      tr {
+        height: 50px;
+
+        &:nth-child(even) {
+          background-color: #F4F5F7;
+          border-top: 1px solid #DFDFDF;
+        }
+
+        .selectedContainer {
+          text-align: center;
+        }
+
+        .indexStatus-success {
+          color: #4CAF50;
+        }
+
+        .indexStatus-pending {
+          color: #FFC107;
+        }
+
+        .index-Status-error {
+          color: #D0021B;
+        }
+
+        .statusIcon {
+          padding-right: 8px;
+          font-size: 18px;
+        }
+      }
     }
   }
 }

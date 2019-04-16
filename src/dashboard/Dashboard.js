@@ -22,6 +22,7 @@ import GeneralSettings    from './Settings/GeneralSettings.react';
 import history            from 'dashboard/history';
 import HostingSettings    from './Settings/HostingSettings.react';
 import Icon               from 'components/Icon/Icon.react';
+import IndexManager       from './IndexManager/IndexManager.react'
 import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
 import Jobs               from './Data/Jobs/Jobs.react';
 import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
@@ -282,6 +283,8 @@ class Dashboard extends React.Component {
             <Route path='push' component={PushSettings} />
             <Route path='hosting' component={HostingSettings} />
           </Route>
+          <Route path='index' component={IndexManager} />
+          <Route path='index/:className' component={IndexManager} />
         </Route>
 
         <Redirect from='account' to='/account/overview' />
