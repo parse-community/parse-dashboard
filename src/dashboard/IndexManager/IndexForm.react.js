@@ -8,7 +8,7 @@ import Option from 'components/Dropdown/Option.react';
 import PropTypes from 'lib/PropTypes'
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
-import styles from 'dashboard/IndexManager/IndexManager.scss';
+import styles from 'dashboard/IndexManager/IndexForm.scss';
 
 class IndexForm extends Component {
   constructor(props) {
@@ -109,7 +109,7 @@ class IndexForm extends Component {
       index,
       indexOptions
     }
-    console.log(indexConfiguration)
+    this.props.onConfirm(indexConfiguration)
   }
 
   renderClassContent() {
@@ -179,7 +179,7 @@ class IndexForm extends Component {
     )
 
     const fieldsInput = (
-      <table className={styles.indexManagerTable}>
+      <table className={styles.indexFormTable}>
         <thead>
           <tr>
             <th>Field</th>
@@ -219,7 +219,7 @@ class IndexForm extends Component {
 
     return (
       <Modal width={700} icon='plus' iconSize={40} type={Modal.Types.INFO} title='New Index' subtitle='Optimize your queries performance' confirmText='Create Index' onConfirm={this.createIndex} onCancel={this.props.onCancel}>
-        <div className={styles.indexManagerContainer}>
+        <div className={styles.indexFormContainer}>
           <Field
             labelWidth={35}
             label={<Label text='Class' description='The Class you want to get indexed' />}
