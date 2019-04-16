@@ -913,7 +913,7 @@ export default class ParseApp {
    * @param {Array<String!>!} indexes
    */
   dropIndexes(className, indexes) {
-    return axios.delete(`/parse-app/${this.slug}/index/${className}`, { indexes }).catch(err => {
+    return axios.post(`/parse-app/${this.slug}/index/${className}/deleteAll`, { indexes }).catch(err => {
       throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
     })
   }
