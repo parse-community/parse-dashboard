@@ -37,16 +37,17 @@ class IndexManager extends DashboardView {
   componentWillMount() {
     this.props.schema.dispatch(ActionTypes.FETCH).then(() => {
       if (!this.props.params.className && this.props.schema.data.get('classes')) {
-        console.log("Redirecting...", this.props)
         this.redirectToFirstClass(this.props.schema.data.get('classes'));
       }
     })
-    this.context.currentApp.getIndexes(this.props.className).then(data => {
-      this.setState({
-        data,
-        loading: false
+    if (this.props.params.className) {
+      this.context.currentApp.getIndexes(this.props.className).then(data => {
+        this.setState({
+          data,
+          loading: false
+        })
       })
-    })
+    }
   }
 
   redirectToFirstClass(classList) {
