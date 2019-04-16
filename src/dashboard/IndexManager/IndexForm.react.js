@@ -98,6 +98,13 @@ class IndexForm extends Component {
 
   createIndex() {
     const { indexFields: index, indexName: name, sparse, unique, expireAfterSeconds, weights } = this.state
+
+    // If the index is ascending (1) or descending (-1), we need to convert it to number
+    for (let [key, value] of Object.entries(index)) {
+      if (!isNaN(parseInt(value))) {
+        index[key] = parseInt(value)
+      }
+    }
     const indexOptions = {
       name,
       sparse,
