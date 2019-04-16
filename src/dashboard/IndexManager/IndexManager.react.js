@@ -125,10 +125,7 @@ class IndexManager extends DashboardView {
 
   createIndexes(indexConfiguration) {
     const { className } = this.props.params
-    this.context.currentApp.createIndex({
-      ...indexConfiguration,
-      className
-    })
+    this.context.currentApp.createIndex(className, indexConfiguration)
     this.closeIndexForm()
   }
 
