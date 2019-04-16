@@ -880,9 +880,40 @@ export default class ParseApp {
     })
   }
 
-  createIndexes() {
-    let path = '/parse-app/index';
-    return axios.post(path, { appId: this.applicationId, index: { '$**': 'text' } }).catch(err => {
+  createTextIndexes() {
+    return axios.post(`/parse-app/${this.slug}/index`, { index: { '$**': 'text' } }).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  /**
+   * @param {String!} className
+   */
+  getIndexes(className) {
+    return axios.get(`/parse-app/${this.slug}/index/${className}`).then(res => {
+      return Object.values(Object.values(res.data[className]))
+    }).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  /**
+   * @param {String!} className
+   * @param {Object!} indexConfiguration.index
+   * @param {Object!} indexConfiguration.indexOptions
+   */
+  createIndex(className, indexConfiguration) {
+    return axios.post(`/parse-app/${this.slug}/index/${className}`, indexConfiguration).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
+  /**
+   * @param {String!} className
+   * @param {Array<String!>!} indexes
+   */
+  dropIndexes(className, indexes) {
+    return axios.delete(`/parse-app/${this.slug}/index/${className}`, { indexes }).catch(err => {
       throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
     })
   }

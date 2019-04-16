@@ -40,7 +40,7 @@ const renderConfirmStep = () => {
   </div>);
 }
 
-const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated, createIndexes }) => {
+const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated, createTextIndexes }) => {
   let adminURL = ''
 
   const steps = await Swal.mixin(modalOptions).queue([
@@ -111,7 +111,7 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
         // Dispatches the request to the back-end in order to create the text indexes
         // and enable the full-text search
-        createIndexes()
+        createTextIndexes()
       }
     }
   ])
