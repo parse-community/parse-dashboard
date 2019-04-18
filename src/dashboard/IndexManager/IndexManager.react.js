@@ -187,7 +187,31 @@ class IndexManager extends DashboardView {
   dropIndexes() {
     const { className } = this.props.params
     const indexesToDrop = Object.entries(this.state.selected).filter(([, isSelected]) => isSelected).map(([indexName]) => indexName)
-    this.context.currentApp.dropIndexes(className, indexesToDrop).then(this.refresh)
+    Swal.mixin().queue([
+      {
+        title: 'Are you sure you want to delete the following indexes?',
+        html: `<p style="text-align: center">${indexesToDrop.join('</p><p style="text-align: center">')}</p>`,
+        type: 'warning',
+        confirmButtonText: 'Delete',
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          this.context.currentApp.dropIndexes(className, indexesToDrop)
+            .then(() => {
+              Swal.close()
+              this.refresh()
+            })
+            .catch(e => {
+              console.trace(e)
+            })
+        }
+      },
+      {
+        title: 'Index drop failure',
+        text: 'Error while dropping the indexes. Please try again later.',
+        type: 'error'
+      }
+    ])
   }
 
   renderIndexForm() {
