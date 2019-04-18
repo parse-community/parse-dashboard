@@ -1,6 +1,7 @@
 import { ActionTypes }  from 'lib/stores/SchemaStore'
 import CategoryList from 'components/CategoryList/CategoryList.react'
 import DashboardView from 'dashboard/DashboardView.react'
+import EmptyState from 'components/EmptyState/EmptyState.react'
 import history from 'dashboard/history'
 import Icon from 'components/Icon/Icon.react';
 import IndexForm from './IndexForm.react'
@@ -192,11 +193,6 @@ class IndexManager extends DashboardView {
 
   renderContent() {
     console.log(this.props)
-    if (this.state.loading) {
-      // TODO: Use EmptyState
-      return <div>Loading indexes...</div>
-    }
-
     const { className } = this.props.params
     return (
       <div className={styles.indexManager}>
@@ -220,22 +216,27 @@ class IndexManager extends DashboardView {
             </a>
           </section>
         </div>
-        <table className={styles.indexTable}>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Creation Type</th>
-              <th>Status</th>
-              <th>Fields</th>
-              <th>Unique</th>
-              <th>Sparse</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.renderRows()}
-          </tbody>
-        </table>
+        {this.state.loading || this.state.data.length === 0
+          ? <EmptyState icon='index-manager' title='No indexes were found' description='Create an index using the button located on the top right side' />
+          : (
+            <table className={styles.indexTable}>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Creation Type</th>
+                  <th>Status</th>
+                  <th>Fields</th>
+                  <th>Unique</th>
+                  <th>Sparse</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.renderRows()}
+              </tbody>
+            </table>
+          )
+        }
         {this.renderIndexForm()}
       </div>
     )
