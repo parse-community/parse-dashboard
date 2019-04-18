@@ -245,7 +245,7 @@ class IndexManager extends DashboardView {
       return (
         <tr key={name}>
           <td className={styles.selectedContainer}>
-            <input type='checkbox' value={!!this.state.selected[name]} onChange={() => this.toggleRow(name)} />
+            {status === 'SUCCESS' && <input type='checkbox' value={!!this.state.selected[name]} onChange={() => this.toggleRow(name)} />}
           </td>
           <td>{name}</td>
           <td>{creationType}</td>
