@@ -80,11 +80,12 @@ class IndexManager extends DashboardView {
 
   componentWillReceiveProps(props, context) {
     const { className } = this.props.params
-    if (props.className !== className) {
+    const { className: newClassName } = props.params
+    if (newClassName !== className) {
       this.setState({
         loading: true
       });
-      context.currentApp.getIndexes(props.className).then(data => {
+      context.currentApp.getIndexes(newClassName).then(data => {
         this.setState({
           data,
           loading: false
