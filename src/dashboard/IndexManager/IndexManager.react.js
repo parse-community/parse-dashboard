@@ -11,6 +11,7 @@ import { SpecialClasses } from 'lib/Constants'
 import stringCompare from 'lib/stringCompare'
 import styles from './IndexManager.scss'
 import subscribeTo from 'lib/subscribeTo'
+import Swal from 'sweetalert2'
 
 @subscribeTo('Schema', 'schema')
 class IndexManager extends DashboardView {
@@ -126,9 +127,56 @@ class IndexManager extends DashboardView {
   }
 
   createIndexes(indexConfiguration) {
+    const { index, indexOptions } = indexConfiguration
+    const indexName = indexOptions.name || Object.entries(index).map(entry => entry.join('_')).join('_')
+    const indexTypes = Object.values(index)
+
+    const errorMessages = []
+
     const { className } = this.props.params
-    this.context.currentApp.createIndex(className, indexConfiguration)
-    this.closeIndexForm()
+    const schema = this.props.schema.data.get('classes').get(className).toJSON()
+
+    if (Object.keys(index).filter(indexedField => schema[indexedField].type === 'Array').length > 1) {
+      errorMessages.push('Indexes can only have one Array field')
+    }
+    if (indexTypes.some((indexType, i) => i > 0 && (indexType === '2d' || indexType === '2dsphere' || indexType === 'geoHaystack'))) {
+      errorMessages.push('Indexes can only have a single geolocation index, and it must be the first field')
+    }
+
+    let isIndexNameValid = true, isIndexFieldsValid = true, isTextIndexValid = true
+    const containsTextIndex = indexTypes.indexOf('text') !== -1
+    this.state.data.forEach(({ name, index: existingIndex }) => {
+      if (name === indexName) {
+        isIndexNameValid = false
+      }
+      if (JSON.stringify(Object.keys(JSON.parse(existingIndex))) === JSON.stringify(Object.keys(index))) {
+        isIndexFieldsValid = false
+      }
+      if (Object.values(JSON.parse(existingIndex)).indexOf('text') !== -1 && containsTextIndex) {
+        isTextIndexValid = false
+      }
+    })
+    if (!isIndexNameValid) {
+      errorMessages.push('Index name must be unique')
+    }
+    if (!isIndexFieldsValid) {
+      errorMessages.push('Index fields order must be unique')
+    }
+    if (!isTextIndexValid) {
+      errorMessages.push('Only one text index is allowed per class')
+    }
+    if (errorMessages.length) {
+      Swal.fire({
+        title: 'We found some errors',
+        html: `<p style="text-align: center">${errorMessages.join('</p><p style="text-align: center">')}</p>`,
+        type: 'error',
+        confirmButtonText: 'OK'
+      })
+    } else {
+      const { className } = this.props.params
+      this.context.currentApp.createIndex(className, indexConfiguration)
+      this.closeIndexForm()
+    }
   }
 
   dropIndexes() {
@@ -141,8 +189,9 @@ class IndexManager extends DashboardView {
     if (this.state.showIndexForm) {
       const { className } = this.props.params
       const schema = this.props.schema.data.get('classes').get(className).toJSON()
+      delete schema.ACL
       const classes = {
-        [className]: Object.keys(schema).filter(column => column !== 'ACL')
+        [className]: Object.keys(schema)
       }
       return <IndexForm classes={classes} onConfirm={this.createIndexes} onCancel={this.closeIndexForm} />
     }
