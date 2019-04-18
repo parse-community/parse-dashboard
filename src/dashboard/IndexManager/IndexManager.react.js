@@ -150,7 +150,7 @@ class IndexManager extends DashboardView {
 
     let isIndexNameValid = true, isIndexFieldsValid = true, isTextIndexValid = true
     const containsTextIndex = indexTypes.indexOf('text') !== -1
-    this.state.data.forEach(({ name, index: existingIndex }) => {
+    this.state.data.filter(({ status }) => status !== 'ERROR').forEach(({ name, index: existingIndex }) => {
       if (name === indexName) {
         isIndexNameValid = false
       }
