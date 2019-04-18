@@ -134,6 +134,10 @@ class IndexManager extends DashboardView {
 
     const errorMessages = []
 
+    if (!indexName || indexName.trim().length === 0) {
+      errorMessages.push('Index name is required')
+    }
+
     const { className } = this.props.params
     const schema = this.props.schema.data.get('classes').get(className).toJSON()
 
@@ -141,7 +145,7 @@ class IndexManager extends DashboardView {
       errorMessages.push('Indexes can only have one Array field')
     }
     if (indexTypes.some((indexType, i) => i > 0 && (indexType === '2d' || indexType === '2dsphere' || indexType === 'geoHaystack'))) {
-      errorMessages.push('Indexes can only have a single geolocation index, and it must be the first field')
+      errorMessages.push('The first index field must be the geolocation field')
     }
 
     let isIndexNameValid = true, isIndexFieldsValid = true, isTextIndexValid = true
