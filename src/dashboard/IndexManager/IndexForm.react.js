@@ -101,8 +101,12 @@ class IndexForm extends Component {
 
     // If the index is ascending (1) or descending (-1), we need to convert it to number
     for (let [key, value] of Object.entries(index)) {
-      if (!isNaN(parseInt(value))) {
-        index[key] = parseInt(value)
+      if (value === '-1') {
+        index[key] = -1
+      } else if (value === 1) {
+        index[key] = 1
+      } else {
+        index[key] = value
       }
     }
     const indexOptions = {
