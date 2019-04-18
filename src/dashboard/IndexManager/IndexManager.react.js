@@ -132,6 +132,10 @@ class IndexManager extends DashboardView {
     const indexName = indexOptions.name || Object.entries(index).map(entry => entry.join('_')).join('_')
     const indexTypes = Object.values(index)
 
+    if (indexTypes.indexOf('geoHaystack') !== -1) {
+      indexOptions.bucketSize = 1
+    }
+
     const errorMessages = []
 
     if (!indexName || indexName.trim().length === 0) {
