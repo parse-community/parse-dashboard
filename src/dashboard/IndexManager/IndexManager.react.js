@@ -184,7 +184,16 @@ class IndexManager extends DashboardView {
     } else {
       const { className } = this.props.params
       this.context.currentApp.createIndex(className, indexConfiguration)
-      this.closeIndexForm()
+        .then(() => {
+          this.closeIndexForm()
+        }).catch(e => {
+          Swal.fire({
+            title: 'Index creation failure',
+            text: 'Error while creating the indexes. Please try again later.',
+            type: 'error'
+          })
+          console.trace(e)
+        })
     }
   }
 
