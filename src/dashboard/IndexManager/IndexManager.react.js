@@ -244,6 +244,9 @@ class IndexManager extends DashboardView {
   }
 
   renderRows() {
+    if (!this.state.data) {
+      return null
+    }
     return this.state.data.map(({ name, index, creationType, status, unique = false, sparse = false }) => {
       return (
         <tr key={name}>
