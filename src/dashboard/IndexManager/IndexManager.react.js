@@ -196,7 +196,7 @@ class IndexManager extends DashboardView {
         showCancelButton: true,
         showLoaderOnConfirm: true,
         preConfirm: () => {
-          this.context.currentApp.dropIndexes(className, indexesToDrop)
+          return this.context.currentApp.dropIndexes(className, indexesToDrop)
             .then(() => {
               Swal.close()
               this.refresh()
