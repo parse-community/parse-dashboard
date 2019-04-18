@@ -151,6 +151,9 @@ class IndexManager extends DashboardView {
     if (indexTypes.some((indexType, i) => i > 0 && (indexType === '2d' || indexType === '2dsphere' || indexType === 'geoHaystack'))) {
       errorMessages.push('The first index field must be the geolocation field')
     }
+    if (indexTypes.indexOf('geoHaystack') !== -1 && indexTypes.length !== 2) {
+      errorMessages.push('Geo haystack requires a geolocation and a non-geolocation field')
+    }
 
     let isIndexNameValid = true, isIndexFieldsValid = true, isTextIndexValid = true
     const containsTextIndex = indexTypes.indexOf('text') !== -1
