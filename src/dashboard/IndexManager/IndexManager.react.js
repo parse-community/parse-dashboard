@@ -82,7 +82,7 @@ class IndexManager extends DashboardView {
       this.setState({
         loading: true
       });
-      context.currentApp.getIndexes(className).then(data => {
+      context.currentApp.getIndexes(props.className).then(data => {
         this.setState({
           data,
           loading: false
