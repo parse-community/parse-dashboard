@@ -129,6 +129,7 @@ class IndexManager extends DashboardView {
 
   createIndexes(indexConfiguration) {
     const { index, indexOptions } = indexConfiguration
+    delete index.objectId
     const indexName = indexOptions.name || Object.entries(index).map(entry => entry.join('_')).join('_')
     const indexTypes = Object.values(index)
 
@@ -145,7 +146,7 @@ class IndexManager extends DashboardView {
     const { className } = this.props.params
     const schema = this.props.schema.data.get('classes').get(className).toJSON()
 
-    if (Object.keys(index).filter(indexedField => schema[indexedField].type === 'Array').length > 1) {
+    if (Object.keys(index).filter(indexedField => schema[indexedField] && schema[indexedField].type === 'Array').length > 1) {
       errorMessages.push('Indexes can only have one Array field')
     }
     if (indexTypes.some((indexType, i) => i > 0 && (indexType === '2d' || indexType === '2dsphere' || indexType === 'geoHaystack'))) {
