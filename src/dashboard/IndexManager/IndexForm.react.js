@@ -101,6 +101,10 @@ class IndexForm extends Component {
 
     // If the index is ascending (1) or descending (-1), we need to convert it to number
     for (let [key, value] of Object.entries(index)) {
+      // objectId does not exists on the database, only _id does
+      if (key === 'objectId') {
+        key = '_id'
+      }
       if (value === '-1') {
         index[key] = -1
       } else if (value === '1') {
