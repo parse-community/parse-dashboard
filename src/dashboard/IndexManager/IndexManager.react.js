@@ -286,7 +286,6 @@ class IndexManager extends DashboardView {
   }
 
   renderContent() {
-    console.log(this.props)
     const { className } = this.props.params
     return (
       <div className={styles.indexManager}>
@@ -310,7 +309,7 @@ class IndexManager extends DashboardView {
             </a>
           </section>
         </div>
-        {this.state.loading || this.state.data.length === 0
+        {this.state.data.length === 0
           ? <EmptyState icon='index-manager' title='No indexes were found' description='Create an index using the button located on the top right side' />
           : (
             <table className={styles.indexTable}>
