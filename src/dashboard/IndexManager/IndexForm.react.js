@@ -103,7 +103,7 @@ class IndexForm extends Component {
     for (let [key, value] of Object.entries(index)) {
       if (value === '-1') {
         index[key] = -1
-      } else if (value === 1) {
+      } else if (value === '1') {
         index[key] = 1
       } else {
         index[key] = value
