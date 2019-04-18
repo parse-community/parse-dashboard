@@ -61,7 +61,7 @@ let B4ABrowserToolbar = ({
     enableSecurityDialog,
 
     applicationId,
-    onOpenIndexManager
+    onClickIndexManager
   }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -185,8 +185,8 @@ let B4ABrowserToolbar = ({
       <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
         <Icon name='refresh' width={30} height={26} />
       </a>
-      <a className={styles.toolbarButton} onClick={onOpenIndexManager} title='Index Manager'>
-        <Icon name='refresh' width={30} height={26} />
+      <a className={styles.toolbarButton} onClick={onClickIndexManager} title='Index Manager'>
+        <Icon name='index-manager' width={30} height={26} />
       </a>
       <BrowserFilter
         setCurrent={setCurrent}
