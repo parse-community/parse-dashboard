@@ -259,13 +259,6 @@ export default class DashboardView extends React.Component {
     }
 
     appSidebarSections.push({
-      name: 'Index Manager',
-      icon: 'api-reference',
-      link: '/index',
-
-    });
-
-    appSidebarSections.push({
       name: 'Admin App',
       icon: 'admin-app',
       link: '/admin',
