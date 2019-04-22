@@ -204,6 +204,13 @@ class IndexManager extends DashboardView {
   dropIndexes() {
     const { className } = this.props.params
     const indexesToDrop = Object.entries(this.state.selected).filter(([, isSelected]) => isSelected).map(([indexName]) => indexName)
+    if (indexesToDrop.length === 0) {
+      Swal.fire({
+        title: 'Please select at least one index to drop',
+        type: 'error'
+      })
+      return
+    }
     Swal.mixin().queue([
       {
         title: 'Are you sure you want to delete the following indexes?',
