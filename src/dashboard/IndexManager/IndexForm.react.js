@@ -97,10 +97,11 @@ class IndexForm extends Component {
   }
 
   createIndex() {
-    const { indexFields: index, indexName: name, sparse, unique, expireAfterSeconds, weights } = this.state
+    const { indexFields, indexName: name, sparse, unique, expireAfterSeconds, weights } = this.state
 
+    const index = {}
     // If the index is ascending (1) or descending (-1), we need to convert it to number
-    for (let [key, value] of Object.entries(index)) {
+    for (let [key, value] of Object.entries(indexFields)) {
       // objectId does not exists on the database, only _id does
       if (key === 'objectId') {
         key = '_id'
