@@ -183,8 +183,7 @@ class IndexManager extends DashboardView {
         title: 'We found some errors',
         html: `<p style="text-align: center">${errorMessages.join('</p><p style="text-align: center">')}</p>`,
         type: 'error',
-        confirmButtonText: 'OK',
-        showCancelButton: true
+        confirmButtonText: 'OK'
       })
     } else {
       const { className } = this.props.params

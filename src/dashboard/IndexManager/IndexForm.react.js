@@ -134,7 +134,8 @@ class IndexForm extends Component {
       confirmButtonText: 'Confirm',
       preConfirm: () => {
         this.props.onConfirm(indexConfiguration)
-      }
+      },
+      showCancelButton: true
     })
   }
 
