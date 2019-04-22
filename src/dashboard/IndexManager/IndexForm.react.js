@@ -9,6 +9,7 @@ import PropTypes from 'lib/PropTypes'
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import styles from 'dashboard/IndexManager/IndexForm.scss';
+import Swal from 'sweetalert2';
 
 class IndexForm extends Component {
   constructor(props) {
@@ -125,7 +126,16 @@ class IndexForm extends Component {
       index,
       indexOptions
     }
-    this.props.onConfirm(indexConfiguration)
+
+    Swal.fire({
+      title: 'Are you sure you want to create the indexes?',
+      text: 'This process will run in background and could take minutes, depending on your class size.',
+      type: 'warning',
+      confirmButtonText: 'Confirm',
+      preConfirm: () => {
+        this.props.onConfirm(indexConfiguration)
+      }
+    })
   }
 
   renderClassContent() {
