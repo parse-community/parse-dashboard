@@ -18,19 +18,25 @@ const B4aAdminParams = ({appName}) => ({
           title: 'Menu Item',
           objectClassName: MENU_ITEM_CLASS,
           relevance: '-1000',
-          isHidden: false
+          isHidden: false,
+          addFormTitle: '',
+          editFormTitle: ''
         },
         {
           title: 'Custom Field',
           objectClassName: CUSTOM_FIELD_CLASS,
           relevance: '-2000',
-          isHidden: false
+          isHidden: false,
+          addFormTitle: '',
+          editFormTitle: ''
         },
         {
           title: 'Setting',
           objectClassName: SETTING_CLASS,
           relevance: '-3000',
-          isHidden: false
+          isHidden: false,
+          addFormTitle: '',
+          editFormTitle: ''
         },
       ],
     },
@@ -137,6 +143,28 @@ const B4aAdminParams = ({appName}) => ({
           defaultValue: 'false',
           isTableHidden: false,
           relevance: -4000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: ''
+        },
+        {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'addFormTitle',
+          title: 'Add Form Title',
+          isRequired: false,
+          isTableHidden: false,
+          relevance: -5000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: ''
+        },
+        {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'editFormTitle',
+          title: 'Edit Form Title',
+          isRequired: false,
+          isTableHidden: false,
+          relevance: -6000,
           referencesLinkText: '',
           referencesLinkTitle: '',
           inputMask: ''
