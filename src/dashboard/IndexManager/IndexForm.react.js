@@ -127,7 +127,7 @@ class IndexForm extends Component {
       indexOptions
     }
 
-    Swal.fire({
+    Swal.queue([{
       title: 'Are you sure you want to create the indexes?',
       text: 'This process will run in background and could take minutes, depending on your class size.',
       type: 'warning',
@@ -136,7 +136,7 @@ class IndexForm extends Component {
         this.props.onConfirm(indexConfiguration)
       },
       showCancelButton: true
-    })
+    }])
   }
 
   renderClassContent() {

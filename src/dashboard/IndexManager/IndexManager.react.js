@@ -179,7 +179,7 @@ class IndexManager extends DashboardView {
       errorMessages.push('Only one text index is allowed per class')
     }
     if (errorMessages.length) {
-      Swal.fire({
+      Swal.insertQueueStep({
         title: 'We found some errors',
         html: `<p style="text-align: center">${errorMessages.join('</p><p style="text-align: center">')}</p>`,
         type: 'error',
@@ -191,7 +191,7 @@ class IndexManager extends DashboardView {
         .then(() => {
           this.closeIndexForm()
         }).catch(e => {
-          Swal.fire({
+          Swal.insertQueueStep({
             title: 'Index creation failure',
             text: 'Error while creating the indexes. Please try again later.',
             type: 'error'
