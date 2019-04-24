@@ -170,6 +170,18 @@ const B4aAdminParams = ({appName}) => ({
           inputMask: ''
         },
         {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'isReadOnly',
+          title: 'Is Read Only?',
+          isRequired: false,
+          defaultValue: 'false',
+          isTableHidden: false,
+          relevance: -7000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: ''
+        },
+        {
           objectClassName: 'B4aCustomField',
           objectClassFieldName: 'objectClassName',
           title: 'Class',
@@ -328,6 +340,30 @@ const B4aAdminParams = ({appName}) => ({
           isTableHidden: false,
           isFormHidden: "((objectClasses.find(objectClass => objectClass.name === objectEntity.objectClassName) || { fields: [] }).fields.find(objectClassField => objectClassField.name === objectEntity.objectClassFieldName) || { type: '' }).type !== 'DATE'",
           relevance: -13000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: ''
+        },
+        {
+          objectClassName: 'B4aCustomField',
+          objectClassFieldName: 'cssClassName',
+          title: 'CSS Class Name',
+          isRequired: false,
+          options: '',
+          isTableHidden: false,
+          relevance: -14000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: ''
+        },
+        {
+          objectClassName: 'B4aCustomField',
+          objectClassFieldName: 'referenceTitleField',
+          title: 'References Title Field',
+          isRequired: false,
+          options: '',
+          isTableHidden: false,
+          relevance: -15000,
           referencesLinkText: '',
           referencesLinkTitle: '',
           inputMask: ''
