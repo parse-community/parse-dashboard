@@ -1,6 +1,7 @@
 .indexFormContainer {
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+  overflow-x: hidden;
 
   .indexFormTable {
     width: 100%;
