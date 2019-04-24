@@ -55,7 +55,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -1000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -67,7 +69,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -2000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -78,7 +82,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -3000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -89,7 +95,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -4000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -100,7 +108,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -5000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -111,7 +121,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -1000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -124,7 +136,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -2000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -136,7 +150,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -3000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -148,7 +164,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -4000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -159,7 +177,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -5000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -170,7 +190,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -6000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -182,7 +204,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -7000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -195,7 +219,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -1000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -208,7 +234,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -2000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -219,7 +247,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -3000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -233,7 +263,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -4000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -245,7 +277,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -8000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -258,7 +292,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -5000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -271,7 +307,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -6000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -283,7 +321,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -7000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -295,7 +335,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -9000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -308,7 +350,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -10000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -320,7 +364,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -11000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -332,7 +378,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -12000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -345,7 +393,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -13000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -357,7 +407,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -14000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -369,7 +421,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -15000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aSetting',
