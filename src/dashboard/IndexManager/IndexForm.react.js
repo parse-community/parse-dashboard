@@ -217,7 +217,7 @@ class IndexForm extends Component {
           : <td className={styles.disabled}>-</td>
         }
         <td>
-          <Icon className={styles.deleteIndexBtn} name='trash-solid' width={22} height={30} fill='red' onClick={() => this.removeIndex(name)} />
+          <Icon className={styles.deleteIndexBtn} name='trash-solid' width={18} height={28} fill='red' onClick={() => this.removeIndex(name)} />
         </td>
       </tr>
     )
