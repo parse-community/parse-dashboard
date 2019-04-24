@@ -13,6 +13,7 @@ import B4aAdminModal    from 'dashboard/B4aAdminPage/B4aAdminModal'
 import B4aAdminParams   from 'dashboard/B4aAdminPage/B4aAdminParams'
 import Toolbar          from 'components/Toolbar/Toolbar.react';
 import Icon             from 'components/Icon/Icon.react';
+import ReactPlayer      from 'react-player';
 
 
 @subscribeTo('Schema', 'schema')
@@ -176,6 +177,11 @@ class B4aAdminPage extends DashboardView {
     );
 
     const fields = <Fieldset legend={this.legend} description={this.description}>
+      <ReactPlayer
+        url='https://www.youtube.com/watch?v=7CHdIniAACE'
+        controls
+        width="650px"
+        style={{ marginBottom: 20 }} />
       <Field
         height='120px'
         textAlign='center'
