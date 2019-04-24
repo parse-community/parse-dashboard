@@ -26,6 +26,7 @@ class IndexForm extends Component {
     }
     this.createIndex = this.createIndex.bind(this)
     this.onChangeTTL = this.onChangeTTL.bind(this)
+    this.onBlurIndexWeight = this.onBlurIndexWeight.bind(this)
   }
 
   componentDidMount() {
@@ -77,6 +78,16 @@ class IndexForm extends Component {
   }
 
   updateIndexWeight(field, weight) {
+    if (weight === '') {
+      const newWeights = {
+        ...this.state.weights
+      }
+      delete newWeights[field]
+      this.setState({
+        weights: newWeights
+      })
+      return
+    }
     const intWeight = parseInt(weight)
     if (!isNaN(intWeight)) {
       this.setState({
@@ -88,7 +99,26 @@ class IndexForm extends Component {
     }
   }
 
+  onBlurIndexWeight(field, weight) {
+    if (!weight) {
+      // If, on blur, the weight was left with an invalid value
+      // sets 1, which is the default value
+      this.setState({
+        weights: {
+          ...this.state.weights,
+          [field]: 1
+        }
+      })
+    }
+  }
+
   onChangeTTL(value) {
+    if (value === '') {
+      this.setState({
+        expireAfterSeconds: ''
+      })
+      return
+    }
     const ttl = parseInt(value)
     if (!isNaN(ttl)) {
       this.setState({
@@ -181,7 +211,7 @@ class IndexForm extends Component {
         {type === 'text'
           ? (
             <td>
-              <TextInput value={this.state.weights[name]} onChange={weight => this.updateIndexWeight(name, weight)} />
+              <TextInput value={this.state.weights[name]} onChange={weight => this.updateIndexWeight(name, weight)} onBlur={e => this.onBlurIndexWeight(name, e.target.value)} />
             </td>
           )
           : <td className={styles.disabled}>-</td>
