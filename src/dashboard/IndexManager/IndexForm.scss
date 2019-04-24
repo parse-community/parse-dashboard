@@ -13,6 +13,17 @@
       text-align: center;
     }
 
+    .indexFormHeaderContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+
+      .helpButton {
+        margin-left: 6px;
+      }
+    }
+
     td {
       &:first-of-type, &:nth-of-type(2) {
         min-width: 167px;
@@ -37,5 +48,9 @@
     .deleteIndexBtn {
       cursor: pointer;
     }
+  }
+
+  .helpButton {
+    cursor: pointer;
   }
 }

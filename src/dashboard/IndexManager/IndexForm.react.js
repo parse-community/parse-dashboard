@@ -242,7 +242,12 @@ class IndexForm extends Component {
         <thead>
           <tr>
             <th>Field</th>
-            <th>Param</th>
+            <th>
+              <div className={styles.indexFormHeaderContainer}>
+                <span>Index Type</span>
+                <Icon className={styles.helpButton} name='info-outline' width={16} height={16} fill='#169CEE' onClick={() => window.open('https://docs.mongodb.com/manual/indexes/#index-types', '_blank')} />
+              </div>
+            </th>
             <th>Weight</th>
             <th></th>
           </tr>
@@ -277,7 +282,7 @@ class IndexForm extends Component {
       )
 
     return (
-      <Modal width={700} icon='plus' iconSize={40} type={Modal.Types.INFO} title='New Index' subtitle='Optimize your queries performance' confirmText='Create Index' onConfirm={this.createIndex} onCancel={this.props.onCancel}>
+      <Modal width={700} type={Modal.Types.INFO} title='New Index' subtitle='Optimize your queries performance' confirmText='Create Index' onConfirm={this.createIndex} onCancel={this.props.onCancel}>
         <div className={styles.indexFormContainer}>
           <Field
             labelWidth={35}
@@ -287,16 +292,16 @@ class IndexForm extends Component {
           <Field
             labelWidth={35}
             textAlign='center'
-            label={<Label text='Unique' description='' />}
+            label={<Label text='Unique' description='' help={<Icon className={styles.helpButton} name='info-outline' width={16} height={16} fill='#169CEE' onClick={() => window.open('https://docs.mongodb.com/manual/core/index-unique/', '_blank')} />} />}
             input={<Toggle type={Toggle.Types.TRUE_FALSE} value={this.state.unique} onChange={unique => this.setState({ unique })} />} />
           <Field
             labelWidth={35}
             textAlign='center'
-            label={<Label text='Sparse' description='' />}
+            label={<Label text='Sparse' description='' help={<Icon className={styles.helpButton} name='info-outline' width={16} height={16} fill='#169CEE' onClick={() => window.open('https://docs.mongodb.com/manual/core/index-sparse/', '_blank')} />} />}
             input={<Toggle type={Toggle.Types.TRUE_FALSE} value={this.state.sparse} onChange={sparse => this.setState({ sparse })} />} />
           <Field
             labelWidth={35}
-            label={<Label text='TTL' description='' />}
+            label={<Label text='TTL' description='' help={<Icon className={styles.helpButton} name='info-outline' width={16} height={16} fill='#169CEE' onClick={() => window.open('https://docs.mongodb.com/manual/core/index-ttl/', '_blank')} />} />}
             input={
               <TextInput
                 placeholder='Input the index time to live (in seconds)'
