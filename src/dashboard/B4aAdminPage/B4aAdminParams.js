@@ -18,19 +18,28 @@ const B4aAdminParams = ({appName}) => ({
           title: 'Menu Item',
           objectClassName: MENU_ITEM_CLASS,
           relevance: '-1000',
-          isHidden: false
+          isHidden: false,
+          addFormTitle: '',
+          editFormTitle: '',
+          isReadOnly: false
         },
         {
           title: 'Custom Field',
           objectClassName: CUSTOM_FIELD_CLASS,
           relevance: '-2000',
-          isHidden: false
+          isHidden: false,
+          addFormTitle: '',
+          editFormTitle: '',
+          isReadOnly: false
         },
         {
           title: 'Setting',
           objectClassName: SETTING_CLASS,
           relevance: '-3000',
-          isHidden: false
+          isHidden: false,
+          addFormTitle: '',
+          editFormTitle: '',
+          isReadOnly: false
         },
       ],
     },
@@ -46,7 +55,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -1000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -58,7 +69,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -2000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -69,7 +82,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -3000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -80,7 +95,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -4000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: '_User',
@@ -91,7 +108,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -5000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -102,7 +121,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -1000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -115,7 +136,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -2000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -127,7 +150,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -3000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aMenuItem',
@@ -139,7 +164,49 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -4000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
+        },
+        {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'addFormTitle',
+          title: 'Add Form Title',
+          isRequired: false,
+          isTableHidden: false,
+          relevance: -5000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
+        },
+        {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'editFormTitle',
+          title: 'Edit Form Title',
+          isRequired: false,
+          isTableHidden: false,
+          relevance: -6000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
+        },
+        {
+          objectClassName: 'B4aMenuItem',
+          objectClassFieldName: 'isReadOnly',
+          title: 'Is Read Only?',
+          isRequired: false,
+          defaultValue: 'false',
+          isTableHidden: false,
+          relevance: -7000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -152,7 +219,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -1000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -165,7 +234,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -2000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -176,7 +247,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -3000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -190,7 +263,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -4000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -202,7 +277,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -8000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -215,7 +292,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -5000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -228,7 +307,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -6000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -240,7 +321,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -7000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -252,7 +335,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -9000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -265,7 +350,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -10000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -277,7 +364,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -11000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -289,7 +378,9 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -12000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aCustomField',
@@ -302,7 +393,37 @@ const B4aAdminParams = ({appName}) => ({
           relevance: -13000,
           referencesLinkText: '',
           referencesLinkTitle: '',
-          inputMask: ''
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
+        },
+        {
+          objectClassName: 'B4aCustomField',
+          objectClassFieldName: 'cssClassName',
+          title: 'CSS Class Name',
+          isRequired: false,
+          options: '',
+          isTableHidden: false,
+          relevance: -14000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
+        },
+        {
+          objectClassName: 'B4aCustomField',
+          objectClassFieldName: 'referenceTitleField',
+          title: 'References Title Field',
+          isRequired: false,
+          options: '',
+          isTableHidden: false,
+          relevance: -15000,
+          referencesLinkText: '',
+          referencesLinkTitle: '',
+          inputMask: '',
+          cssClassName: '',
+          referenceTitleField: ''
         },
         {
           objectClassName: 'B4aSetting',
