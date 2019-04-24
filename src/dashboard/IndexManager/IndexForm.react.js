@@ -221,19 +221,21 @@ class IndexForm extends Component {
         </td>
       </tr>
     )
-    rows.push(
-      <tr key='new-index'>
-        <td>
-          <Dropdown placeHolder='Choose a field' value={this.state.selectedClass} onChange={value => this.addIndex(value)}>
-            {['', ...nonIndexedFields].map(field =>
-              <Option key={field} value={field}>{field}</Option>
-            )}
-          </Dropdown>
-        </td>
-        <td className={styles.disabled}>-</td>
-        <td className={styles.disabled}>-</td>
-      </tr>
-    )
+    if (nonIndexedFields.length > 0) {
+      rows.push(
+        <tr key='new-index'>
+          <td>
+            <Dropdown placeHolder='Choose a field' value={this.state.selectedClass} onChange={value => this.addIndex(value)}>
+              {['', ...nonIndexedFields].map(field =>
+                <Option key={field} value={field}>{field}</Option>
+              )}
+            </Dropdown>
+          </td>
+          <td className={styles.disabled}>-</td>
+          <td className={styles.disabled}>-</td>
+        </tr>
+      )
+    }
 
     const fieldsInput = (
       <table className={styles.indexFormTable}>
