@@ -20,7 +20,8 @@ const B4aAdminParams = ({appName}) => ({
           relevance: '-1000',
           isHidden: false,
           addFormTitle: '',
-          editFormTitle: ''
+          editFormTitle: '',
+          isReadOnly: false
         },
         {
           title: 'Custom Field',
@@ -28,7 +29,8 @@ const B4aAdminParams = ({appName}) => ({
           relevance: '-2000',
           isHidden: false,
           addFormTitle: '',
-          editFormTitle: ''
+          editFormTitle: '',
+          isReadOnly: false
         },
         {
           title: 'Setting',
@@ -36,7 +38,8 @@ const B4aAdminParams = ({appName}) => ({
           relevance: '-3000',
           isHidden: false,
           addFormTitle: '',
-          editFormTitle: ''
+          editFormTitle: '',
+          isReadOnly: false
         },
       ],
     },
