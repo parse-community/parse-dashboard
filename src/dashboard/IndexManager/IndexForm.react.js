@@ -88,7 +88,10 @@ class IndexForm extends Component {
       })
       return
     }
-    const intWeight = parseInt(weight)
+    const intWeight = Math.abs(parseInt(weight))
+    if (intWeight > Number.MAX_SAFE_INTEGER) {
+      return
+    }
     if (!isNaN(intWeight)) {
       this.setState({
         weights: {
@@ -119,7 +122,10 @@ class IndexForm extends Component {
       })
       return
     }
-    const ttl = parseInt(value)
+    const ttl = Math.abs(parseInt(value))
+    if (ttl > Number.MAX_SAFE_INTEGER) {
+      return
+    }
     if (!isNaN(ttl)) {
       this.setState({
         expireAfterSeconds: ttl.toString()
