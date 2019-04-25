@@ -328,25 +328,27 @@ class IndexManager extends DashboardView {
         {this.state.data && this.state.data.length === 0
           ? <EmptyState icon='index-manager' title='No indexes were found' description='Create an index using the button located on the top right side' />
           : (
-            <table className={styles.indexTable}>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th>Creation Type</th>
-                  <th>Status</th>
-                  <th>Fields</th>
-                  <th>Unique</th>
-                  <th>Sparse</th>
-                  <th>TTL</th>
-                  <th>Weight</th>
-                  <th>Size</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.renderRows()}
-              </tbody>
-            </table>
+            <div className={styles.indexTableContainer}>
+              <table className={styles.indexTable}>
+                <thead>
+                  <tr>
+                    <th style={{ width: 50 }}></th>
+                    <th>Name</th>
+                    <th>Creation Type</th>
+                    <th>Status</th>
+                    <th>Fields</th>
+                    <th>Unique</th>
+                    <th>Sparse</th>
+                    <th>TTL</th>
+                    <th>Weight</th>
+                    <th>Size</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.renderRows()}
+                </tbody>
+              </table>
+            </div>
           )
         }
         {this.renderIndexForm()}

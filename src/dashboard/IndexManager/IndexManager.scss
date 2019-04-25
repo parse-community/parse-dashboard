@@ -41,53 +41,79 @@
     }
   }
 
-  .indexTable {
-    width: 100%;
+  .indexTableContainer {
+    overflow: scroll;
 
-    thead {
-      font-size: 12px;
-      color: white;
-      background-color: #66637A;
+    .indexTable {
+      width: 100%;
+      table-layout: fixed;
 
-      tr {
-        height: 30px;
+      thead {
+        font-size: 12px;
+        color: white;
+        background-color: #66637A;
+
+        tr {
+          height: 30px;
+        }
+
+        th {
+          font-weight: 400;
+          width: 70px;
+
+          &:first-of-type {
+            width: 50px;
+          }
+
+          &:nth-child(2) {
+            width: 200px;
+          }
+
+          &:nth-child(3), &:nth-child(4) {
+            width: 100px;
+          }
+
+          &:nth-child(5) {
+            width: 280px;
+          }
+        }
       }
 
-      th {
-        font-weight: 400;
-      }
-    }
+      tbody {
+        font-size: 14px;
 
-    tbody {
-      font-size: 14px;
+        tr {
+          height: 50px;
 
-      tr {
-        height: 50px;
+          &:nth-child(even) {
+            background-color: #F4F5F7;
+            border-top: 1px solid #DFDFDF;
+          }
 
-        &:nth-child(even) {
-          background-color: #F4F5F7;
-          border-top: 1px solid #DFDFDF;
-        }
+          .selectedContainer {
+            text-align: center;
+          }
 
-        .selectedContainer {
-          text-align: center;
-        }
+          .indexStatus-success {
+            color: #4CAF50;
+          }
 
-        .indexStatus-success {
-          color: #4CAF50;
-        }
+          .indexStatus-pending {
+            color: #FFC107;
+          }
 
-        .indexStatus-pending {
-          color: #FFC107;
-        }
+          .indexStatus-error {
+            color: #D0021B;
+          }
 
-        .indexStatus-error {
-          color: #D0021B;
-        }
+          .statusIcon {
+            padding-right: 8px;
+            font-size: 18px;
+          }
 
-        .statusIcon {
-          padding-right: 8px;
-          font-size: 18px;
+          td {
+            word-break: break-word;
+          }
         }
       }
     }
