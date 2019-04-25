@@ -181,7 +181,11 @@ class B4aAdminPage extends DashboardView {
         url='https://www.youtube.com/watch?v=7CHdIniAACE'
         controls
         width="650px"
-        style={{ marginBottom: 20 }} />
+        style={{
+          border: "1px solid #000",
+          borderRadius: "4px",
+          marginBottom: "20"
+        }} />
       <Field
         height='120px'
         textAlign='center'
