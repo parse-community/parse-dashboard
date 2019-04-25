@@ -141,6 +141,8 @@ class IndexManager extends DashboardView {
 
     if (!indexName || indexName.trim().length === 0) {
       errorMessages.push('Index name is required')
+    } else {
+      indexOptions.name = indexName
     }
 
     const { className } = this.props.params
