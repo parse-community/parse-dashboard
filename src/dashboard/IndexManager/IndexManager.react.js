@@ -130,7 +130,7 @@ class IndexManager extends DashboardView {
   createIndexes(indexConfiguration) {
     const { index, indexOptions } = indexConfiguration
     delete index.objectId
-    const indexName = indexOptions.name || Object.entries(index).map(entry => entry.join('_')).join('_')
+    const indexName = indexOptions.name
     const indexTypes = Object.values(index)
 
     if (indexTypes.indexOf('geoHaystack') !== -1) {
@@ -141,6 +141,8 @@ class IndexManager extends DashboardView {
 
     if (!indexName || indexName.trim().length === 0) {
       errorMessages.push('Index name is required')
+    } else if (indexName.length > 128) {
+      errorMessages.push('Index name can not exceed 128 characters')
     } else {
       indexOptions.name = indexName
     }
