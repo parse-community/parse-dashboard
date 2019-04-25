@@ -134,7 +134,7 @@ class IndexForm extends Component {
   }
 
   createIndex() {
-    const { indexFields, indexName: name, sparse, unique, expireAfterSeconds, weights } = this.state
+    const { indexFields, indexName: name, sparse, unique, expireAfterSeconds, weights = {} } = this.state
 
     const index = {}
     // If the index is ascending (1) or descending (-1), we need to convert it to number
@@ -156,7 +156,14 @@ class IndexForm extends Component {
       sparse,
       unique,
       expireAfterSeconds,
-      weights
+      weights: Object.entries(weights).reduce((acc, [key, value]) => {
+        if (typeof value === 'string') {
+          acc[key] = parseInt(value)
+        } else {
+          acc[key] = value
+        }
+        return acc
+      }, {})
     }
     const indexConfiguration = {
       index,
