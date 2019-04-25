@@ -274,7 +274,7 @@ class IndexManager extends DashboardView {
           <td>{index}</td>
           <td>{unique ? 'True' : 'False'}</td>
           <td>{sparse ? 'True' : 'False'}</td>
-          <td>{expireAfterSeconds ? expireAfterSeconds : '-'}</td>
+          {/* <td>{expireAfterSeconds ? expireAfterSeconds : '-'}</td> */}
           <td>{weights ? JSON.stringify(weights) : '-'}</td>
           <td>{size ? `${size}MB` : '-'}</td>
         </tr>
@@ -341,7 +341,7 @@ class IndexManager extends DashboardView {
                     <th>Fields</th>
                     <th>Unique</th>
                     <th>Sparse</th>
-                    <th>TTL</th>
+                    {/* <th>TTL</th> */}
                     <th>Weight</th>
                     <th>Size</th>
                   </tr>

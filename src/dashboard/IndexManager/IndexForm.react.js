@@ -26,7 +26,7 @@ class IndexForm extends Component {
     }
     this.onChangeIndexName = this.onChangeIndexName.bind(this)
     this.createIndex = this.createIndex.bind(this)
-    this.onChangeTTL = this.onChangeTTL.bind(this)
+    // this.onChangeTTL = this.onChangeTTL.bind(this)
     this.onBlurIndexWeight = this.onBlurIndexWeight.bind(this)
   }
 
@@ -116,23 +116,23 @@ class IndexForm extends Component {
     }
   }
 
-  onChangeTTL(value) {
-    if (value === '') {
-      this.setState({
-        expireAfterSeconds: ''
-      })
-      return
-    }
-    const ttl = Math.abs(parseInt(value))
-    if (ttl > Number.MAX_SAFE_INTEGER) {
-      return
-    }
-    if (!isNaN(ttl)) {
-      this.setState({
-        expireAfterSeconds: ttl.toString()
-      })
-    }
-  }
+  // onChangeTTL(value) {
+  //   if (value === '') {
+  //     this.setState({
+  //       expireAfterSeconds: ''
+  //     })
+  //     return
+  //   }
+  //   const ttl = Math.abs(parseInt(value))
+  //   if (ttl > Number.MAX_SAFE_INTEGER) {
+  //     return
+  //   }
+  //   if (!isNaN(ttl)) {
+  //     this.setState({
+  //       expireAfterSeconds: ttl.toString()
+  //     })
+  //   }
+  // }
 
   onChangeIndexName(value = '') {
     this.setState({
@@ -319,7 +319,7 @@ class IndexForm extends Component {
             textAlign='center'
             label={<Label text='Sparse' description='' help={<Icon className={styles.helpButton} name='info-outline' width={16} height={16} fill='#169CEE' onClick={() => window.open('https://docs.mongodb.com/manual/core/index-sparse/', '_blank')} />} />}
             input={<Toggle type={Toggle.Types.TRUE_FALSE} value={this.state.sparse} onChange={sparse => this.setState({ sparse })} />} />
-          <Field
+          {/* <Field
             labelWidth={35}
             label={<Label text='TTL' description='' help={<Icon className={styles.helpButton} name='info-outline' width={16} height={16} fill='#169CEE' onClick={() => window.open('https://docs.mongodb.com/manual/core/index-ttl/', '_blank')} />} />}
             input={
@@ -327,7 +327,7 @@ class IndexForm extends Component {
                 placeholder='Input the index time to live (in seconds)'
                 value={this.state.expireAfterSeconds}
                 onChange={expireAfterSeconds => this.onChangeTTL(expireAfterSeconds)} />
-            } />
+            } /> */}
         </div>
       </Modal>
     )
