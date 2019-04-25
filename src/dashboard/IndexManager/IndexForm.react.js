@@ -24,6 +24,7 @@ class IndexForm extends Component {
       expireAfterSeconds: '',
       weights: {}
     }
+    this.onChangeIndexName = this.onChangeIndexName.bind(this)
     this.createIndex = this.createIndex.bind(this)
     this.onChangeTTL = this.onChangeTTL.bind(this)
     this.onBlurIndexWeight = this.onBlurIndexWeight.bind(this)
@@ -131,6 +132,12 @@ class IndexForm extends Component {
         expireAfterSeconds: ttl.toString()
       })
     }
+  }
+
+  onChangeIndexName(value = '') {
+    this.setState({
+      indexName: value.length > 128 ? value.substr(0, 128) : value
+    })
   }
 
   createIndex() {
@@ -279,7 +286,7 @@ class IndexForm extends Component {
         <Field
           labelWidth={35}
           label={<Label text='Name' description='Give an easy name to identify your index' />}
-          input={<TextInput placeholder='Input the index name' value={this.state.indexName} onChange={indexName => this.setState({ indexName })} />} />
+          input={<TextInput placeholder='Input the index name' value={this.state.indexName} onChange={this.onChangeIndexName} />} />
       </div>
     )
   }
