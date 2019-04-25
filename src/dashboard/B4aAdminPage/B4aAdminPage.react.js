@@ -189,7 +189,7 @@ class B4aAdminPage extends DashboardView {
       <Field
         height='120px'
         textAlign='center'
-        label={<Label text='Is Enabled?' description="Enabling will automatically add to your app’s schema a new role and three new classes." />}
+        label={<Label text='Is Enabled?' description="Enabling will automatically add three new classes, new indexes and a new role to your application’s schema." />}
         input={<div className={styles['input']}>
           {
             isAdminHostEnabled
