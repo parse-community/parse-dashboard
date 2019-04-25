@@ -257,7 +257,7 @@ class IndexManager extends DashboardView {
     if (!this.state.data) {
       return null
     }
-    return this.state.data.map(({ name, index, creationType, status, unique = false, sparse = false }) => {
+    return this.state.data.map(({ name, index, creationType, status, unique = false, sparse = false, expireAfterSeconds, weights, size }) => {
       return (
         <tr key={name}>
           <td className={styles.selectedContainer}>
@@ -272,6 +272,9 @@ class IndexManager extends DashboardView {
           <td>{index}</td>
           <td>{unique ? 'True' : 'False'}</td>
           <td>{sparse ? 'True' : 'False'}</td>
+          <td>{expireAfterSeconds}</td>
+          <td>{JSON.stringify(weights)}</td>
+          <td>{size}MB</td>
         </tr>
       )
     })
@@ -335,6 +338,9 @@ class IndexManager extends DashboardView {
                   <th>Fields</th>
                   <th>Unique</th>
                   <th>Sparse</th>
+                  <th>TTL</th>
+                  <th>Weight</th>
+                  <th>Size</th>
                 </tr>
               </thead>
               <tbody>
