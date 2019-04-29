@@ -30,8 +30,7 @@ import tableStyles            from 'components/Table/Table.scss';
 import Toggle                 from 'components/Toggle/Toggle.react';
 import Toolbar                from 'components/Toolbar/Toolbar.react';
 import { Directions }         from 'lib/Constants';
-import { Link }               from 'react-router';
-import { Promise }            from 'parse';
+import { Link }               from 'react-router-dom';
 import { tableInfoBuilder }   from 'lib/PushUtils';
 
 const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments';
@@ -39,7 +38,7 @@ const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments
 let getMessage = (payload) => {
   if(payload) {
     let payloadJSON = JSON.parse(payload);
-		if (payloadJSON.alert.body) {
+		if (payloadJSON.alert && payloadJSON.alert.body) {
 			return payloadJSON.alert.body;
 		} else if (payloadJSON.alert) {
 			return payloadJSON.alert;
@@ -202,8 +201,9 @@ const COLOR_MAP = {
 const DROPDOWN_KEY_GROUP_A = 'Group A';
 const DROPDOWN_KEY_GROUP_B = 'Group B';
 
+export default
 @subscribeTo('Schema', 'schema')
-export default class PushDetails extends DashboardView {
+class PushDetails extends DashboardView {
   constructor() {
     super();
     this.section = 'Push';
@@ -284,7 +284,7 @@ export default class PushDetails extends DashboardView {
         this.xhrHandles.push(abortableRequestA.xhr);
         this.xhrHandles.push(abortableRequestB.xhr);
 
-        Parse.Promise.when(promiseList).then((dataA, dataB) => {
+        Promise.all(promiseList).then(([dataA, dataB]) => {
           let chartDataA = formatAnalyticsData(dataA);
           let chartDataB = formatAnalyticsData(dataB);
           if (chartDataA.length > 0 || chartDataB.length > 0) {
@@ -300,7 +300,7 @@ export default class PushDetails extends DashboardView {
                 }
               }});
           }
-        }).always(() => {
+        }).finally(() => {
           this.setState({ loading: false })
         });
       } else {
@@ -319,7 +319,7 @@ export default class PushDetails extends DashboardView {
                 }
               }});
           }
-        }).always(() => {
+        }).finally(() => {
           this.setState({ loading: false })
         });
         this.xhrHandles = [xhr];
@@ -336,7 +336,7 @@ export default class PushDetails extends DashboardView {
       this.setState( {loading: true });
       this.context.currentApp.fetchPushDetails(nextProps.params.pushId).then((pushDetails) => {
         this.setState({ pushDetails });
-      }).always(() => {
+      }).finally(() => {
         this.setState({ loading: false })
       });
     }

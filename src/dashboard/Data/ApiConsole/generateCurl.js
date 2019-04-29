@@ -11,7 +11,7 @@
  * when exporting a request to cURL
  */
 let escapeValueForCURL = (value) => {
-  return value.replace(/\\/g, '\\\\').replace(/\"/g, '\\"').replace(/\$/g, '\\$');
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
 }
 
 export default function generateCurl(app, method, path, body, options) {
@@ -19,14 +19,14 @@ export default function generateCurl(app, method, path, body, options) {
     path = path.substr(1);
   }
   
-  let headers = [[`-H \"X-Parse-Application-Id: ${app.applicationId}\" \\`]];
+  let headers = [[`-H "X-Parse-Application-Id: ${app.applicationId}" \\`]];
   if (options.useMasterKey) {
-    headers.push([`-H \"X-Parse-Master-Key: ${app.masterKey}\" \\`]);
+    headers.push([`-H "X-Parse-Master-Key: ${app.masterKey}" \\`]);
   } else {
-    headers.push([`-H \"X-Parse-REST-API-Key: ${app.restKey}\" \\`]);
+    headers.push([`-H "X-Parse-REST-API-Key: ${app.restKey}" \\`]);
   }
   if (options.sessionToken) {
-    headers.push([`-H \"X-Parse-Session-Token: ${options.sessionToken}\" \\`]);
+    headers.push([`-H "X-Parse-Session-Token: ${options.sessionToken}" \\`]);
   }
 
   let _body = escapeValueForCURL(body);

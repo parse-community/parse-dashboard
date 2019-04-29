@@ -44,10 +44,20 @@ export default class FileEditor extends React.Component {
     }
   }
 
-  handleChange(e) {
+  getBase64(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  async handleChange(e) {
     let file = e.target.files[0];
     if (file) {
-      this.props.onCommit(new Parse.File(file.name, file));
+      let base64 = await this.getBase64(file);
+      this.props.onCommit(new Parse.File(file.name, { base64 }));
     }
   }
 

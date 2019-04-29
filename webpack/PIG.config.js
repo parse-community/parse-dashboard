@@ -9,6 +9,7 @@ var configuration = require('./base.config.js');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 
+configuration.mode = 'development';
 configuration.entry = {PIG: './parse-interface-guide/index.js'};
 configuration.output.path = require('path').resolve('./PIG/bundles');
 configuration.output.filename = "[name].[chunkhash].js";

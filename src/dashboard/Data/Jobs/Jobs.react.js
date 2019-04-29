@@ -59,8 +59,9 @@ function scheduleString(data) {
 }
 
 // TODO: create scrollable view component that handles lazy fetch container on scroll
+export default
 @subscribeTo('Jobs', 'jobs')
-export default class Jobs extends TableView {
+class Jobs extends TableView {
   constructor() {
     super();
     this.section = 'Core';
@@ -74,7 +75,6 @@ export default class Jobs extends TableView {
       hasPermission: true,
       errorMessage: ""
     };
-
   }
 
   componentWillMount() {
@@ -101,7 +101,7 @@ export default class Jobs extends TableView {
   }
 
   loadData() {
-    this.props.jobs.dispatch(ActionTypes.FETCH).always(() => {
+    this.props.jobs.dispatch(ActionTypes.FETCH).finally(() => {
       let err
       err = this.props.jobs.data && this.props.jobs.data.get('err')
       // Verify error message, used to control collaborators permissions

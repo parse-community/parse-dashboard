@@ -7,11 +7,16 @@
  */
 import PIG               from 'parse-interface-guide/PIG.react';
 import React             from 'react';
-import { browserHistory, Router, Route } from 'react-router';
+import { Router, Route } from 'react-router';
+import { createBrowserHistory } from 'history';
+const history = createBrowserHistory({});
 
 module.exports = (
-<Router history={browserHistory}>
-  <Route path='/' component={PIG} />
-  <Route path='/:component' component={PIG} />
+<Router history={history}>
+  <div>
+    <Route path='/:component?' render={(props) => {
+      return <PIG params={props.match.params || {}} />
+    }} />
+  </div>
 </Router>
 );

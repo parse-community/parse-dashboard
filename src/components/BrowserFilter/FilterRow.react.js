@@ -95,7 +95,7 @@ let FilterRow = ({
       options={fields}
       onChange={onChangeField} />
     <ChromeDropdown
-      width={compareInfo.type ? 175 : 325}
+      width={compareInfo.type ? '175' : '325'}
       color={active ? 'blue' : 'purple'}
       value={Constraints[currentConstraint].name}
       options={constraints.map((c) => Constraints[c].name)}

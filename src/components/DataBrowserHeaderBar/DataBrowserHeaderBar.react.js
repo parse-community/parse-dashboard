@@ -12,14 +12,15 @@ import React               from 'react';
 import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
 import { DragDropContext } from 'react-dnd';
 
+export default
 @DragDropContext(HTML5Backend)
-export default class DataBrowserHeaderBar extends React.Component {
+class DataBrowserHeaderBar extends React.Component {
   render() {
-    let { headers, onResize, selected, selectAll, onAddColumn, updateOrdering, readonly, handleDragDrop, minWidth } = this.props;
+    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits } = this.props;
     let elements = [
       // Note: bulk checkbox is disabled as all rows are selected (not just visible ones due to current lazy loading implementation)
       // TODO: add bulk checking only visible rows
-      <div key='check' className={styles.check}>
+      <div key='check' className={[styles.wrap, styles.check].join(' ')}>
         {readonly ? null : <input className={styles.disabled} type='checkbox' disabled={true} checked={false} onChange={(e) => selectAll(e.target.checked)} />}
       </div>
     ];
@@ -48,7 +49,7 @@ export default class DataBrowserHeaderBar extends React.Component {
             targetClass={targetClass}
             order={order}
             index={i}
-            moveDataBrowserHeader={handleDragDrop}/>
+            moveDataBrowserHeader={this.props.handleDragDrop}/>
         </div>
       );
       elements.push(
@@ -60,9 +61,10 @@ export default class DataBrowserHeaderBar extends React.Component {
     if (headers.length % 2) {
       finalStyle.background = 'rgba(224,224,234,0.10)';
     }
+
     elements.push(
-      readonly ? null : (
-        <div key='add' className={[styles.wrap, styles.addColumn].join(' ')} style={finalStyle}>
+      readonly || preventSchemaEdits ? null : (
+        <div key='add' className={styles.addColumn} style={finalStyle}>
           <a
             href='javascript:;'
             role='button'
@@ -74,6 +76,6 @@ export default class DataBrowserHeaderBar extends React.Component {
       )
     );
 
-    return <div className={styles.bar} style={{ minWidth: minWidth }}>{elements}</div>;
+    return <div className={styles.bar}>{elements}</div>;
   }
 }

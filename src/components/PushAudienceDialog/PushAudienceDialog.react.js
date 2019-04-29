@@ -26,8 +26,8 @@ import TextInput             from 'components/TextInput/TextInput.react';
 import Toggle                from 'components/Toggle/Toggle.react';
 import { List, Map }         from 'immutable';
 
-const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = false;
-const AUDIENCE_SIZE_FETCHING_ENABLED = false;
+const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = true;
+const AUDIENCE_SIZE_FETCHING_ENABLED = true;
 
 let filterFormatter = (filters, schema) => {
   return filters.map((filter) => {
@@ -268,7 +268,7 @@ export default class PushAudienceDialog extends React.Component {
 }
 
 PushAudienceDialog.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };
 
 PushAudienceDialog.propTypes = {

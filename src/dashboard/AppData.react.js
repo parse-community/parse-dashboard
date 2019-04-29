@@ -6,16 +6,17 @@
  * the root directory of this source tree.
  */
 import React       from 'react';
-
+import PropTypes   from 'lib/PropTypes';
 import AppSelector from 'dashboard/AppSelector.react';
 import AppsManager from 'lib/AppsManager';
 import history     from 'dashboard/history';
 import ParseApp    from 'lib/ParseApp';
+import createClass from 'create-react-class';
 
-let AppData = React.createClass({
+let AppData = createClass({
   childContextTypes: {
-    generatePath: React.PropTypes.func,
-    currentApp: React.PropTypes.instanceOf(ParseApp)
+    generatePath: PropTypes.func,
+    currentApp: PropTypes.instanceOf(ParseApp)
   },
 
   getChildContext() {
@@ -49,4 +50,4 @@ let AppData = React.createClass({
   }
 });
 
-module.exports = AppData;
+export default AppData;

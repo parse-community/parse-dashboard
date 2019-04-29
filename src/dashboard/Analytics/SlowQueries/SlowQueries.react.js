@@ -36,9 +36,10 @@ let formatQuery = (query) => {
   return query;
 };
 
+export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('AnalyticsQuery', 'customQueries')
-export default class SlowQueries extends TableView {
+class SlowQueries extends TableView {
   constructor() {
     super();
     this.section = 'Analytics';

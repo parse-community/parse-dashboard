@@ -10,6 +10,7 @@ import B4ABrowserToolbar      from 'dashboard/Data/Browser/B4ABrowserToolbar.rea
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
+import PropTypes              from 'lib/PropTypes';
 import { SpecialClasses }     from 'lib/Constants';
 import copy                   from 'copy-to-clipboard';
 
@@ -247,7 +248,7 @@ export default class DataBrowser extends React.Component {
 
   render() {
     let { className, ...other } = this.props;
-    let { applicationId } = this.context.currentApp
+    let { applicationId, preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
         <BrowserTable
@@ -268,10 +269,12 @@ export default class DataBrowser extends React.Component {
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}
           setCurrent={this.setCurrent.bind(this)}
-          enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass}
-          enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass}
+          enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
+          enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
           enableImport={this.context.currentApp.serverInfo.features.schemas.import}
-          enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions}
+          enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions && !preventSchemaEdits}
+          enableColumnManipulation={!preventSchemaEdits}
+          enableClassManipulation={!preventSchemaEdits}
           {...other}
           applicationId={applicationId} />
       </div>
@@ -280,5 +283,5 @@ export default class DataBrowser extends React.Component {
 }
 
 DataBrowser.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

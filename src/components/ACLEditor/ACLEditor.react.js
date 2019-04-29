@@ -15,18 +15,15 @@ function validateEntry(text) {
     new Parse.Query(Parse.User).equalTo('objectId', text)
   );
   let roleQuery = new Parse.Query(Parse.Role).equalTo('name', text);
-  let promise = new Parse.Promise();
-  Parse.Promise.when(userQuery.find({ useMasterKey: true }), roleQuery.find({ useMasterKey: true })).then((user, role) => {
+  return Promise.all([userQuery.find({ useMasterKey: true }), roleQuery.find({ useMasterKey: true })]).then(([user, role]) => {
     if (user.length > 0) {
-      promise.resolve({ user: user[0] });
+      return { user: user[0] };
     } else if (role.length > 0) {
-      promise.resolve({ role: role[0] });
+      return { role: role[0] };
     } else {
-      promise.reject();
+      throw new Error();
     }
   });
-
-  return promise;
 }
 
 function toPerms(acl) {

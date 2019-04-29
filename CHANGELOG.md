@@ -1,8 +1,29 @@
 ## Parse Dashboard Changelog
 
-### NEXT RELEASE
+### master
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.0...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: Correct inappropriate error message when no target audience is selected (#1052), thanks to [Bouimadaghene](https://github.com/starbassma)
+
+### 1.3.0
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.2.0...1.3.0)
+
+* Node 10 Support, thanks [Florent Vilmart](https://github.com/flovilmart)
+* Fix: Remove column dialog default values (#969), thanks to [Jonas Stendahl](https://github.com/JStonevalley)
+* Fix: Handle case of null in array (#922), thanks to [Abdullah Alsigar](https://github.com/agent3bood)
+* Fix: JSON file upload (#935), thanks to [joshuadiezmo](https://github.com/joshuadiezmo)
+* Fix: Set initial audience null (#910), thanks to [Paulo Reis](https://github.com/paulovitin)
+* Fix: Ensure we traverse the payloadJSON properly (#861), thanks [Florent Vilmart](https://github.com/flovilmart)
+* Improvements: Push Audiences (#813), thanks [Florent Vilmart](https://github.com/flovilmart)
+* Improvements: Docker Build
+* Feature: `preventSchemaEdits` option (#960), thanks to [Cyril Chandelier](https://github.com/cyrilchandelier)
+* Feature: Redirect to the first app browser when only a single app is registered (#958), thanks to [Cyril Chandelier](https://github.com/cyrilchandelier)
+* Feature: Add classname to browser title (#913), thanks to [Paulo Reis](https://github.com/paulovitin)
+* Feature: Support for Clone Object (#946), thanks to [Diamond Lewis](https://github.com/dplewis)
+* Feature: Add tvOS support to push targeting (#936), thanks to [Thomas Kollbach](https://github.com/toto)
+* Feature: When using username to login, display dashboard username (#800), thanks to [Abdullah Alsigar](https://github.com/agent3bood)
+
 
 ### 1.2.0
 * Fix: Filtering with a 1-digit number (#831), thanks to [Pascal Giguère](https://github.com/pgiguere1)
