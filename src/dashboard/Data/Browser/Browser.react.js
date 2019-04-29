@@ -119,6 +119,7 @@ export default class Browser extends DashboardView {
     this.showNote = this.showNote.bind(this);
     this.getFooterMenuButtons = this.getFooterMenuButtons.bind(this);
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
+    this.onClickIndexManager = this.onClickIndexManager.bind(this);
   }
 
   getFooterMenuButtons() {
@@ -1144,6 +1145,11 @@ export default class Browser extends DashboardView {
     }, 3500);
   }
 
+  onClickIndexManager() {
+    const { appId, className } = this.props.params
+    history.push(`apps/${appId}/index/${className}`)
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1239,7 +1245,8 @@ export default class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
             onAddClass={this.showCreateClass}
             err={this.state.err}
-            showNote={this.showNote}/>
+            showNote={this.showNote}
+            onClickIndexManager={this.onClickIndexManager} />
         );
       }
     }
