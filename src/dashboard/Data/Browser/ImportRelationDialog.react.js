@@ -12,6 +12,7 @@ import Field    from 'components/Field/Field.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import FileInput from 'components/FileInput/FileInput.react';
 import Label    from 'components/Label/Label.react';
+import PropTypes from 'lib/PropTypes';
 
 export default class ImportRelationDialog extends React.Component {
   constructor() {
@@ -79,5 +80,5 @@ export default class ImportRelationDialog extends React.Component {
 }
 
 ImportRelationDialog.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

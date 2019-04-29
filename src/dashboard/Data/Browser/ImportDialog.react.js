@@ -9,7 +9,7 @@ import React    from 'react';
 import ParseApp from 'lib/ParseApp';
 import Modal    from 'components/Modal/Modal.react';
 import Field    from 'components/Field/Field.react';
-import TextInput from 'components/TextInput/TextInput.react';
+import PropTypes from 'lib/PropTypes';
 import FileInput from 'components/FileInput/FileInput.react';
 import Label    from 'components/Label/Label.react';
 
@@ -73,5 +73,5 @@ export default class ImportDialog extends React.Component {
 }
 
 ImportDialog.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

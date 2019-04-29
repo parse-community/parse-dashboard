@@ -61,7 +61,7 @@ let B4ABrowserToolbar = ({
     enableExportClass,
     enableSecurityDialog,
     enableColumnManipulation,
-    enableClassManipulation
+    enableClassManipulation,
 
     applicationId
   }) => {

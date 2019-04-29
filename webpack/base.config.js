@@ -34,8 +34,8 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: { 
-          loader: 'babel-loader', 
+        use: {
+          loader: 'babel-loader',
           query: {
             plugins: [["@babel/plugin-proposal-decorators", { "legacy": true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
             presets: ['@babel/preset-react', '@babel/preset-env']
@@ -53,6 +53,9 @@ module.exports = {
         use: { loader: 'file-loader?name=img/[hash].[ext]' }
       }, {
         test: /\.jpg$/,
+        use: { loader: 'file-loader?name=img/[hash].[ext]' }
+      }, {
+        test: /\.gif$/,
         use: { loader: 'file-loader?name=img/[hash].[ext]' }
       }
     ]
