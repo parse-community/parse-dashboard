@@ -122,51 +122,8 @@ let AppInformationFields = ({
       description='(On back4app, this switch is temporarily disabled)' />}
     input={<Toggle
       value={inProduction}
-      type={Toggle.Types.YES_NO}
-      onChange={setInProduction} />
+      type={Toggle.Types.YES_NO} />
     } />
-  { inProduction ? <div>
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='iTunes App Store URL' />}
-      input={<TextInput
-        value={iTunesURL}
-        placeholder='Where is it?'
-        onChange={setiTunesURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Google Play Store URL' />}
-      input={<TextInput
-        value={googlePlayURL}
-        placeholder='Where is it?'
-        onChange={setGooglePlayURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Windows App Store URL' />}
-      input={<TextInput
-        value={windowsAppStoreURL}
-        placeholder='Where is it?'
-        onChange={setWindowsAppStoreURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Web App URL' />}
-      input={<TextInput
-        value={webAppURL}
-        placeholder='Where is it?'
-        onChange={setWebAppURL} />
-      } />
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label text='Other URL' />}
-      input={<TextInput
-        value={otherURL}
-        placeholder='Where is it?'
-        onChange={setOtherURL} />
-      } />
-  </div> : null }
 </Fieldset>;
 
 let CollaboratorsFields = ({

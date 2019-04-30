@@ -31,8 +31,8 @@ export default class B4ACloudCodeView extends React.Component {
     return <SyntaxHighlighter
       showLineNumbers={true}
       lineNumberStyle={{
-        "padding-right": 10,
-        "color": "rgb(169, 183, 198, 0.3)"
+        paddingRight: 10,
+        color: "rgb(169, 183, 198, 0.3)"
       }}
       wrapLines={true}
       language={this.extensionDecoder()}

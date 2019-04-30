@@ -160,7 +160,7 @@ const customMenu = node => {
 
 // Return the jstree config
 const getConfig = (files) => {
-  if (files[0] && files[0].state) files[0].state.selected = true
+  if (files && files[0] && files[0].state) files[0].state.selected = true
   return {
     plugins: ['contextmenu', 'dnd', 'sort', 'types', 'unique', 'changed'],
     core: {

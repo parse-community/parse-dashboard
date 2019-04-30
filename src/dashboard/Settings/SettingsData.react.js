@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes  from 'lib/PropTypes'; 
+import PropTypes  from 'lib/PropTypes';
 import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
 
@@ -19,14 +19,12 @@ export default class SettingsData extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount')
     this.context.currentApp.fetchSettingsFields().then(({ fields }) => {
       this.setState({ fields });
     });
   }
 
   componentWillReceiveProps(props, context) {
-    console.log('componentWillReceiveProps')
     if (this.context !== context) {
       this.setState({ fields: undefined });
       context.currentApp.fetchSettingsFields().then(({ fields }) => {
@@ -36,7 +34,6 @@ export default class SettingsData extends React.Component {
   }
 
   saveChanges(changes) {
-    console.log('saveChanges')
     let promise = this.context.currentApp.saveSettingsFields(changes)
     promise.then(({successes}) => {
       let newFields = {...this.state.fields, ...successes};
@@ -46,16 +43,10 @@ export default class SettingsData extends React.Component {
   }
 
   render() {
-    let child = React.Children.only(this.props.children);
-    console.log('render this.state', this.state)
-    return React.cloneElement(
-      child,
-      {
-        ...child.props,
-        initialFields: this.state.fields,
-        saveChanges: this.saveChanges.bind(this)
-      }
-    );
+    return this.props.children({
+      initialFields: this.state.fields,
+      saveChanges: this.saveChanges.bind(this)
+    })
   }
 }
 

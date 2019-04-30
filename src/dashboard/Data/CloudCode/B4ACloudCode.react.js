@@ -65,7 +65,7 @@ class B4ACloudCode extends CloudCode {
     typeof back4AppNavigation === 'object' && back4AppNavigation.atCloudCodePageEvent()
     await this.fetchSource()
     // define the parameters to show unsaved changes warning modal
-    const unbindHook = this.props.router.setRouteLeaveHook(this.props.route, nextLocation => {
+    const unbindHook = this.props.history.block(nextLocation => {
       if (this.state.unsavedChanges) {
         const warningModal = <Modal
           type={Modal.Types.WARNING}

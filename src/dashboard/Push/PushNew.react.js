@@ -161,18 +161,13 @@ class PushNew extends DashboardView {
 
     const available = this.context.currentApp.isLocalizationAvailable();
     if (available) {
-      this.context.currentApp.fetchPushLocales().promise
-        .then((locales) => {
-          const filteredLocales = (locales || []).filter((locale) => !(locale === '' || locale === undefined));
-          this.setState({
-            isLocalizationAvailable: true,
-            locales: filteredLocales,
-            availableLocales: filteredLocales
-          });
-          this.setState({
-            loadingLocale: false
-          });
-        });
+      const locales = this.context.currentApp.fetchPushLocales();
+      const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
+      this.setState({
+        isLocalizationAvailable: true,
+        locales: filteredLocales,
+        availableLocales: filteredLocales
+      });
     }
   }
 

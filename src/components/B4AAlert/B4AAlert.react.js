@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { centered } from 'components/Field/Field.scss';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
 import styles       from 'components/B4AAlert/B4AAlert.scss';
@@ -50,7 +49,7 @@ export default class B4AAlert extends React.Component {
   }
 }
 
-B4AAlert.PropTypes = {
+B4AAlert.propTypes = {
   title: PropTypes.node.describe(
     'The main title/node of the label.'
   ),

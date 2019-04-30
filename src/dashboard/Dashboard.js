@@ -210,13 +210,17 @@ export default class Dashboard extends React.Component {
 
     const SettingsRoute = ({ match }) => (
       <SettingsData params={ match.params }>
-        <Switch>
-          <Route path={ match.url + '/general' } component={GeneralSettings} />
-          <Route path={ match.url + '/keys' } component={SecuritySettings} />
-          <Route path={ match.url + '/users' } component={UsersSettings} />
-          <Route path={ match.url + '/push' } component={PushSettings} />
-          <Route path={ match.url + '/hosting' } component={HostingSettings} />
-        </Switch>
+        {settingsDataProps => (
+          <>
+            <Route path={ match.url + '/general' } render={props => (
+              <GeneralSettings {...props} {...settingsDataProps} />
+            )} />
+            <Route path={ match.url + '/keys' } component={SecuritySettings} />
+            <Route path={ match.url + '/users' } component={UsersSettings} />
+            <Route path={ match.url + '/push' } component={PushSettings} />
+            <Route path={ match.url + '/hosting' } component={HostingSettings} />
+          </>
+        )}
       </SettingsData>
     )
 
@@ -267,8 +271,10 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
           <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
           <Route path={ match.path + '/browser' } component={BrowserRoute} />
-          <Route path={ match.path + '/cloud_code' } component={CloudCode} />
-          <Route path={ match.path + '/cloud_code/*' } component={CloudCode} />
+          <Route path={ match.path + '/cloud_code' } render={(props) => (
+            <CloudCode {...props} params={match.params} />
+          )} />
+          <Redirect from={ match.path + '/cloud_code/*' } to='/apps/:appId/cloud_code' />
           <Route path={ match.path + '/webhooks' } component={Webhooks} />
 
           <Route path={ match.path + '/jobs' } component={JobsRoute}/>
@@ -296,7 +302,9 @@ export default class Dashboard extends React.Component {
           )} />
           <Route path={ match.path + '/admin' } component={B4aAdminPage} />
           <Route path={ match.path + '/app-templates' } component={B4aAppTemplates} />
-          <Route path={ match.path + '/server-settings' } component={ServerSettings} />
+          <Route path={ match.path + '/server-settings' } render={() => (
+            <ServerSettings params={match.params} />
+          )} />
 
           {/* Unused routes... */}
           <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/performance' />
