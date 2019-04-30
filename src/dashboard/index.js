@@ -10,10 +10,10 @@ import installDevTools from 'immutable-devtools';
 import React           from 'react';
 import ReactDOM        from 'react-dom';
 import Dashboard       from './Dashboard';
+import { mountPath}    from 'lib/path';
 import '@babel/polyfill';
 
 require('stylesheets/fonts.scss');
 installDevTools(Immutable);
 
-var path = window.PARSE_DASHBOARD_PATH || '/';
-ReactDOM.render(<Dashboard path={path}/>, document.getElementById('browser_mount'));
+ReactDOM.render(<Dashboard path={mountPath}/>, document.getElementById('browser_mount'));

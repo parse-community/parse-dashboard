@@ -5,12 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AppBadge         from 'components/AppBadge/AppBadge.react';
-import html             from 'lib/htmlString';
-import { Link }         from 'react-router-dom';
-import React            from 'react';
-import styles           from 'components/Sidebar/Sidebar.scss';
-import { unselectable } from 'stylesheets/base.scss';
+import AppBadge           from 'components/AppBadge/AppBadge.react';
+import html               from 'lib/htmlString';
+import { Link }           from 'react-router-dom';
+import React              from 'react';
+import styles             from 'components/Sidebar/Sidebar.scss';
+import { unselectable }   from 'stylesheets/base.scss';
+import { applyMountPath } from "lib/path";
 
 let AppsMenu = ({ apps, current, height, onSelect }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
@@ -23,7 +24,7 @@ let AppsMenu = ({ apps, current, height, onSelect }) => (
         return null;
       }
       return (
-        <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow}>
+        <Link to={{ pathname: applyMountPath(`apps/${app.slug}/browser`) }} key={app.slug} className={styles.menuRow}>
           {app.name}
           <AppBadge production={app.production} />
         </Link>

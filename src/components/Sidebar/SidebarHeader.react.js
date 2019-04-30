@@ -5,10 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Icon     from 'components/Icon/Icon.react';
-import { Link } from 'react-router-dom';
-import React    from 'react';
-import styles   from 'components/Sidebar/Sidebar.scss';
+import Icon                          from 'components/Icon/Icon.react';
+import { Link }                      from 'react-router-dom';
+import React                         from 'react';
+import styles                        from 'components/Sidebar/Sidebar.scss';
+import { mountPath, applyMountPath } from 'lib/path';
 // get the package.json environment variable
 const version = process.env.version;
 
@@ -18,7 +19,6 @@ export default class SidebarHeader extends React.Component {
     this.state = { };
   }
   componentWillMount() {
-    let mountPath = window.PARSE_DASHBOARD_PATH;
     fetch(mountPath).then(response => {
       this.setState({ dashboardUser: response.headers.get('username') });
     });
@@ -26,10 +26,10 @@ export default class SidebarHeader extends React.Component {
   render() {
     return (
       <div className={styles.header}>
-        <Link className={styles.logo} to={{ pathname: '/apps' }}>
+        <Link className={styles.logo} to={{ pathname: applyMountPath('apps') }}>
           <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
         </Link>
-        <Link to='/apps'>
+        <Link to={applyMountPath('apps')}>
           <div className={styles.version}>
             <div>
               Parse Dashboard {version}

@@ -5,14 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
-import Sidebar        from 'components/Sidebar/Sidebar.react';
+import React              from 'react';
+import Sidebar            from 'components/Sidebar/Sidebar.react';
+import { applyMountPath } from 'lib/path';
 
 let accountSidebarSections = [
   {
     name: 'Your Apps',
     icon: 'blank-app-outline',
-    link: '/apps'
+    link: applyMountPath('apps')
   }, /*{
     name: 'Account Settings',
     icon: 'users-solid',

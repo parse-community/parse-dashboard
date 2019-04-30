@@ -32,6 +32,7 @@ import Toolbar                from 'components/Toolbar/Toolbar.react';
 import { Directions }         from 'lib/Constants';
 import { Link }               from 'react-router-dom';
 import { tableInfoBuilder }   from 'lib/PushUtils';
+import { applyMountPath }     from "lib/path";
 
 const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments';
 
@@ -178,7 +179,7 @@ let getExperimentPartial = (pushDetails, type, isMessageType, style) => {
 }
 
 let getPushDetailUrl = (context, pushId) => {
-  return `/apps/${context.currentApp.slug}/push/${pushId}`;
+  return applyMountPath(`apps/${context.currentApp.slug}/push/${pushId}`);
 }
 
 let formatAnalyticsData = (data) => {

@@ -5,18 +5,19 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AppsManager   from 'lib/AppsManager';
-import FlowFooter    from 'components/FlowFooter/FlowFooter.react';
-import history       from 'dashboard/history';
-import html          from 'lib/htmlString';
-import Icon          from 'components/Icon/Icon.react';
-import joinWithFinal from 'lib/joinWithFinal';
-import LiveReload    from 'components/LiveReload/LiveReload.react';
-import prettyNumber  from 'lib/prettyNumber';
-import React         from 'react';
-import styles        from 'dashboard/Apps/AppsIndex.scss';
-import { center }    from 'stylesheets/base.scss';
-import AppBadge      from 'components/AppBadge/AppBadge.react';
+import AppsManager        from 'lib/AppsManager';
+import FlowFooter         from 'components/FlowFooter/FlowFooter.react';
+import history            from 'dashboard/history';
+import html               from 'lib/htmlString';
+import Icon               from 'components/Icon/Icon.react';
+import joinWithFinal      from 'lib/joinWithFinal';
+import LiveReload         from 'components/LiveReload/LiveReload.react';
+import prettyNumber       from 'lib/prettyNumber';
+import React              from 'react';
+import styles             from 'dashboard/Apps/AppsIndex.scss';
+import { center }         from 'stylesheets/base.scss';
+import AppBadge           from 'components/AppBadge/AppBadge.react';
+import { applyMountPath } from 'lib/path';
 
 function dash(value, content) {
   if (value === undefined) {
@@ -36,7 +37,7 @@ let CloningNote = ({ app, clone_status, clone_progress }) => {
   }
   let progress = <LiveReload
     initialData={[{appId: app.applicationId, progress: clone_progress}]}
-    source='/apps/cloning_progress'
+    source={applyMountPath('apps/cloning_progress')}
     render={data => {
       let currentAppProgress = data.find(({ appId }) => appId === app.applicationId);
       let progressStr = currentAppProgress ? currentAppProgress.progress.toString() : '0';
@@ -64,7 +65,7 @@ let AppCard = ({
   app,
   icon,
 }) => {
-  let canBrowse = app.serverInfo.error ? null : () => history.push(html`/apps/${app.slug}/browser`);
+  let canBrowse = app.serverInfo.error ? null : () => history.push(applyMountPath(`apps/${app.slug}/browser`));
   let versionMessage = app.serverInfo.error ?
     <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
     <div className={styles.serverVersion}>
@@ -98,7 +99,7 @@ export default class AppsIndex extends React.Component {
   componentWillMount() {
     if (AppsManager.apps().length === 1) {
       const [app] = AppsManager.apps();
-      history.push(`/apps/${app.slug}/browser`);
+      history.push(applyMountPath(`apps/${app.slug}/browser`));
       return;
     }
     document.body.addEventListener('keydown', this.focusField);

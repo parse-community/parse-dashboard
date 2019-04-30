@@ -5,13 +5,14 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React       from 'react';
-import PropTypes   from 'lib/PropTypes';
-import AppSelector from 'dashboard/AppSelector.react';
-import AppsManager from 'lib/AppsManager';
-import history     from 'dashboard/history';
-import ParseApp    from 'lib/ParseApp';
-import createClass from 'create-react-class';
+import React              from 'react';
+import PropTypes          from 'lib/PropTypes';
+import AppSelector        from 'dashboard/AppSelector.react';
+import AppsManager        from 'lib/AppsManager';
+import history            from 'dashboard/history';
+import ParseApp           from 'lib/ParseApp';
+import createClass        from 'create-react-class';
+import { applyMountPath } from 'lib/path';
 
 let AppData = createClass({
   childContextTypes: {
@@ -27,7 +28,7 @@ let AppData = createClass({
   },
 
   generatePath(path) {
-    return '/apps/' + this.props.params.appId + '/' + path;
+    return applyMountPath('apps/' + this.props.params.appId + '/' + path);
   },
 
   render() {
@@ -39,7 +40,7 @@ let AppData = createClass({
     if (current) {
       current.setParseKeys();
     } else {
-      history.replace('/apps');
+      history.replace(applyMountPath('apps'));
       return <div />;
     }
     return (

@@ -5,12 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as AJAX      from 'lib/AJAX';
-import encodeFormData from 'lib/encodeFormData';
-import Parse          from 'parse';
+import * as AJAX          from 'lib/AJAX';
+import encodeFormData     from 'lib/encodeFormData';
+import Parse              from 'parse';
+import { applyMountPath } from "lib/path";
 
 function setEnablePushSource(setting, enable) {
-  let path = `/apps/${this.slug}/update_push_notifications`;
+  let path = applyMountPath(`apps/${this.slug}/update_push_notifications`);
   let attr = `parse_app[${setting}]`;
   let body = {};
   body[attr] = enable ? 'true' : 'false';
@@ -218,7 +219,7 @@ export default class ParseApp {
 
   getAnalyticsRetention(time) {
     time = Math.round(time.getTime() / 1000);
-    return AJAX.abortableGet('/apps/' + this.slug + '/analytics_retention?at=' + time);
+    return AJAX.abortableGet(applyMountPath('apps/' + this.slug + '/analytics_retention?at=' + time));
   }
 
   getAnalyticsOverview(time) {
@@ -233,7 +234,7 @@ export default class ParseApp {
       'monthly_installations',
       'total_installations'
     ].map((activity) => {
-      let { xhr, promise } = AJAX.abortableGet('/apps/' + this.slug + '/analytics_content_audience?at=' + time + '&audienceType=' + activity);
+      let { xhr, promise } = AJAX.abortableGet(applyMountPath('apps/' + this.slug + '/analytics_content_audience?at=' + time + '&audienceType=' + activity));
       promise = promise.then((result) => (
         result.total === undefined ? result.content : result.total
       ));
@@ -245,7 +246,7 @@ export default class ParseApp {
       'billing_database_storage',
       'billing_data_transfer'
     ].map((billing) => (
-      AJAX.abortableGet('/apps/' + this.slug + '/' + billing)
+      AJAX.abortableGet(applyMountPath('apps/' + this.slug + '/' + billing))
     ));
 
     let allPromises = audiencePromises.concat(billingPromises);
@@ -266,20 +267,20 @@ export default class ParseApp {
   }
 
   getAnalyticsTimeSeries(query) {
-    let path = '/apps/' + this.slug + '/analytics?' + encodeFormData(null, query);
+    let path = applyMountPath('apps/' + this.slug + '/analytics?' + encodeFormData(null, query));
     let { promise, xhr } = AJAX.abortableGet(path);
     promise = promise.then(({ requested_data }) => requested_data);
     return { promise, xhr };
   }
 
   getAnalyticsSlowQueries(className, os, version, from, to) {
-    let path = '/apps/' + this.slug + '/slow_queries?' + encodeFormData(null, {
+    let path = applyMountPath('apps/' + this.slug + '/slow_queries?' + encodeFormData(null, {
       className: className || '',
       os: os || '',
       version: version || '',
       from: from.getTime() / 1000,
       to: to.getTime() / 1000
-    });
+    }));
     let { promise, xhr } = AJAX.abortableGet(path);
     promise = promise.then(({ result }) => result);
 
@@ -287,38 +288,38 @@ export default class ParseApp {
   }
 
   getAppleCerts() {
-    let path = '/apps/' + this.slug + '/apple_certificates';
+    let path = applyMountPath('apps/' + this.slug + '/apple_certificates');
     return AJAX.get(path).then(({ certs }) => certs);
   }
 
   uploadAppleCert(file) {
-    let path = '/apps/' + this.slug + '/dashboard_ajax/push_certificate';
+    let path = applyMountPath('apps/' + this.slug + '/dashboard_ajax/push_certificate');
     let data = new FormData();
     data.append('new_apple_certificate', file);
     return AJAX.post(path, data).then(({ cert }) => cert);
   }
 
   deleteAppleCert(id) {
-    let path = '/apps/' + this.slug + '/apple_certificates/' + id;
+    let path = applyMountPath('apps/' + this.slug + '/apple_certificates/' + id);
     return AJAX.del(path);
   }
 
   uploadSSLPublicCertificate(file) {
-    let path = '/apps/' + this.slug + '/update_hosting_certificates';
+    let path = applyMountPath('apps/' + this.slug + '/update_hosting_certificates');
     let data= new FormData();
     data.append('new_hosting_certificate[certificate_data]', file);
     return AJAX.put(path, data);
   }
 
   uploadSSLPrivateKey(file) {
-    let path = '/apps/' + this.slug + '/update_hosting_certificates';
+    let path = applyMountPath('apps/' + this.slug + '/update_hosting_certificates');
     let data= new FormData();
     data.append('new_hosting_certificate[key_data]', file);
     return AJAX.put(path, data);
   }
 
   saveSettingsFields(fields) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let appFields = {};
     for (let f in fields) {
       appFields['parse_app[' + f + ']'] = fields[f];
@@ -337,7 +338,7 @@ export default class ParseApp {
     if (new Date() - this.settings.lastFetched < 60000) {
       return Promise.resolve(this.settings.fields);
     }
-    let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
+    let path = applyMountPath('apps/' + this.slug + '/dashboard_ajax/settings');
     return AJAX.get(path).then((fields) => {
       for (let f in fields) {
         this.settings.fields[f] = fields[f];
@@ -348,17 +349,17 @@ export default class ParseApp {
   }
 
   cleanUpFiles() {
-    let path = '/apps/' + this.slug + '/cleanup_files';
+    let path = applyMountPath('apps/' + this.slug + '/cleanup_files');
     return AJAX.put(path);
   }
 
   exportData() {
-    let path = '/apps/' + this.slug + '/export_data';
+    let path = applyMountPath('apps/' + this.slug + '/export_data');
     return AJAX.put(path);
   }
 
   resetMasterKey(password) {
-    let path = '/apps/' + this.slug + '/reset_master_key';
+    let path = applyMountPath('apps/' + this.slug + '/reset_master_key');
     return AJAX.post(
       path,
       { password_confirm_reset_master_key: password }
@@ -370,7 +371,7 @@ export default class ParseApp {
 
   clearCollection(className) {
     if (this.serverInfo.parseServerVersion == 'Parse.com') {
-      let path = `/apps/${this.slug}/collections/${className}/clear`;
+      let path = applyMountPath(`apps/${this.slug}/collections/${className}/clear`);
       return AJAX.del(path);
     } else {
       let path = `purge/${className}`;
@@ -379,7 +380,7 @@ export default class ParseApp {
   }
 
   validateCollaborator(email) {
-    let path = '/apps/' + this.slug + '/collaborations/validate?email=' + encodeURIComponent(email);
+    let path = applyMountPath('apps/' + this.slug + '/collaborations/validate?email=' + encodeURIComponent(email));
     return AJAX.get(path);
   }
 
@@ -412,7 +413,7 @@ export default class ParseApp {
   }
 
   fetchPushAudienceSizeSuggestion() {
-    let path = '/apps/' + this.slug + '/push_notifications/audience_size_suggestion';
+    let path = applyMountPath('apps/' + this.slug + '/push_notifications/audience_size_suggestion');
     return AJAX.get(path);
   }
 
@@ -431,7 +432,7 @@ export default class ParseApp {
   }
 
   fetchPushLocaleDeviceCount(audienceId, where, locales) {
-    let path = '/apps/' + this.slug + '/push_subscriber_translation_count';
+    let path = applyMountPath('apps/' + this.slug + '/push_subscriber_translation_count');
     let urlsSeparator = '?';
     path += `?where=${encodeURI(JSON.stringify(where || {}))}`;
     path += `&locales=${encodeURI(JSON.stringify(locales))}`
@@ -440,12 +441,12 @@ export default class ParseApp {
   }
 
   fetchAvailableDevices() {
-    let path = '/apps/' + this.slug + '/dashboard_ajax/available_devices';
+    let path = applyMountPath('apps/' + this.slug + '/dashboard_ajax/available_devices');
     return AJAX.get(path);
   }
 
   removeCollaboratorById(id) {
-    let path = '/apps/' + this.slug + '/collaborations/' + id.toString();
+    let path = applyMountPath('apps/' + this.slug + '/collaborations/' + id.toString());
     let promise = AJAX.del(path)
     promise.then(() => {
       //TODO: this currently works because everything that uses collaborators
@@ -457,7 +458,7 @@ export default class ParseApp {
   }
 
   addCollaborator(email) {
-    let path = '/apps/' + this.slug + '/collaborations';
+    let path = applyMountPath('apps/' + this.slug + '/collaborations');
     let promise = AJAX.post(path, {'collaboration[email]': email});
     promise.then(({ data }) => {
       //TODO: this currently works because everything that uses collaborators
@@ -478,7 +479,7 @@ export default class ParseApp {
   }
 
   setAppName(name) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[name]': name});
     promise.then(() => {
       this.name = name;
@@ -487,7 +488,7 @@ export default class ParseApp {
   }
 
   setAppStoreURL(type, url) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {['parse_app[parse_app_metadata][url][' + type + ']']: url});
     promise.then(() => {
       this.settings.fields.fields.urls.unshift({platform: type, url: url});
@@ -496,7 +497,7 @@ export default class ParseApp {
   }
 
   setInProduction(inProduction) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[parse_app_metadata][production]': inProduction ? 'true' : 'false'});
     promise.then(() => {
       this.production = inProduction;
@@ -505,7 +506,7 @@ export default class ParseApp {
   }
 
   launchExperiment(objectId, formData) {
-    let path = `/apps/${this.slug}/push_notifications/${objectId}/launch_experiment`;
+    let path = applyMountPath(`apps/${this.slug}/push_notifications/${objectId}/launch_experiment`);
     return AJAX.post(path, formData);
   }
 
@@ -513,12 +514,12 @@ export default class ParseApp {
     if (!where) {
       where = {};
     }
-    let path = '/apps/' + this.slug + '/export_data';
+    let path = applyMountPath('apps/' + this.slug + '/export_data');
     return AJAX.put(path, { name: className, where: where });
   }
 
   getExportProgress() {
-    let path = '/apps/' + this.slug + '/export_progress';
+    let path = applyMountPath('apps/' + this.slug + '/export_progress');
     return AJAX.get(path);
   }
 
@@ -561,7 +562,7 @@ export default class ParseApp {
   }
 
   getMigrations() {
-    let path = '/apps/' + this.slug + '/migrations';
+    let path = applyMountPath('apps/' + this.slug + '/migrations');
     let obj = AJAX.abortableGet(path);
     this.hasCheckedForMigraton = true
     obj.promise.then(({ migration }) => {
@@ -572,12 +573,12 @@ export default class ParseApp {
 
   beginMigration(connectionString) {
     this.hasCheckedForMigraton = false;
-    let path = '/apps/' + this.slug + '/migrations';
+    let path = applyMountPath('apps/' + this.slug + '/migrations');
     return AJAX.post(path, {connection_string: connectionString});
   }
 
   changeConnectionString(newConnectionString) {
-    let path = '/apps/' + this.slug + '/change_connection_string';
+    let path = applyMountPath('apps/' + this.slug + '/change_connection_string');
     let promise = AJAX.post(path, {connection_string: newConnectionString});
     promise.then(() => {
       this.settings.fields.fields.opendb_connection_string = newConnectionString;
@@ -587,19 +588,19 @@ export default class ParseApp {
 
   stopMigration() {
     //We will need to pass the real ID here if we decide to have migrations deletable by id. For now, from the users point of view, there is only one migration per app.
-    let path = '/apps/' + this.slug + '/migrations/0';
+    let path = applyMountPath('apps/' + this.slug + '/migrations/0');
     return AJAX.del(path);
   }
 
   commitMigration() {
     //Migration IDs are not to be exposed, so pass 0 as ID and let rails fetch the correct ID
-    let path = '/apps/' + this.slug + '/migrations/0/commit';
+    let path = applyMountPath('apps/' + this.slug + '/migrations/0/commit');
     //No need to update anything, UI will autorefresh once request goes through and mowgli enters FINISH/DONE state
     return AJAX.post(path);
   }
 
   setRequireRevocableSessions(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[require_revocable_session]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -611,7 +612,7 @@ export default class ParseApp {
   }
 
   setExpireInactiveSessions(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[expire_revocable_session]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -623,7 +624,7 @@ export default class ParseApp {
   }
 
   setRevokeSessionOnPasswordChange(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[revoke_on_password_reset]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -635,7 +636,7 @@ export default class ParseApp {
   }
 
   setEnableNewMethodsByDefault(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[auth_options_attributes][_enable_by_default_as_bool]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -647,7 +648,7 @@ export default class ParseApp {
   }
 
   setAllowUsernameAndPassword(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[auth_options_attributes][username_attributes][enabled_as_bool]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -659,7 +660,7 @@ export default class ParseApp {
   }
 
   setAllowAnonymousUsers(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[auth_options_attributes][anonymous_attributes][enabled_as_bool]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -671,7 +672,7 @@ export default class ParseApp {
   }
 
   setAllowCustomAuthentication(require) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {'parse_app[auth_options_attributes][custom_attributes][enabled_as_bool]': require ? 'true' : 'false'});
     promise.then(() => {
       //TODO: this currently works because everything that uses this
@@ -683,7 +684,7 @@ export default class ParseApp {
   }
 
   setConnectedFacebookApps(idList, secretList) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {
       'parse_app[auth_options_attributes][facebook_attributes][app_ids_as_list]': idList.join(','),
       'parse_app[auth_options_attributes][facebook_attributes][app_secrets_as_list]': secretList.join(','),
@@ -702,7 +703,7 @@ export default class ParseApp {
   }
 
   setAllowFacebookAuth(enable) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {
       'parse_app[auth_options_attributes][facebook_attributes][enabled_as_bool]': enable ? 'true' : 'false',
     });
@@ -713,7 +714,7 @@ export default class ParseApp {
   }
 
   setConnectedTwitterApps(consumerKeyList) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {
       'parse_app[auth_options_attributes][twitter_attributes][consumer_keys_as_list]': consumerKeyList.join(','),
     });
@@ -729,7 +730,7 @@ export default class ParseApp {
   }
 
   setAllowTwitterAuth(allow) {
-    let path = '/apps/' + this.slug;
+    let path = applyMountPath('apps/' + this.slug);
     let promise = AJAX.put(path, {
       'parse_app[auth_options_attributes][twitter_attributes][enabled_as_bool]': allow ? 'true' : 'false',
     });
@@ -748,7 +749,7 @@ export default class ParseApp {
   }
 
   addGCMCredentials(sender_id, api_key) {
-    let path = '/apps/' + this.slug + '/update_push_notifications'
+    let path = applyMountPath('apps/' + this.slug + '/update_push_notifications');
     let promise = AJAX.post(path, {
       gcm_sender_id: sender_id,
       gcm_api_key: api_key
@@ -760,7 +761,7 @@ export default class ParseApp {
   }
 
   deleteGCMPushCredentials(GCMSenderID) {
-    let path = '/apps/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id='+GCMSenderID;
+    let path = applyMountPath('apps/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id='+GCMSenderID);
     let promise = AJAX.get(path);
     promise.then(() => {
       this.settings.fields.fields.gcm_credentials = this.settings.fields.fields.gcm_credentials.filter(cred =>

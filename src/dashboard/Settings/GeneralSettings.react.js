@@ -38,6 +38,7 @@ import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
 import { Link }                          from 'react-router-dom';
+import { applyMountPath }                from "lib/path";
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
@@ -225,7 +226,7 @@ let ManageAppFields = ({
         description='View your migration progress.' />}
       input={<FormButton
         color='blue'
-        onClick={() => history.push(`/apps/${appSlug}/migration`)}
+        onClick={() => history.push(applyMountPath(`apps/${appSlug}/migration`))}
         value='View progress' />} />
   } else {
     migrateAppField = [<Field
@@ -305,7 +306,7 @@ let ManageAppFields = ({
     {cloneAppMessage ? <FormNote
       show={true}
       color='green'>
-      <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: '/apps' }}>apps page</Link>!</div>
+      <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: applyMountPath('apps') }}>apps page</Link>!</div>
     </FormNote> : null}
     {!isCollaborator ? <Field
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
@@ -424,7 +425,7 @@ export default class GeneralSettings extends DashboardView {
         return promise;
       }}
       onClose={closeModalWithConnectionString}
-      onSuccess={() => history.push(`/apps/${this.context.currentApp.slug}/migration`)}
+      onSuccess={() => history.push(applyMountPath(`apps/${this.context.currentApp.slug}/migration`))}
       clearFields={() => this.setState({
         migrationMongoURL: '',
         migrationWarnings: [],
@@ -535,7 +536,7 @@ export default class GeneralSettings extends DashboardView {
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
       onSubmit={() => AppsManager.deleteApp(this.context.currentApp.slug, this.state.password)}
-      onSuccess={() => history.push('/apps')}
+      onSuccess={() => history.push(applyMountPath('apps'))}
       onClose={() => this.setState({showDeleteAppModal: false})}
       clearFields={() => this.setState({password: ''})}>
       {passwordField}

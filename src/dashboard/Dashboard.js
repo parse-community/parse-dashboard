@@ -5,48 +5,49 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountOverview    from './Account/AccountOverview.react';
-import AccountView        from './AccountView.react';
-import AnalyticsOverview  from './Analytics/Overview/Overview.react';
-import ApiConsole         from './Data/ApiConsole/ApiConsole.react';
-import AppData            from './AppData.react';
-import AppsIndex          from './Apps/AppsIndex.react';
-import AppsManager        from 'lib/AppsManager';
-import Browser            from './Data/Browser/Browser.react';
-import CloudCode          from './Data/CloudCode/CloudCode.react';
-import Config             from './Data/Config/Config.react';
-import Explorer           from './Analytics/Explorer/Explorer.react';
-import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
-import GeneralSettings    from './Settings/GeneralSettings.react';
-import history            from 'dashboard/history';
-import HostingSettings    from './Settings/HostingSettings.react';
-import Icon               from 'components/Icon/Icon.react';
-import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
-import Jobs               from './Data/Jobs/Jobs.react';
-import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
-import Loader             from 'components/Loader/Loader.react';
-import Logs               from './Data/Logs/Logs.react';
-import Migration          from './Data/Migration/Migration.react';
-import ParseApp           from 'lib/ParseApp';
-import Performance        from './Analytics/Performance/Performance.react';
-import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
-import PushDetails        from './Push/PushDetails.react';
-import PushIndex          from './Push/PushIndex.react';
-import PushNew            from './Push/PushNew.react';
-import PushSettings       from './Settings/PushSettings.react';
-import React              from 'react';
-import Retention          from './Analytics/Retention/Retention.react';
-import SchemaOverview     from './Data/Browser/SchemaOverview.react';
-import SecuritySettings   from './Settings/SecuritySettings.react';
-import SettingsData       from './Settings/SettingsData.react';
-import SlowQueries        from './Analytics/SlowQueries/SlowQueries.react';
-import styles             from 'dashboard/Apps/AppsIndex.scss';
-import UsersSettings      from './Settings/UsersSettings.react';
-import Webhooks           from './Data/Webhooks/Webhooks.react';
-import { AsyncStatus }    from 'lib/Constants';
-import { center }         from 'stylesheets/base.scss';
-import { get }            from 'lib/AJAX';
-import { setBasePath }    from 'lib/AJAX';
+import AccountOverview               from './Account/AccountOverview.react';
+import AccountView                   from './AccountView.react';
+import AnalyticsOverview             from './Analytics/Overview/Overview.react';
+import ApiConsole                    from './Data/ApiConsole/ApiConsole.react';
+import AppData                       from './AppData.react';
+import AppsIndex                     from './Apps/AppsIndex.react';
+import AppsManager                   from 'lib/AppsManager';
+import Browser                       from './Data/Browser/Browser.react';
+import CloudCode                     from './Data/CloudCode/CloudCode.react';
+import Config                        from './Data/Config/Config.react';
+import Explorer                      from './Analytics/Explorer/Explorer.react';
+import FourOhFour                    from 'components/FourOhFour/FourOhFour.react';
+import GeneralSettings               from './Settings/GeneralSettings.react';
+import history                       from 'dashboard/history';
+import HostingSettings               from './Settings/HostingSettings.react';
+import Icon                          from 'components/Icon/Icon.react';
+import JobEdit                       from 'dashboard/Data/Jobs/JobEdit.react';
+import Jobs                          from './Data/Jobs/Jobs.react';
+import JobsData                      from 'dashboard/Data/Jobs/JobsData.react';
+import Loader                        from 'components/Loader/Loader.react';
+import Logs                          from './Data/Logs/Logs.react';
+import Migration                     from './Data/Migration/Migration.react';
+import ParseApp                      from 'lib/ParseApp';
+import Performance                   from './Analytics/Performance/Performance.react';
+import PushAudiencesIndex            from './Push/PushAudiencesIndex.react';
+import PushDetails                   from './Push/PushDetails.react';
+import PushIndex                     from './Push/PushIndex.react';
+import PushNew                       from './Push/PushNew.react';
+import PushSettings                  from './Settings/PushSettings.react';
+import React                         from 'react';
+import Retention                     from './Analytics/Retention/Retention.react';
+import SchemaOverview                from './Data/Browser/SchemaOverview.react';
+import SecuritySettings              from './Settings/SecuritySettings.react';
+import SettingsData                  from './Settings/SettingsData.react';
+import SlowQueries                   from './Analytics/SlowQueries/SlowQueries.react';
+import styles                        from 'dashboard/Apps/AppsIndex.scss';
+import UsersSettings                 from './Settings/UsersSettings.react';
+import Webhooks                      from './Data/Webhooks/Webhooks.react';
+import { AsyncStatus }               from 'lib/Constants';
+import { center }                    from 'stylesheets/base.scss';
+import { get }                       from 'lib/AJAX';
+import { setBasePath }               from 'lib/AJAX';
+import { mountPath, applyMountPath } from 'lib/path';
 import {
   Router,
   Switch,
@@ -173,6 +174,7 @@ export default class Dashboard extends React.Component {
   }
 
   render() {
+
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
       return <div className={center}><Loader/></div>;
     }
@@ -205,7 +207,7 @@ export default class Dashboard extends React.Component {
           <Route path={ match.url + '/hosting' } component={HostingSettings} />
         </Switch>
       </SettingsData>
-    )
+    );
 
     const JobsRoute = (props) => (
       <Switch>
@@ -224,14 +226,14 @@ export default class Dashboard extends React.Component {
             <Jobs {...props} params={props.match.params}/>
           </JobsData>
         )} />
-        <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' />
+        <Redirect from={ props.match.path } to={applyMountPath('apps/:appId/jobs/all')} />
       </Switch>
-    )
+    );
 
     const AnalyticsRoute = ({ match }) => (
       <Switch>
         <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
-        <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
+        <Redirect exact from={ match.path + '/explorer' } to={applyMountPath('apps/:appId/analytics/explorer/chart')} />
         <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
         <Route path={ match.path + '/retention' } component={Retention} />
         <Route path={ match.path + '/performance' } component={Performance} />
@@ -262,15 +264,15 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/logs/:type' } render={(props) => (
             <Logs {...props} params={props.match.params} />
           )} />
-          <Redirect from={ match.path + '/logs' } to='/apps/:appId/logs/info' />
+          <Redirect from={ match.path + '/logs' } to={applyMountPath('apps/:appId/logs/info')} />
 
           <Route path={ match.path + '/config' } component={Config} />
           <Route path={ match.path + '/api_console' } component={ApiConsole} />
           <Route path={ match.path + '/migration' } component={Migration} />/>
 
 
-          <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
-          <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
+          <Redirect exact from={ match.path + '/push' } to={applyMountPath('apps/:appId/push/new')} />
+          <Redirect exact from={ match.path + '/push/activity' } to={applyMountPath('apps/:appId/push/activity/all')} />
 
           <Route path={ match.path + '/push/activity/:category' } render={(props) => (
             <PushIndex {...props} params={props.match.params} />
@@ -282,9 +284,9 @@ export default class Dashboard extends React.Component {
           )} />
 
           {/* Unused routes... */}
-          <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/overview' />
+          <Redirect exact from={ match.path + '/analytics' } to={applyMountPath('apps/:appId/analytics/overview')} />
           <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
-          <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
+          <Redirect exact from={ match.path + '/settings' } to={applyMountPath('apps/:appId/settings/general')} />
           <Route path={ match.path + '/settings' } component={SettingsRoute}/>
         </Switch>
       </AppData>
@@ -293,9 +295,9 @@ export default class Dashboard extends React.Component {
     const Index = () => (
       <div>
         <Switch>
-          <Redirect exact from='/apps/:appId' to='/apps/:appId/browser' />
-          <Route exact path='/apps' component={AppsIndexPage} />
-          <Route path='/apps/:appId' component={AppRoute} />
+          <Redirect exact from={applyMountPath('apps/:appId')} to={applyMountPath('apps/:appId/browser')} />
+          <Route exact path={applyMountPath('apps')} component={AppsIndexPage} />
+          <Route path={applyMountPath('apps/:appId')} component={AppRoute} />
         </Switch>
       </div>
     )
@@ -306,10 +308,10 @@ export default class Dashboard extends React.Component {
             <title>Parse Dashboard</title>
           </Helmet>
           <Switch>
-            <Route path='/apps' component={Index} />
-            <Route path='/account/overview' component={AccountSettingsPage} />
-            <Redirect from='/account' to='/account/overview' />
-            <Redirect from='/' to='/apps' />
+            <Route path={applyMountPath('apps')} component={Index} />
+            <Route path={applyMountPath('account/overview')} component={AccountSettingsPage} />
+            <Redirect from={applyMountPath('account')} to={applyMountPath('account/overview')} />
+            <Redirect from={mountPath} to={applyMountPath('apps')} />
             <Route path='*' component={FourOhFour} />
           </Switch>
         </div>

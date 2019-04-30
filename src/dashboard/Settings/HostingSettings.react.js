@@ -20,6 +20,7 @@ import TextInput               from 'components/TextInput/TextInput.react';
 import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import unique                  from 'lib/unique';
+import { applyMountPath }      from 'lib/path';
 
 export default class HostingSettings extends DashboardView {
 	constructor() {
@@ -220,7 +221,7 @@ export default class HostingSettings extends DashboardView {
 				label={<Label
 					text={"Custom “choose a new password” page"}
 					//getSiteDomain() is required here and not for the other templates because this template is an erb file, as opposed to the others which are html.
-					description={<span>This page will be loaded when users click on a reset password link. <a href={getSiteDomain() + '/apps/choose_password'} download="choose_password.html">Download the template</a>.</span>} />
+					description={<span>This page will be loaded when users click on a reset password link. <a href={getSiteDomain() + applyMountPath('apps/choose_password')} download="choose_password.html">Download the template</a>.</span>} />
 				}
 				input={<TextInput
 					value={fields.choose_password_link}

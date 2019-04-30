@@ -5,15 +5,16 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes   from 'lib/PropTypes'; 
-import AppsMenu       from 'components/Sidebar/AppsMenu.react';
-import Popover        from 'components/Popover/Popover.react';
-import history        from 'dashboard/history';
-import ParseApp       from 'lib/ParseApp';
-import Position       from 'lib/Position';
-import React          from 'react';
-import ReactDOM       from 'react-dom';
-import styles         from 'components/Sidebar/Sidebar.scss';
+import PropTypes          from 'lib/PropTypes'; 
+import AppsMenu           from 'components/Sidebar/AppsMenu.react';
+import Popover            from 'components/Popover/Popover.react';
+import history            from 'dashboard/history';
+import ParseApp           from 'lib/ParseApp';
+import Position           from 'lib/Position';
+import React              from 'react';
+import ReactDOM           from 'react-dom';
+import styles             from 'components/Sidebar/Sidebar.scss';
+import { applyMountPath } from "lib/path";
 
 export default class AppsSelector extends React.Component {
   constructor() {
@@ -58,7 +59,7 @@ export default class AppsSelector extends React.Component {
         if (sections[0] === '') {
           sections.shift();
         }
-        history.push(`/apps/${value}/${sections[2]}`);
+        history.push(applyMountPath(`apps/${value}/${sections[2]}`));
       }
     });
   }

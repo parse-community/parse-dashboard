@@ -5,14 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AppsManager from 'lib/AppsManager';
-import Dropdown    from 'components/Dropdown/Dropdown.react';
-import Field       from 'components/Field/Field.react';
-import history     from 'dashboard/history';
-import Label       from 'components/Label/Label.react';
-import Modal       from 'components/Modal/Modal.react';
-import Option      from 'components/Dropdown/Option.react';
-import React       from 'react';
+import AppsManager        from 'lib/AppsManager';
+import Dropdown           from 'components/Dropdown/Dropdown.react';
+import Field              from 'components/Field/Field.react';
+import history            from 'dashboard/history';
+import Label              from 'components/Label/Label.react';
+import Modal              from 'components/Modal/Modal.react';
+import Option             from 'components/Dropdown/Option.react';
+import React              from 'react';
+import { applyMountPath } from 'lib/path'
 
 export default class AppSelector extends React.Component {
   constructor(props, context) {
@@ -30,7 +31,7 @@ export default class AppSelector extends React.Component {
   }
 
   handleCancel() {
-    history.push('/apps');
+    history.push(applyMountPath('apps'));
   }
 
   render() {

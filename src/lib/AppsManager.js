@@ -7,6 +7,7 @@
  */
 import ParseApp           from 'lib/ParseApp';
 import { post, del } from 'lib/AJAX';
+import { applyMountPath } from "lib/path";
 
 let appsStore = [];
 
@@ -39,7 +40,7 @@ const AppsManager = {
     if (connectionURL) {
       payload.parse_app.connectionString = connectionURL;
     }
-    return post('/apps', payload).then((response) => {
+    return post(applyMountPath('apps'), payload).then((response) => {
       let newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;
@@ -47,7 +48,7 @@ const AppsManager = {
   },
 
   deleteApp(slug, password) {
-    return del('/apps/' + slug + '?password_confirm_delete=' + password).then(() => {
+    return del(applyMountPath('apps/' + slug + '?password_confirm_delete=' + password)).then(() => {
       for (let i = 0; i < appsStore.length; i++) {
         if (appsStore[i].slug == slug) {
           appsStore.splice(i, 1);
@@ -90,7 +91,7 @@ const AppsManager = {
         optionsForRuby[option] = true;
       }
     });
-    let path = '/apps/' + slug + '/clone_app';
+    let path = applyMountPath('apps/' + slug + '/clone_app');
     let request = post(path, {
       app_name: name,
       options: optionsForRuby,
@@ -114,7 +115,7 @@ const AppsManager = {
       payload.password_confirm_transfer = password;
     }
 
-    let promise = post('/apps/' + slug + '/transfer', payload);
+    let promise = post(applyMountPath('apps/' + slug + '/transfer'), payload);
     promise.then(() => {
       //TODO modify appsStore to reflect transfer
     });

@@ -5,13 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Icon     from 'components/Icon/Icon.react';
-import Popover  from 'components/Popover/Popover.react';
-import Position from 'lib/Position';
-import React    from 'react';
-import styles   from 'components/Sidebar/Sidebar.scss';
-
-let mountPath = window.PARSE_DASHBOARD_PATH;
+import Icon               from 'components/Icon/Icon.react';
+import Popover            from 'components/Popover/Popover.react';
+import Position           from 'lib/Position';
+import React              from 'react';
+import styles             from 'components/Sidebar/Sidebar.scss';
+import { applyMountPath } from 'lib/path';
 
 export default class FooterMenu extends React.Component {
   constructor() {
@@ -41,7 +40,7 @@ export default class FooterMenu extends React.Component {
           position={this.state.position}
           onExternalClick={() => this.setState({ show: false })}>
           <div className={styles.popup}>
-            <a href={`${mountPath}logout`}>Log Out <span className={styles.emoji}>👋</span></a>
+            <a href={applyMountPath('logout')}>Log Out <span className={styles.emoji}>👋</span></a>
             <a target='_blank' href='http://docs.parseplatform.org/parse-server/guide/'>Server Guide <span className={styles.emoji}>📚</span></a>
             <a target='_blank' href='http://stackoverflow.com/questions/tagged/parse.com'>Code-level Questions <span className={styles.emoji}>❓</span></a>
             <a target='_blank' href='http://stackoverflow.com/questions/tagged/parse-server'>Server Questions <span className={styles.emoji}>❓</span></a>

@@ -9,6 +9,7 @@ import { get, post, put } from 'lib/AJAX';
 import keyMirror          from 'lib/keyMirror';
 import { Map }            from 'immutable';
 import { registerStore }  from 'lib/stores/StoreManager';
+import { applyMountPath } from "lib/path";
 
 const LABEL_TO_KEY_MAPPING = {
   // Display Type
@@ -167,7 +168,7 @@ export const ActionTypes = keyMirror([
 
 function AnalyticsQueryStore(state, action) {
   action.app.setParseKeys();
-  let urlPrefix = `/apps/${action.app.slug}/explorer`;
+  let urlPrefix = applyMountPath(`apps/${action.app.slug}/explorer`);
 
   switch (action.type) {
     case ActionTypes.LIST:
