@@ -45,7 +45,7 @@
     "package-json": "5.0.0",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
-    "react-helmet": "5.2.0"
+    "react-helmet": "5.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",
