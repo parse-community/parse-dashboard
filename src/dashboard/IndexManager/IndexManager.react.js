@@ -266,7 +266,7 @@ class IndexManager extends DashboardView {
           {!this.state.isReadOnly && <td className={styles.selectedContainer}>
             {status === 'SUCCESS' && <input type='checkbox' value={!!this.state.selected[name]} onChange={() => this.toggleRow(name)} />}
           </td>}
-          <td>{name}</td>
+          <td className={this.state.isReadOnly ? styles.readOnly : ''}>{name}</td>
           <td>{creationType}</td>
           <td className={[styles.indexStatus, styles[`indexStatus-${status.toLowerCase()}`]].join(' ')}>
             <span className={styles.statusIcon}>●</span>
@@ -336,7 +336,7 @@ class IndexManager extends DashboardView {
                 <thead>
                   <tr>
                     {!this.state.isReadOnly && <th style={{ width: 50 }}></th>}
-                    <th>Name</th>
+                    <th className={this.state.isReadOnly ? styles.readOnly : ''}>Name</th>
                     <th>Creation Type</th>
                     <th>Status</th>
                     <th>Fields</th>

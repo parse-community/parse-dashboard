@@ -42,7 +42,7 @@
   }
 
   .indexTableContainer {
-    overflow: scroll;
+    overflow: auto;
 
     .indexTable {
       width: 100%;
@@ -64,6 +64,10 @@
           &:first-of-type {
             width: 50px;
             padding-left: 10px;
+
+            &.readOnly {
+              width: 70px;
+            }
           }
 
           &:nth-child(2) {
@@ -114,6 +118,10 @@
 
           td {
             word-break: break-word;
+
+            &.readOnly {
+              padding-left: 10px;
+            }
           }
         }
       }
