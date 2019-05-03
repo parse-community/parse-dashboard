@@ -73,9 +73,11 @@
     "marked": "0.6.2",
     "node-sass": "4.12.0",
     "parse": "2.3.2",
+    "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.0.0",
     "prismjs": "1.16.0",
     "prop-types": "15.7.2",
+    "puppeteer": "1.15.0",
     "query-string": "6.5.0",
     "react": "16.8.6",
     "react-dnd": "7.4.5",
@@ -101,7 +103,8 @@
     "lint": "eslint . --ignore-path .gitignore --cache",
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
-    "prepublish": "webpack --config webpack/publish.config.js --progress",
+    "prepare": "webpack --config webpack/publish.config.js --progress",
+    "server": "node server.js",
     "start": "node ./Parse-Dashboard/index.js"
   },
   "bin": {
