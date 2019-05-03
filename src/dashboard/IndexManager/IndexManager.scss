@@ -6,19 +6,29 @@
     padding: 0 20px;
     background-color: #353445;
 
-    .header {
+    .headerDescriptionContainer {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      align-items: center;
 
-      .subtitle {
-        font-size: 10px;
-        color: rgba(255, 255, 255, .5);
+      a {
+        display: flex;
+        margin-right: 10px;
       }
 
-      .title {
-        font-size: 16px;
-        color: #F4F5F7;
+      .header {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .subtitle {
+          font-size: 10px;
+          color: rgba(255, 255, 255, .5);
+        }
+
+        .title {
+          font-size: 16px;
+          color: #F4F5F7;
+        }
       }
     }
 

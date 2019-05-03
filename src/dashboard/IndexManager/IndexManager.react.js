@@ -309,15 +309,23 @@ class IndexManager extends DashboardView {
     if (className.startsWith('_')) {
       className = className.substr(1, className.length - 1)
     }
+    const { showBackButton } = this.props.location.state || {}
     return (
       <div className={styles.indexManager}>
         <div className={styles.headerContainer}>
-          <section className={styles.header}>
-            <span className={styles.subtitle}>Index Manager</span>
-            <div>
-              <span className={styles.title}>{className} Indexes</span>
-            </div>
-          </section>
+          <div className={styles.headerDescriptionContainer}>
+            {showBackButton ? (
+              <a className={styles.iconButton} onClick={() => history.goBack()} title='Back to Database Browser'>
+                <Icon width={32} height={32} fill="#ffffff" name="left-outline" />
+              </a>
+            ) : null}
+            <section className={styles.header}>
+              <span className={styles.subtitle}>Index Manager</span>
+              <div>
+                <span className={styles.title}>{className} Indexes</span>
+              </div>
+            </section>
+          </div>
 
           <section className={styles.toolbar}>
             {!this.state.isReadOnly && <a className={styles.toolbarButton} onClick={this.showIndexForm} title='Add an index'>
