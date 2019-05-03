@@ -13,6 +13,7 @@ import B4aAdminModal    from 'dashboard/B4aAdminPage/B4aAdminModal'
 import B4aAdminParams   from 'dashboard/B4aAdminPage/B4aAdminParams'
 import Toolbar          from 'components/Toolbar/Toolbar.react';
 import Icon             from 'components/Icon/Icon.react';
+import ReactPlayer      from 'react-player';
 
 
 @subscribeTo('Schema', 'schema')
@@ -143,6 +144,10 @@ class B4aAdminPage extends DashboardView {
     await this.setState({ isRoleCreated: true })
   }
 
+  async createIndexes() {
+    await this.context.currentApp.createIndexes()
+  }
+
   async renderModal() {
     await B4aAdminModal.show({
       domain: this.adminDomain,
@@ -151,6 +156,7 @@ class B4aAdminPage extends DashboardView {
       createClasses: this.createClasses.bind(this),
       createAdminHost: this.createHost.bind(this),
       activateLiveQuery: this.activateLiveQuery.bind(this),
+      createIndexes: this.createIndexes.bind(this),
       ...this.state
     })
 
@@ -169,6 +175,15 @@ class B4aAdminPage extends DashboardView {
     );
 
     const fields = <Fieldset legend={this.legend} description={this.description}>
+      <ReactPlayer
+        url='https://www.youtube.com/watch?v=7CHdIniAACE'
+        controls
+        width="650px"
+        style={{
+          border: "1px solid #000",
+          borderRadius: "4px",
+          marginBottom: "20"
+        }} />
       <Field
         height='120px'
         textAlign='center'

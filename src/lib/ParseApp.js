@@ -886,4 +886,11 @@ export default class ParseApp {
       throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
     })
   }
+
+  createIndexes() {
+    let path = '/parse-app/index';
+    return axios.post(path, { appId: this.applicationId, index: { '$**': 'text' } }).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
 }
