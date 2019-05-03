@@ -40,7 +40,7 @@ const renderConfirmStep = () => {
   </div>);
 }
 
-const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated, createIndexes }) => {
+const show = async ({domain, setState, createAdmin, createAdminHost, isRoleCreated, createIndexes }) => {
   let adminURL = ''
 
   const steps = await Swal.mixin(modalOptions).queue([
