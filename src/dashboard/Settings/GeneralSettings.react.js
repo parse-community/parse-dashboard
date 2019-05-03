@@ -122,7 +122,8 @@ let AppInformationFields = ({
       description='(On back4app, this switch is temporarily disabled)' />}
     input={<Toggle
       value={inProduction}
-      type={Toggle.Types.YES_NO} />
+      type={Toggle.Types.YES_NO}
+      onChange={() => {}} />
     } />
 </Fieldset>;
 
