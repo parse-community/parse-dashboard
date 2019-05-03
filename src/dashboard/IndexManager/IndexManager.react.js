@@ -305,7 +305,10 @@ class IndexManager extends DashboardView {
   }
 
   renderContent() {
-    const { className } = this.props.params
+    let { className } = this.props.params
+    if (className.startsWith('_')) {
+      className = className.substr(1, className.length - 1)
+    }
     return (
       <div className={styles.indexManager}>
         <div className={styles.headerContainer}>
