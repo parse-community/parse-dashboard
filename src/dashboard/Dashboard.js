@@ -249,7 +249,9 @@ export default class Dashboard extends React.Component {
       <Switch>
         <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
         <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
-        <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
+        <Route path={ match.path + '/explorer/:displayType' } render={props => (
+          <Explorer {...props} params={match.params} />
+        )} />
         <Route path={ match.path + '/retention' } component={Retention} />
         <Route path={ match.path + '/performance' } component={Performance} />
         <Route path={ match.path + '/slow_queries' } component={SlowQueries} />
