@@ -25,7 +25,8 @@ class IndexManager extends DashboardView {
       loading: true,
       selected: {},
       data: null,
-      showIndexManager: false
+      showIndexManager: false,
+      isReadOnly: !this.context.currentApp.custom.isOwner
     }
 
     this.refresh = this.refresh.bind(this)
@@ -262,10 +263,10 @@ class IndexManager extends DashboardView {
     return this.state.data.map(({ name, index, creationType, status, unique = false, sparse = false, expireAfterSeconds, weights, size }) => {
       return (
         <tr key={name}>
-          <td className={styles.selectedContainer}>
+          {!this.state.isReadOnly && <td className={styles.selectedContainer}>
             {status === 'SUCCESS' && <input type='checkbox' value={!!this.state.selected[name]} onChange={() => this.toggleRow(name)} />}
-          </td>
-          <td>{name}</td>
+          </td>}
+          <td className={this.state.isReadOnly ? styles.readOnly : ''}>{name}</td>
           <td>{creationType}</td>
           <td className={[styles.indexStatus, styles[`indexStatus-${status.toLowerCase()}`]].join(' ')}>
             <span className={styles.statusIcon}>●</span>
@@ -316,15 +317,15 @@ class IndexManager extends DashboardView {
           </section>
 
           <section className={styles.toolbar}>
-            <a className={styles.toolbarButton} onClick={this.showIndexForm} title='Add an index'>
+            {!this.state.isReadOnly && <a className={styles.toolbarButton} onClick={this.showIndexForm} title='Add an index'>
               <Icon name='add-row' width={32} height={26} />
-            </a>
+            </a>}
             <a className={styles.toolbarButton} onClick={this.refresh} title='Refresh'>
               <Icon name='refresh' width={30} height={26} />
             </a>
-            <a className={styles.toolbarButton} onClick={this.dropIndexes} title='Drop index'>
+            {!this.state.isReadOnly && <a className={styles.toolbarButton} onClick={this.dropIndexes} title='Drop index'>
               <Icon name='trash-solid' width={30} height={26} />
-            </a>
+            </a>}
           </section>
         </div>
         {this.state.data && this.state.data.length === 0
@@ -334,8 +335,8 @@ class IndexManager extends DashboardView {
               <table className={styles.indexTable}>
                 <thead>
                   <tr>
-                    <th style={{ width: 50 }}></th>
-                    <th>Name</th>
+                    {!this.state.isReadOnly && <th style={{ width: 50 }}></th>}
+                    <th className={this.state.isReadOnly ? styles.readOnly : ''}>Name</th>
                     <th>Creation Type</th>
                     <th>Status</th>
                     <th>Fields</th>
