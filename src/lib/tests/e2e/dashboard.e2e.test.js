@@ -25,9 +25,10 @@ const dashboardSettings = {
 describe('dashboard e2e', () => {
   it('can keep mount path on redirect', async () => {
     let server;
+    const mount = '/dashboard';
     const launchApp = new Promise(resolve => {
       const app = express();
-      app.use('/dashboard', ParseDashboard(dashboardSettings));
+      app.use(mount, ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
     await launchApp;
@@ -36,10 +37,10 @@ describe('dashboard e2e', () => {
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
 
-    await page.goto('http://localhost:5051/dashboard');
+    await page.goto(`http://localhost:5051${mount}`);
     await page.waitForSelector('#browser_mount');
 
-    expect(page.url().indexOf('http://localhost:5051/dashboard/apps')).toBe(0);
+    expect(page.url().indexOf(`http://localhost:5051${mount}/apps`)).toBe(0);
 
     await page.close();
     await browser.close();
