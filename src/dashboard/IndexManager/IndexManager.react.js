@@ -306,7 +306,7 @@ class IndexManager extends DashboardView {
 
   renderContent() {
     let { className } = this.props.params
-    if (className.startsWith('_')) {
+    if (className && className.startsWith('_')) {
       className = className.substr(1, className.length - 1)
     }
     const { showBackButton } = this.props.location.state || {}
