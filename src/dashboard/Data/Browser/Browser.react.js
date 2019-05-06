@@ -1147,7 +1147,10 @@ export default class Browser extends DashboardView {
 
   onClickIndexManager() {
     const { appId, className } = this.props.params
-    history.push(`apps/${appId}/index/${className}`)
+    history.push({
+      pathname: `apps/${appId}/index/${className}`,
+      state: { showBackButton: true }
+    })
   }
 
   renderContent() {
