@@ -8,14 +8,19 @@
 import { Link } from 'react-router';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
+import B4aBadge from 'components/B4aBadge/B4aBadge.react'
 
-let SidebarSubItem = ({ active, name, action, link, children }) => {
+let SidebarSubItem = ({ active, name, action, link, children, badge }) => {
   if (active) {
     return (
       <div>
         <div className={styles.subitem}>
           {name}
-          {action ? action.renderButton() : null}
+          {action
+            ? React.isValidElement(action)
+              ? action
+              : action.renderButton()
+            : null}
         </div>
         <div>
           {children}
@@ -30,6 +35,7 @@ let SidebarSubItem = ({ active, name, action, link, children }) => {
         className={styles.subitem}
         to={{ pathname: link }}>
         {name}
+        {badge ? <B4aBadge {...badge} /> : null}
       </Link>
     </div>
   );
