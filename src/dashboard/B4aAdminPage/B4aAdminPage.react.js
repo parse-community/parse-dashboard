@@ -75,8 +75,8 @@ class B4aAdminPage extends DashboardView {
     await this.setState({ isRoleCreated: true })
   }
 
-  async createIndexes() {
-    await this.context.currentApp.createIndexes()
+  async createTextIndexes() {
+    await this.context.currentApp.createTextIndexes()
   }
 
   async renderModal() {
@@ -85,7 +85,7 @@ class B4aAdminPage extends DashboardView {
       setState: this.setState.bind(this),
       createAdmin: this.createAdmin.bind(this),
       createAdminHost: this.createHost.bind(this),
-      createIndexes: this.createIndexes.bind(this),
+      createTextIndexes: this.createTextIndexes.bind(this),
       ...this.state
     })
 
@@ -116,7 +116,7 @@ class B4aAdminPage extends DashboardView {
       <Field
         height='120px'
         textAlign='center'
-        label={<Label text='Is Enabled?' description="Enabling will automatically add to your app’s schema a new role and three new classes." />}
+        label={<Label text='Is Enabled?' description="Enabling will automatically add three new classes, new indexes and a new role to your application’s schema." />}
         input={<div className={styles['input']}>
           {
             isAdminHostEnabled
