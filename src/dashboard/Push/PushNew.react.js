@@ -729,7 +729,7 @@ class PushNew extends DashboardView {
     let invalidInputMessages = [];
 
     if (!this.state.audienceId) {
-      emptyInputMessages.push('you need select an audience');
+      emptyInputMessages.push('target audience');
     }
 
     // when number audience size is 0
