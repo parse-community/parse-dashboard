@@ -42,9 +42,10 @@
     "csurf": "1.10.0",
     "express": "4.13.4",
     "json-file-plus": "3.2.0",
-    "package-json": "5.0.0",
+    "package-json": "6.1.0",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
+    "query-string": "6.5.0",
     "react-helmet": "5.2.1"
   },
   "devDependencies": {
@@ -59,6 +60,7 @@
     "babel-eslint": "10.0.0",
     "babel-loader": "8.0.0",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "core-js": "2.6.5",
     "css-loader": "1.0.0",
     "eslint": "5.0.0",
     "eslint-plugin-jest": "22.5.1",
@@ -78,7 +80,6 @@
     "prismjs": "1.16.0",
     "prop-types": "15.7.2",
     "puppeteer": "1.15.0",
-    "query-string": "6.5.0",
     "react": "16.8.6",
     "react-dnd": "7.4.5",
     "react-dnd-html5-backend": "7.4.4",
