@@ -51,7 +51,8 @@ export default class DataBrowser extends React.Component {
         current: null,
         editing: false,
       });
-    } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length) {
+    } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
+           || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
       let order = ColumnPreferences.getOrder(
         props.columns,
         context.currentApp.applicationId,

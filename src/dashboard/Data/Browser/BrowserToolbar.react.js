@@ -41,12 +41,14 @@ let BrowserToolbar = ({
   onChangeCLP,
   onRefresh,
   hidePerms,
+  isUnique,
 
   enableDeleteAllRows,
   enableExportClass,
   enableSecurityDialog,
+
   enableColumnManipulation,
-  enableClassManipulation
+  enableClassManipulation,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -58,7 +60,7 @@ let BrowserToolbar = ({
       }
   }
 
-  if (!relation) {
+  if (!relation && !isUnique) {
     if (perms && !hidePerms) {
       let read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
       let write = perms.create && perms.update && perms.delete && perms.create['*'] && perms.update['*'] && perms.delete['*'];
@@ -93,7 +95,7 @@ let BrowserToolbar = ({
     );
   } else {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
         <MenuItem text='Add a row' onClick={onAddRow} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
         {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
@@ -129,6 +131,12 @@ let BrowserToolbar = ({
   } else if (subsection.length > 30) {
     subsection = subsection.substr(0, 30) + '\u2026';
   }
+  const classes = [styles.toolbarButton];
+  let onClick = onAddRow;
+  if (isUnique) {
+    classes.push(styles.toolbarButtonDisabled);
+    onClick = null;
+  }
   return (
     <Toolbar
       relation={relation}
@@ -137,7 +145,7 @@ let BrowserToolbar = ({
       subsection={subsection}
       details={details.join(' \u2022 ')}
     >
-      <a className={styles.toolbarButton} onClick={onAddRow}>
+      <a className={classes.join(' ')} onClick={onClick}>
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>
       </a>
@@ -155,7 +163,7 @@ let BrowserToolbar = ({
       <div className={styles.toolbarSeparator} />
       {enableSecurityDialog ? <SecurityDialog
         setCurrent={setCurrent}
-        disabled={!!relation}
+        disabled={!!relation || !!isUnique}
         perms={perms}
         className={classNameForPermissionsEditor}
         onChangeCLP={onChangeCLP}
