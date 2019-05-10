@@ -1,6 +1,17 @@
 language: node_js
 node_js:
 - '10.14'
+
+branches:
+  only:
+    - master
+    - /^greenkeeper/.*$/
+    - /^v?[0-9]+.[0-9]+.[0-9]+(-.*)?$/
+
+cache:
+  directories:
+  - node_modules
+
 before_install:
   - npm install -g greenkeeper-lockfile@1
 before_script:
