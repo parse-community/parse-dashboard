@@ -22,7 +22,7 @@ module.exports = {
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6
-    if (filename.indexOf('node_modules') < 0) {
+    if (filename.indexOf('node_modules') < 0 && !filename.endsWith('package.json')) {
       return babel.transform(src, {
         filename: filename,
         retainLines: true,
