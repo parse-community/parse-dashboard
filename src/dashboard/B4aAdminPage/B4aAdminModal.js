@@ -40,7 +40,7 @@ const renderConfirmStep = () => {
   </div>);
 }
 
-const show = async ({domain, setState, createAdmin, createClasses, createAdminHost, activateLiveQuery, isRoleCreated, createTextIndexes }) => {
+const show = async ({domain, setState, createAdmin, createAdminHost, isRoleCreated, createTextIndexes }) => {
   let adminURL = ''
 
   const steps = await Swal.mixin(modalOptions).queue([
@@ -64,7 +64,6 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
 
             await setState({ username, password })
             await createAdmin()
-            await createClasses()
           }
         } catch(err) {
           Swal.showValidationMessage(
@@ -89,7 +88,6 @@ const show = async ({domain, setState, createAdmin, createClasses, createAdminHo
           if (!host) throw new Error("Missing admin host")
           await setState({host: host.toLowerCase()})
           adminURL = await createAdminHost()
-          await activateLiveQuery()
           await setState({ adminURL })
         } catch(err) {
           Swal.showValidationMessage(

@@ -852,6 +852,13 @@ export default class ParseApp {
     })
   }
 
+  addAdminUser(userCredentials) {
+    let path = '/parse-app/' + this.slug + '/adminuser';
+    return axios.post(path, userCredentials).catch(err => {
+      throw err.response && err.response.data && err.response.data.error ? err.response.data.error : err
+    })
+  }
+
   getAdminHost() {
     let path = '/parse-app/' + this.slug + '/adminhost';
     return axios.get(path).then(({ data }) => data.adminHost).catch(err => {
