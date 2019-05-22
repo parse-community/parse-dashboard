@@ -15,7 +15,7 @@ RUN npm install
 COPY . /src
 
 # Run all webpack build steps
-RUN npm run prepublish && npm run build
+RUN npm run prepare && npm run build
 
 
 #
