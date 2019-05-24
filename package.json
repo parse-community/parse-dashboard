@@ -85,7 +85,7 @@
     "node-sass": "4.12.0",
     "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.0.0",
-    "puppeteer": "1.16.0",
+    "puppeteer": "1.17.0",
     "react-test-renderer": "16.8.6",
     "request": "2.87.0",
     "request-promise": "4.2.4",
