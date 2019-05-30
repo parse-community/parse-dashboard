@@ -47,9 +47,19 @@ export default class BrowserMenu extends React.Component {
         </Popover>
       );
     }
+    const classes = [styles.entry];
+    if (this.props.disabled) {
+      classes.push(styles.disabled);
+    }
+    let onClick = null;
+    if (!this.props.disabled) {
+      onClick = () => {
+        this.setState({ open: true });
+      };
+    }
     return (
       <div className={styles.wrap}>
-        <div className={styles.entry} onClick={() => this.setState({ open: true })}>
+        <div className={classes.join(' ')} onClick={onClick}>
           <Icon name={this.props.icon} width={14} height={14} />
           <span>{this.props.title}</span>
         </div>

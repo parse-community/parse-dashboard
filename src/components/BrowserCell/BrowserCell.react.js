@@ -33,12 +33,22 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
     content = <span>&nbsp;</span>;
     classes.push(styles.empty);
   } else if (type === 'Pointer') {
+    if (value && value.__type) {
+      const object = new Parse.Object(value.className);
+      object.id = value.objectId;
+      value = object;
+    }
     content = (
       <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
         <Pill value={value.id} />
       </a>
     );
   } else if (type === 'Date') {
+    if (typeof value === 'object' && value.__type) {
+      value = new Date(value.iso);
+    } else if (typeof value === 'string') {
+      value = new Date(value);
+    }
     content = dateStringUTC(value);
   } else if (type === 'Boolean') {
     content = value ? 'True' : 'False';

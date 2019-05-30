@@ -11,3 +11,6 @@ npm-debug.log
 *.swp
 .env
 .idea/
+
+logs/
+test_logs

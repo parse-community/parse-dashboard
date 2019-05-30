@@ -1,10 +1,16 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.0...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.1...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
-* Fix: Correct inappropriate error message when no target audience is selected (#1052), thanks to [Bouimadaghene](https://github.com/starbassma)
+
+### 1.3.1
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.0...1.3.1)
+
+* FIX: Correct inappropriate error message when no target audience is selected ([#1052](https://github.com/parse-community/parse-dashboard/pull/1051)), thanks to [Bouimadaghene](https://github.com/starbassma)
+* FIX: issue regarding lost mount path ([#1070](https://github.com/parse-community/parse-dashboard/pull/1070)), thanks to [Diamond Lewis](https://github.com/dplewis)
+* NEW: Add distinct / unique filter ([#920](https://github.com/parse-community/parse-dashboard/pull/920)), thanks to [Diamond Lewis](https://github.com/dplewis)
 
 ### 1.3.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.2.0...1.3.0)
