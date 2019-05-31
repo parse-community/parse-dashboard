@@ -22,7 +22,8 @@ export default class ApiConsole extends DashboardView {
     const current = path.substr(path.lastIndexOf('/') + 1, path.length - 1)
     return (
       <CategoryList current={current} linkPrefix={'api_console/'} categories={[
-        { name: 'REST Console', id: 'rest' }
+        { name: 'REST Console', id: 'rest' },
+        { name: 'GraphQL Console', id: 'graphql' }
       ]} />
     )
   }

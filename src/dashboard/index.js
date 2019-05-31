@@ -13,6 +13,7 @@ import Dashboard       from './Dashboard';
 import '@babel/polyfill';
 
 require('stylesheets/fonts.scss');
+require('../../node_modules/graphql-playground-react/build/static/css/index.css')
 installDevTools(Immutable);
 
 var path = window.PARSE_DASHBOARD_PATH || '/';
