@@ -7,6 +7,7 @@ import history from 'dashboard/history'
 import Icon from 'components/Icon/Icon.react'
 import IndexForm from './IndexForm.react'
 import ParseApp from 'lib/ParseApp'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { SpecialClasses } from 'lib/Constants'
 import stringCompare from 'lib/stringCompare'
@@ -374,7 +375,7 @@ class IndexManager extends DashboardView {
 }
 
 IndexManager.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 }
 
 export default IndexManager
