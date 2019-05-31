@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import AccountManager from 'lib/AccountManager';
 import { post } from 'lib/AJAX';
+import B4aBadge from '../components/B4aBadge/B4aBadge.react';
 
 // Alert parameters
 const MySwal = withReactContent(Swal)
@@ -85,6 +86,15 @@ export default class DashboardView extends React.Component {
       });
     }
 
+    coreSubsections.push({
+      name: 'Index Manager',
+      link: '/index',
+      badge: {
+        label: 'NEW',
+        color: 'green'
+      }
+    })
+
     // Show cloud code to all parse versions
     //if (features.cloudCode && features.cloudCode.viewCode) {
       coreSubsections.push({
@@ -137,6 +147,7 @@ export default class DashboardView extends React.Component {
         link: '/migration',
       });
     }
+
     let pushSubsections = [];
 
     if (features.push && features.push.immediatePush) {

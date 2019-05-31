@@ -24,11 +24,25 @@ let isError = (str) => str[0] === 'E';
 
 let getLogEntryInfo = (str) => {
   let re = getTimestampRegex();
-  let timeStampStr = str.match(re) ? str.match(re)[0] : '';
+  let time = '';
+  let content = '';
+  let error = false;
+
+  if (typeof str === 'string') {
+    time = str.match(re) ? str.match(re)[0] : '';
+    content = str.replace(time, '');
+    error = isError(str);
+  } else if (str && typeof str.message === 'object') {
+    let objectError = str.message;
+    time = objectError.timestamp;
+    content = objectError.message;
+    error = objectError.level && objectError.level === 'error';
+  }
+
   return {
-    time: timeStampStr,
-    content: str.replace(timeStampStr,''),
-    error: isError(str)
+    time,
+    content,
+    error
   };
 }
 

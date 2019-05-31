@@ -37,7 +37,8 @@ export default class DataBrowser extends React.Component {
       current: null,
       editing: false,
       currentTooltip: null,
-      numberOfColumns: 0
+      numberOfColumns: 0,
+      showIndexManager: false
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -276,7 +277,8 @@ export default class DataBrowser extends React.Component {
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
           {...other}
-          applicationId={applicationId} />
+          applicationId={applicationId}
+          onClickIndexManager={this.props.onClickIndexManager} />
       </div>
     );
   }

@@ -22,6 +22,7 @@ import GeneralSettings    from './Settings/GeneralSettings.react';
 import history            from 'dashboard/history';
 import HostingSettings    from './Settings/HostingSettings.react';
 import Icon               from 'components/Icon/Icon.react';
+import IndexManager       from './IndexManager/IndexManager.react'
 import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
 import Jobs               from './Data/Jobs/Jobs.react';
 import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
@@ -307,6 +308,8 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/server-settings' } render={() => (
             <ServerSettings params={match.params} />
           )} />
+          <Route path={ match.path + '/index' } component={IndexManager} />
+          <Route path={ match.path + '/index/:className'} component={IndexManager} />
 
           {/* Unused routes... */}
           <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/performance' />

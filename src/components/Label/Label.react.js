@@ -16,7 +16,10 @@ let Label = (props) => {
     <div
       className={[styles.label, centered].join(' ')}
       style={{ padding: '0 ' + padding }}>
-      <div className={styles.text}>{props.text}</div>
+      <div className={styles.text}>
+        {props.text}
+        {props.help ? <span className={styles.help}>{props.help}</span> : null}
+      </div>
       {props.description ? <div className={styles.description}>{props.description}</div> : null}
     </div>
   );
@@ -33,5 +36,8 @@ Label.propTypes = {
   ),
   padding: PropTypes.number.describe(
     'Allows you to override the left-right padding of the label.'
+  ),
+  help: PropTypes.node.describe(
+    'The component to be rendered as a help for this label.'
   )
 };

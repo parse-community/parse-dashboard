@@ -22,7 +22,6 @@ class B4aAdminPage extends DashboardView {
     super()
     this.section = 'Admin App';
     this.adminDomain = b4aSettings.ADMIN_DOMAIN
-    this.webHostDomain = '.back4app.io'
     this.protocol = 'https://'
 
     this.state = {
@@ -31,7 +30,6 @@ class B4aAdminPage extends DashboardView {
       password: '',
       host: '',
       adminURL: '',
-      webHost: '',
       isRoleCreated: false,
       adminParams: {}
     }
@@ -45,10 +43,9 @@ class B4aAdminPage extends DashboardView {
     await this.setState({ adminParams })
 
     const adminHost = await this.context.currentApp.getAdminHost()
-    const webHost = await this.context.currentApp.getWebHost()
     const adminURL = adminHost ? this.protocol + adminHost : ''
     const isRoleCreated = await this.checkRole()
-    this.setState({ isRoleCreated, adminHost, adminURL, webHost, loading: false })
+    this.setState({ isRoleCreated, adminHost, adminURL, loading: false })
 
     if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.atAdminPageEvent === 'function')
       back4AppNavigation.atAdminPageEvent()
@@ -63,74 +60,8 @@ class B4aAdminPage extends DashboardView {
     return !!result
   }
 
-  async createRole(admin) {
-    const { adminParams } = this.state
-
-    const roleACL = new Parse.ACL()
-    roleACL.setPublicReadAccess(true)
-    roleACL.setPublicWriteAccess(true)
-    const role = new Parse.Role(adminParams.adminRole, roleACL)
-    role.getUsers().add([admin])
-    return await role.save(undefined, { useMasterKey: true })
-  }
-
-  async createUser(user) {
-    const admin = new Parse.User()
-    admin.set('username', user.username)
-    admin.set('password', user.password)
-    return await admin.signUp(undefined, { useMasterKey: true })
-  }
-
-  async setClassLevelPermission() {
-    const { adminParams } = this.state
-    const promises = []
-    for (let { name } of adminParams.classes)
-      promises.push(this.props.schema.dispatch(ActionTypes.SET_CLP, {
-        className: name,
-        clp: adminParams.customCLP[name] || adminParams.defaultCLP
-      }))
-    await Promise.all(promises)
-  }
-
-  async createClasses() {
-    const { adminParams } = this.state
-    const promises = []
-    for (let { name, rows } of adminParams.classes) {
-      const ParseObject = Parse.Object.extend(name)
-      for (let row of rows) {
-        const newObject = new ParseObject()
-        Object.entries(row).forEach(([key, value]) => {
-          newObject.set(key, value)
-        })
-        promises.push(newObject.save(undefined, { useMasterKey: true }))
-      }
-    }
-    // wait until each object has been saved properly
-    await Promise.all(promises)
-    await this.setClassLevelPermission()
-  }
-
-  async activateLiveQuery() {
-    await this.props.schema.dispatch(ActionTypes.FETCH)
-    const schemasChoose = {}
-
-    this.props.schema.data.get('classes').filter((key, className) => {
-      return className.indexOf('_') !== 0 || className === '_User'
-    }).forEach((key, className) => schemasChoose[className] = true)
-
-    await this.context.currentApp.setLiveQuery({ schemasChoose , statusLiveQuery: true })
-  }
-
   async createHost() {
-    const { host, webHost } = this.state
-
-    // Activate webHost
-    if (!webHost || !webHost.activated) {
-      const subdomainName = webHost && webHost.subdomainName || host + this.webHostDomain
-      const hostSettings = { subdomainName, activated: true }
-      await this.context.currentApp.setWebHost(hostSettings)
-      this.setState({ webHost: hostSettings })
-    }
+    const { host } = this.state
 
     // Create admin host
     await this.context.currentApp.addAdminHost(host + this.adminDomain)
@@ -139,15 +70,13 @@ class B4aAdminPage extends DashboardView {
 
   async createAdmin() {
     const { username, password } = this.state
-    const admin = await this.createUser({ username, password })
+    await this.context.currentApp.addAdminUser({ username, password })
 
-    // Create role and a relation with admin
-    await this.createRole(admin)
     await this.setState({ isRoleCreated: true })
   }
 
-  async createIndexes() {
-    await this.context.currentApp.createIndexes()
+  async createTextIndexes() {
+    await this.context.currentApp.createTextIndexes()
   }
 
   async renderModal() {
@@ -155,10 +84,8 @@ class B4aAdminPage extends DashboardView {
       domain: this.adminDomain,
       setState: this.setState.bind(this),
       createAdmin: this.createAdmin.bind(this),
-      createClasses: this.createClasses.bind(this),
       createAdminHost: this.createHost.bind(this),
-      activateLiveQuery: this.activateLiveQuery.bind(this),
-      createIndexes: this.createIndexes.bind(this),
+      createTextIndexes: this.createTextIndexes.bind(this),
       ...this.state
     })
 

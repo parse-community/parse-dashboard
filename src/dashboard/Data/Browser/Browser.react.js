@@ -127,6 +127,7 @@ class Browser extends DashboardView {
     this.showNote = this.showNote.bind(this);
     this.getFooterMenuButtons = this.getFooterMenuButtons.bind(this);
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
+    this.onClickIndexManager = this.onClickIndexManager.bind(this);
   }
 
   getFooterMenuButtons() {
@@ -1192,6 +1193,14 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
+  onClickIndexManager() {
+    const { appId, className } = this.props.params
+    history.push({
+      pathname: `apps/${appId}/index/${className}`,
+      state: { showBackButton: true }
+    })
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1288,7 +1297,8 @@ class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
             onAddClass={this.showCreateClass}
             err={this.state.err}
-            showNote={this.showNote} />
+            showNote={this.showNote}
+            onClickIndexManager={this.onClickIndexManager} />
         );
       }
     }

@@ -164,7 +164,7 @@ class Sidebar extends React.Component {
       }
       return (
         <div className={styles.submenu}>
-          {subsections.map(({name, link}) => {
+          {subsections.map(({name, link, badge}) => {
             const active = subsection === name;
             return (
               <SidebarSubItem
@@ -174,6 +174,7 @@ class Sidebar extends React.Component {
                 action={action || null}
                 actionHandler={active ? actionHandler : null}
                 active={active}
+                badge={badge}
                 >
                 {active ? children : null}
               </SidebarSubItem>
