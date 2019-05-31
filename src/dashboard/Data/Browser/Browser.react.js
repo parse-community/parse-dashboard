@@ -1196,7 +1196,7 @@ class Browser extends DashboardView {
   onClickIndexManager() {
     const { appId, className } = this.props.params
     history.push({
-      pathname: `apps/${appId}/index/${className}`,
+      pathname: `/apps/${appId}/index/${className}`,
       state: { showBackButton: true }
     })
   }
