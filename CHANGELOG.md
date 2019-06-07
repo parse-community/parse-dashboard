@@ -1,9 +1,14 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.2...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.3...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 1.3.3
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.2...1.3.3)
+
+* FIX: Travis configuration which was preventing 1.3.2 from publishing, thanks to [Diamond Lewis](https://github.com/dplewis)
 
 ### 1.3.2
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.1...1.3.2)
