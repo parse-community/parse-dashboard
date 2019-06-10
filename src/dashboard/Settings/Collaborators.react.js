@@ -70,12 +70,10 @@ export default class Collaborators extends React.Component {
   }
 
   handleAdd(newEmail) {
-    console.log(1, newEmail);
     //TODO: Show some in-progress thing while the collaborator is being validated, or maybe have some sort of
     //async validator in the parent form. Currently if you mash the add button, they same collaborator gets added many times.
     return this.context.currentApp.validateCollaborator(newEmail).then((response) => {
       // lastError logic assumes we only have 1 input field
-      console.log(2, response);
       if (response.success) {
         this.setState({
           currentEmail: newEmail,
@@ -87,13 +85,12 @@ export default class Collaborators extends React.Component {
         this.setState({ lastError: response.error });
         return false;
       }
-    }).fail(({ error }) => {
+    }).catch(({ error }) => {
       this.setState({ lastError: error });
     });
   }
 
   handleDelete(collaborator) {
-    console.log('this.props.collaborators', this.props.collaborators);
     let newCollaborators = this.props.collaborators.filter(oldCollaborator => oldCollaborator.userEmail !== collaborator.userEmail);
     this.props.onRemove(collaborator, newCollaborators);
   }
@@ -112,7 +109,6 @@ export default class Collaborators extends React.Component {
   }
 
   validateEmail(email) {
-    console.log('validateEmail', email, AccountManager.currentUser());
     // We allow mixed-case emails for Parse accounts
     let isExistingCollaborator = !!this.props.collaborators.find(collab => email.toLowerCase() === collab.userEmail.toLowerCase());
     return validateEmailFormat(email) &&
@@ -273,7 +269,7 @@ export default class Collaborators extends React.Component {
 }
 
 Collaborators.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };
 
 Collaborators.propTypes = {

@@ -7,7 +7,6 @@
  */
 import * as CSRFManager from 'lib/CSRFManager';
 import encodeFormData   from 'lib/encodeFormData';
-import { Promise }      from 'parse';
 
 let basePath = '';
 export function setBasePath(newBasePath) {
@@ -34,7 +33,14 @@ export function request(method, url, body, abortable = false, withCredentials = 
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
   }
   xhr.withCredentials = withCredentials;
-  let p = new Promise();
+  let resolve;
+  let reject;
+  let p = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  p.resolve = resolve;
+  p.reject = reject;
   xhr.onerror = (e) => {
     console.log(e);
     p.reject({
@@ -45,7 +51,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
       notice: 'Network Error',
     });
   };
-  xhr.onload = function(e) {
+  xhr.onload = function() {
     if (this.status === 200) {
       let json = {};
       try {

@@ -7,6 +7,7 @@ import history from 'dashboard/history'
 import Icon from 'components/Icon/Icon.react'
 import IndexForm from './IndexForm.react'
 import ParseApp from 'lib/ParseApp'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { SpecialClasses } from 'lib/Constants'
 import stringCompare from 'lib/stringCompare'
@@ -165,7 +166,10 @@ class IndexManager extends DashboardView {
 
     let isIndexNameValid = true, isIndexFieldsValid = true, isTextIndexValid = true
     const containsTextIndex = indexTypes.indexOf('text') !== -1
-    this.state.data.filter(({ status }) => status !== 'ERROR').forEach(({ name, index: existingIndex }) => {
+    if (!this.state.data) {
+      errorMessages.push('No indexes to create')
+    }
+    this.state.data && this.state.data.filter(({ status }) => status !== 'ERROR').forEach(({ name, index: existingIndex }) => {
       if (name === indexName) {
         isIndexNameValid = false
       }
@@ -374,7 +378,7 @@ class IndexManager extends DashboardView {
 }
 
 IndexManager.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 }
 
 export default IndexManager

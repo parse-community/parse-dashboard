@@ -26,7 +26,7 @@ function JobsStore(state, action) {
   switch (action.type) {
     case ActionTypes.FETCH:
       if (state && new Date() - state.get('lastFetch') < 60000) {
-        return Parse.Promise.as(state);
+        return Promise.resolve(state);
       }
 
       return Parse._request('GET', 'serverInfo', {}).then(serverInfo => {

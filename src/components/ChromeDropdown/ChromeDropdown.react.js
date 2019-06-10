@@ -53,7 +53,7 @@ export default class ChromeDropdown extends React.Component {
   }
 
   render() {
-    let widthStyle = { width: this.props.width || 140 };
+    let widthStyle = { width: parseFloat(this.props.width || 140) };
     let styles = this.styles;
     let color = this.props.color || 'purple';
     let isMultipleOptions = this.props.options.length > 1
@@ -81,7 +81,7 @@ export default class ChromeDropdown extends React.Component {
 
     if (this.state.open) {
       let position = Position.inWindow(this.node);
-      let measuredWidth = this.node.offsetWidth;
+      let measuredWidth = parseFloat(this.node.offsetWidth);
       widthStyle = { width: measuredWidth };
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>

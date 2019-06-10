@@ -7,7 +7,7 @@
  */
 import AppBadge         from 'components/AppBadge/AppBadge.react';
 import html             from 'lib/htmlString';
-import { Link }         from 'react-router';
+import { Link }         from 'react-router-dom';
 import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';

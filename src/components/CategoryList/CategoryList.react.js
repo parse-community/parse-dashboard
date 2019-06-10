@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import ReactDOM  from 'react-dom';
 import styles    from 'components/CategoryList/CategoryList.scss';
-import { Link }  from 'react-router';
+import { Link }  from 'react-router-dom';
 
 export default class CategoryList extends React.Component {
   componentDidMount() {
@@ -79,5 +79,5 @@ CategoryList.propTypes = {
 };
 
 CategoryList.contextTypes = {
-  generatePath: React.PropTypes.func
+  generatePath: PropTypes.func
 };

@@ -45,7 +45,8 @@ export default class ParseApp {
     secondaryBackgroundColor,
     supportedPushLocales,
     feedbackEmail,
-    custom
+    custom,
+    preventSchemaEdits
   }) {
     this.name = appName;
     this.feedbackEmail = feedbackEmail;
@@ -71,6 +72,7 @@ export default class ParseApp {
     this.secondaryBackgroundColor=secondaryBackgroundColor;
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
     this.custom = custom;
+    this.preventSchemaEdits = preventSchemaEdits || false;
 
     if(!supportedPushLocales) {
       console.warn(`Missing push locales for '` + appName + `', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications`);
@@ -127,12 +129,12 @@ export default class ParseApp {
     return this.getLatestRelease().then((release) => {
       if (release.files === null) {
         // No release yet
-        return Parse.Promise.as(null);
+        return Promise.resolve(null);
       }
 
       let fileMetaData = release.files[fileName];
       if (fileMetaData && fileMetaData.source) {
-        return Parse.Promise.as(fileMetaData.source);
+        return Promise.resolve(fileMetaData.source);
       }
 
       let params = {
@@ -145,14 +147,14 @@ export default class ParseApp {
         this.latestRelease.files[fileName].source = source;
       }
 
-      return Parse.Promise.as(source);
+      return Promise.resolve(source);
     });
   }
 
   getLatestRelease() {
     // Cache it for a minute
     if (new Date() - this.latestRelease.lastFetched < 60000) {
-      return Parse.Promise.as(this.latestRelease);
+      return Promise.resolve(this.latestRelease);
     }
     return this.apiRequest(
       'GET',
@@ -194,7 +196,7 @@ export default class ParseApp {
         }
       }
 
-      return Parse.Promise.as(this.latestRelease);
+      return Promise.resolve(this.latestRelease);
     });
   }
 
@@ -203,7 +205,7 @@ export default class ParseApp {
     if (this.classCounts.counts[className] !== undefined) {
       // Cache it for a minute
       if (new Date() - this.classCounts.lastFetched[className] < 60000) {
-        return Parse.Promise.as(this.classCounts.counts[className]);
+        return Promise.resolve(this.classCounts.counts[className]);
       }
     }
     let p = new Parse.Query(className).count({ useMasterKey: true });
@@ -344,7 +346,7 @@ export default class ParseApp {
   fetchSettingsFields() {
     // Cache it for a minute
     // if (new Date() - this.settings.lastFetched < 60000) {
-    //   return Parse.Promise.as(this.settings.fields);
+    //   return Promise.resolve(this.settings.fields);
     // }
     let path = '/apps/' + this.slug + '/dashboard_ajax/settings';
     return AJAX.get(path).then((fields) => {
@@ -352,7 +354,7 @@ export default class ParseApp {
         this.settings.fields[f] = fields[f];
         this.settings.lastFetched = new Date();
       }
-      return Parse.Promise.as(fields);
+      return Promise.resolve(fields);
     });
   }
 
@@ -423,7 +425,7 @@ export default class ParseApp {
       { password_confirm_reset_master_key: password }
     ).then(({ new_key }) => {
       this.masterKey = new_key;
-      return Parse.Promise.as();
+      return Promise.resolve();
     });
   }
 
@@ -443,13 +445,20 @@ export default class ParseApp {
   }
 
   fetchPushSubscriberCount(audienceId, query) {
-    let path = '/apps/' + this.slug + '/dashboard_ajax/push_subscriber_count';
-    let urlsSeparator = '?';
-    if (query){
-      path += `?where=${encodeURI(JSON.stringify(query))}`;
-      urlsSeparator = '&';
+    let promise;
+    if (audienceId === 'everyone') {
+      query = {};
     }
-    return AJAX.abortableGet(audienceId ? `${path}${urlsSeparator}audienceId=${audienceId}` : path);
+    if (!query) {
+      promise = new Parse.Query('_Audience').get(audienceId, { useMasterKey: true }).then(function(audience) {
+        return Parse.Query.fromJSON('_Installation', { where: audience.get('query') }).count({ useMasterKey: true })
+      });
+    } else {
+      promise = Parse.Query.fromJSON('_Installation', { where: query }).count({ useMasterKey: true })
+    }
+    return { xhr: undefined, promise: promise.then(function (count) {
+      return { count: count };
+    }) };
   }
 
   fetchPushNotifications(type, page, limit) {
@@ -475,13 +484,11 @@ export default class ParseApp {
   }
 
   isLocalizationAvailable() {
-    let path = '/apps/' + this.slug + '/is_localization_available';
-    return AJAX.abortableGet(path);
+    return !!this.serverInfo.features.push.localization;
   }
 
   fetchPushLocales() {
-    let path = '/apps/' + this.slug + '/installation_column_options?column=localeIdentifier';
-    return AJAX.abortableGet(path);
+    return this.supportedPushLocales;
   }
 
   fetchPushLocaleDeviceCount(audienceId, where, locales) {
@@ -517,13 +524,13 @@ export default class ParseApp {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators
       // should be updated properly in a store or AppsManager or something
-      this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.map(c => {
+      this.settings.fields.fields.collaborators = Array.isArray(this.settings.fields.fields.collaborators) && this.settings.fields.fields.collaborators.map(c => {
         if (c.id === id) {
           c.featuresPermission = featuresPermission
           c.classesPermission = classesPermission
         }
         return c
-      });
+      }) || [];
     });
     return promise;
   }
@@ -602,22 +609,26 @@ export default class ParseApp {
   }
 
   getAvailableJobs() {
-    let path = 'cloud_code/jobs';
-    return this.apiRequest('GET', path, {}, {useMasterKey:true});
+    let path = 'cloud_code/jobs/data';
+    return this.apiRequest('GET', path, {}, { useMasterKey: true });
   }
 
   getJobStatus() {
-    // Cache it for a minute
+    // Cache it for a 30s
+    if (new Date() - this.jobStatus.lastFetched < 30000) {
+      return Promise.resolve(this.jobStatus.status);
+    }
     let query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
-    return query.find({ useMasterKey: true }).then((status) => {
+    return query.find({ useMasterKey: true }).then((status) => {
+      status = status.map((jobStatus) => {
+        return jobStatus.toJSON();
+      });
       this.jobStatus = {
         status: status || null,
         lastFetched: new Date()
       };
-      return status.map((jobStatus) => {
-        return jobStatus.toJSON();
-      });
+      return status;
     });
   }
 
@@ -641,7 +652,7 @@ export default class ParseApp {
     this.hasCheckedForMigraton = true
     obj.promise.then(({ migration }) => {
       this.migration = migration;
-    });
+    }).catch(() => {}); // swallow errors
     return obj;
   }
 

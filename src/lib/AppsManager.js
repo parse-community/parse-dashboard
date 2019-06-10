@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse              from 'parse';
 import ParseApp           from 'lib/ParseApp';
 import { post, del } from 'lib/AJAX';
 
@@ -60,10 +59,15 @@ const AppsManager = {
 
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
-    return Parse.Promise.when(this.apps().map(app => {
-      return Parse.Promise.when(
-        app.getClassCount('_Installation').then(count => app.installations = count),
-        app.getClassCount('_User').then(count => app.users = count)
+    return Promise.all(this.apps().map(app => {
+      if (app.serverInfo.error) {
+        return;
+      }
+      return Promise.all(
+        [
+          app.getClassCount('_Installation').then(count => app.installations = count),
+          app.getClassCount('_User').then(count => app.users = count)
+        ]
       );
     }));
   },

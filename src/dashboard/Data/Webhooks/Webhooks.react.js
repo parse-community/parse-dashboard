@@ -28,9 +28,10 @@ let TableWarning = ({ text }) => <div>
   <Icon name='warn-outline' fill='#343445' width={20} height={20}/><span style={{ position: 'relative', top: '2px' }}> {text}</span>
 </div>;
 
+export default
 @subscribeTo('Webhooks', 'webhooks')
 @subscribeTo('Schema', 'schema')
-export default class Webhooks extends TableView {
+class Webhooks extends TableView {
   constructor() {
     super();
     this.section = 'Core';

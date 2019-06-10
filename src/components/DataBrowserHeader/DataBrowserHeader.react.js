@@ -52,7 +52,7 @@ const dataBrowserHeaderSource = {
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 }))
-export default class DataBrowserHeader extends React.Component {
+class DataBrowserHeader extends React.Component {
   render() {
     let { connectDragSource, connectDropTarget, name, type, targetClass, order, style, isDragging, isOver } = this.props;
     let classes = [styles.header, unselectable];
@@ -73,6 +73,8 @@ export default class DataBrowserHeader extends React.Component {
     ));
   }
 }
+
+export default DataBrowserHeader;
 
 DataBrowserHeader.propTypes = {
   name: PropTypes.string.isRequired.describe(

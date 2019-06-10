@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import BrowserCell            from 'components/BrowserCell/BrowserCell.react';
-import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as browserUtils      from 'lib/browserUtils';
 import DataBrowserHeaderBar   from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
 import Editor                 from 'dashboard/Data/Browser/Editor.react';
@@ -16,6 +15,8 @@ import Parse                  from 'parse';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import Button                 from 'components/Button/Button.react';
+import ParseApp               from 'lib/ParseApp';
+import PropTypes              from 'lib/PropTypes';
 
 const MAX_ROWS = 60; // Number of rows to render at any time
 const ROW_HEIGHT = 31;
@@ -25,7 +26,7 @@ const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt', 'sessionToken' ];
 let scrolling = false;
 
 export default class BrowserTable extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = {
@@ -34,7 +35,7 @@ export default class BrowserTable extends React.Component {
     this.handleScroll = this.handleScroll.bind(this);
   }
 
-  componentWillReceiveProps(props, context) {
+  componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
       this.setState({
         offset: 0,
@@ -147,7 +148,7 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    let headers = this.props.order.map(({ name, width }, i) => (
+    let headers = this.props.order.map(({ name, width }) => (
       {
         width: width,
         name: name,
@@ -158,10 +159,6 @@ export default class BrowserTable extends React.Component {
     ));
     let editor = null;
     let table = <div ref='table' />;
-    let classes = [styles.browser, browserUtils.isSafari() ? styles.safari : '']
-    let addRow = null;
-    let rowWidth = 0;
-
     if (this.props.data) {
       let rowWidth = 210;
       for (let i = 0; i < this.props.order.length; i++) {
@@ -214,7 +211,7 @@ export default class BrowserTable extends React.Component {
               value = value.map(val => {
                   if (val instanceof Parse.Object) {
                       return val.toPointer();
-                  } else if (typeof val.getMonth === 'function') {
+                  } else if (val && typeof val.getMonth === 'function') {
                       return { __type: "Date", iso: val.toISOString() };
                   }
 
@@ -347,8 +344,13 @@ export default class BrowserTable extends React.Component {
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
-          minWidth={rowWidth} />
+          preventSchemaEdits={this.context.currentApp.preventSchemaEdits} />
       </div>
     );
   }
 }
+
+BrowserTable.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
+};
+

@@ -12,6 +12,7 @@ var path = require('path');
 var HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 var settings = require('@back4app/back4app-settings');
 
+configuration.mode = 'development';
 configuration.entry = {
   dashboard: './dashboard/index.js',
   login: './login/index.js'

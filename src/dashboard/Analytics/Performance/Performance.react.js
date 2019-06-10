@@ -103,7 +103,8 @@ export default class Performance extends DashboardView {
 
   componentWillMount() {
     // Send track event
-    back4AppNavigation && back4AppNavigation.atAnalyticsPerformanceEvent()
+    if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.atAnalyticsPerformanceEvent === 'function')
+      back4AppNavigation.atAnalyticsPerformanceEvent()
 
     this.handleRunQuery(this.context.currentApp);
   }
@@ -148,7 +149,7 @@ export default class Performance extends DashboardView {
       promises.push(promise);
       this.xhrHandles.push(xhr);
     });
-    Parse.Promise.when(promises).then(() => {
+    Promise.all(promises).then(() => {
       this.setState({
         loading: false,
         mutated: false

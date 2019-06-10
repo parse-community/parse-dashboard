@@ -18,8 +18,6 @@ export default class ServerSettings extends DashboardView {
     this.section = 'Server Settings';
     this.subsection = 'General';
 
-    console.log('props', props);
-
     this.state = {
       appId: props && props.params && props.params.appId
     };

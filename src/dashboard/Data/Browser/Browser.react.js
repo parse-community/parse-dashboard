@@ -22,6 +22,7 @@ import ImportRelationDialog               from 'dashboard/Data/Browser/ImportRel
 import ExportDialog                       from 'dashboard/Data/Browser/ExportDialog.react';
 import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
+import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
@@ -35,18 +36,22 @@ import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
-import introJs from 'intro.js'
-import introStyle from 'stylesheets/introjs.css';
-import Tour from 'components/Tour/Tour.react';
-import { isMobile } from 'lib/browserUtils';
+import introJs                            from 'intro.js'
+import introStyle                         from 'stylesheets/introjs.css';
+import Tour                               from 'components/Tour/Tour.react';
+import { isMobile }                       from 'lib/browserUtils';
+import * as queryString                   from 'query-string';
+import { Helmet }                         from 'react-helmet';
+import PropTypes                          from 'lib/PropTypes';
+import ParseApp                           from 'lib/ParseApp';
 
+export default
 @subscribeTo('Schema', 'schema')
-export default class Browser extends DashboardView {
+class Browser extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';
     this.subsection = 'Database Browser'
-    this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
 
     const user = AccountManager.currentUser();
@@ -100,6 +105,9 @@ export default class Browser extends DashboardView {
     this.showAttachSelectedRowsDialog = this.showAttachSelectedRowsDialog.bind(this);
     this.confirmAttachSelectedRows = this.confirmAttachSelectedRows.bind(this);
     this.cancelAttachSelectedRows = this.cancelAttachSelectedRows.bind(this);
+    this.showCloneSelectedRowsDialog = this.showCloneSelectedRowsDialog.bind(this);
+    this.confirmCloneSelectedRows = this.confirmCloneSelectedRows.bind(this);
+    this.cancelCloneSelectedRows = this.cancelCloneSelectedRows.bind(this);
     this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -137,6 +145,11 @@ export default class Browser extends DashboardView {
   }
 
   componentWillMount() {
+    const { currentApp } = this.context;
+    if (!currentApp.preventSchemaEdits) {
+      this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+    }
+
     this.props.schema.dispatch(ActionTypes.FETCH)
     .then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
@@ -401,8 +414,11 @@ export default class Browser extends DashboardView {
   extractFiltersFromQuery(props) {
     let filters = new List();
     //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
-    const query = props.location && props.location.query;
-    if (query && query.filters) {
+    if (!props || !props.location || !props.location.search) {
+      return filters;
+    }
+    const query = queryString.parse(props.location.search);
+    if (query.filters) {
       const queryFilters = JSON.parse(query.filters);
       queryFilters.forEach((filter) => filters = filters.push(new Map(filter)));
     }
@@ -476,14 +492,14 @@ export default class Browser extends DashboardView {
     }).then(() => {
       // Send track event
       back4AppNavigation && back4AppNavigation.createClassClickEvent()
-      this.setState({ showCreateClassDialog: false });
     }).catch(error => {
       let errorDeletingNote = 'Internal server error'
       if (error.code === 403) errorDeletingNote = error.message;
 
       this.showNote(errorDeletingNote, true);
+    }).finally(() => {
       this.setState({ showCreateClassDialog: false });
-    })
+    });
   }
 
   dropClass(className) {
@@ -531,7 +547,7 @@ export default class Browser extends DashboardView {
   }
 
   exportClass(className) {
-    this.context.currentApp.exportClass(className).always(() => {
+    this.context.currentApp.exportClass(className).finally(() => {
       this.setState({ showExportDialog: false });
     });
   }
@@ -543,15 +559,15 @@ export default class Browser extends DashboardView {
       name: name,
       targetClass: target
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).then(() => {
-      this.setState({ showAddColumnDialog: false });
-    }).catch(error => {
+    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).catch(error => {
       let errorDeletingNote = 'Internal server error'
       if (error.code === 403) errorDeletingNote = error.message;
 
       this.showNote(errorDeletingNote, true);
       this.setState({ showAddColumnDialog: false });
-    })
+    }).finally(() => {
+      this.setState({ showAddColumnDialog: false });
+    });
   }
 
   addRow() {
@@ -578,20 +594,20 @@ export default class Browser extends DashboardView {
       className: this.props.params.className,
       name: name
     };
-    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).then(() => {
-      let state = { showRemoveColumnDialog: false };
-      if (this.state.ordering === name || this.state.ordering === '-' + name) {
-        state.ordering = '-createdAt';
-      }
-      this.setState(state);
-    }).catch(error => {
+    this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).catch(error => {
       let errorDeletingNote = 'Internal server error'
       if (error.code === 403) errorDeletingNote = error.message;
 
       this.showNote(errorDeletingNote, true);
       this.setState({ showRemoveColumnDialog: false });
 
-    })
+    }).finally(() => {
+      let state = { showRemoveColumnDialog: false };
+      if (this.state.ordering === name || this.state.ordering === '-' + name) {
+        state.ordering = '-createdAt';
+      }
+      this.setState(state);
+    });
   }
 
   handleFetchedSchema() {
@@ -649,19 +665,15 @@ export default class Browser extends DashboardView {
   async fetchData(source, filters = new List()) {
     try {
       const data = await this.fetchParseData(source, filters);
-      var filteredCounts = {...this.state.filteredCounts};
+      var filteredCounts = { ...this.state.filteredCounts };
       if (filters.size > 0) {
-        filteredCounts[source] = await this.fetchParseDataCount(source,
-          filters);
+        filteredCounts[source] = await this.fetchParseDataCount(source,filters);
       } else {
         delete filteredCounts[source];
       }
-      this.setState(
-        {data: data, filters, lastMax: 200, filteredCounts: filteredCounts});
-    }
-    catch(err) {
-      this.setState(
-        { data: [], filters, err });
+      this.setState({data: data, filters, lastMax: 200, filteredCounts: filteredCounts});
+    } catch(err) {
+      this.setState({ data: [], filters, err });
     }
   }
 
@@ -803,7 +815,7 @@ export default class Browser extends DashboardView {
     let obj = isNewObject ? this.state.newObject : this.state.data[row];
     if (!obj && isNewObject) {
       obj = this.getLastCreatedObject(this.state.data)
-      isNewObject = !isNewObject
+      isNewObject = false
     }
     const prev = obj.get(attr);
     if (value === prev) {
@@ -990,7 +1002,8 @@ export default class Browser extends DashboardView {
       this.state.showExportDialog ||
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
-      this.state.showAttachSelectedRowsDialog
+      this.state.showAttachSelectedRowsDialog ||
+      this.state.showCloneSelectedRowsDialog
     );
   }
 
@@ -1063,6 +1076,41 @@ export default class Browser extends DashboardView {
     await parent.save(null, { useMasterKey: true });
     this.setState({
       selection: {},
+    });
+  }
+
+  showCloneSelectedRowsDialog() {
+    this.setState({
+      showCloneSelectedRowsDialog: true,
+    });
+  }
+
+  cancelCloneSelectedRows() {
+    this.setState({
+      showCloneSelectedRowsDialog: false,
+    });
+  }
+
+  async confirmCloneSelectedRows() {
+    const objectIds = [];
+    for (const objectId in this.state.selection) {
+      objectIds.push(objectId);
+    }
+    const query = new Parse.Query(this.props.params.className);
+    query.containedIn('objectId', objectIds);
+    const objects = await query.find({ useMasterKey: true });
+    const toClone = [];
+    for (const object of objects) {
+      toClone.push(object.clone());
+    }
+    await Parse.Object.saveAll(toClone, { useMasterKey: true });
+    this.setState({
+      selection: {},
+      data: [
+        ...toClone,
+        ...this.state.data,
+      ],
+      showCloneSelectedRowsDialog: false,
     });
   }
 
@@ -1148,7 +1196,7 @@ export default class Browser extends DashboardView {
   onClickIndexManager() {
     const { appId, className } = this.props.params
     history.push({
-      pathname: `apps/${appId}/index/${className}`,
+      pathname: `/apps/${appId}/index/${className}`,
       state: { showBackButton: true }
     })
   }
@@ -1227,6 +1275,7 @@ export default class Browser extends DashboardView {
             onRefresh={this.refresh}
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
+            onCloneSelectedRows={this.showCloneSelectedRowsDialog}
 
             columns={columns}
             className={className}
@@ -1341,9 +1390,19 @@ export default class Browser extends DashboardView {
           onConfirm={this.confirmAttachSelectedRows}
         />
       );
+    } else if (this.state.showCloneSelectedRowsDialog) {
+      extras = (
+        <CloneSelectedRowsDialog
+          className={className}
+          selection={this.state.selection}
+          onCancel={this.cancelCloneSelectedRows}
+          onConfirm={this.confirmCloneSelectedRows}
+        />
+      );
     }
 
     let notification = null;
+    const pageTitle = `${this.props.params.className} - Parse Dashboard`;
 
     if (this.state.lastError) {
       notification = (
@@ -1363,6 +1422,9 @@ export default class Browser extends DashboardView {
 
     return (
       <div>
+        <Helmet>
+          <title>{pageTitle}</title>
+        </Helmet>
         {browser}
         {notification}
         {extras}
@@ -1371,3 +1433,7 @@ export default class Browser extends DashboardView {
     );
   }
 }
+
+Browser.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
+};

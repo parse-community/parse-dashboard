@@ -11,27 +11,17 @@ var path = require('path');
 var HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 var settings = require('@back4app/back4app-settings');
 
+configuration.mode = 'production';
 configuration.entry = {
   dashboard: './dashboard/index.js'
 };
 configuration.output.path = path.resolve('./Parse-Dashboard/public/bundles');
 configuration.output.filename = "[name].[chunkhash].js";
 
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 // Enable minification
 configuration.plugins.push(
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV': '"production"'
-    }
-  }),
-  new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    }
-  }),
-  new webpack.optimize.OccurrenceOrderPlugin(),
   new HtmlWebpackPlugin({
     template: '../Parse-Dashboard/index.ejs',
     filename: path.resolve('./Parse-Dashboard/public/index.html')
@@ -41,15 +31,7 @@ configuration.plugins.push(
       module: '@back4app/back4app-navigation',
       entry: settings.BACK4APP_NAVIGATION_PATH + '/back4app-navigation.bundle.js'
     }]
-  }),
-  function() {
-    this.plugin('done', function(stats) {
-      if (stats.compilation.errors && stats.compilation.errors.length) {
-        console.log(stats.compilation.errors);
-        process.exit(1);
-      }
-    });
-  }
+  })
 );
 
 module.exports = configuration;

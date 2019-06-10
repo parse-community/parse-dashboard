@@ -45,7 +45,7 @@ export default class LiveReload extends React.Component {
 		}
 		promise.then(data => {
 			this.setState({currentData: data});
-		}).always(() => {
+		}).finally(() => {
 			if (this.shouldContinueReloading) {
 				this.timer = setTimeout(this.fetchNewData.bind(this), this.refreshIntervalMillis);
 			}

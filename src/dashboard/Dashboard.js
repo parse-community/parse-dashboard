@@ -29,7 +29,6 @@ import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
 import Loader             from 'components/Loader/Loader.react';
 import Logs               from './Data/Logs/Logs.react';
 import Migration          from './Data/Migration/Migration.react';
-import Parse              from 'parse';
 import ParseApp           from 'lib/ParseApp';
 import Performance        from './Analytics/Performance/Performance.react';
 import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
@@ -48,44 +47,26 @@ import UsersSettings      from './Settings/UsersSettings.react';
 import Webhooks           from './Data/Webhooks/Webhooks.react';
 import B4aAdminPage       from './B4aAdminPage/B4aAdminPage.react';
 import B4aAppTemplates    from './B4aAppTemplates/B4aAppTemplates.react';
-
 import { AsyncStatus }    from 'lib/Constants';
 import { center }         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
 import ServerSettings     from 'dashboard/ServerSettings/ServerSettings.react';
-import 'whatwg-fetch';
-
-import subscribeTo        from 'lib/subscribeTo';
-
 import {
   Router,
-  Route,
-  Redirect
+  Switch,
 } from 'react-router';
+import { Route, Redirect } from 'react-router-dom';
+import createClass from 'create-react-class';
+import { Helmet } from 'react-helmet';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sidebarIsOpen: false
-    };
-  }
-
+let Empty = createClass({
   render() {
-    return (
-      <div>
-        {this.props.children}
-      </div>
-    );
+    return <div>Not yet implemented</div>;
   }
-}
-
-let Empty = () => (
-  <div>Not yet implemented</div>
-);
+});
 
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>
@@ -126,7 +107,7 @@ const PARSE_DOT_COM_SERVER_INFO = {
   parseServerVersion: 'Parse.com',
 }
 
-class Dashboard extends React.Component {
+export default class Dashboard extends React.Component {
   constructor(props) {
     super();
     this.state = {
@@ -148,7 +129,7 @@ class Dashboard extends React.Component {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
           app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
-          return Parse.Promise.as(app);
+          return Promise.resolve(app);
         } else {
           app.serverInfo = {}
           return new ParseApp(app).apiRequest(
@@ -166,26 +147,26 @@ class Dashboard extends React.Component {
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
-              return Parse.Promise.as(app);
+              return Promise.resolve(app);
             } else if (error.code === 107) {
               app.serverInfo = {
                 error: 'server version too low',
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
-              return Parse.Promise.as(app);
+              return Promise.resolve(app);
             } else {
               app.serverInfo = {
                 error: error.message || 'unknown error',
                 enabledFeatures: {},
                 parseServerVersion: "unknown"
               }
-              return Parse.Promise.as(app);
+              return Promise.resolve(app);
             }
           });
         }
       });
-      return Parse.Promise.when(appInfoPromises);
+      return Promise.all(appInfoPromises);
     }).then(function(resolvedApps) {
       if(resolvedApps && Array.isArray(resolvedApps)) {
         resolvedApps.forEach(app => {
@@ -197,12 +178,12 @@ class Dashboard extends React.Component {
         });
       }
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }.bind(this)).fail(({ error }) => {
+    }.bind(this)).catch(({ error }) => {
       this.setState({
         configLoadingError: error,
         configLoadingState: AsyncStatus.FAILED
       });
-    })
+    });
   }
 
   render() {
@@ -222,80 +203,147 @@ class Dashboard extends React.Component {
       </div>
     }
 
-
     const AppsIndexPage = () => (
       <AccountView section='Your Apps' style={{top: '0px'}}>
         <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
       </AccountView>
     );
 
+    const SettingsRoute = ({ match }) => (
+      <SettingsData params={ match.params }>
+        {settingsDataProps => (
+          <>
+            <Route path={ match.url + '/general' } render={props => (
+              <GeneralSettings {...props} {...settingsDataProps} />
+            )} />
+            <Route path={ match.url + '/keys' } component={SecuritySettings} />
+            <Route path={ match.url + '/users' } component={UsersSettings} />
+            <Route path={ match.url + '/push' } component={PushSettings} />
+            <Route path={ match.url + '/hosting' } component={HostingSettings} />
+          </>
+        )}
+      </SettingsData>
+    )
 
-    return <Router history={history}>
-      <Redirect from='/' to='/apps' />
-      <Route path='/' component={App}>
-        <Route path='apps' component={AppsIndexPage} />
+    const JobsRoute = (props) => (
+      <Switch>
+        <Route exact path={ props.match.path + '/new' } render={(props) => (
+          <JobsData {...props} params={props.match.params}>
+            <JobEdit params={props.match.params}/>
+          </JobsData>
+        )} />
+        <Route path={ props.match.path + '/edit/:jobId' } render={(props) => (
+          <JobsData {...props} params={props.match.params}>
+            <JobEdit params={props.match.params}/>
+          </JobsData>
+        )} />
+        <Route path={ props.match.path + '/:section' } render={(props) => (
+          <JobsData {...props} params={props.match.params}>
+            <Jobs {...props} params={props.match.params}/>
+          </JobsData>
+        )} />
+        <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' />
+      </Switch>
+    )
 
-        <Redirect from='apps/:appId' to='/apps/:appId/browser' />
-        <Route path='apps/:appId' component={AppData}>
-          <Route path='getting_started' component={Empty} />
+    const AnalyticsRoute = ({ match }) => (
+      <Switch>
+        <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
+        <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
+        <Route path={ match.path + '/explorer/:displayType' } render={props => (
+          <Explorer {...props} params={match.params} />
+        )} />
+        <Route path={ match.path + '/retention' } component={Retention} />
+        <Route path={ match.path + '/performance' } component={Performance} />
+        <Route path={ match.path + '/slow_queries' } component={SlowQueries} />
+        <Route path={ match.path + '/slow_requests' } component={SlowQueries} />
+      </Switch>
+    );
 
-          <Route path='browser' component={ShowSchemaOverview ? SchemaOverview : Browser} /> //In progress features. Change false to true to work on this feature.
-          <Route path='browser/:className' component={Browser} />
-          <Route path='browser/:className/:entityId/:relationName' component={Browser} />
+    const BrowserRoute = (props) => {
+      if (ShowSchemaOverview) {
+        return <SchemaOverview {...props} params={props.match.params} />
+      }
+      return <Browser {...props} params={ props.match.params } />
+    }
 
-          <Route path='cloud_code' component={CloudCode} />
-          <Route path='cloud_code/*' component={CloudCode} />
-          <Route path='webhooks' component={Webhooks} />
-          <Redirect from='jobs' to='/apps/:appId/jobs/all' />
-          <Route path='jobs' component={JobsData}>
-            <Route path='new' component={JobEdit} />
-            <Route path='edit/:jobId' component={JobEdit} />
-            <Route path=':section' component={Jobs} />
-          </Route>
-          <Redirect from='logs' to='/apps/:appId/logs/info' />
-          <Route path='logs/:type' component={Logs} />
-          <Route path='config' component={Config} />
-          <Route path='api_console' component={ApiConsole} />
-          <Route path='migration' component={Migration} />
-          <Route path='admin' component={B4aAdminPage} />
-          <Route path='app-templates' component={B4aAppTemplates} />
-          <Redirect from='push' to='/apps/:appId/push/new' />
-          <Redirect from='push/activity' to='/apps/:appId/push/activity/all' />
-          <Route path='push/activity/:category' component={PushIndex} />
-          <Route path='push/audiences' component={PushAudiencesIndex} />
-          <Route path='push/new' component={PushNew} />
-          <Route path='push/:pushId' component={PushDetails} />
+    const AppRoute = ({ match }) => (
+      <AppData params={ match.params }>
+        <Switch>
+          <Route path={ match.path + '/getting_started' } component={Empty} />
+          <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
+          <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
+          <Route path={ match.path + '/browser' } component={BrowserRoute} />
+          <Route path={ match.path + '/cloud_code' } render={(props) => (
+            <CloudCode {...props} params={match.params} />
+          )} />
+          <Redirect from={ match.path + '/cloud_code/*' } to='/apps/:appId/cloud_code' />
+          <Route path={ match.path + '/webhooks' } component={Webhooks} />
 
-          <Redirect from='analytics' to='/apps/:appId/analytics/performance' />
-          <Route path='analytics'>
-            <Route path='overview' component={AnalyticsOverview} />
-            <Redirect from='explorer' to='/apps/:appId/analytics/explorer/chart' />
-            <Route path='explorer/:displayType' component={Explorer} />
-            <Route path='retention' component={Retention} />
-            <Route path='performance' component={Performance} />
-            <Route path='slow_requests' component={SlowQueries} />
-          </Route>
+          <Route path={ match.path + '/jobs' } component={JobsRoute}/>
 
-          <Route path='server-settings' component={ServerSettings} />
+          <Route path={ match.path + '/logs/:type' } render={(props) => (
+            <Logs {...props} params={props.match.params} />
+          )} />
+          <Redirect from={ match.path + '/logs' } to='/apps/:appId/logs/info' />
 
-          <Redirect from='settings' to='/apps/:appId/settings/general' />
-          <Route path='settings' component={SettingsData}>
-            <Route path='general' component={GeneralSettings} />
-            <Route path='keys' component={SecuritySettings} />
-            <Route path='users' component={UsersSettings} />
-            <Route path='push' component={PushSettings} />
-            <Route path='hosting' component={HostingSettings} />
-          </Route>
-          <Route path='index' component={IndexManager} />
-          <Route path='index/:className' component={IndexManager} />
-        </Route>
+          <Route path={ match.path + '/config' } component={Config} />
+          <Route path={ match.path + '/api_console' } component={ApiConsole} />
+          <Route path={ match.path + '/migration' } component={Migration} />/>
 
-        <Redirect from='account' to='/account/overview' />
-        <Route path='account/overview' component={AccountSettingsPage} />
-      </Route>
-      <Route path='*' component={FourOhFour} />
-    </Router>
+
+          <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
+          <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
+
+          <Route path={ match.path + '/push/activity/:category' } render={(props) => (
+            <PushIndex {...props} params={props.match.params} />
+          )} />
+          <Route path={ match.path + '/push/audiences' } component={PushAudiencesIndex} />
+          <Route path={ match.path + '/push/new' } component={PushNew} />
+          <Route path={ match.path + '/push/:pushId' } render={(props) => (
+            <PushDetails {...props} params={props.match.params} />
+          )} />
+          <Route path={ match.path + '/admin' } component={B4aAdminPage} />
+          <Route path={ match.path + '/app-templates' } component={B4aAppTemplates} />
+          <Route path={ match.path + '/server-settings' } render={() => (
+            <ServerSettings params={match.params} />
+          )} />
+          <Route exact path={ match.path + '/index' } render={props => <IndexManager {...props} params={props.match.params} />} />
+          <Route path={ match.path + '/index/:className'} render={props => <IndexManager {...props} params={props.match.params} />} />
+
+          {/* Unused routes... */}
+          <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/performance' />
+          <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
+          <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
+          <Route path={ match.path + '/settings' } component={SettingsRoute}/>
+        </Switch>
+      </AppData>
+    )
+
+    const Index = () => (
+      <div>
+        <Switch>
+          <Redirect exact from='/apps/:appId' to='/apps/:appId/browser' />
+          <Route exact path='/apps' component={AppsIndexPage} />
+          <Route path='/apps/:appId' component={AppRoute} />
+        </Switch>
+      </div>
+    )
+    return (
+      <Router history={history}>
+        <div>
+          <Helmet>
+            <title>Parse Dashboard</title>
+          </Helmet>
+          <Switch>
+            <Route path='/apps' component={Index} />
+            <Route path='/account/overview' component={AccountSettingsPage} />
+            <Redirect from='/account' to='/account/overview' />
+            <Redirect from='/' to='/apps' />
+            <Route path='*' component={FourOhFour} />
+          </Switch>
+        </div>
+      </Router>
+    );
   }
 }
-
-module.exports = Dashboard;

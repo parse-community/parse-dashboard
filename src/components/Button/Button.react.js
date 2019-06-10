@@ -71,7 +71,7 @@ Button.propTypes = {
   onClick: PropTypes.func.describe(
     'A function to be called when the button is clicked.'
   ),
-  value: PropTypes.string.isRequired.describe(
+  value: PropTypes.any.isRequired.describe(
     'The content of the button. This can be any renderable content.'
   ),
   width: PropTypes.string.describe(

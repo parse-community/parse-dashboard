@@ -26,12 +26,13 @@ export const SENT_FIELD = 'numSent';
 export const DEVICE_MAP = {
   ios: 'iOS',
   osx: 'OS X',
+  tvos: 'tvOS',
   android: 'Android',
   winrt: 'Win8',
   winphone: 'Windows Phone',
   embedded: 'Embedded',
 };
 
-export const DEFAULT_DEVICES = ['ios', 'osx', 'android', 'winrt', 'winphone', 'embedded'];
+export const DEFAULT_DEVICES = ['ios', 'osx', 'tvos', 'android', 'winrt', 'winphone', 'embedded'];
 
 export const NEW_SEGMENT_ID = 'new_segment';

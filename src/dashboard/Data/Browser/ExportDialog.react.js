@@ -5,9 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal    from 'components/Modal/Modal.react';
-import ParseApp from 'lib/ParseApp';
-import React    from 'react';
+import Modal      from 'components/Modal/Modal.react';
+import ParseApp   from 'lib/ParseApp';
+import React      from 'react';
+import PropTypes  from 'lib/PropTypes'; 
 
 export default class ExportDialog extends React.Component {
   constructor() {
@@ -61,5 +62,5 @@ export default class ExportDialog extends React.Component {
 }
 
 ExportDialog.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

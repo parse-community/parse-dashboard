@@ -19,7 +19,7 @@ const overwriteFileModal = {
 
 // Function used to force an update on jstree element. Useful to re-render tree
 // after deploy changes
-const updateTreeContent = async (files) => {
+export const updateTreeContent = async (files) => {
   $('#tree').jstree(true).settings.core.data = files;
   await $('#tree').jstree(true).refresh();
 }
@@ -160,7 +160,7 @@ const customMenu = node => {
 
 // Return the jstree config
 const getConfig = (files) => {
-  if (files[0] && files[0].state) files[0].state.selected = true
+  if (files && files[0] && files[0].state) files[0].state.selected = true
   return {
     plugins: ['contextmenu', 'dnd', 'sort', 'types', 'unique', 'changed'],
     core: {
@@ -195,11 +195,11 @@ const getConfig = (files) => {
 }
 
 // Get the current files on jstree element
-const getFiles = (reference = '#') => {
+export const getFiles = (reference = '#') => {
   return $("#tree").jstree(true).get_json(reference)
 }
 
-module.exports = {
+export default {
   getConfig,
   remove,
   addFilesOnTree,

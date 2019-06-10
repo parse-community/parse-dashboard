@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import PropTypes   from 'lib/PropTypes'; 
 import hasAncestor from 'lib/hasAncestor';
 import React       from 'react';
 import ReactDOM    from 'react-dom';
@@ -22,8 +23,8 @@ class ContextProxy extends React.Component {
 }
 
 ContextProxy.childContextTypes = {
-  history: React.PropTypes.object,
-  router: React.PropTypes.object
+  history: PropTypes.object,
+  router: PropTypes.object
 };
 
 export default class Popover extends React.Component {
@@ -94,6 +95,6 @@ export default class Popover extends React.Component {
 }
 
 Popover.contextTypes = {
-  history: React.PropTypes.object,
-  router: React.PropTypes.object
+  history: PropTypes.object,
+  router: PropTypes.object
 };

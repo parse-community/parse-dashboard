@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Provides a layer on top of React's PropTypes. This allows our code to be
@@ -16,7 +16,7 @@ let Types = null;
 
 function wrapType(type, id) {
   type._id = id;
-  if (type.isRequired) {
+  if (type.isRequired && type.isRequired != type) {
     type.isRequired = wrapType(type.isRequired, id);
     type.isRequired._required = true;
     type.isRequired._classes = type._classes;

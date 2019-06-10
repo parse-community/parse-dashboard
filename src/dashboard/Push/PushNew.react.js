@@ -35,8 +35,8 @@ import TextInput               from 'components/TextInput/TextInput.react';
 import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
-import { Promise }             from 'parse';
 import { extractExpiration, extractPushTime } from 'lib/extractTime';
+import * as queryString        from 'query-string';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
@@ -121,9 +121,10 @@ let LocalizedMessageField = ({
 
 const XHR_KEY = 'PushNew';
 
+export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
-export default class PushNew extends DashboardView {
+class PushNew extends DashboardView {
   constructor() {
     super();
     this.xhrs = [];
@@ -132,7 +133,7 @@ export default class PushNew extends DashboardView {
     this.state = {
       pushAudiencesFetched: false,
       deviceCount: null,
-      initialAudienceId: 'everyone',
+      initialAudienceId: null,
       audienceSizeSuggestion: null,
       recipientCount: null,
       isLocalizationAvailable: false,
@@ -147,10 +148,11 @@ export default class PushNew extends DashboardView {
   componentWillMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     let options = { xhrKey: XHR_KEY };
-    if (this.props.location.query.audienceId) {
+    const query = queryString.parse(this.props.location.search);
+    if (query.audienceId) {
       options.limit = PushConstants.SHOW_MORE_LIMIT;
       options.min = PushConstants.INITIAL_PAGE_SIZE;
-      this.setState({ initialAudienceId: this.props.location.query.audienceId });
+      this.setState({ initialAudienceId: query.audienceId });
     }
     this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
       options).then(() => {
@@ -159,19 +161,13 @@ export default class PushNew extends DashboardView {
 
     const available = this.context.currentApp.isLocalizationAvailable();
     if (available) {
-      this.context.currentApp.fetchPushLocales().promise
-        .then((locales) => {
-          console.log(locales);
-          const filteredLocales = (locales || []).filter((locale) => !(locale === '' || locale === undefined));
-          this.setState({
-            isLocalizationAvailable: true,
-            locales: filteredLocales,
-            availableLocales: filteredLocales
-          });
-          this.setState({
-            loadingLocale: false
-          });
-        });
+      const locales = this.context.currentApp.fetchPushLocales();
+      const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
+      this.setState({
+        isLocalizationAvailable: true,
+        locales: filteredLocales,
+        availableLocales: filteredLocales
+      });
     }
   }
 
@@ -187,7 +183,6 @@ export default class PushNew extends DashboardView {
   //TODO: scroll audience row into view if req.
 
   handlePushSubmit(changes) {
-    let promise = new Promise();
     let payload = changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
     if (changes.increment_badge) {
       payload.badge = "Increment";
@@ -221,25 +216,23 @@ export default class PushNew extends DashboardView {
         .find((a) => a.objectId === audience_id);
       body.where = pushAudience.query;
     }
-    Parse.Push.send(body, {
+
+    return Parse.Push.send(body, {
       useMasterKey: true,
     }).then(({ error }) => {
       //navigate to push index page and clear cache once push store is created
       if (error) {
-        promise.reject({ error });
+        throw { error };
       } else {
         //TODO: global success message banner for passing successful creation - store should also be cleared
         const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
         if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
           history.push(this.context.generatePath('push/activity'));
         } else {
-          promise.resolve();
+          return;
         }
       }
-    }, (error) => {
-      promise.reject(error);
     });
-    return promise;
   }
 
   renderExperimentContent(fields, setField) {
@@ -636,10 +629,7 @@ export default class PushNew extends DashboardView {
         pushAudiencesStore={this.props.pushaudiences}
         current={fields.audience_id}
         onChange={(audienceId, queryOrFilters, deviceCount) => {
-          console.log('audienceId', audienceId);
-          console.log('PushConstants.NEW_SEGMENT_ID', PushConstants.NEW_SEGMENT_ID);
-          PushConstants.NEW_SEGMENT_ID
-          this.setState({ deviceCount });
+          this.setState({ deviceCount, audienceId });
           setField('audience_id', audienceId);
           if (audienceId === PushConstants.NEW_SEGMENT_ID) {
             // Horrible code here is due to old rails code that sent pushes through it's own endpoint, while Parse Server sends through Parse.Push.
@@ -734,6 +724,11 @@ export default class PushNew extends DashboardView {
   valid(changes) {
     let emptyInputMessages = [];
     let invalidInputMessages = [];
+
+    if (!this.state.audienceId) {
+      emptyInputMessages.push('target audience');
+    }
+
     // when number audience size is 0
     if (this.state.deviceCount === 0) {
       emptyInputMessages.push('recipient count for this campaign');

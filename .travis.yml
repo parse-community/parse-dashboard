@@ -1,11 +1,13 @@
 language: node_js
 node_js:
-- '6.11'
-- '8.8'
-before_script: ./scripts/before_script.sh
-cache:
-  directories:
-    - node_modules
+- '10.14'
+before_install:
+  - npm install -g greenkeeper-lockfile@1
+before_script: 
+  - ./scripts/before_script.sh
+  - greenkeeper-lockfile-update
+after_script:
+  - greenkeeper-lockfile-upload
 deploy:
   provider: npm
   on:

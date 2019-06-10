@@ -25,8 +25,6 @@ import Label                             from 'components/Label/Label.react';
 import Modal                             from 'components/Modal/Modal.react';
 import MultiSelect                       from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption                 from 'components/MultiSelect/MultiSelectOption.react';
-import Parse                             from 'parse';
-import ParseApp                          from 'lib/ParseApp';
 import pluck                             from 'lib/pluck';
 import Range                             from 'components/Range/Range.react';
 import React                             from 'react';
@@ -39,8 +37,7 @@ import Toolbar                           from 'components/Toolbar/Toolbar.react'
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
 import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
-import { get }                           from 'lib/AJAX';
-import { Link }                          from 'react-router';
+import { Link }                          from 'react-router-dom';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 55;
 
@@ -116,7 +113,7 @@ let AppInformationFields = ({
     label={<Label text='App name' />}
     input={<TextInput
       value={appName}
-      onChange={(newValue) => setAppName(newValue)} />
+      onChange={setAppName} />
     } />
   <Field
     labelWidth={58}
@@ -125,9 +122,9 @@ let AppInformationFields = ({
       description='(On back4app, this switch is temporarily disabled)' />}
     input={<Toggle
       value={inProduction}
-      type={Toggle.Types.YES_NO} />
+      type={Toggle.Types.YES_NO}
+      onChange={() => {}} />
     } />
-
 </Fieldset>;
 
 let CollaboratorsFields = ({
@@ -349,7 +346,7 @@ export default class GeneralSettings extends DashboardView {
           warnings => this.setState({migrationWarnings: warnings}),
           connectionString => this.context.currentApp.beginMigration(connectionString)
         );
-        promise.fail(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
+        promise.catch(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
         return promise;
       }}
       onClose={closeModalWithConnectionString}
@@ -387,7 +384,7 @@ export default class GeneralSettings extends DashboardView {
           warnings => this.setState({migrationWarnings: warnings}),
           connectionString => this.context.currentApp.changeConnectionString(connectionString)
         );
-        promise.fail(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
+        promise.catch(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
         return promise;
       }}
       onClose={closeModalWithConnectionString}
@@ -416,8 +413,6 @@ export default class GeneralSettings extends DashboardView {
       {this.state.migrationWarnings.map(warning => <FormNote key={warning}show={true} color='orange'>{warning}</FormNote>)}
     </FormModal>
 
-
-
     let deleteAppModal = <FormModal
       title='Delete App'
       icon='trash-solid'
@@ -429,7 +424,7 @@ export default class GeneralSettings extends DashboardView {
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
       onSubmit={() => AppsManager.deleteApp(this.context.currentApp.slug, this.state.password)}
-      onSuccess={result => history.push('/apps')}
+      onSuccess={() => history.push('/apps')}
       onClose={() => this.setState({showDeleteAppModal: false})}
       clearFields={() => this.setState({password: ''})}>
       {passwordField}
@@ -570,17 +565,14 @@ export default class GeneralSettings extends DashboardView {
             }
           });
 
-          let promise = new Parse.Promise();
-          Parse.Promise.when(promiseList).then(() => {
-            promise.resolve();
+          return Promise.all(promiseList).then(() => {
             this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
             this.setState({ removedCollaborators: removedCollaborators || [] });
-          }).fail(errors => {
-            promise.reject({ error: unique(pluck(errors, 'error')).join(' ')});
+          }).catch(errors => {
+            return Promise.reject({ error: unique(pluck(errors, 'error')).join(' ')});
           });
-          return promise;
         }}
-        renderForm={({ changes, fields, setField, resetFields }) => {
+        renderForm={({ fields, setField }) => {
           //let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={styles.settings_page}>
             <AppInformationFields
@@ -631,7 +623,7 @@ export default class GeneralSettings extends DashboardView {
                   cleanupNoteColor: 'orange',
                   showPurgeFilesModal: false,
                 });
-              }).fail((e) => {
+              }).catch((e) => {
                 this.setState({
                   cleanupFilesMessage: e.error,
                   cleanupNoteColor: 'red',

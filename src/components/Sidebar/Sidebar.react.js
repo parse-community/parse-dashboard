@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import PropTypes   from 'lib/PropTypes';
 import AppsManager    from 'lib/AppsManager';
 import AppsSelector   from 'components/Sidebar/AppsSelector.react';
 import FooterMenu from 'components/Sidebar/FooterMenu.react';
@@ -196,13 +197,13 @@ class Sidebar extends React.Component {
       footerButtons.push(<FooterMenu key={1}>{footerMenuButtons}</FooterMenu>);
     }
 
-    const onMouseLeave = !this.state.mobileFriendly && !this.state.collapsed && !this.state.fixed && (
+    const onMouseLeave = (!this.state.mobileFriendly && !this.state.collapsed && !this.state.fixed && (
       e => {
         if (!isInsidePopover(e.relatedTarget)) {
           this.setState({ collapsed: true });
         }
       }
-    );
+    )) || undefined;
 
     const pinClasses = [styles.sidebarPin];
     if (this.state.fixed) {
@@ -259,7 +260,7 @@ class Sidebar extends React.Component {
 }
 
 Sidebar.contextTypes = {
-  generatePath: React.PropTypes.func
+  generatePath: PropTypes.func
 };
 
 export default Sidebar;

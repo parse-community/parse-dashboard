@@ -47,6 +47,7 @@ let B4ABrowserToolbar = ({
     onAttachSelectedRows,
     onImport,
     onImportRelation,
+    onCloneSelectedRows,
     onExport,
     onRemoveColumn,
     onDeleteRows,
@@ -59,6 +60,8 @@ let B4ABrowserToolbar = ({
     enableImport,
     enableExportClass,
     enableSecurityDialog,
+    enableColumnManipulation,
+    enableClassManipulation,
 
     applicationId,
     onClickIndexManager
@@ -110,8 +113,8 @@ let B4ABrowserToolbar = ({
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid'>
         <MenuItem text='Add a row' onClick={onAddRow} />
-        <MenuItem text='Add a column' onClick={onAddColumn} />
-        <MenuItem text='Add a class' onClick={onAddClass} />
+        {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
+        {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
         <Separator />
         <MenuItem
           disabled={!selectionLength}
@@ -120,12 +123,18 @@ let B4ABrowserToolbar = ({
         />
         <Separator />
         <MenuItem
+          disabled={!selectionLength}
+          text={`Clone ${selectionLength <= 1 ? 'this row' : 'these rows'}`}
+          onClick={onCloneSelectedRows}
+        />
+        <Separator />
+        <MenuItem
           disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)} />
-        <MenuItem text='Delete a column' onClick={onRemoveColumn} />
+        {enableColumnManipulation ? <MenuItem text='Delete a column' onClick={onRemoveColumn} /> : <noscript />}
         {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
-        <MenuItem text='Delete this class' onClick={onDropClass} />
+        {enableClassManipulation ? <MenuItem text='Delete this class' onClick={onDropClass} /> : <noscript />}
         {enableImport || enableExportClass ? <Separator /> : <noscript />}
         {enableImport ? <MenuItem text='Import data' onClick={onImport} /> : <noscript />}
         {enableImport ? <MenuItem text='Import relation data' onClick={onImportRelation} /> : <noscript />}

@@ -33,9 +33,9 @@ function WebhookStore(state, action) {
         {},
         { useMasterKey: true }
       );
-      return Parse.Promise.when(functionsPromise, triggersPromise).then((
-        functions,
-        triggers
+      return Promise.all([functionsPromise, triggersPromise]).then((
+        [functions,
+        triggers]
       ) => {
         return Map({ lastFetch: new Date(), webhooks: List(functions.concat(triggers))});
       });

@@ -121,7 +121,7 @@ export default class SecuritySettings extends DashboardView {
 
   renderContent() {
     return <FlowView
-      initialFields={this.props.initialFields}
+      initialFields={this.props.initialFields || {}}
       initialChanges={{}}
       footerContents={({changes}) => <span>You've <strong>{changes.client_class_creation_enabled ? '' : 'dis'}allowed</strong> class creation on clients.</span>}
       onSubmit={({changes}) => this.props.saveChanges({client_class_creation_enabled: changes.client_class_creation_enabled})}
