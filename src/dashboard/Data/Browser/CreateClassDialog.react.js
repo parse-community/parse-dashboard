@@ -46,7 +46,7 @@ export default class CreateClassDialog extends React.Component {
   render() {
     let availableClasses = ['Custom'];
     for (let raw in SpecialClasses) {
-      if (raw !== '_Session' && this.props.currentClasses.indexOf(raw) < 0) {
+      if (raw !== '_Session' && raw !== '_PushStatus' && this.props.currentClasses.indexOf(raw) < 0) {
         availableClasses.push(SpecialClasses[raw]);
       }
     }
