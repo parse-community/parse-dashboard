@@ -55,7 +55,7 @@
     "prismjs": "1.16.0",
     "query-string": "6.5.0",
     "react": "16.8.6",
-    "react-dnd": "7.6.1",
+    "react-dnd": "8.0.0",
     "react-dnd-html5-backend": "7.6.2",
     "react-dom": "16.8.6",
     "react-helmet": "5.2.1",
