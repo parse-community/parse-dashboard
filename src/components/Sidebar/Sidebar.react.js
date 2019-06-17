@@ -7,7 +7,6 @@
  */
 import PropTypes   from 'lib/PropTypes';
 import AppsManager    from 'lib/AppsManager';
-import AppsSelector   from 'components/Sidebar/AppsSelector.react';
 import FooterMenu from 'components/Sidebar/FooterMenu.react';
 import React          from 'react';
 // import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
@@ -19,6 +18,9 @@ import Button         from 'components/Button/Button.react'
 import Icon           from 'components/Icon/Icon.react';
 import { isMobile }   from 'lib/browserUtils';
 import B4aBadge       from 'components/B4aBadge/B4aBadge.react';
+import ParseApp       from 'lib/ParseApp';
+import AppsMenu       from 'components/Sidebar/AppsMenu.react';
+import AppName        from 'components/Sidebar/AppName.react';
 
 const isInsidePopover = node => {
   let cur = node.parentNode;
@@ -42,10 +44,12 @@ class Sidebar extends React.Component {
     this.state = {
       collapsed: isSidebarCollapsed,
       fixed: isSidebarFixed,
-      mobileFriendly: isMobile()
+      mobileFriendly: isMobile(),
+      appsMenuOpen: false
     };
     this.windowResizeHandler = this.windowResizeHandler.bind(this);
     this.checkExternalClick = this.checkExternalClick.bind(this);
+    this.toggleAppsMenu = this.toggleAppsMenu.bind(this);
   }
 
   componentWillMount() {
@@ -88,6 +92,12 @@ class Sidebar extends React.Component {
       }
       this.setState({ collapsed: true });
     }
+  }
+
+  toggleAppsMenu() {
+    this.setState({
+      appsMenuOpen: !this.state.appsMenuOpen
+    });
   }
 
   render () {
@@ -218,39 +228,59 @@ class Sidebar extends React.Component {
     }
     const pin = <Icon className={pinClasses.join(' ')} name={this.state.mobileFriendly ? 'expand' : 'pin'} width={18} height={18} onClick={onPinClick} />;
 
-    return <div className={sidebarClasses.join(' ')} onMouseLeave={onMouseLeave}>
-      {appSelector ? <AppsSelector apps={apps} pin={pin} /> : null}
+    let sidebarContent;
+    if (this.state.appsMenuOpen) {
+      sidebarContent = (
+        <AppsMenu
+          apps={apps}
+          current={this.context.currentApp}
+          onSelect={this.toggleAppsMenu}
+          pin={pin} />
+      );
+    } else {
+      sidebarContent = (
+        <>
+          {appSelector && (
+            <div className={styles.apps}>
+              <AppName name={this.context.currentApp.name} pin={pin} onClick={this.toggleAppsMenu} />
+            </div>
+          )}
+          <div className={styles.content} style={contentStyle}>
+            {sections.map(({
+              name,
+              icon,
+              style,
+              link,
+              subsections,
+              badgeParams
+            }) => {
+              const active = name === section;
+              const badge = badgeParams && <B4aBadge {...badgeParams} /> || ''
+              // If link points to another component, adds the prefix
+              link = link.startsWith('/') ? prefix + link : link;
+              return (
+                <SidebarSection
+                  key={name}
+                  name={name}
+                  icon={icon}
+                  style={style}
+                  link={link}
+                  active={active}
+                  primaryBackgroundColor={primaryBackgroundColor}
+                  secondaryBackgroundColor={secondaryBackgroundColor}
+                  badge={badge}
+                  >
+                  {active ? _subMenu(subsections) : null}
+                </SidebarSection>
+              );
+            })}
+          </div>
+        </>
+      )
+    }
 
-      <div className={styles.content} style={contentStyle}>
-        {sections.map(({
-          name,
-          icon,
-          style,
-          link,
-          subsections,
-          badgeParams
-        }) => {
-          const active = name === section;
-          const badge = badgeParams && <B4aBadge {...badgeParams} /> || ''
-          // If link points to another component, adds the prefix
-          link = link.startsWith('/') ? prefix + link : link;
-          return (
-            <SidebarSection
-              key={name}
-              name={name}
-              icon={icon}
-              style={style}
-              link={link}
-              active={active}
-              primaryBackgroundColor={primaryBackgroundColor}
-              secondaryBackgroundColor={secondaryBackgroundColor}
-              badge={badge}
-              >
-              {active ? _subMenu(subsections) : null}
-            </SidebarSection>
-          );
-        })}
-      </div>
+    return <div className={sidebarClasses.join(' ')} onMouseLeave={onMouseLeave}>
+      {sidebarContent}
       <div className={styles.help}>
         {/* div to add the zendesk help widget*/}
       </div>
@@ -260,6 +290,7 @@ class Sidebar extends React.Component {
 }
 
 Sidebar.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp),
   generatePath: PropTypes.func
 };
 
