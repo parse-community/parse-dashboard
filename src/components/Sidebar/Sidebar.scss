@@ -215,6 +215,11 @@
     background: #0c5582;
   }
 
+  .appsList {
+    overflow: auto;
+    height: calc(100vh - 183px);
+  }
+
   .currentApp .appsSelectorArrow {
     @include arrow('up', 10px, 7px, #ffffff);
   }
