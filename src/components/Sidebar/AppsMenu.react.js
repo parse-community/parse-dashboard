@@ -17,17 +17,19 @@ let AppsMenu = ({ apps, current, height, onSelect, pin }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
     <AppName name={current.name} pin={pin} onClick={onSelect.bind(null, current.slug)} />
     <div className={styles.menuSection}>All Apps</div>
-    {apps.map((app) => {
-      if (app.slug === current.slug) {
-        return null;
-      }
-      return (
-        <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow}>
-          {app.name}
-          <AppBadge production={app.production} />
-        </Link>
-      );
-    })}
+    <div className={styles.appsList}>
+      {apps.map((app) => {
+        if (app.slug === current.slug) {
+          return null;
+        }
+        return (
+          <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow}>
+            {app.name}
+            <AppBadge production={app.production} />
+          </Link>
+        );
+      })}
+    </div>
   </div>
 );
 
