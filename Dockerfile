@@ -2,6 +2,9 @@
 # --- Base Node Image ---
 FROM node:8-alpine AS base
 
+RUN apk update; \
+  apk add git;
+
 WORKDIR /src
 
 # Copy package.json first to benefit from layer caching
