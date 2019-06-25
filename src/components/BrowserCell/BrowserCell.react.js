@@ -14,6 +14,7 @@ import styles               from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }     from 'stylesheets/base.scss';
 import { findDOMNode }      from 'react-dom'
 import ReactTooltip         from 'react-tooltip'
+import PropTypes            from 'lib/PropTypes';
 
 class BrowserCell extends React.Component {
   constructor (){
@@ -57,20 +58,22 @@ class BrowserCell extends React.Component {
     } else if (type === 'Pointer') {
       content = (
         <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={value.id} />
+          <Pill value={value ? value.id : undefined} />
         </a>
       );
-      readableValue = value.id;
+      readableValue = value ? value.id : undefined;
     } else if (type === 'Date') {
-      readableValue = content = dateStringUTC(value);
+      readableValue = content = value ? dateStringUTC(value) : undefined;
     } else if (type === 'Boolean') {
       readableValue = content = value ? 'True' : 'False';
     } else if (type === 'Array') {
-      readableValue = content = JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
+      readableValue = content = value && typeof value.map === 'function'
+        ? JSON.stringify(value.map(val => val instanceof Parse.Object ? val.toPointer() : val))
+        : undefined;
     } else if (type === 'Object' || type === 'Bytes') {
-      readableValue = content = JSON.stringify(value);
+      readableValue = content = value ? JSON.stringify(value) : undefined;
     } else if (type === 'File') {
-      if (value.url()) {
+      if (value && value.url()) {
         content = <Pill value={getFileName(value)} />;
       } else {
         content = <Pill value={'Uploading\u2026'} />;
@@ -98,9 +101,9 @@ class BrowserCell extends React.Component {
       }
       readableValue = content = pieces.join(', ');
     } else if (type === 'GeoPoint') {
-      readableValue = content = `(${value.latitude}, ${value.longitude})`;
+      readableValue = content = value ? `(${value.latitude}, ${value.longitude})` : undefined;
     } else if (type === 'Polygon') {
-      readableValue = content = value.coordinates.map(coord => `(${coord})`)
+      readableValue = content = value ? value.coordinates.map(coord => `(${coord})`) : undefined;
     } else if (type === 'Relation') {
       content = (
         <div style={{ textAlign: 'center', cursor: 'pointer' }}>
@@ -143,6 +146,16 @@ class BrowserCell extends React.Component {
        </span>
     );
   }
+}
+
+BrowserCell.propTypes = {
+  type: PropTypes.string.isRequired.describe('The column data type'),
+  value: PropTypes.any.describe('The cell value (can be null/undefined as well)'),
+  hidden: PropTypes.bool.describe('True if the cell value must be hidden (like passwords), false otherwise'),
+  current: PropTypes.bool.describe('True if it is the BrowserCell selected, false otherwise'),
+  setRelation: PropTypes.func.isRequired.describe('Function invoked when the Relation link is clicked'),
+  onPointerClick: PropTypes.func.isRequired.describe('Function invoked when the Pointer link is clicked'),
+  readonly: PropTypes.bool.describe('True if the cell value is read only')
 }
 
 export default BrowserCell;
