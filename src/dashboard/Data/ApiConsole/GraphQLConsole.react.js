@@ -13,9 +13,14 @@ import { Playground, store } from 'graphql-playground-react';
 
 export default class GraphQLConsole extends Component {
   render() {
+    const { applicationId, graphQLServerURL, masterKey } = this.context.currentApp
+    const headers = {
+      'X-Parse-Application-Id': applicationId,
+      'X-Parse-Master-Key': masterKey
+    }
     return (
       <Provider store={store}>
-        <Playground endpoint={this.context.currentApp.graphQLServerURL} />
+        <Playground endpoint={graphQLServerURL} headers={headers} />
       </Provider>
     );
   }
