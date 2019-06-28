@@ -8,5 +8,6 @@ configuration.plugins.push(
     }
   })
 );
+configuration.devtool = 'source-map'
 
 module.exports = configuration;
