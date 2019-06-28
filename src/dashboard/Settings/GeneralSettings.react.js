@@ -534,13 +534,14 @@ export default class GeneralSettings extends DashboardView {
             promiseList.push(this.context.currentApp.setInProduction(changes.inProduction));
           }
 
+          let removedCollaborators;
           if (changes.collaborators !== undefined) {
             let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
             addedCollaborators.forEach(({ userEmail, featuresPermission, classesPermission }) => {
               promiseList.push(this.context.currentApp.addCollaborator(userEmail, featuresPermission, classesPermission));
             });
 
-            let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
+            removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
             removedCollaborators.forEach(({ id }) => {
               promiseList.push(this.context.currentApp.removeCollaboratorById(id));
             });
