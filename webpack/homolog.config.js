@@ -8,6 +8,6 @@ configuration.plugins.push(
     }
   })
 );
-configuration.devtool = 'source-map'
+configuration.devtool = 'cheap-eval-source-map'
 
 module.exports = configuration;
