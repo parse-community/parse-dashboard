@@ -88,8 +88,12 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
   }
 
   .filterInputStyle {
-    width: 47%;
-    margin-left: 2%
+    width: 50%;
+
+    &:last-of-type {
+      width: 48%;
+      margin-left: 2%
+    }
   }
 
   .halfBox {
