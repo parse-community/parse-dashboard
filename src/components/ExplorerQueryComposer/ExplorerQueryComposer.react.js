@@ -399,7 +399,7 @@ export default class ExplorerQueryComposer extends React.Component {
       filter.json_scalar_op = filter.json_scalar_op || '$eq';
 
       constraintView = (
-        <div style={{ width: '65%', display: 'inline-block' }}>
+        <div style={{ width: '66%', display: 'inline-block' }}>
           <div>
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
