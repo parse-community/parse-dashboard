@@ -81,7 +81,7 @@
     "file-loader": "4.0.0",
     "http-server": "0.11.1",
     "jest": "24.8.0",
-    "marked": "0.6.2",
+    "marked": "0.6.3",
     "node-sass": "4.12.0",
     "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.0.0",
