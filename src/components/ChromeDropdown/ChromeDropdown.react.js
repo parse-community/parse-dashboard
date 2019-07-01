@@ -53,7 +53,8 @@ export default class ChromeDropdown extends React.Component {
   }
 
   render() {
-    let widthStyle = { width: `${parseFloat(this.props.width)}%` || 140 };
+    const width = this.props.width || 140;
+    let widthStyle = {width: width.toString().endsWith('%') ? width : parseFloat(width)};
     let styles = this.styles;
     let color = this.props.color || 'purple';
     let isMultipleOptions = this.props.options.length > 1
