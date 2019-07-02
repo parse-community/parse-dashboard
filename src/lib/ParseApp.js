@@ -561,7 +561,7 @@ export default class ParseApp {
 
   setAppName(name) {
     let path = `${b4aSettings.BACK4APP_API_PATH}/parse-app/${this.slug}`;
-    let promise = axios.patch(path, {'appName': name});
+    let promise = axios.patch(path, {'appName': name}, { withCredentials: true });
     promise.then(() => {
       this.name = name;
     });
