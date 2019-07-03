@@ -16,32 +16,38 @@ import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
 
 export default class GraphQLConsole extends Component {
   render() {
-    const { applicationId, graphQLServerURL, masterKey } = this.context.currentApp
+    const { applicationId, graphQLServerURL, masterKey } = this.context.currentApp;
+    let content;
     if (!graphQLServerURL) {
-      return (
-        <>
-          <Toolbar section='Core' subsection='GraphQL API Console' />
-          <div className={styles.content}>
-            <div className={styles.empty}>
-              <EmptyState
-                title='GraphQL API Console'
-                description='Please update Parse-Server to version equal or above
-                3.5.0 and define the "graphQLServerURL" on your app configuration
-                in order to use the GraphQL API Console.'
-                icon='info-solid' />
-            </div>
-          </div>
-        </>
+      content = (
+        <div className={styles.empty}>
+          <EmptyState
+            title='GraphQL API Console'
+            description='Please update Parse-Server to version equal or above
+            3.5.0 and define the "graphQLServerURL" on your app configuration
+            in order to use the GraphQL API Console.'
+            icon='info-solid' />
+        </div>
+      );
+    } else {
+      const headers = {
+        'X-Parse-Application-Id': applicationId,
+        'X-Parse-Master-Key': masterKey
+      }
+      content = (
+        <Provider store={store}>
+          <Playground endpoint={graphQLServerURL} headers={headers} />
+        </Provider>
       );
     }
-    const headers = {
-      'X-Parse-Application-Id': applicationId,
-      'X-Parse-Master-Key': masterKey
-    }
+
     return (
-      <Provider store={store}>
-        <Playground endpoint={graphQLServerURL} headers={headers} />
-      </Provider>
+      <>
+        <Toolbar section='Core' subsection='GraphQL API Console' />
+        <div className={styles.content}>
+          {content}
+        </div>
+      </>
     );
   }
 }
