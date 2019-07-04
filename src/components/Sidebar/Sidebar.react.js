@@ -290,8 +290,7 @@ class Sidebar extends React.Component {
 }
 
 Sidebar.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp),
-  generatePath: PropTypes.func
+  currentApp: PropTypes.instanceOf(ParseApp)
 };
 
 export default Sidebar;

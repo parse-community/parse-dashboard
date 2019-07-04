@@ -13,6 +13,7 @@ import Dashboard       from './Dashboard';
 import '@babel/polyfill';
 
 require('stylesheets/fonts.scss');
+require('graphql-playground-react/build/static/css/index.css')
 installDevTools(Immutable);
 
 // import 'bootstrap/js/dist/dropdown';

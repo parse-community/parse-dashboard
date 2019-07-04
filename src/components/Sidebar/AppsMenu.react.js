@@ -6,12 +6,12 @@
  * the root directory of this source tree.
  */
 import AppBadge         from 'components/AppBadge/AppBadge.react';
+import AppName          from 'components/Sidebar/AppName.react';
 import html             from 'lib/htmlString';
 import { Link }         from 'react-router-dom';
 import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';
-import AppName from 'components/Sidebar/AppName.react';
 
 let AppsMenu = ({ apps, current, height, onSelect, pin }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>

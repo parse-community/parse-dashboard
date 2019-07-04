@@ -131,14 +131,18 @@ export const Constraints = {
     field: 'Object',
     composable: true
   },
+  unique: {
+    name: 'unique',
+    field: null
+  },
 };
 
 export const FieldConstraints = {
-  'Pointer': [ 'exists', 'dne', 'eq', 'neq'],
-  'Boolean': [ 'exists', 'dne', 'eq' ],
-  'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte' ],
-  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString' ],
-  'Date': [ 'exists', 'dne', 'before', 'after' ],
+  'Pointer': [ 'exists', 'dne', 'eq', 'neq', 'unique' ],
+  'Boolean': [ 'exists', 'dne', 'eq', 'unique' ],
+  'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique' ],
+  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique' ],
+  'Date': [ 'exists', 'dne', 'before', 'after', 'unique' ],
   'Object': [
     'exists',
     'dne',
@@ -149,7 +153,8 @@ export const FieldConstraints = {
     'keyGt',
     'keyGte',
     'keyLt',
-    'keyLte'
+    'keyLte',
+    'unique',
   ],
   'Array': [
     'exists',

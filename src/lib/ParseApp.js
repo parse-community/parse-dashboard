@@ -10,7 +10,6 @@ import encodeFormData from 'lib/encodeFormData';
 import Parse          from 'parse';
 import axios          from 'axios';
 
-
 function setEnablePushSource(setting, enable) {
   let path = `/apps/${this.slug}/update_push_notifications`;
   let attr = `parse_app[${setting}]`;
@@ -46,7 +45,8 @@ export default class ParseApp {
     supportedPushLocales,
     feedbackEmail,
     custom,
-    preventSchemaEdits
+    preventSchemaEdits,
+    graphQLServerURL
   }) {
     this.name = appName;
     this.feedbackEmail = feedbackEmail;
@@ -73,6 +73,7 @@ export default class ParseApp {
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
     this.custom = custom;
     this.preventSchemaEdits = preventSchemaEdits || false;
+    this.graphQLServerURL = graphQLServerURL;
 
     if(!supportedPushLocales) {
       console.warn(`Missing push locales for '` + appName + `', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications`);
