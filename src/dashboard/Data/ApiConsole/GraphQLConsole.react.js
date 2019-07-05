@@ -36,7 +36,9 @@ export default class GraphQLConsole extends Component {
       }
       content = (
         <Provider store={store}>
-          <Playground endpoint={graphQLServerURL} headers={headers} />
+          <div className={styles.playgroundContainer}>
+            <Playground endpoint={graphQLServerURL} headers={headers} />
+          </div>
         </Provider>
       );
     }

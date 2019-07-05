@@ -27,6 +27,12 @@
   padding-top: 48px;
 }
 
+.playgroundContainer > div > div {
+  opacity: 1;
+  transform: unset;
+  animation: unset;
+}
+
 .empty {
   position: absolute;
   top: 96px;
