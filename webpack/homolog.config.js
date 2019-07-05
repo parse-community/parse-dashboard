@@ -28,7 +28,10 @@ configuration.optimization = {
     new TerserPlugin({
       cache: true,
       parallel: true,
-      sourceMap: true // Must be set to true if using source-maps in production
+      sourceMap: true, // Must be set to true if using source-maps in production
+      terserOptions: {
+        mangle: false
+      }
     })
   ]
 }
