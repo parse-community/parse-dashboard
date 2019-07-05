@@ -6,8 +6,11 @@ configuration.plugins.push(
     'process.env': {
       'NODE_ENV': '"homolog"'
     }
+  }),
+  new webpack.SourceMapDevToolPlugin({
+    filename: '[file].map',
+    include: /dashboard.*.*/
   })
 );
-configuration.devtool = 'cheap-eval-source-map'
 
 module.exports = configuration;
