@@ -20,3 +20,17 @@
   padding: 10px 0;
   text-align: center;
 }
+
+.content {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 96px;
+}
+
+.empty {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
