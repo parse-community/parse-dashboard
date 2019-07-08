@@ -6,12 +6,8 @@ import subscribeTo      from 'lib/subscribeTo';
 import LoaderContainer  from 'components/LoaderContainer/LoaderContainer.react'
 import B4AFieldTemplate from 'components/B4AFieldTemplate/B4AFieldTemplate.react';
 import Fieldset         from 'components/Fieldset/Fieldset.react';
-import Label            from 'components/Label/Label.react';
-import Button           from 'components/Button/Button.react';
 import styles           from 'dashboard/B4aAppTemplates/B4aAppTemplates.scss'
 import Toolbar          from 'components/Toolbar/Toolbar.react';
-import Icon             from 'components/Icon/Icon.react';
-
 
 const APP_TEMPLATES_URL = `${b4aSettings.BACK4APP_API_PATH}/app-templates`
 const LEGEND = 'App Templates'
@@ -30,6 +26,7 @@ class B4aAppTemplates extends DashboardView {
       error: undefined
     }
 
+    this.scrollRef = React.createRef();
   }
 
   async fetchTemplates(currentPage = 1) {
@@ -50,6 +47,10 @@ class B4aAppTemplates extends DashboardView {
       back4AppNavigation.onOpenAppTemplatePage()
   }
 
+  getScrollParent() {
+    return this.scrollRef.current;
+  }
+
   renderContent() {
     const { appTemplates = [] } = this.state
 
@@ -68,6 +69,8 @@ class B4aAppTemplates extends DashboardView {
           pageStart={1}
           loadMore={this.fetchTemplates.bind(this)}
           hasMore={this.state.hasMore}
+          useWindow={false}
+          getScrollParent={this.getScrollParent.bind(this)}
           loader={<div className="loader" key={0}>Loading ...</div>}>
           {
             appTemplates.map((template, index) => {
@@ -90,12 +93,14 @@ class B4aAppTemplates extends DashboardView {
     )
 
     return (
-      <LoaderContainer className={styles.loading} loading={this.state.loading} hideAnimation={false} solid={true}>
-        <div className={styles['app-templates']}>
-          {fieldSet}
-          {toolbar}
-        </div>
-      </LoaderContainer>
+      <div className={styles.loading}>
+        <LoaderContainer loading={this.state.loading} hideAnimation={false} solid={true}>
+          <div className={styles['app-templates']} ref={this.scrollRef}>
+            {fieldSet}
+            {toolbar}
+          </div>
+        </LoaderContainer>
+      </div>
     )
   }
 }
