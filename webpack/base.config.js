@@ -73,10 +73,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-      Popper: ['popper.js', 'default'],
-      Tether: 'tether',
-      Dropdown: "exports-loader?Dropdown!bootstrap/js/dist/dropdown",
+      'window.jQuery': 'jquery'
     })
   ]
 };

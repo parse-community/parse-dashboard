@@ -155,7 +155,7 @@ export default class RestConsole extends Component {
     }
 
     return (
-      <div style={{ padding: '120px 0 60px 0' }}>
+      <div style={{ padding: '120px 0 0 0' }}>
         <Fieldset
           legend='Send a test query'
           description='Try out some queries, and take a look at what they return.'>

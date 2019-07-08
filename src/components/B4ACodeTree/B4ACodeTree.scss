@@ -1,5 +1,34 @@
 @import 'stylesheets/globals.scss';
-@import 'stylesheets/bootstrap-custom.scss';
+
+.fileSelector, .filePreview {
+  width: 100%;
+}
+
+@media (min-width: 774px) {
+  .fileSelector {
+    flex: 0 0 33.33333%;
+    width: 33%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .filePreview {
+    flex: 0 0 66.66667%;
+    max-width: 66.66667%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .codeContainer {
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+}
+
+.codeContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
 
 .files-box{
   border-radius: 4px;
@@ -14,6 +43,8 @@
     p {
       height: 22px;
       margin: 5px 0 0 0;
+      text-align: left;
+      padding: 0 20px;
       font-family: Noto Sans;
       font-size: 16px;
       font-weight: bold;
@@ -56,6 +87,8 @@
   }
 
   .files-text {
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace !important;
+    font-size: 14px;
     height: 367px;
     border-radius: 5px;
     background-color: #0c2337;

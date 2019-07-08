@@ -20,7 +20,7 @@ export default class GraphQLConsole extends Component {
     let content;
     if (!graphQLServerURL) {
       content = (
-        <div className={styles.empty}>
+        <div>
           <EmptyState
             title='GraphQL API Console'
             description='Please update Parse-Server to version equal or above

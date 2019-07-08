@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
 .curl {
@@ -23,7 +24,7 @@
 
 .content {
   position: relative;
-  min-height: 100vh;
+  min-height: $content-max-height;
   padding-top: 48px;
 }
 
@@ -31,12 +32,4 @@
   opacity: 1;
   transform: unset;
   animation: unset;
-}
-
-.empty {
-  position: absolute;
-  top: 48px;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }

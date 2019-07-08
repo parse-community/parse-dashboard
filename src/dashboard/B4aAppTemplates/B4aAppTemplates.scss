@@ -1,11 +1,13 @@
+@import 'stylesheets/back4app.scss';
+
 .loading {
   position: relative;
-  min-height: 100vh;
+  min-height: $content-max-height;
 }
 
 .app-templates {
   background-color: #f9f9f9;
-  min-height: 100vh;
+  min-height: $content-max-height;
   padding-top: 70px;
   overflow: hidden;
 }

@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
 $overviewBackground: #fbfbfc;
@@ -15,7 +16,7 @@ $infoWidth: ($containerWidth - 2 * $containerPadding) / 4;
 .content {
   padding: 96px 0px 48px 0px;
   background: $white;
-  min-height: 100vh; //to remove the purple background from bleeding through on tall sizes
+  min-height: $content-max-height; //to remove the purple background from bleeding through on tall sizes
 }
 
 h2{

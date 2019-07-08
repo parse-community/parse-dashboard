@@ -33,12 +33,10 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/runtime": "7.4.5",
     "@back4app/back4app-settings": "^1.1.0",
     "axios": "^0.18.0",
     "bcryptjs": "2.3.0",
     "body-parser": "1.19.0",
-    "bootstrap": "4.0.0-alpha.6",
     "commander": "2.20.0",
     "connect-flash": "0.1.1",
     "cookie-session": "2.0.0-beta.3",
@@ -90,13 +88,14 @@
     "symbol-observable": "^1.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.4.5",
+    "@babel/core": "7.5.0",
     "@babel/plugin-proposal-decorators": "7.4.4",
     "@babel/plugin-transform-regenerator": "7.4.5",
-    "@babel/plugin-transform-runtime": "7.4.4",
+    "@babel/plugin-transform-runtime": "7.5.0",
     "@babel/polyfill": "7.4.4",
-    "@babel/preset-env": "7.4.5",
+    "@babel/preset-env": "7.5.0",
     "@babel/preset-react": "7.0.0",
+    "@babel/runtime": "7.5.1",
     "babel-eslint": "10.0.2",
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",

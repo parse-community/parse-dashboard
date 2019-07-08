@@ -1,3 +1,5 @@
+@import 'stylesheets/back4app.scss';
+
 .b4a-source {
   margin: 0 38px;
   background-color: #f9f9f9;
@@ -5,7 +7,7 @@
 
 .loading {
   position: relative;
-  min-height: 100vh;
+  min-height: $content-max-height;
 }
 
 .title {
@@ -26,6 +28,7 @@
     letter-spacing: normal;
     color: #224969;
     padding-left: 0px;
+    padding-right: 20px;
   }
 
   a {
@@ -46,8 +49,7 @@
 }
 
 .footer {
-  margin-top: 28px;
-  margin-right: 0px;
+  margin: 28px 0 20px 0;
   float: right;
 
   .b4a-cc-deploy-btn {
