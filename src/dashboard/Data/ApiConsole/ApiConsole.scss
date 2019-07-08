@@ -24,12 +24,25 @@
 
 .content {
   position: relative;
-  min-height: $content-max-height;
-  padding-top: 48px;
+  min-height: calc(#{$content-max-height} - #{$toolbar-height});
+  margin-top: $toolbar-height;
 }
 
-.playgroundContainer > div > div {
-  opacity: 1;
-  transform: unset;
-  animation: unset;
+.playgroundContainer {
+  max-height: $content-max-height;
+
+  & > div > div {
+    opacity: 1;
+    transform: unset;
+    animation: unset;
+
+    & > div {
+      max-height: calc(#{$content-max-height} - #{$toolbar-height});
+      margin-right: 0 !important;
+
+      & > div:nth-child(2) {
+        height: calc(#{$content-max-height} - #{$toolbar-height} - 57px);
+      }
+    }
+  }
 }
