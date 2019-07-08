@@ -9,13 +9,18 @@
 @import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
+$toolbar-height: 48px;
+$server-settings-content-height: calc(#{$content-max-height} - #{$toolbar-height});
+
 .content {
-  max-height: calc(#{$content-max-height} - 48px);
+  max-height: $server-settings-content-height;
   margin-top: 48px;
+  overflow: hidden;
 }
 
 .iframeContent {
-  max-height: calc(#{$content-max-height} - 53px);
+  max-height: $server-settings-content-height;
+  min-height: $server-settings-content-height;
   width: 100%;
   border: 0;
 
