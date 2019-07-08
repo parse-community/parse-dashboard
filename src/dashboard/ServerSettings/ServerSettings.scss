@@ -10,13 +10,14 @@
 @import 'stylesheets/globals.scss';
 
 .content {
-  min-height: $content-max-height;
-  margin-top: 42px;
+  max-height: calc(#{$content-max-height} - 48px);
+  margin-top: 48px;
 }
 
 .iframeContent {
-  min-height: $content-max-height;
+  max-height: calc(calc(100vh - 51px) - 53px);
   width: 100%;
+  border: 0;
 
   iframe {
     outline: 5px solid red;
