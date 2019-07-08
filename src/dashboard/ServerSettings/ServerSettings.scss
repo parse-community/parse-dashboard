@@ -15,7 +15,7 @@
 }
 
 .iframeContent {
-  max-height: calc(calc(100vh - 51px) - 53px);
+  max-height: calc(#{$content-max-height} - 53px);
   width: 100%;
   border: 0;
 
