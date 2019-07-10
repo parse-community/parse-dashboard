@@ -1,11 +1,15 @@
+@import 'stylesheets/back4app.scss';
+
 .loading {
-  position: relative;
-  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(#{$content-max-height} - #{$toolbar-height});
 }
 
 .app-templates {
   background-color: #f9f9f9;
-  min-height: 100vh;
-  padding-top: 70px;
-  overflow: hidden;
+  max-height: calc(#{$content-max-height} - #{$toolbar-height});
+  margin-top: $toolbar-height;
+  overflow: auto;
 }

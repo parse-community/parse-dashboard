@@ -238,7 +238,7 @@ class B4ACloudCode extends CloudCode {
         currentApp={this.context.currentApp}
       />
 
-      footer = <div className={`${styles.row} ${styles.footer}`}>
+      footer = <div className={styles.footer}>
         <Button
           value={<div className={styles['b4a-cc-deploy-btn']}><Icon name='icon-deploy' fill='#fff' width={17} height={30} /> DEPLOY</div>}
           primary={true}

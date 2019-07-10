@@ -5,11 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
 .headers {
   position: fixed;
-  top: 96px;
+  top: 99px;
   left: 300px;
   right: 0;
   background: #66637A;
@@ -26,15 +27,7 @@ body:global(.expanded) {
 .content {
   position: relative;
   padding-top: 75px;
-  min-height: 100vh;
-}
-
-.empty {
-  position: absolute;
-  top: 126px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  min-height: $content-max-height;
 }
 
 .rows {

@@ -1,11 +1,9 @@
 .DS_Store
 node_modules/
 bundles/
-PIG/index.html
 PIG/bundles/
-production/
-Parse-Dashboard/public/index.html
-Parse-Dashboard/public/bundles/
+Parse-Dashboard/public/*
+Parse-Dashboard/parse-dashboard-config.json
 npm-debug.log
 .eslintcache
 
@@ -14,7 +12,5 @@ npm-debug.log
 .env
 .idea/
 
-npm-debug.log.*
-
-*.orig
-Parse-Dashboard/parse-dashboard-config.json
+logs/
+test_logs

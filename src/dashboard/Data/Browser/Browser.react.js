@@ -83,6 +83,9 @@ class Browser extends DashboardView {
       lastNote: null,
 
       relationCount: 0,
+
+      isUnique: false,
+      uniqueField: null,
       showTour: !isMobile() && user && user.playDatabaseBrowserTutorial,
       renderFooterMenu: !isMobile()
     };
@@ -652,7 +655,21 @@ class Browser extends DashboardView {
     }
 
     query.limit(200);
-    const data = await query.find({ useMasterKey: true });
+
+    let promise = query.find({ useMasterKey: true });
+    let isUnique = false;
+    let uniqueField = null;
+    filters.forEach(async (filter) => {
+      if (filter.get('constraint') == 'unique') {
+        const field = filter.get('field');
+        promise = query.distinct(field);
+        isUnique = true;
+        uniqueField = field;
+      }
+    });
+    await this.setState({ isUnique, uniqueField });
+
+    const data = await promise;
     return data;
   }
 
@@ -667,7 +684,11 @@ class Browser extends DashboardView {
       const data = await this.fetchParseData(source, filters);
       var filteredCounts = { ...this.state.filteredCounts };
       if (filters.size > 0) {
-        filteredCounts[source] = await this.fetchParseDataCount(source,filters);
+        if (this.state.isUnique) {
+          filteredCounts[source] = data.length;
+        } else {
+          filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+        }
       } else {
         delete filteredCounts[source];
       }
@@ -695,7 +716,7 @@ class Browser extends DashboardView {
   }
 
   fetchNextPage() {
-    if (!this.state.data) {
+    if (!this.state.data || this.state.isUnique) {
       return null;
     }
     let className = this.props.params.className;
@@ -1232,9 +1253,15 @@ class Browser extends DashboardView {
         let columns = {
           objectId: { type: 'String' }
         };
+        if (this.state.isUnique) {
+          columns = {};
+        }
         let userPointers = [];
         classes.get(className).forEach((field, name) => {
           if (name === 'objectId') {
+            return;
+          }
+          if (this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
           let info = { type: field.type };
@@ -1259,6 +1286,8 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
+            isUnique={this.state.isUnique}
+            uniqueField={this.state.uniqueField}
             count={count}
             perms={this.state.clp[className]}
             schema={schema}

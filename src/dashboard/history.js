@@ -7,4 +7,6 @@
  */
 
 import { createBrowserHistory } from 'history';
-export default createBrowserHistory({});
+
+const path = window.PARSE_DASHBOARD_PATH || '/';
+export default createBrowserHistory({ basename: path });

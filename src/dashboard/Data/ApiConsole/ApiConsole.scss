@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
 .curl {
@@ -19,4 +20,29 @@
   border-top: 1px solid #e3e3ea;
   padding: 10px 0;
   text-align: center;
+}
+
+.content {
+  position: relative;
+  min-height: calc(#{$content-max-height} - #{$toolbar-height});
+  margin-top: $toolbar-height;
+}
+
+.playgroundContainer {
+  max-height: $content-max-height;
+
+  & > div > div {
+    opacity: 1;
+    transform: unset;
+    animation: unset;
+
+    & > div {
+      max-height: calc(#{$content-max-height} - #{$toolbar-height});
+      margin-right: 0 !important;
+
+      & > div:nth-child(2) {
+        height: calc(#{$content-max-height} - #{$toolbar-height} - 57px);
+      }
+    }
+  }
 }

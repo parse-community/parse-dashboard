@@ -7,11 +7,9 @@
  */
 @import 'globals.scss';
 @import 'back4app.scss';
-@import 'bootstrap-custom.scss';
-@import "~bootstrap/scss/bootstrap";
 
 html, body {
-  min-height: 100vh;
+  min-height: $content-max-height;
   background-color: #fdf9fb;
 }
 
@@ -20,6 +18,7 @@ body {
   box-sizing: border-box;
   color: $mainTextColor;
   padding-top: $header-height;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 :global(#browser_mount) {
@@ -50,12 +49,17 @@ a {
   text-decoration: none;
 }
 
+span, div {
+  letter-spacing: 0;
+}
+
 ul {
   list-style: none;
 }
 
 table {
   border-collapse: collapse;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .unselectable {

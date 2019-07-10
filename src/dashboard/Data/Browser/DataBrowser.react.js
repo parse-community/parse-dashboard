@@ -59,7 +59,8 @@ export default class DataBrowser extends React.Component {
         editing: false,
         currentTooltip: null
       });
-    } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length) {
+    } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
+           || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
       let order = ColumnPreferences.getOrder(
         props.columns,
         context.currentApp.applicationId,
@@ -249,7 +250,7 @@ export default class DataBrowser extends React.Component {
 
   render() {
     let { className, ...other } = this.props;
-    let { applicationId, preventSchemaEdits } = this.context.currentApp;
+    const { applicationId, preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
         <BrowserTable

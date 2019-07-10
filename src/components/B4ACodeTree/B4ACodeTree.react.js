@@ -129,8 +129,8 @@ export default class B4ACodeTree extends React.Component {
 
   render(){
     return (
-      <div className={styles.row}>
-        <div className={styles['col-4']}>
+      <div className={styles.codeContainer}>
+        <div className={styles.fileSelector}>
           <div className={`${styles['files-box']}`}>
             <div className={styles['files-header']} >
               <p>Files</p>
@@ -162,7 +162,7 @@ export default class B4ACodeTree extends React.Component {
             </Resizable>
           </div>
         </div>
-        <div className={styles['col-8']}>
+        <div className={styles.filePreview}>
           <div className={`${styles['files-box']}`}>
             <div className={styles['files-header']} >
               <p>{this.state.selectedFile}</p>

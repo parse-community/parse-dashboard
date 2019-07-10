@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
 .loadingError {
@@ -15,13 +16,13 @@
 .index {
   padding: 38px 30px;
   background: #1e3b4d;
-  min-height: 100vh;
+  min-height: $content-max-height;
 }
 
 .empty {
   position: relative;
   background: #1e3b4d;
-  min-height: 100vh;
+  min-height: $content-max-height;
   text-align: center;
 }
 

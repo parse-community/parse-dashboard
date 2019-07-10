@@ -6,16 +6,23 @@
  * the root directory of this source tree.
  *
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
+$toolbar-height: 48px;
+$server-settings-content-height: calc(#{$content-max-height} - #{$toolbar-height});
+
 .content {
-  min-height: 100vh;
-  margin-top: 42px;
+  max-height: $server-settings-content-height;
+  margin-top: 48px;
+  overflow: hidden;
 }
 
 .iframeContent {
-  min-height: 100vh;
+  max-height: $server-settings-content-height;
+  min-height: $server-settings-content-height;
   width: 100%;
+  border: 0;
 
   iframe {
     outline: 5px solid red;

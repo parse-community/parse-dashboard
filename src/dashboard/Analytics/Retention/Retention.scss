@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/back4app.scss';
 @import 'stylesheets/globals.scss';
 
 $retentionCellHeight: 40px;
@@ -12,7 +13,7 @@ $contentPadding: 10px;
 
 .content {
   padding: (96px + $contentPadding) $contentPadding $contentPadding $contentPadding;
-  min-height: 100vh;
+  min-height: $content-max-height;
   position: relative;
   background: $white;
 }

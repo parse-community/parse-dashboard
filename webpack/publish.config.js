@@ -18,8 +18,6 @@ configuration.entry = {
 configuration.output.path = path.resolve('./Parse-Dashboard/public/bundles');
 configuration.output.filename = "[name].[chunkhash].js";
 
-const webpack = require('webpack');
-
 // Enable minification
 configuration.plugins.push(
   new HtmlWebpackPlugin({

@@ -18,8 +18,6 @@ configuration.entry = {
 };
 configuration.output.path = require('path').resolve('./production/bundles');
 
-const webpack = require('webpack');
-
 configuration.plugins.push(
   new HtmlWebpackExternalsPlugin({
     externals: [{

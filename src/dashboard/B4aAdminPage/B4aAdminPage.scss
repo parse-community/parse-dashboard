@@ -1,3 +1,4 @@
+@import 'stylesheets/back4app.scss';
 
 .elements-wrapper {
   display: flex;
@@ -19,12 +20,12 @@
 
 .loading {
   position: relative;
-  min-height: 100vh;
+  min-height: $content-max-height;
 }
 
 .admin-page {
   background-color: #f9f9f9;
-  min-height: 100vh;
+  min-height: $content-max-height;
   padding-top: 70px;
   overflow: hidden;
 }
