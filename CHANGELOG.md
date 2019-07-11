@@ -8,8 +8,8 @@
 ### 1.4.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.3...1.4.0)
 
-* Feature: GraphQL API playground (#1123), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
-* Fix: Can't switch (dropdown list) between servers #1045, thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
+* Feature: GraphQL API playground ([#1123](https://github.com/parse-community/parse-dashboard/pull/1123)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
+* Fix: Can't switch (dropdown list) between servers [#1045](https://github.com/parse-community/parse-dashboard/issues/1045) ([#1125](https://github.com/parse-community/parse-dashboard/pull/1125)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
 
 ### 1.3.3
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.2...1.3.3)
