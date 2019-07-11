@@ -1,9 +1,15 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.3...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.0...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 1.4.0
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.3...1.4.0)
+* Security Fix: see the [advisory](https://github.com/parse-community/parse-dashboard/network/alert/package-lock.json/lodash/open) for details. [22d748](https://github.com/parse-community/parse-dashboard/pull/1134/commits/22d748fdc1e95661dc39226f5f797dc8fb0e5c2f)
+* Feature: GraphQL API playground ([#1123](https://github.com/parse-community/parse-dashboard/pull/1123)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
+* Fix: Can't switch (dropdown list) between servers [#1045](https://github.com/parse-community/parse-dashboard/issues/1045) ([#1125](https://github.com/parse-community/parse-dashboard/pull/1125)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
 
 ### 1.3.3
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.2...1.3.3)
