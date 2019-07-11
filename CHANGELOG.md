@@ -7,7 +7,7 @@
 
 ### 1.4.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.3...1.4.0)
-
+* Security Fix: see: https://github.com/parse-community/parse-dashboard/network/alert/package-lock.json/lodash/open [22d748](https://github.com/parse-community/parse-dashboard/pull/1134/commits/22d748fdc1e95661dc39226f5f797dc8fb0e5c2f)
 * Feature: GraphQL API playground ([#1123](https://github.com/parse-community/parse-dashboard/pull/1123)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
 * Fix: Can't switch (dropdown list) between servers [#1045](https://github.com/parse-community/parse-dashboard/issues/1045) ([#1125](https://github.com/parse-community/parse-dashboard/pull/1125)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka)
 
