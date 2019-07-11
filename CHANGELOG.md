@@ -1,9 +1,13 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.0...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.1...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 1.4.1
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.0...1.4.1)
+* Fix: 1.4.0 failed to deploy to npm.  Reset credentials and trying again.
 
 ### 1.4.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.3...1.4.0)
