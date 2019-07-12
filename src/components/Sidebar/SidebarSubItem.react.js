@@ -21,6 +21,7 @@ let SidebarSubItem = ({ active, name, action, link, children, badge }) => {
               ? action
               : action.renderButton()
             : null}
+          {badge ? <B4aBadge {...badge} /> : null}
         </div>
         <div>
           {children}
