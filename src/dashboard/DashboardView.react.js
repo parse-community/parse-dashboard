@@ -88,11 +88,7 @@ export default class DashboardView extends React.Component {
 
     coreSubsections.push({
       name: 'Index Manager',
-      link: '/index',
-      badge: {
-        label: 'NEW',
-        color: 'green'
-      }
+      link: '/index'
     })
 
     // Show cloud code to all parse versions
@@ -138,7 +134,11 @@ export default class DashboardView extends React.Component {
 
     coreSubsections.push({
       name: 'API Console',
-      link: '/api_console'
+      link: '/api_console',
+      badgeParams: {
+        label: 'NEW',
+        color: 'green'
+      }
     });
 
     if (this.context.currentApp.migration) {
@@ -268,21 +268,13 @@ export default class DashboardView extends React.Component {
     appSidebarSections.push({
       name: 'Admin App',
       icon: 'admin-app',
-      link: '/admin',
-      badgeParams: {
-        label: 'NEW',
-        color: 'green'
-      }
+      link: '/admin'
     })
 
     appSidebarSections.push({
       name: 'App Templates',
       icon: 'icon-app-templates',
-      link: '/app-templates',
-      badgeParams: {
-        label: 'NEW',
-        color: 'green'
-      }
+      link: '/app-templates'
     })
 
     if (pushSubsections.length > 0) {
