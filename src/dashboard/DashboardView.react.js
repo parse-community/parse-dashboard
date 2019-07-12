@@ -135,7 +135,7 @@ export default class DashboardView extends React.Component {
     coreSubsections.push({
       name: 'API Console',
       link: '/api_console',
-      badgeParams: {
+      badge: {
         label: 'NEW',
         color: 'green'
       }
