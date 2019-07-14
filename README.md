@@ -18,8 +18,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     * [Environment variables](#environment-variables)
       * [Multiple apps](#multiple-apps)
       * [Single app](#single-app)
-  * [GraphQL Playground](#graphql-playground)    
   * [Managing Multiple Apps](#managing-multiple-apps)
+  * [GraphQL Playground](#graphql-playground)    
   * [App Icon Configuration](#app-icon-configuration)
   * [App Background Color Configuration](#app-background-color-configuration)
   * [Other Configuration Options](#other-configuration-options)
@@ -114,6 +114,29 @@ PARSE_DASHBOARD_SSL_CERT: "sslCert"
 PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
 ```
 
+## Managing Multiple Apps
+
+Managing multiple apps from the same dashboard is also possible. Simply add additional entries into the `parse-dashboard-config.json` file's `"apps"` array:
+
+```json
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse", // Self-hosted Parse Server
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App"
+    },
+    {
+      "serverURL": "http://localhost:1337/parse2", // Self-hosted Parse Server
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App 2"
+    }
+  ]
+}
+```
+
 ## GraphQL Playground
 
 Parse Dashboard has a built-in GraphQL Playground to play with the auto-generated [Parse GraphQL API](https://github.com/parse-community/parse-server#graphql).
@@ -163,29 +186,6 @@ You can also setup the GraphQL Playground in your `parse-dashboard-config.json` 
 After starting the dashboard, you can visit http://0.0.0.0:4040/apps/MyTestApp/api_console/graphql in your browser:
 
 ![Parse Dashboard GraphQL Playground](.github/graphql-playground.png)
-
-## Managing Multiple Apps
-
-Managing multiple apps from the same dashboard is also possible. Simply add additional entries into the `parse-dashboard-config.json` file's `"apps"` array:
-
-```json
-{
-  "apps": [
-    {
-      "serverURL": "http://localhost:1337/parse", // Self-hosted Parse Server
-      "appId": "myAppId",
-      "masterKey": "myMasterKey",
-      "appName": "My Parse Server App"
-    },
-    {
-      "serverURL": "http://localhost:1337/parse2", // Self-hosted Parse Server
-      "appId": "myAppId",
-      "masterKey": "myMasterKey",
-      "appName": "My Parse Server App 2"
-    }
-  ]
-}
-```
 
 ## App Icon Configuration
 
