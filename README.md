@@ -115,7 +115,7 @@ PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
 
 ## GraphQL Playground
 
-Parse Dashboard has a built-in GraphQL Playground to play with the auto generated [Parse GraphQL API](https://github.com/parse-community/parse-server#graphql).
+Parse Dashboard has a built-in GraphQL Playground to play with the auto-generated [Parse GraphQL API](https://github.com/parse-community/parse-server#graphql).
 
 You can setup the GraphQL Playground by passing the `--graphQLServerURL` option to the `parse-dashboard` CLI:
 
