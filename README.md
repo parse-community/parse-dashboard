@@ -18,6 +18,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     * [Environment variables](#environment-variables)
       * [Multiple apps](#multiple-apps)
       * [Single app](#single-app)
+  * [GraphQL Playground](#graphql-playground)    
   * [Managing Multiple Apps](#managing-multiple-apps)
   * [App Icon Configuration](#app-icon-configuration)
   * [App Background Color Configuration](#app-background-color-configuration)
