@@ -16,7 +16,7 @@ import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
 
 export default class GraphQLConsole extends Component {
   render() {
-    const { applicationId, graphQLServerURL, masterKey } = this.context.currentApp;
+    const { applicationId, clientKey, graphQLServerURL, masterKey } = this.context.currentApp;
     let content;
     if (!graphQLServerURL) {
       content = (
@@ -32,6 +32,7 @@ export default class GraphQLConsole extends Component {
     } else {
       const headers = {
         'X-Parse-Application-Id': applicationId,
+        'X-Parse-Client-Key': clientKey,
         'X-Parse-Master-Key': masterKey
       }
       content = (
