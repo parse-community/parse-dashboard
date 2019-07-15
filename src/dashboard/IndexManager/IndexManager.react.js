@@ -1,5 +1,4 @@
 import { ActionTypes }  from 'lib/stores/SchemaStore'
-import B4aBadge from 'components/B4aBadge/B4aBadge.react'
 import CategoryList from 'components/CategoryList/CategoryList.react'
 import DashboardView from 'dashboard/DashboardView.react'
 import EmptyState from 'components/EmptyState/EmptyState.react'
@@ -22,7 +21,6 @@ class IndexManager extends DashboardView {
 
     this.section = 'Core';
     this.subsection = 'Index Manager'
-    this.action = <B4aBadge label='NEW' color='green' />
 
     this.state = {
       loading: true,
