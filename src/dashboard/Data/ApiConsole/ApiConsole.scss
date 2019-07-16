@@ -23,8 +23,20 @@
 
 .content {
   position: relative;
-  min-height: 100vh;
-  padding-top: 96px;
+  height: calc(100vh - 96px);
+  margin-top: 96px;
+
+  // Workaround to override graphql-playground-react
+  // animations and query editor height
+  & > div > div {
+    opacity: 1;
+    transform: unset;
+    animation: unset;
+
+    & > div > :nth-child(2){
+      height: calc(100vh - 153px);
+    }
+  }
 }
 
 .empty {
