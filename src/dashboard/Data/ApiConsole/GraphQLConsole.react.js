@@ -32,8 +32,10 @@ export default class GraphQLConsole extends Component {
     } else {
       const headers = {
         'X-Parse-Application-Id': applicationId,
-        'X-Parse-Client-Key': clientKey,
         'X-Parse-Master-Key': masterKey
+      }
+      if (clientKey) {
+        headers['X-Parse-Client-Key'] = clientKey
       }
       content = (
         <Provider store={store}>
