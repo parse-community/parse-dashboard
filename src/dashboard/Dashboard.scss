@@ -8,6 +8,8 @@
 .content {
   margin-left: 300px;
   transition: margin-left 0.5s ease-in;
+  overflow: auto;
+  max-height: 100vh;
 }
 
 @media (max-width: 980px) {
