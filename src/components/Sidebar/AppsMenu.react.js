@@ -24,7 +24,7 @@ let AppsMenu = ({ apps, current, height, onSelect }) => (
         }
         return (
           <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow} onClick={onSelect.bind(null, current.slug)}>
-            {app.name}
+            <span>{app.name}</span>
             <AppBadge production={app.production} />
           </Link>
         );
