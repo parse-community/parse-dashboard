@@ -129,7 +129,7 @@ class SlowQueries extends TableView {
         let os = value['OS'];
         let version = value['App Display Version'];
         if (os === null || version === null) return;
-        if (appVersions.hasOwnProperty(os)) {
+        if (Object.prototype.hasOwnProperty.call(appVersions, os)) {
           appVersions[os].push(version);
         } else {
           appVersions[os] = [version];
