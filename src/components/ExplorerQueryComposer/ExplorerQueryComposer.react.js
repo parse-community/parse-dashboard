@@ -370,7 +370,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   renderFilter(filter, index=0) {
-    let type = Constraints[filter.op].hasOwnProperty('field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
+    let type = Object.prototype.hasOwnProperty.call(Constraints[filter.op], 'field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
 
     let constraintView = null;
     if (type === 'JSON') {

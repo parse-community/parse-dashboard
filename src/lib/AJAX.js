@@ -59,7 +59,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
         p.reject(this.responseText);
         return;
       }
-      if (json.hasOwnProperty('success') && json.success === false) {
+      if (Object.prototype.hasOwnProperty.call(json, 'success') && json.success === false) {
         p.reject(json);
       } else {
         p.resolve(json);

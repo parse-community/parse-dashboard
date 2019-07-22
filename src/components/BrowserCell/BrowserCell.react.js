@@ -65,7 +65,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
   } else if (type === 'ACL') {
     let pieces = [];
     let json = value.toJSON();
-    if (json.hasOwnProperty('*')) {
+    if (Object.prototype.hasOwnProperty.call(json, '*')) {
       if (json['*'].read && json['*'].write) {
         pieces.push('Public Read + Write');
       } else if (json['*'].read) {
