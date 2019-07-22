@@ -22,7 +22,7 @@ function changeField(schema, filters, index, newField) {
 function changeConstraint(schema, filters, index, newConstraint) {
   let field = filters.get(index).get('field');
   let compareType = schema[field].type;
-  if (Filters.Constraints[newConstraint].hasOwnProperty('field')) {
+  if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
     compareType = Filters.Constraints[newConstraint].field;
   }
   let newFilter = new Map({
@@ -59,7 +59,7 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist }) => {
         fields.sort();
         let constraints = Filters.FieldConstraints[schema[field].type].filter((c) => blacklist.indexOf(c) < 0);
         let compareType = schema[field].type;
-        if (Filters.Constraints[constraint].hasOwnProperty('field')) {
+        if (Object.prototype.hasOwnProperty.call(Filters.Constraints[constraint], 'field')) {
           compareType = Filters.Constraints[constraint].field;
         }
         return renderRow({
