@@ -209,13 +209,13 @@ class Explorer extends DashboardView {
             if (query.objectId) {
               // We have predefined custom query.
               serverResult = customQueries.find((customQuery) => {
-                return customQuery.objectId === query.objectId;
-              });
+                return customQuery[1].objectId === query.objectId;
+              })[1];
             } else if (query.localId) {
               // We're in the middle of custom query creation.
               serverResult = customQueries.find((customQuery) => {
-                return customQuery.localId === query.localId;
-              });
+                return customQuery[1].localId === query.localId;
+              })[1];
             }
             // If we can't find it in the result, let's use the old one.
             if (!serverResult) {
