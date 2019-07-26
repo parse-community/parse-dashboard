@@ -11,7 +11,7 @@ import { Router, Route } from 'react-router';
 import { createBrowserHistory } from 'history';
 const history = createBrowserHistory({});
 
-module.exports = (
+const routes = (
 <Router history={history}>
   <div>
     <Route path='/:component?' render={(props) => {
@@ -20,3 +20,5 @@ module.exports = (
   </div>
 </Router>
 );
+
+export default routes
