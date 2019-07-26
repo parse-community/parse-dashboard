@@ -11,12 +11,26 @@ import React from 'react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/ServerSettings/ServerSettings.scss'
 
-export default class ServerSettings extends DashboardView {
+const handleMessage = ({ data }) => {
+  // Reloads the page when receives a message with a string "reload"
+  if (data === 'reload') {
+    window.location.reload();
+  }
+}
 
+export default class ServerSettings extends DashboardView {
   constructor () {
     super();
     this.section = 'Server Settings';
     this.subsection = 'General';
+  }
+
+  componentWillMount() {
+    window.addEventListener('message', handleMessage);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('message');
   }
 
   renderContent () {
