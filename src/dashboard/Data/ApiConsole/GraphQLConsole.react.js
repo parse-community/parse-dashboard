@@ -29,7 +29,7 @@ class GraphQLConsole extends Component {
             in order to use the GraphQL API Console.'
             cta="Change Parse Version"
             action={() => {
-              this.props.history.push(`/apps/${slug}/server-settings/parse-server`)
+              this.props.history.push(`/apps/${slug}/server-settings/parse-version`)
             }}
             icon='info-solid' />
         </div>
