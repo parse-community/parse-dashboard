@@ -75,7 +75,8 @@ function SchemaStore(state, action) {
       let newField = {
         [action.name]: {
           type: action.columnType,
-          required: action.required
+          required: action.required,
+          defaultValue: action.defaultValue
         }
       };
       if (action.columnType === 'Pointer' || action.columnType === 'Relation') {
