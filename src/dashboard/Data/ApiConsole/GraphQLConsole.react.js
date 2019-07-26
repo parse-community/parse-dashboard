@@ -10,13 +10,15 @@ import PropTypes     from 'lib/PropTypes';
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import { Playground, store } from 'graphql-playground-react';
+import Button from 'components/Button/Button.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
+import { withRouter } from 'react-router';
 
-export default class GraphQLConsole extends Component {
+class GraphQLConsole extends Component {
   render() {
-    const { applicationId, graphQLServerURL, masterKey } = this.context.currentApp;
+    const { applicationId, graphQLServerURL, masterKey, slug } = this.context.currentApp;
     let content;
     if (!graphQLServerURL) {
       content = (
@@ -48,6 +50,13 @@ export default class GraphQLConsole extends Component {
         <Toolbar section='Core' subsection='GraphQL API Console' />
         <div className={styles.content}>
           {content}
+          <Button
+            value='Change Parse Version'
+            primary={true}
+            onClick={() => {
+              this.props.history.push(`/apps/${slug}/server-settings/parse-server`)
+            }}>
+          </Button>
         </div>
       </>
     );
@@ -57,3 +66,5 @@ export default class GraphQLConsole extends Component {
 GraphQLConsole.contextTypes = {
   currentApp: PropTypes.instanceOf(ParseApp)
 };
+
+export default withRouter(GraphQLConsole);

@@ -13,35 +13,24 @@ import styles from 'dashboard/ServerSettings/ServerSettings.scss'
 
 export default class ServerSettings extends DashboardView {
 
-  constructor (props) {
+  constructor () {
     super();
     this.section = 'Server Settings';
     this.subsection = 'General';
-
-    this.state = {
-      appId: props && props.params && props.params.appId
-    };
   }
 
   renderContent () {
-    let toolbar = (
-      <Toolbar
-        section='Server Settings'>
-      </Toolbar>
-    );
-    let content = (
-      this.state.appId ?
-        <div className={styles.content}>
-          <iframe src={`${b4aSettings.DASHBOARD_PATH}/apps/settings/${this.state.appId}?showCardsOnly=true`} className={styles.iframeContent}>
-          </iframe>
-        </div> :
-        <div>Loading ...</div>
-    );
+    const { appId, targetPage } = this.props.params;
+    const iframeSrc = targetPage
+      ? `${b4aSettings.DASHBOARD_PATH}/classic#/wizard/${targetPage}/${appId}`
+      : `${b4aSettings.DASHBOARD_PATH}/apps/settings/${appId}?showCardsOnly=true`
 
     return (
       <div>
-        {content}
-        {toolbar}
+        <div className={styles.content}>
+          <iframe src={iframeSrc} className={styles.iframeContent} />
+        </div>
+        <Toolbar section='Server Settings' />
       </div>
     );
   }
