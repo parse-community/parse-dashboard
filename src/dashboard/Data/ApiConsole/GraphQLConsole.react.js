@@ -10,7 +10,6 @@ import PropTypes     from 'lib/PropTypes';
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import { Playground, store } from 'graphql-playground-react';
-import Button from 'components/Button/Button.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
@@ -28,6 +27,10 @@ class GraphQLConsole extends Component {
             description='Please update Parse-Server to version equal or above
             3.5.0 and define the "graphQLServerURL" on your app configuration
             in order to use the GraphQL API Console.'
+            cta="Change Parse Version"
+            action={() => {
+              this.props.history.push(`/apps/${slug}/server-settings/parse-server`)
+            }}
             icon='info-solid' />
         </div>
       );
@@ -50,13 +53,6 @@ class GraphQLConsole extends Component {
         <Toolbar section='Core' subsection='GraphQL API Console' />
         <div className={styles.content}>
           {content}
-          <Button
-            value='Change Parse Version'
-            primary={true}
-            onClick={() => {
-              this.props.history.push(`/apps/${slug}/server-settings/parse-server`)
-            }}>
-          </Button>
         </div>
       </>
     );
