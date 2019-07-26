@@ -12,6 +12,8 @@ import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 import TextInput          from 'components/TextInput/TextInput.react';
+import Toggle             from 'components/Toggle/Toggle.react';
+import styles             from 'dashboard/Data/Browser/Browser.scss';
 import {
   DataTypes,
   SpecialClasses
@@ -27,7 +29,8 @@ export default class AddColumnDialog extends React.Component {
     this.state = {
       type: 'String',
       target: props.classes[0],
-      name: ''
+      name: '',
+      required: false
     };
   }
 
@@ -74,13 +77,13 @@ export default class AddColumnDialog extends React.Component {
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         onConfirm={() => {
-          this.props.onConfirm(this.state.type, this.state.name, this.state.target);
+          this.props.onConfirm(this.state);
         }}>
         <Field
           label={
             <Label
               text='What type of data do you want to store?' />
-            }
+          }
           input={typeDropdown} />
         {this.state.type === 'Pointer' || this.state.type === 'Relation' ?
           <Field
@@ -89,6 +92,10 @@ export default class AddColumnDialog extends React.Component {
         <Field
           label={<Label text='What should we call it?' description={'Don\u2019t use any special characters, and start your name with a letter.'} />}
           input={<TextInput placeholder='Give it a good name...' value={this.state.name} onChange={(name) => this.setState({ name })} />}/>
+        <Field
+          label={<Label text='Is it a required field?' description={'When true this field must be filled when a new object is created'} />}
+          input={<Toggle value={this.state.required} type={Toggle.Types.YES_NO} onChange={(required) => this.setState({ required })}  additionalStyles={{ margin: '0px' }}/>}
+          className={styles.addColumnToggleWrapper}/>
       </Modal>
     );
   }

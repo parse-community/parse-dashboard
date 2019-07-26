@@ -258,12 +258,13 @@ class Browser extends DashboardView {
     });
   }
 
-  addColumn(type, name, target) {
+  addColumn({ type, name, target, required }) {
     let payload = {
       className: this.props.params.className,
       columnType: type,
       name: name,
-      targetClass: target
+      targetClass: target,
+      required
     };
     this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).finally(() => {
       this.setState({ showAddColumnDialog: false });
