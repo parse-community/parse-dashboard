@@ -17,8 +17,8 @@ import DateTimeInput      from 'components/DateTimeInput/DateTimeInput.react';
 import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
 import FileInput          from 'components/FileInput/FileInput.react';
 import styles             from 'dashboard/Data/Browser/Browser.scss';
-import Parse from 'parse'
-import validateNumeric from 'lib/validateNumeric';
+import Parse              from 'parse'
+import validateNumeric    from 'lib/validateNumeric';
 import {
   DataTypes,
   SpecialClasses
@@ -39,22 +39,45 @@ export default class AddColumnDialog extends React.Component {
       defaultValue: undefined,
       isDefaultValueValid: true
     };
-    console.log('props', this)
     this.renderDefaultValueInput = this.renderDefaultValueInput.bind(this)
     this.handleDefaultValueChange = this.handleDefaultValueChange.bind(this)
   }
 
   valid() {
-    if (this.state.name.length === 0) {
-      return false;
+    const { name, isDefaultValueValid } = this.state
+
+    return (
+      name &&
+      name.length > 0 &&
+      validColumnName(this.state.name) &&
+      this.props.currentColumns.indexOf(this.state.name) === -1 &&
+      isDefaultValueValid
+    )
+  }
+
+  async handlePointer(objectId, target) {
+    const targetClass = new Parse.Object.extend(target)
+    const query = new Parse.Query(targetClass)
+    const result = await query.get(objectId)
+    return result.toPointer()
+  }
+
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  async handleFile(file) {
+    if (file) {
+      let base64 = await this.getBase64(file);
+      const parseFile = new Parse.File(file.name, { base64 });
+      await parseFile.save();
+      return parseFile
     }
-    if (!validColumnName(this.state.name)) {
-      return false;
-    }
-    if (this.props.currentColumns.indexOf(this.state.name) > -1) {
-      return false;
-    }
-    return true;
   }
 
   renderClassDropdown() {
@@ -74,37 +97,38 @@ export default class AddColumnDialog extends React.Component {
 
     try {
       switch (type) {
+        case 'String':
+          formattedValue = defaultValue.toString()
+          break
         case 'Number':
           if (!validateNumeric(defaultValue)) throw 'Invalid number'
-          formattedValue = defaultValue
+          formattedValue = +defaultValue
           break
         case 'Array':
         case 'Object':
           formattedValue = JSON.parse(defaultValue)
           break
         case 'Date':
-          formattedValue = new Date(defaultValue)
+          formattedValue = { __type: 'Date', iso: new Date(defaultValue) }
           break
         case 'Polygon':
-          formattedValue = new Parse.Polygon(defaultValue)
+          formattedValue = new Parse.Polygon(JSON.parse(defaultValue))
           break
         case 'GeoPoint':
           formattedValue = new Parse.GeoPoint(defaultValue)
           break;
         case 'Pointer':
-          const targetClass = new Parse.Object.extend(target)
-          const query = new Parse.Query(targetClass)
-          const result = await query.get(defaultValue)
-          formattedValue = result.toPointer()
+          formattedValue = await this.handlePointer(defaultValue, target)
           break
         case 'Boolean':
           formattedValue = (defaultValue === 'True' ? true : (defaultValue === 'False' ? false : undefined))
           break
-        default:
-          formattedValue = defaultValue
+        case 'File':
+          formattedValue = await this.handleFile(defaultValue)
+          break
       }
-    } catch(e) {
-      isDefaultValueValid = false
+    } catch (e) {
+      isDefaultValueValid = defaultValue === ''
     }
     return await this.setState({ defaultValue: formattedValue, isDefaultValueValid })
   }
@@ -116,18 +140,29 @@ export default class AddColumnDialog extends React.Component {
       case 'Object':
       case 'Polygon':
       case 'GeoPoint':
-          return <TextInput placeholder='Set here a default value' multiline={true} onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+        return <TextInput
+          placeholder='Set here a default value'
+          multiline={true}
+          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
       case 'Number':
       case 'String':
       case 'Pointer':
-        return <TextInput placeholder='Set here a default value' onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+        return <TextInput
+          placeholder={type === 'Pointer' ? 'Set here a valid object ID' : 'Set here a default value'}
+          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
       case 'Date':
-        return <DateTimeInput onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+        return <DateTimeInput
+          value={this.state.defaultValue && this.state.defaultValue.__type === 'Date' ? this.state.defaultValue.iso : undefined}
+          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
       case 'Boolean':
         return <SegmentSelect
-        values={['False', 'None', 'True']}
-        current={(this.state.defaultValue ? 'True' : (this.state.defaultValue === false ? 'False' : 'None'))}
-        onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+          values={['False', 'None', 'True']}
+          current={(this.state.defaultValue ? 'True' : (this.state.defaultValue === false ? 'False' : 'None'))}
+          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+      case 'File':
+        return <FileInput
+          value={this.defaultValue ? this.defaultValue._name : ''}
+          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
     }
   }
 
@@ -136,7 +171,7 @@ export default class AddColumnDialog extends React.Component {
     let typeDropdown = (
       <Dropdown
         value={this.state.type}
-        onChange={(type) => this.setState({ type: type })}>
+        onChange={(type) => this.setState({ type: type, defaultValue: undefined, required: false })}>
         {DataTypes.map((t) => <Option key={t} value={t}>{t}</Option>)}
       </Dropdown>
     );
@@ -147,7 +182,7 @@ export default class AddColumnDialog extends React.Component {
         iconSize={30}
         title='Add a new column'
         subtitle='Store another type of data in this class.'
-        disabled={!this.valid() || !this.state.isDefaultValueValid}
+        disabled={!this.valid()}
         confirmText='Add column'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
@@ -167,7 +202,7 @@ export default class AddColumnDialog extends React.Component {
             input={this.renderClassDropdown()} /> : null}
         <Field
           label={<Label text='What should we call it?' description={'Don\u2019t use any special characters, and start your name with a letter.'} />}
-          input={<TextInput placeholder='Give it a good name...' value={this.state.name} onChange={(name) => this.setState({ name })} />}/>
+          input={<TextInput placeholder='Give it a good name...' value={this.state.name} onChange={(name) => this.setState({ name })} />} />
         {
           this.state.type !== 'Relation' ?
             <>
@@ -177,7 +212,7 @@ export default class AddColumnDialog extends React.Component {
                 className={styles.addColumnToggleWrapper} />
               <Field
                 label={<Label text='Is it a required field?' description={'When true this field must be filled when a new object is created'} />}
-                input={<Toggle value={this.state.required} type={Toggle.Types.YES_NO} onChange={(required) => this.setState({ required })}  additionalStyles={{ margin: '0px' }}/>}
+                input={<Toggle value={this.state.required} type={Toggle.Types.YES_NO} onChange={(required) => this.setState({ required })} additionalStyles={{ margin: '0px' }} />}
                 className={styles.addColumnToggleWrapper} />
             </>
             : null
