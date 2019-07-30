@@ -993,6 +993,7 @@ class Browser extends DashboardView {
           onConfirm={this.createClass} />
       );
     } else if (this.state.showAddColumnDialog) {
+      const { currentApp = {} } = this.context;
       let currentColumns = [];
       classes.get(className).forEach((field, name) => {
         currentColumns.push(name);
@@ -1002,7 +1003,8 @@ class Browser extends DashboardView {
           currentColumns={currentColumns}
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
-          onConfirm={this.addColumn} />
+          onConfirm={this.addColumn}
+          parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
       );
     } else if (this.state.showRemoveColumnDialog) {
       let currentColumns = this.getClassColumns(className).map(column => column.name);

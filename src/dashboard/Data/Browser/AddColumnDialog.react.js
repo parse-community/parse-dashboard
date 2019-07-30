@@ -5,19 +5,21 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+
+import Parse              from 'parse'
+import React              from 'react';
+import semver             from 'semver';
 import Dropdown           from 'components/Dropdown/Dropdown.react';
 import Field              from 'components/Field/Field.react';
 import Label              from 'components/Label/Label.react';
 import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';
-import React              from 'react';
 import TextInput          from 'components/TextInput/TextInput.react';
 import Toggle             from 'components/Toggle/Toggle.react';
 import DateTimeInput      from 'components/DateTimeInput/DateTimeInput.react';
 import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
 import FileInput          from 'components/FileInput/FileInput.react';
 import styles             from 'dashboard/Data/Browser/Browser.scss';
-import Parse              from 'parse'
 import validateNumeric    from 'lib/validateNumeric';
 import {
   DataTypes,
@@ -39,6 +41,8 @@ export default class AddColumnDialog extends React.Component {
       defaultValue: undefined,
       isDefaultValueValid: true
     };
+
+    this.parseServerVersion = this.props.parseServerVersion
     this.renderDefaultValueInput = this.renderDefaultValueInput.bind(this)
     this.handleDefaultValueChange = this.handleDefaultValueChange.bind(this)
   }
@@ -204,6 +208,13 @@ export default class AddColumnDialog extends React.Component {
           label={<Label text='What should we call it?' description={'Don\u2019t use any special characters, and start your name with a letter.'} />}
           input={<TextInput placeholder='Give it a good name...' value={this.state.name} onChange={(name) => this.setState({ name })} />} />
         {
+          /*
+            Allow include require fields and default values if the parse-server
+            version is greater than or equal 3.7.0, that is the minimum version
+            support this feature and check if the field is not a relation
+          */
+          semver.valid(this.parseServerVersion) &&
+          semver.gte(this.parseServerVersion, '3.7.0') &&
           this.state.type !== 'Relation' ?
             <>
               <Field
