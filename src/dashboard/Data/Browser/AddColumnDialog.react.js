@@ -154,7 +154,7 @@ export default class AddColumnDialog extends React.Component {
       case 'String':
       case 'Pointer':
         return <TextInput
-          placeholder={type === 'Pointer' ? 'Set here a valid object ID' : 'Set here a default value'}
+          placeholder={type === 'Pointer' ? 'Set a valid object ID here' : 'Set a default value here'}
           onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
       case 'Date':
         return <DateTimeInput
@@ -219,11 +219,11 @@ export default class AddColumnDialog extends React.Component {
           this.state.type !== 'Relation' ?
             <>
               <Field
-                label={<Label text='What is the default value?' description='If no value is specified for this column, it will be filled with its default value' />}
+                label={<Label text='What is the default value?' description='If no value is specified for this column, it will be filled with its default value.' />}
                 input={this.renderDefaultValueInput()}
                 className={styles.addColumnToggleWrapper} />
               <Field
-                label={<Label text='Is it a required field?' description={'When true this field must be filled when a new object is created'} />}
+                label={<Label text='Is it a required field?' description={'When true this field must be filled when a new object is created.'} />}
                 input={<Toggle value={this.state.required} type={Toggle.Types.YES_NO} onChange={(required) => this.setState({ required })} additionalStyles={{ margin: '0px' }} />}
                 className={styles.addColumnToggleWrapper} />
             </>
