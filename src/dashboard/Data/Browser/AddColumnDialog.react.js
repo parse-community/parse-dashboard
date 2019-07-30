@@ -115,7 +115,7 @@ export default class AddColumnDialog extends React.Component {
           formattedValue = new Parse.Polygon(JSON.parse(defaultValue))
           break
         case 'GeoPoint':
-          formattedValue = new Parse.GeoPoint(defaultValue)
+          formattedValue = new Parse.GeoPoint(JSON.parse(defaultValue))
           break;
         case 'Pointer':
           formattedValue = await this.handlePointer(defaultValue, target)
