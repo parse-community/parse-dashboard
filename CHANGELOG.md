@@ -1,9 +1,13 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.1...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.3...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 1.4.3
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.2...1.4.3)
+* Fix 1.4.2 release.
 
 ### 1.4.2
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.1...1.4.2)
