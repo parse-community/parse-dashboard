@@ -323,8 +323,8 @@ export default class Dashboard extends React.Component {
           )} />
           <Route path={ match.path + '/admin' } component={B4aAdminPage} />
           <Route path={ match.path + '/app-templates' } component={B4aAppTemplates} />
-          <Route path={ match.path + '/server-settings' } render={() => (
-            <ServerSettings params={match.params} />
+          <Route path={ match.path + '/server-settings/:targetPage?' } render={(props) => (
+            <ServerSettings params={props.match.params} />
           )} />
           <Route exact path={ match.path + '/index' } render={props => <IndexManager {...props} params={props.match.params} />} />
           <Route path={ match.path + '/index/:className'} render={props => <IndexManager {...props} params={props.match.params} />} />

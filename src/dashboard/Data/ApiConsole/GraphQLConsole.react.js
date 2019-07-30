@@ -13,10 +13,11 @@ import { Playground, store } from 'graphql-playground-react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
+import { withRouter } from 'react-router';
 
-export default class GraphQLConsole extends Component {
+class GraphQLConsole extends Component {
   render() {
-    const { applicationId, graphQLServerURL, masterKey } = this.context.currentApp;
+    const { applicationId, graphQLServerURL, masterKey, slug } = this.context.currentApp;
     let content;
     if (!graphQLServerURL) {
       content = (
@@ -26,6 +27,10 @@ export default class GraphQLConsole extends Component {
             description='Please update Parse-Server to version equal or above
             3.5.0 and define the "graphQLServerURL" on your app configuration
             in order to use the GraphQL API Console.'
+            cta="Change Parse Version"
+            action={() => {
+              this.props.history.push(`/apps/${slug}/server-settings/parse-version`)
+            }}
             icon='info-solid' />
         </div>
       );
@@ -57,3 +62,5 @@ export default class GraphQLConsole extends Component {
 GraphQLConsole.contextTypes = {
   currentApp: PropTypes.instanceOf(ParseApp)
 };
+
+export default withRouter(GraphQLConsole);
