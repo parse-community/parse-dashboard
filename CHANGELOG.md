@@ -11,14 +11,14 @@
 
 ### 1.4.2
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.1...1.4.2)
-* Feature: Include count CLP option (#1180), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
-* Fix: AppsMenu broken layout when app name is too long (#1164), thanks to [Lucas Alencar](https://github.com/alencarlucas)
-* Fix: getFileName lib to display correctly the filename (#1154), thanks to [Yago Tomé](https://github.com/yagotome)
-* Fix: Scroll is not working properly (#1151), thanks to [Lucas Alencar](https://github.com/alencarlucas)
-* Fix: AppsMenu not closing after selecting app (#1146), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
-* Feature: Add client key into GraphQL console by default (#1142), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
-* Fix: GraphQL console headers menu not visible (#1141), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
-* Fix: project not installing due to package-lock (#1143), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* Feature: Include count CLP option ([#1180](https://github.com/parse-community/parse-dashboard/pull/1180)), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
+* Fix: AppsMenu broken layout when app name is too long ([#1164](https://github.com/parse-community/parse-dashboard/pull/1164)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* Fix: getFileName lib to display correctly the filename ([#1154](https://github.com/parse-community/parse-dashboard/pull/1154)), thanks to [Yago Tomé](https://github.com/yagotome)
+* Fix: Scroll is not working properly ([#1151](https://github.com/parse-community/parse-dashboard/pull/1151)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* Fix: AppsMenu not closing after selecting app ([#1146](https://github.com/parse-community/parse-dashboard/pull/1146)), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
+* Feature: Add client key into GraphQL console by default ([#1142](https://github.com/parse-community/parse-dashboard/pull/1142)), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
+* Fix: GraphQL console headers menu not visible ([#1141](https://github.com/parse-community/parse-dashboard/pull/1141)), thanks to [Douglas Muroaka](https://github.com/douglasmuraoka)
+* Fix: project not installing due to package-lock ([#1143](https://github.com/parse-community/parse-dashboard/pull/1143)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
 
 ### 1.4.1
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.0...1.4.1)
