@@ -41,8 +41,6 @@ export default class AddColumnDialog extends React.Component {
       defaultValue: undefined,
       isDefaultValueValid: true
     };
-
-    this.parseServerVersion = this.props.parseServerVersion
     this.renderDefaultValueInput = this.renderDefaultValueInput.bind(this)
     this.handleDefaultValueChange = this.handleDefaultValueChange.bind(this)
   }
@@ -109,7 +107,11 @@ export default class AddColumnDialog extends React.Component {
           formattedValue = +defaultValue
           break
         case 'Array':
+          if (!Array.isArray(JSON.parse(defaultValue))) throw 'Invalid array'
+          formattedValue = JSON.parse(defaultValue)
+          break
         case 'Object':
+          if (typeof JSON.parse(defaultValue) !== 'object' || Array.isArray(JSON.parse(defaultValue))) throw 'Invalid object'
           formattedValue = JSON.parse(defaultValue)
           break
         case 'Date':
@@ -191,7 +193,6 @@ export default class AddColumnDialog extends React.Component {
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         onConfirm={() => {
-          console.log(this.state)
           this.props.onConfirm(this.state);
         }}>
         <Field
@@ -213,8 +214,8 @@ export default class AddColumnDialog extends React.Component {
             version is greater than or equal 3.7.0, that is the minimum version
             support this feature and check if the field is not a relation
           */
-          semver.valid(this.parseServerVersion) &&
-          semver.gte(this.parseServerVersion, '3.7.0') &&
+          semver.valid(this.props.parseServerVersion) &&
+          semver.gte(this.props.parseServerVersion, '3.7.0') &&
           this.state.type !== 'Relation' ?
             <>
               <Field
