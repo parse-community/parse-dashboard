@@ -30,7 +30,7 @@ export default class ServerSettings extends DashboardView {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('message');
+    window.removeEventListener('message', handleMessage);
   }
 
   renderContent () {
