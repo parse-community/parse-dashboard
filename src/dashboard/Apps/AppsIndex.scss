@@ -129,6 +129,7 @@
 }
 
 .appname {
+  @include DosisFont;
   @include ellipsis();
   width: 100%;
   display: inline-block;
