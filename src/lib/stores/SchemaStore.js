@@ -74,7 +74,9 @@ function SchemaStore(state, action) {
     case ActionTypes.ADD_COLUMN:
       let newField = {
         [action.name]: {
-          type: action.columnType
+          type: action.columnType,
+          required: action.required,
+          defaultValue: action.defaultValue
         }
       };
       if (action.columnType === 'Pointer' || action.columnType === 'Relation') {
