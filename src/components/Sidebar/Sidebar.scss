@@ -70,7 +70,7 @@ $footerHeight: 36px;
 }
 
 .footer {
-  @include NotoSansFont;
+  @include DosisFont;
   position: absolute;
   background: #05283c;
   height: $footerHeight;
@@ -255,6 +255,7 @@ $footerHeight: 36px;
 
   > span {
     vertical-align: top;
+    @include DosisFont;
   }
 
   > svg {
