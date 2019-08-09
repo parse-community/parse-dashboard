@@ -61,7 +61,7 @@
     "react": "16.9.0",
     "react-dnd": "8.0.3",
     "react-dnd-html5-backend": "8.0.3",
-    "react-dom": "16.8.6",
+    "react-dom": "16.9.0",
     "react-helmet": "5.2.1",
     "react-redux": "5.1.1",
     "react-router": "5.0.1",
