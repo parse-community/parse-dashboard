@@ -79,7 +79,7 @@
     "babel-eslint": "10.0.2",
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "core-js": "2.6.5",
+    "core-js": "3.2.0",
     "css-loader": "3.2.0",
     "eslint": "6.1.0",
     "eslint-plugin-jest": "22.15.0",
