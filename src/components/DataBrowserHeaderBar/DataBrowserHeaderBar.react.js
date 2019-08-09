@@ -10,11 +10,9 @@ import DragHandle          from 'components/DragHandle/DragHandle.react';
 import HTML5Backend        from 'react-dnd-html5-backend';
 import React               from 'react';
 import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
-import { DragDropContext } from 'react-dnd';
+import { DndProvider }     from 'react-dnd'
 
-export default
-@DragDropContext(HTML5Backend)
-class DataBrowserHeaderBar extends React.Component {
+export default class DataBrowserHeaderBar extends React.Component {
   render() {
     let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits } = this.props;
     let elements = [
@@ -76,6 +74,10 @@ class DataBrowserHeaderBar extends React.Component {
       )
     );
 
-    return <div className={styles.bar}>{elements}</div>;
+    return (
+      <DndProvider backend={HTML5Backend}>
+        <div className={styles.bar}>{elements}</div>
+      </DndProvider>
+    )
   }
 }
