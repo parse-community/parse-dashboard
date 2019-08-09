@@ -66,6 +66,7 @@
     "react-redux": "5.1.1",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
+    "regenerator-runtime": "^0.13.3",
     "semver": "^6.3.0"
   },
   "devDependencies": {
@@ -73,13 +74,12 @@
     "@babel/plugin-proposal-decorators": "7.4.4",
     "@babel/plugin-transform-regenerator": "7.4.5",
     "@babel/plugin-transform-runtime": "7.5.5",
-    "@babel/polyfill": "7.4.4",
     "@babel/preset-env": "7.5.5",
     "@babel/preset-react": "7.0.0",
     "babel-eslint": "10.0.2",
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "core-js": "2.6.5",
+    "core-js": "3.2.0",
     "css-loader": "3.2.0",
     "eslint": "6.1.0",
     "eslint-plugin-jest": "22.15.0",
