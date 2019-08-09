@@ -93,7 +93,7 @@
     "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.0.0",
     "puppeteer": "1.19.0",
-    "react-test-renderer": "16.8.6",
+    "react-test-renderer": "16.9.0",
     "request": "2.87.0",
     "request-promise": "4.2.4",
     "sass-loader": "7.1.0",
