@@ -23,11 +23,11 @@ class GraphQLConsole extends Component {
   }
 
   render() {
-    const { applicationId, graphQLServerURL, masterKey, slug } = this.context.currentApp;
+    const { applicationId, clientKey, graphQLServerURL, masterKey, slug } = this.context.currentApp;
     let content;
     if (!graphQLServerURL) {
       content = (
-        <div>
+        <div className={styles.empty}>
           <EmptyState
             title='GraphQL API Console'
             description='Please update Parse-Server to version equal or above
@@ -44,6 +44,9 @@ class GraphQLConsole extends Component {
       const headers = {
         'X-Parse-Application-Id': applicationId,
         'X-Parse-Master-Key': masterKey
+      }
+      if (clientKey) {
+        headers['X-Parse-Client-Key'] = clientKey
       }
       content = (
         <Provider store={store}>

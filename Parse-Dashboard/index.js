@@ -16,6 +16,7 @@ const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
 program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
 program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');
+program.option('--graphQLServerURL [graphQLServerURL]', 'the GraphQL server url of the app you would like to manage.');
 program.option('--dev', 'Enable development mode. This will disable authentication and allow non HTTPS connections. DO NOT ENABLE IN PRODUCTION SERVERS');
 program.option('--appName [appName]', 'the name of the app you would like to manage. Optional.');
 program.option('--config [config]', 'the path to the configuration file');
@@ -47,6 +48,7 @@ let explicitConfigFileProvided = !!program.config;
 let configFile = null;
 let configFromCLI = null;
 let configServerURL = program.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
+let configGraphQLServerURL = program.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
 let configMasterKey = program.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
 let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
 let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
@@ -87,6 +89,9 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
         ]
       }
     };
+    if (configGraphQLServerURL) {
+      configFromCLI.data.apps[0].graphQLServerURL = configGraphQLServerURL;
+    }
     if (configUserId && configUserPassword) {
       configFromCLI.data.users = [
         {
@@ -104,8 +109,8 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   };
 } else {
   configFile = program.config;
-  if (program.appId || program.serverURL || program.masterKey || program.appName) {
-    console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
+  if (program.appId || program.serverURL || program.masterKey || program.appName || program.graphQLServerURL) {
+    console.log('You must provide either a config file or other CLI options (appName, appId, masterKey, serverURL, and graphQLServerURL); not both.');
     process.exit(3);
   }
 }
