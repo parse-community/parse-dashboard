@@ -62,7 +62,7 @@
 }
 
 .footer {
-  @include DosisFont;
+  @include NotoSansFont;
   position: absolute;
   background: #094162;
   height: 61px;
@@ -299,7 +299,6 @@
 
   > span {
     vertical-align: top;
-    @include DosisFont;
   }
 
   > svg {
