@@ -13,9 +13,9 @@ import { Playground, store } from 'graphql-playground-react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
+import { withRouter } from 'react-router';
 
-
-export default class GraphQLConsole extends Component {
+class GraphQLConsole extends Component {
 
   componentDidMount () {
     if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.atGraphQLConsole === 'function')
@@ -50,7 +50,9 @@ export default class GraphQLConsole extends Component {
       }
       content = (
         <Provider store={store}>
-          <Playground endpoint={graphQLServerURL} headers={headers} />
+          <div className={styles.playgroundContainer}>
+            <Playground endpoint={graphQLServerURL} headers={headers} />
+          </div>
         </Provider>
       );
     }
@@ -69,3 +71,5 @@ export default class GraphQLConsole extends Component {
 GraphQLConsole.contextTypes = {
   currentApp: PropTypes.instanceOf(ParseApp)
 };
+
+export default withRouter(GraphQLConsole);
