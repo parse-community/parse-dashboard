@@ -19,6 +19,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
       * [Multiple apps](#multiple-apps)
       * [Single app](#single-app)
   * [Managing Multiple Apps](#managing-multiple-apps)
+  * [GraphQL Playground](#graphql-playground)    
   * [App Icon Configuration](#app-icon-configuration)
   * [App Background Color Configuration](#app-background-color-configuration)
   * [Other Configuration Options](#other-configuration-options)
@@ -135,6 +136,56 @@ Managing multiple apps from the same dashboard is also possible. Simply add addi
   ]
 }
 ```
+
+## GraphQL Playground
+
+Parse Dashboard has a built-in GraphQL Playground to play with the auto-generated [Parse GraphQL API](https://github.com/parse-community/parse-server#graphql).
+
+You can setup the GraphQL Playground by passing the `--graphQLServerURL` option to the `parse-dashboard` CLI:
+
+```
+parse-dashboard --dev --appId yourAppId --masterKey yourMasterKey --serverURL "https://example.com/parse" --graphQLServerURL "https://example.com/graphql" --appName optionalName
+```
+
+The `graphQLServerURL` option is also available through an environment variable called `PARSE_DASHBOARD_GRAPHQL_SERVER_URL`:
+
+```
+HOST: "0.0.0.0"
+PORT: "4040"
+MOUNT_PATH: "/"
+PARSE_DASHBOARD_SERVER_URL: "http://localhost:1337/parse"
+PARSE_DASHBOARD_GRAPHQL_URL: "http://localhost:1337/graphql"
+PARSE_DASHBOARD_MASTER_KEY: "myMasterKey"
+PARSE_DASHBOARD_APP_ID: "myAppId"
+PARSE_DASHBOARD_APP_NAME: "MyApp"
+```
+
+You can also setup the GraphQL Playground in your `parse-dashboard-config.json` file:
+
+```json
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "graphQLServerURL": "http://localhost:1337/graphql",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App"
+    },
+    {
+      "serverURL": "http://localhost:1337/parse2",
+      "graphQLServerURL": "http://localhost:1337/graphql2",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "My Parse Server App 2"
+    }
+  ]
+}
+```
+
+After starting the dashboard, you can visit http://0.0.0.0:4040/apps/MyTestApp/api_console/graphql in your browser:
+
+![Parse Dashboard GraphQL Playground](.github/graphql-playground.png)
 
 ## App Icon Configuration
 

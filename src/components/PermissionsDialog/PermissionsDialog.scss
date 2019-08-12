@@ -7,12 +7,24 @@
  */
 @import 'stylesheets/globals.scss';
 
+$labelWidth: 330px;
+$colWidth: 82px;
+$writeColWidth: 92px;
+$addFieldColWidth: 118px;
+$deleteColWidth: 44px;
+
+$sumReadColsWidth: calc(3 * #{$colWidth});
+$sumWriteColsWidth: calc(3 * #{$writeColWidth});
+
+$permissionsDialogWidth: calc(#{$labelWidth} + (2 * #{$colWidth}) + #{$deleteColWidth});
+$permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth} + #{$addFieldColWidth} + #{$deleteColWidth});
+
 .dialog {
   @include modalAnimation();
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 540px;
+  width: $permissionsDialogWidth;
   background: white;
   border-radius: 5px;
   overflow: hidden;
@@ -54,7 +66,7 @@
 
 .level {
   height: 50px;
-  width: 540px;
+  width: $permissionsDialogWidth;
   background: #0E69A1;
   position: relative;
   color: white;
@@ -82,26 +94,17 @@
   overflow-x: hidden;
 }
 
-.second {
-  width: 82px;
+.second, .third, .fourth {
+  width: $colWidth;
 }
-.third {
-  width: 82px;
-}
-.fourth {
-  width: 92px;
-}
-.fifth {
-  width: 92px;
-}
-.sixth {
-  width: 92px;
-}
-.seventh {
-  width: 118px;
+.fifth, .sixth, .seventh {
+  width: $writeColWidth;
 }
 .eighth {
-  width: 44px;
+  width: $addFieldColWidth;
+}
+.nineth {
+  width: $deleteColWidth;
 }
 
 .table {
@@ -116,16 +119,16 @@
     background: rgba(0,0,40,0.03);
 
     &.second {
-      left: 330px;
+      left: $labelWidth;
     }
     &.fourth {
-      left: 494px;
+      left: calc(#{$labelWidth} + (2 * #{$colWidth}));
     }
     &.sixth {
-      left: 678px;
+      left: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$writeColWidth});
     }
     &.eighth {
-      left: 888px;
+      left: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth});
     }
   }
 }
@@ -159,7 +162,7 @@
   transition: height .3s cubic-bezier(0.645,0.045,0.355,1) .5s;
   background: #56AEE3;
   height: 0;
-  padding-left: 330px;
+  padding-left: $labelWidth;
   text-align: center;
   color: white;
   font-size: 12px;
@@ -174,23 +177,23 @@
 }
 
 .readHeader {
-  width: 164px;
+  width: $sumReadColsWidth;
 }
 
 .writeHeader {
-  width: 276px;
+  width: $sumWriteColsWidth;
 }
 
 .addHeader {
-  width: 118px;
+  width: $addFieldColWidth;
   border-right: 1px solid white;
 }
 
 .advanced {
-  width: 930px;
+  width: $permissionsDialogMaxWidth;
 
   .level {
-    width: 930px;
+    width: $permissionsDialogMaxWidth;
   }
 
   .headers {
@@ -218,7 +221,7 @@
 
 .label {
   display: inline-block;
-  width: 330px;
+  width: $labelWidth;
   padding: 0 20px;
 }
 .check {
@@ -233,12 +236,12 @@
 
 .pointerRead {
   display: inline-block;
-  width: 164px;
+  width: $sumReadColsWidth;
   padding: 5px 10px;
 }
 .pointerWrite {
   display: inline-block;
-  width: 394px;
+  width: calc(#{$sumWriteColsWidth} + #{$addFieldColWidth});
   padding: 5px 10px;
 }
 

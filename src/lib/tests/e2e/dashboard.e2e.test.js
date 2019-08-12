@@ -39,7 +39,7 @@ describe('dashboard e2e', () => {
 
     await page.goto(`http://localhost:5051${mount}`);
     await page.waitForSelector('#browser_mount');
-
+console.log(page.url());
     expect(page.url().indexOf(`http://localhost:5051${mount}/apps`)).toBe(0);
 
     await page.close();

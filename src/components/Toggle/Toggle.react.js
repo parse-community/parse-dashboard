@@ -100,7 +100,7 @@ export default class Toggle extends React.Component {
       toggleClasses.push(styles.darkBg);
     }
     return (
-      <div className={toggleClasses.join(' ')}>
+      <div className={toggleClasses.join(' ')} style={this.props.additionalStyles || {}}>
         <span className={styles.label} onClick={this.toLeft.bind(this)}>{labelLeft}</span>
         <span className={switchClasses.join(' ')} onClick={this.toggle.bind(this)}></span>
         <span className={styles.label} onClick={this.toRight.bind(this)}>{labelRight}</span>
@@ -122,6 +122,7 @@ Toggle.propTypes = {
   labelRight: PropTypes.string.describe('Custom right toggle label, case when label does not equal content. [For Toggle.Type.CUSTOM]'),
   colored: PropTypes.bool.describe('Flag describing is toggle is colored. [For Toggle.Type.CUSTOM]'),
   darkBg: PropTypes.bool,
+  additionalStyles: PropTypes.object.describe('Additional styles for Toggle component.'),
 };
 
 Toggle.Types = {
