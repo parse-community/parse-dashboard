@@ -16,6 +16,12 @@ import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
 import { withRouter } from 'react-router';
 
 class GraphQLConsole extends Component {
+
+  componentDidMount () {
+    if (typeof back4AppNavigation !== 'undefined' && typeof back4AppNavigation.atGraphQLConsole === 'function')
+      back4AppNavigation.atGraphQLConsole()
+  }
+
   render() {
     const { applicationId, graphQLServerURL, masterKey, slug } = this.context.currentApp;
     let content;
