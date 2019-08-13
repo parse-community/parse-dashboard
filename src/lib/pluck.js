@@ -6,5 +6,8 @@
  * the root directory of this source tree.
  */
 export default function(array, key) {
+  // handle axios responses
+  if (array && array.response && array.response.data)
+    return [array.response.data[key]];
   return array.map(item => item[key]);
 }
