@@ -14,16 +14,13 @@ import { DndProvider }     from 'react-dnd'
 
 export default class DataBrowserHeaderBar extends React.Component {
   render() {
-    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, disableSelectAll, selected } = this.props;
+    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected } = this.props;
     let elements = [
       <div key='check' className={[styles.wrap, styles.check].join(' ')}>
         {readonly
           ? null
           : <input
-              className={disableSelectAll ? styles.disabled : undefined}
               type='checkbox'
-              title={disableSelectAll ? 'This operation is only avaialble when lazy loading data is entirely fetched' : undefined}
-              disabled={disableSelectAll}
               checked={selected}
               onChange={(e) => selectAll(e.target.checked)} />
         }

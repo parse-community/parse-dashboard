@@ -67,7 +67,6 @@ class Browser extends DashboardView {
       selection: {},
 
       data: null,
-      hasMoreData: true,
       lastMax: -1,
       newObject: null,
 
@@ -438,8 +437,7 @@ class Browser extends DashboardView {
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
         this.setState((state) => ({
-          data: state.data.concat(nextPage),
-          hasMoreData: nextPage.length === MAX_ROWS_FETCHED
+          data: state.data.concat(nextPage)
         }));
       }
     });
@@ -676,25 +674,10 @@ class Browser extends DashboardView {
 
   selectRow(id, checked) {
     this.setState(({ selection }) => {
-      if (id === '*') {
-        return { selection: checked ? { '*': true } : {} };
-      }
       if (checked) {
         selection[id] = true;
       } else {
-        // If all objects are selected (*), selects all, except the id given
-        if (selection['*']) {
-          return {
-            selection: this.state.data.reduce((selection, obj) => {
-              selection[obj.id] = obj.id !== id;
-              return selection;
-            }, {})
-          };
-        }
-        // Otherwise just remove the id from the selection
-        else {
-          delete selection[id];
-        }
+        delete selection[id];
       }
       return { selection };
     });
@@ -989,7 +972,6 @@ class Browser extends DashboardView {
             selectRow={this.selectRow}
             selection={this.state.selection}
             data={this.state.data}
-            hasMoreData={this.state.hasMoreData}
             ordering={this.state.ordering}
             newObject={this.state.newObject}
             relation={this.state.relation}

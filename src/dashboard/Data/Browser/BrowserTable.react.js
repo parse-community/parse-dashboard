@@ -324,16 +324,19 @@ export default class BrowserTable extends React.Component {
       <div className={[styles.browser, browserUtils.isSafari() ? styles.safari : ''].join(' ')}>
         {table}
         <DataBrowserHeaderBar
-          selected={this.props.selection['*']}
-          selectAll={this.props.selectRow.bind(null, '*')}
+          selected={
+            this.props.selection &&
+            this.props.data &&
+            Object.values(this.props.selection).filter(checked => checked).length === this.props.data.length
+          }
+          selectAll={checked => this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))}
           headers={headers}
           updateOrdering={this.props.updateOrdering}
           readonly={!!this.props.relation || !!this.props.isUnique}
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.currentApp.preventSchemaEdits}
-          disableSelectAll={this.props.hasMoreData} />
+          preventSchemaEdits={this.context.currentApp.preventSchemaEdits} />
       </div>
     );
   }
