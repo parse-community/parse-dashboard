@@ -37,6 +37,9 @@ import { Helmet }                         from 'react-helmet';
 import PropTypes                          from 'lib/PropTypes';
 import ParseApp                           from 'lib/ParseApp';
 
+// The initial and max amount of rows fetched by lazy loading
+const MAX_ROWS_FETCHED = 200;
+
 export default
 @subscribeTo('Schema', 'schema')
 class Browser extends DashboardView {
@@ -64,6 +67,7 @@ class Browser extends DashboardView {
       selection: {},
 
       data: null,
+      hasMoreData: true,
       lastMax: -1,
       newObject: null,
 
@@ -337,7 +341,7 @@ class Browser extends DashboardView {
       query.ascending(field)
     }
 
-    query.limit(200);
+    query.limit(MAX_ROWS_FETCHED);
 
     let promise = query.find({ useMasterKey: true });
     let isUnique = false;
@@ -374,7 +378,7 @@ class Browser extends DashboardView {
     } else {
       delete filteredCounts[source];
     }
-    this.setState({ data: data, filters, lastMax: 200 , filteredCounts: filteredCounts});
+    this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -386,7 +390,7 @@ class Browser extends DashboardView {
       selection: {},
       data,
       filters,
-      lastMax: 200,
+      lastMax: MAX_ROWS_FETCHED,
     });
   }
 
@@ -429,14 +433,17 @@ class Browser extends DashboardView {
       query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
     }
     query.addDescending('createdAt');
-    query.limit(200);
+    query.limit(MAX_ROWS_FETCHED);
 
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
-        this.setState((state) => ({ data: state.data.concat(nextPage)}));
+        this.setState((state) => ({
+          data: state.data.concat(nextPage),
+          hasMoreData: nextPage.length === MAX_ROWS_FETCHED
+        }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + 200 });
+    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
   }
 
   updateFilters(filters) {
@@ -587,7 +594,7 @@ class Browser extends DashboardView {
           this.state.counts[className] = 0;
           this.setState({
             data: [],
-            lastMax: 200,
+            lastMax: MAX_ROWS_FETCHED,
             selection: {},
           });
         }
@@ -675,7 +682,19 @@ class Browser extends DashboardView {
       if (checked) {
         selection[id] = true;
       } else {
-        delete selection[id];
+        // If all objects are selected (*), selects all, except the id given
+        if (selection['*']) {
+          return {
+            selection: this.state.data.reduce((selection, obj) => {
+              selection[obj.id] = obj.id !== id;
+              return selection;
+            }, {})
+          };
+        }
+        // Otherwise just remove the id from the selection
+        else {
+          delete selection[id];
+        }
       }
       return { selection };
     });
@@ -970,6 +989,7 @@ class Browser extends DashboardView {
             selectRow={this.selectRow}
             selection={this.state.selection}
             data={this.state.data}
+            hasMoreData={this.state.hasMoreData}
             ordering={this.state.ordering}
             newObject={this.state.newObject}
             relation={this.state.relation}

@@ -23,8 +23,6 @@ const ROW_HEIGHT = 31;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
 
-let scrolling = false;
-
 export default class BrowserTable extends React.Component {
   constructor() {
     super();
@@ -59,9 +57,6 @@ export default class BrowserTable extends React.Component {
   }
 
   handleScroll() {
-    if (scrolling) {
-      return;
-    }
     if (!this.props.data || this.props.data.length === 0) {
       return;
     }
@@ -337,7 +332,8 @@ export default class BrowserTable extends React.Component {
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.currentApp.preventSchemaEdits} />
+          preventSchemaEdits={this.context.currentApp.preventSchemaEdits}
+          disableSelectAll={this.props.hasMoreData} />
       </div>
     );
   }
