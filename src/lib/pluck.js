@@ -7,7 +7,7 @@
  */
 export default function(array, key) {
   // handle axios responses
-  if (array && array.response)
-    array = [{ ...array.response.data }];
+  if (array && array.response && array.response.data)
+    return [array.response.data[key]];
   return array.map(item => item[key]);
 }
