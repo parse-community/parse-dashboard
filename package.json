@@ -99,7 +99,7 @@
     "sass-loader": "7.2.0",
     "style-loader": "1.0.0",
     "svg-prep": "1.0.4",
-    "webpack": "4.39.1",
+    "webpack": "4.39.2",
     "webpack-cli": "3.3.6"
   },
   "scripts": {
