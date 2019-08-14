@@ -107,6 +107,15 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
         if (type !== 'Relation') {
           onEditChange(true)
         }
+      }}
+      onTouchEnd={e => {
+        if (current && type !== 'Relation') {
+          // The touch event may trigger an unwanted change in the column value
+          if (['ACL', 'Boolean', 'File'].includes(type)) {
+            e.preventDefault();
+          }
+          onEditChange(true);
+        }
       }}>
       {content}
     </span>
