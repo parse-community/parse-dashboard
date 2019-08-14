@@ -25,6 +25,7 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
         multiline={!readonly}
         width={width}
         onCommit={onCommit}
+        resizable={true}
         setFocus={true} />
     );
   } else if (type === 'Array' || type === 'Object') {
