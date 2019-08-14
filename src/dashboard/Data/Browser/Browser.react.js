@@ -645,7 +645,14 @@ class Browser extends DashboardView {
               this.state.data.splice(indexes[i] - i, 1);
             }
             this.state.counts[className] -= indexes.length;
-            this.forceUpdate();
+
+            // If after deletion, the remaining elements on the table is lesser than the maximum allowed elements
+            // we fetch more data to fill the table
+            if (this.state.data.length < MAX_ROWS_FETCHED) {
+              this.prefetchData(this.props, this.context);
+            } else {
+              this.forceUpdate();
+            }
           }
         }, (error) => {
           let errorDeletingNote = null;
