@@ -66,6 +66,7 @@
     "react-redux": "5.1.1",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
+    "regenerator-runtime": "^0.13.3",
     "semver": "^6.3.0"
   },
   "devDependencies": {
@@ -73,16 +74,15 @@
     "@babel/plugin-proposal-decorators": "7.4.4",
     "@babel/plugin-transform-regenerator": "7.4.5",
     "@babel/plugin-transform-runtime": "7.5.5",
-    "@babel/polyfill": "7.4.4",
     "@babel/preset-env": "7.5.5",
     "@babel/preset-react": "7.0.0",
     "babel-eslint": "10.0.2",
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "core-js": "2.6.5",
+    "core-js": "3.2.1",
     "css-loader": "3.2.0",
     "eslint": "6.1.0",
-    "eslint-plugin-jest": "22.15.0",
+    "eslint-plugin-jest": "22.15.1",
     "eslint-plugin-react": "7.14.3",
     "file-loader": "4.2.0",
     "http-server": "0.11.1",
@@ -99,7 +99,7 @@
     "sass-loader": "7.2.0",
     "style-loader": "1.0.0",
     "svg-prep": "1.0.4",
-    "webpack": "4.39.1",
+    "webpack": "4.39.2",
     "webpack-cli": "3.3.6"
   },
   "scripts": {
