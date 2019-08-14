@@ -23,8 +23,6 @@ const ROW_HEIGHT = 31;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
 
-let scrolling = false;
-
 export default class BrowserTable extends React.Component {
   constructor() {
     super();
@@ -59,9 +57,6 @@ export default class BrowserTable extends React.Component {
   }
 
   handleScroll() {
-    if (scrolling) {
-      return;
-    }
     if (!this.props.data || this.props.data.length === 0) {
       return;
     }
@@ -329,8 +324,12 @@ export default class BrowserTable extends React.Component {
       <div className={[styles.browser, browserUtils.isSafari() ? styles.safari : ''].join(' ')}>
         {table}
         <DataBrowserHeaderBar
-          selected={this.props.selection['*']}
-          selectAll={this.props.selectRow.bind(null, '*')}
+          selected={
+            this.props.selection &&
+            this.props.data &&
+            Object.values(this.props.selection).filter(checked => checked).length === this.props.data.length
+          }
+          selectAll={checked => this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))}
           headers={headers}
           updateOrdering={this.props.updateOrdering}
           readonly={!!this.props.relation || !!this.props.isUnique}
