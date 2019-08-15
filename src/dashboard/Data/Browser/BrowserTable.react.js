@@ -78,7 +78,7 @@ export default class BrowserTable extends React.Component {
     });
   }
 
-  renderRow({ row, obj, json, rowWidth }) {
+  renderRow({ row, obj, rowWidth }) {
     let attributes = obj.attributes;
     let index = row - this.state.offset;
     return (
@@ -103,10 +103,10 @@ export default class BrowserTable extends React.Component {
               attr.targetClassName = this.props.columns[name].targetClass;
             } else if (type === 'Array' || type === 'Object') {
               // This is needed to avoid unwanted conversions of objects to Parse.Objects.
-              // When retrieving data from JSON, Parse-SDK will not try to convert any data.
+              // "Parse._encoding" is responsible to convert Parse data into raw data.
               // Since array and object are generic types, we want to render them the way
               // they were stored in the database.
-              attr = json[name];
+              attr = Parse._encode(obj.get(name));
             }
           }
           let current = this.props.current && this.props.current.row === row && this.props.current.col === j;
@@ -176,7 +176,7 @@ export default class BrowserTable extends React.Component {
       for (let i = this.state.offset; i < end; i++) {
         let index = i - this.state.offset;
         let obj = this.props.data[i];
-        rows[index] = this.renderRow({ row: i, obj, json: obj.toJSON(), rowWidth: rowWidth });
+        rows[index] = this.renderRow({ row: i, obj, rowWidth: rowWidth });
       }
 
       if (this.props.editing) {
@@ -199,17 +199,13 @@ export default class BrowserTable extends React.Component {
           }
           let obj = this.props.current.row < 0 ? this.props.newObject : this.props.data[this.props.current.row];
           let value = obj;
-          let json = obj.toJSON();
           if (!this.props.isUnique) {
             if (type === 'Array' || type === 'Object') {
-              if (!json) {
-                json = obj.toJSON();
-              }
               // This is needed to avoid unwanted conversions of objects to Parse.Objects.
-              // When retrieving data from JSON, Parse-SDK will not try to convert any data.
+              // "Parse._encoding" is responsible to convert Parse data into raw data.
               // Since array and object are generic types, we want to edit them the way
               // they were stored in the database.
-              value = json[name];
+              value = Parse._encode(obj.get(name));
             } else {
               value = obj.get(name);
             }
