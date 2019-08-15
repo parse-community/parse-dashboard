@@ -138,6 +138,16 @@
   }
 }
 
+.addColumnToggleWrapper {
+  >:nth-child(2) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    background: #f6fafb;
+  }
+}
+
 .notificationMessage, .notificationError {
   @include animation('fade-in 0.2s ease-out');
   position: absolute;

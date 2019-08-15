@@ -18,6 +18,7 @@ import Config             from './Data/Config/Config.react';
 import Explorer           from './Analytics/Explorer/Explorer.react';
 import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
 import GeneralSettings    from './Settings/GeneralSettings.react';
+import GraphQLConsole     from './Data/ApiConsole/GraphQLConsole.react';
 import history            from 'dashboard/history';
 import HostingSettings    from './Settings/HostingSettings.react';
 import Icon               from 'components/Icon/Icon.react';
@@ -35,6 +36,7 @@ import PushIndex          from './Push/PushIndex.react';
 import PushNew            from './Push/PushNew.react';
 import PushSettings       from './Settings/PushSettings.react';
 import React              from 'react';
+import RestConsole        from './Data/ApiConsole/RestConsole.react';
 import Retention          from './Analytics/Retention/Retention.react';
 import SchemaOverview     from './Data/Browser/SchemaOverview.react';
 import SecuritySettings   from './Settings/SecuritySettings.react';
@@ -246,6 +248,22 @@ export default class Dashboard extends React.Component {
       return <Browser {...props} params={ props.match.params } />
     }
 
+    const ApiConsoleRoute = (props) => (
+      <Switch>
+        <Route path={ props.match.path + '/rest' } render={props => (
+          <ApiConsole {...props}>
+            <RestConsole />
+          </ApiConsole>
+        )} />
+        <Route path={ props.match.path + '/graphql' } render={props => (
+          <ApiConsole {...props}>
+            <GraphQLConsole />
+          </ApiConsole>
+        )} />
+        <Redirect from={ props.match.path } to='/apps/:appId/api_console/rest' />
+      </Switch>
+    )
+
     const AppRoute = ({ match }) => (
       <AppData params={ match.params }>
         <Switch>
@@ -265,8 +283,8 @@ export default class Dashboard extends React.Component {
           <Redirect from={ match.path + '/logs' } to='/apps/:appId/logs/info' />
 
           <Route path={ match.path + '/config' } component={Config} />
-          <Route path={ match.path + '/api_console' } component={ApiConsole} />
-          <Route path={ match.path + '/migration' } component={Migration} />/>
+          <Route path={ match.path + '/api_console' } component={ApiConsoleRoute} />
+          <Route path={ match.path + '/migration' } component={Migration} />
 
 
           <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />

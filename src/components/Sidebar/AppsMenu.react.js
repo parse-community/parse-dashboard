@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import AppBadge         from 'components/AppBadge/AppBadge.react';
+import AppName          from 'components/Sidebar/AppName.react';
 import html             from 'lib/htmlString';
 import { Link }         from 'react-router-dom';
 import React            from 'react';
@@ -14,21 +15,21 @@ import { unselectable } from 'stylesheets/base.scss';
 
 let AppsMenu = ({ apps, current, height, onSelect }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
-    <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
-      {current.name}
-    </div>
+    <AppName name={current.name} onClick={onSelect.bind(null, current.slug)} />
     <div className={styles.menuSection}>All Apps</div>
-    {apps.map((app) => {
-      if (app.slug === current.slug) {
-        return null;
-      }
-      return (
-        <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow}>
-          {app.name}
-          <AppBadge production={app.production} />
-        </Link>
-      );
-    })}
+    <div className={styles.appListContainer}>
+      {apps.map((app) => {
+        if (app.slug === current.slug) {
+          return null;
+        }
+        return (
+          <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow} onClick={onSelect.bind(null, current.slug)}>
+            <span>{app.name}</span>
+            <AppBadge production={app.production} />
+          </Link>
+        );
+      })}
+    </div>
   </div>
 );
 

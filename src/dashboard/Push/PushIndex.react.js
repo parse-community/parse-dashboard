@@ -98,7 +98,7 @@ let isChannelTargeted = (pushData) => {
   let additionalKeys = false;
 
   for (let key in queryJSON) {
-    if (queryJSON.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(queryJSON, key)) {
       if (key !== 'deviceType' && key !== 'channels') {
         additionalKeys = true;
       }

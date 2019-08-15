@@ -10,18 +10,20 @@ import DragHandle          from 'components/DragHandle/DragHandle.react';
 import HTML5Backend        from 'react-dnd-html5-backend';
 import React               from 'react';
 import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
-import { DragDropContext } from 'react-dnd';
+import { DndProvider }     from 'react-dnd'
 
-export default
-@DragDropContext(HTML5Backend)
-class DataBrowserHeaderBar extends React.Component {
+export default class DataBrowserHeaderBar extends React.Component {
   render() {
-    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits } = this.props;
+    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected } = this.props;
     let elements = [
-      // Note: bulk checkbox is disabled as all rows are selected (not just visible ones due to current lazy loading implementation)
-      // TODO: add bulk checking only visible rows
       <div key='check' className={[styles.wrap, styles.check].join(' ')}>
-        {readonly ? null : <input className={styles.disabled} type='checkbox' disabled={true} checked={false} onChange={(e) => selectAll(e.target.checked)} />}
+        {readonly
+          ? null
+          : <input
+              type='checkbox'
+              checked={selected}
+              onChange={(e) => selectAll(e.target.checked)} />
+        }
       </div>
     ];
 
@@ -76,6 +78,10 @@ class DataBrowserHeaderBar extends React.Component {
       )
     );
 
-    return <div className={styles.bar}>{elements}</div>;
+    return (
+      <DndProvider backend={HTML5Backend}>
+        <div className={styles.bar}>{elements}</div>
+      </DndProvider>
+    )
   }
 }

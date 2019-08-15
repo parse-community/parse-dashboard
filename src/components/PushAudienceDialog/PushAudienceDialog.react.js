@@ -32,7 +32,7 @@ const AUDIENCE_SIZE_FETCHING_ENABLED = true;
 let filterFormatter = (filters, schema) => {
   return filters.map((filter) => {
     let type = schema[filter.get('field')];
-    if (Filters.Constraints[filter.get('constraint')].hasOwnProperty('field')) {
+    if (Object.prototype.hasOwnProperty.call(Filters.Constraints[filter.get('constraint')], 'field')) {
       type = Filters.Constraints[filter.get('constraint')].field;
     }
     // Format any stringified fields

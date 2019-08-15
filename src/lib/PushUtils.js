@@ -159,7 +159,7 @@ let formatConstraintComponent = (key, operation, value, schema) => {
 let formatStructure = (key, constraints, schema) => {
   let rows = [];
   for(let prop in constraints){
-    if(constraints.hasOwnProperty(prop)){
+    if(Object.prototype.hasOwnProperty.call(constraints, prop)){
       rows.push(formatConstraintComponent(key, prop, constraints[prop], schema));
     }
   }
@@ -287,9 +287,9 @@ export function largeInfoBuilder(query, schema, styles = {}) {
         <ul className={styles.installationInfo}>
           <li className={styles.detailsHeaderListItem}>INSTALLATION CONDITIONS</li>
           {conditionRows}
-        </ul> : 
+        </ul> :
         null
-      }    
+      }
     </div>
   )
 }
@@ -307,7 +307,7 @@ let tableInfoBuilderHelper = (styles, key, description, value) => {
 export function tableInfoBuilder(query, schema, styles = {}) {
   try {
     query = JSON.parse(query);
-  } catch(e) {/**/} 
+  } catch(e) {/**/}
 
   if(!query) {
     return;

@@ -20,3 +20,30 @@
   padding: 10px 0;
   text-align: center;
 }
+
+.content {
+  position: relative;
+  height: calc(100vh - 96px);
+  margin-top: 96px;
+  overflow: hidden;
+
+  // Workaround to override graphql-playground-react
+  // animations and query editor height
+  & > div:not(.empty) > div {
+    opacity: 1;
+    transform: unset;
+    animation: unset;
+
+    & > div > :nth-child(2){
+      height: calc(100vh - 153px);
+    }
+  }
+}
+
+.empty {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

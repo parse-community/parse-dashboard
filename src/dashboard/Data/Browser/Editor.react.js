@@ -24,7 +24,8 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
         readonly={readonly}
         multiline={!readonly}
         width={width}
-        onCommit={onCommit} />
+        onCommit={onCommit}
+        resizable={true} />
     );
   } else if (type === 'Array' || type === 'Object') {
     let encodeCommit = (json) => {

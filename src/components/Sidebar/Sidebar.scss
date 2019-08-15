@@ -7,6 +7,11 @@
  */
 @import 'stylesheets/globals.scss';
 
+$headerHeight: 48px;
+$menuSectionHeight: 24px;
+$sidebarMenuItemHeight: 48px;
+$footerHeight: 36px;
+
 .sidebar {
   position: fixed;
   width: 300px;
@@ -54,21 +59,21 @@
 .content {
   position: absolute;
   overflow-y: auto;
-  top: 48px;
+  top: $headerHeight;
   right: 0;
   bottom: 36px;
   left: 0;
 }
 
 .apps + .content {
-  top: 96px;
+  top: $headerHeight + $sidebarMenuItemHeight;
 }
 
 .footer {
-  @include NotoSansFont;
+  @include DosisFont;
   position: absolute;
   background: #05283c;
-  height: 36px;
+  height: $footerHeight;
   line-height: 18px;
   padding: 9px 0;
   text-align: center;
@@ -102,7 +107,7 @@
 
 .header {
   background: #05283c;
-  height: 48px;
+  height: $headerHeight;
   padding: 10px 14px;
 
   :global(.icon) {
@@ -116,7 +121,7 @@
   @include ellipsis();
   display: block;
   background: #094162;
-  height: 48px;
+  height: $sidebarMenuItemHeight;
   padding: 10px 14px;
 
   color: white;
@@ -179,11 +184,16 @@
   .menuRow:hover {
     background: #0c5582;
   }
+
+  .appListContainer {
+    overflow-y: auto;
+    height: calc(100vh - #{$headerHeight} - #{$menuSectionHeight} - #{$sidebarMenuItemHeight} - #{$footerHeight});
+  }
 }
 
 .menuSection {
   @include DosisFont;
-  height: 24px;
+  height: $menuSectionHeight;
   line-height: 24px;
   background: #0c5582;
   color: #84A5BC;
@@ -233,7 +243,7 @@
 
 .section_header {
   display: block;
-  height: 48px;
+  height: $sidebarMenuItemHeight;
   font-size: 18px;
   line-height: 28px;
   padding: 12px 14px;
@@ -245,6 +255,7 @@
 
   > span {
     vertical-align: top;
+    @include DosisFont;
   }
 
   > svg {
