@@ -34,22 +34,22 @@ export default class BrowserFilter extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.schema !== this.props.schema) {
+    if (props.className !== this.props.className) {
       this.setState({ open: false });
     }
   }
 
-  open() {
+  toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
       let available = Filters.availableFilters(this.props.schema, null, BLACKLISTED_FILTERS);
       let field = Object.keys(available)[0];
       filters = new List([new Map({ field: field, constraint: available[field][0] })]);
     }
-    this.setState({
-      open: true,
+    this.setState(prevState => ({
+      open: !prevState.open,
       filters: filters,
-    });
+    }));
     this.props.setCurrent(null);
   }
 
@@ -62,9 +62,7 @@ export default class BrowserFilter extends React.Component {
   }
 
   clear() {
-    this.setState({ open: false }, () => {
-      this.props.onChange(new Map());
-    });
+    this.props.onChange(new Map());
   }
 
   apply() {
@@ -76,16 +74,19 @@ export default class BrowserFilter extends React.Component {
       }*/
       return filter;
     })
-    this.setState({ open: false }, () => {
-      this.props.onChange(formatted);
-    });
+    this.props.onChange(formatted);
   }
 
   render() {
     let popover = null;
+    let buttonStyle = [styles.entry];
+
     if (this.state.open) {
       let position = Position.inDocument(this.node);
+      position = { x: Math.ceil(position.x + this.node.clientWidth), y: position.y}
       let popoverStyle = [styles.popover];
+      buttonStyle.push(styles.title);
+
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
       }
@@ -93,10 +94,6 @@ export default class BrowserFilter extends React.Component {
       popover = (
         <Popover fixed={true} position={position}>
           <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)}>
-            <div className={styles.title} onClick={() => this.setState({ open: false })}>
-              <Icon name='filter-solid' width={14} height={14} />
-              <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
-            </div>
             <div className={styles.body}>
               <Filter
                 blacklist={BLACKLISTED_FILTERS}
@@ -129,13 +126,12 @@ export default class BrowserFilter extends React.Component {
         </Popover>
       );
     }
-    let buttonStyle = [styles.entry];
     if (this.props.filters.size) {
       buttonStyle.push(styles.active);
     }
     return (
       <div className={styles.wrap}>
-        <div className={buttonStyle.join(' ')} onClick={this.open.bind(this)}>
+        <div className={buttonStyle.join(' ')} onClick={this.toggle.bind(this)}>
           <Icon name='filter-solid' width={14} height={14} />
           <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
         </div>
