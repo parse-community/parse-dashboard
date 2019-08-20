@@ -108,13 +108,15 @@ export default class ConfigDialog extends React.Component {
     this.state = {
       value: null,
       type: 'String',
-      name: ''
+      name: '',
+      masterKeyOnly: false
     };
     if (props.param.length > 0) {
       this.state = {
         name: props.param,
         type: props.type,
         value: props.value,
+        masterKeyOnly: props.masterKeyOnly
       };
     }
   }
@@ -228,6 +230,18 @@ export default class ConfigDialog extends React.Component {
               description='Use this to configure your app. You can change it at any time.' />
           }
           input={EDITORS[this.state.type](this.state.value, (value) => { this.setState({ value }) })} />
+        <Field
+          label={
+            <Label
+              text='Master key only'
+              description='The parameter is returned only when requested with the master key. You can change it at any time.' />
+          }
+          input={
+            <Toggle
+              type={Toggle.Types.TRUE_FALSE}
+              value={this.state.masterKeyOnly}
+              onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })} />
+          } />
       </Modal>
     );
   }
