@@ -157,12 +157,12 @@ class Config extends TableView {
     let data = undefined;
     if (this.props.config.data) {
       let params = this.props.config.data.get('params');
-      let masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly');
+      let masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
       if (params) {
         data = [];
         params.forEach((value, param) => {
+          let masterKeyOnly = masterKeyOnlyParams.get(param) || false;
           let type = typeof value;
-          let masterKeyOnly = masterKeyOnlyParams !== undefined && masterKeyOnlyParams.includes(value);
           if (type === 'object' && value.__type == 'File') {
             value = Parse.File.fromJSON(value);
           }
@@ -179,7 +179,7 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, value }) {
+  saveParam({ name, value, masterKeyOnly }) {
     this.props.config.dispatch(
       ActionTypes.SET,
       { param: name, value: value, masterKeyOnly: masterKeyOnly }

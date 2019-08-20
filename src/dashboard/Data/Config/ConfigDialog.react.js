@@ -178,6 +178,7 @@ export default class ConfigDialog extends React.Component {
     this.props.onConfirm({
       name: this.state.name,
       value: GET_VALUE[this.state.type](this.state.value),
+      masterKeyOnly: this.state.masterKeyOnly
     });
   }
 
