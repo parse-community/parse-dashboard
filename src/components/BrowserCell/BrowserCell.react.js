@@ -19,6 +19,8 @@ import PropTypes            from 'lib/PropTypes';
 class BrowserCell extends React.Component {
   constructor (){
     super()
+
+    this.readableValue = undefined;
   }
 
   showTooltip(ref) {
@@ -30,6 +32,12 @@ class BrowserCell extends React.Component {
     // show the next currentTooltip
     if (nextProps.currentTooltip !== this.props.currentTooltip && nextProps.currentTooltip) {
       this.showTooltip(nextProps.currentTooltip)
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.current && this.props.current) {
+      this.props.onSelect(this.readableValue);
     }
   }
 
@@ -127,6 +135,7 @@ class BrowserCell extends React.Component {
     let { id, readonly , width, current, type, onSelect, onEditChange } = this.props;
     let { content, readableValue, classes } = this.defineCellParams();
 
+    this.readableValue = readableValue;
     return (
       readonly ?
         <span
