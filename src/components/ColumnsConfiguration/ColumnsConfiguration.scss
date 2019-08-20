@@ -1,0 +1,81 @@
+@import 'stylesheets/globals.scss';
+
+.wrap {
+  display: inline-block;
+}
+
+.entry {
+  height: 30px;
+  padding: 8px;
+
+  svg {
+    fill: #66637A;
+  }
+
+  &:hover svg {
+    fill: white;
+  }
+}
+
+.title {
+  background: #797691;
+  padding: 8px;
+  border-radius: 5px 5px 0 0;
+
+  svg {
+    fill: white;
+  }
+}
+
+.entry, .title {
+  @include NotoSansFont;
+  position: relative;
+  bottom: -4px;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+
+  svg {
+    vertical-align: top;
+    margin-right: 6px;
+  }
+
+  span {
+    display: inline-block;
+    vertical-align: top;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+.body {
+  color: white;
+  position: absolute;
+  top: 30px;
+  right: 0;
+  border-radius: 5px 0 5px 5px;
+  background: #797691;
+  width: 220px;
+  font-size: 14px;
+
+  .columnConfigContainer {
+    max-height: calc(100vh - 180px);
+    overflow: auto;
+    margin: 10px;
+  }
+}
+
+.footer {
+  background: rgba(0,0,0,0.2);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+
+  > a {
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

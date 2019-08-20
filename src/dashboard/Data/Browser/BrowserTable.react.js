@@ -89,7 +89,8 @@ export default class BrowserTable extends React.Component {
             checked={this.props.selection['*'] || this.props.selection[obj.id]}
             onChange={(e) => this.props.selectRow(obj.id, e.target.checked)} />
         </span>
-        {this.props.order.map(({ name, width }, j) => {
+        {this.props.order.map(({ name, width, visible }, j) => {
+          if (!visible) return null;
           let type = this.props.columns[name].type;
           let attr = obj;
           if (!this.props.isUnique) {
@@ -147,22 +148,23 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    let headers = this.props.order.map(({ name, width }) => (
+    let headers = this.props.order.map(({ name, width, visible }) => (
       {
         width: width,
         name: name,
         type: this.props.columns[name].type,
         targetClass: this.props.columns[name].targetClass,
-        order: ordering.col === name ? ordering.direction : null
+        order: ordering.col === name ? ordering.direction : null,
+        visible
       }
     ));
     let editor = null;
     let table = <div ref='table' />;
     if (this.props.data) {
-      let rowWidth = 210;
-      for (let i = 0; i < this.props.order.length; i++) {
-        rowWidth += this.props.order[i].width;
-      }
+      const rowWidth = this.props.order.reduce(
+        (rowWidth, { visible, width }) => visible ? rowWidth + width : rowWidth,
+        210
+      );
       let newRow = null;
       if (this.props.newObject && this.state.offset <= 0) {
         newRow = (
