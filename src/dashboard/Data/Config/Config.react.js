@@ -59,6 +59,7 @@ class Config extends TableView {
     if (!this.state.modalOpen) {
       return null;
     }
+    const { currentApp = {} } = this.context;
     return (
       <ConfigDialog
         onConfirm={this.saveParam.bind(this)}
@@ -66,7 +67,8 @@ class Config extends TableView {
         param={this.state.modalParam}
         type={this.state.modalType}
         value={this.state.modalValue}
-        masterKeyOnly={this.state.modalMasterKeyOnly} />
+        masterKeyOnly={this.state.modalMasterKeyOnly}
+        parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
     );
   }
 

@@ -19,6 +19,7 @@ import TextInput       from 'components/TextInput/TextInput.react';
 import Toggle          from 'components/Toggle/Toggle.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles          from 'dashboard/Data/Browser/Browser.scss';
+import semver          from 'semver';
 
 const PARAM_TYPES = [
   'Boolean',
@@ -232,21 +233,30 @@ export default class ConfigDialog extends React.Component {
               description='Use this to configure your app. You can change it at any time.' />
           }
           input={EDITORS[this.state.type](this.state.value, (value) => { this.setState({ value }) })} />
-        <Field
-          label={
-            <Label
-              text='Requires master key?'
-              description='When set to yes the parameter is returned only when requested with the master key. You can change it at any time.' />
-          }
-          input={
-            <Toggle
-              type={Toggle.Types.YES_NO}
-              value={this.state.masterKeyOnly}
-              onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })} 
-              additionalStyles={{ margin: '0px' }} />
-          }
-          className={styles.addColumnToggleWrapper}
-        />
+        
+        {
+          /*
+            Add `Requires master key` field if parse-server version >= 3.8.0,
+            that is the minimum version that supports this feature.
+          */
+          semver.valid(this.props.parseServerVersion) && semver.gte(this.props.parseServerVersion, '3.8.0') 
+          ? <Field
+              label={
+                <Label
+                  text='Requires master key?'
+                  description='When set to yes the parameter is returned only when requested with the master key. You can change it at any time.' />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.masterKeyOnly}
+                  onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })} 
+                  additionalStyles={{ margin: '0px' }} />
+              }
+              className={styles.addColumnToggleWrapper}
+            />
+          : null
+        }
       </Modal>
     );
   }
