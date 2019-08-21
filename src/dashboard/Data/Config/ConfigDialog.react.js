@@ -18,6 +18,7 @@ import React           from 'react';
 import TextInput       from 'components/TextInput/TextInput.react';
 import Toggle          from 'components/Toggle/Toggle.react';
 import validateNumeric from 'lib/validateNumeric';
+import styles          from 'dashboard/Data/Browser/Browser.scss';
 
 const PARAM_TYPES = [
   'Boolean',
@@ -234,15 +235,18 @@ export default class ConfigDialog extends React.Component {
         <Field
           label={
             <Label
-              text='Master key only'
+              text='Requires master key?'
               description='The parameter is returned only when requested with the master key. You can change it at any time.' />
           }
           input={
             <Toggle
-              type={Toggle.Types.TRUE_FALSE}
+              type={Toggle.Types.YES_NO}
               value={this.state.masterKeyOnly}
-              onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })} />
-          } />
+              onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })} 
+              additionalStyles={{ margin: '0px' }} />
+          }
+          className={styles.addColumnToggleWrapper}
+        />
       </Modal>
     );
   }
