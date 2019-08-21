@@ -32,11 +32,11 @@ export default ({ name, handleColumnDragDrop, index, onChangeVisible, visible })
       }}
       onClick={() => onChangeVisible(!visible)}>
       <div className={[styles.icon, styles.visibilityIcon].join(' ')}>
-        <Icon name={visible ? 'visibility' : 'visibility_off'} width={20} height={20} fill={visible ? 'white' : 'rgba(0,0,0,0.4)'} />
+        <Icon name={visible ? 'visibility' : 'visibility_off'} width={18} height={18} fill={visible ? 'white' : 'rgba(0,0,0,0.4)'} />
       </div>
-      <div className={styles.columnConfigItemName} title={name.length > 14 ? name : undefined}>{name}</div>
+      <div className={styles.columnConfigItemName} title={name}>{name}</div>
       <div className={styles.icon}>
-        <Icon name='drag-indicator' width={16} height={16} fill="white" />
+        <Icon name='drag-indicator' width={14} height={14} fill="white" />
       </div>
     </section>
   ));

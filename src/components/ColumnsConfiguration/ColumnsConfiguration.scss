@@ -1,12 +1,9 @@
 @import 'stylesheets/globals.scss';
 
-.wrap {
-  display: inline-block;
-}
-
 .entry {
-  height: 30px;
-  padding: 8px;
+  display: inline-block;
+  height: 14px;
+  padding: 0 8px;
 
   svg {
     fill: #66637A;
@@ -18,8 +15,9 @@
 }
 
 .title {
+  margin-top: -4px;
   background: #797691;
-  padding: 8px;
+  padding: 4px 8px;
   border-radius: 5px 5px 0 0;
 
   svg {
@@ -29,21 +27,17 @@
 
 .entry, .title {
   @include NotoSansFont;
-  position: relative;
-  bottom: -4px;
   font-size: 14px;
   color: #ffffff;
   cursor: pointer;
 
   svg {
-    vertical-align: top;
-    margin-right: 6px;
+    vertical-align: middle;
+    margin-right: 4px;
   }
 
   span {
-    display: inline-block;
-    vertical-align: top;
-    height: 14px;
+    vertical-align: middle;
     line-height: 14px;
   }
 }
@@ -51,7 +45,7 @@
 .body {
   color: white;
   position: absolute;
-  top: 30px;
+  top: 22px;
   right: 0;
   border-radius: 5px 0 5px 5px;
   background: #797691;

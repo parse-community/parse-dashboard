@@ -100,10 +100,10 @@ export default class ColumnsConfiguration extends React.Component {
       );
     }
     return (
-      <div className={styles.wrap}>
+      <>
         {entry}
         {popover}
-      </div>
+      </>
     );
   }
 }
