@@ -236,7 +236,7 @@ export default class ConfigDialog extends React.Component {
           label={
             <Label
               text='Requires master key?'
-              description='The parameter is returned only when requested with the master key. You can change it at any time.' />
+              description='When set to yes the parameter is returned only when requested with the master key. You can change it at any time.' />
           }
           input={
             <Toggle
