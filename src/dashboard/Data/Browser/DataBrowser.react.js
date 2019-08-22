@@ -35,6 +35,10 @@ export default class DataBrowser extends React.Component {
     };
 
     this.handleKey = this.handleKey.bind(this);
+    this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.setCurrent = this.setCurrent.bind(this);
+    this.setEditing = this.setEditing.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -183,8 +187,8 @@ export default class DataBrowser extends React.Component {
   }
 
   setCurrent(current) {
-    if (this.state.current !== current) {
-      this.setState({ current: current });
+    if (JSON.stringify(this.state.current) !== JSON.stringify(current)) {
+      this.setState({ current });
     }
   }
 
@@ -198,16 +202,16 @@ export default class DataBrowser extends React.Component {
           current={this.state.current}
           editing={this.state.editing}
           className={className}
-          handleHeaderDragDrop={this.handleHeaderDragDrop.bind(this)}
-          handleResize={this.handleResize.bind(this)}
-          setEditing={this.setEditing.bind(this)}
-          setCurrent={this.setCurrent.bind(this)}
+          handleHeaderDragDrop={this.handleHeaderDragDrop}
+          handleResize={this.handleResize}
+          setEditing={this.setEditing}
+          setCurrent={this.setCurrent}
           {...other} />
         <BrowserToolbar
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}
-          setCurrent={this.setCurrent.bind(this)}
+          setCurrent={this.setCurrent}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions && !preventSchemaEdits}

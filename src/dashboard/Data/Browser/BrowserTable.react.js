@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import BrowserCell            from 'components/BrowserCell/BrowserCell.react';
+import BrowserRow             from 'components/BrowserRow/BrowserRow.react';
 import * as browserUtils      from 'lib/browserUtils';
 import DataBrowserHeaderBar   from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
 import Editor                 from 'dashboard/Data/Browser/Editor.react';
@@ -78,65 +78,6 @@ export default class BrowserTable extends React.Component {
     });
   }
 
-  renderRow({ row, obj, rowWidth }) {
-    let attributes = obj.attributes;
-    let index = row - this.state.offset;
-    return (
-      <div key={`row${index}`} className={styles.tableRow} style={{ minWidth: rowWidth }}>
-        <span className={styles.checkCell}>
-          <input
-            type='checkbox'
-            checked={this.props.selection['*'] || this.props.selection[obj.id]}
-            onChange={(e) => this.props.selectRow(obj.id, e.target.checked)} />
-        </span>
-        {this.props.order.map(({ name, width }, j) => {
-          let type = this.props.columns[name].type;
-          let attr = obj;
-          if (!this.props.isUnique) {
-              attr = attributes[name];
-            if (name === 'objectId') {
-              attr = obj.id;
-            } else if (name === 'ACL' && this.props.className === '_User' && !attr) {
-              attr = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
-            } else if (type === 'Relation' && !attr && obj.id) {
-              attr = new Parse.Relation(obj, name);
-              attr.targetClassName = this.props.columns[name].targetClass;
-            } else if (type === 'Array' || type === 'Object') {
-              // This is needed to avoid unwanted conversions of objects to Parse.Objects.
-              // "Parse._encoding" is responsible to convert Parse data into raw data.
-              // Since array and object are generic types, we want to render them the way
-              // they were stored in the database.
-              attr = Parse._encode(obj.get(name));
-            }
-          }
-          let current = this.props.current && this.props.current.row === row && this.props.current.col === j;
-          let hidden = false;
-          if (name === 'password' && this.props.className === '_User') {
-            hidden = true;
-          } else if (name === 'sessionToken') {
-            if (this.props.className === '_User' || this.props.className === '_Session') {
-              hidden = true;
-            }
-          }
-          return (
-            <BrowserCell
-              key={name}
-              type={type}
-              readonly={this.props.isUnique || READ_ONLY.indexOf(name) > -1}
-              width={width}
-              current={current}
-              onSelect={() => this.props.setCurrent({ row: row, col: j })}
-              onEditChange={(state) => this.props.setEditing(state)}
-              onPointerClick={this.props.onPointerClick}
-              setRelation={this.props.setRelation}
-              value={attr}
-              hidden={hidden} />
-          );
-        })}
-      </div>
-    );
-  }
-
   render() {
     let ordering = {};
     if (this.props.ordering) {
@@ -165,9 +106,26 @@ export default class BrowserTable extends React.Component {
       }
       let newRow = null;
       if (this.props.newObject && this.state.offset <= 0) {
+        const currentCol = this.props.current && this.props.current.row === -1 ? this.props.current.col : undefined;
         newRow = (
           <div style={{ marginBottom: 30, borderBottom: '1px solid #169CEE' }}>
-            {this.renderRow({ row: -1, obj: this.props.newObject, json: {}, rowWidth: rowWidth })}
+            <BrowserRow
+              key={-1}
+              className={this.props.className}
+              columns={this.props.columns}
+              currentCol={currentCol}
+              isUnique={this.props.isUnique}
+              obj={this.props.newObject}
+              onPointerClick={this.props.onPointerClick}
+              order={this.props.order}
+              readOnlyFields={READ_ONLY}
+              row={-1}
+              rowWidth={rowWidth}
+              selection={this.props.selection}
+              selectRow={this.props.selectRow}
+              setCurrent={this.props.setCurrent}
+              setEditing={this.props.setEditing}
+              setRelation={this.props.setRelation} />
           </div>
         );
       }
@@ -176,7 +134,24 @@ export default class BrowserTable extends React.Component {
       for (let i = this.state.offset; i < end; i++) {
         let index = i - this.state.offset;
         let obj = this.props.data[i];
-        rows[index] = this.renderRow({ row: i, obj, rowWidth: rowWidth });
+        const currentCol = this.props.current && this.props.current.row === i ? this.props.current.col : undefined;
+        rows[index] = <BrowserRow
+          key={index}
+          className={this.props.className}
+          columns={this.props.columns}
+          currentCol={currentCol}
+          isUnique={this.props.isUnique}
+          obj={obj}
+          onPointerClick={this.props.onPointerClick}
+          order={this.props.order}
+          readOnlyFields={READ_ONLY}
+          row={i}
+          rowWidth={rowWidth}
+          selection={this.props.selection}
+          selectRow={this.props.selectRow}
+          setCurrent={this.props.setCurrent}
+          setEditing={this.props.setEditing}
+          setRelation={this.props.setRelation} />
       }
 
       if (this.props.editing) {
