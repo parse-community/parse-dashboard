@@ -57,7 +57,7 @@ export default class ColumnsConfiguration extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={Position.inDocument(this.node)}>
+        <Popover fixed={true} position={Position.inDocument(this.node)} onExternalClick={this.toggle.bind(this)}>
           <div className={styles.popover}>
             {title}
             <div className={styles.body}>
