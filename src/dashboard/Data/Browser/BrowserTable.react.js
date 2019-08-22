@@ -19,6 +19,7 @@ import ParseApp               from 'lib/ParseApp';
 import PropTypes              from 'lib/PropTypes';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
+const ROWS_OFFSET = 160;
 const ROW_HEIGHT = 31;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
@@ -62,12 +63,19 @@ export default class BrowserTable extends React.Component {
     }
     requestAnimationFrame(() => {
       const currentScrollTop = this.refs.table.scrollTop;
-      const rowsAbove = Math.floor(currentScrollTop / ROW_HEIGHT);
+      let rowsAbove = Math.floor(currentScrollTop / ROW_HEIGHT);
       let offset = this.state.offset;
-      if (rowsAbove - this.state.offset > 160) {
-        offset = Math.floor(rowsAbove / 10) * 10 - 10;
-      } else if (rowsAbove - this.state.offset < 10) {
-        offset = Math.max(0, Math.floor(rowsAbove / 10) * 10 - 30);
+      const currentRow = rowsAbove - this.state.offset;
+
+      // If the scroll is near the beginning or end of the offset,
+      // we need to update the table data with the previous/next offset
+      if (currentRow < 10 || currentRow > ROWS_OFFSET + 10) {
+        // Rounds the number of rows above
+        rowsAbove = Math.floor(rowsAbove / 10) * 10;
+
+        offset = currentRow < 10
+          ? Math.max(0, rowsAbove - ROWS_OFFSET) // Previous set of rows
+          : rowsAbove - 10; // Next set of rows
       }
       if (this.state.offset !== offset) {
         this.setState({ offset });
