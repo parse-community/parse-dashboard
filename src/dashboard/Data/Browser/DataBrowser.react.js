@@ -188,6 +188,12 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleColumnsOrder(order) {
+    this.setState({ order }, () => {
+      this.updatePreferences(order);
+    });
+  }
+
   render() {
     let { className, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
@@ -213,6 +219,9 @@ export default class DataBrowser extends React.Component {
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions && !preventSchemaEdits}
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
+          handleColumnDragDrop={this.handleHeaderDragDrop.bind(this)}
+          handleColumnsOrder={this.handleColumnsOrder.bind(this)}
+          order={this.state.order}
           {...other}/>
       </div>
     );

@@ -7,6 +7,8 @@
  */
 import BrowserFilter  from 'components/BrowserFilter/BrowserFilter.react';
 import BrowserMenu    from 'components/BrowserMenu/BrowserMenu.react';
+import ColumnsConfiguration
+                      from 'components/ColumnsConfiguration/ColumnsConfiguration.react';
 import Icon           from 'components/Icon/Icon.react';
 import MenuItem       from 'components/BrowserMenu/MenuItem.react';
 import prettyNumber   from 'lib/prettyNumber';
@@ -42,6 +44,9 @@ let BrowserToolbar = ({
   onRefresh,
   hidePerms,
   isUnique,
+  handleColumnDragDrop,
+  handleColumnsOrder,
+  order,
 
   enableDeleteAllRows,
   enableExportClass,
@@ -149,6 +154,11 @@ let BrowserToolbar = ({
         <Icon name='plus-solid' width={14} height={14} />
         <span>Add Row</span>
       </a>
+      <div className={styles.toolbarSeparator} />
+      <ColumnsConfiguration
+        handleColumnsOrder={handleColumnsOrder}
+        handleColumnDragDrop={handleColumnDragDrop}
+        order={order} />
       <div className={styles.toolbarSeparator} />
       <a className={styles.toolbarButton} onClick={onRefresh}>
         <Icon name='refresh-solid' width={14} height={14} />

@@ -27,7 +27,8 @@ export default class DataBrowserHeaderBar extends React.Component {
       </div>
     ];
 
-    headers.forEach(({ width, name, type, targetClass, order }, i) => {
+    headers.forEach(({ width, name, type, targetClass, order, visible }, i) => {
+      if (!visible) return;
       let wrapStyle = { width };
       if (i % 2) {
         wrapStyle.background = '#726F85';
