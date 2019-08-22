@@ -18,7 +18,7 @@ import Button                 from 'components/Button/Button.react';
 import ParseApp               from 'lib/ParseApp';
 import PropTypes              from 'lib/PropTypes';
 
-const MAX_ROWS = 60; // Number of rows to render at any time
+const MAX_ROWS = 200; // Number of rows to render at any time
 const ROW_HEIGHT = 31;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
@@ -61,16 +61,17 @@ export default class BrowserTable extends React.Component {
       return;
     }
     requestAnimationFrame(() => {
-      let rowsAbove = Math.floor(this.refs.table.scrollTop / ROW_HEIGHT);
+      const currentScrollTop = this.refs.table.scrollTop;
+      const rowsAbove = Math.floor(currentScrollTop / ROW_HEIGHT);
       let offset = this.state.offset;
-      if (rowsAbove - this.state.offset > 20) {
+      if (rowsAbove - this.state.offset > 160) {
         offset = Math.floor(rowsAbove / 10) * 10 - 10;
       } else if (rowsAbove - this.state.offset < 10) {
         offset = Math.max(0, Math.floor(rowsAbove / 10) * 10 - 30);
       }
       if (this.state.offset !== offset) {
         this.setState({ offset });
-        this.refs.table.scrollTop = rowsAbove * ROW_HEIGHT;
+        this.refs.table.scrollTop = currentScrollTop;
       }
       if (this.props.maxFetched - offset < 100) {
         this.props.fetchNextPage();
