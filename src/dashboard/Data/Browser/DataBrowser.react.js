@@ -43,6 +43,19 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const shallowVerifyStates = [...new Set(Object.keys(this.state).concat(Object.keys(nextState)))]
+    if (shallowVerifyStates.some(stateName => this.state[stateName] !== nextState[stateName])) {
+      return true;
+    }
+    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
+      .filter(propName => propName !== 'columns');
+    if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
+      return true;
+    }
+    return JSON.stringify(this.props.columns) !== JSON.stringify(nextProps.columns);
+  }
+
   componentWillReceiveProps(props, context) {
     if (props.className !== this.props.className) {
       let order = ColumnPreferences.getOrder(
@@ -193,7 +206,7 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, ...other } = this.props;
+    let { className, count, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
@@ -208,6 +221,7 @@ export default class DataBrowser extends React.Component {
           setCurrent={this.setCurrent}
           {...other} />
         <BrowserToolbar
+          count={count}
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}

@@ -6,20 +6,15 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 
 export default class BrowserRow extends Component {
   shouldComponentUpdate(nextProps) {
-    const shallowVerifyProps = ['currentCol', 'rowWidth', 'selection', 'order', 'className', 'columns', 'isUnique', 'row', 'readOnlyFields'];
+    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
+      .filter(propName => propName !== 'obj');
     if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
       return true;
     }
     const { obj } = this.props;
     const { obj: nextObj } = nextProps;
-    if (typeof obj !== typeof nextObj) {
-      return true;
-    }
     const isRefDifferent = obj !== nextObj;
-    if (isRefDifferent && typeof obj === 'object') {
-      return JSON.stringify(obj) !== JSON.stringify(nextObj);
-    }
-    return isRefDifferent;
+    return isRefDifferent ? JSON.stringify(obj) !== JSON.stringify(nextObj) : isRefDifferent;
   }
 
   render() {

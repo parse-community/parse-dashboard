@@ -15,7 +15,8 @@ import { unselectable }          from 'stylesheets/base.scss';
 
 export default class BrowserCell extends Component {
   shouldComponentUpdate(nextProps) {
-    const shallowVerifyProps = ['current', 'value', 'width', 'col', 'row', 'type', 'hidden'];
+    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
+      .filter(propName => propName !== 'value');
     if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
       return true;
     }

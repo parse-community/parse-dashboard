@@ -22,7 +22,6 @@ let BrowserToolbar = ({
   count,
   perms,
   schema,
-  userPointers,
   filters,
   selection,
   relation,
@@ -42,6 +41,7 @@ let BrowserToolbar = ({
   onRefresh,
   hidePerms,
   isUnique,
+  uniqueField,
 
   enableDeleteAllRows,
   enableExportClass,
@@ -137,6 +137,22 @@ let BrowserToolbar = ({
     classes.push(styles.toolbarButtonDisabled);
     onClick = null;
   }
+
+  const userPointers = [];
+  const schemaSimplifiedData = {};
+  schema.data.get('classes').get(className).forEach(({ type, targetClass }, col) => {
+    if (name === 'objectId' || isUnique && name !== uniqueField) {
+      return;
+    }
+    if (targetClass === '_User') {
+      userPointers.push(name);
+    }
+    schemaSimplifiedData[col] = {
+      type,
+      targetClass,
+    };
+  });
+
   return (
     <Toolbar
       relation={relation}
@@ -157,7 +173,7 @@ let BrowserToolbar = ({
       <div className={styles.toolbarSeparator} />
       <BrowserFilter
         setCurrent={setCurrent}
-        schema={schema}
+        schema={schemaSimplifiedData}
         filters={filters}
         onChange={onFilterChange} />
       <div className={styles.toolbarSeparator} />
