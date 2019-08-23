@@ -30,7 +30,8 @@ class Config extends TableView {
       modalOpen: false,
       modalParam: '',
       modalType: 'String',
-      modalValue: ''
+      modalValue: '',
+      modalMasterKeyOnly: false
     };
   }
 
@@ -58,13 +59,16 @@ class Config extends TableView {
     if (!this.state.modalOpen) {
       return null;
     }
+    const { currentApp = {} } = this.context;
     return (
       <ConfigDialog
         onConfirm={this.saveParam.bind(this)}
         onCancel={() => this.setState({ modalOpen: false })}
         param={this.state.modalParam}
         type={this.state.modalType}
-        value={this.state.modalValue} />
+        value={this.state.modalValue}
+        masterKeyOnly={this.state.modalMasterKeyOnly}
+        parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
     );
   }
 
@@ -103,9 +107,11 @@ class Config extends TableView {
       modalOpen: true,
       modalParam: data.param,
       modalType: type,
-      modalValue: modalValue
+      modalValue: modalValue,
+      modalMasterKeyOnly: data.masterKeyOnly
     });
-    let columnStyle = { width: '30%', cursor: 'pointer' };
+    let columnStyleLarge = { width: '30%', cursor: 'pointer' };
+    let columnStyleSmall = { width: '15%', cursor: 'pointer' };
 
     let openModalValueColumn = () => {
       if (data.value instanceof Parse.File) {
@@ -116,9 +122,10 @@ class Config extends TableView {
 
     return (
       <tr key={data.param}>
-        <td style={columnStyle} onClick={openModal}>{data.param}</td>
-        <td style={columnStyle} onClick={openModal}>{type}</td>
-        <td style={columnStyle} onClick={openModalValueColumn}>{value}</td>
+        <td style={columnStyleLarge} onClick={openModal}>{data.param}</td>
+        <td style={columnStyleSmall} onClick={openModal}>{type}</td>
+        <td style={columnStyleLarge} onClick={openModalValueColumn}>{value}</td>
+        <td style={columnStyleSmall} onClick={openModal}>{data.masterKeyOnly.toString()}</td>
         <td style={{ textAlign: 'center' }}>
           <a onClick={this.deleteParam.bind(this, data.param)}>
             <Icon width={16} height={16} name='trash-solid' fill='#ff395e' />
@@ -131,8 +138,9 @@ class Config extends TableView {
   renderHeaders() {
     return [
       <TableHeader key='parameter' width={30}>Parameter</TableHeader>,
-      <TableHeader key='type' width={30}>Type</TableHeader>,
-      <TableHeader key='value' width={30}>Value</TableHeader>
+      <TableHeader key='type' width={15}>Type</TableHeader>,
+      <TableHeader key='value' width={30}>Value</TableHeader>,
+      <TableHeader key='masterKeyOnly' width={15}>Master key only</TableHeader>
     ];
   }
 
@@ -151,9 +159,11 @@ class Config extends TableView {
     let data = undefined;
     if (this.props.config.data) {
       let params = this.props.config.data.get('params');
+      let masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
       if (params) {
         data = [];
         params.forEach((value, param) => {
+          let masterKeyOnly = masterKeyOnlyParams.get(param) || false;
           let type = typeof value;
           if (type === 'object' && value.__type == 'File') {
             value = Parse.File.fromJSON(value);
@@ -161,10 +171,8 @@ class Config extends TableView {
           else if (type === 'object' && value.__type == 'GeoPoint') {
             value = new Parse.GeoPoint(value);
           }
-
-          data.push({ param: param, value: value })
+          data.push({ param: param, value: value, masterKeyOnly: masterKeyOnly })
         });
-
         data.sort((object1, object2) => {
           return object1.param.localeCompare(object2.param);
         });
@@ -173,10 +181,10 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, value }) {
+  saveParam({ name, value, masterKeyOnly }) {
     this.props.config.dispatch(
       ActionTypes.SET,
-      { param: name, value: value }
+      { param: name, value: value, masterKeyOnly: masterKeyOnly }
     ).then(() => {
       this.setState({ modalOpen: false });
     }, () => {
@@ -196,7 +204,8 @@ class Config extends TableView {
       modalOpen: true,
       modalParam: '',
       modalType: 'String',
-      modalValue: ''
+      modalValue: '',
+      modalMasterKeyOnly: false
     });
   }
 }

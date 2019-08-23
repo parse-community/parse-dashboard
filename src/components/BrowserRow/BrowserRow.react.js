@@ -28,7 +28,8 @@ export default class BrowserRow extends Component {
             checked={selection['*'] || selection[obj.id]}
             onChange={e => selectRow(obj.id, e.target.checked)} />
         </span>
-        {order.map(({ name, width }, j) => {
+        {order.map(({ name, width, visible }, j) => {
+          if (!visible) return null;
           let type = columns[name].type;
           let attr = obj;
           if (!isUnique) {

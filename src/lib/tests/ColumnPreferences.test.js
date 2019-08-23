@@ -43,17 +43,17 @@ describe('ColumnPreferences', () => {
   it('can retrive column orderings', () => {
     ColumnPreferences.updatePreferences([{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }], 'testapp', 'Klass');
     expect(ColumnPreferences.getOrder({ objectId: {}, createdAt: {} }, 'testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'createdAt', width: 150, visible: true }]
     );
   });
 
   it('tacks unknown columns onto the end', () => {
     ColumnPreferences.updatePreferences([{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }], 'testapp', 'Klass');
     expect(ColumnPreferences.getOrder({ objectId: {}, updatedAt: {}, createdAt: {}, someField: {} }, 'testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }, { name: 'updatedAt', width: 150 }, { name: 'someField', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'createdAt', width: 150, visible: true }, { name: 'updatedAt', width: 150, visible: true }, { name: 'someField', width: 150, visible: true }]
     );
     expect(ColumnPreferences.getPreferences('testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }, { name: 'updatedAt', width: 150 }, { name: 'someField', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'createdAt', width: 150, visible: true }, { name: 'updatedAt', width: 150, visible: true }, { name: 'someField', width: 150, visible: true }]
     );
   });
 
@@ -64,17 +64,17 @@ describe('ColumnPreferences', () => {
       'Klass'
     );
     expect(ColumnPreferences.getOrder({ objectId: {}, createdAt: {}, updatedAt: {} }, 'testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }, { name: 'updatedAt', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'createdAt', width: 150, visible: true }, { name: 'updatedAt', width: 150, visible: true }]
     );
     expect(ColumnPreferences.getPreferences('testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'createdAt', width: 150 }, { name: 'updatedAt', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'createdAt', width: 150, visible: true }, { name: 'updatedAt', width: 150, visible: true }]
     );
 
     expect(ColumnPreferences.getOrder({ objectId: {}, updatedAt: {}, someField: {} }, 'testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'updatedAt', width: 150 }, { name: 'someField', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'updatedAt', width: 150, visible: true }, { name: 'someField', width: 150, visible: true }]
     );
     expect(ColumnPreferences.getPreferences('testapp', 'Klass')).toEqual(
-      [{ name: 'objectId', width: 100 }, { name: 'updatedAt', width: 150 }, { name: 'someField', width: 150 }]
+      [{ name: 'objectId', width: 100, visible: true }, { name: 'updatedAt', width: 150, visible: true }, { name: 'someField', width: 150, visible: true }]
     );
   });
 });

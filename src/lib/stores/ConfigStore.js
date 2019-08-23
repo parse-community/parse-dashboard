@@ -16,6 +16,7 @@ export const ActionTypes = keyMirror(['FETCH', 'SET', 'DELETE']);
 // Config state should be an Immutable Map with the following fields:
 //   - lastFetch: the last time all data was fetched from the server
 //   - params: An Immutable Map of parameter strings to values
+//   - masterKeyOnly: An Immutable Map of parameter properties for read with master key only
 
 function ConfigStore(state, action) {
   action.app.setParseKeys();
@@ -27,22 +28,24 @@ function ConfigStore(state, action) {
         {},
         { useMasterKey: true }
       ).then((result) => {
-        return Map({ lastFetch: new Date(), params: Map(result.params) });
+        return Map({ lastFetch: new Date(), params: Map(result.params), masterKeyOnly: Map(result.masterKeyOnly) });
       });
     case ActionTypes.SET:
       return Parse._request(
         'PUT',
         'config',
-        { params: { [action.param]: Parse._encode(action.value) } },
+        { params: { [action.param]: Parse._encode(action.value) }, masterKeyOnly: { [action.param]: action.masterKeyOnly} },
         { useMasterKey: true }
       ).then(() => {
-        return state.setIn(['params', action.param], action.value);
+        return state
+        .setIn(['params', action.param], action.value)
+        .setIn(['masterKeyOnly', action.param], action.masterKeyOnly);
       });
     case ActionTypes.DELETE:
       return Parse._request(
         'PUT',
         'config',
-        { params: { [action.param]: { __op: 'Delete' } } },
+        { params: { [action.param]: { __op: 'Delete' } }, masterKeyOnly: { [action.param]: { __op: 'Delete' } } },
         { useMasterKey: true }
       ).then(() => {
         return state.deleteIn(['params', action.param]);

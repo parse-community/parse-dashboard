@@ -39,13 +39,18 @@ export default class DataBrowser extends React.Component {
     this.handleResize = this.handleResize.bind(this);
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
+    this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
 
     this.saveOrderTimeout = null;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const shallowVerifyStates = [...new Set(Object.keys(this.state).concat(Object.keys(nextState)))]
+      .filter(stateName => stateName !== 'order');
     if (shallowVerifyStates.some(stateName => this.state[stateName] !== nextState[stateName])) {
+      return true;
+    }
+    if (JSON.stringify(this.state.order) !== JSON.stringify(nextState.order)) {
       return true;
     }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
@@ -112,8 +117,8 @@ export default class DataBrowser extends React.Component {
    * @param  {Number} hoverIndex - index of headerbar moved to left of
    */
   handleHeaderDragDrop(dragIndex, hoverIndex) {
-    let newOrder = this.state.order;
-    let movedIndex = newOrder.splice(dragIndex, 1);
+    const newOrder = [ ...this.state.order ];
+    const movedIndex = newOrder.splice(dragIndex, 1);
     newOrder.splice(hoverIndex, 0, movedIndex[0]);
     this.setState({ order: newOrder }, () => {
       this.updatePreferences(newOrder);
@@ -205,6 +210,12 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleColumnsOrder(order) {
+    this.setState({ order: [ ...order ] }, () => {
+      this.updatePreferences(order);
+    });
+  }
+
   render() {
     let { className, count, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
@@ -231,6 +242,9 @@ export default class DataBrowser extends React.Component {
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions && !preventSchemaEdits}
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
+          handleColumnDragDrop={this.handleHeaderDragDrop}
+          handleColumnsOrder={this.handleColumnsOrder}
+          order={this.state.order}
           {...other}/>
       </div>
     );

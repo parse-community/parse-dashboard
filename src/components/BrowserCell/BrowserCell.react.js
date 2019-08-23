@@ -14,6 +14,31 @@ import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 
 export default class BrowserCell extends Component {
+  constructor() {
+    super();
+
+    this.cellRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    if (this.props.current) {
+      const node = this.cellRef.current;
+      const { left, right, bottom, top } = node.getBoundingClientRect();
+
+      // Takes into consideration Sidebar width when over 980px wide.
+      const leftBoundary = window.innerWidth > 980 ? 300 : 0;
+
+      // BrowserToolbar + DataBrowserHeader height
+      const topBoundary = 126;
+
+      if (left < leftBoundary || right > window.innerWidth) {
+        node.scrollIntoView({ block: 'nearest', inline: 'start' });
+      } else if (top < topBoundary || bottom > window.innerHeight) {
+        node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
+  }
+
   shouldComponentUpdate(nextProps) {
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
       .filter(propName => propName !== 'value');
@@ -118,6 +143,7 @@ export default class BrowserCell extends Component {
     }
     return (
       <span
+        ref={this.cellRef}
         className={classes.join(' ')}
         style={{ width }}
         onClick={() => onSelect({ row, col })}
