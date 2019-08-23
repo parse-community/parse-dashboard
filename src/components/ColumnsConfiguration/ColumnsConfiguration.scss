@@ -1,0 +1,75 @@
+@import 'stylesheets/globals.scss';
+
+.entry {
+  display: inline-block;
+  height: 14px;
+  padding: 0 8px;
+
+  svg {
+    fill: #66637A;
+  }
+
+  &:hover svg {
+    fill: white;
+  }
+}
+
+.title {
+  margin-top: -4px;
+  background: #797691;
+  padding: 4px 8px;
+  border-radius: 5px 5px 0 0;
+
+  svg {
+    fill: white;
+  }
+}
+
+.entry, .title {
+  @include NotoSansFont;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  span {
+    vertical-align: middle;
+    line-height: 14px;
+  }
+}
+
+.body {
+  color: white;
+  position: absolute;
+  top: 22px;
+  right: 0;
+  border-radius: 5px 0 5px 5px;
+  background: #797691;
+  width: 220px;
+  font-size: 14px;
+
+  .columnConfigContainer {
+    max-height: calc(100vh - 180px);
+    overflow: auto;
+    margin: 10px;
+  }
+}
+
+.footer {
+  background: rgba(0,0,0,0.2);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+
+  > a {
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

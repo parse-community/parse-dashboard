@@ -90,7 +90,7 @@ export default class Popover extends React.Component {
   }
 
   render() {
-    return <div></div>;
+    return null;
   }
 }
 

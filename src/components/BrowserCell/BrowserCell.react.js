@@ -9,11 +9,32 @@ import { dateStringUTC }         from 'lib/DateUtils';
 import getFileName               from 'lib/getFileName';
 import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
-import React                     from 'react';
+import React, { useEffect, useRef }
+                                 from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 
 let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange, setRelation,  onPointerClick }) => {
+  const cellRef = current ? useRef() : null;
+  if (current) {
+    useEffect(() => {
+      const node = cellRef.current;
+      const { left, right, bottom, top } = node.getBoundingClientRect();
+
+      // Takes into consideration Sidebar width when over 980px wide.
+      const leftBoundary = window.innerWidth > 980 ? 300 : 0;
+
+      // BrowserToolbar + DataBrowserHeader height
+      const topBoundary = 126;
+
+      if (left < leftBoundary || right > window.innerWidth) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (top < topBoundary || bottom > window.innerHeight) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    });
+  }
+
   let content = value;
   let classes = [styles.cell, unselectable];
   if (hidden) {
@@ -98,6 +119,7 @@ let BrowserCell = ({ type, value, hidden, width, current, onSelect, onEditChange
   }
   return (
     <span
+      ref={cellRef}
       className={classes.join(' ')}
       style={{ width }}
       onClick={onSelect}
