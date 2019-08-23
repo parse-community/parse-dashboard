@@ -58,7 +58,7 @@ export default class BrowserCell extends Component {
   }
 
   render() {
-    const { type, value, hidden, width, current, onSelect, onEditChange, setRelation, onPointerClick, row, col } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setRelation, onPointerClick, row, col } = this.props;
     let content = value;
     let classes = [styles.cell, unselectable];
     if (hidden) {
