@@ -27,6 +27,7 @@ export default class BrowserFilter extends React.Component {
       open: false,
       filters: new List(),
     };
+    this.toggle = this.toggle.bind(this)
   }
 
   componentDidMount() {
@@ -83,7 +84,6 @@ export default class BrowserFilter extends React.Component {
 
     if (this.state.open) {
       let position = Position.inDocument(this.node);
-      position = { x: Math.ceil(position.x + this.node.clientWidth), y: position.y}
       let popoverStyle = [styles.popover];
       buttonStyle.push(styles.title);
 
@@ -92,8 +92,9 @@ export default class BrowserFilter extends React.Component {
       }
       let available = Filters.availableFilters(this.props.schema, this.state.filters);
       popover = (
-        <Popover fixed={true} position={position}>
+        <Popover fixed={true} position={position} onExternalClick={this.toggle}>
           <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)}>
+            <div onClick={this.toggle} style={{ cursor: 'pointer', width: this.node.clientWidth, height: this.node.clientHeight }}></div>
             <div className={styles.body}>
               <Filter
                 blacklist={BLACKLISTED_FILTERS}
@@ -131,7 +132,7 @@ export default class BrowserFilter extends React.Component {
     }
     return (
       <div className={styles.wrap}>
-        <div className={buttonStyle.join(' ')} onClick={this.toggle.bind(this)}>
+        <div className={buttonStyle.join(' ')} onClick={this.toggle}>
           <Icon name='filter-solid' width={14} height={14} />
           <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
         </div>

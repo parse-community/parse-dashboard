@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes   from 'lib/PropTypes'; 
+import PropTypes   from 'lib/PropTypes';
 import hasAncestor from 'lib/hasAncestor';
 import React       from 'react';
 import ReactDOM    from 'react-dom';
@@ -83,7 +83,7 @@ export default class Popover extends React.Component {
   }
 
   _checkExternalClick(e) {
-    if (!hasAncestor(e.target, this._popoverLayer) &&
+    if (!hasAncestor(e.target, this._popoverWrapper) &&
       this.props.onExternalClick) {
       this.props.onExternalClick(e);
     }
