@@ -188,7 +188,8 @@ let BrowserToolbar = ({
         setCurrent={setCurrent}
         schema={schemaSimplifiedData}
         filters={filters}
-        onChange={onFilterChange} />
+        onChange={onFilterChange}
+        className={className} />
       <div className={styles.toolbarSeparator} />
       {enableSecurityDialog ? <SecurityDialog
         setCurrent={setCurrent}
