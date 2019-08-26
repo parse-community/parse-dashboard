@@ -69,7 +69,7 @@ export default class BrowserTable extends React.Component {
 
       // If the scroll is near the beginning or end of the offset,
       // we need to update the table data with the previous/next offset
-      if (currentRow < 10 || currentRow > ROWS_OFFSET + 10) {
+      if (currentRow < 10 || currentRow >= ROWS_OFFSET) {
         // Rounds the number of rows above
         rowsAbove = Math.floor(rowsAbove / 10) * 10;
 
@@ -81,7 +81,7 @@ export default class BrowserTable extends React.Component {
         this.setState({ offset });
         this.refs.table.scrollTop = currentScrollTop;
       }
-      if (this.props.maxFetched - offset < 100) {
+      if (this.props.maxFetched - offset <= ROWS_OFFSET * 1.4) {
         this.props.fetchNextPage();
       }
     });
