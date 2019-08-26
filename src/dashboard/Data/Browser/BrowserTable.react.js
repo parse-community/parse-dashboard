@@ -23,8 +23,6 @@ const ROW_HEIGHT = 31;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt', 'sessionToken' ];
 
-let scrolling = false;
-
 export default class BrowserTable extends React.Component {
   constructor() {
     super();
@@ -59,9 +57,6 @@ export default class BrowserTable extends React.Component {
   }
 
   handleScroll() {
-    if (scrolling) {
-      return;
-    }
     if (!this.props.data || this.props.data.length === 0) {
       return;
     }
@@ -94,7 +89,8 @@ export default class BrowserTable extends React.Component {
             checked={this.props.selection['*'] || this.props.selection[obj.id]}
             onChange={(e) => this.props.selectRow(obj.id, e.target.checked)} />
         </span>
-        {this.props.order.map(({ name, width }, j) => {
+        {this.props.order.map(({ name, width, visible }, j) => {
+          if (!visible) return null;
           let type = this.props.columns[name].type;
           let readonly = READ_ONLY.indexOf(name) > -1
           let attr = obj;
@@ -107,6 +103,12 @@ export default class BrowserTable extends React.Component {
             } else if (type === 'Relation' && !attr && obj.id) {
               attr = new Parse.Relation(obj, name);
               attr.targetClassName = this.props.columns[name].targetClass;
+            } else if (type === 'Array' || type === 'Object') {
+              // This is needed to avoid unwanted conversions of objects to Parse.Objects.
+              // "Parse._encoding" is responsible to convert Parse data into raw data.
+              // Since array and object are generic types, we want to render them the way
+              // they were stored in the database.
+              attr = Parse._encode(obj.get(name));
             }
           }
           let current = this.props.current && this.props.current.row === row && this.props.current.col === j;
@@ -151,27 +153,28 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    let headers = this.props.order.map(({ name, width }) => (
+    let headers = this.props.order.map(({ name, width, visible }) => (
       {
         width: width,
         name: name,
         type: this.props.columns[name].type,
         targetClass: this.props.columns[name].targetClass,
-        order: ordering.col === name ? ordering.direction : null
+        order: ordering.col === name ? ordering.direction : null,
+        visible
       }
     ));
     let editor = null;
     let table = <div ref='table' />;
     if (this.props.data) {
-      let rowWidth = 210;
-      for (let i = 0; i < this.props.order.length; i++) {
-        rowWidth += this.props.order[i].width;
-      }
+      const rowWidth = this.props.order.reduce(
+        (rowWidth, { visible, width }) => visible ? rowWidth + width : rowWidth,
+        210
+      );
       let newRow = null;
       if (this.props.newObject && this.state.offset <= 0) {
         newRow = (
           <div style={{ marginBottom: 30, borderBottom: '1px solid #169CEE' }}>
-            {this.renderRow({ row: -1, obj: this.props.newObject, rowWidth: rowWidth })}
+            {this.renderRow({ row: -1, obj: this.props.newObject, json: {}, rowWidth: rowWidth })}
           </div>
         );
       }
@@ -180,7 +183,7 @@ export default class BrowserTable extends React.Component {
       for (let i = this.state.offset; i < end; i++) {
         let index = i - this.state.offset;
         let obj = this.props.data[i];
-        rows[index] = this.renderRow({ row: i, obj: obj, rowWidth: rowWidth });
+        rows[index] = this.renderRow({ row: i, obj, rowWidth: rowWidth });
       }
 
       if (this.props.editing) {
@@ -204,7 +207,15 @@ export default class BrowserTable extends React.Component {
           let obj = this.props.current.row < 0 ? this.props.newObject : this.props.data[this.props.current.row];
           let value = obj;
           if (!this.props.isUnique) {
-            value = obj.get(name);
+            if (type === 'Array' || type === 'Object') {
+              // This is needed to avoid unwanted conversions of objects to Parse.Objects.
+              // "Parse._encoding" is responsible to convert Parse data into raw data.
+              // Since array and object are generic types, we want to edit them the way
+              // they were stored in the database.
+              value = Parse._encode(obj.get(name));
+            } else {
+              value = obj.get(name);
+            }
           }
           if (name === 'objectId') {
             if (!this.props.isUnique) {
@@ -214,18 +225,6 @@ export default class BrowserTable extends React.Component {
             value = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
           } else if (name === 'password' && this.props.className === '_User') {
             value = '';
-          } else if (type === 'Array') {
-            if (value) {
-              value = value.map(val => {
-                  if (val instanceof Parse.Object) {
-                      return val.toPointer();
-                  } else if (val && typeof val.getMonth === 'function') {
-                      return { __type: "Date", iso: val.toISOString() };
-                  }
-
-                  return val;
-              });
-            }
           }
           let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);
           if (this.props.current.row > -1 && this.props.newObject) {
@@ -344,8 +343,12 @@ export default class BrowserTable extends React.Component {
       <div className={[styles.browser, browserUtils.isSafari() ? styles.safari : ''].join(' ')}>
         {table}
         <DataBrowserHeaderBar
-          selected={this.props.selection['*']}
-          selectAll={this.props.selectRow.bind(null, '*')}
+          selected={
+            this.props.selection &&
+            this.props.data &&
+            Object.values(this.props.selection).filter(checked => checked).length === this.props.data.length
+          }
+          selectAll={checked => this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))}
           headers={headers}
           updateOrdering={this.props.updateOrdering}
           readonly={!!this.props.relation || !!this.props.isUnique}

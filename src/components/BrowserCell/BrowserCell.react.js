@@ -5,11 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { dateStringUTC }    from 'lib/DateUtils';
-import getFileName          from 'lib/getFileName';
-import Parse                from 'parse';
-import Pill                 from 'components/Pill/Pill.react';
-import React                from 'react';
+import { dateStringUTC }         from 'lib/DateUtils';
+import getFileName               from 'lib/getFileName';
+import Parse                     from 'parse';
+import Pill                      from 'components/Pill/Pill.react';
+import React, { useEffect, useRef }
+                                 from 'react';
 import styles               from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }     from 'stylesheets/base.scss';
 import { findDOMNode }      from 'react-dom'
@@ -35,6 +36,27 @@ class BrowserCell extends React.Component {
 
   defineCellParams() {
     let { type, value, hidden, current, setRelation, onPointerClick, readonly } = this.props
+     
+    const cellRef = current ? useRef() : null;
+    if (current) {
+      useEffect(() => {
+        const node = cellRef.current;
+        const { left, right, bottom, top } = node.getBoundingClientRect();
+
+        // Takes into consideration Sidebar width when over 980px wide.
+        const leftBoundary = window.innerWidth > 980 ? 300 : 0;
+
+        // BrowserToolbar + DataBrowserHeader height
+        const topBoundary = 126;
+
+        if (left < leftBoundary || right > window.innerWidth) {
+	  node.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        } else if (top < topBoundary || bottom > window.innerHeight) {
+	  node.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+      });
+    }
+
     let content = value;
     let classes = [styles.cell, unselectable];
     let readableValue = value
@@ -120,19 +142,19 @@ class BrowserCell extends React.Component {
       classes.push(styles.current);
     }
 
-    return { content, readableValue, classes }
+    return { content, readableValue, classes, cellRef }
   }
 
   render() {
     let { id, readonly , width, current, type, onSelect, onEditChange } = this.props;
-    let { content, readableValue, classes } = this.defineCellParams();
+    let { content, readableValue, classes, cellRef } = this.defineCellParams();
 
     return (
       readonly ?
         <span
           className={classes.join(' ')}
           style={{ width }}
-          ref={id}
+          ref={cellRef}
           data-tip='Read only (CTRL+C to copy)'
           onClick={() => onSelect(readableValue)} >
           {content}
@@ -141,7 +163,16 @@ class BrowserCell extends React.Component {
         <span
           className={classes.join(' ')}
           style={{ width }}
-          onClick={() => current && type !== 'Relation' ? onEditChange(true) : onSelect(readableValue)} >
+          onClick={() => current && type !== 'Relation' ? onEditChange(true) : onSelect(readableValue)} 
+          onTouchEnd={e => {
+              if (current && type !== 'Relation') {
+              // The touch event may trigger an unwanted change in the column value
+              if (['ACL', 'Boolean', 'File'].includes(type)) {
+                e.preventDefault();
+              }
+              onEditChange(true);
+            }
+          }}>
           {content}
        </span>
     );

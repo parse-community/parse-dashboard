@@ -45,6 +45,9 @@ import { Helmet }                         from 'react-helmet';
 import PropTypes                          from 'lib/PropTypes';
 import ParseApp                           from 'lib/ParseApp';
 
+// The initial and max amount of rows fetched by lazy loading
+const MAX_ROWS_FETCHED = 200;
+
 export default
 @subscribeTo('Schema', 'schema')
 class Browser extends DashboardView {
@@ -694,7 +697,7 @@ class Browser extends DashboardView {
       } else {
         delete filteredCounts[source];
       }
-      this.setState({data: data, filters, lastMax: 200, filteredCounts: filteredCounts});
+      this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
     } catch(err) {
       this.setState({ data: [], filters, err });
     }
@@ -709,7 +712,7 @@ class Browser extends DashboardView {
       selection: {},
       data,
       filters,
-      lastMax: 200,
+      lastMax: MAX_ROWS_FETCHED,
     });
   }
 
@@ -752,14 +755,16 @@ class Browser extends DashboardView {
       query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
     }
     query.addDescending('createdAt');
-    query.limit(200);
+    query.limit(MAX_ROWS_FETCHED);
 
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
-        this.setState((state) => ({ data: state.data.concat(nextPage)}));
+        this.setState((state) => ({
+          data: state.data.concat(nextPage)
+        }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + 200 });
+    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
   }
 
   updateFilters(filters) {
@@ -917,7 +922,7 @@ class Browser extends DashboardView {
           this.state.counts[className] = 0;
           this.setState({
             data: [],
-            lastMax: 200,
+            lastMax: MAX_ROWS_FETCHED,
             selection: {},
           });
         }
@@ -970,7 +975,14 @@ class Browser extends DashboardView {
               this.state.data.splice(indexes[i] - i, 1);
             }
             this.state.counts[className] -= indexes.length;
-            this.forceUpdate();
+
+            // If after deletion, the remaining elements on the table is lesser than the maximum allowed elements
+            // we fetch more data to fill the table
+            if (this.state.data.length < MAX_ROWS_FETCHED) {
+              this.prefetchData(this.props, this.context);
+            } else {
+              this.forceUpdate();
+            }
           }
         }, (error) => {
           let errorDeletingNote = null;

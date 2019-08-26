@@ -248,6 +248,12 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleColumnsOrder(order) {
+    this.setState({ order }, () => {
+      this.updatePreferences(order);
+    });
+  }
+
   render() {
     let { className, ...other } = this.props;
     const { applicationId, preventSchemaEdits } = this.context.currentApp;
