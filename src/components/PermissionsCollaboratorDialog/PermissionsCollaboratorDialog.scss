@@ -54,7 +54,7 @@
   line-height: 50px;
   font-size: 16px;
   text-align: center;
-  margin-bottom: -1px;
+  padding-left: 20px;
 
   .settings {
     position: absolute;
@@ -105,7 +105,7 @@
 }
 
 .tableWrap {
-  height: 550px;
+  height: calc(100vh - 330px);
   overflow-y: auto;
   overflow-x: hidden;
   background: #f6fafb;
