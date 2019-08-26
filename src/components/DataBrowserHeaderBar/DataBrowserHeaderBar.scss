@@ -16,9 +16,6 @@
   white-space: nowrap;
   display: inline-block;
   min-width: 100%;
-  width: 100%;
-  // to resolve rendering issue with retina displays
-  -webkit-transform: translate3d(0,0,0);
 }
 
 .wrap {

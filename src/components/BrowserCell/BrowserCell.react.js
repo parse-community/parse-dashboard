@@ -5,19 +5,19 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { dateStringUTC }  from 'lib/DateUtils';
-import getFileName        from 'lib/getFileName';
-import Parse              from 'parse';
-import Pill               from 'components/Pill/Pill.react';
-import React              from 'react';
-import styles             from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }   from 'stylesheets/base.scss';
-import { findDOMNode }    from 'react-dom'
-import ReactTooltip       from 'react-tooltip'
-import PropTypes          from 'lib/PropTypes';
+import { dateStringUTC }    from 'lib/DateUtils';
+import getFileName          from 'lib/getFileName';
+import Parse                from 'parse';
+import Pill                 from 'components/Pill/Pill.react';
+import React                from 'react';
+import styles               from 'components/BrowserCell/BrowserCell.scss';
+import { unselectable }     from 'stylesheets/base.scss';
+import { findDOMNode }      from 'react-dom'
+import ReactTooltip         from 'react-tooltip'
+import PropTypes            from 'lib/PropTypes';
 
 class BrowserCell extends React.Component {
-  constructor() {
+  constructor (){
     super()
 
     this.readableValue = undefined;
@@ -147,7 +147,7 @@ class BrowserCell extends React.Component {
   }
 
   render() {
-    let { id, readonly, width, current, type, onSelect, onEditChange } = this.props;
+    let { id, readonly , width, current, type, onSelect, onEditChange } = this.props;
     let { content, readableValue, classes } = this.defineCellParams();
 
     this.readableValue = readableValue;
