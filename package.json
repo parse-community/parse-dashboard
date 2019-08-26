@@ -82,7 +82,7 @@
     "react-redux": "5.1.1",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
-    "react-syntax-highlighter": "^9.0.0",
+    "react-syntax-highlighter": "11.0.2",
     "react-tabs": "^2.2.2",
     "react-tooltip": "^3.9.2",
     "regenerator-runtime": "^0.13.3",
