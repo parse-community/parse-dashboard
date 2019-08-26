@@ -138,7 +138,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
 
   renderClassesRows(permissionType) {
     let rows = [];
-    console.log(this.props.classesPermissions, permissionType)
     for (let appClassName in this.props.classesPermissions) {
       let label = <Label key={appClassName  + (permissionType === 'Custom' ? 'Label' : 'Input')} text={appClassName}/>
       let content = null;
@@ -149,7 +148,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
         <Field labelWidth={100} className={[styles.label, styles.permission].join(' ')} label={content} />
       </div>))
     }
-    console.log('rows', rows)
     return rows;
   }
 
@@ -175,7 +173,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
 
   render() {
     let classes = [styles.dialog, unselectable];
-    console.log('state', this.state)
 
     return (
       <Popover fadeIn={true} fixed={true} position={origin} modal={true} color='rgba(17,13,17,0.8)'>
@@ -185,102 +182,99 @@ export default class PermissionsCollaboratorDialog extends React.Component {
             <p className={styles.email}>{this.props.email}</p>
             <p className={styles.description}>{this.props.description}</p>
           </div>
-              <Tabs defaultIndex={0}>
-                <div className={styles.subHeader}>
-                  <TabList className={styles.customTabList}>
-                    <Tab onClick={() => this.setState({ isFeaturesSelected: true })}>
-                      Features
-                    </Tab>
-                    <Tab style={ this.state.isGDPR ? {} : {display: 'none'}} onClick={() => this.setState({ isFeaturesSelected: false })}>
-                      Classes
-                    </Tab>
-                  </TabList>
-                </div>
-                <TabPanel>
-                  <div className={ [styles.label, styles.labelSubHeader].join(' ') }>
-                    <label className={ styles.labelTab }>
-                      <RadioButton
-                        id='tab1'
-                        name='Tab'
-                        className={styles.radiobutton}
-                        defaultChecked={this.state.isDefaultFeatures}
-                        disabled={false}
-                        onClick={() => this.setState({ selectedFeaturesTab: 'Default', isDefaultFeatures: true, isFeaturesSelected: true })}
-                      />
-                      Default
-                    </label>
-                    <label className={ styles.labelTab } htmlFor='tab2'>
-                      <RadioButton
-                        id='tab2'
-                        name='Tab'
-                        defaultChecked={!this.state.isDefaultFeatures}
-                        disabled={false}
-                        onClick={() => this.setState({ selectedFeaturesTab: 'CustomFeatures', isDefaultFeatures: false, isFeaturesSelected: true })}
-                      />
-                      Custom
-                    </label>
-                  </div>
-                </TabPanel>
-                <TabPanel>
-                  <div className={ [styles.label, styles.labelSubHeader, styles.classesSubHeader].join(' ') }>
-                    <label className={ styles.labelTab } htmlFor='tab3'>
-                      <RadioButton
-                        id='tab3'
-                        name='Tab'
-                        className={styles.radiobutton}
-                        defaultChecked={this.state.selectedClassesTab === 'Write'}
-                        disabled={false}
-                        onClick={() => this.setState({ selectedClassesTab: 'Write', isFeaturesSelected: false })}
-                      />
-                      Write
-                    </label>
-                    <label className={ styles.labelTab } htmlFor='tab4'>
-                      <RadioButton
-                        id='tab4'
-                        name='Tab'
-                        defaultChecked={this.state.selectedClassesTab === 'Read'}
-                        disabled={false}
-                        onClick={() => this.setState({ selectedClassesTab: 'Read', isFeaturesSelected: false })}
-                      />
-                      Read
-                    </label>
-                    <label className={ styles.labelTab } htmlFor='tab5'>
-                      <RadioButton
-                        id='tab5'
-                        name='Tab'
-                        className={styles.radiobutton}
-                        defaultChecked={this.state.selectedClassesTab === 'None'}
-                        disabled={false}
-                        onClick={() => this.setState({ selectedClassesTab: 'None', isFeaturesSelected: false })}
-                      />
-                      None
-                    </label>
-                    <label className={ styles.labelTab } htmlFor='tab6'>
-                      <RadioButton
-                        id='tab6'
-                        name='Tab'
-                        defaultChecked={this.state.selectedClassesTab === 'CustomClasses'}
-                        disabled={false}
-                        onClick={() => this.setState({ selectedClassesTab: 'CustomClasses', isFeaturesSelected: false })}
-                      />
-                      Custom
-                    </label>
-                  </div>
-                </TabPanel>
-                <div className={styles.tableWrap}>
-
-                <div className={styles.table}>
-
+          <Tabs defaultIndex={0}>
+            <div className={styles.subHeader}>
+              <TabList className={styles.customTabList}>
+                <Tab onClick={() => this.setState({ isFeaturesSelected: true })}>
+                  Features
+                </Tab>
+                <Tab style={ this.state.isGDPR ? {} : {display: 'none'}} onClick={() => this.setState({ isFeaturesSelected: false })}>
+                  Classes
+                </Tab>
+              </TabList>
+            </div>
+            <TabPanel>
+              <div className={ [styles.label, styles.labelSubHeader].join(' ') }>
+                <label className={ styles.labelTab }>
+                  <RadioButton
+                    id='tab1'
+                    name='Tab'
+                    className={styles.radiobutton}
+                    defaultChecked={this.state.isDefaultFeatures}
+                    disabled={false}
+                    onClick={() => this.setState({ selectedFeaturesTab: 'Default', isDefaultFeatures: true, isFeaturesSelected: true })}
+                  />
+                  Default
+                </label>
+                <label className={ styles.labelTab } htmlFor='tab2'>
+                  <RadioButton
+                    id='tab2'
+                    name='Tab'
+                    defaultChecked={!this.state.isDefaultFeatures}
+                    disabled={false}
+                    onClick={() => this.setState({ selectedFeaturesTab: 'CustomFeatures', isDefaultFeatures: false, isFeaturesSelected: true })}
+                  />
+                  Custom
+                </label>
+              </div>
+            </TabPanel>
+            <TabPanel>
+              <div className={ [styles.label, styles.labelSubHeader, styles.classesSubHeader].join(' ') }>
+                <label className={ styles.labelTab } htmlFor='tab3'>
+                  <RadioButton
+                    id='tab3'
+                    name='Tab'
+                    className={styles.radiobutton}
+                    defaultChecked={this.state.selectedClassesTab === 'Write'}
+                    disabled={false}
+                    onClick={() => this.setState({ selectedClassesTab: 'Write', isFeaturesSelected: false })}
+                  />
+                  Write
+                </label>
+                <label className={ styles.labelTab } htmlFor='tab4'>
+                  <RadioButton
+                    id='tab4'
+                    name='Tab'
+                    defaultChecked={this.state.selectedClassesTab === 'Read'}
+                    disabled={false}
+                    onClick={() => this.setState({ selectedClassesTab: 'Read', isFeaturesSelected: false })}
+                  />
+                  Read
+                </label>
+                <label className={ styles.labelTab } htmlFor='tab5'>
+                  <RadioButton
+                    id='tab5'
+                    name='Tab'
+                    className={styles.radiobutton}
+                    defaultChecked={this.state.selectedClassesTab === 'None'}
+                    disabled={false}
+                    onClick={() => this.setState({ selectedClassesTab: 'None', isFeaturesSelected: false })}
+                  />
+                  None
+                </label>
+                <label className={ styles.labelTab } htmlFor='tab6'>
+                  <RadioButton
+                    id='tab6'
+                    name='Tab'
+                    defaultChecked={this.state.selectedClassesTab === 'CustomClasses'}
+                    disabled={false}
+                    onClick={() => this.setState({ selectedClassesTab: 'CustomClasses', isFeaturesSelected: false })}
+                  />
+                  Custom
+                </label>
+              </div>
+            </TabPanel>
+            <div className={styles.tableWrap}>
+              <div className={styles.table}>
                 <div>
                   {this.renderRows(this.state.isFeaturesSelected)}
                 </div>
                 {/*<TabPanel>*/}
                   {/*{this.renderFeaturesRows()}*/}
                 {/*</TabPanel>*/}
+              </div>
             </div>
-          </div>
-              </Tabs>
-
+          </Tabs>
 
           <div className={styles.footer}>
             <div className={styles.actions}>
@@ -309,7 +303,6 @@ export default class PermissionsCollaboratorDialog extends React.Component {
                     classesPermissions = lodash.mapValues(this.state.classesPermissions, () => this.state.selectedClassesTab)
                     featuresPermissions['classes'] = this.state.selectedClassesTab
                   }
-                  console.log(featuresPermissions, classesPermissions)
                   this.props.onConfirm(featuresPermissions, classesPermissions)
                 }}
               />
