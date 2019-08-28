@@ -52,7 +52,7 @@
     "js-beautify": "1.10.2",
     "json-file-plus": "3.2.0",
     "package-json": "6.5.0",
-    "parse": "2.6.0",
+    "parse": "2.7.0",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
     "prismjs": "1.17.0",
