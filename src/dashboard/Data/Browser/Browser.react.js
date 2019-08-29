@@ -910,13 +910,6 @@ class Browser extends DashboardView {
           </div>
         );
       } else if (className && classes.get(className)) {
-        let schema = {};
-        classes.get(className).forEach(({ type, targetClass }, col) => {
-          schema[col] = {
-            type,
-            targetClass,
-          };
-        });
 
         let columns = {
           objectId: { type: 'String' }
@@ -924,20 +917,13 @@ class Browser extends DashboardView {
         if (this.state.isUnique) {
           columns = {};
         }
-        let userPointers = [];
-        classes.get(className).forEach((field, name) => {
-          if (name === 'objectId') {
+        classes.get(className).forEach(({ type, targetClass }, name) => {
+          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (this.state.isUnique && name !== this.state.uniqueField) {
-            return;
-          }
-          let info = { type: field.type };
-          if (field.targetClass) {
-            info.targetClass = field.targetClass;
-            if (field.targetClass === '_User') {
-              userPointers.push(name);
-            }
+          const info = { type };
+          if (targetClass) {
+            info.targetClass = targetClass;
           }
           columns[name] = info;
         });
@@ -958,8 +944,7 @@ class Browser extends DashboardView {
             uniqueField={this.state.uniqueField}
             count={count}
             perms={this.state.clp[className]}
-            schema={schema}
-            userPointers={userPointers}
+            schema={this.props.schema}
             filters={this.state.filters}
             onFilterChange={this.updateFilters}
             onRemoveColumn={this.showRemoveColumn}

@@ -35,8 +35,30 @@ export default class DataBrowser extends React.Component {
     };
 
     this.handleKey = this.handleKey.bind(this);
+    this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.setCurrent = this.setCurrent.bind(this);
+    this.setEditing = this.setEditing.bind(this);
+    this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
 
     this.saveOrderTimeout = null;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const shallowVerifyStates = [...new Set(Object.keys(this.state).concat(Object.keys(nextState)))]
+      .filter(stateName => stateName !== 'order');
+    if (shallowVerifyStates.some(stateName => this.state[stateName] !== nextState[stateName])) {
+      return true;
+    }
+    if (JSON.stringify(this.state.order) !== JSON.stringify(nextState.order)) {
+      return true;
+    }
+    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
+      .filter(propName => propName !== 'columns');
+    if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
+      return true;
+    }
+    return JSON.stringify(this.props.columns) !== JSON.stringify(nextProps.columns);
   }
 
   componentWillReceiveProps(props, context) {
@@ -95,8 +117,8 @@ export default class DataBrowser extends React.Component {
    * @param  {Number} hoverIndex - index of headerbar moved to left of
    */
   handleHeaderDragDrop(dragIndex, hoverIndex) {
-    let newOrder = this.state.order;
-    let movedIndex = newOrder.splice(dragIndex, 1);
+    const newOrder = [ ...this.state.order ];
+    const movedIndex = newOrder.splice(dragIndex, 1);
     newOrder.splice(hoverIndex, 0, movedIndex[0]);
     this.setState({ order: newOrder }, () => {
       this.updatePreferences(newOrder);
@@ -183,19 +205,19 @@ export default class DataBrowser extends React.Component {
   }
 
   setCurrent(current) {
-    if (this.state.current !== current) {
-      this.setState({ current: current });
+    if (JSON.stringify(this.state.current) !== JSON.stringify(current)) {
+      this.setState({ current });
     }
   }
 
   handleColumnsOrder(order) {
-    this.setState({ order }, () => {
+    this.setState({ order: [ ...order ] }, () => {
       this.updatePreferences(order);
     });
   }
 
   render() {
-    let { className, ...other } = this.props;
+    let { className, count, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
@@ -204,23 +226,24 @@ export default class DataBrowser extends React.Component {
           current={this.state.current}
           editing={this.state.editing}
           className={className}
-          handleHeaderDragDrop={this.handleHeaderDragDrop.bind(this)}
-          handleResize={this.handleResize.bind(this)}
-          setEditing={this.setEditing.bind(this)}
-          setCurrent={this.setCurrent.bind(this)}
+          handleHeaderDragDrop={this.handleHeaderDragDrop}
+          handleResize={this.handleResize}
+          setEditing={this.setEditing}
+          setCurrent={this.setCurrent}
           {...other} />
         <BrowserToolbar
+          count={count}
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}
-          setCurrent={this.setCurrent.bind(this)}
+          setCurrent={this.setCurrent}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
           enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions && !preventSchemaEdits}
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
-          handleColumnDragDrop={this.handleHeaderDragDrop.bind(this)}
-          handleColumnsOrder={this.handleColumnsOrder.bind(this)}
+          handleColumnDragDrop={this.handleHeaderDragDrop}
+          handleColumnsOrder={this.handleColumnsOrder}
           order={this.state.order}
           {...other}/>
       </div>
