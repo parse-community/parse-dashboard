@@ -38,7 +38,7 @@
     "bcryptjs": "2.3.0",
     "body-parser": "1.19.0",
     "codemirror-graphql": "github:timsuchanek/codemirror-graphql#details-fix",
-    "commander": "3.0.0",
+    "commander": "3.0.1",
     "connect-flash": "0.1.1",
     "cookie-session": "2.0.0-beta.3",
     "create-react-class": "15.6.3",
