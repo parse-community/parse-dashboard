@@ -51,6 +51,7 @@
 .footer {
   margin: 28px 0 20px 0;
   float: right;
+  display: flex;
 
   .b4a-cc-deploy-btn {
     display: flex;
@@ -75,7 +76,15 @@
   }
 
   a {
-    height: 47px;
-    padding: 10px 16px;
+    height: 40px;
+    min-width: unset;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:first-of-type {
+      margin-right: 20px;
+    }
   }
 }
