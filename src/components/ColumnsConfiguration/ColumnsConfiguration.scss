@@ -15,10 +15,15 @@
 }
 
 .title {
-  margin-top: -4px;
   background: #797691;
-  padding: 4px 8px;
   border-radius: 5px 5px 0 0;
+  padding: 4px 2px 4px;
+  height: 38px;
+  width: 38px;
+
+  &:hover {
+    background-color: none!important;
+  }
 
   svg {
     fill: white;
@@ -27,7 +32,6 @@
 
 .entry, .title {
   @include NotoSansFont;
-  font-size: 14px;
   color: #ffffff;
   cursor: pointer;
 
@@ -45,7 +49,6 @@
 .body {
   color: white;
   position: absolute;
-  top: 22px;
   right: 0;
   border-radius: 5px 0 5px 5px;
   background: #797691;
@@ -71,5 +74,32 @@
     &:last-child {
       margin-right: 0;
     }
+  }
+}
+
+.toolbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 38px;
+  width: 38px;
+  margin: 0px 3px 0px 6px;
+  padding: 4px 2px 4px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  svg {
+    vertical-align: middle;
+    fill: white;
+  }
+
+  span {
+    vertical-align: middle;
+    height: 14px;
+    line-height: 14px;
   }
 }

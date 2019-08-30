@@ -47,10 +47,9 @@ export default class ColumnsConfiguration extends React.Component {
 
   render() {
     const { handleColumnDragDrop, handleColumnsOrder, order } = this.props;
-    const [ title, entry ] = [styles.title, styles.entry ].map(className => (
-      <div className={className} onClick={this.toggle.bind(this)}>
-        <Icon name='manage-columns' width={14} height={14} />
-        <span>Manage Columns</span>
+    const [ title, entry ] = [styles.title, `${styles.entry} ${styles.toolbarButton}`].map(className => (
+      <div className={className} onClick={this.toggle.bind(this)} >
+        <Icon name='manage-columns' width={32} height={26} />
       </div>
     ));
 
