@@ -46,6 +46,8 @@ class B4ACloudCode extends CloudCode {
       showTips: localStorage.getItem(this.alertTips) !== 'false',
       showWhatIs: localStorage.getItem(this.alertWhatIs) !== 'false'
     };
+
+    this.onLogClick = this.onLogClick.bind(this);
   }
 
   // Method used to handler the B4AAlerts closed (that divs with some tips) and
@@ -182,6 +184,10 @@ class B4ACloudCode extends CloudCode {
     }
   }
 
+  onLogClick() {
+    window.open(`/apps/${this.context.currentApp.slug}/server-settings/logs`, '_blank');
+  }
+
   // override renderSidebar from cloud code to don't show the files name on sidebar
   renderSidebar() {
     return null
@@ -240,11 +246,15 @@ class B4ACloudCode extends CloudCode {
 
       footer = <div className={styles.footer}>
         <Button
-          value={<div className={styles['b4a-cc-deploy-btn']}><Icon name='icon-deploy' fill='#fff' width={17} height={30} /> DEPLOY</div>}
+          value='Logs'
+          primary={true}
+          onClick={this.onLogClick}
+        />
+        <Button
+          value={<div className={styles['b4a-cc-deploy-btn']}><Icon name='icon-deploy' fill='#fff' width={17} height={30} /> Deploy</div>}
           primary={true}
           color='b4a-green'
           onClick={this.uploadCode.bind(this)}
-          width={'144px'}
         />
       </div>
     }
