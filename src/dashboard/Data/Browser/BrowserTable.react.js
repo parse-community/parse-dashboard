@@ -145,8 +145,14 @@ export default class BrowserTable extends React.Component {
         let index = i - this.state.offset;
         let obj = this.props.data[i];
         const currentCol = this.props.current && this.props.current.row === i ? this.props.current.col : undefined;
+
+        // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
+        // since the "obj" instance will only be updated when the update request is done.
+        const isEditingRow = this.props.current && this.props.current.row === i && !!this.props.editing;
+
         rows[index] = <BrowserRow
           key={index}
+          isEditing={isEditingRow}
           className={this.props.className}
           columns={this.props.columns}
           currentCol={currentCol}
