@@ -53,7 +53,14 @@ module.exports = {
               importLoaders: 2
             },
           },
-          "sass-loader?includePaths[]=" + encodeURIComponent(path.resolve(__dirname, '../src'))
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, '../src')]
+              }
+            }
+          }
         ]
       }, {
         test: /\.css$/,
