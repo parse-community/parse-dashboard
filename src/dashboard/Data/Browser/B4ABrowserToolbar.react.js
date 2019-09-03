@@ -10,6 +10,8 @@ import styles         from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar        from 'components/Toolbar/Toolbar.react';
 import Button         from 'components/Button/Button.react'
 import VideoTutorialButton from 'components/VideoTutorialButton/VideoTutorialButton.react';
+import ColumnsConfiguration
+                      from 'components/ColumnsConfiguration/ColumnsConfiguration.react';
 
 const apiDocsButtonStyle = {
   display: 'inline-block',
@@ -55,6 +57,9 @@ let B4ABrowserToolbar = ({
     onChangeCLP,
     onRefresh,
     hidePerms,
+    handleColumnDragDrop,
+    handleColumnsOrder,
+    order,
 
     enableDeleteAllRows,
     enableImport,
@@ -191,6 +196,10 @@ let B4ABrowserToolbar = ({
       <a className={styles.toolbarButton} onClick={onAddColumn} title='Add a column' style={{ padding: '4px 4px 6px 4px' }}>
         <Icon name='add-column' width={32} height={26} />
       </a>
+      <ColumnsConfiguration
+        handleColumnsOrder={handleColumnsOrder}
+        handleColumnDragDrop={handleColumnDragDrop}
+        order={order} />
       <a className={styles.toolbarButton} onClick={onRefresh} title='Refresh'>
         <Icon name='refresh' width={30} height={26} />
       </a>

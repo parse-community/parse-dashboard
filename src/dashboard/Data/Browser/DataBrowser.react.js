@@ -42,7 +42,13 @@ export default class DataBrowser extends React.Component {
     };
 
     this.handleKey = this.handleKey.bind(this);
-
+    this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.setCurrent = this.setCurrent.bind(this);
+    this.setEditing = this.setEditing.bind(this);
+    this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
+    this.unsetTooltip = this.unsetTooltip.bind(this);
+    
     this.saveOrderTimeout = null;
   }
 
@@ -248,6 +254,12 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleColumnsOrder(order) {
+    this.setState({ order }, () => {
+      this.updatePreferences(order);
+    });
+  }
+
   render() {
     let { className, ...other } = this.props;
     const { applicationId, preventSchemaEdits } = this.context.currentApp;
@@ -258,19 +270,19 @@ export default class DataBrowser extends React.Component {
           current={this.state.current}
           editing={this.state.editing}
           className={className}
-          handleHeaderDragDrop={this.handleHeaderDragDrop.bind(this)}
-          handleResize={this.handleResize.bind(this)}
-          setEditing={this.setEditing.bind(this)}
-          setCurrent={this.setCurrent.bind(this)}
+          handleHeaderDragDrop={this.handleHeaderDragDrop}
+          handleResize={this.handleResize}
+          setEditing={this.setEditing}
+          setCurrent={this.setCurrent}
           currentTooltip={this.state.currentTooltip}
-          unsetTooltip={this.unsetTooltip.bind(this)}
+          unsetTooltip={this.unsetTooltip}
           numberOfColumns={this.state.numberOfColumns}
           {...other} />
         <B4ABrowserToolbar
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}
-          setCurrent={this.setCurrent.bind(this)}
+          setCurrent={this.setCurrent}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
           enableImport={this.context.currentApp.serverInfo.features.schemas.import}
@@ -279,7 +291,10 @@ export default class DataBrowser extends React.Component {
           enableClassManipulation={!preventSchemaEdits}
           {...other}
           applicationId={applicationId}
-          onClickIndexManager={this.props.onClickIndexManager} />
+          onClickIndexManager={this.props.onClickIndexManager}
+          handleColumnDragDrop={this.handleHeaderDragDrop}
+          handleColumnsOrder={this.handleColumnsOrder}
+          order={this.state.order} />
       </div>
     );
   }

@@ -38,6 +38,21 @@ class BrowserCell extends React.Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.current && this.props.current) {
       this.props.onSelect(this.readableValue);
+
+      const node = findDOMNode(this);
+      const { left, right, bottom, top } = node.getBoundingClientRect();
+
+      // Takes into consideration Sidebar width when over 980px wide.
+      const leftBoundary = window.innerWidth > 980 ? 300 : 0;
+
+      // BrowserToolbar + DataBrowserHeader height
+      const topBoundary = 126;
+
+      if (left < leftBoundary || right > window.innerWidth) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (top < topBoundary || bottom > window.innerHeight) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
     }
   }
 
@@ -90,7 +105,7 @@ class BrowserCell extends React.Component {
     } else if (type === 'ACL') {
       let pieces = [];
       let json = value.toJSON();
-      if (json.hasOwnProperty('*')) {
+      if (Object.prototype.hasOwnProperty.call(json, '*')) {
         if (json['*'].read && json['*'].write) {
           pieces.push('Public Read + Write');
         } else if (json['*'].read) {
@@ -150,9 +165,18 @@ class BrowserCell extends React.Component {
         <span
           className={classes.join(' ')}
           style={{ width }}
-          onClick={() => current && type !== 'Relation' ? onEditChange(true) : onSelect(readableValue)} >
+          onClick={() => current && type !== 'Relation' ? onEditChange(true) : onSelect(readableValue)}
+          onTouchEnd={e => {
+            if (current && type !== 'Relation') {
+              // The touch event may trigger an unwanted change in the column value
+              if (['ACL', 'Boolean', 'File'].includes(type)) {
+                e.preventDefault();
+              }
+              onEditChange(true);
+            }
+          }}>
           {content}
-       </span>
+        </span>
     );
   }
 }

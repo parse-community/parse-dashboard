@@ -9,7 +9,7 @@ import DataBrowserHeader   from 'components/DataBrowserHeader/DataBrowserHeader.
 import DragHandle          from 'components/DragHandle/DragHandle.react';
 import HTML5Backend        from 'react-dnd-html5-backend';
 import React               from 'react';
-import { DragDropContext } from 'react-dnd';
+import { DndProvider }     from 'react-dnd'
 
 export const component = DragHandle;
 
@@ -64,7 +64,6 @@ let handleStyle = {
   cursor: 'ew-resize'
 };
 
-@DragDropContext(HTML5Backend)
 class HeadersDemo extends React.Component {
   constructor() {
     super();
@@ -90,32 +89,34 @@ class HeadersDemo extends React.Component {
 
   render() {
     return (
-      <div style={{ height: 30, background: '#66637A', whiteSpace: 'nowrap' }}>
-        <div style={{ display: 'inline-block', width: this.state.widths[0] }}>
-          <DataBrowserHeader name='objectId' type='Special' />
+      <DndProvider backend={HTML5Backend}>
+        <div style={{ height: 30, background: '#66637A', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'inline-block', width: this.state.widths[0] }}>
+            <DataBrowserHeader name='objectId' type='Special' />
+          </div>
+          <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 0)} />
+          <div style={{ display: 'inline-block', width: this.state.widths[1] }}>
+            <DataBrowserHeader name='createdAt' type='Date' style={lightBg} />
+          </div>
+          <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 1)} />
+          <div style={{ display: 'inline-block', width: this.state.widths[2] }}>
+            <DataBrowserHeader name='updatedAt' type='Date' />
+          </div>
+          <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 2)} />
+          <div style={{ display: 'inline-block', width: this.state.widths[3] }}>
+            <DataBrowserHeader name='name' type='String' style={lightBg} />
+          </div>
+          <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 3)} />
+          <div style={{ display: 'inline-block', width: this.state.widths[4] }}>
+            <DataBrowserHeader name='owner' type='Pointer<_User>' />
+          </div>
+          <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 4)} />
+          <div style={{ display: 'inline-block', width: this.state.widths[5] }}>
+            <DataBrowserHeader name='really_long_column_name_that_overflows' type='String' style={lightBg} />
+          </div>
+          <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 5)} />
         </div>
-        <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 0)} />
-        <div style={{ display: 'inline-block', width: this.state.widths[1] }}>
-          <DataBrowserHeader name='createdAt' type='Date' style={lightBg} />
-        </div>
-        <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 1)} />
-        <div style={{ display: 'inline-block', width: this.state.widths[2] }}>
-          <DataBrowserHeader name='updatedAt' type='Date' />
-        </div>
-        <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 2)} />
-        <div style={{ display: 'inline-block', width: this.state.widths[3] }}>
-          <DataBrowserHeader name='name' type='String' style={lightBg} />
-        </div>
-        <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 3)} />
-        <div style={{ display: 'inline-block', width: this.state.widths[4] }}>
-          <DataBrowserHeader name='owner' type='Pointer<_User>' />
-        </div>
-        <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 4)} />
-        <div style={{ display: 'inline-block', width: this.state.widths[5] }}>
-          <DataBrowserHeader name='really_long_column_name_that_overflows' type='String' style={lightBg} />
-        </div>
-        <DragHandle style={handleStyle} onDrag={this.handleDrag.bind(this, 5)} />
-      </div>
+      </DndProvider>
     );
   }
 }

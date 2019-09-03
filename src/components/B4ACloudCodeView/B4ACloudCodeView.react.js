@@ -1,6 +1,6 @@
 import React             from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import style             from 'react-syntax-highlighter/styles/hljs/tomorrow-night-eighties';
+import style             from 'react-syntax-highlighter/dist/esm/styles/hljs/tomorrow-night-eighties';
 
 export default class B4ACloudCodeView extends React.Component {
   constructor(props){
