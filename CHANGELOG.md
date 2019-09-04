@@ -1,9 +1,13 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.0...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.1...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 2.0.1
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.0...2.0.1)
+* Publishing it again since there is an old test 2.0.0 release already published to npm
 
 ### 2.0.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.3...2.0.0)
