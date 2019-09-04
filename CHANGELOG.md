@@ -1,9 +1,31 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.3...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.0...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 2.0.0
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.3...2.0.0)
+* Fix: Cell edit not updating partial view ([#1255](https://github.com/parse-community/parse-dashboard/pull/1255)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* Improve: Table performance improvements ([#1241](https://github.com/parse-community/parse-dashboard/pull/1241)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* Fix: Avoid filter tab disappears on apply filter ([#1229](https://github.com/parse-community/parse-dashboard/pull/1229)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* NEW: Change columns order and visibility ([#1235](https://github.com/parse-community/parse-dashboard/pull/1235)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* Improve: Table not scrolling when using arrow keys ([#1239](https://github.com/parse-community/parse-dashboard/pull/1239)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* NEW: Add masterkey parameters ([#1233](https://github.com/parse-community/parse-dashboard/pull/1233)), thanks to [Manuel](https://github.com/mtrezza)
+* Improve: Editing values not possible on mobile ([#1222](https://github.com/parse-community/parse-dashboard/pull/1222)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* Fix: JSON conversion breaking file upload process ([#1225](https://github.com/parse-community/parse-dashboard/pull/1225)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* NEW: Support building on Windows ([#1115](https://github.com/parse-community/parse-dashboard/pull/1115)), thanks to [Diamond Lewis](https://github.com/dplewis)
+* Improve: Avoid Parse transformations on array and object fields ([#1223](https://github.com/parse-community/parse-dashboard/pull/1223)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* NEW: Select all objects ([#1219](https://github.com/parse-community/parse-dashboard/pull/1219)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* NEW: Boolean dropdown on installation condition ([#1221](https://github.com/parse-community/parse-dashboard/pull/1229)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* NEW: String editor resizable ([#1217](https://github.com/parse-community/parse-dashboard/pull/1217)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* Fix: Update PIG examples to work with react-dnd 3.x ([#1214](https://github.com/parse-community/parse-dashboard/pull/1217)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* Fix: Fonts on AppsIndex ([#1197](https://github.com/parse-community/parse-dashboard/pull/1197)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* NEW: Add required and default value options ([#1193](https://github.com/parse-community/parse-dashboard/pull/1197)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+
+#### Breaking Changes:
+* Parse Dashboard now requires Node.js version >= 8.9
 
 ### 1.4.3
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.4.2...1.4.3)
