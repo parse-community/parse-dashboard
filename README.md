@@ -39,7 +39,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 
 # Getting Started
 
-[Node.js](https://nodejs.org) version >= 4.3 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher.
+[Node.js](https://nodejs.org) version >= 8.9 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher.
 
 # Local Installation
 
