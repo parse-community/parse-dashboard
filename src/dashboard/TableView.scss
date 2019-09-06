@@ -14,13 +14,12 @@
   right: 0;
   background: #66637A;
   height: 30px;
-  transition: left 0.5s ease-in;
   white-space: nowrap;
 }
 
-@media (max-width: 980px) {
+body:global(.expanded) {
   .headers {
-    left: 0;
+    left: $sidebarCollapsedWidth;
   }
 }
 

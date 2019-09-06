@@ -24,21 +24,33 @@ export default class SidebarHeader extends React.Component {
     });
   }
   render() {
-    return (
-      <div className={styles.header}>
-        <Link className={styles.logo} to={{ pathname: '/apps' }}>
+    const { isCollapsed = false } = this.props;
+    const headerContent = isCollapsed
+      ? (
+        <div className={styles.logo}>
           <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
-        </Link>
-        <Link to='/apps'>
-          <div className={styles.version}>
-            <div>
-              Parse Dashboard {version}
+        </div>
+      )
+      : (
+        <>
+          <Link className={styles.logo} to={{ pathname: '/apps' }}>
+            <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
+          </Link>
+          <Link to='/apps'>
+            <div className={styles.version}>
               <div>
-                {this.state.dashboardUser}
+                Parse Dashboard {version}
+                <div>
+                  {this.state.dashboardUser}
+                </div>
               </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </>
+      )
+    return (
+      <div className={styles.header}>
+        {headerContent}
       </div>
     );
   }
