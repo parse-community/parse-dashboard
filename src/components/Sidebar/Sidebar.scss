@@ -128,16 +128,20 @@ $footerHeight: 36px;
 
 .currentApp {
   position: relative;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  .currentAppName {
+  .appNameContainer {
     display: flex;
     align-items: center;
     cursor: pointer;
+
+    .currentAppName {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 215px;
+    }
 
     &:after {
       @include arrow('down', 10px, 7px, #132B39);
