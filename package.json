@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
-    "@babel/plugin-proposal-decorators": "7.4.4",
+    "@babel/plugin-proposal-decorators": "7.6.0",
     "@babel/plugin-transform-regenerator": "7.4.5",
     "@babel/plugin-transform-runtime": "7.5.5",
     "@babel/preset-env": "7.5.5",
