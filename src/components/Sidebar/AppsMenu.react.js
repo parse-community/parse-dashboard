@@ -13,9 +13,9 @@ import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
 import { unselectable } from 'stylesheets/base.scss';
 
-let AppsMenu = ({ apps, current, height, onSelect }) => (
+const AppsMenu = ({ apps, current, height, onSelect, onPinClick }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>
-    <AppName name={current.name} onClick={onSelect.bind(null, current.slug)} />
+    <AppName name={current.name} onClick={onSelect.bind(null, current.slug)} onPinClick={onPinClick} />
     <div className={styles.menuSection}>All Apps</div>
     <div className={styles.appListContainer}>
       {apps.map((app) => {
