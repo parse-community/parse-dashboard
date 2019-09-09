@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import copy                   from 'copy-to-clipboard';
 import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
@@ -32,6 +33,7 @@ export default class DataBrowser extends React.Component {
       order: order,
       current: null,
       editing: false,
+      copyableValue: undefined
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -40,6 +42,7 @@ export default class DataBrowser extends React.Component {
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
+    this.setCopyableValue = this.setCopyableValue.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -178,6 +181,13 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
+      case 67: // C
+        if ((e.ctrlKey || e.metaKey) && this.state.copyableValue !== undefined) {
+          copy(this.state.copyableValue); // Copies current cell value to clipboard
+          this.props.showNote('Value copied to clipboard', false)
+          e.preventDefault()
+        }
+        break;
     }
   }
 
@@ -190,6 +200,12 @@ export default class DataBrowser extends React.Component {
   setCurrent(current) {
     if (JSON.stringify(this.state.current) !== JSON.stringify(current)) {
       this.setState({ current });
+    }
+  }
+  
+  setCopyableValue(copyableValue) {
+    if (this.state.copyableValue !== copyableValue) {
+      this.setState({ copyableValue });
     }
   }
 
@@ -213,6 +229,7 @@ export default class DataBrowser extends React.Component {
           handleResize={this.handleResize}
           setEditing={this.setEditing}
           setCurrent={this.setCurrent}
+          setCopyableValue={this.setCopyableValue}
           {...other} />
         <BrowserToolbar
           count={count}
