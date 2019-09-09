@@ -135,7 +135,8 @@ export default class BrowserTable extends React.Component {
               selectRow={this.props.selectRow}
               setCurrent={this.props.setCurrent}
               setEditing={this.props.setEditing}
-              setRelation={this.props.setRelation} />
+              setRelation={this.props.setRelation}
+              setCopyableValue={this.props.setCopyableValue} />
           </div>
         );
       }
@@ -167,7 +168,8 @@ export default class BrowserTable extends React.Component {
           selectRow={this.props.selectRow}
           setCurrent={this.props.setCurrent}
           setEditing={this.props.setEditing}
-          setRelation={this.props.setRelation} />
+          setRelation={this.props.setRelation}
+          setCopyableValue={this.props.setCopyableValue} />
       }
 
       if (this.props.editing) {
