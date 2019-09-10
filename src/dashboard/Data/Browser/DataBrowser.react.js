@@ -235,7 +235,7 @@ export default class DataBrowser extends React.Component {
           count={count}
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
-          classNameForPermissionsEditor={className}
+          classNameForEditors={className}
           setCurrent={this.setCurrent}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
