@@ -1,9 +1,16 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.1...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.2...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+
+### 2.0.2
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.1...2.0.2)
+* Fix: filter tab not working for _User, and ohter classes starting with _ ([#1275](https://github.com/parse-community/parse-dashboard/pull/1275)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* Fix: Data Browser is not updating accordingly ([#1276](https://github.com/parse-community/parse-dashboard/pull/1276)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* NEW: Copy cell value using CTRL+C ([#1272](https://github.com/parse-community/parse-dashboard/pull/1272)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* Docs: Update NodeJS required version in README ([#1265](https://github.com/parse-community/parse-dashboard/pull/1265)), thanks to [Jerome](https://github.com/JeromeDeLeon)
 
 ### 2.0.1
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.0...2.0.1)
