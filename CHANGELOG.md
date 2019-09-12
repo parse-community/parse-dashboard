@@ -4,6 +4,7 @@
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.2...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Fix: Feature "masterkey parameters" requires Parse Server >= 3.8.1
 
 ### 2.0.2
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.1...2.0.2)
