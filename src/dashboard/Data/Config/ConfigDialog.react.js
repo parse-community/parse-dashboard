@@ -236,10 +236,10 @@ export default class ConfigDialog extends React.Component {
         
         {
           /*
-            Add `Requires master key` field if parse-server version >= 3.8.0,
+            Add `Requires master key` field if parse-server version >= 3.9.0,
             that is the minimum version that supports this feature.
           */
-          semver.valid(this.props.parseServerVersion) && semver.gte(this.props.parseServerVersion, '3.8.0') 
+          semver.valid(this.props.parseServerVersion) && semver.gte(this.props.parseServerVersion, '3.9.0') 
           ? <Field
               label={
                 <Label
