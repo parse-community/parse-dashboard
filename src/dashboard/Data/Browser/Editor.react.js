@@ -12,6 +12,7 @@ import FileEditor     from 'components/FileEditor/FileEditor.react';
 import GeoPointEditor from 'components/GeoPointEditor/GeoPointEditor.react';
 import NumberEditor   from 'components/NumberEditor/NumberEditor.react';
 import Parse          from 'parse';
+import decode         from 'parse/lib/browser/decode';
 import React          from 'react';
 import StringEditor   from 'components/StringEditor/StringEditor.react';
 
@@ -30,7 +31,7 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit }
   } else if (type === 'Array' || type === 'Object') {
     let encodeCommit = (json) => {
       try {
-        let obj = JSON.parse(json);
+        let obj = decode(JSON.parse(json));
         onCommit(obj);
       } catch (e) {
         onCommit(value);
