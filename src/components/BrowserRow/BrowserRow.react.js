@@ -1,4 +1,5 @@
 import Parse from 'parse';
+import encode from 'parse/lib/browser/encode';
 import React, { Component } from 'react';
 
 import BrowserCell from 'components/BrowserCell/BrowserCell.react';
@@ -46,7 +47,7 @@ export default class BrowserRow extends Component {
               // "Parse._encoding" is responsible to convert Parse data into raw data.
               // Since array and object are generic types, we want to render them the way
               // they were stored in the database.
-              attr = Parse._encode(obj.get(name));
+              attr = encode(obj.get(name), undefined, true);
             }
           }
           let hidden = false;
