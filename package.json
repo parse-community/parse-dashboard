@@ -81,7 +81,7 @@
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "core-js": "3.2.1",
-    "cross-env": "6.0.0",
+    "cross-env": "6.0.2",
     "css-loader": "3.2.0",
     "eslint": "6.5.1",
     "eslint-plugin-jest": "22.17.0",
