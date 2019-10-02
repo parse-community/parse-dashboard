@@ -148,16 +148,17 @@ let BrowserToolbar = ({
   const classSchema = schema.data.get('classes').get(classNameForEditors);
   if (classSchema) {
     classSchema.forEach(({ type, targetClass }, col) => {
+      schemaSimplifiedData[col] = {
+        type,
+        targetClass,
+      };
+
       if (col === 'objectId' || isUnique && col !== uniqueField) {
         return;
       }
       if (targetClass === '_User') {
         userPointers.push(col);
       }
-      schemaSimplifiedData[col] = {
-        type,
-        targetClass,
-      };
     });
   }
 
