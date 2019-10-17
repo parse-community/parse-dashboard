@@ -1,9 +1,12 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.3...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+### 2.0.4
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.3...2.0.4)
+* Fix: Restore `ObjectId` to filter ([#1315](https://github.com/parse-community/parse-dashboard/pull/1315)), thanks to [Wolfwood](https://github.com/W0lfw00d)
 
 ### 2.0.3
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.2...2.0.3)
