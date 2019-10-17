@@ -53,7 +53,7 @@
     "js-beautify": "1.10.2",
     "json-file-plus": "3.2.0",
     "package-json": "6.5.0",
-    "parse": "2.7.1",
+    "parse": "2.8.0",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
     "prismjs": "1.17.0",
@@ -71,7 +71,7 @@
     "semver": "^6.3.0"
   },
   "devDependencies": {
-    "@babel/core": "7.6.3",
+    "@babel/core": "7.6.4",
     "@babel/plugin-proposal-decorators": "7.6.0",
     "@babel/plugin-transform-regenerator": "7.4.5",
     "@babel/plugin-transform-runtime": "7.6.2",
@@ -80,11 +80,11 @@
     "babel-eslint": "10.0.3",
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "core-js": "3.2.1",
+    "core-js": "3.3.2",
     "cross-env": "6.0.3",
     "css-loader": "3.2.0",
     "eslint": "6.5.1",
-    "eslint-plugin-jest": "22.17.0",
+    "eslint-plugin-jest": "22.19.0",
     "eslint-plugin-react": "7.16.0",
     "file-loader": "4.2.0",
     "http-server": "0.11.1",
@@ -101,7 +101,7 @@
     "sass-loader": "8.0.0",
     "style-loader": "1.0.0",
     "svg-prep": "1.0.4",
-    "webpack": "4.41.0",
+    "webpack": "4.41.2",
     "webpack-cli": "3.3.9"
   },
   "scripts": {
