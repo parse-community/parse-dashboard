@@ -405,7 +405,7 @@ class Browser extends DashboardView {
     let className = this.props.params.className;
     let source = this.state.relation || className;
     let query = queryFromFilters(source, this.state.filters);
-    if (this.state.ordering !== '-createdAt') {
+    if (this.state.ordering !== 'createdAt') {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let field = this.state.ordering;
