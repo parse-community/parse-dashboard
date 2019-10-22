@@ -47,23 +47,6 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const shallowVerifyStates = [...new Set(Object.keys(this.state).concat(Object.keys(nextState)))]
-      .filter(stateName => stateName !== 'order' && stateName !== 'copyableValue');
-    if (shallowVerifyStates.some(stateName => this.state[stateName] !== nextState[stateName])) {
-      return true;
-    }
-    if (JSON.stringify(this.state.order) !== JSON.stringify(nextState.order)) {
-      return true;
-    }
-    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
-      .filter(propName => propName !== 'columns');
-    if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
-      return true;
-    }
-    return JSON.stringify(this.props.columns) !== JSON.stringify(nextProps.columns);
-  }
-
   componentWillReceiveProps(props, context) {
     if (props.className !== this.props.className) {
       let order = ColumnPreferences.getOrder(
@@ -252,7 +235,7 @@ export default class DataBrowser extends React.Component {
           count={count}
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
-          classNameForPermissionsEditor={className}
+          classNameForEditors={className}
           setCurrent={this.setCurrent}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
           enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}

@@ -1,9 +1,26 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.1...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...master)
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+### 2.0.4
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.3...2.0.4)
+* Fix: Restore `ObjectId` to filter ([#1315](https://github.com/parse-community/parse-dashboard/pull/1315)), thanks to [Wolfwood](https://github.com/W0lfw00d)
+* Fix: Prevent duplicate entries when sorting by `createdAt` ([#1334](https://github.com/parse-community/parse-dashboard/pull/1334)), thanks to [Wolfwood](https://github.com/W0lfw00d)
+
+### 2.0.3
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.2...2.0.3)
+* Fix: Feature "masterkey parameters" requires Parse Server >= 3.9.0 ([#1281](https://github.com/parse-community/parse-dashboard/pull/1281)), thanks to [Manuel Trezza](https://github.com/mtrezza)
+* Fix: CLP dialog for pointer fields ([#1283](https://github.com/parse-community/parse-dashboard/pull/1283)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* Fix: Force pointer array items to always be pointers ([#1291](https://github.com/parse-community/parse-dashboard/pull/1291)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+
+### 2.0.2
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.1...2.0.2)
+* Fix: filter tab not working for _User, and ohter classes starting with _ ([#1275](https://github.com/parse-community/parse-dashboard/pull/1275)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* Fix: Data Browser is not updating accordingly ([#1276](https://github.com/parse-community/parse-dashboard/pull/1276)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo)
+* NEW: Copy cell value using CTRL+C ([#1272](https://github.com/parse-community/parse-dashboard/pull/1272)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
+* Docs: Update NodeJS required version in README ([#1265](https://github.com/parse-community/parse-dashboard/pull/1265)), thanks to [Jerome](https://github.com/JeromeDeLeon)
 
 ### 2.0.1
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.0...2.0.1)
@@ -22,11 +39,11 @@
 * NEW: Support building on Windows ([#1115](https://github.com/parse-community/parse-dashboard/pull/1115)), thanks to [Diamond Lewis](https://github.com/dplewis)
 * Improve: Avoid Parse transformations on array and object fields ([#1223](https://github.com/parse-community/parse-dashboard/pull/1223)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
 * NEW: Select all objects ([#1219](https://github.com/parse-community/parse-dashboard/pull/1219)), thanks to [Douglas Muaroka](https://github.com/douglasmuraoka)
-* NEW: Boolean dropdown on installation condition ([#1221](https://github.com/parse-community/parse-dashboard/pull/1229)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* NEW: Boolean dropdown on installation condition ([#1221](https://github.com/parse-community/parse-dashboard/pull/1221)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
 * NEW: String editor resizable ([#1217](https://github.com/parse-community/parse-dashboard/pull/1217)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
-* Fix: Update PIG examples to work with react-dnd 3.x ([#1214](https://github.com/parse-community/parse-dashboard/pull/1217)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* Fix: Update PIG examples to work with react-dnd 3.x ([#1214](https://github.com/parse-community/parse-dashboard/pull/1214)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
 * Fix: Fonts on AppsIndex ([#1197](https://github.com/parse-community/parse-dashboard/pull/1197)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
-* NEW: Add required and default value options ([#1193](https://github.com/parse-community/parse-dashboard/pull/1197)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
+* NEW: Add required and default value options ([#1193](https://github.com/parse-community/parse-dashboard/pull/1193)), thanks to [Lucas Alencar](https://github.com/alencarlucas)
 
 #### Breaking Changes:
 * Parse Dashboard now requires Node.js version >= 8.9
@@ -69,7 +86,7 @@
 ### 1.3.1
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/1.3.0...1.3.1)
 
-* FIX: Correct inappropriate error message when no target audience is selected ([#1052](https://github.com/parse-community/parse-dashboard/pull/1051)), thanks to [Bouimadaghene](https://github.com/starbassma)
+* FIX: Correct inappropriate error message when no target audience is selected ([#1052](https://github.com/parse-community/parse-dashboard/pull/1052)), thanks to [Bouimadaghene](https://github.com/starbassma)
 * FIX: issue regarding lost mount path ([#1070](https://github.com/parse-community/parse-dashboard/pull/1070)), thanks to [Diamond Lewis](https://github.com/dplewis)
 * NEW: Add distinct / unique filter ([#920](https://github.com/parse-community/parse-dashboard/pull/920)), thanks to [Diamond Lewis](https://github.com/dplewis)
 
