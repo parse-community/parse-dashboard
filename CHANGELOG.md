@@ -6,11 +6,7 @@
 * _Contributing to this repo? Add info about your change here to be included in next release_
 ### 2.0.5
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...2.0.5)
-* Fix: delete and regenerate package-lock to fix broken build ([#1354](https://github.com/parse-community/parse-dashboard/pull/1354)), thanks to [Arthur Cinader](https://github.com/acinader)
-
-### 2.0.4
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...2.0.5)
-* Fix: Add @babel/runtime-corejs3 to fix broken build ([#1354](https://github.com/parse-community/parse-dashboard/pull/1354)), thanks to [Arthur Cinader](https://github.com/acinader)
+* Fix: delete and regenerate package-lock to fix broken build ([#1354](https://github.com/parse-community/parse-dashboard/pull/1354)), thanks to [Diamond Lewis](https://github.com/dplewis)
 
 ### 2.0.4
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.3...2.0.4)
