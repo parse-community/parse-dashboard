@@ -90,7 +90,7 @@
     "http-server": "0.11.1",
     "jest": "24.8.0",
     "marked": "0.7.0",
-    "node-sass": "4.12.0",
+    "node-sass": "4.13.0",
     "null-loader": "^3.0.0",
     "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.1.0",
