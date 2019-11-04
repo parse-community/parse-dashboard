@@ -97,7 +97,7 @@
     "puppeteer": "2.0.0",
     "react-test-renderer": "16.11.0",
     "request": "2.87.0",
-    "request-promise": "4.2.4",
+    "request-promise": "4.2.5",
     "sass-loader": "8.0.0",
     "style-loader": "1.0.0",
     "svg-prep": "1.0.4",
