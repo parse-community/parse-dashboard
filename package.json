@@ -76,7 +76,7 @@
     "@babel/plugin-transform-regenerator": "7.7.0",
     "@babel/plugin-transform-runtime": "7.6.2",
     "@babel/preset-env": "7.7.0",
-    "@babel/preset-react": "7.6.3",
+    "@babel/preset-react": "7.7.0",
     "babel-eslint": "10.0.3",
     "babel-loader": "8.0.6",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
