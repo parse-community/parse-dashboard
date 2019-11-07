@@ -34,7 +34,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/runtime": "7.7.1",
+    "@babel/runtime": "7.7.2",
     "bcryptjs": "2.3.0",
     "body-parser": "1.19.0",
     "codemirror-graphql": "github:timsuchanek/codemirror-graphql#details-fix",
@@ -71,7 +71,7 @@
     "semver": "6.3.0"
   },
   "devDependencies": {
-    "@babel/core": "7.7.0",
+    "@babel/core": "7.7.2",
     "@babel/plugin-proposal-decorators": "7.7.0",
     "@babel/plugin-transform-regenerator": "7.7.0",
     "@babel/plugin-transform-runtime": "7.6.2",
