@@ -48,7 +48,10 @@ export default class Logs extends DashboardView {
   fetchLogs(app, type) {
     let typeParam = (type || 'INFO').toUpperCase();
     app.getLogs(typeParam).then(
-      (logs) => this.setState({ logs }),
+      (logs) => {
+        this.setState({logs:[]})
+        this.setState({ logs })
+      },
       () => this.setState({ logs: [] })
     );
   }
