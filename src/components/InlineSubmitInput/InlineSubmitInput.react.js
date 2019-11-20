@@ -17,6 +17,12 @@ export default class InlineSubmitInput extends React.Component {
     this.state = { value: '', showButton: false };
   }
 
+  componentDidUpdate(props){
+    if(props.showButton != this.props.showButton){
+      this.setState({showButton: this.props.showButton})
+    }
+  }
+
   validate(value) {
     if (this.props.validate) {
       return this.props.validate(value);
@@ -25,7 +31,7 @@ export default class InlineSubmitInput extends React.Component {
   }
 
   handleInputChange(value) {
-    this.setState({ value: value, showButton: this.validate(value) });
+    this.setState({ value, showButton: this.validate(value) });    
   }
 
   handleSubmit() {
@@ -40,10 +46,16 @@ export default class InlineSubmitInput extends React.Component {
     return (
       <div className={styles.wrapper}>
         <div className={this.state.showButton ? styles.input_padded : null}>
-          <TextInput
-            placeholder={this.props.placeholder}
-            value={this.state.value}
-            onChange={this.handleInputChange.bind(this)} />
+          {this.props.render ? (            
+            this.props.render(this.props, this.state, this.handleInputChange)
+          ) : (
+            <TextInput
+              placeholder={this.props.placeholder}
+              value={this.state.value}
+              onChange={this.handleInputChange}
+            />
+          )}
+         
         </div>
         { this.state.showButton ?
           <a href='javascript:;' role='button' className={styles.button} onClick={this.handleSubmit.bind(this)}>

@@ -490,6 +490,7 @@ export default class GeneralSettings extends DashboardView {
       webAppURL: webUrl ? webUrl.url : '',
       otherURL: otherURL ? otherURL.url : '',
       collaborators: this.props.initialFields.collaborators,
+      waiting_collaborators: this.props.initialFields.waiting_collaborators,
       mongoURL: this.context.currentApp.settings.fields.fields.opendb_connection_string,
     };
 
@@ -592,6 +593,7 @@ export default class GeneralSettings extends DashboardView {
               otherURL={fields.otherURL}
               setOtherURL={setField.bind(this, 'otherURL')} />
             <CollaboratorsFields
+              waitingCollaborators={fields.waiting_collaborators}
               collaborators={fields.collaborators}
               ownerEmail={this.props.initialFields.owner_email}
               viewerEmail={AccountManager.currentUser().email}
