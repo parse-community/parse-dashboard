@@ -129,6 +129,7 @@ let AppInformationFields = ({
 
 let CollaboratorsFields = ({
   collaborators,
+  waiting_collaborators,
   ownerEmail,
   viewerEmail,
   addCollaborator,
@@ -138,6 +139,7 @@ let CollaboratorsFields = ({
   legend='Collaborators'
   description='Team up and work together with other people.'
   collaborators={collaborators}
+  waiting_collaborators={waiting_collaborators}
   owner_email={ownerEmail}
   viewer_email={viewerEmail}
   onAdd={addCollaborator}
@@ -490,6 +492,7 @@ export default class GeneralSettings extends DashboardView {
       webAppURL: webUrl ? webUrl.url : '',
       otherURL: otherURL ? otherURL.url : '',
       collaborators: this.props.initialFields.collaborators,
+      waiting_collaborators: this.props.initialFields.waiting_collaborators,
       mongoURL: this.context.currentApp.settings.fields.fields.opendb_connection_string,
     };
 
@@ -593,6 +596,7 @@ export default class GeneralSettings extends DashboardView {
               setOtherURL={setField.bind(this, 'otherURL')} />
             <CollaboratorsFields
               collaborators={fields.collaborators}
+              waiting_collaborators={fields.waiting_collaborators}
               ownerEmail={this.props.initialFields.owner_email}
               viewerEmail={AccountManager.currentUser().email}
               addCollaborator={setCollaborators.bind(undefined, setField)}
