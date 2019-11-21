@@ -330,7 +330,6 @@ export default class Collaborators extends React.Component {
               placeholder="What&#39;s their email?"
               value={this.state.currentEmail}
               onChange={(value)=> {
-                console.log(this.validateEmail(value))
                 this.setState({currentEmail: value, showBtnCollaborator: this.validateEmail(value)});
               }}
             />

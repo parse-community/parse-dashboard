@@ -129,6 +129,7 @@ let AppInformationFields = ({
 
 let CollaboratorsFields = ({
   collaborators,
+  waiting_collaborators,
   ownerEmail,
   viewerEmail,
   addCollaborator,
@@ -138,6 +139,7 @@ let CollaboratorsFields = ({
   legend='Collaborators'
   description='Team up and work together with other people.'
   collaborators={collaborators}
+  waiting_collaborators={waiting_collaborators}
   owner_email={ownerEmail}
   viewer_email={viewerEmail}
   onAdd={addCollaborator}
@@ -593,8 +595,8 @@ export default class GeneralSettings extends DashboardView {
               otherURL={fields.otherURL}
               setOtherURL={setField.bind(this, 'otherURL')} />
             <CollaboratorsFields
-              waitingCollaborators={fields.waiting_collaborators}
               collaborators={fields.collaborators}
+              waiting_collaborators={fields.waiting_collaborators}
               ownerEmail={this.props.initialFields.owner_email}
               viewerEmail={AccountManager.currentUser().email}
               addCollaborator={setCollaborators.bind(undefined, setField)}
