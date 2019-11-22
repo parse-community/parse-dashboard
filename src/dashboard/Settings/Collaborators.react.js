@@ -342,14 +342,17 @@ export default class Collaborators extends React.Component {
   }
 
   listAppOwnerEmail() {
-    <Field
-      labelWidth={55}
-      label={<Label text='App Owner' />}
-      input={<TextInput
-        value={this.props.owner_email}
-        disabled={true}
-      />}
-    />
+    return(
+      <Field
+        labelWidth={55}
+        label={<Label text='App Owner' />}
+        input={<TextInput
+          value={this.props.owner_email}
+          onChange={() => {}}
+          disabled={true}
+        />}
+      />
+    )
   }
 
   renderCollaborators() {
