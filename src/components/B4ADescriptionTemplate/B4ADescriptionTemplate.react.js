@@ -28,7 +28,7 @@ let B4ADescriptionTemplate = (props) => {
       style={{ padding: '0 ' + padding }}>
         <div className={styles.text}>{truncateDescription(props.description)}</div>
         <div className={styles.button}>
-          <Button value={"Buy externally"} primary={true} color="green" onClick={props.onOpenLink}/>
+          <Button value={"Get Started"} primary={true} color="green" onClick={props.onOpenLink}/>
         </div>
     </div>
   );
