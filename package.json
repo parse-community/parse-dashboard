@@ -101,7 +101,7 @@
     "sass-loader": "8.0.0",
     "style-loader": "1.0.1",
     "svg-prep": "1.0.4",
-    "webpack": "4.41.2",
+    "webpack": "4.41.3",
     "webpack-cli": "3.3.10"
   },
   "scripts": {
