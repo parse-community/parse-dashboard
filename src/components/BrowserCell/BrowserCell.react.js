@@ -63,7 +63,7 @@ export default class BrowserCell extends Component {
   }
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, setContextMenu, onPointerClick, row, col } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -143,7 +143,7 @@ export default class BrowserCell extends Component {
       );
       this.copyableValue = undefined;
     }
-  
+
     if (current) {
       classes.push(styles.current);
     }
@@ -168,6 +168,20 @@ export default class BrowserCell extends Component {
               e.preventDefault();
             }
             onEditChange(true);
+          }
+        }}
+        onContextMenu={e => {
+          if (e.type === 'contextmenu') {
+            e.preventDefault();
+            onSelect({ row, col });
+            setCopyableValue(hidden ? undefined : this.copyableValue);
+
+            const { pageX, pageY } = e;
+            setContextMenu({ pageX, pageY }, {
+              field: this.props.field,
+              value: this.copyableValue
+            });
+
           }
         }}>
         {content}

@@ -19,7 +19,7 @@ export default class BrowserRow extends Component {
   }
 
   render() {
-    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation } = this.props;
+    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, setContextMenu } = this.props;
     let attributes = obj.attributes;
     return (
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
@@ -61,6 +61,7 @@ export default class BrowserRow extends Component {
           return (
             <BrowserCell
               key={name}
+              field={name}
               row={row}
               col={j}
               type={type}
@@ -73,7 +74,8 @@ export default class BrowserRow extends Component {
               setRelation={setRelation}
               value={attr}
               hidden={hidden}
-              setCopyableValue={setCopyableValue} />
+              setCopyableValue={setCopyableValue}
+              setContextMenu={setContextMenu} />
           );
         })}
       </div>

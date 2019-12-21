@@ -8,6 +8,7 @@
 import copy                   from 'copy-to-clipboard';
 import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
+import ContextMenu            from 'dashboard/Data/Browser/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
@@ -43,6 +44,7 @@ export default class DataBrowser extends React.Component {
     this.setEditing = this.setEditing.bind(this);
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
+    this.setContextMenu = this.setContextMenu.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -202,11 +204,15 @@ export default class DataBrowser extends React.Component {
       this.setState({ current });
     }
   }
-  
+
   setCopyableValue(copyableValue) {
     if (this.state.copyableValue !== copyableValue) {
       this.setState({ copyableValue });
     }
+  }
+
+  setContextMenu(position, entity) {
+    this.setState({ position, entity });
   }
 
   handleColumnsOrder(order) {
@@ -230,6 +236,7 @@ export default class DataBrowser extends React.Component {
           setEditing={this.setEditing}
           setCurrent={this.setCurrent}
           setCopyableValue={this.setCopyableValue}
+          setContextMenu={this.setContextMenu}
           {...other} />
         <BrowserToolbar
           count={count}
@@ -245,7 +252,13 @@ export default class DataBrowser extends React.Component {
           handleColumnDragDrop={this.handleHeaderDragDrop}
           handleColumnsOrder={this.handleColumnsOrder}
           order={this.state.order}
-          {...other}/>
+          {...other} />
+        <ContextMenu
+          position={this.state.position}
+          entity={this.state.entity}
+          onFilterChange={this.props.onFilterChange}
+          hide={this.setContextMenu}
+        />
       </div>
     );
   }
