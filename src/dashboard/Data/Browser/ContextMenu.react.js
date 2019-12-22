@@ -1,24 +1,14 @@
 import React from 'react';
 import { List, Map } from 'immutable';
+import styles from 'dashboard/Data/Browser/ContextMenu.scss';
 
 let ContextMenu = ({ position, entity, onFilterChange, hide }) => {
 	if (!position) { return null; }
 
 	const { pageX, pageY } = position;
 
-
-	return <div style={{
-		position: 'absolute',
-		border: '1px solid',
-		background: '#797691',
-		color: 'white',
-		top: `${pageY}px`,
-		left: `${pageX}px`,
-		padding: '0.5rem',
-		cursor: 'pointer'
-	}} onClick={() => {
+	const pickFilter = (constraint) => {
 		const filters = new List();
-
 
 		let compareTo;
 		switch (entity.type) {
@@ -33,13 +23,23 @@ let ContextMenu = ({ position, entity, onFilterChange, hide }) => {
 
 		onFilterChange(filters.push(new Map({
 			field: entity.field,
-			// TODO: handle different constraints
-			constraint: 'eq',
+			constraint,
 			compareTo
 		})));
 		hide();
-	}}
-	>Filter by this value</div>;
+	}
+
+	return <div className={styles.menu} style={{
+		top: `${pageY}px`,
+		left: `${pageX}px`
+	}}>
+		{/* TODO: menu items should be generated dynamically  */}
+		<p className={styles.item} onClick={pickFilter.bind(this, 'exists')}>{entity.field} exists</p>
+		<p className={styles.item} onClick={pickFilter.bind(this, 'dne')}>{entity.field} does not exist</p>
+		<p className={styles.item} onClick={pickFilter.bind(this, 'eq')}>{entity.field} equals {entity.copyableValue}</p>
+		<p className={styles.item} onClick={pickFilter.bind(this, 'neq')}>{entity.field} does not equal {entity.copyableValue}</p>
+
+	</div>;
 }
 
 // BrowserContextMenu.propTypes = {
