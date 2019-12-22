@@ -18,10 +18,24 @@ let ContextMenu = ({ position, entity, onFilterChange, hide }) => {
 		cursor: 'pointer'
 	}} onClick={() => {
 		const filters = new List();
+
+
+		let compareTo;
+		switch (entity.type) {
+			case 'Pointer':
+				compareTo = entity.value.toPointer();
+				break;
+			// TODO: handle other types
+
+			default:
+				compareTo = entity.value;
+		}
+
 		onFilterChange(filters.push(new Map({
 			field: entity.field,
+			// TODO: handle different constraints
 			constraint: 'eq',
-			compareTo: entity.value
+			compareTo
 		})));
 		hide();
 	}}

@@ -179,7 +179,8 @@ export default class BrowserCell extends Component {
             const { pageX, pageY } = e;
             setContextMenu({ pageX, pageY }, {
               field: this.props.field,
-              value: this.copyableValue
+              value: this.props.value,
+              type: this.props.type
             });
 
           }
