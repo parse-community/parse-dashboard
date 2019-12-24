@@ -25,7 +25,7 @@ export default class DateTimeEditor extends React.Component {
     this.handleKey = this.handleKey.bind(this);
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState({ value: props.value, text: props.value.toISOString() });
   }
 

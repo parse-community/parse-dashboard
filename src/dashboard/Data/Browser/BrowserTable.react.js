@@ -35,7 +35,7 @@ export default class BrowserTable extends React.Component {
     this.handleScroll = this.handleScroll.bind(this);
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
       this.setState({
         offset: 0,

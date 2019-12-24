@@ -95,7 +95,7 @@ export default class AppsIndex extends React.Component {
     this.focusField = this.focusField.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (AppsManager.apps().length === 1) {
       const [app] = AppsManager.apps();
       history.push(`/apps/${app.slug}/browser`);

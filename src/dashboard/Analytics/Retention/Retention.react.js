@@ -52,7 +52,7 @@ export default class Retention extends DashboardView {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.fetchRetention(this.context.currentApp);
   }
 
@@ -60,7 +60,7 @@ export default class Retention extends DashboardView {
     this.xhrHandles.forEach((xhr) => xhr.abort());
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchRetention(nextContext.currentApp);
     }

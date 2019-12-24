@@ -24,7 +24,7 @@ export default class SettingsData extends React.Component {
     });
   }
 
-  componentWillReceiveProps(props, context) {
+  UNSAFE_componentWillReceiveProps(props, context) {
     if (this.context !== context) {
       this.setState({ fields: undefined });
       context.currentApp.fetchSettingsFields().then(({ fields }) => {

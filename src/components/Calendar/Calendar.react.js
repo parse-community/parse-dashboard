@@ -26,7 +26,7 @@ export default class Calendar extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.value) {
       this.setState({
         currentMonth: new Date(props.value[getDateMethod(props.local, 'getFullYear')](), props.value[getDateMethod(props.local, 'getMonth')](), 1)

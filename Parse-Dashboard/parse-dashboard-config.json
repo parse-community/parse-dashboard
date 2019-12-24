@@ -1,8 +1,8 @@
 {
   "apps": [{
-    "serverURL": "http://localhost:1338/parse",
-    "appId": "hello",
-    "masterKey": "world",
+    "serverURL": "https://parsedev.behive.io/parse",
+    "appId": "Q2keNQdPMD2t3dzwWANyw5w5MzaT5h6TfdVAm5oC",
+    "masterKey": "tBlFocOzlsGKSad40KmLx7wckRhxSAFhgV72GlTK",
     "appName": "",
     "iconName": "",
     "primaryBackgroundColor": "",

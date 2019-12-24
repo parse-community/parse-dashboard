@@ -32,7 +32,7 @@ export default class Popover extends React.Component {
     super();
     this._checkExternalClick = this._checkExternalClick.bind(this);
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let wrapperStyle = this.props.fixed ?
       styles.fixed_wrapper :
       styles.popover_wrapper;
@@ -60,7 +60,7 @@ export default class Popover extends React.Component {
     this._popoverWrapper.appendChild(this._popoverLayer);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.position) {
       this._popoverLayer.style.left = this.props.position.x + 'px';
       this._popoverLayer.style.top = this.props.position.y + 'px';
@@ -78,7 +78,7 @@ export default class Popover extends React.Component {
     this._popoverWrapper.removeChild(this._popoverLayer);
   }
 
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     ReactDOM.render(<ContextProxy cx={this.context}>{React.Children.only(nextProps.children)}</ContextProxy>, this._popoverLayer);
   }
 

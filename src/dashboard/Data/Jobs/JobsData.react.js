@@ -50,7 +50,7 @@ export default class JobsData extends React.Component {
     // this.fetchRelease(this.context.currentApp);
   }
 
-  componentWillReceiveProps(props, context) {
+  UNSAFE_componentWillReceiveProps(props, context) {
     if (this.context !== context) {
       this.fetchJobs(context.currentApp);
       // this.fetchRelease(context.currentApp);

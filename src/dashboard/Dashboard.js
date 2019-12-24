@@ -56,6 +56,7 @@ import {
 import { Route, Redirect } from 'react-router-dom';
 import createClass from 'create-react-class';
 import { Helmet } from 'react-helmet';
+import Playground from "./Data/Playground/Playground.react";
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -100,6 +101,9 @@ const PARSE_DOT_COM_SERVER_INFO = {
       update: true,
       delete: true,
     },
+    playground: {
+      evalCode: true
+    }
   },
   parseServerVersion: 'Parse.com',
 }
@@ -284,6 +288,7 @@ export default class Dashboard extends React.Component {
 
           <Route path={ match.path + '/config' } component={Config} />
           <Route path={ match.path + '/api_console' } component={ApiConsoleRoute} />
+          <Route path={ match.path + '/playground' } component={Playground} />
           <Route path={ match.path + '/migration' } component={Migration} />
 
 

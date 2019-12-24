@@ -27,7 +27,7 @@ export default class Notification extends React.Component {
     clearTimeout(this.timeout);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.state.lastNote !== nextProps.note) {
       clearTimeout(this.timeout);
       if (this.state.hiding) {

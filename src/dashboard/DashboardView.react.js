@@ -86,6 +86,12 @@ export default class DashboardView extends React.Component {
       link: '/api_console'
     });
 
+    coreSubsections.push({
+      name: 'Playground',
+      link: '/playground'
+    });
+
+
     if (this.context.currentApp.migration) {
       coreSubsections.push({
         name: 'Migration',

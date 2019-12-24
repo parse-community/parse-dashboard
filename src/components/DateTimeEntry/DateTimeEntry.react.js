@@ -22,7 +22,7 @@ export default class DateTimeEntry extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       value: props.value.toISOString ? props.value.toISOString() : props.value
     });

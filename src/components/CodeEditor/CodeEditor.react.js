@@ -18,7 +18,7 @@ export default class CodeEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {code: ''}
+    this.state = {code: ''};
     this.id = `EDITOR-${Math.floor(Math.random() * 1000)}`
   }
 

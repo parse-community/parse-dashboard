@@ -38,7 +38,7 @@ export default class Logs extends DashboardView {
     // this.fetchRelease(this.context.currentApp);
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchLogs(nextContext.currentApp, nextProps.params.type);
       // this.fetchRelease(nextContext.currentApp);

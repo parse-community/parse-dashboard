@@ -27,7 +27,7 @@ export default class MultiSelect extends React.Component {
     this.node = ReactDOM.findDOMNode(this);
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     //Necessary for when the size of the field changes.
     this.setState({}, this.setPosition.bind(this));
   }

@@ -27,7 +27,7 @@ export default class SlowQueriesFilter extends React.Component {
     this.node = ReactDOM.findDOMNode(this);
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.schema !== this.props.schema) {
       this.setState({ open: false });
     }
