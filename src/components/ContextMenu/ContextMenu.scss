@@ -1,0 +1,45 @@
+@import 'stylesheets/globals.scss';
+
+.menu {
+	position: absolute;
+	font-size: 14px;
+
+	ul {
+		background: $purple;
+	}
+
+	li {
+		height: 30px;
+    line-height: 30px;
+		border-radius: 5px;
+		color: $white;
+		cursor: pointer;
+		white-space: nowrap;
+		padding: 0 30px 0 10px;
+	}
+
+	li:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.category {
+		display: flex;
+
+		.item {
+			&:after {
+				@include arrow('right', 12px, 8px, rgba(255,255,255,0.3));
+				position: absolute;
+				content: '';
+				margin-top: 10px;
+				right: 10px;
+			}
+		}
+
+		.body {
+			left: 100%;
+			position: absolute;
+		}
+
+	}
+
+}

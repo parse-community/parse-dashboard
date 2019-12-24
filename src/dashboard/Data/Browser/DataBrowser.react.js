@@ -8,7 +8,7 @@
 import copy                   from 'copy-to-clipboard';
 import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
-import ContextMenu            from 'dashboard/Data/Browser/ContextMenu.react';
+import ContextMenu            from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
@@ -211,8 +211,8 @@ export default class DataBrowser extends React.Component {
     }
   }
 
-  setContextMenu(position, entity) {
-    this.setState({ position, entity });
+  setContextMenu(contextMenuX, contextMenuY, contextMenuItems) {
+    this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
   handleColumnsOrder(order) {
@@ -237,6 +237,7 @@ export default class DataBrowser extends React.Component {
           setCurrent={this.setCurrent}
           setCopyableValue={this.setCopyableValue}
           setContextMenu={this.setContextMenu}
+          onFilterChange={this.props.onFilterChange}
           {...other} />
         <BrowserToolbar
           count={count}
@@ -253,12 +254,12 @@ export default class DataBrowser extends React.Component {
           handleColumnsOrder={this.handleColumnsOrder}
           order={this.state.order}
           {...other} />
-        <ContextMenu
-          position={this.state.position}
-          entity={this.state.entity}
-          onFilterChange={this.props.onFilterChange}
-          hide={this.setContextMenu}
-        />
+
+        {this.state.contextMenuX && <ContextMenu
+          x={this.state.contextMenuX}
+          y={this.state.contextMenuY}
+          items={this.state.contextMenuItems}
+        />}
       </div>
     );
   }

@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import { List, Map }             from 'immutable';
 import { dateStringUTC }         from 'lib/DateUtils';
 import getFileName               from 'lib/getFileName';
 import Parse                     from 'parse';
@@ -63,7 +64,7 @@ export default class BrowserCell extends Component {
   }
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, setContextMenu, onPointerClick, row, col } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, onFilterChange, setCopyableValue, setRelation, setContextMenu, onPointerClick, row, col } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -176,13 +177,48 @@ export default class BrowserCell extends Component {
             onSelect({ row, col });
             setCopyableValue(hidden ? undefined : this.copyableValue);
 
+            const { field, value, type } = this.props;
+            const pickFilter = (constraint) => {
+              const filters = new List();
+
+              let compareTo;
+              switch (type) {
+                case 'Pointer':
+                  compareTo = value.toPointer();
+                  break;
+                // TODO: handle other types
+
+                default:
+                  compareTo = value;
+              }
+
+              onFilterChange(filters.push(new Map({
+                field: field,
+                constraint,
+                compareTo
+              })));
+            };
+
             const { pageX, pageY } = e;
-            setContextMenu({ pageX, pageY }, {
-              field: this.props.field,
-              value: this.props.value,
-              copyableValue: this.copyableValue,
-              type: this.props.type
-            });
+            setContextMenu(pageX, pageY, [
+              //TODO: create menu items dynamically
+              { text: 'Set filter...', items: [
+                { text: `${field} exists`,
+                  callback: pickFilter.bind(this, 'exists')},
+                { text: `${field} does not exist`,
+                  callback: pickFilter.bind(this, 'dne')},
+                { text: `${field} equals ${this.copyableValue}`,
+                  callback: pickFilter.bind(this, 'eq')},
+                { text: `${field} does not equal ${this.copyableValue}`,
+                  callback: pickFilter.bind(this, 'neq')}
+              ]},
+              { text: 'Add filter...', items: [
+                { text: `${field} exists`, callback: () => {}},
+                { text: `${field} does not exist`, callback: () => {}},
+                { text: `${field} equals ${this.copyableValue}`, callback: () => {}},
+                { text: `${field} does not equal ${this.copyableValue}`, callback: () => {}}
+              ]}
+            ]);
 
           }
         }}>

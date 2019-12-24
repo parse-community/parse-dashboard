@@ -128,6 +128,7 @@ export default class BrowserTable extends React.Component {
               isUnique={this.props.isUnique}
               obj={this.props.newObject}
               onPointerClick={this.props.onPointerClick}
+              onFilterChange={this.props.onFilterChange}
               order={this.props.order}
               readOnlyFields={READ_ONLY}
               row={-1}
@@ -162,6 +163,7 @@ export default class BrowserTable extends React.Component {
           isUnique={this.props.isUnique}
           obj={obj}
           onPointerClick={this.props.onPointerClick}
+          onFilterChange={this.props.onFilterChange}
           order={this.props.order}
           readOnlyFields={READ_ONLY}
           row={i}
