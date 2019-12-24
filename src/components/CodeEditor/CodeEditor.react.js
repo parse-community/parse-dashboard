@@ -19,17 +19,25 @@ export default class CodeEditor extends React.Component {
     super(props);
 
     this.state = {code: ''}
+    this.id = `EDITOR-${Math.floor(Math.random() * 1000)}`
+  }
+
+  get value() {
+    return document.querySelector(`#${this.id}`).value;
   }
 
   render() {
+    const {className, placeHolder, id} = this.props;
+
     return (
-      <pre style={{margin: 0}} className={`${this.props.className} line-numbers language-javascript`}>
+      <pre style={{margin: 0}} className={`${className} line-numbers language-javascript`}>
         <Editor
-          placeholder={this.props.placeHolder || ''}
+          placeholder={placeHolder || ''}
           value={this.state.code}
           onValueChange={code => this.setState({code})}
           highlight={code => highlight(code, languages.js)}
           padding={10}
+          textareaId={id}
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',
             fontSize: 12,
@@ -41,6 +49,7 @@ export default class CodeEditor extends React.Component {
 }
 
 CodeEditor.propTypes = {
+  id: PropTypes.string.describe('Text area element id to be queried afterwards'),
   className: PropTypes.string.describe('CSS classes'),
   placeHolder: PropTypes.string.describe('Code place holder')
 };
