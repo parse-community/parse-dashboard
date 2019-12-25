@@ -99,7 +99,7 @@
     "request": "2.87.0",
     "request-promise": "4.2.5",
     "sass-loader": "8.0.0",
-    "style-loader": "1.1.1",
+    "style-loader": "1.1.2",
     "svg-prep": "1.0.4",
     "webpack": "4.41.2",
     "webpack-cli": "3.3.10"
