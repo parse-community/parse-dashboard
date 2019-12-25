@@ -1,13 +1,12 @@
 {
   "apps": [{
-    "serverURL": "https://digdig-dev.appspot.com/parse",
-    "appId": "DigDigDev",
-    "masterKey": "DigDigDevMasterKey",
-    "appName": "DigDigDev",
+    "serverURL": "http://localhost:1338/parse",
+    "appId": "hello",
+    "masterKey": "world",
+    "appName": "",
     "iconName": "",
     "primaryBackgroundColor": "",
     "secondaryBackgroundColor": ""
-  }
-  ],
+  }],
   "iconsFolder": "icons"
 }
