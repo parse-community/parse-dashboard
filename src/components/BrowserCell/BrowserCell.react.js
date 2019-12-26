@@ -200,25 +200,52 @@ export default class BrowserCell extends Component {
             };
 
             const { pageX, pageY } = e;
-            setContextMenu(pageX, pageY, [
+            const menuItems = [
               //TODO: create menu items dynamically
-              { text: 'Set filter...', items: [
-                { text: `${field} exists`,
-                  callback: pickFilter.bind(this, 'exists')},
-                { text: `${field} does not exist`,
-                  callback: pickFilter.bind(this, 'dne')},
-                { text: `${field} equals ${this.copyableValue}`,
-                  callback: pickFilter.bind(this, 'eq')},
-                { text: `${field} does not equal ${this.copyableValue}`,
-                  callback: pickFilter.bind(this, 'neq')}
-              ]},
-              { text: 'Add filter...', items: [
-                { text: `${field} exists`, callback: () => {}},
-                { text: `${field} does not exist`, callback: () => {}},
-                { text: `${field} equals ${this.copyableValue}`, callback: () => {}},
-                { text: `${field} does not equal ${this.copyableValue}`, callback: () => {}}
-              ]}
-            ]);
+              {
+                text: 'Set filter...', items: [
+                  {
+                    text: `${field} exists`,
+                    callback: pickFilter.bind(this, 'exists')
+                  },
+                  {
+                    text: `${field} does not exist`,
+                    callback: pickFilter.bind(this, 'dne')
+                  },
+                  {
+                    text: `${field} equals ${this.copyableValue}`,
+                    callback: pickFilter.bind(this, 'eq')
+                  },
+                  {
+                    text: `${field} does not equal ${this.copyableValue}`,
+                    callback: pickFilter.bind(this, 'neq')
+                  }
+                ]
+              },
+              {
+                text: 'Add filter...', items: [
+                  { text: `${field} exists`, callback: () => { } },
+                  { text: `${field} does not exist`, callback: () => { } },
+                  { text: `${field} equals ${this.copyableValue}`, callback: () => { } },
+                  { text: `${field} does not equal ${this.copyableValue}`, callback: () => { } }
+                ]
+              }
+            ];
+
+            const className = this.props.value.className || (field === 'objectId' && this.props.className);
+            className && menuItems.push({
+              text: 'Get related records from...', items:
+                this.props.schema.data.get('classes').filter(cl => {
+                  return cl.filter(column => {
+                    return column.targetClass === className;
+                  }).size > 0
+                }).map((object, key) => {
+                  return { text: key, callback: () => {
+                    // TODO: Browse ClassName filtered by field equals to current value
+                  }}
+                }).toIndexedSeq().toArray()
+            });
+            setContextMenu(pageX, pageY, menuItems);
 
           }
         }}>

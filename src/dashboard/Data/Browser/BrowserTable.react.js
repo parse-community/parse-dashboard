@@ -159,6 +159,7 @@ export default class BrowserTable extends React.Component {
           isEditing={isEditingRow}
           className={this.props.className}
           columns={this.props.columns}
+          schema={this.props.schema}
           currentCol={currentCol}
           isUnique={this.props.isUnique}
           obj={obj}

@@ -61,6 +61,8 @@ export default class BrowserRow extends Component {
           return (
             <BrowserCell
               key={name}
+              schema={this.props.schema}
+              className={className}
               field={name}
               row={row}
               col={j}
