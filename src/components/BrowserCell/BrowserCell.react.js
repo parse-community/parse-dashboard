@@ -242,13 +242,12 @@ export default class BrowserCell extends Component {
                   if (column.targetClass !== pointerClassName) { return; }
                   relatedRecordsMenuItem.items.push({
                     text: className, callback: () => {
-                      let id = this.copyableValue;
+                      let relatedObject = value;
                       if (this.props.field === 'objectId') {
-                        const object = new Parse.Object(pointerClassName);
-                        object.id = value;
-                        id = object.toPointer();
+                        relatedObject = new Parse.Object(pointerClassName);
+                        relatedObject.id = value;
                       }
-                      onPointerClick({ className, id, field })
+                      onPointerClick({ className, id: relatedObject.toPointer(), field })
                     }
                   })
                 });
