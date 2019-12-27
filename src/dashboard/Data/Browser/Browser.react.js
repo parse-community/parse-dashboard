@@ -496,9 +496,9 @@ class Browser extends DashboardView {
     });
   }
 
-  handlePointerClick({ className, id }) {
+  handlePointerClick({ className, id, field = 'objectId' }) {
     let filters = JSON.stringify([{
-        field: 'objectId',
+        field,
         constraint: 'eq',
         compareTo: id
     }]);

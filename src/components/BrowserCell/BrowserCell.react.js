@@ -232,21 +232,32 @@ export default class BrowserCell extends Component {
               }
             ];
 
-            const className = this.props.value.className || (field === 'objectId' && this.props.className);
-            className && menuItems.push({
-              text: 'Get related records from...', items:
-                this.props.schema.data.get('classes').filter(cl => {
-                  return cl.filter(column => {
-                    return column.targetClass === className;
-                  }).size > 0
-                }).map((object, key) => {
-                  return { text: key, callback: () => {
-                    // TODO: Browse ClassName filtered by field equals to current value
-                  }}
-                }).toIndexedSeq().toArray()
-            });
-            setContextMenu(pageX, pageY, menuItems);
+            // Push "Get related records from..." context menu item if cell holds a Pointer
+            // or objectId and there's a class in relation
+            const pointerClassName = this.props.value.className || (field === 'objectId' && this.props.className);
+            if (pointerClassName) {
+              const relatedRecordsMenuItem = { text: 'Get related records from...', items: [] };
+              this.props.schema.data.get('classes').forEach((cl, className) => {
+                cl.forEach((column, field) => {
+                  if (column.targetClass !== pointerClassName) { return; }
+                  relatedRecordsMenuItem.items.push({
+                    text: className, callback: () => {
+                      let id = this.copyableValue;
+                      if (this.props.field === 'objectId') {
+                        const object = new Parse.Object(pointerClassName);
+                        object.id = value;
+                        id = object.toPointer();
+                      }
+                      onPointerClick({ className, id, field })
+                    }
+                  })
+                });
+              });
 
+              relatedRecordsMenuItem.items.length > 0 && menuItems.push(relatedRecordsMenuItem  );
+            }
+
+            setContextMenu(pageX, pageY, menuItems);
           }
         }}>
         {content}
