@@ -6,12 +6,14 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
 let ContextMenu = ({ x, y, items }) => {
 
   const [path, setPath] = useState([]);
+  const [visible, setVisible] = useState(true);
+  useEffect(() => { setVisible(true); }, [items]);
 
   const renderItem = (item, index, array, level = 0) => {
 
@@ -36,11 +38,14 @@ let ContextMenu = ({ x, y, items }) => {
     return (
       <li className={styles.option} onClick={() => {
         item.callback && item.callback();
+        setVisible(false);
       }}>
         {item.text}
       </li>
     );
   }
+
+  if (!visible) { return null; }
 
   return (
     <div className={styles.menu} style={{
