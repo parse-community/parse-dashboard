@@ -234,7 +234,8 @@ export default class BrowserCell extends Component {
 
             // Push "Get related records from..." context menu item if cell holds a Pointer
             // or objectId and there's a class in relation
-            const pointerClassName = this.props.value.className || (field === 'objectId' && this.props.className);
+            const pointerClassName = (this.props.value && this.props.value.className)
+              || (field === 'objectId' && this.props.className);
             if (pointerClassName) {
               const relatedRecordsMenuItem = { text: 'Get related records from...', items: [] };
               this.props.schema.data.get('classes').forEach((cl, className) => {
