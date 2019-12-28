@@ -6,12 +6,13 @@
 
 	ul {
 		background: $purple;
+		@include animation('fade-in .2s linear');
+		opacity: 0;
 	}
 
 	li {
 		height: 30px;
     line-height: 30px;
-		border-radius: 5px;
 		color: $white;
 		cursor: pointer;
 		white-space: nowrap;
@@ -23,7 +24,7 @@
 	}
 
 	.category {
-		display: flex;
+		position: absolute;
 
 		.item {
 			width: 100%;
@@ -42,5 +43,15 @@
 		}
 
 	}
+}
 
+@include keyframes(fade-in) {
+  0% {
+    // @include transform(scale(0.9));
+    opacity: 0;
+  }
+  100% {
+    // @include transform(scale(1));
+    opacity: 1;
+  }
 }
