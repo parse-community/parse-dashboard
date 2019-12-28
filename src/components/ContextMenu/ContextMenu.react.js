@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
 let ContextMenu = ({ x, y, items }) => {
@@ -14,6 +14,25 @@ let ContextMenu = ({ x, y, items }) => {
   const [path, setPath] = useState([]);
   const [visible, setVisible] = useState(true);
   useEffect(() => { setVisible(true); }, [items]);
+
+  //#region Closing menu after clicking outside it
+
+  const menuRef = useRef(null);
+
+  function handleClickOutside(event) {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setVisible(false);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
+
+  //#endregion
 
   const renderItem = (item, index, array, level = 0) => {
 
@@ -48,7 +67,7 @@ let ContextMenu = ({ x, y, items }) => {
   if (!visible) { return null; }
 
   return (
-    <div className={styles.menu} style={{
+    <div className={styles.menu} ref={menuRef} style={{
       left: x, top: y
     }}>
       {items.map(renderItem)}
