@@ -39,7 +39,7 @@ let ContextMenu = ({ x, y, items }) => {
     // items array indicates that we're dealing with the category
     if (item.items && item.items.length > 0) {
       return (
-        <ul className={styles.category}>
+        <ul key={`category-${level}-${index}`} className={styles.category}>
           <li className={styles.item} onMouseEnter={() => {
             const newPath = path.slice(0, level);
             newPath.push(index);
@@ -55,7 +55,7 @@ let ContextMenu = ({ x, y, items }) => {
     }
 
     return (
-      <li className={styles.option} onClick={() => {
+      <li key={`item-${level}-${index}`} className={styles.option} onClick={() => {
         item.callback && item.callback();
         setVisible(false);
       }}>
