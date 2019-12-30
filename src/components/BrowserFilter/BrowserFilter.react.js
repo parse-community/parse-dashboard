@@ -17,8 +17,6 @@ import ReactDOM      from 'react-dom';
 import styles        from 'components/BrowserFilter/BrowserFilter.scss';
 import { List, Map } from 'immutable';
 
-const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];
-
 export default class BrowserFilter extends React.Component {
   constructor() {
     super();
@@ -43,7 +41,7 @@ export default class BrowserFilter extends React.Component {
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
-      let available = Filters.availableFilters(this.props.schema, null, BLACKLISTED_FILTERS);
+      let available = Filters.availableFilters(this.props.schema, null, Filters.BLACKLISTED_FILTERS);
       let field = Object.keys(available)[0];
       filters = new List([new Map({ field: field, constraint: available[field][0] })]);
     }
@@ -55,7 +53,7 @@ export default class BrowserFilter extends React.Component {
   }
 
   addRow() {
-    let available = Filters.availableFilters(this.props.schema, this.state.filters, BLACKLISTED_FILTERS);
+    let available = Filters.availableFilters(this.props.schema, this.state.filters, Filters.BLACKLISTED_FILTERS);
     let field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
       filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
@@ -97,7 +95,7 @@ export default class BrowserFilter extends React.Component {
             <div onClick={this.toggle} style={{ cursor: 'pointer', width: this.node.clientWidth, height: this.node.clientHeight }}></div>
             <div className={styles.body}>
               <Filter
-                blacklist={BLACKLISTED_FILTERS}
+                blacklist={Filters.BLACKLISTED_FILTERS}
                 schema={this.props.schema}
                 filters={this.state.filters}
                 onChange={(filters) => this.setState({ filters: filters })}

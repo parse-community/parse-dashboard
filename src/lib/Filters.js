@@ -231,3 +231,5 @@ export function availableFilters(schema, currentFilters, blacklist) {
   }
   return available;
 }
+
+export const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];

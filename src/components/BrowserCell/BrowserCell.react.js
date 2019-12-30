@@ -75,7 +75,7 @@ export default class BrowserCell extends Component {
     onSelect({ row, col });
     setCopyableValue(hidden ? undefined : this.copyableValue);
 
-    const available = Filters.availableFilters(this.props.simplifiedSchema, this.props.filters);
+    const available = Filters.availableFilters(this.props.simplifiedSchema, this.props.filters, Filters.BLACKLISTED_FILTERS);
     const constraints = available && available[field];
 
     const { pageX, pageY } = event;
