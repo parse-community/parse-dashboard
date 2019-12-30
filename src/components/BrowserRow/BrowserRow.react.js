@@ -62,6 +62,7 @@ export default class BrowserRow extends Component {
             <BrowserCell
               key={name}
               schema={this.props.schema}
+              simplifiedSchema={this.props.simplifiedSchema}
               filters={this.props.filters}
               className={className}
               field={name}

@@ -172,109 +172,83 @@ export default class BrowserCell extends Component {
           }
         }}
         onContextMenu={e => {
-          if (e.type === 'contextmenu') {
-            e.preventDefault();
-            onSelect({ row, col });
-            setCopyableValue(hidden ? undefined : this.copyableValue);
+          if (e.type !== 'contextmenu') { return; }
+          e.preventDefault();
 
-            const { field, value, type } = this.props;
+          onSelect({ row, col });
+          setCopyableValue(hidden ? undefined : this.copyableValue);
 
-            const pickFilter = (constraint, addToExistingFilter) => {
-              const filters = addToExistingFilter ? this.props.filters : new List();
+          const menuItems = [];
+          const { field, value, type } = this.props;
 
-              let compareTo;
-              switch (type) {
-                case 'Pointer':
-                  compareTo = value.toPointer();
-                  break;
-                // TODO: handle other types
+          const pickFilter = (constraint, addToExistingFilter) => {
+            const filters = addToExistingFilter ? this.props.filters : new List();
+            const compareTo = type === 'Pointer' ? value.toPointer() : value;
 
-                default:
-                  compareTo = value;
-              }
+            onFilterChange(filters.push(new Map({
+              field: field,
+              constraint,
+              compareTo
+            })));
+          };
 
-              onFilterChange(filters.push(new Map({
-                field: field,
-                constraint,
-                compareTo
-              })));
-            };
+          const available = Filters.availableFilters(this.props.simplifiedSchema, this.props.filters);
+          const constraints = available && available[field];
 
-            const { pageX, pageY } = e;
-            const menuItems = [
-              //TODO: create menu items dynamically
-              {
-                text: 'Set filter...', items: [
-                  {
-                    text: `${field} exists`,
-                    callback: pickFilter.bind(this, 'exists')
-                  },
-                  {
-                    text: `${field} does not exist`,
-                    callback: pickFilter.bind(this, 'dne')
-                  },
-                  {
-                    text: `${field} equals ${this.copyableValue}`,
-                    callback: pickFilter.bind(this, 'eq')
-                  },
-                  {
-                    text: `${field} does not equal ${this.copyableValue}`,
-                    callback: pickFilter.bind(this, 'neq')
-                  }
-                ]
-              }
-            ];
+          if (constraints) {
+            menuItems.push({
+              text: 'Set filter...', items: constraints.map(constraint => {
+                const definition = Filters.Constraints[constraint];
+                const text = `${field} ${definition.name}${definition.comparable ? (' ' + this.copyableValue) : ''}`;
+                return {
+                  text,
+                  callback: pickFilter.bind(this, constraint)
+                };
+              })
+            });
 
             if (this.props.filters && this.props.filters.size > 0) {
               menuItems.push({
-                text: 'Add filter...', items: [
-                  {
-                    text: `${field} exists`,
-                    callback: pickFilter.bind(this, 'exists', true)
-                  },
-                  {
-                    text: `${field} does not exist`,
-                    callback: pickFilter.bind(this, 'dne', true)
-                  },
-                  {
-                    text: `${field} equals ${this.copyableValue}`,
-                    callback: pickFilter.bind(this, 'eq', true)
-                  },
-                  {
-                    text: `${field} does not equal ${this.copyableValue}`,
-                    callback: pickFilter.bind(this, 'neq', true)
-                  }
-                ]
+                text: 'Add filter...', items: constraints.map(constraint => {
+                  const definition = Filters.Constraints[constraint];
+                  const text = `${field} ${definition.name}${definition.comparable ? (' ' + this.copyableValue) : ''}`;
+                  return {
+                    text,
+                    callback: pickFilter.bind(this, constraint)
+                  };
+                })
               });
             }
-
-            // Push "Get related records from..." context menu item if cell holds a Pointer
-            // or objectId and there's a class in relation
-            const pointerClassName = (this.props.value && this.props.value.className)
-              || (field === 'objectId' && this.props.className);
-            if (pointerClassName) {
-              const relatedRecordsMenuItem = { text: 'Get related records from...', items: [] };
-              this.props.schema.data.get('classes').forEach((cl, className) => {
-                cl.forEach((column, field) => {
-                  if (column.targetClass !== pointerClassName) { return; }
-                  relatedRecordsMenuItem.items.push({
-                    text: className, callback: () => {
-                      let relatedObject = value;
-                      if (this.props.field === 'objectId') {
-                        relatedObject = new Parse.Object(pointerClassName);
-                        relatedObject.id = value;
-                      }
-                      onPointerClick({ className, id: relatedObject.toPointer(), field })
-                    }
-                  })
-                });
-              });
-
-              relatedRecordsMenuItem.items.length > 0 && menuItems.push(relatedRecordsMenuItem  );
-            }
-
-            setContextMenu(pageX, pageY, menuItems);
           }
+
+          // Push "Get related records from..." context menu item if cell holds a Pointer
+          // or objectId and there's a class in relation
+          const pointerClassName = (this.props.value && this.props.value.className)
+            || (field === 'objectId' && this.props.className);
+          if (pointerClassName) {
+            const relatedRecordsMenuItem = { text: 'Get related records from...', items: [] };
+            this.props.schema.data.get('classes').forEach((cl, className) => {
+              cl.forEach((column, field) => {
+                if (column.targetClass !== pointerClassName) { return; }
+                relatedRecordsMenuItem.items.push({
+                  text: className, callback: () => {
+                    let relatedObject = value;
+                    if (this.props.field === 'objectId') {
+                      relatedObject = new Parse.Object(pointerClassName);
+                      relatedObject.id = value;
+                    }
+                    onPointerClick({ className, id: relatedObject.toPointer(), field })
+                  }
+                })
+              });
+            });
+
+            relatedRecordsMenuItem.items.length > 0 && menuItems.push(relatedRecordsMenuItem);
+          }
+
+          const { pageX, pageY } = e;
+          menuItems.length && setContextMenu(pageX, pageY, menuItems);
+
         }}>
         {content}
       </span>

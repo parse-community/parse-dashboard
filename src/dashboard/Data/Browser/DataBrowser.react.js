@@ -34,7 +34,8 @@ export default class DataBrowser extends React.Component {
       order: order,
       current: null,
       editing: false,
-      copyableValue: undefined
+      copyableValue: undefined,
+      simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className)
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -60,6 +61,7 @@ export default class DataBrowser extends React.Component {
         order: order,
         current: null,
         editing: false,
+        simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className)
       });
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
            || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
@@ -89,6 +91,20 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = setTimeout(() => {
       ColumnPreferences.updatePreferences(order, appId, className)
     }, 1000);
+  }
+
+  getSimplifiedSchema(schema, classNameForEditors) {
+    const schemaSimplifiedData = {};
+    const classSchema = schema.data.get('classes').get(classNameForEditors);
+    if (classSchema) {
+      classSchema.forEach(({ type, targetClass }, col) => {
+        schemaSimplifiedData[col] = {
+          type,
+          targetClass,
+        };
+      });
+    }
+    return schemaSimplifiedData;
   }
 
   handleResize(index, delta) {
@@ -230,6 +246,7 @@ export default class DataBrowser extends React.Component {
           order={this.state.order}
           current={this.state.current}
           editing={this.state.editing}
+          simplifiedSchema={this.state.simplifiedSchema}
           className={className}
           handleHeaderDragDrop={this.handleHeaderDragDrop}
           handleResize={this.handleResize}
