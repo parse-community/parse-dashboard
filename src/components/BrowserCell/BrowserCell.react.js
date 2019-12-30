@@ -222,8 +222,11 @@ export default class BrowserCell extends Component {
                     callback: pickFilter.bind(this, 'neq')
                   }
                 ]
-              },
-              {
+              }
+            ];
+
+            if (this.props.filters && this.props.filters.size > 0) {
+              menuItems.push({
                 text: 'Add filter...', items: [
                   {
                     text: `${field} exists`,
@@ -242,8 +245,8 @@ export default class BrowserCell extends Component {
                     callback: pickFilter.bind(this, 'neq', true)
                   }
                 ]
-              }
-            ];
+              });
+            }
 
             // Push "Get related records from..." context menu item if cell holds a Pointer
             // or objectId and there's a class in relation
