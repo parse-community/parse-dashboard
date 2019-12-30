@@ -178,8 +178,9 @@ export default class BrowserCell extends Component {
             setCopyableValue(hidden ? undefined : this.copyableValue);
 
             const { field, value, type } = this.props;
-            const pickFilter = (constraint) => {
-              const filters = new List();
+
+            const pickFilter = (constraint, addToExistingFilter) => {
+              const filters = addToExistingFilter ? this.props.filters : new List();
 
               let compareTo;
               switch (type) {
@@ -224,10 +225,22 @@ export default class BrowserCell extends Component {
               },
               {
                 text: 'Add filter...', items: [
-                  { text: `${field} exists`, callback: () => { } },
-                  { text: `${field} does not exist`, callback: () => { } },
-                  { text: `${field} equals ${this.copyableValue}`, callback: () => { } },
-                  { text: `${field} does not equal ${this.copyableValue}`, callback: () => { } }
+                  {
+                    text: `${field} exists`,
+                    callback: pickFilter.bind(this, 'exists', true)
+                  },
+                  {
+                    text: `${field} does not exist`,
+                    callback: pickFilter.bind(this, 'dne', true)
+                  },
+                  {
+                    text: `${field} equals ${this.copyableValue}`,
+                    callback: pickFilter.bind(this, 'eq', true)
+                  },
+                  {
+                    text: `${field} does not equal ${this.copyableValue}`,
+                    callback: pickFilter.bind(this, 'neq', true)
+                  }
                 ]
               }
             ];
