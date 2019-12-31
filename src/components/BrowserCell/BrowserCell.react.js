@@ -139,7 +139,7 @@ export default class BrowserCell extends Component {
       || (this.props.field === 'objectId' && this.props.className);
     if (pointerClassName) {
       const relatedRecordsMenuItem = { text: 'Get related records from...', items: [] };
-      schema.data.get('classes').forEach((cl, className) => {
+      schema.data.get('classes').sortBy((v, k) => k).forEach((cl, className) => {
         cl.forEach((column, field) => {
           if (column.targetClass !== pointerClassName) { return; }
           relatedRecordsMenuItem.items.push({
