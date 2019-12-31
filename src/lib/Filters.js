@@ -113,6 +113,7 @@ export const Constraints = {
   keyExists: {
     name: 'key exists',
     field: 'Object',
+    composable: true,
     comparable: false
   },
   keyDne: {
