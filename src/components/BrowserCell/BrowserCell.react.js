@@ -162,7 +162,22 @@ export default class BrowserCell extends Component {
   pickFilter(constraint, addToExistingFilter) {
     const { filters, type, value, field } = this.props;
     const newFilters = addToExistingFilter ? filters : new List();
-    const compareTo = type === 'Pointer' ? value.toPointer() : value;
+    let compareTo;
+    switch (type) {
+      case 'Pointer':
+        compareTo = value.toPointer()
+        break;
+      case 'Date':
+        compareTo = value.__type ? value : {
+          __type: 'Date',
+          iso: value
+        };
+        break;
+
+      default:
+        compareTo = value;
+        break;
+    }
 
     this.props.onFilterChange(newFilters.push(new Map({
       field,
