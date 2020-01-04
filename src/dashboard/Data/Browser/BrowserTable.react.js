@@ -219,7 +219,8 @@ export default class BrowserTable extends React.Component {
           }
           let wrapLeft = 30;
           for (let i = 0; i < this.props.current.col; i++) {
-            wrapLeft += this.props.order[i].width;
+            const column = this.props.order[i];
+            wrapLeft += column.visible ? column.width : 0;
           }
           if (!this.props.isUnique) {
             editor = (
