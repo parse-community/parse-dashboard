@@ -36,3 +36,4 @@ COPY --from=base /src/Parse-Dashboard/ /src/Parse-Dashboard/
 USER node
 
 ENTRYPOINT ["node", "Parse-Dashboard/index.js"]
+EXPOSE 4040
