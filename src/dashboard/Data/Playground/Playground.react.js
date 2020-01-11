@@ -1,4 +1,5 @@
 import React from "react";
+import ReactJson from "react-json-view";
 
 import CategoryList from 'components/CategoryList/CategoryList.react'
 import DashboardView from 'dashboard/DashboardView.react'
@@ -11,6 +12,9 @@ export default class Playground extends DashboardView {
     super();
     this.section = 'Core';
     this.subsection = 'Playground';
+    this.state = {
+      result: null
+    }
   }
 
   renderSidebar() {
@@ -21,11 +25,16 @@ export default class Playground extends DashboardView {
     )
   }
 
+  runCode() {
+    const originalCode = this.editor.value;
+  }
+
   renderContent() {
     return React.cloneElement(
       <>
-        <CodeEditor placeHolder={"You can run custom queries here"}/>
-        <Button value={"RUN"} primary={true}/>
+        <CodeEditor placeHolder={"You can run custom queries here"} ref={editor => this.editor = editor}/>
+        <Button value={"RUN"} primary={true} onClick={() => this.runCode()}/>
+        {this.state.result && <ReactJson json={this.stat.result}/>}
       </>
     )
   }

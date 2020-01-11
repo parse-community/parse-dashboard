@@ -27,7 +27,7 @@ export default class CodeEditor extends React.Component {
   }
 
   render() {
-    const {className, placeHolder, id} = this.props;
+    const {className, placeHolder, id = this.id} = this.props;
 
     return (
       <pre style={{margin: 0}} className={`${className} line-numbers language-javascript`}>
