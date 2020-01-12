@@ -73,7 +73,7 @@
   "devDependencies": {
     "@babel/core": "7.8.0",
     "@babel/plugin-proposal-decorators": "7.8.0",
-    "@babel/plugin-transform-regenerator": "7.7.5",
+    "@babel/plugin-transform-regenerator": "7.8.0",
     "@babel/plugin-transform-runtime": "7.7.6",
     "@babel/preset-env": "7.7.7",
     "@babel/preset-react": "7.7.4",
