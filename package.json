@@ -56,7 +56,7 @@
     "parse": "2.11.0",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
-    "prismjs": "1.17.0",
+    "prismjs": "1.19.0",
     "prop-types": "15.7.2",
     "query-string": "6.9.0",
     "react": "16.12.0",
