@@ -33,8 +33,7 @@ class Config extends TableView {
       modalParam: '',
       modalType: 'String',
       modalValue: '',
-      modalMasterKeyOnly: false,
-      parameterToDelete: null
+      modalMasterKeyOnly: false
     };
   }
 
@@ -76,8 +75,8 @@ class Config extends TableView {
       extras = (
         <DeleteParameterDialog
           param={this.state.modalParam}
-          onCancel={() => this.setState({ showDeleteParameterDialog: false, parameterToDelete: null })}
-          onConfirm={() => this.deleteParam.bind(this, this.state.modalParam)} />
+          onCancel={() => this.setState({ showDeleteParameterDialog: false })}
+          onConfirm={this.deleteParam.bind(this, this.state.modalParam)} />
       );
     }
     return extras;
@@ -212,7 +211,9 @@ class Config extends TableView {
     this.props.config.dispatch(
       ActionTypes.DELETE,
       { param: name }
-    )
+    ).then(() => {
+      this.setState({ showDeleteParameterDialog: false });
+    });
   }
 
   createParameter() {

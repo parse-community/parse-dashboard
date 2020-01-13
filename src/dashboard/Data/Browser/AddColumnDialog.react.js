@@ -8,7 +8,7 @@
 
 import Parse              from 'parse'
 import React              from 'react';
-import semver             from 'semver';
+import semver             from 'semver/preload.js';
 import Dropdown           from 'components/Dropdown/Dropdown.react';
 import Field              from 'components/Field/Field.react';
 import Label              from 'components/Label/Label.react';
