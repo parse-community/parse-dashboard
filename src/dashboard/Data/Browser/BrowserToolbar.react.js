@@ -32,6 +32,7 @@ let BrowserToolbar = ({
   onAddColumn,
   onAddRow,
   onAddClass,
+  onEditSelectedRow,
   onAttachRows,
   onAttachSelectedRows,
   onCloneSelectedRows,
@@ -104,6 +105,12 @@ let BrowserToolbar = ({
         <MenuItem text='Add a row' onClick={onAddRow} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
         {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
+        <Separator />
+        <MenuItem
+          disabled={selectionLength !== 1}
+          text={`Edit this row`}
+          onClick={onEditSelectedRow}
+        />
         <Separator />
         <MenuItem
           disabled={!selectionLength}
