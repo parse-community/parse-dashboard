@@ -39,7 +39,7 @@ export default class GeoPointEditor extends React.Component {
   }
 
   checkExternalClick() {
-    // small timeout is needed here because activeElement is set after onBlur event is done
+    // timeout needed because activeElement is set after onBlur event is done
     setTimeout(function() {
       // check if activeElement is something else from input fields,
       // to avoid commiting new value on every switch of focus beetween latitude and longitude fields
