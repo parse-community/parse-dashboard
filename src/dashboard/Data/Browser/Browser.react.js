@@ -19,6 +19,7 @@ import ExportDialog                       from 'dashboard/Data/Browser/ExportDia
 import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
+import EditRowDialog                      from 'dashboard/Data/Browser/EditRowDialog.react';
 import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
@@ -56,6 +57,7 @@ class Browser extends DashboardView {
       showDropClassDialog: false,
       showExportDialog: false,
       showAttachRowsDialog: false,
+      showEditRowDialog: false,
       rowsToDelete: null,
 
       relation: null,
@@ -114,6 +116,10 @@ class Browser extends DashboardView {
     this.addColumn = this.addColumn.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
+    this.showEditRowDialog = this.showEditRowDialog.bind(this);
+    this.confirmEditRowDialog = this.confirmEditRowDialog.bind(this);
+    this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
+    this.handleShowAcl = this.handleShowAcl.bind(this);
   }
 
   componentWillMount() {
@@ -705,7 +711,8 @@ class Browser extends DashboardView {
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
       this.state.showAttachSelectedRowsDialog ||
-      this.state.showCloneSelectedRowsDialog
+      this.state.showCloneSelectedRowsDialog ||
+      this.state.showEditRowDialog
     );
   }
 
@@ -895,6 +902,37 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
+  showEditRowDialog(objectId) {
+    // objectId is optional param which is used for doubleClick event on objectId BrowserCell
+    if (objectId) {
+      // remove all selected rows and select doubleClicked row
+      this.setState({ selection: {} });
+      this.selectRow(objectId, true);
+    }
+    this.setState({
+      showEditRowDialog: true,
+    });
+  }
+
+  closeEditRowDialog() {
+    this.setState({
+      selection: {},
+      showEditRowDialog: false,
+    });
+  }
+
+  handleShowAcl(row, col){
+    this.refs.dataBrowser.setEditing(true);
+    this.refs.dataBrowser.setCurrent({ row, col });
+  }
+
+  async confirmEditRowDialog() {
+    this.setState({
+      selection: {},
+      showEditRowDialog: false,
+    });
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -945,6 +983,7 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
+            ref='dataBrowser'
             isUnique={this.state.isUnique}
             uniqueField={this.state.uniqueField}
             count={count}
@@ -961,6 +1000,7 @@ class Browser extends DashboardView {
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
+            onEditSelectedRow={this.showEditRowDialog}
 
             columns={columns}
             className={className}
@@ -1068,6 +1108,50 @@ class Browser extends DashboardView {
           onConfirm={this.confirmCloneSelectedRows}
         />
       );
+    } else if (this.state.showEditRowDialog) {
+      const classColumns = this.getClassColumns(className, false);
+      // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
+      const columnsObject = {};
+      classColumns.forEach((column) => {
+        columnsObject[column.name] = column
+      });
+      // get ordered list of class columns
+      const columns = ColumnPreferences.getOrder(
+        columnsObject,
+        this.context.currentApp.applicationId,
+        className
+      );
+      // extend columns with their type and targetClass properties
+      columns.forEach(column => {
+        const { type, targetClass } = columnsObject[column.name];
+        column.type = type;
+        column.targetClass = targetClass;
+      });
+
+      const { data, selection } = this.state;
+      // at this moment only one row must be selected, so take the first and only one
+      const selectedId = Object.keys(selection)[0];
+      const row = data.findIndex(d => d.id === selectedId);
+      const selectedRowData = data[row];
+
+      const selectedObject = {
+        row: row,
+        objectId: selectedId,
+        ...selectedRowData.attributes,
+      };
+
+      extras = (
+        <EditRowDialog
+          className={className}
+          columns={columns}
+          selectedObject={selectedObject}
+          setRelation={this.setRelation}
+          handleShowAcl={this.handleShowAcl}
+          onClose={this.closeEditRowDialog}
+          onConfirm={this.confirmEditRowDialog}
+          updateRow={this.updateRow}
+        />
+      )
     }
 
     let notification = null;

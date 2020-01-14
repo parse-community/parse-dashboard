@@ -13,6 +13,9 @@ export default class TextInput extends React.Component {
   changeValue(e) {
     this.props.onChange(e.nativeEvent.target.value);
   }
+  updateValue(e) {
+    this.props.onBlur(e.nativeEvent.target.value);
+  }
 
   render() {
     let classes = [styles.text_input];
@@ -27,7 +30,8 @@ export default class TextInput extends React.Component {
           style={{height: this.props.height || 80}}
           placeholder={this.props.placeholder}
           value={this.props.value}
-          onChange={this.changeValue.bind(this)} />
+          onChange={this.changeValue.bind(this)}
+          onBlur={this.updateValue.bind(this)} />
       );
     }
     return (
@@ -39,7 +43,7 @@ export default class TextInput extends React.Component {
         placeholder={this.props.placeholder}
         value={this.props.value}
         onChange={this.changeValue.bind(this)}
-        onBlur={this.props.onBlur} />
+        onBlur={this.updateValue.bind(this)} />
     );
   }
 }

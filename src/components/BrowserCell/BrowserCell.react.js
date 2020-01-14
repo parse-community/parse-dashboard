@@ -63,7 +63,7 @@ export default class BrowserCell extends Component {
   }
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, name, onEditSelectedRow } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -157,7 +157,10 @@ export default class BrowserCell extends Component {
           setCopyableValue(hidden ? undefined : this.copyableValue);
         }}
         onDoubleClick={() => {
-          if (type !== 'Relation') {
+          // Since objectId can't be edited, double click event opens edit row dialog
+          if (name === 'objectId') {
+            onEditSelectedRow(value);
+          } else if (type !== 'Relation') {
             onEditChange(true)
           }
         }}
