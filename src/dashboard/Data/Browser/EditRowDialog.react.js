@@ -129,7 +129,7 @@ export default class EditRowDialog extends React.Component {
           inputComponent = (
             <TextInput
               multiline={
-                currentObject[name] && currentObject[name].length > 70
+                currentObject[name] && currentObject[name].length > 50
                   ? true
                   : false
               }
