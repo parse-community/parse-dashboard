@@ -129,7 +129,7 @@ export default class EditRowDialog extends React.Component {
           inputComponent = (
             <TextInput
               multiline={
-                currentObject[name] && currentObject[name].length > 50
+                currentObject[name] && currentObject[name].length > 25
                   ? true
                   : false
               }
@@ -192,7 +192,6 @@ export default class EditRowDialog extends React.Component {
               <GeoPointEditor
                 disableAutoFocus={true}
                 value={selectedObject[name]}
-                width={610}
                 style={{ position: "inherit" }}
                 onCommit={newValue => this.handleChange(newValue, name)}
               />
@@ -204,7 +203,6 @@ export default class EditRowDialog extends React.Component {
             <div style={{ padding: "25px" }}>
               <FileEditor
                 value={selectedObject[name]}
-                width={610}
                 style={{ position: "inherit" }}
                 onCommit={newValue => this.handleChange(newValue, name)}
               />
@@ -274,7 +272,6 @@ export default class EditRowDialog extends React.Component {
         onClose={onClose}
         onSubmit={onConfirm}
         submitText="Close"
-        width={1000}
       >
         <div style={{ maxHeight: "60vh", overflowY: "scroll" }}>{fields}</div>
       </FormModal>
