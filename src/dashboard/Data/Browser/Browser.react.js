@@ -117,7 +117,6 @@ class Browser extends DashboardView {
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
     this.showEditRowDialog = this.showEditRowDialog.bind(this);
-    this.confirmEditRowDialog = this.confirmEditRowDialog.bind(this);
     this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
     this.handleShowAcl = this.handleShowAcl.bind(this);
   }
@@ -926,13 +925,6 @@ class Browser extends DashboardView {
     this.refs.dataBrowser.setCurrent({ row, col });
   }
 
-  async confirmEditRowDialog() {
-    this.setState({
-      selection: {},
-      showEditRowDialog: false,
-    });
-  }
-
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1148,7 +1140,6 @@ class Browser extends DashboardView {
           setRelation={this.setRelation}
           handleShowAcl={this.handleShowAcl}
           onClose={this.closeEditRowDialog}
-          onConfirm={this.confirmEditRowDialog}
           updateRow={this.updateRow}
         />
       )

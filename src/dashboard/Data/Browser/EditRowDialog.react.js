@@ -1,5 +1,6 @@
 import React from "react";
 import Parse from "parse";
+import { dateStringUTC } from "lib/DateUtils";
 import Modal from "components/Modal/Modal.react";
 import FormModal from "components/FormModal/FormModal.react";
 import Field from "components/Field/Field.react";
@@ -100,18 +101,22 @@ export default class EditRowDialog extends React.Component {
       selectedObject,
       className,
       columns,
-      onClose,
-      onConfirm
+      onClose
     } = this.props;
     const { currentObject } = this.state;
 
     const fields = columns.map(column => {
       const { name, type, targetClass } = column;
 
+      const isHidden = ["objectId", "createdAt", "updatedAt", "ACL"].indexOf(name) >= 0;
+
+      if (isHidden) {
+        return;
+      }
+
       let inputComponent;
 
       const isDisabled =
-        ["objectId", "createdAt", "updatedAt"].indexOf(name) >= 0 ||
         (className === "_User" && ["authData"].indexOf(name) >= 0) ||
         (className === "_Role" && ["name"].indexOf(name) >= 0) ||
         (className === "_Session" &&
@@ -267,11 +272,21 @@ export default class EditRowDialog extends React.Component {
         type={Modal.Types.INFO}
         icon="edit-solid"
         iconSize={30}
-        title={`${className} Details`}
-        showCancel={false}
+        title={
+          selectedObject.objectId
+            ? `Edit ${selectedObject.objectId}`
+            : `New ${className}`
+        }
+        subtitle={
+          <div style={{ paddingTop: "5px", fontSize: "12px" }}>
+            <p>CreatedAt {dateStringUTC(selectedObject.createdAt)}</p>
+            <p>UpdatedAt {dateStringUTC(selectedObject.updatedAt)}</p>
+          </div>
+        }
         onClose={onClose}
-        onSubmit={onConfirm}
-        submitText="Close"
+        onSubmit={this.openAcl}
+        submitText="View ACL"
+        cancelText="Close"
       >
         <div style={{ maxHeight: "60vh", overflowY: "scroll" }}>{fields}</div>
       </FormModal>
