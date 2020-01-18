@@ -31,6 +31,7 @@ let BrowserToolbar = ({
   onFilterChange,
   onAddColumn,
   onAddRow,
+  onAddRowWithModal,
   onAddClass,
   onEditSelectedRow,
   onAttachRows,
@@ -103,12 +104,13 @@ let BrowserToolbar = ({
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
         <MenuItem text='Add a row' onClick={onAddRow} />
+        <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
         {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
         <Separator />
         <MenuItem
           disabled={selectionLength !== 1}
-          text={`Edit this row`}
+          text={`Edit this row with modal`}
           onClick={onEditSelectedRow}
         />
         <Separator />

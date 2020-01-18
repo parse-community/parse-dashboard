@@ -159,7 +159,7 @@ export default class BrowserCell extends Component {
         onDoubleClick={() => {
           // Since objectId can't be edited, double click event opens edit row dialog
           if (name === 'objectId') {
-            onEditSelectedRow(value);
+            onEditSelectedRow(true, value);
           } else if (type !== 'Relation') {
             onEditChange(true)
           }

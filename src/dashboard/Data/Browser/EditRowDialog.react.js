@@ -97,12 +97,7 @@ export default class EditRowDialog extends React.Component {
   }
 
   render() {
-    const {
-      selectedObject,
-      className,
-      columns,
-      onClose
-    } = this.props;
+    const { selectedObject, className, columns, onClose } = this.props;
     const { currentObject } = this.state;
 
     const fields = columns.map(column => {
@@ -118,7 +113,9 @@ export default class EditRowDialog extends React.Component {
 
       const isDisabled =
         (className === "_User" && ["authData"].indexOf(name) >= 0) ||
-        (className === "_Role" && ["name"].indexOf(name) >= 0) ||
+        (selectedObject.objectId &&
+          className === "_Role" &&
+          ["name"].indexOf(name) >= 0) ||
         (className === "_Session" &&
           [
             "sessionToken",
@@ -279,8 +276,16 @@ export default class EditRowDialog extends React.Component {
         }
         subtitle={
           <div style={{ paddingTop: "5px", fontSize: "12px" }}>
-            <p>CreatedAt {dateStringUTC(selectedObject.createdAt)}</p>
-            <p>UpdatedAt {dateStringUTC(selectedObject.updatedAt)}</p>
+            <p>
+              CreatedAt{" "}
+              {selectedObject.createdAt &&
+                dateStringUTC(selectedObject.createdAt)}
+            </p>
+            <p>
+              UpdatedAt{" "}
+              {selectedObject.updatedAt &&
+                dateStringUTC(selectedObject.updatedAt)}
+            </p>
           </div>
         }
         onClose={onClose}

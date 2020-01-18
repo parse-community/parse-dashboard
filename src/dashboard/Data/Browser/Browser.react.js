@@ -111,6 +111,7 @@ class Browser extends DashboardView {
     this.setRelation = this.setRelation.bind(this);
     this.showAddColumn = this.showAddColumn.bind(this);
     this.addRow = this.addRow.bind(this);
+    this.addRowWithModal = this.addRowWithModal.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
@@ -290,6 +291,12 @@ class Browser extends DashboardView {
         : new Parse.Object(this.props.params.className) ),
       });
     }
+  }
+
+  addRowWithModal() {
+    this.addRow();
+    this.selectRow(undefined, true);
+    this.showEditRowDialog();
   }
 
   removeColumn(name) {
@@ -901,9 +908,9 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
-  showEditRowDialog(objectId) {
+  showEditRowDialog(isDoubleClick, objectId) {
     // objectId is optional param which is used for doubleClick event on objectId BrowserCell
-    if (objectId) {
+    if (isDoubleClick) {
       // remove all selected rows and select doubleClicked row
       this.setState({ selection: {} });
       this.selectRow(objectId, true);
@@ -915,7 +922,6 @@ class Browser extends DashboardView {
 
   closeEditRowDialog() {
     this.setState({
-      selection: {},
       showEditRowDialog: false,
     });
   }
@@ -1011,6 +1017,7 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
+            onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote} />
         );
@@ -1120,16 +1127,30 @@ class Browser extends DashboardView {
         column.targetClass = targetClass;
       });
 
-      const { data, selection } = this.state;
+      const { data, selection, newObject } = this.state;
       // at this moment only one row must be selected, so take the first and only one
-      const selectedId = Object.keys(selection)[0];
+      const selectedKey = Object.keys(selection)[0];
+      // if selectedKey is string "undefined" => new row column 'objectId' was clicked
+      let selectedId = selectedKey === "undefined" ? undefined : selectedKey;
+      // if selectedId is undefined and newObject is null it means new row was just saved and added to data array
+      const isJustSavedObject = selectedId === undefined && newObject === null;
+      // if new object just saved, remove new row selection and select new added row
+      if (isJustSavedObject) {
+        selectedId = data[0].id;
+        this.setState({ selection: {} });
+        this.selectRow(selectedId, true);
+      }
+
       const row = data.findIndex(d => d.id === selectedId);
-      const selectedRowData = data[row];
+
+      const attributes = selectedId
+        ? data[row].attributes
+        : newObject.attributes;
 
       const selectedObject = {
         row: row,
         objectId: selectedId,
-        ...selectedRowData.attributes,
+        ...attributes
       };
 
       extras = (
