@@ -156,7 +156,7 @@ let BrowserToolbar = ({
       if (col === 'objectId' || isUnique && col !== uniqueField) {
         return;
       }
-      if (targetClass === '_User') {
+      if ((type !=='Relation' && targetClass === '_User') || type === 'Array' ) {
         userPointers.push(col);
       }
     });
