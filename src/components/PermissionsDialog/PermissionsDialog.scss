@@ -19,6 +19,11 @@ $sumWriteColsWidth: calc(3 * #{$writeColWidth});
 $permissionsDialogWidth: calc(#{$labelWidth} + (2 * #{$colWidth}) + #{$deleteColWidth});
 $permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth} + #{$addFieldColWidth} + #{$deleteColWidth});
 
+$simplePointerWriteWidth: calc( #{$colWidth} + #{$addFieldColWidth});
+$pointerWriteWidth: calc( #{$sumWriteColsWidth} + #{$addFieldColWidth});
+
+$clpDialogWidth: calc(#{$permissionsDialogWidth} + #{$addFieldColWidth});
+
 .dialog {
   @include modalAnimation();
   position: absolute;
@@ -29,6 +34,24 @@ $permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumW
   border-radius: 5px;
   overflow: hidden;
   transition: width 0.3s 0.15s ease-out;
+}
+
+.clp{
+  width: $clpDialogWidth;
+  
+  .level{
+    width: $clpDialogWidth;
+  }
+  // 118px for add field in CLP only
+  .fourth {
+    width: $addFieldColWidth;
+  }
+}
+
+.clp.advanced{
+  .fourth {
+    width: $colWidth;
+  }
 }
 
 .header {
@@ -64,9 +87,10 @@ $permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumW
   }
 }
 
+
 .level {
   height: 50px;
-  width: $permissionsDialogWidth;
+  width: $permissionsDialogWidth; //   width: 658px;
   background: #0E69A1;
   position: relative;
   color: white;
@@ -239,10 +263,11 @@ $permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumW
   width: $sumReadColsWidth;
   padding: 5px 10px;
 }
+
 .pointerWrite {
+  width: $simplePointerWriteWidth;
+  padding: 0px 10px;
   display: inline-block;
-  width: calc(#{$sumWriteColsWidth} + #{$addFieldColWidth});
-  padding: 5px 10px;
 }
 
 .checkboxWrap {
