@@ -702,7 +702,6 @@ export default class PermissionsDialog extends React.Component {
           } else {
             nextPerms = nextPerms.setIn(['read', id], true);
             nextPerms = nextPerms.setIn(['write', id], true);
-            nextPerms = nextPerms.setIn(['addField', id], true);
           }
 
           let nextKeys = this.state.newKeys.concat([id]);
