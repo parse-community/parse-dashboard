@@ -1149,7 +1149,7 @@ class Browser extends DashboardView {
 
       const selectedObject = {
         row: row,
-        objectId: selectedId,
+        id: selectedId,
         ...attributes
       };
 

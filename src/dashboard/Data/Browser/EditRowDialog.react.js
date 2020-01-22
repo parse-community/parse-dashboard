@@ -2,7 +2,6 @@ import React from "react";
 import Parse from "parse";
 import { dateStringUTC } from "lib/DateUtils";
 import Modal from "components/Modal/Modal.react";
-import FormModal from "components/FormModal/FormModal.react";
 import Field from "components/Field/Field.react";
 import Label from "components/Label/Label.react";
 import TextInput from "components/TextInput/TextInput.react";
@@ -16,8 +15,28 @@ export default class EditRowDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedObject, columns } = this.props;
-    const currentObject = { ...selectedObject };
+    const { selectedObject } = this.props;
+    const currentObject = this.initializeCurrentObject(selectedObject);
+    this.state = { currentObject };
+
+    this.updateCurrentObject = this.updateCurrentObject.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.openAcl = this.openAcl.bind(this);
+    this.openRelation = this.openRelation.bind(this);
+  }
+
+  componentWillReceiveProps(props) {
+    const newSelectedObject = props.selectedObject;
+    const previousSelectedObject = this.props.selectedObject;
+    if (newSelectedObject.id !== previousSelectedObject.id) {
+      const currentObject = this.initializeCurrentObject(newSelectedObject);
+      this.setState({ currentObject });
+    }
+  }
+
+  initializeCurrentObject(newObject) {
+    const { columns } = this.props;
+    const currentObject = { ...newObject };
     columns.forEach(column => {
       const { name, type } = column;
       if (["Array", "Object"].indexOf(type) >= 0) {
@@ -37,12 +56,8 @@ export default class EditRowDialog extends React.Component {
           (currentObject[name] && currentObject[name].id) || "";
       }
     });
-    this.state = { currentObject };
 
-    this.updateCurrentObject = this.updateCurrentObject.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.openAcl = this.openAcl.bind(this);
-    this.openRelation = this.openRelation.bind(this);
+    return currentObject;
   }
 
   updateCurrentObject(newValue, name) {
@@ -83,10 +98,9 @@ export default class EditRowDialog extends React.Component {
   }
 
   openAcl() {
-    const { selectedObject, columns, onClose, handleShowAcl } = this.props;
+    const { selectedObject, columns, handleShowAcl } = this.props;
     const { row } = selectedObject;
     const col = columns.findIndex(c => c.name === "ACL");
-    onClose();
     handleShowAcl(row, col);
   }
 
@@ -103,7 +117,8 @@ export default class EditRowDialog extends React.Component {
     const fields = columns.map(column => {
       const { name, type, targetClass } = column;
 
-      const isHidden = ["objectId", "createdAt", "updatedAt", "ACL"].indexOf(name) >= 0;
+      const isHidden =
+        ["objectId", "createdAt", "updatedAt", "ACL"].indexOf(name) >= 0;
 
       if (isHidden) {
         return;
@@ -113,7 +128,7 @@ export default class EditRowDialog extends React.Component {
 
       const isDisabled =
         (className === "_User" && ["authData"].indexOf(name) >= 0) ||
-        (selectedObject.objectId &&
+        (selectedObject.id &&
           className === "_Role" &&
           ["name"].indexOf(name) >= 0) ||
         (className === "_Session" &&
@@ -223,9 +238,13 @@ export default class EditRowDialog extends React.Component {
             />
           );
           break;
-        case "ACL":
         case "Relation":
-          inputComponent = (
+          // fallback if selectedObject is just saved, so it still doesn't have relation properites set
+          const relation =
+            selectedObject[name] || new Parse.Relation(selectedObject, name);
+          relation.targetClassName = targetClass;
+
+          inputComponent = selectedObject.id ? (
             <div
               style={{
                 textAlign: "center",
@@ -234,14 +253,12 @@ export default class EditRowDialog extends React.Component {
               }}
             >
               <Pill
-                onClick={() =>
-                  type === "ACL"
-                    ? this.openAcl(selectedObject[name])
-                    : this.openRelation(selectedObject[name])
-                }
+                onClick={() => this.openRelation(relation)}
                 value={`View ${type}`}
               />
             </div>
+          ) : (
+            <TextInput disabled={true} placeholder={"Set required fields first"} />
           );
           break;
         default:
@@ -264,37 +281,45 @@ export default class EditRowDialog extends React.Component {
     });
 
     return (
-      <FormModal
+      <Modal
         open
         type={Modal.Types.INFO}
         icon="edit-solid"
         iconSize={30}
         title={
-          selectedObject.objectId
-            ? `Edit ${selectedObject.objectId}`
-            : `New ${className}`
+          selectedObject.id ? (
+            <span>
+              Edit <strong>{selectedObject.id}</strong>
+            </span>
+          ) : (
+            <span>
+              New <strong>{className}</strong>
+            </span>
+          )
         }
         subtitle={
           <div style={{ paddingTop: "5px", fontSize: "12px" }}>
-            <p>
-              CreatedAt{" "}
-              {selectedObject.createdAt &&
-                dateStringUTC(selectedObject.createdAt)}
-            </p>
-            <p>
-              UpdatedAt{" "}
-              {selectedObject.updatedAt &&
-                dateStringUTC(selectedObject.updatedAt)}
-            </p>
+            {selectedObject.createdAt && (
+              <p>
+                CreatedAt{" "}
+                <strong>{dateStringUTC(selectedObject.createdAt)}</strong>
+              </p>
+            )}
+            {selectedObject.updatedAt && (
+              <p>
+                UpdatedAt{" "}
+                <strong>{dateStringUTC(selectedObject.updatedAt)}</strong>
+              </p>
+            )}
           </div>
         }
-        onClose={onClose}
-        onSubmit={this.openAcl}
-        submitText="View ACL"
+        onCancel={onClose}
+        onConfirm={this.openAcl}
+        confirmText="Edit ACL"
         cancelText="Close"
       >
         <div style={{ maxHeight: "60vh", overflowY: "scroll" }}>{fields}</div>
-      </FormModal>
+      </Modal>
     );
   }
 }
