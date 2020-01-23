@@ -5,19 +5,20 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { ActionTypes } from 'lib/stores/ConfigStore';
-import Button          from 'components/Button/Button.react';
-import ConfigDialog    from 'dashboard/Data/Config/ConfigDialog.react';
-import EmptyState      from 'components/EmptyState/EmptyState.react';
-import Icon            from 'components/Icon/Icon.react';
-import { isDate }      from 'lib/DateUtils';
-import Parse           from 'parse';
-import React           from 'react';
-import SidebarAction   from 'components/Sidebar/SidebarAction';
-import subscribeTo     from 'lib/subscribeTo';
-import TableHeader     from 'components/Table/TableHeader.react';
-import TableView       from 'dashboard/TableView.react';
-import Toolbar         from 'components/Toolbar/Toolbar.react';
+import { ActionTypes }        from 'lib/stores/ConfigStore';
+import Button                 from 'components/Button/Button.react';
+import ConfigDialog           from 'dashboard/Data/Config/ConfigDialog.react';
+import DeleteParameterDialog  from 'dashboard/Data/Config/DeleteParameterDialog.react';
+import EmptyState             from 'components/EmptyState/EmptyState.react';
+import Icon                   from 'components/Icon/Icon.react';
+import { isDate }             from 'lib/DateUtils';
+import Parse                  from 'parse';
+import React                  from 'react';
+import SidebarAction          from 'components/Sidebar/SidebarAction';
+import subscribeTo            from 'lib/subscribeTo';
+import TableHeader            from 'components/Table/TableHeader.react';
+import TableView              from 'dashboard/TableView.react';
+import Toolbar                from 'components/Toolbar/Toolbar.react';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -28,6 +29,7 @@ class Config extends TableView {
     this.action = new SidebarAction('Create a parameter', this.createParameter.bind(this));
     this.state = {
       modalOpen: false,
+      showDeleteParameterDialog: false,
       modalParam: '',
       modalType: 'String',
       modalValue: '',
@@ -56,20 +58,28 @@ class Config extends TableView {
   }
 
   renderExtras() {
-    if (!this.state.modalOpen) {
-      return null;
-    }
     const { currentApp = {} } = this.context;
-    return (
-      <ConfigDialog
-        onConfirm={this.saveParam.bind(this)}
-        onCancel={() => this.setState({ modalOpen: false })}
-        param={this.state.modalParam}
-        type={this.state.modalType}
-        value={this.state.modalValue}
-        masterKeyOnly={this.state.modalMasterKeyOnly}
-        parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
-    );
+    let extras = null;
+    if (this.state.modalOpen) {
+      extras = (
+        <ConfigDialog
+          onConfirm={this.saveParam.bind(this)}
+          onCancel={() => this.setState({ modalOpen: false })}
+          param={this.state.modalParam}
+          type={this.state.modalType}
+          value={this.state.modalValue}
+          masterKeyOnly={this.state.modalMasterKeyOnly}
+          parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
+      );
+    } else if (this.state.showDeleteParameterDialog) {
+      extras = (
+        <DeleteParameterDialog
+          param={this.state.modalParam}
+          onCancel={() => this.setState({ showDeleteParameterDialog: false })}
+          onConfirm={this.deleteParam.bind(this, this.state.modalParam)} />
+      );
+    }
+    return extras;
   }
 
   renderRow(data) {
@@ -119,6 +129,11 @@ class Config extends TableView {
       }
       openModal()
     }
+  
+    let openDeleteParameterDialog = () => this.setState({
+      showDeleteParameterDialog: true,
+      modalParam: data.param
+    });
 
     return (
       <tr key={data.param}>
@@ -127,7 +142,7 @@ class Config extends TableView {
         <td style={columnStyleLarge} onClick={openModalValueColumn}>{value}</td>
         <td style={columnStyleSmall} onClick={openModal}>{data.masterKeyOnly.toString()}</td>
         <td style={{ textAlign: 'center' }}>
-          <a onClick={this.deleteParam.bind(this, data.param)}>
+          <a onClick={openDeleteParameterDialog}>
             <Icon width={16} height={16} name='trash-solid' fill='#ff395e' />
           </a>
         </td>
@@ -196,7 +211,9 @@ class Config extends TableView {
     this.props.config.dispatch(
       ActionTypes.DELETE,
       { param: name }
-    )
+    ).then(() => {
+      this.setState({ showDeleteParameterDialog: false });
+    });
   }
 
   createParameter() {
