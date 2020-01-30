@@ -781,10 +781,10 @@ class Browser extends DashboardView {
     });
   }
 
-  async confirmAttachSelectedRows(className, targetObjectId, relationName, objectIds) {
+  async confirmAttachSelectedRows(className, targetObjectId, relationName, objectIds, targetClassName) {
     const parentQuery = new Parse.Query(className);
     const parent = await parentQuery.get(targetObjectId, { useMasterKey: true });
-    const query = new Parse.Query(this.props.params.className);
+    const query = new Parse.Query(targetClassName || this.props.params.className);
     query.containedIn('objectId', objectIds);
     const objects = await query.find({ useMasterKey: true });
     parent.relation(relationName).add(objects);
@@ -1158,10 +1158,13 @@ class Browser extends DashboardView {
           className={className}
           columns={columns}
           selectedObject={selectedObject}
+          handlePointerClick={this.handlePointerClick}
           setRelation={this.setRelation}
           handleShowAcl={this.handleShowAcl}
           onClose={this.closeEditRowDialog}
           updateRow={this.updateRow}
+          confirmAttachSelectedRows={this.confirmAttachSelectedRows}
+          schema={this.props.schema}
         />
       )
     }

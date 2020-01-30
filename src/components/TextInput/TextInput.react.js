@@ -24,10 +24,16 @@ export default class TextInput extends React.Component {
   }
 
   changeValue(e) {
-    this.props.onChange(e.nativeEvent.target.value);
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(e.nativeEvent.target.value);
+    }
   }
   updateValue(e) {
-    this.props.onBlur(e.nativeEvent.target.value);
+    const { onBlur } = this.props;
+    if (onBlur) {
+      onBlur(e.nativeEvent.target.value);
+    }
   }
 
   render() {
@@ -39,6 +45,7 @@ export default class TextInput extends React.Component {
       return (
         <textarea
           ref="textarea"
+          id={this.props.id}
           disabled={!!this.props.disabled}
           className={classes.join(' ')}
           style={{height: this.props.height || 80}}
@@ -51,6 +58,7 @@ export default class TextInput extends React.Component {
     return (
       <input
         ref="input"
+        id={this.props.id}
         type={this.props.hidden ? 'password' : 'text'}
         disabled={!!this.props.disabled}
         className={classes.join(' ')}

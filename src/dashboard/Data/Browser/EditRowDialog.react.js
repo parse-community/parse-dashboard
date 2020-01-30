@@ -1,6 +1,9 @@
 import React from "react";
 import Parse from "parse";
 import { dateStringUTC } from "lib/DateUtils";
+import PropTypes from "lib/PropTypes";
+import ParseApp from "lib/ParseApp";
+import { ContextProxy } from "components/Popover/Popover.react.js";
 import Modal from "components/Modal/Modal.react";
 import Field from "components/Field/Field.react";
 import Label from "components/Label/Label.react";
@@ -10,18 +13,24 @@ import Toggle from "components/Toggle/Toggle.react";
 import Pill from "components/Pill/Pill.react";
 import GeoPointEditor from "components/GeoPointEditor/GeoPointEditor.react";
 import FileEditor from "components/FileEditor/FileEditor.react";
+import ObjectPickerDialog from "dashboard/Data/Browser/ObjectPickerDialog.react";
+import styles from "dashboard/Data/Browser/Browser.scss";
 
 export default class EditRowDialog extends React.Component {
   constructor(props) {
     super(props);
 
     const { selectedObject } = this.props;
-    const currentObject = this.initializeCurrentObject(selectedObject);
-    this.state = { currentObject };
+    const { currentObject, openObjectPickers } = this.initializeState(
+      selectedObject
+    );
+    this.state = { currentObject, openObjectPickers };
 
     this.updateCurrentObject = this.updateCurrentObject.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.openAcl = this.openAcl.bind(this);
+    this.openPointer = this.openPointer.bind(this);
+    this.toggleObjectPicker = this.toggleObjectPicker.bind(this);
     this.openRelation = this.openRelation.bind(this);
   }
 
@@ -29,14 +38,17 @@ export default class EditRowDialog extends React.Component {
     const newSelectedObject = props.selectedObject;
     const previousSelectedObject = this.props.selectedObject;
     if (newSelectedObject.id !== previousSelectedObject.id) {
-      const currentObject = this.initializeCurrentObject(newSelectedObject);
-      this.setState({ currentObject });
+      const { currentObject, openObjectPickers } = this.initializeState(
+        newSelectedObject
+      );
+      this.setState({ currentObject, openObjectPickers });
     }
   }
 
-  initializeCurrentObject(newObject) {
+  initializeState(newObject) {
     const { columns } = this.props;
     const currentObject = { ...newObject };
+    const openObjectPickers = {};
     columns.forEach(column => {
       const { name, type } = column;
       if (["Array", "Object"].indexOf(type) >= 0) {
@@ -54,10 +66,14 @@ export default class EditRowDialog extends React.Component {
       if (type === "Pointer") {
         currentObject[name] =
           (currentObject[name] && currentObject[name].id) || "";
+        openObjectPickers[name] = false;
+      }
+      if (type === "Relation") {
+        openObjectPickers[name] = false;
       }
     });
 
-    return currentObject;
+    return { currentObject, openObjectPickers };
   }
 
   updateCurrentObject(newValue, name) {
@@ -66,7 +82,7 @@ export default class EditRowDialog extends React.Component {
     this.setState({ currentObject });
   }
 
-  handleChange(newValue, name, type, targetClass) {
+  handleChange(newValue, name, type, targetClass, toDelete) {
     if (name == "password") {
       if (newValue === "") {
         return false;
@@ -75,26 +91,51 @@ export default class EditRowDialog extends React.Component {
         currentObject.password = "";
       }
     }
-    if (["Array", "Object", "Polygon"].indexOf(type) >= 0) {
-      const { currentObject } = this.state;
-      currentObject[name] = JSON.stringify(newValue, null, 2);
-      if (type === "Polygon") {
-        newValue = {
-          __type: type,
-          coordinates: newValue
-        };
+    const {
+      selectedObject,
+      className,
+      updateRow,
+      confirmAttachSelectedRows
+    } = this.props;
+    if (type === "Relation") {
+      if (toDelete.length > 0) {
+        selectedObject[name].remove(toDelete);
+        selectedObject[name].parent.save(null, { useMasterKey: true });
       }
+      if (newValue.length > 0) {
+        confirmAttachSelectedRows(
+          className,
+          selectedObject.id,
+          name,
+          newValue,
+          targetClass
+        );
+      }
+      this.toggleObjectPicker(name, false);
+    } else {
+      if (["Array", "Object", "Polygon"].indexOf(type) >= 0) {
+        const { currentObject } = this.state;
+        currentObject[name] = JSON.stringify(newValue, null, 2);
+        if (type === "Polygon") {
+          newValue = {
+            __type: type,
+            coordinates: newValue
+          };
+        }
+      }
+      if (type === "Pointer") {
+        // when Pointer newValue is array with length 0 or 1
+        const pointerId = newValue[0];
+        newValue = pointerId
+          ? Parse.Object.fromJSON({
+              className: targetClass,
+              objectId: pointerId
+            })
+          : undefined;
+        this.toggleObjectPicker(name, false);
+      }
+      updateRow(selectedObject.row, name, newValue);
     }
-    if (type === "Pointer") {
-      newValue = newValue
-        ? Parse.Object.fromJSON({
-            className: targetClass,
-            objectId: newValue
-          })
-        : undefined;
-    }
-    const { selectedObject, updateRow } = this.props;
-    updateRow(selectedObject.row, name, newValue);
   }
 
   openAcl() {
@@ -104,15 +145,27 @@ export default class EditRowDialog extends React.Component {
     handleShowAcl(row, col);
   }
 
+  openPointer(className, id) {
+    const { onClose, handlePointerClick } = this.props;
+    onClose();
+    handlePointerClick({ className: className, id: id });
+  }
+
   openRelation(relation) {
     const { onClose, setRelation } = this.props;
     onClose();
     setRelation(relation);
   }
 
+  toggleObjectPicker(name, isOpen) {
+    const { openObjectPickers } = this.state;
+    openObjectPickers[name] = isOpen;
+    this.setState({ openObjectPickers });
+  }
+
   render() {
-    const { selectedObject, className, columns, onClose } = this.props;
-    const { currentObject } = this.state;
+    const { selectedObject, className, columns, onClose, schema } = this.props;
+    const { currentObject, openObjectPickers } = this.state;
 
     const fields = columns.map(column => {
       const { name, type, targetClass } = column;
@@ -227,15 +280,39 @@ export default class EditRowDialog extends React.Component {
           );
           break;
         case "Pointer":
-          inputComponent = (
-            <TextInput
-              disabled={isDisabled}
-              value={currentObject[name]}
-              onChange={newValue => this.updateCurrentObject(newValue, name)}
-              onBlur={newValue =>
-                this.handleChange(newValue, name, type, targetClass)
-              }
-            />
+          const pointerId = selectedObject[name] && selectedObject[name].id;
+          inputComponent = openObjectPickers[name] ? (
+            <ContextProxy cx={this.context}>
+              <ObjectPickerDialog
+                schema={schema}
+                column={column}
+                className={targetClass}
+                pointerId={pointerId}
+                onConfirm={newValue =>
+                  this.handleChange(newValue, name, type, targetClass)
+                }
+                onCancel={() => this.toggleObjectPicker(name, false)}
+              />
+            </ContextProxy>
+          ) : (
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+                paddingTop: pointerId ? "17px" : "35px"
+              }}
+            >
+              {pointerId && (
+                <Pill
+                  onClick={() => this.openPointer(targetClass, pointerId)}
+                  value={pointerId}
+                />
+              )}
+              <Pill
+                onClick={() => this.toggleObjectPicker(name, true)}
+                value={`Select ${name}`}
+              />
+            </div>
           );
           break;
         case "Relation":
@@ -244,21 +321,38 @@ export default class EditRowDialog extends React.Component {
             selectedObject[name] || new Parse.Relation(selectedObject, name);
           relation.targetClassName = targetClass;
 
-          inputComponent = selectedObject.id ? (
-            <div
-              style={{
-                textAlign: "center",
-                cursor: "pointer",
-                paddingTop: "35px"
-              }}
-            >
-              <Pill
-                onClick={() => this.openRelation(relation)}
-                value={`View ${type}`}
+          inputComponent = openObjectPickers[name] ? (
+            <ContextProxy cx={this.context}>
+              <ObjectPickerDialog
+                schema={schema}
+                column={column}
+                className={targetClass}
+                relation={relation}
+                onConfirm={(newValue, toDelete) =>
+                  this.handleChange(newValue, name, type, targetClass, toDelete)
+                }
+                onCancel={() => this.toggleObjectPicker(name, false)}
               />
-            </div>
+            </ContextProxy>
           ) : (
-            <TextInput disabled={true} placeholder={"Set required fields first"} />
+            selectedObject.id && (
+              <div
+                style={{
+                  textAlign: "center",
+                  cursor: "pointer",
+                  paddingTop: "17px"
+                }}
+              >
+                <Pill
+                  onClick={() => this.openRelation(relation)}
+                  value={`View ${type}`}
+                />
+                <Pill
+                  onClick={() => this.toggleObjectPicker(name, true)}
+                  value={`Select ${name}`}
+                />
+              </div>
+            )
           );
           break;
         default:
@@ -318,8 +412,12 @@ export default class EditRowDialog extends React.Component {
         confirmText="Edit ACL"
         cancelText="Close"
       >
-        <div style={{ maxHeight: "60vh", overflowY: "scroll" }}>{fields}</div>
+        <div className={[styles.objectPickerContent]}>{fields}</div>
       </Modal>
     );
   }
 }
+
+EditRowDialog.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
+};

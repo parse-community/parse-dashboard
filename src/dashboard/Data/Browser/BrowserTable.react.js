@@ -113,7 +113,7 @@ export default class BrowserTable extends React.Component {
     if (this.props.data) {
       const rowWidth = this.props.order.reduce(
         (rowWidth, { visible, width }) => visible ? rowWidth + width : rowWidth,
-        210
+        this.props.onAddRow ? 210 : 0
       );
       let newRow = null;
       if (this.props.newObject && this.state.offset <= 0) {
@@ -250,7 +250,7 @@ export default class BrowserTable extends React.Component {
       }
 
       let addRow = null;
-      if (!this.props.newObject) {
+      if (!this.props.newObject && this.props.onAddRow) {
         if (this.props.relation) {
           addRow = (
             <div className={styles.addRow}>
@@ -308,9 +308,9 @@ export default class BrowserTable extends React.Component {
                   icon='files-solid' /> :
                 <EmptyState
                   title='No data to display'
-                  description='Add a row to store an object in this class.'
+                  description={this.props.onAddRow && 'Add a row to store an object in this class.'}
                   icon='files-solid'
-                  cta='Add a row'
+                  cta={this.props.onAddRow && 'Add a row'}
                   action={this.props.onAddRow} />
               }
             </div>
