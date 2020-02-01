@@ -3,7 +3,8 @@
 ### master
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...master)
 
-* _Contributing to this repo? Add info about your change here to be included in next release_
+* Feature: added playground feature to run custom queries
+* Feature: added save button on playground feature to save the custom query on the local storage
 ### 2.0.5
  [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...2.0.5)
  * Fix: delete and regenerate package-lock to fix broken build
