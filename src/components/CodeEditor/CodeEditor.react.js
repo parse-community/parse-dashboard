@@ -26,6 +26,10 @@ export default class CodeEditor extends React.Component {
     return document.querySelector(`#${this.id}`).value;
   }
 
+  set value(code) {
+    this.setState({code});
+  }
+
   render() {
     const {className, placeHolder, id = this.id} = this.props;
 
@@ -41,6 +45,8 @@ export default class CodeEditor extends React.Component {
           style={{
             fontFamily: '"Fira code", "Fira Mono", monospace',
             fontSize: 12,
+            minHeight: 550,
+            height: '100%'
           }}
         />
       </pre>
