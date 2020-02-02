@@ -204,7 +204,9 @@ export default class ParseApp {
         return Promise.resolve(this.classCounts.counts[className]);
       }
     }
-    let p = new Parse.Query(className).count({ useMasterKey: true });
+    const query = new Parse.Query(className);
+    query.readPreference(this.getReadPreference());
+    let p = query.count({ useMasterKey: true });
     p.then(count => {
       this.classCounts.counts[className] = count;
       this.classCounts.lastFetched[className] = new Date();
@@ -214,7 +216,9 @@ export default class ParseApp {
 
   getRelationCount(relation) {
     this.setParseKeys();
-    let p = relation.query().count({ useMasterKey: true });
+    const query = relation.query();
+    query.readPreference(this.getReadPreference());
+    let p = query.count({ useMasterKey: true });
     return p;
   }
 
@@ -770,5 +774,9 @@ export default class ParseApp {
       );
     });
     return promise;
+  }
+
+  getReadPreference() {
+    return 'SECONDARY';
   }
 }

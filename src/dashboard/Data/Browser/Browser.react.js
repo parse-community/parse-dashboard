@@ -341,6 +341,7 @@ class Browser extends DashboardView {
       query.ascending(field)
     }
 
+    query.readPreference(this.getReadPreference());
     query.limit(MAX_ROWS_FETCHED);
 
     let promise = query.find({ useMasterKey: true });
@@ -362,6 +363,7 @@ class Browser extends DashboardView {
 
   async fetchParseDataCount(source, filters) {
     const query = queryFromFilters(source, filters);
+    query.readPreference(this.getReadPreference());
     const count = await query.count({ useMasterKey: true });
     return count;
   }
@@ -438,7 +440,7 @@ class Browser extends DashboardView {
       query.addDescending('createdAt');
     }
     query.limit(MAX_ROWS_FETCHED);
-
+    query.readPreference(this.getReadPreference());
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
         this.setState((state) => ({
@@ -844,6 +846,10 @@ class Browser extends DashboardView {
       columns = columns.filter((column) => untouchable.indexOf(column.name) === -1);
     }
     return columns;
+  }
+
+  getReadPreference() {
+    return this.context.currentApp.getReadPreference();
   }
 
   renderSidebar() {
