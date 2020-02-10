@@ -18,7 +18,7 @@ export default class ExportDialog extends React.Component {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.context.currentApp.getExportProgress().then((progress) => {
       this.setState({ progress });
     });

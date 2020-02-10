@@ -31,11 +31,11 @@ export default function subscribeTo(name, prop) {
         }
       }
 
-      UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+      componentWillReceiveProps(nextProps, nextContext) {
         this.setState({ data: store.getData(nextContext.currentApp) });
       }
 
-      UNSAFE_componentWillMount() {
+      componentWillMount() {
         this.subscriptionId = store.subscribe(this.handleNewData.bind(this));
       }
 

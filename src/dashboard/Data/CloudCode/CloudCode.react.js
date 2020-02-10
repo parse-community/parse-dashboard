@@ -30,11 +30,11 @@ export default class CloudCode extends DashboardView {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.fetchSource(this.context.currentApp, getPath(this.props.params));
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchSource(nextContext.currentApp, getPath(nextProps.params));
     }

@@ -22,7 +22,7 @@ export default class ChromeDropdown extends React.Component {
     };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.keyValueMap = {};
     nextProps.options.forEach((value) => {
       if (value instanceof Object) {
@@ -34,7 +34,7 @@ export default class ChromeDropdown extends React.Component {
     }
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.styles = this.props.styles || styles;
   }
 

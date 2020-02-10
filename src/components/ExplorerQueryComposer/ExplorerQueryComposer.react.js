@@ -187,7 +187,7 @@ export default class ExplorerQueryComposer extends React.Component {
     return options;
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     let initialState = this.getInitialStateFromProps(nextProps);
     this.setState({ ...initialState });
   }

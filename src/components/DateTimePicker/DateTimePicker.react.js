@@ -22,7 +22,7 @@ export default class DateTimePicker extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(props) {
+  componentWillReceiveProps(props) {
     let timeRef = props.value || hoursFrom(new Date(), 1);
     this.setState({
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),

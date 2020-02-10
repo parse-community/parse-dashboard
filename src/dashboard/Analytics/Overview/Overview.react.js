@@ -99,11 +99,11 @@ export default class Overview extends DashboardView {
     }
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.fetchOverview(this.context.currentApp);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchOverview(nextContext.currentApp);
     }

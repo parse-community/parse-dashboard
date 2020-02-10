@@ -101,7 +101,7 @@ export default class Performance extends DashboardView {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.handleRunQuery(this.context.currentApp);
   }
 
@@ -109,7 +109,7 @@ export default class Performance extends DashboardView {
     this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.handleRunQuery(nextContext.currentApp);
     }

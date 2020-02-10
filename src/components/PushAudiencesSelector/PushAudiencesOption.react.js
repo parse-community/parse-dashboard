@@ -40,7 +40,7 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
   }
 
   // pass count information to PushNew flow
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps, nextState) {
     if ((nextState.count !== this.state.count || JSON.stringify(nextProps.query) !== JSON.stringify(this.props.query))
       && this.props.isChecked) {
       nextProps.onChange.call(undefined, nextState.count);

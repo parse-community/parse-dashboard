@@ -53,7 +53,7 @@ export default class LiveReload extends React.Component {
 		return promise;
 	}
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
 		this.shouldContinueReloading = true;
 		if (!this.state.currentData) {
 			this.fetchNewData();

@@ -262,7 +262,7 @@ export default class PushIndex extends DashboardView {
     });
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.handleFetch(this.props.params.category);
     //TODO: make xhr map and generic abort for existing xhrs.
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
@@ -282,7 +282,7 @@ export default class PushIndex extends DashboardView {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.params.category !== nextProps.params.category) {
       // The category has changed
       if (this.xhrHandle) {

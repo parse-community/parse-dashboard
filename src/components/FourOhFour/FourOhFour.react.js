@@ -22,7 +22,7 @@ export default class FourOhFour extends React.Component {
     this.updateEmoji = this.updateEmoji.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.timeout = setTimeout(this.updateEmoji, 3000);
   }
 

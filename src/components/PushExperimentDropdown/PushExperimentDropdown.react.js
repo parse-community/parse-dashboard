@@ -22,7 +22,7 @@ export default class PushExperimentDropdown extends React.Component {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.styles = this.props.styles || styles;
   }
 
