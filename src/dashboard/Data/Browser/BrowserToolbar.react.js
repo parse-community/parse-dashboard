@@ -31,7 +31,9 @@ let BrowserToolbar = ({
   onFilterChange,
   onAddColumn,
   onAddRow,
+  onAddRowWithModal,
   onAddClass,
+  onEditSelectedRow,
   onAttachRows,
   onAttachSelectedRows,
   onCloneSelectedRows,
@@ -98,12 +100,19 @@ let BrowserToolbar = ({
         />
       </BrowserMenu>
     );
-  } else {
+  } else if (onAddRow) {
     menu = (
       <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
         <MenuItem text='Add a row' onClick={onAddRow} />
+        <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
         {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
+        <Separator />
+        <MenuItem
+          disabled={selectionLength !== 1}
+          text={`Edit this row with modal`}
+          onClick={onEditSelectedRow}
+        />
         <Separator />
         <MenuItem
           disabled={!selectionLength}
@@ -170,11 +179,13 @@ let BrowserToolbar = ({
       subsection={subsection}
       details={details.join(' \u2022 ')}
     >
-      <a className={classes.join(' ')} onClick={onClick}>
-        <Icon name='plus-solid' width={14} height={14} />
-        <span>Add Row</span>
-      </a>
-      <div className={styles.toolbarSeparator} />
+      {onAddRow && (
+        <a className={classes.join(" ")} onClick={onClick}>
+          <Icon name="plus-solid" width={14} height={14} />
+          <span>Add Row</span>
+        </a>
+      )}
+      {onAddRow && <div className={styles.toolbarSeparator} />}
       <ColumnsConfiguration
         handleColumnsOrder={handleColumnsOrder}
         handleColumnDragDrop={handleColumnDragDrop}
@@ -190,16 +201,17 @@ let BrowserToolbar = ({
         schema={schemaSimplifiedData}
         filters={filters}
         onChange={onFilterChange}
-        className={classNameForEditors} />
-      <div className={styles.toolbarSeparator} />
-      {enableSecurityDialog ? <SecurityDialog
+        className={classNameForEditors}
+        blacklistedFilters={onAddRow ? [] : ['unique']} />
+      {onAddRow && <div className={styles.toolbarSeparator} />}
+      {perms && enableSecurityDialog ? <SecurityDialog
         setCurrent={setCurrent}
         disabled={!!relation || !!isUnique}
         perms={perms}
         className={classNameForEditors}
         onChangeCLP={onChangeCLP}
         userPointers={userPointers} /> : <noscript />}
-      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript/>}
+      {perms && enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript/>}
       {menu}
     </Toolbar>
   );

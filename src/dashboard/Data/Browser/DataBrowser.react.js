@@ -184,7 +184,9 @@ export default class DataBrowser extends React.Component {
       case 67: // C
         if ((e.ctrlKey || e.metaKey) && this.state.copyableValue !== undefined) {
           copy(this.state.copyableValue); // Copies current cell value to clipboard
-          this.props.showNote('Value copied to clipboard', false)
+          if (this.props.showNote) {
+            this.props.showNote('Value copied to clipboard', false);
+          }
           e.preventDefault()
         }
         break;
@@ -192,8 +194,10 @@ export default class DataBrowser extends React.Component {
   }
 
   setEditing(editing) {
-    if (this.state.editing !== editing) {
-      this.setState({ editing: editing });
+    if (this.props.updateRow) {
+      if (this.state.editing !== editing) {
+        this.setState({ editing: editing });
+      }
     }
   }
 
