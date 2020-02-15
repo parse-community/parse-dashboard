@@ -7,7 +7,7 @@
  */
 import React from "react";
 import Editor from "react-ace";
-import PropTypes from "lib/PropTypes";
+import PropTypes from "../../lib/PropTypes";
 
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-solarized_dark";
