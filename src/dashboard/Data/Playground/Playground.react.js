@@ -11,6 +11,8 @@ import Button from "components/Button/Button.react";
 import SaveButton from "components/SaveButton/SaveButton.react";
 import Toolbar from "components/Toolbar/Toolbar.react";
 
+import styles from "./Playground.scss";
+
 export default class Playground extends DashboardView {
   constructor() {
     super();
@@ -18,10 +20,9 @@ export default class Playground extends DashboardView {
     this.subsection = "Playground";
     this.localKey = "parse-dashboard-playground-code";
     this.state = {
-      result: null,
+      results: [],
       running: false,
       saving: false,
-      initialCode: "",
       savingState: SaveButton.States.WAITING
     };
   }
@@ -38,39 +39,79 @@ export default class Playground extends DashboardView {
     );
   }
 
+  overrideConsole() {
+    const originalConsoleLog = console.log;
+    const originalConsoleError = console.error;
+
+    console.log = (...args) => {
+      this.setState(({ results }) => ({
+        results: [
+          ...results,
+          ...args.map(arg => ({
+            log:
+              typeof arg === "object"
+                ? Array.isArray(arg)
+                  ? arg.map(this.getParseObjectAttr)
+                  : this.getParseObjectAttr(arg)
+                : { result: arg },
+            name: "Log"
+          }))
+        ]
+      }));
+
+      originalConsoleLog.apply(console, args);
+    };
+    console.error = (...args) => {
+      this.setState(({ results }) => ({
+        results: [
+          ...results,
+          ...args.map(arg => ({
+            log:
+              arg instanceof Error
+                ? { message: arg.message, name: arg.name, stack: arg.stack }
+                : { result: arg },
+            name: "Error"
+          }))
+        ]
+      }));
+
+      originalConsoleError.apply(console, args);
+    };
+
+    return [originalConsoleLog, originalConsoleError];
+  }
+
   async runCode() {
+    const [originalConsoleLog, originalConsoleError] = this.overrideConsole();
+
     try {
       const {
         currentApp: { applicationId, masterKey, serverURL, javascriptKey }
       } = this.context;
-
-      const originalCode = this.editor.value.split(";");
-      originalCode[originalCode.length - 1] = `return ${
-        originalCode[originalCode.length - 1]
-      }`;
+      const originalCode = this.editor.value;
 
       const finalCode = `return (async function(){
-        Parse.initialize('${applicationId}', ${
+        try{
+          Parse.initialize('${applicationId}', ${
         javascriptKey ? `'${javascriptKey}'` : undefined
       });
-        Parse.masterKey = '${masterKey}';
-        Parse.serverUrl = '${serverURL}';
+          Parse.masterKey = '${masterKey}';
+          Parse.serverUrl = '${serverURL}';
 
-        ${originalCode.join("\n")}})()`;
+          ${originalCode}
+        } catch(e) {
+          console.error(e);
+        }
+      })()`;
 
-      this.setState({ running: true });
-      const evaluation = await new Function("Parse", finalCode)(Parse);
-      const result = Array.isArray(evaluation)
-        ? evaluation.map(this.getParseObjectAttr)
-        : this.getParseObjectAttr(evaluation);
+      this.setState({ running: true, results: [] });
 
-      this.setState({ result: { result } });
+      await new Function("Parse", finalCode)(Parse);
     } catch (e) {
-      console.error(
-        "Don't forget to separate your statements with semicolon ;"
-      );
       console.error(e);
     } finally {
+      console.log = originalConsoleLog;
+      console.error = originalConsoleError;
       this.setState({ running: false });
     }
   }
@@ -87,7 +128,7 @@ export default class Playground extends DashboardView {
       });
 
       setTimeout(
-        () => this.setState({ savingState: SaveButton.States.WAINTING }),
+        () => this.setState({ savingState: SaveButton.States.WAITING }),
         3000
       );
     } catch (e) {
@@ -114,53 +155,55 @@ export default class Playground extends DashboardView {
   }
 
   renderContent() {
-    const { result, running, saving, initialCode, savingState } = this.state;
+    const { results, running, saving, savingState } = this.state;
+
     return React.cloneElement(
-      <div style={{ padding: "96px 0 60px 0" }}>
+      <div className={styles["playground-ctn"]}>
         <Toolbar section={this.section} subsection={this.subsection} />
-        <div style={{ minHeight: "600px" }}>
+        <div style={{ minHeight: "25vh" }}>
           <CodeEditor
-            initialCode={initialCode}
-            placeHolder={
-              "Type your code here\nDon't forget to separate your statements with semicolon ;"
-            }
+            placeHolder={`//Example query to get 5 of your users
+console.log(await new Parse.Query(Parse.User).limit(5).find());`}
             ref={editor => (this.editor = editor)}
           />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              padding: 15,
-              borderTop: "#66637A 1px solid",
-              alignItems: "center"
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                width: "25%"
-              }}
-            >
-              <div style={{ marginRight: "15px" }}>
-                {window.localStorage && (
-                  <SaveButton
-                    state={savingState}
+          <div className={styles["console-ctn"]}>
+            <header>
+              <h3>Console</h3>
+              <div className={styles["buttons-ctn"]}>
+                <div>
+                  <div style={{ marginRight: "15px" }}>
+                    {window.localStorage && (
+                      <SaveButton
+                        state={savingState}
+                        primary={false}
+                        color="white"
+                        onClick={() => this.saveCode()}
+                        progress={saving}
+                      />
+                    )}
+                  </div>
+                  <Button
+                    value={"Run"}
                     primary={false}
-                    onClick={() => this.saveCode()}
-                    progress={saving}
+                    onClick={() => this.runCode()}
+                    progress={running}
+                    color="white"
                   />
-                )}
+                </div>
               </div>
-              <Button
-                value={"Run"}
-                primary={true}
-                onClick={() => this.runCode()}
-                progress={running}
-              />
-            </div>
+            </header>
+            <section>
+              {results.map(({ log, name }, i) => (
+                <ReactJson
+                  key={i + `${log}`}
+                  src={log}
+                  collapsed={1}
+                  theme="solarized"
+                  name={name}
+                />
+              ))}
+            </section>
           </div>
-          {result && <ReactJson src={result} collapsed={1} />}
         </div>
       </div>
     );

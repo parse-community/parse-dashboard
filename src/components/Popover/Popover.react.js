@@ -12,7 +12,7 @@ import ReactDOM    from 'react-dom';
 import styles      from 'components/Popover/Popover.scss';
 
 // We use this component to proxy the current tree's context (just the React Router history for now) to the new tree
-class ContextProxy extends React.Component {
+export class ContextProxy extends React.Component {
   getChildContext() {
     return this.props.cx;
   }
@@ -24,7 +24,8 @@ class ContextProxy extends React.Component {
 
 ContextProxy.childContextTypes = {
   history: PropTypes.object,
-  router: PropTypes.object
+  router: PropTypes.object,
+  currentApp: PropTypes.object
 };
 
 export default class Popover extends React.Component {
@@ -33,8 +34,8 @@ export default class Popover extends React.Component {
     this._checkExternalClick = this._checkExternalClick.bind(this);
   }
   componentWillMount() {
-    let wrapperStyle = this.props.fixed ?
-      styles.fixed_wrapper :
+    let wrapperStyle = this.props.fixed ? 
+      styles.fixed_wrapper : 
       styles.popover_wrapper;
     this._popoverWrapper = document.getElementById(wrapperStyle);
     if (!this._popoverWrapper) {
@@ -83,8 +84,16 @@ export default class Popover extends React.Component {
   }
 
   _checkExternalClick(e) {
-    if (!hasAncestor(e.target, this._popoverWrapper) &&
-      this.props.onExternalClick) {
+    const { contentId } = this.props;
+    const popoverWrapper = contentId
+      ? document.getElementById(contentId)
+      : this._popoverWrapper;
+    const isChromeDropdown = e.target.parentNode.classList.contains("chromeDropdown");
+    if (
+      !hasAncestor(e.target, popoverWrapper) &&
+      this.props.onExternalClick &&
+      !isChromeDropdown
+    ) {
       this.props.onExternalClick(e);
     }
   }

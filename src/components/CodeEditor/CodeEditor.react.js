@@ -5,57 +5,56 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React from 'react';
-import Editor from 'react-simple-code-editor';
-import PropTypes from 'lib/PropTypes';
-import {highlight, languages} from 'prismjs/components/prism-core';
+import React from "react";
+import Editor from "react-ace";
+import PropTypes from "lib/PropTypes";
 
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import './CodeEditor.scss';
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/theme-solarized_dark";
+import "ace-builds/src-noconflict/snippets/javascript";
+import "ace-builds/src-noconflict/ext-language_tools";
 
 export default class CodeEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {code: ''};
-    this.id = `EDITOR-${Math.floor(Math.random() * 1000)}`
+    this.state = { code: "" };
   }
 
   get value() {
-    return document.querySelector(`#${this.id}`).value;
+    return this.state.code || this.props.placeHolder;
   }
 
   set value(code) {
-    this.setState({code});
+    this.setState({ code });
   }
 
   render() {
-    const {className, placeHolder, id = this.id} = this.props;
+    const { placeHolder, fontSize = 18 } = this.props;
+    const { code } = this.state;
 
     return (
-      <pre style={{margin: 0}} className={`${className} line-numbers language-javascript`}>
-        <Editor
-          placeholder={placeHolder || ''}
-          value={this.state.code}
-          onValueChange={code => this.setState({code})}
-          highlight={code => highlight(code, languages.js)}
-          padding={10}
-          textareaId={id}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
-            minHeight: 550,
-            height: '100%'
-          }}
-        />
-      </pre>
-    )
+      <Editor
+        mode="javascript"
+        theme="solarized_dark"
+        onChange={value => this.setState({ code: value })}
+        fontSize={fontSize}
+        showPrintMargin={true}
+        showGutter={true}
+        highlightActiveLine={true}
+        width="100%"
+        value={code || placeHolder}
+        enableBasicAutocompletion={true}
+        enableLiveAutocompletion={true}
+        enableSnippets={false}
+        showLineNumbers={true}
+        tabSize={2}
+      />
+    );
   }
 }
 
 CodeEditor.propTypes = {
-  id: PropTypes.string.describe('Text area element id to be queried afterwards'),
-  className: PropTypes.string.describe('CSS classes'),
-  placeHolder: PropTypes.string.describe('Code place holder')
+  fontSize: PropTypes.number.describe("Font size of the editor"),
+  placeHolder: PropTypes.string.describe("Code place holder")
 };
