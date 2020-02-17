@@ -1,11 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactJson from "react-json-view";
 import Parse from "parse";
 
 import PropTypes from "lib/PropTypes";
 import ParseApp from "lib/ParseApp";
-import CategoryList from "components/CategoryList/CategoryList.react";
-import DashboardView from "dashboard/DashboardView.react";
 import CodeEditor from "components/CodeEditor/CodeEditor.react";
 import Button from "components/Button/Button.react";
 import SaveButton from "components/SaveButton/SaveButton.react";
@@ -13,11 +11,11 @@ import Toolbar from "components/Toolbar/Toolbar.react";
 
 import styles from "./Playground.scss";
 
-export default class Playground extends DashboardView {
+export default class Playground extends Component {
   constructor() {
     super();
     this.section = "Core";
-    this.subsection = "Playground";
+    this.subsection = "JS Console";
     this.localKey = "parse-dashboard-playground-code";
     this.state = {
       results: [],
@@ -25,18 +23,6 @@ export default class Playground extends DashboardView {
       saving: false,
       savingState: SaveButton.States.WAITING
     };
-  }
-
-  renderSidebar() {
-    const { path } = this.props.match;
-    const current = path.substr(path.lastIndexOf("/") + 1, path.length - 1);
-    return (
-      <CategoryList
-        current={current}
-        linkPrefix={"playground/"}
-        categories={[]}
-      />
-    );
   }
 
   overrideConsole() {
@@ -154,7 +140,7 @@ export default class Playground extends DashboardView {
     }
   }
 
-  renderContent() {
+  render() {
     const { results, running, saving, savingState } = this.state;
 
     return React.cloneElement(

@@ -264,6 +264,11 @@ export default class Dashboard extends React.Component {
             <GraphQLConsole />
           </ApiConsole>
         )} />
+        <Route path={ props.match.path + '/js_console' } render={props => (
+          <ApiConsole {...props}>
+            <Playground />
+          </ApiConsole>
+        )} />
         <Redirect from={ props.match.path } to='/apps/:appId/api_console/rest' />
       </Switch>
     )
@@ -288,7 +293,6 @@ export default class Dashboard extends React.Component {
 
           <Route path={ match.path + '/config' } component={Config} />
           <Route path={ match.path + '/api_console' } component={ApiConsoleRoute} />
-          <Route path={ match.path + '/playground' } component={Playground} />
           <Route path={ match.path + '/migration' } component={Migration} />
 
 

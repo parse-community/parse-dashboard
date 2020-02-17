@@ -5,16 +5,16 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters from "lib/Filters";
-import Button from "components/Button/Button.react";
-import Filter from "components/Filter/Filter.react";
-import FilterRow from "components/BrowserFilter/FilterRow.react";
-import Icon from "components/Icon/Icon.react";
-import Popover from "components/Popover/Popover.react";
-import Position from "lib/Position";
-import React from "react";
-import ReactDOM from "react-dom";
-import styles from "components/BrowserFilter/BrowserFilter.scss";
+import * as Filters  from "lib/Filters";
+import Button        from "components/Button/Button.react";
+import Filter        from "components/Filter/Filter.react";
+import FilterRow     from "components/BrowserFilter/FilterRow.react";
+import Icon          from "components/Icon/Icon.react";
+import Popover       from "components/Popover/Popover.react";
+import Position      from "lib/Position";
+import React         from "react";
+import ReactDOM      from "react-dom";
+import styles        from "components/BrowserFilter/BrowserFilter.scss";
 import { List, Map } from "immutable";
 
 const BLACKLISTED_FILTERS = ["containsAny", "doesNotContainAny"];
