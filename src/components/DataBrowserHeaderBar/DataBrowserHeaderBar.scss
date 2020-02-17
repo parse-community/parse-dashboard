@@ -64,3 +64,11 @@
   margin: 0 -4px;
   cursor: ew-resize;
 }
+
+.pickerPointer {
+  .check {
+    input {
+      display: none;
+    }
+  }
+}

@@ -24,6 +24,22 @@
   }
 }
 
+.objectPickerContent {
+  .toolbar {
+    background: #00db7c;
+    height: 80px;
+    right: 135px;
+
+    .nav {
+      display: none;
+    }
+
+    .titleText {
+      display: none;
+    }
+  }
+}
+
 .title {
   position: absolute;
   left: 14px;

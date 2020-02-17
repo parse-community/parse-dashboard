@@ -196,3 +196,65 @@
     opacity: 0;
   }
 }
+
+.editRowDialogContent {
+  max-height: 60vh;
+  overflow-y: scroll;
+}
+
+.objectPickerContent {
+  min-height: 150px;
+  max-height: 60vh;
+  overflow-y: scroll;
+
+  .browser {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 60vh;
+    width: calc(100% - 140px);
+
+    .empty {
+      position: unset;
+    }
+  }
+
+  .toolbarButton svg {
+    fill: rgba(0, 0, 0, 0.3);
+  }
+
+  .toolbarSeparator {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .selectionSection {
+    position: fixed;
+    right: 0;
+    width: 142px;
+    font-size: 12px;
+    color: #0E69A1;
+    background: #F4F5F7;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+
+    .selectionHeader {
+      background: rgb(102, 99, 122);
+      color: white;
+      height: 30px;
+      padding-top: 5px;
+      padding-left: 10px;
+      line-height: 22px;
+    }
+
+    .selectionList {
+      padding-left: 12px;
+      padding-top: 4px;
+      height: calc(60vh - 30px);
+      overflow-y: scroll;
+    }
+  }
+}
+
+.selectionInputWrapper {
+  width: calc(100% - 280px);
+  float: left;
+}
