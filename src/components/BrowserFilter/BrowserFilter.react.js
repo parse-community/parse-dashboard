@@ -17,7 +17,7 @@ import ReactDOM      from 'react-dom';
 import styles        from 'components/BrowserFilter/BrowserFilter.scss';
 import { List, Map } from 'immutable';
 
-const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];
+const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];
 const POPOVER_CONTENT_ID = 'browserFilterPopover';
 
 export default class BrowserFilter extends React.Component {
@@ -45,11 +45,7 @@ export default class BrowserFilter extends React.Component {
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
-      let available = Filters.availableFilters(
-        this.props.schema,
-        null,
-        this.state.blacklistedFilters
-      );
+      let available = Filters.availableFilters(this.props.schema, null, this.state.blacklistedFilters);
       let field = Object.keys(available)[0];
       filters = new List([
         new Map({ field: field, constraint: available[field][0] })
@@ -63,11 +59,7 @@ export default class BrowserFilter extends React.Component {
   }
 
   addRow() {
-    let available = Filters.availableFilters(
-      this.props.schema,
-      this.state.filters,
-      this.state.blacklistedFilters
-    );
+    let available = Filters.availableFilters(this.props.schema, this.state.filters, this.state.blacklistedFilters);
     let field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
       filters: filters.push(
@@ -109,25 +101,9 @@ export default class BrowserFilter extends React.Component {
         this.state.filters
       );
       popover = (
-        <Popover
-          fixed={true}
-          position={position}
-          onExternalClick={this.toggle}
-          contentId={POPOVER_CONTENT_ID}
-        >
-          <div
-            className={popoverStyle.join(' ')}
-            onClick={() => this.props.setCurrent(null)}
-            id={POPOVER_CONTENT_ID}
-          >
-            <div
-              onClick={this.toggle}
-              style={{
-                cursor: 'pointer',
-                width: this.node.clientWidth,
-                height: this.node.clientHeight
-              }}
-            ></div>
+        <Popover fixed={true} position={position} onExternalClick={this.toggle} contentId={POPOVER_CONTENT_ID}>
+          <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)} id={POPOVER_CONTENT_ID}>
+            <div onClick={this.toggle} style={{ cursor: 'pointer', width: this.node.clientWidth, height: this.node.clientHeight }}></div>
             <div className={styles.body}>
               <Filter
                 blacklist={this.state.blacklistedFilters}
