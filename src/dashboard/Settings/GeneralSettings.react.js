@@ -449,7 +449,7 @@ export default class GeneralSettings extends DashboardView {
 
     let changeConnectionStringModal = <FormModal
       title='Change Connection String'
-      subtitle={"Immediately switch your connection string for your app's database."}
+      subtitle={'Immediately switch your connection string for your app\'s database.'}
       open={this.state.showChangeConnectionStringModal}
       onSubmit={() => {
         let promise = validateAndSubmitConnectionString(

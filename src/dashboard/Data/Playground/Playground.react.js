@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import ReactJson from "react-json-view";
-import Parse from "parse";
+import React, { Component } from 'react';
+import ReactJson from 'react-json-view';
+import Parse from 'parse';
 
-import PropTypes from "lib/PropTypes";
-import ParseApp from "lib/ParseApp";
-import CodeEditor from "components/CodeEditor/CodeEditor.react";
-import Button from "components/Button/Button.react";
-import SaveButton from "components/SaveButton/SaveButton.react";
-import Toolbar from "components/Toolbar/Toolbar.react";
+import PropTypes from 'lib/PropTypes';
+import ParseApp from 'lib/ParseApp';
+import CodeEditor from 'components/CodeEditor/CodeEditor.react';
+import Button from 'components/Button/Button.react';
+import SaveButton from 'components/SaveButton/SaveButton.react';
+import Toolbar from 'components/Toolbar/Toolbar.react';
 
-import styles from "./Playground.scss";
+import styles from './Playground.scss';
 
 export default class Playground extends Component {
   constructor() {
     super();
-    this.section = "Core";
-    this.subsection = "JS Console";
-    this.localKey = "parse-dashboard-playground-code";
+    this.section = 'Core';
+    this.subsection = 'JS Console';
+    this.localKey = 'parse-dashboard-playground-code';
     this.state = {
       results: [],
       running: false,
@@ -35,12 +35,12 @@ export default class Playground extends Component {
           ...results,
           ...args.map(arg => ({
             log:
-              typeof arg === "object"
+              typeof arg === 'object'
                 ? Array.isArray(arg)
                   ? arg.map(this.getParseObjectAttr)
                   : this.getParseObjectAttr(arg)
                 : { result: arg },
-            name: "Log"
+            name: 'Log'
           }))
         ]
       }));
@@ -56,7 +56,7 @@ export default class Playground extends Component {
               arg instanceof Error
                 ? { message: arg.message, name: arg.name, stack: arg.stack }
                 : { result: arg },
-            name: "Error"
+            name: 'Error'
           }))
         ]
       }));
@@ -92,7 +92,7 @@ export default class Playground extends Component {
 
       this.setState({ running: true, results: [] });
 
-      await new Function("Parse", finalCode)(Parse);
+      await new Function('Parse', finalCode)(Parse);
     } catch (e) {
       console.error(e);
     } finally {
@@ -144,20 +144,22 @@ export default class Playground extends Component {
     const { results, running, saving, savingState } = this.state;
 
     return React.cloneElement(
-      <div className={styles["playground-ctn"]}>
+      <div className={styles['playground-ctn']}>
         <Toolbar section={this.section} subsection={this.subsection} />
-        <div style={{ minHeight: "25vh" }}>
+        <div style={{ minHeight: '25vh' }}>
           <CodeEditor
-            placeHolder={`//Example query to get 5 of your users
-console.log(await new Parse.Query(Parse.User).limit(5).find());`}
+            placeHolder={`const myObj = new Parse.Object('MyClass');
+myObj.set('myField', 'Hello World!')
+await myObj.save();
+console.log(myObj);`}
             ref={editor => (this.editor = editor)}
           />
-          <div className={styles["console-ctn"]}>
+          <div className={styles['console-ctn']}>
             <header>
               <h3>Console</h3>
-              <div className={styles["buttons-ctn"]}>
+              <div className={styles['buttons-ctn']}>
                 <div>
-                  <div style={{ marginRight: "15px" }}>
+                  <div style={{ marginRight: '15px' }}>
                     {window.localStorage && (
                       <SaveButton
                         state={savingState}
@@ -169,7 +171,7 @@ console.log(await new Parse.Query(Parse.User).limit(5).find());`}
                     )}
                   </div>
                   <Button
-                    value={"Run"}
+                    value={'Run'}
                     primary={false}
                     onClick={() => this.runCode()}
                     progress={running}

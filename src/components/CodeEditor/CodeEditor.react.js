@@ -5,20 +5,20 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React from "react";
-import Editor from "react-ace";
-import PropTypes from "../../lib/PropTypes";
+import React from 'react';
+import Editor from 'react-ace';
+import PropTypes from '../../lib/PropTypes';
 
-import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/theme-solarized_dark";
-import "ace-builds/src-noconflict/snippets/javascript";
-import "ace-builds/src-noconflict/ext-language_tools";
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/theme-solarized_dark';
+import 'ace-builds/src-noconflict/snippets/javascript';
+import 'ace-builds/src-noconflict/ext-language_tools';
 
 export default class CodeEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { code: "" };
+    this.state = { code: '' };
   }
 
   get value() {
@@ -55,6 +55,6 @@ export default class CodeEditor extends React.Component {
 }
 
 CodeEditor.propTypes = {
-  fontSize: PropTypes.number.describe("Font size of the editor"),
-  placeHolder: PropTypes.string.describe("Code place holder")
+  fontSize: PropTypes.number.describe('Font size of the editor'),
+  placeHolder: PropTypes.string.describe('Code place holder')
 };

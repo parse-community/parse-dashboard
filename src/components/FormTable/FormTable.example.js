@@ -37,7 +37,7 @@ export const demos = [
             {
               title: 'Title',
               color: 'red',
-              onDelete: () => {alert("Delete button clicked.")},
+              onDelete: () => {alert('Delete button clicked.')},
               notes: [
                 {
                   key: 'foo',

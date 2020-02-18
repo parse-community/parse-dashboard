@@ -5,20 +5,20 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters  from "lib/Filters";
-import Button        from "components/Button/Button.react";
-import Filter        from "components/Filter/Filter.react";
-import FilterRow     from "components/BrowserFilter/FilterRow.react";
-import Icon          from "components/Icon/Icon.react";
-import Popover       from "components/Popover/Popover.react";
-import Position      from "lib/Position";
-import React         from "react";
-import ReactDOM      from "react-dom";
-import styles        from "components/BrowserFilter/BrowserFilter.scss";
-import { List, Map } from "immutable";
+import * as Filters  from 'lib/Filters';
+import Button        from 'components/Button/Button.react';
+import Filter        from 'components/Filter/Filter.react';
+import FilterRow     from 'components/BrowserFilter/FilterRow.react';
+import Icon          from 'components/Icon/Icon.react';
+import Popover       from 'components/Popover/Popover.react';
+import Position      from 'lib/Position';
+import React         from 'react';
+import ReactDOM      from 'react-dom';
+import styles        from 'components/BrowserFilter/BrowserFilter.scss';
+import { List, Map } from 'immutable';
 
-const BLACKLISTED_FILTERS = ["containsAny", "doesNotContainAny"];
-const POPOVER_CONTENT_ID = "browserFilterPopover";
+const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];
+const POPOVER_CONTENT_ID = 'browserFilterPopover';
 
 export default class BrowserFilter extends React.Component {
   constructor(props) {
@@ -116,14 +116,14 @@ export default class BrowserFilter extends React.Component {
           contentId={POPOVER_CONTENT_ID}
         >
           <div
-            className={popoverStyle.join(" ")}
+            className={popoverStyle.join(' ')}
             onClick={() => this.props.setCurrent(null)}
             id={POPOVER_CONTENT_ID}
           >
             <div
               onClick={this.toggle}
               style={{
-                cursor: "pointer",
+                cursor: 'pointer',
                 width: this.node.clientWidth,
                 height: this.node.clientHeight
               }}
@@ -171,9 +171,9 @@ export default class BrowserFilter extends React.Component {
     }
     return (
       <div className={styles.wrap}>
-        <div className={buttonStyle.join(" ")} onClick={this.toggle}>
+        <div className={buttonStyle.join(' ')} onClick={this.toggle}>
           <Icon name="filter-solid" width={14} height={14} />
-          <span>{this.props.filters.size ? "Filtered" : "Filter"}</span>
+          <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
         </div>
         {popover}
       </div>

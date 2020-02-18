@@ -17,7 +17,7 @@ export default class TextInput extends React.Component {
       setTimeout(function() {
         const newInput = previousInput ? this.refs.textarea : this.refs.input;
         newInput.focus();
-        newInput.value = "";
+        newInput.value = '';
         newInput.value = props.value;
       }.bind(this), 1);
     }

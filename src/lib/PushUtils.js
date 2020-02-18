@@ -143,7 +143,7 @@ let formatConstraintComponent = (key, operation, value, schema) => {
       }
       break;
     default:
-      res = [key, `advanced operator`, `${operation} ${JSON.stringify(value)}`];
+      res = [key, 'advanced operator', `${operation} ${JSON.stringify(value)}`];
       break;
   }
   return res;

@@ -56,7 +56,7 @@ import {
 import { Route, Redirect } from 'react-router-dom';
 import createClass from 'create-react-class';
 import { Helmet } from 'react-helmet';
-import Playground from "./Data/Playground/Playground.react";
+import Playground from './Data/Playground/Playground.react';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -143,21 +143,21 @@ export default class Dashboard extends React.Component {
               app.serverInfo = {
                 error: 'unable to connect to server',
                 enabledFeatures: {},
-                parseServerVersion: "unknown"
+                parseServerVersion: 'unknown'
               }
               return Promise.resolve(app);
             } else if (error.code === 107) {
               app.serverInfo = {
                 error: 'server version too low',
                 enabledFeatures: {},
-                parseServerVersion: "unknown"
+                parseServerVersion: 'unknown'
               }
               return Promise.resolve(app);
             } else {
               app.serverInfo = {
                 error: error.message || 'unknown error',
                 enabledFeatures: {},
-                parseServerVersion: "unknown"
+                parseServerVersion: 'unknown'
               }
               return Promise.resolve(app);
             }

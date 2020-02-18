@@ -398,7 +398,7 @@ class PushDetails extends DashboardView {
     } else if (statistics) {
       isFlowView = true;
 
-      let headline = statistics.confidence_interval  ? `Group {statistics.winner} is the winner!` : 'Not enough data to automatically determine the winner';
+      let headline = statistics.confidence_interval  ? 'Group {statistics.winner} is the winner!' : 'Not enough data to automatically determine the winner';
       let subline = [];
       let launchGroupFragment = 'These devices are outside test groups A & B.';
 
