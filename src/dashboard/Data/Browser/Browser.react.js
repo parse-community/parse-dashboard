@@ -19,6 +19,7 @@ import ExportDialog                       from 'dashboard/Data/Browser/ExportDia
 import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
+import EditRowDialog                      from 'dashboard/Data/Browser/EditRowDialog.react';
 import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
@@ -56,6 +57,7 @@ class Browser extends DashboardView {
       showDropClassDialog: false,
       showExportDialog: false,
       showAttachRowsDialog: false,
+      showEditRowDialog: false,
       rowsToDelete: null,
 
       relation: null,
@@ -109,11 +111,15 @@ class Browser extends DashboardView {
     this.setRelation = this.setRelation.bind(this);
     this.showAddColumn = this.showAddColumn.bind(this);
     this.addRow = this.addRow.bind(this);
+    this.addRowWithModal = this.addRowWithModal.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
+    this.showEditRowDialog = this.showEditRowDialog.bind(this);
+    this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
+    this.handleShowAcl = this.handleShowAcl.bind(this);
   }
 
   componentWillMount() {
@@ -285,6 +291,12 @@ class Browser extends DashboardView {
         : new Parse.Object(this.props.params.className) ),
       });
     }
+  }
+
+  addRowWithModal() {
+    this.addRow();
+    this.selectRow(undefined, true);
+    this.showEditRowDialog();
   }
 
   removeColumn(name) {
@@ -705,7 +717,8 @@ class Browser extends DashboardView {
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
       this.state.showAttachSelectedRowsDialog ||
-      this.state.showCloneSelectedRowsDialog
+      this.state.showCloneSelectedRowsDialog ||
+      this.state.showEditRowDialog
     );
   }
 
@@ -768,10 +781,10 @@ class Browser extends DashboardView {
     });
   }
 
-  async confirmAttachSelectedRows(className, targetObjectId, relationName, objectIds) {
+  async confirmAttachSelectedRows(className, targetObjectId, relationName, objectIds, targetClassName) {
     const parentQuery = new Parse.Query(className);
     const parent = await parentQuery.get(targetObjectId, { useMasterKey: true });
-    const query = new Parse.Query(this.props.params.className);
+    const query = new Parse.Query(targetClassName || this.props.params.className);
     query.containedIn('objectId', objectIds);
     const objects = await query.find({ useMasterKey: true });
     parent.relation(relationName).add(objects);
@@ -895,6 +908,29 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
+  showEditRowDialog(isDoubleClick, objectId) {
+    // objectId is optional param which is used for doubleClick event on objectId BrowserCell
+    if (isDoubleClick) {
+      // remove all selected rows and select doubleClicked row
+      this.setState({ selection: {} });
+      this.selectRow(objectId, true);
+    }
+    this.setState({
+      showEditRowDialog: true,
+    });
+  }
+
+  closeEditRowDialog() {
+    this.setState({
+      showEditRowDialog: false,
+    });
+  }
+
+  handleShowAcl(row, col){
+    this.refs.dataBrowser.setEditing(true);
+    this.refs.dataBrowser.setCurrent({ row, col });
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -945,6 +981,7 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
+            ref='dataBrowser'
             isUnique={this.state.isUnique}
             uniqueField={this.state.uniqueField}
             count={count}
@@ -961,6 +998,7 @@ class Browser extends DashboardView {
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
+            onEditSelectedRow={this.showEditRowDialog}
 
             columns={columns}
             className={className}
@@ -979,6 +1017,7 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
+            onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote} />
         );
@@ -1068,6 +1107,66 @@ class Browser extends DashboardView {
           onConfirm={this.confirmCloneSelectedRows}
         />
       );
+    } else if (this.state.showEditRowDialog) {
+      const classColumns = this.getClassColumns(className, false);
+      // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
+      const columnsObject = {};
+      classColumns.forEach((column) => {
+        columnsObject[column.name] = column
+      });
+      // get ordered list of class columns
+      const columns = ColumnPreferences.getOrder(
+        columnsObject,
+        this.context.currentApp.applicationId,
+        className
+      );
+      // extend columns with their type and targetClass properties
+      columns.forEach(column => {
+        const { type, targetClass } = columnsObject[column.name];
+        column.type = type;
+        column.targetClass = targetClass;
+      });
+
+      const { data, selection, newObject } = this.state;
+      // at this moment only one row must be selected, so take the first and only one
+      const selectedKey = Object.keys(selection)[0];
+      // if selectedKey is string "undefined" => new row column 'objectId' was clicked
+      let selectedId = selectedKey === "undefined" ? undefined : selectedKey;
+      // if selectedId is undefined and newObject is null it means new row was just saved and added to data array
+      const isJustSavedObject = selectedId === undefined && newObject === null;
+      // if new object just saved, remove new row selection and select new added row
+      if (isJustSavedObject) {
+        selectedId = data[0].id;
+        this.setState({ selection: {} });
+        this.selectRow(selectedId, true);
+      }
+
+      const row = data.findIndex(d => d.id === selectedId);
+
+      const attributes = selectedId
+        ? data[row].attributes
+        : newObject.attributes;
+
+      const selectedObject = {
+        row: row,
+        id: selectedId,
+        ...attributes
+      };
+
+      extras = (
+        <EditRowDialog
+          className={className}
+          columns={columns}
+          selectedObject={selectedObject}
+          handlePointerClick={this.handlePointerClick}
+          setRelation={this.setRelation}
+          handleShowAcl={this.handleShowAcl}
+          onClose={this.closeEditRowDialog}
+          updateRow={this.updateRow}
+          confirmAttachSelectedRows={this.confirmAttachSelectedRows}
+          schema={this.props.schema}
+        />
+      )
     }
 
     let notification = null;
