@@ -258,7 +258,7 @@ export default class Migration extends DashboardView {
           let errorMessage = null;
           switch (this.context.currentApp.migration.wellKnownError) {
             case 1:
-              errorMessage = "This is an error state.";
+              errorMessage = 'This is an error state.';
               break;
             default:
               errorMessage = this.context.currentApp.migration.migrationState === MIGRATION_INITIALSYNC ? null : ' ';

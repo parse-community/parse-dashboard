@@ -151,7 +151,7 @@ export default class PushAudiencesData extends React.Component {
       let stateSettings = {
         newSegment: {
           createdAt: new Date(),
-          name: "New Segment",
+          name: 'New Segment',
           count: 0,
           objectId: PushConstants.NEW_SEGMENT_ID,
           query,

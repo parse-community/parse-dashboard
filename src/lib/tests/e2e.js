@@ -13,12 +13,12 @@ var rp = require('request-promise');
 var ParseDashboard = require('../../../Parse-Dashboard/app');
 
 var dashboardSettings = {
-  "apps": [
+  'apps': [
     {
-      "serverURL": "http://localhost:5051/parse",
-      "appId": "appId",
-      "masterKey": "masterKey",
-      "appName": "MyApp"
+      'serverURL': 'http://localhost:5051/parse',
+      'appId': 'appId',
+      'masterKey': 'masterKey',
+      'appName': 'MyApp'
     }
   ]
 };

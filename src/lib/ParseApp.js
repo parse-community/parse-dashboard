@@ -71,7 +71,7 @@ export default class ParseApp {
     this.graphQLServerURL = graphQLServerURL;
 
     if(!supportedPushLocales) {
-      console.warn(`Missing push locales for '` + appName + `', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications`);
+      console.warn('Missing push locales for \'' + appName + '\', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications');
     }
 
     this.settings = {

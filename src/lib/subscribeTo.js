@@ -70,5 +70,5 @@ export default function subscribeTo(name, prop) {
     SubscribedComponent.original = Component;
 
     return SubscribedComponent;
-  }
+  };
 }

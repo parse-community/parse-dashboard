@@ -1,20 +1,20 @@
-import React from "react";
-import Parse from "parse";
-import { dateStringUTC } from "lib/DateUtils";
-import PropTypes from "lib/PropTypes";
-import ParseApp from "lib/ParseApp";
-import { ContextProxy } from "components/Popover/Popover.react.js";
-import Modal from "components/Modal/Modal.react";
-import Field from "components/Field/Field.react";
-import Label from "components/Label/Label.react";
-import TextInput from "components/TextInput/TextInput.react";
-import DateTimeInput from "components/DateTimeInput/DateTimeInput.react";
-import Toggle from "components/Toggle/Toggle.react";
-import Pill from "components/Pill/Pill.react";
-import GeoPointEditor from "components/GeoPointEditor/GeoPointEditor.react";
-import FileEditor from "components/FileEditor/FileEditor.react";
-import ObjectPickerDialog from "dashboard/Data/Browser/ObjectPickerDialog.react";
-import styles from "dashboard/Data/Browser/Browser.scss";
+import React from 'react';
+import Parse from 'parse';
+import { dateStringUTC } from 'lib/DateUtils';
+import PropTypes from 'lib/PropTypes';
+import ParseApp from 'lib/ParseApp';
+import { ContextProxy } from 'components/Popover/Popover.react.js';
+import Modal from 'components/Modal/Modal.react';
+import Field from 'components/Field/Field.react';
+import Label from 'components/Label/Label.react';
+import TextInput from 'components/TextInput/TextInput.react';
+import DateTimeInput from 'components/DateTimeInput/DateTimeInput.react';
+import Toggle from 'components/Toggle/Toggle.react';
+import Pill from 'components/Pill/Pill.react';
+import GeoPointEditor from 'components/GeoPointEditor/GeoPointEditor.react';
+import FileEditor from 'components/FileEditor/FileEditor.react';
+import ObjectPickerDialog from 'dashboard/Data/Browser/ObjectPickerDialog.react';
+import styles from 'dashboard/Data/Browser/Browser.scss';
 
 export default class EditRowDialog extends React.Component {
   constructor(props) {
@@ -51,24 +51,24 @@ export default class EditRowDialog extends React.Component {
     const openObjectPickers = {};
     columns.forEach(column => {
       const { name, type } = column;
-      if (["Array", "Object"].indexOf(type) >= 0) {
+      if (['Array', 'Object'].indexOf(type) >= 0) {
         currentObject[name] = JSON.stringify(currentObject[name], null, 2);
       }
-      if (type === "Polygon") {
+      if (type === 'Polygon') {
         currentObject[name] = JSON.stringify(
           (currentObject[name] && currentObject[name].coordinates) || [
-            ["lat", "lon"]
+            ['lat', 'lon']
           ],
           null,
           2
         );
       }
-      if (type === "Pointer") {
+      if (type === 'Pointer') {
         currentObject[name] =
-          (currentObject[name] && currentObject[name].id) || "";
+          (currentObject[name] && currentObject[name].id) || '';
         openObjectPickers[name] = false;
       }
-      if (type === "Relation") {
+      if (type === 'Relation') {
         openObjectPickers[name] = false;
       }
     });
@@ -83,12 +83,12 @@ export default class EditRowDialog extends React.Component {
   }
 
   handleChange(newValue, name, type, targetClass, toDelete) {
-    if (name == "password") {
-      if (newValue === "") {
+    if (name == 'password') {
+      if (newValue === '') {
         return false;
       } else {
         const { currentObject } = this.state;
-        currentObject.password = "";
+        currentObject.password = '';
       }
     }
     const {
@@ -97,7 +97,7 @@ export default class EditRowDialog extends React.Component {
       updateRow,
       confirmAttachSelectedRows
     } = this.props;
-    if (type === "Relation") {
+    if (type === 'Relation') {
       if (toDelete.length > 0) {
         selectedObject[name].remove(toDelete);
         selectedObject[name].parent.save(null, { useMasterKey: true });
@@ -113,17 +113,17 @@ export default class EditRowDialog extends React.Component {
       }
       this.toggleObjectPicker(name, false);
     } else {
-      if (["Array", "Object", "Polygon"].indexOf(type) >= 0) {
+      if (['Array', 'Object', 'Polygon'].indexOf(type) >= 0) {
         const { currentObject } = this.state;
         currentObject[name] = JSON.stringify(newValue, null, 2);
-        if (type === "Polygon") {
+        if (type === 'Polygon') {
           newValue = {
             __type: type,
             coordinates: newValue
           };
         }
       }
-      if (type === "Pointer") {
+      if (type === 'Pointer') {
         // when Pointer newValue is array with length 0 or 1
         const pointerId = newValue[0];
         newValue = pointerId
@@ -141,7 +141,7 @@ export default class EditRowDialog extends React.Component {
   openAcl() {
     const { selectedObject, columns, handleShowAcl } = this.props;
     const { row } = selectedObject;
-    const col = columns.findIndex(c => c.name === "ACL");
+    const col = columns.findIndex(c => c.name === 'ACL');
     handleShowAcl(row, col);
   }
 
@@ -171,7 +171,7 @@ export default class EditRowDialog extends React.Component {
       const { name, type, targetClass } = column;
 
       const isHidden =
-        ["objectId", "createdAt", "updatedAt", "ACL"].indexOf(name) >= 0;
+        ['objectId', 'createdAt', 'updatedAt', 'ACL'].indexOf(name) >= 0;
 
       if (isHidden) {
         return;
@@ -180,22 +180,22 @@ export default class EditRowDialog extends React.Component {
       let inputComponent;
 
       const isDisabled =
-        (className === "_User" && ["authData"].indexOf(name) >= 0) ||
+        (className === '_User' && ['authData'].indexOf(name) >= 0) ||
         (selectedObject.id &&
-          className === "_Role" &&
-          ["name"].indexOf(name) >= 0) ||
-        (className === "_Session" &&
+          className === '_Role' &&
+          ['name'].indexOf(name) >= 0) ||
+        (className === '_Session' &&
           [
-            "sessionToken",
-            "expiresAt",
-            "user",
-            "createdWith",
-            "installationId",
-            "restricted"
+            'sessionToken',
+            'expiresAt',
+            'user',
+            'createdWith',
+            'installationId',
+            'restricted'
           ].indexOf(name) >= 0);
 
       switch (type) {
-        case "String":
+        case 'String':
           inputComponent = (
             <TextInput
               multiline={
@@ -204,14 +204,14 @@ export default class EditRowDialog extends React.Component {
                   : false
               }
               disabled={isDisabled}
-              placeholder={name === "password" ? "(hidden)" : ""}
+              placeholder={name === 'password' ? '(hidden)' : ''}
               value={currentObject[name]}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue => this.handleChange(newValue, name)}
             />
           );
           break;
-        case "Number":
+        case 'Number':
           inputComponent = (
             <TextInput
               disabled={isDisabled}
@@ -221,9 +221,9 @@ export default class EditRowDialog extends React.Component {
             />
           );
           break;
-        case "Array":
-        case "Object":
-        case "Polygon":
+        case 'Array':
+        case 'Object':
+        case 'Polygon':
           inputComponent = (
             <TextInput
               multiline={true}
@@ -236,7 +236,7 @@ export default class EditRowDialog extends React.Component {
             />
           );
           break;
-        case "Boolean":
+        case 'Boolean':
           inputComponent = isDisabled ? (
             <TextInput disabled={true} value={selectedObject[name]} />
           ) : (
@@ -247,7 +247,7 @@ export default class EditRowDialog extends React.Component {
             />
           );
           break;
-        case "Date":
+        case 'Date':
           inputComponent = (
             <DateTimeInput
               disabled={isDisabled}
@@ -256,30 +256,30 @@ export default class EditRowDialog extends React.Component {
             />
           );
           break;
-        case "GeoPoint":
+        case 'GeoPoint':
           inputComponent = (
-            <div style={{ padding: "25px" }}>
+            <div style={{ padding: '25px' }}>
               <GeoPointEditor
                 disableAutoFocus={true}
                 value={selectedObject[name]}
-                style={{ position: "inherit" }}
+                style={{ position: 'inherit' }}
                 onCommit={newValue => this.handleChange(newValue, name)}
               />
             </div>
           );
           break;
-        case "File":
+        case 'File':
           inputComponent = (
-            <div style={{ padding: "25px" }}>
+            <div style={{ padding: '25px' }}>
               <FileEditor
                 value={selectedObject[name]}
-                style={{ position: "inherit" }}
+                style={{ position: 'inherit' }}
                 onCommit={newValue => this.handleChange(newValue, name)}
               />
             </div>
           );
           break;
-        case "Pointer":
+        case 'Pointer':
           const pointerId = selectedObject[name] && selectedObject[name].id;
           inputComponent = openObjectPickers[name] ? (
             <ContextProxy cx={this.context}>
@@ -297,9 +297,9 @@ export default class EditRowDialog extends React.Component {
           ) : (
             <div
               style={{
-                textAlign: "center",
-                cursor: "pointer",
-                paddingTop: pointerId ? "17px" : "35px"
+                textAlign: 'center',
+                cursor: 'pointer',
+                paddingTop: pointerId ? '17px' : '35px'
               }}
             >
               {pointerId && (
@@ -315,7 +315,7 @@ export default class EditRowDialog extends React.Component {
             </div>
           );
           break;
-        case "Relation":
+        case 'Relation':
           // fallback if selectedObject is just saved, so it still doesn't have relation properites set
           const relation =
             selectedObject[name] || new Parse.Relation(selectedObject, name);
@@ -338,9 +338,9 @@ export default class EditRowDialog extends React.Component {
             selectedObject.id && (
               <div
                 style={{
-                  textAlign: "center",
-                  cursor: "pointer",
-                  paddingTop: "17px"
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  paddingTop: '17px'
                 }}
               >
                 <Pill
@@ -392,16 +392,16 @@ export default class EditRowDialog extends React.Component {
           )
         }
         subtitle={
-          <div style={{ paddingTop: "5px", fontSize: "12px" }}>
+          <div style={{ paddingTop: '5px', fontSize: '12px' }}>
             {selectedObject.createdAt && (
               <p>
-                CreatedAt{" "}
+                CreatedAt{' '}
                 <strong>{dateStringUTC(selectedObject.createdAt)}</strong>
               </p>
             )}
             {selectedObject.updatedAt && (
               <p>
-                UpdatedAt{" "}
+                UpdatedAt{' '}
                 <strong>{dateStringUTC(selectedObject.updatedAt)}</strong>
               </p>
             )}
