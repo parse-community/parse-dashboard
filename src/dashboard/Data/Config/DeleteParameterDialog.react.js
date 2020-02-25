@@ -46,10 +46,10 @@ export default class DeleteParameterDialog extends React.Component {
       <Modal
         type={Modal.Types.DANGER}
         icon='warn-outline'
-        title={`Delete parameter?`}
+        title={'Delete parameter?'}
         subtitle={'This action cannot be undone!'}
         disabled={!this.valid()}
-        confirmText={`Yes, delete`}
+        confirmText={'Yes, delete'}
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>

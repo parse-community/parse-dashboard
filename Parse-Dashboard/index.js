@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 // Command line tool for npm start
-"use strict"
+'use strict'
 const path = require('path');
 const jsonFile = require('json-file-plus');
 const express = require('express');
@@ -40,7 +40,7 @@ const trustProxy = program.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY
 const dev = program.dev;
 
 if (trustProxy && allowInsecureHTTP) {
-  console.log("Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.");
+  console.log('Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.');
   process.exit(-1);
 }
 

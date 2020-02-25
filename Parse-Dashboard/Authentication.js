@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 var bcrypt = require('bcryptjs');
 var csrf = require('csurf');
 var passport = require('passport');

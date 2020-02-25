@@ -110,7 +110,7 @@ let BrowserToolbar = ({
         <Separator />
         <MenuItem
           disabled={selectionLength !== 1}
-          text={`Edit this row with modal`}
+          text={'Edit this row with modal'}
           onClick={onEditSelectedRow}
         />
         <Separator />
@@ -180,7 +180,7 @@ let BrowserToolbar = ({
       details={details.join(' \u2022 ')}
     >
       {onAddRow && (
-        <a className={classes.join(" ")} onClick={onClick}>
+        <a className={classes.join(' ')} onClick={onClick}>
           <Icon name="plus-solid" width={14} height={14} />
           <span>Add Row</span>
         </a>

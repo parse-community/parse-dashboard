@@ -29,7 +29,7 @@ export default class BrowserFilter extends React.Component {
       filters: new List(),
       blacklistedFilters: BLACKLISTED_FILTERS.concat(props.blacklistedFilters)
     };
-    this.toggle = this.toggle.bind(this)
+    this.toggle = this.toggle.bind(this);
   }
 
   componentDidMount() {
@@ -47,11 +47,13 @@ export default class BrowserFilter extends React.Component {
     if (this.props.filters.size === 0) {
       let available = Filters.availableFilters(this.props.schema, null, this.state.blacklistedFilters);
       let field = Object.keys(available)[0];
-      filters = new List([new Map({ field: field, constraint: available[field][0] })]);
+      filters = new List([
+        new Map({ field: field, constraint: available[field][0] })
+      ]);
     }
     this.setState(prevState => ({
       open: !prevState.open,
-      filters: filters,
+      filters: filters
     }));
     this.props.setCurrent(null);
   }
@@ -60,7 +62,9 @@ export default class BrowserFilter extends React.Component {
     let available = Filters.availableFilters(this.props.schema, this.state.filters, this.state.blacklistedFilters);
     let field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
-      filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+      filters: filters.push(
+        new Map({ field: field, constraint: available[field][0] })
+      )
     }));
   }
 
@@ -69,14 +73,14 @@ export default class BrowserFilter extends React.Component {
   }
 
   apply() {
-    let formatted = this.state.filters.map((filter) => {
+    let formatted = this.state.filters.map(filter => {
       // TODO: type is unused?
       /*let type = this.props.schema[filter.get('field')].type;
       if (Filters.Constraints[filter.get('constraint')].hasOwnProperty('field')) {
         type = Filters.Constraints[filter.get('constraint')].field;
       }*/
       return filter;
-    })
+    });
     this.props.onChange(formatted);
   }
 
@@ -92,7 +96,10 @@ export default class BrowserFilter extends React.Component {
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
       }
-      let available = Filters.availableFilters(this.props.schema, this.state.filters);
+      let available = Filters.availableFilters(
+        this.props.schema,
+        this.state.filters
+      );
       popover = (
         <Popover fixed={true} position={position} onExternalClick={this.toggle} contentId={POPOVER_CONTENT_ID}>
           <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)} id={POPOVER_CONTENT_ID}>
@@ -102,27 +109,33 @@ export default class BrowserFilter extends React.Component {
                 blacklist={this.state.blacklistedFilters}
                 schema={this.props.schema}
                 filters={this.state.filters}
-                onChange={(filters) => this.setState({ filters: filters })}
-                renderRow={(props) => <FilterRow {...props} active={this.props.filters.size > 0} />} />
+                onChange={filters => this.setState({ filters: filters })}
+                renderRow={props => (
+                  <FilterRow {...props} active={this.props.filters.size > 0} />
+                )}
+              />
               <div className={styles.footer}>
                 <Button
-                  color='white'
-                  value='Clear all'
+                  color="white"
+                  value="Clear all"
                   disabled={this.state.filters.size === 0}
-                  width='120px'
-                  onClick={this.clear.bind(this)} />
+                  width="120px"
+                  onClick={this.clear.bind(this)}
+                />
                 <Button
-                  color='white'
-                  value='Add filter'
+                  color="white"
+                  value="Add filter"
                   disabled={Object.keys(available).length === 0}
-                  width='120px'
-                  onClick={this.addRow.bind(this)} />
+                  width="120px"
+                  onClick={this.addRow.bind(this)}
+                />
                 <Button
-                  color='white'
+                  color="white"
                   primary={true}
-                  value='Apply these filters'
-                  width='245px'
-                  onClick={this.apply.bind(this)} />
+                  value="Apply these filters"
+                  width="245px"
+                  onClick={this.apply.bind(this)}
+                />
               </div>
             </div>
           </div>
@@ -135,7 +148,7 @@ export default class BrowserFilter extends React.Component {
     return (
       <div className={styles.wrap}>
         <div className={buttonStyle.join(' ')} onClick={this.toggle}>
-          <Icon name='filter-solid' width={14} height={14} />
+          <Icon name="filter-solid" width={14} height={14} />
           <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
         </div>
         {popover}

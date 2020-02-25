@@ -16,9 +16,9 @@ module.exports = {
     }
 
     // Let Jest handle our custom module resolution
-    src = src.replace(/from 'stylesheets/g, "from '../../stylesheets");
-    src = src.replace(/from 'lib/g, "from '../../lib");
-    src = src.replace(/from 'components/g, "from '../../components");
+    src = src.replace(/from 'stylesheets/g, 'from \'../../stylesheets');
+    src = src.replace(/from 'lib/g, 'from \'../../lib');
+    src = src.replace(/from 'components/g, 'from \'../../components');
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6
@@ -26,7 +26,7 @@ module.exports = {
       return babel.transform(src, {
         filename: filename,
         retainLines: true,
-        plugins: [["@babel/plugin-proposal-decorators", { "legacy": true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
+        plugins: [['@babel/plugin-proposal-decorators', { 'legacy': true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
         presets: ['@babel/preset-react', '@babel/preset-env']
         // Remove propTypes for tests so we don't have to keep unmocking lib/PropTypes
         // Also it's more representative of the production environment

@@ -542,8 +542,8 @@ class Browser extends DashboardView {
       obj.set(attr, value);
     }
     obj.save(null, { useMasterKey: true }).then((objectSaved) => {
-      const createdOrUpdated = isNewObject ? "created" : "updated";
-      let msg = objectSaved.className + " with id '" + objectSaved.id + "' " + createdOrUpdated;
+      const createdOrUpdated = isNewObject ? 'created' : 'updated';
+      let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + createdOrUpdated;
       this.showNote(msg, false);
 
       const state = { data: this.state.data };
@@ -650,9 +650,9 @@ class Browser extends DashboardView {
           let deletedNote;
 
           if (toDeleteObjectIds.length == 1) {
-            deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
+            deletedNote = className + ' with id \'' + toDeleteObjectIds[0] + '\' deleted';
           } else {
-            deletedNote = toDeleteObjectIds.length + " " + className + " objects deleted";
+            deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
           }
 
           this.showNote(deletedNote, false);
@@ -676,17 +676,17 @@ class Browser extends DashboardView {
 
           if (error.code === Parse.Error.AGGREGATE_ERROR) {
             if (error.errors.length == 1) {
-              errorDeletingNote = "Error deleting " + className + " with id '" + error.errors[0].object.id + "'";
+              errorDeletingNote = 'Error deleting ' + className + ' with id \'' + error.errors[0].object.id + '\'';
             } else if (error.errors.length < toDeleteObjectIds.length) {
-              errorDeletingNote = "Error deleting " + error.errors.length + " out of " + toDeleteObjectIds.length + " " + className + " objects";
+              errorDeletingNote = 'Error deleting ' + error.errors.length + ' out of ' + toDeleteObjectIds.length + ' ' + className + ' objects';
             } else {
-              errorDeletingNote = "Error deleting all " + error.errors.length + " " + className + " objects";
+              errorDeletingNote = 'Error deleting all ' + error.errors.length + ' ' + className + ' objects';
             }
           } else {
             if (toDeleteObjectIds.length == 1) {
-              errorDeletingNote = "Error deleting " + className + " with id '" + toDeleteObjectIds[0] + "'";
+              errorDeletingNote = 'Error deleting ' + className + ' with id \'' + toDeleteObjectIds[0] + '\'';
             } else {
-              errorDeletingNote = "Error deleting " + toDeleteObjectIds.length + " " + className + " objects";
+              errorDeletingNote = 'Error deleting ' + toDeleteObjectIds.length + ' ' + className + ' objects';
             }
           }
 
@@ -1131,7 +1131,7 @@ class Browser extends DashboardView {
       // at this moment only one row must be selected, so take the first and only one
       const selectedKey = Object.keys(selection)[0];
       // if selectedKey is string "undefined" => new row column 'objectId' was clicked
-      let selectedId = selectedKey === "undefined" ? undefined : selectedKey;
+      let selectedId = selectedKey === 'undefined' ? undefined : selectedKey;
       // if selectedId is undefined and newObject is null it means new row was just saved and added to data array
       const isJustSavedObject = selectedId === undefined && newObject === null;
       // if new object just saved, remove new row selection and select new added row

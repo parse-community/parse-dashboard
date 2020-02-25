@@ -1,25 +1,25 @@
-import React from "react";
-import { List } from "immutable";
-import Parse from "parse";
-import * as ColumnPreferences from "lib/ColumnPreferences";
-import queryFromFilters from "lib/queryFromFilters";
-import PropTypes from "lib/PropTypes";
-import ParseApp from "lib/ParseApp";
-import { ContextProxy } from "components/Popover/Popover.react.js";
-import Modal from "components/Modal/Modal.react";
-import Button from "components/Button/Button.react";
-import TextInput from "components/TextInput/TextInput.react";
-import DataBrowser from "dashboard/Data/Browser/DataBrowser.react";
-import stylesBrowser from "dashboard/Data/Browser/Browser.scss";
-import stylesBrowserFilter from "components/BrowserFilter/BrowserFilter.scss";
-import stylesToolbar from "components/Toolbar/Toolbar.scss";
-import stylesColumnsConfiguration from "components/ColumnsConfiguration/ColumnsConfiguration.scss";
-import stylesDataBrowserHeaderBar from "components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss";
-import stylesFooter from "components/Modal/Modal.scss";
+import React from 'react';
+import { List } from 'immutable';
+import Parse from 'parse';
+import * as ColumnPreferences from 'lib/ColumnPreferences';
+import queryFromFilters from 'lib/queryFromFilters';
+import PropTypes from 'lib/PropTypes';
+import ParseApp from 'lib/ParseApp';
+import { ContextProxy } from 'components/Popover/Popover.react.js';
+import Modal from 'components/Modal/Modal.react';
+import Button from 'components/Button/Button.react';
+import TextInput from 'components/TextInput/TextInput.react';
+import DataBrowser from 'dashboard/Data/Browser/DataBrowser.react';
+import stylesBrowser from 'dashboard/Data/Browser/Browser.scss';
+import stylesBrowserFilter from 'components/BrowserFilter/BrowserFilter.scss';
+import stylesToolbar from 'components/Toolbar/Toolbar.scss';
+import stylesColumnsConfiguration from 'components/ColumnsConfiguration/ColumnsConfiguration.scss';
+import stylesDataBrowserHeaderBar from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
+import stylesFooter from 'components/Modal/Modal.scss';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
-const SELECTION_INPUT_ID = "selectionInput";
+const SELECTION_INPUT_ID = 'selectionInput';
 
 export default class ObjectPickerDialog extends React.Component {
   constructor(props, context) {
@@ -31,11 +31,11 @@ export default class ObjectPickerDialog extends React.Component {
       filteredCounts: {},
       filters: new List(),
       lastMax: -1,
-      ordering: "-createdAt",
+      ordering: '-createdAt',
       selection: {},
       // initial relation ids -> currently saved in database
       initialRelationData: [],
-      selectionInput: "",
+      selectionInput: '',
       disableDataBrowserKeyControls: false
     };
 
@@ -63,13 +63,13 @@ export default class ObjectPickerDialog extends React.Component {
     }
     document
       .getElementById(SELECTION_INPUT_ID)
-      .addEventListener("focus", this.disableDataBrowserKeyControls);
+      .addEventListener('focus', this.disableDataBrowserKeyControls);
   }
 
   componentWillUnmount() {
     document
       .getElementById(SELECTION_INPUT_ID)
-      .addEventListener("focus", this.disableDataBrowserKeyControls);
+      .addEventListener('focus', this.disableDataBrowserKeyControls);
   }
 
   disableDataBrowserKeyControls() {
@@ -100,10 +100,10 @@ export default class ObjectPickerDialog extends React.Component {
 
   async fetchParseData(source, filters) {
     const query = queryFromFilters(source, filters);
-    const sortDir = this.state.ordering[0] === "-" ? "-" : "+";
-    const field = this.state.ordering.substr(sortDir === "-" ? 1 : 0);
+    const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
+    const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
 
-    if (sortDir === "-") {
+    if (sortDir === '-') {
       query.descending(field);
     } else {
       query.ascending(field);
@@ -130,31 +130,31 @@ export default class ObjectPickerDialog extends React.Component {
     let className = this.props.className;
     let source = this.state.relation || className;
     let query = queryFromFilters(source, this.state.filters);
-    if (this.state.ordering !== "-createdAt") {
+    if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let field = this.state.ordering;
       let ascending = true;
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      if (field === "objectId" || field === "-objectId") {
+      if (field === 'objectId' || field === '-objectId') {
         comp = this.state.data[this.state.data.length - 1].id;
       }
-      if (field[0] === "-") {
+      if (field[0] === '-') {
         field = field.substr(1);
         query.lessThan(field, comp);
         ascending = false;
       } else {
         query.greaterThan(field, comp);
       }
-      if (field === "createdAt") {
+      if (field === 'createdAt') {
         equalityQuery.greaterThan(
-          "createdAt",
-          this.state.data[this.state.data.length - 1].get("createdAt")
+          'createdAt',
+          this.state.data[this.state.data.length - 1].get('createdAt')
         );
       } else {
         equalityQuery.lessThan(
-          "createdAt",
-          this.state.data[this.state.data.length - 1].get("createdAt")
+          'createdAt',
+          this.state.data[this.state.data.length - 1].get('createdAt')
         );
         equalityQuery.equalTo(field, comp);
       }
@@ -166,10 +166,10 @@ export default class ObjectPickerDialog extends React.Component {
       }
     } else {
       query.lessThan(
-        "createdAt",
-        this.state.data[this.state.data.length - 1].get("createdAt")
+        'createdAt',
+        this.state.data[this.state.data.length - 1].get('createdAt')
       );
-      query.addDescending("createdAt");
+      query.addDescending('createdAt');
     }
     query.limit(MAX_ROWS_FETCHED);
 
@@ -226,23 +226,23 @@ export default class ObjectPickerDialog extends React.Component {
     const { column } = this.props;
     this.setState(({ selection, selectionInput }) => {
       if (checked) {
-        if (column.type === "Pointer") {
+        if (column.type === 'Pointer') {
           selection = {};
         }
         selection[id] = true;
       } else {
         delete selection[id];
       }
-      selectionInput = Object.keys(selection).join(", ");
+      selectionInput = Object.keys(selection).join(', ');
       return { selection, selectionInput };
     });
   }
 
   updateSelectionFromInput(newValue) {
     const { column } = this.props;
-    const isPointer = column.type === "Pointer";
+    const isPointer = column.type === 'Pointer';
     const newSelection = {};
-    newValue.split(", ").some(id => {
+    newValue.split(', ').some(id => {
       if (id.length === 10) {
         newSelection[id] = true;
         if (isPointer) {
@@ -259,7 +259,7 @@ export default class ObjectPickerDialog extends React.Component {
 
   onConfirm() {
     const { onConfirm, column } = this.props;
-    const isRelation = column.type === "Relation";
+    const isRelation = column.type === 'Relation';
     const { selection, initialRelationData } = this.state;
     const currentSelection = Object.keys(selection);
     const newValue = isRelation
@@ -285,10 +285,10 @@ export default class ObjectPickerDialog extends React.Component {
       disableDataBrowserKeyControls
     } = this.state;
 
-    const columns = { objectId: { type: "String" } };
-    const classes = schema.data.get("classes");
+    const columns = { objectId: { type: 'String' } };
+    const classes = schema.data.get('classes');
     classes.get(className).forEach(({ type, targetClass }, name) => {
-      if (name === "objectId") {
+      if (name === 'objectId') {
         return;
       }
       const info = { type };
@@ -311,18 +311,18 @@ export default class ObjectPickerDialog extends React.Component {
         iconSize={30}
         title={`Select ${column.name}`}
         subtitle={`${column.type} <${column.targetClass}>`}
-        width={"80vw"}
+        width={'80vw'}
         customFooter={
-          <div style={{ textAlign: "right" }} className={stylesFooter.footer}>
+          <div style={{ textAlign: 'right' }} className={stylesFooter.footer}>
             <div className={stylesBrowser.selectionInputWrapper}>
               <TextInput
                 id={SELECTION_INPUT_ID}
                 monospace={true}
                 height="30px"
                 placeholder={
-                  column.type === "Relation"
-                    ? "ox0QZFl7eg, qs81Q72lTL, etc..."
-                    : "ox0QZFl7eg"
+                  column.type === 'Relation'
+                    ? 'ox0QZFl7eg, qs81Q72lTL, etc...'
+                    : 'ox0QZFl7eg'
                 }
                 value={selectionInput}
                 onChange={newValue =>
@@ -350,10 +350,10 @@ export default class ObjectPickerDialog extends React.Component {
             stylesBrowserFilter.objectPickerContent,
             stylesToolbar.objectPickerContent,
             stylesColumnsConfiguration.objectPickerContent,
-            column.type === "Pointer"
+            column.type === 'Pointer'
               ? stylesDataBrowserHeaderBar.pickerPointer
-              : ""
-          ].join(" ")}
+              : ''
+          ].join(' ')}
         >
           <div className={stylesBrowser.selectionSection}>
             <div className={stylesBrowser.selectionHeader}>
@@ -368,12 +368,12 @@ export default class ObjectPickerDialog extends React.Component {
                     color="red"
                     width="108px"
                     additionalStyles={{
-                      height: "22px",
-                      lineHeight: "22px",
-                      padding: "0",
-                      fontSize: "12px",
-                      marginBottom: "9px",
-                      fontFamily: "Source Code Pro, Courier New, monospace"
+                      height: '22px',
+                      lineHeight: '22px',
+                      padding: '0',
+                      fontSize: '12px',
+                      marginBottom: '9px',
+                      fontFamily: 'Source Code Pro, Courier New, monospace'
                     }}
                     onClick={() => this.selectRow(id, false)}
                   />
