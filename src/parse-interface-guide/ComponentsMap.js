@@ -10,6 +10,7 @@ export let Calendar                  = require('components/Calendar/Calendar.exa
 export let CascadingView             = require('components/CascadingView/CascadingView.example');
 export let Chart                     = require('components/Chart/Chart.example');
 export let Checkbox                  = require('components/Checkbox/Checkbox.example');
+export let Chip                      = require('components/Chip/Chip.example');
 export let ChromeDatePicker          = require('components/ChromeDatePicker/ChromeDatePicker.example');
 export let ChromeDropdown            = require('components/ChromeDropdown/ChromeDropdown.example');
 export let CodeEditor                = require('components/CodeEditor/CodeEditor.example');
