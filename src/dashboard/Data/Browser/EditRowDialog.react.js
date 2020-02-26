@@ -3,7 +3,6 @@ import Parse from 'parse';
 import { dateStringUTC } from 'lib/DateUtils';
 import PropTypes from 'lib/PropTypes';
 import ParseApp from 'lib/ParseApp';
-import { ContextProxy } from 'components/Popover/Popover.react.js';
 import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
@@ -282,7 +281,6 @@ export default class EditRowDialog extends React.Component {
         case 'Pointer':
           const pointerId = selectedObject[name] && selectedObject[name].id;
           inputComponent = openObjectPickers[name] ? (
-            <ContextProxy cx={this.context}>
               <ObjectPickerDialog
                 schema={schema}
                 column={column}
@@ -293,7 +291,6 @@ export default class EditRowDialog extends React.Component {
                 }
                 onCancel={() => this.toggleObjectPicker(name, false)}
               />
-            </ContextProxy>
           ) : (
             <div
               style={{
@@ -322,7 +319,6 @@ export default class EditRowDialog extends React.Component {
           relation.targetClassName = targetClass;
 
           inputComponent = openObjectPickers[name] ? (
-            <ContextProxy cx={this.context}>
               <ObjectPickerDialog
                 schema={schema}
                 column={column}
@@ -333,7 +329,6 @@ export default class EditRowDialog extends React.Component {
                 }
                 onCancel={() => this.toggleObjectPicker(name, false)}
               />
-            </ContextProxy>
           ) : (
             selectedObject.id && (
               <div

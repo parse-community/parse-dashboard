@@ -5,7 +5,6 @@ import * as ColumnPreferences from 'lib/ColumnPreferences';
 import queryFromFilters from 'lib/queryFromFilters';
 import PropTypes from 'lib/PropTypes';
 import ParseApp from 'lib/ParseApp';
-import { ContextProxy } from 'components/Popover/Popover.react.js';
 import Modal from 'components/Modal/Modal.react';
 import Button from 'components/Button/Button.react';
 import TextInput from 'components/TextInput/TextInput.react';
@@ -381,7 +380,6 @@ export default class ObjectPickerDialog extends React.Component {
               })}
             </div>
           </div>
-          <ContextProxy cx={this.context}>
             <DataBrowser
               count={count}
               schema={schema}
@@ -399,7 +397,6 @@ export default class ObjectPickerDialog extends React.Component {
               disableKeyControls={disableDataBrowserKeyControls}
               updateOrdering={this.updateOrdering}
             />
-          </ContextProxy>
         </div>
       </Modal>
     );
