@@ -56,6 +56,7 @@ export let MultiSelect               = require('components/MultiSelect/MultiSele
 export let PermissionsDialog         = require('components/PermissionsDialog/PermissionsDialog.example');
 export let Pill                      = require('components/Pill/Pill.example');
 export let PlatformCard              = require('components/PlatformCard/PlatformCard.example');
+export let ProtectedFieldsDialog     = require('components/ProtectedFieldsDialog/ProtectedFieldsDialog.example');
 export let PushAudienceDialog        = require('components/PushAudienceDialog/PushAudienceDialog.example');
 export let PushAudiencesOption       = require('components/PushAudiencesSelector/PushAudiencesOption.example');
 export let PushAudiencesSelector     = require('components/PushAudiencesSelector/PushAudiencesSelector.example');
