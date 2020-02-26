@@ -395,6 +395,7 @@ export default class ObjectPickerDialog extends React.Component {
               data={data}
               ordering={ordering}
               disableKeyControls={disableDataBrowserKeyControls}
+              disableSecurityDialog={true}
               updateOrdering={this.updateOrdering}
             />
         </div>
