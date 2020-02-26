@@ -74,8 +74,8 @@ class DialogDemo extends React.Component {
             confirmText='Save ACL'
             details={<a href='#'>Learn more about ACLs and app security</a>}
             permissions={{
-              read: {'*': true},
-              write: {'*': true},
+              read: {'*': true, 'role:admin': true, 'role:user': true, 's0meU5er1d':true},
+              write: {'*': true, 'role:admin':true },
             }}
             validateEntry={validateSimple}
             onCancel={() => {
@@ -93,14 +93,15 @@ class DialogDemo extends React.Component {
             confirmText='Save CLP'
             details={<a href='#'>Learn more about CLPs and app security</a>}
             permissions={{
-              get: {'*': false, '1234asdf': true, 'role:admin': true},
-              find: {'*': true, '1234asdf': true, 'role:admin': true},
-              create: {'*': true},
-              update: {'*': true},
-              delete: {'*': true},
-              addField: {'*': true},
-              readUserFields: ['owner'],
-              writeUserFields: ['owner']
+              get: {'*': false, '1234asdf': true, 'role:admin': true,},
+              find: {'*': true, '1234asdf': true, 'role:admin': true, },
+              create: {'*': true,  },
+              update: {'*': true, pointerFields: ['user']},
+              delete: {'*': true, },
+              addField: {'*': true, 'requiresAuthentication': true},
+              readUserFields: ['owner', 'user'],
+              writeUserFields: ['owner'],
+              protectedFields: {'*': ['password', 'email'], 'userField:owner': []}
             }}
             validateEntry={validateAdvanced}
             onCancel={() => {
