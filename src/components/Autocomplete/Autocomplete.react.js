@@ -104,7 +104,6 @@ export default class Autocomplete extends Component {
   }
 
   onChange(e) {
-    console.log('onchange');
     const userInput = e.currentTarget && e.currentTarget.value;
 
     const filteredSuggestions = this.getSuggestions(userInput);
@@ -222,7 +221,6 @@ export default class Autocomplete extends Component {
   }
 
   onKeyDown(e) {
-    console.log('onkeydown:::::' + e.keyCode)
     const { activeSuggestion, filteredSuggestions } = this.state;
 
     // Enter
@@ -233,7 +231,6 @@ export default class Autocomplete extends Component {
         this.props.onSubmit(userInput);
       }
     } else if (e.keyCode === 9) {
-      console.log('tab');
       // Tab
       // do not type it
       e.preventDefault();
