@@ -252,10 +252,10 @@ let BrowserToolbar = ({
           disabled={!!relation || !!isUnique}
         >
           <div className={classes.join('')} onClick={showCLP}>
-            <span>{'ClassLevelPermissions'}</span>
+            <span className={styles.singleLine}>{'Class Level Permissions'}</span>
           </div>
           <div className={classes.join(' ')} onClick={showProtected}>
-            <span>{'ProtectedFields'}</span>
+            <span className={styles.singleLine}>{'Protected Fields'}</span>
           </div>
         </BrowserMenu>
       ) : (

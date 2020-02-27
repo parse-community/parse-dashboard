@@ -258,3 +258,7 @@
   width: calc(100% - 280px);
   float: left;
 }
+
+.singleLine {
+  white-space: nowrap;
+}
