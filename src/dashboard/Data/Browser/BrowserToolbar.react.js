@@ -240,8 +240,8 @@ let BrowserToolbar = ({
         className={classNameForEditors}
         onChangeCLP={onChangeCLP}
         userPointers={userPointers}
-        title="ProtectedFields"
-        icon="locked-solid"
+        title='ProtectedFields'
+        icon='locked-solid'
         onEditPermissions={onEditPermissions}
       />
       {enableSecurityDialog ? (
@@ -251,12 +251,8 @@ let BrowserToolbar = ({
           icon="locked-solid"
           disabled={!!relation || !!isUnique}
         >
-          <div className={classes.join('')} onClick={showCLP}>
-            <span className={styles.singleLine}>{'Class Level Permissions'}</span>
-          </div>
-          <div className={classes.join(' ')} onClick={showProtected}>
-            <span className={styles.singleLine}>{'Protected Fields'}</span>
-          </div>
+          <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
+          <MenuItem text={'Protected Fields'} onClick={showProtected} />
         </BrowserMenu>
       ) : (
         <noscript />
