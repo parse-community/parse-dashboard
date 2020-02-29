@@ -15,6 +15,7 @@ import Pill             from 'components/Pill/Pill.react';
 import Popover          from 'components/Popover/Popover.react';
 import Position         from 'lib/Position';
 import React            from 'react';
+import ScrollHint       from 'components/ScrollHint/ScrollHint.react'
 import SliderWrap       from 'components/SliderWrap/SliderWrap.react';
 import styles           from 'components/PermissionsDialog/PermissionsDialog.scss';
 import Toggle           from 'components/Toggle/Toggle.react';
@@ -525,10 +526,15 @@ export default class PermissionsDialog extends React.Component {
 
     this.refEntry = React.createRef(null);
     this.refTable = React.createRef(null);
+    this.refScrollIndicator = React.createRef(null);
 
     const callback = ([entry]) => {
       const ratio = entry.intersectionRatio;
-      this.refEntry.current.setHidden(ratio < 0.92);
+      const hidden = ratio < 0.92;
+      // hide suggestions to avoid ugly footer overlap
+      this.refEntry.current.setHidden(hidden);
+      // also show indicator when input is not visible
+      this.refScrollHint.current.toggleActive(hidden);
     };
 
     this.observer = new IntersectionObserver(callback, {
@@ -615,7 +621,6 @@ export default class PermissionsDialog extends React.Component {
       showLevels: false,
       level: 'Simple', // 'Simple' | 'Advanced'
       entryTypes: undefined,
-
       perms: Map(perms), // Permissions map
       keys: uniqueKeys, // Permissions row order
       pointerPerms: Map(fromJS(pointerPerms)), // Pointer permissions map
@@ -1267,6 +1272,7 @@ export default class PermissionsDialog extends React.Component {
             </div>
           </div>
           <div className={styles.footer}>
+            <ScrollHint ref={this.refScrollIndicator}/>
             <div className={styles.actions}>
               <Button value="Cancel" onClick={this.props.onCancel} />
               <Button

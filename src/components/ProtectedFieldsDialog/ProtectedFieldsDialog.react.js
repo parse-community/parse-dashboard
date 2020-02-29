@@ -14,6 +14,7 @@ import Pill               from 'components/Pill/Pill.react';
 import Popover            from 'components/Popover/Popover.react';
 import Position           from 'lib/Position';
 import React              from 'react';
+import ScrollHint         from 'components/ScrollHint/ScrollHint.react'
 import styles             from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.scss';
 import MultiSelect        from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption  from 'components/MultiSelect/MultiSelectOption.react';
@@ -33,12 +34,17 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     this.refEntry = React.createRef(null);
     this.refTable = React.createRef(null);
+    this.refScrollHint = React.createRef(null);
 
     // Intersection observer is used to avoid ugly effe t
     // when suggestion are shown whil input field is scrolled out oof viewpoort
     const callback = ([entry]) => {
       const ratio = entry.intersectionRatio;
-      this.refEntry.current.setHidden(ratio < 0.92);
+      const hidden = ratio < 0.92;
+      // hide suggestions to avoid ugly  footer overlap
+      this.refEntry.current.setHidden(hidden);
+      // also show indicator when input is not visible
+      this.refScrollHint.current.toggleActive(hidden);
     };
 
     this.observer = new IntersectionObserver(callback, {
@@ -483,6 +489,7 @@ export default class ProtectedFieldsDialog extends React.Component {
             </div>
           </div>
           <div className={styles.footer}>
+            <ScrollHint ref={this.refScrollIndicator}/>
             <div className={styles.actions}>
               <Button value="Cancel" onClick={this.props.onCancel} />
               <Button
