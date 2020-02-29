@@ -60,6 +60,13 @@
   }
 }
 
+.option.disabled {
+  &:hover {
+    background: white;
+    cursor: default;
+  }
+}
+
 .checked,
 .unchecked {
   position: absolute;

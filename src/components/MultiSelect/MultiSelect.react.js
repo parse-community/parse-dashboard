@@ -92,7 +92,7 @@ export default class MultiSelect extends React.Component {
                 {
                   ...c.props,
                   checked: this.props.value.indexOf(c.props.value) > -1,
-                  onClick: this.select.bind(this, c.props.value)
+                  onClick: c.props.disabled? null : this.select.bind(this, c.props.value)
                 }
             ))}
           </div>

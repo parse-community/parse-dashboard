@@ -235,6 +235,18 @@ export default class ProtectedFieldsDialog extends React.Component {
       );
     }
 
+    let noAvailableFields = options.length === 0;
+
+    if(noAvailableFields){
+      options.push(
+        <MultiSelectOption  disabled={true} dense={true}>
+        {'This class has no fields to protect'}
+        </MultiSelectOption>
+      )
+    }
+
+    const placeholder = 'All fields allowed.'+ (noAvailableFields ? '': ' Click to protect.');
+
     return (
       <div className={(styles.second, styles.multiselect)}>
         <MultiSelect
@@ -245,7 +257,7 @@ export default class ProtectedFieldsDialog extends React.Component {
             this.onChange(key, s);
           }}
           value={values}
-          placeHolder="All fields allowed. Click to protect."
+          placeHolder={placeholder}
         >
           {options}
         </MultiSelect>
