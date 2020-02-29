@@ -17,7 +17,6 @@ import ReactDOM      from 'react-dom';
 import styles        from 'components/BrowserFilter/BrowserFilter.scss';
 import { List, Map } from 'immutable';
 
-const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];
 const POPOVER_CONTENT_ID = 'browserFilterPopover';
 
 export default class BrowserFilter extends React.Component {
@@ -27,7 +26,7 @@ export default class BrowserFilter extends React.Component {
     this.state = {
       open: false,
       filters: new List(),
-      blacklistedFilters: BLACKLISTED_FILTERS.concat(props.blacklistedFilters)
+      blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters)
     };
     this.toggle = this.toggle.bind(this);
   }
