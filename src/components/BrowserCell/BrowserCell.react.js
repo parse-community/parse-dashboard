@@ -86,6 +86,7 @@ export default class BrowserCell extends Component {
   }
 
   getContextMenuOptions(constraints) {
+    let { onEditSelectedRow } = this.props;
     const contextMenuOptions = [];
 
     const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
@@ -96,6 +97,16 @@ export default class BrowserCell extends Component {
 
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
+
+    onEditSelectedRow && contextMenuOptions.push({
+      text: 'Edit row',
+      callback: () => {
+        let { onSelect, row, col, objectId, onEditSelectedRow, setCopyableValue } = this.props;
+        onSelect({ row, col });
+        setCopyableValue(this.copyableValue);
+        onEditSelectedRow(true, objectId);
+      }
+    });
 
     return contextMenuOptions;
   }
@@ -225,8 +236,8 @@ export default class BrowserCell extends Component {
           <Pill value={value.id} />
         </a>
       ) : (
-        value.id
-      );
+          value.id
+        );
       this.copyableValue = value.id;
     } else if (type === 'Date') {
       if (typeof value === 'object' && value.__type) {
@@ -274,8 +285,8 @@ export default class BrowserCell extends Component {
           <Pill onClick={() => setRelation(value)} value='View relation' />
         </div>
       ) : (
-        'Relation'
-      );
+          'Relation'
+        );
       this.copyableValue = undefined;
     }
 

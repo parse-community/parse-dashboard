@@ -77,6 +77,7 @@ export default class BrowserRow extends Component {
               onPointerClick={onPointerClick}
               onFilterChange={onFilterChange}
               setRelation={setRelation}
+              objectId={obj.id}
               value={attr}
               hidden={hidden}
               setCopyableValue={setCopyableValue}
