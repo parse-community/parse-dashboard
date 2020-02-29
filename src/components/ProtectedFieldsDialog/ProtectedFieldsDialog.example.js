@@ -5,7 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse             from 'parse';
 import React             from 'react';
 import ProtectedFieldsDialog 
                          from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
@@ -13,24 +12,46 @@ import Button            from 'components/Button/Button.react';
 
 export const component = ProtectedFieldsDialog;
 
+
 function validateDemo(text) {
-  if (text.startsWith('i')) {
-    return Promise.resolve({ user: { id: text } });
+  if (text===('*')) {
+    return Promise.resolve({ entry: '*' , type:'public'});
   }
-  if (text.startsWith('r')) {
-    return Promise.resolve({ role: new Parse.Role(text, new Parse.ACL()) });
+  if (text===('authenticated')) {
+    return Promise.resolve({ entry: 'authenticated' , type:'auth'});
   }
   if (text.startsWith('u')) {
-    return Promise.resolve({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
+    return Promise.resolve({ entry: { id: text, get:() => 'demouser' } , type:'user'});
   }
-  if (text.startsWith('f')) {
-    return Promise.resolve({ userField: { id: 'i' + ((Math.random() * 10000) | 0)}});
+  if (text.startsWith('role:')) {
+    const roleName = text.substring(5)
+    return Promise.resolve({ entry: {id:`1d0f${roleName}`, getName:()=>roleName}, type:'role' });
   }
-  if (text.startsWith('p')) {
-    return Promise.resolve({ pointer: text });
+
+  // if (text.startsWith('f')) {
+  //   return Promise.resolve({ userField: { id: 'i' + ((Math.random() * 10000) | 0)}});
+  // }
+  if (text.startsWith('ptr')) {
+    return Promise.resolve({ entry: text, type: 'pointer' });
   }
   return Promise.reject();
 }
+
+const columns = {
+  'email': { type: 'String',},
+  'password':{ type: 'String', },
+  'ptr_owner':{ type: 'Pointer', targetClass:'_User'},
+  'nickname':{ type: 'String',},
+  'ptr_followers':{ type: 'Array', },
+  'ptr_friends':{ type: 'Array', }
+};
+
+const userPointers = [
+  'ptr_followers',
+  'ptr_owner',
+  'ptr_friends'
+]
+
 
 class ProtectedFieldsDemo extends React.Component {
   constructor() {
@@ -42,14 +63,6 @@ class ProtectedFieldsDemo extends React.Component {
 
   render() {
 
-    let columns = [
-        {col: 'email', type: 'String', targetClass:''},
-        {col: 'password', type: 'String', targetClass:''},
-        {col: 'owner', type: 'Pointer', targetClass:'_User'},
-        {col: 'nickname', type: 'String', targetClass:''},
-        {col: 'followers', type: 'Array', targetClass:''},
-        {col: 'friends', type: 'Array', targetClass:''},
-      ];
     return (
       <div>
         <Button
@@ -67,9 +80,10 @@ class ProtectedFieldsDemo extends React.Component {
             details={<a href='#'>Learn more about CLPs and app security</a>}
             protectedFields={{
               '*': ['password', 'email'],
-              'userField:owner': [],
-              '0bj3ct1d': ['password']
+              'userField:ptr_owner': [],
+              'us3r1d': ['password']
             }}
+            userPointers={userPointers}
             columns={columns}
             validateEntry={validateDemo}
             onCancel={() => {
