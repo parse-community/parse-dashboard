@@ -101,8 +101,7 @@ export default class BrowserCell extends Component {
     onEditSelectedRow && contextMenuOptions.push({
       text: 'Edit row',
       callback: () => {
-        let { objectId, onEditSelectedRow, setCopyableValue } = this.props;
-        setCopyableValue(this.copyableValue);
+        let { objectId, onEditSelectedRow } = this.props;
         onEditSelectedRow(true, objectId);
       }
     });
