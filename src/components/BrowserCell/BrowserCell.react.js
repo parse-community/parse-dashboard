@@ -26,10 +26,12 @@ export default class BrowserCell extends Component {
   componentDidUpdate() {
     if (this.props.current) {
       const node = this.cellRef.current;
+      const { setRelation } = this.props;
       const { left, right, bottom, top } = node.getBoundingClientRect();
 
       // Takes into consideration Sidebar width when over 980px wide.
-      const leftBoundary = window.innerWidth > 980 ? 300 : 0;
+      // If setRelation is undefined, DataBrowser is used as ObjectPicker, so it does not have a sidebar.
+      const leftBoundary = window.innerWidth > 980 && setRelation ? 300 : 0;
 
       // BrowserToolbar + DataBrowserHeader height
       const topBoundary = 126;
@@ -192,7 +194,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, name, onEditSelectedRow } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -218,10 +220,12 @@ export default class BrowserCell extends Component {
         object.id = value.objectId;
         value = object;
       }
-      content = (
+      content = onPointerClick ? (
         <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
           <Pill value={value.id} />
         </a>
+      ) : (
+        value.id
       );
       this.copyableValue = value.id;
     } else if (type === 'Date') {
@@ -265,10 +269,12 @@ export default class BrowserCell extends Component {
     } else if (type === 'Polygon') {
       this.copyableValue = content = value.coordinates.map(coord => `(${coord})`)
     } else if (type === 'Relation') {
-      content = (
+      content = setRelation ? (
         <div style={{ textAlign: 'center', cursor: 'pointer' }}>
           <Pill onClick={() => setRelation(value)} value='View relation' />
         </div>
+      ) : (
+        'Relation'
       );
       this.copyableValue = undefined;
     }
@@ -286,7 +292,10 @@ export default class BrowserCell extends Component {
           setCopyableValue(hidden ? undefined : this.copyableValue);
         }}
         onDoubleClick={() => {
-          if (type !== 'Relation') {
+          // Since objectId can't be edited, double click event opens edit row dialog
+          if (name === 'objectId' && onEditSelectedRow) {
+            onEditSelectedRow(true, value);
+          } else if (type !== 'Relation') {
             onEditChange(true)
           }
         }}

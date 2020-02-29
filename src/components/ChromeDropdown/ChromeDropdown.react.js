@@ -77,7 +77,7 @@ export default class ChromeDropdown extends React.Component {
       widthStyle = { width: measuredWidth };
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
-          <div style={widthStyle} className={[styles.menu, styles[color]].join(' ')}>
+          <div style={widthStyle} className={[styles.menu, styles[color], 'chromeDropdown'].join(' ')}>
             {this.props.options.map((o) => {
               let key = o;
               let value = o;

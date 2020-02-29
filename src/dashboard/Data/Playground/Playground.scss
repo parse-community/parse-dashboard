@@ -1,0 +1,47 @@
+.playground-ctn {
+  padding-top: 96px;
+  background-color: #002b36;
+  height: 100vh;
+}
+
+.console-ctn {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-direction: column;
+
+  & h3 {
+    height: 28px;
+    line-height: 28px;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+  }
+
+  & > header {
+    flex: 1;
+    padding: 0 0 0 10px;
+    background-color: #169cee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  & > section {
+    width: 100%;
+  }
+}
+
+.buttons-ctn {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px;
+  align-items: center;
+
+  & > div {
+    display: flex;
+    justify-content: flex-end;
+    width: 25%;
+  }
+}

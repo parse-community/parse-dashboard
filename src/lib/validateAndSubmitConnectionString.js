@@ -15,7 +15,7 @@ export default function validateAndSubmitConnectionString(connectionString, igno
       // If they have already seen the current set of warnings and want to continue anyway,
       // just let them. If there are new warnings, show those warnings.
       stoppedWithWarnings(result.warnings);
-      return Promise.reject({ success: false, error: "Warnings" }); // Consumer needs to do custom handling of warnings.
+      return Promise.reject({ success: false, error: 'Warnings' }); // Consumer needs to do custom handling of warnings.
     } else {
       return submit(connectionString);
     }

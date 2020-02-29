@@ -10,8 +10,30 @@ import React from 'react';
 import styles from 'components/TextInput/TextInput.scss';
 
 export default class TextInput extends React.Component {
+  componentWillReceiveProps(props) {
+    if (props.multiline !== this.props.multiline) {
+      const previousInput = this.refs.input;
+      // wait a little while for component to re-render
+      setTimeout(function() {
+        const newInput = previousInput ? this.refs.textarea : this.refs.input;
+        newInput.focus();
+        newInput.value = '';
+        newInput.value = props.value;
+      }.bind(this), 1);
+    }
+  }
+
   changeValue(e) {
-    this.props.onChange(e.nativeEvent.target.value);
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(e.nativeEvent.target.value);
+    }
+  }
+  updateValue(e) {
+    const { onBlur } = this.props;
+    if (onBlur) {
+      onBlur(e.nativeEvent.target.value);
+    }
   }
 
   render() {
@@ -22,16 +44,21 @@ export default class TextInput extends React.Component {
     if (this.props.multiline) {
       return (
         <textarea
+          ref="textarea"
+          id={this.props.id}
           disabled={!!this.props.disabled}
           className={classes.join(' ')}
           style={{height: this.props.height || 80}}
           placeholder={this.props.placeholder}
           value={this.props.value}
-          onChange={this.changeValue.bind(this)} />
+          onChange={this.changeValue.bind(this)}
+          onBlur={this.updateValue.bind(this)} />
       );
     }
     return (
       <input
+        ref="input"
+        id={this.props.id}
         type={this.props.hidden ? 'password' : 'text'}
         disabled={!!this.props.disabled}
         className={classes.join(' ')}
@@ -39,7 +66,7 @@ export default class TextInput extends React.Component {
         placeholder={this.props.placeholder}
         value={this.props.value}
         onChange={this.changeValue.bind(this)}
-        onBlur={this.props.onBlur} />
+        onBlur={this.updateValue.bind(this)} />
     );
   }
 }

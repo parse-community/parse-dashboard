@@ -67,10 +67,10 @@ export function request(method, url, body, abortable = false, withCredentials = 
     } else if (this.status === 403) {
       p.reject({
         success: false,
-        message: "Permission Denied",
-        error: "Permission Denied",
-        errors: ["Permission Denied"],
-        notice: "Permission Denied",
+        message: 'Permission Denied',
+        error: 'Permission Denied',
+        errors: ['Permission Denied'],
+        notice: 'Permission Denied',
       });
     } else if (this.status >= 400 && this.status < 500) {
       let json = {};
