@@ -66,7 +66,6 @@ export default class BrowserRow extends Component {
               filters={this.props.filters}
               className={className}
               field={name}
-              name={name}
               row={row}
               col={j}
               type={type}

@@ -17,7 +17,6 @@ import ReactDOM      from 'react-dom';
 import styles        from 'components/BrowserFilter/BrowserFilter.scss';
 import { List, Map } from 'immutable';
 
-
 const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];
 const POPOVER_CONTENT_ID = 'browserFilterPopover';
 
