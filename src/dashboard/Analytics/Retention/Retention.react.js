@@ -139,7 +139,7 @@ export default class Retention extends DashboardView {
     let dayData = this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
     let date = DateUtils.daysFrom(this.state.date, -daysAgo);
     let formattedDate = DateUtils.monthDayStringUTC(date);
-    let formattedDateSplit = formattedDate.split(" ");
+    let formattedDateSplit = formattedDate.split(' ');
     let formattedDateMonth = formattedDateSplit[0];
     let formattedDateDay   = formattedDateSplit[1];
 
@@ -171,9 +171,9 @@ export default class Retention extends DashboardView {
     if (!this.state.retentions || Object.keys(this.state.retentions).length === 0) {
       chart = (
         <EmptyState
-          title={`You don't have any user retention data for this period.`}
+          title={'You don\'t have any user retention data for this period.'}
           icon='analytics-outline'
-          description={`Once you start tracking user signups, we'll chart your user retention here.`}
+          description={'Once you start tracking user signups, we\'ll chart your user retention here.'}
           cta='Get started with Users'
           action={() => window.location = 'https://parse.com/apps/quickstart'} />
       );

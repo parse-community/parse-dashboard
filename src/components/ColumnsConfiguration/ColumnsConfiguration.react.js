@@ -10,6 +10,8 @@ import Icon from 'components/Icon/Icon.react';
 import Popover from 'components/Popover/Popover.react';
 import Position from 'lib/Position';
 
+const POPOVER_CONTENT_ID = 'columnsConfigurationPopover';
+
 export default class ColumnsConfiguration extends React.Component {
   constructor() {
     super();
@@ -57,8 +59,8 @@ export default class ColumnsConfiguration extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={Position.inDocument(this.node)} onExternalClick={this.toggle.bind(this)}>
-          <div className={styles.popover}>
+        <Popover fixed={true} position={Position.inDocument(this.node)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
+          <div className={styles.popover} id={POPOVER_CONTENT_ID}>
             {title}
             <div className={styles.body}>
               <div className={styles.columnConfigContainer}>

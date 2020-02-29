@@ -14,10 +14,10 @@ const puppeteer = require('puppeteer');
 
 const dashboardSettings = {
   apps: [{
-    serverURL: "http://localhost:5051/parse",
-    appId: "appId",
-    masterKey: "masterKey",
-    appName: "MyApp"
+    serverURL: 'http://localhost:5051/parse',
+    appId: 'appId',
+    masterKey: 'masterKey',
+    appName: 'MyApp'
   }]
 };
 

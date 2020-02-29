@@ -51,7 +51,7 @@ function compareValue(info, value, onChangeCompareTo) {
       return <Dropdown
         value={value ? 'True' : 'False'}
         onChange={(_value) => onChangeCompareTo(_value === 'True')} >
-          {["True", "False"].map(value => <Option value={value} key={value}>{value}</Option>)}
+          {['True', 'False'].map(value => <Option value={value} key={value}>{value}</Option>)}
         </Dropdown>
     case 'Number':
       return <TextInput placeholder='value' className={styles.conditionValue} value={value} onChange={(_value) => onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))} ref={setFocus}/>;

@@ -29,12 +29,12 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   for (var i in apps) {
     var currentApp = apps[i];
     var iconName = currentApp.iconName;
-    var path = iconsFolder + "/" + iconName;
+    var path = iconsFolder + '/' + iconName;
 
     fs.stat(path, function(err) {
       if (err) {
           if ('ENOENT' == err.code) {// file does not exist
-              console.warn("Icon with file name: " + iconName +" couldn't be found in icons folder!");
+              console.warn('Icon with file name: ' + iconName +' couldn\'t be found in icons folder!');
           } else {
             console.log(
               'An error occurd while checking for icons, please check permission!');
@@ -162,8 +162,8 @@ module.exports = function(config, options) {
         }
       } catch (e) {
         // Directory doesn't exist or something.
-        console.warn("Iconsfolder at path: " + config.iconsFolder +
-          " not found!");
+        console.warn('Iconsfolder at path: ' + config.iconsFolder +
+          ' not found!');
       }
     }
 

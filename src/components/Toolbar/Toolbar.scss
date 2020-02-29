@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-@import 'stylesheets/globals.scss';
+@import "stylesheets/globals.scss";
 
 .toolbar {
   position: fixed;
@@ -16,11 +16,28 @@
   height: 96px;
   color: white;
   transition: left 0.5s ease-in;
+  z-index: 5;
 }
 
 @media (max-width: 980px) {
   .toolbar {
     left: 0;
+  }
+}
+
+.objectPickerContent {
+  .toolbar {
+    background: #00db7c;
+    height: 80px;
+    right: 135px;
+
+    .nav {
+      display: none;
+    }
+
+    .titleText {
+      display: none;
+    }
   }
 }
 

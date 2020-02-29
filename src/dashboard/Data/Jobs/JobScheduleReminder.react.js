@@ -6,14 +6,14 @@ export default class JobScheduleReminder extends React.Component {
     return (
       <div className={horizontalCenter}>
         <p>
-          {"Be noted that "}
-          <b>{"parse-server doesn't run the jobs in the scheduled times"}</b>
-          {" by itself."}
+          {'Be noted that '}
+          <b>{'parse-server doesn\'t run the jobs in the scheduled times'}</b>
+          {' by itself.'}
         </p>
         <p>
-          {"Please take a look at the "}
+          {'Please take a look at the '}
           <a href="http://docs.parseplatform.org/parse-server/guide/#jobs">{'docs'}</a>
-          {" on how to do that."}
+          {' on how to do that.'}
         </p>
       </div>
     );
