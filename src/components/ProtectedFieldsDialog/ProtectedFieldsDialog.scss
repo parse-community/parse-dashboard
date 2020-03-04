@@ -1,0 +1,236 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import "stylesheets/globals.scss";
+
+$labelWidth: 440px;
+$fieldsWidth: 480px;
+
+$deleteColWidth: 44px;
+
+$entryMargin: 20px;
+$entryWidth: calc(#{$labelWidth} - #{$entryMargin}* 2);
+
+$permissionsDialogWidth: calc(
+  #{$labelWidth} + #{$fieldsWidth} + #{$deleteColWidth}
+);
+
+.dialog {
+  @include modalAnimation();
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: $permissionsDialogWidth;
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: width 0.3s 0.15s ease-out;
+}
+
+.header {
+  height: 50px;
+  background: $blue;
+  position: relative;
+  color: #ffffff;
+  line-height: 50px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.level {
+  height: 50px;
+  width: $permissionsDialogWidth; //   width: 658px;
+  background: #0e69a1;
+  position: relative;
+  color: white;
+  transition: width 0.3s 0.15s ease-out;
+
+  > div {
+    margin: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  > span {
+    display: inline-block;
+    font-size: 12;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
+  }
+}
+
+.tableWrap {
+  height: 450px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.second {
+  width: #{$fieldsWidth};
+}
+
+.table {
+  position: relative;
+  min-height: 450px;
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 40, 0.03);
+
+    &.second {
+      left: $labelWidth;
+    }
+  }
+}
+
+.footer {
+  position: relative;
+  height: 51px;
+  border-top: 1px solid #e3e3ea;
+
+  .details {
+    font-size: 12px;
+    padding-left: 20px;
+
+    a {
+      color: $blue;
+    }
+  }
+
+  .actions {
+    float: right;
+    padding: 10px 15px;
+
+    a {
+      margin-left: 10px;
+    }
+  }
+}
+
+.multiselect {
+  display: inline-block;
+  width: #{$fieldsWidth};
+}
+
+.row {
+  display: flex;
+  min-height: 50px;
+  height: 100%;
+  vertical-align: middle;
+  font-size: 15px;
+  border-bottom: 1px solid #e3e3ea;
+  white-space: nowrap;
+
+  &:nth-child(odd) {
+    background: rgba(14, 105, 161, 0.03);
+  }
+}
+
+.row.public {
+  background: rgba(22, 156, 238, 0.18);
+  border-bottom: 1px solid #0e69a1;
+  color: $blue;
+}
+
+.label {
+  display: inline-flex;
+  width: $labelWidth;
+  padding: 0 20px;
+  flex-direction: column;
+  align-self: center;
+}
+
+.entry {
+  height: 30px;
+  width: $entryWidth;
+  border: 1px solid $mainTextColor;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  padding: 0 6px;
+  margin: 10px $entryMargin;
+  vertical-align: top;
+}
+
+.error {
+  border-color: $red;
+  color: $red;
+  overflow: hidden;
+  white-space: normal;
+}
+
+.delete {
+  display: inline-block;
+  vertical-align: top;
+  width: 32px;
+  height: 50px;
+  padding-top: 15px;
+  text-align: right;
+
+  svg {
+    vertical-align: top;
+    cursor: pointer;
+    fill: #c1c7cd;
+
+    &:hover {
+      fill: $red;
+    }
+  }
+}
+
+.pillHolder {
+  max-width: 200px;
+  overflow: hidden;
+  display: inline-flex;
+  align-self: center;
+  padding-left: 4px;
+}
+
+.pillType {
+  width: auto;
+  display: inline-flex;
+  height: 20;
+  padding: 2px 8px 0 8px;
+}
+
+.multiselect {
+  .pillType {
+    visibility: collapse;
+    display: none;
+    top: 5px;
+  }
+}
+
+.hint {
+  color: $secondaryTextColor;
+  font-size: 0.8em;
+}
+.selectable {
+  user-select: text;
+}
+.prefix {
+  color: #0e69a1;
+}
+
+.suggestions {
+  margin-left: -19px;
+  width: $entryWidth;
+  margin-top: -24px;
+}
+
+.entry input {
+  width: $entryWidth !important;
+  padding: 0 6px;
+  margin: 10px 20px;
+}
+
+@include modalKeyframes();

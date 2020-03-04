@@ -10,130 +10,158 @@ import Parse from 'parse';
 export const Constraints = {
   exists: {
     name: 'exists',
-    field: null
+    field: null,
+    comparable: false
   },
   dne: {
     name: 'does not exist',
-    field: null
+    field: null,
+    comparable: false
   },
   eq: {
     name: 'equals',
+    comparable: true
   },
   neq: {
     name: 'does not equal',
+    comparable: true
   },
   lt: {
     name: 'less than',
     field: 'Number',
     composable: true,
+    comparable: true
   },
   lte: {
     name: 'less than or equal',
     field: 'Number',
     composable: true,
+    comparable: true
   },
   gt: {
     name: 'greater than',
     field: 'Number',
     composable: true,
+    comparable: true
   },
   gte: {
     name: 'greater than or equal',
     field: 'Number',
     composable: true,
+    comparable: true
   },
   starts: {
     name: 'starts with',
+    comparable: true
   },
   ends: {
     name: 'ends with',
+    comparable: true
   },
   stringContainsString: {
     name: 'string contains string',
     field: 'String',
     composable: true,
+    comparable: true
   },
   before: {
     name: 'is before',
     field: 'Date',
     composable: true,
+    comparable: true
   },
   after: {
     name: 'is after',
     field: 'Date',
     composable: true,
+    comparable: true
   },
   containsString: {
     name: 'contains string',
     field: 'String',
     composable: true,
+    comparable: true
   },
   doesNotContainString: {
     name: 'without string',
     field: 'String',
     composable: true,
+    comparable: true
   },
   containsNumber: {
     name: 'contains number',
     field: 'Number',
     composable: true,
+    comparable: true
   },
   doesNotContainNumber: {
     name: 'without number',
     field: 'Number',
     composable: true,
+    comparable: true
   },
   containsAny: {
     name: 'contains',
     field: 'Array',
+    comparable: true
   },
   doesNotContainAny: {
     name: 'does not contain',
     field: 'Array',
+    comparable: true
   },
   keyExists: {
     name: 'key exists',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: false
   },
   keyDne: {
     name: 'key does not exist',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: false
   },
   keyEq: {
     name: 'key equals',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: true
   },
   keyNeq: {
     name: 'key does not equal',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: true
   },
   keyGt: {
     name: 'key greater than',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: true
   },
   keyGte: {
     name: 'key greater than/equal',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: true
   },
   keyLt: {
     name: 'key less than',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: true
   },
   keyLte: {
     name: 'key less than/equal',
     field: 'Object',
-    composable: true
+    composable: true,
+    comparable: true
   },
   unique: {
     name: 'unique',
-    field: null
+    field: null,
+    comparable: false
   },
 };
 
@@ -204,3 +232,5 @@ export function availableFilters(schema, currentFilters, blacklist) {
   }
   return available;
 }
+
+export const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];

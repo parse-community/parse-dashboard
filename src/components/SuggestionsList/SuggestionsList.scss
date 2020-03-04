@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.suggestions {
+  border: 1px solid $mainTextColor;
+  border-top-width: 0;
+  list-style: none;
+  max-height: 143px;
+  overflow-y: auto;
+  -moz-box-shadow: 0px 0px 0px #666, 0px 4px 8px #666;
+  -webkit-box-shadow: 0px 0px 0px #666, 0px 4px 8px #666;
+  box-shadow:0px 0px 0px #666, 0px 4px 8px #666;
+}
+
+.suggestions li {
+  background: white;
+  padding-left: 10px;
+  font-family:"Open Sans", sans-serif;  
+}
+
+.active,
+.suggestions li:hover {
+  color: #0e69a1;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.suggestions li:not(:last-of-type) {
+  border-bottom: 1px solid #999;
+}

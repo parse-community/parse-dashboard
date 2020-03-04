@@ -120,6 +120,7 @@ class Browser extends DashboardView {
     this.showEditRowDialog = this.showEditRowDialog.bind(this);
     this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
     this.handleShowAcl = this.handleShowAcl.bind(this);
+    this.onDialogToggle = this.onDialogToggle.bind(this);
   }
 
   componentWillMount() {
@@ -508,9 +509,9 @@ class Browser extends DashboardView {
     });
   }
 
-  handlePointerClick({ className, id }) {
+  handlePointerClick({ className, id, field = 'objectId' }) {
     let filters = JSON.stringify([{
-        field: 'objectId',
+        field,
         constraint: 'eq',
         compareTo: id
     }]);
@@ -718,7 +719,8 @@ class Browser extends DashboardView {
       this.state.showAttachRowsDialog ||
       this.state.showAttachSelectedRowsDialog ||
       this.state.showCloneSelectedRowsDialog ||
-      this.state.showEditRowDialog
+      this.state.showEditRowDialog ||
+      this.state.showPermissionsDialog
     );
   }
 
@@ -908,9 +910,9 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
-  showEditRowDialog(isDoubleClick, objectId) {
+  showEditRowDialog(selectRow, objectId) {
     // objectId is optional param which is used for doubleClick event on objectId BrowserCell
-    if (isDoubleClick) {
+    if (selectRow) {
       // remove all selected rows and select doubleClicked row
       this.setState({ selection: {} });
       this.selectRow(objectId, true);
@@ -931,6 +933,11 @@ class Browser extends DashboardView {
     this.refs.dataBrowser.setCurrent({ row, col });
   }
 
+  // skips key controls handling when dialog is opened
+  onDialogToggle(opened){
+    this.setState({showPermissionsDialog: opened});
+  }
+  
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -999,6 +1006,7 @@ class Browser extends DashboardView {
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
+            onEditPermissions={this.onDialogToggle}
 
             columns={columns}
             className={className}
