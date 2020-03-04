@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse             from 'parse';
+// import Parse             from 'parse';
 import React             from 'react';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
 import Button            from 'components/Button/Button.react';
@@ -13,33 +13,52 @@ import Button            from 'components/Button/Button.react';
 export const component = PermissionsDialog;
 
 function validateSimple(text) {
-  if (text.startsWith('i')) {
-    return Promise.resolve({ user: { id: text } });
-  }
-  if (text.startsWith('r')) {
-    return Promise.resolve({ role: new Parse.Role(text, new Parse.ACL()) });
-  }
+
   if (text.startsWith('u')) {
-    return Promise.resolve({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
+    return Promise.resolve({ entry: { id: text, get:() => 'demouser' } , type:'user'});
+  }
+  if (text.startsWith('role:')) {
+    const roleName = text.substring(5);
+    return Promise.resolve({ entry: {id:`1d0f${roleName}`, getName:()=>roleName}, type:'role' });
+  }
+  if (text.startsWith('ptr')) {
+    return Promise.resolve({ entry: text, type: 'pointer' });
   }
   return Promise.reject();
 }
 
 function validateAdvanced(text) {
-  if (text.startsWith('i')) {
-    return Promise.resolve({ user: { id: text } });
-  }
-  if (text.startsWith('r')) {
-    return Promise.resolve({ role: new Parse.Role(text, new Parse.ACL()) });
+  if (text==='*') {
+    return Promise.resolve({ entry: '*' , type:'public'});
   }
   if (text.startsWith('u')) {
-    return Promise.resolve({ user: { id: 'i' + ((Math.random() * 10000) | 0)}});
+    return Promise.resolve({ entry: { id: text, get:() => 'demouser' } , type:'user'});
   }
-  if (text.startsWith('p')) {
-    return Promise.resolve({ pointer: text });
+  if (text.startsWith('role:')) {
+    const roleName = text.substring(5);
+    return Promise.resolve({ entry: {id:`1d0f${roleName}`, getName:()=>roleName}, type:'role' });
+  }
+  if (text.startsWith('ptr')) {
+    return Promise.resolve({ entry: text, type: 'pointer' });
   }
   return Promise.reject();
 }
+
+const columns = {
+  'email': { type: 'String',},
+  'password':{ type: 'String', },
+  'ptr_owner':{ type: 'Pointer', targetClass:'_User'},
+  'nickname':{ type: 'String',},
+  'ptr_followers':{ type: 'Array', },
+  'ptr_friends':{ type: 'Array', }
+};
+
+const userPointers = [
+  'ptr_followers',
+  'ptr_owner',
+  'ptr_friends'
+]
+
 
 class DialogDemo extends React.Component {
   constructor() {
@@ -74,8 +93,8 @@ class DialogDemo extends React.Component {
             confirmText='Save ACL'
             details={<a href='#'>Learn more about ACLs and app security</a>}
             permissions={{
-              read: {'*': true},
-              write: {'*': true},
+              read: {'*': true, 'role:admin': true, 'role:user': true, 'us3r1d':true},
+              write: {'*': true, 'role:admin':true },
             }}
             validateEntry={validateSimple}
             onCancel={() => {
@@ -83,6 +102,7 @@ class DialogDemo extends React.Component {
                 showSimple: false,
               });
             }}
+            coolumns={columns}
             onConfirm={(perms) => {
               console.log(perms);
             }} /> : null}
@@ -93,16 +113,19 @@ class DialogDemo extends React.Component {
             confirmText='Save CLP'
             details={<a href='#'>Learn more about CLPs and app security</a>}
             permissions={{
-              get: {'*': false, '1234asdf': true, 'role:admin': true},
-              find: {'*': true, '1234asdf': true, 'role:admin': true},
-              create: {'*': true},
-              update: {'*': true},
-              delete: {'*': true},
-              addField: {'*': true},
-              readUserFields: ['owner'],
-              writeUserFields: ['owner']
+              get: {'*': false, 'us3r1d': true, 'role:admin': true,},
+              find: {'*': true, 'us3r1d': true, 'role:admin': true, },
+              create: {'*': true,  },
+              update: {'*': true, pointerFields: ['user']},
+              delete: {'*': true, },
+              addField: {'*': true, 'requiresAuthentication': true},
+              readUserFields: ['ptr_owner', 'ptr_followers', 'ptr_friends'],
+              writeUserFields: ['ptr_owner'],
+              protectedFields: {'*': ['password', 'email'], 'userField:ptr_owner': []}
             }}
+            columns={columns}
             validateEntry={validateAdvanced}
+            userPointers={userPointers}
             onCancel={() => {
               this.setState({
                 showAdvanced: false,

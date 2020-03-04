@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+.scrollHint.active::before{
+    content: '╲╱';
+    color: rgb(116, 214, 249);
+    position: absolute;
+    opacity: 0.8;
+    text-shadow: 0 0 .5rem rgba(0,0,0,0.5);
+    width: 6rem;
+    font-size: 1rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    bottom: 2rem;
+    margin-left: -3rem;
+    left: 50%;
+    animation: bounce 1s ease infinite;
+  }
+  
+  @keyframes bounce {
+    50% {
+      transform: translateY(-50%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }

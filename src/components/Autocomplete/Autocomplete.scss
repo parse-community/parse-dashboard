@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+ @import "stylesheets/globals.scss";
+
+.field {
+  width: 100%;
+  height: 56px;
+  border-radius: 4px;
+  position: relative;
+  transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out;
+}
+
+.field.dropdown input{
+  border-radius: 5px 5px 0px 0px;
+}
+
+.field.active input + label {
+  opacity: 1;
+  font-size: 0.5em;
+  color: #0e69a1;
+}
+
+.field.locked {
+  pointer-events: none;
+}
+
+.field input {
+  height: 40px;
+
+  border: 1px solid $mainTextColor;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  vertical-align: top;
+  line-height: normal;
+  position: relative;
+  font-weight: 400;
+  transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
+    0.1s padding ease-in-out;
+  -webkit-appearance: none;
+}
+
+.field input + label {
+  position: absolute;
+  top: 6px;
+  left: 26px;
+  font-family: "Gotham SSm A", "Gotham SSm B", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.1s all ease-in-out;
+}
+
+.field input + label.error {
+  color: #ec392f;
+}
