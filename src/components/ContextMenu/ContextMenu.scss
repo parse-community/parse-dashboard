@@ -1,0 +1,57 @@
+@import 'stylesheets/globals.scss';
+
+.menu {
+	position: absolute;
+	font-size: 14px;
+
+	ul {
+		background: $purple;
+		@include animation('fade-in .2s linear');
+		opacity: 0;
+	}
+
+	li {
+		height: 30px;
+    line-height: 30px;
+		color: $white;
+		cursor: pointer;
+		white-space: nowrap;
+		padding: 0 30px 0 10px;
+	}
+
+	li:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.category {
+		position: absolute;
+
+		.item {
+			width: 100%;
+			&:after {
+				@include arrow('right', 12px, 8px, rgba(255,255,255,0.3));
+				position: absolute;
+				content: '';
+				margin-top: 10px;
+				right: 10px;
+			}
+		}
+
+		.body {
+			left: 100%;
+			position: absolute;
+		}
+
+	}
+}
+
+@include keyframes(fade-in) {
+  0% {
+    // @include transform(scale(0.9));
+    opacity: 0;
+  }
+  100% {
+    // @include transform(scale(1));
+    opacity: 1;
+  }
+}

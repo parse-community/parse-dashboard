@@ -128,6 +128,7 @@ export default class BrowserTable extends React.Component {
               isUnique={this.props.isUnique}
               obj={this.props.newObject}
               onPointerClick={this.props.onPointerClick}
+              onFilterChange={this.props.onFilterChange}
               order={this.props.order}
               readOnlyFields={READ_ONLY}
               row={-1}
@@ -138,6 +139,7 @@ export default class BrowserTable extends React.Component {
               setEditing={this.props.setEditing}
               setRelation={this.props.setRelation}
               setCopyableValue={this.props.setCopyableValue}
+              setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow} />
           </div>
         );
@@ -158,10 +160,14 @@ export default class BrowserTable extends React.Component {
           isEditing={isEditingRow}
           className={this.props.className}
           columns={this.props.columns}
+          schema={this.props.schema}
+          simplifiedSchema={this.props.simplifiedSchema}
+          filters={this.props.filters}
           currentCol={currentCol}
           isUnique={this.props.isUnique}
           obj={obj}
           onPointerClick={this.props.onPointerClick}
+          onFilterChange={this.props.onFilterChange}
           order={this.props.order}
           readOnlyFields={READ_ONLY}
           row={i}
@@ -172,6 +178,7 @@ export default class BrowserTable extends React.Component {
           setEditing={this.props.setEditing}
           setRelation={this.props.setRelation}
           setCopyableValue={this.props.setCopyableValue}
+          setContextMenu={this.props.setContextMenu}
           onEditSelectedRow={this.props.onEditSelectedRow} />
       }
 
