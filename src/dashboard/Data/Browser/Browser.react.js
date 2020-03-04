@@ -508,9 +508,9 @@ class Browser extends DashboardView {
     });
   }
 
-  handlePointerClick({ className, id }) {
+  handlePointerClick({ className, id, field = 'objectId' }) {
     let filters = JSON.stringify([{
-        field: 'objectId',
+        field,
         constraint: 'eq',
         compareTo: id
     }]);
@@ -908,9 +908,9 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
-  showEditRowDialog(isDoubleClick, objectId) {
+  showEditRowDialog(selectRow, objectId) {
     // objectId is optional param which is used for doubleClick event on objectId BrowserCell
-    if (isDoubleClick) {
+    if (selectRow) {
       // remove all selected rows and select doubleClicked row
       this.setState({ selection: {} });
       this.selectRow(objectId, true);

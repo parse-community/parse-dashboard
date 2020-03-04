@@ -14,6 +14,7 @@ export let ChromeDatePicker          = require('components/ChromeDatePicker/Chro
 export let ChromeDropdown            = require('components/ChromeDropdown/ChromeDropdown.example');
 export let CodeEditor                = require('components/CodeEditor/CodeEditor.example');
 export let CodeSnippet               = require('components/CodeSnippet/CodeSnippet.example');
+export let ContextMenu               = require('components/ContextMenu/ContextMenu.example');
 export let CreditCardInput           = require('components/CreditCardInput/CreditCardInput.example');
 export let DataBrowserHeader         = require('components/DataBrowserHeader/DataBrowserHeader.example');
 export let DatePicker                = require('components/DatePicker/DatePicker.example');
