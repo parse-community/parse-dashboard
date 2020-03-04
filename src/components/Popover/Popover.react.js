@@ -5,45 +5,43 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes   from 'lib/PropTypes';
-import hasAncestor from 'lib/hasAncestor';
-import React       from 'react';
-import ReactDOM    from 'react-dom';
-import styles      from 'components/Popover/Popover.scss';
+import PropTypes        from 'lib/PropTypes';
+import hasAncestor      from 'lib/hasAncestor';
+import React            from 'react';
+import styles           from 'components/Popover/Popover.scss';
+import ParseApp         from 'lib/ParseApp';
+import { createPortal } from 'react-dom';
 
-// We use this component to proxy the current tree's context (just the React Router history for now) to the new tree
-export class ContextProxy extends React.Component {
-  getChildContext() {
-    return this.props.cx;
-  }
-
-  render() {
-    return this.props.children;
-  }
-}
-
-ContextProxy.childContextTypes = {
-  history: PropTypes.object,
-  router: PropTypes.object,
-  currentApp: PropTypes.object
-};
-
+// We use this component to proxy the current tree's context
+// (React Router history and ParseApp) to the new tree
 export default class Popover extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this._checkExternalClick = this._checkExternalClick.bind(this);
+
+    this._popoverLayer = document.createElement('div');
   }
-  componentWillMount() {
-    let wrapperStyle = this.props.fixed ? 
-      styles.fixed_wrapper : 
-      styles.popover_wrapper;
-    this._popoverWrapper = document.getElementById(wrapperStyle);
+
+  componentDidUpdate(prevState) {
+    if (this.props.position !== prevState.position) {
+      this._popoverLayer.style.left = this.props.position.x + 'px';
+      this._popoverLayer.style.top = this.props.position.y + 'px';
+    }
+  }
+
+  componentDidMount() {
     if (!this._popoverWrapper) {
       this._popoverWrapper = document.createElement('div');
-      this._popoverWrapper.id = wrapperStyle;
       document.body.appendChild(this._popoverWrapper);
     }
-    this._popoverLayer = document.createElement('div');
+
+    let wrapperStyle = this.props.fixed
+      ? styles.fixed_wrapper
+      : styles.popover_wrapper;
+
+    this._popoverWrapper.className = wrapperStyle;
+    this._popoverWrapper.appendChild(this._popoverLayer);
+
     if (this.props.position) {
       this._popoverLayer.style.left = this.props.position.x + 'px';
       this._popoverLayer.style.top = this.props.position.y + 'px';
@@ -55,39 +53,29 @@ export default class Popover extends React.Component {
     if (this.props.color) {
       this._popoverLayer.style.background = this.props.color;
     }
-    if (this.props.fadeIn){
+    if (this.props.fadeIn) {
       this._popoverLayer.className = styles.transition;
     }
-    this._popoverWrapper.appendChild(this._popoverLayer);
-  }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.position) {
-      this._popoverLayer.style.left = this.props.position.x + 'px';
-      this._popoverLayer.style.top = this.props.position.y + 'px';
-    }
-  }
-
-  componentDidMount() {
-    ReactDOM.render(<ContextProxy cx={this.context}>{React.Children.only(this.props.children)}</ContextProxy>, this._popoverLayer);
     document.body.addEventListener('click', this._checkExternalClick);
   }
 
-  componentWillUnmount() {
-    document.body.removeEventListener('click', this._checkExternalClick);
-    ReactDOM.unmountComponentAtNode(this._popoverLayer);
-    this._popoverWrapper.removeChild(this._popoverLayer);
+  setPosition(position) {
+    this._popoverLayer.style.left = position.x + 'px';
+    this._popoverLayer.style.top = position.y + 'px';
+    this.forceUpdate();
   }
 
-  componentWillUpdate(nextProps) {
-    ReactDOM.render(<ContextProxy cx={this.context}>{React.Children.only(nextProps.children)}</ContextProxy>, this._popoverLayer);
+  componentWillUnmount() {
+    document.body.removeChild(this._popoverWrapper);
+    document.body.removeEventListener('click', this._checkExternalClick);
   }
 
   _checkExternalClick(e) {
     const { contentId } = this.props;
     const popoverWrapper = contentId
       ? document.getElementById(contentId)
-      : this._popoverWrapper;
+      : this._popoverLayer;
     const isChromeDropdown = e.target.parentNode.classList.contains('chromeDropdown');
     if (
       !hasAncestor(e.target, popoverWrapper) &&
@@ -99,11 +87,12 @@ export default class Popover extends React.Component {
   }
 
   render() {
-    return null;
+    return createPortal(this.props.children, this._popoverLayer);
   }
 }
 
 Popover.contextTypes = {
   history: PropTypes.object,
-  router: PropTypes.object
+  router: PropTypes.object,
+  currentApp: PropTypes.instanceOf(ParseApp)
 };

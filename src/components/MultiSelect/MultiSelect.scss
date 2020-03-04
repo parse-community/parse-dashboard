@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-@import 'stylesheets/globals.scss';
+@import "stylesheets/globals.scss";
 
 .dropdown {
   position: relative;
@@ -15,7 +15,8 @@
   overflow: hidden;
 }
 
-.dropdown, .menu {
+.dropdown,
+.menu {
   text-align: left;
   cursor: pointer;
   white-space: nowrap;
@@ -51,7 +52,7 @@
   text-overflow: ellipsis;
 
   &:hover {
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
 
     .unchecked {
       background: white;
@@ -59,7 +60,15 @@
   }
 }
 
-.checked, .unchecked {
+.option.disabled {
+  &:hover {
+    background: white;
+    cursor: default;
+  }
+}
+
+.checked,
+.unchecked {
   position: absolute;
   width: 32px;
   height: 32px;
@@ -81,6 +90,48 @@
   }
 }
 
-.placeholder {
+.current.placeholder {
   color: $secondaryTextColor;
+  text-align: center;
+}
+
+.dropdown.dense {
+  background: none;
+}
+
+.dropdown.dense {
+  background: none;
+}
+.dense {
+  .checked,
+  .unchecked {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 100%;
+    top: 4px;
+    right: 4px;
+  }
+  .checked {
+    svg {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      font-size: small;
+    }
+  }
+
+  .current {
+    text-align: center;
+    min-height: 50px;
+    height: 100%;
+    padding: 0px;
+    line-height: 48px;
+  }
+
+  .option {
+    height: 30px;
+    line-height: 32px;
+    padding: 0 50px 0 14px;
+  }
 }

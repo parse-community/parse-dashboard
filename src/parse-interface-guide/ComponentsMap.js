@@ -5,11 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+export let Autocomplete              = require('components/Autocomplete/Autocomplete.example');
 export let Button                    = require('components/Button/Button.example');
 export let Calendar                  = require('components/Calendar/Calendar.example');
 export let CascadingView             = require('components/CascadingView/CascadingView.example');
 export let Chart                     = require('components/Chart/Chart.example');
 export let Checkbox                  = require('components/Checkbox/Checkbox.example');
+export let Chip                      = require('components/Chip/Chip.example');
 export let ChromeDatePicker          = require('components/ChromeDatePicker/ChromeDatePicker.example');
 export let ChromeDropdown            = require('components/ChromeDropdown/ChromeDropdown.example');
 export let CodeEditor                = require('components/CodeEditor/CodeEditor.example');
@@ -55,6 +57,7 @@ export let MultiSelect               = require('components/MultiSelect/MultiSele
 export let PermissionsDialog         = require('components/PermissionsDialog/PermissionsDialog.example');
 export let Pill                      = require('components/Pill/Pill.example');
 export let PlatformCard              = require('components/PlatformCard/PlatformCard.example');
+export let ProtectedFieldsDialog     = require('components/ProtectedFieldsDialog/ProtectedFieldsDialog.example');
 export let PushAudienceDialog        = require('components/PushAudienceDialog/PushAudienceDialog.example');
 export let PushAudiencesOption       = require('components/PushAudiencesSelector/PushAudiencesOption.example');
 export let PushAudiencesSelector     = require('components/PushAudiencesSelector/PushAudiencesSelector.example');
@@ -70,3 +73,4 @@ export let StatusIndicator           = require('components/StatusIndicator/Statu
 export let TextInput                 = require('components/TextInput/TextInput.example');
 export let Toggle                    = require('components/Toggle/Toggle.example');
 export let Tooltip                   = require('components/Tooltip/Tooltip.example');
+export let TrackVisibility           = require('components/TrackVisibility/TrackVisibility.example');

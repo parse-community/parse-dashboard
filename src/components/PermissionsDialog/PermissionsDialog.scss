@@ -5,298 +5,352 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-@import 'stylesheets/globals.scss';
+ @import 'stylesheets/globals.scss';
 
-$labelWidth: 330px;
-$colWidth: 82px;
-$writeColWidth: 92px;
-$addFieldColWidth: 118px;
-$deleteColWidth: 44px;
-
-$sumReadColsWidth: calc(3 * #{$colWidth});
-$sumWriteColsWidth: calc(3 * #{$writeColWidth});
-
-$permissionsDialogWidth: calc(#{$labelWidth} + (2 * #{$colWidth}) + #{$deleteColWidth});
-$permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth} + #{$addFieldColWidth} + #{$deleteColWidth});
-
-.dialog {
-  @include modalAnimation();
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: $permissionsDialogWidth;
-  background: white;
-  border-radius: 5px;
-  overflow: hidden;
-  transition: width 0.3s 0.15s ease-out;
-}
-
-.header {
-  height: 50px;
-  background: $blue;
-  position: relative;
-  color: #ffffff;
-  line-height: 50px;
-  font-size: 16px;
-  text-align: center;
-
-  .settings {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-
-    svg {
-      fill: #0E69A1;
-      vertical-align: top;
-    }
-
-    &:hover svg {
-      fill: #094367;
-    }
-  }
-
-  .arrow {
-    position: absolute;
-    @include arrow('up', 12px, 6px, #0E69A1);
-    top: 44px;
-    right: 19px;
-  }
-}
-
-.level {
-  height: 50px;
-  width: $permissionsDialogWidth;
-  background: #0E69A1;
-  position: relative;
-  color: white;
-  transition: width 0.3s 0.15s ease-out;
-
-  > div {
-    margin: 0;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-
-  > span {
-    display: inline-block;
-    font-size: 12;
-    height: 50px;
-    line-height: 50px;
-    padding-left: 20px;
-  }
-}
-
-.tableWrap {
-  height: 250px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.second, .third, .fourth {
-  width: $colWidth;
-}
-.fifth, .sixth, .seventh {
-  width: $writeColWidth;
-}
-.eighth {
-  width: $addFieldColWidth;
-}
-.nineth {
-  width: $deleteColWidth;
-}
-
-.table {
-  position: relative;
-  min-height: 250px;
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    pointer-events: none;
-    background: rgba(0,0,40,0.03);
-
-    &.second {
-      left: $labelWidth;
-    }
-    &.fourth {
-      left: calc(#{$labelWidth} + (2 * #{$colWidth}));
-    }
-    &.sixth {
-      left: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$writeColWidth});
-    }
-    &.eighth {
-      left: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth});
-    }
-  }
-}
-
-.footer {
-  position: relative;
-  height: 51px;
-  border-top: 1px solid #e3e3ea;
-
-  .details {
-    font-size: 12px;
-    padding-left: 20px;
-
-    a {
-      color: $blue;
-    }
-  }
-
-  .actions {
-    float: right;
-    padding: 10px 15px;
-
-    a {
-      margin-left: 10px;
-    }
-  }
-}
-
-.headers {
-  overflow: hidden;
-  transition: height .3s cubic-bezier(0.645,0.045,0.355,1) .5s;
-  background: #56AEE3;
-  height: 0;
-  padding-left: $labelWidth;
-  text-align: center;
-  color: white;
-  font-size: 12px;
-
-  div {
-    float: left;
-    border-left: 1px solid white;
-    height: 20px;
-    line-height: 20px;
-    vertical-align: top;
-  }
-}
-
-.readHeader {
-  width: $sumReadColsWidth;
-}
-
-.writeHeader {
-  width: $sumWriteColsWidth;
-}
-
-.addHeader {
-  width: $addFieldColWidth;
-  border-right: 1px solid white;
-}
-
-.advanced {
-  width: $permissionsDialogMaxWidth;
-
-  .level {
-    width: $permissionsDialogMaxWidth;
-  }
-
-  .headers {
-    height: 20px;
-  }
-}
-
-.row {
-  height: 50px;
-  line-height: 50px;
+ $labelWidth: 330px;
+ $colWidth: 82px;
+ $writeColWidth: 92px;
+ $addFieldColWidth: 118px;
+ $deleteColWidth: 44px;
+ 
+ $sumReadColsWidth: calc(3 * #{$colWidth});
+ $sumWriteColsWidth: calc(3 * #{$writeColWidth});
+ 
+ $permissionsDialogWidth: calc(#{$labelWidth} + (2 * #{$colWidth}) + #{$deleteColWidth});
+ $permissionsDialogMaxWidth: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth} + #{$addFieldColWidth} + #{$deleteColWidth});
+ 
+ $simplePointerWriteWidth: calc( #{$colWidth} + #{$addFieldColWidth});
+ $pointerWriteWidth: calc( #{$sumWriteColsWidth} + #{$addFieldColWidth});
+ 
+ $clpDialogWidth: calc(#{$permissionsDialogWidth} + #{$addFieldColWidth});
+ 
+ .dialog {
+   @include modalAnimation();
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: $permissionsDialogWidth;
+   background: white;
+   border-radius: 5px;
+   overflow: hidden;
+   transition: width 0.3s 0.15s ease-out;
+ }
+ 
+ .clp{
+   width: $clpDialogWidth;
+   
+   .level{
+     width: $clpDialogWidth;
+   }
+   // 118px for add field in CLP only
+   .fourth {
+     width: $addFieldColWidth;
+   }
+ }
+ 
+ .clp.advanced{
+   .fourth {
+     width: $colWidth;
+   }
+ }
+ 
+ .header {
+   height: 50px;
+   background: $blue;
+   position: relative;
+   color: #ffffff;
+   line-height: 50px;
+   font-size: 16px;
+   text-align: center;
+ 
+   .settings {
+     position: absolute;
+     top: 15px;
+     right: 15px;
+     cursor: pointer;
+ 
+     svg {
+       fill: #0E69A1;
+       vertical-align: top;
+     }
+ 
+     &:hover svg {
+       fill: #094367;
+     }
+   }
+ 
+   .arrow {
+     position: absolute;
+     @include arrow('up', 12px, 6px, #0E69A1);
+     top: 44px;
+     right: 19px;
+   }
+ }
+ 
+ 
+ .level {
+   height: 50px;
+   width: $permissionsDialogWidth; //   width: 658px;
+   background: #0E69A1;
+   position: relative;
+   color: white;
+   transition: width 0.3s 0.15s ease-out;
+ 
+   > div {
+     margin: 0;
+     position: absolute;
+     top: 10px;
+     right: 10px;
+   }
+ 
+   > span {
+     display: inline-block;
+     font-size: 12;
+     height: 50px;
+     line-height: 50px;
+     padding-left: 20px;
+   }
+ }
+ 
+ .tableWrap {
+   height: 300px;
+   overflow-y: auto;
+   overflow-x: hidden;
+ }
+ 
+ .second, .third, .fourth {
+   width: $colWidth;
+ }
+ .fifth, .sixth, .seventh {
+   width: $writeColWidth;
+ }
+ .eighth {
+   width: $addFieldColWidth;
+ }
+ .nineth {
+   width: $deleteColWidth;
+ }
+ 
+ .table {
+   position: relative;
+   min-height:300px;
+ 
+   .overlay {
+     position: absolute;
+     top: 0;
+     bottom: 0;
+     pointer-events: none;
+     background: rgba(0,0,40,0.03);
+ 
+     &.second {
+       left: $labelWidth;
+     }
+     &.fourth {
+       left: calc(#{$labelWidth} + (2 * #{$colWidth}));
+     }
+     &.sixth {
+       left: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$writeColWidth});
+     }
+     &.eighth {
+       left: calc(#{$labelWidth} + #{$sumReadColsWidth} + #{$sumWriteColsWidth});
+     }
+   }
+ }
+ 
+ .footer {
+   position: relative;
+   height: 51px;
+   border-top: 1px solid #e3e3ea;
+ 
+   .details {
+     font-size: 12px;
+     padding-left: 20px;
+ 
+     a {
+       color: $blue;
+     }
+   }
+ 
+   .actions {
+     float: right;
+     padding: 10px 15px;
+ 
+     a {
+       margin-left: 10px;
+     }
+   }
+ }
+ 
+ .headers {
+   overflow: hidden;
+   transition: height .3s cubic-bezier(0.645,0.045,0.355,1) .5s;
+   background: #56AEE3;
+   height: 0;
+   padding-left: $labelWidth;
+   text-align: center;
+   color: white;
+   font-size: 12px;
+ 
+   div {
+     float: left;
+     border-left: 1px solid white;
+     height: 20px;
+     line-height: 20px;
+     vertical-align: top;
+   }
+ }
+ 
+ .readHeader {
+   width: $sumReadColsWidth;
+ }
+ 
+ .writeHeader {
+   width: $sumWriteColsWidth;
+ }
+ 
+ .addHeader {
+   width: $addFieldColWidth;
+   border-right: 1px solid white;
+ }
+ 
+ .advanced {
+   width: $permissionsDialogMaxWidth;
+ 
+   .level {
+     width: $permissionsDialogMaxWidth;
+   }
+ 
+   .headers {
+     height: 20px;
+   }
+ }
+ 
+ .row {
+  display: flex;
+  min-height: 50px;
+  height: 100%;
+  vertical-align: middle;
   font-size: 15px;
   border-bottom: 1px solid #e3e3ea;
   white-space: nowrap;
 
-  &:nth-child(odd) {
-    background: rgba(14, 105, 161, 0.03);
-  }
-}
-
-.row.public {
-  background: rgba(22, 156, 238, 0.18);
-  border-bottom: 1px solid #0E69A1;
-  color: $blue;
-}
-
-.label {
-  display: inline-block;
+   &:nth-child(odd) {
+     background: rgba(14, 105, 161, 0.03);
+   }
+ }
+ 
+ .row.public {
+   background: rgba(22, 156, 238, 0.18);
+   border-bottom: 1px solid #0E69A1;
+   color: $blue;
+ }
+ 
+  
+ .label {
+  display: inline-flex;
   width: $labelWidth;
   padding: 0 20px;
-}
-.check {
-  display: inline-block;
-  text-align: center;
-
-  > svg {
-    fill: $blue;
-    vertical-align: middle;
-  }
+  flex-direction: column;
+  align-self: center;
 }
 
-.pointerRead {
-  display: inline-block;
-  width: $sumReadColsWidth;
-  padding: 5px 10px;
+ .check {
+   display: inline-flex;
+   flex-direction: column;
+   align-self: center;
+   text-align: center;
+ 
+   > svg {
+     fill: $blue;
+     vertical-align: middle;
+     align-self: center;
+   }
+ }
+ 
+ .pointerRead {
+   display: inline-block;
+   width: $sumReadColsWidth;
+   padding: 5px 10px;
+ }
+ 
+ .pointerWrite {
+   width: $simplePointerWriteWidth;
+   padding: 0px 10px;
+   display: inline-block;
+ }
+ 
+ .checkboxWrap {
+   position: relative;
+   vertical-align: top;
+   border: 1px solid #e3e3ea;
+   height: 40px;
+   line-height: 40px;
+   text-align: center;
+   border-radius: 5px;
+   background: white;
+ }
+ 
+ .entry {
+   height: 30px;
+   width: 290px;
+   border: 1px solid $mainTextColor;
+   border-radius: 5px;
+   font-size: 14px;
+   outline: none;
+   padding: 0 6px;
+   margin: 10px 0 0 20px;
+   vertical-align: top;
+ }
+ 
+ .error {
+   border-color: $red;
+   color: $red;
+ }
+ 
+ .delete {
+   display: inline-block;
+   vertical-align: top;
+   width: 32px;
+   height: 50px;
+   padding-top: 15px;
+   text-align: right;
+ 
+   svg {
+     vertical-align: top;
+     cursor: pointer;
+     fill: #C1C7CD;
+ 
+     &:hover {
+       fill: $red;
+     }
+   }
+ }
+ 
+ .pillHolder{
+   max-width: 100px;
+   position: relative;
+   display: inline-block;
+   top: 5px;
+ }
+
+ .pillType{
+  width: auto;
+  display: inline-flex;
+  height: 20;
+  padding: 2px 8px 0 8px;
 }
-.pointerWrite {
-  display: inline-block;
-  width: calc(#{$sumWriteColsWidth} + #{$addFieldColWidth});
-  padding: 5px 10px;
+
+.prefix {
+  color:  #0E69A1;
 }
 
-.checkboxWrap {
-  position: relative;
-  vertical-align: top;
-  border: 1px solid #e3e3ea;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  border-radius: 5px;
-  background: white;
+.hint{
+  color: $secondaryTextColor;
+  font-size: 0.8em;
 }
 
-.entry {
-  height: 30px;
-  width: 290px;
-  border: 1px solid $mainTextColor;
-  border-radius: 5px;
-  font-size: 14px;
-  outline: none;
-  padding: 0 6px;
-  margin: 10px 0 0 20px;
-  vertical-align: top;
+.selectable{
+   user-select: text;
 }
 
-.error {
-  border-color: $red;
-  color: $red;
-}
-
-.delete {
-  display: inline-block;
-  vertical-align: top;
-  width: 32px;
-  height: 50px;
-  padding-top: 15px;
-  text-align: right;
-
-  svg {
-    vertical-align: top;
-    cursor: pointer;
-    fill: #C1C7CD;
-
-    &:hover {
-      fill: $red;
-    }
-  }
-}
-
-.pillHolder{
-  max-width: 100px;
-  position: relative;
-  display: inline-block;
-  top: 5px;
-}
-
-@include modalKeyframes();
+ @include modalKeyframes();

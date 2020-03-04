@@ -7,13 +7,14 @@
  */
 @import 'stylesheets/globals.scss';
 
-#popover_wrapper, #fixed_wrapper {
+.popover_wrapper, .fixed_wrapper {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   pointer-events: none;
+  z-index: 6;
 
   & > div {
     position: absolute;
@@ -26,13 +27,18 @@
   opacity: 1;
 }
 
-#popover_wrapper {
+.popover_wrapper {
   position: absolute;
 }
 
-#fixed_wrapper {
+.fixed_wrapper {
   position: fixed;
 }
+
+.popoverLayer {
+  cursor: pointer;
+}
+
 
 @include keyframes(fade-in) {
   0% {

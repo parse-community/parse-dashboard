@@ -10,18 +10,58 @@ import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.re
 import React             from 'react';
 
 function validateEntry(text) {
-  let userQuery = Parse.Query.or(
-    new Parse.Query(Parse.User).equalTo('username', text),
-    new Parse.Query(Parse.User).equalTo('objectId', text)
-  );
-  let roleQuery = new Parse.Query(Parse.Role).equalTo('name', text);
-  return Promise.all([userQuery.find({ useMasterKey: true }), roleQuery.find({ useMasterKey: true })]).then(([user, role]) => {
+
+  let userQuery;
+  let roleQuery;
+
+  if (text === '*') {
+    return Promise.resolve({ entry: '*', type: 'public' });
+  }
+
+  if (text.startsWith('user:')) {
+    // no need to query roles
+    roleQuery = {
+      find: () => Promise.resolve([])
+    };
+
+    let user = text.substring(5);
+    userQuery = new Parse.Query.or(
+      new Parse.Query(Parse.User).equalTo('username', user),
+      new Parse.Query(Parse.User).equalTo('objectId', user)
+    );
+  } else if (text.startsWith('role:')) {
+    // no need to query users
+    userQuery = {
+      find: () => Promise.resolve([])
+    };
+    let role = text.substring(5);
+    roleQuery = new Parse.Query.or(
+      new Parse.Query(Parse.Role).equalTo('name', role),
+      new Parse.Query(Parse.Role).equalTo('objectId', role)
+    );
+  } else {
+    // query both
+    userQuery = Parse.Query.or(
+      new Parse.Query(Parse.User).equalTo('username', text),
+      new Parse.Query(Parse.User).equalTo('objectId', text)
+    );
+
+    roleQuery = Parse.Query.or(
+      new Parse.Query(Parse.Role).equalTo('name', text),
+      new Parse.Query(Parse.Role).equalTo('objectId', text)
+    );
+  }
+
+  return Promise.all([
+    userQuery.find({ useMasterKey: true }),
+    roleQuery.find({ useMasterKey: true })
+  ]).then(([user, role]) => {
     if (user.length > 0) {
-      return { user: user[0] };
+      return { entry: user[0], type: 'user' };
     } else if (role.length > 0) {
-      return { role: role[0] };
+      return { entry: role[0], type: 'role' };
     } else {
-      throw new Error();
+      return Promise.reject();
     }
   });
 }
