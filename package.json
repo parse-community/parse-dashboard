@@ -69,7 +69,7 @@
     "react-redux": "5.1.2",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
-    "regenerator-runtime": "0.13.3",
+    "regenerator-runtime": "0.13.5",
     "semver": "7.1.3"
   },
   "devDependencies": {
