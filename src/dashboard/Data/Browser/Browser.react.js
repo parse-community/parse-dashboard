@@ -885,7 +885,7 @@ class Browser extends DashboardView {
     }
 
     // Deliver to browser to download file
-    const element = document.createElement("a");
+    const element = document.createElement('a');
     const file = new Blob([csvString], {type: 'text/csv'});
     element.href = URL.createObjectURL(file);
     element.download = `${className}.csv`;
@@ -999,7 +999,7 @@ class Browser extends DashboardView {
   onDialogToggle(opened){
     this.setState({showPermissionsDialog: opened});
   }
-  
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
