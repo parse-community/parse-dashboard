@@ -854,8 +854,6 @@ class Browser extends DashboardView {
     const className = this.props.params.className;
     const query = new Parse.Query(className);
 
-    console.log(rows);
-
     if (rows['*']) {
       // Export all
       query.limit(10000);
