@@ -15,8 +15,9 @@ import Separator            from 'components/BrowserMenu/Separator.react';
 import styles               from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar              from 'components/Toolbar/Toolbar.react';
 import SecurityDialog       from 'dashboard/Data/Browser/SecurityDialog.react';
-import ColumnsConfiguration  from 'components/ColumnsConfiguration/ColumnsConfiguration.react'
+import ColumnsConfiguration  from 'components/ColumnsConfiguration/ColumnsConfiguration.react';
 import SecureFieldsDialog   from 'dashboard/Data/Browser/SecureFieldsDialog.react';
+import LoginDialog          from 'dashboard/Data/Browser/LoginDialog.react';
 
 let BrowserToolbar = ({
   className,
@@ -57,6 +58,12 @@ let BrowserToolbar = ({
 
   enableColumnManipulation,
   enableClassManipulation,
+
+  currentUser,
+  useMasterKey,
+  login,
+  logout,
+  toggleMasterKeyUsage,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let details = [];
@@ -177,9 +184,11 @@ let BrowserToolbar = ({
 
   let clpDialogRef = useRef(null);
   let protectedDialogRef = useRef(null);
+  let loginDialogRef = useRef(null);
 
   const showCLP = ()=> clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
+  const showLogin = () => loginDialogRef.current.handleOpen();
 
   return (
     <Toolbar
@@ -244,15 +253,25 @@ let BrowserToolbar = ({
         icon='locked-solid'
         onEditPermissions={onEditPermissions}
       />
+      <LoginDialog
+        ref={loginDialogRef}
+        currentUser={currentUser}
+        login={login}
+        logout={logout}
+      />
       {enableSecurityDialog ? (
         <BrowserMenu
           setCurrent={setCurrent}
           title="Security"
           icon="locked-solid"
           disabled={!!relation || !!isUnique}
+          active={!!currentUser}
         >
           <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
           <MenuItem text={'Protected Fields'} onClick={showProtected} />
+          <Separator />
+          <MenuItem text={'Test ACL - Login'} onClick={showLogin} active={!!currentUser} />
+          {currentUser ? <MenuItem text={'Use Master Key'} onClick={toggleMasterKeyUsage} active={useMasterKey} /> : <noscript />}
         </BrowserMenu>
       ) : (
         <noscript />
