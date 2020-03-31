@@ -79,6 +79,8 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
+
+      useMasterKey: true,
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -91,6 +93,9 @@ class Browser extends DashboardView {
     this.showDeleteRows = this.showDeleteRows.bind(this);
     this.showDropClass = this.showDropClass.bind(this);
     this.showExport = this.showExport.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
+    this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
     this.confirmAttachRows = this.confirmAttachRows.bind(this);
@@ -239,6 +244,24 @@ class Browser extends DashboardView {
     this.setState({ showExportDialog: true });
   }
 
+  async login(username, password) {
+    if (!!Parse.User.current()) {
+      Parse.User.logOut();
+    }
+    const currentUser = await Parse.User.logIn(username, password);
+    this.setState({ currentUser: currentUser, useMasterKey: false }, () => this.refresh());
+  }
+
+  async logout() {
+    await Parse.User.logOut();
+    this.setState({ currentUser: null, useMasterKey: true }, () => this.refresh());
+  }
+
+  toggleMasterKeyUsage() {
+    const { useMasterKey } = this.state;
+    this.setState({ useMasterKey: !useMasterKey }, () => this.refresh());
+  }
+
   createClass(className) {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
@@ -344,6 +367,7 @@ class Browser extends DashboardView {
   }
 
   async fetchParseData(source, filters) {
+    const { useMasterKey } = this.state;
     const query = queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0)
@@ -356,7 +380,7 @@ class Browser extends DashboardView {
 
     query.limit(MAX_ROWS_FETCHED);
 
-    let promise = query.find({ useMasterKey: true });
+    let promise = query.find({ useMasterKey: useMasterKey });
     let isUnique = false;
     let uniqueField = null;
     filters.forEach(async (filter) => {
@@ -1008,6 +1032,11 @@ class Browser extends DashboardView {
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
+            currentUser={this.state.currentUser}
+            useMasterKey={this.state.useMasterKey}
+            login={this.login}
+            logout={this.logout}
+            toggleMasterKeyUsage={this.toggleMasterKeyUsage}
 
             columns={columns}
             className={className}
