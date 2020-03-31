@@ -1,8 +1,9 @@
-import React from 'react';
-import ParseApp from 'lib/ParseApp';
-import PropTypes from 'prop-types';
-import Modal from 'components/Modal/Modal.react';
-import LoginRow from 'components/LoginRow/LoginRow.react';
+import React from "react";
+import ParseApp from "lib/ParseApp";
+import PropTypes from "prop-types";
+import Modal from "components/Modal/Modal.react";
+import Button from "components/Button/Button.react";
+import LoginRow from "components/LoginRow/LoginRow.react";
 import Notification from 'dashboard/Data/Browser/Notification.react';
 
 export default class LoginDialog extends React.Component {

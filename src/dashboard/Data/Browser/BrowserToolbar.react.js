@@ -310,15 +310,25 @@ let BrowserToolbar = ({
         icon='locked-solid'
         onEditPermissions={onEditPermissions}
       />
+      <LoginDialog
+        ref={loginDialogRef}
+        currentUser={currentUser}
+        login={login}
+        logout={logout}
+      />
       {enableSecurityDialog ? (
         <BrowserMenu
           setCurrent={setCurrent}
           title="Security"
           icon="locked-solid"
           disabled={!!relation || !!isUnique}
+          active={!!currentUser}
         >
           <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
           <MenuItem text={'Protected Fields'} onClick={showProtected} />
+          <Separator />
+          <MenuItem text={'Test ACL - Login'} onClick={showLogin} active={!!currentUser} />
+          {currentUser ? <MenuItem text={'Use Master Key'} onClick={toggleMasterKeyUsage} active={useMasterKey} /> : <noscript />}
         </BrowserMenu>
       ) : (
         <noscript />

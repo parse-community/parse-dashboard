@@ -248,7 +248,7 @@ class Browser extends DashboardView {
 
   async login(username, password) {
     if (Parse.User.current()) {
-      Parse.User.logOut();
+      await Parse.User.logOut();
     }
 
     const currentUser = await Parse.User.logIn(username, password);
