@@ -48,7 +48,8 @@ export default class TextInput extends React.Component {
           id={this.props.id}
           disabled={!!this.props.disabled}
           className={classes.join(' ')}
-          style={{height: this.props.height || 80}}
+          rows={this.props.rows && this.props.rows > 3 ? this.props.rows : null}
+          style={this.props.rows && this.props.rows > 3 ? null : {height: this.props.height || 80}}
           placeholder={this.props.placeholder}
           value={this.props.value}
           onChange={this.changeValue.bind(this)}
