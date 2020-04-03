@@ -2,8 +2,8 @@ import React from "react";
 import ParseApp from "lib/ParseApp";
 import PropTypes from "prop-types";
 import Modal from "components/Modal/Modal.react";
-import Button from "components/Button/Button.react";
 import LoginRow from "components/LoginRow/LoginRow.react";
+import Notification from "dashboard/Data/Browser/Notification.react";
 
 export default class LoginDialog extends React.Component {
   constructor(props) {
@@ -11,12 +11,13 @@ export default class LoginDialog extends React.Component {
     this.state = {
       open: false,
       username: "",
-      password: "",
+      password: ""
     };
 
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.login = this.login.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   handleOpen() {
@@ -27,27 +28,45 @@ export default class LoginDialog extends React.Component {
     this.setState({ open: false });
   }
 
-  login() {
+  async login() {
     const { username, password } = this.state;
-    this.props.login(username, password);
-    this.handleClose();
+    if (!!username && !!password) {
+      try {
+        await this.props.login(username, password);
+        this.handleClose();
+      } catch (error) {
+        this.setState({ error: error.message });
+        setTimeout(() => {
+          this.setState({ error: null });
+        }, 3500);
+      }
+    }
+  }
+
+  handleKeyDown(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      // Cancel the default action, if needed
+      event.preventDefault();
+      // Trigger the button element with a click
+      this.login();
+    }
   }
 
   render() {
-    const { currentUser, logout } = this.props;
-    const { open, username, password } = this.state;
+    const { currentUser } = this.props;
+    const { open } = this.state;
 
     return (
       open && (
         <Modal
           type={Modal.Types.INFO}
-          title="Test ACL"
+          title={currentUser ? "Switch Parse.User" : "Login as Parse.User"}
           subtitle={
             <div style={{ paddingTop: "5px" }}>
               {currentUser && (
                 <p>
-                  Logged in as <strong>{currentUser.get("username")}</strong>{" "}
-                  <Button value={"Logout"} color="white" onClick={logout} />
+                  Logged in as <strong>{currentUser.get("username")}</strong>
                 </p>
               )}
             </div>
@@ -59,12 +78,29 @@ export default class LoginDialog extends React.Component {
         >
           <LoginRow
             label="Username"
-            input={<input onChange={e => this.setState({username: e.nativeEvent.target.value})} />}
+            input={
+              <input
+                onChange={e =>
+                  this.setState({ username: e.nativeEvent.target.value })
+                }
+                onKeyDown={this.handleKeyDown}
+                autoFocus
+              />
+            }
           />
           <LoginRow
             label="Password"
-            input={<input onChange={e => this.setState({password: e.nativeEvent.target.value})} type="password" />}
+            input={
+              <input
+                onChange={e =>
+                  this.setState({ password: e.nativeEvent.target.value })
+                }
+                type="password"
+                onKeyDown={this.handleKeyDown}
+              />
+            }
           />
+          <Notification note={this.state.error} isErrorNote={true} />
         </Modal>
       )
     );
