@@ -111,6 +111,20 @@
 
   &.active {
     background: $blue;
+
+    &:hover {
+      background: white;
+      color: $blue;
+    }
+  }
+
+  &.greenActive {
+    background: $green;
+
+    &:hover {
+      background: white;
+      color: $blue;
+    }
   }
 }
 
