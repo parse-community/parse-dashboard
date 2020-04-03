@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import Modal from "components/Modal/Modal.react";
 import LoginRow from "components/LoginRow/LoginRow.react";
 import Notification from "dashboard/Data/Browser/Notification.react";
-import LoginRow from "components/LoginRow/LoginRow.react";
 
 export default class LoginDialog extends React.Component {
   constructor(props) {
