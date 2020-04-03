@@ -327,8 +327,9 @@ let BrowserToolbar = ({
           <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
           <MenuItem text={'Protected Fields'} onClick={showProtected} />
           <Separator />
-          <MenuItem text={'Test ACL - Login'} onClick={showLogin} active={!!currentUser} />
-          {currentUser ? <MenuItem text={'Use Master Key'} onClick={toggleMasterKeyUsage} active={useMasterKey} /> : <noscript />}
+          <MenuItem text={currentUser ? 'Switch Parse.User' : 'Browse as Parse.User'} onClick={showLogin} active={!!currentUser} />
+          {currentUser ? <MenuItem text={useMasterKey ? <span>Browsing with <b>Master Key</b></span> : <span>Browse with <s>Master Key</s></span>} onClick={toggleMasterKeyUsage} active={!!currentUser} greenActive={useMasterKey} /> : <noscript />}
+          {currentUser ? <MenuItem text={<span>Logout (<b>{currentUser.get("username")}</b>)</span>} onClick={logout} active={!!currentUser} /> : <noscript />}
         </BrowserMenu>
       ) : (
         <noscript />
