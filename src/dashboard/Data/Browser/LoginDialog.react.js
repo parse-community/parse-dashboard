@@ -1,17 +1,17 @@
-import React from "react";
-import ParseApp from "lib/ParseApp";
-import PropTypes from "prop-types";
-import Modal from "components/Modal/Modal.react";
-import LoginRow from "components/LoginRow/LoginRow.react";
-import Notification from "dashboard/Data/Browser/Notification.react";
+import React from 'react';
+import ParseApp from 'lib/ParseApp';
+import PropTypes from 'prop-types';
+import Modal from 'components/Modal/Modal.react';
+import LoginRow from 'components/LoginRow/LoginRow.react';
+import Notification from 'dashboard/Data/Browser/Notification.react';
 
 export default class LoginDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      username: "",
-      password: ""
+      username: '',
+      password: ''
     };
 
     this.handleOpen = this.handleOpen.bind(this);
@@ -61,12 +61,12 @@ export default class LoginDialog extends React.Component {
       open && (
         <Modal
           type={Modal.Types.INFO}
-          title={currentUser ? "Switch Parse.User" : "Login as Parse.User"}
+          title={currentUser ? 'Switch Parse.User' : 'Login as Parse.User'}
           subtitle={
-            <div style={{ paddingTop: "5px" }}>
+            <div style={{ paddingTop: '5px' }}>
               {currentUser && (
                 <p>
-                  Logged in as <strong>{currentUser.get("username")}</strong>
+                  Logged in as <strong>{currentUser.get('username')}</strong>
                 </p>
               )}
             </div>
