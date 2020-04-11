@@ -148,8 +148,19 @@ export default class EditRowDialog extends React.Component {
       this.toggleObjectPicker(name, false);
     } else {
       if (['Array', 'Object', 'Polygon'].indexOf(type) >= 0) {
+        const { selectedObject } = this.props;
         const { currentObject, expandedTextAreas } = this.state;
+        const oldStringifyValue = JSON.stringify(
+          type === "Polygon"
+            ? selectedObject[name].coordinates
+            : selectedObject[name],
+          null,
+          4
+        );
         const stringifyValue = JSON.stringify(newValue, null, 4);
+        if (oldStringifyValue === stringifyValue) {
+          return;
+        }
         currentObject[name] = stringifyValue;
         const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
         expandedTextAreas[name].rows = rows;
