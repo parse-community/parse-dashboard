@@ -151,7 +151,7 @@ export default class EditRowDialog extends React.Component {
         const { selectedObject } = this.props;
         const { currentObject, expandedTextAreas } = this.state;
         const oldStringifyValue = JSON.stringify(
-          type === "Polygon"
+          type === 'Polygon'
             ? selectedObject[name].coordinates
             : selectedObject[name],
           null,
@@ -419,13 +419,13 @@ export default class EditRowDialog extends React.Component {
       const description = (
         <span>
           {targetClass ? `${type} <${targetClass}>` : type}
-          <div style={{ marginTop: "2px" }}>
+          <div style={{ marginTop: '2px' }}>
             {expandedTextAreas[name] && expandedTextAreas[name].rows > 3 && (
               <a
-                style={{ color: "#169cee" }}
+                style={{ color: '#169cee' }}
                 onClick={() => this.toggleExpandTextArea(name)}
               >
-                {expandedTextAreas[name].expanded ? "collapse" : "expand"}
+                {expandedTextAreas[name].expanded ? 'collapse' : 'expand'}
               </a>
             )}
           </div>
