@@ -294,7 +294,7 @@ let BrowserToolbar = ({
           <Separator />
           <MenuItem text={currentUser ? 'Switch Parse.User' : 'Browse as Parse.User'} onClick={showLogin} active={!!currentUser} />
           {currentUser ? <MenuItem text={useMasterKey ? <span>Browsing with <b>Master Key</b></span> : <span>Browse with <s>Master Key</s></span>} onClick={toggleMasterKeyUsage} active={!!currentUser} greenActive={useMasterKey} /> : <noscript />}
-          {currentUser ? <MenuItem text={<span>Logout (<b>{currentUser.get("username")}</b>)</span>} onClick={logout} active={!!currentUser} /> : <noscript />}
+          {currentUser ? <MenuItem text={<span>Logout (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} active={!!currentUser} /> : <noscript />}
         </BrowserMenu>
       ) : (
         <noscript />
