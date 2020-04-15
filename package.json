@@ -101,7 +101,7 @@
     "request": "2.88.2",
     "request-promise": "4.2.5",
     "sass-loader": "8.0.0",
-    "style-loader": "1.1.2",
+    "style-loader": "1.1.4",
     "svg-prep": "1.0.4",
     "webpack": "4.42.1",
     "webpack-cli": "3.3.10"
