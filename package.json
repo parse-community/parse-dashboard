@@ -92,7 +92,7 @@
     "file-loader": "6.0.0",
     "http-server": "0.12.0",
     "jest": "24.8.0",
-    "marked": "0.8.2",
+    "marked": "1.0.0",
     "node-sass": "^4.13.1",
     "null-loader": "^3.0.0",
     "parse-server": "github:parseplatform/parse-server#master",
