@@ -866,14 +866,27 @@ class Browser extends DashboardView {
       query.containedIn('objectId', objectIds);
     }
 
-    const columns = this.getClassColumns(className, false);
-    const objects = await query.find({useMasterKey: true});
+    const classColumns = this.getClassColumns(className, false);
+    // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
+    const columnsObject = {};
+    classColumns.forEach((column) => {
+      columnsObject[column.name] = column
+    });
+    // get ordered list of class columns
+    const columns = ColumnPreferences.getOrder(
+      columnsObject,
+      this.context.currentApp.applicationId,
+      className
+    ).filter(column => column.visible);
+
+    const objects = await query.find({ useMasterKey: true });
     let csvString = columns.map(column => column.name).join(',') + '\n';
     for (const object of objects) {
-      let row = columns.map(column => {
+      const row = columns.map(column => {
+        const type = columnsObject[column.name].type;
         if (column.name === 'objectId') {
           return object.id;
-        } else if (column.type === 'Relation' || column.type === 'Pointer') {
+        } else if (type === 'Relation' || type === 'Pointer') {
           return object.get(column.name).id;
         } else {
           return `"${object.get(column.name)}"`;
@@ -884,7 +897,7 @@ class Browser extends DashboardView {
 
     // Deliver to browser to download file
     const element = document.createElement('a');
-    const file = new Blob([csvString], {type: 'text/csv'});
+    const file = new Blob([csvString], { type: 'text/csv' });
     element.href = URL.createObjectURL(file);
     element.download = `${className}.csv`;
     document.body.appendChild(element); // Required for this to work in FireFox
