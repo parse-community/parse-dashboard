@@ -35,7 +35,7 @@
   }
 
   &.active {
-    background: $blue;
+    background: $orange;
     border-radius: 5px;
 
     svg {
@@ -54,7 +54,7 @@
   }
 
   &.active {
-    background: $blue;
+    background: $orange;
     border-radius: 5px;
   }
 }
@@ -106,24 +106,6 @@
 
     &:hover {
       background: none;
-    }
-  }
-
-  &.active {
-    background: $blue;
-
-    &:hover {
-      background: white;
-      color: $blue;
-    }
-  }
-
-  &.greenActive {
-    background: $green;
-
-    &:hover {
-      background: white;
-      color: $blue;
     }
   }
 }
