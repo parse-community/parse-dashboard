@@ -61,12 +61,12 @@ export default class LoginDialog extends React.Component {
       open && (
         <Modal
           type={Modal.Types.INFO}
-          title={currentUser ? "Switch User" : "Browse as User"}
+          title={currentUser ? 'Switch User' : 'Browse as User'}
           subtitle={
             <div style={{ paddingTop: '5px' }}>
               {currentUser && (
                 <p>
-                  Browsing as <strong>{currentUser.get("username")}</strong>
+                  Browsing as <strong>{currentUser.get('username')}</strong>
                 </p>
               )}
             </div>
