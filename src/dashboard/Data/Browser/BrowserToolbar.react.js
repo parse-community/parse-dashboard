@@ -18,6 +18,7 @@ import SecurityDialog       from 'dashboard/Data/Browser/SecurityDialog.react';
 import ColumnsConfiguration  from 'components/ColumnsConfiguration/ColumnsConfiguration.react';
 import SecureFieldsDialog   from 'dashboard/Data/Browser/SecureFieldsDialog.react';
 import LoginDialog          from 'dashboard/Data/Browser/LoginDialog.react';
+import Toggle               from 'components/Toggle/Toggle.react';
 
 let BrowserToolbar = ({
   className,
@@ -224,6 +225,23 @@ let BrowserToolbar = ({
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
       />
+      <div className={styles.toolbarSeparator} />
+      <LoginDialog
+        ref={loginDialogRef}
+        currentUser={currentUser}
+        login={login}
+        logout={logout}
+      />
+      <BrowserMenu
+          setCurrent={setCurrent}
+          title={currentUser ? "Browsing" : "Browse"}
+          icon="users-solid"
+          active={!!currentUser}
+        >
+          <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+          {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
+          {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+        </BrowserMenu>
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {perms && enableSecurityDialog ? (
         <SecurityDialog
@@ -253,26 +271,15 @@ let BrowserToolbar = ({
         icon='locked-solid'
         onEditPermissions={onEditPermissions}
       />
-      <LoginDialog
-        ref={loginDialogRef}
-        currentUser={currentUser}
-        login={login}
-        logout={logout}
-      />
       {enableSecurityDialog ? (
         <BrowserMenu
           setCurrent={setCurrent}
           title="Security"
           icon="locked-solid"
           disabled={!!relation || !!isUnique}
-          active={!!currentUser}
         >
           <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
           <MenuItem text={'Protected Fields'} onClick={showProtected} />
-          <Separator />
-          <MenuItem text={currentUser ? 'Switch Parse.User' : 'Browse as Parse.User'} onClick={showLogin} active={!!currentUser} />
-          {currentUser ? <MenuItem text={useMasterKey ? <span>Browsing with <b>Master Key</b></span> : <span>Browse with <s>Master Key</s></span>} onClick={toggleMasterKeyUsage} active={!!currentUser} greenActive={useMasterKey} /> : <noscript />}
-          {currentUser ? <MenuItem text={<span>Logout (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} active={!!currentUser} /> : <noscript />}
         </BrowserMenu>
       ) : (
         <noscript />
