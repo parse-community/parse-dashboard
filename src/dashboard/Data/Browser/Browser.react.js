@@ -798,7 +798,7 @@ class Browser extends DashboardView {
     }
   
     const { useMasterKey } = this.state;
-    obj.save(null, { useMasterKey: useMasterKey }).then((objectSaved) => {
+    obj.save(null, { useMasterKey }).then((objectSaved) => {
       let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
       this.showNote(msg, false);
       const state = { data: this.state.data };
