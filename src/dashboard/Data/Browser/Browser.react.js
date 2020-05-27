@@ -1038,7 +1038,7 @@ class Browser extends DashboardView {
       toClone.push(object.clone());
     }
     try {
-      await Parse.Object.saveAll(toClone, { useMasterKey: true });
+      await Parse.Object.saveAll(toClone, { useMasterKey });
       this.setState({
         selection: {},
         data: [...toClone, ...this.state.data],
