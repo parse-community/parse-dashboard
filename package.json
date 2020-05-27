@@ -7,6 +7,7 @@
     "Parse Config",
     "REST API Console",
     "GraphQL API Console",
+    "JS Custom Query Console",
     "Class Level Permissions Editor",
     "Pointer Permissions Editor",
     "Send Push Notifications",
@@ -21,7 +22,7 @@
   ],
   "homepage": "https://github.com/ParsePlatform/parse-dashboard",
   "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -70,7 +71,7 @@
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
     "regenerator-runtime": "0.13.5",
-    "semver": "7.2.2"
+    "semver": "7.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.8.7",
@@ -96,7 +97,7 @@
     "null-loader": "^3.0.0",
     "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.2.0",
-    "puppeteer": "2.1.1",
+    "puppeteer": "3.0.0",
     "react-test-renderer": "16.13.1",
     "request": "2.88.2",
     "request-promise": "4.2.5",

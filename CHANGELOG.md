@@ -1,10 +1,26 @@
 ## Parse Dashboard Changelog
 
 ### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.1.0...master)
 
-* Feature: added JS Console feature to run custom queries
-* Feature: added save button on JS Console feature to save the custom query on the local storage
+### 2.1.0
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.5...2.1.0)
+
+__New features:__
+* Added JS Console to run custom queries ([#1464](https://github.com/parse-community/parse-dashboard/pull/1464)), thanks to [Pedro Mutter](https://github.com/MutterPedro).
+* View/Edit single row modal ([#1448](https://github.com/parse-community/parse-dashboard/pull/1448)), thanks to [NIno Črljenec](https://github.com/NinoZX).
+* Context menu with quick filters and links to related records in other Parse Objects ([#1431](https://github.com/parse-community/parse-dashboard/pull/1431)), thanks to [404-html](https://github.com/404-html).
+* Add ProtectedFields dialog and enhance Permissions dialogs ([#1478](https://github.com/parse-community/parse-dashboard/pull/1478)), thanks to [Old Grandpa](https://github.com/BufferUnderflower).
+
+__Improvements:__
+* Added config param delete confirmation dialog ([#1443](https://github.com/parse-community/parse-dashboard/pull/1443)), thanks to [Manuel Trezza](https://github.com/mtrezza).
+
+__Fixes:__
+* Inifite scroll not working ([#1432](https://github.com/parse-community/parse-dashboard/pull/1432)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka).
+* Fix crash in import semver re: npm/node-semver#305 ([#1441](https://github.com/parse-community/parse-dashboard/pull/1441)), thanks to [Ben Petty](https://github.com/benpetty).
+* Taking hidden columns into account when calculating Editor position ([#1438](https://github.com/parse-community/parse-dashboard/pull/1438)), thanks to [404-html](https://github.com/404-html).
+* Fix audience conditions when Installation class does not exist ([#1451](https://github.com/parse-community/parse-dashboard/pull/1451)), thanks to [Antonio Davi Macedo Coelho de Castro](https://github.com/davimacedo).
+
 ### 2.0.5
  [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.4...2.0.5)
  * Fix: delete and regenerate package-lock to fix broken build
