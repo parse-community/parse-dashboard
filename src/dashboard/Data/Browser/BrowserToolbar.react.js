@@ -290,7 +290,7 @@ let BrowserToolbar = ({
       />
       <BrowserMenu
           setCurrent={setCurrent}
-          title={currentUser ? "Browsing" : "Browse"}
+          title={currentUser ? 'Browsing' : 'Browse'}
           icon="users-solid"
           active={!!currentUser}
         >
