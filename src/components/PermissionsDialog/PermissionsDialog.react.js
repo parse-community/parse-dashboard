@@ -936,6 +936,7 @@ export default class PermissionsDialog extends React.Component {
         }
       });
     });
+
     let readUserFields = [];
     let writeUserFields = [];
     this.state.pointerPerms.forEach((perms, key) => {
@@ -945,6 +946,7 @@ export default class PermissionsDialog extends React.Component {
       if (perms.get('write')) {
         writeUserFields.push(key);
       }
+
       fields.forEach(op => {
         if (perms.get(op)) {
           if (!output[op].pointerFields) {
@@ -1168,6 +1170,7 @@ export default class PermissionsDialog extends React.Component {
     } else {
       placeholderText = 'Role or User\u2026';
     }
+
     return (
       <Popover
         fadeIn={true}
@@ -1244,6 +1247,7 @@ export default class PermissionsDialog extends React.Component {
                   {this.renderAuthenticatedCheckboxes()}
                 </div>
               ) : null}
+
               {this.state.keys
                 .slice(this.props.advanced ? 2 : 1)
                 .map(key =>
