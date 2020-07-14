@@ -499,6 +499,7 @@ class Browser extends DashboardView {
   setRelation(relation, filters) {
     this.setState({
       relation: relation,
+      data: null,
     }, () => {
       let filterQueryString;
       if (filters && filters.size) {
@@ -937,7 +938,7 @@ class Browser extends DashboardView {
   onDialogToggle(opened){
     this.setState({showPermissionsDialog: opened});
   }
-  
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
