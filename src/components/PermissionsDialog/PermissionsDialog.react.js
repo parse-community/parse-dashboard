@@ -534,7 +534,7 @@ export default class PermissionsDialog extends React.Component {
       // hide suggestions to avoid ugly footer overlap
       this.refEntry.current.setHidden(hidden);
       // also show indicator when input is not visible
-      this.refScrollHint.current.toggleActive(hidden);
+      // this.refScrollHint.current.toggleActive(hidden);
     };
 
     this.observer = new IntersectionObserver(callback, {
@@ -589,13 +589,15 @@ export default class PermissionsDialog extends React.Component {
       perms.delete = perms.delete || Map();
       perms.addField = perms.addField || Map();
 
-      (pointerPermsSubset.get = perms.get.pointerFields || []),
-        (pointerPermsSubset.find = perms.find.pointerFields || []),
-        (pointerPermsSubset.count = perms.count.pointerFields || []),
-        (pointerPermsSubset.create = perms.create.pointerFields || []),
-        (pointerPermsSubset.update = perms.update.pointerFields || []),
-        (pointerPermsSubset.delete = perms.delete.pointerFields || []),
-        (pointerPermsSubset.addField = perms.addField.pointerFields || []);
+      // The double check is necessary because the permissions object seems to be empty when accessing the CLP section
+      // if the class was recently created.
+      (pointerPermsSubset.get = permissions.get && permissions.get.pointerFields || []),
+        (pointerPermsSubset.find = permissions.find && permissions.find.pointerFields || []),
+        (pointerPermsSubset.count = permissions.count && permissions.count.pointerFields || []),
+        (pointerPermsSubset.create = permissions.create && permissions.create.pointerFields || []),
+        (pointerPermsSubset.update = permissions.update && permissions.update.pointerFields || []),
+        (pointerPermsSubset.delete = permissions.delete && permissions.delete.pointerFields || []),
+        (pointerPermsSubset.addField = permissions.addField && permissions.addField.pointerFields || []);
     }
 
     let pointerPerms = {};
@@ -764,6 +766,7 @@ export default class PermissionsDialog extends React.Component {
           let nextKeys;
           let nextEntryTypes;
           let nextPerms = this.state.perms;
+          let nextPointerPerms = this.state.pointerPerms;
 
           if (next.user || next.role) {
             id = next.user ? next.user.id : next.role.id;
@@ -791,17 +794,32 @@ export default class PermissionsDialog extends React.Component {
           }
 
           // create new permissions
-          if (this.props.advanced) {
-            nextPerms = nextPerms.setIn(['get', key], true);
-            nextPerms = nextPerms.setIn(['find', key], true);
-            nextPerms = nextPerms.setIn(['count', key], true);
-            nextPerms = nextPerms.setIn(['create', key], true);
-            nextPerms = nextPerms.setIn(['update', key], true);
-            nextPerms = nextPerms.setIn(['delete', key], true);
-            nextPerms = nextPerms.setIn(['addField', key], true);
+          if (next.pointer) {
+            if (this.props.advanced) {
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'get'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'find'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'count'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'create'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'update'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'delete'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'addField'], true)
+            } else {
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'read'], true)
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'write'], true)
+            }
           } else {
-            nextPerms = nextPerms.setIn(['read', key], true);
-            nextPerms = nextPerms.setIn(['write', key], true);
+            if (this.props.advanced) {
+              nextPerms = nextPerms.setIn(['get', key], true);
+              nextPerms = nextPerms.setIn(['find', key], true);
+              nextPerms = nextPerms.setIn(['count', key], true);
+              nextPerms = nextPerms.setIn(['create', key], true);
+              nextPerms = nextPerms.setIn(['update', key], true);
+              nextPerms = nextPerms.setIn(['delete', key], true);
+              nextPerms = nextPerms.setIn(['addField', key], true);
+            } else {
+              nextPerms = nextPerms.setIn(['read', key], true);
+              nextPerms = nextPerms.setIn(['write', key], true);
+            }
           }
 
           nextKeys = this.state.newKeys.concat([key]);
@@ -810,6 +828,7 @@ export default class PermissionsDialog extends React.Component {
           return this.setState(
             {
               perms: nextPerms,
+              pointerPerms: nextPointerPerms,
               newKeys: nextKeys,
               entryTypes: nextEntryTypes,
               newEntry: '',
@@ -911,7 +930,7 @@ export default class PermissionsDialog extends React.Component {
           return;
         }
         if (k === 'requiresAuthentication' && !v){
-          // only acceppt requiresAuthentication with true 
+          // only acceppt requiresAuthentication with true
           return
         }
         if (v) {
@@ -964,7 +983,7 @@ export default class PermissionsDialog extends React.Component {
     // types is immutable.js Map
     const type = (types && types.get(key)) || {};
 
-    let pointer;
+    let pointer = this.state.pointerPerms.has(key);
     let label = <span>{key}</span>;
 
     if (type.user) {
@@ -996,7 +1015,7 @@ export default class PermissionsDialog extends React.Component {
           </p>
         </span>
       );
-    } else if (type.pointer) {
+    } else if (pointer) {
       // get class info from schema
       let { type, targetClass } = columns[key];
 
@@ -1238,7 +1257,7 @@ export default class PermissionsDialog extends React.Component {
                 )}
               {this.props.advanced
                 ? this.state.pointers.map(pointer =>
-                    this.renderRow(pointer, true)
+                    this.renderRow(pointer, this.state.columns)
                   )
                 : null}
               {this.state.newKeys.map(key =>
