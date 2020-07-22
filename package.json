@@ -68,7 +68,7 @@
     "react-helmet": "6.0.0",
     "react-json-view": "^1.19.1",
     "react-redux": "5.1.2",
-    "react-router": "5.1.2",
+    "react-router": "5.2.0",
     "react-router-dom": "5.1.2",
     "regenerator-runtime": "0.13.5",
     "semver": "7.3.2"
