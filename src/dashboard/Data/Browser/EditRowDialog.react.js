@@ -165,7 +165,7 @@ export default class EditRowDialog extends React.Component {
 
   render() {
     const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
-    const { currentObject, openObjectPickers, expandedTextAreas } = this.state;
+    const { currentObject, openObjectPickers } = this.state;
 
     const fields = columns.map(column => {
       const { name, type, targetClass } = column;
