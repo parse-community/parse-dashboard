@@ -247,62 +247,6 @@ let BrowserToolbar = ({
         blacklistedFilters={onAddRow ? [] : ['unique']}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
-      {onAddRow && (
-        <LoginDialog
-          ref={loginDialogRef}
-          currentUser={currentUser}
-          login={login}
-          logout={logout}
-        />
-      )}
-      {onAddRow && (
-        <BrowserMenu
-            setCurrent={setCurrent}
-            title={currentUser ? 'Browsing' : 'Browse'}
-            icon="users-solid"
-            active={!!currentUser}
-          >
-            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
-            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
-            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
-        </BrowserMenu>
-      )}
-      {onAddRow && <div className={styles.toolbarSeparator} />}
-      <a className={styles.toolbarButton} onClick={onRefresh}>
-        <Icon name="refresh-solid" width={14} height={14} />
-        <span>Refresh</span>
-      </a>
-      <div className={styles.toolbarSeparator} />
-      <BrowserFilter
-        setCurrent={setCurrent}
-        schema={schemaSimplifiedData}
-        filters={filters}
-        onChange={onFilterChange}
-        className={classNameForEditors}
-        blacklistedFilters={onAddRow ? [] : ['unique']}
-      />
-      {onAddRow && <div className={styles.toolbarSeparator} />}
-      {onAddRow && (
-        <LoginDialog
-          ref={loginDialogRef}
-          currentUser={currentUser}
-          login={login}
-          logout={logout}
-        />
-      )}
-      {onAddRow && (
-        <BrowserMenu
-            setCurrent={setCurrent}
-            title={currentUser ? 'Browsing' : 'Browse'}
-            icon="users-solid"
-            active={!!currentUser}
-          >
-            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
-            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
-            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
-        </BrowserMenu>
-      )}
-      {onAddRow && <div className={styles.toolbarSeparator} />}
       {perms && enableSecurityDialog ? (
         <SecurityDialog
           ref={clpDialogRef}
