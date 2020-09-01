@@ -268,6 +268,20 @@ let BrowserToolbar = ({
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
+      <a className={styles.toolbarButton} onClick={onRefresh}>
+        <Icon name="refresh-solid" width={14} height={14} />
+        <span>Refresh</span>
+      </a>
+      <div className={styles.toolbarSeparator} />
+      <BrowserFilter
+        setCurrent={setCurrent}
+        schema={schemaSimplifiedData}
+        filters={filters}
+        onChange={onFilterChange}
+        className={classNameForEditors}
+        blacklistedFilters={onAddRow ? [] : ['unique']}
+      />
+      {onAddRow && <div className={styles.toolbarSeparator} />}
       {perms && enableSecurityDialog ? (
         <SecurityDialog
           ref={clpDialogRef}
