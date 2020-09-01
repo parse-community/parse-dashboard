@@ -42,7 +42,7 @@ function numberValidator(onChange) {
 
 function saveFile(onChange, file) {
   let value = new Parse.File(file.name, file);
-  value.save().then(() => onChange(value));
+  value.save({ useMasterKey: true }).then(() => onChange(value));
 }
 
 const EDITORS = {
