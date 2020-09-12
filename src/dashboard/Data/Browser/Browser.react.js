@@ -839,13 +839,13 @@ class Browser extends DashboardView {
 
   showExportSelectedRowsDialog(rows) {
     this.setState({
-      rowsToExport: rows,
+      rowsToExport: rows
     });
   }
 
   cancelExportSelectedRows() {
     this.setState({
-      rowsToExport: null,
+      rowsToExport: null
     });
   }
 
@@ -870,7 +870,7 @@ class Browser extends DashboardView {
     // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
     const columnsObject = {};
     classColumns.forEach((column) => {
-      columnsObject[column.name] = column
+      columnsObject[column.name] = column;
     });
     // get ordered list of class columns
     const columns = ColumnPreferences.getOrder(
