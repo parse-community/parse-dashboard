@@ -902,6 +902,7 @@ class Browser extends DashboardView {
     element.download = `${className}.csv`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
+    document.body.removeChild(element);
   }
 
   getClassRelationColumns(className) {
