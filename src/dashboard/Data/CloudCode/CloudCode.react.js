@@ -15,7 +15,8 @@ import styles        from 'dashboard/Data/CloudCode/CloudCode.scss';
 import Toolbar       from 'components/Toolbar/Toolbar.react';
 
 function getPath(params) {
-  return params.splat;
+  const last = params.location.pathname.split('cloud_code/')[1]
+  return last;
 }
 
 export default class CloudCode extends DashboardView {
@@ -31,12 +32,12 @@ export default class CloudCode extends DashboardView {
   }
 
   componentWillMount() {
-    this.fetchSource(this.context.currentApp, getPath(this.props.params));
+    this.fetchSource(this.context.currentApp, getPath(this.props));
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.fetchSource(nextContext.currentApp, getPath(nextProps.params));
+      this.fetchSource(nextContext.currentApp, getPath(nextProps));
     }
   }
 
@@ -52,7 +53,7 @@ export default class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          history.replace(this.context.generatePath('cloud_code/main.js'))
+          history.replace(this.context.generatePath(`cloud_code/${Object.keys(release.files)[0]}`))
         } else {
           // Means we can load /cloud_code/<fileName>
           app.getSource(fileName).then(
@@ -66,7 +67,7 @@ export default class CloudCode extends DashboardView {
   }
 
   renderSidebar() {
-    let current = getPath(this.props.params) || '';
+    let current = getPath(this.props) || '';
     let files = this.state.files;
     if (!files) {
       return null;
@@ -90,7 +91,7 @@ export default class CloudCode extends DashboardView {
   renderContent() {
     let toolbar = null;
     let content = null;
-    let fileName = getPath(this.props.params);
+    let fileName = getPath(this.props);
 
     if (!this.state.files || Object.keys(this.state.files).length === 0) {
       content = (
