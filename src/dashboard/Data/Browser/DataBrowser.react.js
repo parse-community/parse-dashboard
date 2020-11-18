@@ -24,12 +24,13 @@ export default class DataBrowser extends React.Component {
   constructor(props, context) {
     super(props, context);
 
+    const columnPreferences = context.currentApp.columnPreference || {}
     let order = ColumnPreferences.getOrder(
       props.columns,
       context.currentApp.applicationId,
-      props.className
+      props.className,
+      columnPreferences[props.className]
     );
-
     this.state = {
       order: order,
       current: null,
@@ -52,10 +53,12 @@ export default class DataBrowser extends React.Component {
 
   componentWillReceiveProps(props, context) {
     if (props.className !== this.props.className) {
+      const columnPreferences = context.currentApp.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
         context.currentApp.applicationId,
-        props.className
+        props.className,
+        columnPreferences[props.className]
       );
       this.setState({
         order: order,
@@ -65,10 +68,12 @@ export default class DataBrowser extends React.Component {
       });
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
            || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
+      const columnPreferences = context.currentApp.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
         context.currentApp.applicationId,
-        props.className
+        props.className,
+        columnPreferences[props.className]
       );
       this.setState({ order });
     }
