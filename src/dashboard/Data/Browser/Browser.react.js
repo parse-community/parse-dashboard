@@ -1124,10 +1124,12 @@ class Browser extends DashboardView {
         columnsObject[column.name] = column
       });
       // get ordered list of class columns
+      const columnPreferences = this.context.currentApp.columnPreference || {}
       const columns = ColumnPreferences.getOrder(
         columnsObject,
         this.context.currentApp.applicationId,
-        className
+        className,
+        columnPreferences[className]
       );
       // extend columns with their type and targetClass properties
       columns.forEach(column => {
