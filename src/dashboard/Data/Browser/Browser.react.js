@@ -174,7 +174,7 @@ class Browser extends DashboardView {
     if (isRelationRoute && !relation) {
       const parentObjectQuery = new Parse.Query(className);
       const { useMasterKey } = this.state;
-      const parent = await parentObjectQuery.get(entityId, { useMasterKey: useMasterKey });
+      const parent = await parentObjectQuery.get(entityId, { useMasterKey });
       relation = parent.relation(relationName);
     }
     await this.setState({
@@ -545,7 +545,7 @@ class Browser extends DashboardView {
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
 
-    let promise = query.find({ useMasterKey: useMasterKey });
+    let promise = query.find({ useMasterKey });
     let isUnique = false;
     let uniqueField = null;
     filters.forEach(async (filter) => {
@@ -575,7 +575,7 @@ class Browser extends DashboardView {
   async fetchParseDataCount(source, filters) {
     const query = queryFromFilters(source, filters);
     const { useMasterKey } = this.state;
-    const count = await query.count({ useMasterKey: useMasterKey });
+    const count = await query.count({ useMasterKey });
     return count;
   }
 
@@ -679,7 +679,7 @@ class Browser extends DashboardView {
     this.excludeFields(query, source);
 
     const { useMasterKey } = this.state;
-    query.find({ useMasterKey: useMasterKey }).then((nextPage) => {
+    query.find({ useMasterKey }).then((nextPage) => {
       if (className === this.props.params.className) {
         this.setState((state) => ({
           data: state.data.concat(nextPage)
@@ -849,7 +849,7 @@ class Browser extends DashboardView {
       let relation = this.state.relation;
       if (relation && toDelete.length) {
         relation.remove(toDelete);
-        relation.parent.save(null, { useMasterKey: useMasterKey }).then(() => {
+        relation.parent.save(null, { useMasterKey }).then(() => {
           if (this.state.relation === relation) {
             for (let i = 0; i < indexes.length; i++) {
               this.state.data.splice(indexes[i] - i, 1);
@@ -860,7 +860,7 @@ class Browser extends DashboardView {
           }
         });
       } else if (toDelete.length) {
-        Parse.Object.destroyAll(toDelete, { useMasterKey: useMasterKey }).then(() => {
+        Parse.Object.destroyAll(toDelete, { useMasterKey }).then(() => {
           let deletedNote;
 
           if (toDeleteObjectIds.length == 1) {
@@ -958,7 +958,7 @@ class Browser extends DashboardView {
     const query = new Parse.Query(relation.targetClassName);
     const parent = relation.parent;
     query.containedIn('objectId', objectIds);
-    let objects = await query.find({ useMasterKey: useMasterKey });
+    let objects = await query.find({ useMasterKey });
     const missedObjectsCount = objectIds.length - objects.length;
     if (missedObjectsCount) {
       const missedObjects = [];
@@ -972,7 +972,7 @@ class Browser extends DashboardView {
       throw `${errorSummary} ${JSON.stringify(missedObjects)}`;
     }
     parent.relation(relation.key).add(objects);
-    await parent.save(null, { useMasterKey: useMasterKey });
+    await parent.save(null, { useMasterKey });
     // remove duplication
     this.state.data.forEach(origin => objects = objects.filter(object => object.id !== origin.id));
     this.setState({
@@ -1000,12 +1000,12 @@ class Browser extends DashboardView {
   async confirmAttachSelectedRows(className, targetObjectId, relationName, objectIds, targetClassName) {
     const { useMasterKey } = this.state;
     const parentQuery = new Parse.Query(className);
-    const parent = await parentQuery.get(targetObjectId, { useMasterKey: useMasterKey });
+    const parent = await parentQuery.get(targetObjectId, { useMasterKey });
     const query = new Parse.Query(targetClassName || this.props.params.className);
     query.containedIn('objectId', objectIds);
-    const objects = await query.find({ useMasterKey: useMasterKey });
+    const objects = await query.find({ useMasterKey });
     parent.relation(relationName).add(objects);
-    await parent.save(null, { useMasterKey: useMasterKey });
+    await parent.save(null, { useMasterKey });
     this.setState({
       selection: {},
     });
@@ -1032,7 +1032,7 @@ class Browser extends DashboardView {
     const className = this.props.params.className;
     const query = new Parse.Query(className);
     query.containedIn('objectId', objectIds);
-    const objects = await query.find({ useMasterKey: useMasterKey });
+    const objects = await query.find({ useMasterKey });
     const toClone = [];
     for (const object of objects) {
       toClone.push(object.clone());
