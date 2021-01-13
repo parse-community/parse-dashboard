@@ -25,7 +25,7 @@ export default class LoginDialog extends React.Component {
   }
 
   handleClose() {
-    this.setState({ open: false });
+    this.setState({ username: '', password: '', open: false });
   }
 
   async login() {
