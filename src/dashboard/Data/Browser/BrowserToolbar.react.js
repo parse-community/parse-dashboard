@@ -92,7 +92,7 @@ let BrowserToolbar = ({
   let menu = null;
   if (relation) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='edit-solid' setCurrent={setCurrent}>
         <MenuItem
           text={`Create ${relation.targetClassName} and attach`}
           onClick={onAddRow}
@@ -111,7 +111,7 @@ let BrowserToolbar = ({
     );
   } else if (onAddRow) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique} setCurrent={setCurrent}>
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}

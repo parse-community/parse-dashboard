@@ -62,6 +62,7 @@ export default class BrowserMenu extends React.Component {
     if (!this.props.disabled) {
       onClick = () => {
         this.setState({ open: true });
+        this.props.setCurrent(null);
       };
     }
     return (
