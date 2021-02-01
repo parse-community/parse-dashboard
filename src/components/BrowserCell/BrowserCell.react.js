@@ -208,7 +208,7 @@ export default class BrowserCell extends Component {
         contentArray = []
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
-      if (hidden) {
+    if (hidden) {
       content = '(hidden)';
       classes.push(styles.empty);
     } else if (value === undefined) {
@@ -248,8 +248,6 @@ export default class BrowserCell extends Component {
     } else if (type === 'Boolean') {
       this.copyableValue = content = value ? 'True' : 'False';
     } else if (type === 'Array') {
-
-
       this.copyableValue = '';
       contentArray.push('[');
       for (var i=0;i<value.length;i++) {
@@ -297,8 +295,6 @@ export default class BrowserCell extends Component {
         }
       }
       contentArray.push(']');
-      
-
     } else if (type === 'Object' || type === 'Bytes') {
       this.copyableValue = content = JSON.stringify(value);
     } else if (type === 'File') {
