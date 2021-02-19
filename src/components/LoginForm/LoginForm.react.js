@@ -14,9 +14,11 @@ import { verticalCenter } from 'stylesheets/base.scss';
 // Class-style component, because we need refs
 export default class LoginForm extends React.Component {
   render() {
+    const customBrandIcon = window.CUSTOM_BRAND_ICON;
     return (
       <div className={styles.login} style={{ marginTop: this.props.marginTop || '-220px' }}>
-        <Icon width={80} height={80} name='infinity' fill='#093A59' />
+        {!customBrandIcon && <Icon width={80} height={80} name='infinity' fill='#093A59' />}
+        {customBrandIcon && <img src={'appicons/' + customBrandIcon} width={80} height={80} alt="Custom BRAND icon"/>}
         <form method='post' ref='form' action={this.props.endpoint} className={styles.form}>
           <CSRFInput />
           <div className={styles.header}>{this.props.header}</div>
