@@ -30,7 +30,7 @@ export default class SidebarHeader extends React.Component {
       <div className={styles.header}>
         <Link className={styles.logo} to={{ pathname: '/apps' }}>
           {!customBrandIcon && <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />}
-          {customBrandIcon && <img src={'appicons/' + customBrandIcon} width={28} height={28} alt="Custom BRAND icon"/>}
+          {customBrandIcon && <img src={'appicons/' + customBrandIcon} width={28} height={28} alt={customBrandTitle || 'Brand Logo'} />}
         </Link>
         <Link to='/apps'>
           <div className={styles.version}>
