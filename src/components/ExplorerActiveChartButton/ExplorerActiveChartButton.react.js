@@ -14,7 +14,8 @@ import PropTypes             from 'lib/PropTypes';
 import React                 from 'react';
 import ReactDOM              from 'react-dom';
 import styles                from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.scss';
-import { verticalCenter }    from 'stylesheets/base.scss';
+import baseStyles            from 'stylesheets/base.scss';
+const { verticalCenter } = baseStyles;
 
 export default class ExplorerActiveChartButton extends React.Component {
   constructor() {

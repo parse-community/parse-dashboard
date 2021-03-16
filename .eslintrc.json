@@ -4,9 +4,16 @@
     "node": true,
     "browser": true
   },
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": "eslint:recommended",
   "parserOptions": {
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"],
+      "plugins": [
+        [ "@babel/plugin-proposal-decorators", { "legacy": true } ]
+      ]
+    },
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "jsx": true

@@ -46,7 +46,8 @@ import styles             from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings      from './Settings/UsersSettings.react';
 import Webhooks           from './Data/Webhooks/Webhooks.react';
 import { AsyncStatus }    from 'lib/Constants';
-import { center }         from 'stylesheets/base.scss';
+import baseStyles         from 'stylesheets/base.scss';
+const { center } = baseStyles;
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
 import {

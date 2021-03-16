@@ -8,7 +8,8 @@
 import PropTypes                  from 'lib/PropTypes';
 import React                      from 'react';
 import styles                     from 'components/DataBrowserHeader/DataBrowserHeader.scss';
-import { unselectable }           from 'stylesheets/base.scss';
+import baseStyles                 from 'stylesheets/base.scss';
+const { unselectable } = baseStyles;
 import { DragSource, DropTarget } from 'react-dnd';
 
 const Types = {

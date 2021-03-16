@@ -5,7 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { center }   from 'stylesheets/base.scss';
+import baseStyles   from 'stylesheets/base.scss';
+const { center } = baseStyles;
 import Loader       from 'components/Loader/Loader.react';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';

@@ -9,7 +9,8 @@ import Button from 'components/Button/Button.react';
 import keyMirror from 'lib/keyMirror';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import { shake } from 'components/SaveButton/SaveButton.scss';
+import saveButtonStyles from 'components/SaveButton/SaveButton.scss';
+const { shake } = saveButtonStyles;
 
 let SaveButton = ({
   state = SaveButton.States.WAITING,

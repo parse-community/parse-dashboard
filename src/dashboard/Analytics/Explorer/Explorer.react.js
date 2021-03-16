@@ -28,7 +28,8 @@ import styles                    from 'dashboard/Analytics/Explorer/Explorer.scs
 import stylesTable               from 'components/Table/Table.scss';
 import subscribeTo               from 'lib/subscribeTo';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import { verticalCenter }        from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
+const { verticalCenter } = baseStyles;
 
 let buildFriendlyName = (query) => {
   let name = [query.source];
@@ -132,7 +133,7 @@ class Explorer extends DashboardView {
       // Update
       activeQueries[existingQueryIndex] = query;
     }
-    
+
     // Update the state to trigger rendering pipeline.
     this.setState({
       activeQueries,

@@ -11,7 +11,8 @@ import html             from 'lib/htmlString';
 import { Link }         from 'react-router-dom';
 import React            from 'react';
 import styles           from 'components/Sidebar/Sidebar.scss';
-import { unselectable } from 'stylesheets/base.scss';
+import baseStyles       from 'stylesheets/base.scss';
+const { unselectable } = baseStyles;
 
 let AppsMenu = ({ apps, current, height, onSelect }) => (
   <div style={{ height }} className={[styles.appsMenu, unselectable].join(' ')}>

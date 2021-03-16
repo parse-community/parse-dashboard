@@ -15,7 +15,8 @@ import LiveReload    from 'components/LiveReload/LiveReload.react';
 import prettyNumber  from 'lib/prettyNumber';
 import React         from 'react';
 import styles        from 'dashboard/Apps/AppsIndex.scss';
-import { center }    from 'stylesheets/base.scss';
+import baseStyles    from 'stylesheets/base.scss';
+const { center } = baseStyles;
 import AppBadge      from 'components/AppBadge/AppBadge.react';
 
 function dash(value, content) {

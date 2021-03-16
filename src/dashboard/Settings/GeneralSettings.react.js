@@ -36,7 +36,8 @@ import Toggle                            from 'components/Toggle/Toggle.react';
 import Toolbar                           from 'components/Toolbar/Toolbar.react';
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
-import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
+import generalSettingsStyles             from 'dashboard/Settings/GeneralSettings.scss';
+const { cost, features } = generalSettingsStyles;
 import { Link }                          from 'react-router-dom';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
