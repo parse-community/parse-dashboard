@@ -8,7 +8,8 @@
 import Button             from 'components/Button/Button.react';
 import Dropdown           from 'components/Dropdown/Dropdown.react';
 import Field              from 'components/Field/Field.react';
-import { footer }         from 'components/Modal/Modal.scss';
+import modalStyles        from 'components/Modal/Modal.scss';
+const { footer } = modalStyles;
 import Label              from 'components/Label/Label.react';
 import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';

@@ -18,7 +18,8 @@ import React                     from 'react';
 import ReactDOM                  from 'react-dom';
 import styles                    from 'dashboard/Analytics/Performance/Performance.scss';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import { verticalCenter }        from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
+const { verticalCenter } = baseStyles;
 
 const PERFORMANCE_QUERIES = [
   {
@@ -156,7 +157,7 @@ export default class Performance extends DashboardView {
   renderContent() {
     let toolbar = (
       <Toolbar
-        section='Analytics'       
+        section='Analytics'
         subsection='Performance' />
     );
 
