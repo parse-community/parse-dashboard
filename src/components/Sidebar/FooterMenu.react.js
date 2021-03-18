@@ -11,7 +11,7 @@ import Position from 'lib/Position';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
 
-let mountPath = window.PARSE_DASHBOARD_PATH;
+const mountPath = window.PARSE_DASHBOARD_PATH;
 
 export default class FooterMenu extends React.Component {
   constructor() {
@@ -21,10 +21,11 @@ export default class FooterMenu extends React.Component {
       show: false,
       position: null,
     };
+    this.moreRef = React.createRef();
   }
 
   toggle() {
-    let pos = Position.inWindow(this.refs.more);
+    let pos = Position.inWindow(this.moreRef.current);
     pos.x += 24;
     this.setState({
       show: true,
@@ -42,16 +43,16 @@ export default class FooterMenu extends React.Component {
           onExternalClick={() => this.setState({ show: false })}>
           <div className={styles.popup}>
             <a href={`${mountPath}logout`}>Log Out <span className={styles.emoji}>👋</span></a>
-            <a target='_blank' href='http://docs.parseplatform.org/parse-server/guide/'>Server Guide <span className={styles.emoji}>📚</span></a>
-            <a target='_blank' href='http://stackoverflow.com/questions/tagged/parse.com'>Code-level Questions <span className={styles.emoji}>❓</span></a>
-            <a target='_blank' href='http://stackoverflow.com/questions/tagged/parse-server'>Server Questions <span className={styles.emoji}>❓</span></a>
-            <a target='_blank' href='http://serverfault.com/tags/parse'>Deployment/Maintenance <span className={styles.emoji}>⚡️</span></a>
+            <a target='_blank' rel='noreferrer' href='http://docs.parseplatform.org/parse-server/guide/'>Server Guide <span className={styles.emoji}>📚</span></a>
+            <a target='_blank' rel='noreferrer' href='http://stackoverflow.com/questions/tagged/parse.com'>Code-level Questions <span className={styles.emoji}>❓</span></a>
+            <a target='_blank' rel='noreferrer' href='http://stackoverflow.com/questions/tagged/parse-server'>Server Questions <span className={styles.emoji}>❓</span></a>
+            <a target='_blank' rel='noreferrer' href='http://serverfault.com/tags/parse'>Deployment/Maintenance <span className={styles.emoji}>⚡️</span></a>
           </div>
         </Popover>
       );
     }
     return (
-      <a onClick={this.toggle.bind(this)} ref='more' className={styles.more}>
+      <a onClick={this.toggle.bind(this)} ref={this.moreRef} className={styles.more}>
         <Icon height={24} width={24} name='ellipses' />
         {content}
       </a>

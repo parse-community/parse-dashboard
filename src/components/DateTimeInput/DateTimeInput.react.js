@@ -10,7 +10,6 @@ import { MONTHS, getDateMethod }     from 'lib/DateUtils';
 import Popover                       from 'components/Popover/Popover.react';
 import Position                      from 'lib/Position';
 import React                         from 'react';
-import ReactDOM                      from 'react-dom';
 import styles                        from 'components/DateTimeInput/DateTimeInput.scss';
 
 export default class DateTimeInput extends React.Component {
@@ -21,15 +20,16 @@ export default class DateTimeInput extends React.Component {
       open: false,
       position: null,
     }
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState(prevState => {
+      if (prevState.open) {
         return { open: false };
       }
       let pos = Position.inDocument(this.node);
@@ -87,9 +87,9 @@ export default class DateTimeInput extends React.Component {
         </div>
       );
     }
-    
+
     return (
-      <div className={styles.input} onClick={this.props.disabled ? null : this.toggle.bind(this)}>
+      <div ref={this.nodeRef} className={styles.input} onClick={this.props.disabled ? null : this.toggle.bind(this)}>
         {content}
         {popover}
       </div>

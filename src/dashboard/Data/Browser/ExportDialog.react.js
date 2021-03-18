@@ -8,7 +8,7 @@
 import Modal      from 'components/Modal/Modal.react';
 import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import PropTypes  from 'lib/PropTypes';
 
 export default class ExportDialog extends React.Component {
   constructor() {
@@ -18,7 +18,7 @@ export default class ExportDialog extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.context.currentApp.getExportProgress().then((progress) => {
       this.setState({ progress });
     });
@@ -55,7 +55,7 @@ export default class ExportDialog extends React.Component {
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
         {inProgress ?
-          <div style={{ padding: 20 }}>You are currently exporting this class. We'll send you an email when that data is available for you to download.</div> : null}
+          <div style={{ padding: 20 }}>You are currently exporting this class. We&apos;ll send you an email when that data is available for you to download.</div> : null}
       </Modal>
     );
   }

@@ -18,7 +18,7 @@ let ctaButton = (cta, action) => {
   if (cta) {
     if (action.constructor === String) {
       return (
-        <a href={action} className={[stylesButton.button, stylesButton.primary].join(' ')} target='_blank'>
+        <a href={action} className={[stylesButton.button, stylesButton.primary].join(' ')} target='_blank' rel='noreferrer'>
           {cta}
         </a>
       );

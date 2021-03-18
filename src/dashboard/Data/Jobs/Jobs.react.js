@@ -75,7 +75,7 @@ class Jobs extends TableView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadData();
   }
 

@@ -21,8 +21,8 @@ const MAX_ROWS_FETCHED = 200;
 const SELECTION_INPUT_ID = 'selectionInput';
 
 export default class ObjectPickerDialog extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
 
     this.state = {
       data: null,
@@ -50,7 +50,7 @@ export default class ObjectPickerDialog extends React.Component {
     this.onConfirm = this.onConfirm.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     const { filters } = this.state;
     const { className, pointerId, relation } = this.props;
     await this.fetchData(className, filters);

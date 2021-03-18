@@ -65,7 +65,7 @@ class SlowQueries extends TableView {
     this.xhrHandles = [];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchDropdownData(this.props);
     this.fetchSlowQueries(this.context.currentApp);
   }

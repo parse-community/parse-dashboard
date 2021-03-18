@@ -40,7 +40,7 @@ export default class CascadingView extends React.Component {
         <div
           className={classes.join(' ')}
           style={style}
-          onClick={() => this.setState({ expanded: !this.state.expanded })}>
+          onClick={() => this.setState(prevState => ({ expanded: !prevState.expanded }))}>
           <span className={styles.left}>{content}</span>
           {expander}
         </div>

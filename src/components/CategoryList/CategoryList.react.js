@@ -7,13 +7,17 @@
  */
 import PropTypes from 'lib/PropTypes';
 import React     from 'react';
-import ReactDOM  from 'react-dom';
 import styles    from 'components/CategoryList/CategoryList.scss';
 import { Link }  from 'react-router-dom';
 
 export default class CategoryList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.listWrapperRef = React.createRef();
+  }
+
   componentDidMount() {
-    let listWrapper = ReactDOM.findDOMNode(this.refs.listWrapper);
+    const listWrapper = this.listWrapperRef.current;
     if (listWrapper) {
       this.highlight = document.createElement('div');
       this.highlight.className = styles.highlight;
@@ -52,7 +56,7 @@ export default class CategoryList extends React.Component {
       return null;
     }
     return (
-      <div ref='listWrapper' className={styles.class_list}>
+      <div ref={this.listWrapperRef} className={styles.class_list}>
         {this.props.categories.map((c) => {
           let id = c.id || c.name;
           let count = c.count;

@@ -10,7 +10,6 @@ import Icon         from 'components/Icon/Icon.react';
 import Position     from 'lib/Position';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
-import ReactDOM     from 'react-dom';
 import styles       from 'components/BrowserMenu/BrowserMenu.scss';
 
 export default class BrowserMenu extends React.Component {
@@ -18,16 +17,17 @@ export default class BrowserMenu extends React.Component {
     super();
 
     this.state = { open: false };
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   render() {
     let menu = null;
     if (this.state.open) {
-      let position = Position.inDocument(this.node);
+      const position = Position.inDocument(this.node);
       menu = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
           <div className={styles.menu}>
@@ -58,7 +58,7 @@ export default class BrowserMenu extends React.Component {
       };
     }
     return (
-      <div className={styles.wrap}>
+      <div ref={this.nodeRef} className={styles.wrap}>
         <div className={classes.join(' ')} onClick={onClick}>
           <Icon name={this.props.icon} width={14} height={14} />
           <span>{this.props.title}</span>

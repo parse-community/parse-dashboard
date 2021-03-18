@@ -328,7 +328,7 @@ let ManageAppFields = ({
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
       label={<Label
         text='Delete app'
-        description={<span>Completely remove any trace <br/>of this app's existence.</span>} />}
+        description={<span>Completely remove any trace <br/>of this app&apos;s existence.</span>} />}
       input={<FormButton
         color='red'
         value='Delete this app'
@@ -434,7 +434,7 @@ export default class GeneralSettings extends DashboardView {
         labelWidth={40}
         label={<Label
           text='Your database connection string.'
-          description={<span>This database must be prepared to handle all of your app's queries and data. Read <a href={getSiteDomain() + '/docs/server/guide#migrating'}>our migration guide</a> to learn how to create a database.</span>} />
+          description={<span>This database must be prepared to handle all of your app&apos;s queries and data. Read <a href={getSiteDomain() + '/docs/server/guide#migrating'}>our migration guide</a> to learn how to create a database.</span>} />
         }
         input={<TextInput
           height={100}

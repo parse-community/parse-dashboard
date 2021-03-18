@@ -59,7 +59,7 @@ export default class PushAudienceDialog extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let stateSettings = {};
     let audienceInfo = this.props.audienceInfo;
     //this case is only for 'New Segment' to prepopulate existing audience

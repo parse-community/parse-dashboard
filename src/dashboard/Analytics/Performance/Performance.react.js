@@ -15,7 +15,6 @@ import ExplorerActiveChartButton from 'components/ExplorerActiveChartButton/Expl
 import LoaderContainer           from 'components/LoaderContainer/LoaderContainer.react';
 import Parse                     from 'parse';
 import React                     from 'react';
-import ReactDOM                  from 'react-dom';
 import styles                    from 'dashboard/Analytics/Performance/Performance.scss';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import baseStyles                from 'stylesheets/base.scss';
@@ -92,18 +91,16 @@ export default class Performance extends DashboardView {
       mutated: false
     };
     this.xhrHandles = [];
+    this.displayRef = React.createRef();
   }
 
   componentDidMount() {
-    let display = ReactDOM.findDOMNode(this.refs.display);
+    this.handleRunQuery(this.context.currentApp);
+    const display = this.displayRef.current;
     this.displaySize = {
       width: display.offsetWidth,
       height: display.offsetHeight
     };
-  }
-
-  componentWillMount() {
-    this.handleRunQuery(this.context.currentApp);
   }
 
   componentWillUnmount() {
@@ -240,7 +237,7 @@ export default class Performance extends DashboardView {
     let content = (
       <LoaderContainer loading={this.state.loading} solid={false}>
         <div className={styles.content}>
-          <div ref='display' className={styles.display}>
+          <div ref={this.displayRef} className={styles.display}>
             {chart}
           </div>
           {header}

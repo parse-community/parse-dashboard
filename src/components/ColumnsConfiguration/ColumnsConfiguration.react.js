@@ -1,8 +1,6 @@
 import React from 'react';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import ReactDOM from 'react-dom';
-
 import Button from 'components/Button/Button.react';
 import ColumnConfigurationItem from 'components/ColumnsConfiguration/ColumnConfigurationItem.react';
 import styles from 'components/ColumnsConfiguration/ColumnsConfiguration.scss';
@@ -19,10 +17,8 @@ export default class ColumnsConfiguration extends React.Component {
     this.state = {
       open: false
     };
-  }
-
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.toggle = this.toggle.bind(this);
+    this.codeRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -34,9 +30,9 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   toggle() {
-    this.setState({
-      open: !this.state.open
-    })
+    this.setState(prevState => ({
+      open: !prevState.open
+    }));
   }
 
   showAll() {
@@ -49,8 +45,8 @@ export default class ColumnsConfiguration extends React.Component {
 
   render() {
     const { handleColumnDragDrop, handleColumnsOrder, order } = this.props;
-    const [ title, entry ] = [styles.title, styles.entry ].map(className => (
-      <div className={className} onClick={this.toggle.bind(this)}>
+    const [ title, entry ] = [styles.title, styles.entry ].map((className, i) => (
+      <div key={i} className={className} onClick={this.toggle}>
         <Icon name='manage-columns' width={14} height={14} />
         <span>Manage Columns</span>
       </div>
@@ -59,7 +55,7 @@ export default class ColumnsConfiguration extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={Position.inDocument(this.node)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
+        <Popover fixed={true} position={Position.inDocument(this.nodeRef.current)} onExternalClick={this.toggle} contentId={POPOVER_CONTENT_ID}>
           <div className={styles.popover} id={POPOVER_CONTENT_ID}>
             {title}
             <div className={styles.body}>
@@ -102,10 +98,10 @@ export default class ColumnsConfiguration extends React.Component {
       );
     }
     return (
-      <>
+      <React.Fragment ref={this.codeRef}>
         {entry}
         {popover}
-      </>
+      </React.Fragment>
     );
   }
 }

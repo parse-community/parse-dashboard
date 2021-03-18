@@ -12,7 +12,6 @@ import Popover               from 'components/Popover/Popover.react';
 import Position              from 'lib/Position';
 import PropTypes             from 'lib/PropTypes';
 import React                 from 'react';
-import ReactDOM              from 'react-dom';
 import styles                from 'components/ExplorerMenuButton/ExplorerMenuButton.scss';
 
 export default class ExplorerMenuButton extends React.Component {
@@ -24,15 +23,16 @@ export default class ExplorerMenuButton extends React.Component {
       position: null,
       align: Directions.LEFT
     };
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.currentView) {
+    this.setState(prevState => {
+      if (prevState.currentView) {
         return { currentView: null };
       }
       let position = Position.inDocument(this.node);
@@ -121,7 +121,7 @@ export default class ExplorerMenuButton extends React.Component {
     }
 
     return (
-      <div className={styles.wrap}>
+      <div ref={this.nodeRef} className={styles.wrap}>
         {content}
         {popover}
       </div>

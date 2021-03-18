@@ -37,7 +37,7 @@ class Config extends TableView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.config.dispatch(ActionTypes.FETCH);
   }
 
@@ -101,7 +101,7 @@ class Config extends TableView {
         modalValue = data.value.toJSON();
       } else if (data.value instanceof Parse.File) {
         type = 'File';
-        value = <a target='_blank' href={data.value.url()}>Open in new window</a>;
+        value = <a target='_blank' rel='noreferrer' href={data.value.url()}>Open in new window</a>;
       } else {
         type = 'Object';
         value = JSON.stringify(value);
@@ -129,7 +129,7 @@ class Config extends TableView {
       }
       openModal()
     }
-  
+
     let openDeleteParameterDialog = () => this.setState({
       showDeleteParameterDialog: true,
       modalParam: data.param

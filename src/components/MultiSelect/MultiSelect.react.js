@@ -10,7 +10,6 @@ import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import stringList     from 'lib/stringList';
 import styles         from 'components/MultiSelect/MultiSelect.scss';
 import Chip           from 'components/Chip/Chip.react';
@@ -22,7 +21,8 @@ export default class MultiSelect extends React.Component {
       open: false,
       position: null
     }
-    this.popoverRef = React.createRef(null);
+    this.popoverRef = React.createRef();
+    this.nodeRef = React.createRef();
     this.handleScroll = () => {
       let newPosition = this.props.fixed ? Position.inWindow(this.node) : Position.inDocument(this.node);
       newPosition.y += this.node.offsetHeight;
@@ -32,11 +32,15 @@ export default class MultiSelect extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
-    window.addEventListener('scroll', this.handleScroll)
-   
+  get node() {
+    return this.nodeRef.current;
   }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll)
+
+  }
+
   componentWillUnmount(){
     window.removeEventListener('scroll', this.handleScroll)
   }
@@ -55,7 +59,7 @@ export default class MultiSelect extends React.Component {
 
   toggle() {
     this.setPosition();
-    this.setState({ open: !this.state.open });
+    this.setState(prevState => ({ open: !prevState.open }));
   }
 
   close(e) {
@@ -79,7 +83,7 @@ export default class MultiSelect extends React.Component {
     let popover = null;
     if (this.state.open) {
       let width = this.node.clientWidth;
-      
+
       let classes = [styles.menu];
       if (this.props.dense){
         classes.push(styles.dense);
@@ -134,7 +138,7 @@ export default class MultiSelect extends React.Component {
                 item = this.props.value[index]
               }
               return (
-                <Chip 
+                <Chip
                   value={item}
                   key={'chip-'+index}
                   onClose={(removed) => {
@@ -147,7 +151,7 @@ export default class MultiSelect extends React.Component {
     }
 
     return (
-      <div style={dropdownStyle} className={dropDownClasses.join(' ')}>
+      <div ref={this.nodeRef} style={dropdownStyle} className={dropDownClasses.join(' ')}>
         <div className={classes.join(' ')} onClick={this.toggle.bind(this)}>
          {content}
         </div>

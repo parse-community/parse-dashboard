@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes               from 'lib/PropTypes'; 
+import PropTypes               from 'lib/PropTypes';
 import * as PushAudiencesStore from 'lib/stores/PushAudiencesStore';
 import * as PushConstants      from './PushConstants';
 import Button                  from 'components/Button/Button.react';
@@ -22,10 +22,14 @@ const XHR_KEY = 'PushAudiencesData';
 
 //TODO: lazy render options - avoid necessary calls for count if user doesn't see the audience
 export default class PushAudiencesData extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    let loading = true;
+    if (props.loaded) {
+      loading = false;
+    }
     this.state = {
-      loading: true,
+      loading,
       showMore: false,
       showCreateModal: false,
       currentAudience: null,
@@ -39,7 +43,7 @@ export default class PushAudiencesData extends React.Component {
     };
   }
 
-  componentWillMount(){
+  componentDidMount(){
     if (this.props.loaded){ //case when data already fetched
       this.setState({ loading: false});
     }
@@ -63,12 +67,6 @@ export default class PushAudiencesData extends React.Component {
         availableDevices: PushConstants.DEFAULT_DEVICES
       });
     });
-  }
-
-  componentWillReceiveProps(props) {
-    if (props.loaded){
-      this.setState({ loading: false});
-    }
   }
 
   componentWillUnmount() {
@@ -129,7 +127,7 @@ export default class PushAudiencesData extends React.Component {
     parseQuery.containedIn('deviceType', platforms);
     if (!saveForFuture) {
       this.props.onChange(PushConstants.NEW_SEGMENT_ID, parseQuery, 1 /* TODO: get the read device count */);
-    }    
+    }
 
     if (saveForFuture){
       this.props.pushAudiencesStore.dispatch(PushAudiencesStore.ActionTypes.CREATE, {

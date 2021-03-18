@@ -30,7 +30,7 @@ export default class CloudCode extends DashboardView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchSource(this.context.currentApp, getPath(this.props.params));
   }
 

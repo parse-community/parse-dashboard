@@ -30,6 +30,7 @@ export default class FileInput extends React.Component {
         <a
           href={this.props.value.url}
           target='_blank'
+          rel='noreferrer'
           className={styles.label}>
           {escape(this.props.value.name)}
         </a>

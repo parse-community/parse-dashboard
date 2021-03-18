@@ -222,7 +222,7 @@ class PushDetails extends DashboardView {
     this.xhrHandles = [];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     let promise = this.context.currentApp.fetchPushDetails(this.props.params.pushId);
     promise.then((pushDetails) => {
@@ -351,7 +351,7 @@ class PushDetails extends DashboardView {
     let statistics = pushDetails.statistics;
 
     let learnMore = (
-      <a href={EXP_STATS_URL} target='_blank'>Learn more</a>
+      <a href={EXP_STATS_URL} target='_blank' rel='noreferrer'>Learn more</a>
     );
 
     if (pushDetails.exp_type === 'time' || pushDetails.launch_info === null || (pushDetails.launch_info && pushDetails.launch_info.percent === 0)) {

@@ -12,7 +12,6 @@ import Popover               from 'components/Popover/Popover.react';
 import Position              from 'lib/Position';
 import PropTypes             from 'lib/PropTypes';
 import React                 from 'react';
-import ReactDOM              from 'react-dom';
 import styles                from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.scss';
 import baseStyles            from 'stylesheets/base.scss';
 const { verticalCenter } = baseStyles;
@@ -27,17 +26,18 @@ export default class ExplorerActiveChartButton extends React.Component {
       active: true,
       align: Directions.LEFT
     }
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   handleCheckbox() {
-    let nextActiveState = !this.state.active;
-    this.props.onToggle(nextActiveState);
-    this.setState({
-      active: nextActiveState
+    this.setState(prevState => {
+      const nextActiveState = !prevState.active;
+      this.props.onToggle(nextActiveState);
+      return { active: nextActiveState }
     });
   }
 
@@ -71,11 +71,11 @@ export default class ExplorerActiveChartButton extends React.Component {
               position.x += this.node.clientWidth;
               align = Directions.RIGHT;
             }
-            this.setState({
-              open: !this.state.open,
+            this.setState(prevState => ({
+              open: !prevState.open,
               position,
               align
-            });
+            }));
           }} />
       );
     }
@@ -131,7 +131,7 @@ export default class ExplorerActiveChartButton extends React.Component {
     }
 
     return (
-      <div className={styles.wrap}>
+      <div ref={this.nodeRef} className={styles.wrap}>
         {content}
         {popover}
       </div>

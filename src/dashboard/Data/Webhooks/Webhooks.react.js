@@ -49,7 +49,7 @@ class Webhooks extends TableView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.webhooks.dispatch(WebhookActionTypes.FETCH);
     this.props.schema.dispatch(SchemaActionTypes.FETCH);
   }
@@ -94,7 +94,7 @@ class Webhooks extends TableView {
       <Field
         label={<Label
           text='Webhook type'
-          description={<span>Learn about <a target='_blank' href='http://docs.parseplatform.org/cloudcode/guide#cloud-code-cloud-functions'>functions</a> and <a target='_blank' href='http://docs.parseplatform.org/cloudcode/guide#cloud-code-beforesave-triggers'>triggers</a>.</span>}
+          description={<span>Learn about <a target='_blank' rel='noreferrer' href='http://docs.parseplatform.org/cloudcode/guide#cloud-code-cloud-functions'>functions</a> and <a target='_blank' rel='noreferrer' href='http://docs.parseplatform.org/cloudcode/guide#cloud-code-beforesave-triggers'>triggers</a>.</span>}
         />}
         input={<Dropdown
           onChange={value => {
@@ -284,7 +284,7 @@ class Webhooks extends TableView {
   renderEmpty() {
     return <EmptyState
       title='Webhooks'
-      description={<span>Use webhooks to run Cloud Code or connect Parse to your own server. <a href='http://docs.parseplatform.org/cloudcode/guide/#cloud-code-webhooks' target='_blank'>Learn more</a>.</span>}
+      description={<span>Use webhooks to run Cloud Code or connect Parse to your own server. <a href='http://docs.parseplatform.org/cloudcode/guide/#cloud-code-webhooks' target='_blank' rel='noreferrer'>Learn more</a>.</span>}
       icon='gears'
       cta='Create a Webhook'
       action={this.openNewWebhookModal.bind(this)} />

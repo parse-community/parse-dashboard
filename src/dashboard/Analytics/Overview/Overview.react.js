@@ -99,7 +99,7 @@ export default class Overview extends DashboardView {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchOverview(this.context.currentApp);
   }
 

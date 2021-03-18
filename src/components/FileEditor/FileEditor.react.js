@@ -21,6 +21,9 @@ export default class FileEditor extends React.Component {
     this.checkExternalClick = this.checkExternalClick.bind(this);
     this.handleKey = this.handleKey.bind(this);
     this.removeFile = this.removeFile.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.inputRef = React.createRef();
+    this.fileInputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -35,7 +38,7 @@ export default class FileEditor extends React.Component {
 
   checkExternalClick(e) {
     const { onCancel } = this.props;
-    if (!hasAncestor(e.target, this.refs.input) && onCancel) {
+    if (!hasAncestor(e.target, this.inputRef.current) && onCancel) {
       onCancel();
     }
   }
@@ -57,7 +60,7 @@ export default class FileEditor extends React.Component {
   }
 
   removeFile() {
-    this.refs.fileInput.value = '';
+    this.fileInputRef.current.value = '';
     this.props.onCommit(undefined);
   }
 
@@ -72,10 +75,10 @@ export default class FileEditor extends React.Component {
   render() {
     const file = this.props.value;
     return (
-      <div ref='input' style={{ minWidth: this.props.width }} className={styles.editor}>
-        {file && file.url() ? <a href={file.url()} target='_blank' role='button' className={styles.download}>Download</a> : null}
+      <div ref={this.inputRef} style={{ minWidth: this.props.width }} className={styles.editor}>
+        {file && file.url() ? <a href={file.url()} target='_blank' rel='noreferrer' role='button' className={styles.download}>Download</a> : null}
         <a className={styles.upload}>
-          <input ref='fileInput' type='file' onChange={this.handleChange.bind(this)} />
+          <input ref={this.fileInputRef} type='file' onChange={this.handleChange} />
           <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
         {file ? <a href='javascript:;' role='button' className={styles.delete} onClick={this.removeFile}>Delete</a> : null}

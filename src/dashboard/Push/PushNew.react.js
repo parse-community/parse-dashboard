@@ -110,8 +110,8 @@ let LocalizedMessageField = ({
         }
         input={
           <Dropdown value={currentLocaleOption} onChange={(nextLocaleOption) => onChangeLocale.call(undefined, id, nextLocaleOption, data, currentLocaleOption)}>
-            {localeOptions && localeOptions.length > 0 ? localeOptions.map((option) => {
-              return (<Option value={option}>{option}</Option>);
+            {localeOptions && localeOptions.length > 0 ? localeOptions.map((option, i) => {
+              return (<Option key={i} value={option}>{option}</Option>);
             }) : null}
           </Dropdown>
         } />
@@ -145,7 +145,7 @@ class PushNew extends DashboardView {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     let options = { xhrKey: XHR_KEY };
     const query = queryString.parse(this.props.location.search);

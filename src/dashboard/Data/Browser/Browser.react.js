@@ -123,7 +123,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { currentApp } = this.context;
     if (!currentApp.preventSchemaEdits) {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));

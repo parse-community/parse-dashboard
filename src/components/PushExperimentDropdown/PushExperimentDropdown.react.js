@@ -9,30 +9,23 @@ import Popover   from 'components/Popover/Popover.react';
 import PropTypes from 'lib/PropTypes';
 import Position  from 'lib/Position';
 import React     from 'react';
-import ReactDOM  from 'react-dom';
 import styles    from 'components/PushExperimentDropdown/PushExperimentDropdown.scss';
 
 export default class PushExperimentDropdown extends React.Component {
   constructor() {
     super();
 
-    this.state = { 
+    this.state = {
       open: false,
       selected: false,
     };
-  }
-
-  componentWillMount() {
     this.styles = this.props.styles || styles;
-  }
-
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.nodeRef = React.createRef();
   }
 
   select(value, e) {
     e.stopPropagation();
-    this.setState({ 
+    this.setState({
       open: false,
       selected: true,
     }, () => {
@@ -50,7 +43,7 @@ export default class PushExperimentDropdown extends React.Component {
       </div>
     );
     if (this.state.open) {
-      let position = Position.inWindow(this.node);
+      const position = Position.inWindow(this.nodeRef.current);
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
           <div style={widthStyle} className={[styles.menu, styles[color]].join(' ')}>
@@ -60,7 +53,7 @@ export default class PushExperimentDropdown extends React.Component {
       );
     }
     return (
-      <div style={widthStyle} className={styles.dropdown}>
+      <div ref={this.nodeRef} style={widthStyle} className={styles.dropdown}>
         {content}
       </div>
     );

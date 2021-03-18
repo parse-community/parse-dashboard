@@ -11,7 +11,6 @@ import { MONTHS }     from 'lib/DateUtils';
 import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import SliderWrap     from 'components/SliderWrap/SliderWrap.react';
 import styles         from 'components/DatePicker/DatePicker.scss';
 
@@ -22,15 +21,18 @@ export default class DatePicker extends React.Component {
       open: false,
       position: null
     }
+    this.toggle = this.toggle.bind(this);
+    this.close = this.close.bind(this);
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState(prevState => {
+      if (prevState.open) {
         return { open: false };
       }
       return {
@@ -49,9 +51,9 @@ export default class DatePicker extends React.Component {
   render() {
     let popover = null;
     if (this.state.open) {
-      let width = this.node.clientWidth;
+      const width = this.node.clientWidth;
       popover = (
-        <Popover position={this.state.position} onExternalClick={this.close.bind(this)}>
+        <Popover position={this.state.position} onExternalClick={this.close}>
           <SliderWrap direction={Directions.DOWN} expanded={true}>
             <div style={{ width }} className={styles.picker}>
               <Calendar value={this.props.value} onChange={(newValue) => {
@@ -73,9 +75,9 @@ export default class DatePicker extends React.Component {
         </div>
       );
     }
-    
+
     return (
-      <div className={styles.input} onClick={this.toggle.bind(this)}>
+      <div ref={this.nodeRef} className={styles.input} onClick={this.toggle}>
         {content}
         {popover}
       </div>

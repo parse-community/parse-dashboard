@@ -132,6 +132,7 @@ export default class SecureFieldsDialog extends React.Component {
           details={
             <a
               target="_blank"
+              rel="noreferrer"
               href="http://docs.parseplatform.org/ios/guide/#security"
             >
               Learn more about CLPs and app security

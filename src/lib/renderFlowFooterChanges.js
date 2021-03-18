@@ -103,6 +103,6 @@ export default (changes, initial, fieldOptions) => {
     renderChangeList(prefix, changes, index === wholeList.length - 1)
   );
   return <span>
-    You've {joinWithFinal(null, allChangeNodes, ', ', allChangeNodes.length < 3 ? ' and ' : ', and ')}.
+    You&apos;ve {joinWithFinal(null, allChangeNodes, ', ', allChangeNodes.length < 3 ? ' and ' : ', and ')}.
   </span>;
 };

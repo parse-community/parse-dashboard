@@ -22,7 +22,7 @@ export default class FourOhFour extends React.Component {
     this.updateEmoji = this.updateEmoji.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.timeout = setTimeout(this.updateEmoji, 3000);
   }
 
@@ -48,7 +48,7 @@ export default class FourOhFour extends React.Component {
           <div className={styles.error}>
             4<div className={styles.emoji} style={{ backgroundPosition: offset + 'px 0px' }} />4
           </div>
-          <div className={styles.message}>Oh no, we can't find that page!</div>
+          <div className={styles.message}>Oh no, we can&apos;t find that page!</div>
 
           <div className={styles.back}>
             <a href='javascript:;' role='button' onClick={() => history.goBack()}>Go back</a>

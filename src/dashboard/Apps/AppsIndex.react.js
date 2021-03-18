@@ -94,9 +94,11 @@ export default class AppsIndex extends React.Component {
     super();
     this.state = { search: '' };
     this.focusField = this.focusField.bind(this);
+    this.updateSearch = this.updateSearch.bind(this);
+    this.searchRef = React.createRef();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (AppsManager.apps().length === 1) {
       const [app] = AppsManager.apps();
       history.push(`/apps/${app.slug}/browser`);
@@ -117,8 +119,8 @@ export default class AppsIndex extends React.Component {
   }
 
   focusField() {
-    if (this.refs.search) {
-      this.refs.search.focus();
+    if (this.searchRef.current) {
+      this.searchRef.current.focus();
     }
   }
 
@@ -132,18 +134,18 @@ export default class AppsIndex extends React.Component {
             <div className={styles.cloud}>
               <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
             </div>
-            <div className={styles.alert}>You don't have any apps</div>
+            <div className={styles.alert}>You don&apos;t have any apps</div>
           </div>
         </div>
       );
     }
     let upgradePrompt = null;
     if (this.props.newFeaturesInLatestVersion.length > 0) {
-      let newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => <strong>
+      let newFeaturesNodes = this.props.newFeaturesInLatestVersion.map((feature, key) => <strong key={key}>
         {feature}
       </strong>);
       upgradePrompt = <FlowFooter>
-        Upgrade to the <a href='https://www.npmjs.com/package/parse-dashboard' target='_blank'>latest version</a> of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
+        Upgrade to the <a href='https://www.npmjs.com/package/parse-dashboard' target='_blank' rel='noreferrer'>latest version</a> of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
       </FlowFooter>
     }
     return (
@@ -151,9 +153,9 @@ export default class AppsIndex extends React.Component {
         <div className={styles.header}>
           <Icon width={18} height={18} name='search-outline' fill='#788c97' />
           <input
-            ref='search'
+            ref={this.searchRef}
             className={styles.search}
-            onChange={this.updateSearch.bind(this)}
+            onChange={this.updateSearch}
             value={this.state.search}
             placeholder='Start typing to filter&hellip;' />
         </div>

@@ -193,14 +193,14 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   toggleEditing() {
-    this.setState({
-      editing: !this.state.editing,
-      newName: this.state.name
-    });
+    this.setState(prevState => ({
+      editing: !prevState.editing,
+      newName: prevState.name
+    }));
   }
 
   handleSave() {
-    let query = this.props.query || {};
+    const query = this.props.query || {};
     this.props.onSave({
       source: this.state.source,
       name: this.state.name,
@@ -214,11 +214,11 @@ export default class ExplorerQueryComposer extends React.Component {
       objectId: query.objectId
     });
 
-    this.setState({
+    this.setState(prevState => ({
       editing: false,
-      name: this.state.newName,
-      isSaved: !!this.state.newName
-    });
+      name: prevState.newName,
+      isSaved: !!prevState.newName
+    }));
   }
 
   handleNameChange(e) {
@@ -226,39 +226,39 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   handleAddAggregate() {
-    this.setState({
-      aggregates: this.state.aggregates.concat([{
+    this.setState(prevState => ({
+      aggregates: prevState.aggregates.concat([{
         op: AGGREGATE_TYPE_LABELS[0],
-        col: FIELD_LABELS[this.state.source][0]
+        col: FIELD_LABELS[prevState.source][0]
       }])
-    });
+    }));
   }
 
   handleAddGroup() {
-    this.setState({
-      groups: this.state.groups.concat([
-        FIELD_LABELS[this.state.source][0]
+    this.setState(prevState => ({
+      groups: prevState.groups.concat([
+        FIELD_LABELS[prevState.source][0]
       ])
-    });
+    }));
   }
 
   handleAddFilter() {
-    this.setState({
-      filters: this.state.filters.concat([{
+    this.setState(prevState => ({
+      filters: prevState.filters.concat([{
         op: '$eq',
-        col: FIELD_LABELS[this.state.source][0],
+        col: FIELD_LABELS[prevState.source][0],
         val: null
       }])
-    });
+    }));
   }
 
   handleAddOrder() {
-    this.setState({
-      orders: this.state.orders.concat([{
+    this.setState(prevState => ({
+      orders: prevState.orders.concat([{
         col: null,
         asc: ORDER_LABELS[0]
       }])
-    });
+    }));
   }
 
   handleSourceChange(newSource) {
@@ -296,12 +296,14 @@ export default class ExplorerQueryComposer extends React.Component {
             value={aggregate.op}
             options={AGGREGATE_TYPE_LABELS}
             onChange={(val) => {
-              let aggregates = this.state.aggregates;
-              aggregates[index] = {
-                op: val,
-                col: FIELD_LABELS[this.state.source][0]
-              };
-              this.setState({ aggregates });
+              this.setState(prevState => {
+                const aggregates = prevState.aggregates;
+                aggregates[index] = {
+                  op: val,
+                  col: FIELD_LABELS[prevState.source][0]
+                };
+                return { aggregates };
+              });
             }}
             color='blue'
             width='100%' />
@@ -322,9 +324,11 @@ export default class ExplorerQueryComposer extends React.Component {
               }
             })}
             onChange={(val) => {
-              let aggregates = this.state.aggregates;
-              aggregates[index].col = val;
-              this.setState({ aggregates });
+              this.setState(prevState => {
+                const aggregates = prevState.aggregates;
+                aggregates[index].col = val;
+                return { aggregates }
+              });
             }}
             color='blue'
             width='100%' />
@@ -357,9 +361,11 @@ export default class ExplorerQueryComposer extends React.Component {
           value={grouping}
           options={specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]}
           onChange={(val) => {
-            let groups = this.state.groups;
-            groups[index] = val;
-            this.setState({ groups });
+            this.setState(prevState => {
+              const groups = prevState.groups;
+              groups[index] = val;
+              return { groups };
+            });
           }}
           color='blue'
           width='100%' />
@@ -388,30 +394,34 @@ export default class ExplorerQueryComposer extends React.Component {
               value={Constraints[filter.json_scalar_op].name}
               options={FieldConstraints['JSONValue'].map((c) => Constraints[c].name)}
               onChange={(val) => {
-                let filters = this.state.filters;
-                filters[index] = {
-                  col: filter.col,
-                  op: filter.op,
-                  json_path: filter.json_path,
-                  json_scalar_op: constraintLookup[val],
-                  val: filter.val
-                };
-                this.setState({ filters });
+                this.setState(prevState => {
+                  const filters = prevState.filters;
+                  filters[index] = {
+                    col: filter.col,
+                    op: filter.op,
+                    json_path: filter.json_path,
+                    json_scalar_op: constraintLookup[val],
+                    val: filter.val
+                  };
+                  return { filters };
+                });
               }} />
 
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={filter.val}
               onChange={(e) => {
-                let filters = this.state.filters;
-                filters[index] = {
-                  col: filter.col,
-                  op: filter.op,
-                  json_path: filter.json_path,
-                  json_scalar_op: filter.json_scalar_op,
-                  val: e.target.value
-                };
-                this.setState({ filters });
+                this.setState(prevState => {
+                  let filters = prevState.filters;
+                  filters[index] = {
+                    col: filter.col,
+                    op: filter.op,
+                    json_path: filter.json_path,
+                    json_scalar_op: filter.json_scalar_op,
+                    val: e.target.value
+                  };
+                  return { filters };
+                });
               }} />
           </div>
         );
@@ -427,38 +437,42 @@ export default class ExplorerQueryComposer extends React.Component {
               value={Constraints[filter.op].name}
               options={availableFilters[filter.col].map((c) => Constraints[c].name)}
               onChange={(val) => {
-                let filters = this.state.filters;
-                filters[index] = {
-                  col: filter.col,
-                  op: constraintLookup[val],
-                  val: filter.val
-                };
-                this.setState({ filters });
+                this.setState(prevState => {
+                  let filters = prevState.filters;
+                  filters[index] = {
+                    col: filter.col,
+                    op: constraintLookup[val],
+                    val: filter.val
+                  };
+                  return { filters };
+                });
               }} />
 
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={constraintInputValue}
               onChange={(e) => {
-                let filters = this.state.filters;
-                let newFilter = null;
-                if (isJSONView) {
-                  newFilter = {
-                    col: filter.col,
-                    op: filter.op,
-                    val: filter.val,
-                    json_path: e.target.value,
-                    json_scalar_op: filter.json_scalar_op
-                  };
-                } else {
-                  newFilter = {
-                    col: filter.col,
-                    op: filter.op,
-                    val: e.target.value
+                this.setState(prevState => {
+                  let filters = prevState.filters;
+                  let newFilter = null;
+                  if (isJSONView) {
+                    newFilter = {
+                      col: filter.col,
+                      op: filter.op,
+                      val: filter.val,
+                      json_path: e.target.value,
+                      json_scalar_op: filter.json_scalar_op
+                    };
+                  } else {
+                    newFilter = {
+                      col: filter.col,
+                      op: filter.op,
+                      val: e.target.value
+                    }
                   }
-                }
-                filters[index] = newFilter;
-                this.setState({ filters });
+                  filters[index] = newFilter;
+                  return { filters };
+                });
               }}
               ref={setFocus} />
           </div>
@@ -475,23 +489,27 @@ export default class ExplorerQueryComposer extends React.Component {
             value={Constraints[filter.op].name}
             options={availableFilters[filter.col].map((c) => Constraints[c].name)}
             onChange={(val) => {
-              let filters = this.state.filters;
-              filters[index] = {
-                col: filter.col,
-                op: constraintLookup[val],
-                val: null
-              };
-              this.setState({ filters });
+              this.setState(prevState => {
+                const filters = prevState.filters;
+                filters[index] = {
+                  col: filter.col,
+                  op: constraintLookup[val],
+                  val: null
+                };
+                return { filters };
+              });
             }} />
 
           {fieldView(type, filter.val, (val) => {
-            let filters = this.state.filters;
-            filters[index] = {
-              col: filter.col,
-              op: filter.op,
-              val: val
-            };
-            this.setState({ filters });
+            this.setState(prevState => {
+              const filters = prevState.filters;
+              filters[index] = {
+                col: filter.col,
+                op: filter.op,
+                val: val
+              };
+              return { filters };
+            });
           })}
         </span>
       );
@@ -507,13 +525,15 @@ export default class ExplorerQueryComposer extends React.Component {
             value={filter.col}
             options={FIELD_LABELS[this.state.source]}
             onChange={(val) => {
-              let filters = this.state.filters;
-              filters[index] = {
-                col: val,
-                op: '$eq',
-                val: null
-              };
-              this.setState({ filters });
+              this.setState(prevState => {
+                const filters = prevState.filters;
+                filters[index] = {
+                  col: val,
+                  op: '$eq',
+                  val: null
+                };
+                return { filters };
+              });
             }} />
         </span>
 
@@ -540,12 +560,14 @@ export default class ExplorerQueryComposer extends React.Component {
             value={order.col}
             options={this.getOrderOptions()}
             onChange={(val) => {
-              let orders = this.state.orders;
-              orders[index] = {
-                col: val,
-                asc: ORDER_LABELS[0]
-              };
-              this.setState({ orders });
+              this.setState(prevState => {
+                const orders = prevState.orders;
+                orders[index] = {
+                  col: val,
+                  asc: ORDER_LABELS[0]
+                };
+                return { orders };
+              });
             }}
             color='blue'
             width='100%' />
@@ -556,9 +578,11 @@ export default class ExplorerQueryComposer extends React.Component {
             value={order.asc}
             options={ORDER_LABELS}
             onChange={(val) => {
-              let orders = this.state.orders;
-              orders[index].asc = val;
-              this.setState({ orders });
+              this.setState(prevState => {
+                const orders = prevState.orders;
+                orders[index].asc = val;
+                return { orders };
+              });
             }}
             color='blue'
             width='100%' />

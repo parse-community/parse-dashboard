@@ -121,12 +121,13 @@ export default class Migration extends DashboardView {
       commitDialogOpen: false,
       showDetails: false,
     };
+    this.reloaderViewRef = React.createRef();
   }
 
   renderContent() {
     return <div>
       <LiveReload
-        ref={'reloaderView'}
+        ref={this.reloaderViewRef}
         source={() => this.context.currentApp.getMigrations()}
         render={migration => {
           if (migration === undefined) {
@@ -310,10 +311,10 @@ export default class Migration extends DashboardView {
         subtitle='This action is irreversible!'
         onCancel={() => this.setState({commitDialogOpen: false})}
         onConfirm={() => {
-          this.refs.reloaderView.abortXHR();
+          this.reloaderViewRef.current.abortXHR();
           this.setState({commitingState: AsyncStatus.PROGRESS});
           this.context.currentApp.commitMigration().then(() => {
-            return this.refs.reloaderView.fetchNewData();
+            return this.reloaderViewRef.current.fetchNewData();
           }).then(() => {
             this.setState({
               commitingState: AsyncStatus.SUCCESS,

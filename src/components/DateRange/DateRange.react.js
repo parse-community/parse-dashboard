@@ -17,7 +17,6 @@ import Popover                          from 'components/Popover/Popover.react';
 import Position                         from 'lib/Position';
 import PropTypes                        from 'lib/PropTypes';
 import React                            from 'react';
-import ReactDOM                         from 'react-dom';
 import styles                           from 'components/DateRange/DateRange.scss';
 
 export default class DateRange extends React.Component {
@@ -32,15 +31,18 @@ export default class DateRange extends React.Component {
       start: val.start || monthsFrom(new Date(), -1),
       end: val.end || new Date()
     };
+    this.close = this.close.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState(prevState => {
+      if (prevState.open) {
         return { open: false };
       }
       let pos = Position.inWindow(this.node);
@@ -55,19 +57,23 @@ export default class DateRange extends React.Component {
   }
 
   setStart(start) {
-    let end = this.state.end;
-    if (start > end) {
-      end = daysFrom(start, 1);
-    }
-    this.setState({ start, end });
+    this.setState(prevState => {
+      let end = prevState.end;
+      if (start > end) {
+        end = daysFrom(start, 1);
+      }
+      return { start, end };
+    });
   }
 
   setEnd(end) {
-    let start = this.state.start;
-    if (start > end) {
-      start = daysFrom(end, -1);
-    }
-    this.setState({ start, end });
+    this.setState(prevState => {
+      let start = prevState.start;
+      if (start > end) {
+        start = daysFrom(end, -1);
+      }
+      return { start, end };
+    });
   }
 
   close() {
@@ -96,7 +102,7 @@ export default class DateRange extends React.Component {
         this.state.start.getMonth() !== this.state.end.getMonth()
       );
       popover = (
-        <Popover fixed={true} position={this.state.position} onExternalClick={this.close.bind(this)}>
+        <Popover fixed={true} position={this.state.position} onExternalClick={this.close}>
           <div className={classes.join(' ')}>
             <div className={styles.calendars}>
               <Calendar
@@ -108,7 +114,7 @@ export default class DateRange extends React.Component {
                 onChange={(end) => this.setEnd(end)}
                 shadeBefore={renderShade} />
             </div>
-            <div className={styles.range} onClick={this.close.bind(this)}>
+            <div className={styles.range} onClick={this.close}>
               <span>{this.rangeString()}</span>
               <Icon width={18} height={18} name='calendar-solid' fill='#169CEE' />
             </div>
@@ -125,7 +131,7 @@ export default class DateRange extends React.Component {
     }
 
     return (
-      <div className={styles.wrap} onClick={this.toggle.bind(this)}>
+      <div ref={this.nodeRef} className={styles.wrap} onClick={this.toggle}>
         {content}
         {popover}
       </div>

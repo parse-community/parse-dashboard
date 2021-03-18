@@ -35,7 +35,7 @@ export default function subscribeTo(name, prop) {
         this.setState({ data: store.getData(nextContext.currentApp) });
       }
 
-      componentWillMount() {
+      componentDidMount() {
         this.subscriptionId = store.subscribe(this.handleNewData.bind(this));
       }
 

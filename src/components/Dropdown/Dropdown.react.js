@@ -10,7 +10,6 @@ import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import SliderWrap     from 'components/SliderWrap/SliderWrap.react';
 import styles         from 'components/Dropdown/Dropdown.scss';
 
@@ -21,15 +20,18 @@ export default class Dropdown extends React.Component {
       open: false,
       position: null
     }
+    this.close = this.close.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState(prevState => {
+      if (prevState.open) {
         return { open: false };
       }
       let pos = Position.inDocument(this.node);
@@ -74,7 +76,7 @@ export default class Dropdown extends React.Component {
         </SliderWrap>
       );
       popover =
-        <Popover fixed={this.props.fixed} position={this.state.position} onExternalClick={this.close.bind(this)}>
+        <Popover fixed={this.props.fixed} position={this.state.position} onExternalClick={this.close}>
           {popoverChildren}
         </Popover>;
     }
@@ -103,8 +105,8 @@ export default class Dropdown extends React.Component {
       dropdownClasses.push(styles.disabled);
     }
     return (
-      <div style={dropdownStyle} className={dropdownClasses.join(' ')}>
-        <div className={[styles.current, this.props.hideArrow ? styles.hideArrow : ''].join(' ')} onClick={this.toggle.bind(this)}>
+      <div ref={this.nodeRef} style={dropdownStyle} className={dropdownClasses.join(' ')}>
+        <div className={[styles.current, this.props.hideArrow ? styles.hideArrow : ''].join(' ')} onClick={this.toggle}>
           {content}
         </div>
         {popover}

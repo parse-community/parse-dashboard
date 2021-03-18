@@ -57,7 +57,7 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
           setPath(newPath);
         }}>{item.text}</li>);
       }
-      return (<li className={styles.option} onClick={() => {
+      return (<li key={index} className={styles.option} onClick={() => {
         item.callback && item.callback();
         hide();
       }}>{item.text}</li>);

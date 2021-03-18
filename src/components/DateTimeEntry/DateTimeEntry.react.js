@@ -9,7 +9,6 @@ import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
 import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 
 export default class DateTimeEntry extends React.Component {
   constructor(props) {
@@ -20,6 +19,15 @@ export default class DateTimeEntry extends React.Component {
       position: null,
       value: props.value.toISOString ? props.value.toISOString() : props.value
     }
+    this.close = this.close.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.inputDate = this.inputDate.bind(this);
+    this.commitDate = this.commitDate.bind(this);
+    this.nodeRef = React.createRef();
+  }
+
+  get node() {
+    return this.nodeRef.current;
   }
 
   componentWillReceiveProps(props) {
@@ -28,13 +36,9 @@ export default class DateTimeEntry extends React.Component {
     });
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
-  }
-
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState(prevState => {
+      if (prevState.open) {
         return { open: false };
       }
       let pos = Position.inDocument(this.node);
@@ -87,7 +91,7 @@ export default class DateTimeEntry extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={this.state.position} onExternalClick={this.close.bind(this)}>
+        <Popover fixed={true} position={this.state.position} onExternalClick={this.close}>
           <DateTimePicker
             value={this.props.value}
             width={Math.max(this.node.clientWidth, 240)}
@@ -96,14 +100,14 @@ export default class DateTimeEntry extends React.Component {
         </Popover>
       );
     }
-    
+
     return (
-      <div className={this.props.className} onClick={this.toggle.bind(this)}>
+      <div ref={this.nodeRef} className={this.props.className} onClick={this.toggle}>
         <input
           type='text'
           value={this.state.value}
-          onChange={this.inputDate.bind(this)}
-          onBlur={this.commitDate.bind(this)} />
+          onChange={this.inputDate}
+          onBlur={this.commitDate} />
         {popover}
       </div>
     );

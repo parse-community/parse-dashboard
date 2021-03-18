@@ -53,7 +53,7 @@ export default class Retention extends DashboardView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchRetention(this.context.currentApp);
   }
 

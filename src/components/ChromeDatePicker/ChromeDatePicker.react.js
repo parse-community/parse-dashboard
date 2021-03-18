@@ -15,7 +15,6 @@ import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import styles         from 'components/ChromeDatePicker/ChromeDatePicker.scss';
 
 export default class ChromeDatePicker extends React.Component {
@@ -26,18 +25,20 @@ export default class ChromeDatePicker extends React.Component {
       open: false,
       position: null,
     };
+    this.toggle = this.toggle.bind(this);
+    this.nodeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState(prevState => {
+      if (prevState.open) {
         return { open: false };
       }
-      let pos = Position.inWindow(this.node);
+      const pos = Position.inWindow(this.node);
       if (this.props.align === Directions.RIGHT) {
         pos.x += this.node.clientWidth;
       }
@@ -92,7 +93,7 @@ export default class ChromeDatePicker extends React.Component {
     }
 
     return (
-      <div className={styles.wrap} onClick={this.toggle.bind(this)}>
+      <div ref={this.nodeRef} className={styles.wrap} onClick={this.toggle}>
         {content}
         {popover}
       </div>

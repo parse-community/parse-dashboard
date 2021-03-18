@@ -25,9 +25,9 @@ export default class PushAudiencesBaseRow extends React.Component {
   handleDetailsToggle(query, schema, evt) {
     evt.preventDefault();
 
-    this.setState({
-      expandedView : !this.state.expandedView
-    });
+    this.setState(prevState => ({
+      expandedView: !prevState.expandedView
+    }));
   }
 
   fetchPushSubscriberCount(context) {
@@ -43,16 +43,10 @@ export default class PushAudiencesBaseRow extends React.Component {
     }, () => {});
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchPushSubscriberCount.call(this,this.context);
     if (this.props.id == NEW_SEGMENT_ID) {
       this.setState({ isNewSegment: true });
-    }
-  }
-
-  componentWillReceiveProps(props, context) {
-    if (this.context !== context) {
-      this.fetchPushSubscriberCount.call(this, context);
     }
   }
 

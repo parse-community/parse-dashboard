@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
 
-let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor  }) => {
+const SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor  }) => {
   let classes = [styles.section];
   if (active) {
     classes.push(styles.active);
@@ -22,7 +22,7 @@ let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgr
   return (
     <div className={classes.join(' ')}>
       {active ?
-        <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor }}>{iconContent}<span>{name}</span></div> :
+        <div style={{background: primaryBackgroundColor, ...style}} className={styles.section_header}>{iconContent}<span>{name}</span></div> :
         <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>{iconContent}<span>{name}</span></Link>}
 
       {children ? <div className={styles.section_contents} style={{ background: secondaryBackgroundColor }}>{children}</div> : null}
