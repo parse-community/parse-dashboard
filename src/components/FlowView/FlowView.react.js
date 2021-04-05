@@ -22,14 +22,14 @@ export default class FlowView extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props) {
-    let newChanges = {...this.state.changes};
+  static getDerivedStateFromProps(props, state) {
+    const newChanges = {...state.changes};
     for (let k in props.initialFields) {
       if (this.state.changes[k] === props.initialFields[k]) {
         delete newChanges[k];
       }
     }
-    this.setState({changes: newChanges});
+    return {changes: newChanges};
   }
 
   currentFields() {
@@ -45,18 +45,20 @@ export default class FlowView extends React.Component {
 
   setField(key, value, preserveSavingState = false) {
     if (this.state.saveState !== SaveButton.States.SAVING) {
-      let newChanges = {...this.state.changes};
-      newChanges[key] = value;
-      if (newChanges[key] === this.props.initialFields[key]) {
-        delete newChanges[key];
-      }
-      //Modify stored state in case component recieves new props,
-      //as componentWillReceiveProps would otherwise clobber this change.
-      this.state.changes[key] = value;
-      this.setState({
-        saveState: preserveSavingState ? this.state.saveState : SaveButton.States.WAITING,
-        saveError: '',
-        changes: newChanges,
+      this.setState(prevState => {
+        const newChanges = { ...prevState.changes };
+        newChanges[key] = value;
+        if (newChanges[key] === this.props.initialFields[key]) {
+          delete newChanges[key];
+        }
+        //Modify stored state in case component recieves new props,
+        //as componentWillReceiveProps would otherwise clobber this change.
+        prevState.changes[key] = value;
+        return {
+          saveState: preserveSavingState ? prevState.saveState : SaveButton.States.WAITING,
+          saveError: '',
+          changes: newChanges,
+        }
       });
     }
   }

@@ -14,11 +14,16 @@ const { verticalCenter } = baseStyles;
 
 // Class-style component, because we need refs
 export default class LoginForm extends React.Component {
+  constructor() {
+    super()
+    this.formRef = React.createRef()
+  }
+
   render() {
     return (
       <div className={styles.login} style={{ marginTop: this.props.marginTop || '-220px' }}>
         <Icon width={80} height={80} name='infinity' fill='#093A59' />
-        <form method='post' ref='form' action={this.props.endpoint} className={styles.form}>
+        <form method='post' ref={this.formRef} action={this.props.endpoint} className={styles.form}>
           <CSRFInput />
           <div className={styles.header}>{this.props.header}</div>
           {this.props.children}
@@ -34,7 +39,7 @@ export default class LoginForm extends React.Component {
               if (this.props.disableSubmit) {
                 return;
               }
-              this.refs.form.submit()
+              this.formRef.current.submit()
             }}
             className={styles.submit}
             value={this.props.action} />

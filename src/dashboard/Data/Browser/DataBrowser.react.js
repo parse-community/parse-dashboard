@@ -169,39 +169,39 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
       case 37: // Left
-        this.setState({
+        this.setState(prevState => ({
           current: {
-            row: this.state.current.row,
-            col: Math.max(this.state.current.col - 1, 0)
+            row: prevState.current.row,
+            col: Math.max(prevState.current.col - 1, 0)
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 38: // Up
-        this.setState({
+        this.setState(prevState => ({
           current: {
-            row: Math.max(this.state.current.row - 1, 0),
-            col: this.state.current.col
+            row: Math.max(prevState.current.row - 1, 0),
+            col: prevState.current.col
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 39: // Right
-        this.setState({
+        this.setState(prevState => ({
           current: {
-            row: this.state.current.row,
-            col: Math.min(this.state.current.col + 1, this.state.order.length - 1)
+            row: prevState.current.row,
+            col: Math.min(prevState.current.col + 1, prevState.order.length - 1)
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 40: // Down
-        this.setState({
+        this.setState(prevState => ({
           current: {
-            row: Math.min(this.state.current.row + 1, this.props.data.length - 1),
-            col: this.state.current.col
+            row: Math.min(prevState.current.row + 1, this.props.data.length - 1),
+            col: prevState.current.col
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 67: // C

@@ -24,15 +24,6 @@ export default class SettingsData extends React.Component {
     });
   }
 
-  componentWillReceiveProps(props, context) {
-    if (this.context !== context) {
-      this.setState({ fields: undefined });
-      context.currentApp.fetchSettingsFields().then(({ fields }) => {
-        this.setState({ fields });
-      });
-    }
-  }
-
   saveChanges(changes) {
     let promise = this.context.currentApp.saveSettingsFields(changes)
     promise.then(({successes}) => {

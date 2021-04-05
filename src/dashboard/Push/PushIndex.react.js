@@ -292,7 +292,7 @@ export default class PushIndex extends DashboardView {
     }
   }
 
-  navigateToNew() {
+  navigateToNew = () => {
     history.push(this.context.generatePath('push/new'));
   }
 
@@ -357,7 +357,7 @@ export default class PushIndex extends DashboardView {
         section='Push'
         subsection={PUSH_CATEGORIES[this.props.params.category]}
         details={'push'}>
-        <Button color='white' value='Send a push' onClick={this.navigateToNew.bind(this)} />
+        <Button color='white' value='Send a push' onClick={this.navigateToNew} />
       </Toolbar>
     );
   }

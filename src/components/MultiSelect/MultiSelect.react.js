@@ -45,9 +45,9 @@ export default class MultiSelect extends React.Component {
     window.removeEventListener('scroll', this.handleScroll)
   }
 
-  componentWillReceiveProps() {
+  componentDidUpdate() {
     //Necessary for when the size of the field changes.
-    this.setState({}, this.setPosition.bind(this));
+    this.setPosition()
   }
 
   setPosition() {

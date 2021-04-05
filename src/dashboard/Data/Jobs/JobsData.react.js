@@ -7,7 +7,7 @@
  */
 import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import PropTypes  from 'lib/PropTypes';
 
 export default class JobsData extends React.Component {
   constructor() {
@@ -48,13 +48,6 @@ export default class JobsData extends React.Component {
   componentDidMount() {
     this.fetchJobs(this.context.currentApp);
     // this.fetchRelease(this.context.currentApp);
-  }
-
-  componentWillReceiveProps(props, context) {
-    if (this.context !== context) {
-      this.fetchJobs(context.currentApp);
-      // this.fetchRelease(context.currentApp);
-    }
   }
 
   render() {

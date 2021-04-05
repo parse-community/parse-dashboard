@@ -22,31 +22,43 @@ export default class GeoPointEditor extends React.Component {
     this.checkExternalClick = this.checkExternalClick.bind(this);
     this.handleKeyLatitude = this.handleKeyLatitude.bind(this);
     this.handleKeyLongitude = this.handleKeyLongitude.bind(this);
+    this.latRef = React.createRef();
+    this.lngRef = React.createRef();
+  }
+
+  get latitude() {
+    return this.latRef.current
+  }
+
+  get longitude() {
+    return this.lngRef.current
   }
 
   componentDidMount() {
     if (!this.props.disableAutoFocus) {
-      this.refs.latitude.focus();
+      this.latitude.focus();
     }
-    this.refs.latitude.setSelectionRange(0, String(this.state.latitude).length);
-    this.refs.latitude.addEventListener('keypress', this.handleKeyLatitude);
-    this.refs.longitude.addEventListener('keypress', this.handleKeyLongitude);
+    this.latitude.setSelectionRange(0, String(this.state.latitude).length);
+    this.latitude.addEventListener('keypress', this.handleKeyLatitude);
+    this.longitude.addEventListener('keypress', this.handleKeyLongitude);
   }
 
-  componentWillReceiveProps(props) {
+  static getDerivedStateFromProps(props) {
     if (props.value) {
+      const state = {}
       if (props.value.latitude !== this.state.latitude) {
-        this.setState({ latitude: props.value.latitude });
+        state.latitude = props.value.latitude
       }
       if (props.value.longitude !== this.state.longitude) {
-        this.setState({ longitude: props.value.longitude });
+        state.longitude = props.value.longitude
       }
+      return state
     }
   }
 
   componentWillUnmount() {
-    this.refs.latitude.removeEventListener('keypress', this.handleKeyLatitude);
-    this.refs.longitude.removeEventListener('keypress', this.handleKeyLongitude);
+    this.latitude.removeEventListener('keypress', this.handleKeyLatitude);
+    this.longitude.removeEventListener('keypress', this.handleKeyLongitude);
   }
 
   checkExternalClick() {
@@ -55,8 +67,8 @@ export default class GeoPointEditor extends React.Component {
       // check if activeElement is something else from input fields,
       // to avoid commiting new value on every switch of focus beetween latitude and longitude fields
       if (
-        document.activeElement !== this.refs.latitude &&
-        document.activeElement !== this.refs.longitude
+        document.activeElement !== this.latitude &&
+        document.activeElement !== this.longitude
       ) {
         this.commitValue();
       }
@@ -65,8 +77,8 @@ export default class GeoPointEditor extends React.Component {
 
   handleKeyLatitude(e) {
     if (e.keyCode === 13 || e.keyCode === 44) {
-      this.refs.longitude.focus();
-      this.refs.longitude.setSelectionRange(0, String(this.state.longitude).length);
+      this.longitude.focus();
+      this.longitude.setSelectionRange(0, String(this.state.longitude).length);
     }
   }
 
@@ -112,32 +124,32 @@ export default class GeoPointEditor extends React.Component {
 
             if (values[1].length <= 0 || !validateNumeric(values[1])) {
               this.setState({ latitude: values[0] });
-              this.refs.longitude.focus();
-              this.refs.longitude.setSelectionRange(0, String(this.state.longitude).length);
+              this.longitude.focus();
+              this.longitude.setSelectionRange(0, String(this.state.longitude).length);
               return;
             }
 
             if (validateNumeric(values[1])) {
               this.setState({ latitude: values[0] });
               this.setState({ longitude: values[1] });
-              this.refs.longitude.focus();
+              this.longitude.focus();
               return;
             }
           }
         }
       }
 
-      this.setState({ [target]: validateNumeric(value) ? value : this.state[target] });
+      this.setState(prevState => ({ [target]: validateNumeric(value) ? value : prevState[target] }));
     };
     return (
-      <div ref='input' style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>
+      <div style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>
         <input
-          ref='latitude'
+          ref={this.latRef}
           value={this.state.latitude}
           onBlur={this.checkExternalClick}
           onChange={onChange.bind(this, 'latitude')} />
         <input
-          ref='longitude'
+          ref={this.lngRef}
           value={this.state.longitude}
           onBlur={this.checkExternalClick}
           onChange={onChange.bind(this, 'longitude')} />

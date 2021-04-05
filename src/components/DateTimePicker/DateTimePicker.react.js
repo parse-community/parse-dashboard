@@ -13,24 +13,15 @@ import React                                from 'react';
 import styles                               from 'components/DateTimePicker/DateTimePicker.scss';
 
 export default class DateTimePicker extends React.Component {
-  constructor(props) {
-    super();
-    let timeRef = props.value || hoursFrom(new Date(), 1);
-    this.state = {
+  static getDerivedStateFromProps(props) {
+    const timeRef = props.value || hoursFrom(new Date(), 1);
+    return {
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
       minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
     }
   }
 
-  componentWillReceiveProps(props) {
-    let timeRef = props.value || hoursFrom(new Date(), 1);
-    this.setState({
-      hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
-      minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
-    });
-  }
-
-  changeHours(e) {
+  changeHours = (e) => {
     let hoursString = e.target.value;
     if (hoursString === '') {
       return this.setState({ hours: '' });
@@ -48,7 +39,7 @@ export default class DateTimePicker extends React.Component {
     this.setState({ hours: String(hours) });
   }
 
-  changeMinutes(e) {
+  changeMinutes = (e) => {
     let minutesString = e.target.value;
     if (minutesString === '') {
       return this.setState({ minutes: '' });
@@ -66,7 +57,7 @@ export default class DateTimePicker extends React.Component {
     this.setState({ minutes: String(minutes) });
   }
 
-  commitTime() {
+  commitTime = () => {
     let dateRef = this.props.value || new Date();
     let newDate = this.props.local ? new Date(
       dateRef.getFullYear(),
@@ -88,34 +79,36 @@ export default class DateTimePicker extends React.Component {
     }
   }
 
+  onChangeDate = (newValue) => {
+    let timeRef = this.props.value || hoursFrom(new Date(), 1);
+    let newDate = this.props.local ? new Date(
+      newValue.getFullYear(),
+      newValue.getMonth(),
+      newValue.getDate(),
+      timeRef.getHours(),
+      timeRef.getMinutes()
+    ) :
+      new Date(Date.UTC(
+        newValue.getUTCFullYear(),
+        newValue.getUTCMonth(),
+        newValue.getUTCDate(),
+        timeRef.getUTCHours(),
+        timeRef.getUTCMinutes()
+      ));
+    this.props.onChange(newDate);
+  }
+
   render() {
     return (
       <div style={{ width: this.props.width }} className={styles.picker}>
-        <Calendar local={this.props.local} value={this.props.value} onChange={(newValue) => {
-          let timeRef = this.props.value || hoursFrom(new Date(), 1);
-          let newDate = this.props.local ? new Date(
-            newValue.getFullYear(),
-            newValue.getMonth(),
-            newValue.getDate(),
-            timeRef.getHours(),
-            timeRef.getMinutes()
-          ) :
-          new Date(Date.UTC(
-            newValue.getUTCFullYear(),
-            newValue.getUTCMonth(),
-            newValue.getUTCDate(),
-            timeRef.getUTCHours(),
-            timeRef.getUTCMinutes()
-          ));
-          this.props.onChange(newDate);
-        }} />
+        <Calendar local={this.props.local} value={this.props.value} onChange={this.onChangeDate} />
         <div className={styles.time}>
           <div style={{float: 'left'}}>
-            <input type='text' value={this.state.hours} onChange={this.changeHours.bind(this)} />
+            <input type='text' value={this.state.hours} onChange={this.changeHours} />
             <span> : </span>
-            <input type='text' value={this.state.minutes} onChange={this.changeMinutes.bind(this)} />
+            <input type='text' value={this.state.minutes} onChange={this.changeMinutes} />
           </div>
-          <Button value='Set time' onClick={this.commitTime.bind(this)} primary={true} />
+          <Button value='Set time' onClick={this.commitTime} primary={true} />
         </div>
       </div>
     );

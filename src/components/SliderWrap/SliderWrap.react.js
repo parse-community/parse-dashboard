@@ -7,13 +7,19 @@
  */
 import { Directions } from 'lib/Constants';
 import React                   from 'react';
-import ReactDOM                from 'react-dom';
 import styles                  from 'components/SliderWrap/SliderWrap.scss';
 
 export default class SliderWrap extends React.Component {
+  constructor() {
+    super()
+    this.metricsRef = React.createRef()
+  }
+
+  get metrics() {
+    return this.metricsRef.current
+  }
+
   componentDidMount() {
-    let wrap = ReactDOM.findDOMNode(this);
-    this.metrics = wrap.children[0];
     if (this.props.expanded) {
       this.forceUpdate();
     }
@@ -55,7 +61,7 @@ export default class SliderWrap extends React.Component {
     }
     return (
       <div className={styles.slider} style={style}>
-        <div className={styles.metrics} style={this.props.block ? { display: 'block' } : {}}>
+        <div ref={this.metricsRef} className={styles.metrics} style={this.props.block ? { display: 'block' } : {}}>
           {this.props.children}
         </div>
       </div>

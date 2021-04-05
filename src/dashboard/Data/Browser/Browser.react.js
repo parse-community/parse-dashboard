@@ -121,6 +121,11 @@ class Browser extends DashboardView {
     this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
     this.handleShowAcl = this.handleShowAcl.bind(this);
     this.onDialogToggle = this.onDialogToggle.bind(this);
+    this.dataBrowserRef = React.createRef();
+  }
+
+  get dataBrowser() {
+    return this.dataBrowserRef.current
   }
 
   componentDidMount() {
@@ -930,8 +935,8 @@ class Browser extends DashboardView {
   }
 
   handleShowAcl(row, col){
-    this.refs.dataBrowser.setEditing(true);
-    this.refs.dataBrowser.setCurrent({ row, col });
+    this.dataBrowser.setEditing(true);
+    this.dataBrowser.setCurrent({ row, col });
   }
 
   // skips key controls handling when dialog is opened
@@ -989,7 +994,7 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
-            ref='dataBrowser'
+            ref={this.dataBrowserRef}
             isUnique={this.state.isUnique}
             uniqueField={this.state.uniqueField}
             count={count}

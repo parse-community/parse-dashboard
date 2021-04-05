@@ -16,6 +16,7 @@
     "babelOptions": {
       "presets": ["@babel/preset-react"],
       "plugins": [
+        "@babel/plugin-proposal-class-properties",
         [ "@babel/plugin-proposal-decorators", { "legacy": true } ]
       ]
     },
@@ -29,13 +30,15 @@
   "rules": {
     "react/prop-types": 0,
     "react/display-name": 0,
-    "react/jsx-no-bind": 1,
+    "react/jsx-no-bind": 0,
     "react/jsx-no-constructed-context-values": 1,
     "react/no-access-state-in-setstate": 1,
     "react/void-dom-elements-no-children": 1,
     "react/no-typos": 1,
     "react/jsx-uses-vars": 1,
     "react/jsx-uses-react": 1,
+    "react/no-did-mount-set-state": 1,
+    "react/no-did-update-set-state": 1,
     "react/react-in-jsx-scope": 1,
     "no-console": 0,
     "no-case-declarations": 0,

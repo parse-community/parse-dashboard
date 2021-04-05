@@ -21,11 +21,12 @@ export default class ColumnsConfiguration extends React.Component {
     this.codeRef = React.createRef();
   }
 
-  componentWillReceiveProps(props) {
-    if (props.schema !== this.props.schema) {
-      this.setState({
+  static getDerivedStateFromProps(props, prevState) {
+    if (props.schema !== prevState.schema) {
+      return {
+        schema: props.schema,
         open: false
-      });
+      }
     }
   }
 

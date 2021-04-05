@@ -12,31 +12,38 @@ import React     from 'react';
 import styles    from 'components/ChromeDropdown/ChromeDropdown.scss';
 
 export default class ChromeDropdown extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       open: false,
       selected: false,
+      labels: {}
     };
     this.styles = this.props.styles || styles;
     this.nodeRef = React.createRef();
+  }
+
+  static getDerivedStateFromProps(props, prevState) {
+    const state = { labels: prevState.labels }
+    props.options.forEach(value => {
+      if (value instanceof Object) {
+        state.labels[value.key] = value.value;
+      }
+    });
+    return state
   }
 
   get node() {
     return this.nodeRef.current;
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.keyValueMap = {};
-    nextProps.options.forEach((value) => {
-      if (value instanceof Object) {
-        this.keyValueMap[value.key] = value.value;
-      }
-    });
-    if (Object.keys(this.keyValueMap).length === 0) {
-      this.keyValueMap = null;
-    }
+  open = () => {
+    this.setState({ open: true })
+  }
+
+  close = () => {
+    this.setState({ open: false })
   }
 
   select(value, e) {
@@ -55,15 +62,15 @@ export default class ChromeDropdown extends React.Component {
     let color = this.props.color || 'purple';
 
     let label = this.props.value;
-    if (this.keyValueMap) {
-      label = this.keyValueMap[label];
+    if (this.state.labels[label]) {
+      label = this.state.labels[label];
     }
     if (!this.state.selected && this.props.placeholder) {
       // If it's time to show placeholder, show placeholder.
       label = this.props.placeholder;
     }
     let content = (
-      <div className={[styles.current, styles[color]].join(' ')} onClick={() => this.setState({ open: true })}>
+      <div className={[styles.current, styles[color]].join(' ')} onClick={this.open}>
         <div>{label}</div>
       </div>
     );
@@ -73,7 +80,7 @@ export default class ChromeDropdown extends React.Component {
       const measuredWidth = parseFloat(this.node.offsetWidth);
       widthStyle = { width: measuredWidth };
       content = (
-        <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
+        <Popover fixed={true} position={position} onExternalClick={this.close}>
           <div style={widthStyle} className={[styles.menu, styles[color], 'chromeDropdown'].join(' ')}>
             {this.props.options.map((o) => {
               let key = o;

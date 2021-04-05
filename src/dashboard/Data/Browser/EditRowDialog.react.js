@@ -33,20 +33,8 @@ export default class EditRowDialog extends React.Component {
     this.openRelation = this.openRelation.bind(this);
   }
 
-  componentWillReceiveProps(props) {
-    const newSelectedObject = props.selectedObject;
-    const previousSelectedObject = this.props.selectedObject;
-    if (newSelectedObject.id !== previousSelectedObject.id) {
-      const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
-        newSelectedObject
-      );
-      this.setState({ currentObject, openObjectPickers, expandedTextAreas });
-    } else if (newSelectedObject.updatedAt !== previousSelectedObject.updatedAt) {
-      this.updateCurrentObjectFromProps(newSelectedObject);
-    }
-  }
-
-  initializeState(newObject) {
+  static getDerivedStateFromProps(props) {
+    const newObject = props.selectedObject;
     const { columns } = this.props;
     const currentObject = { ...newObject };
     const openObjectPickers = {};
@@ -83,36 +71,6 @@ export default class EditRowDialog extends React.Component {
     const { currentObject } = this.state;
     currentObject[name] = newValue;
     this.setState({ currentObject });
-  }
-
-  updateCurrentObjectFromProps(newObject) {
-    const { columns } = this.props;
-    const { currentObject, expandedTextAreas } = this.state;
-    columns.forEach(column => {
-      const { name, type } = column;
-      if (['String', 'Number'].indexOf(type) >= 0) {
-        currentObject[name] = newObject[name];
-      }
-      if (['Array', 'Object'].indexOf(type) >= 0) {
-        const stringifyValue = JSON.stringify(newObject[name], null, 4);
-        currentObject[name] = stringifyValue;
-        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
-        expandedTextAreas[name].rows = rows;
-      }
-      if (type === 'Polygon') {
-        const stringifyValue = JSON.stringify(
-          (newObject[name] && newObject[name].coordinates) || [
-            ['lat', 'lon']
-          ],
-          null,
-          4
-        );
-        currentObject[name] = stringifyValue;
-        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
-        expandedTextAreas[name].rows = rows;
-      }
-    });
-    this.setState({ currentObject, expandedTextAreas });
   }
 
   handleChange(newValue, name, type, targetClass, toDelete) {

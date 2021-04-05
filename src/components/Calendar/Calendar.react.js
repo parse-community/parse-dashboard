@@ -26,11 +26,11 @@ export default class Calendar extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props) {
+  static getDerivedStateFromProps(props) {
     if (props.value) {
-      this.setState({
+      return {
         currentMonth: new Date(props.value[getDateMethod(props.local, 'getFullYear')](), props.value[getDateMethod(props.local, 'getMonth')](), 1)
-      });
+      }
     }
   }
 

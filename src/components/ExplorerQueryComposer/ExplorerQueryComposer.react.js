@@ -15,7 +15,6 @@ import {
 }                       from 'components/ExplorerQueryComposer/ExplorerFilter';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import styles         from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
 
 const TABLE_SOURCES_LABEL = ['API Event', 'Custom Event'];
@@ -102,9 +101,9 @@ for (let c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-let setFocus = (input) => {
+const setFocus = (input) => {
   if (input !== null) {
-    ReactDOM.findDOMNode(input).focus();
+    input.focus();
   }
 };
 
@@ -129,21 +128,19 @@ let fieldView = (type, value, onChangeValue) => {
 };
 
 export default class ExplorerQueryComposer extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
-    let initialState = this.getInitialStateFromProps(props);
     this.state = {
       // newName is used to revert the edit if cancelled.
       newName: '',
       editing: false,
-      isSaved: false,
-      ...initialState
+      isSaved: false
     };
   }
 
-  getInitialStateFromProps(props) {
-    let query = props.query || {};
+  static getDerivedStateFromProps(props) {
+    const query = props.query || {};
     let defaultState = {};
     if (props.isTimeSeries) {
       defaultState = {
@@ -185,11 +182,6 @@ export default class ExplorerQueryComposer extends React.Component {
     });
 
     return options;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let initialState = this.getInitialStateFromProps(nextProps);
-    this.setState({ ...initialState });
   }
 
   toggleEditing() {
@@ -262,16 +254,15 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   handleSourceChange(newSource) {
-    let initialState = this.getInitialStateFromProps(this.props);
-    this.setState({
-      ...initialState,
-      source: newSource
-    });
+    this.setState({ source: newSource });
   }
 
   removeAdditionalQuery(stateKey, index) {
-    this.state[stateKey].splice(index, 1);
-    this.setState({ [stateKey]: this.state[stateKey] });
+    this.setState(prevState => {
+      const state = prevState[stateKey].slice()
+      state.splice(index, 1)
+      return { [stateKey]: state }
+    });
   }
 
   renderAggregate(aggregate, index=0) {

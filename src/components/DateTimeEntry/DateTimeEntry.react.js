@@ -11,13 +11,12 @@ import Position       from 'lib/Position';
 import React          from 'react';
 
 export default class DateTimeEntry extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = {
       open: false,
-      position: null,
-      value: props.value.toISOString ? props.value.toISOString() : props.value
+      position: null
     }
     this.close = this.close.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -26,14 +25,14 @@ export default class DateTimeEntry extends React.Component {
     this.nodeRef = React.createRef();
   }
 
-  get node() {
-    return this.nodeRef.current;
+  static getDerivedStateFromProps(props) {
+    return {
+      value: props.value.toISOString ? props.value.toISOString() : props.value
+    }
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({
-      value: props.value.toISOString ? props.value.toISOString() : props.value
-    });
+  get node() {
+    return this.nodeRef.current;
   }
 
   toggle() {
@@ -96,7 +95,7 @@ export default class DateTimeEntry extends React.Component {
             value={this.props.value}
             width={Math.max(this.node.clientWidth, 240)}
             onChange={this.props.onChange}
-            close={() => this.setState({ open: false })} />
+            close={this.close} />
         </Popover>
       );
     }

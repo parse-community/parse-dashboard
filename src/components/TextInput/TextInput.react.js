@@ -10,17 +10,13 @@ import React from 'react';
 import styles from 'components/TextInput/TextInput.scss';
 
 export default class TextInput extends React.Component {
-  componentWillReceiveProps(props) {
-    if (props.multiline !== this.props.multiline) {
-      const previousInput = this.refs.input;
-      // wait a little while for component to re-render
-      setTimeout(function() {
-        const newInput = previousInput ? this.refs.textarea : this.refs.input;
-        newInput.focus();
-        newInput.value = '';
-        newInput.value = props.value;
-      }.bind(this), 1);
-    }
+  constructor() {
+    super()
+    this.inputRef = React.createRef()
+  }
+
+  componentDidUpdate() {
+    this.inputRef.current.focus()
   }
 
   changeValue(e) {
@@ -44,7 +40,7 @@ export default class TextInput extends React.Component {
     if (this.props.multiline) {
       return (
         <textarea
-          ref="textarea"
+          ref={this.inputRef}
           id={this.props.id}
           disabled={!!this.props.disabled}
           className={classes.join(' ')}
@@ -58,7 +54,7 @@ export default class TextInput extends React.Component {
     }
     return (
       <input
-        ref="input"
+        ref={this.inputRef}
         id={this.props.id}
         type={this.props.hidden ? 'password' : 'text'}
         disabled={!!this.props.disabled}

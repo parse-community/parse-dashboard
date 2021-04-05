@@ -12,7 +12,7 @@ import styles         from 'components/DateTimeEditor/DateTimeEditor.scss';
 
 export default class DateTimeEditor extends React.Component {
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {
       open: false,
@@ -27,21 +27,18 @@ export default class DateTimeEditor extends React.Component {
     this.inputDate = this.inputDate.bind(this);
     this.commitDate = this.commitDate.bind(this);
     this.editorRef = React.createRef();
-    this.inputRef = React.createRef();
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({ value: props.value, text: props.value.toISOString() });
+  static getDerivedStateFromProps(props) {
+    return { value: props.value, text: props.value.toISOString() }
   }
 
   componentDidMount() {
     document.body.addEventListener('click', this.checkExternalClick);
-    this.inputRef.current.addEventListener('keypress', this.handleKey);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('click', this.checkExternalClick);
-    this.inputRef.current.removeEventListener('keypress', this.handleKey);
   }
 
   checkExternalClick(e) {
@@ -108,8 +105,8 @@ export default class DateTimeEditor extends React.Component {
       <div ref={this.editorRef} style={{ width: this.props.width }} className={styles.editor}>
         <input
           type='text'
-          ref={this.inputRef}
           value={this.state.text}
+          onKeyPress={this.handleKey}
           onClick={this.toggle}
           onChange={this.inputDate}
           onBlur={this.commitDate} />
