@@ -76,7 +76,7 @@ let LocalizedMessageField = ({
     <div className={styles.localeContainer}>
       <div className={styles.localeTitle}>
         <span>Localized message</span>
-        <a href='javascript:;' role='button' className={styles.localeRemoveButton} onClick={onClickRemove.bind(undefined, id, currentLocaleOption)}>REMOVE</a>
+        <a role='button' className={styles.localeRemoveButton} onClick={onClickRemove.bind(undefined, id, currentLocaleOption)}>REMOVE</a>
       </div>
       <Field
         key={`message1_${id}`}

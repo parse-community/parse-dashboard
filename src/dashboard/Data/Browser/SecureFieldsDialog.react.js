@@ -10,8 +10,7 @@ import Parse                  from 'parse';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import ProtectedFieldsDialog  from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
-import ParseApp               from 'lib/ParseApp';
-import PropTypes              from 'prop-types';
+import { AppContext } from '../../AppData.react';
 
 const pointerPrefix = 'userField:';
 
@@ -165,6 +164,4 @@ export default class SecureFieldsDialog extends React.Component {
   }
 }
 
-SecureFieldsDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+SecureFieldsDialog.contextType = AppContext;

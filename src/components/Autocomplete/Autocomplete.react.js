@@ -61,13 +61,11 @@ export default class Autocomplete extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
-    this.node.addEventListener('scroll', this.handleScroll);
     this.recalculatePosition();
     this._ignoreBlur = false;
   }
 
   componentWillUnmount() {
-    this.node.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -323,8 +321,8 @@ export default class Autocomplete extends Component {
     }
 
     return (
-      <React.Fragment ref={this.nodeRef}>
-        <div className={fieldClassName}>
+      <React.Fragment>
+        <div ref={this.nodeRef} className={fieldClassName} onScroll={this.handleScroll}>
           <input
             id={1}
             role={'combobox'}

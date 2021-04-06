@@ -5,9 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
-import PropTypes  from 'lib/PropTypes';
+import { AppContext } from '../../AppData.react';
 
 export default class JobsData extends React.Component {
   constructor() {
@@ -64,6 +63,4 @@ export default class JobsData extends React.Component {
   }
 }
 
-JobsData.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+JobsData.contextType = AppContext;

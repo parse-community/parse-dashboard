@@ -33,17 +33,9 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
 
   handleChange() {
     if(this.props.onChange && !this.props.isDisabled){
-      this.props.onChange.call(undefined, this.state.count);
+      this.props.onChange(this.state.count);
     } else {
       return;
-    }
-  }
-
-  // pass count information to PushNew flow
-  componentWillUpdate(nextProps, nextState) {
-    if ((nextState.count !== this.state.count || JSON.stringify(nextProps.query) !== JSON.stringify(this.props.query))
-      && this.props.isChecked) {
-      nextProps.onChange.call(undefined, nextState.count);
     }
   }
 
@@ -88,14 +80,12 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
                 <a
                   role='button'
                   className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(' ')}
-                  href='javascript:;'
                   onClick={this.handleDetailsToggle.bind(this,this.props.query, this.props.schema)}>
                   {this.state.expandedView ? 'less details' : 'more details'}
                 </a> :
                 <a
                   role='button'
                   className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(' ')}
-                  href='javascript:;'
                   onClick={this.props.onEditAudience.bind(undefined, {
                     name: this.props.name,
                     filters: this.props.filters,

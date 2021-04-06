@@ -21,10 +21,7 @@ export default class CascadingView extends React.Component {
 
   render() {
     let { content, className, children, style } = this.props;
-    let expander = <a
-      href='javascript:;'
-      role='button'
-      className={styles.right}>
+    const expander = <a role='button' className={styles.right}>
       <div className={[center, this.state.expanded ? styles.expanded : styles.collapsed].join(' ') } />
     </a>;
     let childrenContainer = this.state.expanded ? (<div className={styles.childrenContainer}>

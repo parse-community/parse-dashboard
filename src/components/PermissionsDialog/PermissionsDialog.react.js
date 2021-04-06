@@ -1060,11 +1060,7 @@ export default class PermissionsDialog extends React.Component {
     if (!this.state.transitioning) {
       trash = (
         <div className={styles.delete}>
-          <a
-            href="javascript:;"
-            role="button"
-            onClick={this.deleteRow.bind(this, key, pointer)}
-          >
+          <a role="button" onClick={this.deleteRow.bind(this, key, pointer)}>
             <Icon name="trash-solid" width={20} height={20} />
           </a>
         </div>

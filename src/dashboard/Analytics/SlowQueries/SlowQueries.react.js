@@ -74,7 +74,7 @@ class SlowQueries extends TableView {
     this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchDropdownData(nextProps);
       this.fetchSlowQueries(nextContext.currentApp);
@@ -164,9 +164,7 @@ class SlowQueries extends TableView {
               ...newValue,
               mutated: true
             })} />
-          <a
-            href='javascript:;'
-            role='button'
+          <a role='button'
             onClick={this.handleDownload.bind(this)}
             className={styles.toolbarAction}>
             <Icon name='download' width={14} height={14} fill='#66637a' />

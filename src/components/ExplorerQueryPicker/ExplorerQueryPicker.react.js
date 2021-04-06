@@ -27,16 +27,12 @@ let ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
                 <div
                   className={styles.queryItem}
                   key={`query_${j}`}>
-                  <a
-                    href='javascript:;'
-                    role='button'
+                  <a role='button'
                     onClick={() => onSelect(query)}
                     className={styles.queryLabel}>
                     {query.name}
                   </a>
-                  {query.preset ? null : <a
-                    href='javascript:;'
-                    role='button'
+                  {query.preset ? null : <a role='button'
                     onClick={() => onDelete(query)}
                     className={styles.del}>
                     &times;

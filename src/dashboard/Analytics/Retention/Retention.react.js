@@ -61,7 +61,7 @@ export default class Retention extends DashboardView {
     this.xhrHandles.forEach((xhr) => xhr.abort());
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchRetention(nextContext.currentApp);
     }

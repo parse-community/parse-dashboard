@@ -102,7 +102,7 @@ class FilterRow extends React.Component {
         options={constraints.map((c) => Constraints[c].name)}
         onChange={(c) => onChangeConstraint(constraintLookup[c])} />
       {compareValue(compareInfo, compareTo, onChangeCompareTo, active)}
-      <a role='button' href='javascript:;' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></a>
+      <a role='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></a>
     </div>
   }
 

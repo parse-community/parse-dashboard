@@ -18,8 +18,7 @@ import Label         from 'components/Label/Label.react';
 import Modal         from 'components/Modal/Modal.react';
 import Option        from 'components/Dropdown/Option.react';
 import Parse         from 'parse';
-import ParseApp      from 'lib/ParseApp';
-import PropTypes     from 'lib/PropTypes';
+import { AppContext } from '../../AppData.react';
 import React, { Component } from 'react';
 import request       from 'dashboard/Data/ApiConsole/request';
 import styles        from 'dashboard/Data/ApiConsole/ApiConsole.scss';
@@ -193,6 +192,4 @@ export default class RestConsole extends Component {
   }
 }
 
-RestConsole.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+RestConsole.contextType = AppContext;

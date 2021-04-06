@@ -59,12 +59,11 @@ function scheduleString(data) {
   return <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>{schedule}</div>;
 }
 
-// TODO: create scrollable view component that handles lazy fetch container on scroll
-export default
+// TODO: create scrollable view component that handles lazy fetch container on scrol
 @subscribeTo('Jobs', 'jobs')
 class Jobs extends TableView {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.section = 'Core';
     this.subsection = 'Jobs';
 
@@ -73,20 +72,15 @@ class Jobs extends TableView {
       jobStatus: undefined,
       loading: true,
     };
+
+    if (props.availableJobs && props.availableJobs.length > 0) {
+      this.action = new SidebarAction('Schedule a job', this.navigateToNew.bind(this))
+    } else {
+      this.action = null
+    }
   }
 
   componentDidMount() {
-    this.loadData();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.availableJobs) {
-      if (nextProps.availableJobs.length > 0) {
-        this.action = new SidebarAction('Schedule a job', this.navigateToNew.bind(this));
-        return;
-      }
-    }
-    this.action = null;
     this.loadData();
   }
 
@@ -299,3 +293,5 @@ class Jobs extends TableView {
     return null;
   }
 }
+
+export default Jobs

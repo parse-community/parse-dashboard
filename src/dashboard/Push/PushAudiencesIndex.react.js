@@ -72,10 +72,11 @@ class PushAudiencesIndex extends DashboardView {
     });
   }
 
-  componentWillReceiveProps(props) {
+  static getDerivedStateFromProps(props) {
     if (props.loaded){
-      this.setState({ loading: false});
+      return { loading: false }
     }
+    return null
   }
 
   componentWillUnmount() {

@@ -35,13 +35,10 @@ import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import * as queryString                   from 'query-string';
 import { Helmet }                         from 'react-helmet';
-import PropTypes                          from 'lib/PropTypes';
-import ParseApp                           from 'lib/ParseApp';
-
+import { AppContext } from '../../AppData.react';
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
 
-export default
 @subscribeTo('Schema', 'schema')
 class Browser extends DashboardView {
   constructor() {
@@ -143,7 +140,7 @@ class Browser extends DashboardView {
     }
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
@@ -1210,6 +1207,6 @@ class Browser extends DashboardView {
   }
 }
 
-Browser.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+Browser.contextType = AppContext;
+
+export default Browser

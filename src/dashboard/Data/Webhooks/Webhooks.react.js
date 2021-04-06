@@ -54,7 +54,7 @@ class Webhooks extends TableView {
     this.props.schema.dispatch(SchemaActionTypes.FETCH);
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       nextProps.webhooks.dispatch(WebhookActionTypes.FETCH);
       nextProps.schema.dispatch(SchemaActionTypes.FETCH);
@@ -250,7 +250,7 @@ class Webhooks extends TableView {
     let rowStyle = hook.url ? { cursor: 'pointer' } : {};
     let deleteColumnContents = null;
     if (hook.url) {
-      deleteColumnContents = <a role='button' href='javascript:;' onClick={showDelete}>
+      deleteColumnContents = <a role='button' onClick={showDelete}>
         <Icon name='trash-outline' fill='#343445' width={20} height={20}/>
       </a>;
     } else {

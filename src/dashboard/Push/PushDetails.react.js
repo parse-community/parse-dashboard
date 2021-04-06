@@ -331,10 +331,10 @@ class PushDetails extends DashboardView {
     this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(this.props.params.pushId !== nextProps.params.pushId) {
-      this.setState( {loading: true });
-      this.context.currentApp.fetchPushDetails(nextProps.params.pushId).then((pushDetails) => {
+  componentDidUpdate(prevProps) {
+    if (this.props.params.pushId !== prevProps.params.pushId) {
+      this.setState({ loading: true });
+      this.context.currentApp.fetchPushDetails(this.props.params.pushId).then((pushDetails) => {
         this.setState({ pushDetails });
       }).finally(() => {
         this.setState({ loading: false })

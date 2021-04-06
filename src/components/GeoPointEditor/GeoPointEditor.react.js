@@ -54,6 +54,7 @@ export default class GeoPointEditor extends React.Component {
       }
       return state
     }
+    return null
   }
 
   componentWillUnmount() {

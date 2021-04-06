@@ -83,7 +83,7 @@ class Explorer extends DashboardView {
     this.xhrHandles.forEach(xhr => xhr && xhr.abort());
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       if (this.props.params.displayType !== nextProps.params.displayType) {
         this.setState({ activeQueries: [], mutated: false });
@@ -333,17 +333,13 @@ class Explorer extends DashboardView {
       <Toolbar
         section='Analytics'
         subsection='Explorer'>
-        <a
-          href='javascript:;'
-          role='button'
+        <a role='button'
           className={styles.toolbarAction}
           style={{ borderRight: '1px solid #66637a' }}>
           <Icon name='question-solid' width={14} height={14} fill='#66637a' />
           FAQ
         </a>
-        <a
-          href='javascript:;'
-          role='button'
+        <a role='button'
           onClick={this.handleDownload.bind(this)}
           className={styles.toolbarAction}>
           <Icon name='download' width={14} height={14} fill='#66637a' />

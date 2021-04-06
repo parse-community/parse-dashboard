@@ -10,9 +10,8 @@ import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
 import ContextMenu            from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
-import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
-import PropTypes              from 'lib/PropTypes';
+import { AppContext } from '../../AppData.react';
 import { SpecialClasses }     from 'lib/Constants';
 
 /**
@@ -22,7 +21,7 @@ import { SpecialClasses }     from 'lib/Constants';
  */
 export default class DataBrowser extends React.Component {
   constructor(props, context) {
-    super(props, context);
+    super(props);
 
     const columnPreferences = context.currentApp.columnPreference || {}
     let order = ColumnPreferences.getOrder(
@@ -51,7 +50,7 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
   }
 
-  componentWillReceiveProps(props, context) {
+  UNSAFE_componentWillReceiveProps(props, context) {
     if (props.className !== this.props.className) {
       const columnPreferences = context.currentApp.columnPreference || {}
       let order = ColumnPreferences.getOrder(
@@ -291,6 +290,4 @@ export default class DataBrowser extends React.Component {
   }
 }
 
-DataBrowser.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+DataBrowser.contextType = AppContext;

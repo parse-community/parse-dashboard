@@ -18,7 +18,7 @@ export default class ColumnsConfiguration extends React.Component {
       open: false
     };
     this.toggle = this.toggle.bind(this);
-    this.codeRef = React.createRef();
+    this.nodeRef = React.createRef();
   }
 
   static getDerivedStateFromProps(props, prevState) {
@@ -28,6 +28,7 @@ export default class ColumnsConfiguration extends React.Component {
         open: false
       }
     }
+    return null
   }
 
   toggle() {
@@ -47,7 +48,7 @@ export default class ColumnsConfiguration extends React.Component {
   render() {
     const { handleColumnDragDrop, handleColumnsOrder, order } = this.props;
     const [ title, entry ] = [styles.title, styles.entry ].map((className, i) => (
-      <div key={i} className={className} onClick={this.toggle}>
+      <div key={i} ref={ i==1 ? this.nodeRef : null } className={className} onClick={this.toggle}>
         <Icon name='manage-columns' width={14} height={14} />
         <span>Manage Columns</span>
       </div>
@@ -99,10 +100,10 @@ export default class ColumnsConfiguration extends React.Component {
       );
     }
     return (
-      <React.Fragment ref={this.codeRef}>
+      <>
         {entry}
         {popover}
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -5,9 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes from 'lib/PropTypes'; 
 import Modal     from 'components/Modal/Modal.react';
-import ParseApp  from 'lib/ParseApp';
+import { AppContext } from '../../dashboard/AppData.react';
 import PushCerts from 'components/PushCerts/PushCerts.react';
 import React     from 'react';
 
@@ -84,6 +83,4 @@ export default class AppleCerts extends React.Component {
   }
 }
 
-AppleCerts.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+AppleCerts.contextType = AppContext;

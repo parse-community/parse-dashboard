@@ -14,7 +14,6 @@ import { List }        from 'immutable';
 import Option          from 'components/Dropdown/Option.react';
 import Parse           from 'parse';
 import React           from 'react';
-import ReactDOM        from 'react-dom';
 import styles          from 'components/PushAudienceDialog/InstallationCondition.scss';
 import TextInput       from 'components/TextInput/TextInput.react';
 import validateNumeric from 'lib/validateNumeric';
@@ -24,9 +23,9 @@ for (let c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-let setFocus = (input) => {
-  if (input !== null) {
-    ReactDOM.findDOMNode(input).focus();
+const setFocus = (dateTimeEntry) => {
+  if (dateTimeEntry !== null) {
+    dateTimeEntry.node.focus()
   }
 }
 
@@ -36,7 +35,7 @@ function compareValue(info, value, onChangeCompareTo) {
     case null:
       return <div className={styles.empty}>-</div>;
     case 'String':
-      return <TextInput placeholder='value' value={value} onChange={(_value) => onChangeCompareTo(_value)} ref={setFocus}/>;
+      return <TextInput placeholder='value' value={value} onChange={(_value) => onChangeCompareTo(_value)} />;
     case 'Pointer':
       return <TextInput
         placeholder='value'
@@ -45,8 +44,7 @@ function compareValue(info, value, onChangeCompareTo) {
           let obj = new Parse.Object(info.targetClass);
           obj.id = _value;
           onChangeCompareTo(Parse._encode(obj.toPointer()));
-        }}
-        ref={setFocus} />
+        }} />
     case 'Boolean':
       return <Dropdown
         value={value ? 'True' : 'False'}
@@ -54,7 +52,7 @@ function compareValue(info, value, onChangeCompareTo) {
           {['True', 'False'].map(value => <Option value={value} key={value}>{value}</Option>)}
         </Dropdown>
     case 'Number':
-      return <TextInput placeholder='value' className={styles.conditionValue} value={value} onChange={(_value) => onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))} ref={setFocus}/>;
+      return <TextInput placeholder='value' className={styles.conditionValue} value={value} onChange={(_value) => onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))} />;
     case 'Date':
       return <DateTimeEntry
         fixed={true}
@@ -117,9 +115,7 @@ export default class InstallationCondition extends React.Component {
 
     //TODO Shoulse use <Button> and have a link type style without border.
     let labelDescription = (
-      <a
-        href='javascript:;'
-        role='button'
+      <a role='button'
         className={styles.description}
         onClick={this.props.onDeleteRow}>
         Remove

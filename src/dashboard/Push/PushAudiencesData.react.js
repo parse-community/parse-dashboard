@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes               from 'lib/PropTypes';
 import * as PushAudiencesStore from 'lib/stores/PushAudiencesStore';
 import * as PushConstants      from './PushConstants';
 import Button                  from 'components/Button/Button.react';
 import LoaderContainer         from 'components/LoaderContainer/LoaderContainer.react';
-import ParseApp                from 'lib/ParseApp';
+import { AppContext } from '../../dashboard/AppData.react';
 import PushAudienceDialog      from 'components/PushAudienceDialog/PushAudienceDialog.react';
 import PushAudiencesSelector   from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
 import queryFromFilters        from 'lib/queryFromFilters';
@@ -229,7 +228,7 @@ export default class PushAudiencesData extends React.Component {
     let _current;
 
     //TODO: should idealy be moved outside render()
-    if (this.newlyCreatedTempSegment) {
+    if (this.SAFE_newlyCreatedTempSegment) {
       _current = PushConstants.NEW_SEGMENT_ID;
       this.newlyCreatedTempSegment = false;
     } else if (this.state.newlyCreatedSegment) {
@@ -259,6 +258,4 @@ export default class PushAudiencesData extends React.Component {
   }
 }
 
-PushAudiencesData.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+PushAudiencesData.contextType = AppContext;

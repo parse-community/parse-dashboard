@@ -6,9 +6,8 @@
  * the root directory of this source tree.
  */
 import Modal      from 'components/Modal/Modal.react';
-import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
-import PropTypes  from 'lib/PropTypes';
+import { AppContext } from '../../AppData.react';
 
 export default class ExportDialog extends React.Component {
   constructor() {
@@ -61,6 +60,4 @@ export default class ExportDialog extends React.Component {
   }
 }
 
-ExportDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+ExportDialog.contextType = AppContext;

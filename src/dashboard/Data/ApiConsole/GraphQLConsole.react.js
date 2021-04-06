@@ -5,8 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ParseApp      from 'lib/ParseApp';
-import PropTypes     from 'lib/PropTypes';
+import { AppContext } from '../../AppData.react';
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import { Playground, store } from 'graphql-playground-react';
@@ -55,6 +54,4 @@ export default class GraphQLConsole extends Component {
   }
 }
 
-GraphQLConsole.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+GraphQLConsole.contextType = AppContext;

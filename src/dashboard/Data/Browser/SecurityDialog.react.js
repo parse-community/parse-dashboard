@@ -5,9 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes         from 'lib/PropTypes';
 import Parse             from 'parse'
-import ParseApp          from 'lib/ParseApp';
+import { AppContext } from '../../AppData.react';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
 import React             from 'react';
 import styles            from 'dashboard/Data/Browser/Browser.scss';
@@ -139,6 +138,4 @@ export default class SecurityDialog extends React.Component {
   }
 }
 
-SecurityDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+SecurityDialog.contextType = AppContext;

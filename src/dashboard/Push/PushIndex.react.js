@@ -282,7 +282,7 @@ export default class PushIndex extends DashboardView {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.params.category !== nextProps.params.category) {
       // The category has changed
       if (this.xhrHandle) {

@@ -5,37 +5,35 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React       from 'react';
-import PropTypes   from 'lib/PropTypes';
+import React from 'react';
 import AppSelector from 'dashboard/AppSelector.react';
 import AppsManager from 'lib/AppsManager';
 import history     from 'dashboard/history';
-import ParseApp    from 'lib/ParseApp';
-import createClass from 'create-react-class';
 
-let AppData = createClass({
-  childContextTypes: {
-    generatePath: PropTypes.func,
-    currentApp: PropTypes.instanceOf(ParseApp)
-  },
+export const AppContext = React.createContext({
+  generatePath: null,
+  currentApp: null
+});
 
-  getChildContext() {
-    return {
-      generatePath: this.generatePath,
-      currentApp: AppsManager.findAppBySlugOrName(this.props.params.appId)
-    };
-  },
-
+class AppData extends React.Component {
   generatePath(path) {
     return '/apps/' + this.props.params.appId + '/' + path;
-  },
+  }
 
   render() {
+    const appContext = {
+      generatePath: this.generatePath.bind(this),
+      currentApp: AppsManager.findAppBySlugOrName(this.props.params.appId)
+    }
     if (this.props.params.appId === '_') {
-      return <AppSelector />;
+      return (
+      <AppContext.Provider value={appContext}>
+        <AppSelector />;
+      </AppContext.Provider>
+      )
     }
     //Find by name to catch edge cases around escaping apostrophes in URLs
-    let current = AppsManager.findAppBySlugOrName(this.props.params.appId);
+    const current = AppsManager.findAppBySlugOrName(this.props.params.appId);
     if (current) {
       current.setParseKeys();
     } else {
@@ -43,11 +41,13 @@ let AppData = createClass({
       return <div />;
     }
     return (
-      <div>
-        {this.props.children}
-      </div>
+      <AppContext.Provider value={appContext}>
+        <div>
+          {this.props.children}
+        </div>
+      </AppContext.Provider>
     );
   }
-});
+}
 
 export default AppData;

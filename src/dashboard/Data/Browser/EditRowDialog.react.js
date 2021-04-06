@@ -1,8 +1,7 @@
 import React from 'react';
 import Parse from 'parse';
 import { dateStringUTC } from 'lib/DateUtils';
-import PropTypes from 'lib/PropTypes';
-import ParseApp from 'lib/ParseApp';
+import { AppContext } from '../../AppData.react';
 import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
@@ -446,6 +445,4 @@ export default class EditRowDialog extends React.Component {
   }
 }
 
-EditRowDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+EditRowDialog.contextType = AppContext;

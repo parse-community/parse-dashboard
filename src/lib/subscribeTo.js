@@ -5,8 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes from 'lib/PropTypes';
-import ParseApp from 'lib/ParseApp';
+import { AppContext } from '../dashboard/AppData.react';
 import React from 'react';
 import * as StoreManager from 'lib/stores/StoreManager';
 
@@ -16,23 +15,14 @@ export default function subscribeTo(name, prop) {
     const displayName = Component.displayName || Component.name || 'Component';
 
     class SubscribedComponent extends React.Component {
-
-      constructor(props, context) {
-        super(props, context);
-
-        this.state = {
-          data: store.getData(context.currentApp)
-        };
+      state = {
+        data: {}
       }
 
       handleNewData(data) {
         if (this.state.data !== data) {
           this.setState({ data });
         }
-      }
-
-      componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({ data: store.getData(nextContext.currentApp) });
       }
 
       componentDidMount() {
@@ -44,15 +34,16 @@ export default function subscribeTo(name, prop) {
       }
 
       render() {
-        let dispatch = (type, params={}) => {
+        const dispatch = (type, params={}) => {
           if (store.isGlobal) {
             return store.dispatch(type, params);
           }
           return store.dispatch(type, params, this.context.currentApp);
         };
-        let extras = {
+        const data = store.getData(this.context.currentApp);
+        const extras = {
           [prop]: {
-            data: this.state.data,
+            data: data,
             dispatch: dispatch,
           }
         };
@@ -61,10 +52,7 @@ export default function subscribeTo(name, prop) {
     }
 
     SubscribedComponent.displayName = `subscribeTo(${displayName})`;
-    SubscribedComponent.contextTypes = {
-      currentApp: PropTypes.instanceOf(ParseApp),
-      generatePath: PropTypes.func,
-    };
+    SubscribedComponent.contextType = AppContext;
 
     // In case you need to add static properties to the original Component
     SubscribedComponent.original = Component;

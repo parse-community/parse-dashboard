@@ -5,8 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes     from 'lib/PropTypes';
-import ParseApp      from 'lib/ParseApp';
+import { AppContext } from './AppData.react';
 import React         from 'react';
 import Sidebar       from 'components/Sidebar/Sidebar.react';
 import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
@@ -261,7 +260,4 @@ export default class DashboardView extends React.Component {
   }
 }
 
-DashboardView.contextTypes = {
-  generatePath: PropTypes.func,
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+DashboardView.contextType = AppContext;

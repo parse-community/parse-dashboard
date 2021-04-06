@@ -70,7 +70,6 @@ export default class DataBrowserHeaderBar extends React.Component {
         readonly || preventSchemaEdits ? null : (
           <div key='add' className={styles.addColumn} style={finalStyle}>
             <a
-              href='javascript:;'
               role='button'
               className={styles.addColumnButton}
               onClick={onAddColumn}>

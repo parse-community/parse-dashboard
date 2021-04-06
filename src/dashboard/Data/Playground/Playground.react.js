@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import ReactJson from 'react-json-view';
 import Parse from 'parse';
-
-import PropTypes from 'lib/PropTypes';
-import ParseApp from 'lib/ParseApp';
+import { AppContext } from '../../AppData.react';
 import CodeEditor from 'components/CodeEditor/CodeEditor.react';
 import Button from 'components/Button/Button.react';
 import SaveButton from 'components/SaveButton/SaveButton.react';
@@ -198,7 +196,4 @@ console.log(myObj);`}
   }
 }
 
-Playground.contextTypes = {
-  generatePath: PropTypes.func,
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+Playground.contextType = AppContext;

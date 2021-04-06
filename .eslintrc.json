@@ -30,6 +30,7 @@
   "rules": {
     "react/prop-types": 0,
     "react/display-name": 0,
+    "react/no-unsafe": 1,
     "react/jsx-no-bind": 0,
     "react/jsx-no-constructed-context-values": 1,
     "react/no-access-state-in-setstate": 1,

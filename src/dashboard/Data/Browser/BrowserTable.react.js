@@ -16,8 +16,7 @@ import encode                 from 'parse/lib/browser/encode';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import Button                 from 'components/Button/Button.react';
-import ParseApp               from 'lib/ParseApp';
-import PropTypes              from 'lib/PropTypes';
+import { AppContext } from '../../AppData.react';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
@@ -347,6 +346,4 @@ export default class BrowserTable extends React.Component {
   }
 }
 
-BrowserTable.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+BrowserTable.contextType = AppContext;

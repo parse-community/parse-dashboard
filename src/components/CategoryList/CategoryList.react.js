@@ -9,6 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/CategoryList/CategoryList.scss';
 import { Link }  from 'react-router-dom';
+import { AppContext } from '../../dashboard/AppData.react';
 
 export default class CategoryList extends React.Component {
   constructor(props) {
@@ -82,6 +83,4 @@ CategoryList.propTypes = {
   linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
 };
 
-CategoryList.contextTypes = {
-  generatePath: PropTypes.func
-};
+CategoryList.contextType = AppContext;

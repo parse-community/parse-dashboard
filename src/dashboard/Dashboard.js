@@ -55,17 +55,14 @@ import {
   Switch,
 } from 'react-router';
 import { Route, Redirect } from 'react-router-dom';
-import createClass from 'create-react-class';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-let Empty = createClass({
-  render() {
-    return <div>Not yet implemented</div>;
-  }
-});
+const Empty = function Empty() {
+  return <div>Not yet implemented</div>;
+}
 
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>

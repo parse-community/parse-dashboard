@@ -81,7 +81,7 @@ export default class FileEditor extends React.Component {
           <input ref={this.fileInputRef} type='file' onChange={this.handleChange} />
           <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
-        {file ? <a href='javascript:;' role='button' className={styles.delete} onClick={this.removeFile}>Delete</a> : null}
+        {file ? <a role='button' className={styles.delete} onClick={this.removeFile}>Delete</a> : null}
       </div>
     );
   }

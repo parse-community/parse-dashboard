@@ -3,8 +3,7 @@ import { List } from 'immutable';
 import Parse from 'parse';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import queryFromFilters from 'lib/queryFromFilters';
-import PropTypes from 'lib/PropTypes';
-import ParseApp from 'lib/ParseApp';
+import { AppContext } from '../../AppData.react';
 import Modal from 'components/Modal/Modal.react';
 import Button from 'components/Button/Button.react';
 import TextInput from 'components/TextInput/TextInput.react';
@@ -404,6 +403,4 @@ export default class ObjectPickerDialog extends React.Component {
   }
 }
 
-ObjectPickerDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+ObjectPickerDialog.contextType = AppContext;

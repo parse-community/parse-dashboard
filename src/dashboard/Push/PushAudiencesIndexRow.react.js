@@ -42,7 +42,6 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
           {this.props.name}
           <a
             className={styles.newPushButton}
-            href='javascript:;'
             role='button'
             onClick={this.props.onSendPush.bind(undefined, this.props.id)}>
               Send a new push
@@ -53,7 +52,6 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
           {detailsView}
           <a
             role='button'
-            href='javascript:;'
             className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(' ')}
             onClick={this.handleDetailsToggle.bind(this,this.props.query, this.props.schema)}>
             {this.state.expandedView ? 'less details' : 'more details' }
@@ -69,7 +67,6 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
           <a
             className={styles.removeIcon}
             role='button'
-            href='javascript:;'
             onClick={this.props.onDelete.bind(undefined, this.props.id, this.props.name)}>
             <Icon name='trash-outline' fill='#343445' width={20} height={20} role='button'/>
           </a>

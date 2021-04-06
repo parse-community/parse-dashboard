@@ -231,7 +231,7 @@ export default class BrowserCell extends Component {
         value = object;
       }
       content = onPointerClick ? (
-        <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
+        <a onClick={onPointerClick.bind(undefined, value)}>
           <Pill value={value.id} />
         </a>
       ) : (

@@ -13,16 +13,18 @@ import styles   from 'components/Sidebar/Sidebar.scss';
 const version = process.env.version;
 
 export default class SidebarHeader extends React.Component {
-  constructor() {
-    super();
-    this.state = { };
-  }
+  state = {}
 
   componentDidMount() {
     let mountPath = window.PARSE_DASHBOARD_PATH;
-    fetch(mountPath).then(response => {
+    this.controller = new AbortController()
+    fetch(mountPath, { signal: this.controller.signal }).then(response => {
       this.setState({ dashboardUser: response.headers.get('username') });
-    });
+    }, () => {});
+  }
+
+  componentWillUnmount() {
+    this.controller.abort()
   }
 
   render() {

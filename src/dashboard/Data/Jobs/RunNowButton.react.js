@@ -6,9 +6,8 @@
  * the root directory of this source tree.
  */
 import Button     from 'components/Button/Button.react';
-import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import { AppContext } from '../../AppData.react';
 
 export default class RunNowButton extends React.Component {
   constructor() {
@@ -56,6 +55,4 @@ export default class RunNowButton extends React.Component {
   }
 }
 
-RunNowButton.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp),
-};
+RunNowButton.contextType = AppContext;

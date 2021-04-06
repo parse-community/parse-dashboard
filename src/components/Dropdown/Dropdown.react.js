@@ -70,7 +70,7 @@ export default class Dropdown extends React.Component {
         <SliderWrap direction={Directions.DOWN} expanded={true}>
           <div style={{ width }} className={styles.menu}>
             {React.Children.map(this.props.children, c => (
-              <a href='javascript:;' onClick={this.select.bind(this, c.props.value)}>{c}</a>
+              <a onClick={this.select.bind(this, c.props.value)}>{c}</a>
             ))}
           </div>
         </SliderWrap>

@@ -25,8 +25,9 @@ export default class SlowQueriesFilter extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     if (props.schema !== state.schema) {
-      this.setState({ open: false, schema: props.schema });
+      return ({ open: false, schema: props.schema })
     }
+    return null
   }
 
   render() {

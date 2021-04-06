@@ -358,11 +358,7 @@ export default class ProtectedFieldsDialog extends React.Component {
     if (!this.state.transitioning) {
       trash = (
         <div className={styles.delete}>
-          <a
-            href="javascript:;"
-            role="button"
-            onClick={this.deleteRow.bind(this, key)}
-          >
+          <a role="button" onClick={this.deleteRow.bind(this, key)}>
             <Icon name="trash-solid" width={20} height={20} />
           </a>
         </div>

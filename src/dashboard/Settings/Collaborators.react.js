@@ -12,7 +12,7 @@ import FormTable           from 'components/FormTable/FormTable.react';
 import FormNote            from 'components/FormNote/FormNote.react';
 import InlineSubmitInput   from 'components/InlineSubmitInput/InlineSubmitInput.react';
 import Label               from 'components/Label/Label.react';
-import ParseApp            from 'lib/ParseApp';
+import { AppContext } from '../../dashboard/AppData.react';
 import PropTypes           from 'lib/PropTypes';
 import React               from 'react';
 import TextInput           from 'components/TextInput/TextInput.react';
@@ -123,9 +123,7 @@ export default class Collaborators extends React.Component {
   }
 }
 
-Collaborators.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+Collaborators.contextType = AppContext;
 
 Collaborators.propTypes = {
   legend: PropTypes.string.isRequired.describe(

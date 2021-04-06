@@ -5,8 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes          from 'lib/PropTypes';
-import ParseApp           from 'lib/ParseApp';
+import { AppContext } from '../../dashboard/AppData.react';
 import React              from 'react';
 import { NEW_SEGMENT_ID } from 'dashboard/Push/PushConstants';
 
@@ -57,6 +56,4 @@ export default class PushAudiencesBaseRow extends React.Component {
   }
 }
 
-PushAudiencesBaseRow.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+PushAudiencesBaseRow.contextType = AppContext;

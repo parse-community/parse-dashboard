@@ -40,9 +40,7 @@ let Button = (props) => {
     styleOverride = { width: props.width, minWidth: props.width, ...props.additionalStyles };
   }
   return (
-    <a
-      href='javascript:;'
-      role='button'
+    <a role='button'
       style={styleOverride}
       className={classes.join(' ')}
       onClick={clickHandler}

@@ -17,7 +17,7 @@ import Label                 from 'components/Label/Label.react';
 import Modal                 from 'components/Modal/Modal.react';
 import MultiSelect           from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption     from 'components/MultiSelect/MultiSelectOption.react';
-import ParseApp              from 'lib/ParseApp';
+import { AppContext } from '../../dashboard/AppData.react';
 import PropTypes             from 'lib/PropTypes';
 import queryFromFilters      from 'lib/queryFromFilters';
 import React                 from 'react';
@@ -272,9 +272,7 @@ export default class PushAudienceDialog extends React.Component {
   }
 }
 
-PushAudienceDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
+PushAudienceDialog.contextType = AppContext;
 
 PushAudienceDialog.propTypes = {
   editMode: PropTypes.bool.describe(

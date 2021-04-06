@@ -51,7 +51,7 @@ export default class FourOhFour extends React.Component {
           <div className={styles.message}>Oh no, we can&apos;t find that page!</div>
 
           <div className={styles.back}>
-            <a href='javascript:;' role='button' onClick={() => history.goBack()}>Go back</a>
+            <a role='button' onClick={() => history.goBack()}>Go back</a>
           </div>
         </div>
       </div>

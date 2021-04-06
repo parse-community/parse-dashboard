@@ -5,20 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes       from 'lib/PropTypes';
 import { ActionTypes } from 'lib/stores/JobsStore';
 import history         from 'dashboard/history';
 import JobsForm        from 'dashboard/Data/Jobs/JobsForm.react';
-import ParseApp        from 'lib/ParseApp';
+import { AppContext } from '../../AppData.react';
 import React           from 'react';
 import subscribeTo     from 'lib/subscribeTo';
 
 @subscribeTo('Jobs', 'jobs')
 class JobEdit extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-
   submitForm(changes) {
     let schedule = {
       job_schedule: {
@@ -119,9 +114,6 @@ class JobEdit extends React.Component {
   }
 }
 
-JobEdit.original.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp),
-  generatePath: PropTypes.func,
-};
+JobEdit.original.contextType = AppContext;
 
 export default JobEdit;
