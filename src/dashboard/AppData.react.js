@@ -16,24 +16,40 @@ export const AppContext = React.createContext({
 });
 
 class AppData extends React.Component {
-  generatePath(path) {
+  _appContext = {
+    generatePath: this.generatePath,
+    currentApp: null
+  }
+
+  get currentApp() {
+    return AppsManager.findAppBySlugOrName(this.props.params.appId)
+  }
+
+  get appContext() {
+    if (this.appId !== this.props.params.appId) {
+      this.appId = this.props.params.appId
+      this._appContext = {
+        generatePath: this.generatePath,
+        currentApp: this.currentApp
+      }
+    }
+    return this._appContext
+  }
+
+  generatePath = (path) => {
     return '/apps/' + this.props.params.appId + '/' + path;
   }
 
   render() {
-    const appContext = {
-      generatePath: this.generatePath.bind(this),
-      currentApp: AppsManager.findAppBySlugOrName(this.props.params.appId)
-    }
     if (this.props.params.appId === '_') {
       return (
-      <AppContext.Provider value={appContext}>
+      <AppContext.Provider value={this.appContext}>
         <AppSelector />;
       </AppContext.Provider>
       )
     }
     //Find by name to catch edge cases around escaping apostrophes in URLs
-    const current = AppsManager.findAppBySlugOrName(this.props.params.appId);
+    const current = this.currentApp;
     if (current) {
       current.setParseKeys();
     } else {
@@ -41,7 +57,7 @@ class AppData extends React.Component {
       return <div />;
     }
     return (
-      <AppContext.Provider value={appContext}>
+      <AppContext.Provider value={this.appContext}>
         <div>
           {this.props.children}
         </div>
