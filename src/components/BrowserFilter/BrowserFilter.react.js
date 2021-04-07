@@ -31,6 +31,13 @@ export default class BrowserFilter extends React.Component {
     this.nodeRef = React.createRef();
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.className !== state.className) {
+      return { open: false, className: props.className }
+    }
+    return null
+  }
+
   get node() {
     return this.nodeRef.current
   }
@@ -149,4 +156,3 @@ export default class BrowserFilter extends React.Component {
     );
   }
 }
-
