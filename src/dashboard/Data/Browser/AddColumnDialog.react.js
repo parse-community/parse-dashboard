@@ -67,9 +67,9 @@ export default class AddColumnDialog extends React.Component {
   getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
     });
   }
 
@@ -77,7 +77,7 @@ export default class AddColumnDialog extends React.Component {
     if (file) {
       let base64 = await this.getBase64(file);
       const parseFile = new Parse.File(file.name, { base64 });
-      await parseFile.save();
+      parseFile.save();
       return parseFile
     }
   }
@@ -136,7 +136,7 @@ export default class AddColumnDialog extends React.Component {
     } catch (e) {
       isDefaultValueValid = defaultValue === ''
     }
-    return await this.setState({ defaultValue: formattedValue, isDefaultValueValid })
+    return this.setState({ defaultValue: formattedValue, isDefaultValueValid })
   }
 
   renderDefaultValueInput() {
@@ -149,26 +149,26 @@ export default class AddColumnDialog extends React.Component {
         return <TextInput
           placeholder='Set here a default value'
           multiline={true}
-          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+          onChange={defaultValue => this.handleDefaultValueChange(defaultValue)} />
       case 'Number':
       case 'String':
       case 'Pointer':
         return <TextInput
           placeholder={type === 'Pointer' ? 'Set a valid object ID here' : 'Set a default value here'}
-          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+          onChange={defaultValue => this.handleDefaultValueChange(defaultValue)} />
       case 'Date':
         return <DateTimeInput
           value={this.state.defaultValue && this.state.defaultValue.__type === 'Date' ? this.state.defaultValue.iso : undefined}
-          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+          onChange={defaultValue => this.handleDefaultValueChange(defaultValue)} />
       case 'Boolean':
         return <SegmentSelect
           values={['False', 'None', 'True']}
           current={(this.state.defaultValue ? 'True' : (this.state.defaultValue === false ? 'False' : 'None'))}
-          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+          onChange={defaultValue => this.handleDefaultValueChange(defaultValue)} />
       case 'File':
         return <FileInput
           value={this.defaultValue ? this.defaultValue._name : ''}
-          onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
+          onChange={defaultValue => this.handleDefaultValueChange(defaultValue)} />
     }
   }
 

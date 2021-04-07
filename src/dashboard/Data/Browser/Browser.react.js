@@ -165,7 +165,7 @@ class Browser extends DashboardView {
       const parent = await parentObjectQuery.get(entityId, { useMasterKey: true });
       relation = parent.relation(relationName);
     }
-    await this.setState({
+    this.setState({
       data: null,
       newObject: null,
       lastMax: -1,
@@ -324,7 +324,7 @@ class Browser extends DashboardView {
     this.setState({clp: this.props.schema.data.get('CLPs').toJS()});
   }
 
-  async refresh() {
+  refresh() {
     const relation = this.state.relation;
     const prevFilters = this.state.filters || new List();
     const initialState = {
@@ -334,14 +334,14 @@ class Browser extends DashboardView {
       selection: {},
     };
     if (relation) {
-      await this.setState(initialState);
-      await this.setRelation(relation, prevFilters);
+      this.setState(initialState);
+      this.setRelation(relation, prevFilters);
     } else {
-      await this.setState({
+      this.setState({
         ...initialState,
         relation: null,
       });
-      await this.fetchData(this.props.params.className, prevFilters);
+      this.fetchData(this.props.params.className, prevFilters);
     }
   }
 
@@ -361,15 +361,16 @@ class Browser extends DashboardView {
     let promise = query.find({ useMasterKey: true });
     let isUnique = false;
     let uniqueField = null;
-    filters.forEach(async (filter) => {
+    filters.forEach(filter => {
       if (filter.get('constraint') == 'unique') {
         const field = filter.get('field');
         promise = query.distinct(field);
         isUnique = true;
         uniqueField = field;
+        return
       }
     });
-    await this.setState({ isUnique, uniqueField });
+    this.setState({ isUnique, uniqueField });
 
     const data = await promise;
     return data;
@@ -396,17 +397,18 @@ class Browser extends DashboardView {
     this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
   }
 
-  async fetchRelation(relation, filters = new List()) {
-    const data = await this.fetchParseData(relation, filters);
-    const relationCount = await this.fetchRelationCount(relation);
-    await this.setState({
+  fetchRelation(relation, filters = new List()) {
+    return Promise.all([
+      this.fetchParseData(relation, filters),
+      this.fetchRelationCount(relation)
+    ]).then((data, relationCount) => this.setState({
       relation,
       relationCount,
       selection: {},
       data,
       filters,
       lastMax: MAX_ROWS_FETCHED,
-    });
+    }))
   }
 
   async fetchRelationCount(relation) {
@@ -761,7 +763,7 @@ class Browser extends DashboardView {
       throw `${errorSummary} ${JSON.stringify(missedObjects)}`;
     }
     parent.relation(relation.key).add(objects);
-    await parent.save(null, { useMasterKey: true });
+    parent.save(null, { useMasterKey: true });
     // remove duplication
     this.state.data.forEach(origin => objects = objects.filter(object => object.id !== origin.id));
     this.setState({
@@ -793,7 +795,7 @@ class Browser extends DashboardView {
     query.containedIn('objectId', objectIds);
     const objects = await query.find({ useMasterKey: true });
     parent.relation(relationName).add(objects);
-    await parent.save(null, { useMasterKey: true });
+    parent.save(null, { useMasterKey: true });
     this.setState({
       selection: {},
     });
@@ -823,7 +825,7 @@ class Browser extends DashboardView {
     for (const object of objects) {
       toClone.push(object.clone());
     }
-    await Parse.Object.saveAll(toClone, { useMasterKey: true });
+    Parse.Object.saveAll(toClone, { useMasterKey: true });
     this.setState({
       selection: {},
       data: [

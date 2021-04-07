@@ -49,10 +49,10 @@ export default class ObjectPickerDialog extends React.Component {
     this.onConfirm = this.onConfirm.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { filters } = this.state;
     const { className, pointerId, relation } = this.props;
-    await this.fetchData(className, filters);
+    this.fetchData(className, filters);
     if (pointerId) {
       this.selectRow(pointerId, true);
     }
@@ -187,25 +187,25 @@ export default class ObjectPickerDialog extends React.Component {
     this.setState(({ lastMax }) => ({ lastMax: lastMax + MAX_ROWS_FETCHED }));
   }
 
-  async updateFilters(filters) {
+  updateFilters(filters) {
     const { selection } = this.state;
     const { className } = this.props;
-    await this.setState({
+    this.setState({
       filters: filters,
       selection: {}
     });
-    await this.fetchData(className, filters);
+    this.fetchData(className, filters);
     Object.keys(selection).forEach(id => this.selectRow(id, true));
   }
 
-  async updateOrdering(ordering) {
+  updateOrdering(ordering) {
     const { className } = this.props;
     const { filters, selection } = this.state;
-    await this.setState({
+    this.setState({
       ordering: ordering,
       selection: {}
     });
-    await this.fetchData(className, filters);
+    this.fetchData(className, filters);
     Object.keys(selection).forEach(id => this.selectRow(id, true));
     ColumnPreferences.getColumnSort(
       ordering,
@@ -214,15 +214,15 @@ export default class ObjectPickerDialog extends React.Component {
     );
   }
 
-  async refresh() {
+  refresh() {
     const { className } = this.props;
     const { filters, selection } = this.state;
-    await this.setState({
+    this.setState({
       data: null,
       lastMax: -1,
       selection: {}
     });
-    await this.fetchData(className, filters);
+    this.fetchData(className, filters);
     Object.keys(selection).forEach(id => this.selectRow(id, true));
   }
 

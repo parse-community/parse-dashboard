@@ -44,6 +44,7 @@
     "no-var": 2,
     "no-console": 0,
     "no-case-declarations": 0,
+    "require-await": 2,
     "quotes": ["error", "single"]
   }
 }
