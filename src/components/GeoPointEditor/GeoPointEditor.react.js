@@ -116,7 +116,7 @@ export default class GeoPointEditor extends React.Component {
       let value = e.target.value;
 
       if (!validateNumeric(value)) {
-        var values = value.split(',');
+        let values = value.split(',');
 
         if (values.length == 2) {
           values = values.map(val => val.trim());

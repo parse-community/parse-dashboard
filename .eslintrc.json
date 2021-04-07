@@ -41,6 +41,7 @@
     "react/no-did-mount-set-state": 1,
     "react/no-did-update-set-state": 1,
     "react/react-in-jsx-scope": 1,
+    "no-var": 2,
     "no-console": 0,
     "no-case-declarations": 0,
     "quotes": ["error", "single"]

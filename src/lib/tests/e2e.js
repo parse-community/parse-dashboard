@@ -8,11 +8,11 @@
 
 jest.disableAutomock();
 
-var express = require('express');
-var rp = require('request-promise');
-var ParseDashboard = require('../../../Parse-Dashboard/app');
+let express = require('express');
+let rp = require('request-promise');
+let ParseDashboard = require('../../../Parse-Dashboard/app');
 
-var dashboardSettings = {
+let dashboardSettings = {
   'apps': [
     {
       'serverURL': 'http://localhost:5051/parse',
@@ -27,7 +27,7 @@ describe('e2e', () => {
   it('loads the dashboard on /dashboard', (done) => {
     let app = express();
     let server;
-    var p = new Promise(resolve => {
+    let p = new Promise(resolve => {
       app.use('/dashboard', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
@@ -47,7 +47,7 @@ describe('e2e', () => {
   it('loads the dashboard on /', (done) => {
     let app = express();
     let server;
-    var p = new Promise(resolve => {
+    let p = new Promise(resolve => {
       app.use('/', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });

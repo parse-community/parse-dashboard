@@ -125,11 +125,13 @@ export default class DataBrowser extends React.Component {
    * @param  {Number} hoverIndex - index of headerbar moved to left of
    */
   handleHeaderDragDrop(dragIndex, hoverIndex) {
-    const newOrder = [ ...this.state.order ];
-    const movedIndex = newOrder.splice(dragIndex, 1);
-    newOrder.splice(hoverIndex, 0, movedIndex[0]);
-    this.setState({ order: newOrder }, () => {
-      this.updatePreferences(newOrder);
+    this.setState(({ order }) => {
+      const newOrder = [...order];
+      const movedIndex = newOrder.splice(dragIndex, 1);
+      newOrder.splice(hoverIndex, 0, movedIndex[0]);
+      return { order: newOrder }
+    }, () => {
+      this.updatePreferences(this.state.order);
     });
   }
 

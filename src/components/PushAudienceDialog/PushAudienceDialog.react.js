@@ -74,7 +74,7 @@ export default class PushAudienceDialog extends React.Component {
       if (audienceInfo.name) {
         stateSettings.audienceName = audienceInfo.name;
       }
-      this.setState(stateSettings, this.fetchAudienceSize.bind(this));
+      this.setState(stateSettings, this.fetchAudienceSize);
     }
   }
 
@@ -87,7 +87,7 @@ export default class PushAudienceDialog extends React.Component {
   handleChange(newValue) {
     this.setState(
       { platforms: newValue },
-      this.fetchAudienceSize.bind(this)
+      this.fetchAudienceSize
     );
   }
 
@@ -100,7 +100,7 @@ export default class PushAudienceDialog extends React.Component {
     let field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
       filters: filters.push(new Map({ field: field, constraint: available[field][0] }))
-    }), this.fetchAudienceSize.bind(this));
+    }), this.fetchAudienceSize);
   }
 
   handleAudienceName(name) {
@@ -112,7 +112,7 @@ export default class PushAudienceDialog extends React.Component {
     this.setState({ saveForFuture: value });
   }
 
-  fetchAudienceSize() {
+  fetchAudienceSize = () => {
     if (!this.context || !this.context.currentApp) { //so we don't break the PIG demo
       return;
     }
@@ -252,7 +252,7 @@ export default class PushAudienceDialog extends React.Component {
             {
               this.setState(
                 { filters },
-                this.fetchAudienceSize.bind(this)
+                this.fetchAudienceSize
               );
             }
           }

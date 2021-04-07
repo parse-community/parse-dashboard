@@ -383,7 +383,7 @@ class Browser extends DashboardView {
 
   async fetchData(source, filters = new List()) {
     const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
+    let filteredCounts = { ...this.state.filteredCounts };
     if (filters.size > 0) {
       if (this.state.isUnique) {
         filteredCounts[source] = data.length;
@@ -979,7 +979,7 @@ class Browser extends DashboardView {
           columns[name] = info;
         });
 
-        var count;
+        let count;
         if (this.state.relation) {
           count = this.state.relationCount;
         } else {

@@ -51,7 +51,7 @@ export default class StringEditor extends React.Component {
   render() {
     let onChange = this.props.readonly ? () => {} : (e) => this.setState({ value: e.target.value });
     if (this.props.multiline) {
-      var style = { minWidth: this.props.minWidth };
+      let style = { minWidth: this.props.minWidth };
       if (this.props.resizable) {
         style.resize = 'both';
       }

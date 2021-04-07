@@ -80,20 +80,26 @@ export default class ObjectPickerDialog extends React.Component {
     relationData.forEach(({ id }) => this.selectRow(id, true));
   }
 
-  async fetchData(source, filters = new List()) {
-    const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      filteredCounts[source] = await this.fetchParseDataCount(source, filters);
-    } else {
-      delete filteredCounts[source];
-    }
-    this.setState({
-      data: data,
-      filters,
-      lastMax: MAX_ROWS_FETCHED,
-      filteredCounts: filteredCounts
-    });
+  fetchData(source, filters = new List()) {
+    Promise.all([
+      this.fetchParseData(source, filters),
+      this.fetchParseDataCount(source, filters)
+    ]).then((data, count) => {
+      this.setState(prevState => {
+        const filteredCounts = { ...prevState.filteredCounts };
+        if (filters.size > 0) {
+          filteredCounts[source] = count;
+        } else {
+          delete filteredCounts[source];
+        }
+        return {
+          data: data,
+          filters,
+          lastMax: MAX_ROWS_FETCHED,
+          filteredCounts: filteredCounts
+        }
+      });
+    })
   }
 
   async fetchParseData(source, filters) {
@@ -178,7 +184,7 @@ export default class ObjectPickerDialog extends React.Component {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState(({ lastMax }) => ({ lastMax: lastMax + MAX_ROWS_FETCHED }));
   }
 
   async updateFilters(filters) {
