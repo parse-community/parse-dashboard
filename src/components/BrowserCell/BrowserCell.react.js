@@ -13,7 +13,8 @@ import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }          from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
+const { unselectable } = baseStyles;
 
 export default class BrowserCell extends Component {
   constructor() {

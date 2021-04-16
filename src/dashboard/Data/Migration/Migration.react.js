@@ -19,7 +19,8 @@ import React                                        from 'react';
 import styles                                       from 'dashboard/Data/Migration/Migration.scss';
 import Toolbar                                      from 'components/Toolbar/Toolbar.react';
 import { AsyncStatus }                              from 'lib/Constants';
-import { horizontalCenter, verticalCenter, center } from 'stylesheets/base.scss';
+import baseStyles                                   from 'stylesheets/base.scss';
+const { horizontalCenter, verticalCenter, center } = baseStyles;
 
 const MIGRATION_INVALID = 0;
 const MIGRATION_NOTSTARTED = 1;

@@ -8,7 +8,8 @@ const DND_TYPE = 'ColumnConfigurationItem';
 
 export default ({ name, handleColumnDragDrop, index, onChangeVisible, visible }) => {
   const [ { isDragging}, drag ] = useDrag({
-    item: { type: DND_TYPE, index },
+    type: DND_TYPE,
+    item: { index },
 		collect: monitor => ({ isDragging: !!monitor.isDragging() })
   });
 

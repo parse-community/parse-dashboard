@@ -1,5 +1,6 @@
 import React from 'react';
-import { horizontalCenter } from 'stylesheets/base.scss'
+import baseStyles from 'stylesheets/base.scss';
+const { horizontalCenter } = baseStyles;
 
 export default class JobScheduleReminder extends React.Component {
   render() {

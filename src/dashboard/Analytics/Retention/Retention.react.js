@@ -17,7 +17,8 @@ import React                   from 'react';
 import styles                  from 'dashboard/Analytics/Retention/Retention.scss';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import Tooltip                 from 'components/Tooltip/Tooltip.react';
-import { verticalCenter }      from 'stylesheets/base.scss';
+import baseStyles              from 'stylesheets/base.scss';
+const { verticalCenter } = baseStyles;
 
 const RETENTION_DAYS = [1, 2, 3, 4, 5, 6, 7, 8, 14, 21, 28];
 const REVERSED_RETENTION_DAYS = RETENTION_DAYS.slice().reverse();
@@ -145,12 +146,12 @@ export default class Retention extends DashboardView {
 
     return (
       <td key={'header_' + daysAgo} className={styles.YaxisLabel}>
-        <div className={styles.YaxisLabelDate}> 
-          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')} 
+        <div className={styles.YaxisLabelDate}>
+          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')}
           <span className={styles.YaxisLabelNumber}> {formattedDateDay}</span>
         </div>
         <div className={styles.YaxisLabelUsers}>
-          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')} 
+          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')}
           <span className={styles.YaxisLabelNumber}>{prettyNumber(dayData.total)}</span>
         </div>
       </td>

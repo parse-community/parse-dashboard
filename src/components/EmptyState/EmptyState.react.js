@@ -11,7 +11,8 @@ import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
 import styles       from 'components/EmptyState/EmptyState.scss';
 import stylesButton from 'components/Button/Button.scss';
-import { center }   from 'stylesheets/base.scss';
+import baseStyles   from 'stylesheets/base.scss';
+const { center } = baseStyles;
 
 let ctaButton = (cta, action) => {
   if (cta) {

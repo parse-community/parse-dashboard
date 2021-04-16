@@ -7,7 +7,7 @@
  */
 import DataBrowserHeader   from 'components/DataBrowserHeader/DataBrowserHeader.react';
 import DragHandle          from 'components/DragHandle/DragHandle.react';
-import HTML5Backend        from 'react-dnd-html5-backend';
+import { HTML5Backend }    from 'react-dnd-html5-backend';
 import React               from 'react';
 import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
 import { DndProvider }     from 'react-dnd'
@@ -65,7 +65,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       if (headers.length % 2) {
         finalStyle.background = 'rgba(224,224,234,0.10)';
       }
-  
+
       elements.push(
         readonly || preventSchemaEdits ? null : (
           <div key='add' className={styles.addColumn} style={finalStyle}>

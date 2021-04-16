@@ -5,7 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { input } from 'components/Field/Field.scss';
+import fieldStyles from 'components/Field/Field.scss';
+const { input } = fieldStyles;
 import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/Range/Range.scss';
