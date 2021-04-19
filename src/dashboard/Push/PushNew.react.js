@@ -597,7 +597,13 @@ class PushNew extends DashboardView {
               })}
             </div>
             { !this.state.loadingLocale && this.state.availableLocales.length === 0 ?
-              null :
+              <a
+                href="https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications"
+                style={{ color: '#169CEE'}}
+                target='_blank'
+              >
+                Please follow this guide to setup the push locales feature
+              </a> :
               <Button
                 progress={this.state.loadingLocale}
                 disabled={this.state.availableLocales.length === 0}
