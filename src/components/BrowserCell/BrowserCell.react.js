@@ -14,6 +14,7 @@ import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
+import Tooltip                   from '../Tooltip/PopperTooltip.react';
 
 export default class BrowserCell extends Component {
   constructor() {
@@ -21,9 +22,13 @@ export default class BrowserCell extends Component {
 
     this.cellRef = React.createRef();
     this.copyableValue = undefined;
+    this.state = {
+      showTooltip: false
+    }
+
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.current) {
       const node = this.cellRef.current;
       const { setRelation } = this.props;
@@ -46,9 +51,15 @@ export default class BrowserCell extends Component {
         this.props.setCopyableValue(this.copyableValue);
       }
     }
+    if (prevProps.current !== this.props.current) {
+      this.setState({ showTooltip: false });
+    }
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.showTooltip !== this.state.showTooltip) {
+      return true;
+    }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
       .filter(propName => propName !== 'value');
     if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
@@ -203,7 +214,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -291,7 +302,32 @@ export default class BrowserCell extends Component {
     if (current) {
       classes.push(styles.current);
     }
-    return (
+    
+    return readonly ? (
+      <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip} >
+        <span
+          ref={this.cellRef}
+          className={classes.join(' ')}
+          style={{ width }}
+          onClick={() => {
+            onSelect({ row, col });
+            setCopyableValue(hidden ? undefined : this.copyableValue);
+          }}
+          onDoubleClick={() => {
+            if (field === 'objectId' && onEditSelectedRow) {
+              onEditSelectedRow(true, value);
+            } else {
+              this.setState({ showTooltip: true });
+              setTimeout(() => {
+                this.setState({ showTooltip: false });
+              }, 2000);
+            }
+          }}
+        >
+          {content}
+        </span>
+      </Tooltip>
+    ) : (
       <span
         ref={this.cellRef}
         className={classes.join(' ')}
