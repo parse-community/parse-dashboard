@@ -200,6 +200,9 @@ export default class BrowserTable extends React.Component {
               readonly = true;
             }
           }
+          if(name === 'expiresAt' && this.props.className === '_Session'){
+            readonly = true;
+          }
           let obj = this.props.current.row < 0 ? this.props.newObject : this.props.data[this.props.current.row];
           let value = obj;
           if (!this.props.isUnique) {
