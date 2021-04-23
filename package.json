@@ -51,7 +51,7 @@
     "history": "4.10.1",
     "immutable": "4.0.0-rc.9",
     "immutable-devtools": "0.1.5",
-    "js-beautify": "1.11.0",
+    "js-beautify": "1.13.1",
     "json-file-plus": "3.2.0",
     "package-json": "6.5.0",
     "parse": "2.19.0",
