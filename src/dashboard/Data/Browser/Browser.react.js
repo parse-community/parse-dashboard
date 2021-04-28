@@ -121,6 +121,7 @@ class Browser extends DashboardView {
     this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
     this.handleShowAcl = this.handleShowAcl.bind(this);
     this.onDialogToggle = this.onDialogToggle.bind(this);
+    this.abortAddRow = this.abortAddRow.bind(this);
   }
 
   componentWillMount() {
@@ -290,6 +291,14 @@ class Browser extends DashboardView {
         newObject: (relation ?
           new Parse.Object(relation.targetClassName)
         : new Parse.Object(this.props.params.className) ),
+      });
+    }
+  }
+
+  abortAddRow(){
+    if(this.state.newObject){
+      this.setState({
+        newObject: null
       });
     }
   }
@@ -1031,6 +1040,7 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
+            onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote} />
