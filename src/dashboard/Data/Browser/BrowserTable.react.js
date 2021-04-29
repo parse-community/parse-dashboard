@@ -119,7 +119,7 @@ export default class BrowserTable extends React.Component {
       if (this.props.newObject && this.state.offset <= 0) {
         const currentCol = this.props.current && this.props.current.row === -1 ? this.props.current.col : undefined;
         newRow = (
-          <div style={{ marginBottom: 30, borderBottom: '1px solid #169CEE' }}>
+          <div style={{ borderBottom: '1px solid #169CEE' }}>
             <BrowserRow
               key={-1}
               className={this.props.className}
@@ -234,7 +234,7 @@ export default class BrowserTable extends React.Component {
           }
           let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);
           if (this.props.current.row > -1 && this.props.newObject) {
-            wrapTop += 90;
+            wrapTop += 60;
           }
           let wrapLeft = 30;
           for (let i = 0; i < this.props.current.col; i++) {
