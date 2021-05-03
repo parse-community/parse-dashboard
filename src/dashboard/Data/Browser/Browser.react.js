@@ -40,6 +40,7 @@ import ParseApp                           from 'lib/ParseApp';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
+const VERSION = 'v1';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -355,6 +356,14 @@ class Browser extends DashboardView {
     }
 
     query.limit(MAX_ROWS_FETCHED);
+    let columns = localStorage.getItem(`ParseDashboard:${VERSION}:${this.props.params.appId}:${source}`)
+    if (columns) {
+      columns = JSON.parse(columns)
+      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name)
+      for (let columnsKey in columns) {
+        query.exclude(columns[columnsKey])
+      }
+    }
 
     let promise = query.find({ useMasterKey: true });
     let isUnique = false;
@@ -451,6 +460,14 @@ class Browser extends DashboardView {
       query.addDescending('createdAt');
     }
     query.limit(MAX_ROWS_FETCHED);
+    let columns = localStorage.getItem(`ParseDashboard:${VERSION}:${this.props.params.appId}:${source}`)
+    if (columns) {
+      columns = JSON.parse(columns)
+      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name)
+      for (let columnsKey in columns) {
+        query.exclude(columns[columnsKey])
+      }
+    }
 
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
@@ -834,7 +851,7 @@ class Browser extends DashboardView {
         showCloneSelectedRowsDialog: false
       });
       this.showNote(error.message, true);
-    }    
+    }
   }
 
   getClassRelationColumns(className) {
