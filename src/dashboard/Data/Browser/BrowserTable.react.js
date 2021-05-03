@@ -148,6 +148,16 @@ export default class BrowserTable extends React.Component {
               onClick={this.props.onAbortAddRow}
               additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', padding: '0'}}
             />
+            <Button
+              value="Add"
+              width="55px"
+              primary={true}
+              onClick={() => {
+                this.props.onSaveNewRow();
+                this.props.setEditing(false);
+              }}
+              additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', padding: '0'}}
+            />
           </div>
         );
       }
