@@ -115,6 +115,46 @@ export default class BrowserTable extends React.Component {
         (rowWidth, { visible, width }) => visible ? rowWidth + width : rowWidth,
         this.props.onAddRow ? 210 : 0
       );
+      let editCloneRows = null;
+      if(this.props.editCloneRows){
+        editCloneRows = (
+          <div style={{ marginBottom: 30, borderBottom: '1px solid #169CEE' }}>
+            {this.props.editCloneRows.map((cloneRow, idx) => {
+              let index = (this.props.editCloneRows.length + 1) * -1 + idx;
+              const currentCol = this.props.current && this.props.current.row === index ? this.props.current.col : undefined;
+              const isEditingRow = this.props.current && this.props.current.row === index && !!this.props.editing;
+              return (
+                <BrowserRow
+                  key={index}
+                  isEditing={isEditingRow}
+                  className={this.props.className}
+                  columns={this.props.columns}
+                  schema={this.props.schema}
+                  simplifiedSchema={this.props.simplifiedSchema}
+                  filters={this.props.filters}
+                  currentCol={currentCol}
+                  isUnique={this.props.isUnique}
+                  obj={cloneRow}
+                  onPointerClick={this.props.onPointerClick}
+                  onFilterChange={this.props.onFilterChange}
+                  order={this.props.order}
+                  readOnlyFields={READ_ONLY}
+                  row={index}
+                  rowWidth={rowWidth}
+                  selection={this.props.selection}
+                  selectRow={this.props.selectRow}
+                  setCurrent={this.props.setCurrent}
+                  setEditing={this.props.setEditing}
+                  setRelation={this.props.setRelation}
+                  setCopyableValue={this.props.setCopyableValue}
+                  setContextMenu={this.props.setContextMenu}
+                  onEditSelectedRow={this.props.onEditSelectedRow}
+                />
+              );
+            })}
+          </div>
+        )
+      }
       let newRow = null;
       if (this.props.newObject && this.state.offset <= 0) {
         const currentCol = this.props.current && this.props.current.row === -1 ? this.props.current.col : undefined;
@@ -205,6 +245,9 @@ export default class BrowserTable extends React.Component {
           }
           let obj = this.props.current.row < 0 ? this.props.newObject : this.props.data[this.props.current.row];
           let value = obj;
+          if(!obj && this.props.current.row < -1){
+            obj = this.props.editCloneRows[this.props.current.row + this.props.editCloneRows.length + 1];
+          }
           if (!this.props.isUnique) {
             if (type === 'Array' || type === 'Object') {
               // This is needed to avoid unwanted conversions of objects to Parse.Objects.
@@ -226,9 +269,15 @@ export default class BrowserTable extends React.Component {
             value = '';
           }
           let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);
+          if(this.props.current.row < -1 && this.props.editCloneRows){
+            wrapTop = ROW_HEIGHT * (this.props.current.row + (this.props.editCloneRows.length + 1));
+          }
           if (this.props.current.row > -1 && this.props.newObject) {
             wrapTop += 60;
           }
+          if (this.props.current.row >= -1 && this.props.editCloneRows) {
+            wrapTop += ROW_HEIGHT * (this.props.editCloneRows.length + 1);
+          }  
           let wrapLeft = 30;
           for (let i = 0; i < this.props.current.col; i++) {
             const column = this.props.order[i];
@@ -297,6 +346,7 @@ export default class BrowserTable extends React.Component {
         table = (
           <div className={styles.table} ref='table'>
             <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
+            {editCloneRows}
             {newRow}
             {rows}
             <div style={{ height: Math.max(0, (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT) }} />

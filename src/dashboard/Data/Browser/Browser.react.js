@@ -71,6 +71,7 @@ class Browser extends DashboardView {
       data: null,
       lastMax: -1,
       newObject: null,
+      editCloneRows: null,
 
       lastError: null,
       lastNote: null,
@@ -121,6 +122,7 @@ class Browser extends DashboardView {
     this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
     this.handleShowAcl = this.handleShowAcl.bind(this);
     this.onDialogToggle = this.onDialogToggle.bind(this);
+    this.addEditCloneRows = this.addEditCloneRows.bind(this);
   }
 
   componentWillMount() {
@@ -300,6 +302,12 @@ class Browser extends DashboardView {
     this.showEditRowDialog();
   }
 
+  addEditCloneRows(cloneRows) {
+    this.setState({
+      editCloneRows: cloneRows
+    });
+  }
+
   removeColumn(name) {
     let payload = {
       className: this.props.params.className,
@@ -330,6 +338,7 @@ class Browser extends DashboardView {
       newObject: null,
       lastMax: -1,
       selection: {},
+      editCloneRows: null,
     };
     if (relation) {
       await this.setState(initialState);
@@ -529,8 +538,12 @@ class Browser extends DashboardView {
   }
 
   updateRow(row, attr, value) {
-    const isNewObject = row < 0;
-    const obj = isNewObject ? this.state.newObject : this.state.data[row];
+    let isNewObject = row === -1;
+    let isEditCloneObj = row < -1;
+    let obj = isNewObject ? this.state.newObject : this.state.data[row];
+    if(isEditCloneObj){
+      obj = this.state.editCloneRows[row + (this.state.editCloneRows.length + 1)];
+    }
     if (!obj) {
       return;
     }
@@ -544,11 +557,11 @@ class Browser extends DashboardView {
       obj.set(attr, value);
     }
     obj.save(null, { useMasterKey: true }).then((objectSaved) => {
-      const createdOrUpdated = isNewObject ? 'created' : 'updated';
+      const createdOrUpdated = isNewObject || isEditCloneObj ? 'created' : 'updated';
       let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + createdOrUpdated;
       this.showNote(msg, false);
 
-      const state = { data: this.state.data };
+      const state = { data: this.state.data, editCloneRows: this.state.editCloneRows };
 
       if (isNewObject) {
         const relation = this.state.relation;
@@ -587,13 +600,23 @@ class Browser extends DashboardView {
           this.state.counts[obj.className] += 1;
         }
       }
+      if (isEditCloneObj) {
+        state.editCloneRows = state.editCloneRows.filter(
+          cloneObj => cloneObj._localId !== obj._localId
+        );
+        if (state.editCloneRows.length === 0) state.editCloneRows = null;
+        if (this.props.params.className === obj.className) {
+          this.state.data.unshift(obj);
+        }
+        this.state.counts[obj.className] += 1;
+      }
       this.setState(state);
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
-      if (!isNewObject) {
+      if (!isNewObject && !isEditCloneObj) {
         obj.set(attr, prev);
         this.setState({ data: this.state.data });
       }
@@ -829,6 +852,9 @@ class Browser extends DashboardView {
         showCloneSelectedRowsDialog: false
       });
     } catch (error) {
+      if(error.code === 137){
+        this.addEditCloneRows(toClone);
+      }
       this.setState({
         selection: {},
         showCloneSelectedRowsDialog: false
@@ -1023,6 +1049,7 @@ class Browser extends DashboardView {
             data={this.state.data}
             ordering={this.state.ordering}
             newObject={this.state.newObject}
+            editCloneRows={this.state.editCloneRows}
             relation={this.state.relation}
             disableKeyControls={this.hasExtras()}
             updateRow={this.updateRow}
