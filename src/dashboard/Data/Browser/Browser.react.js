@@ -355,7 +355,7 @@ class Browser extends DashboardView {
     }
 
     query.limit(MAX_ROWS_FETCHED);
-    this.excludeFields(query, source)
+    this.excludeFields(query, source);
 
     let promise = query.find({ useMasterKey: true });
     let isUnique = false;
@@ -375,11 +375,11 @@ class Browser extends DashboardView {
   }
 
   excludeFields(query, className) {
-    let columns = ColumnPreferences.getPreferences(this.props.params.appId, className)
+    let columns = ColumnPreferences.getPreferences(this.props.params.appId, className);
     if (columns) {
-      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name)
+      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name);
       for (let columnsKey in columns) {
-        query.exclude(columns[columnsKey])
+        query.exclude(columns[columnsKey]);
       }
     }
   }
@@ -462,7 +462,7 @@ class Browser extends DashboardView {
       query.addDescending('createdAt');
     }
     query.limit(MAX_ROWS_FETCHED);
-    this.excludeFields(query, source)
+    this.excludeFields(query, source);
 
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
