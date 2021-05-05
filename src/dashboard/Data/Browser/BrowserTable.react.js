@@ -141,12 +141,6 @@ export default class BrowserTable extends React.Component {
               setCopyableValue={this.props.setCopyableValue}
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow} 
-            />            
-            <Button
-              value="Cancel"
-              width="55px"
-              onClick={this.props.onAbortAddRow}
-              additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', padding: '0'}}
             />
             <Button
               value="Add"
@@ -156,6 +150,12 @@ export default class BrowserTable extends React.Component {
                 this.props.onSaveNewRow();
                 this.props.setEditing(false);
               }}
+              additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', padding: '0'}}
+            />
+            <Button
+              value="Cancel"
+              width="55px"
+              onClick={this.props.onAbortAddRow}
               additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', padding: '0'}}
             />
           </div>
