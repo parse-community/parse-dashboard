@@ -355,13 +355,7 @@ class Browser extends DashboardView {
     }
 
     query.limit(MAX_ROWS_FETCHED);
-    let columns = ColumnPreferences.getPreferences(this.props.params.appId, source)
-    if (columns) {
-      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name)
-      for (let columnsKey in columns) {
-        query.exclude(columns[columnsKey])
-      }
-    }
+    this.excludeFields(query, source)
 
     let promise = query.find({ useMasterKey: true });
     let isUnique = false;
@@ -378,6 +372,16 @@ class Browser extends DashboardView {
 
     const data = await promise;
     return data;
+  }
+
+  excludeFields(query, className) {
+    let columns = ColumnPreferences.getPreferences(this.props.params.appId, className)
+    if (columns) {
+      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name)
+      for (let columnsKey in columns) {
+        query.exclude(columns[columnsKey])
+      }
+    }
   }
 
   async fetchParseDataCount(source, filters) {
@@ -458,13 +462,7 @@ class Browser extends DashboardView {
       query.addDescending('createdAt');
     }
     query.limit(MAX_ROWS_FETCHED);
-    let columns = ColumnPreferences.getPreferences(this.props.params.appId, source)
-    if (columns) {
-      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name)
-      for (let columnsKey in columns) {
-        query.exclude(columns[columnsKey])
-      }
-    }
+    this.excludeFields(query, source)
 
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
