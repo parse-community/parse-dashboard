@@ -122,7 +122,7 @@ let BrowserToolbar = ({
         />
         <Separator />
         <MenuItem
-          disabled={!selectionLength || classNameForEditors.startsWith('_')}
+          disabled={!selectionLength}
           text={`Clone ${selectionLength <= 1 ? 'this row' : 'these rows'}`}
           onClick={onCloneSelectedRows}
         />
