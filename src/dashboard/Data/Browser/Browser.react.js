@@ -826,7 +826,8 @@ class Browser extends DashboardView {
     for (const objectId in this.state.selection) {
       objectIds.push(objectId);
     }
-    const query = new Parse.Query(this.props.params.className);
+    const className = this.props.params.className;
+    const query = new Parse.Query(className);
     query.containedIn('objectId', objectIds);
     const objects = await query.find({ useMasterKey: true });
     const toClone = [];
@@ -838,7 +839,11 @@ class Browser extends DashboardView {
       this.setState({
         selection: {},
         data: [...toClone, ...this.state.data],
-        showCloneSelectedRowsDialog: false
+        showCloneSelectedRowsDialog: false,
+        counts: {
+          ...this.state.counts,
+          [className]: this.state.counts[className] + toClone.length
+        }
       });
     } catch (error) {
       this.setState({
