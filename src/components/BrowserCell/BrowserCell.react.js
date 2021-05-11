@@ -324,7 +324,7 @@ export default class BrowserCell extends Component {
             }
           }}
         >
-          {content}
+          {row < 0 ? '(auto)' : content}
         </span>
       </Tooltip>
     ) : (

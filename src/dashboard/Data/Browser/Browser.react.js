@@ -123,6 +123,7 @@ class Browser extends DashboardView {
     this.handleShowAcl = this.handleShowAcl.bind(this);
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.addEditCloneRows = this.addEditCloneRows.bind(this);
+    this.abortAddRow = this.abortAddRow.bind(this);
   }
 
   componentWillMount() {
@@ -296,6 +297,14 @@ class Browser extends DashboardView {
     }
   }
 
+  abortAddRow(){
+    if(this.state.newObject){
+      this.setState({
+        newObject: null
+      });
+    }
+  }
+
   addRowWithModal() {
     this.addRow();
     this.selectRow(undefined, true);
@@ -364,6 +373,7 @@ class Browser extends DashboardView {
     }
 
     query.limit(MAX_ROWS_FETCHED);
+    this.excludeFields(query, source);
 
     let promise = query.find({ useMasterKey: true });
     let isUnique = false;
@@ -380,6 +390,16 @@ class Browser extends DashboardView {
 
     const data = await promise;
     return data;
+  }
+
+  excludeFields(query, className) {
+    let columns = ColumnPreferences.getPreferences(this.props.params.appId, className);
+    if (columns) {
+      columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name);
+      for (let columnsKey in columns) {
+        query.exclude(columns[columnsKey]);
+      }
+    }
   }
 
   async fetchParseDataCount(source, filters) {
@@ -460,6 +480,7 @@ class Browser extends DashboardView {
       query.addDescending('createdAt');
     }
     query.limit(MAX_ROWS_FETCHED);
+    this.excludeFields(query, source);
 
     query.find({ useMasterKey: true }).then((nextPage) => {
       if (className === this.props.params.className) {
@@ -837,7 +858,8 @@ class Browser extends DashboardView {
     for (const objectId in this.state.selection) {
       objectIds.push(objectId);
     }
-    const query = new Parse.Query(this.props.params.className);
+    const className = this.props.params.className;
+    const query = new Parse.Query(className);
     query.containedIn('objectId', objectIds);
     const objects = await query.find({ useMasterKey: true });
     const toClone = [];
@@ -849,7 +871,11 @@ class Browser extends DashboardView {
       this.setState({
         selection: {},
         data: [...toClone, ...this.state.data],
-        showCloneSelectedRowsDialog: false
+        showCloneSelectedRowsDialog: false,
+        counts: {
+          ...this.state.counts,
+          [className]: this.state.counts[className] + toClone.length
+        }
       });
     } catch (error) {
       if(error.code === 137){
@@ -860,7 +886,7 @@ class Browser extends DashboardView {
         showCloneSelectedRowsDialog: false
       });
       this.showNote(error.message, true);
-    }    
+    }
   }
 
   getClassRelationColumns(className) {
@@ -1039,6 +1065,7 @@ class Browser extends DashboardView {
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
+            onAbortAddRow={this.abortAddRow}
 
             columns={columns}
             className={className}
