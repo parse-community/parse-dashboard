@@ -363,6 +363,14 @@ class Browser extends DashboardView {
       query.ascending(field)
     }
 
+    if (field !== 'objectId') {
+      if (sortDir === '-') {
+        query.addDescending('objectId');
+      } else {
+        query.addAscending('objectId');
+      }
+    }
+
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
 
@@ -438,37 +446,38 @@ class Browser extends DashboardView {
     let className = this.props.params.className;
     let source = this.state.relation || className;
     let query = queryFromFilters(source, this.state.filters);
-    if (this.state.ordering !== '-createdAt') {
+    let field = this.state.ordering;
+    let sortDir = field[0] === '-' ? '-' : '+';
+    field = field[0] === '-' ? field.slice(1) : field;
+    if (this.state.ordering !== '-objectId' && this.state.ordering !== 'objectId') {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
-      let field = this.state.ordering;
-      let ascending = true;
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      if (field === 'objectId' || field === '-objectId') {
-        comp = this.state.data[this.state.data.length - 1].id;
-      }
-      if (field[0] === '-') {
-        field = field.substr(1);
+      
+      if (sortDir === '-') {
         query.lessThan(field, comp);
-        ascending = false;
+        equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
       } else {
         query.greaterThan(field, comp);
+        equalityQuery.greaterThan('objectId', this.state.data[this.state.data.length - 1].id);
       }
-      if (field === 'createdAt') {
-        equalityQuery.greaterThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
-      } else {
-        equalityQuery.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
-        equalityQuery.equalTo(field, comp);
-      }
+      equalityQuery.equalTo(field, comp);
       query = Parse.Query.or(query, equalityQuery);
-      if (ascending) {
-        query.ascending(this.state.ordering);
+      if (sortDir === '-') {
+        query.descending(field);
+        query.addDescending('objectId');
       } else {
-        query.descending(this.state.ordering.substr(1));
+        query.ascending(field);
+        query.addAscending('objectId');
       }
     } else {
-      query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
-      query.addDescending('createdAt');
+      if (sortDir === '-') {
+        query.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
+        query.addDescending('objectId');
+      } else {
+        query.greaterThan('objectId', this.state.data[this.state.data.length - 1].id);
+        query.addAscending('objectId');
+      }
     }
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
