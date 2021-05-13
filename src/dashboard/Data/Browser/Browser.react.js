@@ -122,6 +122,7 @@ class Browser extends DashboardView {
     this.handleShowAcl = this.handleShowAcl.bind(this);
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
+    this.saveNewRow = this.saveNewRow.bind(this);
   }
 
   componentWillMount() {
@@ -301,6 +302,66 @@ class Browser extends DashboardView {
         newObject: null
       });
     }
+  }
+
+  saveNewRow(){
+    const obj = this.state.newObject;
+    if (!obj) {
+      return;
+    }
+
+    obj.save(null, { useMasterKey: true }).then(
+      objectSaved => {
+        let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
+        this.showNote(msg, false);
+
+        const state = { data: this.state.data };
+        const relation = this.state.relation;
+        if (relation) {
+          const parent = relation.parent;
+          const parentRelation = parent.relation(relation.key);
+          parentRelation.add(obj);
+          const targetClassName = relation.targetClassName;
+          parent.save(null, { useMasterKey: true }).then(
+            () => {
+              this.setState({
+                newObject: null,
+                data: [obj, ...this.state.data],
+                relationCount: this.state.relationCount + 1,
+                counts: {
+                  ...this.state.counts,
+                  [targetClassName]: this.state.counts[targetClassName] + 1
+                }
+              });
+            },
+            error => {
+              let msg = typeof error === "string" ? error : error.message;
+              if (msg) {
+                msg = msg[0].toUpperCase() + msg.substr(1);
+              }
+              obj.set(attr, prev);
+              this.setState({ data: this.state.data });
+              this.showNote(msg, true);
+            }
+          );
+        } else {
+          state.newObject = null;
+          if (this.props.params.className === obj.className) {
+            this.state.data.unshift(obj);
+          }
+          this.state.counts[obj.className] += 1;
+        }
+        
+        this.setState(state);
+      },
+      error => {
+        let msg = typeof error === "string" ? error : error.message;
+        if (msg) {
+          msg = msg[0].toUpperCase() + msg.substr(1);
+        }
+        this.showNote(msg, true);
+      }
+    );
   }
 
   addRowWithModal() {
@@ -573,59 +634,21 @@ class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
+    if(isNewObject){
+      this.setState({
+        isNewObject: obj
+      });
+      return;
+    }
     obj.save(null, { useMasterKey: true }).then((objectSaved) => {
-      const createdOrUpdated = isNewObject ? 'created' : 'updated';
-      let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + createdOrUpdated;
+      let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
       this.showNote(msg, false);
-
       const state = { data: this.state.data };
-
-      if (isNewObject) {
-        const relation = this.state.relation;
-        if (relation) {
-          const parent = relation.parent;
-          const parentRelation = parent.relation(relation.key);
-          parentRelation.add(obj);
-          const targetClassName = relation.targetClassName;
-          parent.save(null, { useMasterKey: true }).then(() => {
-            this.setState({
-              newObject: null,
-              data: [
-                obj,
-                ...this.state.data,
-              ],
-              relationCount: this.state.relationCount + 1,
-              counts: {
-                ...this.state.counts,
-                [targetClassName]: this.state.counts[targetClassName] + 1,
-              },
-            });
-          }, (error) => {
-            let msg = typeof error === 'string' ? error : error.message;
-            if (msg) {
-              msg = msg[0].toUpperCase() + msg.substr(1);
-            }
-            obj.set(attr, prev);
-            this.setState({ data: this.state.data });
-            this.showNote(msg, true);
-          });
-        } else {
-          state.newObject = null;
-          if (this.props.params.className === obj.className) {
-            this.state.data.unshift(obj);
-          }
-          this.state.counts[obj.className] += 1;
-        }
-      }
       this.setState(state);
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
-      }
-      if (!isNewObject) {
-        obj.set(attr, prev);
-        this.setState({ data: this.state.data });
       }
 
       this.showNote(msg, true);
@@ -1048,6 +1071,7 @@ class Browser extends DashboardView {
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
+            onSaveNewRow={this.saveNewRow}
             onAbortAddRow={this.abortAddRow}
 
             columns={columns}
@@ -1067,6 +1091,7 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
+            onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote} />
