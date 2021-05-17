@@ -125,6 +125,8 @@ class Browser extends DashboardView {
     this.addEditCloneRows = this.addEditCloneRows.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
+    this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
+    this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
   }
 
   componentWillMount() {
@@ -364,6 +366,58 @@ class Browser extends DashboardView {
         this.showNote(msg, true);
       }
     );
+  }
+
+  saveEditCloneRow(rowIndex) {
+    let obj;
+    if (rowIndex < -1) {
+      obj = this.state.editCloneRows[
+        rowIndex + (this.state.editCloneRows.length + 1)
+      ];
+    }
+    if (!obj) {
+      return;
+    }
+    obj.save(null, { useMasterKey: true }).then((objectSaved) => {
+      let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
+      this.showNote(msg, false);
+
+      const state = { data: this.state.data, editCloneRows: this.state.editCloneRows };
+      state.editCloneRows = state.editCloneRows.filter(
+        cloneObj => cloneObj._localId !== obj._localId
+      );
+      if (state.editCloneRows.length === 0) state.editCloneRows = null;
+      if (this.props.params.className === obj.className) {
+        this.state.data.unshift(obj);
+      }
+      this.state.counts[obj.className] += 1;
+      this.setState(state);
+    }, (error) => {
+      let msg = typeof error === 'string' ? error : error.message;
+      if (msg) {
+        msg = msg[0].toUpperCase() + msg.substr(1);
+      }
+
+      this.showNote(msg, true);
+    });
+  }
+
+  abortEditCloneRow(rowIndex) {
+    let obj;
+    if (rowIndex < -1) {
+      obj = this.state.editCloneRows[
+        rowIndex + (this.state.editCloneRows.length + 1)
+      ];
+    }
+    if (!obj) {
+      return;
+    }
+    const state = { editCloneRows: this.state.editCloneRows };
+    state.editCloneRows = state.editCloneRows.filter(
+      cloneObj => cloneObj._localId !== obj._localId
+    );
+    if (state.editCloneRows.length === 0) state.editCloneRows = null;
+    this.setState(state);
   }
 
   addRowWithModal() {
@@ -653,6 +707,16 @@ class Browser extends DashboardView {
       });
       return;
     }
+    if (isEditCloneObj) {
+      const editObjIndex = row + (this.state.editCloneRows.length + 1);
+      let cloneRows = [...this.state.editCloneRows];
+      cloneRows.splice(editObjIndex, 1, obj);
+      this.setState({
+        editCloneRows: cloneRows
+      });
+      return;
+    }
+
     obj.save(null, { useMasterKey: true }).then((objectSaved) => {
       const createdOrUpdated = isNewObject || isEditCloneObj ? 'created' : 'updated';
       let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + createdOrUpdated;
@@ -1159,6 +1223,8 @@ class Browser extends DashboardView {
             onEditPermissions={this.onDialogToggle}
             onSaveNewRow={this.saveNewRow}
             onAbortAddRow={this.abortAddRow}
+            onSaveEditCloneRow={this.saveEditCloneRow}
+            onAbortEditCloneRow={this.abortEditCloneRow}
 
             columns={columns}
             className={className}
