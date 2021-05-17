@@ -954,8 +954,24 @@ class Browser extends DashboardView {
         }
       });
     } catch (error) {
-      if(error.code === 137){
-        this.addEditCloneRows(toClone);
+      if (error.code === 137) {
+        let failedSaveObj = [];
+        let savedObjects = [];
+        toClone.forEach(cloneObj => {
+          cloneObj.dirty()
+            ? failedSaveObj.push(cloneObj)
+            : savedObjects.push(cloneObj);
+        });
+        if (savedObjects.length) {
+          this.setState({
+            data: [...savedObjects, ...this.state.data],
+            counts: {
+              ...this.state.counts,
+              [className]: this.state.counts[className] + savedObjects.length
+            }
+          });
+        }
+        this.addEditCloneRows(failedSaveObj);
       }
       this.setState({
         selection: {},
