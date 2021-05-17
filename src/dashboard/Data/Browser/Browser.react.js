@@ -124,6 +124,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.addEditCloneRows = this.addEditCloneRows.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
+    this.saveNewRow = this.saveNewRow.bind(this);
   }
 
   componentWillMount() {
@@ -305,6 +306,66 @@ class Browser extends DashboardView {
     }
   }
 
+  saveNewRow(){
+    const obj = this.state.newObject;
+    if (!obj) {
+      return;
+    }
+
+    obj.save(null, { useMasterKey: true }).then(
+      objectSaved => {
+        let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
+        this.showNote(msg, false);
+
+        const state = { data: this.state.data };
+        const relation = this.state.relation;
+        if (relation) {
+          const parent = relation.parent;
+          const parentRelation = parent.relation(relation.key);
+          parentRelation.add(obj);
+          const targetClassName = relation.targetClassName;
+          parent.save(null, { useMasterKey: true }).then(
+            () => {
+              this.setState({
+                newObject: null,
+                data: [obj, ...this.state.data],
+                relationCount: this.state.relationCount + 1,
+                counts: {
+                  ...this.state.counts,
+                  [targetClassName]: this.state.counts[targetClassName] + 1
+                }
+              });
+            },
+            error => {
+              let msg = typeof error === "string" ? error : error.message;
+              if (msg) {
+                msg = msg[0].toUpperCase() + msg.substr(1);
+              }
+              obj.set(attr, prev);
+              this.setState({ data: this.state.data });
+              this.showNote(msg, true);
+            }
+          );
+        } else {
+          state.newObject = null;
+          if (this.props.params.className === obj.className) {
+            this.state.data.unshift(obj);
+          }
+          this.state.counts[obj.className] += 1;
+        }
+        
+        this.setState(state);
+      },
+      error => {
+        let msg = typeof error === "string" ? error : error.message;
+        if (msg) {
+          msg = msg[0].toUpperCase() + msg.substr(1);
+        }
+        this.showNote(msg, true);
+      }
+    );
+  }
+
   addRowWithModal() {
     this.addRow();
     this.selectRow(undefined, true);
@@ -370,6 +431,14 @@ class Browser extends DashboardView {
       query.descending(field)
     } else {
       query.ascending(field)
+    }
+
+    if (field !== 'objectId') {
+      if (sortDir === '-') {
+        query.addDescending('objectId');
+      } else {
+        query.addAscending('objectId');
+      }
     }
 
     query.limit(MAX_ROWS_FETCHED);
@@ -447,37 +516,38 @@ class Browser extends DashboardView {
     let className = this.props.params.className;
     let source = this.state.relation || className;
     let query = queryFromFilters(source, this.state.filters);
-    if (this.state.ordering !== '-createdAt') {
+    let field = this.state.ordering;
+    let sortDir = field[0] === '-' ? '-' : '+';
+    field = field[0] === '-' ? field.slice(1) : field;
+    if (this.state.ordering !== '-objectId' && this.state.ordering !== 'objectId') {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
-      let field = this.state.ordering;
-      let ascending = true;
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      if (field === 'objectId' || field === '-objectId') {
-        comp = this.state.data[this.state.data.length - 1].id;
-      }
-      if (field[0] === '-') {
-        field = field.substr(1);
+      
+      if (sortDir === '-') {
         query.lessThan(field, comp);
-        ascending = false;
+        equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
       } else {
         query.greaterThan(field, comp);
+        equalityQuery.greaterThan('objectId', this.state.data[this.state.data.length - 1].id);
       }
-      if (field === 'createdAt') {
-        equalityQuery.greaterThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
-      } else {
-        equalityQuery.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
-        equalityQuery.equalTo(field, comp);
-      }
+      equalityQuery.equalTo(field, comp);
       query = Parse.Query.or(query, equalityQuery);
-      if (ascending) {
-        query.ascending(this.state.ordering);
+      if (sortDir === '-') {
+        query.descending(field);
+        query.addDescending('objectId');
       } else {
-        query.descending(this.state.ordering.substr(1));
+        query.ascending(field);
+        query.addAscending('objectId');
       }
     } else {
-      query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
-      query.addDescending('createdAt');
+      if (sortDir === '-') {
+        query.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
+        query.addDescending('objectId');
+      } else {
+        query.greaterThan('objectId', this.state.data[this.state.data.length - 1].id);
+        query.addAscending('objectId');
+      }
     }
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
@@ -576,6 +646,12 @@ class Browser extends DashboardView {
       obj.unset(attr);
     } else {
       obj.set(attr, value);
+    }
+    if(isNewObject){
+      this.setState({
+        isNewObject: obj
+      });
+      return;
     }
     obj.save(null, { useMasterKey: true }).then((objectSaved) => {
       const createdOrUpdated = isNewObject || isEditCloneObj ? 'created' : 'updated';
@@ -1065,6 +1141,7 @@ class Browser extends DashboardView {
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
+            onSaveNewRow={this.saveNewRow}
             onAbortAddRow={this.abortAddRow}
 
             columns={columns}
@@ -1085,6 +1162,7 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
+            onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote} />
