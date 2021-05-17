@@ -314,7 +314,7 @@ export default class BrowserTable extends React.Component {
           }
           if (this.props.current.row >= -1 && this.props.editCloneRows) {
             //for data rows & new row when there are edit clone rows
-            wrapTop += (ROW_HEIGHT) * (this.props.editCloneRows.length + 1 + 1);
+            wrapTop += (2 * ROW_HEIGHT) * (this.props.editCloneRows.length);
           }  
           let wrapLeft = 30;
           for (let i = 0; i < this.props.current.col; i++) {
