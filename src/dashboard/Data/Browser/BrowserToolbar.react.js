@@ -49,6 +49,8 @@ let BrowserToolbar = ({
   uniqueField,
   handleColumnDragDrop,
   handleColumnsOrder,
+  editCloneRows,
+  onCancelPendingEditRows,
   order,
 
   enableDeleteAllRows,
@@ -59,6 +61,7 @@ let BrowserToolbar = ({
   enableClassManipulation,
 }) => {
   let selectionLength = Object.keys(selection).length;
+  let isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
   let details = [];
   if (count !== undefined) {
       if (count === 1) {
@@ -103,7 +106,7 @@ let BrowserToolbar = ({
     );
   } else if (onAddRow) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique || isPendingEditCloneRows}>
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
@@ -249,7 +252,7 @@ let BrowserToolbar = ({
           setCurrent={setCurrent}
           title="Security"
           icon="locked-solid"
-          disabled={!!relation || !!isUnique}
+          disabled={!!relation || !!isUnique || isPendingEditCloneRows}
         >
           <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
           <MenuItem text={'Protected Fields'} onClick={showProtected} />
@@ -263,6 +266,16 @@ let BrowserToolbar = ({
         <noscript />
       )}
       {menu}
+      {editCloneRows && editCloneRows.length > 0 && <div className={styles.toolbarSeparator} />}
+      {editCloneRows && editCloneRows.length > 0 && (
+        <BrowserMenu title="Clone" icon="clone-icon">
+          <MenuItem
+            text={"Cancel All Pending Rows"}
+            onClick={onCancelPendingEditRows}
+          />
+        </BrowserMenu>
+      )}
+      
     </Toolbar>
   );
 };

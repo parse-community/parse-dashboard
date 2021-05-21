@@ -127,6 +127,7 @@ class Browser extends DashboardView {
     this.saveNewRow = this.saveNewRow.bind(this);
     this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
+    this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
   }
 
   componentWillMount() {
@@ -424,6 +425,12 @@ class Browser extends DashboardView {
     this.addRow();
     this.selectRow(undefined, true);
     this.showEditRowDialog();
+  }
+
+  cancelPendingEditRows() {
+    this.setState({
+      editCloneRows: null
+    });
   }
 
   addEditCloneRows(cloneRows) {
@@ -1225,6 +1232,7 @@ class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
             onSaveEditCloneRow={this.saveEditCloneRow}
             onAbortEditCloneRow={this.abortEditCloneRow}
+            onCancelPendingEditRows={this.cancelPendingEditRows}
 
             columns={columns}
             className={className}
