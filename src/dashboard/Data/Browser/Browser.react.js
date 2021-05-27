@@ -1025,7 +1025,8 @@ class Browser extends DashboardView {
         }
       });
     } catch (error) {
-      if (error.code === 137) {
+      //for duplicate error or password missing error
+      if (error.code === 137 || error.code === 201) {
         let failedSaveObj = [];
         let savedObjects = [];
         toClone.forEach(cloneObj => {
@@ -1045,7 +1046,6 @@ class Browser extends DashboardView {
         this.addEditCloneRows(failedSaveObj);
       }
       this.setState({
-        selection: {},
         showCloneSelectedRowsDialog: false
       });
       this.showNote(error.message, true);
