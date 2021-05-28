@@ -77,8 +77,13 @@ export default class AddColumnDialog extends React.Component {
     if (file) {
       let base64 = await this.getBase64(file);
       const parseFile = new Parse.File(file.name, { base64 });
-      await parseFile.save();
-      return parseFile
+      try {
+        await parseFile.save();
+        return parseFile;
+      } catch (err) {
+        this.props.showNote(err.message, true);
+        return parseFile;
+      }
     }
   }
 
@@ -167,7 +172,7 @@ export default class AddColumnDialog extends React.Component {
           onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
       case 'File':
         return <FileInput
-          value={this.defaultValue ? this.defaultValue._name : ''}
+          value={this.state.defaultValue ? this.state.defaultValue._name : ''}
           onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
     }
   }
