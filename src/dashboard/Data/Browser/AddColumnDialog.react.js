@@ -27,7 +27,7 @@ import {
 }                         from 'lib/Constants';
 
 function validColumnName(name) {
-  return !!name.match(/^[a-zA-Z0-9][_a-zA-Z0-9]*$/);
+  return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
 }
 
 export default class AddColumnDialog extends React.Component {
