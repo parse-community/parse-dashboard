@@ -241,12 +241,14 @@ export default class BrowserCell extends Component {
         value = object;
       }
       content = onPointerClick ? (
-        <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={value.id} />
-        </a>
+        <Pill
+          value={value.id}
+          onClick={current ? onPointerClick.bind(undefined, value) : null}
+          followClick={true}
+        />
       ) : (
-          value.id
-        );
+        value.id
+      );
       this.copyableValue = value.id;
     } else if (type === 'Date') {
       if (typeof value === 'object' && value.__type) {
@@ -290,8 +292,8 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = value.coordinates.map(coord => `(${coord})`)
     } else if (type === 'Relation') {
       content = setRelation ? (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }}>
-          <Pill onClick={() => setRelation(value)} value='View relation' />
+        <div style={{ textAlign: 'center' }}>
+          <Pill onClick={current ? () => setRelation(value) : null} value='View relation' followClick={true} />
         </div>
       ) : (
           'Relation'
@@ -312,16 +314,6 @@ export default class BrowserCell extends Component {
           onClick={() => {
             onSelect({ row, col });
             setCopyableValue(hidden ? undefined : this.copyableValue);
-          }}
-          onMouseEnter={() => {
-            if (field === 'objectId') {
-              this.setState({ showTooltip: true });
-            }
-          }}
-          onMouseLeave={() => {
-            if (field === 'objectId') {
-              this.setState({ showTooltip: false });
-            }
           }}
           onDoubleClick={() => {
             if (field === 'objectId' && onEditSelectedRow) {
