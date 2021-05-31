@@ -1118,6 +1118,7 @@ class Browser extends DashboardView {
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
           onConfirm={this.addColumn}
+          showNote={this.showNote}
           parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
       );
     } else if (this.state.showRemoveColumnDialog) {
