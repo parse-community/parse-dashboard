@@ -98,7 +98,7 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    let headers = this.props.order.map(({ name, width, visible, preventSort }) => (
+    let headers = this.props.order.map(({ name, width, visible, preventSort, required }) => (
       {
         width: width,
         name: name,
@@ -106,7 +106,8 @@ export default class BrowserTable extends React.Component {
         targetClass: this.props.columns[name].targetClass,
         order: ordering.col === name ? ordering.direction : null,
         visible,
-        preventSort
+        preventSort,
+        required
       }
     ));
     let editor = null;

@@ -1029,11 +1029,11 @@ class Browser extends DashboardView {
         if (this.state.isUnique) {
           columns = {};
         }
-        classes.get(className).forEach(({ type, targetClass }, name) => {
+        classes.get(className).forEach(({ type, targetClass, required }, name) => {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          const info = { type };
+          const info = { type, required: !!required };
           if (targetClass) {
             info.targetClass = targetClass;
           }
