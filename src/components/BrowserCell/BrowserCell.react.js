@@ -243,7 +243,7 @@ export default class BrowserCell extends Component {
       content = onPointerClick ? (
         <Pill
           value={value.id}
-          onClick={current ? onPointerClick.bind(undefined, value) : null}
+          onClick={onPointerClick.bind(undefined, value)}
           followClick={true}
         />
       ) : (
@@ -293,7 +293,7 @@ export default class BrowserCell extends Component {
     } else if (type === 'Relation') {
       content = setRelation ? (
         <div style={{ textAlign: 'center' }}>
-          <Pill onClick={current ? () => setRelation(value) : null} value='View relation' followClick={true} />
+          <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
         </div>
       ) : (
           'Relation'
