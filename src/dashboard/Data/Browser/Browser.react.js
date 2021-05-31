@@ -280,7 +280,9 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).finally(() => {
+    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).catch((err) => {
+      this.showNote(err.message, true);
+    }).finally(() => {
       this.setState({ showAddColumnDialog: false });
     });
   }
