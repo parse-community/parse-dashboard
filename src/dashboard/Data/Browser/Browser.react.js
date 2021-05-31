@@ -1034,6 +1034,12 @@ class Browser extends DashboardView {
             return;
           }
           const info = { type, required: !!required };
+          if (className === '_User' && (name === 'username' || name === 'password')) {
+            info.required = true;
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            info.required = true;
+          }
           if (targetClass) {
             info.targetClass = targetClass;
           }
