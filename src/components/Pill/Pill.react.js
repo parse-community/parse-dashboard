@@ -24,7 +24,7 @@ let Pill = ({ value, onClick, followClick = false }) => (
         onClick={onClick}
         className={!onClick ? styles.disableIconAction : styles.iconAction}
       >
-        <Icon name="arrow" width={20} height={20} fill="#1669a1" />
+        <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}
   </span>
