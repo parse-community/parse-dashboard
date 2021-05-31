@@ -23,6 +23,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   * [App Icon Configuration](#app-icon-configuration)
   * [App Background Color Configuration](#app-background-color-configuration)
   * [Other Configuration Options](#other-configuration-options)
+    * [Prevent columns sorting](#prevent-columns-sorting)
 * [Running as Express Middleware](#running-as-express-middleware)
 * [Deploying Parse Dashboard](#deploying-parse-dashboard)
   * [Preparing for Deployment](#preparing-for-deployment)
@@ -240,6 +241,33 @@ Parse Dashboard supports adding an optional background color for each app, so yo
 You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
+
+ ### Prevent columns sorting  
+
+You can prevent some columns to be sortable by adding `preventSort` to columnPreference options in each app configuration
+
+```json
+
+"apps": [
+  {
+    "appId": "local_app_id",
+    "columnPreference": {
+        "_User": [
+          {
+            "name": "createdAt",
+            "visible": true,
+            "preventSort": true
+          },
+          {
+            "name": "updatedAt",
+            "visible": true,
+            "preventSort": false
+          },
+        ]
+      }
+    }
+]
+```
 
 # Running as Express Middleware
 
