@@ -10,7 +10,7 @@ import styles from 'components/Pill/Pill.scss';
 import Icon from "components/Icon/Icon.react";
 
 //TODO: refactor, may want to move onClick outside or need to make onClick able to handle link/button a11y
-let Pill = ({ value, onClick, followClick = false }) => (
+let Pill = ({ value, onClick, fileDownloadLink, followClick = false }) => (
   <span
     className={[
       styles.pill,
@@ -22,7 +22,14 @@ let Pill = ({ value, onClick, followClick = false }) => (
     {followClick && (
       <a
         onClick={onClick}
-        className={!onClick ? styles.disableIconAction : styles.iconAction}
+      >
+        <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
+      </a>
+    )}
+    {!followClick && fileDownloadLink && (
+      <a
+        href={fileDownloadLink}
+        target="_blank"
       >
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
