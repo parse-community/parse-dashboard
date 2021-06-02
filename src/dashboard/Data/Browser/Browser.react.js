@@ -1025,8 +1025,8 @@ class Browser extends DashboardView {
         }
       });
     } catch (error) {
-      //for duplicate error or password missing error
-      if (error.code === 137 || error.code === 201) {
+      //for duplicate, username missing, password missing or required field missing errors
+      if (error.code === 137 || error.code === 201 || error.code === 200 || error.code === 142) {
         let failedSaveObj = [];
         let savedObjects = [];
         toClone.forEach(cloneObj => {
