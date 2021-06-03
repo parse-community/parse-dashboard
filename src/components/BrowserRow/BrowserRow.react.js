@@ -58,6 +58,7 @@ export default class BrowserRow extends Component {
               hidden = true;
             }
           }
+          let isRequired = columns[name].required;
           return (
             <BrowserCell
               key={name}
@@ -80,6 +81,7 @@ export default class BrowserRow extends Component {
               objectId={obj.id}
               value={attr}
               hidden={hidden}
+              isRequired={isRequired}
               setCopyableValue={setCopyableValue}
               setContextMenu={setContextMenu}
               onEditSelectedRow={onEditSelectedRow} />

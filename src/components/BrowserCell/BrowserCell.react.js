@@ -214,12 +214,12 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
     if (hidden) {
-      content = '(hidden)';
+      content = row < 0 && isRequired ? '(required)' : '(hidden)';
       classes.push(styles.empty);
     } else if (value === undefined) {
       if (type === 'ACL') {
@@ -228,6 +228,8 @@ export default class BrowserCell extends Component {
         this.copyableValue = content = '(undefined)';
         classes.push(styles.empty);
       }
+      content = row < 0 && isRequired ? '(required)' : content;
+      row < 0 && classes.push(styles.empty);
     } else if (value === null) {
       this.copyableValue = content = '(null)';
       classes.push(styles.empty);

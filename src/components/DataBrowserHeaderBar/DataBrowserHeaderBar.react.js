@@ -27,7 +27,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       </div>
     ];
 
-    headers.forEach(({ width, name, type, targetClass, order, visible, preventSort, required }, i) => {
+    headers.forEach(({ width, name, type, targetClass, order, visible, preventSort }, i) => {
       if (!visible) return;
       let wrapStyle = { width };
       if (i % 2) {
@@ -57,7 +57,6 @@ export default class DataBrowserHeaderBar extends React.Component {
             targetClass={targetClass}
             order={order}
             index={i}
-            required={required}
             moveDataBrowserHeader={this.props.handleDragDrop}/>
         </div>
       );
