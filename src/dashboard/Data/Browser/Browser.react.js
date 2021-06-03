@@ -37,9 +37,13 @@ import * as queryString                   from 'query-string';
 import { Helmet }                         from 'react-helmet';
 import PropTypes                          from 'lib/PropTypes';
 import ParseApp                           from 'lib/ParseApp';
+import Swal                               from 'sweetalert2';
+import withReactContent                   from 'sweetalert2-react-content';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
+
+const MySwal = withReactContent(Swal);
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -123,6 +127,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
+    this.onChangeDefaultKey = this.onChangeDefaultKey.bind(this);
   }
 
   componentWillMount() {
@@ -353,7 +358,7 @@ class Browser extends DashboardView {
           }
           this.state.counts[obj.className] += 1;
         }
-        
+
         this.setState(state);
       },
       error => {
@@ -516,7 +521,7 @@ class Browser extends DashboardView {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      
+
       if (sortDir === '-') {
         query.lessThan(field, comp);
         equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
@@ -1004,6 +1009,33 @@ class Browser extends DashboardView {
     this.setState({showPermissionsDialog: opened});
   }
 
+  async onChangeDefaultKey () {
+    const className = this.props.params.className;
+    const classes = this.props.schema.data.get('classes');
+
+    const cols = {};
+
+    classes.get(className).forEach(({ type, targetClass, required }, name) => {
+        if ( name !== 'ACL' ) {
+          cols[name] = name;
+        }
+    });
+
+    const defaultValue = await localStorage.getItem(className) || 'objectId';
+
+    const { value } = await MySwal.fire({
+      title: 'Cange Pointer Key',
+      input: 'select',
+      inputValue: defaultValue,
+      inputOptions: cols,
+      showCancelButton: true,
+    })
+    if ( value ) {
+      await localStorage.setItem(className, value);
+    }
+  }
+
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1096,6 +1128,7 @@ class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
+            onChangeDefaultKey={this.onChangeDefaultKey}
             showNote={this.showNote} />
         );
       }
