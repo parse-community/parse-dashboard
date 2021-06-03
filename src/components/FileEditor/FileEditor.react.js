@@ -26,6 +26,8 @@ export default class FileEditor extends React.Component {
   componentDidMount() {
     document.body.addEventListener('click', this.checkExternalClick);
     document.body.addEventListener('keypress', this.handleKey);
+    let fileInputElement = document.getElementById('fileInput');
+    fileInputElement.click();
   }
 
   componentWillUnmount() {
@@ -72,9 +74,9 @@ export default class FileEditor extends React.Component {
   render() {
     const file = this.props.value;
     return (
-      <div ref='input' style={{ minWidth: this.props.width }} className={styles.editor}>
+      <div ref='input' style={{ minWidth: this.props.width, visibility: 'hidden' }} className={styles.editor}>
         <a className={styles.upload}>
-          <input ref='fileInput' type='file' onChange={this.handleChange.bind(this)} />
+          <input ref='fileInput' id="fileInput" type='file' onChange={this.handleChange.bind(this)} />
           <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
       </div>
