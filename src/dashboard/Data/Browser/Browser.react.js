@@ -38,13 +38,9 @@ import * as queryString                   from 'query-string';
 import { Helmet }                         from 'react-helmet';
 import PropTypes                          from 'lib/PropTypes';
 import ParseApp                           from 'lib/ParseApp';
-import Swal                               from 'sweetalert2';
-import withReactContent                   from 'sweetalert2-react-content';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
-
-const MySwal = withReactContent(Swal);
 
 export default
 @subscribeTo('Schema', 'schema')
