@@ -14,10 +14,9 @@ import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import Tooltip                   from 'components/Tooltip/PopperTooltip.react';
-import PropTypes                 from "lib/PropTypes";
 import { unselectable }          from 'stylesheets/base.scss';
 
-class BrowserCell extends Component {
+export default class BrowserCell extends Component {
   constructor() {
     super();
 
@@ -337,18 +336,8 @@ class BrowserCell extends Component {
             onSelect({ row, col });
             setCopyableValue(hidden ? undefined : this.copyableValue);
           }}
-          onMouseEnter={() => {
-            if (field === "objectId") {
-              this.setState({ showTooltip: true });
-            }
-          }}
-          onMouseLeave={() => {
-            if (field === "objectId") {
-              this.setState({ showTooltip: false });
-            }
-          }}
           onDoubleClick={() => {
-            if (field === "objectId" && onEditSelectedRow) {
+            if (field === 'objectId' && onEditSelectedRow) {
               onEditSelectedRow(true, value);
             } else {
               this.setState({ showTooltip: true });
@@ -384,25 +373,11 @@ class BrowserCell extends Component {
             if (['ACL', 'Boolean', 'File'].includes(type)) {
               e.preventDefault();
             }
-          }}}>
+          }}}
+        onContextMenu={this.onContextMenu.bind(this)}
+        >
           {this.state.content}
         </span>
     );
   }
 }
-
-BrowserCell.propTypes = {
-  type: PropTypes.string.isRequired.describe('The column data type'),
-  value: PropTypes.any.describe('The cell value (can be null/undefined as well)'),
-  hidden: PropTypes.bool.describe('True if the cell value must be hidden (like passwords), false otherwise'),
-  width: PropTypes.number.describe('The cell width style'),
-  current: PropTypes.bool.describe('True if it is the BrowserCell selected, false otherwise'),
-  onSelect: PropTypes.func.isRequired.describe('Function invoked when the selected flag should be updated'),
-  onEditChange: PropTypes.func.isRequired.describe('Function invoked when the edit flag should be updated'),
-  setCopyableValue: PropTypes.func.isRequired.describe('Function invoked when the copyable value has changed'),
-  setRelation: PropTypes.func.isRequired.describe('Function invoked when the Relation link is clicked'),
-  onPointerClick: PropTypes.func.isRequired.describe('Function invoked when the Pointer link is clicked'),
-  readonly: PropTypes.bool.describe('True if the cell value is read only')
-}
-
-export default BrowserCell;
