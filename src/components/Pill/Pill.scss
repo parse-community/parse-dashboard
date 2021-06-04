@@ -10,7 +10,7 @@
 .pill {
   @include MonospaceFont;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   color: #0E69A1;
   height: 20px;
@@ -19,9 +19,9 @@
   font-size: 11px;
   padding: 0 8px;
   width: 100%;
-  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
   margin-bottom: 4px;
   & a {
     height: 20px;
@@ -34,6 +34,15 @@
   }
 }
 
+.content {
+  width: 80%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: left;
+  height: 100%;
+  white-space: nowrap;
+}
+
 .iconAction {
   cursor: pointer;
 }
@@ -44,6 +53,7 @@
 
 .action {
   background: #D5E5F2;
+  justify-content: center;
   &:hover {
     background: #BFD4E5;
   }

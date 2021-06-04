@@ -18,19 +18,14 @@ let Pill = ({ value, onClick, fileDownloadLink, followClick = false }) => (
     ].join(" ")}
     onClick={!followClick && onClick ? onClick : null}
   >
-    {value}
+    <span className={!followClick && fileDownloadLink ? styles.content : ''}>{value}</span>
     {followClick && (
-      <a
-        onClick={onClick}
-      >
+      <a onClick={onClick}>
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}
     {!followClick && fileDownloadLink && (
-      <a
-        href={fileDownloadLink}
-        target="_blank"
-      >
+      <a href={fileDownloadLink} target="_blank">
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}

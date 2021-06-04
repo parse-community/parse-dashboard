@@ -349,7 +349,7 @@ export default class EditRowDialog extends React.Component {
               {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
               <div style={{ cursor: 'pointer' }}>
                 <Pill
-                  value='Select file'
+                  value={file ? 'Change file' : 'Select file'}
                   onClick={() => this.openFileEditor()}
                 />
                 {this.state.showFileEditor && (
