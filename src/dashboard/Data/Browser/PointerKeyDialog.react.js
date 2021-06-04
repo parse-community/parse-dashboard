@@ -53,7 +53,7 @@ export default class PointerKeyDialod extends React.Component {
         icon='warn-outline'
         title='Remove a column'
         subtitle={hasColumns ? 'The column will be used throughout dashboard as pointer value for this class.' : 'There are no columns on this class that can be set a pointer value.'}
-        confirmText='Make pointer value'
+        confirmText='Update pointer value'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         disabled={!this.state.name}
