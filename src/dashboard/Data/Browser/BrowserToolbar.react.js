@@ -96,7 +96,7 @@ let BrowserToolbar = ({
           onClick={onAttachRows}
         />
         <Separator />
-        <MenuItem text='Change pointer key (current: objectId)' onClick={onChangeDefaultKey} />
+        <MenuItem text='Change pointer key (current: objectId)' onClick={onShowPointerKey} />
         <MenuItem
           disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Detach this row' : 'Detach these rows'}
