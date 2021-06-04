@@ -25,7 +25,7 @@ class BrowserCell extends Component {
     this.copyableValue = undefined;
     this.state = {
       showTooltip: false,
-      constent: null,
+      content: null,
       classes: []
     };
   }
@@ -236,45 +236,10 @@ class BrowserCell extends Component {
       classes.push(styles.empty);
     } else if (type === 'Pointer') {
       const defaultPointerKey = await localStorage.getItem(value.className) || 'objectId';
-      if ( defaultPointerKey !== 'objectId' ) {
-        const query = new Parse.Query(value);
-        query.get(value.id)
-          .then(result => {
-            let data = result.get(defaultPointerKey);
-            if ( data && typeof data === 'object' ){
-              if ( data instanceof Date ) {
-                data = data.toLocaleString();
-              }
-              else {
-                data = '[Invalid value]';
-              }
-            }
-            if ( !data ) {
-              data = '[Invalid value]';
-            }
 
-            this.setState({ ...this.state, content: (
-              content = onPointerClick ? (
-                <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-                  <Pill value={ data } />
-                </a>
-              ) : (
-                data
-                )
-            ), classes });
-          })
-          .catch(err => console.log(err));
-      }
-      else {
-        this.setState({ ...this.state, content: (
-          content = onPointerClick ? (
-            <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-              <Pill value={ value.id } />
-            </a>
-          ) : (
-            value.id
-            )
-        ), classes });
+      let dataValue = value.id;
+      if ( defaultPointerKey !== 'objectId' ) {
+        dataValue = value.get(defaultPointerKey);
       }
 
       if (value && value.__type) {
@@ -282,12 +247,13 @@ class BrowserCell extends Component {
         object.id = value.objectId;
         value = object;
       }
+
       content = onPointerClick ? (
       <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-        <Pill value={ value.id } />
+        <Pill value={ dataValue } />
       </a>
       ) : (
-        value.id
+        dataValue
       );
 
       this.copyableValue = value.id;
@@ -348,7 +314,8 @@ class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, readonly, field, onEditSelectedRow } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, row, col, readonly, field, onEditSelectedRow } = this.props;
+
     return readonly ? (
       <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip}>
         <span

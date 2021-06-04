@@ -439,6 +439,19 @@ class Browser extends DashboardView {
       }
     }
 
+    await Parse.Schema.all({ useMasterKey: true });
+    const classColumns = await this.getClassColumns(source, false);
+
+    for ( let i = 0; i < classColumns.length; i++ ) {
+      if ( classColumns[i].type === 'Pointer' ) {
+        const defaultPointerKey = await localStorage.getItem(classColumns[i].targetClass) || 'objectId';
+        if ( defaultPointerKey !== 'objectId' ) {
+          query.include(classColumns[i].name);
+          query.select(classColumns[i].name + '.' + defaultPointerKey);
+        }
+      }
+    }
+
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
 
