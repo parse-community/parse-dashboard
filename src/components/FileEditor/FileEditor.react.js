@@ -27,9 +27,11 @@ export default class FileEditor extends React.Component {
     document.body.addEventListener('click', this.checkExternalClick);
     document.body.addEventListener('keypress', this.handleKey);
     let fileInputElement = document.getElementById('fileInput');
-    fileInputElement.click();
+    if (fileInputElement) {
+      fileInputElement.click();
+    }
   }
-
+  
   componentWillUnmount() {
     document.body.removeEventListener('click', this.checkExternalClick);
     document.body.removeEventListener('keypress', this.handleKey);
@@ -74,9 +76,9 @@ export default class FileEditor extends React.Component {
   render() {
     const file = this.props.value;
     return (
-      <div ref='input' style={{ minWidth: this.props.width, visibility: 'hidden' }} className={styles.editor}>
+      <div ref='input' style={{ minWidth: this.props.width, display: 'none' }} className={styles.editor}>
         <a className={styles.upload}>
-          <input ref='fileInput' id="fileInput" type='file' onChange={this.handleChange.bind(this)} />
+          <input ref='fileInput' id='fileInput' type='file' onChange={this.handleChange.bind(this)} />
           <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
       </div>
