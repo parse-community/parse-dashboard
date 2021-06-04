@@ -62,6 +62,7 @@ class Browser extends DashboardView {
       showExportDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
+      showPointerKeyDialogue: false,
       rowsToDelete: null,
 
       relation: null,
@@ -439,15 +440,18 @@ class Browser extends DashboardView {
       }
     }
 
-    await Parse.Schema.all({ useMasterKey: true });
-    const classColumns = await this.getClassColumns(source, false);
+    const classes = await Parse.Schema.all();
+    const schema = classes.find( c => c.className === this.props.params.className);
 
-    for ( let i = 0; i < classColumns.length; i++ ) {
-      if ( classColumns[i].type === 'Pointer' ) {
-        const defaultPointerKey = await localStorage.getItem(classColumns[i].targetClass) || 'objectId';
+    const fieldKeys = Object.keys(schema.fields)
+    for ( let i = 0; i < fieldKeys.length; i++ ) {
+      const schemaKey = fieldKeys[i];
+      const schVal = schema.fields[schemaKey];
+      if ( schVal.type === 'Pointer' ) {
+        const defaultPointerKey = await localStorage.getItem(schVal.targetClass) || 'objectId';
         if ( defaultPointerKey !== 'objectId' ) {
-          query.include(classColumns[i].name);
-          query.select(classColumns[i].name + '.' + defaultPointerKey);
+          query.include(schemaKey);
+          query.select(schemaKey + '.' + defaultPointerKey);
         }
       }
     }
@@ -1006,6 +1010,10 @@ class Browser extends DashboardView {
     });
   }
 
+  showPointerKeyDialogue() {
+    this.setState({ showPointerKeyDialogue: true });
+  }
+
   closeEditRowDialog() {
     this.setState({
       showEditRowDialog: false,
@@ -1119,6 +1127,7 @@ class Browser extends DashboardView {
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
             onSaveNewRow={this.saveNewRow}
+            onShowPointerKey={this.showPointerKeyDialogue}
             onAbortAddRow={this.abortAddRow}
 
             columns={columns}

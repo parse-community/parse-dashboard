@@ -14,7 +14,7 @@ import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 
-export default class RemoveColumnDialog extends React.Component {
+export default class PointerKeyDialod extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -30,7 +30,7 @@ export default class RemoveColumnDialog extends React.Component {
         <Field
           label={
             <Label
-              text='Which column?' />
+              text='PointerKey' />
             }
           input={
             <Dropdown
