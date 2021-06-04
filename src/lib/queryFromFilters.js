@@ -16,7 +16,7 @@ export default function queryFromFilters(className, filters) {
     query = className.query();
   }
   filters.forEach((filter) => {
-    query = addConstraint(query, filter, className);
+    addConstraint(query, filter);
   });
   return query;
 }
@@ -28,7 +28,7 @@ function addQueryConstraintFromObject(query, filter, constraintType) {
   }
 }
 
-function addConstraint(query, filter, className) {
+function addConstraint(query, filter) {
   switch (filter.get('constraint')) {
     case 'exists':
       query.exists(filter.get('field'));
@@ -104,11 +104,8 @@ function addConstraint(query, filter, className) {
     case 'keyLte':
       addQueryConstraintFromObject(query, filter, 'lessThanOrEqualTo');
       break;
-    case 'isNull':
-      query.exists(filter.get('field'));
-      let nullQuery = new Parse.Query(className);
-      nullQuery.equalTo(filter.get('field'), null);
-      query = Parse.Query.and(query, nullQuery);
+    case 'dneOrNull':
+      query.equalTo(filter.get('field'), null);
       break;
   }
   return query;
