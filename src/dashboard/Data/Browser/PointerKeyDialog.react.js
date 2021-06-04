@@ -22,6 +22,11 @@ export default class PointerKeyDialod extends React.Component {
     };
   }
 
+  async componentDidMount() {
+    const defaultPointerKey = await localStorage.getItem(this.props.className);
+    this.setState({ name: defaultPointerKey });
+  }
+
   render() {
     let content = null;
     let hasColumns = this.props.currentColumns.length > 0;
@@ -44,11 +49,11 @@ export default class PointerKeyDialod extends React.Component {
     }
     return (
       <Modal
-        type={Modal.Types.DANGER}
+        type={Modal.Types.INFO}
         icon='warn-outline'
         title='Remove a column'
-        subtitle={hasColumns ? 'Be careful, this action cannot be undone.' : 'There are no removable columns on this class.'}
-        confirmText='Remove column'
+        subtitle={hasColumns ? 'The column will be used throughout dashboard as pointer value for this class.' : 'There are no columns on this class that can be set a pointer value.'}
+        confirmText='Make pointer value'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
         disabled={!this.state.name}

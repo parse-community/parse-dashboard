@@ -28,6 +28,7 @@ import prettyNumber                       from 'lib/prettyNumber';
 import queryFromFilters                   from 'lib/queryFromFilters';
 import React                              from 'react';
 import RemoveColumnDialog                 from 'dashboard/Data/Browser/RemoveColumnDialog.react';
+import PointerKeyDialod                   from 'dashboard/Data/Browser/PointerKeyDialog.react';
 import SidebarAction                      from 'components/Sidebar/SidebarAction';
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
@@ -128,6 +129,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
+    this.showPointerKeyDialogue = this.showPointerKeyDialogue.bind(this);
     this.onChangeDefaultKey = this.onChangeDefaultKey.bind(this);
   }
 
@@ -1030,30 +1032,12 @@ class Browser extends DashboardView {
     this.setState({showPermissionsDialog: opened});
   }
 
-  async onChangeDefaultKey () {
+  async onChangeDefaultKey (name) {
     const className = this.props.params.className;
-    const classes = this.props.schema.data.get('classes');
-
-    const cols = {};
-
-    classes.get(className).forEach(({ type, targetClass, required }, name) => {
-        if ( name !== 'ACL' ) {
-          cols[name] = name;
-        }
-    });
-
-    const defaultValue = await localStorage.getItem(className) || 'objectId';
-
-    const { value } = await MySwal.fire({
-      title: 'Cange Pointer Key',
-      input: 'select',
-      inputValue: defaultValue,
-      inputOptions: cols,
-      showCancelButton: true,
-    })
-    if ( value ) {
-      await localStorage.setItem(className, value);
+    if ( name ) {
+      await localStorage.setItem(className, name);
     }
+    this.setState({ showPointerKeyDialogue: false });
   }
 
 
@@ -1150,13 +1134,22 @@ class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
-            onChangeDefaultKey={this.onChangeDefaultKey}
             showNote={this.showNote} />
         );
       }
     }
     let extras = null;
-    if (this.state.showCreateClassDialog) {
+    if(this.state.showPointerKeyDialogue){
+      let currentColumns = this.getClassColumns(className).map(column => column.name);
+      extras = (
+        <PointerKeyDialod
+          className={className}
+          currentColumns={currentColumns}
+          onCancel={() => this.setState({ showPointerKeyDialogue: false })}
+          onConfirm={this.onChangeDefaultKey} />
+      );
+    }
+    else if (this.state.showCreateClassDialog) {
       extras = (
         <CreateClassDialog
           currentClasses={this.props.schema.data.get('classes').keySeq().toArray()}

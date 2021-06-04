@@ -240,6 +240,17 @@ class BrowserCell extends Component {
       let dataValue = value.id;
       if ( defaultPointerKey !== 'objectId' ) {
         dataValue = value.get(defaultPointerKey);
+        if ( dataValue && typeof dataValue === 'object' ){
+          if ( dataValue instanceof Date ) {
+            dataValue = dataValue.toLocaleString();
+          }
+          else {
+            dataValue = '[Invalid value]';
+          }
+        }
+        if ( !dataValue ) {
+          dataValue = '[Invalid value]';
+        }
       }
 
       if (value && value.__type) {
