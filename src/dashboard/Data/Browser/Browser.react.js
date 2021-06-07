@@ -59,7 +59,7 @@ class Browser extends DashboardView {
       showExportDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
-      showPointerKeyDialogue: false,
+      showPointerKeyDialog: false,
       rowsToDelete: null,
 
       relation: null,
@@ -125,7 +125,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
-    this.showPointerKeyDialogue = this.showPointerKeyDialogue.bind(this);
+    this.showPointerKeyDialog = this.showPointerKeyDialog.bind(this);
     this.onChangeDefaultKey = this.onChangeDefaultKey.bind(this);
   }
 
@@ -1008,8 +1008,8 @@ class Browser extends DashboardView {
     });
   }
 
-  showPointerKeyDialogue() {
-    this.setState({ showPointerKeyDialogue: true });
+  showPointerKeyDialog() {
+    this.setState({ showPointerKeyDialog: true });
   }
 
   closeEditRowDialog() {
@@ -1033,7 +1033,7 @@ class Browser extends DashboardView {
     if ( name ) {
       await localStorage.setItem(className, name);
     }
-    this.setState({ showPointerKeyDialogue: false });
+    this.setState({ showPointerKeyDialog: false });
   }
 
 
@@ -1107,7 +1107,7 @@ class Browser extends DashboardView {
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
             onSaveNewRow={this.saveNewRow}
-            onShowPointerKey={this.showPointerKeyDialogue}
+            onShowPointerKey={this.showPointerKeyDialog}
             onAbortAddRow={this.abortAddRow}
 
             columns={columns}
@@ -1135,13 +1135,13 @@ class Browser extends DashboardView {
       }
     }
     let extras = null;
-    if(this.state.showPointerKeyDialogue){
+    if(this.state.showPointerKeyDialog){
       let currentColumns = this.getClassColumns(className).map(column => column.name);
       extras = (
         <PointerKeyDialod
           className={className}
           currentColumns={currentColumns}
-          onCancel={() => this.setState({ showPointerKeyDialogue: false })}
+          onCancel={() => this.setState({ showPointerKeyDialog: false })}
           onConfirm={this.onChangeDefaultKey} />
       );
     }
