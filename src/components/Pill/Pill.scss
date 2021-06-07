@@ -17,7 +17,6 @@
   line-height: 20px;
   border-radius: 10px;
   font-size: 11px;
-  padding: 0 8px;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -49,12 +48,4 @@
 
 .disableIconAction {
   cursor: initial;
-}
-
-.action {
-  background: #D5E5F2;
-  justify-content: center;
-  &:hover {
-    background: #BFD4E5;
-  }
 }
