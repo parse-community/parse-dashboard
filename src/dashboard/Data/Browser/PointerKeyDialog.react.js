@@ -14,7 +14,7 @@ import Modal              from 'components/Modal/Modal.react';
 import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 
-export default class PointerKeyDialod extends React.Component {
+export default class PointerKeyDialog extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -50,9 +50,8 @@ export default class PointerKeyDialod extends React.Component {
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon='warn-outline'
-        title={'Change pointer value for class '+this.props.className}
-        subtitle={hasColumns ? 'The column will be used throughout dashboard as pointer value for this class.' : 'There are no columns on this class that can be set a pointer value.'}
+        title={'Change pointer key'}
+        subtitle={hasColumns ? 'The column will be used inplace of pointer value for class:'+this.props.className : 'There are no columns on this class that can be set a pointer value.'}
         confirmText='Update pointer value'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
