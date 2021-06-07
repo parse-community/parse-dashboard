@@ -50,7 +50,7 @@ export default class PointerKeyDialog extends React.Component {
     return (
       <Modal
         type={Modal.Types.INFO}
-        title={'Change pointer key'}
+        title={'Edit pointer key for this class'}
         subtitle={hasColumns ? 'The column will be used inplace of pointer column value for class:'+this.props.className : 'There are no columns on this class that can be set a pointer value.'}
         confirmText='Update pointer value'
         cancelText={'Never mind, don\u2019t.'}
