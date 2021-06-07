@@ -388,6 +388,7 @@ export default class EditRowDialog extends React.Component {
                 <Pill
                   onClick={() => this.openPointer(targetClass, pointerId)}
                   value={pointerId}
+                  followClick={true}
                 />
               )}
               <Pill
