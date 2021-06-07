@@ -57,7 +57,6 @@ let BrowserToolbar = ({
 
   enableColumnManipulation,
   enableClassManipulation,
-
   onShowPointerKey
 }) => {
   let selectionLength = Object.keys(selection).length;
