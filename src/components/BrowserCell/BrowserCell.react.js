@@ -58,7 +58,7 @@ export default class BrowserCell extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.constent ) {
+    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.content ) {
       return true;
     }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
