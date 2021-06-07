@@ -214,7 +214,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredField } = this.props;
     let content = value;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
@@ -303,6 +303,10 @@ export default class BrowserCell extends Component {
 
     if (current) {
       classes.push(styles.current);
+    }
+    
+    if (markRequiredField && isRequired && !value) {
+      classes.push(styles.required);
     }
     
     return readonly ? (

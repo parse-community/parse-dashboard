@@ -79,6 +79,7 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
+      markRequiredField: false
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -302,6 +303,11 @@ class Browser extends DashboardView {
         newObject: null
       });
     }
+    if (this.state.markRequiredField) {
+      this.setState({
+        markRequiredField: false
+      });
+    }
   }
 
   saveNewRow(){
@@ -310,6 +316,45 @@ class Browser extends DashboardView {
       return;
     }
 
+    // check if required fields are missing
+    const className = this.props.params.className;
+    let requiredCols = [];
+    if (className) {
+      let classColumns = this.props.schema.data.get('classes').get(className);
+      classColumns.forEach(({ required }, name) => {
+          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
+            return;
+          }
+          if (!!required) {
+            requiredCols.push(name);
+          }
+          if (className === '_User' && (name === 'username' || name === 'password')) {
+            if (!obj.get('authData')) {
+              requiredCols.push(name);
+            }
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            requiredCols.push(name);
+          }
+        });
+    }
+    if (requiredCols.length) {
+      for (let idx = 0; idx < requiredCols.length; idx++) {
+        const name = requiredCols[idx];
+        if (!obj.get(name)) {
+          this.showNote("Please enter all required fields", true);
+          this.setState({
+            markRequiredField: true
+          });
+          return;
+        }
+      }
+    }
+    if (this.state.markRequiredField) {
+      this.setState({
+        markRequiredField: false
+      });
+    }
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
         let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
@@ -1080,6 +1125,7 @@ class Browser extends DashboardView {
             onSaveNewRow={this.saveNewRow}
             onAbortAddRow={this.abortAddRow}
 
+            markRequiredField={this.state.markRequiredField}
             columns={columns}
             className={className}
             fetchNextPage={this.fetchNextPage}
