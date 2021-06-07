@@ -237,7 +237,7 @@ export default class BrowserCell extends Component {
       const defaultPointerKey = await localStorage.getItem(value.className) || 'objectId';
 
       let dataValue = value.id;
-      if ( defaultPointerKey !== 'objectId' ) {
+      if( defaultPointerKey !== 'objectId' ) {
         dataValue = value.get(defaultPointerKey);
         if ( dataValue && typeof dataValue === 'object' ){
           if ( dataValue instanceof Date ) {

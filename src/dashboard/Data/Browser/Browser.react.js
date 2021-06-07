@@ -341,7 +341,7 @@ class Browser extends DashboardView {
               });
             },
             error => {
-              let msg = typeof error === "string" ? error : error.message;
+              let msg = typeof error === 'string' ? error : error.message;
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
@@ -361,7 +361,7 @@ class Browser extends DashboardView {
         this.setState(state);
       },
       error => {
-        let msg = typeof error === "string" ? error : error.message;
+        let msg = typeof error === 'string' ? error : error.message;
         if (msg) {
           msg = msg[0].toUpperCase() + msg.substr(1);
         }
