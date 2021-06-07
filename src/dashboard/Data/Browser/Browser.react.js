@@ -28,7 +28,7 @@ import prettyNumber                       from 'lib/prettyNumber';
 import queryFromFilters                   from 'lib/queryFromFilters';
 import React                              from 'react';
 import RemoveColumnDialog                 from 'dashboard/Data/Browser/RemoveColumnDialog.react';
-import PointerKeyDialod                   from 'dashboard/Data/Browser/PointerKeyDialog.react';
+import PointerKeyDialog                   from 'dashboard/Data/Browser/PointerKeyDialog.react';
 import SidebarAction                      from 'components/Sidebar/SidebarAction';
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
@@ -1138,7 +1138,7 @@ class Browser extends DashboardView {
     if(this.state.showPointerKeyDialog){
       let currentColumns = this.getClassColumns(className).map(column => column.name);
       extras = (
-        <PointerKeyDialod
+        <PointerKeyDialog
           className={className}
           currentColumns={currentColumns}
           onCancel={() => this.setState({ showPointerKeyDialog: false })}
