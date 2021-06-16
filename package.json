@@ -67,7 +67,7 @@
     "react-dom": "16.14.0",
     "react-helmet": "6.0.0",
     "react-json-view": "1.21.3",
-    "react-popper-tooltip": "4.2.0",
+    "react-popper-tooltip": "4.3.0",
     "react-redux": "5.1.2",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
