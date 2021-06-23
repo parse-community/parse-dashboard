@@ -219,7 +219,7 @@ export default class BrowserCell extends Component {
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
     if (hidden) {
-      content = row < 0 && isRequired ? '(required)' : '(hidden)';
+      content = row < 0 && isRequired && value === undefined ? '(required)' : '(hidden)';
       classes.push(styles.empty);
     } else if (value === undefined) {
       if (type === 'ACL') {
@@ -228,8 +228,7 @@ export default class BrowserCell extends Component {
         this.copyableValue = content = '(undefined)';
         classes.push(styles.empty);
       }
-      content = row < 0 && isRequired ? '(required)' : content;
-      row < 0 && classes.push(styles.empty);
+      content = row < 0 && isRequired && value === undefined ? '(required)' : content;
     } else if (value === null) {
       this.copyableValue = content = '(null)';
       classes.push(styles.empty);
