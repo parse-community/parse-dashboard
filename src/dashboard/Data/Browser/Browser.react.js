@@ -1011,7 +1011,12 @@ class Browser extends DashboardView {
     const objects = await query.find({ useMasterKey: true });
     const toClone = [];
     for (const object of objects) {
-      toClone.push(object.clone());
+      let clonedObj = object.clone();
+      if (className === '_User') {
+        clonedObj.set('username', '');
+        clonedObj.set('authData', undefined);
+      }
+      toClone.push(clonedObj);
     }
     try {
       await Parse.Object.saveAll(toClone, { useMasterKey: true });
@@ -1025,8 +1030,8 @@ class Browser extends DashboardView {
         }
       });
     } catch (error) {
-      //for duplicate, username missing, password missing or required field missing errors
-      if (error.code === 137 || error.code === 201 || error.code === 200 || error.code === 142) {
+      //for duplicate, username missing or required field missing errors
+      if (error.code === 137 || error.code === 200 || error.code === 142) {
         let failedSaveObj = [];
         let savedObjects = [];
         toClone.forEach(cloneObj => {
