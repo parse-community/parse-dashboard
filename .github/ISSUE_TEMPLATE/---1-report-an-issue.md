@@ -45,6 +45,8 @@ assignees: ''
 
 Dashboard
 - Parse Dashboard version: `FILL_THIS_OUT`
+- Browser (Safari, Chrome, Firefox, Edge, etc.): `FILL_THIS_OUT`
+- Browser version: `FILL_THIS_OUT`
 
 Server
 - Parse Server version: `FILL_THIS_OUT`
