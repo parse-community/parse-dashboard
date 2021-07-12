@@ -79,7 +79,8 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
-      markRequiredField: false
+      markRequiredField: false,
+      requiredColumnFields: []
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -124,6 +125,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
+    this.setRequiredColumnFields = this.setRequiredColumnFields.bind(this);
   }
 
   componentWillMount() {
@@ -287,6 +289,10 @@ class Browser extends DashboardView {
   }
 
   addRow() {
+    if (this.props.params.className === '_User') {
+      // if User class row, then reload requiredFields
+      this.setRequiredColumnFields();
+    }
     if (!this.state.newObject) {
       const relation = this.state.relation;
       this.setState({
@@ -526,6 +532,30 @@ class Browser extends DashboardView {
       delete filteredCounts[source];
     }
     this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
+    this.setRequiredColumnFields();
+  }
+
+  setRequiredColumnFields() {
+    if (!this.props.schema.data.get('classes')) {
+      return;
+    }
+    let classes = this.props.schema.data.get('classes');
+    const { className } = this.props.params;
+    let requiredCols = [];
+    classes.get(className).forEach(({ required }, name) => {
+      if (!!required) {
+        requiredCols.push(name);
+      }
+      if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
+        requiredCols.push(name);
+      }
+      if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+        requiredCols.push(name);
+      }
+    });
+    this.setState({
+      requiredColumnFields: requiredCols
+    });
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -679,7 +709,23 @@ class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
-    if(isNewObject){
+    
+    if (isNewObject) {
+      // for dynamically changing required placeholder text for _User class new row object
+      if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
+        // username & password are not required
+        this.setState({
+          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'username' && field !== 'password')
+        })
+      }
+
+      if (obj.className === '_User' && (attr === 'username' || attr === 'password') && value !== undefined) {
+        // authData is not required
+        this.setState({
+          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'authData')
+        })
+      }
+
       this.setState({
         isNewObject: obj
       });
@@ -1074,17 +1120,11 @@ class Browser extends DashboardView {
         if (this.state.isUnique) {
           columns = {};
         }
-        classes.get(className).forEach(({ type, targetClass, required }, name) => {
+        classes.get(className).forEach(({ type, targetClass }, name) => {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          const info = { type, required: !!required };
-          if (className === '_User' && (name === 'username' || name === 'password')) {
-            info.required = true;
-          }
-          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
-            info.required = true;
-          }
+          const info = { type };
           if (targetClass) {
             info.targetClass = targetClass;
           }
@@ -1126,6 +1166,7 @@ class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
 
             markRequiredField={this.state.markRequiredField}
+            requiredColumnFields={this.state.requiredColumnFields}
             columns={columns}
             className={className}
             fetchNextPage={this.fetchNextPage}

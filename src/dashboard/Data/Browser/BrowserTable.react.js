@@ -144,6 +144,7 @@ export default class BrowserTable extends React.Component {
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredField={this.props.markRequiredField}
+              requiredColumnFields={this.props.requiredColumnFields}
             />
             <Button
               value="Add"
