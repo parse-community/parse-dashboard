@@ -219,7 +219,7 @@ export default class BrowserCell extends Component {
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
     if (hidden) {
-      content = row < 0 && isRequired && value === undefined ? '(required)' : '(hidden)';
+      content = value !== undefined || row > -1 ? '(hidden)' : isRequired ? '(required)' : '(undefined)';
       classes.push(styles.empty);
     } else if (value === undefined) {
       if (type === 'ACL') {
