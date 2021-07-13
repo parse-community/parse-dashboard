@@ -115,7 +115,7 @@ export default class BrowserTable extends React.Component {
         (rowWidth, { visible, width }) => visible ? rowWidth + width : rowWidth,
         this.props.onAddRow ? 210 : 0
       );
-      let editCloneRows = null;
+      let editCloneRows;
       if(this.props.editCloneRows){
         editCloneRows = (
           <div>
@@ -173,7 +173,7 @@ export default class BrowserTable extends React.Component {
           </div>
         )
       }
-      let newRow = null;
+      let newRow;
       if (this.props.newObject && this.state.offset <= 0) {
         const currentCol = this.props.current && this.props.current.row === -1 ? this.props.current.col : undefined;
         newRow = (
