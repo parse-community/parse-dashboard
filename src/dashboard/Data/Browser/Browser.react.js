@@ -726,6 +726,10 @@ class Browser extends DashboardView {
         })
       }
 
+      if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
+        this.setRequiredColumnFields();
+      }
+      
       this.setState({
         isNewObject: obj
       });
