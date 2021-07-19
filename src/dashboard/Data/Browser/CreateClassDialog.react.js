@@ -13,7 +13,7 @@ import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 import { SpecialClasses } from 'lib/Constants';
 import TextInput          from 'components/TextInput/TextInput.react';
-import history                           from 'dashboard/history';
+import history            from 'dashboard/history';
 
 function validClassName(name) {
   return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
