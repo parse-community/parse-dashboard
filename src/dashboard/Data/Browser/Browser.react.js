@@ -283,13 +283,17 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).finally(() => {
+    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).then(() => {
+      // if new required field column is added, then add field in requiredColumn
+      if (required) {
+        let requiredCols = [...this.state.requiredColumnFields, name];
+        this.setState({
+          requiredColumnFields: requiredCols
+        });
+      }
+    }).finally(() => {
       this.setState({ showAddColumnDialog: false });
     });
-    // if required column is added, reload required column fields
-    if (required) {
-      this.setRequiredColumnFields();
-    }
   }
 
   addRow() {
