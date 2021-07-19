@@ -286,6 +286,10 @@ class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).finally(() => {
       this.setState({ showAddColumnDialog: false });
     });
+    // if required column is added, reload required column fields
+    if (required) {
+      this.setRequiredColumnFields();
+    }
   }
 
   addRow() {
