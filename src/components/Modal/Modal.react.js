@@ -52,7 +52,7 @@ let Modal = (({
       return c;
     });
   }
-
+  let isDisabled = !!disabled;
   let footer = customFooter || (
     <div style={{textAlign: buttonsInCenter ? 'center' : 'right'}} className={styles.footer}>
       {showCancel ? <Button
@@ -63,7 +63,7 @@ let Modal = (({
         primary={true}
         value={confirmText}
         color={buttonColors[type]}
-        disabled={!!disabled}
+        disabled={isDisabled}
         onClick={onConfirm}
         progress={progress} />
       {
@@ -72,7 +72,7 @@ let Modal = (({
         primary={true}
         value={continueText}
         color={buttonColors[type]}
-        disabled={!!disabled}
+        disabled={isDisabled}
         onClick={onContinue}
         progress={progress} />: null}
     </div>

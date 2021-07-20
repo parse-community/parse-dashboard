@@ -33,7 +33,7 @@ function validColumnName(name) {
 export default class AddColumnDialog extends React.Component {
   constructor(props) {
     super();
-    this.state = {
+    this.initialState = {
       type: 'String',
       target: props.classes[0],
       name: '',
@@ -42,6 +42,7 @@ export default class AddColumnDialog extends React.Component {
       isDefaultValueValid: true,
       uploadingFile: false
     };
+    this.state = this.initialState;
     this.renderDefaultValueInput = this.renderDefaultValueInput.bind(this)
     this.handleDefaultValueChange = this.handleDefaultValueChange.bind(this)
   }
@@ -208,7 +209,10 @@ export default class AddColumnDialog extends React.Component {
         onCancel={this.props.onCancel}
         continueText={'Add column & continue'}
         showContinue={true}
-        onContinue={() => this.props.onContinue(this.state)}
+        onContinue={() => {
+          this.props.onContinue(this.state);
+          this.setState(this.initialState);
+        }}
         onConfirm={() => {
           this.props.onConfirm(this.state);
         }}>
