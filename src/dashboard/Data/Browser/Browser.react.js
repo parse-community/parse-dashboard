@@ -1013,7 +1013,7 @@ class Browser extends DashboardView {
     for (const object of objects) {
       let clonedObj = object.clone();
       if (className === '_User') {
-        clonedObj.set('username', '');
+        clonedObj.set('username', undefined);
         clonedObj.set('authData', undefined);
       }
       toClone.push(clonedObj);
