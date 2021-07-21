@@ -87,7 +87,7 @@ export default class DataBrowser extends React.Component {
     document.body.removeEventListener('keydown', this.handleKey);
   }
 
-  updatePreferences(order) {
+  updatePreferences(order, shouldReload) {
     if (this.saveOrderTimeout) {
       clearTimeout(this.saveOrderTimeout);
     }
@@ -95,6 +95,7 @@ export default class DataBrowser extends React.Component {
     let className = this.props.className;
     this.saveOrderTimeout = setTimeout(() => {
       ColumnPreferences.updatePreferences(order, appId, className)
+      shouldReload && this.props.onRefresh();
     }, 1000);
   }
 
@@ -262,9 +263,9 @@ export default class DataBrowser extends React.Component {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
-  handleColumnsOrder(order) {
+  handleColumnsOrder(order, shouldReload) {
     this.setState({ order: [ ...order ] }, () => {
-      this.updatePreferences(order);
+      this.updatePreferences(order, shouldReload);
     });
   }
 
