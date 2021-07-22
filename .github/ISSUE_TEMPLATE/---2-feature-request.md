@@ -9,7 +9,7 @@ assignees: ''
 
 ### New Feature / Enhancement Checklist
 <!--
-    Please check the following boxes [x] before submitting your issue.
+    Check every following box [x] before submitting your issue.
     Click the "Preview" tab for better readability.
     Thanks for contributing to Parse Platform!
 -->
