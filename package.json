@@ -71,7 +71,7 @@
     "react-redux": "5.1.2",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
-    "regenerator-runtime": "0.13.5",
+    "regenerator-runtime": "0.13.8",
     "semver": "7.3.4"
   },
   "devDependencies": {
