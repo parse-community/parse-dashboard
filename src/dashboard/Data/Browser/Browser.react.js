@@ -291,6 +291,8 @@ class Browser extends DashboardView {
           requiredColumnFields: requiredCols
         });
       }
+    }).catch((err) => {
+      this.showNote(err.message, true);
     }).finally(() => {
       this.setState({ showAddColumnDialog: false });
     });
