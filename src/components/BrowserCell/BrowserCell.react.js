@@ -250,7 +250,7 @@ export default class BrowserCell extends Component {
       this.copyableValue = value.id;
     }
     else if (type === 'Array') {
-      if ( typeof value[0] === 'object' && value[0].__type === 'Pointer' ) {
+      if ( value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer' ) {
         const array = [];
         value.map( (v, i) => {
           if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
