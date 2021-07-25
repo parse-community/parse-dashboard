@@ -32,12 +32,12 @@ assignees: ''
 ### Expected Outcome
 <!-- What outcome did you expect? -->
 
-### Failing Test / Pull Request
+### Pull Request
 <!--
-    Please submit a PR with a failing test (or passing test if you already include the fix), so we can verify that the issue exists.
+    If you can, please submit a PR with a fix.
 -->
 
-- PR with [test](https://github.com/parse-community/parse-server/blob/master/CONTRIBUTING.md#environment-setup): #`FILL_THIS_OUT`
+- PR: #`FILL_THIS_OUT`
 
 ###  Environment
 <!-- Be specific with versions, don't use "latest" or semver ranges like "~x.y.z" or "^x.y.z". -->
