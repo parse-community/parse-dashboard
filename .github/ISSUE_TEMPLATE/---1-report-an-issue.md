@@ -33,9 +33,7 @@ assignees: ''
 <!-- What outcome did you expect? -->
 
 ### Pull Request
-<!--
-    If you can, please submit a PR with a fix.
--->
+<!-- If you can, please submit a PR with a fix. -->
 
 - PR: #`FILL_THIS_OUT`
 
