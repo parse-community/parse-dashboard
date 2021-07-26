@@ -314,7 +314,7 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.newColumn(payload).finally(() => {
+    this.newColumn(payload, required).finally(() => {
       this.setState({ showAddColumnDialog: false, keepAddingCols: false });
       this.setState({ showAddColumnDialog: true, keepAddingCols: true });
     });
