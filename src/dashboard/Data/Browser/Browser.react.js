@@ -79,6 +79,7 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
+      keepAddingCols: false,
       markRequiredField: false,
       requiredColumnFields: []
     };
@@ -117,6 +118,7 @@ class Browser extends DashboardView {
     this.showCreateClass = this.showCreateClass.bind(this);
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
+    this.addColumnAndContinue = this.addColumnAndContinue.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
     this.showEditRowDialog = this.showEditRowDialog.bind(this);
@@ -274,6 +276,21 @@ class Browser extends DashboardView {
     });
   }
 
+  newColumn(payload, required) {
+    return this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload)
+      .then(() => {
+        if (required) {
+          let requiredCols = [...this.state.requiredColumnFields, name];
+          this.setState({
+            requiredColumnFields: requiredCols
+          });
+        }
+      })
+      .catch((err) => {
+        this.showNote(err.message, true);
+      });
+  }
+
   addColumn({ type, name, target, required, defaultValue }) {
     let payload = {
       className: this.props.params.className,
@@ -283,18 +300,23 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).then(() => {
-      // if new required field column is added, then add field in requiredColumn
-      if (required) {
-        let requiredCols = [...this.state.requiredColumnFields, name];
-        this.setState({
-          requiredColumnFields: requiredCols
-        });
-      }
-    }).catch((err) => {
-      this.showNote(err.message, true);
-    }).finally(() => {
-      this.setState({ showAddColumnDialog: false });
+    this.newColumn(payload, required).finally(() => {
+      this.setState({ showAddColumnDialog: false, keepAddingCols: false });
+    });
+  }
+
+  addColumnAndContinue({ type, name, target, required, defaultValue }) {
+    let payload = {
+      className: this.props.params.className,
+      columnType: type,
+      name: name,
+      targetClass: target,
+      required,
+      defaultValue
+    };
+    this.newColumn(payload, required).finally(() => {
+      this.setState({ showAddColumnDialog: false, keepAddingCols: false });
+      this.setState({ showAddColumnDialog: true, keepAddingCols: true });
     });
   }
 
@@ -412,7 +434,7 @@ class Browser extends DashboardView {
           }
           this.state.counts[obj.className] += 1;
         }
-        
+
         this.setState(state);
       },
       error => {
@@ -599,7 +621,7 @@ class Browser extends DashboardView {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      
+
       if (sortDir === '-') {
         query.lessThan(field, comp);
         equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
@@ -719,7 +741,7 @@ class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
-    
+
     if (isNewObject) {
       // for dynamically changing required placeholder text for _User class new row object
       if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
@@ -739,7 +761,7 @@ class Browser extends DashboardView {
       if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
         this.setRequiredColumnFields();
       }
-      
+
       this.setState({
         isNewObject: obj
       });
@@ -1209,6 +1231,8 @@ class Browser extends DashboardView {
     if (this.state.showCreateClassDialog) {
       extras = (
         <CreateClassDialog
+          currentAppSlug={this.context.currentApp.slug}
+          onAddColumn={this.showAddColumn}
           currentClasses={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showCreateClassDialog: false })}
           onConfirm={this.createClass} />
@@ -1221,10 +1245,12 @@ class Browser extends DashboardView {
       });
       extras = (
         <AddColumnDialog
+          onAddColumn={this.showAddColumn}
           currentColumns={currentColumns}
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
           onConfirm={this.addColumn}
+          onContinue={this.addColumnAndContinue}
           showNote={this.showNote}
           parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
       );
