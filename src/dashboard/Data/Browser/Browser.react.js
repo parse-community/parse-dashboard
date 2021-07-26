@@ -79,12 +79,9 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
-<<<<<<< HEAD
       keepAddingCols: false,
-=======
       markRequiredField: false,
       requiredColumnFields: []
->>>>>>> 526fedd139e11b389cf64f3384abd867e8000cba
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -294,7 +291,6 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-<<<<<<< HEAD
     this.newColumn(payload).finally(() => {
       this.setState({ showAddColumnDialog: false, keepAddingCols: false });
     });
@@ -312,20 +308,6 @@ class Browser extends DashboardView {
     this.newColumn(payload).finally(() => {
       this.setState({ showAddColumnDialog: false, keepAddingCols: false });
       this.setState({ showAddColumnDialog: true, keepAddingCols: true });
-=======
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).then(() => {
-      // if new required field column is added, then add field in requiredColumn
-      if (required) {
-        let requiredCols = [...this.state.requiredColumnFields, name];
-        this.setState({
-          requiredColumnFields: requiredCols
-        });
-      }
-    }).catch((err) => {
-      this.showNote(err.message, true);
-    }).finally(() => {
-      this.setState({ showAddColumnDialog: false });
->>>>>>> 526fedd139e11b389cf64f3384abd867e8000cba
     });
   }
 
@@ -750,7 +732,7 @@ class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
-    
+
     if (isNewObject) {
       // for dynamically changing required placeholder text for _User class new row object
       if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
@@ -770,7 +752,7 @@ class Browser extends DashboardView {
       if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
         this.setRequiredColumnFields();
       }
-      
+
       this.setState({
         isNewObject: obj
       });
