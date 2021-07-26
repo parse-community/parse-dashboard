@@ -276,10 +276,19 @@ class Browser extends DashboardView {
     });
   }
 
-  newColumn(payload) {
-    return this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).catch((err) => {
-      this.showNote(err.message, true);
-    });
+  newColumn(payload, required) {
+    return this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload)
+      .then(() => {
+        if (required) {
+          let requiredCols = [...this.state.requiredColumnFields, name];
+          this.setState({
+            requiredColumnFields: requiredCols
+          });
+        }
+      })
+      .catch((err) => {
+        this.showNote(err.message, true);
+      });
   }
 
   addColumn({ type, name, target, required, defaultValue }) {
@@ -291,7 +300,7 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.newColumn(payload).finally(() => {
+    this.newColumn(payload, required).finally(() => {
       this.setState({ showAddColumnDialog: false, keepAddingCols: false });
     });
   }
