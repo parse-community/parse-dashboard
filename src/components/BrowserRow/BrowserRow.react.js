@@ -19,7 +19,7 @@ export default class BrowserRow extends Component {
   }
 
   render() {
-    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, markRequiredField, requiredColumnFields } = this.props;
+    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, markRequiredFieldRow, requiredColumnFields } = this.props;
     let attributes = obj.attributes;
     return (
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
@@ -82,7 +82,7 @@ export default class BrowserRow extends Component {
               value={attr}
               hidden={hidden}
               isRequired={isRequired}
-              markRequiredField={markRequiredField}
+              markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
               setContextMenu={setContextMenu}
               onEditSelectedRow={onEditSelectedRow} />

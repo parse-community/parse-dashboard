@@ -81,7 +81,7 @@ class Browser extends DashboardView {
       isUnique: false,
       uniqueField: null,
       keepAddingCols: false,
-      markRequiredField: false,
+      markRequiredFieldRow: 0,
       requiredColumnFields: []
     };
 
@@ -387,7 +387,7 @@ class Browser extends DashboardView {
         if (!obj.get(name)) {
           this.showNote("Please enter all required fields", true);
           this.setState({
-            markRequiredField: true
+            markRequiredFieldRow: -1
           });
           return;
         }
@@ -395,7 +395,7 @@ class Browser extends DashboardView {
     }
     if (this.state.markRequiredField) {
       this.setState({
-        markRequiredField: false
+        markRequiredFieldRow: 0
       });
     }
     obj.save(null, { useMasterKey: true }).then(
@@ -462,6 +462,47 @@ class Browser extends DashboardView {
     if (!obj) {
       return;
     }
+
+    // check if required fields are missing
+    const className = this.props.params.className;
+    let requiredCols = [];
+    if (className) {
+      let classColumns = this.props.schema.data.get('classes').get(className);
+      classColumns.forEach(({ required }, name) => {
+          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
+            return;
+          }
+          if (!!required) {
+            requiredCols.push(name);
+          }
+          if (className === '_User' && (name === 'username' || name === 'password')) {
+            if (!obj.get('authData')) {
+              requiredCols.push(name);
+            }
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            requiredCols.push(name);
+          }
+        });
+    }
+    if (requiredCols.length) {
+      for (let idx = 0; idx < requiredCols.length; idx++) {
+        const name = requiredCols[idx];
+        if (!obj.get(name)) {
+          this.showNote("Please enter all required fields", true);
+          this.setState({
+            markRequiredFieldRow: rowIndex
+          });
+          return;
+        }
+      }
+    }
+    if (this.state.markRequiredField) {
+      this.setState({
+        markRequiredFieldRow: 0
+      });
+    }
+
     obj.save(null, { useMasterKey: true }).then((objectSaved) => {
       let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
       this.showNote(msg, false);
@@ -816,7 +857,7 @@ class Browser extends DashboardView {
       obj.set(attr, value);
     }
 
-    if (isNewObject) {
+    if (isNewObject || isEditCloneObj) {
       // for dynamically changing required placeholder text for _User class new row object
       if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
         // username & password are not required
@@ -1175,6 +1216,7 @@ class Browser extends DashboardView {
             }
           });
         }
+        this.setRequiredColumnFields();
         this.addEditCloneRows(failedSaveObj);
       }
       this.setState({
@@ -1366,7 +1408,7 @@ class Browser extends DashboardView {
             onAbortEditCloneRow={this.abortEditCloneRow}
             onCancelPendingEditRows={this.cancelPendingEditRows}
 
-            markRequiredField={this.state.markRequiredField}
+            markRequiredFieldRow={this.state.markRequiredFieldRow}
             requiredColumnFields={this.state.requiredColumnFields}
             columns={columns}
             className={className}
