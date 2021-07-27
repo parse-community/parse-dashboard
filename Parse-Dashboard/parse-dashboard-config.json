@@ -1,133 +1,14 @@
 {
   "apps": [
     {
-      "serverURL": "https://parseapi-homolog.back4app.com",
-      "appId": "mQFigU8a6rIVd0iR8YspHMZqG7xdaFRMRjhrLwHm",
-      "javascriptKey": "59Aqu7n6WCm2WGgqo5xpJoujuLKbzLTSa2pSlbpY",
-      "restKey": "s9IRTCGVGpPCF6vPOM80u7hyH44pd8ckNITufvmE",
-      "clientKey": "41wIRkLIlSF5ksPDoiRp38t0glmOgEN5UHzIlR72",
-      "windowsKey": "lRr1as1Bqyh815zQ2XBKsC8GSob0Kz15qgZufPyl",
-      "webhookKey": "t3YafAm0UYjoytFYX7FGbczZIGAOwjfGF6GA6fSc",
-      "apiKey": "abf2c547-6700-460f-94a0-0b55f1ef443c",
-      "appName": "Sample Blog App",
-      "production": true,
-      "appNameForURL": "376a0ede-1aef-4fb7-b9d9-480dbbce2181",
-      "feedbackEmail": "prerna@back4app.com",
-      "custom": {
-        "isGDPR": false,
-        "forceShowGDPRFields": false,
-        "showAdminPage": false,
-        "isOwner": true,
-        "isDatabasePublic": false
-      },
-      "supportedPushLocales": [],
-      "graphQLServerURL": "https://parseapi.back4app.com/graphql",
-      "masterKey": "WBj1fHiKL2oX60XKlSQK29Ofo04ejsnuTSbowkjg"
-    },
-    {
-      "serverURL": "https://parseapi-homolog.back4app.com",
-      "appId": "WaVsDEoypTqV8yEB5PZxY6Yxw5oSM6R0UMUV2KeT",
-      "javascriptKey": "JSqQJb7h3UZ4LsbCVaezS2f52rIXTpwQ6sSO5K5q",
-      "restKey": "3hLLYc4aBmihnGJl9rXO5geEdbCWZ5SLXaqjOigr",
-      "clientKey": "W7VQq9zc0x2YIc2VkHI1sNRIKltpyrhPlvIXsOda",
-      "windowsKey": "SZDqvZwuWRWNCSnX4mLbNbee3BXkQLKCSRUiIxOw",
-      "webhookKey": "wNfGMB7Td9bQM2fNVYAetjIxmTT8l2OKw5sJKhzx",
-      "apiKey": "0a6a3380-e4c7-43b3-a3f3-ec19137c532d",
-      "appName": "My awesome app",
-      "production": true,
-      "appNameForURL": "f171d9cb-2f9a-4ebc-b89e-3044d74c3707",
-      "feedbackEmail": "prerna@back4app.com",
-      "custom": {
-        "isGDPR": false,
-        "forceShowGDPRFields": false,
-        "showAdminPage": false,
-        "isOwner": true,
-        "isDatabasePublic": false
-      },
-      "supportedPushLocales": ["en", "ru", "fr"],
-      "graphQLServerURL": "https://parseapi.back4app.com/graphql",
-      "masterKey": "WCyo3hDrxRy7GLWGdXvqMfbzJvtVpIRTNZORMrgx"
-    },
-    {
-      "serverURL": "https://parseapi-homolog.back4app.com",
-      "appId": "QI6OXGgC5SWniVM8pyPcxjq1yvoftphMO3CInOkn",
-      "javascriptKey": "P1hfsgqtUeDGJBtnlWZQjDieYWdhshtzNFLjvfoG",
-      "restKey": "5CFY3ZpapN7resoznUqnFtLB3K3uM0mFdr2ECqMc",
-      "clientKey": "PjwqF4xS6fo08O0wv4dnpU9Eyqs40xsl7gq5loia",
-      "windowsKey": "jpHF6wqrioJ7BzYvyE9jItwqthPcE12IMRKaxLx8",
-      "webhookKey": "pz0kBJKPzmV4ca1DsRw51UxdlMacgytwwMRLV3HB",
-      "apiKey": "34769d3d-fbb1-49d6-9fb4-754c2bfd64ca",
-      "appName": "osm app",
-      "production": true,
-      "appNameForURL": "c7a6796e-aca0-4a6c-8531-264db4e1a01b",
-      "feedbackEmail": "prerna@back4app.com",
-      "custom": {
-        "isGDPR": false,
-        "forceShowGDPRFields": false,
-        "showAdminPage": false,
-        "isOwner": true,
-        "isDatabasePublic": false
-      },
-      "supportedPushLocales": [],
-      "graphQLServerURL": "https://parseapi.back4app.com/graphql",
-      "masterKey": "jrkeRKQ7FAyflU44QxkEaIxcy7PxKVZZTlZRFTrX"
-    },
-    {
-      "serverURL": "https://parseapi.back4app.com",
-      "appId": "hava58eE0F5BnP1Xz1AWDiW5Sdn7JEZtLqeHVCXT",
-      "javascriptKey": "sI0KsJndJFyeH6yTgXoMHOWLCplffAIAQEDSynDu",
-      "restKey": "mUala6JGbvpJ6mgHgNwZ5sKzpsGSauMHrfwlURO3",
-      "clientKey": "lgKMxXRVEgt1P0iblJug3bYrLtgpizjxZ5eFqlPI",
-      "windowsKey": "Pt3IM73T8JeIW0GWKBcv9BpGCJXrg0ntlx52yMVk",
-      "webhookKey": "5Y4hiZMI7HsgXSG5bJF9NWPLpMa7XRp7Nk8QyPmK",
-      "apiKey": "73fcf2c0-980c-4524-8360-1b85ba9c9022",
-      "appName": "deja vu",
-      "production": true,
-      "appNameForURL": "2d34d793-1a89-4514-b189-b30c2f144404",
-      "feedbackEmail": "prerna@back4app.com",
-      "custom": {
-        "isGDPR": false,
-        "forceShowGDPRFields": false,
-        "showAdminPage": false,
-        "isOwner": true,
-        "isDatabasePublic": false
-      },
-      "supportedPushLocales": [],
-      "graphQLServerURL": "https://parseapi.back4app.com/graphql",
-      "masterKey": "H2h3ZMcDwG7wTZQ7aRJ1kd6ivgU8taQIZ2gjfrms"
-    },
-    {
-      "serverURL": "https://parseapi.back4app.com",
-      "appId": "cq1SwLrKOMnvVRHlwXLOQ0OJwl9DkVXDHrAOnXLp",
-      "javascriptKey": "errgVPjCiwrh80tmOwE789nsabiJzOTAbAeBTBKn",
-      "restKey": "xWE0sYXpsYYpYlJBYIxJH5XmXJ1tjTQeEkWg3qah",
-      "clientKey": "ECFIFusLOcoaMsqZQWaDLi7QIER6ooBkuu9HsRHx",
-      "windowsKey": "pZWFWviroSRWBYlNC8xVyYlXhRTHoLEAQvbNuXYi",
-      "webhookKey": "s0EZTYRAQVk3Os95a0Z4jSM1IAnv507m2kgHwu7e",
-      "apiKey": "d0bcb6bd-430a-4f91-aad0-351c9d8afee9",
-      "appName": "kakashi",
-      "production": true,
-      "appNameForURL": "319c036a-e647-4519-bc67-57c476daf2f9",
-      "feedbackEmail": "prerna@back4app.com",
-      "custom": {
-        "isGDPR": false,
-        "forceShowGDPRFields": false,
-        "showAdminPage": false,
-        "isOwner": true,
-        "isDatabasePublic": false
-      },
-      "supportedPushLocales": [],
-      "graphQLServerURL": "https://parseapi.back4app.com/graphql",
-      "masterKey": "YyxjrcUYkwZGudgTdgrAdCkX4nRtGQfFp3UVKtNE"
+      "serverURL": "http://localhost:1338/parse",
+      "appId": "hello",
+      "masterKey": "world",
+      "appName": "",
+      "iconName": "",
+      "primaryBackgroundColor": "",
+      "secondaryBackgroundColor": ""
     }
   ],
-  "iconsFolder": "icons",
-  "newFeaturesInLatestVersion": [],
-  "user": {
-    "email": "prerna@back4app.com",
-    "has_password": false,
-    "account_keys": [],
-    "name": "prerna@back4app.com",
-    "playDatabaseBrowserTutorial": false
-  }
+  "iconsFolder": "icons"
 }
