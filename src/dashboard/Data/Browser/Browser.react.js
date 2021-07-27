@@ -346,9 +346,9 @@ class Browser extends DashboardView {
         newObject: null
       });
     }
-    if (this.state.markRequiredField) {
+    if (this.state.markRequiredFieldRow !== 0) {
       this.setState({
-        markRequiredField: false
+        markRequiredFieldRow: 0
       });
     }
   }
