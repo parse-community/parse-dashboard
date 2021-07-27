@@ -98,14 +98,16 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    let headers = this.props.order.map(({ name, width, visible }) => (
+    let headers = this.props.order.map(({ name, width, visible, preventSort, required }) => (
       {
         width: width,
         name: name,
         type: this.props.columns[name].type,
         targetClass: this.props.columns[name].targetClass,
         order: ordering.col === name ? ordering.direction : null,
-        visible
+        visible,
+        preventSort,
+        required
       }
     ));
     let editor = null;
@@ -198,7 +200,9 @@ export default class BrowserTable extends React.Component {
               setRelation={this.props.setRelation}
               setCopyableValue={this.props.setCopyableValue}
               setContextMenu={this.props.setContextMenu}
-              onEditSelectedRow={this.props.onEditSelectedRow} 
+              onEditSelectedRow={this.props.onEditSelectedRow}
+              markRequiredField={this.props.markRequiredField}
+              requiredColumnFields={this.props.requiredColumnFields}
             />
             <Button
               value="Add"

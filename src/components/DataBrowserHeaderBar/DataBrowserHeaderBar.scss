@@ -72,3 +72,9 @@
     }
   }
 }
+
+.preventSort {
+  :hover {
+    cursor: not-allowed;
+  }
+}

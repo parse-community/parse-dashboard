@@ -159,7 +159,6 @@ export default class DataBrowser extends React.Component {
         this.props.onAbortAddRow();
         e.preventDefault();
       }
-      return;
     }
     if (this.state.editing) {
       switch (e.keyCode) {
