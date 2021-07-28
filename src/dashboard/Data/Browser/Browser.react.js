@@ -79,6 +79,9 @@ class Browser extends DashboardView {
 
       isUnique: false,
       uniqueField: null,
+      keepAddingCols: false,
+      markRequiredField: false,
+      requiredColumnFields: []
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -115,6 +118,7 @@ class Browser extends DashboardView {
     this.showCreateClass = this.showCreateClass.bind(this);
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
+    this.addColumnAndContinue = this.addColumnAndContinue.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
     this.showNote = this.showNote.bind(this);
     this.showEditRowDialog = this.showEditRowDialog.bind(this);
@@ -123,6 +127,7 @@ class Browser extends DashboardView {
     this.onDialogToggle = this.onDialogToggle.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
+    this.setRequiredColumnFields = this.setRequiredColumnFields.bind(this);
   }
 
   componentWillMount() {
@@ -271,6 +276,21 @@ class Browser extends DashboardView {
     });
   }
 
+  newColumn(payload, required) {
+    return this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload)
+      .then(() => {
+        if (required) {
+          let requiredCols = [...this.state.requiredColumnFields, name];
+          this.setState({
+            requiredColumnFields: requiredCols
+          });
+        }
+      })
+      .catch((err) => {
+        this.showNote(err.message, true);
+      });
+  }
+
   addColumn({ type, name, target, required, defaultValue }) {
     let payload = {
       className: this.props.params.className,
@@ -280,12 +300,31 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload).finally(() => {
-      this.setState({ showAddColumnDialog: false });
+    this.newColumn(payload, required).finally(() => {
+      this.setState({ showAddColumnDialog: false, keepAddingCols: false });
+    });
+  }
+
+  addColumnAndContinue({ type, name, target, required, defaultValue }) {
+    let payload = {
+      className: this.props.params.className,
+      columnType: type,
+      name: name,
+      targetClass: target,
+      required,
+      defaultValue
+    };
+    this.newColumn(payload, required).finally(() => {
+      this.setState({ showAddColumnDialog: false, keepAddingCols: false });
+      this.setState({ showAddColumnDialog: true, keepAddingCols: true });
     });
   }
 
   addRow() {
+    if (this.props.params.className === '_User') {
+      // if User class row, then reload requiredFields
+      this.setRequiredColumnFields();
+    }
     if (!this.state.newObject) {
       const relation = this.state.relation;
       this.setState({
@@ -302,6 +341,11 @@ class Browser extends DashboardView {
         newObject: null
       });
     }
+    if (this.state.markRequiredField) {
+      this.setState({
+        markRequiredField: false
+      });
+    }
   }
 
   saveNewRow(){
@@ -310,6 +354,45 @@ class Browser extends DashboardView {
       return;
     }
 
+    // check if required fields are missing
+    const className = this.props.params.className;
+    let requiredCols = [];
+    if (className) {
+      let classColumns = this.props.schema.data.get('classes').get(className);
+      classColumns.forEach(({ required }, name) => {
+          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
+            return;
+          }
+          if (!!required) {
+            requiredCols.push(name);
+          }
+          if (className === '_User' && (name === 'username' || name === 'password')) {
+            if (!obj.get('authData')) {
+              requiredCols.push(name);
+            }
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            requiredCols.push(name);
+          }
+        });
+    }
+    if (requiredCols.length) {
+      for (let idx = 0; idx < requiredCols.length; idx++) {
+        const name = requiredCols[idx];
+        if (!obj.get(name)) {
+          this.showNote("Please enter all required fields", true);
+          this.setState({
+            markRequiredField: true
+          });
+          return;
+        }
+      }
+    }
+    if (this.state.markRequiredField) {
+      this.setState({
+        markRequiredField: false
+      });
+    }
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
         let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
@@ -351,7 +434,7 @@ class Browser extends DashboardView {
           }
           this.state.counts[obj.className] += 1;
         }
-        
+
         this.setState(state);
       },
       error => {
@@ -481,6 +564,30 @@ class Browser extends DashboardView {
       delete filteredCounts[source];
     }
     this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
+    this.setRequiredColumnFields();
+  }
+
+  setRequiredColumnFields() {
+    if (!this.props.schema.data.get('classes')) {
+      return;
+    }
+    let classes = this.props.schema.data.get('classes');
+    const { className } = this.props.params;
+    let requiredCols = [];
+    classes.get(className).forEach(({ required }, name) => {
+      if (!!required) {
+        requiredCols.push(name);
+      }
+      if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
+        requiredCols.push(name);
+      }
+      if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+        requiredCols.push(name);
+      }
+    });
+    this.setState({
+      requiredColumnFields: requiredCols
+    });
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -514,7 +621,7 @@ class Browser extends DashboardView {
       // Construct complex pagination query
       let equalityQuery = queryFromFilters(source, this.state.filters);
       let comp = this.state.data[this.state.data.length - 1].get(field);
-      
+
       if (sortDir === '-') {
         query.lessThan(field, comp);
         equalityQuery.lessThan('objectId', this.state.data[this.state.data.length - 1].id);
@@ -634,7 +741,27 @@ class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
-    if(isNewObject){
+
+    if (isNewObject) {
+      // for dynamically changing required placeholder text for _User class new row object
+      if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
+        // username & password are not required
+        this.setState({
+          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'username' && field !== 'password')
+        })
+      }
+
+      if (obj.className === '_User' && (attr === 'username' || attr === 'password') && value !== undefined) {
+        // authData is not required
+        this.setState({
+          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'authData')
+        })
+      }
+
+      if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
+        this.setRequiredColumnFields();
+      }
+
       this.setState({
         isNewObject: obj
       });
@@ -1074,6 +1201,8 @@ class Browser extends DashboardView {
             onSaveNewRow={this.saveNewRow}
             onAbortAddRow={this.abortAddRow}
 
+            markRequiredField={this.state.markRequiredField}
+            requiredColumnFields={this.state.requiredColumnFields}
             columns={columns}
             className={className}
             fetchNextPage={this.fetchNextPage}
@@ -1102,6 +1231,8 @@ class Browser extends DashboardView {
     if (this.state.showCreateClassDialog) {
       extras = (
         <CreateClassDialog
+          currentAppSlug={this.context.currentApp.slug}
+          onAddColumn={this.showAddColumn}
           currentClasses={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showCreateClassDialog: false })}
           onConfirm={this.createClass} />
@@ -1114,10 +1245,12 @@ class Browser extends DashboardView {
       });
       extras = (
         <AddColumnDialog
+          onAddColumn={this.showAddColumn}
           currentColumns={currentColumns}
           classes={this.props.schema.data.get('classes').keySeq().toArray()}
           onCancel={() => this.setState({ showAddColumnDialog: false })}
           onConfirm={this.addColumn}
+          onContinue={this.addColumnAndContinue}
           showNote={this.showNote}
           parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
       );

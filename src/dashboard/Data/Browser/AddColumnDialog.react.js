@@ -27,7 +27,7 @@ import {
 }                         from 'lib/Constants';
 
 function validColumnName(name) {
-  return !!name.match(/^[a-zA-Z0-9][_a-zA-Z0-9]*$/);
+  return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
 }
 
 export default class AddColumnDialog extends React.Component {
@@ -206,6 +206,11 @@ export default class AddColumnDialog extends React.Component {
         confirmText='Add column'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
+        continueText={'Add column & continue'}
+        showContinue={true}
+        onContinue={() => {
+          this.props.onContinue(this.state);
+        }}
         onConfirm={() => {
           this.props.onConfirm(this.state);
         }}>
