@@ -82,7 +82,6 @@ class Browser extends DashboardView {
       uniqueField: null,
       keepAddingCols: false,
       markRequiredFieldRow: 0,
-      requiredColumnFields: []
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -132,7 +131,6 @@ class Browser extends DashboardView {
     this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
-    this.setRequiredColumnFields = this.setRequiredColumnFields.bind(this);
   }
 
   componentWillMount() {
@@ -326,10 +324,6 @@ class Browser extends DashboardView {
   }
 
   addRow() {
-    if (this.props.params.className === '_User') {
-      // if User class row, then reload requiredFields
-      this.setRequiredColumnFields();
-    }
     if (!this.state.newObject) {
       const relation = this.state.relation;
       this.setState({
@@ -393,7 +387,7 @@ class Browser extends DashboardView {
         }
       }
     }
-    if (this.state.markRequiredField) {
+    if (this.state.markRequiredFieldRow) {
       this.setState({
         markRequiredFieldRow: 0
       });
@@ -497,7 +491,7 @@ class Browser extends DashboardView {
         }
       }
     }
-    if (this.state.markRequiredField) {
+    if (this.state.markRequiredFieldRow) {
       this.setState({
         markRequiredFieldRow: 0
       });
@@ -675,30 +669,6 @@ class Browser extends DashboardView {
       delete filteredCounts[source];
     }
     this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
-    this.setRequiredColumnFields();
-  }
-
-  setRequiredColumnFields() {
-    if (!this.props.schema.data.get('classes')) {
-      return;
-    }
-    let classes = this.props.schema.data.get('classes');
-    const { className } = this.props.params;
-    let requiredCols = [];
-    classes.get(className).forEach(({ required }, name) => {
-      if (!!required) {
-        requiredCols.push(name);
-      }
-      if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
-        requiredCols.push(name);
-      }
-      if (className === '_Role' && (name === 'name' || name === 'ACL')) {
-        requiredCols.push(name);
-      }
-    });
-    this.setState({
-      requiredColumnFields: requiredCols
-    });
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -1197,7 +1167,6 @@ class Browser extends DashboardView {
             }
           });
         }
-        this.setRequiredColumnFields();
         this.addEditCloneRows(failedSaveObj);
       }
       this.setState({
@@ -1396,7 +1365,6 @@ class Browser extends DashboardView {
             onCancelPendingEditRows={this.cancelPendingEditRows}
 
             markRequiredFieldRow={this.state.markRequiredFieldRow}
-            requiredColumnFields={this.state.requiredColumnFields}
             columns={columns}
             className={className}
             fetchNextPage={this.fetchNextPage}

@@ -153,7 +153,6 @@ export default class BrowserTable extends React.Component {
                     setContextMenu={this.props.setContextMenu}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
-                    requiredColumnFields={this.props.requiredColumnFields}
                   />
                   <Button
                     value="Clone"
@@ -204,7 +203,6 @@ export default class BrowserTable extends React.Component {
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
-              requiredColumnFields={this.props.requiredColumnFields}
             />
             <Button
               value="Add"
