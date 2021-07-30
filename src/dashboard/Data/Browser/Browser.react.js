@@ -857,26 +857,7 @@ class Browser extends DashboardView {
       obj.set(attr, value);
     }
 
-    if (isNewObject || isEditCloneObj) {
-      // for dynamically changing required placeholder text for _User class new row object
-      if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
-        // username & password are not required
-        this.setState({
-          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'username' && field !== 'password')
-        })
-      }
-
-      if (obj.className === '_User' && (attr === 'username' || attr === 'password') && value !== undefined) {
-        // authData is not required
-        this.setState({
-          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'authData')
-        })
-      }
-
-      if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
-        this.setRequiredColumnFields();
-      }
-
+    if (isNewObject) {
       this.setState({
         isNewObject: obj
       });
@@ -1360,11 +1341,17 @@ class Browser extends DashboardView {
         if (this.state.isUnique) {
           columns = {};
         }
-        classes.get(className).forEach(({ type, targetClass }, name) => {
+        classes.get(className).forEach(({ type, targetClass, required }, name) => {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          const info = { type };
+          const info = { type, required: !!required };
+          if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
+            info.required = true;
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            info.required = true;
+          }
           if (targetClass) {
             info.targetClass = targetClass;
           }
