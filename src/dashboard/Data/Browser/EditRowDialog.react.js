@@ -71,10 +71,7 @@ export default class EditRowDialog extends React.Component {
         const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
         expandedTextAreas[name] = { rows: rows, expanded: false };
       }
-      if (type === 'Pointer') {
-        openObjectPickers[name] = false;
-      }
-      if (type === 'Relation') {
+      if (['Pointer', 'Relation'].indexOf(type) >= 0) {
         openObjectPickers[name] = false;
       }
     });
