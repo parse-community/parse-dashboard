@@ -375,6 +375,7 @@ class Browser extends DashboardView {
   }
 
   saveNewRow(){
+    const { useMasterKey } = this.state;
     const obj = this.state.newObject;
     if (!obj) {
       return;
@@ -419,7 +420,7 @@ class Browser extends DashboardView {
         markRequiredField: false
       });
     }
-    obj.save(null, { useMasterKey: true }).then(
+    obj.save(null, { useMasterKey }).then(
       objectSaved => {
         let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
         this.showNote(msg, false);
@@ -431,7 +432,7 @@ class Browser extends DashboardView {
           const parentRelation = parent.relation(relation.key);
           parentRelation.add(obj);
           const targetClassName = relation.targetClassName;
-          parent.save(null, { useMasterKey: true }).then(
+          parent.save(null, { useMasterKey }).then(
             () => {
               this.setState({
                 newObject: null,
