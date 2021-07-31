@@ -770,7 +770,7 @@ class Browser extends DashboardView {
     } else {
       obj.set(attr, value);
     }
-  
+
     if (isNewObject) {
       // for dynamically changing required placeholder text for _User class new row object
       if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
@@ -779,24 +779,24 @@ class Browser extends DashboardView {
           requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'username' && field !== 'password')
         })
       }
-  
+
       if (obj.className === '_User' && (attr === 'username' || attr === 'password') && value !== undefined) {
         // authData is not required
         this.setState({
           requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'authData')
         })
       }
-  
+
       if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
         this.setRequiredColumnFields();
       }
-  
+
       this.setState({
         isNewObject: obj
       });
       return;
     }
-  
+
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then((objectSaved) => {
       let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
@@ -808,7 +808,7 @@ class Browser extends DashboardView {
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
       }
-  
+
       this.showNote(msg, true);
     });
   }
