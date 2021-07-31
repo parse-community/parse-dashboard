@@ -560,6 +560,8 @@ docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-
 If you are not familiar with Docker, ``--port 8080`` will be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
 
 # Features
+*(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)*
+
 ## Browse as User
 
 ▶️ *Core > Browser > Browse*
