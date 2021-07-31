@@ -55,9 +55,9 @@ export default class EditRowDialog extends React.Component {
       const { name, type } = column;
       if (['Array', 'Object'].indexOf(type) >= 0) {
         const stringifyValue = JSON.stringify(currentObject[name], null, 4);
-         currentObject[name] = stringifyValue;
-         const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
-         expandedTextAreas[name] = { rows: rows, expanded: false };
+        currentObject[name] = stringifyValue;
+        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
+        expandedTextAreas[name] = { rows: rows, expanded: false };
       }
       if (type === 'Polygon') {
         const stringifyValue = JSON.stringify(
@@ -215,10 +215,10 @@ export default class EditRowDialog extends React.Component {
   }
 
   toggleExpandTextArea(name) {
-     const { expandedTextAreas } = this.state;
-     expandedTextAreas[name].expanded = !expandedTextAreas[name].expanded;
-     this.setState({ expandedTextAreas });
-   }
+    const { expandedTextAreas } = this.state;
+    expandedTextAreas[name].expanded = !expandedTextAreas[name].expanded;
+    this.setState({ expandedTextAreas });
+  }
 
   render() {
     const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
