@@ -111,16 +111,16 @@ export default class ObjectPickerDialog extends React.Component {
 
     query.limit(MAX_ROWS_FETCHED);
 
-    let promise = query.find({ useMasterKey: useMasterKey });
+    let promise = query.find({ useMasterKey });
 
     const data = await promise;
     return data;
   }
 
   async fetchParseDataCount(source, filters) {
-    const query = queryFromFilters(source, filters);
     const { useMasterKey } = this.props;
-    const count = await query.count({ useMasterKey: useMasterKey });
+    const query = queryFromFilters(source, filters);
+    const count = await query.count({ useMasterKey });
     return count;
   }
 
