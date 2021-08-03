@@ -14,6 +14,7 @@ import GeoPointEditor from 'components/GeoPointEditor/GeoPointEditor.react';
 import FileEditor from 'components/FileEditor/FileEditor.react';
 import ObjectPickerDialog from 'dashboard/Data/Browser/ObjectPickerDialog.react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
+import getFileName from 'lib/getFileName';
 
 export default class EditRowDialog extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ export default class EditRowDialog extends React.Component {
     const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
       selectedObject
     );
-    this.state = { currentObject, openObjectPickers, expandedTextAreas };
+    this.state = { currentObject, openObjectPickers, expandedTextAreas, showFileEditor: false };
 
     this.updateCurrentObject = this.updateCurrentObject.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -31,6 +32,8 @@ export default class EditRowDialog extends React.Component {
     this.openPointer = this.openPointer.bind(this);
     this.toggleObjectPicker = this.toggleObjectPicker.bind(this);
     this.openRelation = this.openRelation.bind(this);
+    this.openFileEditor = this.openFileEditor.bind(this);
+    this.hideFileEditor = this.hideFileEditor.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -217,6 +220,18 @@ export default class EditRowDialog extends React.Component {
     this.setState({ expandedTextAreas });
   }
 
+  openFileEditor() {
+    this.setState({
+      showFileEditor: true
+    });
+  }
+
+  hideFileEditor() {
+    this.setState({
+      showFileEditor: false
+    });
+  }
+
   render() {
     const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
     const { currentObject, openObjectPickers, expandedTextAreas } = this.state;
@@ -248,6 +263,7 @@ export default class EditRowDialog extends React.Component {
             'restricted'
           ].indexOf(name) >= 0);
 
+      let val = currentObject[name];
       switch (type) {
         case 'String':
           inputComponent = (
@@ -258,7 +274,7 @@ export default class EditRowDialog extends React.Component {
                   : false
               }
               disabled={isDisabled}
-              placeholder={name === 'password' ? '(hidden)' : ''}
+              placeholder={name === 'password' ? '(hidden)' : val === undefined ? '(undefined)' : ''}
               value={currentObject[name]}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue => this.handleChange(newValue, name)}
@@ -270,6 +286,7 @@ export default class EditRowDialog extends React.Component {
             <TextInput
               disabled={isDisabled}
               value={currentObject[name]}
+              placeholder={val === undefined ? '(undefined)' : ''}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue => this.handleChange(parseFloat(newValue), name)}
             />
@@ -287,6 +304,7 @@ export default class EditRowDialog extends React.Component {
                 expandedTextAreas[name].rows
               }
               disabled={isDisabled}
+              placeholder={val === undefined && '(undefined)'}
               value={currentObject[name]}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue =>
@@ -297,7 +315,7 @@ export default class EditRowDialog extends React.Component {
           break;
         case 'Boolean':
           inputComponent = isDisabled ? (
-            <TextInput disabled={true} value={selectedObject[name]} />
+            <TextInput disabled={true} placeholder={val === undefined && '(undefined)'} value={selectedObject[name]} />
           ) : (
             <Toggle
               type={Toggle.Types.TRUE_FALSE}
@@ -328,13 +346,24 @@ export default class EditRowDialog extends React.Component {
           );
           break;
         case 'File':
+          let file = selectedObject[name];
+          let fileName = file && file.url() ? getFileName(file) : '';
           inputComponent = (
             <div style={{ padding: '25px' }}>
-              <FileEditor
-                value={selectedObject[name]}
-                style={{ position: 'inherit' }}
-                onCommit={newValue => this.handleChange(newValue, name)}
-              />
+              {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
+              <div style={{ cursor: 'pointer' }}>
+                <Pill
+                  value={file ? 'Change file' : 'Select file'}
+                  onClick={() => this.openFileEditor()}
+                />
+                {this.state.showFileEditor && (
+                  <FileEditor
+                    value={file}
+                    onCancel={this.hideFileEditor}
+                    onCommit={newValue => this.handleChange(newValue, name)}
+                  />
+                )}
+              </div>
             </div>
           );
           break;
@@ -364,6 +393,7 @@ export default class EditRowDialog extends React.Component {
                 <Pill
                   onClick={() => this.openPointer(targetClass, pointerId)}
                   value={pointerId}
+                  followClick={true}
                 />
               )}
               <Pill
@@ -403,6 +433,7 @@ export default class EditRowDialog extends React.Component {
                 <Pill
                   onClick={() => this.openRelation(relation)}
                   value={`View ${type}`}
+                  followClick={true}
                 />
                 <Pill
                   onClick={() => this.toggleObjectPicker(name, true)}
