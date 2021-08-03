@@ -213,7 +213,7 @@ export default class BrowserCell extends Component {
   }
 
   async componentDidMount(){
-    let { type, value, hidden, setRelation, onPointerClick } = this.props;
+    let { type, value, hidden, setRelation, onPointerClick, row, isRequired } = this.props;
     let content = value;
     let isNewRow = row < 0;
     this.copyableValue = content;
@@ -361,7 +361,7 @@ export default class BrowserCell extends Component {
 
   render() {
     let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, row, col, readonly, field, onEditSelectedRow } = this.props;
-
+    let isNewRow = row < 0;
 
     return readonly ? (
       <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip}>
