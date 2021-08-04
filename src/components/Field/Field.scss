@@ -42,11 +42,12 @@
   min-height: 80px;
   text-align: right;
   padding: 0;
+  background: #f6fafb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.input {
-  margin: 25px 20px 0 0;
-}
 
 .header {
   min-height: 56px;
@@ -54,10 +55,6 @@
 
   .right {
     min-height: 56px;
-  }
-
-  .input {
-    margin: 13px 20px 0 0;
   }
 
   & ~ .field {
