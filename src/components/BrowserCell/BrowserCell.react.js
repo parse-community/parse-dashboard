@@ -95,7 +95,7 @@ export default class BrowserCell extends Component {
             const object = new Parse.Object(v.className);
             object.id = v.objectId;
             array.push(
-                <Pill key={i} value={v.objectId} onClick={this.props.onPointerClick.bind(undefined, object)} />
+                <Pill key={i} value={v.objectId} onClick={this.props.onPointerClick.bind(undefined, object)} followClick={true} />
               );
           });
           this.copyableValue = content = <ul>
@@ -414,9 +414,8 @@ export default class BrowserCell extends Component {
           const object = new Parse.Object(v.className);
           object.id = v.objectId;
           array.push(
-            <a key={i} href='javascript:;' onClick={onPointerClick.bind(undefined, object)}>
-              <Pill value={v.objectId} />
-            </a>);
+              <Pill value={v.objectId} onClick={onPointerClick.bind(undefined, object)} followClick={true} />
+            );
         });
         this.copyableValue = content = <ul>
           { array.map( a => <li>{a}</li>) }
