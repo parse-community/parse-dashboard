@@ -234,6 +234,7 @@ let BrowserToolbar = ({
             title={currentUser ? 'Browsing' : 'Browse'}
             icon="users-solid"
             active={!!currentUser}
+            disabled={isPendingEditCloneRows}
           >
             <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
             {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
@@ -241,7 +242,7 @@ let BrowserToolbar = ({
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
-      <a className={styles.toolbarButton} onClick={isPendingEditCloneRows ? null : onRefresh}>
+      <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
         <Icon name="refresh-solid" width={14} height={14} />
         <span>Refresh</span>
       </a>
