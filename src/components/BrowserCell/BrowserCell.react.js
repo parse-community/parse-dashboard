@@ -29,7 +29,143 @@ export default class BrowserCell extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
+    if ( this.props.value !== prevProps.value ) {
+      let content = this.props.value;
+      let isNewRow = this.props.row < 0;
+      this.copyableValue = content;
+      let classes = [styles.cell, unselectable];
+      if (this.props.hidden) {
+        content = this.props.value !== undefined || !isNewRow ? '(hidden)' : this.props.isRequired ? '(required)' : '(undefined)';
+        classes.push(styles.empty);
+      } else if (this.props.value === undefined) {
+        if (this.props.type === 'ACL') {
+          this.copyableValue = content = 'Public Read + Write';
+        } else {
+          this.copyableValue = content = '(undefined)';
+          classes.push(styles.empty);
+        }
+        content = isNewRow && this.props.isRequired && this.props.value === undefined ? '(required)' : content;
+      } else if (this.props.value === null) {
+        this.copyableValue = content = '(null)';
+        classes.push(styles.empty);
+      } else if (this.props.value === '') {
+        content = <span>&nbsp;</span>;
+        classes.push(styles.empty);
+      } else if (this.props.type === 'Pointer') {
+        const defaultPointerKey = await localStorage.getItem(this.props.value.className) || 'objectId';
+
+        let dataValue = this.props.value.id;
+        if( defaultPointerKey !== 'objectId' ) {
+          dataValue = this.props.value.get(defaultPointerKey);
+          if ( dataValue && typeof dataValue === 'object' ){
+            if ( dataValue instanceof Date ) {
+              dataValue = dataValue.toLocaleString();
+            }
+            else {
+              dataValue = '(undefined)';
+            }
+          }
+          if ( !dataValue ) {
+            dataValue = '(undefined)';
+          }
+        }
+
+        if (this.props.value && this.props.value.__type) {
+          const object = new Parse.Object(this.props.value.className);
+          object.id = this.props.value.objectId;
+          this.props.value = object;
+        }
+
+        content = this.props.onPointerClick ? (
+          <Pill value={ dataValue } onClick={this.props.onPointerClick.bind(undefined, this.props.value)} followClick={true} />
+        ) : (
+          dataValue
+        );
+
+        this.copyableValue = this.props.value.id;
+      }
+      else if (this.props.type === 'Array') {
+        if ( this.props.value[0] && typeof this.props.value[0] === 'object' && this.props.value[0].__type === 'Pointer' ) {
+          const array = [];
+          this.props.value.map( (v, i) => {
+            if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
+              throw new Error('Invalid type found in pointer array');
+            }
+            const object = new Parse.Object(v.className);
+            object.id = v.objectId;
+            array.push(
+                <Pill key={i} value={v.objectId} onClick={this.props.onPointerClick.bind(undefined, object)} />
+              );
+          });
+          this.copyableValue = content = <ul>
+            { array.map( a => <li>{a}</li>) }
+          </ul>
+          if ( array.length > 1 ) {
+            classes.push(styles.hasMore);
+          }
+        }
+        else {
+          this.copyableValue = content = JSON.stringify(this.props.value);
+        }
+      }
+      else if (this.props.type === 'Date') {
+        if (typeof value === 'object' && this.props.value.__type) {
+          this.props.value = new Date(this.props.value.iso);
+        } else if (typeof value === 'string') {
+          this.props.value = new Date(this.props.value);
+        }
+        this.copyableValue = content = dateStringUTC(this.props.value);
+      } else if (this.props.type === 'Boolean') {
+        this.copyableValue = content = this.props.value ? 'True' : 'False';
+      } else if (this.props.type === 'Object' || this.props.type === 'Bytes') {
+        this.copyableValue = content = JSON.stringify(this.props.value);
+      } else if (this.props.type === 'File') {
+        const fileName = this.props.value.url() ? getFileName(this.props.value) : 'Uploading\u2026';
+        content = <Pill value={fileName} fileDownloadLink={this.props.value.url()} />;
+        this.copyableValue = fileName;
+      } else if (this.props.type === 'ACL') {
+        let pieces = [];
+        let json = this.props.value.toJSON();
+        if (Object.prototype.hasOwnProperty.call(json, '*')) {
+          if (json['*'].read && json['*'].write) {
+            pieces.push('Public Read + Write');
+          } else if (json['*'].read) {
+            pieces.push('Public Read');
+          } else if (json['*'].write) {
+            pieces.push('Public Write');
+          }
+        }
+        for (let role in json) {
+          if (role !== '*') {
+            pieces.push(role);
+          }
+        }
+        if (pieces.length === 0) {
+          pieces.push('Master Key Only');
+        }
+        this.copyableValue = content = pieces.join(', ');
+      } else if (this.props.type === 'GeoPoint') {
+        this.copyableValue = content = `(${this.props.value.latitude}, ${this.props.value.longitude})`;
+      } else if (this.props.type === 'Polygon') {
+        this.copyableValue = content = this.props.value.coordinates.map(coord => `(${coord})`)
+      } else if (this.props.type === 'Relation') {
+        content = this.props.setRelation ? (
+          <div style={{ textAlign: 'center' }}>
+            <Pill onClick={() => this.props.setRelation(this.props.value)} value='View relation' followClick={true} />
+          </div>
+        ) : (
+            'Relation'
+          );
+        this.copyableValue = undefined;
+      }
+
+      if (this.props.markRequiredField && this.props.isRequired && !this.props.value) {
+        classes.push(styles.required);
+      }
+
+      this.setState({ ...this.state, content, classes })
+    }
     if (this.props.current) {
       const node = this.cellRef.current;
       const { setRelation } = this.props;
@@ -246,11 +382,11 @@ export default class BrowserCell extends Component {
             dataValue = dataValue.toLocaleString();
           }
           else {
-            dataValue = '[Invalid value]';
+            dataValue = '(undefined)';
           }
         }
         if ( !dataValue ) {
-          dataValue = '[Invalid value]';
+          dataValue = '(undefined)';
         }
       }
 
@@ -261,9 +397,7 @@ export default class BrowserCell extends Component {
       }
 
       content = onPointerClick ? (
-        <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={ dataValue } onClick={onPointerClick.bind(undefined, value)} followClick={true} />
-        </a>
+        <Pill value={ dataValue } onClick={onPointerClick.bind(undefined, value)} followClick={true} />
       ) : (
         dataValue
       );
@@ -346,10 +480,6 @@ export default class BrowserCell extends Component {
       this.copyableValue = undefined;
     }
 
-    if (this.props.current) {
-      classes.push(styles.current);
-    }
-
     if (this.props.markRequiredField && this.props.isRequired && !value) {
       classes.push(styles.required);
     }
@@ -363,11 +493,19 @@ export default class BrowserCell extends Component {
     let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, row, col, readonly, field, onEditSelectedRow } = this.props;
     let isNewRow = row < 0;
 
+    let classes = [...this.state.classes];
+
+    if ( current ) {
+      classes.push(styles.current);
+    }
+
+    // console.log(value, this.state.value);
+
     return readonly ? (
       <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip}>
         <span
           ref={this.cellRef}
-          className={this.state.classes.join(' ')}
+          className={classes.join(' ')}
           style={{ width }}
           onClick={() => {
             onSelect({ row, col });
@@ -390,7 +528,7 @@ export default class BrowserCell extends Component {
     ) : (
       <span
         ref={this.cellRef}
-        className={this.state.classes.join(' ')}
+        className={classes.join(' ')}
         style={{ width }}
         onClick={() => {
           onSelect({ row, col });
