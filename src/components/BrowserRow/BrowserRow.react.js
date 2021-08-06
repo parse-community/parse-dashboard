@@ -19,8 +19,21 @@ export default class BrowserRow extends Component {
   }
 
   render() {
-    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, markRequiredField, requiredColumnFields } = this.props;
+    const { className, columns, currentCol, isUnique, obj, onPointerClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, markRequiredFieldRow } = this.props;
     let attributes = obj.attributes;
+    let requiredCols = [];
+    Object.entries(columns).reduce((acc, cur) => {
+      if (cur[1].required) {
+        acc.push(cur[0]);
+      }
+      return acc;
+    }, requiredCols);
+    // for dynamically changing required field on _User class
+    if (obj.className === '_User' && (obj.get('username') !== undefined || obj.get('password') !== undefined)) {
+      requiredCols = ['username', 'password'];
+    } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
+      requiredCols = ['authData'];
+    }
     return (
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
         <span className={styles.checkCell}>
@@ -58,7 +71,7 @@ export default class BrowserRow extends Component {
               hidden = true;
             }
           }
-          let isRequired = requiredColumnFields && requiredColumnFields.includes(name);
+          let isRequired = requiredCols.includes(name);
           return (
             <BrowserCell
               key={name}
@@ -82,7 +95,7 @@ export default class BrowserRow extends Component {
               value={attr}
               hidden={hidden}
               isRequired={isRequired}
-              markRequiredField={markRequiredField}
+              markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
               setContextMenu={setContextMenu}
               onEditSelectedRow={onEditSelectedRow} />
