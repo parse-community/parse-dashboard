@@ -15,8 +15,10 @@ import Separator            from 'components/BrowserMenu/Separator.react';
 import styles               from 'dashboard/Data/Browser/Browser.scss';
 import Toolbar              from 'components/Toolbar/Toolbar.react';
 import SecurityDialog       from 'dashboard/Data/Browser/SecurityDialog.react';
-import ColumnsConfiguration  from 'components/ColumnsConfiguration/ColumnsConfiguration.react'
+import ColumnsConfiguration from 'components/ColumnsConfiguration/ColumnsConfiguration.react'
 import SecureFieldsDialog   from 'dashboard/Data/Browser/SecureFieldsDialog.react';
+import LoginDialog          from 'dashboard/Data/Browser/LoginDialog.react';
+import Toggle               from 'components/Toggle/Toggle.react';
 
 let BrowserToolbar = ({
   className,
@@ -49,6 +51,8 @@ let BrowserToolbar = ({
   uniqueField,
   handleColumnDragDrop,
   handleColumnsOrder,
+  editCloneRows,
+  onCancelPendingEditRows,
   order,
 
   enableDeleteAllRows,
@@ -57,8 +61,15 @@ let BrowserToolbar = ({
 
   enableColumnManipulation,
   enableClassManipulation,
+
+  currentUser,
+  useMasterKey,
+  login,
+  logout,
+  toggleMasterKeyUsage,
 }) => {
   let selectionLength = Object.keys(selection).length;
+  let isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
   let details = [];
   if (count !== undefined) {
       if (count === 1) {
@@ -84,7 +95,7 @@ let BrowserToolbar = ({
   let menu = null;
   if (relation) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='edit-solid' setCurrent={setCurrent}>
         <MenuItem
           text={`Create ${relation.targetClassName} and attach`}
           onClick={onAddRow}
@@ -103,7 +114,7 @@ let BrowserToolbar = ({
     );
   } else if (onAddRow) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique}>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique || isPendingEditCloneRows} setCurrent={setCurrent}>
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
         {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
@@ -152,6 +163,10 @@ let BrowserToolbar = ({
     classes.push(styles.toolbarButtonDisabled);
     onClick = null;
   }
+  if (isPendingEditCloneRows) {
+    classes.push(styles.toolbarButtonDisabled);
+    onClick = null;
+  }
 
   const columns = {};
   const userPointers = [];
@@ -177,9 +192,11 @@ let BrowserToolbar = ({
 
   let clpDialogRef = useRef(null);
   let protectedDialogRef = useRef(null);
+  let loginDialogRef = useRef(null);
 
   const showCLP = ()=> clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
+  const showLogin = () => loginDialogRef.current.handleOpen();
 
   return (
     <Toolbar
@@ -200,9 +217,32 @@ let BrowserToolbar = ({
         handleColumnsOrder={handleColumnsOrder}
         handleColumnDragDrop={handleColumnDragDrop}
         order={order}
+        disabled={isPendingEditCloneRows}
       />
       <div className={styles.toolbarSeparator} />
-      <a className={styles.toolbarButton} onClick={onRefresh}>
+      {onAddRow && (
+        <LoginDialog
+          ref={loginDialogRef}
+          currentUser={currentUser}
+          login={login}
+          logout={logout}
+        />
+      )}
+      {onAddRow && (
+        <BrowserMenu
+            setCurrent={setCurrent}
+            title={currentUser ? 'Browsing' : 'Browse'}
+            icon="users-solid"
+            active={!!currentUser}
+            disabled={isPendingEditCloneRows}
+          >
+            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
+            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+        </BrowserMenu>
+      )}
+      {onAddRow && <div className={styles.toolbarSeparator} />}
+      <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
         <Icon name="refresh-solid" width={14} height={14} />
         <span>Refresh</span>
       </a>
@@ -214,6 +254,7 @@ let BrowserToolbar = ({
         onChange={onFilterChange}
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
+        disabled={isPendingEditCloneRows}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {perms && enableSecurityDialog ? (
@@ -249,7 +290,7 @@ let BrowserToolbar = ({
           setCurrent={setCurrent}
           title="Security"
           icon="locked-solid"
-          disabled={!!relation || !!isUnique}
+          disabled={!!relation || !!isUnique || isPendingEditCloneRows}
         >
           <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
           <MenuItem text={'Protected Fields'} onClick={showProtected} />
@@ -263,6 +304,16 @@ let BrowserToolbar = ({
         <noscript />
       )}
       {menu}
+      {editCloneRows && editCloneRows.length > 0 && <div className={styles.toolbarSeparator} />}
+      {editCloneRows && editCloneRows.length > 0 && (
+        <BrowserMenu title="Clone" icon="clone-icon">
+          <MenuItem
+            text={"Cancel all pending rows"}
+            onClick={onCancelPendingEditRows}
+          />
+        </BrowserMenu>
+      )}
+      
     </Toolbar>
   );
 };

@@ -214,7 +214,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredField } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
     let content = value;
     let isNewRow = row < 0;
     this.copyableValue = content;
@@ -243,12 +243,14 @@ export default class BrowserCell extends Component {
         value = object;
       }
       content = onPointerClick ? (
-        <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={value.id} />
-        </a>
+        <Pill
+          value={value.id}
+          onClick={onPointerClick.bind(undefined, value)}
+          followClick={true}
+        />
       ) : (
-          value.id
-        );
+        value.id
+      );
       this.copyableValue = value.id;
     }
     else if (type === 'Array') {
@@ -289,7 +291,7 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = JSON.stringify(value);
     } else if (type === 'File') {
       const fileName = value.url() ? getFileName(value) : 'Uploading\u2026';
-      content = <Pill value={fileName} />;
+      content = <Pill value={fileName} fileDownloadLink={value.url()} />;
       this.copyableValue = fileName;
     } else if (type === 'ACL') {
       let pieces = [];
@@ -318,8 +320,8 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = value.coordinates.map(coord => `(${coord})`)
     } else if (type === 'Relation') {
       content = setRelation ? (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }}>
-          <Pill onClick={() => setRelation(value)} value='View relation' />
+        <div style={{ textAlign: 'center' }}>
+          <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
         </div>
       ) : (
           'Relation'
@@ -331,7 +333,7 @@ export default class BrowserCell extends Component {
       classes.push(styles.current);
     }
 
-    if (markRequiredField && isRequired && !value) {
+    if (markRequiredFieldRow === row && isRequired && !value) {
       classes.push(styles.required);
     }
 
