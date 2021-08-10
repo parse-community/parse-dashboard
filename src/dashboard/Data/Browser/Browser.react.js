@@ -73,6 +73,7 @@ class Browser extends DashboardView {
       data: null,
       lastMax: -1,
       newObject: null,
+      editCloneRows: null,
 
       lastError: null,
       lastNote: null,
@@ -82,7 +83,7 @@ class Browser extends DashboardView {
       isUnique: false,
       uniqueField: null,
       keepAddingCols: false,
-      markRequiredField: false,
+      markRequiredFieldRow: 0,
       requiredColumnFields: [],
 
       useMasterKey: true,
@@ -133,11 +134,14 @@ class Browser extends DashboardView {
     this.closeEditRowDialog = this.closeEditRowDialog.bind(this);
     this.handleShowAcl = this.handleShowAcl.bind(this);
     this.onDialogToggle = this.onDialogToggle.bind(this);
+    this.addEditCloneRows = this.addEditCloneRows.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
     this.showPointerKeyDialog = this.showPointerKeyDialog.bind(this);
     this.onChangeDefaultKey = this.onChangeDefaultKey.bind(this);
-    this.setRequiredColumnFields = this.setRequiredColumnFields.bind(this);
+    this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
+    this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
+    this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
   }
 
   componentWillMount() {
@@ -351,10 +355,6 @@ class Browser extends DashboardView {
   }
 
   addRow() {
-    if (this.props.params.className === '_User') {
-      // if User class row, then reload requiredFields
-      this.setRequiredColumnFields();
-    }
     if (!this.state.newObject) {
       const relation = this.state.relation;
       this.setState({
@@ -371,9 +371,9 @@ class Browser extends DashboardView {
         newObject: null
       });
     }
-    if (this.state.markRequiredField) {
+    if (this.state.markRequiredFieldRow !== 0) {
       this.setState({
-        markRequiredField: false
+        markRequiredFieldRow: 0
       });
     }
   }
@@ -413,15 +413,15 @@ class Browser extends DashboardView {
         if (!obj.get(name)) {
           this.showNote("Please enter all required fields", true);
           this.setState({
-            markRequiredField: true
+            markRequiredFieldRow: -1
           });
           return;
         }
       }
     }
-    if (this.state.markRequiredField) {
+    if (this.state.markRequiredFieldRow) {
       this.setState({
-        markRequiredField: false
+        markRequiredFieldRow: 0
       });
     }
     obj.save(null, { useMasterKey }).then(
@@ -478,10 +478,115 @@ class Browser extends DashboardView {
     );
   }
 
+  saveEditCloneRow(rowIndex) {
+    let obj;
+    if (rowIndex < -1) {
+      obj = this.state.editCloneRows[
+        rowIndex + (this.state.editCloneRows.length + 1)
+      ];
+    }
+    if (!obj) {
+      return;
+    }
+
+    // check if required fields are missing
+    const className = this.props.params.className;
+    let requiredCols = [];
+    if (className) {
+      let classColumns = this.props.schema.data.get('classes').get(className);
+      classColumns.forEach(({ required }, name) => {
+          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
+            return;
+          }
+          if (!!required) {
+            requiredCols.push(name);
+          }
+          if (className === '_User' && (name === 'username' || name === 'password')) {
+            if (!obj.get('authData')) {
+              requiredCols.push(name);
+            }
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            requiredCols.push(name);
+          }
+        });
+    }
+    if (requiredCols.length) {
+      for (let idx = 0; idx < requiredCols.length; idx++) {
+        const name = requiredCols[idx];
+        if (!obj.get(name)) {
+          this.showNote("Please enter all required fields", true);
+          this.setState({
+            markRequiredFieldRow: rowIndex
+          });
+          return;
+        }
+      }
+    }
+    if (this.state.markRequiredFieldRow) {
+      this.setState({
+        markRequiredFieldRow: 0
+      });
+    }
+
+    obj.save(null, { useMasterKey: true }).then((objectSaved) => {
+      let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
+      this.showNote(msg, false);
+
+      const state = { data: this.state.data, editCloneRows: this.state.editCloneRows };
+      state.editCloneRows = state.editCloneRows.filter(
+        cloneObj => cloneObj._localId !== obj._localId
+      );
+      if (state.editCloneRows.length === 0) state.editCloneRows = null;
+      if (this.props.params.className === obj.className) {
+        this.state.data.unshift(obj);
+      }
+      this.state.counts[obj.className] += 1;
+      this.setState(state);
+    }, (error) => {
+      let msg = typeof error === 'string' ? error : error.message;
+      if (msg) {
+        msg = msg[0].toUpperCase() + msg.substr(1);
+      }
+
+      this.showNote(msg, true);
+    });
+  }
+
+  abortEditCloneRow(rowIndex) {
+    let obj;
+    if (rowIndex < -1) {
+      obj = this.state.editCloneRows[
+        rowIndex + (this.state.editCloneRows.length + 1)
+      ];
+    }
+    if (!obj) {
+      return;
+    }
+    const state = { editCloneRows: this.state.editCloneRows };
+    state.editCloneRows = state.editCloneRows.filter(
+      cloneObj => cloneObj._localId !== obj._localId
+    );
+    if (state.editCloneRows.length === 0) state.editCloneRows = null;
+    this.setState(state);
+  }
+
   addRowWithModal() {
     this.addRow();
     this.selectRow(undefined, true);
     this.showEditRowDialog();
+  }
+
+  cancelPendingEditRows() {
+    this.setState({
+      editCloneRows: null
+    });
+  }
+
+  addEditCloneRows(cloneRows) {
+    this.setState({
+      editCloneRows: cloneRows
+    });
   }
 
   removeColumn(name) {
@@ -514,6 +619,7 @@ class Browser extends DashboardView {
       newObject: null,
       lastMax: -1,
       selection: {},
+      editCloneRows: null,
     };
     if (relation) {
       await this.setState(initialState);
@@ -525,6 +631,29 @@ class Browser extends DashboardView {
       });
       await this.fetchData(this.props.params.className, prevFilters);
     }
+  }
+
+  setRequiredColumnFields() {
+    if (!this.props.schema.data.get('classes')) {
+      return;
+    }
+    let classes = this.props.schema.data.get('classes');
+    const { className } = this.props.params;
+    let requiredCols = [];
+    classes.get(className).forEach(({ required }, name) => {
+      if (!!required) {
+        requiredCols.push(name);
+      }
+      if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
+        requiredCols.push(name);
+      }
+      if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+        requiredCols.push(name);
+      }
+    });
+    this.setState({
+      requiredColumnFields: requiredCols
+    });
   }
 
   async fetchParseData(source, filters) {
@@ -613,30 +742,6 @@ class Browser extends DashboardView {
       delete filteredCounts[source];
     }
     this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
-    this.setRequiredColumnFields();
-  }
-
-  setRequiredColumnFields() {
-    if (!this.props.schema.data.get('classes')) {
-      return;
-    }
-    let classes = this.props.schema.data.get('classes');
-    const { className } = this.props.params;
-    let requiredCols = [];
-    classes.get(className).forEach(({ required }, name) => {
-      if (!!required) {
-        requiredCols.push(name);
-      }
-      if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
-        requiredCols.push(name);
-      }
-      if (className === '_Role' && (name === 'name' || name === 'ACL')) {
-        requiredCols.push(name);
-      }
-    });
-    this.setState({
-      requiredColumnFields: requiredCols
-    });
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -777,8 +882,12 @@ class Browser extends DashboardView {
   }
 
   updateRow(row, attr, value) {
-    const isNewObject = row < 0;
-    const obj = isNewObject ? this.state.newObject : this.state.data[row];
+    let isNewObject = row === -1;
+    let isEditCloneObj = row < -1;
+    let obj = isNewObject ? this.state.newObject : this.state.data[row];
+    if(isEditCloneObj){
+      obj = this.state.editCloneRows[row + (this.state.editCloneRows.length + 1)];
+    }
     if (!obj) {
       return;
     }
@@ -793,27 +902,17 @@ class Browser extends DashboardView {
     }
 
     if (isNewObject) {
-      // for dynamically changing required placeholder text for _User class new row object
-      if (obj.className === '_User' && attr === 'authData' && value !== undefined) {
-        // username & password are not required
-        this.setState({
-          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'username' && field !== 'password')
-        })
-      }
-
-      if (obj.className === '_User' && (attr === 'username' || attr === 'password') && value !== undefined) {
-        // authData is not required
-        this.setState({
-          requiredColumnFields: this.state.requiredColumnFields.filter(field => field !== 'authData')
-        })
-      }
-
-      if (obj.className === '_User' && obj.get('username') === undefined && obj.get('password') === undefined && obj.get('authData') === undefined) {
-        this.setRequiredColumnFields();
-      }
-
       this.setState({
         isNewObject: obj
+      });
+      return;
+    }
+    if (isEditCloneObj) {
+      const editObjIndex = row + (this.state.editCloneRows.length + 1);
+      let cloneRows = [...this.state.editCloneRows];
+      cloneRows.splice(editObjIndex, 1, obj);
+      this.setState({
+        editCloneRows: cloneRows
       });
       return;
     }
@@ -822,12 +921,65 @@ class Browser extends DashboardView {
     obj.save(null, { useMasterKey }).then((objectSaved) => {
       let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
       this.showNote(msg, false);
-      const state = { data: this.state.data };
+
+      const state = { data: this.state.data, editCloneRows: this.state.editCloneRows };
+
+      if (isNewObject) {
+        const relation = this.state.relation;
+        if (relation) {
+          const parent = relation.parent;
+          const parentRelation = parent.relation(relation.key);
+          parentRelation.add(obj);
+          const targetClassName = relation.targetClassName;
+          parent.save(null, { useMasterKey: true }).then(() => {
+            this.setState({
+              newObject: null,
+              data: [
+                obj,
+                ...this.state.data,
+              ],
+              relationCount: this.state.relationCount + 1,
+              counts: {
+                ...this.state.counts,
+                [targetClassName]: this.state.counts[targetClassName] + 1,
+              },
+            });
+          }, (error) => {
+            let msg = typeof error === 'string' ? error : error.message;
+            if (msg) {
+              msg = msg[0].toUpperCase() + msg.substr(1);
+            }
+            obj.set(attr, prev);
+            this.setState({ data: this.state.data });
+            this.showNote(msg, true);
+          });
+        } else {
+          state.newObject = null;
+          if (this.props.params.className === obj.className) {
+            this.state.data.unshift(obj);
+          }
+          this.state.counts[obj.className] += 1;
+        }
+      }
+      if (isEditCloneObj) {
+        state.editCloneRows = state.editCloneRows.filter(
+          cloneObj => cloneObj._localId !== obj._localId
+        );
+        if (state.editCloneRows.length === 0) state.editCloneRows = null;
+        if (this.props.params.className === obj.className) {
+          this.state.data.unshift(obj);
+        }
+        this.state.counts[obj.className] += 1;
+      }
       this.setState(state);
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
       if (msg) {
         msg = msg[0].toUpperCase() + msg.substr(1);
+      }
+      if (!isNewObject && !isEditCloneObj) {
+        obj.set(attr, prev);
+        this.setState({ data: this.state.data });
       }
 
       this.showNote(msg, true);
@@ -1056,7 +1208,12 @@ class Browser extends DashboardView {
     const objects = await query.find({ useMasterKey });
     const toClone = [];
     for (const object of objects) {
-      toClone.push(object.clone());
+      let clonedObj = object.clone();
+      if (className === '_User') {
+        clonedObj.set('username', undefined);
+        clonedObj.set('authData', undefined);
+      }
+      toClone.push(clonedObj);
     }
     try {
       await Parse.Object.saveAll(toClone, { useMasterKey });
@@ -1070,8 +1227,27 @@ class Browser extends DashboardView {
         }
       });
     } catch (error) {
+      //for duplicate, username missing or required field missing errors
+      if (error.code === 137 || error.code === 200 || error.code === 142) {
+        let failedSaveObj = [];
+        let savedObjects = [];
+        toClone.forEach(cloneObj => {
+          cloneObj.dirty()
+            ? failedSaveObj.push(cloneObj)
+            : savedObjects.push(cloneObj);
+        });
+        if (savedObjects.length) {
+          this.setState({
+            data: [...savedObjects, ...this.state.data],
+            counts: {
+              ...this.state.counts,
+              [className]: this.state.counts[className] + savedObjects.length
+            }
+          });
+        }
+        this.addEditCloneRows(failedSaveObj);
+      }
       this.setState({
-        selection: {},
         showCloneSelectedRowsDialog: false
       });
       this.showNote(error.message, true);
@@ -1225,11 +1401,17 @@ class Browser extends DashboardView {
         if (this.state.isUnique) {
           columns = {};
         }
-        classes.get(className).forEach(({ type, targetClass }, name) => {
+        classes.get(className).forEach(({ type, targetClass, required }, name) => {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          const info = { type };
+          const info = { type, required: !!required };
+          if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
+            info.required = true;
+          }
+          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+            info.required = true;
+          }
           if (targetClass) {
             info.targetClass = targetClass;
           }
@@ -1270,12 +1452,16 @@ class Browser extends DashboardView {
             onSaveNewRow={this.saveNewRow}
             onShowPointerKey={this.showPointerKeyDialog}
             onAbortAddRow={this.abortAddRow}
+            onSaveEditCloneRow={this.saveEditCloneRow}
+            onAbortEditCloneRow={this.abortEditCloneRow}
+            onCancelPendingEditRows={this.cancelPendingEditRows}
+
             currentUser={this.state.currentUser}
             useMasterKey={this.state.useMasterKey}
             login={this.login}
             logout={this.logout}
             toggleMasterKeyUsage={this.toggleMasterKeyUsage}
-            markRequiredField={this.state.markRequiredField}
+            markRequiredFieldRow={this.state.markRequiredFieldRow}
             requiredColumnFields={this.state.requiredColumnFields}
             columns={columns}
             className={className}
@@ -1286,6 +1472,7 @@ class Browser extends DashboardView {
             data={this.state.data}
             ordering={this.state.ordering}
             newObject={this.state.newObject}
+            editCloneRows={this.state.editCloneRows}
             relation={this.state.relation}
             disableKeyControls={this.hasExtras()}
             updateRow={this.updateRow}
