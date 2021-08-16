@@ -580,7 +580,7 @@ This feature allows you to use a different column, instead of the objectId colum
 
 > ⚠️ The array of pointers will use the objectID instead of the default pointer key column.
 
-> ⚠️ System columns ( like createdAt, updatedAt, ACL etc. ) can not be used as pointer key.
+> ⚠️ System columns like createdAt, updatedAt, ACL etc. ( except of the objectId column ) can not be used as pointer key.
 
 > ⚠️ This feature uses browser storage and switching to a different browser would cause the key to revert to objectId.
 
