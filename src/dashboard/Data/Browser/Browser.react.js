@@ -1268,12 +1268,29 @@ class Browser extends DashboardView {
           return object.id;
         } else if (type === 'Relation' || type === 'Pointer') {
           if (object.get(column.name)) {
-          return  object.get(column.name).id
+            return  object.get(column.name).id
           } else {
-          return 'undefined'
-          }; 
+            return 'undefined'
+          }
         } else {
-          return `"${object.get(column.name)}"`;
+          let colValue = object.get(column.name);
+          if(typeof colValue === 'string') {
+            if (colValue.includes('"')) {
+              // Has quote in data, escape and quote
+              // If the value contains both a quote and delimiter, adding quotes and escaping will take care of both scenarios
+              colValue = colValue.split('"').join('""');
+              return `"${colValue}"`;
+            } else if (colValue.includes(',')) {
+              // Has delimiter in data, surround with quote (which the value doesn't already contain)
+              return `"${colValue}"`;
+            } else {
+              // No quote or delimiter, just include plainly
+              return `${colValue}`;
+            }
+          } else {
+            // value isn't a string, include plainly and let javascript format it
+            return `${colValue}`;
+          }
         }
       }).join(',');
       csvString += row + '\n';
