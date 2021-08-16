@@ -315,7 +315,7 @@ let BrowserToolbar = ({
           />
         </BrowserMenu>
       )}
-      
+
     </Toolbar>
   );
 };

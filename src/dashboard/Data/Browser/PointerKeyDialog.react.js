@@ -30,6 +30,7 @@ export default class PointerKeyDialog extends React.Component {
   render() {
     let content = null;
     let hasColumns = this.props.currentColumns.length > 0;
+    let currentColumns = [...this.props.currentColumns, 'objectId'];
     if (hasColumns) {
       content = (
         <Field
@@ -42,7 +43,7 @@ export default class PointerKeyDialog extends React.Component {
               placeHolder='Select a column'
               value={this.state.name}
               onChange={(name) => this.setState({ name: name })}>
-              {this.props.currentColumns.map((t) => <Option key={t} value={t}>{t}</Option>)}
+              {currentColumns.map((t) => <Option key={t} value={t}>{t}</Option>)}
             </Dropdown>
           } />
       )

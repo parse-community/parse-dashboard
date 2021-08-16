@@ -570,6 +570,20 @@ This feature allows you to use the data browser as another user, respecting that
 
 > ⚠️ Logging in as another user will trigger the same Cloud Triggers as if the user logged in themselves using any other login method. Logging in as another user requires to enter that user's password.
 
+## Choose which column should represent a pointer (instead of objectId)
+
+▶️ *Core > Browser > Edit > Change pointer key*
+
+This feature allows you to use a different column, instead of the objectId column, to reprent the pointer to the class. For example, if class A has a pointer to class B, In the Data browser for class A, the pointer column to class B can be represented by a different column from class B instead of the objectID.
+
+### Limitations.
+
+> ⚠️ The array of pointers will use the objectID instead of the default pointer key column.
+
+> ⚠️ System columns ( like createdAt, updatedAt, ACL etc. ) can not be used as pointer key.
+
+> ⚠️ This feature uses browser storage and switching to a different browser would cause the key to revert to objectId.
+
 # Contributing
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
