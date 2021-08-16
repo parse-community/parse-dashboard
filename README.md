@@ -38,6 +38,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Run with Docker](#run-with-docker)
 - [Features](#features)
   - [Browse as User](#browse-as-user)
+  - [Change Pointer Key](#change-pointer-key)
+    - [Limitations](#limitations)
 - [Contributing](#contributing)
 
 # Getting Started
@@ -570,19 +572,19 @@ This feature allows you to use the data browser as another user, respecting that
 
 > ⚠️ Logging in as another user will trigger the same Cloud Triggers as if the user logged in themselves using any other login method. Logging in as another user requires to enter that user's password.
 
-## Choose which column should represent a pointer (instead of objectId)
+## Change Pointer Key
 
 ▶️ *Core > Browser > Edit > Change pointer key*
 
-This feature allows you to use a different column, instead of the objectId column, to reprent the pointer to the class. For example, if class A has a pointer to class B, In the Data browser for class A, the pointer column to class B can be represented by a different column from class B instead of the objectID.
+This feature allows you to change how a pointer is represented in the browser. By default, a pointer is represented by the `objectId` of the linked object. You can change this to any other column of the object class. For example, if class `Installation` has a field that contains a pointer to class `User`, the pointer will show the `objectId` of the user by default. You can change this to display the field `email` of the user, so that a pointer displays the user's email address instead.
 
-### Limitations.
+### Limitations
 
-> ⚠️ The array of pointers will use the objectID instead of the default pointer key column.
+- This does not work for an array of pointers; the pointer will always display the `objectId`.
+- System columns like `createdAt`, `updatedAt`, `ACL` cannot be set as pointer key.
+- This feature uses browser storage; switching to a different browser resets the pointer key to `objectId`.
 
-> ⚠️ System columns like createdAt, updatedAt, ACL etc. ( except of the objectId column ) can not be used as pointer key.
-
-> ⚠️ This feature uses browser storage and switching to a different browser would cause the key to revert to objectId.
+> ⚠️ For each custom pointer key in each row, a server request is triggered to resolve the custom pointer key. For example, if the browser shows a class with 50 rows and each row contains 3 custom pointer keys, a total of 150 separate server requests are triggered.
 
 # Contributing
 
