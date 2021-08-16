@@ -14,6 +14,7 @@ import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
+import Tooltip                   from '../Tooltip/PopperTooltip.react';
 
 export default class BrowserCell extends Component {
   constructor() {
@@ -21,9 +22,13 @@ export default class BrowserCell extends Component {
 
     this.cellRef = React.createRef();
     this.copyableValue = undefined;
+    this.state = {
+      showTooltip: false
+    }
+
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.current) {
       const node = this.cellRef.current;
       const { setRelation } = this.props;
@@ -46,9 +51,15 @@ export default class BrowserCell extends Component {
         this.props.setCopyableValue(this.copyableValue);
       }
     }
+    if (prevProps.current !== this.props.current) {
+      this.setState({ showTooltip: false });
+    }
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.showTooltip !== this.state.showTooltip) {
+      return true;
+    }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
       .filter(propName => propName !== 'value');
     if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
@@ -203,12 +214,13 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
     let content = value;
+    let isNewRow = row < 0;
     this.copyableValue = content;
     let classes = [styles.cell, unselectable];
     if (hidden) {
-      content = '(hidden)';
+      content = value !== undefined || !isNewRow ? '(hidden)' : isRequired ? '(required)' : '(undefined)';
       classes.push(styles.empty);
     } else if (value === undefined) {
       if (type === 'ACL') {
@@ -217,6 +229,7 @@ export default class BrowserCell extends Component {
         this.copyableValue = content = '(undefined)';
         classes.push(styles.empty);
       }
+      content = isNewRow && isRequired && value === undefined ? '(required)' : content;
     } else if (value === null) {
       this.copyableValue = content = '(null)';
       classes.push(styles.empty);
@@ -230,14 +243,42 @@ export default class BrowserCell extends Component {
         value = object;
       }
       content = onPointerClick ? (
-        <a href='javascript:;' onClick={onPointerClick.bind(undefined, value)}>
-          <Pill value={value.id} />
-        </a>
+        <Pill
+          value={value.id}
+          onClick={onPointerClick.bind(undefined, value)}
+          followClick={true}
+        />
       ) : (
-          value.id
-        );
+        value.id
+      );
       this.copyableValue = value.id;
-    } else if (type === 'Date') {
+    }
+    else if (type === 'Array') {
+      if ( value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer' ) {
+        const array = [];
+        value.map( (v, i) => {
+          if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
+            throw new Error('Invalid type found in pointer array');
+          }
+          const object = new Parse.Object(v.className);
+          object.id = v.objectId;
+          array.push(
+            <a key={i} href='javascript:;' onClick={onPointerClick.bind(undefined, object)}>
+              <Pill value={v.objectId} />
+            </a>);
+        });
+        this.copyableValue = content = <ul>
+          { array.map( a => <li>{a}</li>) }
+        </ul>
+        if ( array.length > 1 ) {
+          classes.push(styles.hasMore);
+        }
+      }
+      else {
+        this.copyableValue = content = JSON.stringify(value);
+      }
+    }
+    else if (type === 'Date') {
       if (typeof value === 'object' && value.__type) {
         value = new Date(value.iso);
       } else if (typeof value === 'string') {
@@ -246,11 +287,11 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = dateStringUTC(value);
     } else if (type === 'Boolean') {
       this.copyableValue = content = value ? 'True' : 'False';
-    } else if (type === 'Object' || type === 'Bytes' || type === 'Array') {
+    } else if (type === 'Object' || type === 'Bytes') {
       this.copyableValue = content = JSON.stringify(value);
     } else if (type === 'File') {
       const fileName = value.url() ? getFileName(value) : 'Uploading\u2026';
-      content = <Pill value={fileName} />;
+      content = <Pill value={fileName} fileDownloadLink={value.url()} />;
       this.copyableValue = fileName;
     } else if (type === 'ACL') {
       let pieces = [];
@@ -279,8 +320,8 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = value.coordinates.map(coord => `(${coord})`)
     } else if (type === 'Relation') {
       content = setRelation ? (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }}>
-          <Pill onClick={() => setRelation(value)} value='View relation' />
+        <div style={{ textAlign: 'center' }}>
+          <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
         </div>
       ) : (
           'Relation'
@@ -291,7 +332,36 @@ export default class BrowserCell extends Component {
     if (current) {
       classes.push(styles.current);
     }
-    return (
+
+    if (markRequiredFieldRow === row && isRequired && !value) {
+      classes.push(styles.required);
+    }
+
+    return readonly ? (
+      <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip} >
+        <span
+          ref={this.cellRef}
+          className={classes.join(' ')}
+          style={{ width }}
+          onClick={() => {
+            onSelect({ row, col });
+            setCopyableValue(hidden ? undefined : this.copyableValue);
+          }}
+          onDoubleClick={() => {
+            if (field === 'objectId' && onEditSelectedRow) {
+              onEditSelectedRow(true, value);
+            } else {
+              this.setState({ showTooltip: true });
+              setTimeout(() => {
+                this.setState({ showTooltip: false });
+              }, 2000);
+            }
+          }}
+        >
+          {isNewRow ? '(auto)' : content}
+        </span>
+      </Tooltip>
+    ) : (
       <span
         ref={this.cellRef}
         className={classes.join(' ')}

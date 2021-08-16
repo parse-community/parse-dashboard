@@ -24,12 +24,13 @@ export default class DataBrowser extends React.Component {
   constructor(props, context) {
     super(props, context);
 
+    const columnPreferences = context.currentApp.columnPreference || {}
     let order = ColumnPreferences.getOrder(
       props.columns,
       context.currentApp.applicationId,
-      props.className
+      props.className,
+      columnPreferences[props.className]
     );
-
     this.state = {
       order: order,
       current: null,
@@ -52,10 +53,12 @@ export default class DataBrowser extends React.Component {
 
   componentWillReceiveProps(props, context) {
     if (props.className !== this.props.className) {
+      const columnPreferences = context.currentApp.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
         context.currentApp.applicationId,
-        props.className
+        props.className,
+        columnPreferences[props.className]
       );
       this.setState({
         order: order,
@@ -65,10 +68,12 @@ export default class DataBrowser extends React.Component {
       });
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
            || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
+      const columnPreferences = context.currentApp.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
         context.currentApp.applicationId,
-        props.className
+        props.className,
+        columnPreferences[props.className]
       );
       this.setState({ order });
     }
@@ -132,6 +137,28 @@ export default class DataBrowser extends React.Component {
   handleKey(e) {
     if (this.props.disableKeyControls) {
       return;
+    }
+    if (
+      this.state.editing &&
+      this.state.current &&
+      this.state.current.row === -1 &&
+      this.props.newObject
+    ) {
+      // if user is editing new row and want to cancel editing cell
+      if (e.keyCode === 27) {
+        this.setState({
+          editing: false
+        });
+        e.preventDefault();
+      }
+      return;
+    }
+    if(!this.state.editing && this.props.newObject){
+      // if user is not editing any row but there's new row
+      if(e.keyCode === 27){
+        this.props.onAbortAddRow();
+        e.preventDefault();
+      }
     }
     if (this.state.editing) {
       switch (e.keyCode) {
@@ -242,7 +269,7 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, count, disableSecurityDialog,  ...other } = this.props;
+    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
@@ -252,6 +279,7 @@ export default class DataBrowser extends React.Component {
           editing={this.state.editing}
           simplifiedSchema={this.state.simplifiedSchema}
           className={className}
+          editCloneRows={editCloneRows}
           handleHeaderDragDrop={this.handleHeaderDragDrop}
           handleResize={this.handleResize}
           setEditing={this.setEditing}
@@ -273,6 +301,8 @@ export default class DataBrowser extends React.Component {
           enableClassManipulation={!preventSchemaEdits}
           handleColumnDragDrop={this.handleHeaderDragDrop}
           handleColumnsOrder={this.handleColumnsOrder}
+          editCloneRows={editCloneRows}
+          onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
           {...other} />
 

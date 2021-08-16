@@ -14,16 +14,17 @@ import GeoPointEditor from 'components/GeoPointEditor/GeoPointEditor.react';
 import FileEditor from 'components/FileEditor/FileEditor.react';
 import ObjectPickerDialog from 'dashboard/Data/Browser/ObjectPickerDialog.react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
+import getFileName from 'lib/getFileName';
 
 export default class EditRowDialog extends React.Component {
   constructor(props) {
     super(props);
 
     const { selectedObject } = this.props;
-    const { currentObject, openObjectPickers } = this.initializeState(
+    const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
       selectedObject
     );
-    this.state = { currentObject, openObjectPickers };
+    this.state = { currentObject, openObjectPickers, expandedTextAreas, showFileEditor: false };
 
     this.updateCurrentObject = this.updateCurrentObject.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -31,16 +32,20 @@ export default class EditRowDialog extends React.Component {
     this.openPointer = this.openPointer.bind(this);
     this.toggleObjectPicker = this.toggleObjectPicker.bind(this);
     this.openRelation = this.openRelation.bind(this);
+    this.openFileEditor = this.openFileEditor.bind(this);
+    this.hideFileEditor = this.hideFileEditor.bind(this);
   }
 
   componentWillReceiveProps(props) {
     const newSelectedObject = props.selectedObject;
     const previousSelectedObject = this.props.selectedObject;
     if (newSelectedObject.id !== previousSelectedObject.id) {
-      const { currentObject, openObjectPickers } = this.initializeState(
+      const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
         newSelectedObject
       );
-      this.setState({ currentObject, openObjectPickers });
+      this.setState({ currentObject, openObjectPickers, expandedTextAreas });
+    } else if (newSelectedObject.updatedAt !== previousSelectedObject.updatedAt) {
+      this.updateCurrentObjectFromProps(newSelectedObject);
     }
   }
 
@@ -48,37 +53,69 @@ export default class EditRowDialog extends React.Component {
     const { columns } = this.props;
     const currentObject = { ...newObject };
     const openObjectPickers = {};
+    const expandedTextAreas = {};
     columns.forEach(column => {
       const { name, type } = column;
       if (['Array', 'Object'].indexOf(type) >= 0) {
-        currentObject[name] = JSON.stringify(currentObject[name], null, 2);
+        const stringifyValue = JSON.stringify(currentObject[name], null, 4);
+        currentObject[name] = stringifyValue;
+        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
+        expandedTextAreas[name] = { rows: rows, expanded: false };
       }
       if (type === 'Polygon') {
-        currentObject[name] = JSON.stringify(
+        const stringifyValue = JSON.stringify(
           (currentObject[name] && currentObject[name].coordinates) || [
             ['lat', 'lon']
           ],
           null,
-          2
+          4
         );
+        currentObject[name] = stringifyValue;
+        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
+        expandedTextAreas[name] = { rows: rows, expanded: false };
       }
-      if (type === 'Pointer') {
-        currentObject[name] =
-          (currentObject[name] && currentObject[name].id) || '';
-        openObjectPickers[name] = false;
-      }
-      if (type === 'Relation') {
+      if (['Pointer', 'Relation'].indexOf(type) >= 0) {
         openObjectPickers[name] = false;
       }
     });
 
-    return { currentObject, openObjectPickers };
+    return { currentObject, openObjectPickers, expandedTextAreas };
   }
 
   updateCurrentObject(newValue, name) {
     const { currentObject } = this.state;
     currentObject[name] = newValue;
     this.setState({ currentObject });
+  }
+
+  updateCurrentObjectFromProps(newObject) {
+    const { columns } = this.props;
+    const { currentObject, expandedTextAreas } = this.state;
+    columns.forEach(column => {
+      const { name, type } = column;
+      if (['String', 'Number'].indexOf(type) >= 0) {
+        currentObject[name] = newObject[name];
+      }
+      if (['Array', 'Object'].indexOf(type) >= 0) {
+        const stringifyValue = JSON.stringify(newObject[name], null, 4);
+        currentObject[name] = stringifyValue;
+        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
+        expandedTextAreas[name].rows = rows;
+      }
+      if (type === 'Polygon') {
+        const stringifyValue = JSON.stringify(
+          (newObject[name] && newObject[name].coordinates) || [
+            ['lat', 'lon']
+          ],
+          null,
+          4
+        );
+        currentObject[name] = stringifyValue;
+        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
+        expandedTextAreas[name].rows = rows;
+      }
+    });
+    this.setState({ currentObject, expandedTextAreas });
   }
 
   handleChange(newValue, name, type, targetClass, toDelete) {
@@ -94,12 +131,13 @@ export default class EditRowDialog extends React.Component {
       selectedObject,
       className,
       updateRow,
-      confirmAttachSelectedRows
+      confirmAttachSelectedRows,
+      useMasterKey
     } = this.props;
     if (type === 'Relation') {
       if (toDelete.length > 0) {
         selectedObject[name].remove(toDelete);
-        selectedObject[name].parent.save(null, { useMasterKey: true });
+        selectedObject[name].parent.save(null, { useMasterKey });
       }
       if (newValue.length > 0) {
         confirmAttachSelectedRows(
@@ -113,8 +151,22 @@ export default class EditRowDialog extends React.Component {
       this.toggleObjectPicker(name, false);
     } else {
       if (['Array', 'Object', 'Polygon'].indexOf(type) >= 0) {
-        const { currentObject } = this.state;
-        currentObject[name] = JSON.stringify(newValue, null, 2);
+        const { selectedObject } = this.props;
+        const { currentObject, expandedTextAreas } = this.state;
+        const oldStringifyValue = JSON.stringify(
+          type === 'Polygon'
+            ? selectedObject[name].coordinates
+            : selectedObject[name],
+          null,
+          4
+        );
+        const stringifyValue = JSON.stringify(newValue, null, 4);
+        if (oldStringifyValue === stringifyValue) {
+          return;
+        }
+        currentObject[name] = stringifyValue;
+        const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
+        expandedTextAreas[name].rows = rows;
         if (type === 'Polygon') {
           newValue = {
             __type: type,
@@ -162,9 +214,27 @@ export default class EditRowDialog extends React.Component {
     this.setState({ openObjectPickers });
   }
 
+  toggleExpandTextArea(name) {
+    const { expandedTextAreas } = this.state;
+    expandedTextAreas[name].expanded = !expandedTextAreas[name].expanded;
+    this.setState({ expandedTextAreas });
+  }
+
+  openFileEditor() {
+    this.setState({
+      showFileEditor: true
+    });
+  }
+
+  hideFileEditor() {
+    this.setState({
+      showFileEditor: false
+    });
+  }
+
   render() {
-    const { selectedObject, className, columns, onClose, schema } = this.props;
-    const { currentObject, openObjectPickers } = this.state;
+    const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
+    const { currentObject, openObjectPickers, expandedTextAreas } = this.state;
 
     const fields = columns.map(column => {
       const { name, type, targetClass } = column;
@@ -193,6 +263,7 @@ export default class EditRowDialog extends React.Component {
             'restricted'
           ].indexOf(name) >= 0);
 
+      let val = currentObject[name];
       switch (type) {
         case 'String':
           inputComponent = (
@@ -203,7 +274,7 @@ export default class EditRowDialog extends React.Component {
                   : false
               }
               disabled={isDisabled}
-              placeholder={name === 'password' ? '(hidden)' : ''}
+              placeholder={name === 'password' ? '(hidden)' : val === undefined ? '(undefined)' : ''}
               value={currentObject[name]}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue => this.handleChange(newValue, name)}
@@ -215,6 +286,7 @@ export default class EditRowDialog extends React.Component {
             <TextInput
               disabled={isDisabled}
               value={currentObject[name]}
+              placeholder={val === undefined ? '(undefined)' : ''}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue => this.handleChange(parseFloat(newValue), name)}
             />
@@ -226,7 +298,13 @@ export default class EditRowDialog extends React.Component {
           inputComponent = (
             <TextInput
               multiline={true}
+              rows={
+                expandedTextAreas[name] &&
+                expandedTextAreas[name].expanded &&
+                expandedTextAreas[name].rows
+              }
               disabled={isDisabled}
+              placeholder={val === undefined && '(undefined)'}
               value={currentObject[name]}
               onChange={newValue => this.updateCurrentObject(newValue, name)}
               onBlur={newValue =>
@@ -237,7 +315,7 @@ export default class EditRowDialog extends React.Component {
           break;
         case 'Boolean':
           inputComponent = isDisabled ? (
-            <TextInput disabled={true} value={selectedObject[name]} />
+            <TextInput disabled={true} placeholder={val === undefined && '(undefined)'} value={selectedObject[name]} />
           ) : (
             <Toggle
               type={Toggle.Types.TRUE_FALSE}
@@ -268,13 +346,24 @@ export default class EditRowDialog extends React.Component {
           );
           break;
         case 'File':
+          let file = selectedObject[name];
+          let fileName = file && file.url() ? getFileName(file) : '';
           inputComponent = (
             <div style={{ padding: '25px' }}>
-              <FileEditor
-                value={selectedObject[name]}
-                style={{ position: 'inherit' }}
-                onCommit={newValue => this.handleChange(newValue, name)}
-              />
+              {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
+              <div style={{ cursor: 'pointer' }}>
+                <Pill
+                  value={file ? 'Change file' : 'Select file'}
+                  onClick={() => this.openFileEditor()}
+                />
+                {this.state.showFileEditor && (
+                  <FileEditor
+                    value={file}
+                    onCancel={this.hideFileEditor}
+                    onCommit={newValue => this.handleChange(newValue, name)}
+                  />
+                )}
+              </div>
             </div>
           );
           break;
@@ -290,6 +379,7 @@ export default class EditRowDialog extends React.Component {
                   this.handleChange(newValue, name, type, targetClass)
                 }
                 onCancel={() => this.toggleObjectPicker(name, false)}
+                useMasterKey={useMasterKey}
               />
           ) : (
             <div
@@ -303,6 +393,7 @@ export default class EditRowDialog extends React.Component {
                 <Pill
                   onClick={() => this.openPointer(targetClass, pointerId)}
                   value={pointerId}
+                  followClick={true}
                 />
               )}
               <Pill
@@ -328,6 +419,7 @@ export default class EditRowDialog extends React.Component {
                   this.handleChange(newValue, name, type, targetClass, toDelete)
                 }
                 onCancel={() => this.toggleObjectPicker(name, false)}
+                useMasterKey={useMasterKey}
               />
           ) : (
             selectedObject.id && (
@@ -341,6 +433,7 @@ export default class EditRowDialog extends React.Component {
                 <Pill
                   onClick={() => this.openRelation(relation)}
                   value={`View ${type}`}
+                  followClick={true}
                 />
                 <Pill
                   onClick={() => this.toggleObjectPicker(name, true)}
@@ -354,13 +447,29 @@ export default class EditRowDialog extends React.Component {
           inputComponent = <div />;
       }
 
+      const description = (
+        <span>
+          {targetClass ? `${type} <${targetClass}>` : type}
+          <div style={{ marginTop: '2px' }}>
+            {expandedTextAreas[name] && expandedTextAreas[name].rows > 3 && (
+              <a
+                style={{ color: '#169cee' }}
+                onClick={() => this.toggleExpandTextArea(name)}
+              >
+                {expandedTextAreas[name].expanded ? 'collapse' : 'expand'}
+              </a>
+            )}
+          </div>
+        </span>
+      );
+
       return (
         <Field
           key={name}
           label={
             <Label
               text={name}
-              description={targetClass ? `${type} <${targetClass}>` : type}
+              description={description}
             />
           }
           labelWidth={33}

@@ -43,7 +43,8 @@ export default class ParseApp {
     secondaryBackgroundColor,
     supportedPushLocales,
     preventSchemaEdits,
-    graphQLServerURL
+    graphQLServerURL,
+    columnPreference
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -69,6 +70,7 @@ export default class ParseApp {
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
     this.preventSchemaEdits = preventSchemaEdits || false;
     this.graphQLServerURL = graphQLServerURL;
+    this.columnPreference = columnPreference;
 
     if(!supportedPushLocales) {
       console.warn('Missing push locales for \'' + appName + '\', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications');

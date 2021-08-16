@@ -27,7 +27,7 @@ import {
 }                         from 'lib/Constants';
 
 function validColumnName(name) {
-  return !!name.match(/^[a-zA-Z0-9][_a-zA-Z0-9]*$/);
+  return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
 }
 
 export default class AddColumnDialog extends React.Component {
@@ -39,7 +39,8 @@ export default class AddColumnDialog extends React.Component {
       name: '',
       required: false,
       defaultValue: undefined,
-      isDefaultValueValid: true
+      isDefaultValueValid: true,
+      uploadingFile: false
     };
     this.renderDefaultValueInput = this.renderDefaultValueInput.bind(this)
     this.handleDefaultValueChange = this.handleDefaultValueChange.bind(this)
@@ -77,8 +78,20 @@ export default class AddColumnDialog extends React.Component {
     if (file) {
       let base64 = await this.getBase64(file);
       const parseFile = new Parse.File(file.name, { base64 });
-      await parseFile.save();
-      return parseFile
+      this.setState({
+        uploadingFile: true
+      });
+      try {
+        await parseFile.save();
+        return parseFile;
+      } catch (err) {
+        this.props.showNote(err.message, true);
+        return parseFile;
+      } finally {
+        this.setState({
+          uploadingFile: false
+        });
+      }
     }
   }
 
@@ -167,7 +180,8 @@ export default class AddColumnDialog extends React.Component {
           onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
       case 'File':
         return <FileInput
-          value={this.defaultValue ? this.defaultValue._name : ''}
+          value={this.state.defaultValue ? this.state.defaultValue._name : ''}
+          uploading={this.state.uploadingFile}
           onChange={async (defaultValue) => await this.handleDefaultValueChange(defaultValue)} />
     }
   }
@@ -192,6 +206,11 @@ export default class AddColumnDialog extends React.Component {
         confirmText='Add column'
         cancelText={'Never mind, don\u2019t.'}
         onCancel={this.props.onCancel}
+        continueText={'Add column & continue'}
+        showContinue={true}
+        onContinue={() => {
+          this.props.onContinue(this.state);
+        }}
         onConfirm={() => {
           this.props.onConfirm(this.state);
         }}>
