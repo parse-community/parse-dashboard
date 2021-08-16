@@ -887,7 +887,11 @@ class Browser extends DashboardView {
         if (column.name === 'objectId') {
           return object.id;
         } else if (type === 'Relation' || type === 'Pointer') {
-          return object.get(column.name).id;
+          if (object.get(column.name)) {
+          return  object.get(column.name).id
+          } else {
+          return 'undefined'
+          }; 
         } else {
           return `"${object.get(column.name)}"`;
         }
