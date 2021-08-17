@@ -355,10 +355,11 @@ export default class BrowserCell extends Component {
           style={{ width }}
           onClick={(e) => {
             if ( e.metaKey === true ) {
-              console.log('cmd key pressed');
+              onPointerCmdClick(value);
+            } else {
+              onSelect({ row, col });
+              setCopyableValue(hidden ? undefined : this.copyableValue);
             }
-            onSelect({ row, col });
-            setCopyableValue(hidden ? undefined : this.copyableValue);
           }}
           onDoubleClick={() => {
             if (field === 'objectId' && onEditSelectedRow) {
@@ -382,7 +383,6 @@ export default class BrowserCell extends Component {
         onClick={(e) => {
           if ( e.metaKey === true && type === 'Pointer' ) {
             onPointerCmdClick(value);
-            setCopyableValue(hidden ? undefined : this.copyableValue);
           }
           else {
             onSelect({ row, col });
