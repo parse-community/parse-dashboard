@@ -251,7 +251,7 @@ let BrowserToolbar = ({
             onClick={() => onExportSelectedRows(selection)}
           />
           <MenuItem
-            text={'Export all rows to CSV'}
+            text={'Export all rows'}
             onClick={() => onExportSelectedRows({ '*': true })}
           />
         </BrowserMenu>
