@@ -1296,8 +1296,10 @@ class Browser extends DashboardView {
               // No quote or delimiter, just include plainly
               return `${colValue}`;
             }
+          } else if (colValue === undefined) {
+            // Export as empty CSV field
+            return '';
           } else {
-            // value isn't a string, include plainly and let javascript format it
             return `${colValue}`;
           }
         }
