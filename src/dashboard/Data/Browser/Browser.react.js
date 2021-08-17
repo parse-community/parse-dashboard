@@ -1279,8 +1279,8 @@ class Browser extends DashboardView {
           } else {
             colValue = object.get(column.name);
           }
-          // Stringify object values
-          if (Object.prototype.toString.call(colValue) === '[object Object]') {
+          // Stringify objects and arrays
+          if (Object.prototype.toString.call(colValue) === '[object Object]' || Object.prototype.toString.call(colValue) === '[object Array]') {
             colValue = JSON.stringify(colValue);
           }
           if(typeof colValue === 'string') {
