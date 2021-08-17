@@ -11,19 +11,17 @@
   @include MonospaceFont;
   display: flex;
   justify-content: space-between;
-  // align-items: center;
+  align-items: center;
   color: #0E69A1;
-  // height: 20px;
-  line-height: 18px;
+  height: 20px;
+  line-height: 20px;
   border-radius: 10px;
   font-size: 11px;
   width: 100%;
-  // overflow: hidden;
-  // text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: 4px;
   & a {
-    margin-top: -1.5px;
     height: 20px;
     width: 20px;
     background: #d6e5f2;
