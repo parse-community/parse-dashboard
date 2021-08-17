@@ -585,6 +585,13 @@ This feature allows you to change how a pointer is represented in the browser. B
 - This feature uses browser storage; switching to a different browser resets the pointer key to `objectId`.
 
 > ⚠️ For each custom pointer key in each row, a server request is triggered to resolve the custom pointer key. For example, if the browser shows a class with 50 rows and each row contains 3 custom pointer keys, a total of 150 separate server requests are triggered.
+## CSV Export
+
+▶️ *Core > Browser > Export*
+
+This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
+
+> ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
 
 # Contributing
 

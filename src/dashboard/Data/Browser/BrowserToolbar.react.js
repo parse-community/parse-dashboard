@@ -39,6 +39,7 @@ let BrowserToolbar = ({
   onAttachRows,
   onAttachSelectedRows,
   onCloneSelectedRows,
+  onExportSelectedRows,
   onExport,
   onRemoveColumn,
   onDeleteRows,
@@ -241,6 +242,20 @@ let BrowserToolbar = ({
             <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
             {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
             {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+        </BrowserMenu>
+      )}
+      {onAddRow && <div className={styles.toolbarSeparator} />}
+      {onAddRow && (
+        <BrowserMenu title='Export' icon='down-solid' disabled={isUnique || isPendingEditCloneRows} setCurrent={setCurrent}>
+          <MenuItem
+            disabled={!selectionLength}
+            text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'}`}
+            onClick={() => onExportSelectedRows(selection)}
+          />
+          <MenuItem
+            text={'Export all rows'}
+            onClick={() => onExportSelectedRows({ '*': true })}
+          />
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
