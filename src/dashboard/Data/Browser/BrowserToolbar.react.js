@@ -247,7 +247,7 @@ let BrowserToolbar = ({
         <BrowserMenu title='Export' icon='down-solid' disabled={isUnique || isPendingEditCloneRows} setCurrent={setCurrent}>
           <MenuItem
             disabled={!selectionLength}
-            text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'} to CSV`}
+            text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'}`}
             onClick={() => onExportSelectedRows(selection)}
           />
           <MenuItem
