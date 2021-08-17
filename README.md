@@ -572,7 +572,9 @@ This feature allows you to use the data browser as another user, respecting that
 
 ## CSV Export
 
-This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the property names.
+▶️ *Core > Browser > Export*
+
+This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
 
 > ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
 

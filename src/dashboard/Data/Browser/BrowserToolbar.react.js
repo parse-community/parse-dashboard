@@ -140,16 +140,6 @@ let BrowserToolbar = ({
         />
         <Separator />
         <MenuItem
-          disabled={!selectionLength}
-          text={`Export ${selectionLength <= 1 ? 'this row' : 'these rows'} to CSV`}
-          onClick={() => onExportSelectedRows(selection)}
-        />
-        <MenuItem
-          text={'Export all rows to CSV'}
-          onClick={() => onExportSelectedRows({ '*': true })}
-        />
-        <Separator />
-        <MenuItem
           disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)} />
@@ -250,6 +240,20 @@ let BrowserToolbar = ({
             <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
             {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
             {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+        </BrowserMenu>
+      )}
+      {onAddRow && <div className={styles.toolbarSeparator} />}
+      {onAddRow && (
+        <BrowserMenu title='Export' icon='down-solid' disabled={isUnique || isPendingEditCloneRows} setCurrent={setCurrent}>
+          <MenuItem
+            disabled={!selectionLength}
+            text={`Export ${selectionLength <= 1 ? 'this row' : 'these rows'} to CSV`}
+            onClick={() => onExportSelectedRows(selection)}
+          />
+          <MenuItem
+            text={'Export all rows to CSV'}
+            onClick={() => onExportSelectedRows({ '*': true })}
+          />
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
