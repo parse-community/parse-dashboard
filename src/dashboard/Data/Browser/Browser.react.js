@@ -1270,10 +1270,19 @@ class Browser extends DashboardView {
           if (object.get(column.name)) {
             return  object.get(column.name).id
           } else {
-            return 'undefined'
+            return ''
           }
         } else {
-          let colValue = object.get(column.name);
+          let colValue;
+          if (column.name === 'ACL') {
+            colValue = object.getACL();
+          } else {
+            colValue = object.get(column.name);
+          }
+          // Stringify object values
+          if (Object.prototype.toString.call(colValue) === '[object Object]') {
+            colValue = JSON.stringify(colValue);
+          }
           if(typeof colValue === 'string') {
             if (colValue.includes('"')) {
               // Has quote in data, escape and quote
