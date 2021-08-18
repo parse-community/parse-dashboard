@@ -20,7 +20,7 @@ let Pill = ({ value, onClick, fileDownloadLink, followClick = false }) => (
   >
     <span className={!followClick && fileDownloadLink ? styles.content : ''}>{value}</span>
     {followClick && (
-      <a onClick={onClick}>
+      <a onClick={e => !e.metaKey && onClick}>
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}
