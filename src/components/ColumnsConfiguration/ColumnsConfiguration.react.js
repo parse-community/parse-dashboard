@@ -84,7 +84,13 @@ export default class ColumnsConfiguration extends React.Component {
                           name,
                           visible
                         };
-                        handleColumnsOrder(updatedOrder, visible);
+                        let shouldReload = visible;
+                        // these fields are always cached as they are never excluded from server
+                        // therefore no need to make another request.
+                        if (name === 'objectId' || name === 'createdAt' || name === 'updatedAt' || name === 'ACL') {
+                          shouldReload = false;
+                        }
+                        handleColumnsOrder(updatedOrder, shouldReload);
                       }}
                       handleColumnDragDrop={handleColumnDragDrop} />
                   })}
