@@ -20,6 +20,7 @@ $footerHeight: 36px;
   bottom: 0;
   background: #0c5582;
   color: #fff;
+  z-index: 100;
 
   &.collapsed {
     left: 0;
