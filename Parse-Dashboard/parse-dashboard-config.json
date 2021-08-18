@@ -2,15 +2,13 @@
   "apps": [
     {
       "serverURL": "http://localhost:1338/parse",
-      "appId": "APPLICATION_ID",
-      "masterKey": "MASTER_KEY",
-      "appName": "Countries States and Cities",
+      "appId": "hello",
+      "masterKey": "world",
+      "appName": "",
       "iconName": "",
       "primaryBackgroundColor": "",
-      "secondaryBackgroundColor": "",
-      "custom": {
-        "isOwner": true
-      }
+      "secondaryBackgroundColor": ""
     }
-  ]
+  ],
+  "iconsFolder": "icons"
 }
