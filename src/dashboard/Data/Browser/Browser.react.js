@@ -681,6 +681,7 @@ class Browser extends DashboardView {
       for (let columnsKey in columns) {
         query.exclude(columns[columnsKey]);
       }
+      ColumnPreferences.updateCachedColumns(this.context.currentApp.applicationId, className);
     }
   }
 

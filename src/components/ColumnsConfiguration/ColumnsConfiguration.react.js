@@ -93,6 +93,9 @@ export default class ColumnsConfiguration extends React.Component {
                         if (this.props.className === '_User' && name === 'password') {
                           shouldReload = false;
                         }
+                        if (updatedOrder[index].cached) {
+                          shouldReload = false;
+                        }
                         handleColumnsOrder(updatedOrder, shouldReload);
                       }}
                       handleColumnDragDrop={handleColumnDragDrop} />
