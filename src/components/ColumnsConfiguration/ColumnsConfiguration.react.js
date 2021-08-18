@@ -90,6 +90,9 @@ export default class ColumnsConfiguration extends React.Component {
                         if (name === 'objectId' || name === 'createdAt' || name === 'updatedAt' || name === 'ACL') {
                           shouldReload = false;
                         }
+                        if (this.props.className === '_User' && name === 'password') {
+                          shouldReload = false;
+                        }
                         handleColumnsOrder(updatedOrder, shouldReload);
                       }}
                       handleColumnDragDrop={handleColumnDragDrop} />
