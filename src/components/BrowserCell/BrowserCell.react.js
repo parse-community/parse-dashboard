@@ -354,7 +354,7 @@ export default class BrowserCell extends Component {
           className={classes.join(' ')}
           style={{ width }}
           onClick={(e) => {
-            if ( e.metaKey === true && ['Pointer', 'Relation'].includes(type)) {
+            if ( e.metaKey === true && type === 'Pointer') {
               onPointerCmdClick(value);
             } else {
               onSelect({ row, col });
@@ -381,7 +381,7 @@ export default class BrowserCell extends Component {
         className={classes.join(' ')}
         style={{ width }}
         onClick={(e) => {
-          if ( e.metaKey === true && ['Pointer', 'Relation'].includes(type) ) {
+          if ( e.metaKey === true && type === 'Pointer' ) {
             onPointerCmdClick(value);
           }
           else {
