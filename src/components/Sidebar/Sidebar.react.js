@@ -31,23 +31,27 @@ const Sidebar = ({
   primaryBackgroundColor,
   secondaryBackgroundColor
 }, { currentApp }) => {
-  const isSidebarFixed = window.innerWidth > 980;
+  const collapseWidth = 980;
+  const isSidebarFixed = window.innerWidth > collapseWidth;
   const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
   const [ collapsed, setCollapsed ] = useState(!isSidebarFixed);
   const [ fixed, setFixed ] = useState(isSidebarFixed);
+  let currentWidth = window.innerWidth;
 
   const windowResizeHandler = () => {
-    if (window.innerWidth <= 980) {
+    if (window.innerWidth <= collapseWidth && currentWidth > collapseWidth) {
       if (document.body.className.indexOf(' expanded') === -1) {
         document.body.className += ' expanded';
       }
       setCollapsed(true);
       setFixed(false);
-    } else {
+    } else if (window.innerWidth > collapseWidth && currentWidth <= collapseWidth) {
       document.body.className = document.body.className.replace(' expanded', '');
       setCollapsed(false);
       setFixed(true);
     }
+    // Update window width
+    currentWidth = window.innerWidth;
   }
 
   useEffect(() => {
