@@ -32,10 +32,9 @@ const Sidebar = ({
   secondaryBackgroundColor
 }, { currentApp }) => {
   const collapseWidth = 980;
-  const isSidebarFixed = window.innerWidth > collapseWidth;
   const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
-  const [ collapsed, setCollapsed ] = useState(!isSidebarFixed);
-  const [ fixed, setFixed ] = useState(isSidebarFixed);
+  const [ collapsed, setCollapsed ] = useState(false);
+  const [ fixed, setFixed ] = useState(true);
   let currentWidth = window.innerWidth;
 
   const windowResizeHandler = () => {
@@ -98,12 +97,12 @@ const Sidebar = ({
 
   const onPinClick = () => {
     if (fixed) {
-      setCollapsed(true);
       setFixed(false);
+      setCollapsed(true);
       setAppsMenuOpen(false);
     } else {
-      setCollapsed(false);
       setFixed(true);
+      setCollapsed(false);
     }
   };
 
@@ -119,7 +118,7 @@ const Sidebar = ({
     );
   } else {
     const topContent = collapsed
-      ? <Pin />
+      ? <Pin onClick={onPinClick} />
       : appSelector && (
         <div className={styles.apps}>
           <AppName name={currentApp.name} onClick={() => setAppsMenuOpen(true)} onPinClick={onPinClick} />
