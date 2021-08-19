@@ -20,38 +20,18 @@ $footerHeight: 36px;
   bottom: 0;
   background: #0c5582;
   color: #fff;
-  transition: left 0.5s ease-in;
-}
+  z-index: 100;
 
-.toggle {
-  position: fixed;
-  border-radius: 5px;
-  width: 28px;
-  height: 28px;
-  top: 10px;
-  left: 310px;
-  opacity: 0;
-  transition: left 0.5s ease-in, opacity 0.5s 0.5s ease-in;
-}
-
-@media (max-width: 980px) {
-  .sidebar {
+  &.collapsed {
     left: 0;
-  }
+    width: 54px;
 
-  .toggle {
-    left: 310px;
-    top: 10px;
-    opacity: 1;
-  }
-
-  body:global(.expanded) {
-    .sidebar {
-      left: -300px;
+    .section_header > svg {
+      margin: 0;
     }
 
-    .toggle {
-      left: 10px;
+    .pinContainer > svg {
+      fill: white;
     }
   }
 }
@@ -128,10 +108,10 @@ $footerHeight: 36px;
   font-size: 18px;
   font-weight: 700;
   line-height: 30px;
-  cursor: pointer;
 }
 
 .menuRow {
+  cursor: pointer;
   border-bottom: 1px solid #0c5582;
 
   > *:first-child {
@@ -149,31 +129,40 @@ $footerHeight: 36px;
 
 .currentApp {
   position: relative;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-right: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  &:hover{
+  .appNameContainer {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .currentAppName {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 215px;
+    }
+
+    &:after {
+      @include arrow('down', 10px, 7px, #132B39);
+      content: '';
+      margin-left: 10px;
+    }
+
+    &:hover {
       &:after {
         border-top-color: white;
       }
-  }
-
-  &:after {
-    @include arrow('down', 10px, 7px, #132B39);
-    position: absolute;
-    content: '';
-    top: 20px;
-    right: 15px;
+    }
   }
 }
 
-.appsMenu .currentApp:after {
-  @include arrow('up', 10px, 7px, #ffffff);
-  position: absolute;
-  content: '';
-  top: 20px;
-  right: 15px;
+.sidebarPin {
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  padding: 6px;
 }
 
 .appsMenu {
@@ -183,6 +172,20 @@ $footerHeight: 36px;
 
   .menuRow:hover {
     background: #0c5582;
+  }
+
+  .currentApp {
+    .currentAppName {
+      &:after {
+        @include arrow('up', 10px, 7px, #132B39);
+      }
+
+      &:hover {
+        &:after {
+          border-bottom-color: white;
+        }
+      }
+    }
   }
 
   .appListContainer {
@@ -389,6 +392,26 @@ a.subitem {
     .emoji{
       padding-left: 4px;
       padding-right: 2px;
+    }
+  }
+}
+
+.pinContainer {
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #094162;
+
+  svg {
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    padding: 10px 10px 10px 10px;
+    fill: #132B39;
+
+    &:hover {
+      fill: white;
     }
   }
 }

@@ -5,6 +5,7 @@
 
 __New features:__
 * Added data export in CSV format for classes ([#1494](https://github.com/parse-community/parse-dashboard/pull/1494)), thanks to [Cory Imdieke](https://github.com/Vortec4800), [Manuel Trezza](https://github.com/mtrezza).
+* Collapse sidebar ([#1760](https://github.com/parse-community/parse-dashboard/pull/1760)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka), [Manuel Trezza](https://github.com/mtrezza).
 
 ### 2.1.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.5...2.1.0)
