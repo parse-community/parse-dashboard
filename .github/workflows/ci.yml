@@ -7,12 +7,20 @@ on:
     branches:
       - '**'
 jobs:
-  changelog:
+  changelog-update:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
     - uses: actions/checkout@v2
     - uses: dangoslen/changelog-enforcer@v2
+  changelog-syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: ardalanamini/auto-changelog@v1.1.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        exclude: 'revert,other,breaking'
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
