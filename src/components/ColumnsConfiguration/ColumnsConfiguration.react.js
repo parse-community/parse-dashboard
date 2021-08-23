@@ -40,7 +40,14 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   showAll() {
-    this.props.handleColumnsOrder(this.props.order.map(order => ({ ...order, visible: true })));
+    let shouldReload = false;
+    let updatedOrder = this.props.order.map(field => {
+      if (!shouldReload && !field.cached) {
+        shouldReload = true;
+      }
+      return { ...field, visible: true }
+    });
+    this.props.handleColumnsOrder(updatedOrder, shouldReload);
   }
 
   hideAll() {
