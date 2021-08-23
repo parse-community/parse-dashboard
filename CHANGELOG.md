@@ -5,7 +5,8 @@
 
 ## New Features
 ## Improvements
-- Add CI check to add changelog entry (Manuel Trezza)
+- Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
+
 ## Fixes
 
 # 2.2.0
