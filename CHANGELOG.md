@@ -38,9 +38,9 @@
 ## Fixes
 - Fixed clear state.data when setting relation to prevent column type mismatch (John Dillick) [#1564](https://github.com/parse-community/parse-dashboard/pull/1564)
 - Fixed incorrect setting of pointer CLPs (mess-lelouch) [#1556](https://github.com/parse-community/parse-dashboard/pull/1556)
-- Fixed master key not being passed in when saving file in global config (stevestencil) [#57953df19ca7fd5f67c065727d32e3e5a4b841bc](https://github.com/parse-community/parse-dashboard/commit/57953df19ca7fd5f67c065727d32e3e5a4b841bc)
+- Fixed master key not being passed in when saving file in global config (stevestencil) [#1581](https://github.com/parse-community/parse-dashboard/pull/1581)
 - Fixes toolbar overlap to page title (Sergei Smirnov) [#1578](https://github.com/parse-community/parse-dashboard/pull/1578)
-- Fixed various issues with edit row dialog (Nino Črljenec) [#5b03d395c74262335b15b2366bccc596dbe06903](https://github.com/parse-community/parse-dashboard/commit/5b03d395c74262335b15b2366bccc596dbe06903)
+- Fixed various issues with edit row dialog (Nino Črljenec) [#1586](https://github.com/parse-community/parse-dashboard/pull/1586)
 - Fixed date filters in data browser (Prerna Mehra) [#1682](https://github.com/parse-community/parse-dashboard/pull/1682)
 - Fixed `expiresAt` field in `Session` class not appearing as read-only (Prerna Mehra) [#1686](https://github.com/parse-community/parse-dashboard/pull/1686)
 - Fixed missing error message on failed clone row task (Prerna Mehra) [#1687](https://github.com/parse-community/parse-dashboard/pull/1687)
