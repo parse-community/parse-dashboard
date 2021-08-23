@@ -122,6 +122,7 @@ class Browser extends DashboardView {
     this.updateRow = this.updateRow.bind(this);
     this.updateOrdering = this.updateOrdering.bind(this);
     this.handlePointerClick = this.handlePointerClick.bind(this);
+    this.handlePointerCmdClick = this.handlePointerCmdClick.bind(this);
     this.handleCLPChange = this.handleCLPChange.bind(this);
     this.setRelation = this.setRelation.bind(this);
     this.showAddColumn = this.showAddColumn.bind(this);
@@ -835,6 +836,15 @@ class Browser extends DashboardView {
     history.push(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
   }
 
+  handlePointerCmdClick({ className, id, field = 'objectId' }) {
+    let filters = JSON.stringify([{
+      field,
+      constraint: 'eq',
+      compareTo: id
+    }]);
+    window.open(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`),'_blank');
+  }
+
   handleCLPChange(clp) {
     let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
       className: this.props.params.className,
@@ -1530,6 +1540,7 @@ class Browser extends DashboardView {
             updateRow={this.updateRow}
             updateOrdering={this.updateOrdering}
             onPointerClick={this.handlePointerClick}
+            onPointerCmdClick={this.handlePointerCmdClick}
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
