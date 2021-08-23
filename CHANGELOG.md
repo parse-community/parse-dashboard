@@ -5,6 +5,7 @@
 
 ## New Features
 ## Improvements
+- Add CI check to add changelog entry (Manuel Trezza)
 ## Fixes
 
 # 2.2.0
