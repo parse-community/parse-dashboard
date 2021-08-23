@@ -1,13 +1,57 @@
-## Parse Dashboard Changelog
+# Parse Dashboard Changelog
 
-### master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.1.0...master)
+# master
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...master)
 
-__New features:__
-* Added data export in CSV format for classes ([#1494](https://github.com/parse-community/parse-dashboard/pull/1494)), thanks to [Cory Imdieke](https://github.com/Vortec4800), [Manuel Trezza](https://github.com/mtrezza).
-* Collapse sidebar ([#1760](https://github.com/parse-community/parse-dashboard/pull/1760)), thanks to [Douglas Muraoka](https://github.com/douglasmuraoka), [Manuel Trezza](https://github.com/mtrezza).
+## New Features
+## Improvements
+## Fixes
 
-### 2.1.0
+# 2.2.0
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.1.0...2.2.0)
+
+## New Features
+- Added data export in CSV format for classes (Cory Imdieke, Manuel Trezza) [#1494](https://github.com/parse-community/parse-dashboard/pull/1494)
+- Added collapsing sidebar for small screens (Douglas Muraoka, Manuel Trezza) [#1760](https://github.com/parse-community/parse-dashboard/pull/1760)
+- Added exclude hidden columns from being fetched from server (itzharDev) [#1694](https://github.com/parse-community/parse-dashboard/pull/1694)
+- Added exclude hidden columns from being fetched from server (Prerna Mehra) [#1734](https://github.com/parse-community/parse-dashboard/pull/1734)
+- Added cloning rows (Prerna Mehra) [#1697](https://github.com/parse-community/parse-dashboard/pull/1697)
+- Added `Cmd`-click on pointer to open link in new browser tab (fn-faisal) [#1757](https://github.com/parse-community/parse-dashboard/pull/1757)
+- Added browsing as another user (Nino Črljenec, Manuel Trezza) [#1750](https://github.com/parse-community/parse-dashboard/pull/1750)
+- Added `columnPreference.preventSort` configuration option to prevent a column from being used for sorting (Christopher Brookes) [#1709](https://github.com/parse-community/parse-dashboard/pull/1709)
+- Added `columnPreference` configuration option for data browser (dblythy) [#1625](https://github.com/parse-community/parse-dashboard/pull/1625)
+
+## Improvements
+- Improved navigation by redesigning pointer cell with link icon (Prerna Mehra) [#1708](https://github.com/parse-community/parse-dashboard/pull/1708)
+- Improved rendering an array of pointers in cell (fn-faisal) [#1727](https://github.com/parse-community/parse-dashboard/pull/1727)
+- Improved flow when creating a class and adding columns (fn-faisal) [#1728](https://github.com/parse-community/parse-dashboard/pull/1728)
+- Added indication of required fields when adding new row (Prerna Mehra) [#1720](https://github.com/parse-community/parse-dashboard/pull/1720)
+- Added indication of auto-populated fields when adding new row (Prerna Mehra) [#1692](https://github.com/parse-community/parse-dashboard/pull/1692)
+- Added cancel button while adding a new row (Prerna Mehra) [#1690](https://github.com/parse-community/parse-dashboard/pull/1690)
+- Added progress indicator when uploading a file in modal dialog (Prerna Mehra) [#1717](https://github.com/parse-community/parse-dashboard/pull/1717)
+- Added tooltip for read-only fields (Prerna Mehra) [#1688](https://github.com/parse-community/parse-dashboard/pull/1688)
+- Added message when no locale is set for localizing push notifications (Prerna Mehra) [#1685](https://github.com/parse-community/parse-dashboard/pull/1685)
+- Updated to Parse JS SDK 3.3.0
+- Transitioned CI to GitHub Actions (Diamond Lewis) [#1640](https://github.com/parse-community/parse-dashboard/pull/1640)
+- Added finish date to Cloud Job status (Diamond Lewis) [#1620](https://github.com/parse-community/parse-dashboard/pull/1620)
+
+## Fixes
+- Fixed clear state.data when setting relation to prevent column type mismatch (John Dillick) [#1564](https://github.com/parse-community/parse-dashboard/pull/1564)
+- Fixed incorrect setting of pointer CLPs (mess-lelouch) [#1556](https://github.com/parse-community/parse-dashboard/pull/1556)
+- Fixed master key not being passed in when saving file in global config (stevestencil) [#57953df19ca7fd5f67c065727d32e3e5a4b841bc](https://github.com/parse-community/parse-dashboard/commit/57953df19ca7fd5f67c065727d32e3e5a4b841bc)
+- Fixes toolbar overlap to page title (Sergei Smirnov) [#1578](https://github.com/parse-community/parse-dashboard/pull/1578)
+- Fixed various issues with edit row dialog (Nino Črljenec) [#5b03d395c74262335b15b2366bccc596dbe06903](https://github.com/parse-community/parse-dashboard/commit/5b03d395c74262335b15b2366bccc596dbe06903)
+- Fixed date filters in data browser (Prerna Mehra) [#1682](https://github.com/parse-community/parse-dashboard/pull/1682)
+- Fixed `expiresAt` field in `Session` class not appearing as read-only (Prerna Mehra) [#1686](https://github.com/parse-community/parse-dashboard/pull/1686)
+- Fixed missing error message on failed clone row task (Prerna Mehra) [#1687](https://github.com/parse-community/parse-dashboard/pull/1687)
+- Fixes missing or duplicate rows displayed when scrolling; this fix may require the additional creation of database indices to avoid performance issues, see PR discussion (Prerna Mehra) [#1706](https://github.com/parse-community/parse-dashboard/pull/1706)
+- Fixed missing key binding for copy, paste, cancel while adding a new row (Christopher Brookes) [#1714](https://github.com/parse-community/parse-dashboard/pull/1714)
+- Fixed setup locales message when adding all locales to push notification (Prerna Mehra) [#1691](https://github.com/parse-community/parse-dashboard/pull/1691)
+- Fixed no error message displayed when trying to add column with a name that has a leading number (Prerna Mehra) [#1718](https://github.com/parse-community/parse-dashboard/pull/1718)
+- Fixed incorrect documentation (Philipp B) [#1592](https://github.com/parse-community/parse-dashboard/pull/1592)
+- Fixed various dependency vulnerabilities
+
+# 2.1.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.0.5...2.1.0)
 
 __New features:__
