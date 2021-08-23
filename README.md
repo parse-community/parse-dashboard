@@ -38,6 +38,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Run with Docker](#run-with-docker)
 - [Features](#features)
   - [Browse as User](#browse-as-user)
+  - [CSV Export](#csv-export)
 - [Contributing](#contributing)
 
 # Getting Started
