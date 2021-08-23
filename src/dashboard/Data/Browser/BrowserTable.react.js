@@ -21,7 +21,7 @@ import PropTypes              from 'lib/PropTypes';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
-const ROW_HEIGHT = 31;
+const ROW_HEIGHT = 30;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
 
