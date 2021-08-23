@@ -31,7 +31,7 @@
 - Added progress indicator when uploading a file in modal dialog (Prerna Mehra) [#1717](https://github.com/parse-community/parse-dashboard/pull/1717)
 - Added tooltip for read-only fields (Prerna Mehra) [#1688](https://github.com/parse-community/parse-dashboard/pull/1688)
 - Added message when no locale is set for localizing push notifications (Prerna Mehra) [#1685](https://github.com/parse-community/parse-dashboard/pull/1685)
-- Updated to Parse JS SDK 3.3.0
+- Updated to Parse JS SDK 3.3.0 (Manuel Treza) [#1745](https://github.com/parse-community/parse-dashboard/pull/1745)
 - Transitioned CI to GitHub Actions (Diamond Lewis) [#1640](https://github.com/parse-community/parse-dashboard/pull/1640)
 - Added finish date to Cloud Job status (Diamond Lewis) [#1620](https://github.com/parse-community/parse-dashboard/pull/1620)
 
