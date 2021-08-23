@@ -14,7 +14,6 @@
 - Added data export in CSV format for classes (Cory Imdieke, Manuel Trezza) [#1494](https://github.com/parse-community/parse-dashboard/pull/1494)
 - Added collapsing sidebar for small screens (Douglas Muraoka, Manuel Trezza) [#1760](https://github.com/parse-community/parse-dashboard/pull/1760)
 - Added exclude hidden columns from being fetched from server (itzharDev) [#1694](https://github.com/parse-community/parse-dashboard/pull/1694)
-- Added exclude hidden columns from being fetched from server (Prerna Mehra) [#1734](https://github.com/parse-community/parse-dashboard/pull/1734)
 - Added cloning rows (Prerna Mehra) [#1697](https://github.com/parse-community/parse-dashboard/pull/1697)
 - Added `Cmd`-click on pointer to open link in new browser tab (fn-faisal) [#1757](https://github.com/parse-community/parse-dashboard/pull/1757)
 - Added browsing as another user (Nino Črljenec, Manuel Trezza) [#1750](https://github.com/parse-community/parse-dashboard/pull/1750)
@@ -48,6 +47,7 @@
 - Fixed missing key binding for copy, paste, cancel while adding a new row (Christopher Brookes) [#1714](https://github.com/parse-community/parse-dashboard/pull/1714)
 - Fixed setup locales message when adding all locales to push notification (Prerna Mehra) [#1691](https://github.com/parse-community/parse-dashboard/pull/1691)
 - Fixed no error message displayed when trying to add column with a name that has a leading number (Prerna Mehra) [#1718](https://github.com/parse-community/parse-dashboard/pull/1718)
+- Fixed fetching data when un-hiding column despite that data is already cached (Prerna Mehra) [#1734](https://github.com/parse-community/parse-dashboard/pull/1734)
 - Fixed incorrect documentation (Philipp B) [#1592](https://github.com/parse-community/parse-dashboard/pull/1592)
 - Fixed various dependency vulnerabilities
 
