@@ -10,8 +10,10 @@ import AppsManager    from 'lib/AppsManager';
 import AppsMenu       from 'components/Sidebar/AppsMenu.react';
 import AppName        from 'components/Sidebar/AppName.react';
 import FooterMenu     from 'components/Sidebar/FooterMenu.react';
-import React, { useState } from 'react';
+import isInsidePopover from 'lib/isInsidePopover';
 import ParseApp       from 'lib/ParseApp';
+import Pin            from 'components/Sidebar/Pin.react';
+import React, { useEffect, useState } from 'react';
 import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
@@ -29,7 +31,46 @@ const Sidebar = ({
   primaryBackgroundColor,
   secondaryBackgroundColor
 }, { currentApp }) => {
+  const collapseWidth = 980;
   const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
+  const [ collapsed, setCollapsed ] = useState(false);
+  const [ fixed, setFixed ] = useState(true);
+  let currentWidth = window.innerWidth;
+
+  const windowResizeHandler = () => {
+    if (window.innerWidth <= collapseWidth && currentWidth > collapseWidth) {
+      if (document.body.className.indexOf(' expanded') === -1) {
+        document.body.className += ' expanded';
+      }
+      setCollapsed(true);
+      setFixed(false);
+    } else if (window.innerWidth > collapseWidth && currentWidth <= collapseWidth) {
+      document.body.className = document.body.className.replace(' expanded', '');
+      setCollapsed(false);
+      setFixed(true);
+    }
+    // Update window width
+    currentWidth = window.innerWidth;
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', windowResizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', windowResizeHandler);
+    }
+  });
+
+  const sidebarClasses = [styles.sidebar];
+  if (fixed) {
+    document.body.className = document.body.className.replace(' expanded', '');
+  } else if (!fixed && collapsed) {
+    sidebarClasses.push(styles.collapsed);
+    if (document.body.className.indexOf(' expanded') === -1) {
+      document.body.className += ' expanded';
+    }
+  }
+
   const _subMenu = subsections => {
     if (!subsections) {
       return null;
@@ -54,25 +95,40 @@ const Sidebar = ({
     );
   }
 
-  const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+  const onPinClick = () => {
+    if (fixed) {
+      setFixed(false);
+      setCollapsed(true);
+      setAppsMenuOpen(false);
+    } else {
+      setFixed(true);
+      setCollapsed(false);
+    }
+  };
 
   let sidebarContent;
   if (appsMenuOpen) {
+    const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
     sidebarContent = (
       <AppsMenu
         apps={apps}
         current={currentApp}
+        onPinClick={onPinClick}
         onSelect={() => setAppsMenuOpen(false)} />
     );
   } else {
+    const topContent = collapsed
+      ? <Pin onClick={onPinClick} />
+      : appSelector && (
+        <div className={styles.apps}>
+          <AppName name={currentApp.name} onClick={() => setAppsMenuOpen(true)} onPinClick={onPinClick} />
+        </div>
+      ) || undefined;
+
     sidebarContent = (
       <>
-        {appSelector && (
-          <div className={styles.apps}>
-            <AppName name={currentApp.name} onClick={() => setAppsMenuOpen(true)} />
-          </div>
-        )}
         <div className={styles.content}>
+          {topContent}
           {sections.map(({
             name,
             icon,
@@ -84,7 +140,7 @@ const Sidebar = ({
             return (
               <SidebarSection
                 key={name}
-                name={name}
+                name={collapsed ? null : name}
                 icon={icon}
                 style={style}
                 link={prefix + link}
@@ -92,7 +148,7 @@ const Sidebar = ({
                 primaryBackgroundColor={primaryBackgroundColor}
                 secondaryBackgroundColor={secondaryBackgroundColor}
                 >
-                {active ? _subMenu(subsections) : null}
+                {!collapsed && active ? _subMenu(subsections) : null}
               </SidebarSection>
             );
           })}
@@ -101,16 +157,39 @@ const Sidebar = ({
     )
   }
 
-  return <div className={styles.sidebar}>
-    <SidebarHeader />
-    {sidebarContent}
-    <div className={styles.footer}>
-      <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
-      <a target='_blank' href='https://github.com/parse-community'>GitHub</a>
-      <a target='_blank' href='http://docs.parseplatform.org/'>Docs</a>
-      <FooterMenu />
+  return (
+    <div
+      className={sidebarClasses.join(' ')}
+      onMouseEnter={
+        !fixed && collapsed
+          ? () => setCollapsed(false)
+          : undefined
+      }
+      onMouseLeave={
+        !collapsed && !fixed
+          ? (e => {
+            if (!isInsidePopover(e.relatedTarget)) {
+              setAppsMenuOpen(false);
+              setCollapsed(true);
+            }
+          })
+          : undefined
+      }
+    >
+      <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
+      {sidebarContent}
+      <div className={styles.footer}>
+        {!collapsed && (
+          <>
+            <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
+            <a target='_blank' href='https://github.com/parse-community'>GitHub</a>
+            <a target='_blank' href='http://docs.parseplatform.org/'>Docs</a>
+          </>
+        )}
+        <FooterMenu isCollapsed={!appsMenuOpen && collapsed} />
+      </div>
     </div>
-  </div>
+  );
 }
 
 Sidebar.contextTypes = {

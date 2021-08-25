@@ -9,7 +9,6 @@ import PropTypes     from 'lib/PropTypes';
 import ParseApp      from 'lib/ParseApp';
 import React         from 'react';
 import Sidebar       from 'components/Sidebar/Sidebar.react';
-import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
 import styles        from 'dashboard/Dashboard.scss';
 
 export default class DashboardView extends React.Component {
@@ -255,7 +254,6 @@ export default class DashboardView extends React.Component {
           {this.renderContent()}
         </div>
         {sidebar}
-        <SidebarToggle />
       </div>
     );
   }

@@ -7,7 +7,6 @@
  */
 import React from 'react';
 import { buildAccountSidebar } from './SidebarBuilder';
-import SidebarToggle from 'components/Sidebar/SidebarToggle.react';
 import styles from 'dashboard/Dashboard.scss';
 
 export default class AccountView extends React.Component {
@@ -23,7 +22,6 @@ export default class AccountView extends React.Component {
           {this.props.children}
         </div>
         {sidebar}
-        <SidebarToggle />
       </div>
     );
   }

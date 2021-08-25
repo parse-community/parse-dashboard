@@ -21,7 +21,7 @@ import PropTypes              from 'lib/PropTypes';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
-const ROW_HEIGHT = 31;
+const ROW_HEIGHT = 30;
 
 const READ_ONLY = [ 'objectId', 'createdAt', 'updatedAt' ];
 
@@ -139,6 +139,7 @@ export default class BrowserTable extends React.Component {
                     isUnique={this.props.isUnique}
                     obj={cloneRow}
                     onPointerClick={this.props.onPointerClick}
+                    onPointerCmdClick={this.props.onPointerCmdClick}
                     onFilterChange={this.props.onFilterChange}
                     order={this.props.order}
                     readOnlyFields={READ_ONLY}
@@ -189,6 +190,7 @@ export default class BrowserTable extends React.Component {
               isUnique={this.props.isUnique}
               obj={this.props.newObject}
               onPointerClick={this.props.onPointerClick}
+              onPointerCmdClick={this.props.onPointerCmdClick}
               onFilterChange={this.props.onFilterChange}
               order={this.props.order}
               readOnlyFields={READ_ONLY}
@@ -246,6 +248,7 @@ export default class BrowserTable extends React.Component {
           isUnique={this.props.isUnique}
           obj={obj}
           onPointerClick={this.props.onPointerClick}
+          onPointerCmdClick={this.props.onPointerCmdClick}
           onFilterChange={this.props.onFilterChange}
           order={this.props.order}
           readOnlyFields={READ_ONLY}
@@ -319,7 +322,7 @@ export default class BrowserTable extends React.Component {
           if (this.props.current.row >= -1 && this.props.editCloneRows) {
             //for data rows & new row when there are edit clone rows
             wrapTop += (2 * ROW_HEIGHT) * (this.props.editCloneRows.length);
-          }  
+          }
           let wrapLeft = 30;
           for (let i = 0; i < this.props.current.col; i++) {
             const column = this.props.order[i];
