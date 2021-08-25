@@ -7,7 +7,8 @@
 ## Improvements
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 
-## Fixes
+## Improvements
+- Improved copy paste functionality for date values. [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
 
 # 2.2.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.1.0...2.2.0)
