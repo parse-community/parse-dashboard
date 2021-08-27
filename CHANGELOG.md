@@ -8,6 +8,7 @@
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Add Parse Issue Bot (Manuel Trezza) [#1766](https://github.com/parse-community/parse-dashboard/pull/1766)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
+- ci: add Issue Bot for PRs (Manuel Trezza) [#1769](https://github.com/parse-community/parse-dashboard/pull/1769)
 
 ## Fixes
 
