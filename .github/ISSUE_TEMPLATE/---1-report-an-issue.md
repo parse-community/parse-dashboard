@@ -31,11 +31,6 @@ assignees: ''
 ### Expected Outcome
 <!-- What outcome did you expect? -->
 
-### Pull Request
-<!-- If you can, please submit a PR with a fix. -->
-
-- PR: #`FILL_THIS_OUT`
-
 ### Environment
 <!-- Be specific with versions, don't use "latest" or semver ranges like "~x.y.z" or "^x.y.z". -->
 
