@@ -40,6 +40,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Browse as User](#browse-as-user)
   - [Change Pointer Key](#change-pointer-key)
     - [Limitations](#limitations)
+  - [CSV Export](#csv-export)
 - [Contributing](#contributing)
 
 # Getting Started

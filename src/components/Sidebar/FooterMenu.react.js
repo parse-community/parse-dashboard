@@ -33,6 +33,14 @@ export default class FooterMenu extends React.Component {
   }
 
   render() {
+    if (this.props.isCollapsed) {
+      return (
+        <div className={styles.more}>
+          <Icon height={24} width={24} name='ellipses' />
+        </div>
+      );
+    }
+
     let content = null;
     if (this.state.show) {
       content = (

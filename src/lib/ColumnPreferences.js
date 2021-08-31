@@ -73,7 +73,7 @@ export function getColumnSort(sortBy, appId, className) {
 
 export function getOrder(cols, appId, className, defaultPrefs) {
 
-  let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true } ];
+  let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true } ];
   if (defaultPrefs) {
     prefs = defaultPrefs;
   }
@@ -87,21 +87,30 @@ export function getOrder(cols, appId, className, defaultPrefs) {
   for (let name in cols) {
     requested[name] = true;
     if (!seen[name]) {
-      order.push({ name: name, width: DEFAULT_WIDTH, visible: !defaultPrefs, required: cols[name]['required'] });
+      order.push({ name: name, width: DEFAULT_WIDTH, visible: !defaultPrefs, required: cols[name]['required'], cached: !defaultPrefs });
       seen[name] = true;
       updated = true;
     }
   }
   let filtered = [];
   for (let i = 0; i < order.length; i++) {
-    const { name, visible, required } = order[i];
+    const { name, visible, required, cached } = order[i];
 
     // If "visible" attribute is not defined, sets to true
     // and updates the cached preferences.
     if (typeof visible === 'undefined') {
       order[i].visible = true;
+      order[i].cached = visible;
       updated = true;
     }
+
+    // If "cached" attribute is not defined, set it to visible attr
+    // and updates the cached preferences.
+    if (typeof cached === 'undefined') {
+      order[i].cached = order[i].visible;
+      updated = true;
+    }
+
     // If "required" attribute is not defined, set it to false
     if (typeof required === 'undefined') {
       order[i].required = false;
@@ -116,6 +125,18 @@ export function getOrder(cols, appId, className, defaultPrefs) {
     updatePreferences(filtered, appId, className);
   }
   return filtered;
+}
+
+export function updateCachedColumns(appId, className) {
+  let prefs = getPreferences(appId, className);
+  let order = [].concat(prefs);
+
+  for (let col of order) {
+    let { visible } = col;
+    col.cached = visible;
+  }
+  updatePreferences(order, appId, className);
+  return order;
 }
 
 function path(appId, className) {

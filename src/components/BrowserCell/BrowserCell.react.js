@@ -258,6 +258,16 @@ export default class BrowserCell extends Component {
       }
     });
 
+    if ( this.props.type === 'Pointer' ) {
+      onEditSelectedRow && contextMenuOptions.push({
+        text: 'Open pointer in new tab',
+        callback: () => {
+          let { value, onPointerCmdClick } = this.props;
+          onPointerCmdClick(value);
+        }
+      });
+    }
+
     return contextMenuOptions;
   }
 
@@ -359,7 +369,12 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
+<<<<<<< HEAD
     let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, row, col, readonly, field, onEditSelectedRow, markRequiredFieldRow, isRequired } = this.props;
+=======
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, onPointerCmdClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
+    let content = value;
+>>>>>>> 53abdb3be937a751ff3b266141de5d5007f23af8
     let isNewRow = row < 0;
 
     let classes = [...this.state.classes];
@@ -377,9 +392,13 @@ export default class BrowserCell extends Component {
           ref={this.cellRef}
           className={classes.join(' ')}
           style={{ width }}
-          onClick={() => {
-            onSelect({ row, col });
-            setCopyableValue(hidden ? undefined : this.copyableValue);
+          onClick={(e) => {
+            if ( e.metaKey === true && type === 'Pointer') {
+              onPointerCmdClick(value);
+            } else {
+              onSelect({ row, col });
+              setCopyableValue(hidden ? undefined : this.copyableValue);
+            }
           }}
           onDoubleClick={() => {
             if (field === 'objectId' && onEditSelectedRow) {
@@ -400,9 +419,14 @@ export default class BrowserCell extends Component {
         ref={this.cellRef}
         className={classes.join(' ')}
         style={{ width }}
-        onClick={() => {
-          onSelect({ row, col });
-          setCopyableValue(hidden ? undefined : this.copyableValue);
+        onClick={(e) => {
+          if ( e.metaKey === true && type === 'Pointer' ) {
+            onPointerCmdClick(value);
+          }
+          else {
+            onSelect({ row, col });
+            setCopyableValue(hidden ? undefined : this.copyableValue);
+          }
         }}
         onDoubleClick={() => {
           // Since objectId can't be edited, double click event opens edit row dialog

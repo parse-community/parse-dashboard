@@ -124,6 +124,7 @@ class Browser extends DashboardView {
     this.updateRow = this.updateRow.bind(this);
     this.updateOrdering = this.updateOrdering.bind(this);
     this.handlePointerClick = this.handlePointerClick.bind(this);
+    this.handlePointerCmdClick = this.handlePointerCmdClick.bind(this);
     this.handleCLPChange = this.handleCLPChange.bind(this);
     this.setRelation = this.setRelation.bind(this);
     this.showAddColumn = this.showAddColumn.bind(this);
@@ -718,12 +719,13 @@ class Browser extends DashboardView {
   }
 
   excludeFields(query, className) {
-    let columns = ColumnPreferences.getPreferences(this.props.params.appId, className);
+    let columns = ColumnPreferences.getPreferences(this.context.currentApp.applicationId, className);
     if (columns) {
       columns = columns.filter(clmn => !clmn.visible).map(clmn => clmn.name);
       for (let columnsKey in columns) {
         query.exclude(columns[columnsKey]);
       }
+      ColumnPreferences.updateCachedColumns(this.context.currentApp.applicationId, className);
     }
   }
 
@@ -875,6 +877,15 @@ class Browser extends DashboardView {
         compareTo: id
     }]);
     history.push(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
+  }
+
+  handlePointerCmdClick({ className, id, field = 'objectId' }) {
+    let filters = JSON.stringify([{
+      field,
+      constraint: 'eq',
+      compareTo: id
+    }]);
+    window.open(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`),'_blank');
   }
 
   handleCLPChange(clp) {
@@ -1586,6 +1597,7 @@ class Browser extends DashboardView {
             updateRow={this.updateRow}
             updateOrdering={this.updateOrdering}
             onPointerClick={this.handlePointerClick}
+            onPointerCmdClick={this.handlePointerCmdClick}
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}

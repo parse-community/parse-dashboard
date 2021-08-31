@@ -221,6 +221,7 @@ let BrowserToolbar = ({
         handleColumnDragDrop={handleColumnDragDrop}
         order={order}
         disabled={isPendingEditCloneRows}
+        className={classNameForEditors}
       />
       <div className={styles.toolbarSeparator} />
       {onAddRow && (

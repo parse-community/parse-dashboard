@@ -15,13 +15,12 @@
   background: #353446;
   height: 96px;
   color: white;
-  transition: left 0.5s ease-in;
   z-index: 5;
 }
 
-@media (max-width: 980px) {
+body:global(.expanded) {
   .toolbar {
-    left: 0;
+    left: $sidebarCollapsedWidth;
   }
 }
 
