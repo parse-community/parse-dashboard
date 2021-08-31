@@ -281,9 +281,10 @@ export default class BrowserCell extends Component {
             />
           );
         });
-        this.copyableValue = content = <ul>
+        content = <ul>
           { array.map( a => <li>{a}</li>) }
         </ul>
+        this.copyableValue = JSON.stringify(value);
         if ( array.length > 1 ) {
           classes.push(styles.hasMore);
         }
