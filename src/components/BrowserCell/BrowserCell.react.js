@@ -369,12 +369,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-<<<<<<< HEAD
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, row, col, readonly, field, onEditSelectedRow, markRequiredFieldRow, isRequired } = this.props;
-=======
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, onPointerCmdClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
-    let content = value;
->>>>>>> 53abdb3be937a751ff3b266141de5d5007f23af8
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, onPointerCmdClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
     let isNewRow = row < 0;
 
     let classes = [...this.state.classes];
