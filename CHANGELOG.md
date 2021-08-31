@@ -8,7 +8,7 @@
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Add Parse Issue Bot (Manuel Trezza) [#1766](https://github.com/parse-community/parse-dashboard/pull/1766)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
-- Improved copy paste functionality for date values. [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
+- fix: date cell value not selected on double clicks (fn-faisal) [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
 
 ## Fixes
 
