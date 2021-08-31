@@ -29,9 +29,8 @@ export default class BrowserCell extends Component {
     };
   }
 
-  async componentDidUpdate(prevProps) {
-    if ( this.props.value !== prevProps.value ) {
-      let content = this.props.value;
+  async renderCellContent() {
+    let content = this.props.value;
       let isNewRow = this.props.row < 0;
       this.copyableValue = content;
       let classes = [styles.cell, unselectable];
@@ -165,6 +164,11 @@ export default class BrowserCell extends Component {
       }
 
       this.setState({ ...this.state, content, classes })
+  }
+
+  async componentDidUpdate(prevProps) {
+    if ( this.props.value !== prevProps.value ) {
+      await this.renderCellContent();
     }
     if (this.props.current) {
       const node = this.cellRef.current;
@@ -348,143 +352,8 @@ export default class BrowserCell extends Component {
     })));
   }
 
-  async componentDidMount(){
-    let { type, value, hidden, setRelation, onPointerClick, row, isRequired } = this.props;
-
-    let content = value;
-    let isNewRow = row < 0;
-    this.copyableValue = content;
-    let classes = [styles.cell, unselectable];
-    if (hidden) {
-      content = value !== undefined || !isNewRow ? '(hidden)' : isRequired ? '(required)' : '(undefined)';
-      classes.push(styles.empty);
-    } else if (value === undefined) {
-      if (type === 'ACL') {
-        this.copyableValue = content = 'Public Read + Write';
-      } else {
-        this.copyableValue = content = '(undefined)';
-        classes.push(styles.empty);
-      }
-      content = isNewRow && isRequired && value === undefined ? '(required)' : content;
-    } else if (value === null) {
-      this.copyableValue = content = '(null)';
-      classes.push(styles.empty);
-    } else if (value === '') {
-      content = <span>&nbsp;</span>;
-      classes.push(styles.empty);
-    } else if (type === 'Pointer') {
-      const defaultPointerKey = await localStorage.getItem(value.className) || 'objectId';
-
-      let dataValue = value.id;
-      if( defaultPointerKey !== 'objectId' ) {
-        dataValue = value.get(defaultPointerKey);
-        if ( dataValue && typeof dataValue === 'object' ){
-          if ( dataValue instanceof Date ) {
-            dataValue = dataValue.toLocaleString();
-          }
-          else {
-            dataValue = '(undefined)';
-          }
-        }
-        if ( !dataValue ) {
-          dataValue = '(undefined)';
-        }
-      }
-
-      if (value && value.__type) {
-        const object = new Parse.Object(value.className);
-        object.id = value.objectId;
-        value = object;
-      }
-
-      content = onPointerClick ? (
-        <Pill value={ dataValue } onClick={onPointerClick.bind(undefined, value)} followClick={true} />
-      ) : (
-        dataValue
-      );
-
-      this.copyableValue = value.id;
-    }
-    else if (type === 'Array') {
-      if ( value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer' ) {
-        const array = [];
-        value.map( (v, i) => {
-          if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
-            throw new Error('Invalid type found in pointer array');
-          }
-          const object = new Parse.Object(v.className);
-          object.id = v.objectId;
-          array.push(
-              <Pill value={v.objectId} onClick={onPointerClick.bind(undefined, object)} followClick={true} />
-            );
-        });
-        this.copyableValue = content = <ul>
-          { array.map( a => <li>{a}</li>) }
-        </ul>
-        if ( array.length > 1 ) {
-          classes.push(styles.hasMore);
-        }
-      }
-      else {
-        this.copyableValue = content = JSON.stringify(value);
-      }
-    }
-    else if (type === 'Date') {
-      if (typeof value === 'object' && value.__type) {
-        value = new Date(value.iso);
-      } else if (typeof value === 'string') {
-        value = new Date(value);
-      }
-      this.copyableValue = content = dateStringUTC(value);
-    } else if (type === 'Boolean') {
-      this.copyableValue = content = value ? 'True' : 'False';
-    } else if (type === 'Object' || type === 'Bytes') {
-      this.copyableValue = content = JSON.stringify(value);
-    } else if (type === 'File') {
-      const fileName = value.url() ? getFileName(value) : 'Uploading\u2026';
-      content = <Pill value={fileName} fileDownloadLink={value.url()} />;
-      this.copyableValue = fileName;
-    } else if (type === 'ACL') {
-      let pieces = [];
-      let json = value.toJSON();
-      if (Object.prototype.hasOwnProperty.call(json, '*')) {
-        if (json['*'].read && json['*'].write) {
-          pieces.push('Public Read + Write');
-        } else if (json['*'].read) {
-          pieces.push('Public Read');
-        } else if (json['*'].write) {
-          pieces.push('Public Write');
-        }
-      }
-      for (let role in json) {
-        if (role !== '*') {
-          pieces.push(role);
-        }
-      }
-      if (pieces.length === 0) {
-        pieces.push('Master Key Only');
-      }
-      this.copyableValue = content = pieces.join(', ');
-    } else if (type === 'GeoPoint') {
-      this.copyableValue = content = `(${value.latitude}, ${value.longitude})`;
-    } else if (type === 'Polygon') {
-      this.copyableValue = content = value.coordinates.map(coord => `(${coord})`)
-    } else if (type === 'Relation') {
-      content = setRelation ? (
-        <div style={{ textAlign: 'center' }}>
-          <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
-        </div>
-      ) : (
-          'Relation'
-        );
-      this.copyableValue = undefined;
-    }
-
-    if (this.props.markRequiredField && this.props.isRequired && !value) {
-      classes.push(styles.required);
-    }
-
-    this.setState({ ...this.state, content, classes })
+  componentDidMount(){
+    this.renderCellContent();
   }
 
   //#endregion
