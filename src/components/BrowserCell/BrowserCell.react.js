@@ -281,12 +281,12 @@ export default class BrowserCell extends Component {
             />
           );
         });
-        content = <ul>
-          { array.map( a => <li>{a}</li>) }
+        content = <ul className={styles.hasMore}>
+          {array.map( a => <li>{a}</li>)}
         </ul>
         this.copyableValue = JSON.stringify(value);
         if ( array.length > 1 ) {
-          classes.push(styles.hasMore);
+          classes.push(styles.removePadding);
         }
       }
       else {
