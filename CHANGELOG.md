@@ -11,7 +11,8 @@
 - fix: date cell value not selected on double clicks (fn-faisal) [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
 
 ## Fixes
-- Fixes: Unable to edit array of pointer field [#1770](https://github.com/parse-community/parse-dashboard/issues/1770) (Prerna Mehra) [#1771](https://github.com/parse-community/parse-dashboard/pull/1771)
+- Fixed bug when editing or copying a field containing an array of pointers [#1770](https://github.com/parse-community/parse-dashboard/issues/1770) (Prerna Mehra) [#1771](https://github.com/parse-community/parse-dashboard/pull/1771)
+
 # 2.2.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.1.0...2.2.0)
 
