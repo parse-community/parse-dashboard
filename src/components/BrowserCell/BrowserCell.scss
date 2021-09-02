@@ -40,11 +40,19 @@
   height: auto;
   max-height: 25px;
   overflow-y: scroll;
+  padding-right: 3px;
+  & > li {
+    margin-bottom: 2px;
+  }
+}
+
+.removePadding {
+  padding-right: 3px !important;
 }
 
 .hasMore::-webkit-scrollbar {
   -webkit-appearance: none!important;
-  width: 7px!important;
+  width: 6px!important;
 }
 
 .hasMore::-webkit-scrollbar-thumb {
