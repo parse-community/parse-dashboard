@@ -15,6 +15,7 @@ import FileEditor from 'components/FileEditor/FileEditor.react';
 import ObjectPickerDialog from 'dashboard/Data/Browser/ObjectPickerDialog.react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import getFileName from 'lib/getFileName';
+import encode from 'parse/lib/browser/encode';
 
 export default class EditRowDialog extends React.Component {
   constructor(props) {
@@ -57,7 +58,12 @@ export default class EditRowDialog extends React.Component {
     columns.forEach(column => {
       const { name, type } = column;
       if (['Array', 'Object'].indexOf(type) >= 0) {
-        const stringifyValue = JSON.stringify(currentObject[name], null, 4);
+        // This is needed to avoid unwanted conversions of objects to Parse.Objects.
+        // "Parse._encoding" is responsible to convert Parse data into raw data.
+        // Since array and object are generic types, we want to render them the way
+        // they were stored in the database.
+        let val = encode(currentObject[name], undefined, true);
+        const stringifyValue = JSON.stringify(val, null, 4);
         currentObject[name] = stringifyValue;
         const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
         expandedTextAreas[name] = { rows: rows, expanded: false };
