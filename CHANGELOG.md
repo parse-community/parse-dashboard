@@ -4,6 +4,8 @@
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...master)
 
 ## New Features
+- Add MFA to dashboard login. To use MFA, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
+
 ## Improvements
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)

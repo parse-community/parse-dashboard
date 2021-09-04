@@ -61,7 +61,7 @@ parse-dashboard --dev --appId yourAppId --masterKey yourMasterKey --serverURL "h
 
 You may set the host, port and mount path by supplying the `--host`, `--port` and `--mountPath` options to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
 
-NB: the `--dev` parameter is disabling production-ready security features, do not use this parameter when starting the dashboard in production. This parameter is useful if you are running on docker. 
+NB: the `--dev` parameter is disabling production-ready security features, do not use this parameter when starting the dashboard in production. This parameter is useful if you are running on docker.
 
 After starting the dashboard, you can visit http://localhost:4040 in your browser:
 
@@ -245,7 +245,7 @@ You can set `appNameForURL` in the config file for each app to control the url o
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
 
- ### Prevent columns sorting  
+ ### Prevent columns sorting
 
 You can prevent some columns to be sortable by adding `preventSort` to columnPreference options in each app configuration
 
@@ -378,7 +378,7 @@ You can configure your dashboard for Basic Authentication by adding usernames an
 ```
 
 You can store the password in either `plain text` or `bcrypt` formats. To use the `bcrypt` format, you must set the config `useEncryptedPasswords` parameter to `true`.
-You can encrypt the password using any online bcrypt tool e.g. [https://www.bcrypt-generator.com](https://www.bcrypt-generator.com).
+You can generated encrypted passwords by using `parse-dashboard --createUser`, and pasting the result in your users config.
 
 ### Separating App Access Based on User Identity
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.
@@ -452,7 +452,7 @@ You can mark a user as a read-only user:
       "appId": "myAppId1",
       "masterKey": "myMasterKey1",
       "readOnlyMasterKey": "myReadOnlyMasterKey1",
-      "serverURL": "myURL1",      
+      "serverURL": "myURL1",
       "port": 4040,
       "production": true
     },
@@ -460,7 +460,7 @@ You can mark a user as a read-only user:
       "appId": "myAppId2",
       "masterKey": "myMasterKey2",
       "readOnlyMasterKey": "myReadOnlyMasterKey2",
-      "serverURL": "myURL2",      
+      "serverURL": "myURL2",
       "port": 4041,
       "production": true
     }
@@ -495,7 +495,7 @@ You can give read only access to a user on a per-app basis:
       "appId": "myAppId1",
       "masterKey": "myMasterKey1",
       "readOnlyMasterKey": "myReadOnlyMasterKey1",
-      "serverURL": "myURL",      
+      "serverURL": "myURL",
       "port": 4040,
       "production": true
     },
@@ -536,7 +536,7 @@ You can provide a list of locales or languages you want to support for your dash
 
 ## Run with Docker
 
-The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard) 
+The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard)
 
 Run the image with your ``config.json`` mounted as a volume
 

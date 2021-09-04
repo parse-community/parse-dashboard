@@ -30,6 +30,7 @@ program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
 program.option('--cookieSessionSecret [cookieSessionSecret]', 'set the cookie session secret, defaults to a random string. You should set that value if you want sessions to work across multiple server, or across restarts');
 program.option('--createUser', 'helper tool to allow you to generate secure user passwords and secrets. Use this once on a trusted device only.');
+program.option('--createMFA', 'helper tool to allow you to generate MFA secrets.');
 
 program.parse(process.argv);
 
@@ -59,6 +60,12 @@ let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USE
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 
+const showQR = (text) => {
+  const QRCode = require('qrcode')
+  QRCode.toString(text, {type:'terminal'}, (err, url) => {
+    console.log(url)
+  })
+}
 if (program.createUser) {
   (async () => {
     const inquirer = require('inquirer');
@@ -107,14 +114,28 @@ if (program.createUser) {
     console.log(`\n\nYour new user details' raw credentials have been copied to your clipboard. Add the following to your Parse Dashboard config:\n\n${JSON.stringify(result)}\n\n`);
 
     if (displayResult.mfa) {
-      const QRCode = require('qrcode')
-      QRCode.toString(displayResult.mfa, {type:'terminal'}, function (err, url) {
-        console.log(url)
-      })
+      showQR(displayResult.mfa)
+      console.log(`After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.\n`)
     }
 
   })();
   return;
+}
+if (program.createMFA) {
+  (async () => {
+    const inquirer = require('inquirer');
+    const {username} = await inquirer.prompt([{
+      type: 'input',
+      name: 'username',
+      message: 'Please enter the name of the user you would like to create MFA for.',
+    }]);
+    const secret = authenticator.generateSecret();
+    console.log(`Please add this to your dashboard config for ${username}.\n\n"mfa":"${secret}"\n\n\n\n\nAsk ${username} to install an Authenticator app and scan this QR code on their device:\n`)
+    const url = authenticator.keyuri(username, configAppName || 'Parse Dashboard', secret);
+    showQR(url);
+    console.log(`After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.\n`)
+  })();
+  return
 }
 
 function handleSIGs(server) {
