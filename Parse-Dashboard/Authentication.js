@@ -33,10 +33,10 @@ function initialize(app, options) {
         return cb(null, false, { message: 'Invalid username or password' });
       }
       if (match.otpMissing) {
-        return cb(null, false, { message: 'Please enter your OTP code.' });
+        return cb(null, false, { message: 'Please enter your one-time password.' });
       }
       if (!match.otpValid) {
-        return cb(null, false, { message: 'Invalid OTP code.' });
+        return cb(null, false, { message: 'Invalid one-time password.' });
       }
       cb(null, match.matchingUsername);
     })

@@ -68,7 +68,7 @@ export default class Login extends React.Component {
             />
           } />
         {
-          this.errors && this.errors.includes('OTP') ?
+          this.errors && this.errors.includes('one-time') ?
           <LoginRow
           label='OTP Code'
           input={<input name='otpCode' type='number' />} />
