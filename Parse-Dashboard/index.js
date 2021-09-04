@@ -74,7 +74,7 @@ if (program.createUser) {
     const {username, password} = await inquirer.prompt([{
       type: 'input',
       name: 'username',
-      message: 'Please enter the username.',
+      message: 'Please enter the username:',
     }, {
       type: 'confirm',
       name: 'password',
@@ -86,7 +86,7 @@ if (program.createUser) {
       const {password} = await inquirer.prompt([{
         type: 'password',
         name: 'password',
-        message: `Please enter the password for ${username}`,
+        message: `Please enter the password for ${username}:`,
       }]);
       displayResult.password = password;
       result.pass = password
@@ -125,7 +125,7 @@ if (program.createMFA) {
     const {username} = await inquirer.prompt([{
       type: 'input',
       name: 'username',
-      message: 'Please enter the name of the user you would like to create MFA for.',
+      message: 'Please enter the name of the user you would like to create MFA for:',
     }]);
     const secret = authenticator.generateSecret();
     console.log(`Please add this to your dashboard config for ${username}.\n\n"mfa":"${secret}"\n\n\n\n\nAsk ${username} to install an Authenticator app and scan this QR code on their device:\n`)
