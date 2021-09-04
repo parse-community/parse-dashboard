@@ -32,6 +32,9 @@ function initialize(app, options) {
       if (!match.matchingUsername) {
         return cb(null, false, { message: 'Invalid username or password' });
       }
+      if (!match.otpValid) {
+        return cb(null, false, { message: 'Invalid OTP code.' });
+      }
       cb(null, match.matchingUsername);
     })
   );
@@ -85,6 +88,7 @@ function authenticate(userToTest, usernameOnly) {
   let appsUserHasAccessTo = null;
   let matchingUsername = null;
   let isReadOnly = false;
+  let otpValid = true;
 
   //they provided auth
   let isAuthenticated = userToTest &&
@@ -93,18 +97,17 @@ function authenticate(userToTest, usernameOnly) {
     //the provided auth matches one of the users
     this.validUsers.find(user => {
       let isAuthenticated = false;
-      let otpValidated = true;
       if (user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
-          otpValidated = false;
+          otpValid = false;
         }
         if (!authenticator.verify({ token:userToTest.otpCode, secret: user.mfa })) {
-          otpValidated = false;
+          otpValid = false;
         }
       }
       let usernameMatches = userToTest.name == user.user;
       let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
-      if (usernameMatches && (usernameOnly || passwordMatches) && otpValidated) {
+      if (usernameMatches && (usernameOnly || passwordMatches)) {
         isAuthenticated = true;
         matchingUsername = user.user;
         // User restricted apps
@@ -117,6 +120,7 @@ function authenticate(userToTest, usernameOnly) {
   return {
     isAuthenticated,
     matchingUsername,
+    otpValid,
     appsUserHasAccessTo,
     isReadOnly,
   };
