@@ -30,7 +30,7 @@ program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
 program.option('--cookieSessionSecret [cookieSessionSecret]', 'set the cookie session secret, defaults to a random string. You should set that value if you want sessions to work across multiple server, or across restarts');
 program.option('--createUser', 'helper tool to allow you to generate secure user passwords and secrets. Use this once on a trusted device only.');
-program.option('--createMFA', 'helper tool to allow you to generate MFA secrets.');
+program.option('--createMFA', 'helper tool to allow you to generate one-time password secrets.');
 
 program.parse(process.argv);
 
