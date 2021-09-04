@@ -112,12 +112,10 @@ if (program.createUser) {
     proc.stdin.write(JSON.stringify(displayResult));
     proc.stdin.end();
     console.log(`\n\nYour new user details' raw credentials have been copied to your clipboard. Add the following to your Parse Dashboard config:\n\n${JSON.stringify(result)}\n\n`);
-
     if (displayResult.mfa) {
       showQR(displayResult.mfa)
       console.log(`After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.\n`)
     }
-
   })();
   return;
 }
