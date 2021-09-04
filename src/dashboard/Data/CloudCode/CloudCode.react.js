@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import CodeEditor from 'components/CodeEditor/CodeEditor.react';
+import CodeSnippet   from 'components/CodeSnippet/CodeSnippet.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState    from 'components/EmptyState/EmptyState.react';
 import FileTree      from 'components/FileTree/FileTree.react';
@@ -13,7 +13,6 @@ import history       from 'dashboard/history';
 import React         from 'react';
 import styles        from 'dashboard/Data/CloudCode/CloudCode.scss';
 import Toolbar       from 'components/Toolbar/Toolbar.react';
-import SaveButton from 'components/SaveButton/SaveButton.react';
 
 function getPath(params) {
   return params.splat;
@@ -27,9 +26,7 @@ export default class CloudCode extends DashboardView {
 
     this.state = {
       files: undefined,
-      source: undefined,
-      saveState: SaveButton.States.WAITING,
-      saveError: '',
+      source: undefined
     };
   }
 
@@ -58,14 +55,8 @@ export default class CloudCode extends DashboardView {
           history.replace(this.context.generatePath('cloud_code/main.js'))
         } else {
           // Means we can load /cloud_code/<fileName>
-          this.setState({ source: undefined })
           app.getSource(fileName).then(
-            (source) => {
-              this.setState({ source: source })
-              if (this.editor) {
-                this.editor.value = source;
-              }
-            },
+            (source) => this.setState({ source: source }),
             () => this.setState({ source: undefined })
           );
         }
@@ -95,23 +86,7 @@ export default class CloudCode extends DashboardView {
       </div>
     );
   }
-  async getCode() { 
-    if (!this.editor) {
-      return;
-    }
-    this.setState({ saveState: SaveButton.States.SAVING });
-    let fileName = getPath(this.props);
-    try {
-      await this.context.currentApp.saveSource(fileName,this.editor.value);
-      this.setState({ saveState: SaveButton.States.SUCCEEDED });
-      setTimeout(()=> {
-        this.setState({ saveState: SaveButton.States.WAITING });
-      },2000);
-    } catch (e) {
-      this.setState({ saveState: SaveButton.States.FAILED });
-      this.setState({ saveError: e.message || e });
-    }
-  }
+
   renderContent() {
     let toolbar = null;
     let content = null;
@@ -135,20 +110,10 @@ export default class CloudCode extends DashboardView {
           subsection={fileName} />;
 
         let source = this.state.files[fileName];
-        if ((source && source.source) || this.state.source) {
+        if (source && source.source) {
           content = (
             <div className={styles.content}>
-              <CodeEditor
-                placeHolder={this.state.source || source.source}
-                ref={editor => (this.editor = editor)}
-                fontSize={'14px'}
-              />
-               <SaveButton 
-               state={this.state.saveState}
-               waitingText={this.state.submitText}
-               savingText={this.state.inProgressText}
-               failedText={this.state.saveError}
-               onClick={() => this.getCode(this)}></SaveButton>
+              <CodeSnippet source={source.source} language='javascript' />
             </div>
           );
         }
