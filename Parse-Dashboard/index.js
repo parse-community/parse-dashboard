@@ -133,7 +133,7 @@ if (program.createMFA) {
     showQR(url);
     console.log(`After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.\n`)
   })();
-  return
+  return;
 }
 
 function handleSIGs(server) {
