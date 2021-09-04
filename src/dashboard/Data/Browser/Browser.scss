@@ -15,7 +15,6 @@
   bottom: 0;
   overflow: auto;
   padding-top: 30px;
-  transition: left 0.5s ease-in;
   // fix for safari scrolling issue:
   // https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/
   // only applying to safari as a side effect of this is emptystate component centering is off
@@ -24,9 +23,9 @@
   }
 }
 
-@media (max-width: 980px) {
+body:global(.expanded) {
   .browser {
-    left: 0;
+    left: $sidebarCollapsedWidth;
   }
 }
 
@@ -102,7 +101,7 @@
   @include MonospaceFont;
   font-size: 12px;
   white-space: nowrap;
-  height: 31px;
+  height: 30px;
   border-bottom: 1px solid #e3e3ea;
 
   &:nth-child(odd) {

@@ -1,4 +1,4 @@
-# Parse Dashboard
+# Parse Dashboard <!-- omit in toc -->
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/parse-community/parse-dashboard.svg)](https://greenkeeper.io/)
 [![Build Status](https://img.shields.io/travis/parse-community/parse-dashboard/master.svg?style=flat)](https://travis-ci.org/parse-community/parse-dashboard)
@@ -11,31 +11,35 @@
 
 Parse Dashboard is a standalone dashboard for managing your [Parse Server](https://github.com/ParsePlatform/parse-server) apps.
 
-* [Getting Started](#getting-started)
-* [Local Installation](#local-installation)
-  * [Configuring Parse Dashboard](#configuring-parse-dashboard)
-    * [File](#file)
-    * [Environment variables](#environment-variables)
-      * [Multiple apps](#multiple-apps)
-      * [Single app](#single-app)
-  * [Managing Multiple Apps](#managing-multiple-apps)
-  * [GraphQL Playground](#graphql-playground)    
-  * [App Icon Configuration](#app-icon-configuration)
-  * [App Background Color Configuration](#app-background-color-configuration)
-  * [Other Configuration Options](#other-configuration-options)
-* [Running as Express Middleware](#running-as-express-middleware)
-* [Deploying Parse Dashboard](#deploying-parse-dashboard)
-  * [Preparing for Deployment](#preparing-for-deployment)
-  * [Security Considerations](#security-considerations)
-    * [Configuring Basic Authentication](#configuring-basic-authentication)
-    * [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
-  * [Use Read-Only masterKey](#use-read-only-masterKey)
-    * [Making an app read-only for all users](#making-an-app-read-only-for-all-users)
-    * [Makings users read-only](#makings-users-read-only)
-    * [Making user's apps readOnly](#making-users-apps-readonly)
-  * [Configuring Localized Push Notifications](#configuring-localized-push-notifications)
-  * [Run with Docker](#run-with-docker)
-* [Contributing](#contributing)
+- [Getting Started](#getting-started)
+- [Local Installation](#local-installation)
+  - [Configuring Parse Dashboard](#configuring-parse-dashboard)
+    - [File](#file)
+    - [Environment variables](#environment-variables)
+      - [Multiple apps](#multiple-apps)
+      - [Single app](#single-app)
+  - [Managing Multiple Apps](#managing-multiple-apps)
+  - [GraphQL Playground](#graphql-playground)
+  - [App Icon Configuration](#app-icon-configuration)
+  - [App Background Color Configuration](#app-background-color-configuration)
+  - [Other Configuration Options](#other-configuration-options)
+    - [Prevent columns sorting](#prevent-columns-sorting)
+- [Running as Express Middleware](#running-as-express-middleware)
+- [Deploying Parse Dashboard](#deploying-parse-dashboard)
+  - [Preparing for Deployment](#preparing-for-deployment)
+  - [Security Considerations](#security-considerations)
+    - [Configuring Basic Authentication](#configuring-basic-authentication)
+    - [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
+  - [Use Read-Only masterKey](#use-read-only-masterkey)
+    - [Making an app read-only for all users](#making-an-app-read-only-for-all-users)
+    - [Makings users read-only](#makings-users-read-only)
+    - [Making user's apps readOnly](#making-users-apps-readonly)
+  - [Configuring Localized Push Notifications](#configuring-localized-push-notifications)
+  - [Run with Docker](#run-with-docker)
+- [Features](#features)
+  - [Browse as User](#browse-as-user)
+  - [CSV Export](#csv-export)
+- [Contributing](#contributing)
 
 # Getting Started
 
@@ -240,6 +244,33 @@ Parse Dashboard supports adding an optional background color for each app, so yo
 You can set `appNameForURL` in the config file for each app to control the url of your app within the dashboard. This can make it easier to use bookmarks or share links on your dashboard.
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
+
+ ### Prevent columns sorting  
+
+You can prevent some columns to be sortable by adding `preventSort` to columnPreference options in each app configuration
+
+```json
+
+"apps": [
+  {
+    "appId": "local_app_id",
+    "columnPreference": {
+        "_User": [
+          {
+            "name": "createdAt",
+            "visible": true,
+            "preventSort": true
+          },
+          {
+            "name": "updatedAt",
+            "visible": true,
+            "preventSort": false
+          },
+        ]
+      }
+    }
+]
+```
 
 # Running as Express Middleware
 
@@ -528,6 +559,25 @@ docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-
 ```
 
 If you are not familiar with Docker, ``--port 8080`` will be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
+
+# Features
+*(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)*
+
+## Browse as User
+
+▶️ *Core > Browser > Browse*
+
+This feature allows you to use the data browser as another user, respecting that user's data permissions. For example, you will only see records and fields the user has permission to see.
+
+> ⚠️ Logging in as another user will trigger the same Cloud Triggers as if the user logged in themselves using any other login method. Logging in as another user requires to enter that user's password.
+
+## CSV Export
+
+▶️ *Core > Browser > Export*
+
+This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
+
+> ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
 
 # Contributing
 
