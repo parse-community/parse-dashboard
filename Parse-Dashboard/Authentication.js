@@ -32,6 +32,9 @@ function initialize(app, options) {
       if (!match.matchingUsername) {
         return cb(null, false, { message: 'Invalid username or password' });
       }
+      if (match.otpMissing) {
+        return cb(null, false, { message: 'Please enter your OTP code.' });
+      }
       if (!match.otpValid) {
         return cb(null, false, { message: 'Invalid OTP code.' });
       }
@@ -88,6 +91,7 @@ function authenticate(userToTest, usernameOnly) {
   let appsUserHasAccessTo = null;
   let matchingUsername = null;
   let isReadOnly = false;
+  let otpMissing = false;
   let otpValid = true;
 
   //they provided auth
@@ -99,7 +103,7 @@ function authenticate(userToTest, usernameOnly) {
       let isAuthenticated = false;
       if (user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
-          otpValid = false;
+          otpMissing = true;
         }
         if (!authenticator.verify({ token:userToTest.otpCode, secret: user.mfa })) {
           otpValid = false;
@@ -120,6 +124,7 @@ function authenticate(userToTest, usernameOnly) {
   return {
     isAuthenticated,
     matchingUsername,
+    otpMissing,
     otpValid,
     appsUserHasAccessTo,
     isReadOnly,

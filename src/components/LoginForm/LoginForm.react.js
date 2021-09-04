@@ -33,6 +33,7 @@ export default class LoginForm extends React.Component {
               if (this.props.disableSubmit) {
                 return;
               }
+              this.props.formSubmit();
               this.refs.form.submit()
             }}
             className={styles.submit}
