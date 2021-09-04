@@ -11,7 +11,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ github.repository }} #parseplatform/parse-dashboard
+  IMAGE_NAME: parseplatform/parse-dashboard
 
 
 jobs:
