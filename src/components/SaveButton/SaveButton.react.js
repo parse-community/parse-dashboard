@@ -52,7 +52,7 @@ let SaveButton = ({
   </span>;
 };
 
-SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED', 'WAITING']);
+SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED']);
 
 let {...forwardedButtonProps} = Button.propTypes;
 delete forwardedButtonProps.value;

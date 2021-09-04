@@ -120,15 +120,6 @@ export default class ParseApp {
   }
 
   /**
-   * Saves source of a Cloud Code hosted file from api.parse.com
-   * fileName - the name of the file to be fetched
-   * data - the text to save to the cloud file
-   */
-  saveSource(fileName,data) {
-    return this.apiRequest('POST', `scripts/${fileName}`, {data}, { useMasterKey: true });
-  }
-
-  /**
    * Fetches source of a Cloud Code hosted file from api.parse.com
    * fileName - the name of the file to be fetched
    */
@@ -138,11 +129,22 @@ export default class ParseApp {
         // No release yet
         return Promise.resolve(null);
       }
-      return this.apiRequest('GET', `scripts/${fileName}`, {}, { useMasterKey: true });
+
+      let fileMetaData = release.files[fileName];
+      if (fileMetaData && fileMetaData.source) {
+        return Promise.resolve(fileMetaData.source);
+      }
+
+      let params = {
+        version: fileMetaData.version,
+        checksum: fileMetaData.checksum
+      }
+      return this.apiRequest('GET', `scripts/${fileName}`, params, { useMasterKey: true });
     }).then((source) => {
       if (this.latestRelease.files) {
         this.latestRelease.files[fileName].source = source;
       }
+
       return Promise.resolve(source);
     });
   }

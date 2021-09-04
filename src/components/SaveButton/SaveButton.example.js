@@ -55,9 +55,6 @@ export const demos = [
         <div style={{padding: 10}}>
           <SaveButton state={SaveButton.States.FAILED} />
         </div>
-        <div style={{padding: 10}}>
-          <SaveButton state={SaveButton.States.WAITING} />
-        </div>
       </div>
     )
   }, {
