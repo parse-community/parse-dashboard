@@ -5,7 +5,7 @@
 
 ## New Features
 ## Improvements
-- CI now pushes docker images to Docker Hub (Corey Baker) [#1780](https://github.com/parse-community/parse-dashboard/pull/1780)
+- CI now pushes docker images to Docker Hub (Corey Baker) [#1781](https://github.com/parse-community/parse-dashboard/pull/1781)
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
 - fix: date cell value not selected on double clicks (fn-faisal) [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
