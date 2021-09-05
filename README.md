@@ -393,12 +393,12 @@ Running `parse-dashboard --createMFA` will help you generate a valid multi-facto
     {
       "user":"user1",
       "pass":"pass",
-      "mfa": "AJ4TS4QMHVYTSGB6"
+      "mfa": "lmvmOIZGMTQklhOIhveqkumss"
     },
     {
       "user":"user2",
       "pass":"pass",
-      "mfa": "AJ4TS4QMHVYTSGB6"
+      "mfa": "KHHEWxHcvAboDvaUUsIVbo"
     }
   ],
   "useEncryptedPasswords": true | false
