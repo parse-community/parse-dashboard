@@ -87,17 +87,23 @@ if (program.createUser) {
       result.pass = password
     } else {
       const password = crypto.randomBytes(20).toString('base64');
-      const bcrypt = require('bcryptjs');
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(password, salt);
-      result.pass = hash;
+      result.pass = password;
       displayResult.password = password;
     }
-    const { mfa } = await inquirer.prompt([{
+    const { mfa, encrypt } = await inquirer.prompt([{
+      type: 'confirm',
+      name: 'encrypt',
+      message: `Would you like to use encrypted passwords?`,
+    }, {
       type: 'confirm',
       name: 'mfa',
       message: `Would you like to enforce multi-factor authentication for ${username}?`,
-    }])
+    }]);
+    if (encrypt) {
+      const bcrypt = require('bcryptjs');
+      const salt = bcrypt.genSaltSync(10);
+      result.pass = bcrypt.hashSync(result.pass, salt);
+    }
     if (mfa) {
       const { app } = await inquirer.prompt([{
           type: 'input',
@@ -123,6 +129,9 @@ Your new user details' raw credentials have been copied to your clipboard. Add t
 ${JSON.stringify(result)}
 
 `);
+  if (encrypt) {
+    console.log(`Be sure to set "useEncryptedPasswords": true in your config\n\n`);
+  }
   })();
   return;
 }
@@ -156,10 +165,7 @@ Please add this to your dashboard config for ${username}.
 }
 
 function generateSecret({app, username}) {
-  let secret = ''
-  while (secret.length < 20) {
-    secret += crypto.randomBytes(20).toString('base64').replace(/[^a-zA-Z]/g, '');
-  }
+  const secret = new OTPAuth.Secret().base32;
   const totp = new OTPAuth.TOTP({
     issuer: app,
     label: username,

@@ -110,8 +110,10 @@ function authenticate(userToTest, usernameOnly) {
             algorithm: 'SHA256',
             secret: OTPAuth.Secret.fromBase32(user.mfa)
           });
-          const valid = totp.generate() === userToTest.otpCode;
-          if (!valid) {
+          const valid = totp.validate({
+            token: userToTest.otpCode
+          });
+          if (valid === null) {
             otpValid = false;
           }
         }
