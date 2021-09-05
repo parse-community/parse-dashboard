@@ -165,17 +165,17 @@ Please add this to your dashboard config for ${username}.
 }
 
 function generateSecret({app, username}) {
-  const secret = new OTPAuth.Secret().base32;
+  const secret = new OTPAuth.Secret();
   const totp = new OTPAuth.TOTP({
     issuer: app,
     label: username,
     algorithm: 'SHA256',
     digits: 6,
     period: 30,
-    secret: OTPAuth.Secret.fromBase32(secret)
+    secret
   });
   const url = totp.toString();
-  return { secret, url }
+  return { secret: secret.base32, url }
 }
 
 function showQR(text) {
