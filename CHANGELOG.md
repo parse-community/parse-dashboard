@@ -4,7 +4,7 @@
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...master)
 
 ## New Features
-- Add multi-factor authentication to dashboard login. To use one-time passwor, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
+- Add multi-factor authentication to dashboard login. To use one-time password, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
 
 ## Improvements
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
