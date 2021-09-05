@@ -11,7 +11,8 @@ const path = require('path');
 const jsonFile = require('json-file-plus');
 const express = require('express');
 const parseDashboard = require('./app');
-const authenticator = require('otplib').authenticator;
+const OTPAuth = require('otpauth');
+const crypto = require('crypto');
 
 const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
@@ -60,12 +61,6 @@ let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USE
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 
-const showQR = (text) => {
-  const QRCode = require('qrcode')
-  QRCode.toString(text, {type:'terminal'}, (err, url) => {
-    console.log(url)
-  })
-}
 if (program.createUser) {
   (async () => {
     const inquirer = require('inquirer');
@@ -91,7 +86,7 @@ if (program.createUser) {
       displayResult.password = password;
       result.pass = password
     } else {
-      const password = require('crypto').randomBytes(20).toString('hex');
+      const password = crypto.randomBytes(20).toString('base64');
       const bcrypt = require('bcryptjs');
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(password, salt);
@@ -104,36 +99,84 @@ if (program.createUser) {
       message: `Would you like to enforce multi-factor authentication for ${username}?`,
     }])
     if (mfa) {
-      const secret = authenticator.generateSecret();
+      const { app } = await inquirer.prompt([{
+          type: 'input',
+          name: 'app',
+          message: "What is your app's name?",
+      }])
+      const {secret, url} = generateSecret({app, username});
       result.mfa = secret;
-      displayResult.mfa = authenticator.keyuri(username, configAppName || 'Parse Dashboard', secret);
+      displayResult.mfa = url
+      showQR(displayResult.mfa)
+      console.log(`Ask ${username} to install an Authenticator app and scan this QR code on their device, or open this URL:
+
+${url}
+
+After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.`)
     }
     const proc = require('child_process').spawn('pbcopy');
     proc.stdin.write(JSON.stringify(displayResult));
     proc.stdin.end();
-    console.log(`\n\nYour new user details' raw credentials have been copied to your clipboard. Add the following to your Parse Dashboard config:\n\n${JSON.stringify(result)}\n\n`);
-    if (displayResult.mfa) {
-      showQR(displayResult.mfa)
-      console.log(`After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.\n`)
-    }
+    console.log(`
+Your new user details' raw credentials have been copied to your clipboard. Add the following to your Parse Dashboard config:
+
+${JSON.stringify(result)}
+
+`);
   })();
   return;
 }
 if (program.createMFA) {
   (async () => {
     const inquirer = require('inquirer');
-    const { username } = await inquirer.prompt([{
+    const { username, app } = await inquirer.prompt([{
       type: 'input',
       name: 'username',
       message: 'Please enter the name of the user you would like to create a multi-factor authentication secret for:',
+    }, {
+      type: 'input',
+      name: 'app',
+      message: "What is your app's name?",
     }]);
-    const secret = authenticator.generateSecret();
-    console.log(`Please add this to your dashboard config for ${username}.\n\n"mfa":"${secret}"\n\n\n\n\nAsk ${username} to install an Authenticator app and scan this QR code on their device:\n`)
-    const url = authenticator.keyuri(username, configAppName || 'Parse Dashboard', secret);
+    const { url, secret } = generateSecret({app, username})
     showQR(url);
-    console.log(`After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.\n`)
+    console.log(`Ask ${username} to install an Authenticator app and scan this QR code on their device, or open this URL:
+
+${url}
+
+After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.
+
+Please add this to your dashboard config for ${username}.
+
+"mfa":"${secret}"
+
+`)
   })();
   return;
+}
+
+function generateSecret({app, username}) {
+  let secret = ''
+  while (secret.length < 20) {
+    secret += crypto.randomBytes(20).toString('base64').replace(/[^a-zA-Z]/g, '');
+  }
+  const totp = new OTPAuth.TOTP({
+    issuer: app,
+    label: username,
+    algorithm: 'SHA256',
+    digits: 6,
+    period: 30,
+    secret: OTPAuth.Secret.fromBase32(secret)
+  });
+  const url = totp.toString();
+  return { secret, url }
+}
+
+function showQR(text) {
+  const QRCode = require('qrcode')
+  QRCode.toString(text, {type:'terminal'}, (err, url) => {
+    console.log(url)
+  })
 }
 
 function handleSIGs(server) {

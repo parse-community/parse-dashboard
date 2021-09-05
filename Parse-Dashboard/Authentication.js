@@ -3,7 +3,7 @@ var bcrypt = require('bcryptjs');
 var csrf = require('csurf');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-const authenticator = require('otplib').authenticator;
+const OTPAuth = require('otpauth')
 
 /**
  * Constructor for Authentication class
@@ -105,9 +105,15 @@ function authenticate(userToTest, usernameOnly) {
       if (usernameMatches && user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
           otpMissing = true;
-        }
-        if (!authenticator.verify({ token:userToTest.otpCode, secret: user.mfa })) {
-          otpValid = false;
+        } else {
+          const totp = new OTPAuth.TOTP({
+            algorithm: 'SHA256',
+            secret: OTPAuth.Secret.fromBase32(user.mfa)
+          });
+          const valid = totp.generate() === userToTest.otpCode;
+          if (!valid) {
+            otpValid = false;
+          }
         }
       }
       let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
