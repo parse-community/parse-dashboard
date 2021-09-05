@@ -380,6 +380,33 @@ You can configure your dashboard for Basic Authentication by adding usernames an
 You can store the password in either `plain text` or `bcrypt` formats. To use the `bcrypt` format, you must set the config `useEncryptedPasswords` parameter to `true`.
 You can generate encrypted passwords by using `parse-dashboard --createUser`, and pasting the result in your users config.
 
+### Configuring Multi-factor Authentication (One-time passwords)
+
+You can configure your dashboard for Multi-factor authentication by adding a `.mfa` secret to your user config.
+
+Running `parse-dashboard --createMFA` will help you generate a valid multi-factor authentication secret, and generate a QR code to share with your user.
+
+```json
+{
+  "apps": [{"...": "..."}],
+  "users": [
+    {
+      "user":"user1",
+      "pass":"pass",
+      "mfa": "AJ4TS4QMHVYTSGB6"
+    },
+    {
+      "user":"user2",
+      "pass":"pass",
+      "mfa": "AJ4TS4QMHVYTSGB6"
+    }
+  ],
+  "useEncryptedPasswords": true | false
+}
+```
+
+If `.mfa` is set, users will have to provide a valid one-time password to login, provided by an Authenticator app, to login.
+
 ### Separating App Access Based on User Identity
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.
 

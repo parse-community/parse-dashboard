@@ -30,7 +30,7 @@ program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
 program.option('--cookieSessionSecret [cookieSessionSecret]', 'set the cookie session secret, defaults to a random string. You should set that value if you want sessions to work across multiple server, or across restarts');
 program.option('--createUser', 'helper tool to allow you to generate secure user passwords and secrets. Use this once on a trusted device only.');
-program.option('--createMFA', 'helper tool to allow you to generate one-time password secrets.');
+program.option('--createMFA', 'helper tool to allow you to generate multi-factor authentication secrets.');
 
 program.parse(process.argv);
 
@@ -71,7 +71,7 @@ if (program.createUser) {
     const inquirer = require('inquirer');
     const result = {}
     const displayResult = {};
-    const {username, password} = await inquirer.prompt([{
+    const { username, password } = await inquirer.prompt([{
       type: 'input',
       name: 'username',
       message: 'Please enter the username:',
@@ -83,7 +83,7 @@ if (program.createUser) {
     displayResult.username = username;
     result.user = username;
     if (!password) {
-      const {password} = await inquirer.prompt([{
+      const { password } = await inquirer.prompt([{
         type: 'password',
         name: 'password',
         message: `Please enter the password for ${username}:`,
@@ -98,10 +98,10 @@ if (program.createUser) {
       result.pass = hash;
       displayResult.password = password;
     }
-    const {mfa} = await inquirer.prompt([{
+    const { mfa } = await inquirer.prompt([{
       type: 'confirm',
       name: 'mfa',
-      message: `Would you like to an MFA secret for ${username}?`,
+      message: `Would you like to enforce multi-factor authentication for ${username}?`,
     }])
     if (mfa) {
       const secret = authenticator.generateSecret();
@@ -122,10 +122,10 @@ if (program.createUser) {
 if (program.createMFA) {
   (async () => {
     const inquirer = require('inquirer');
-    const {username} = await inquirer.prompt([{
+    const { username } = await inquirer.prompt([{
       type: 'input',
       name: 'username',
-      message: 'Please enter the name of the user you would like to create MFA for:',
+      message: 'Please enter the name of the user you would like to create a multi-factor authentication secret for:',
     }]);
     const secret = authenticator.generateSecret();
     console.log(`Please add this to your dashboard config for ${username}.\n\n"mfa":"${secret}"\n\n\n\n\nAsk ${username} to install an Authenticator app and scan this QR code on their device:\n`)
