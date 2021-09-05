@@ -5,15 +5,16 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/globals.scss';
+
 .content {
   margin-left: 300px;
-  transition: margin-left 0.5s ease-in;
   overflow: auto;
   max-height: 100vh;
 }
 
-@media (max-width: 980px) {
+body:global(.expanded) {
   .content {
-    margin-left: 0;
+    margin-left: $sidebarCollapsedWidth;
   }
 }

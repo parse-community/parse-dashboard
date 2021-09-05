@@ -110,7 +110,7 @@ export default class BrowserFilter extends React.Component {
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
                 renderRow={props => (
-                  <FilterRow {...props} active={this.props.filters.size > 0} />
+                  <FilterRow {...props} active={this.props.filters.size > 0} parentContentId={POPOVER_CONTENT_ID} />
                 )}
               />
               <div className={styles.footer}>
@@ -143,6 +143,9 @@ export default class BrowserFilter extends React.Component {
     }
     if (this.props.filters.size) {
       buttonStyle.push(styles.active);
+    }
+    if (this.props.disabled) {
+      buttonStyle.push(styles.disabled);
     }
     return (
       <div className={styles.wrap}>

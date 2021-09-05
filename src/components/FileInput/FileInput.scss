@@ -49,6 +49,17 @@
   }
 }
 
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: .15em solid $blue;
+  vertical-align: bottom;
+  border-right-color: transparent;
+  border-radius: 50%;
+  @include animation('spinner-border .75s linear infinite');
+}
+
 .disabled, .disabled:hover {
   background: #e0e0ea;
   border-color: #e0e0ea;
@@ -75,4 +86,10 @@
 
 a.label {
   color: $blue;
+}
+
+@include keyframes(spinner-border) {
+  100% {
+    @include transform(rotate(360deg));
+  }
 }

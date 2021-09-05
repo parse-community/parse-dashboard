@@ -12,8 +12,8 @@
   cursor: default;
   color: #0E69A1;
   height: 30px;
-  line-height: 22px;
-  padding: 5px 4px 0;
+  line-height: 20px;
+  padding: 5px;
   border-right: 1px solid #e3e3ea;
 }
 
@@ -29,6 +29,45 @@
     pointer-events: none;
     content: '';
     border: 2px solid #555572;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.hasMore{
+  height: auto;
+  max-height: 25px;
+  overflow-y: scroll;
+  padding-right: 3px;
+  & > li {
+    margin-bottom: 2px;
+  }
+}
+
+.removePadding {
+  padding-right: 3px !important;
+}
+
+.hasMore::-webkit-scrollbar {
+  -webkit-appearance: none!important;
+  width: 6px!important;
+}
+
+.hasMore::-webkit-scrollbar-thumb {
+  border-radius: 4px!important;
+  background-color: rgba(0, 0, 0, .5)!important;
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5)!important;
+}
+.required {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border: 2px solid #ff395e;
     top: 0;
     left: 0;
     right: 0;
