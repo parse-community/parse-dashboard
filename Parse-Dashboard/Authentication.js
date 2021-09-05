@@ -101,7 +101,8 @@ function authenticate(userToTest, usernameOnly) {
     //the provided auth matches one of the users
     this.validUsers.find(user => {
       let isAuthenticated = false;
-      if (user.mfa && !usernameOnly) {
+      let usernameMatches = userToTest.name == user.user;
+      if (usernameMatches && user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
           otpMissing = true;
         }
@@ -109,7 +110,6 @@ function authenticate(userToTest, usernameOnly) {
           otpValid = false;
         }
       }
-      let usernameMatches = userToTest.name == user.user;
       let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
       if (usernameMatches && (usernameOnly || passwordMatches)) {
         isAuthenticated = true;
