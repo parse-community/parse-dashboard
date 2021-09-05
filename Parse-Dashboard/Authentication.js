@@ -107,7 +107,7 @@ function authenticate(userToTest, usernameOnly) {
           otpMissing = true;
         } else {
           const totp = new OTPAuth.TOTP({
-            algorithm: 'SHA256',
+            algorithm: user.mfaAlgorithm || 'SHA256',
             secret: OTPAuth.Secret.fromBase32(user.mfa)
           });
           const valid = totp.validate({

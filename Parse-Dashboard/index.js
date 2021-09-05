@@ -11,8 +11,7 @@ const path = require('path');
 const jsonFile = require('json-file-plus');
 const express = require('express');
 const parseDashboard = require('./app');
-const OTPAuth = require('otpauth');
-const crypto = require('crypto');
+const CLIHelper = require('./CLIHelper.js');
 
 const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
@@ -34,6 +33,14 @@ program.option('--createUser', 'helper tool to allow you to generate secure user
 program.option('--createMFA', 'helper tool to allow you to generate multi-factor authentication secrets.');
 
 program.parse(process.argv);
+
+for (const key in program) {
+  const func = CLIHelper[key];
+  if (func && typeof func === 'function') {
+    func();
+    return;
+  }
+}
 
 const host = program.host || process.env.HOST || '0.0.0.0';
 const port = program.port || process.env.PORT || 4040;
@@ -61,129 +68,6 @@ let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USE
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 
-if (program.createUser) {
-  (async () => {
-    const inquirer = require('inquirer');
-    const result = {}
-    const displayResult = {};
-    const { username, password } = await inquirer.prompt([{
-      type: 'input',
-      name: 'username',
-      message: 'Please enter the username:',
-    }, {
-      type: 'confirm',
-      name: 'password',
-      message: 'Would you like to generate a secure password?',
-    }]);
-    displayResult.username = username;
-    result.user = username;
-    if (!password) {
-      const { password } = await inquirer.prompt([{
-        type: 'password',
-        name: 'password',
-        message: `Please enter the password for ${username}:`,
-      }]);
-      displayResult.password = password;
-      result.pass = password
-    } else {
-      const password = crypto.randomBytes(20).toString('base64');
-      result.pass = password;
-      displayResult.password = password;
-    }
-    const { mfa, encrypt } = await inquirer.prompt([{
-      type: 'confirm',
-      name: 'encrypt',
-      message: `Would you like to use encrypted passwords?`,
-    }, {
-      type: 'confirm',
-      name: 'mfa',
-      message: `Would you like to enforce multi-factor authentication for ${username}?`,
-    }]);
-    if (encrypt) {
-      const bcrypt = require('bcryptjs');
-      const salt = bcrypt.genSaltSync(10);
-      result.pass = bcrypt.hashSync(result.pass, salt);
-    }
-    if (mfa) {
-      const { app } = await inquirer.prompt([{
-          type: 'input',
-          name: 'app',
-          message: "What is your app's name?",
-      }])
-      const {secret, url} = generateSecret({app, username});
-      result.mfa = secret;
-      displayResult.mfa = url
-      showQR(displayResult.mfa)
-      console.log(`Ask ${username} to install an Authenticator app and scan this QR code on their device, or open this URL:
-
-${url}
-
-After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.`)
-    }
-    const proc = require('child_process').spawn('pbcopy');
-    proc.stdin.write(JSON.stringify(displayResult));
-    proc.stdin.end();
-    console.log(`
-Your new user details' raw credentials have been copied to your clipboard. Add the following to your Parse Dashboard config:
-
-${JSON.stringify(result)}
-
-`);
-  if (encrypt) {
-    console.log(`Be sure to set "useEncryptedPasswords": true in your config\n\n`);
-  }
-  })();
-  return;
-}
-if (program.createMFA) {
-  (async () => {
-    const inquirer = require('inquirer');
-    const { username, app } = await inquirer.prompt([{
-      type: 'input',
-      name: 'username',
-      message: 'Please enter the name of the user you would like to create a multi-factor authentication secret for:',
-    }, {
-      type: 'input',
-      name: 'app',
-      message: "What is your app's name?",
-    }]);
-    const { url, secret } = generateSecret({app, username})
-    showQR(url);
-    console.log(`Ask ${username} to install an Authenticator app and scan this QR code on their device, or open this URL:
-
-${url}
-
-After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.
-
-Please add this to your dashboard config for ${username}.
-
-"mfa":"${secret}"
-
-`)
-  })();
-  return;
-}
-
-function generateSecret({app, username}) {
-  const secret = new OTPAuth.Secret();
-  const totp = new OTPAuth.TOTP({
-    issuer: app,
-    label: username,
-    algorithm: 'SHA256',
-    digits: 6,
-    period: 30,
-    secret
-  });
-  const url = totp.toString();
-  return { secret: secret.base32, url }
-}
-
-function showQR(text) {
-  const QRCode = require('qrcode')
-  QRCode.toString(text, {type:'terminal'}, (err, url) => {
-    console.log(url)
-  })
-}
 
 function handleSIGs(server) {
   const signals = {
