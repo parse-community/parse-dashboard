@@ -64,7 +64,7 @@ module.exports = {
       const { secret, url } = generateSecret({ app, username, algorithm });
       result.mfa = secret;
       displayResult.mfa = url;
-      if (algorithm !== 'SHA256') {
+      if (algorithm !== 'SHA1') {
         result.mfaAlgorithm = algorithm;
       }
       showQR(displayResult.mfa);
@@ -114,7 +114,7 @@ After you've shared the QR code ${username}, it is recommended to delete any pho
 Please add this to your dashboard config for ${username}.
 
 "mfa":"${secret}"${
-      algorithm !== 'SHA256' ? `,\n"mfaAlgorithm":"${algorithm}"` : ''
+      algorithm !== 'SHA1' ? `,\n"mfaAlgorithm":"${algorithm}"` : ''
     }
 
 `);

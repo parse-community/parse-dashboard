@@ -7,7 +7,7 @@ module.exports = {
         type: 'list',
         name: 'algorithm',
         message: 'What hashing algorithm would you like to use?',
-        default: 'SHA256',
+        default: 'SHA1',
         choices: [
           'SHA1',
           'SHA224',
