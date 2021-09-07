@@ -6,7 +6,6 @@ const phrases = {
   enterPassword: 'Enter a password:',
   enterUsername: 'Enter a username:',
   enterAppName: 'Enter the app name:',
-
 }
 const getAlgorithm = async () => {
   let { algorithm } = await inquirer.prompt([
