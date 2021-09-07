@@ -2,12 +2,18 @@ const crypto = require('crypto');
 const inquirer = require('inquirer');
 const OTPAuth = require('otpauth');
 const { copy } = require('./utils.js');
+const phrases = {
+  enterPassword: 'Enter a password:',
+  enterUsername: 'Enter a username:',
+  enterAppName: 'Enter the app name:',
+
+}
 const getAlgorithm = async () => {
   let { algorithm } = await inquirer.prompt([
     {
       type: 'list',
       name: 'algorithm',
-      message: 'What hashing algorithm would you like to use?',
+      message: 'Which hashing algorithm do you want to use?',
       default: 'SHA1',
       choices: [
         'SHA1',
@@ -28,7 +34,7 @@ const getAlgorithm = async () => {
       {
         type: 'input',
         name: 'algorithm',
-        message: 'Please enter the hashing algorithm you would like to use:'
+        message: 'Enter the hashing algorithm you want to use:'
       }
     ]);
     algorithm = result.algorithm;
@@ -38,13 +44,13 @@ const getAlgorithm = async () => {
       type: 'number',
       name: 'digits',
       default: 6,
-      message: 'How many digits should the OTP contain?'
+      message: 'Enter the number of digits the one-time password should have:'
     },
     {
       type: 'number',
       name: 'period',
       default: 30,
-      message: 'How many seconds should the OTP last for?'
+      message: 'Enter how long the one-time password should be valid (in seconds):'
     }
   ])
   return { algorithm, digits, period};
@@ -65,9 +71,50 @@ const generateSecret = ({ app, username, algorithm, digits, period }) => {
 const showQR = text => {
   const QRCode = require('qrcode');
   QRCode.toString(text, { type: 'terminal' }, (err, url) => {
-    console.log(url);
+    console.log(
+      '\n------------------------------------------------------------------------------' +
+      `\n\n${url}`
+    );
   });
 };
+
+const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
+  let orderCounter = 0;
+  const getOrder = () => {
+    orderCounter++;
+    return orderCounter;
+  }
+  console.log(
+    '------------------------------------------------------------------------------' +
+    '\n\nFollow these steps to complete the set-up:'
+  );
+
+  copy(JSON.stringify(config));
+  console.log(
+    `\n${getOrder()}. Add the following settings for user "${username}" ${app ? `in app "${app}" ` : '' }to the Parse Dashboard configuration.` +
+    '\n   The settings have been copied to your clipboard.' + 
+    `\n\n   ${JSON.stringify(config)}`
+  );
+
+  if (mfaUrl) {
+    console.log(
+      `\n${getOrder()}. Ask the user to install an authenticator app and scan the QR code above, or open this link:` + 
+      `\n\n   ${mfaUrl}` + 
+      `\n\n${getOrder()}. After you have shared these details, make sure to destroy any records of it.`
+    );
+  }
+  
+  if (encrypt) {
+    console.log(
+      `\n${getOrder()}. Make sure that "useEncryptedPasswords" is set to "true" in your dashboard configuration.` +
+      '\n   You chose to generate an encrypted password for this user.' +
+      '\n   If there are existing users with non-encrypted passwords, you need to create new passwords for them.'
+      );
+  }
+  console.log(
+    '\n------------------------------------------------------------------------------\n'
+  );
+}
 
 module.exports = {
   async createUser() {
@@ -77,12 +124,12 @@ module.exports = {
       {
         type: 'input',
         name: 'username',
-        message: 'Please enter the username:'
+        message: phrases.enterUsername
       },
       {
         type: 'confirm',
         name: 'password',
-        message: 'Would you like to generate a secure password?'
+        message: 'Do you want to auto-generate a password?'
       }
     ]);
     displayResult.username = username;
@@ -92,7 +139,7 @@ module.exports = {
         {
           type: 'password',
           name: 'password',
-          message: `Please enter the password for ${username}:`
+          message: phrases.enterPassword
         }
       ]);
       displayResult.password = password;
@@ -106,12 +153,12 @@ module.exports = {
       {
         type: 'confirm',
         name: 'encrypt',
-        message: 'Would you like to use encrypted passwords?'
+        message: 'Should the password be encrypted? (strongly recommended, otherwise it is stored in clear-text)'
       },
       {
         type: 'confirm',
         name: 'mfa',
-        message: `Would you like to enforce multi-factor authentication for ${username}?`
+        message: 'Do you want to enable multi-factor authentication?'
       }
     ]);
     if (encrypt) {
@@ -124,35 +171,20 @@ module.exports = {
         {
           type: 'input',
           name: 'app',
-          message: "What is your app's name?"
+          message: phrases.enterAppName
         }
       ]);
       const { algorithm, digits, period } = await getAlgorithm();
       const { secret, url } = generateSecret({ app, username, algorithm, digits, period });
       result.mfa = secret;
+      result.app = app;
       displayResult.mfa = url;
       if (algorithm !== 'SHA1') {
         result.mfaAlgorithm = algorithm;
       }
       showQR(displayResult.mfa);
-      console.log(`Ask ${username} to install an Authenticator app and scan this QR code on their device, or open this URL:
-
-${url}
-
-After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.`);
     }
-    copy(JSON.stringify(displayResult));
-    console.log(`
-Your new user details' raw credentials have been copied to your clipboard. Add the following to your Parse Dashboard config:
-
-${JSON.stringify(result)}
-
-`);
-    if (encrypt) {
-      console.log(
-        'Be sure to set "useEncryptedPasswords": true in your config\n\n'
-      );
-    }
+    showInstructions({ app: result.app, username, mfaUrl: displayResult.mfa, encrypt, config: displayResult });
   },
   async createMFA() {
     const { username, app } = await inquirer.prompt([
@@ -160,30 +192,24 @@ ${JSON.stringify(result)}
         type: 'input',
         name: 'username',
         message:
-          'Please enter the name of the user you would like to create a multi-factor authentication secret for:'
+          'Enter the username for which you want to enable multi-factor authentication:'
       },
       {
         type: 'input',
         name: 'app',
-        message: "What is your app's name?"
+        message: phrases.enterAppName
       }
     ]);
     const { algorithm, digits, period } = await getAlgorithm();
 
     const { url, secret } = generateSecret({ app, username, algorithm, digits, period });
     showQR(url);
-    console.log(`Ask ${username} to install an Authenticator app and scan this QR code on their device, or open this URL:
-
-${url}
-
-After you've shared the QR code ${username}, it is recommended to delete any photos or records of it.
-
-Please add this to your dashboard config for ${username}.
-
-"mfa":"${secret}"${
-      algorithm !== 'SHA1' ? `,\n"mfaAlgorithm":"${algorithm}"` : ''
+    
+    // Compose config
+    const config = { mfa: secret };
+    if (algorithm !== 'SHA1') {
+      config.mfaAlgorithm = algorithm;
     }
-
-`);
+    showInstructions({ app, username, url, config: config });
   }
 };
