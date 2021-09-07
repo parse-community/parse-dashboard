@@ -77,7 +77,7 @@ const showQR = text => {
   });
 };
 
-const showInstructions = ({ app, username, passwordCopied, mfaUrl, encrypt, config }) => {
+const showInstructions = ({ app, username, passwordCopied, secret, encrypt, config }) => {
   let orderCounter = 0;
   const getOrder = () => {
     orderCounter++;
@@ -95,15 +95,15 @@ const showInstructions = ({ app, username, passwordCopied, mfaUrl, encrypt, conf
 
   if (passwordCopied) {
     console.log(
-      `\n${getOrder()}. Securely store the auto-generated login password that has been copied to your clipboard.`
+      `\n${getOrder()}. Securely store the generated login password that has been copied to your clipboard.`
     );
   }
 
-  if (mfaUrl) {
+  if (secret) {
     console.log(
-      `\n${getOrder()}. Install an authenticator app and scan the QR code above, or open this link:` + 
-      `\n\n   ${mfaUrl}` + 
-      `\n\n${getOrder()}. Destroy any records of the QR code and the link, as they allow anyone to generate a one-time password.`
+      `\n${getOrder()}. Open the authenticator app to scan the QR code above or enter this secret code:` + 
+      `\n\n   ${secret}` + 
+      `\n\n${getOrder()}. Destroy any records of the QR code and the secret code to secure the account.`
     );
   }
   
@@ -191,7 +191,7 @@ module.exports = {
     }
 
     const config = { mfa: data.mfa, user: data.user, pass: data.pass };
-    showInstructions({ app: data.app, username, passwordCopied: true, mfaUrl: data.url, encrypt, config });
+    showInstructions({ app: data.app, username, passwordCopied: true, secret: data.mfa, encrypt, config });
   },
   async createMFA() {
     console.log('');
