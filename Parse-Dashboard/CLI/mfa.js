@@ -98,9 +98,9 @@ const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
 
   if (mfaUrl) {
     console.log(
-      `\n${getOrder()}. Ask the user to install an authenticator app and scan the QR code above, or to open this link:` + 
+      `\n${getOrder()}. Install an authenticator app and scan the QR code above, or open this link:` + 
       `\n\n   ${mfaUrl}` + 
-      `\n\n${getOrder()}. After you have shared these details, make sure to destroy any records of it.`
+      `\n\n${getOrder()}. Destroy any records of the QR code and the link, as they allow anyone to generate a one-time password.`
     );
   }
   
