@@ -78,7 +78,7 @@ const showQR = text => {
   });
 };
 
-const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
+const showInstructions = ({ app, username, passwordCopied, mfaUrl, encrypt, config }) => {
   let orderCounter = 0;
   const getOrder = () => {
     orderCounter++;
@@ -89,12 +89,16 @@ const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
     '\n\nFollow these steps to complete the set-up:'
   );
 
-  copy(JSON.stringify(config));
   console.log(
     `\n${getOrder()}. Add the following settings for user "${username}" ${app ? `in app "${app}" ` : '' }to the Parse Dashboard configuration.` +
-    '\n   The settings have been copied to your clipboard.' + 
     `\n\n   ${JSON.stringify(config)}`
   );
+
+  if (passwordCopied) {
+    console.log(
+      `\n${getOrder()}. Securely store the auto-generated login password that has been copied to your clipboard.`
+    );
+  }
 
   if (mfaUrl) {
     console.log(
@@ -108,7 +112,7 @@ const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
     console.log(
       `\n${getOrder()}. Make sure that "useEncryptedPasswords" is set to "true" in your dashboard configuration.` +
       '\n   You chose to generate an encrypted password for this user.' +
-      '\n   If there are existing users with non-encrypted passwords, you need to create new passwords for them.'
+      '\n   Any existing users with non-encrypted passwords will require newly created, encrypted passwords.'
       );
   }
   console.log(
@@ -158,6 +162,10 @@ module.exports = {
       }
     ]);
     if (encrypt) {
+      // Copy the raw password to clipboard
+      copy(data.pass);
+
+      // Encrypt password
       const bcrypt = require('bcryptjs');
       const salt = bcrypt.genSaltSync(10);
       data.pass = bcrypt.hashSync(data.pass, salt);
@@ -180,8 +188,9 @@ module.exports = {
       }
       showQR(data.url);
     }
+
     const config = { mfa: data.mfa, user: data.user, pass: data.pass };
-    showInstructions({ app: data.app, username, mfaUrl: data.url, encrypt, config });
+    showInstructions({ app: data.app, username, passwordCopied: true, mfaUrl: data.url, encrypt, config });
   },
   async createMFA() {
     const { username, app } = await inquirer.prompt([
