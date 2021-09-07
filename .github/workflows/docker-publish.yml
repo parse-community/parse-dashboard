@@ -2,17 +2,15 @@ name: docker
 
 on:
   schedule:
-    - cron: '19 17 * * *' # Nightly builds capture upstream updates to dependency images such as node.
+    # Nightly builds capture upstream updates to dependency images such as node.
+    - cron: '19 17 * * *'
   push:
     branches: [ master ]
     tags: [ '*.*.*' ]
-  pull_request:
-    branches: [ master ]
 
 env:
   REGISTRY: docker.io
   IMAGE_NAME: parseplatform/parse-dashboard
-
 
 jobs:
   build:
@@ -23,6 +21,10 @@ jobs:
       packages: write
 
     steps:
+      - name: Determine branch name
+        id: branch
+        run: echo "::set-output name=branch_name::${GITHUB_REF#refs/*/}"
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -45,6 +47,8 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=${{ steps.branch.outputs.branch_name == 'master' }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
