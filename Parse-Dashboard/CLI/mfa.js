@@ -77,7 +77,7 @@ const showQR = text => {
   });
 };
 
-const showInstructions = ({ app, username, passwordCopied, secret, encrypt, config }) => {
+const showInstructions = ({ app, username, passwordCopied, secret, url, encrypt, config }) => {
   let orderCounter = 0;
   const getOrder = () => {
     orderCounter++;
@@ -103,6 +103,8 @@ const showInstructions = ({ app, username, passwordCopied, secret, encrypt, conf
     console.log(
       `\n${getOrder()}. Open the authenticator app to scan the QR code above or enter this secret code:` + 
       `\n\n   ${secret}` + 
+      '\n\n   If the secret code generates incorrect one-time passwords, try this alternative:' +
+      `\n\n   ${url}` + 
       `\n\n${getOrder()}. Destroy any records of the QR code and the secret code to secure the account.`
     );
   }
@@ -191,7 +193,7 @@ module.exports = {
     }
 
     const config = { mfa: data.mfa, user: data.user, pass: data.pass };
-    showInstructions({ app: data.app, username, passwordCopied: true, secret: data.mfa, encrypt, config });
+    showInstructions({ app: data.app, username, passwordCopied: true, secret: data.mfa, url: data.url, encrypt, config });
   },
   async createMFA() {
     console.log('');
@@ -218,6 +220,6 @@ module.exports = {
     if (algorithm !== 'SHA1') {
       config.mfaAlgorithm = algorithm;
     }
-    showInstructions({ app, username, url, config });
+    showInstructions({ app, username, secret, url, config });
   }
 };
