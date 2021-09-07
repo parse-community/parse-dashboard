@@ -123,6 +123,8 @@ const showInstructions = ({ app, username, passwordCopied, mfaUrl, encrypt, conf
 module.exports = {
   async createUser() {
     const data = {};
+
+    console.log('');
     const { username, password } = await inquirer.prompt([
       {
         type: 'input',
@@ -193,6 +195,7 @@ module.exports = {
     showInstructions({ app: data.app, username, passwordCopied: true, mfaUrl: data.url, encrypt, config });
   },
   async createMFA() {
+    console.log('');
     const { username, app } = await inquirer.prompt([
       {
         type: 'input',
