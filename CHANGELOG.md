@@ -13,6 +13,7 @@
 - fix: date cell value not selected on double clicks (fn-faisal) [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
 
 ## Fixes
+- Fixed bug after creating new class, wrong CLP was shown for that class [#1784](https://github.com/parse-community/parse-dashboard/issues/1784)  (Prerna Mehra) [#1785](https://github.com/parse-community/parse-dashboard/pull/1785)
 - Fixed bug when opening a big modal, modal content is not visible due to Sidebar (Prerna Mehra) [#1777](https://github.com/parse-community/parse-dashboard/pull/1778)
 - Fixed UI for a field containing an array of pointers (Prerna Mehra) [#1776](https://github.com/parse-community/parse-dashboard/pull/1776)
 - Fixed bug when editing or copying a field containing an array of pointers [#1770](https://github.com/parse-community/parse-dashboard/issues/1770) (Prerna Mehra) [#1771](https://github.com/parse-community/parse-dashboard/pull/1771)
