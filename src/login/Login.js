@@ -21,26 +21,59 @@ export default class Login extends React.Component {
     }
 
     this.state = {
-      forgot: false
+      forgot: false,
+      username: sessionStorage.getItem('username') || '',
+      password: sessionStorage.getItem('password') || ''
     };
+    sessionStorage.clear();
     setBasePath(props.path);
   }
 
   render() {
     const {path} = this.props;
+    const updateField  = (field, e) => {
+      this.setState({[field]: e.target.value});
+    }
+    const formSubmit = () => {
+      sessionStorage.setItem('username', this.state.username);
+      sessionStorage.setItem('password', this.state.password);
+    }
 
     return (
       <LoginForm
         header='Access your Dashboard'
         action='Log In'
         endpoint={`${path}login`}
+        formSubmit={formSubmit}
         >
         <LoginRow
           label='Username'
-          input={<input name='username' type='username' autoFocus />} />
+          input={
+            <input
+              name='username'
+              type='username'
+              value={this.state.username}
+              onChange={e => updateField('username', e)}
+              autoFocus
+            />
+          } />
         <LoginRow
           label='Password'
-          input={<input name='password' type='password' />} />
+          input={
+            <input
+              name='password'
+              type='password'
+              value={this.state.password}
+              onChange={e => updateField('password', e)}
+            />
+          } />
+        {
+          this.errors && this.errors.includes('one-time') ?
+          <LoginRow
+          label='OTP'
+          input={<input name='otpCode' type='number' />} />
+          : null
+        }
         {this.errors ?
           <div className={styles.error}>
             {this.errors}
