@@ -98,7 +98,7 @@ const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
 
   if (mfaUrl) {
     console.log(
-      `\n${getOrder()}. Ask the user to install an authenticator app and scan the QR code above, or open this link:` + 
+      `\n${getOrder()}. Ask the user to install an authenticator app and scan the QR code above, or to open this link:` + 
       `\n\n   ${mfaUrl}` + 
       `\n\n${getOrder()}. After you have shared these details, make sure to destroy any records of it.`
     );
@@ -118,8 +118,7 @@ const showInstructions = ({ app, username, mfaUrl, encrypt, config }) => {
 
 module.exports = {
   async createUser() {
-    const result = {};
-    const displayResult = {};
+    const data = {};
     const { username, password } = await inquirer.prompt([
       {
         type: 'input',
@@ -132,8 +131,7 @@ module.exports = {
         message: 'Do you want to auto-generate a password?'
       }
     ]);
-    displayResult.username = username;
-    result.user = username;
+    data.user = username;
     if (!password) {
       const { password } = await inquirer.prompt([
         {
@@ -142,12 +140,10 @@ module.exports = {
           message: phrases.enterPassword
         }
       ]);
-      displayResult.password = password;
-      result.pass = password;
+      data.pass = password;
     } else {
       const password = crypto.randomBytes(20).toString('base64');
-      result.pass = password;
-      displayResult.password = password;
+      data.pass = password;
     }
     const { mfa, encrypt } = await inquirer.prompt([
       {
@@ -164,7 +160,7 @@ module.exports = {
     if (encrypt) {
       const bcrypt = require('bcryptjs');
       const salt = bcrypt.genSaltSync(10);
-      result.pass = bcrypt.hashSync(result.pass, salt);
+      data.pass = bcrypt.hashSync(data.pass, salt);
     }
     if (mfa) {
       const { app } = await inquirer.prompt([
@@ -176,15 +172,16 @@ module.exports = {
       ]);
       const { algorithm, digits, period } = await getAlgorithm();
       const { secret, url } = generateSecret({ app, username, algorithm, digits, period });
-      result.mfa = secret;
-      result.app = app;
-      displayResult.mfa = url;
+      data.mfa = secret;
+      data.app = app;
+      data.url = url;
       if (algorithm !== 'SHA1') {
-        result.mfaAlgorithm = algorithm;
+        data.mfaAlgorithm = algorithm;
       }
-      showQR(displayResult.mfa);
+      showQR(data.url);
     }
-    showInstructions({ app: result.app, username, mfaUrl: displayResult.mfa, encrypt, config: displayResult });
+    const config = { mfa: data.mfa, user: data.user, pass: data.pass };
+    showInstructions({ app: data.app, username, mfaUrl: data.url, encrypt, config });
   },
   async createMFA() {
     const { username, app } = await inquirer.prompt([
@@ -210,6 +207,6 @@ module.exports = {
     if (algorithm !== 'SHA1') {
       config.mfaAlgorithm = algorithm;
     }
-    showInstructions({ app, username, url, config: config });
+    showInstructions({ app, username, url, config });
   }
 };
