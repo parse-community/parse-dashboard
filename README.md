@@ -29,6 +29,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Preparing for Deployment](#preparing-for-deployment)
   - [Security Considerations](#security-considerations)
     - [Configuring Basic Authentication](#configuring-basic-authentication)
+    - [Multi-Factor Authentication (One-Time Password)](#multi-factor-authentication-one-time-password)
     - [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
   - [Use Read-Only masterKey](#use-read-only-masterkey)
     - [Making an app read-only for all users](#making-an-app-read-only-for-all-users)
@@ -380,11 +381,16 @@ You can configure your dashboard for Basic Authentication by adding usernames an
 You can store the password in either `plain text` or `bcrypt` formats. To use the `bcrypt` format, you must set the config `useEncryptedPasswords` parameter to `true`.
 You can generate encrypted passwords by using `parse-dashboard --createUser`, and pasting the result in your users config.
 
-### Configuring Multi-factor Authentication (One-time passwords)
+### Multi-Factor Authentication (One-Time Password)
 
-You can configure your dashboard for Multi-factor authentication by adding a `.mfa` secret to your user config.
+You can add an additional layer of security for a user account by requiring multi-factor authentication (MFA) for the user to login.
 
-Running `parse-dashboard --createMFA` will help you generate a valid multi-factor authentication secret, and generate a QR code to share with your user.
+With MFA enabled, a user must provide a one-time password that is typically bound to a physical device, in addition to their login password. This means in addition to knowing the login password, the user needs to have physical access to a device to generate the one-time password. This one-time password is time-based (TOTP) and only valid for a short amount of time, typically 30 seconds, until it expires.
+
+The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
+
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, 
+run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
 
 ```json
 {
@@ -394,18 +400,12 @@ Running `parse-dashboard --createMFA` will help you generate a valid multi-facto
       "user":"user1",
       "pass":"pass",
       "mfa": "lmvmOIZGMTQklhOIhveqkumss"
-    },
-    {
-      "user":"user2",
-      "pass":"pass",
-      "mfa": "KHHEWxHcvAboDvaUUsIVbo"
     }
-  ],
-  "useEncryptedPasswords": true | false
+  ]
 }
 ```
 
-If `.mfa` is set, users will have to provide a valid one-time password to login, provided by an Authenticator app, to login.
+ Parse Dashboard follows the industry standard and supports the common OTP algorithm `SHA-1` by default, to be compatible with most authenticator apps. If you have specific security requirements regarding TOTP characteristics (algorithm, digit length, time period) you can customize them by using the guided configuration mentioned above.
 
 ### Separating App Access Based on User Identity
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.

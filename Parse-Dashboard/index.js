@@ -68,7 +68,6 @@ let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USE
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 
-
 function handleSIGs(server) {
   const signals = {
     'SIGINT': 2,
