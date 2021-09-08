@@ -89,8 +89,9 @@ jobs:
             NODE_VERSION: 12.22.6
           - name: Node 14
             NODE_VERSION: 14.17.6
-          - name: Node 16
-            NODE_VERSION: 16.9.0
+          # Enable the following lines when Parse Dashboard reached Node 16 compatibility
+          #- name: Node 16
+          #  NODE_VERSION: 16.9.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
@@ -125,3 +126,5 @@ jobs:
         run: ./scripts/before_script.sh
         env:
           CI: true
+      - name: Build docker image
+        uses: docker/build-push-action@v2
