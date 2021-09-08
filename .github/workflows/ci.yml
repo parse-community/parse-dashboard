@@ -101,7 +101,7 @@ jobs:
       - name: Determine major node version
         id: node
         run: |
-          $node_major=echo "${{ matrix.NODE_VERSION }}" | cut -d'.' -f1
+          node_major=$(echo "${{ matrix.NODE_VERSION }}" | cut -d'.' -f1)
           echo "::set-output name=node_major::$(echo $node_major)"
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
