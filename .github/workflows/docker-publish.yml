@@ -1,11 +1,13 @@
 name: docker
 
 on:
-  schedule:
-    # Nightly builds capture upstream updates to dependency images such as node.
-    - cron: '19 17 * * *'
+  # Disabled as we move to new branch model and plan to change the `latest` tag to mean "latest stable" instead of as currently "latest unstable"
+  # schedule:
+  #   # Nightly builds capture upstream updates to dependency images such as node.
+  #   - cron: '19 17 * * *'
   push:
-    branches: [ master ]
+    # Disabled as we move to new branch model and plan to change the `latest` tag to mean "latest stable" instead of as currently "latest unstable"
+    # branches: [ master ]
     tags: [ '*.*.*' ]
 
 env:
