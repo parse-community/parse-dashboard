@@ -84,15 +84,26 @@ jobs:
       - name: Scan for circular dependencies
         run: npm run madge:circular
   check-docker:
-    name: Docker Build
-    timeout-minutes: 5
+    strategy:
+      matrix:
+        include:
+          - name: Docker Build linux/amd64
+            DOCKER_PLATFORM: linux/amd64
+          - name: Docker Build linux/arm/v6
+            DOCKER_PLATFORM: linux/arm/v6
+          - name: Docker Build linux/arm/v7
+            DOCKER_PLATFORM: linux/arm/v7
+          - name: Docker Build linux/arm64/v8
+            DOCKER_PLATFORM: linux/arm64/v8
+    name: ${{ matrix.name }}
+    timeout-minutes: 15
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Build docker image
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/amd64, linux/arm/v6, linux/arm/v7, linux/arm64/v8
+          platforms: ${{ matrix.DOCKER_PLATFORM }}
   check-lock-file-version:
     name: NPM Lock File Version
     timeout-minutes: 5
