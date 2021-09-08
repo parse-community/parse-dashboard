@@ -21,7 +21,6 @@ import { SpecialClasses }     from 'lib/Constants';
  * and the keyboard interactions for the data table.
  */
 
-no undefined
 export default class DataBrowser extends React.Component {
   constructor(props, context) {
     super(props, context);
