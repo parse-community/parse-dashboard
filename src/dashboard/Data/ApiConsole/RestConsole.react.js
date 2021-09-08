@@ -52,8 +52,8 @@ export default class RestConsole extends Component {
       return;
     }
     Parse.Query.or(
-      new Parse.Query(Parse.User).equalTo('username', this.state.runAsIdentifier ),
-      new Parse.Query(Parse.User).equalTo('objectId', this.state.runAsIdentifier )
+      new Parse.Query(Parse.User).equalTo('username', this.state.runAsIdentifier),
+      new Parse.Query(Parse.User).equalTo('objectId', this.state.runAsIdentifier)
     ).first({ useMasterKey: true }).then((found) => {
       if (found) {
         if (found.getSessionToken()) {

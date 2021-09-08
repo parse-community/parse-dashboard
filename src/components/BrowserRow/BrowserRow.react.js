@@ -47,7 +47,7 @@ export default class BrowserRow extends Component {
           let type = columns[name].type;
           let attr = obj;
           if (!isUnique) {
-              attr = attributes[name];
+            attr = attributes[name];
             if (name === 'objectId') {
               attr = obj.id;
             } else if (name === 'ACL' && className === '_User' && !attr) {

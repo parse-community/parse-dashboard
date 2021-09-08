@@ -20,9 +20,9 @@ export default class DataBrowserHeaderBar extends React.Component {
         {readonly
           ? null
           : <input
-              type='checkbox'
-              checked={selected}
-              onChange={(e) => selectAll(e.target.checked)} />
+            type='checkbox'
+            checked={selected}
+            onChange={(e) => selectAll(e.target.checked)} />
         }
       </div>
     ];

@@ -132,7 +132,7 @@ class Explorer extends DashboardView {
       // Update
       activeQueries[existingQueryIndex] = query;
     }
-    
+
     // Update the state to trigger rendering pipeline.
     this.setState({
       activeQueries,

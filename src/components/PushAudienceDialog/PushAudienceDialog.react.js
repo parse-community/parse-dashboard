@@ -245,18 +245,18 @@ export default class PushAudienceDialog extends React.Component {
           label={<Label text='Which platforms should be included?' />}
           input={platformSelect} />
         <div className={styles.filter}>
-        <Filter
-          schema={this.props.schema}
-          filters={this.state.filters}
-          onChange={(filters) =>
+          <Filter
+            schema={this.props.schema}
+            filters={this.state.filters}
+            onChange={(filters) =>
             {
               this.setState(
                 { filters },
                 this.fetchAudienceSize.bind(this)
               );
             }
-          }
-          renderRow={(props) => <InstallationCondition {...props} />} />
+            }
+            renderRow={(props) => <InstallationCondition {...props} />} />
         </div>
         <div className={[styles.addConditions, nonEmptyConditions ? styles.nonEmptyConditions : ''].join(' ')}>
           <Button value={nonEmptyConditions ? 'Add another condition' : 'Add a condition'} onClick={this.handleAddCondition.bind(this)}/>

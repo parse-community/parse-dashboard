@@ -70,18 +70,18 @@ let ClassProgressBar = ({ job, last }) => {
       progressDiv = <div
         style={{width: '100%'}}
         className={[styles.detailCompletion, base.succeededBackground].join(' ')}/>
-        icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
+      icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
       break;
     case MIGRATION_FATALED:
       progressDiv = <div
         style={{width: '100%'}}
         className={[styles.detailCompletion, base.failedBackground].join(' ')}/>
-        icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
+      icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
   }
   return <div>
     <div
       style={{
-        borderBottomLeftRadius: last ? '5px': 0,
+        borderBottomLeftRadius: last ? '5px' : 0,
         marginBottom: last ? '20px' : 0,
       }}
       className={styles.detailClassName}>
@@ -324,13 +324,13 @@ export default class Migration extends DashboardView {
         }}
         progress={this.state.commitingState === AsyncStatus.PROGRESS}
         buttonsInCenter={true}>
-          <div style={{padding: '17px 55px 10px 55px', textAlign: 'center'}}>After you commit to using your new database, you cannot switch back to using a Parse managed database! You will be responsible for your own imports, exports, backups, indexes, monitoring, and other database administration. Are you sure you want to continue?</div>
-          <FormNote
-            show={this.state.commitingState === AsyncStatus.FAILED}
-            color='red'>
-            <div>We were unable to commit your migration. Please try again.</div>
-          </FormNote>
+        <div style={{padding: '17px 55px 10px 55px', textAlign: 'center'}}>After you commit to using your new database, you cannot switch back to using a Parse managed database! You will be responsible for your own imports, exports, backups, indexes, monitoring, and other database administration. Are you sure you want to continue?</div>
+        <FormNote
+          show={this.state.commitingState === AsyncStatus.FAILED}
+          color='red'>
+          <div>We were unable to commit your migration. Please try again.</div>
+        </FormNote>
       </Modal> : null}
     </div>;
-    }
+  }
 }

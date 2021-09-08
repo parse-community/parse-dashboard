@@ -87,7 +87,7 @@ export default class DateTimeInput extends React.Component {
         </div>
       );
     }
-    
+
     return (
       <div className={styles.input} onClick={this.props.disabled ? null : this.toggle.bind(this)}>
         {content}

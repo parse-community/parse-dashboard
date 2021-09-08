@@ -109,37 +109,37 @@ class Webhooks extends TableView {
           <DropdownOption value={'beforeDelete'} key={'beforeDelete'}>beforeDelete</DropdownOption>
           <DropdownOption value={'afterDelete'} key={'afterDelete'}>afterDelete</DropdownOption>
         </Dropdown>} />
-        {this.state.hookType === 'function' ? <Field
-          label={<Label text='Function name' description='This is how you will reference your webhook'/>}
-          input={<TextInput
-            placeholder='MyWebhook'
-            disabled={!this.state.showNewWebhookModal}
-            onChange={value => {
-              this.setState({functionName: value});
-            }}
-            value={this.state.functionName}
-          />} /> : <Field
-          label={<Label text='Choose a Class'/>}
-          input={<Dropdown
-            disabled={!this.state.showNewWebhookModal}
-            onChange={value => {
-              this.setState({triggerClass: value});
-            }}
-            value={this.state.triggerClass}
-            fixed={true}>
-              {/*TODO(drewgross)(non-blocking) display special classes without leading underscore*/}
-              {classNames.map(name => <DropdownOption key={name} value={name}>{name}</DropdownOption>)}
-          </Dropdown>} />
-        }
-        <Field
-          label={<Label text='Webhook URL' />}
-          input={<TextInput
-            disabled={this.state.showDeleteWebhookModal}
-            onChange={value => {
-              this.setState({hookURL: value})
-            }}
-            value={this.state.hookURL}
-          />} />
+      {this.state.hookType === 'function' ? <Field
+        label={<Label text='Function name' description='This is how you will reference your webhook'/>}
+        input={<TextInput
+          placeholder='MyWebhook'
+          disabled={!this.state.showNewWebhookModal}
+          onChange={value => {
+            this.setState({functionName: value});
+          }}
+          value={this.state.functionName}
+        />} /> : <Field
+        label={<Label text='Choose a Class'/>}
+        input={<Dropdown
+          disabled={!this.state.showNewWebhookModal}
+          onChange={value => {
+            this.setState({triggerClass: value});
+          }}
+          value={this.state.triggerClass}
+          fixed={true}>
+          {/*TODO(drewgross)(non-blocking) display special classes without leading underscore*/}
+          {classNames.map(name => <DropdownOption key={name} value={name}>{name}</DropdownOption>)}
+        </Dropdown>} />
+      }
+      <Field
+        label={<Label text='Webhook URL' />}
+        input={<TextInput
+          disabled={this.state.showDeleteWebhookModal}
+          onChange={value => {
+            this.setState({hookURL: value})
+          }}
+          value={this.state.hookURL}
+        />} />
     </div>
 
     let hookRequestData = ({hookURL, hookType, functionName, triggerClass}) => {

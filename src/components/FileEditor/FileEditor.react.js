@@ -31,7 +31,7 @@ export default class FileEditor extends React.Component {
       fileInputElement.click();
     }
   }
-  
+
   componentWillUnmount() {
     document.body.removeEventListener('click', this.checkExternalClick);
     document.body.removeEventListener('keypress', this.handleKey);

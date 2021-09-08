@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes from 'lib/PropTypes'; 
+import PropTypes from 'lib/PropTypes';
 import Modal     from 'components/Modal/Modal.react';
 import ParseApp  from 'lib/ParseApp';
 import PushCerts from 'components/PushCerts/PushCerts.react';

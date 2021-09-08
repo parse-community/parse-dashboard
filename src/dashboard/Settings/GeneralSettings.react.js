@@ -41,18 +41,18 @@ import { Link }                          from 'react-router-dom';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
-let numJobsFromRequestLimit = (limit) => Math.floor((limit-10)/20);
+let numJobsFromRequestLimit = (limit) => Math.floor((limit - 10) / 20);
 
 let CurrentPlan = ({requestLimit}) => {
   let costString = requestLimit === 30 ?
     'Free' :
-    '$' + ((requestLimit-30) * 10).toString();
+    '$' + ((requestLimit - 30) * 10).toString();
   return (
     <div>
       <div className={cost}>{costString}</div>
       <div className={features}>{requestLimit.toString() + ' requests per second'}<br/>{numJobsFromRequestLimit(requestLimit).toString() + ' background job' + (numJobsFromRequestLimit(requestLimit) > 1 ? 's' : '')}</div>
     </div>
-)};
+  )};
 
 let CurrentPlanFields = ({
   visible,
@@ -263,77 +263,77 @@ let ManageAppFields = ({
   }
   return (
     <Fieldset
-    legend='App Management'
-    description='These options will affect your entire app.' >
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Clean up app'
-        description={<span>This will delete any files that <br/>are not referenced by any objects.</span>} />}
-      input={<FormButton
-        onClick={cleanUpFiles}
-        value='Clean Up Files'/>} />
-    {cleanUpFilesMessage ? <FormNote
-      show={true}
-      color={cleanUpMessageColor}>
-      <div>{cleanUpFilesMessage}</div>
-    </FormNote> : null}
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Export app data'
-        description={'We firmly believe in data portability.'} />}
-      //TODO: Add export progress view when designs are ready.
-      input={<FormButton
-        onClick={exportData}
-        value='Export Data'/>} />
-    {exportDataMessage ? <FormNote
-      show={true}
-      color={exportMessageColor}>
-      <div>{exportDataMessage}</div>
-    </FormNote> : null}
-    {migrateAppField}
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Clone app'
-        description={<span>Choose what you want to carry over <br/>and create a copy of this Parse app.</span>} />}
-      input={<FormButton
-        value='Clone this app'
-        onClick={cloneApp} />
-      } />
-    {cloneAppMessage ? <FormNote
-      show={true}
-      color='green'>
-      <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: '/apps' }}>apps page</Link>!</div>
-    </FormNote> : null}
-    {!isCollaborator ? <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Transfer app'
-        description={<span>Give an existing collaborator <br/>ownership over this app.</span>} />
-      }
-      input={<FormButton
-        value='Transfer this app'
-        color='red'
-        disabled={!hasCollaborators}
-        onClick={transferApp} />
-      } /> : null}
-    {transferAppMessage ? <FormNote
-      color='green'>
-      {transferAppMessage}
-    </FormNote> : null}
-    {!isCollaborator ? <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Delete app'
-        description={<span>Completely remove any trace <br/>of this app's existence.</span>} />}
-      input={<FormButton
-        color='red'
-        value='Delete this app'
-        onClick={deleteApp} />
-      } /> : null}
-  </Fieldset>);
+      legend='App Management'
+      description='These options will affect your entire app.' >
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Clean up app'
+          description={<span>This will delete any files that <br/>are not referenced by any objects.</span>} />}
+        input={<FormButton
+          onClick={cleanUpFiles}
+          value='Clean Up Files'/>} />
+      {cleanUpFilesMessage ? <FormNote
+        show={true}
+        color={cleanUpMessageColor}>
+        <div>{cleanUpFilesMessage}</div>
+      </FormNote> : null}
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Export app data'
+          description={'We firmly believe in data portability.'} />}
+        //TODO: Add export progress view when designs are ready.
+        input={<FormButton
+          onClick={exportData}
+          value='Export Data'/>} />
+      {exportDataMessage ? <FormNote
+        show={true}
+        color={exportMessageColor}>
+        <div>{exportDataMessage}</div>
+      </FormNote> : null}
+      {migrateAppField}
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Clone app'
+          description={<span>Choose what you want to carry over <br/>and create a copy of this Parse app.</span>} />}
+        input={<FormButton
+          value='Clone this app'
+          onClick={cloneApp} />
+        } />
+      {cloneAppMessage ? <FormNote
+        show={true}
+        color='green'>
+        <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: '/apps' }}>apps page</Link>!</div>
+      </FormNote> : null}
+      {!isCollaborator ? <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Transfer app'
+          description={<span>Give an existing collaborator <br/>ownership over this app.</span>} />
+        }
+        input={<FormButton
+          value='Transfer this app'
+          color='red'
+          disabled={!hasCollaborators}
+          onClick={transferApp} />
+        } /> : null}
+      {transferAppMessage ? <FormNote
+        color='green'>
+        {transferAppMessage}
+      </FormNote> : null}
+      {!isCollaborator ? <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Delete app'
+          description={<span>Completely remove any trace <br/>of this app's existence.</span>} />}
+        input={<FormButton
+          color='red'
+          value='Delete this app'
+          onClick={deleteApp} />
+        } /> : null}
+    </Fieldset>);
 }
 
 export default class GeneralSettings extends DashboardView {
@@ -506,7 +506,7 @@ export default class GeneralSettings extends DashboardView {
       clearFields={() => this.setState({
         password: '',
         transferNewOwner: '',
-        })}>
+      })}>
       <Field
         labelWidth={60}
         label={<Label
@@ -517,9 +517,9 @@ export default class GeneralSettings extends DashboardView {
           fixed={true}
           value={this.state.transferNewOwner}
           onChange={(collaborator) => this.setState({transferNewOwner: collaborator})}>
-            {((this.props.initialFields||{}).collaborators||[]).map(collaborator =>
-              <DropdownOption key={collaborator.id.toString()} value={collaborator.userEmail}>{collaborator.userEmail}</DropdownOption>
-            )}
+          {((this.props.initialFields || {}).collaborators || []).map(collaborator =>
+            <DropdownOption key={collaborator.id.toString()} value={collaborator.userEmail}>{collaborator.userEmail}</DropdownOption>
+          )}
         </Dropdown>} />
       {AccountManager.currentUser().has_password ? passwordField : null}
     </FormModal>;
@@ -568,7 +568,7 @@ export default class GeneralSettings extends DashboardView {
         input={<TextInput
           value={this.state.cloneAppName}
           onChange={value => this.setState({cloneAppName: value})
-        } /> } />
+          } /> } />
       <Field
         labelWidth={35}
         label={<Label text='What should we include in the clone?' />}

@@ -67,10 +67,10 @@ let Empty = createClass({
 });
 
 const AccountSettingsPage = () => (
-    <AccountView section='Account Settings'>
-      <AccountOverview />
-    </AccountView>
-  );
+  <AccountView section='Account Settings'>
+    <AccountOverview />
+  </AccountView>
+);
 
 const PARSE_DOT_COM_SERVER_INFO = {
   features: {

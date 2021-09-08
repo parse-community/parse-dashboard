@@ -233,14 +233,14 @@ export default class ConfigDialog extends React.Component {
               description='Use this to configure your app. You can change it at any time.' />
           }
           input={EDITORS[this.state.type](this.state.value, (value) => { this.setState({ value }) })} />
-        
+
         {
           /*
             Add `Requires master key` field if parse-server version >= 3.9.0,
             that is the minimum version that supports this feature.
           */
-          semver.valid(this.props.parseServerVersion) && semver.gte(this.props.parseServerVersion, '3.9.0') 
-          ? <Field
+          semver.valid(this.props.parseServerVersion) && semver.gte(this.props.parseServerVersion, '3.9.0')
+            ? <Field
               label={
                 <Label
                   text='Requires master key?'
@@ -250,12 +250,12 @@ export default class ConfigDialog extends React.Component {
                 <Toggle
                   type={Toggle.Types.YES_NO}
                   value={this.state.masterKeyOnly}
-                  onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })} 
+                  onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })}
                   additionalStyles={{ margin: '0px' }} />
               }
               className={styles.addColumnToggleWrapper}
             />
-          : null
+            : null
         }
       </Modal>
     );

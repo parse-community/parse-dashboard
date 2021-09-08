@@ -58,10 +58,10 @@ export default (changes, initial, fieldOptions) => {
         let friendlyAddition = additionsToSet.length > 1 ? fieldOptions[key].friendlyNamePlural : fieldOptions[key].friendlyName;
         let friendlyRemoval = removalsFromSet.length > 1 ? fieldOptions[key].friendlyNamePlural : fieldOptions[key].friendlyName;
         if (additionsToSet.length > 0) {
-          setChanges.push(<span key={key+'added'}>added <strong>{additionsToSet.length} {friendlyAddition}</strong></span>);
+          setChanges.push(<span key={key + 'added'}>added <strong>{additionsToSet.length} {friendlyAddition}</strong></span>);
         }
         if (removalsFromSet.length > 0) {
-          setChanges.push(<span key={key+'removed'}>removed <strong>{removalsFromSet.length} {friendlyRemoval}</strong></span>);
+          setChanges.push(<span key={key + 'removed'}>removed <strong>{removalsFromSet.length} {friendlyRemoval}</strong></span>);
         }
 
       } else {

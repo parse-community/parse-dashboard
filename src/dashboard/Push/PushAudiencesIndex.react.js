@@ -213,7 +213,7 @@ class PushAudiencesIndex extends DashboardView {
             showCreateAudienceModal: false
           });
         }}/>
-      ) :
+    ) :
       null;
 
     let deleteSubtitle = (

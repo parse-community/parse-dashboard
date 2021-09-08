@@ -35,7 +35,7 @@ function WebhookStore(state, action) {
       );
       return Promise.all([functionsPromise, triggersPromise]).then((
         [functions,
-        triggers]
+          triggers]
       ) => {
         return Map({ lastFetch: new Date(), webhooks: List(functions.concat(triggers))});
       });

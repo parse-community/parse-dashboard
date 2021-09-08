@@ -86,8 +86,8 @@ export default class AccountOverview extends React.Component {
 
     let linkedAccountsFields = this.state.linkedAccounts !== null ?
       <Fieldset
-          legend='Linked Accounts'
-          description='Manage the accounts you have linked to Parse.' >
+        legend='Linked Accounts'
+        description='Manage the accounts you have linked to Parse.' >
         <AccountLinkField
           serviceName='Facebook'
           metadata={this.state.linkedAccounts['facebook']} />

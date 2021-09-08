@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes               from 'lib/PropTypes'; 
+import PropTypes               from 'lib/PropTypes';
 import * as PushAudiencesStore from 'lib/stores/PushAudiencesStore';
 import * as PushConstants      from './PushConstants';
 import Button                  from 'components/Button/Button.react';
@@ -129,7 +129,7 @@ export default class PushAudiencesData extends React.Component {
     parseQuery.containedIn('deviceType', platforms);
     if (!saveForFuture) {
       this.props.onChange(PushConstants.NEW_SEGMENT_ID, parseQuery, 1 /* TODO: get the read device count */);
-    }    
+    }
 
     if (saveForFuture){
       this.props.pushAudiencesStore.dispatch(PushAudiencesStore.ActionTypes.CREATE, {

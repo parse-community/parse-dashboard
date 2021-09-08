@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import Icon from "components/Icon/Icon.react";
-import styles from "components/Sidebar/Sidebar.scss";
+import Icon from 'components/Icon/Icon.react';
+import styles from 'components/Sidebar/Sidebar.scss';
 
 const Pin = ({ onClick }) => (
   <div className={styles.pinContainer} onClick={onClick}>

@@ -93,9 +93,9 @@ export default class Autocomplete extends Component {
     const filteredSuggestions = buildSuggestions
       ? buildSuggestions(userInput)
       : suggestions.filter(
-          suggestion =>
-            suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-        );
+        suggestion =>
+          suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+      );
     return filteredSuggestions;
   }
 
@@ -226,15 +226,15 @@ export default class Autocomplete extends Component {
     // Enter
     const { userInput } = this.state;
 
-      if (e.keyCode === 13) {
-            if (userInput && userInput.length > 0) {
+    if (e.keyCode === 13) {
+      if (userInput && userInput.length > 0) {
         this.props.onSubmit(userInput);
       }
     } else if (e.keyCode === 9) {
       // Tab
       // do not type it
       e.preventDefault();
-      
+
       e.stopPropagation();
       // move focus to input
       this.inputRef.current.focus();
@@ -317,7 +317,7 @@ export default class Autocomplete extends Component {
           onClick={onClick}
         />
       );
-    } 
+    }
 
     return (
       <React.Fragment>
@@ -371,5 +371,5 @@ Autocomplete.propTypes = {
   ),
   error: PropTypes.string.describe(
     'Error to be rendered in place of label if defined'
-  ) 
-} 
+  )
+}

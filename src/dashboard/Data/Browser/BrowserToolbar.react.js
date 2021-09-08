@@ -73,11 +73,11 @@ let BrowserToolbar = ({
   let isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
   let details = [];
   if (count !== undefined) {
-      if (count === 1) {
-        details.push('1 object');
-      } else {
-        details.push(prettyNumber(count) + ' objects');
-      }
+    if (count === 1) {
+      details.push('1 object');
+    } else {
+      details.push(prettyNumber(count) + ' objects');
+    }
   }
 
   if (!relation && !isUnique) {
@@ -185,7 +185,7 @@ let BrowserToolbar = ({
       if (col === 'objectId' || isUnique && col !== uniqueField) {
         return;
       }
-      if ((type ==='Pointer' && targetClass === '_User') || type === 'Array' ) {
+      if ((type === 'Pointer' && targetClass === '_User') || type === 'Array') {
         userPointers.push(col);
       }
     });
@@ -232,15 +232,15 @@ let BrowserToolbar = ({
       )}
       {onAddRow && (
         <BrowserMenu
-            setCurrent={setCurrent}
-            title={currentUser ? 'Browsing' : 'Browse'}
-            icon="users-solid"
-            active={!!currentUser}
-            disabled={isPendingEditCloneRows}
-          >
-            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
-            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
-            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+          setCurrent={setCurrent}
+          title={currentUser ? 'Browsing' : 'Browse'}
+          icon="users-solid"
+          active={!!currentUser}
+          disabled={isPendingEditCloneRows}
+        >
+          <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+          {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
+          {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
@@ -324,12 +324,12 @@ let BrowserToolbar = ({
       {editCloneRows && editCloneRows.length > 0 && (
         <BrowserMenu title="Clone" icon="clone-icon">
           <MenuItem
-            text={"Cancel all pending rows"}
+            text={'Cancel all pending rows'}
             onClick={onCancelPendingEditRows}
           />
         </BrowserMenu>
       )}
-      
+
     </Toolbar>
   );
 };

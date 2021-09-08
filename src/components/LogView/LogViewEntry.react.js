@@ -40,7 +40,7 @@ let LogViewEntry = ({
   timestamp,
 }) => {
   let logEntryInfo = getLogEntryInfo(text);
-  let classes = [styles.entry, logEntryInfo.error ? styles.error: ''];
+  let classes = [styles.entry, logEntryInfo.error ? styles.error : ''];
   return (
     <li className={classes.join(' ')}>
       {/* handle the timestamp format used by both Parse Server and Parse.com */}

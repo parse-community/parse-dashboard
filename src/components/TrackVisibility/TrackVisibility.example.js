@@ -32,12 +32,12 @@ class DemoTrackVisibility extends React.Component {
     });
 
     this.state = {
-        visibility: 0
+      visibility: 0
     };
   }
 
   render() {
-    
+
     return (
       <React.Fragment>
         <div>{'Yellow block is ' + this.state.visibility + '% visible'}</div>
@@ -59,7 +59,7 @@ class DemoTrackVisibility extends React.Component {
 export const demos = [
   {
     render: () => (
-     <DemoTrackVisibility/>
+      <DemoTrackVisibility/>
     )
   }
 ];

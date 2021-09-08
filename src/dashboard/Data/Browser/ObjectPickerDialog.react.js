@@ -383,24 +383,24 @@ export default class ObjectPickerDialog extends React.Component {
               })}
             </div>
           </div>
-            <DataBrowser
-              count={count}
-              schema={schema}
-              filters={filters}
-              onFilterChange={this.updateFilters}
-              onRefresh={this.refresh}
-              columns={columns}
-              className={className}
-              fetchNextPage={this.fetchNextPage}
-              maxFetched={lastMax}
-              selectRow={this.selectRow}
-              selection={selection}
-              data={data}
-              ordering={ordering}
-              disableKeyControls={disableDataBrowserKeyControls}
-              disableSecurityDialog={true}
-              updateOrdering={this.updateOrdering}
-            />
+          <DataBrowser
+            count={count}
+            schema={schema}
+            filters={filters}
+            onFilterChange={this.updateFilters}
+            onRefresh={this.refresh}
+            columns={columns}
+            className={className}
+            fetchNextPage={this.fetchNextPage}
+            maxFetched={lastMax}
+            selectRow={this.selectRow}
+            selection={selection}
+            data={data}
+            ordering={ordering}
+            disableKeyControls={disableDataBrowserKeyControls}
+            disableSecurityDialog={true}
+            updateOrdering={this.updateOrdering}
+          />
         </div>
       </Modal>
     );

@@ -156,7 +156,7 @@ export default class Performance extends DashboardView {
   renderContent() {
     let toolbar = (
       <Toolbar
-        section='Analytics'       
+        section='Analytics'
         subsection='Performance' />
     );
 

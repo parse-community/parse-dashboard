@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import {
-   unselectable,
-   verticalCenter }     from 'stylesheets/base.scss';
+  unselectable,
+  verticalCenter }     from 'stylesheets/base.scss';
 import Button           from 'components/Button/Button.react';
 import Checkbox         from 'components/Checkbox/Checkbox.react';
 import Icon             from 'components/Icon/Icon.react';
@@ -592,12 +592,12 @@ export default class PermissionsDialog extends React.Component {
       // The double check is necessary because the permissions object seems to be empty when accessing the CLP section
       // if the class was recently created.
       (pointerPermsSubset.get = permissions.get && permissions.get.pointerFields || []),
-        (pointerPermsSubset.find = permissions.find && permissions.find.pointerFields || []),
-        (pointerPermsSubset.count = permissions.count && permissions.count.pointerFields || []),
-        (pointerPermsSubset.create = permissions.create && permissions.create.pointerFields || []),
-        (pointerPermsSubset.update = permissions.update && permissions.update.pointerFields || []),
-        (pointerPermsSubset.delete = permissions.delete && permissions.delete.pointerFields || []),
-        (pointerPermsSubset.addField = permissions.addField && permissions.addField.pointerFields || []);
+      (pointerPermsSubset.find = permissions.find && permissions.find.pointerFields || []),
+      (pointerPermsSubset.count = permissions.count && permissions.count.pointerFields || []),
+      (pointerPermsSubset.create = permissions.create && permissions.create.pointerFields || []),
+      (pointerPermsSubset.update = permissions.update && permissions.update.pointerFields || []),
+      (pointerPermsSubset.delete = permissions.delete && permissions.delete.pointerFields || []),
+      (pointerPermsSubset.addField = permissions.addField && permissions.addField.pointerFields || []);
     }
 
     let pointerPerms = {};
@@ -1257,8 +1257,8 @@ export default class PermissionsDialog extends React.Component {
                 )}
               {this.props.advanced
                 ? this.state.pointers.map(pointer =>
-                    this.renderRow(pointer, this.state.columns)
-                  )
+                  this.renderRow(pointer, this.state.columns)
+                )
                 : null}
               {this.state.newKeys.map(key =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
@@ -1285,7 +1285,7 @@ export default class PermissionsDialog extends React.Component {
                     buildSuggestions={input => this.suggestInput(input)}
                     buildLabel={input => this.buildLabel(input)}
                     error={this.state.entryError}
-                 />
+                  />
                 </TrackVisibility>
               </div>
             </div>

@@ -46,10 +46,10 @@ let CloningNote = ({ app, clone_status, clone_progress }) => {
 };
 
 let CountsSection = ({ className, title, children }) =>
- <div className={className}>
-   <div className={styles.section}>{title}</div>
-   {children}
- </div>
+  <div className={className}>
+    <div className={styles.section}>{title}</div>
+    {children}
+  </div>
 
 let Metric = (props) => {
   return (
@@ -66,7 +66,7 @@ let AppCard = ({
 }) => {
   let canBrowse = app.serverInfo.error ? null : () => history.push(html`/apps/${app.slug}/browser`);
   let versionMessage = app.serverInfo.error ?
-    <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
+    <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div> :
     <div className={styles.serverVersion}>
     Server URL: <span className={styles.ago}>{app.serverURL || 'unknown'}</span>
     Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>

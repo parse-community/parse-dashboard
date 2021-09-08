@@ -85,24 +85,24 @@ export default class PushSettings extends DashboardView {
         label={<Label text='Existing Credentials' />}
         input={
           (<FormTable
-          items={fields.gcmCredentials.map((credential, index) => {
-            return {
-              title: 'Credential #' + (index + 1).toString(),
-              onDelete: () => setField('gcmCredentials', fields.gcmCredentials.filter(oldCred =>
-                !compareGCMCredentials(oldCred, credential)
-              )),
-              notes: [
-                {
-                  key: 'Sender ID',
-                  value: credential.sender_id,
-                },
-                {
-                  key: 'API Key',
-                  value: credential.api_key,
-                }
-              ],
-            };
-          })}/>)}/> : null}
+            items={fields.gcmCredentials.map((credential, index) => {
+              return {
+                title: 'Credential #' + (index + 1).toString(),
+                onDelete: () => setField('gcmCredentials', fields.gcmCredentials.filter(oldCred =>
+                  !compareGCMCredentials(oldCred, credential)
+                )),
+                notes: [
+                  {
+                    key: 'Sender ID',
+                    value: credential.sender_id,
+                  },
+                  {
+                    key: 'API Key',
+                    value: credential.api_key,
+                  }
+                ],
+              };
+            })}/>)}/> : null}
     </Fieldset>;
 
     let windowsPushFields = <Fieldset
@@ -111,7 +111,7 @@ export default class PushSettings extends DashboardView {
       <Field
         labelWidth={DEFAULT_LABEL_WIDTH}
         label={<Label
-              text='Windows Keys' />}
+          text='Windows Keys' />}
         input={<FormButton onClick={this.legacyPushSettings.bind(this)} value='Configure'/>} />
       {/* TODO(drewgross): make Push Credentials component
       <Field

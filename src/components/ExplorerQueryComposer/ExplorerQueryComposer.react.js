@@ -274,9 +274,9 @@ export default class ExplorerQueryComposer extends React.Component {
     this.setState({ [stateKey]: this.state[stateKey] });
   }
 
-  renderAggregate(aggregate, index=0) {
+  renderAggregate(aggregate, index = 0) {
     let deleteButton = null;
-    if (!this.props.isTimeSeries || index !== 0 ) {
+    if (!this.props.isTimeSeries || index !== 0) {
       deleteButton = (
         <a
           href='javascript:;'
@@ -335,7 +335,7 @@ export default class ExplorerQueryComposer extends React.Component {
     );
   }
 
-  renderGroup(grouping, index=0) {
+  renderGroup(grouping, index = 0) {
     let deleteButton = null;
     let specialGroup = this.props.isTimeSeries && index === 0;
     if (!specialGroup) {
@@ -369,7 +369,7 @@ export default class ExplorerQueryComposer extends React.Component {
     );
   }
 
-  renderFilter(filter, index=0) {
+  renderFilter(filter, index = 0) {
     let type = Object.prototype.hasOwnProperty.call(Constraints[filter.op], 'field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
 
     let constraintView = null;
@@ -526,7 +526,7 @@ export default class ExplorerQueryComposer extends React.Component {
           onClick={this.removeAdditionalQuery.bind(this, 'filters', index)}>
           &times;
         </a>
-        </div>
+      </div>
     );
   }
 

@@ -12,13 +12,13 @@ import { createBrowserHistory } from 'history';
 const history = createBrowserHistory({});
 
 const routes = (
-<Router history={history}>
-  <div>
-    <Route path='/:component?' render={(props) => {
-      return <PIG params={props.match.params || {}} />
-    }} />
-  </div>
-</Router>
+  <Router history={history}>
+    <div>
+      <Route path='/:component?' render={(props) => {
+        return <PIG params={props.match.params || {}} />
+      }} />
+    </div>
+  </Router>
 );
 
 export default routes

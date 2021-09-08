@@ -44,7 +44,7 @@ export default function subscribeTo(name, prop) {
       }
 
       render() {
-        let dispatch = (type, params={}) => {
+        let dispatch = (type, params = {}) => {
           if (store.isGlobal) {
             return store.dispatch(type, params);
           }

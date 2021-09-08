@@ -12,10 +12,10 @@ import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
 import styles             from 'components/PushPreview/PushPreview.scss';
 import VisiblePreview     from 'components/PushPreview/VisiblePreview.react';
 import {
-         getDateMethod,
-         MONTHS,
-         pad,
-       }                from 'lib/DateUtils';
+  getDateMethod,
+  MONTHS,
+  pad,
+}                from 'lib/DateUtils';
 
 let Row = ({ label, content }) => (
   <div className={styles.row}>

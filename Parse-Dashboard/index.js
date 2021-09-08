@@ -193,7 +193,7 @@ p.then(config => {
     process.exit(-1);
   }
 })
-.catch(error => {
-  console.log('There was a problem loading the dashboard. Exiting.', error);
-  process.exit(-1);
-});
+  .catch(error => {
+    console.log('There was a problem loading the dashboard. Exiting.', error);
+    process.exit(-1);
+  });

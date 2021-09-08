@@ -25,13 +25,13 @@ function getRateString(rateNum) {
 }
 
 let PushOpenRate = ({
-    numOpened,
-    numSent,
-    color,
-    isExperiment = false,
-    isWinner = false,
-    customColor,
-  }) => {
+  numOpened,
+  numSent,
+  color,
+  isExperiment = false,
+  isWinner = false,
+  customColor,
+}) => {
   let rateNum = numOpened / numSent * 100;
   if(isNaN(rateNum)){ //check for case when numSent is 0
     rateNum = 0;

@@ -117,7 +117,7 @@ export default class BrowserCell extends Component {
       }
     });
 
-    if ( this.props.type === 'Pointer' ) {
+    if (this.props.type === 'Pointer') {
       onEditSelectedRow && contextMenuOptions.push({
         text: 'Open pointer in new tab',
         callback: () => {
@@ -264,10 +264,10 @@ export default class BrowserCell extends Component {
       this.copyableValue = value.id;
     }
     else if (type === 'Array') {
-      if ( value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer' ) {
+      if (value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer') {
         const array = [];
-        value.map( (v, i) => {
-          if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
+        value.map((v) => {
+          if (typeof v !== 'object' || v.__type !== 'Pointer') {
             throw new Error('Invalid type found in pointer array');
           }
           const object = new Parse.Object(v.className);
@@ -282,10 +282,10 @@ export default class BrowserCell extends Component {
           );
         });
         content = <ul className={styles.hasMore}>
-          {array.map( a => <li>{a}</li>)}
+          {array.map(a => <li>{a}</li>)}
         </ul>
         this.copyableValue = JSON.stringify(value);
-        if ( array.length > 1 ) {
+        if (array.length > 1) {
           classes.push(styles.removePadding);
         }
       }
@@ -339,8 +339,8 @@ export default class BrowserCell extends Component {
           <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
         </div>
       ) : (
-          'Relation'
-        );
+        'Relation'
+      );
       this.copyableValue = undefined;
     }
 
@@ -359,7 +359,7 @@ export default class BrowserCell extends Component {
           className={classes.join(' ')}
           style={{ width }}
           onClick={(e) => {
-            if ( e.metaKey === true && type === 'Pointer') {
+            if (e.metaKey === true && type === 'Pointer') {
               onPointerCmdClick(value);
             } else {
               onSelect({ row, col });
@@ -386,7 +386,7 @@ export default class BrowserCell extends Component {
         className={classes.join(' ')}
         style={{ width }}
         onClick={(e) => {
-          if ( e.metaKey === true && type === 'Pointer' ) {
+          if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
           }
           else {

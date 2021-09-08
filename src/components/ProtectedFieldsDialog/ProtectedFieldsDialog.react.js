@@ -19,7 +19,7 @@ import styles             from 'components/ProtectedFieldsDialog/ProtectedFields
 import MultiSelect        from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption  from 'components/MultiSelect/MultiSelectOption.react';
 import TrackVisibility    from 'components/TrackVisibility/TrackVisibility.react';
-import { 
+import {
   unselectable,
   verticalCenter }        from 'stylesheets/base.scss';
 
@@ -240,12 +240,12 @@ export default class ProtectedFieldsDialog extends React.Component {
     if(noAvailableFields){
       options.push(
         <MultiSelectOption  disabled={true} dense={true}>
-        {'This class has no fields to protect'}
+          {'This class has no fields to protect'}
         </MultiSelectOption>
       )
     }
 
-    const placeholder = 'All fields allowed.'+ (noAvailableFields ? '': ' Click to protect.');
+    const placeholder = 'All fields allowed.' + (noAvailableFields ? '' : ' Click to protect.');
 
     return (
       <div className={(styles.second, styles.multiselect)}>

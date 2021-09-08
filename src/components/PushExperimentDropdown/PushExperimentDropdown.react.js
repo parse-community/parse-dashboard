@@ -16,7 +16,7 @@ export default class PushExperimentDropdown extends React.Component {
   constructor() {
     super();
 
-    this.state = { 
+    this.state = {
       open: false,
       selected: false,
     };
@@ -32,7 +32,7 @@ export default class PushExperimentDropdown extends React.Component {
 
   select(value, e) {
     e.stopPropagation();
-    this.setState({ 
+    this.setState({
       open: false,
       selected: true,
     }, () => {

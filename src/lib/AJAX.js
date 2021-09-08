@@ -12,7 +12,7 @@ let basePath = '';
 export function setBasePath(newBasePath) {
   basePath = newBasePath || '';
   if (basePath.endsWith('/')) {
-    basePath = basePath.slice(0, basePath.length-1);
+    basePath = basePath.slice(0, basePath.length - 1);
   }
 }
 

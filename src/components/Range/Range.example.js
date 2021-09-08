@@ -51,7 +51,7 @@ export const demos = [
     name: 'Complex tracker units',
     render: () => (
       <RangeWrapper track={true} units={(value) => {
-        return value + 'req/s & ' + Math.floor((value-10)/20) + ' jobs';
+        return value + 'req/s & ' + Math.floor((value - 10) / 20) + ' jobs';
       }} min={0} max={100} width={200} step={10} />
     ),
   },

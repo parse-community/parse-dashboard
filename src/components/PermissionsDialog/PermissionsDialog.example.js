@@ -28,7 +28,7 @@ function validateSimple(text) {
 }
 
 function validateAdvanced(text) {
-  if (text==='*') {
+  if (text === '*') {
     return Promise.resolve({ entry: '*' , type:'public'});
   }
   if (text.startsWith('u')) {

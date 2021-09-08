@@ -26,11 +26,11 @@ export const demos = [
     anotherFunction
     WillError`;
 
-    let text2 = `I2015-09-30T00:35:42.336Z]v2 before_save triggered for Item:
+      let text2 = `I2015-09-30T00:35:42.336Z]v2 before_save triggered for Item:
   Input: {"original":null,"update":{"name":"i"}}
   Result: Update changed to {"name":"i","count":12}`;
 
-    let text3 = `I2015-10-06T22:39:11.029Z]v4 Ran cloud function doSomething with:
+      let text3 = `I2015-10-06T22:39:11.029Z]v4 Ran cloud function doSomething with:
   Input: {}
   Result: {}`;
 

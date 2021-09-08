@@ -86,11 +86,11 @@ export default class CreateClassDialog extends React.Component {
         }}>
         {availableClasses.length > 1 ?
           <Field
-          label={
-            <Label
-              text='What type of class do you need?' />
-          }
-          input={typeDropdown} /> : null
+            label={
+              <Label
+                text='What type of class do you need?' />
+            }
+            input={typeDropdown} /> : null
         }
         {this.state.type === 'Custom' ?
           <Field

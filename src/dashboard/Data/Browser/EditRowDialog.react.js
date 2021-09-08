@@ -185,9 +185,9 @@ export default class EditRowDialog extends React.Component {
         const pointerId = newValue[0];
         newValue = pointerId
           ? Parse.Object.fromJSON({
-              className: targetClass,
-              objectId: pointerId
-            })
+            className: targetClass,
+            objectId: pointerId
+          })
           : undefined;
         this.toggleObjectPicker(name, false);
       }
@@ -376,17 +376,17 @@ export default class EditRowDialog extends React.Component {
         case 'Pointer':
           const pointerId = selectedObject[name] && selectedObject[name].id;
           inputComponent = openObjectPickers[name] ? (
-              <ObjectPickerDialog
-                schema={schema}
-                column={column}
-                className={targetClass}
-                pointerId={pointerId}
-                onConfirm={newValue =>
-                  this.handleChange(newValue, name, type, targetClass)
-                }
-                onCancel={() => this.toggleObjectPicker(name, false)}
-                useMasterKey={useMasterKey}
-              />
+            <ObjectPickerDialog
+              schema={schema}
+              column={column}
+              className={targetClass}
+              pointerId={pointerId}
+              onConfirm={newValue =>
+                this.handleChange(newValue, name, type, targetClass)
+              }
+              onCancel={() => this.toggleObjectPicker(name, false)}
+              useMasterKey={useMasterKey}
+            />
           ) : (
             <div
               style={{
@@ -416,17 +416,17 @@ export default class EditRowDialog extends React.Component {
           relation.targetClassName = targetClass;
 
           inputComponent = openObjectPickers[name] ? (
-              <ObjectPickerDialog
-                schema={schema}
-                column={column}
-                className={targetClass}
-                relation={relation}
-                onConfirm={(newValue, toDelete) =>
-                  this.handleChange(newValue, name, type, targetClass, toDelete)
-                }
-                onCancel={() => this.toggleObjectPicker(name, false)}
-                useMasterKey={useMasterKey}
-              />
+            <ObjectPickerDialog
+              schema={schema}
+              column={column}
+              className={targetClass}
+              relation={relation}
+              onConfirm={(newValue, toDelete) =>
+                this.handleChange(newValue, name, type, targetClass, toDelete)
+              }
+              onCancel={() => this.toggleObjectPicker(name, false)}
+              useMasterKey={useMasterKey}
+            />
           ) : (
             selectedObject.id && (
               <div

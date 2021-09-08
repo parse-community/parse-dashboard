@@ -24,7 +24,7 @@ export default function queryFromFilters(className, filters) {
 function addQueryConstraintFromObject(query, filter, constraintType) {
   let compareTo = JSON.parse(filter.get('compareTo'));
   for (let key of Object.keys(compareTo)) {
-    query[constraintType](filter.get('field')+'.'+key, compareTo[key]);
+    query[constraintType](filter.get('field') + '.' + key, compareTo[key]);
   }
 }
 

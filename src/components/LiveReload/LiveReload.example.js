@@ -12,9 +12,9 @@ export const component = LiveReload;
 export const demos = [
   {
     render: () => <LiveReload
-			source={() => Promise.resolve(Math.random())}
-			render={num => <span>{num}</span>}
-			refreshIntervalMillis={100}
-			initialData={0}/>,
+      source={() => Promise.resolve(Math.random())}
+      render={num => <span>{num}</span>}
+      refreshIntervalMillis={100}
+      initialData={0}/>,
   },
- ];
+];

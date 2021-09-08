@@ -89,7 +89,7 @@ let humanizedList = (value, inclusive, all) => {
       break;
     default:
       prefix = all ? 'all of' : 'any of';
-      res = `${join} ${objectToReadable(value[value.length-1])}`;
+      res = `${join} ${objectToReadable(value[value.length - 1])}`;
       break;
   }
   return res;
@@ -138,8 +138,8 @@ let formatConstraintComponent = (key, operation, value, schema) => {
       } else if (schema[key]['type'] === 'Array'){
         let isAll = operation === '$all';
         res = [key,
-         isInclusive || isAll ? 'contains' : 'does not contain',
-         humanizedList(value, isInclusive, isAll)];
+          isInclusive || isAll ? 'contains' : 'does not contain',
+          humanizedList(value, isInclusive, isAll)];
       }
       break;
     default:
@@ -182,7 +182,7 @@ export function formatConstraint(key, constraints, schema) {
     rows.push(formatStructure(key, constraints, schema));
   } else if(constraints.constructor === Array) {
     // legacy comment: Not sure how we want to display grouped subclauses
-    for(let i = 0; i<constraints.length; i++) {
+    for(let i = 0; i < constraints.length; i++) {
       if(constraints[i].constructor === Object){
         rows = rows.concat(formatStructure(key, constraints[i], schema));
       } else {

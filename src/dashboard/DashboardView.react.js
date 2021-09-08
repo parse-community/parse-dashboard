@@ -235,18 +235,18 @@ export default class DashboardView extends React.Component {
     }
 
     let sidebar = (
-    <Sidebar
-      sections={appSidebarSections}
-      appSelector={true}
-      section={this.section}
-      subsection={this.subsection}
-      prefix={'/apps/' + appSlug}
-      action={this.action}
-      primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
-      secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
+      <Sidebar
+        sections={appSidebarSections}
+        appSelector={true}
+        section={this.section}
+        subsection={this.subsection}
+        prefix={'/apps/' + appSlug}
+        action={this.action}
+        primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
+        secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
       >
-      {sidebarChildren}
-    </Sidebar>);
+        {sidebarChildren}
+      </Sidebar>);
 
     return (
       <div className={styles.dashboard}>

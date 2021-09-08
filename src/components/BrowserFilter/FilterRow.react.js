@@ -70,26 +70,26 @@ function compareValue(info, value, onChangeCompareTo, active, parentContentId) {
           className={styles.date}
           value={Parse._decode('date', value)}
           onChange={(value) => onChangeCompareTo(Parse._encode(value))}
-          ref={setFocus} 
+          ref={setFocus}
           parentContentId={parentContentId} />
       );
   }
 }
 
 let FilterRow = ({
-    fields,
-    constraints,
-    compareInfo,
-    currentField,
-    currentConstraint,
-    compareTo,
-    onChangeField,
-    onChangeConstraint,
-    onChangeCompareTo,
-    onDeleteRow,
-    active,
-    parentContentId,
-  }) => (
+  fields,
+  constraints,
+  compareInfo,
+  currentField,
+  currentConstraint,
+  compareTo,
+  onChangeField,
+  onChangeConstraint,
+  onChangeCompareTo,
+  onDeleteRow,
+  active,
+  parentContentId,
+}) => (
   <div className={styles.row}>
     <ChromeDropdown
       color={active ? 'blue' : 'purple'}

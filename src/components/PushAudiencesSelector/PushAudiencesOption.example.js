@@ -18,16 +18,16 @@ let mockData = {
 
 export const demos = [
   {
-  render() {
-    return (
-      <PushAudiencesOption
-        id={mockData.id}
-        inputId={mockData.inputId}
-        name={mockData.name}
-        createdAt={mockData.createdAt}
-        inputName='test'
-      />
-    );
+    render() {
+      return (
+        <PushAudiencesOption
+          id={mockData.id}
+          inputId={mockData.inputId}
+          name={mockData.name}
+          createdAt={mockData.createdAt}
+          inputName='test'
+        />
+      );
+    }
   }
-}
 ];

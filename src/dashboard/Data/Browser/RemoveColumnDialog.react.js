@@ -31,7 +31,7 @@ export default class RemoveColumnDialog extends React.Component {
           label={
             <Label
               text='Which column?' />
-            }
+          }
           input={
             <Dropdown
               placeHolder='Select a column'

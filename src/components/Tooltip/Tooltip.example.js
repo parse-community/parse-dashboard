@@ -20,7 +20,7 @@ export const demos = [
           <div>
             Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple text
           </div>
-      )}>
+        )}>
         <div>Demo content</div>
       </Tooltip>
     )
@@ -34,7 +34,7 @@ export const demos = [
             <div>
               Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple text
             </div>
-        )}>
+          )}>
           <span>Demo content 1</span>
         </Tooltip>
         <Tooltip
@@ -42,7 +42,7 @@ export const demos = [
             <div>
               Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple text
             </div>
-        )}>
+          )}>
           <span>Demo content 2</span>
         </Tooltip>
         <Tooltip
@@ -50,7 +50,7 @@ export const demos = [
             <div>
               Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple text
             </div>
-        )}>
+          )}>
           <DateRange />
         </Tooltip>
       </div>

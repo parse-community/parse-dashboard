@@ -35,7 +35,7 @@ export default class MultiSelect extends React.Component {
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
     window.addEventListener('scroll', this.handleScroll)
-   
+
   }
   componentWillUnmount(){
     window.removeEventListener('scroll', this.handleScroll)
@@ -79,7 +79,7 @@ export default class MultiSelect extends React.Component {
     let popover = null;
     if (this.state.open) {
       let width = this.node.clientWidth;
-      
+
       let classes = [styles.menu];
       if (this.props.dense){
         classes.push(styles.dense);
@@ -89,11 +89,11 @@ export default class MultiSelect extends React.Component {
         <Popover ref={this.popoverRef} fixed={this.props.fixed} position={this.state.position} onExternalClick={this.close.bind(this)}>
           <div style={{ width }} className={classes.join(' ')}>
             {React.Children.map(this.props.children, c => React.cloneElement(c,
-                {
-                  ...c.props,
-                  checked: this.props.value.indexOf(c.props.value) > -1,
-                  onClick: c.props.disabled? null : this.select.bind(this, c.props.value)
-                }
+              {
+                ...c.props,
+                checked: this.props.value.indexOf(c.props.value) > -1,
+                onClick: c.props.disabled ? null : this.select.bind(this, c.props.value)
+              }
             ))}
           </div>
         </Popover>
@@ -127,29 +127,29 @@ export default class MultiSelect extends React.Component {
       classes.push(styles.placeholder);
     } else {
 
-      content = this.props.chips?
-            selection.map((child,index) => {
-              let item;
-              if(Array.isArray(this.props.value)){
-                item = this.props.value[index]
-              }
-              return (
-                <Chip 
-                  value={item}
-                  key={'chip-'+index}
-                  onClose={(removed) => {
-                    if(removed) this.select(removed);
-                  }}>
-                  {child}
-                </Chip>)}
-             ) :
-            stringList(selection, this.props.endDelineator);
+      content = this.props.chips ?
+        selection.map((child,index) => {
+          let item;
+          if(Array.isArray(this.props.value)){
+            item = this.props.value[index]
+          }
+          return (
+            <Chip
+              value={item}
+              key={'chip-' + index}
+              onClose={(removed) => {
+                if(removed) this.select(removed);
+              }}>
+              {child}
+            </Chip>)}
+        ) :
+        stringList(selection, this.props.endDelineator);
     }
 
     return (
       <div style={dropdownStyle} className={dropDownClasses.join(' ')}>
         <div className={classes.join(' ')} onClick={this.toggle.bind(this)}>
-         {content}
+          {content}
         </div>
         {popover}
       </div>

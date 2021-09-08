@@ -34,14 +34,14 @@ describe('e2e', () => {
     return p.then(() => {
       return rp('http://localhost:5051/dashboard');
     })
-    .then(result => {
-      let bundleLocation = result.match(/<script src="([^"]*)">/)[1]
-      return rp('http://localhost:5051' + bundleLocation);
-    })
-    .then(bundleText => {
-      expect(bundleText.length).toBeGreaterThan(1000000);
-      server.close(done);
-    });
+      .then(result => {
+        let bundleLocation = result.match(/<script src="([^"]*)">/)[1]
+        return rp('http://localhost:5051' + bundleLocation);
+      })
+      .then(bundleText => {
+        expect(bundleText.length).toBeGreaterThan(1000000);
+        server.close(done);
+      });
   });
 
   it('loads the dashboard on /', (done) => {
@@ -54,13 +54,13 @@ describe('e2e', () => {
     return p.then(() => {
       return rp('http://localhost:5051');
     })
-    .then(result => {
-      let bundleLocation = result.match(/<script src="([^"]*)">/)[1]
-      return rp('http://localhost:5051' + bundleLocation);
-    })
-    .then(bundleText => {
-      expect(bundleText.length).toBeGreaterThan(1000000);
-      server.close(done);
-    });
+      .then(result => {
+        let bundleLocation = result.match(/<script src="([^"]*)">/)[1]
+        return rp('http://localhost:5051' + bundleLocation);
+      })
+      .then(bundleText => {
+        expect(bundleText.length).toBeGreaterThan(1000000);
+        server.close(done);
+      });
   });
 });

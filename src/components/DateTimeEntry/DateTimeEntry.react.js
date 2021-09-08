@@ -96,7 +96,7 @@ export default class DateTimeEntry extends React.Component {
         </Popover>
       );
     }
-    
+
     return (
       <div className={this.props.className} onClick={this.toggle.bind(this)}>
         <input

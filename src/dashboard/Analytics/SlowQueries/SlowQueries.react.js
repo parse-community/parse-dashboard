@@ -177,7 +177,7 @@ class SlowQueries extends TableView {
     }
 
     return (
-       <Toolbar
+      <Toolbar
         section='Analytics'
         subsection='Slow Queries'>
         {actions}
@@ -235,7 +235,7 @@ class SlowQueries extends TableView {
             onClick={this.fetchSlowQueries.bind(this, this.context.currentApp)}
             value='Run query' />
         )}
-        />
+      />
     );
   }
 }

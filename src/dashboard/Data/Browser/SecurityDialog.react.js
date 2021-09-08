@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes         from 'lib/PropTypes'; 
+import PropTypes         from 'lib/PropTypes';
 import Parse             from 'parse'
 import ParseApp          from 'lib/ParseApp';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
@@ -15,7 +15,7 @@ import styles            from 'dashboard/Data/Browser/Browser.scss';
 const pointerPrefix = 'userField:';
 
 function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
-   if (parseServerSupportsPointerPermissions) {
+  if (parseServerSupportsPointerPermissions) {
     let fieldName = text.startsWith(pointerPrefix)
       ? text.substring(pointerPrefix.length)
       : text;
@@ -122,10 +122,10 @@ export default class SecurityDialog extends React.Component {
           details={<a target="_blank" href='http://docs.parseplatform.org/ios/guide/#security'>Learn more about CLPs and app security</a>}
           permissions={this.props.perms}
           userPointers={this.props.userPointers}
-          validateEntry={entry => 
+          validateEntry={entry =>
             validateEntry(this.props.userPointers, entry, parseServerSupportsPointerPermissions)}
           onCancel={this.handleClose}
-          onConfirm={perms => 
+          onConfirm={perms =>
             this.props.onChangeCLP(perms).then(this.handleClose)}
         />
       );
@@ -134,7 +134,7 @@ export default class SecurityDialog extends React.Component {
     if (this.props.disabled) {
       classes.push(styles.toolbarButtonDisabled);
     }
-  
+
     return dialog;
   }
 }

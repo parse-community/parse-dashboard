@@ -75,13 +75,13 @@ export default class DateTimePicker extends React.Component {
       parseInt(this.state.hours, 10),
       parseInt(this.state.minutes, 10)
     ) :
-    new Date(Date.UTC(
-      dateRef.getUTCFullYear(),
-      dateRef.getUTCMonth(),
-      dateRef.getUTCDate(),
-      parseInt(this.state.hours, 10),
-      parseInt(this.state.minutes, 10)
-    ));
+      new Date(Date.UTC(
+        dateRef.getUTCFullYear(),
+        dateRef.getUTCMonth(),
+        dateRef.getUTCDate(),
+        parseInt(this.state.hours, 10),
+        parseInt(this.state.minutes, 10)
+      ));
     this.props.onChange(newDate);
     if (this.props.close) {
       this.props.close();
@@ -100,13 +100,13 @@ export default class DateTimePicker extends React.Component {
             timeRef.getHours(),
             timeRef.getMinutes()
           ) :
-          new Date(Date.UTC(
-            newValue.getUTCFullYear(),
-            newValue.getUTCMonth(),
-            newValue.getUTCDate(),
-            timeRef.getUTCHours(),
-            timeRef.getUTCMinutes()
-          ));
+            new Date(Date.UTC(
+              newValue.getUTCFullYear(),
+              newValue.getUTCMonth(),
+              newValue.getUTCDate(),
+              timeRef.getUTCHours(),
+              timeRef.getUTCMinutes()
+            ));
           this.props.onChange(newDate);
         }} />
         <div className={styles.time}>

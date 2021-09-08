@@ -137,8 +137,8 @@ let getPushName = (pushData) => {
     if (typeof payload === 'object') {
       if (typeof payload.alert === 'string') {
         return payload.alert;
-			} else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
-				return payload.alert.title;
+      } else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
+        return payload.alert.title;
       }
       return payload.alert ? JSON.stringify(payload.alert) : JSON.stringify(payload);
     } else {
@@ -221,7 +221,7 @@ let getPushTime = (pushTime, updatedAt) => {
     );
   }
   result.push(
-     <div key='timeContent'>{timeContent}</div>
+    <div key='timeContent'>{timeContent}</div>
   );
   return result;
 }
@@ -329,7 +329,7 @@ export default class PushIndex extends DashboardView {
         //   id: PUSH_TYPE_EXPERIMENT},
         // { name: PUSH_CATEGORIES[PUSH_TYPE_API],
         //   id: PUSH_TYPE_API},
-        ]} />
+      ]} />
     );
   }
 

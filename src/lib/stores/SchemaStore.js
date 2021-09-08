@@ -57,8 +57,8 @@ function SchemaStore(state, action) {
         { useMasterKey: true }
       ).then(({ fields, classLevelPermissions }) => {
         return state
-        .setIn(['classes', action.className], Map(fields))
-        .setIn(['CLPs', action.className], Map(classLevelPermissions));
+          .setIn(['classes', action.className], Map(fields))
+          .setIn(['CLPs', action.className], Map(classLevelPermissions));
       });
     case ActionTypes.DROP_CLASS:
       return action.app.apiRequest(
@@ -68,8 +68,8 @@ function SchemaStore(state, action) {
         { useMasterKey: true }
       ).then(() => {
         return state
-        .deleteIn(['classes', action.className])
-        .deleteIn(['CLPs', action.className]);
+          .deleteIn(['classes', action.className])
+          .deleteIn(['CLPs', action.className]);
       });
     case ActionTypes.ADD_COLUMN:
       let newField = {

@@ -65,8 +65,8 @@ export default class ParseApp {
     this.serverURL = serverURL;
     this.serverInfo = serverInfo;
     this.icon = iconName;
-    this.primaryBackgroundColor=primaryBackgroundColor;
-    this.secondaryBackgroundColor=secondaryBackgroundColor;
+    this.primaryBackgroundColor = primaryBackgroundColor;
+    this.secondaryBackgroundColor = secondaryBackgroundColor;
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
     this.preventSchemaEdits = preventSchemaEdits || false;
     this.graphQLServerURL = graphQLServerURL;
@@ -115,7 +115,7 @@ export default class ParseApp {
    * since - only fetch lines since this Date
    */
   getLogs(level, since) {
-    let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase()) + '&n=100' + (since?'&startDate=' + encodeURIComponent(since.getTime()):'');
+    let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase()) + '&n=100' + (since ? '&startDate=' + encodeURIComponent(since.getTime()) : '');
     return this.apiRequest('GET', path, {}, { useMasterKey: true });
   }
 
@@ -309,14 +309,14 @@ export default class ParseApp {
 
   uploadSSLPublicCertificate(file) {
     let path = '/apps/' + this.slug + '/update_hosting_certificates';
-    let data= new FormData();
+    let data = new FormData();
     data.append('new_hosting_certificate[certificate_data]', file);
     return AJAX.put(path, data);
   }
 
   uploadSSLPrivateKey(file) {
     let path = '/apps/' + this.slug + '/update_hosting_certificates';
-    let data= new FormData();
+    let data = new FormData();
     data.append('new_hosting_certificate[key_data]', file);
     return AJAX.put(path, data);
   }
@@ -409,7 +409,7 @@ export default class ParseApp {
     if (type != 'all') {
       query.equalTo('source', type || 'rest');
     }
-    query.skip(page*limit);
+    query.skip(page * limit);
     query.limit(limit);
     query.descending('createdAt');
     return query.find({ useMasterKey: true });
@@ -764,7 +764,7 @@ export default class ParseApp {
   }
 
   deleteGCMPushCredentials(GCMSenderID) {
-    let path = '/apps/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id='+GCMSenderID;
+    let path = '/apps/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id=' + GCMSenderID;
     let promise = AJAX.get(path);
     promise.then(() => {
       this.settings.fields.fields.gcm_credentials = this.settings.fields.fields.gcm_credentials.filter(cred =>

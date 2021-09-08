@@ -45,7 +45,7 @@ export default class Login extends React.Component {
         action='Log In'
         endpoint={`${path}login`}
         formSubmit={formSubmit}
-        >
+      >
         <LoginRow
           label='Username'
           input={
@@ -69,10 +69,10 @@ export default class Login extends React.Component {
           } />
         {
           this.errors && this.errors.includes('one-time') ?
-          <LoginRow
-          label='OTP'
-          input={<input name='otpCode' type='number' />} />
-          : null
+            <LoginRow
+              label='OTP'
+              input={<input name='otpCode' type='number' />} />
+            : null
         }
         {this.errors ?
           <div className={styles.error}>

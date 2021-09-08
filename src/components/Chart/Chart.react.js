@@ -182,7 +182,7 @@ Chart.propTypes = {
     'The height of the chart.'
   ),
   data: PropTypes.object.isRequired.describe(
-    'The data to graph. It is a map of data names to objects containing two keys: ' + 
+    'The data to graph. It is a map of data names to objects containing two keys: ' +
     '"color," the color to use for the lines, and "points," an array of tuples containing time-value data.'
   ),
   formatter: PropTypes.func.describe(

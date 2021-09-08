@@ -129,7 +129,7 @@ class Config extends TableView {
       }
       openModal()
     }
-  
+
     let openDeleteParameterDialog = () => this.setState({
       showDeleteParameterDialog: true,
       modalParam: data.param

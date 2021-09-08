@@ -16,7 +16,7 @@ import { pad }       from 'lib/DateUtils';
 
 export function setTimeFieldDescription(isLocal) {
   return isLocal ? 'LOCAL TIME' : null;
-} 
+}
 
 /**
  * Sets the field with or without 'Z' ending based on isLocal flag
@@ -34,7 +34,7 @@ export function setPushTimeField(setField, field, value, isLocal) {
       + 'T' + pad(value.getHours())
       + ':' + pad(value.getMinutes())
       + ':' + pad(value.getSeconds())
-      + '.' + String((value.getMilliseconds()/1000).toFixed(3)).slice(2, 5);
+      + '.' + String((value.getMilliseconds() / 1000).toFixed(3)).slice(2, 5);
     setField(field, _value);
   } else {
     setField(field, value);
@@ -50,8 +50,8 @@ export function setPushTimeField(setField, field, value, isLocal) {
  */
 export function localTimeFormater(setField, field, value, isLocal) {
   if (value && value.constructor === Date) {
-    let offset = value.getTimezoneOffset()*60*1000;
-    let newDate = new Date(value.getTime() + (isLocal ? offset : -offset ));
+    let offset = value.getTimezoneOffset() * 60 * 1000;
+    let newDate = new Date(value.getTime() + (isLocal ? offset : -offset));
     setField(field + '_iso', newDate);
     setPushTimeField(setField, field, newDate, isLocal);
   }
@@ -88,7 +88,7 @@ export function renderExpirationContent(fields, setField) {
             onChange={(value) => {
               setField('expiration_time_iso', value);
               setPushTimeField(setField, 'expiration_time', value, fields.local_time);
-            }} /> 
+            }} />
         } />
     );
   } else {
@@ -122,7 +122,7 @@ export function renderExpirationContent(fields, setField) {
               value={fields.expiration_interval_unit}
               onChange={(value) => {
                 //handle case when interval num is out of expected range
-                if (value === 'hours' && Number(fields.expiration_interval_num) > 24 ) {
+                if (value === 'hours' && Number(fields.expiration_interval_num) > 24) {
                   setField('expiration_interval_num', '24');
                 }
                 setField('expiration_interval_unit', value);

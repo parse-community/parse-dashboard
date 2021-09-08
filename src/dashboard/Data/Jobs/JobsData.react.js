@@ -7,7 +7,7 @@
  */
 import ParseApp   from 'lib/ParseApp';
 import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import PropTypes  from 'lib/PropTypes';
 
 export default class JobsData extends React.Component {
   constructor() {

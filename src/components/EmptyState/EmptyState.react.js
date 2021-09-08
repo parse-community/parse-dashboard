@@ -23,11 +23,11 @@ let ctaButton = (cta, action) => {
       );
     } else {
       return (
-       <Button
-        value={cta}
-        color={'blue'}
-        primary={true}
-        onClick={action} />
+        <Button
+          value={cta}
+          color={'blue'}
+          primary={true}
+          onClick={action} />
       );
     }
   } else {
@@ -36,13 +36,13 @@ let ctaButton = (cta, action) => {
 }
 
 let EmptyState = ({
-  icon='',
-  title='',
-  description='',
-  cta='',
-  action=() => {},
-  secondaryCta='',
-  secondaryAction=() => {},
+  icon = '',
+  title = '',
+  description = '',
+  cta = '',
+  action = () => {},
+  secondaryCta = '',
+  secondaryAction = () => {},
 }) => (
   <div className={center}>
     <div className={styles.icon}>

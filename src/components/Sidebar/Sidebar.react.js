@@ -147,7 +147,7 @@ const Sidebar = ({
                 active={active}
                 primaryBackgroundColor={primaryBackgroundColor}
                 secondaryBackgroundColor={secondaryBackgroundColor}
-                >
+              >
                 {!collapsed && active ? _subMenu(subsections) : null}
               </SidebarSection>
             );

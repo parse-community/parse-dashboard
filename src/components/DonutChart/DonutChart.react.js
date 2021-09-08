@@ -22,7 +22,7 @@ const MONOCHROME_COLORS = [
   '#e0e0ea'
 ];
 
-let DonutChart = ({ segments=[], diameter=200, label='', isMonochrome=false, printPercentage=false }) => {
+let DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = false, printPercentage = false }) => {
   let centerX = diameter / 2;
   let centerY = centerX;
   let radius = centerX * 0.9;

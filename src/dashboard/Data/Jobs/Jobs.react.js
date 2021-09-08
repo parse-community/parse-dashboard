@@ -258,7 +258,7 @@ class Jobs extends TableView {
           return { jobName };
         });
       }
-    } else if (this.props.params.section === 'scheduled' ) {
+    } else if (this.props.params.section === 'scheduled') {
       if (this.props.jobs.data) {
         let jobs = this.props.jobs.data.get('jobs');
         if (jobs) {

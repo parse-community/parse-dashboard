@@ -25,13 +25,13 @@ const REVERSED_RETENTION_DAYS = RETENTION_DAYS.slice().reverse();
 let retentionChartColor = percent => {
   let red, blue, green;
   if (percent > 50) {
-    red   = 23 + ( ( percent - 50 ) * 2 ) * 11 / 100;
-    green = 166 - ( ( percent - 50 ) * 2 ) * 166 / 100;
+    red   = 23 + ((percent - 50) * 2) * 11 / 100;
+    green = 166 - ((percent - 50) * 2) * 166 / 100;
     blue  = 255;
   } else {
-    red   = 228 - ( percent * 2 ) * 205 / 100;
-    green = 233 - ( percent * 2 ) * 67 / 100;
-    blue  = 237 + ( percent * 2 ) * 18 / 100;
+    red   = 228 - (percent * 2) * 205 / 100;
+    green = 233 - (percent * 2) * 67 / 100;
+    blue  = 237 + (percent * 2) * 18 / 100;
   }
   //return without decimals since css doesn't allow them
   return 'rgb(' + red.toFixed(0) + ', ' + green.toFixed(0) + ', ' + blue.toFixed(0) + ')';
@@ -101,7 +101,7 @@ export default class Retention extends DashboardView {
           <div>
             <b>{active}</b> of <b>{total}</b> users who signed up on <b>{monthDayPretty}</b> were still active on their <b>{englishOrdinalIndicator(day)} day</b>
           </div>
-          )}>
+        )}>
           <div className={styles.retentionCell} style={style}>{percentage}%</div>
         </Tooltip>
       </td>
@@ -145,12 +145,12 @@ export default class Retention extends DashboardView {
 
     return (
       <td key={'header_' + daysAgo} className={styles.YaxisLabel}>
-        <div className={styles.YaxisLabelDate}> 
-          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')} 
+        <div className={styles.YaxisLabelDate}>
+          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')}
           <span className={styles.YaxisLabelNumber}> {formattedDateDay}</span>
         </div>
         <div className={styles.YaxisLabelUsers}>
-          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')} 
+          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')}
           <span className={styles.YaxisLabelNumber}>{prettyNumber(dayData.total)}</span>
         </div>
       </td>

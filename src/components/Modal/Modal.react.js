@@ -67,14 +67,14 @@ let Modal = (({
         onClick={onConfirm}
         progress={progress} />
       {
-      showContinue === true ?
-      <Button
-        primary={true}
-        value={continueText}
-        color={buttonColors[type]}
-        disabled={!!disabled}
-        onClick={onContinue}
-        progress={progress} />: null}
+        showContinue === true ?
+          <Button
+            primary={true}
+            value={continueText}
+            color={buttonColors[type]}
+            disabled={!!disabled}
+            onClick={onContinue}
+            progress={progress} /> : null}
     </div>
   );
 

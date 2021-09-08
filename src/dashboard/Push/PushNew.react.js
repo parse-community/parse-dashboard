@@ -436,7 +436,7 @@ class PushNew extends DashboardView {
             direction='left'
             value={fields.data_type_1}
             onChange={setField.bind(null, 'data_type_1')} />
-        } />,
+          } />,
         <Field
           key='messageA'
           className={monospaceA ? styles.monospace : ''}
@@ -491,7 +491,7 @@ class PushNew extends DashboardView {
           direction='left'
           value={fields.data_type}
           onChange={setField.bind(null, 'data_type')} />
-      } />,
+        } />,
       <Field
         key='message'
         className={monospace ? styles.monospace : ''}
@@ -604,26 +604,26 @@ class PushNew extends DashboardView {
               >
                 Please follow this guide to setup the push locales feature
               </a> :
-                !this.state.loadingLocale && this.state.availableLocales.length === 0 ? null :
-              <Button
-                progress={this.state.loadingLocale}
-                disabled={this.state.availableLocales.length === 0}
-                value={this.state.loadingLocale ? 'Loading locales...' : 'Add a Localization'}
-                onClick={() => {
-                  let currentLocale = this.state.availableLocales[0];
-                  this.setState({
-                    localizedMessages: this.state.localizedMessages.concat([{
-                      locale: currentLocale
-                    }]),
-                    availableLocales: this.state.availableLocales.slice(1)
-                  }, () => {
-                    let {xhr, promise} = this.context.currentApp.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
-                    promise.then((localeDeviceCountMap) => {
-                      this.setState({ localeDeviceCountMap })
+              !this.state.loadingLocale && this.state.availableLocales.length === 0 ? null :
+                <Button
+                  progress={this.state.loadingLocale}
+                  disabled={this.state.availableLocales.length === 0}
+                  value={this.state.loadingLocale ? 'Loading locales...' : 'Add a Localization'}
+                  onClick={() => {
+                    let currentLocale = this.state.availableLocales[0];
+                    this.setState({
+                      localizedMessages: this.state.localizedMessages.concat([{
+                        locale: currentLocale
+                      }]),
+                      availableLocales: this.state.availableLocales.slice(1)
+                    }, () => {
+                      let {xhr, promise} = this.context.currentApp.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
+                      promise.then((localeDeviceCountMap) => {
+                        this.setState({ localeDeviceCountMap })
+                      });
+                      this.xhrs.push(xhr);
                     });
-                    this.xhrs.push(xhr);
-                  });
-                }} />
+                  }} />
             }
           </div>
         );
@@ -705,7 +705,7 @@ class PushNew extends DashboardView {
       legend={'Write your message' + (multiMessage ? 's' : '')}
       description='The best campaigns use short and direct messaging.'>
       <div className={styles.messageContentWrap}>
-       {this.renderMessageContent(fields, setField)}
+        {this.renderMessageContent(fields, setField)}
       </div>
       <Field
         label={<Label text='Increment the app badge?' />}

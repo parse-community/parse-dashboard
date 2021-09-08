@@ -38,13 +38,13 @@ const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments
 let getMessage = (payload) => {
   if(payload) {
     let payloadJSON = JSON.parse(payload);
-		if (payloadJSON.alert && payloadJSON.alert.body) {
-			return payloadJSON.alert.body;
-		} else if (payloadJSON.alert) {
-			return payloadJSON.alert;
-		} else {
-			return payload;
-		}
+    if (payloadJSON.alert && payloadJSON.alert.body) {
+      return payloadJSON.alert.body;
+    } else if (payloadJSON.alert) {
+      return payloadJSON.alert;
+    } else {
+      return payload;
+    }
   }
   return '';
 }
@@ -72,7 +72,7 @@ let getSentInfo = (sendTime, expiration) => {
   }
 }
 
-let getDeliveryErrors = (deliveryErrors=[]) => {
+let getDeliveryErrors = (deliveryErrors = []) => {
   let res = [];
 
   // NOTE: odd case when when deliverErrors === [null]
@@ -108,27 +108,27 @@ let getStatusTable = (pushDetails, deferDeliveries) => {
     <div className={styles.tableSectionWrap}>
       <div className={styles.tableSectionHeader}>Delivery Report</div>
       <div className={styles.tableWrap}>
-      <table className={tableStyles.table}>
-        <thead className={tableStyles.head}>
-          <tr>
-            <th className={tableStyles.td} width={'65%'}>Status</th>
-            <th className={tableStyles.td} width={'35%'}>Push Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {!deferDeliveries ?
-            <tr key='pushesSent' className={tableStyles.tr}>
-              <td className={tableStyles.td} width={'65%'}>
-                <div className={styles.deliveryName}>Successful Deliveries</div>
-                <div className={styles.deliveryMessage}>Give your test a memorable name so you remember what you were testing when you see the results.</div>
-              </td>
-              <td className={tableStyles.td} width={'35%'}>{pushDetails.get('numSent')}</td>
-            </tr> :
-            null
-          }
-          {deliverErrors}
-        </tbody>
-      </table>
+        <table className={tableStyles.table}>
+          <thead className={tableStyles.head}>
+            <tr>
+              <th className={tableStyles.td} width={'65%'}>Status</th>
+              <th className={tableStyles.td} width={'35%'}>Push Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {!deferDeliveries ?
+              <tr key='pushesSent' className={tableStyles.tr}>
+                <td className={tableStyles.td} width={'65%'}>
+                  <div className={styles.deliveryName}>Successful Deliveries</div>
+                  <div className={styles.deliveryMessage}>Give your test a memorable name so you remember what you were testing when you see the results.</div>
+                </td>
+                <td className={tableStyles.td} width={'35%'}>{pushDetails.get('numSent')}</td>
+              </tr> :
+              null
+            }
+            {deliverErrors}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -143,18 +143,18 @@ let getTargetTable = (query, schema) => {
       <div className={styles.tableSectionWrap}>
         <div className={styles.tableSectionHeader}>Target</div>
         <div className={styles.tableWrap}>
-        <table className={tableStyles.table}>
-          <thead className={tableStyles.head}>
-            <tr>
-              <th className={tableStyles.td} width={'25%'}>Grouping</th>
-              <th className={tableStyles.td} width={'25%'}>Operator</th>
-              <th className={tableStyles.td} width={'50%'}>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            {targetRows}
-          </tbody>
-        </table>
+          <table className={tableStyles.table}>
+            <thead className={tableStyles.head}>
+              <tr>
+                <th className={tableStyles.td} width={'25%'}>Grouping</th>
+                <th className={tableStyles.td} width={'25%'}>Operator</th>
+                <th className={tableStyles.td} width={'50%'}>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {targetRows}
+            </tbody>
+          </table>
         </div>
       </div>
     );
@@ -333,7 +333,7 @@ class PushDetails extends DashboardView {
 
   componentWillReceiveProps(nextProps) {
     if(this.props.params.pushId !== nextProps.params.pushId) {
-      this.setState( {loading: true });
+      this.setState({loading: true });
       this.context.currentApp.fetchPushDetails(nextProps.params.pushId).then((pushDetails) => {
         this.setState({ pushDetails });
       }).finally(() => {
@@ -369,7 +369,7 @@ class PushDetails extends DashboardView {
         subline.push(
           <div key='subline_1'>
             We are highly confident that if this experiment were repeated, <span styles={{ color: this.state[`groupColor${statistics.winner}`] }}>{pushDetails.exp_type} {statistics.winner}</span> would yield an open rate that&#8217;s
-            <span>{statistics.confidence_interval[0]}</span>&mdash;<span>{statistics.confidence_interval[statistics.confidence_interval.length-1]}</span>
+            <span>{statistics.confidence_interval[0]}</span>&mdash;<span>{statistics.confidence_interval[statistics.confidence_interval.length - 1]}</span>
             percentage points higher than sending <span styles={{ color: this.state[`groupColor${statistics.winner}`] }}>{getExperimentLoser(statistics.winner)}</span>.
           </div>
         );
@@ -410,7 +410,7 @@ class PushDetails extends DashboardView {
         subline.push(
           <div key='subline_1'>
             We are highly confident that sending {statistics.winner} to the Launch Group will yield an open rate that&#8217;s
-            <span>{statistics.confidence_interval[0]}</span>&mdash;<span>{statistics.confidence_interval[statistics.confidence_interval.length-1]}</span>
+            <span>{statistics.confidence_interval[0]}</span>&mdash;<span>{statistics.confidence_interval[statistics.confidence_interval.length - 1]}</span>
             percentage points higher than sending {getExperimentLoser(statistics.winner)}. {learnMore}
           </div>
         );
@@ -467,7 +467,7 @@ class PushDetails extends DashboardView {
     let isMessageType = pushDetails.exp_type === 'message';
     let res = null;
     let prevLaunchGroup = null;
-		let alert = getMessage(pushDetails.get('payload'));
+    let alert = getMessage(pushDetails.get('payload'));
 
     if (pushDetails && pushDetails.experiment_push_id) {
       prevLaunchGroup = (
@@ -519,14 +519,14 @@ class PushDetails extends DashboardView {
         <div>
           <div className={styles.groupHeader}>
             <div className={styles.headerTitle}>MESSAGE SENT</div>
-							{
-								(typeof alert === 'object') ?
-									<div>
-										<div className={styles.headline}>{alert.title}</div>
-										<div className={styles.headline}>{alert.body}</div>
-									</div>:
-									<div className={styles.headline}>{alert}</div>
-							}
+            {
+              (typeof alert === 'object') ?
+                <div>
+                  <div className={styles.headline}>{alert.title}</div>
+                  <div className={styles.headline}>{alert.body}</div>
+                </div> :
+                <div className={styles.headline}>{alert}</div>
+            }
             <div className={styles.subline}>
               {getSentInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
             </div>
@@ -553,7 +553,7 @@ class PushDetails extends DashboardView {
             width={800}
             height={400}
             data={this.state.chartData}
-            formatter={(value) => value + ' push' + (value !== 1 ?  'es' : '' )} />
+            formatter={(value) => value + ' push' + (value !== 1 ?  'es' : '')} />
         </div>
       )
     } else {
@@ -673,7 +673,7 @@ class PushDetails extends DashboardView {
         {key: DROPDOWN_KEY_GROUP_B, style: { color: this.state.groupColorB }}]} />
   }
 
- renderForm(flowFooterDetails, { fields, setField }) {
+  renderForm(flowFooterDetails, { fields, setField }) {
     let classes = this.props.schema.data.get('classes');
     let schema = {};
     if(classes){
@@ -738,7 +738,7 @@ class PushDetails extends DashboardView {
             footerContents={() => flowFooterDetails}
             validate={() => this.state.selectedGroup === undefined ? 'use default' : '' }
             secondaryButton={args => this.renderSecondaryFooterButton(args)}/> :
-            null
+          null
         }
         <Toolbar section='Push' subsection='Push Notification Details' details={`ID: ${this.props.params.pushId}`}/>
       </div>

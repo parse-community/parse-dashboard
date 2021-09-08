@@ -41,7 +41,7 @@ export const demos = [
             label={<Label text='Taller input' description='This one is taller' />}
             input={<div className={styles.textarea_wrap}>
               <TextInput height={200} placeholder='Some placeholder' multiline={true} onChange={function(){}} />
-              </div>} />
+            </div>} />
         </Fieldset>
       </Wrapper>
     )

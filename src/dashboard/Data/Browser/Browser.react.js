@@ -153,7 +153,7 @@ class Browser extends DashboardView {
     }
 
     this.props.schema.dispatch(ActionTypes.FETCH)
-    .then(() => this.handleFetchedSchema());
+      .then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -169,7 +169,7 @@ class Browser extends DashboardView {
       }
       this.prefetchData(nextProps, nextContext);
       nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.handleFetchedSchema());
+        .then(() => this.handleFetchedSchema());
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
@@ -362,7 +362,7 @@ class Browser extends DashboardView {
       this.setState({
         newObject: (relation ?
           new Parse.Object(relation.targetClassName)
-        : new Parse.Object(this.props.params.className) ),
+          : new Parse.Object(this.props.params.className)),
       });
     }
   }
@@ -393,27 +393,27 @@ class Browser extends DashboardView {
     if (className) {
       let classColumns = this.props.schema.data.get('classes').get(className);
       classColumns.forEach(({ required }, name) => {
-          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
-            return;
-          }
-          if (!!required) {
+        if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
+          return;
+        }
+        if (required) {
+          requiredCols.push(name);
+        }
+        if (className === '_User' && (name === 'username' || name === 'password')) {
+          if (!obj.get('authData')) {
             requiredCols.push(name);
           }
-          if (className === '_User' && (name === 'username' || name === 'password')) {
-            if (!obj.get('authData')) {
-              requiredCols.push(name);
-            }
-          }
-          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
-            requiredCols.push(name);
-          }
-        });
+        }
+        if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+          requiredCols.push(name);
+        }
+      });
     }
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: -1
           });
@@ -451,11 +451,11 @@ class Browser extends DashboardView {
               });
             },
             error => {
-              let msg = typeof error === "string" ? error : error.message;
+              let msg = typeof error === 'string' ? error : error.message;
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
-              obj.set(attr, prev);
+              // obj.set(attr, prev);
               this.setState({ data: this.state.data });
               this.showNote(msg, true);
             }
@@ -471,7 +471,7 @@ class Browser extends DashboardView {
         this.setState(state);
       },
       error => {
-        let msg = typeof error === "string" ? error : error.message;
+        let msg = typeof error === 'string' ? error : error.message;
         if (msg) {
           msg = msg[0].toUpperCase() + msg.substr(1);
         }
@@ -497,27 +497,27 @@ class Browser extends DashboardView {
     if (className) {
       let classColumns = this.props.schema.data.get('classes').get(className);
       classColumns.forEach(({ required }, name) => {
-          if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
-            return;
-          }
-          if (!!required) {
+        if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
+          return;
+        }
+        if (required) {
+          requiredCols.push(name);
+        }
+        if (className === '_User' && (name === 'username' || name === 'password')) {
+          if (!obj.get('authData')) {
             requiredCols.push(name);
           }
-          if (className === '_User' && (name === 'username' || name === 'password')) {
-            if (!obj.get('authData')) {
-              requiredCols.push(name);
-            }
-          }
-          if (className === '_Role' && (name === 'name' || name === 'ACL')) {
-            requiredCols.push(name);
-          }
-        });
+        }
+        if (className === '_Role' && (name === 'name' || name === 'ACL')) {
+          requiredCols.push(name);
+        }
+      });
     }
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: rowIndex
           });
@@ -608,7 +608,7 @@ class Browser extends DashboardView {
   handleFetchedSchema() {
     this.props.schema.data.get('classes').forEach((_, className) => {
       this.context.currentApp.getClassCount(className)
-      .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
+        .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
     })
     this.setState({clp: this.props.schema.data.get('CLPs').toJS()});
   }
@@ -829,9 +829,9 @@ class Browser extends DashboardView {
 
   handlePointerClick({ className, id, field = 'objectId' }) {
     let filters = JSON.stringify([{
-        field,
-        constraint: 'eq',
-        compareTo: id
+      field,
+      constraint: 'eq',
+      compareTo: id
     }]);
     history.push(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
   }
@@ -1343,10 +1343,10 @@ class Browser extends DashboardView {
     let columns = [];
     const classes = this.props.schema.data.get('classes');
     classes.get(className).forEach((field, name) => {
-        columns.push({
-          ...field,
-          name,
-        });
+      columns.push({
+        ...field,
+        name,
+      });
     });
     if (onlyTouchable) {
       let untouchable = DefaultColumns.All;

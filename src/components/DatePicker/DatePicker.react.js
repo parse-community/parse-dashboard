@@ -73,7 +73,7 @@ export default class DatePicker extends React.Component {
         </div>
       );
     }
-    
+
     return (
       <div className={styles.input} onClick={this.toggle.bind(this)}>
         {content}
