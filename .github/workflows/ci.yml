@@ -87,13 +87,13 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: Docker Build linux/amd64
+          - name: Docker linux/amd64
             DOCKER_PLATFORM: linux/amd64
-          - name: Docker Build linux/arm/v6
+          - name: Docker linux/arm/v6
             DOCKER_PLATFORM: linux/arm/v6
-          - name: Docker Build linux/arm/v7
+          - name: Docker linux/arm/v7
             DOCKER_PLATFORM: linux/arm/v7
-          - name: Docker Build linux/arm64/v8
+          - name: Docker linux/arm64/v8
             DOCKER_PLATFORM: linux/arm64/v8
       fail-fast: false
     name: ${{ matrix.name }}
