@@ -9,6 +9,36 @@ on:
 env:
   NODE_VERSION: 16.9.0
 jobs:
+  check-ci:
+    name: CI Self-Check
+    timeout-minutes: 15
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Determine major node version
+        id: node
+        run: |
+          node_major=$(echo "${{ matrix.NODE_VERSION }}" | cut -d'.' -f1)
+          echo "::set-output name=node_major::$(echo $node_major)"
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
+      - name: Install dependencies (Node < 10)
+        run: npm install
+        if: ${{ steps.node.outputs.node_major < 10 }}
+      - name: Install dependencies (Node >= 10)
+        run: npm ci
+        if: ${{ steps.node.outputs.node_major >= 10 }}
+      - name: CI Self-Check
+        run: npm run ci:check
   check-changelog:
     name: Changelog
     timeout-minutes: 5
