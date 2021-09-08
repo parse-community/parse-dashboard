@@ -103,8 +103,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build docker image
         uses: docker/build-push-action@v2
-        with:
-          platforms: ${{ matrix.DOCKER_PLATFORM }}
+        # with:
+        #   platforms: ${{ matrix.DOCKER_PLATFORM }}
   check-lock-file-version:
     name: NPM Lock File Version
     timeout-minutes: 5
