@@ -7,7 +7,7 @@ on:
     branches:
       - '**'
 env:
-  NODE_VERSION: 16.9.0
+  NODE_VERSION: 14.17.6
 jobs:
   check-ci:
     name: CI Self-Check
