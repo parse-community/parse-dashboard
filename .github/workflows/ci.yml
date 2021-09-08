@@ -95,6 +95,7 @@ jobs:
             DOCKER_PLATFORM: linux/arm/v7
           - name: Docker Build linux/arm64/v8
             DOCKER_PLATFORM: linux/arm64/v8
+      fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
     runs-on: ubuntu-18.04
