@@ -98,6 +98,11 @@ jobs:
     env:
       NODE_VERSION: ${{ matrix.NODE_VERSION }}
     steps:
+      - name: Determine major node version
+        id: node
+        run: |
+          $node_major = "${{ matrix.NODE_VERSION }}" | cut -d '.' -f1
+          echo "::set-env name=node_major::$(echo $node_major)"
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
         uses: actions/setup-node@v1
@@ -110,8 +115,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
               ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
-      - name: Install dependencies
+      - name: Install dependencies (Node < 10)
+        run: npm install
+        if: ${{ steps.node.outputs.node_major < 10 }}
+      - name: Install dependencies (Node >= 10)
         run: npm ci
+        if: ${{ steps.node.outputs.node_major >= 10 }}
       - name: Test bundles
         run: ./scripts/before_script.sh
         env:
