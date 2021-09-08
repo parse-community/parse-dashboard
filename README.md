@@ -243,7 +243,7 @@ Parse Dashboard supports adding an optional background color for each app, so yo
 
 - You can set `customBrandIcon` with a relative path from `iconsFolder`. This could be your custom logo which will appear on the login screen and on the top of the sidebar. Icon should be square (same width and height), SVG or PNG with transparent background.
 - You can set `customBrandTitle` which will be visible on top of the sidebar instead of `Parse Dashboard`.
-- You can set `customBrandColorPrimary` which will be background color at login screen.
+- You can set `customBrandColorPrimary` which will be the background color at the login screen.
 
 ## Other Configuration Options
 
