@@ -7,6 +7,7 @@
 - Add multi-factor authentication to dashboard login. To use one-time password, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
 
 ## Improvements
+- Docker image use now node 12 version [#1788](https://github.com/parse-community/parse-dashboard/pull/1788)
 - CI now pushes docker images to Docker Hub (Corey Baker) [#1781](https://github.com/parse-community/parse-dashboard/pull/1781)
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
