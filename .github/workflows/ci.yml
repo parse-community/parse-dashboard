@@ -35,6 +35,8 @@ jobs:
         run: npm ci
       - name: CI Self-Check
         run: npm run ci:check
+      - name: CI Node Engine Check
+        run: npm run ci:checkNodeEngine
   check-changelog:
     name: Changelog
     timeout-minutes: 5
