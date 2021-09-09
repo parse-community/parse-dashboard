@@ -102,7 +102,6 @@
     "marked": "0.8.2",
     "node-sass": "5.0.0",
     "null-loader": "3.0.0",
-    "parse-server": "github:parseplatform/parse-server#master",
     "path-to-regexp": "3.2.0",
     "puppeteer": "3.0.0",
     "react-test-renderer": "16.13.1",
@@ -127,7 +126,6 @@
     "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
     "prepare": "webpack --config webpack/publish.config.js --progress",
-    "server": "node server.js",
     "start": "node ./Parse-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular"
   },
@@ -135,7 +133,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=12.0.0 <16.0.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
