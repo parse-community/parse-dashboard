@@ -131,8 +131,8 @@ jobs:
           - name: Node 14
             NODE_VERSION: 14.17.6
           # Enable the following lines when Parse Dashboard reached Node 16 compatibility
-          #- name: Node 16
-          #  NODE_VERSION: 16.9.0
+          # - name: Node 16
+          #   NODE_VERSION: 16.9.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
