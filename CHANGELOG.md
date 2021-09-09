@@ -12,6 +12,7 @@
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
 - fix: date cell value not selected on double clicks (fn-faisal) [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
+- Adds `npm run lint:fix` and pre-commit hook (Daniel Blyth) [#1791](https://github.com/parse-community/parse-dashboard/pull/1730)
 
 ## Fixes
 - Fixed bug after creating new class, wrong CLP was shown for that class [#1784](https://github.com/parse-community/parse-dashboard/issues/1784)  (Prerna Mehra) [#1785](https://github.com/parse-community/parse-dashboard/pull/1785)
