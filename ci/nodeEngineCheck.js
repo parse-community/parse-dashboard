@@ -176,10 +176,10 @@ async function check() {
       
       // Get package name
       const package = higherVersion.file.split('node_modules/').pop().replace('/package.json', '');
-      console.log(`- ${package} requires at least version ${higherVersion.nodeMinVersion}`);
+      console.log(`- ${package} requires at least node ${higherVersion.nodeMinVersion} (${higherVersion.nodeVersion})`);
     }
     console.log('');
-    core.setFailed(`❌ Upgrade the node engine version in package.json to at least ${highestVersion} to satisfy the dependencies.`);
+    core.setFailed(`❌ Upgrade the node engine version in package.json to at least '${highestVersion}' to satisfy the dependencies.`);
     console.log('');
     return;
   }
