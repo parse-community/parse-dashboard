@@ -90,7 +90,7 @@ export default class DateTimePicker extends React.Component {
 
   render() {
     return (
-      <div style={{ width: this.props.width }} className={styles.picker}>
+      <div style={{ width: this.props.width }} className={styles.picker} onClick={(e) => e.stopPropagation()} >
         <Calendar local={this.props.local} value={this.props.value} onChange={(newValue) => {
           let timeRef = this.props.value || hoursFrom(new Date(), 1);
           let newDate = this.props.local ? new Date(

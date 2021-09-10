@@ -1,4 +1,4 @@
-# Parse Dashboard
+# Parse Dashboard <!-- omit in toc -->
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/parse-community/parse-dashboard.svg)](https://greenkeeper.io/)
 [![Build Status](https://img.shields.io/travis/parse-community/parse-dashboard/master.svg?style=flat)](https://travis-ci.org/parse-community/parse-dashboard)
@@ -11,35 +11,40 @@
 
 Parse Dashboard is a standalone dashboard for managing your [Parse Server](https://github.com/ParsePlatform/parse-server) apps.
 
-* [Getting Started](#getting-started)
-* [Local Installation](#local-installation)
-  * [Configuring Parse Dashboard](#configuring-parse-dashboard)
-    * [File](#file)
-    * [Environment variables](#environment-variables)
-      * [Multiple apps](#multiple-apps)
-      * [Single app](#single-app)
-  * [Managing Multiple Apps](#managing-multiple-apps)
-  * [GraphQL Playground](#graphql-playground)    
-  * [App Icon Configuration](#app-icon-configuration)
-  * [App Background Color Configuration](#app-background-color-configuration)
-  * [Other Configuration Options](#other-configuration-options)
-* [Running as Express Middleware](#running-as-express-middleware)
-* [Deploying Parse Dashboard](#deploying-parse-dashboard)
-  * [Preparing for Deployment](#preparing-for-deployment)
-  * [Security Considerations](#security-considerations)
-    * [Configuring Basic Authentication](#configuring-basic-authentication)
-    * [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
-  * [Use Read-Only masterKey](#use-read-only-masterKey)
-    * [Making an app read-only for all users](#making-an-app-read-only-for-all-users)
-    * [Makings users read-only](#makings-users-read-only)
-    * [Making user's apps readOnly](#making-users-apps-readonly)
-  * [Configuring Localized Push Notifications](#configuring-localized-push-notifications)
-  * [Run with Docker](#run-with-docker)
-* [Contributing](#contributing)
+- [Getting Started](#getting-started)
+- [Local Installation](#local-installation)
+  - [Configuring Parse Dashboard](#configuring-parse-dashboard)
+    - [File](#file)
+    - [Environment variables](#environment-variables)
+      - [Multiple apps](#multiple-apps)
+      - [Single app](#single-app)
+  - [Managing Multiple Apps](#managing-multiple-apps)
+  - [GraphQL Playground](#graphql-playground)
+  - [App Icon Configuration](#app-icon-configuration)
+  - [App Background Color Configuration](#app-background-color-configuration)
+  - [Other Configuration Options](#other-configuration-options)
+    - [Prevent columns sorting](#prevent-columns-sorting)
+- [Running as Express Middleware](#running-as-express-middleware)
+- [Deploying Parse Dashboard](#deploying-parse-dashboard)
+  - [Preparing for Deployment](#preparing-for-deployment)
+  - [Security Considerations](#security-considerations)
+    - [Configuring Basic Authentication](#configuring-basic-authentication)
+    - [Multi-Factor Authentication (One-Time Password)](#multi-factor-authentication-one-time-password)
+    - [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
+  - [Use Read-Only masterKey](#use-read-only-masterkey)
+    - [Making an app read-only for all users](#making-an-app-read-only-for-all-users)
+    - [Makings users read-only](#makings-users-read-only)
+    - [Making user's apps readOnly](#making-users-apps-readonly)
+  - [Configuring Localized Push Notifications](#configuring-localized-push-notifications)
+  - [Run with Docker](#run-with-docker)
+- [Features](#features)
+  - [Browse as User](#browse-as-user)
+  - [CSV Export](#csv-export)
+- [Contributing](#contributing)
 
 # Getting Started
 
-[Node.js](https://nodejs.org) version >= 8.9 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher.
+[Node.js](https://nodejs.org) version >= 12 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher.
 
 # Local Installation
 
@@ -57,7 +62,7 @@ parse-dashboard --dev --appId yourAppId --masterKey yourMasterKey --serverURL "h
 
 You may set the host, port and mount path by supplying the `--host`, `--port` and `--mountPath` options to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
 
-NB: the `--dev` parameter is disabling production-ready security features, do not use this parameter when starting the dashboard in production. This parameter is useful if you are running on docker. 
+NB: the `--dev` parameter is disabling production-ready security features, do not use this parameter when starting the dashboard in production. This parameter is useful if you are running on docker.
 
 After starting the dashboard, you can visit http://localhost:4040 in your browser:
 
@@ -241,6 +246,33 @@ You can set `appNameForURL` in the config file for each app to control the url o
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
 
+ ### Prevent columns sorting
+
+You can prevent some columns to be sortable by adding `preventSort` to columnPreference options in each app configuration
+
+```json
+
+"apps": [
+  {
+    "appId": "local_app_id",
+    "columnPreference": {
+        "_User": [
+          {
+            "name": "createdAt",
+            "visible": true,
+            "preventSort": true
+          },
+          {
+            "name": "updatedAt",
+            "visible": true,
+            "preventSort": false
+          },
+        ]
+      }
+    }
+]
+```
+
 # Running as Express Middleware
 
 Instead of starting Parse Dashboard with the CLI, you can also run it as an [express](https://github.com/expressjs/express) middleware.
@@ -347,7 +379,33 @@ You can configure your dashboard for Basic Authentication by adding usernames an
 ```
 
 You can store the password in either `plain text` or `bcrypt` formats. To use the `bcrypt` format, you must set the config `useEncryptedPasswords` parameter to `true`.
-You can encrypt the password using any online bcrypt tool e.g. [https://www.bcrypt-generator.com](https://www.bcrypt-generator.com).
+You can generate encrypted passwords by using `parse-dashboard --createUser`, and pasting the result in your users config.
+
+### Multi-Factor Authentication (One-Time Password)
+
+You can add an additional layer of security for a user account by requiring multi-factor authentication (MFA) for the user to login.
+
+With MFA enabled, a user must provide a one-time password that is typically bound to a physical device, in addition to their login password. This means in addition to knowing the login password, the user needs to have physical access to a device to generate the one-time password. This one-time password is time-based (TOTP) and only valid for a short amount of time, typically 30 seconds, until it expires.
+
+The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
+
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, 
+run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
+
+```json
+{
+  "apps": [{"...": "..."}],
+  "users": [
+    {
+      "user":"user1",
+      "pass":"pass",
+      "mfa": "lmvmOIZGMTQklhOIhveqkumss"
+    }
+  ]
+}
+```
+
+ Parse Dashboard follows the industry standard and supports the common OTP algorithm `SHA-1` by default, to be compatible with most authenticator apps. If you have specific security requirements regarding TOTP characteristics (algorithm, digit length, time period) you can customize them by using the guided configuration mentioned above.
 
 ### Separating App Access Based on User Identity
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.
@@ -421,7 +479,7 @@ You can mark a user as a read-only user:
       "appId": "myAppId1",
       "masterKey": "myMasterKey1",
       "readOnlyMasterKey": "myReadOnlyMasterKey1",
-      "serverURL": "myURL1",      
+      "serverURL": "myURL1",
       "port": 4040,
       "production": true
     },
@@ -429,7 +487,7 @@ You can mark a user as a read-only user:
       "appId": "myAppId2",
       "masterKey": "myMasterKey2",
       "readOnlyMasterKey": "myReadOnlyMasterKey2",
-      "serverURL": "myURL2",      
+      "serverURL": "myURL2",
       "port": 4041,
       "production": true
     }
@@ -464,7 +522,7 @@ You can give read only access to a user on a per-app basis:
       "appId": "myAppId1",
       "masterKey": "myMasterKey1",
       "readOnlyMasterKey": "myReadOnlyMasterKey1",
-      "serverURL": "myURL",      
+      "serverURL": "myURL",
       "port": 4040,
       "production": true
     },
@@ -505,7 +563,7 @@ You can provide a list of locales or languages you want to support for your dash
 
 ## Run with Docker
 
-The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard) 
+The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard)
 
 Run the image with your ``config.json`` mounted as a volume
 
@@ -528,6 +586,25 @@ docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-
 ```
 
 If you are not familiar with Docker, ``--port 8080`` will be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
+
+# Features
+*(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)*
+
+## Browse as User
+
+▶️ *Core > Browser > Browse*
+
+This feature allows you to use the data browser as another user, respecting that user's data permissions. For example, you will only see records and fields the user has permission to see.
+
+> ⚠️ Logging in as another user will trigger the same Cloud Triggers as if the user logged in themselves using any other login method. Logging in as another user requires to enter that user's password.
+
+## CSV Export
+
+▶️ *Core > Browser > Export*
+
+This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
+
+> ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
 
 # Contributing
 

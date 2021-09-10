@@ -87,7 +87,7 @@ export default class DataBrowser extends React.Component {
     document.body.removeEventListener('keydown', this.handleKey);
   }
 
-  updatePreferences(order) {
+  updatePreferences(order, shouldReload) {
     if (this.saveOrderTimeout) {
       clearTimeout(this.saveOrderTimeout);
     }
@@ -95,6 +95,7 @@ export default class DataBrowser extends React.Component {
     let className = this.props.className;
     this.saveOrderTimeout = setTimeout(() => {
       ColumnPreferences.updatePreferences(order, appId, className)
+      shouldReload && this.props.onRefresh();
     }, 1000);
   }
 
@@ -137,6 +138,28 @@ export default class DataBrowser extends React.Component {
   handleKey(e) {
     if (this.props.disableKeyControls) {
       return;
+    }
+    if (
+      this.state.editing &&
+      this.state.current &&
+      this.state.current.row === -1 &&
+      this.props.newObject
+    ) {
+      // if user is editing new row and want to cancel editing cell
+      if (e.keyCode === 27) {
+        this.setState({
+          editing: false
+        });
+        e.preventDefault();
+      }
+      return;
+    }
+    if(!this.state.editing && this.props.newObject){
+      // if user is not editing any row but there's new row
+      if(e.keyCode === 27){
+        this.props.onAbortAddRow();
+        e.preventDefault();
+      }
     }
     if (this.state.editing) {
       switch (e.keyCode) {
@@ -240,14 +263,14 @@ export default class DataBrowser extends React.Component {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
-  handleColumnsOrder(order) {
+  handleColumnsOrder(order, shouldReload) {
     this.setState({ order: [ ...order ] }, () => {
-      this.updatePreferences(order);
+      this.updatePreferences(order, shouldReload);
     });
   }
 
   render() {
-    let { className, count, disableSecurityDialog,  ...other } = this.props;
+    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
     const { preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
@@ -257,6 +280,7 @@ export default class DataBrowser extends React.Component {
           editing={this.state.editing}
           simplifiedSchema={this.state.simplifiedSchema}
           className={className}
+          editCloneRows={editCloneRows}
           handleHeaderDragDrop={this.handleHeaderDragDrop}
           handleResize={this.handleResize}
           setEditing={this.setEditing}
@@ -278,6 +302,8 @@ export default class DataBrowser extends React.Component {
           enableClassManipulation={!preventSchemaEdits}
           handleColumnDragDrop={this.handleHeaderDragDrop}
           handleColumnsOrder={this.handleColumnsOrder}
+          editCloneRows={editCloneRows}
+          onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
           {...other} />
 

@@ -27,7 +27,7 @@ let setFocus = (input) => {
   }
 }
 
-function compareValue(info, value, onChangeCompareTo, active) {
+function compareValue(info, value, onChangeCompareTo, active, parentContentId) {
   switch (info.type) {
     case null:
       return null;
@@ -70,7 +70,8 @@ function compareValue(info, value, onChangeCompareTo, active) {
           className={styles.date}
           value={Parse._decode('date', value)}
           onChange={(value) => onChangeCompareTo(Parse._encode(value))}
-          ref={setFocus} />
+          ref={setFocus} 
+          parentContentId={parentContentId} />
       );
   }
 }
@@ -87,6 +88,7 @@ let FilterRow = ({
     onChangeCompareTo,
     onDeleteRow,
     active,
+    parentContentId,
   }) => (
   <div className={styles.row}>
     <ChromeDropdown
@@ -100,7 +102,7 @@ let FilterRow = ({
       value={Constraints[currentConstraint].name}
       options={constraints.map((c) => Constraints[c].name)}
       onChange={(c) => onChangeConstraint(constraintLookup[c])} />
-    {compareValue(compareInfo, compareTo, onChangeCompareTo, active)}
+    {compareValue(compareInfo, compareTo, onChangeCompareTo, active, parentContentId)}
     <a role='button' href='javascript:;' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></a>
   </div>
 );

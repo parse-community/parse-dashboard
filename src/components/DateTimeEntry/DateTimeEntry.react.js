@@ -87,7 +87,7 @@ export default class DateTimeEntry extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={this.state.position} onExternalClick={this.close.bind(this)}>
+        <Popover fixed={true} position={this.state.position} onExternalClick={this.close.bind(this)}  parentContentId={this.props.parentContentId}>
           <DateTimePicker
             value={this.props.value}
             width={Math.max(this.node.clientWidth, 240)}

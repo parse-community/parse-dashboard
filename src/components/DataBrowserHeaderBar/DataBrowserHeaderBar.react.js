@@ -27,7 +27,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       </div>
     ];
 
-    headers.forEach(({ width, name, type, targetClass, order, visible }, i) => {
+    headers.forEach(({ width, name, type, targetClass, order, visible, preventSort }, i) => {
       if (!visible) return;
       let wrapStyle = { width };
       if (i % 2) {
@@ -36,15 +36,20 @@ export default class DataBrowserHeaderBar extends React.Component {
         wrapStyle.background = '#66637A';
       }
       let onClick = null;
-      if (type === 'String' || type === 'Number' || type === 'Date' || type === 'Boolean') {
+      if (!preventSort && (type === 'String' || type === 'Number' || type === 'Date' || type === 'Boolean')) {
         onClick = () => updateOrdering((order === 'descending' ? '' : '-') + name);
+      }
+
+      let className = styles.wrap;
+      if (preventSort) {
+        className += ` ${styles.preventSort} `;
       }
 
       elements.push(
         <div
           onClick={onClick}
           key={'header' + i}
-          className={styles.wrap}
+          className={className}
           style={ wrapStyle }>
           <DataBrowserHeader
             name={name}
@@ -65,7 +70,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       if (headers.length % 2) {
         finalStyle.background = 'rgba(224,224,234,0.10)';
       }
-  
+
       elements.push(
         readonly || preventSchemaEdits ? null : (
           <div key='add' className={styles.addColumn} style={finalStyle}>
