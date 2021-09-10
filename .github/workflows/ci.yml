@@ -6,7 +6,37 @@ on:
   pull_request:
     branches:
       - '**'
+env:
+  NODE_VERSION: 16.9.0
 jobs:
+  check-ci:
+    name: CI Self-Check
+    timeout-minutes: 15
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Determine major node version
+        id: node
+        run: |
+          node_major=$(echo "${{ env.NODE_VERSION }}" | cut -d'.' -f1)
+          echo "::set-output name=node_major::$(echo $node_major)"
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+      - name: Install dependencies
+        run: npm ci
+      - name: CI Environments Check
+        run: npm run ci:check
+      - name: CI Node Engine Check
+        run: npm run ci:checkNodeEngine
   check-changelog:
     name: Changelog
     timeout-minutes: 5
@@ -14,23 +44,126 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: dangoslen/changelog-enforcer@v2
-  build:
+  # check-lint:
+  #   name: Lint
+  #   timeout-minutes: 15
+  #   runs-on: ubuntu-18.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ env.node-version }}
+  #     - name: Cache Node.js modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ~/.npm
+  #         key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+  #     - name: Install dependencies
+  #       run: npm ci
+  #     - run: npm run lint
+  check-circular:
+     name: Circular Dependencies
+     timeout-minutes: 5
+     runs-on: ubuntu-18.04
+     steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+      - name: Install dependencies
+        run: npm ci
+      - name: Scan for circular dependencies
+        run: npm run madge:circular
+  check-docker:
+    strategy:
+      matrix:
+        include:
+          - name: Docker linux/amd64
+            DOCKER_PLATFORM: linux/amd64
+          # Building currently fails for the platforms below
+          # - name: Docker linux/arm/v6
+          #   DOCKER_PLATFORM: linux/arm/v6
+          # - name: Docker linux/arm/v7
+          #   DOCKER_PLATFORM: linux/arm/v7
+          # - name: Docker linux/arm64/v8
+          #   DOCKER_PLATFORM: linux/arm64/v8
+      fail-fast: false
+    name: ${{ matrix.name }}
+    timeout-minutes: 15
     runs-on: ubuntu-18.04
-    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.14'
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-            ${{ runner.os }}-node-
-    - run: npm ci
-    - run: ./scripts/before_script.sh
-      env:
-        CI: true
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build docker image
+        uses: docker/build-push-action@v2
+        with:
+          platforms: ${{ matrix.DOCKER_PLATFORM }}
+  check-lock-file-version:
+    name: NPM Lock File Version
+    timeout-minutes: 5
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check NPM lock file version
+        uses: mansona/npm-lockfile-version@v1
+        with:
+          version: 1
+  check-build:
+    strategy:
+      matrix:
+        include:
+          - name: Node 12
+            NODE_VERSION: 12.22.6
+          - name: Node 14
+            NODE_VERSION: 14.17.6
+          # Enable the following lines when Parse Dashboard reached Node 16 compatibility
+          # - name: Node 16
+          #   NODE_VERSION: 16.9.0
+      fail-fast: false
+    name: ${{ matrix.name }}
+    timeout-minutes: 15
+    runs-on: ubuntu-18.04
+    env:
+      NODE_VERSION: ${{ matrix.NODE_VERSION }}
+    steps:
+      - name: Determine major node version
+        id: node
+        run: |
+          node_major=$(echo "${{ matrix.NODE_VERSION }}" | cut -d'.' -f1)
+          echo "::set-output name=node_major::$(echo $node_major)"
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.NODE_VERSION }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
+      - name: Install dependencies (Node < 10)
+        run: npm install
+        if: ${{ steps.node.outputs.node_major < 10 }}
+      - name: Install dependencies (Node >= 10)
+        run: npm ci
+        if: ${{ steps.node.outputs.node_major >= 10 }}
+      - name: Test bundles
+        run: ./scripts/before_script.sh
+        env:
+          CI: true
