@@ -15,6 +15,7 @@ import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import { unselectable }          from 'stylesheets/base.scss';
 import Tooltip                   from '../Tooltip/PopperTooltip.react';
+import * as ColumnPreferences    from 'lib/ColumnPreferences';
 
 export default class BrowserCell extends Component {
   constructor() {
@@ -52,8 +53,7 @@ export default class BrowserCell extends Component {
       content = <span>&nbsp;</span>;
       classes.push(styles.empty);
     } else if (this.props.type === 'Pointer') {
-      const defaultPointerKey = await localStorage.getItem(this.props.value.className) || 'objectId';
-
+      const defaultPointerKey = await ColumnPreferences.getPointerDefaultKey(this.props.appId, this.props.value.className);
       let dataValue = this.props.value.id;
       if( defaultPointerKey !== 'objectId' ) {
         dataValue = this.props.value.get(defaultPointerKey);
@@ -62,11 +62,19 @@ export default class BrowserCell extends Component {
             dataValue = dataValue.toLocaleString();
           }
           else {
-            dataValue = '(undefined)';
+            if ( !this.props.value.id ) {
+              dataValue = this.props.value.id;
+            } else {
+              dataValue = '(undefined)';
+            }
           }
         }
         if ( !dataValue ) {
-          dataValue = '(undefined)';
+          if ( this.props.value.id ) {
+            dataValue = this.props.value.id;
+          } else {
+            dataValue = '(undefined)';
+          }
         }
       }
 

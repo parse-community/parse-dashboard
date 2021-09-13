@@ -5,14 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button             from 'components/Button/Button.react';
-import Dropdown           from 'components/Dropdown/Dropdown.react';
-import Field              from 'components/Field/Field.react';
-import { footer }         from 'components/Modal/Modal.scss';
-import Label              from 'components/Label/Label.react';
-import Modal              from 'components/Modal/Modal.react';
-import Option             from 'components/Dropdown/Option.react';
-import React              from 'react';
+import Button                 from 'components/Button/Button.react';
+import Dropdown               from 'components/Dropdown/Dropdown.react';
+import Field                  from 'components/Field/Field.react';
+import { footer }             from 'components/Modal/Modal.scss';
+import Label                  from 'components/Label/Label.react';
+import Modal                  from 'components/Modal/Modal.react';
+import Option                 from 'components/Dropdown/Option.react';
+import React                  from 'react';
+import * as ColumnPreferences from 'lib/ColumnPreferences';
 
 export default class PointerKeyDialog extends React.Component {
   constructor() {
@@ -23,8 +24,8 @@ export default class PointerKeyDialog extends React.Component {
   }
 
   async componentDidMount() {
-    const defaultPointerKey = await localStorage.getItem(this.props.className);
-    this.setState({ name: defaultPointerKey });
+    const pointerKey = await ColumnPreferences.getPointerDefaultKey(this.props.app.applicationId, this.props.className);
+    this.setState({ name: pointerKey });
   }
 
   render() {

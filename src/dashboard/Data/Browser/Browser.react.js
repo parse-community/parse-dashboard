@@ -690,7 +690,7 @@ class Browser extends DashboardView {
       const schemaKey = fieldKeys[i];
       const schVal = schema.fields[schemaKey];
       if ( schVal.type === 'Pointer' ) {
-        const defaultPointerKey = await localStorage.getItem(schVal.targetClass) || 'objectId';
+        const defaultPointerKey = await ColumnPreferences.getPointerDefaultKey(this.context.currentApp.applicationId, schVal.targetClass);
         if ( defaultPointerKey !== 'objectId' ) {
           query.include(schemaKey);
           query.select(schemaKey + '.' + defaultPointerKey);
@@ -1483,10 +1483,11 @@ class Browser extends DashboardView {
   }
 
   async onChangeDefaultKey (name) {
-    const className = this.props.params.className;
-    if ( name ) {
-      await localStorage.setItem(className, name);
-    }
+    ColumnPreferences.setPointerDefaultKey(
+      this.context.currentApp.applicationId,
+      this.props.params.className,
+      name
+      );
     this.setState({ showPointerKeyDialog: false });
   }
 
@@ -1613,6 +1614,7 @@ class Browser extends DashboardView {
       let currentColumns = this.getClassColumns(className).map(column => column.name);
       extras = (
         <PointerKeyDialog
+          app={this.context.currentApp}
           className={className}
           currentColumns={currentColumns}
           onCancel={() => this.setState({ showPointerKeyDialog: false })}
