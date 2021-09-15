@@ -3,6 +3,7 @@ var bcrypt = require('bcryptjs');
 var csrf = require('csurf');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+const OTPAuth = require('otpauth')
 
 /**
  * Constructor for Authentication class
@@ -21,13 +22,21 @@ function initialize(app, options) {
   options = options || {};
   var self = this;
   passport.use('local', new LocalStrategy(
-    function(username, password, cb) {
+    {passReqToCallback:true},
+    function(req, username, password, cb) {
       var match = self.authenticate({
         name: username,
-        pass: password
+        pass: password,
+        otpCode: req.body.otpCode
       });
       if (!match.matchingUsername) {
         return cb(null, false, { message: 'Invalid username or password' });
+      }
+      if (match.otpMissing) {
+        return cb(null, false, { message: 'Please enter your one-time password.' });
+      }
+      if (!match.otpValid) {
+        return cb(null, false, { message: 'Invalid one-time password.' });
       }
       cb(null, match.matchingUsername);
     })
@@ -82,6 +91,8 @@ function authenticate(userToTest, usernameOnly) {
   let appsUserHasAccessTo = null;
   let matchingUsername = null;
   let isReadOnly = false;
+  let otpMissing = false;
+  let otpValid = true;
 
   //they provided auth
   let isAuthenticated = userToTest &&
@@ -91,6 +102,22 @@ function authenticate(userToTest, usernameOnly) {
     this.validUsers.find(user => {
       let isAuthenticated = false;
       let usernameMatches = userToTest.name == user.user;
+      if (usernameMatches && user.mfa && !usernameOnly) {
+        if (!userToTest.otpCode) {
+          otpMissing = true;
+        } else {
+          const totp = new OTPAuth.TOTP({
+            algorithm: user.mfaAlgorithm || 'SHA1',
+            secret: OTPAuth.Secret.fromBase32(user.mfa)
+          });
+          const valid = totp.validate({
+            token: userToTest.otpCode
+          });
+          if (valid === null) {
+            otpValid = false;
+          }
+        }
+      }
       let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
       if (usernameMatches && (usernameOnly || passwordMatches)) {
         isAuthenticated = true;
@@ -99,13 +126,14 @@ function authenticate(userToTest, usernameOnly) {
         appsUserHasAccessTo = user.apps || null;
         isReadOnly = !!user.readOnly; // make it true/false
       }
-
       return isAuthenticated;
     }) ? true : false;
 
   return {
     isAuthenticated,
     matchingUsername,
+    otpMissing,
+    otpValid,
     appsUserHasAccessTo,
     isReadOnly,
   };
