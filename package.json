@@ -73,7 +73,7 @@
     "react-popper-tooltip": "4.3.0",
     "react-redux": "5.1.2",
     "react-router": "5.1.2",
-    "react-router-dom": "5.1.2",
+    "react-router-dom": "5.2.1",
     "regenerator-runtime": "0.13.8",
     "semver": "7.3.4"
   },
