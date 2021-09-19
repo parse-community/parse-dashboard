@@ -12,8 +12,8 @@
   cursor: default;
   color: #0E69A1;
   height: 30px;
-  line-height: 22px;
-  padding: 5px 4px 0;
+  line-height: 20px;
+  padding: 5px;
   border-right: 1px solid #e3e3ea;
 }
 
@@ -40,11 +40,19 @@
   height: auto;
   max-height: 25px;
   overflow-y: scroll;
+  padding-right: 3px;
+  & > li {
+    margin-bottom: 2px;
+  }
+}
+
+.removePadding {
+  padding-right: 3px !important;
 }
 
 .hasMore::-webkit-scrollbar {
   -webkit-appearance: none!important;
-  width: 7px!important;
+  width: 6px!important;
 }
 
 .hasMore::-webkit-scrollbar-thumb {

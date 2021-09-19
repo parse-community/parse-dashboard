@@ -117,6 +117,16 @@ export default class BrowserCell extends Component {
       }
     });
 
+    if ( this.props.type === 'Pointer' ) {
+      onEditSelectedRow && contextMenuOptions.push({
+        text: 'Open pointer in new tab',
+        callback: () => {
+          let { value, onPointerCmdClick } = this.props;
+          onPointerCmdClick(value);
+        }
+      });
+    }
+
     return contextMenuOptions;
   }
 
@@ -214,7 +224,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredField } = this.props;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, setRelation, onPointerClick, onPointerCmdClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
     let content = value;
     let isNewRow = row < 0;
     this.copyableValue = content;
@@ -263,15 +273,20 @@ export default class BrowserCell extends Component {
           const object = new Parse.Object(v.className);
           object.id = v.objectId;
           array.push(
-            <a key={i} href='javascript:;' onClick={onPointerClick.bind(undefined, object)}>
-              <Pill value={v.objectId} />
-            </a>);
+            <Pill
+              key={v.objectId}
+              value={v.objectId}
+              onClick={onPointerClick.bind(undefined, object)}
+              followClick={true}
+            />
+          );
         });
-        this.copyableValue = content = <ul>
-          { array.map( a => <li>{a}</li>) }
+        content = <ul className={styles.hasMore}>
+          {array.map( a => <li>{a}</li>)}
         </ul>
+        this.copyableValue = JSON.stringify(value);
         if ( array.length > 1 ) {
-          classes.push(styles.hasMore);
+          classes.push(styles.removePadding);
         }
       }
       else {
@@ -333,7 +348,7 @@ export default class BrowserCell extends Component {
       classes.push(styles.current);
     }
 
-    if (markRequiredField && isRequired && !value) {
+    if (markRequiredFieldRow === row && isRequired && !value) {
       classes.push(styles.required);
     }
 
@@ -343,9 +358,13 @@ export default class BrowserCell extends Component {
           ref={this.cellRef}
           className={classes.join(' ')}
           style={{ width }}
-          onClick={() => {
-            onSelect({ row, col });
-            setCopyableValue(hidden ? undefined : this.copyableValue);
+          onClick={(e) => {
+            if ( e.metaKey === true && type === 'Pointer') {
+              onPointerCmdClick(value);
+            } else {
+              onSelect({ row, col });
+              setCopyableValue(hidden ? undefined : this.copyableValue);
+            }
           }}
           onDoubleClick={() => {
             if (field === 'objectId' && onEditSelectedRow) {
@@ -366,9 +385,14 @@ export default class BrowserCell extends Component {
         ref={this.cellRef}
         className={classes.join(' ')}
         style={{ width }}
-        onClick={() => {
-          onSelect({ row, col });
-          setCopyableValue(hidden ? undefined : this.copyableValue);
+        onClick={(e) => {
+          if ( e.metaKey === true && type === 'Pointer' ) {
+            onPointerCmdClick(value);
+          }
+          else {
+            onSelect({ row, col });
+            setCopyableValue(hidden ? undefined : this.copyableValue);
+          }
         }}
         onDoubleClick={() => {
           // Since objectId can't be edited, double click event opens edit row dialog

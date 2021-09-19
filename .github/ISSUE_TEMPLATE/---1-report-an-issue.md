@@ -17,8 +17,7 @@ assignees: ''
 - [ ] I am not disclosing a [vulnerability](https://github.com/parse-community/parse-server/blob/master/SECURITY.md).
 - [ ] I am not just asking a [question](https://github.com/parse-community/.github/blob/master/SUPPORT.md).
 - [ ] I have searched through [existing issues](https://github.com/parse-community/parse-dashboard/issues?q=is%3Aissue).
-- [ ] I can reproduce the issue with the [latest version of Parse Server](https://github.com/parse-community/parse-server/releases).
-- [ ] I can reproduce the issue with the [latest version of Parse Dashboard](https://github.com/parse-community/parse-dashboard/releases).
+- [ ] I can reproduce the issue with the latest versions of [Parse Server](https://github.com/parse-community/parse-server/releases) and [Parse Dashboard](https://github.com/parse-community/parse-dashboard/releases). <!-- We don't investigate issues for outdated releases. -->
 
 ### Issue Description
 <!-- What is the specific issue? -->
@@ -32,12 +31,7 @@ assignees: ''
 ### Expected Outcome
 <!-- What outcome did you expect? -->
 
-### Pull Request
-<!-- If you can, please submit a PR with a fix. -->
-
-- PR: #`FILL_THIS_OUT`
-
-###  Environment
+### Environment
 <!-- Be specific with versions, don't use "latest" or semver ranges like "~x.y.z" or "^x.y.z". -->
 
 Dashboard
