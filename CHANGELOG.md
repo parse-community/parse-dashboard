@@ -4,15 +4,25 @@
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...master)
 
 ## New Features
+- Add multi-factor authentication to dashboard login. To use one-time password, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
+
 ## Improvements
+- Sidebar: Class counts are now updated when all counts are returned instead of after each call (Christopher Brookes) [#1802](https://github.com/parse-community/parse-dashboard/pull/1802)
+- Update sass to 5.0.0 and make docker image use node:lts-alpine (Corey Baker) [#1792](https://github.com/parse-community/parse-dashboard/pull/1792)
+- Docker image use now node 12 version (Christopher Brookes) [#1788](https://github.com/parse-community/parse-dashboard/pull/1788)
+- CI now pushes docker images to Docker Hub (Corey Baker) [#1781](https://github.com/parse-community/parse-dashboard/pull/1781)
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
-- Add Parse Issue Bot (Manuel Trezza) [#1766](https://github.com/parse-community/parse-dashboard/pull/1766)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
 - fix: date cell value not selected on double clicks (fn-faisal) [#1730](https://github.com/parse-community/parse-dashboard/pull/1730)
 
 ## Fixes
+- Revert PR [#1706](https://github.com/parse-community/parse-dashboard/pull/1706) which introduced new database index requirements for pagination and was a breaking change that can lead to database performance issues if database indices are not adapted (Christopher Brookes) [#1800](https://github.com/parse-community/parse-dashboard/pull/1800)
+- Fixed bug after creating new class, wrong CLP was shown for that class [#1784](https://github.com/parse-community/parse-dashboard/issues/1784)  (Prerna Mehra) [#1785](https://github.com/parse-community/parse-dashboard/pull/1785)
+- Fixed bug when opening a big modal, modal content is not visible due to Sidebar (Prerna Mehra) [#1777](https://github.com/parse-community/parse-dashboard/pull/1778)
 - Fixed UI for a field containing an array of pointers (Prerna Mehra) [#1776](https://github.com/parse-community/parse-dashboard/pull/1776)
 - Fixed bug when editing or copying a field containing an array of pointers [#1770](https://github.com/parse-community/parse-dashboard/issues/1770) (Prerna Mehra) [#1771](https://github.com/parse-community/parse-dashboard/pull/1771)
+- Modernize CI (Manuel Trezza) [#1789](https://github.com/parse-community/parse-dashboard/pull/1789)
+- ci: Remove parse-server dev dependency (Manuel Trezza) [#1796](https://github.com/parse-community/parse-dashboard/pull/1796)
 
 # 2.2.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.1.0...2.2.0)

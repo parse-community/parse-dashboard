@@ -11,6 +11,7 @@ const path = require('path');
 const jsonFile = require('json-file-plus');
 const express = require('express');
 const parseDashboard = require('./app');
+const CLIHelper = require('./CLIHelper.js');
 
 const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
@@ -28,8 +29,18 @@ program.option('--sslKey [sslKey]', 'the path to the SSL private key.');
 program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
 program.option('--cookieSessionSecret [cookieSessionSecret]', 'set the cookie session secret, defaults to a random string. You should set that value if you want sessions to work across multiple server, or across restarts');
+program.option('--createUser', 'helper tool to allow you to generate secure user passwords and secrets. Use this on trusted devices only.');
+program.option('--createMFA', 'helper tool to allow you to generate multi-factor authentication secrets.');
 
 program.parse(process.argv);
+
+for (const key in program) {
+  const func = CLIHelper[key];
+  if (func && typeof func === 'function') {
+    func();
+    return;
+  }
+}
 
 const host = program.host || process.env.HOST || '0.0.0.0';
 const port = program.port || process.env.PORT || 4040;
