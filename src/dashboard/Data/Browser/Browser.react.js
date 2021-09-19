@@ -64,6 +64,7 @@ class Browser extends DashboardView {
 
       relation: null,
       counts: {},
+      computingClassCounts: false,
       filteredCounts: {},
       clp: {},
       filters: new List(),
@@ -605,12 +606,21 @@ class Browser extends DashboardView {
     });
   }
 
-  handleFetchedSchema() {
-    this.props.schema.data.get('classes').forEach((_, className) => {
-      this.context.currentApp.getClassCount(className)
-      .then(count => this.setState({ counts: { [className]: count, ...this.state.counts } }));
-    })
-    this.setState({clp: this.props.schema.data.get('CLPs').toJS()});
+  async handleFetchedSchema() {
+    const counts = this.state.counts;
+    if (this.state.computingClassCounts === false) {
+      this.setState({ computingClassCounts: true });
+      for (const parseClass of this.props.schema.data.get('classes')) {
+        const [className] = parseClass;
+        counts[className] = await this.context.currentApp.getClassCount(className);
+      }
+
+      this.setState({
+        clp: this.props.schema.data.get('CLPs').toJS(),
+        counts,
+        computingClassCounts: false
+      });
+    }
   }
 
   async refresh() {
