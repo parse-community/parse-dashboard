@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -59,7 +59,7 @@
     "parse": "3.3.0",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
-    "prismjs": "1.24.1",
+    "prismjs": "1.25.0",
     "prop-types": "15.7.2",
     "qrcode": "1.4.4",
     "query-string": "6.14.1",
@@ -72,8 +72,8 @@
     "react-json-view": "1.21.3",
     "react-popper-tooltip": "4.3.0",
     "react-redux": "5.1.2",
-    "react-router": "5.1.2",
-    "react-router-dom": "5.1.2",
+    "react-router": "5.2.1",
+    "react-router-dom": "5.2.1",
     "regenerator-runtime": "0.13.8",
     "semver": "7.3.4"
   },
