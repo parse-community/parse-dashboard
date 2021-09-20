@@ -74,7 +74,8 @@
     "react-router": "5.2.1",
     "react-router-dom": "5.2.1",
     "regenerator-runtime": "0.13.8",
-    "semver": "7.3.4"
+    "semver": "7.3.4",
+    "typescript": "4.4.3"
   },
   "devDependencies": {
     "@actions/core": "1.2.6",
