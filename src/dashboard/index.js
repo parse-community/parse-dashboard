@@ -14,7 +14,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
 require('stylesheets/fonts.scss');
-require('graphql-playground-react/build/static/css/index.css')
+require('graphiql/graphiql.min.css')
 installDevTools(Immutable);
 
 var path = window.PARSE_DASHBOARD_PATH || '/';
