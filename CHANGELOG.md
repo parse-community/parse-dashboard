@@ -1,15 +1,27 @@
 # Parse Dashboard Changelog
 
 # master
-[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...master)
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/3.0.0...master)
+
+## New Features
+## Improvements
+## Fixes
+
+# 3.0.0
+[Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...3.0.0)
+
+## BREAKING CHANGE
+- Parse Dashboard requires Node >=12.0.0 <16.0.0
+- Reverts PR [#1706](https://github.com/parse-community/parse-dashboard/pull/1706) which introduced new database index requirements for pagination and was a breaking change that can lead to database performance issues if database indices were not adapted; reverting #1706 removes the `objectId` from the compound query; make sure that the database indices satisfy your dashboard sorting and filter usage before upgrading to this release to prevent database performance issues due to missing indices (Christopher Brookes) [#1800](https://github.com/parse-community/parse-dashboard/pull/1800)
 
 ## New Features
 - Added feature to choose a different column, other than objectId, to be used as pointer value (Faisal Nadeem) [#1723](https://github.com/parse-community/parse-dashboard/pull/1723)
 - Add multi-factor authentication to dashboard login. To use one-time password, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
 
 ## Improvements
+- Sidebar: Class counts are now updated when all counts are returned instead of after each call (Christopher Brookes) [#1802](https://github.com/parse-community/parse-dashboard/pull/1802)
 - Update sass to 5.0.0 and make docker image use node:lts-alpine (Corey Baker) [#1792](https://github.com/parse-community/parse-dashboard/pull/1792)
-- Docker image use now node 12 version [#1788](https://github.com/parse-community/parse-dashboard/pull/1788)
+- Docker image use now node 12 version (Christopher Brookes) [#1788](https://github.com/parse-community/parse-dashboard/pull/1788)
 - CI now pushes docker images to Docker Hub (Corey Baker) [#1781](https://github.com/parse-community/parse-dashboard/pull/1781)
 - Add CI check to add changelog entry (Manuel Trezza) [#1764](https://github.com/parse-community/parse-dashboard/pull/1764)
 - Refactor: uniform issue templates across repos (Manuel Trezza) [#1767](https://github.com/parse-community/parse-dashboard/pull/1767)
