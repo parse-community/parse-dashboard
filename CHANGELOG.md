@@ -15,10 +15,6 @@ Details:
 - Purpose: official release
 - Suitable environment: production
 
-## New Features
-- Added feature to choose a different column, other than objectId, to be used as pointer value (Faisal Nadeem) [#1723](https://github.com/parse-community/parse-dashboard/pull/1723)
-- Add multi-factor authentication to dashboard login. To use one-time password, run `parse-dashboard --createMFA` or `parse-dashboard --createUser`. (Daniel Blyth) [#1624](https://github.com/parse-community/parse-dashboard/pull/1624)
-
 ## ⚠️ [Beta Releases][log_beta]
 
 These are releases that are pretty stable, but may have still some bugs to be fixed before official release.
