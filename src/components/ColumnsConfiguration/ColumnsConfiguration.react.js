@@ -40,7 +40,14 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   showAll() {
-    this.props.handleColumnsOrder(this.props.order.map(order => ({ ...order, visible: true })));
+    let shouldReload = false;
+    let updatedOrder = this.props.order.map(field => {
+      if (!shouldReload && !field.cached) {
+        shouldReload = true;
+      }
+      return { ...field, visible: true }
+    });
+    this.props.handleColumnsOrder(updatedOrder, shouldReload);
   }
 
   hideAll() {
@@ -48,13 +55,19 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   render() {
-    const { handleColumnDragDrop, handleColumnsOrder, order } = this.props;
-    const [ title, entry ] = [styles.title, styles.entry ].map(className => (
+    const { handleColumnDragDrop, handleColumnsOrder, order, disabled } = this.props;
+    let [ title, entry ] = [styles.title, styles.entry ].map(className => (
       <div className={className} onClick={this.toggle.bind(this)}>
         <Icon name='manage-columns' width={14} height={14} />
         <span>Manage Columns</span>
       </div>
     ));
+    if (disabled) {
+      entry = <div className={styles.entry + ' ' + styles.disabled} onClick={null}>
+        <Icon name='manage-columns' width={14} height={14} />
+        <span>Manage Columns</span>
+      </div>;
+    }
 
     let popover = null;
     if (this.state.open) {
@@ -78,7 +91,19 @@ export default class ColumnsConfiguration extends React.Component {
                           name,
                           visible
                         };
-                        handleColumnsOrder(updatedOrder);
+                        let shouldReload = visible;
+                        // these fields are always cached as they are never excluded from server
+                        // therefore no need to make another request.
+                        if (name === 'objectId' || name === 'createdAt' || name === 'updatedAt' || name === 'ACL') {
+                          shouldReload = false;
+                        }
+                        if (this.props.className === '_User' && name === 'password') {
+                          shouldReload = false;
+                        }
+                        if (updatedOrder[index].cached) {
+                          shouldReload = false;
+                        }
+                        handleColumnsOrder(updatedOrder, shouldReload);
                       }}
                       handleColumnDragDrop={handleColumnDragDrop} />
                   })}

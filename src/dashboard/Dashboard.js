@@ -117,6 +117,8 @@ export default class Dashboard extends React.Component {
       newFeaturesInLatestVersion: [],
     };
     setBasePath(props.path);
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('password');
   }
 
   componentDidMount() {

@@ -9,20 +9,43 @@
 
 .pill {
   @include MonospaceFont;
-  display: inline-block;
-  background: #D5E5F2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: #0E69A1;
   height: 20px;
   line-height: 20px;
   border-radius: 10px;
   font-size: 11px;
-  padding: 0 8px;
   width: 100%;
-  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  &:hover {
-    background: #BFD4E5;
+  white-space: nowrap;
+  & a {
+    height: 20px;
+    width: 20px;
+    background: #d6e5f2;
+    border-radius: 50%;
+    margin-left: 5px;
+    & svg  {
+      transform: rotate(316deg);
+    }
   }
+}
+
+.content {
+  width: 80%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: left;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.iconAction {
+  cursor: pointer;
+}
+
+.disableIconAction {
+  cursor: initial;
 }

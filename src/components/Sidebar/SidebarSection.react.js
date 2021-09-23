@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
 
-let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor  }) => {
+let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor, isCollapsed }) => {
   let classes = [styles.section];
   if (active) {
     classes.push(styles.active);
@@ -18,6 +18,16 @@ let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgr
   let iconContent = null;
   if (icon) {
     iconContent = <Icon width={25} height={25} name={icon} fill='#ffffff' />;
+  }
+  if (isCollapsed) {
+    classes.push(styles.collapsed);
+    return (
+      <div className={classes.join(' ')}>
+        <div style={style} className={styles.section_header} style={{ background: primaryBackgroundColor}}>
+          {iconContent}
+        </div>
+      </div>
+    );
   }
   return (
     <div className={classes.join(' ')}>
