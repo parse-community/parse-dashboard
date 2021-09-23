@@ -6,7 +6,6 @@
 ## New Features
 ## Improvements
 ## Fixes
-- Fix npm 7 installation issue, migrate GraphQL playground to GraphIQL  (Daniel Blyth) [#1807](https://github.com/parse-community/parse-dashboard/pull/1807)
 
 # 3.0.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...3.0.0)
