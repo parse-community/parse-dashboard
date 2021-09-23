@@ -24,3 +24,4 @@ Related issue: #`FILL_THIS_OUT`
 
 - [ ] Add tests
 - [ ] Add changes to documentation (guides, repository pages, in-code descriptions)
+- [x] A changelog entry is created automatically using the pull request title (do not manually add a changelog entry)
