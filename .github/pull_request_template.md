@@ -23,5 +23,4 @@ Related issue: #`FILL_THIS_OUT`
 -->
 
 - [ ] Add tests
-- [ ] Add entry to changelog
 - [ ] Add changes to documentation (guides, repository pages, in-code descriptions)
