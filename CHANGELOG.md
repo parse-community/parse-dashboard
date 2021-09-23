@@ -42,9 +42,9 @@ Details:
 - Suitable environment: experimental
 
 
-[log_master]: https://github.com/parse-community/parse-issue-bot/blob/master/changelogs/CHANGELOG_master.md
-[log_beta]: https://github.com/parse-community/parse-issue-bot/blob/beta/changelogs/CHANGELOG_beta.md
-[log_alpha]: https://github.com/parse-community/parse-issue-bot/blob/alpha/changelogs/CHANGELOG_alpha.md
-[branch_master]: https://github.com/parse-community/parse-issue-bot/tree/master
-[branch_beta]: https://github.com/parse-community/parse-issue-bot/tree/beta
-[branch_alpha]: https://github.com/parse-community/parse-issue-bot/tree/alpha
+[log_master]: https://github.com/parse-community/parse-dashboard/blob/master/changelogs/CHANGELOG_master.md
+[log_beta]: https://github.com/parse-community/parse-dashboard/blob/beta/changelogs/CHANGELOG_beta.md
+[log_alpha]: https://github.com/parse-community/parse-dashboard/blob/alpha/changelogs/CHANGELOG_alpha.md
+[branch_master]: https://github.com/parse-community/parse-dashboard/tree/master
+[branch_beta]: https://github.com/parse-community/parse-dashboard/tree/beta
+[branch_alpha]: https://github.com/parse-community/parse-dashboard/tree/alpha
