@@ -106,19 +106,19 @@
     "jest": "24.8.0",
     "madge": "5.0.1",
     "marked": "0.8.2",
-    "node-sass": "5.0.0",
-    "null-loader": "3.0.0",
+    "node-sass": "6.0.0",
+    "null-loader": "4.0.1",
     "path-to-regexp": "3.2.0",
     "puppeteer": "3.0.0",
     "react-test-renderer": "16.13.1",
     "request": "2.88.2",
     "request-promise": "4.2.5",
-    "sass-loader": "10.1.1",
+    "sass-loader": "12.1.0",
     "semantic-release": "17.4.6",
     "style-loader": "1.1.2",
     "svg-prep": "1.0.4",
-    "webpack": "4.42.1",
-    "webpack-cli": "3.3.10",
+    "webpack": "5.53.0",
+    "webpack-cli": "4.0.0",
     "yaml": "1.10.0"
   },
   "scripts": {
@@ -141,7 +141,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=12.0.0 <16.0.0"
+    "node": ">=12.0.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
