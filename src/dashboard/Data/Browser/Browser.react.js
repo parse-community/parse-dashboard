@@ -34,7 +34,6 @@ import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
-import * as queryString                   from 'query-string';
 import { Helmet }                         from 'react-helmet';
 import PropTypes                          from 'lib/PropTypes';
 import ParseApp                           from 'lib/ParseApp';
@@ -213,9 +212,9 @@ class Browser extends DashboardView {
     if (!props || !props.location || !props.location.search) {
       return filters;
     }
-    const query = queryString.parse(props.location.search);
-    if (query.filters) {
-      const queryFilters = JSON.parse(query.filters);
+    const query = new URLSearchParams(props.location.search);
+    if (query.has('filters')) {
+      const queryFilters = JSON.parse(query.get('filters'));
       queryFilters.forEach((filter) => filters = filters.push(new Map(filter)));
     }
     return filters;
@@ -397,7 +396,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (!!required) {
+          if (required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -414,7 +413,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: -1
           });
@@ -452,7 +451,7 @@ class Browser extends DashboardView {
               });
             },
             error => {
-              let msg = typeof error === "string" ? error : error.message;
+              let msg = typeof error === 'string' ? error : error.message;
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
@@ -472,7 +471,7 @@ class Browser extends DashboardView {
         this.setState(state);
       },
       error => {
-        let msg = typeof error === "string" ? error : error.message;
+        let msg = typeof error === 'string' ? error : error.message;
         if (msg) {
           msg = msg[0].toUpperCase() + msg.substr(1);
         }
@@ -501,7 +500,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (!!required) {
+          if (required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -518,7 +517,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: rowIndex
           });

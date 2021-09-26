@@ -62,7 +62,6 @@
     "prismjs": "1.25.0",
     "prop-types": "15.7.2",
     "qrcode": "1.4.4",
-    "query-string": "6.14.1",
     "react": "16.14.0",
     "react-ace": "9.4.3",
     "react-dnd": "10.0.2",
