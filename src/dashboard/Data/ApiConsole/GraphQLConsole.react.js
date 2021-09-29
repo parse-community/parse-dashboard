@@ -8,8 +8,7 @@
 import ParseApp      from 'lib/ParseApp';
 import PropTypes     from 'lib/PropTypes';
 import React, { Component } from 'react';
-import { Provider } from 'react-redux'
-import { Playground, store } from 'graphql-playground-react';
+import GraphiQL from 'graphiql';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
@@ -38,9 +37,23 @@ export default class GraphQLConsole extends Component {
         headers['X-Parse-Client-Key'] = clientKey
       }
       content = (
-        <Provider store={store}>
-          <Playground endpoint={graphQLServerURL} headers={headers} />
-        </Provider>
+        <GraphiQL
+          fetcher={async graphQLParams => {
+            const data = await fetch(
+              graphQLServerURL,
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                ...headers
+              },
+              body: JSON.stringify(graphQLParams),
+            },
+          );
+          return data.json().catch(() => data.text());
+          }}
+        />
       );
     }
 

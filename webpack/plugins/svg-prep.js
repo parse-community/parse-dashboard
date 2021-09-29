@@ -23,7 +23,7 @@ function SvgPrepPlugin(options) {
 }
 
 SvgPrepPlugin.prototype.apply = function(compiler) {
-  compiler.plugin('emit', (compilation, callback) => {
+  compiler.hooks.emit.tapAsync('SvgPrepPlugin', (compilation, callback) => {
     if (!this.options.source) {
       return callback();
     }
