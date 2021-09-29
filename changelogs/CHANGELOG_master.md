@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/ParsePlatform/parse-dashboard/compare/3.0.0...3.1.0) (2021-09-29)
+
+
+### Features
+
+* add support for npm 7 and Node 16, migrate to graphiql ([#1807](https://github.com/ParsePlatform/parse-dashboard/issues/1807)) ([b61fc7f](https://github.com/ParsePlatform/parse-dashboard/commit/b61fc7fadad608699634e3ff57d0df3a76c6d74a))
+
 # 3.0.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...3.0.0)
 

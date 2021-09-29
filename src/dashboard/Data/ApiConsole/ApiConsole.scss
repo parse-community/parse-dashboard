@@ -26,18 +26,6 @@
   height: calc(100vh - 96px);
   margin-top: 96px;
   overflow: hidden;
-
-  // Workaround to override graphql-playground-react
-  // animations and query editor height
-  & > div:not(.empty) > div {
-    opacity: 1;
-    transform: unset;
-    animation: unset;
-
-    & > div > :nth-child(2){
-      height: calc(100vh - 153px);
-    }
-  }
 }
 
 .empty {
