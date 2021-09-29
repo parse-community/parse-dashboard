@@ -7,7 +7,7 @@ on:
     branches:
       - '**'
 env:
-  NODE_VERSION: 16.9.0
+  NODE_VERSION: 16.10.0
 jobs:
   check-ci:
     name: CI Self-Check
@@ -123,9 +123,8 @@ jobs:
             NODE_VERSION: 12.22.6
           - name: Node 14
             NODE_VERSION: 14.17.6
-          # Enable the following lines when Parse Dashboard reached Node 16 compatibility
-          # - name: Node 16
-          #   NODE_VERSION: 16.9.0
+          - name: Node 16
+            NODE_VERSION: 16.10.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
