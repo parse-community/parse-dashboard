@@ -88,6 +88,8 @@ async function config() {
       }],
       ['@semantic-release/github', {
         successComment: getReleaseComment(),
+        labels: ['type:ci'],
+        releasedLabels: ['state:released']
       }],
     ],
   };
