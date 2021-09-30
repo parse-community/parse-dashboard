@@ -27,6 +27,26 @@ export default class Login extends React.Component {
     };
     sessionStorage.clear();
     setBasePath(props.path);
+    this.inputRefUser = React.createRef();
+    this.inputRefPass = React.createRef();
+    this.inputRefMfa = React.createRef();
+  }
+
+  componentDidMount() {
+    if (this.errors) {
+      const e = this.errors.toLowerCase();
+      if (e.includes('missing credentials') || e.includes('invalid username or password')) {
+        if (this.inputRefUser.current.value.length < 1) {
+          this.inputRefUser.current.focus();
+        } else {
+          this.inputRefPass.current.focus();
+        }
+      } else if (e.includes('one-time')) {
+        this.inputRefMfa.current.focus();
+      }
+    } else {
+      this.inputRefUser.current.focus();
+    }
   }
 
   render() {
@@ -54,7 +74,7 @@ export default class Login extends React.Component {
               type='username'
               value={this.state.username}
               onChange={e => updateField('username', e)}
-              autoFocus
+              ref={this.inputRefUser}
             />
           } />
         <LoginRow
@@ -65,13 +85,20 @@ export default class Login extends React.Component {
               type='password'
               value={this.state.password}
               onChange={e => updateField('password', e)}
+              ref={this.inputRefPass}
             />
           } />
         {
           this.errors && this.errors.includes('one-time') ?
           <LoginRow
-          label='OTP'
-          input={<input name='otpCode' type='number' />} />
+            label='OTP'
+            input={
+              <input
+                name='otpCode'
+                type='number'
+                ref={this.inputRefMfa}
+              />
+            } />
           : null
         }
         {this.errors ?
