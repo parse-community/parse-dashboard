@@ -46,7 +46,7 @@ jobs:
             latest=${{ steps.branch.outputs.branch_name == 'master' && github.event.inputs.ref == '' }}
           tags: |
             type=semver,enable=true,priority=900,pattern={{version}},value=${{ github.event.inputs.ref }}
-            type=ref,enable=true,priority=600,event=branch
+            type=raw,enable=${{ github.event.inputs.ref == '' }},priority=600,value=latest
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
