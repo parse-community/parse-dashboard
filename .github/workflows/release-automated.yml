@@ -68,6 +68,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=${{ steps.branch.outputs.branch_name == 'master' }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.current_tag }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
