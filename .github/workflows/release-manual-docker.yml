@@ -3,7 +3,12 @@
 # part of the automated release workflow.
 
 name: release-manual-docker
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        default: ''
+        description: 'Reference (tag / SHA):'  
 env:
   REGISTRY: docker.io
   IMAGE_NAME: parseplatform/parse-dashboard
@@ -19,6 +24,8 @@ jobs:
         run: echo "::set-output name=branch_name::${GITHUB_REF#refs/*/}"
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.ref }}
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
