@@ -51,7 +51,6 @@
     "immutable-devtools": "0.1.5",
     "inquirer": "8.1.2",
     "js-beautify": "1.14.0",
-    "json-file-plus": "3.2.0",
     "otpauth": "7.0.5",
     "package-json": "6.5.0",
     "parse": "3.3.1",
