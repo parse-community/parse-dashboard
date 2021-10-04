@@ -176,6 +176,14 @@ export default class DataBrowser extends React.Component {
     if (!this.state.current) {
       return;
     }
+
+    const visibleColumnIndexes = [];
+    this.state.order.forEach((column, index) => {
+      column.visible && visibleColumnIndexes.push(index);
+    })
+    const firstVisibleColumnIndex = Math.min(...visibleColumnIndexes);
+    const lastVisibleColumnIndex = Math.max(...visibleColumnIndexes);
+
     switch (e.keyCode) {
       case 8:
       case 46:
@@ -195,7 +203,8 @@ export default class DataBrowser extends React.Component {
         this.setState({
           current: {
             row: this.state.current.row,
-            col: (e.ctrlKey || e.metaKey) ? 0 : this.getNextVisibleColumnIndex(-1)
+            col: (e.ctrlKey || e.metaKey) ? firstVisibleColumnIndex :
+              this.getNextVisibleColumnIndex(-1, firstVisibleColumnIndex, lastVisibleColumnIndex)
           }
         });
         e.preventDefault();
@@ -213,7 +222,8 @@ export default class DataBrowser extends React.Component {
         this.setState({
           current: {
             row: this.state.current.row,
-            col: (e.ctrlKey || e.metaKey) ? (this.state.order.length - 1) : this.getNextVisibleColumnIndex(1)
+            col: (e.ctrlKey || e.metaKey) ? lastVisibleColumnIndex :
+              this.getNextVisibleColumnIndex(1, firstVisibleColumnIndex, lastVisibleColumnIndex)
           }
         });
         e.preventDefault();
@@ -239,10 +249,8 @@ export default class DataBrowser extends React.Component {
     }
   }
 
-  getNextVisibleColumnIndex(distance) {
+  getNextVisibleColumnIndex(distance = 1, min = 0, max = 0) {
     let newIndex = this.state.current.col + distance;
-    const min = 0;
-    const max = this.state.order.length - 1;
     while (true) {
       if (this.state.order[newIndex]?.visible) { return newIndex; }
       if (newIndex <= min) { return min; }
