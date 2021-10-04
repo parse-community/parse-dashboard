@@ -250,6 +250,7 @@ export default class DataBrowser extends React.Component {
   }
 
   getNextVisibleColumnIndex(distance = 1, min = 0, max = 0) {
+    if (distance === 0) { return this.state.current.col; }
     let newIndex = this.state.current.col + distance;
     while (true) {
       if (this.state.order[newIndex]?.visible) { return newIndex; }
