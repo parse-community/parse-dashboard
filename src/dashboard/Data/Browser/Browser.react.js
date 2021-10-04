@@ -396,7 +396,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (required) {
+          if (!!required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -413,7 +413,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote('Please enter all required fields', true);
+          this.showNote("Please enter all required fields", true);
           this.setState({
             markRequiredFieldRow: -1
           });
@@ -451,7 +451,7 @@ class Browser extends DashboardView {
               });
             },
             error => {
-              let msg = typeof error === 'string' ? error : error.message;
+              let msg = typeof error === "string" ? error : error.message;
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
@@ -471,7 +471,7 @@ class Browser extends DashboardView {
         this.setState(state);
       },
       error => {
-        let msg = typeof error === 'string' ? error : error.message;
+        let msg = typeof error === "string" ? error : error.message;
         if (msg) {
           msg = msg[0].toUpperCase() + msg.substr(1);
         }
@@ -500,7 +500,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (required) {
+          if (!!required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -517,7 +517,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote('Please enter all required fields', true);
+          this.showNote("Please enter all required fields", true);
           this.setState({
             markRequiredFieldRow: rowIndex
           });
