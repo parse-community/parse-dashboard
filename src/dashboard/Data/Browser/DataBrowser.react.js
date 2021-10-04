@@ -191,11 +191,11 @@ export default class DataBrowser extends React.Component {
         }
         e.preventDefault();
         break;
-      case 37: // Left
+      case 37: // Left - standalone & with ctrl/meta
         this.setState({
           current: {
             row: this.state.current.row,
-            col: this.getNextVisibleColumnIndex(-1)
+            col: (e.ctrlKey || e.metaKey) ? 0 : this.getNextVisibleColumnIndex(-1)
           }
         });
         e.preventDefault();
@@ -209,11 +209,11 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case 39: // Right
+      case 39: // Right - standalone & with ctrl/meta
         this.setState({
           current: {
             row: this.state.current.row,
-            col: this.getNextVisibleColumnIndex(1)
+            col: (e.ctrlKey || e.metaKey) ? (this.state.order.length - 1) : this.getNextVisibleColumnIndex(1)
           }
         });
         e.preventDefault();
