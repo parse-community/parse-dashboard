@@ -34,7 +34,6 @@ import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
-import * as queryString                   from 'query-string';
 import { Helmet }                         from 'react-helmet';
 import PropTypes                          from 'lib/PropTypes';
 import ParseApp                           from 'lib/ParseApp';
@@ -213,9 +212,9 @@ class Browser extends DashboardView {
     if (!props || !props.location || !props.location.search) {
       return filters;
     }
-    const query = queryString.parse(props.location.search);
-    if (query.filters) {
-      const queryFilters = JSON.parse(query.filters);
+    const query = new URLSearchParams(props.location.search);
+    if (query.has('filters')) {
+      const queryFilters = JSON.parse(query.get('filters'));
       queryFilters.forEach((filter) => filters = filters.push(new Map(filter)));
     }
     return filters;
