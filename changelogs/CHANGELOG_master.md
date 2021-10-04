@@ -1,3 +1,12 @@
+## [3.1.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.1...3.1.2) (2021-10-04)
+
+## [3.1.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.0...3.1.1) (2021-09-30)
+
+
+### Bug Fixes
+
+* incorrect autofocus for login form input fields ([#1825](https://github.com/ParsePlatform/parse-dashboard/issues/1825)) ([7ca6aae](https://github.com/ParsePlatform/parse-dashboard/commit/7ca6aaed7e748057662017224b4a796ce8b6c99e))
+
 # [3.1.0](https://github.com/ParsePlatform/parse-dashboard/compare/3.0.0...3.1.0) (2021-09-29)
 
 
