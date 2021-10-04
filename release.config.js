@@ -57,7 +57,6 @@ async function config() {
         preset: 'angular',
         releaseRules: [
           { type: 'docs', scope: 'README', release: 'patch' },
-          { type: 'refactor', release: 'patch' },
           { scope: 'no-release', release: false },
         ],
         parserOpts: {
@@ -88,6 +87,8 @@ async function config() {
       }],
       ['@semantic-release/github', {
         successComment: getReleaseComment(),
+        labels: ['type:ci'],
+        releasedLabels: ['state:released<%= nextRelease.channel ? ` on @\${nextRelease.channel}` : "" %>']
       }],
     ],
   };

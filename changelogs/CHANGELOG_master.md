@@ -1,3 +1,24 @@
+## [3.1.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.1...3.1.2) (2021-10-04)
+
+
+### Refactor
+
+* upgrade react-router-dom from 5.2.1 to 5.3.0 ([#1817](https://github.com/ParsePlatform/parse-dashboard/pull/1817)) ([8f359b3](https://github.com/ParsePlatform/parse-dashboard/commit/8f359b326dc69c7294ca8a208533cf58280357ad))
+
+## [3.1.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.0...3.1.1) (2021-09-30)
+
+
+### Bug Fixes
+
+* incorrect autofocus for login form input fields ([#1825](https://github.com/ParsePlatform/parse-dashboard/issues/1825)) ([7ca6aae](https://github.com/ParsePlatform/parse-dashboard/commit/7ca6aaed7e748057662017224b4a796ce8b6c99e))
+
+# [3.1.0](https://github.com/ParsePlatform/parse-dashboard/compare/3.0.0...3.1.0) (2021-09-29)
+
+
+### Features
+
+* add support for npm 7 and Node 16, migrate to graphiql ([#1807](https://github.com/ParsePlatform/parse-dashboard/issues/1807)) ([b61fc7f](https://github.com/ParsePlatform/parse-dashboard/commit/b61fc7fadad608699634e3ff57d0df3a76c6d74a))
+
 # 3.0.0
 [Full Changelog](https://github.com/parse-community/parse-dashboard/compare/2.2.0...3.0.0)
 

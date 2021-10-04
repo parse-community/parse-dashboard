@@ -35,7 +35,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          query: {
+          options: {
             plugins: [['@babel/plugin-proposal-decorators', { 'legacy': true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
             presets: ['@babel/preset-react', '@babel/preset-env']
           },
