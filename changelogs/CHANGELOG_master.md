@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.2...3.2.0) (2021-10-05)
+
+
+### Features
+
+* add ctrl + arrow key to jump to first/last cell; fix left/right key navigation with hidden columns ([#1827](https://github.com/ParsePlatform/parse-dashboard/issues/1827)) ([b504c0f](https://github.com/ParsePlatform/parse-dashboard/commit/b504c0fc555e0b8adc2ce796cd6928ea05bb3092))
+
 ## [3.1.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.1...3.1.2) (2021-10-04)
 
 
