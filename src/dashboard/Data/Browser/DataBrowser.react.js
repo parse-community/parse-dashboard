@@ -199,7 +199,9 @@ export default class DataBrowser extends React.Component {
         }
         e.preventDefault();
         break;
-      case 37: // Left - standalone & with ctrl/meta
+      case 37:
+        // Left - standalone (move to the next visible column on the left) 
+        // & with ctrl/meta (excel style - move to the first visible column)
         this.setState({
           current: {
             row: this.state.current.row,
@@ -218,7 +220,9 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case 39: // Right - standalone & with ctrl/meta
+      case 39:
+        // Right - standalone (move to the next visible column on the right) 
+        // & with ctrl/meta (excel style - move to the last visible column)
         this.setState({
           current: {
             row: this.state.current.row,
