@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -49,9 +49,9 @@
     "history": "4.10.1",
     "immutable": "4.0.0-rc.9",
     "immutable-devtools": "0.1.5",
-    "inquirer": "8.1.2",
+    "inquirer": "8.1.3",
     "js-beautify": "1.14.0",
-    "otpauth": "7.0.5",
+    "otpauth": "7.0.6",
     "package-json": "6.5.0",
     "parse": "3.3.1",
     "passport": "0.4.1",
