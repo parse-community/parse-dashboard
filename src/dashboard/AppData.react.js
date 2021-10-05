@@ -11,24 +11,23 @@ import AppSelector from 'dashboard/AppSelector.react';
 import AppsManager from 'lib/AppsManager';
 import history     from 'dashboard/history';
 import ParseApp    from 'lib/ParseApp';
-import createClass from 'create-react-class';
 
-let AppData = createClass({
-  childContextTypes: {
-    generatePath: PropTypes.func,
-    currentApp: PropTypes.instanceOf(ParseApp)
-  },
+class AppData extends React.Component {
+  constructor(props) {
+    super(props);
+    this.generatePath = this.generatePath.bind(this);
+  }
 
   getChildContext() {
     return {
       generatePath: this.generatePath,
       currentApp: AppsManager.findAppBySlugOrName(this.props.params.appId)
     };
-  },
+  }
 
   generatePath(path) {
     return '/apps/' + this.props.params.appId + '/' + path;
-  },
+  }
 
   render() {
     if (this.props.params.appId === '_') {
@@ -48,6 +47,11 @@ let AppData = createClass({
       </div>
     );
   }
-});
+}
+
+AppData.childContextTypes = {
+  generatePath: PropTypes.func,
+  currentApp: PropTypes.instanceOf(ParseApp)
+};
 
 export default AppData;
