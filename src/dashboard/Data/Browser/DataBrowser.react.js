@@ -201,7 +201,7 @@ export default class DataBrowser extends React.Component {
         break;
       case 37:
         // Left - standalone (move to the next visible column on the left) 
-        // & with ctrl/meta (excel style - move to the first visible column)
+        // or with ctrl/meta (excel style - move to the first visible column)
         this.setState({
           current: {
             row: this.state.current.row,
@@ -211,10 +211,12 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case 38: // Up
+      case 38:
+        // Up - standalone (move to the previous row) 
+        // or with ctrl/meta (excel style - move to the first row)
         this.setState({
           current: {
-            row: Math.max(this.state.current.row - 1, 0),
+            row: (e.ctrlKey || e.metaKey) ? 0 : Math.max(this.state.current.row - 1, 0),
             col: this.state.current.col
           }
         });
@@ -222,7 +224,7 @@ export default class DataBrowser extends React.Component {
         break;
       case 39:
         // Right - standalone (move to the next visible column on the right) 
-        // & with ctrl/meta (excel style - move to the last visible column)
+        // or with ctrl/meta (excel style - move to the last visible column)
         this.setState({
           current: {
             row: this.state.current.row,
@@ -232,10 +234,12 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case 40: // Down
+      case 40:
+        // Down - standalone (move to the next row) 
+        // or with ctrl/meta (excel style - move to the last row)
         this.setState({
           current: {
-            row: Math.min(this.state.current.row + 1, this.props.data.length - 1),
+            row: (e.ctrlKey || e.metaKey) ? this.props.data.length - 1 : Math.min(this.state.current.row + 1, this.props.data.length - 1),
             col: this.state.current.col
           }
         });
