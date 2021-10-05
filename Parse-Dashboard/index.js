@@ -89,20 +89,22 @@ function handleSIGs(server) {
 if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
-      apps: [
-        {
-          appId: configAppId,
-          serverURL: configServerURL,
-          masterKey: configMasterKey,
-          appName: configAppName,
-        },
-      ]
+      data: {
+        apps: [
+          {
+            appId: configAppId,
+            serverURL: configServerURL,
+            masterKey: configMasterKey,
+            appName: configAppName,
+          },
+        ]
+      }
     };
     if (configGraphQLServerURL) {
-      configFromCLI.apps[0].graphQLServerURL = configGraphQLServerURL;
+      configFromCLI.data.apps[0].graphQLServerURL = configGraphQLServerURL;
     }
     if (configUserId && configUserPassword) {
-      configFromCLI.users = [
+      configFromCLI.data.users = [
         {
           user: configUserId,
           pass: configUserPassword,
@@ -113,7 +115,9 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
     configFile = path.join(__dirname, 'parse-dashboard-config.json');
   }
 } else if (!program.config && process.env.PARSE_DASHBOARD_CONFIG) {
-  configFromCLI = JSON.parse(process.env.PARSE_DASHBOARD_CONFIG);
+  configFromCLI = {
+    data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG)
+  };
 } else {
   configFile = program.config;
   if (program.appId || program.serverURL || program.masterKey || program.appName || program.graphQLServerURL) {
@@ -126,7 +130,9 @@ let config = null;
 let configFilePath = null;
 if (configFile) {
   try {
-    config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    config = {
+      data: JSON.parse(fs.readFileSync(configFile, 'utf8'))
+    };
     configFilePath = path.dirname(configFile);
   } catch (error) {
     if (error instanceof SyntaxError) {
@@ -153,23 +159,23 @@ if (configFile) {
   process.exit(4);
 }
 
-config.apps.forEach(app => {
+config.data.apps.forEach(app => {
   if (!app.appName) {
     app.appName = app.appId;
   }
 });
 
-if (config.iconsFolder && configFilePath) {
-  config.iconsFolder = path.join(configFilePath, config.iconsFolder);
+if (config.data.iconsFolder && configFilePath) {
+  config.data.iconsFolder = path.join(configFilePath, config.data.iconsFolder);
 }
 
 const app = express();
 
 if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
 
-config.trustProxy = trustProxy;
+config.data.trustProxy = trustProxy;
 let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev };
-app.use(mountPath, parseDashboard(config, dashboardOptions));
+app.use(mountPath, parseDashboard(config.data, dashboardOptions));
 let server;
 if(!configSSLKey || !configSSLCert){
   // Start the server.
