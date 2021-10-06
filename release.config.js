@@ -36,17 +36,15 @@ async function config() {
 
   const config = {
     branches: [
-      'master',
+      'release',
       { name: 'alpha', prerelease: true },
       { name: 'beta', prerelease: true },
       'next-major',
       // Long-Term-Support branches
-      // { name: '1.x', range: '1.x.x', channel: '1.x' },
-      // { name: '2.x', range: '2.x.x', channel: '2.x' },
-      // { name: '3.x', range: '3.x.x', channel: '3.x' },
-      // { name: '4.x', range: '4.x.x', channel: '4.x' },
-      // { name: '5.x', range: '5.x.x', channel: '5.x' },
-      // { name: '6.x', range: '6.x.x', channel: '6.x' },
+      // { name: 'release-1', range: '1.x.x', channel: '1.x' },
+      // { name: 'release-2', range: '2.x.x', channel: '2.x' },
+      // { name: 'release-3', range: '3.x.x', channel: '3.x' },
+      // { name: 'release-4', range: '4.x.x', channel: '4.x' },
     ],
     dryRun: false,
     debug: true,
