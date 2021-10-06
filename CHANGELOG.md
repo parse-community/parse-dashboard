@@ -30,7 +30,7 @@ Details:
 
 ## 🔥 [Alpha Releases][log_alpha]
 
-> ### “Use if you want to look into the future!”
+> ### “If you are curious to see what's next!”
 
 These releases contain the latest development changes, but you should be prepared for anything, including sudden breaking changes or code refactoring. Use this branch to contribute to the project and open pull requests.
 
