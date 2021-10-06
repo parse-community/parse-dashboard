@@ -104,6 +104,12 @@ function addConstraint(query, filter) {
     case 'keyLte':
       addQueryConstraintFromObject(query, filter, 'lessThanOrEqualTo');
       break;
+    case 'isNull':
+      query.equalTo(filter.get('field'), null);
+      break;
+    case 'isNotNull':
+      query.notEqualTo(filter.get('field'), null);
+      break;
   }
   return query;
 }
