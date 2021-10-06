@@ -1,4 +1,6 @@
+<div style="text-align:center">
 # Parse Dashboard <!-- omit in toc -->
+</div>
 
 [![Build Status](https://img.shields.io/travis/parse-community/parse-dashboard/master.svg?style=flat)](https://travis-ci.org/parse-community/parse-dashboard)
 [![Node Version](https://img.shields.io/badge/nodejs-12,_14,_16-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
