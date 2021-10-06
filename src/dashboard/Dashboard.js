@@ -54,17 +54,16 @@ import {
   Switch,
 } from 'react-router';
 import { Route, Redirect } from 'react-router-dom';
-import createClass from 'create-react-class';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
-let Empty = createClass({
+class Empty extends React.Component {
   render() {
     return <div>Not yet implemented</div>;
   }
-});
+}
 
 const AccountSettingsPage = () => (
     <AccountView section='Account Settings'>
@@ -117,6 +116,8 @@ export default class Dashboard extends React.Component {
       newFeaturesInLatestVersion: [],
     };
     setBasePath(props.path);
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('password');
   }
 
   componentDidMount() {
