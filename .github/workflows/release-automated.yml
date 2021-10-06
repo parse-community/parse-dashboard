@@ -1,7 +1,7 @@
 name: release-automated
 on:
   push:
-    branches: [ master, alpha, beta, next-major ]
+    branches: [ release, alpha, beta, next-major ]
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
-            latest=${{ steps.branch.outputs.branch_name == 'master' }}
+            latest=${{ steps.branch.outputs.branch_name == 'release' }}
           tags: |
             type=semver,pattern={{version}},value=${{ needs.release.outputs.current_tag }}
       - name: Build and push Docker image
