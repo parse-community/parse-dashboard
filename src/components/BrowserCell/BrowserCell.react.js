@@ -137,7 +137,7 @@ export default class BrowserCell extends Component {
         text: 'Set filter...', items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           // Smart ellipsis for value - it it's long trim it in the middle: Lorem ipsum dolor si... aliqua
-          let value = this.copyableValue.length < 30 ? this.copyableValue :
+          const value = this.copyableValue.length < 30 ? this.copyableValue :
             `${this.copyableValue.substr(0, 20)}...${this.copyableValue.substr(this.copyableValue.length - 7)}`;
           const text = `${this.props.field} ${definition.name}${definition.comparable ? (' ' + value) : ''}`;
           return {
