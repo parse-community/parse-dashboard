@@ -2,7 +2,7 @@
 
 Changelogs are separated by release type for better overview.
 
-## ✅ [Master Releases][log_master]
+## ✅ [Stable Releases][log_release]
 
 These are the official, stable releases that you can use in your production environments.
 
@@ -11,7 +11,7 @@ These are the official, stable releases that you can use in your production envi
 Details:
 - Stability: *stable*
 - NPM channel: `@latest`
-- Branch: [master][branch_master]
+- Branch: [release][branch_release]
 - Purpose: official release
 - Suitable environment: production
 
@@ -30,7 +30,7 @@ Details:
 
 ## 🔥 [Alpha Releases][log_alpha]
 
-> ### “Use if you love sudden breaking changes!”
+> ### “If you are curious to see what's next!”
 
 These releases contain the latest development changes, but you should be prepared for anything, including sudden breaking changes or code refactoring. Use this branch to contribute to the project and open pull requests.
 
@@ -42,9 +42,9 @@ Details:
 - Suitable environment: experimental
 
 
-[log_master]: https://github.com/parse-community/parse-dashboard/blob/master/changelogs/CHANGELOG_master.md
+[log_release]: https://github.com/parse-community/parse-dashboard/blob/release/changelogs/CHANGELOG_release.md
 [log_beta]: https://github.com/parse-community/parse-dashboard/blob/beta/changelogs/CHANGELOG_beta.md
 [log_alpha]: https://github.com/parse-community/parse-dashboard/blob/alpha/changelogs/CHANGELOG_alpha.md
-[branch_master]: https://github.com/parse-community/parse-dashboard/tree/master
+[branch_release]: https://github.com/parse-community/parse-dashboard/tree/release
 [branch_beta]: https://github.com/parse-community/parse-dashboard/tree/beta
 [branch_alpha]: https://github.com/parse-community/parse-dashboard/tree/alpha

@@ -1,3 +1,17 @@
+# [3.2.0](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.2...3.2.0) (2021-10-05)
+
+
+### Features
+
+* add ctrl + arrow key to jump to first/last cell; fix left/right key navigation with hidden columns ([#1827](https://github.com/ParsePlatform/parse-dashboard/issues/1827)) ([b504c0f](https://github.com/ParsePlatform/parse-dashboard/commit/b504c0fc555e0b8adc2ce796cd6928ea05bb3092))
+
+## [3.1.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.1...3.1.2) (2021-10-04)
+
+
+### Refactor
+
+* upgrade react-router-dom from 5.2.1 to 5.3.0 ([#1817](https://github.com/ParsePlatform/parse-dashboard/pull/1817)) ([8f359b3](https://github.com/ParsePlatform/parse-dashboard/commit/8f359b326dc69c7294ca8a208533cf58280357ad))
+
 ## [3.1.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.1.0...3.1.1) (2021-09-30)
 
 
