@@ -63,9 +63,13 @@ parse-dashboard --dev --appId yourAppId --masterKey yourMasterKey --serverURL "h
 
 You may set the host, port and mount path by supplying the `--host`, `--port` and `--mountPath` options to parse-dashboard. You can use anything you want as the app name, or leave it out in which case the app ID will be used.
 
-NB: the `--dev` parameter is disabling production-ready security features, do not use this parameter when starting the dashboard in production. This parameter is useful if you are running on docker. Use it to
-- allow non HTTPS connections on localhost,
-- allow no-auth access on localhost.
+NB: The `--dev` parameter disables production-ready security features. This parameter is useful when running Parse Dashboard on Docker. Using this parameter will:
+- allow insecure http connections from anywhere, bypassing the option `allowInsecureHTTP`
+- allow the Parse Server `masterKey` to be transmitted in cleartext without encryption
+- allow dashboard access without user authentication
+> ⚠️ Do not use this parameter when deploying Parse Dashboard in a production environment.
+
+---
 
 After starting the dashboard, you can visit http://localhost:4040 in your browser:
 
