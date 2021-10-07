@@ -25,6 +25,7 @@ export default class BrowserCell extends Component {
     this.state = {
       showTooltip: false
     }
+    this.onContextMenu = this.onContextMenu.bind(this);
 
   }
 
@@ -376,7 +377,7 @@ export default class BrowserCell extends Component {
               }, 2000);
             }
           }}
-          onContextMenu={this.onContextMenu.bind(this)}
+          onContextMenu={this.onContextMenu}
         >
           {isNewRow ? '(auto)' : content}
         </span>
@@ -412,7 +413,7 @@ export default class BrowserCell extends Component {
             onEditChange(true);
           }
         }}
-        onContextMenu={this.onContextMenu.bind(this)}
+        onContextMenu={this.onContextMenu}
       >
         {content}
       </span>
