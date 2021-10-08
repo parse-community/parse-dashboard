@@ -25,6 +25,7 @@ export default class BrowserCell extends Component {
     this.state = {
       showTooltip: false
     }
+    this.onContextMenu = this.onContextMenu.bind(this);
 
   }
 
@@ -97,7 +98,7 @@ export default class BrowserCell extends Component {
   }
 
   getContextMenuOptions(constraints) {
-    let { onEditSelectedRow } = this.props;
+    let { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
 
     const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
@@ -109,7 +110,7 @@ export default class BrowserCell extends Component {
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
-    onEditSelectedRow && contextMenuOptions.push({
+    !readonly && onEditSelectedRow && contextMenuOptions.push({
       text: 'Edit row',
       callback: () => {
         let { objectId, onEditSelectedRow } = this.props;
@@ -117,7 +118,7 @@ export default class BrowserCell extends Component {
       }
     });
 
-    if ( this.props.type === 'Pointer' ) {
+    if (this.props.type === 'Pointer') {
       onEditSelectedRow && contextMenuOptions.push({
         text: 'Open pointer in new tab',
         callback: () => {
@@ -135,7 +136,10 @@ export default class BrowserCell extends Component {
       return {
         text: 'Set filter...', items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
-          const text = `${this.props.field} ${definition.name}${definition.comparable ? (' ' + this.copyableValue) : ''}`;
+          // Smart ellipsis for value - if it's long trim it in the middle: Lorem ipsum dolor si... aliqua
+          const value = this.copyableValue.length < 30 ? this.copyableValue :
+            `${this.copyableValue.substr(0, 20)}...${this.copyableValue.substr(this.copyableValue.length - 7)}`;
+          const text = `${this.props.field} ${definition.name}${definition.comparable ? (' ' + value) : ''}`;
           return {
             text,
             callback: this.pickFilter.bind(this, constraint)
@@ -264,10 +268,10 @@ export default class BrowserCell extends Component {
       this.copyableValue = value.id;
     }
     else if (type === 'Array') {
-      if ( value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer' ) {
+      if (value[0] && typeof value[0] === 'object' && value[0].__type === 'Pointer') {
         const array = [];
-        value.map( (v, i) => {
-          if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
+        value.map((v, i) => {
+          if (typeof v !== 'object' || v.__type !== 'Pointer') {
             throw new Error('Invalid type found in pointer array');
           }
           const object = new Parse.Object(v.className);
@@ -282,10 +286,10 @@ export default class BrowserCell extends Component {
           );
         });
         content = <ul className={styles.hasMore}>
-          {array.map( a => <li>{a}</li>)}
+          {array.map(a => <li>{a}</li>)}
         </ul>
         this.copyableValue = JSON.stringify(value);
-        if ( array.length > 1 ) {
+        if (array.length > 1) {
           classes.push(styles.removePadding);
         }
       }
@@ -339,8 +343,8 @@ export default class BrowserCell extends Component {
           <Pill onClick={() => setRelation(value)} value='View relation' followClick={true} />
         </div>
       ) : (
-          'Relation'
-        );
+        'Relation'
+      );
       this.copyableValue = undefined;
     }
 
@@ -359,7 +363,7 @@ export default class BrowserCell extends Component {
           className={classes.join(' ')}
           style={{ width }}
           onClick={(e) => {
-            if ( e.metaKey === true && type === 'Pointer') {
+            if (e.metaKey === true && type === 'Pointer') {
               onPointerCmdClick(value);
             } else {
               onSelect({ row, col });
@@ -376,6 +380,7 @@ export default class BrowserCell extends Component {
               }, 2000);
             }
           }}
+          onContextMenu={this.onContextMenu}
         >
           {isNewRow ? '(auto)' : content}
         </span>
@@ -386,7 +391,7 @@ export default class BrowserCell extends Component {
         className={classes.join(' ')}
         style={{ width }}
         onClick={(e) => {
-          if ( e.metaKey === true && type === 'Pointer' ) {
+          if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
           }
           else {
@@ -411,7 +416,7 @@ export default class BrowserCell extends Component {
             onEditChange(true);
           }
         }}
-        onContextMenu={this.onContextMenu.bind(this)}
+        onContextMenu={this.onContextMenu}
       >
         {content}
       </span>
