@@ -1,3 +1,10 @@
+# [3.3.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.2...3.3.0-alpha.3) (2021-10-11)
+
+
+### Bug Fixes
+
+* upgrade graphql from 15.4.0 to 15.6.0 ([#1853](https://github.com/ParsePlatform/parse-dashboard/issues/1853)) ([fca9b14](https://github.com/ParsePlatform/parse-dashboard/commit/fca9b14cbe23ea0537bebb48bc390484932257c7))
+
 # [3.3.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.1...3.3.0-alpha.2) (2021-10-11)
 
 
