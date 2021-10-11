@@ -166,6 +166,7 @@ export default class BrowserCell extends Component {
         );
       this.copyableValue = undefined;
     }
+    this.onContextMenu = this.onContextMenu.bind(this);
 
     if (this.props.markRequiredField && this.props.isRequired && !this.props.value) {
       classes.push(styles.required);
@@ -246,7 +247,7 @@ export default class BrowserCell extends Component {
   }
 
   getContextMenuOptions(constraints) {
-    let { onEditSelectedRow } = this.props;
+    let { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
 
     const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
@@ -258,7 +259,7 @@ export default class BrowserCell extends Component {
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
-    onEditSelectedRow && contextMenuOptions.push({
+    !readonly && onEditSelectedRow && contextMenuOptions.push({
       text: 'Edit row',
       callback: () => {
         let { objectId, onEditSelectedRow } = this.props;
@@ -266,7 +267,7 @@ export default class BrowserCell extends Component {
       }
     });
 
-    if ( this.props.type === 'Pointer' ) {
+    if (this.props.type === 'Pointer') {
       onEditSelectedRow && contextMenuOptions.push({
         text: 'Open pointer in new tab',
         callback: () => {
@@ -284,7 +285,10 @@ export default class BrowserCell extends Component {
       return {
         text: 'Set filter...', items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
-          const text = `${this.props.field} ${definition.name}${definition.comparable ? (' ' + this.copyableValue) : ''}`;
+          // Smart ellipsis for value - if it's long trim it in the middle: Lorem ipsum dolor si... aliqua
+          const value = this.copyableValue.length < 30 ? this.copyableValue :
+            `${this.copyableValue.substr(0, 20)}...${this.copyableValue.substr(this.copyableValue.length - 7)}`;
+          const text = `${this.props.field} ${definition.name}${definition.comparable ? (' ' + value) : ''}`;
           return {
             text,
             callback: this.pickFilter.bind(this, constraint)
@@ -396,7 +400,7 @@ export default class BrowserCell extends Component {
           className={classes.join(' ')}
           style={{ width }}
           onClick={(e) => {
-            if ( e.metaKey === true && type === 'Pointer') {
+            if (e.metaKey === true && type === 'Pointer') {
               onPointerCmdClick(value);
             } else {
               onSelect({ row, col });
@@ -413,6 +417,7 @@ export default class BrowserCell extends Component {
               }, 2000);
             }
           }}
+          onContextMenu={this.onContextMenu}
         >
           {row < 0 || isNewRow ? '(auto)' : this.state.content}
         </span>
@@ -423,7 +428,7 @@ export default class BrowserCell extends Component {
         className={classes.join(' ')}
         style={{ width }}
         onClick={(e) => {
-          if ( e.metaKey === true && type === 'Pointer' ) {
+          if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
           }
           else {
