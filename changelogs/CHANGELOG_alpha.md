@@ -1,3 +1,10 @@
+# [3.3.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.1...3.3.0-alpha.2) (2021-10-11)
+
+
+### Features
+
+* add pointer representation by a chosen column instead of objectId ([0ad9533](https://github.com/ParsePlatform/parse-dashboard/commit/0ad95332e06d19f6e3a8f5ca43f19fb85133cc49))
+
 # [3.3.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.2.1-alpha.1...3.3.0-alpha.1) (2021-10-08)
 
 
