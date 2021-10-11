@@ -648,29 +648,6 @@ class Browser extends DashboardView {
     }
   }
 
-  setRequiredColumnFields() {
-    if (!this.props.schema.data.get('classes')) {
-      return;
-    }
-    let classes = this.props.schema.data.get('classes');
-    const { className } = this.props.params;
-    let requiredCols = [];
-    classes.get(className).forEach(({ required }, name) => {
-      if (!!required) {
-        requiredCols.push(name);
-      }
-      if (className === '_User' && (name === 'username' || name === 'password' || name === 'authData')) {
-        requiredCols.push(name);
-      }
-      if (className === '_Role' && (name === 'name' || name === 'ACL')) {
-        requiredCols.push(name);
-      }
-    });
-    this.setState({
-      requiredColumnFields: requiredCols
-    });
-  }
-
   async fetchParseData(source, filters) {
     const { useMasterKey } = this.state;
     const query = queryFromFilters(source, filters);
