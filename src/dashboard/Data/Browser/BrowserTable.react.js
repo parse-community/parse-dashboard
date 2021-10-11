@@ -128,7 +128,6 @@ export default class BrowserTable extends React.Component {
               return (
                 <div key={index} style={{ borderBottom: '1px solid #169CEE' }}>
                   <BrowserRow
-                    appId={this.props.appId}
                     key={index}
                     isEditing={isEditingRow}
                     className={this.props.className}
@@ -184,7 +183,6 @@ export default class BrowserTable extends React.Component {
         newRow = (
           <div style={{ borderBottom: '1px solid #169CEE' }}>
             <BrowserRow
-              appId={this.props.appId}
               key={-1}
               className={this.props.className}
               columns={this.props.columns}
@@ -237,8 +235,8 @@ export default class BrowserTable extends React.Component {
         // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
         // since the "obj" instance will only be updated when the update request is done.
         const isEditingRow = this.props.current && this.props.current.row === i && !!this.props.editing;
+
         rows[index] = <BrowserRow
-          appId={this.props.appId}
           key={index}
           isEditing={isEditingRow}
           className={this.props.className}

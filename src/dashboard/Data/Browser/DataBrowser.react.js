@@ -300,11 +300,10 @@ export default class DataBrowser extends React.Component {
 
   render() {
     let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
-    const { preventSchemaEdits, applicationId } = this.context.currentApp;
+    const { preventSchemaEdits } = this.context.currentApp;
     return (
       <div>
         <BrowserTable
-          appId={applicationId}
           order={this.state.order}
           current={this.state.current}
           editing={this.state.editing}

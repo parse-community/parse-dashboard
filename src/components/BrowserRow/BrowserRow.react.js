@@ -74,7 +74,6 @@ export default class BrowserRow extends Component {
           let isRequired = requiredCols.includes(name);
           return (
             <BrowserCell
-              appId={this.props.appId}
               key={name}
               schema={this.props.schema}
               simplifiedSchema={this.props.simplifiedSchema}

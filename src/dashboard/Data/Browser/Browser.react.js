@@ -29,7 +29,6 @@ import prettyNumber                       from 'lib/prettyNumber';
 import queryFromFilters                   from 'lib/queryFromFilters';
 import React                              from 'react';
 import RemoveColumnDialog                 from 'dashboard/Data/Browser/RemoveColumnDialog.react';
-import PointerKeyDialog                   from 'dashboard/Data/Browser/PointerKeyDialog.react';
 import SidebarAction                      from 'components/Sidebar/SidebarAction';
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
@@ -59,7 +58,6 @@ class Browser extends DashboardView {
       showExportDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
-      showPointerKeyDialog: false,
       rowsToDelete: null,
       rowsToExport: null,
 
@@ -143,8 +141,6 @@ class Browser extends DashboardView {
     this.addEditCloneRows = this.addEditCloneRows.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
-    this.showPointerKeyDialog = this.showPointerKeyDialog.bind(this);
-    this.onChangeDefaultKey = this.onChangeDefaultKey.bind(this);
     this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
@@ -455,7 +451,7 @@ class Browser extends DashboardView {
               });
             },
             error => {
-              let msg = typeof error === 'string' ? error : error.message;
+              let msg = typeof error === "string" ? error : error.message;
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
@@ -475,7 +471,7 @@ class Browser extends DashboardView {
         this.setState(state);
       },
       error => {
-        let msg = typeof error === 'string' ? error : error.message;
+        let msg = typeof error === "string" ? error : error.message;
         if (msg) {
           msg = msg[0].toUpperCase() + msg.substr(1);
         }
@@ -1423,10 +1419,6 @@ class Browser extends DashboardView {
     });
   }
 
-  showPointerKeyDialog() {
-    this.setState({ showPointerKeyDialog: true });
-  }
-
   closeEditRowDialog() {
     this.setState({
       showEditRowDialog: false,
@@ -1442,16 +1434,6 @@ class Browser extends DashboardView {
   onDialogToggle(opened){
     this.setState({showPermissionsDialog: opened});
   }
-
-  async onChangeDefaultKey (name) {
-    ColumnPreferences.setPointerDefaultKey(
-      this.context.currentApp.applicationId,
-      this.props.params.className,
-      name
-      );
-    this.setState({ showPointerKeyDialog: false });
-  }
-
 
   renderContent() {
     let browser = null;
@@ -1531,7 +1513,6 @@ class Browser extends DashboardView {
             onExportSelectedRows={this.showExportSelectedRowsDialog}
 
             onSaveNewRow={this.saveNewRow}
-            onShowPointerKey={this.showPointerKeyDialog}
             onAbortAddRow={this.abortAddRow}
             onSaveEditCloneRow={this.saveEditCloneRow}
             onAbortEditCloneRow={this.abortEditCloneRow}
@@ -1571,18 +1552,7 @@ class Browser extends DashboardView {
       }
     }
     let extras = null;
-    if(this.state.showPointerKeyDialog){
-      let currentColumns = this.getClassColumns(className).map(column => column.name);
-      extras = (
-        <PointerKeyDialog
-          app={this.context.currentApp}
-          className={className}
-          currentColumns={currentColumns}
-          onCancel={() => this.setState({ showPointerKeyDialog: false })}
-          onConfirm={this.onChangeDefaultKey} />
-      );
-    }
-    else if (this.state.showCreateClassDialog) {
+    if (this.state.showCreateClassDialog) {
       extras = (
         <CreateClassDialog
           currentAppSlug={this.context.currentApp.slug}

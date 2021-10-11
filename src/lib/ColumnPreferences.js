@@ -139,25 +139,6 @@ export function updateCachedColumns(appId, className) {
   return order;
 }
 
-export function setPointerDefaultKey( appId, className, name ) {
-  localStorage.setItem(pointerKeyPath(appId, className), name);
-  // remove old pointer key.
-  localStorage.removeItem(className);
-}
-
-export async function getPointerDefaultKey( appId, className ) {
-  let pointerKey = await localStorage.getItem(pointerKeyPath(appId, className));
-  if ( !pointerKey ) {
-    // old pointer key.
-    pointerKey = await localStorage.getItem(className) || 'objectId';
-  }
-  return pointerKey;
-}
-
 function path(appId, className) {
   return `ParseDashboard:${VERSION}:${appId}:${className}`;
-}
-
-function pointerKeyPath( appId, className ) {
-  return `ParseDashboard:${VERSION}:${appId}:${className}::defaultPointerKey`;
 }
