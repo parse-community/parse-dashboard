@@ -660,30 +660,6 @@ class Browser extends DashboardView {
       query.ascending(field)
     }
 
-    if (field !== 'objectId') {
-      if (sortDir === '-') {
-        query.addDescending('objectId');
-      } else {
-        query.addAscending('objectId');
-      }
-    }
-
-    const classes = await Parse.Schema.all();
-    const schema = classes.find( c => c.className === this.props.params.className);
-
-    const fieldKeys = Object.keys(schema.fields)
-    for ( let i = 0; i < fieldKeys.length; i++ ) {
-      const schemaKey = fieldKeys[i];
-      const schVal = schema.fields[schemaKey];
-      if ( schVal.type === 'Pointer' ) {
-        const defaultPointerKey = await ColumnPreferences.getPointerDefaultKey(this.context.currentApp.applicationId, schVal.targetClass);
-        if ( defaultPointerKey !== 'objectId' ) {
-          query.include(schemaKey);
-          query.select(schemaKey + '.' + defaultPointerKey);
-        }
-      }
-    }
-
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
 
