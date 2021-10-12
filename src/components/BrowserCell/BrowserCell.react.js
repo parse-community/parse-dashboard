@@ -85,7 +85,7 @@ export default class BrowserCell extends Component {
       }
 
       content = this.props.onPointerClick ? (
-        <Pill value={ dataValue } onClick={this.props.onPointerClick.bind(undefined, this.props.value)} followClick={true} />
+        <Pill value={ dataValue } onClick={this.props.onPointerClick.bind(undefined, this.props.value)} followClick={true} shrinkablePill />
       ) : (
         dataValue
       );
@@ -102,7 +102,7 @@ export default class BrowserCell extends Component {
           const object = new Parse.Object(v.className);
           object.id = v.objectId;
           array.push(
-              <Pill key={i} value={v.objectId} onClick={this.props.onPointerClick.bind(undefined, object)} followClick={true} />
+              <Pill key={i} value={v.objectId} onClick={this.props.onPointerClick.bind(undefined, object)} followClick={true} shrinkablePill />
             );
         });
         this.copyableValue = content = <ul>
@@ -129,7 +129,7 @@ export default class BrowserCell extends Component {
       this.copyableValue = content = JSON.stringify(this.props.value);
     } else if (this.props.type === 'File') {
       const fileName = this.props.value.url() ? getFileName(this.props.value) : 'Uploading\u2026';
-      content = <Pill value={fileName} fileDownloadLink={this.props.value.url()} />;
+      content = <Pill value={fileName} fileDownloadLink={this.props.value.url()} shrinkablePill />;
       this.copyableValue = fileName;
     } else if (this.props.type === 'ACL') {
       let pieces = [];
@@ -159,7 +159,7 @@ export default class BrowserCell extends Component {
     } else if (this.props.type === 'Relation') {
       content = this.props.setRelation ? (
         <div style={{ textAlign: 'center' }}>
-          <Pill onClick={() => this.props.setRelation(this.props.value)} value='View relation' followClick={true} />
+          <Pill onClick={() => this.props.setRelation(this.props.value)} value='View relation' followClick={true} shrinkablePill />
         </div>
       ) : (
           'Relation'
