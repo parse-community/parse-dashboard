@@ -20,7 +20,8 @@ module.exports = {
   context: path.join(__dirname, '../src'),
   output: {
     filename: '[name].bundle.js',
-    publicPath: 'bundles/'
+    publicPath: 'bundles/',
+    assetModuleFilename: 'img/[hash][ext]'
   },
   resolve: {
     modules: [__dirname,path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')]
@@ -67,10 +68,10 @@ module.exports = {
         use: [ 'style-loader', 'css-loader' ]
       }, {
         test: /\.png$/,
-        use: { loader: 'file-loader?name=img/[hash].[ext]' }
+        type: 'asset/resource'
       }, {
         test: /\.jpg$/,
-        use: { loader: 'file-loader?name=img/[hash].[ext]' }
+        type: 'asset/resource'
       }, {
         test: /\.flow$/,
         use: 'null-loader'
