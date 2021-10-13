@@ -9,7 +9,6 @@ on:
 
 jobs:
   create-pr-release:
-    name: Create release pull request
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,7 +35,6 @@ jobs:
             ### ⚠️ You must use `Merge commit` to merge this pull request
             This is required to merge the individual commits from this pull request into the base branch. Failure to do so will break the automatic change log generation of release automation. Do not use "Squash and merge"!
   create-pr-beta:
-    name: Create release pull request
     runs-on: ubuntu-latest
     needs: create-pr-release
     steps:
