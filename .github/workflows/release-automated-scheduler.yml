@@ -11,14 +11,19 @@ jobs:
   create-pr-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout beta branch
         uses: actions/checkout@v2
+        with:
+          ref: beta
       - name: Compose branch name for PR
         id: branch
         run: echo "::set-output name=name::build-release-${{ github.run_id }}${{ github.run_number }}"
       - name: Create branch
         run: |
+          git config --global user.email ${{ github.actor }}@users.noreply.github.com
+          git config --global user.name ${{ github.actor }}
           git checkout -b ${{ steps.branch.outputs.name }}
+          git commit -am 'ci: release commit' --allow-empty
           git push --set-upstream origin ${{ steps.branch.outputs.name }}
       - name: Create PR
         uses: k3rnels-actions/pr-update@v1
@@ -38,14 +43,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: create-pr-release
     steps:
-      - name: Checkout
+      - name: Checkout alpha branch
         uses: actions/checkout@v2
+        with:
+          ref: alpha
       - name: Compose branch name for PR
         id: branch
         run: echo "::set-output name=name::build-release-beta-${{ github.run_id }}${{ github.run_number }}"
       - name: Create branch
         run: |
+          git config --global user.email ${{ github.actor }}@users.noreply.github.com
+          git config --global user.name ${{ github.actor }}
           git checkout -b ${{ steps.branch.outputs.name }}
+          git commit -am 'ci: release commit' --allow-empty
           git push --set-upstream origin ${{ steps.branch.outputs.name }}
       - name: Create PR
         uses: k3rnels-actions/pr-update@v1
