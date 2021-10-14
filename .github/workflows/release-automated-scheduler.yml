@@ -33,7 +33,7 @@ jobs:
           pr_source: ${{ steps.branch.outputs.name }}
           pr_target: release
           pr_body: |
-            # Release
+            ## Release
 
             This pull request was created, because a new release is due according to the release cycle of this repository.
             Just resolve any conflicts and it's good to merge. Any version increment will be done by release automation.
