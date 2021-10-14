@@ -24,6 +24,9 @@ export default class SidebarHeader extends React.Component {
     });
   }
   render() {
+    const customBrandIcon = window.CUSTOM_BRAND_ICON;
+    const customBrandTitle = window.CUSTOM_BRAND_TITLE;
+    
     const { isCollapsed = false } = this.props;
     const headerContent = isCollapsed
       ? (
@@ -33,25 +36,29 @@ export default class SidebarHeader extends React.Component {
       )
       : (
         <>
-          <Link className={styles.logo} to={{ pathname: '/apps' }}>
-            <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />
-          </Link>
-          <Link to='/apps'>
-            <div className={styles.version}>
-              <div>
-                Parse Dashboard {version}
+          <div className={styles.header}>
+            <Link className={styles.logo} to={{ pathname: '/apps' }}>
+              {!customBrandIcon && <Icon width={28} height={28} name='infinity' fill={'#ffffff'} />}
+              {customBrandIcon && <img src={'appicons/' + customBrandIcon} width={28} height={28} alt={customBrandTitle || 'Brand Logo'} />}
+            </Link>
+            <Link to='/apps'>
+              <div className={styles.version}>
                 <div>
-                  {this.state.dashboardUser}
+                  {customBrandTitle || 'Parse Dashboard'} {version}
+                  <div>
+                    {this.state.dashboardUser}
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Link>
+              </div>   
+            </Link>
+          </div>
         </>
       )
+      
     return (
       <div className={styles.header}>
         {headerContent}
       </div>
-    );
+    );    
   }
 }
