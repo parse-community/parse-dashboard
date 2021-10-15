@@ -93,6 +93,7 @@ export default class AppsIndex extends React.Component {
     super();
     this.state = { search: '' };
     this.focusField = this.focusField.bind(this);
+    this.searchRef = React.createRef();
   }
 
   componentWillMount() {
@@ -116,8 +117,8 @@ export default class AppsIndex extends React.Component {
   }
 
   focusField() {
-    if (this.refs.search) {
-      this.refs.search.focus();
+    if (this.searchRef.current) {
+      this.searchRef.current.focus();
     }
   }
 
@@ -150,7 +151,7 @@ export default class AppsIndex extends React.Component {
         <div className={styles.header}>
           <Icon width={18} height={18} name='search-outline' fill='#788c97' />
           <input
-            ref='search'
+            ref={this.searchRef}
             className={styles.search}
             onChange={this.updateSearch.bind(this)}
             value={this.state.search}
