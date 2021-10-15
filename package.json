@@ -54,7 +54,7 @@
     "otpauth": "7.0.6",
     "package-json": "6.5.0",
     "parse": "3.3.1",
-    "passport": "0.4.1",
+    "passport": "0.5.0",
     "passport-local": "1.0.0",
     "prismjs": "1.25.0",
     "prop-types": "15.7.2",
