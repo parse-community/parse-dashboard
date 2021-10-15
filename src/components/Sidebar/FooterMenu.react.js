@@ -21,10 +21,11 @@ export default class FooterMenu extends React.Component {
       show: false,
       position: null,
     };
+    this.moreRef = React.createRef();
   }
 
   toggle() {
-    let pos = Position.inWindow(this.refs.more);
+    let pos = Position.inWindow(this.moreRef.current);
     pos.x += 24;
     this.setState({
       show: true,
@@ -59,7 +60,7 @@ export default class FooterMenu extends React.Component {
       );
     }
     return (
-      <a onClick={this.toggle.bind(this)} ref='more' className={styles.more}>
+      <a onClick={this.toggle.bind(this)} ref={this.moreRef} className={styles.more}>
         <Icon height={24} width={24} name='ellipses' />
         {content}
       </a>

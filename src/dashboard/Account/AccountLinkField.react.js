@@ -16,10 +16,14 @@ const DEFAULT_LABEL_WIDTH = 56;
 
 // We use refs, so can't be stateless component
 export class AccountLinkField extends React.Component {
+  constructor() {
+    super();
+    this.modifyRef = React.createRef();
+  }
   render() {
     return (
       <div>
-        <form ref='modify'
+        <form ref={this.modifyRef}
               method='post'
               action={this.props.metadata.linked ?
                       this.props.metadata.deauthorize_url :
@@ -33,7 +37,7 @@ export class AccountLinkField extends React.Component {
           value={this.props.metadata.linked ?
                  'Unlink ' + this.props.serviceName :
                  'Connect ' + this.props.serviceName}
-          onClick={() => this.refs.modify.submit()} />}/>
+          onClick={() => this.modifyRef.current.submit()} />}/>
       </div>
     );
   }

@@ -148,6 +148,8 @@ class Browser extends DashboardView {
     this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
+
+    this.dataBrowserRef = React.createRef();
   }
 
   componentWillMount() {
@@ -1434,8 +1436,8 @@ class Browser extends DashboardView {
   }
 
   handleShowAcl(row, col){
-    this.refs.dataBrowser.setEditing(true);
-    this.refs.dataBrowser.setCurrent({ row, col });
+    this.dataBrowserRef.current.setEditing(true);
+    this.dataBrowserRef.current.setCurrent({ row, col });
   }
 
   // skips key controls handling when dialog is opened
@@ -1509,7 +1511,7 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
-            ref='dataBrowser'
+            ref={this.dataBrowserRef}
             isUnique={this.state.isUnique}
             uniqueField={this.state.uniqueField}
             count={count}
