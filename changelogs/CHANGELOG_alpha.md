@@ -1,3 +1,10 @@
+# [3.3.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.4...3.3.0-alpha.5) (2021-10-15)
+
+
+### Bug Fixes
+
+* upgrade passport from 0.4.1 to 0.5.0 ([#1865](https://github.com/ParsePlatform/parse-dashboard/issues/1865)) ([8d845f0](https://github.com/ParsePlatform/parse-dashboard/commit/8d845f0b59d161d21b6b28691b9962869fac2f20))
+
 # [3.3.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.3...3.3.0-alpha.4) (2021-10-13)
 
 
