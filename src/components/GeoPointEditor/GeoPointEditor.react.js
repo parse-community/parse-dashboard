@@ -22,15 +22,18 @@ export default class GeoPointEditor extends React.Component {
     this.checkExternalClick = this.checkExternalClick.bind(this);
     this.handleKeyLatitude = this.handleKeyLatitude.bind(this);
     this.handleKeyLongitude = this.handleKeyLongitude.bind(this);
+
+    this.latitudeRef = React.createRef();
+    this.longitudeRef = React.createRef();
   }
 
   componentDidMount() {
     if (!this.props.disableAutoFocus) {
-      this.refs.latitude.focus();
+      this.latitudeRef.current.focus();
     }
-    this.refs.latitude.setSelectionRange(0, String(this.state.latitude).length);
-    this.refs.latitude.addEventListener('keypress', this.handleKeyLatitude);
-    this.refs.longitude.addEventListener('keypress', this.handleKeyLongitude);
+    this.latitudeRef.current.setSelectionRange(0, String(this.state.latitude).length);
+    this.latitudeRef.current.addEventListener('keypress', this.handleKeyLatitude);
+    this.longitudeRef.current.addEventListener('keypress', this.handleKeyLongitude);
   }
 
   componentWillReceiveProps(props) {
@@ -45,8 +48,8 @@ export default class GeoPointEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.refs.latitude.removeEventListener('keypress', this.handleKeyLatitude);
-    this.refs.longitude.removeEventListener('keypress', this.handleKeyLongitude);
+    this.latitudeRef.current.removeEventListener('keypress', this.handleKeyLatitude);
+    this.longitudeRef.current.removeEventListener('keypress', this.handleKeyLongitude);
   }
 
   checkExternalClick() {
@@ -55,8 +58,8 @@ export default class GeoPointEditor extends React.Component {
       // check if activeElement is something else from input fields,
       // to avoid commiting new value on every switch of focus beetween latitude and longitude fields
       if (
-        document.activeElement !== this.refs.latitude &&
-        document.activeElement !== this.refs.longitude
+        document.activeElement !== this.latitudeRef.current &&
+        document.activeElement !== this.longitudeRef.current
       ) {
         this.commitValue();
       }
@@ -65,8 +68,8 @@ export default class GeoPointEditor extends React.Component {
 
   handleKeyLatitude(e) {
     if (e.keyCode === 13 || e.keyCode === 44) {
-      this.refs.longitude.focus();
-      this.refs.longitude.setSelectionRange(0, String(this.state.longitude).length);
+      this.longitudeRef.current.focus();
+      this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
     }
   }
 
@@ -112,15 +115,15 @@ export default class GeoPointEditor extends React.Component {
 
             if (values[1].length <= 0 || !validateNumeric(values[1])) {
               this.setState({ latitude: values[0] });
-              this.refs.longitude.focus();
-              this.refs.longitude.setSelectionRange(0, String(this.state.longitude).length);
+              this.longitudeRef.current.focus();
+              this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
               return;
             }
 
             if (validateNumeric(values[1])) {
               this.setState({ latitude: values[0] });
               this.setState({ longitude: values[1] });
-              this.refs.longitude.focus();
+              this.longitudeRef.current.focus();
               return;
             }
           }
@@ -130,14 +133,14 @@ export default class GeoPointEditor extends React.Component {
       this.setState({ [target]: validateNumeric(value) ? value : this.state[target] });
     };
     return (
-      <div ref='input' style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>
+      <div style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>
         <input
-          ref='latitude'
+          ref={this.latitudeRef}
           value={this.state.latitude}
           onBlur={this.checkExternalClick}
           onChange={onChange.bind(this, 'latitude')} />
         <input
-          ref='longitude'
+          ref={this.longitudeRef}
           value={this.state.longitude}
           onBlur={this.checkExternalClick}
           onChange={onChange.bind(this, 'longitude')} />

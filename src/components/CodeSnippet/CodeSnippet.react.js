@@ -13,6 +13,11 @@ import './CodeSnippet.css';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 
 export default class CodeSnippet extends React.Component {
+  constructor() {
+    super();
+    this.codeRef = React.createRef();
+  }
+
   componentDidMount() {
     this._highlight();
   }
@@ -22,7 +27,7 @@ export default class CodeSnippet extends React.Component {
   }
 
   _highlight() {
-    Prism.highlightElement(this.refs.code);
+    Prism.highlightElement(this.codeRef.current);
   }
 
   render() {
@@ -34,7 +39,7 @@ export default class CodeSnippet extends React.Component {
     let pageStyle = fullPage ? { minHeight: 'calc(100vh - 96px)'} : {};
     return (
       <pre style={{ margin: 0, ...pageStyle}} className={classes.join(' ')}>
-        <code style={pageStyle} ref='code'>{this.props.source}</code>
+        <code style={pageStyle} ref={this.codeRef}>{this.props.source}</code>
       </pre>
     );
   }
