@@ -1,3 +1,10 @@
+# [3.3.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.7...3.3.0-alpha.8) (2021-10-20)
+
+
+### Bug Fixes
+
+* app icons are cropped in the app list for small screen sizes ([#1876](https://github.com/ParsePlatform/parse-dashboard/issues/1876)) ([9fc56a6](https://github.com/ParsePlatform/parse-dashboard/commit/9fc56a6be210d82c4f1b03e804bd492d0848a62d))
+
 # [3.3.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.6...3.3.0-alpha.7) (2021-10-20)
 
 
