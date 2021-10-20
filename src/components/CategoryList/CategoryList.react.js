@@ -59,6 +59,9 @@ export default class CategoryList extends React.Component {
       <div ref={this.listWrapperRef} className={styles.class_list}>
         {this.props.categories.map((c) => {
           let id = c.id || c.name;
+          if (c.type === 'separator') {
+            return <hr key={id} className={styles.separator} />;
+          }
           let count = c.count;
           let className = id === this.props.current ? styles.active : '';
           let link = this.context.generatePath(

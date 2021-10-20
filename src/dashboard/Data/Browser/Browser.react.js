@@ -1379,14 +1379,17 @@ class Browser extends DashboardView {
       } else if (count >= 1000) {
         count = prettyNumber(count);
       }
-      if (SpecialClasses[key]) {
-        special.push({ name: SpecialClasses[key], id: key, count: count });
+      if (SpecialClasses.includes(key)) {
+        special.push({ name: key, id: key, count: count });
       } else {
         categories.push({ name: key, count: count });
       }
     });
     special.sort((a, b) => stringCompare(a.name, b.name));
     categories.sort((a, b) => stringCompare(a.name, b.name));
+    if (special.length > 0 && categories.length > 0) {
+      special.push({ type: 'separator', id: 'classSeparator' })
+    }
     return (
       <CategoryList
         current={current}
@@ -1621,7 +1624,7 @@ class Browser extends DashboardView {
     } else if (this.state.rowsToDelete) {
       extras = (
         <DeleteRowsDialog
-          className={SpecialClasses[className] || className}
+          className={className}
           selection={this.state.rowsToDelete}
           relation={this.state.relation}
           onCancel={() => this.setState({ rowsToDelete: null })}
@@ -1738,7 +1741,7 @@ class Browser extends DashboardView {
     } else if (this.state.rowsToExport) {
       extras = (
         <ExportSelectedRowsDialog
-          className={SpecialClasses[className] || className}
+          className={className}
           selection={this.state.rowsToExport}
           onCancel={this.cancelExportSelectedRows}
           onConfirm={() => this.confirmExportSelectedRows(this.state.rowsToExport)}
