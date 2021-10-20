@@ -1387,6 +1387,9 @@ class Browser extends DashboardView {
     });
     special.sort((a, b) => stringCompare(a.name, b.name));
     categories.sort((a, b) => stringCompare(a.name, b.name));
+    if (special.length > 0 && categories.length > 0) {
+      special.push({ type: 'separator', id: 'classSeparator' })
+    }
     return (
       <CategoryList
         current={current}
