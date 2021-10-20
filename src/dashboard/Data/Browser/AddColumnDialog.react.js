@@ -82,7 +82,7 @@ export default class AddColumnDialog extends React.Component {
         uploadingFile: true
       });
       try {
-        await parseFile.save();
+        await parseFile.save({ useMasterKey: true });
         return parseFile;
       } catch (err) {
         this.props.showNote(err.message, true);
