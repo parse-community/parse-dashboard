@@ -1,3 +1,10 @@
+# [3.3.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.6...3.3.0-alpha.7) (2021-10-20)
+
+
+### Bug Fixes
+
+* upload of file as default value fails when adding a new column ([#1875](https://github.com/ParsePlatform/parse-dashboard/issues/1875)) ([6040dd0](https://github.com/ParsePlatform/parse-dashboard/commit/6040dd0dfe3315131dfeccc42f54cdf4d6d6b90e))
+
 # [3.3.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.5...3.3.0-alpha.6) (2021-10-20)
 
 
