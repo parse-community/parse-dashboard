@@ -145,11 +145,11 @@ export function setPointerDefaultKey( appId, className, name ) {
   localStorage.removeItem(className);
 }
 
-export async function getPointerDefaultKey( appId, className ) {
-  let pointerKey = await localStorage.getItem(pointerKeyPath(appId, className));
+export function getPointerDefaultKey( appId, className ) {
+  let pointerKey = localStorage.getItem(pointerKeyPath(appId, className));
   if ( !pointerKey ) {
     // old pointer key.
-    pointerKey = await localStorage.getItem(className) || 'objectId';
+    pointerKey = localStorage.getItem(className) || 'objectId';
   }
   return pointerKey;
 }
