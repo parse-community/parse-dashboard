@@ -193,7 +193,7 @@ class Browser extends DashboardView {
       const parent = await parentObjectQuery.get(entityId, { useMasterKey });
       relation = parent.relation(relationName);
     }
-    await this.setState({
+    this.setState({
       data: null,
       newObject: null,
       lastMax: -1,
@@ -639,10 +639,10 @@ class Browser extends DashboardView {
       editCloneRows: null,
     };
     if (relation) {
-      await this.setState(initialState);
-      await this.setRelation(relation, prevFilters);
+      this.setState(initialState);
+      this.setRelation(relation, prevFilters);
     } else {
-      await this.setState({
+      this.setState({
         ...initialState,
         relation: null,
       });
@@ -676,7 +676,7 @@ class Browser extends DashboardView {
         uniqueField = field;
       }
     });
-    await this.setState({ isUnique, uniqueField });
+    this.setState({ isUnique, uniqueField });
 
     const data = await promise;
     return data;
@@ -718,7 +718,7 @@ class Browser extends DashboardView {
   async fetchRelation(relation, filters = new List()) {
     const data = await this.fetchParseData(relation, filters);
     const relationCount = await this.fetchRelationCount(relation);
-    await this.setState({
+    this.setState({
       relation,
       relationCount,
       selection: {},

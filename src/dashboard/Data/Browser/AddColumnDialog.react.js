@@ -146,7 +146,7 @@ export default class AddColumnDialog extends React.Component {
     } catch (e) {
       isDefaultValueValid = defaultValue === ''
     }
-    return await this.setState({ defaultValue: formattedValue, isDefaultValueValid })
+    return this.setState({ defaultValue: formattedValue, isDefaultValueValid })
   }
 
   renderDefaultValueInput() {

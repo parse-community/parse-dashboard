@@ -23,8 +23,8 @@ export default class PointerKeyDialog extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    const pointerKey = await ColumnPreferences.getPointerDefaultKey(this.props.app.applicationId, this.props.className);
+  componentDidMount() {
+    const pointerKey = ColumnPreferences.getPointerDefaultKey(this.props.app.applicationId, this.props.className);
     this.setState({ name: pointerKey });
   }
 

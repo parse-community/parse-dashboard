@@ -30,7 +30,7 @@ export default class BrowserCell extends Component {
     };
   }
 
-  async renderCellContent() {
+  renderCellContent() {
     let content = this.props.value;
     let isNewRow = this.props.row < 0;
     this.copyableValue = content;
@@ -53,7 +53,7 @@ export default class BrowserCell extends Component {
       content = <span>&nbsp;</span>;
       classes.push(styles.empty);
     } else if (this.props.type === 'Pointer') {
-      const defaultPointerKey = await ColumnPreferences.getPointerDefaultKey(this.props.appId, this.props.value.className);
+      const defaultPointerKey = ColumnPreferences.getPointerDefaultKey(this.props.appId, this.props.value.className);
       let dataValue = this.props.value.id;
       if( defaultPointerKey !== 'objectId' ) {
         dataValue = this.props.value.get(defaultPointerKey);
@@ -175,9 +175,9 @@ export default class BrowserCell extends Component {
     this.setState({ ...this.state, content, classes })
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     if ( this.props.value !== prevProps.value ) {
-      await this.renderCellContent();
+      this.renderCellContent();
     }
     if (this.props.current) {
       const node = this.cellRef.current;

@@ -188,7 +188,7 @@ export default class ObjectPickerDialog extends React.Component {
   async updateFilters(filters) {
     const { selection } = this.state;
     const { className } = this.props;
-    await this.setState({
+    this.setState({
       filters: filters,
       selection: {}
     });
@@ -199,7 +199,7 @@ export default class ObjectPickerDialog extends React.Component {
   async updateOrdering(ordering) {
     const { className } = this.props;
     const { filters, selection } = this.state;
-    await this.setState({
+    this.setState({
       ordering: ordering,
       selection: {}
     });
@@ -215,7 +215,7 @@ export default class ObjectPickerDialog extends React.Component {
   async refresh() {
     const { className } = this.props;
     const { filters, selection } = this.state;
-    await this.setState({
+    this.setState({
       data: null,
       lastMax: -1,
       selection: {}
