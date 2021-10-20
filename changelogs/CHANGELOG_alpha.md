@@ -1,3 +1,10 @@
+# [3.3.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.5...3.3.0-alpha.6) (2021-10-20)
+
+
+### Bug Fixes
+
+* always pass boolean value when toggling checkbox ([#1872](https://github.com/ParsePlatform/parse-dashboard/issues/1872)) ([2e9fd59](https://github.com/ParsePlatform/parse-dashboard/commit/2e9fd59c2ce33f60c904213dc0b5956c4fbfe0c9))
+
 # [3.3.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.4...3.3.0-alpha.5) (2021-10-15)
 
 
