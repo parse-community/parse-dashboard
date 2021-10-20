@@ -433,8 +433,8 @@ export default class BrowserTable extends React.Component {
         {table}
         <DataBrowserHeaderBar
           selected={
-            this.props.selection &&
-            this.props.data &&
+            !!this.props.selection &&
+            !!this.props.data &&
             Object.values(this.props.selection).filter(checked => checked).length === this.props.data.length
           }
           selectAll={checked => this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))}
