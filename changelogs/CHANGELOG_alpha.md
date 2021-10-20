@@ -1,3 +1,10 @@
+# [3.3.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.8...3.3.0-alpha.9) (2021-10-20)
+
+
+### Features
+
+* add visual distinction in data browser for internal classes and display their real names with underscore ([#1878](https://github.com/ParsePlatform/parse-dashboard/issues/1878)) ([ac8d85e](https://github.com/ParsePlatform/parse-dashboard/commit/ac8d85e368d1ff0f2bc644b30264b9af7c86c76d))
+
 # [3.3.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.7...3.3.0-alpha.8) (2021-10-20)
 
 
