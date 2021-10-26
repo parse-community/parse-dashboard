@@ -9,6 +9,8 @@ import * as Filters  from 'lib/Filters';
 import { List, Map } from 'immutable';
 import PropTypes     from 'lib/PropTypes';
 import React         from 'react';
+import stringCompare from 'lib/stringCompare';
+import ParseApp      from 'lib/ParseApp';
 
 function changeField(schema, filters, index, newField) {
   let newFilter = new Map({
@@ -42,7 +44,7 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-let Filter = ({ schema, filters, renderRow, onChange, blacklist }) => {
+let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }, context) => {
   blacklist = blacklist || [];
   let available = Filters.availableFilters(schema, filters);
   return (
@@ -56,7 +58,37 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist }) => {
         if (fields.indexOf(field) < 0) {
           fields.push(field);
         }
-        fields.sort();
+
+        // Get the column preference of the current class.
+        const currentColumnPreference = context.currentApp.columnPreference[className];
+
+        // Check if the preference exists.
+        if (currentColumnPreference) {
+          const fieldsToSortToTop = currentColumnPreference
+            .filter(item => item.filterSortToTop)
+            .map(item => item.name);
+          // Sort the fields.
+          fields.sort((a, b) => {
+            // Only "a" should sorted to the top.
+            if (fieldsToSortToTop.includes(a) && !fieldsToSortToTop.includes(b)) {
+              return -1
+            }
+            // Only "b" should sorted to the top.
+            if (!fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+              return 1;
+            }
+            // Both should sorted to the top -> they should be sorted to the same order as in the "fieldsToSortToTop" array.
+            if (fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+              return fieldsToSortToTop.indexOf(a) - fieldsToSortToTop.indexOf(b);
+            }
+            return stringCompare(a, b);
+          });
+        }
+        // If there's no preference: Use the default sort function.
+        else {
+          fields.sort();
+        }
+
         let constraints = Filters.FieldConstraints[schema[field].type].filter((c) => blacklist.indexOf(c) < 0);
         let compareType = schema[field].type;
         if (Object.prototype.hasOwnProperty.call(Filters.Constraints[constraint], 'field')) {
@@ -104,4 +136,8 @@ Filter.propTypes = {
   renderRow: PropTypes.func.isRequired.describe(
     'A function for rendering a row of a filter.'
   )
+};
+
+Filter.contextTypes = {
+  currentApp: PropTypes.instanceOf(ParseApp)
 };
