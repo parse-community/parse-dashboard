@@ -197,6 +197,7 @@ export default class ConfigDialog extends React.Component {
     );
     return (
       <Modal
+        resizable
         type={Modal.Types.INFO}
         title={newParam ? 'New parameter' : 'Edit parameter'}
         icon='gear-solid'

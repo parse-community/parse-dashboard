@@ -18,6 +18,10 @@
   overflow: hidden;
   transition: width 0.5s cubic-bezier(1, 0, 0, 1);
 
+  &.noTransition {
+    transition: none;
+  }
+
   > *:not(:first-child):not(:last-child) {
     border-color: $borderGrey;
     border-width: 0 0 1px 0;
@@ -99,3 +103,13 @@
 }
 
 @include modalKeyframes();
+
+.resizeHandle {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  user-select: none;
+  cursor: ew-resize;
+}
