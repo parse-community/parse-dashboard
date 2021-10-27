@@ -1,3 +1,17 @@
+# [3.3.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.10...3.3.0-alpha.11) (2021-10-27)
+
+
+### Bug Fixes
+
+* upgrade graphql from 15.6.0 to 15.6.1 ([#1887](https://github.com/ParsePlatform/parse-dashboard/issues/1887)) ([0cfe59e](https://github.com/ParsePlatform/parse-dashboard/commit/0cfe59e475d9f991a3579eb81e8e8a24705eec6a))
+
+# [3.3.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.9...3.3.0-alpha.10) (2021-10-27)
+
+
+### Bug Fixes
+
+* upgrade inquirer from 8.1.3 to 8.2.0 ([#1886](https://github.com/ParsePlatform/parse-dashboard/issues/1886)) ([c77f335](https://github.com/ParsePlatform/parse-dashboard/commit/c77f335f6203842d0c83bc161ced0376ae166f26))
+
 # [3.3.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.8...3.3.0-alpha.9) (2021-10-20)
 
 
