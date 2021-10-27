@@ -1,3 +1,10 @@
+# [3.3.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.11...3.3.0-alpha.12) (2021-10-27)
+
+
+### Bug Fixes
+
+* manual column preferences are overwritten by columnPreference option on page refresh ([#1881](https://github.com/ParsePlatform/parse-dashboard/issues/1881)) ([7232b0b](https://github.com/ParsePlatform/parse-dashboard/commit/7232b0b13916ee9bc409279242b5d4bbc4fee033))
+
 # [3.3.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.10...3.3.0-alpha.11) (2021-10-27)
 
 
