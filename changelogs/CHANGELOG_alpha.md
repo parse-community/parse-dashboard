@@ -1,3 +1,10 @@
+# [3.3.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.12...3.3.0-alpha.13) (2021-10-27)
+
+
+### Features
+
+* add config option `columnPreference.filterSortToTop` to set column name order in filter dialog ([#1884](https://github.com/ParsePlatform/parse-dashboard/issues/1884)) ([3acbda1](https://github.com/ParsePlatform/parse-dashboard/commit/3acbda1cf2adfaa4471ef761c81e000eb1d04a97))
+
 # [3.3.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.11...3.3.0-alpha.12) (2021-10-27)
 
 
