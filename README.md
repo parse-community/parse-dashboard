@@ -297,7 +297,7 @@ You can prevent some columns to be sortable by adding `preventSort` to columnPre
 
 ### Custom order in the filter popup
 
-If you have classes with a lot of columns and you filter them often with the same columns you can sort those columns to the top by extending the `columnPreference` setting with the `filterSortToTop` option:
+If you have classes with a lot of columns and you filter them often with the same columns you can sort those to the top by extending the `columnPreference` setting with the `filterSortToTop` option:
 
 ```json
 "apps": [
