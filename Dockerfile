@@ -1,6 +1,6 @@
 #
 # --- Base Node Image ---
-FROM node:lts-alpine AS base
+FROM node:12-alpine AS base
 
 RUN apk update; \
   apk add git;
@@ -23,7 +23,7 @@ RUN npm run prepare && npm run build
 
 #
 # --- Production Image ---
-FROM node:lts-alpine AS release
+FROM node:12-alpine AS release
 WORKDIR /src
 
 # Copy production node_modules
