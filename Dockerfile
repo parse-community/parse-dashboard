@@ -13,7 +13,7 @@ RUN npm install --only=production
 # Copy production node_modules aside for later
 RUN cp -R node_modules prod_node_modules
 # Install remaining dev dependencies
-RUN npm install
+RUN npm ci
 
 COPY . /src
 
