@@ -12,10 +12,11 @@ COPY package*.json ./
 RUN npm ci --production --ignore-scripts
 # Copy production node_modules aside for later
 RUN cp -R node_modules prod_node_modules
-# Install remaining dev dependencies
-RUN npm ci
 
 COPY . /src
+
+# Install remaining dev dependencies
+RUN npm ci
 
 # Run all webpack build steps
 RUN npm run prepare && npm run build
