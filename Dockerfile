@@ -4,12 +4,12 @@ FROM node:lts-alpine AS base
 
 RUN apk update; \
   apk add git;
-
 WORKDIR /src
 
 # Copy package.json first to benefit from layer caching
 COPY package*.json ./
-RUN npm install --only=production
+
+RUN npm ci --production --ignore-scripts
 # Copy production node_modules aside for later
 RUN cp -R node_modules prod_node_modules
 # Install remaining dev dependencies
