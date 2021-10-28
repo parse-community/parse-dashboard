@@ -1,5 +1,6 @@
-#
-# --- Base Node Image ---
+############################################################
+# Build stage
+############################################################
 FROM node:lts-alpine AS base
 
 RUN apk update; \
@@ -9,10 +10,13 @@ WORKDIR /src
 # Copy package.json first to benefit from layer caching
 COPY package*.json ./
 
+# Install without scripts otherwise webpack will fail
 RUN npm ci --production --ignore-scripts
+
 # Copy production node_modules aside for later
 RUN cp -R node_modules prod_node_modules
 
+# Copy src to have webpack config files ready for install
 COPY . /src
 
 # Install remaining dev dependencies
@@ -21,9 +25,9 @@ RUN npm ci
 # Run all webpack build steps
 RUN npm run prepare && npm run build
 
-
-#
-# --- Production Image ---
+############################################################
+# Release stage
+############################################################
 FROM node:lts-alpine AS release
 WORKDIR /src
 
