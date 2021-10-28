@@ -16,11 +16,12 @@ RUN npm ci --production --ignore-scripts
 # Copy production node_modules aside for later
 RUN cp -R node_modules prod_node_modules
 
-# Copy src to have webpack config files ready for install
-COPY . /src
+# Copy webpack config files for install
+COPY webpack /src/webpack
 
 # Install remaining dev dependencies
 RUN npm ci
+COPY . /src
 
 # Run all webpack build steps
 RUN npm run prepare && npm run build
