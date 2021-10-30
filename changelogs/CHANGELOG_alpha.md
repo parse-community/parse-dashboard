@@ -1,3 +1,10 @@
+# [3.3.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.13...3.3.0-alpha.14) (2021-10-30)
+
+
+### Bug Fixes
+
+* notification to upgrade dashboard for latest features not working ([#1894](https://github.com/ParsePlatform/parse-dashboard/issues/1894)) ([81361b6](https://github.com/ParsePlatform/parse-dashboard/commit/81361b67946a347d31ef96d61e3dd11503a6ad5b))
+
 # [3.3.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.12...3.3.0-alpha.13) (2021-10-27)
 
 
