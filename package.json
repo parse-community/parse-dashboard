@@ -47,7 +47,7 @@
     "graphiql": "1.4.2",
     "graphql": "15.6.1",
     "history": "4.10.1",
-    "immutable": "4.0.0-rc.9",
+    "immutable": "4.0.0",
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.0",
     "js-beautify": "1.14.0",
