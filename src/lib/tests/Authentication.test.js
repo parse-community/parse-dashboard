@@ -54,7 +54,9 @@ function createAuthenticationResult(isAuthenticated, matchingUsername, appsUserH
     isAuthenticated,
     matchingUsername,
     appsUserHasAccessTo,
-    isReadOnly
+    isReadOnly,
+    otpMissing: false,
+    otpValid: true
   }
 }
 
