@@ -64,7 +64,7 @@
     "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",
     "react-dom": "16.14.0",
-    "react-helmet": "6.0.0",
+    "react-helmet": "6.1.0",
     "react-json-view": "1.21.3",
     "react-popper-tooltip": "4.3.0",
     "react-redux": "5.1.2",
