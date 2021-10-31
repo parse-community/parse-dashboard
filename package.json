@@ -52,7 +52,7 @@
     "inquirer": "8.2.0",
     "js-beautify": "1.14.0",
     "otpauth": "7.0.6",
-    "package-json": "6.5.0",
+    "package-json": "7.0.0",
     "parse": "3.3.1",
     "passport": "0.5.0",
     "passport-local": "1.0.0",
