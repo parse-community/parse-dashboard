@@ -1,16 +1,28 @@
-# Parse Dashboard <!-- omit in toc -->
+![parse-repository-header-dashboard](https://user-images.githubusercontent.com/5673677/138276825-9b430df8-b1f6-41d7-af32-4852a8fbc143.png)
 
-[![Build Status](https://img.shields.io/travis/parse-community/parse-dashboard/master.svg?style=flat)](https://travis-ci.org/parse-community/parse-dashboard)
-[![Node Version](https://img.shields.io/badge/nodejs-12,_14,_16-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
-[![npm version](https://img.shields.io/npm/v/parse-dashboard.svg?style=flat)](https://www.npmjs.com/package/parse-dashboard)
+---
+
+[![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=alpha)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Aalpha)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
+
+[![Node Version](https://img.shields.io/badge/nodejs-12,_14,_16-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
+[![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
+
+[![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
+[![npm beta version](https://img.shields.io/npm/v/parse-dashboard/beta.svg)](https://www.npmjs.com/package/parse-dashboard)
+[![npm alpha version](https://img.shields.io/npm/v/parse-dashboard/alpha.svg)](https://www.npmjs.com/package/parse-dashboard)
+
 [![Backers on Open Collective](https://opencollective.com/parse-server/backers/badge.svg)][open-collective-link]
 [![Sponsors on Open Collective](https://opencollective.com/parse-server/sponsors/badge.svg)][open-collective-link]
 [![License][license-svg]][license-link]
 [![Forum](https://img.shields.io/discourse/https/community.parseplatform.org/topics.svg)](https://community.parseplatform.org/c/parse-server)
 [![Twitter](https://img.shields.io/twitter/follow/ParsePlatform.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=ParsePlatform)
 
+---
+
 Parse Dashboard is a standalone dashboard for managing your [Parse Server](https://github.com/ParsePlatform/parse-server) apps.
+
+---
 
 - [Getting Started](#getting-started)
 - [Local Installation](#local-installation)
@@ -25,6 +37,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [App Background Color Configuration](#app-background-color-configuration)
   - [Other Configuration Options](#other-configuration-options)
     - [Prevent columns sorting](#prevent-columns-sorting)
+    - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -40,6 +53,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Run with Docker](#run-with-docker)
 - [Features](#features)
   - [Browse as User](#browse-as-user)
+  - [Change Pointer Key](#change-pointer-key)
+    - [Limitations](#limitations)
   - [CSV Export](#csv-export)
 - [Contributing](#contributing)
 
@@ -274,6 +289,29 @@ You can prevent some columns to be sortable by adding `preventSort` to columnPre
             "visible": true,
             "preventSort": false
           },
+        ]
+      }
+    }
+]
+```
+
+### Custom order in the filter popup
+
+If you have classes with a lot of columns and you filter them often with the same columns you can sort those to the top by extending the `columnPreference` setting with the `filterSortToTop` option:
+
+```json
+"apps": [
+  {
+    "columnPreference": {
+        "_User": [
+          {
+            "name": "objectId",
+            "filterSortToTop": true
+          },
+          {
+            "name": "email",
+            "filterSortToTop": true
+          }          
         ]
       }
     }
@@ -605,6 +643,19 @@ This feature allows you to use the data browser as another user, respecting that
 
 > ⚠️ Logging in as another user will trigger the same Cloud Triggers as if the user logged in themselves using any other login method. Logging in as another user requires to enter that user's password.
 
+## Change Pointer Key
+
+▶️ *Core > Browser > Edit > Change pointer key*
+
+This feature allows you to change how a pointer is represented in the browser. By default, a pointer is represented by the `objectId` of the linked object. You can change this to any other column of the object class. For example, if class `Installation` has a field that contains a pointer to class `User`, the pointer will show the `objectId` of the user by default. You can change this to display the field `email` of the user, so that a pointer displays the user's email address instead.
+
+### Limitations
+
+- This does not work for an array of pointers; the pointer will always display the `objectId`.
+- System columns like `createdAt`, `updatedAt`, `ACL` cannot be set as pointer key.
+- This feature uses browser storage; switching to a different browser resets the pointer key to `objectId`.
+
+> ⚠️ For each custom pointer key in each row, a server request is triggered to resolve the custom pointer key. For example, if the browser shows a class with 50 rows and each row contains 3 custom pointer keys, a total of 150 separate server requests are triggered.
 ## CSV Export
 
 ▶️ *Core > Browser > Export*

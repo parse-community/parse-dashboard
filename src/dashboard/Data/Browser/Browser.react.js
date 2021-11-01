@@ -29,6 +29,7 @@ import prettyNumber                       from 'lib/prettyNumber';
 import queryFromFilters                   from 'lib/queryFromFilters';
 import React                              from 'react';
 import RemoveColumnDialog                 from 'dashboard/Data/Browser/RemoveColumnDialog.react';
+import PointerKeyDialog                   from 'dashboard/Data/Browser/PointerKeyDialog.react';
 import SidebarAction                      from 'components/Sidebar/SidebarAction';
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
@@ -58,6 +59,7 @@ class Browser extends DashboardView {
       showExportDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
+      showPointerKeyDialog: false,
       rowsToDelete: null,
       rowsToExport: null,
 
@@ -141,9 +143,13 @@ class Browser extends DashboardView {
     this.addEditCloneRows = this.addEditCloneRows.bind(this);
     this.abortAddRow = this.abortAddRow.bind(this);
     this.saveNewRow = this.saveNewRow.bind(this);
+    this.showPointerKeyDialog = this.showPointerKeyDialog.bind(this);
+    this.onChangeDefaultKey = this.onChangeDefaultKey.bind(this);
     this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
+
+    this.dataBrowserRef = React.createRef();
   }
 
   componentWillMount() {
@@ -187,7 +193,7 @@ class Browser extends DashboardView {
       const parent = await parentObjectQuery.get(entityId, { useMasterKey });
       relation = parent.relation(relationName);
     }
-    await this.setState({
+    this.setState({
       data: null,
       newObject: null,
       lastMax: -1,
@@ -451,7 +457,7 @@ class Browser extends DashboardView {
               });
             },
             error => {
-              let msg = typeof error === "string" ? error : error.message;
+              let msg = typeof error === 'string' ? error : error.message;
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
@@ -471,7 +477,7 @@ class Browser extends DashboardView {
         this.setState(state);
       },
       error => {
-        let msg = typeof error === "string" ? error : error.message;
+        let msg = typeof error === 'string' ? error : error.message;
         if (msg) {
           msg = msg[0].toUpperCase() + msg.substr(1);
         }
@@ -633,10 +639,10 @@ class Browser extends DashboardView {
       editCloneRows: null,
     };
     if (relation) {
-      await this.setState(initialState);
-      await this.setRelation(relation, prevFilters);
+      this.setState(initialState);
+      this.setRelation(relation, prevFilters);
     } else {
-      await this.setState({
+      this.setState({
         ...initialState,
         relation: null,
       });
@@ -670,7 +676,7 @@ class Browser extends DashboardView {
         uniqueField = field;
       }
     });
-    await this.setState({ isUnique, uniqueField });
+    this.setState({ isUnique, uniqueField });
 
     const data = await promise;
     return data;
@@ -712,7 +718,7 @@ class Browser extends DashboardView {
   async fetchRelation(relation, filters = new List()) {
     const data = await this.fetchParseData(relation, filters);
     const relationCount = await this.fetchRelationCount(relation);
-    await this.setState({
+    this.setState({
       relation,
       relationCount,
       selection: {},
@@ -1373,14 +1379,17 @@ class Browser extends DashboardView {
       } else if (count >= 1000) {
         count = prettyNumber(count);
       }
-      if (SpecialClasses[key]) {
-        special.push({ name: SpecialClasses[key], id: key, count: count });
+      if (SpecialClasses.includes(key)) {
+        special.push({ name: key, id: key, count: count });
       } else {
         categories.push({ name: key, count: count });
       }
     });
     special.sort((a, b) => stringCompare(a.name, b.name));
     categories.sort((a, b) => stringCompare(a.name, b.name));
+    if (special.length > 0 && categories.length > 0) {
+      special.push({ type: 'separator', id: 'classSeparator' })
+    }
     return (
       <CategoryList
         current={current}
@@ -1419,6 +1428,10 @@ class Browser extends DashboardView {
     });
   }
 
+  showPointerKeyDialog() {
+    this.setState({ showPointerKeyDialog: true });
+  }
+
   closeEditRowDialog() {
     this.setState({
       showEditRowDialog: false,
@@ -1426,14 +1439,24 @@ class Browser extends DashboardView {
   }
 
   handleShowAcl(row, col){
-    this.refs.dataBrowser.setEditing(true);
-    this.refs.dataBrowser.setCurrent({ row, col });
+    this.dataBrowserRef.current.setEditing(true);
+    this.dataBrowserRef.current.setCurrent({ row, col });
   }
 
   // skips key controls handling when dialog is opened
   onDialogToggle(opened){
     this.setState({showPermissionsDialog: opened});
   }
+
+  async onChangeDefaultKey (name) {
+    ColumnPreferences.setPointerDefaultKey(
+      this.context.currentApp.applicationId,
+      this.props.params.className,
+      name
+      );
+    this.setState({ showPointerKeyDialog: false });
+  }
+
 
   renderContent() {
     let browser = null;
@@ -1491,7 +1514,7 @@ class Browser extends DashboardView {
         }
         browser = (
           <DataBrowser
-            ref='dataBrowser'
+            ref={this.dataBrowserRef}
             isUnique={this.state.isUnique}
             uniqueField={this.state.uniqueField}
             count={count}
@@ -1513,6 +1536,7 @@ class Browser extends DashboardView {
             onExportSelectedRows={this.showExportSelectedRowsDialog}
 
             onSaveNewRow={this.saveNewRow}
+            onShowPointerKey={this.showPointerKeyDialog}
             onAbortAddRow={this.abortAddRow}
             onSaveEditCloneRow={this.saveEditCloneRow}
             onAbortEditCloneRow={this.abortEditCloneRow}
@@ -1552,7 +1576,18 @@ class Browser extends DashboardView {
       }
     }
     let extras = null;
-    if (this.state.showCreateClassDialog) {
+    if(this.state.showPointerKeyDialog){
+      let currentColumns = this.getClassColumns(className).map(column => column.name);
+      extras = (
+        <PointerKeyDialog
+          app={this.context.currentApp}
+          className={className}
+          currentColumns={currentColumns}
+          onCancel={() => this.setState({ showPointerKeyDialog: false })}
+          onConfirm={this.onChangeDefaultKey} />
+      );
+    }
+    else if (this.state.showCreateClassDialog) {
       extras = (
         <CreateClassDialog
           currentAppSlug={this.context.currentApp.slug}
@@ -1589,7 +1624,7 @@ class Browser extends DashboardView {
     } else if (this.state.rowsToDelete) {
       extras = (
         <DeleteRowsDialog
-          className={SpecialClasses[className] || className}
+          className={className}
           selection={this.state.rowsToDelete}
           relation={this.state.relation}
           onCancel={() => this.setState({ rowsToDelete: null })}
@@ -1706,7 +1741,7 @@ class Browser extends DashboardView {
     } else if (this.state.rowsToExport) {
       extras = (
         <ExportSelectedRowsDialog
-          className={SpecialClasses[className] || className}
+          className={className}
           selection={this.state.rowsToExport}
           onCancel={this.cancelExportSelectedRows}
           onConfirm={() => this.confirmExportSelectedRows(this.state.rowsToExport)}

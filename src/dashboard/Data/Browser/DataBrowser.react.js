@@ -13,7 +13,6 @@ import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
 import PropTypes              from 'lib/PropTypes';
-import { SpecialClasses }     from 'lib/Constants';
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -200,7 +199,7 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
       case 37:
-        // Left - standalone (move to the next visible column on the left) 
+        // Left - standalone (move to the next visible column on the left)
         // or with ctrl/meta (excel style - move to the first visible column)
         this.setState({
           current: {
@@ -212,7 +211,7 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
       case 38:
-        // Up - standalone (move to the previous row) 
+        // Up - standalone (move to the previous row)
         // or with ctrl/meta (excel style - move to the first row)
         this.setState({
           current: {
@@ -223,7 +222,7 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
       case 39:
-        // Right - standalone (move to the next visible column on the right) 
+        // Right - standalone (move to the next visible column on the right)
         // or with ctrl/meta (excel style - move to the last visible column)
         this.setState({
           current: {
@@ -235,7 +234,7 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
         break;
       case 40:
-        // Down - standalone (move to the next row) 
+        // Down - standalone (move to the next row)
         // or with ctrl/meta (excel style - move to the last row)
         this.setState({
           current: {
@@ -300,10 +299,11 @@ export default class DataBrowser extends React.Component {
 
   render() {
     let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
-    const { preventSchemaEdits } = this.context.currentApp;
+    const { preventSchemaEdits, applicationId } = this.context.currentApp;
     return (
       <div>
         <BrowserTable
+          appId={applicationId}
           order={this.state.order}
           current={this.state.current}
           editing={this.state.editing}
@@ -321,7 +321,7 @@ export default class DataBrowser extends React.Component {
         <BrowserToolbar
           count={count}
           hidePerms={className === '_Installation'}
-          className={SpecialClasses[className] || className}
+          className={className}
           classNameForEditors={className}
           setCurrent={this.setCurrent}
           enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
