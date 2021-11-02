@@ -1,3 +1,10 @@
+# [3.3.0-beta.2](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-beta.1...3.3.0-beta.2) (2021-11-02)
+
+
+### Bug Fixes
+
+* context menu in data browser not opening for cell of type number ([#1913](https://github.com/ParsePlatform/parse-dashboard/issues/1913)) ([8731c35](https://github.com/ParsePlatform/parse-dashboard/commit/8731c350bd1867cedbaa735f035d16dde4033bc7))
+
 # [3.3.0-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.2.1-beta.1...3.3.0-beta.1) (2021-11-01)
 
 
