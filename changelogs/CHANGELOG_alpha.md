@@ -1,3 +1,10 @@
+# [3.3.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.15...3.3.0-alpha.16) (2021-11-09)
+
+
+### Bug Fixes
+
+* bump graphiql from 1.4.6 to 1.4.7 ([#1920](https://github.com/ParsePlatform/parse-dashboard/issues/1920)) ([26c0dfa](https://github.com/ParsePlatform/parse-dashboard/commit/26c0dfa7eaa68194d53beaeed1ca6705f3d11a6a))
+
 # [3.3.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.14...3.3.0-alpha.15) (2021-11-02)
 
 
