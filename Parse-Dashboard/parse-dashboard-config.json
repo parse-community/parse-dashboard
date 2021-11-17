@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "serverURL": "https://bot.stratified.io/parse",
-      "appId": "8BsP9wCcM3",
-      "masterKey": "parseMasterKey",
+      "serverURL": "https://localhost:1338/parse",
+      "appId": "hello",
+      "masterKey": "world",
       "appName": "",
       "iconName": "",
       "primaryBackgroundColor": "",
