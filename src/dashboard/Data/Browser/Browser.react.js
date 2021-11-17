@@ -41,10 +41,11 @@ import ParseApp                           from 'lib/ParseApp';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
-
+const ref = this
 export default
 @subscribeTo('Schema', 'schema')
 class Browser extends DashboardView {
+
   constructor() {
     super();
     this.section = 'Core';
@@ -206,9 +207,9 @@ class Browser extends DashboardView {
       relation: isRelationRoute ? relation : null,
     });
     if (isRelationRoute) {
-      this.fetchRelation(relation, filters);
+      this.fetchRelation(relation, filters).then().catch();
     } else if (className) {
-      this.fetchData(className, filters);
+      this.fetchData(className, filters).then().catch();
     }
   }
 
@@ -419,7 +420,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: -1
           });
@@ -657,9 +658,13 @@ class Browser extends DashboardView {
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0)
 
     if (sortDir === '-') {
+      console.log('descending', field);
       query.descending(field)
+      query.addDescending('index')
     } else {
+      console.log('ascending', field);
       query.ascending(field)
+      query.addAscending('index')
     }
 
     query.limit(MAX_ROWS_FETCHED);
@@ -1398,6 +1403,22 @@ class Browser extends DashboardView {
     );
   }
 
+  onNewSort (sortBy) {
+    console.log('onNewSort', sortBy );
+    console.log(ref);
+    const filters = ref.extractFiltersFromQuery(ref.props);
+    const { className } = ref.props.params;
+    this.fetchData(className, filters).then().catch();
+  }
+
+  onAddSort (sortBy) {
+    console.log('onAddSort', sortBy );
+    console.log(ref);
+    const filters = ref.extractFiltersFromQuery(ref.props);
+    const { className } = ref.props.params;
+    this.fetchData(className, filters).then().catch();
+  }
+
   showNote(message, isError) {
     if (!message) {
       return;
@@ -1571,6 +1592,8 @@ class Browser extends DashboardView {
             onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
+            onNewSort={this.onNewSort}
+            onAddSort={this.onAddSort}
             showNote={this.showNote} />
         );
       }

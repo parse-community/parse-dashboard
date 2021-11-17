@@ -11,10 +11,21 @@ import HTML5Backend        from 'react-dnd-html5-backend';
 import React               from 'react';
 import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
 import { DndProvider }     from 'react-dnd'
+import ContextMenu         from 'components/ContextMenu/ContextMenu.react';
 
 export default class DataBrowserHeaderBar extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.setContextMenu = this.setContextMenu.bind(this);
+  }
+
+  setContextMenu(contextMenuX, contextMenuY, contextMenuItems) {
+    this.setState({ contextMenuX, contextMenuY, contextMenuItems });
+  }
+
   render() {
-    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected } = this.props;
+    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected, onAddSort, onNewSort } = this.props;
     let elements = [
       <div key='check' className={[styles.wrap, styles.check].join(' ')}>
         {readonly
@@ -57,7 +68,15 @@ export default class DataBrowserHeaderBar extends React.Component {
             targetClass={targetClass}
             order={order}
             index={i}
+            onAddSort={onAddSort}
+            onNewSort={onNewSort}
+            setContextMenu={this.setContextMenu}
             moveDataBrowserHeader={this.props.handleDragDrop}/>
+          {this.state && this.state.contextMenuX && <ContextMenu
+            x={this.state.contextMenuX - 280}
+            y={this.state.contextMenuY - 80}
+            items={this.state.contextMenuItems}
+          />}
         </div>
       );
       elements.push(

@@ -234,15 +234,18 @@ export default class BrowserCell extends Component {
     event.preventDefault();
 
     const { field, hidden, onSelect, setCopyableValue, setContextMenu, row, col } = this.props;
-
+    console.log('this.props', this.props);
+    console.log('field', field);
     onSelect({ row, col });
     setCopyableValue(hidden ? undefined : this.copyableValue);
 
     const available = Filters.availableFilters(this.props.simplifiedSchema, this.props.filters, Filters.BLACKLISTED_FILTERS);
     const constraints = available && available[field];
-
     const { pageX, pageY } = event;
+    console.log(pageX);
+    console.log(pageY);
     const menuItems = this.getContextMenuOptions(constraints);
+    console.log(menuItems);
     menuItems.length && setContextMenu(pageX, pageY, menuItems);
   }
 

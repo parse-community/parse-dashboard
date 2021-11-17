@@ -22,7 +22,7 @@ import PropTypes              from 'lib/PropTypes';
 export default class DataBrowser extends React.Component {
   constructor(props, context) {
     super(props, context);
-
+    console.log('propspropspropsprops', props);
     const columnPreferences = context.currentApp.columnPreference || {}
     let order = ColumnPreferences.getOrder(
       props.columns,
@@ -298,7 +298,7 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
+    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, onNewSort, onAddSort, ...other } = this.props;
     const { preventSchemaEdits, applicationId } = this.context.currentApp;
     return (
       <div>
@@ -317,6 +317,8 @@ export default class DataBrowser extends React.Component {
           setCopyableValue={this.setCopyableValue}
           setContextMenu={this.setContextMenu}
           onFilterChange={this.props.onFilterChange}
+          onNewSort={onNewSort}
+          onAddSort={onAddSort}
           {...other} />
         <BrowserToolbar
           count={count}
