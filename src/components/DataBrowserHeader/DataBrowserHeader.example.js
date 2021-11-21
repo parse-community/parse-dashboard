@@ -15,6 +15,15 @@ export const component = DataBrowserHeader;
 let lightBg = { background: 'rgba(224,224,234,0.10)' };
 
 class HeadersDemo extends React.Component {
+  constructor() {
+    super();
+    this.setContextMenu = this.setContextMenu.bind(this);
+  }
+
+  setContextMenu(contextMenuX, contextMenuY, contextMenuItems) {
+    this.setState({ contextMenuX, contextMenuY, contextMenuItems });
+  }
+
   render() {
     return (
       <DndProvider backend={HTML5Backend}>

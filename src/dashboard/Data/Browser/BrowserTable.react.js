@@ -33,6 +33,7 @@ export default class BrowserTable extends React.Component {
       offset: 0,
     };
     this.handleScroll = this.handleScroll.bind(this);
+    this.setContextMenu = this.setContextMenu.bind(this);
     this.tableRef = React.createRef();
   }
 
@@ -57,6 +58,10 @@ export default class BrowserTable extends React.Component {
 
   componentWillUnmount() {
     this.tableRef.current.removeEventListener('scroll', this.handleScroll);
+  }
+
+  setContextMenu(contextMenuX, contextMenuY, contextMenuItems) {
+    this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
   handleScroll() {
@@ -444,6 +449,8 @@ export default class BrowserTable extends React.Component {
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
+          onNewSort={this.props.onNewSort}
+          onAddSort={this.props.onAddSort}
           preventSchemaEdits={this.context.currentApp.preventSchemaEdits} />
       </div>
     );
