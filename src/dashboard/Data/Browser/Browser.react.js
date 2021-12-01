@@ -394,7 +394,7 @@ class Browser extends DashboardView {
     }
 
     // check if required fields are missing
-    const className = this.props.params.className;
+    const className = this.state.newObject.className;
     let requiredCols = [];
     if (className) {
       let classColumns = this.props.schema.data.get('classes').get(className);
