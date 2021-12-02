@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { input } from 'components/Field/Field.scss';
-import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/Range/Range.scss';
+import fieldStyles from 'components/Field/Field.scss';
+import PropTypes   from 'lib/PropTypes';
+import React       from 'react';
+import styles      from 'components/Range/Range.scss';
 
 const DEFAULT_COLOR = '#fd9539';
 
@@ -66,7 +66,7 @@ export default class Range extends React.Component {
       <div
         style={wrapperStyle}
         ref={this.metricsRef}
-        className={[styles.range, input].join(' ')}>
+        className={[styles.range, fieldStyles.input].join(' ')}>
         {tracker}
         <input
           type='range'
