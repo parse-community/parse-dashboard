@@ -47,6 +47,7 @@ function deleteRow(filters, index) {
 let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }, context) => {
   blacklist = blacklist || [];
   let available = Filters.availableFilters(schema, filters);
+  console.log('c', context)
   return (
     <div>
       {filters.toArray().map((filter, i) => {
@@ -60,7 +61,7 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }, co
         }
 
         // Get the column preference of the current class.
-        const currentColumnPreference = context.currentApp.columnPreference[className];
+        const currentColumnPreference = context.currentApp.columnPreference && context.currentApp.columnPreference[className];
 
         // Check if the preference exists.
         if (currentColumnPreference) {

@@ -40,24 +40,22 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
       <tr>
         <td className={styles.colName}>
           {this.props.name}
-          <a
+          <button
             className={styles.newPushButton}
-            href='javascript:;'
-            role='button'
+            type='button'
             onClick={this.props.onSendPush.bind(undefined, this.props.id)}>
               Send a new push
-          </a>
+          </button>
         </td>
         <td className={styles.colSize}>{countDetails}</td>
         <td className={styles.colDetails}>
           {detailsView}
-          <a
-            role='button'
-            href='javascript:;'
+          <button
+            type='button'
             className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(' ')}
             onClick={this.handleDetailsToggle.bind(this,this.props.query, this.props.schema)}>
             {this.state.expandedView ? 'less details' : 'more details' }
-          </a>
+          </button>
         </td>
         <td className={styles.colCreatedOn}>
           {DateUtils.yearMonthDayFormatter(this.props.createdAt)}
@@ -66,13 +64,12 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
           {this.props.timesUsed}
         </td>
         <td className={styles.colAction}>
-          <a
+          <button
             className={styles.removeIcon}
-            role='button'
-            href='javascript:;'
+            type='button'
             onClick={this.props.onDelete.bind(undefined, this.props.id, this.props.name)}>
             <Icon name='trash-outline' fill='#343445' width={20} height={20} role='button'/>
-          </a>
+          </button>
         </td>
       </tr>
     );

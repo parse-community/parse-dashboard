@@ -115,15 +115,13 @@ export default class InstallationCondition extends React.Component {
       </div>
     );
 
-    //TODO Shoulse use <Button> and have a link type style without border.
     let labelDescription = (
-      <a
-        href='javascript:;'
-        role='button'
+      <button
+        type='button'
         className={styles.description}
         onClick={this.props.onDeleteRow}>
         Remove
-      </a>
+      </button>
     );
 
     return (

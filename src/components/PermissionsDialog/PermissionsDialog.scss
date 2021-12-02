@@ -314,6 +314,10 @@
    height: 50px;
    padding-top: 15px;
    text-align: right;
+
+   button {
+     @include buttonReset;
+   }
  
    svg {
      vertical-align: top;
