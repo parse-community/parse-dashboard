@@ -1,3 +1,15 @@
+# [4.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.17...4.0.0-alpha.1) (2021-12-05)
+
+
+### Features
+
+* upgrade graphiql from 1.4.7 to 1.5.1 ([#1943](https://github.com/ParsePlatform/parse-dashboard/issues/1943)) ([ebb1f66](https://github.com/ParsePlatform/parse-dashboard/commit/ebb1f660f1d10921f92d05eb58b09d548e00d3a9))
+
+
+### BREAKING CHANGES
+
+* The required Node version was increased to >=12.20.0. ([ebb1f66](ebb1f66))
+
 # [3.3.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.16...3.3.0-alpha.17) (2021-12-05)
 
 
