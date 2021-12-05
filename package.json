@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "3.3.0-alpha.16",
+  "version": "4.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -35,7 +35,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/runtime": "7.16.0",
+    "@babel/runtime": "7.16.3",
     "bcryptjs": "2.3.0",
     "body-parser": "1.19.0",
     "commander": "6.2.1",
@@ -44,14 +44,14 @@
     "copy-to-clipboard": "3.3.1",
     "csurf": "1.11.0",
     "express": "4.17.1",
-    "graphiql": "1.4.7",
+    "graphiql": "1.5.1",
     "graphql": "15.7.0",
     "history": "4.10.1",
     "immutable": "4.0.0",
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.0",
     "js-beautify": "1.14.0",
-    "otpauth": "7.0.6",
+    "otpauth": "7.0.7",
     "package-json": "7.0.0",
     "parse": "3.3.1",
     "passport": "0.5.0",
@@ -76,12 +76,12 @@
   },
   "devDependencies": {
     "@actions/core": "1.2.6",
-    "@babel/core": "7.8.7",
-    "@babel/plugin-proposal-decorators": "7.8.3",
-    "@babel/plugin-transform-regenerator": "7.8.7",
-    "@babel/plugin-transform-runtime": "7.8.3",
-    "@babel/preset-env": "7.9.0",
-    "@babel/preset-react": "7.8.3",
+    "@babel/core": "7.16.0",
+    "@babel/plugin-proposal-decorators": "7.16.4",
+    "@babel/plugin-transform-regenerator": "7.16.0",
+    "@babel/plugin-transform-runtime": "7.16.4",
+    "@babel/preset-env": "7.16.4",
+    "@babel/preset-react": "7.16.0",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.0",
@@ -90,7 +90,7 @@
     "@semantic-release/release-notes-generator": "9.0.3",
     "all-node-versions": "8.0.0",
     "babel-eslint": "10.1.0",
-    "babel-loader": "8.1.0",
+    "babel-loader": "8.2.3",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "core-js": "3.6.5",
     "cross-env": "7.0.2",
@@ -137,7 +137,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.20.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
