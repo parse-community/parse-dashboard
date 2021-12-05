@@ -9,7 +9,6 @@ import PropTypes        from 'lib/PropTypes';
 import hasAncestor      from 'lib/hasAncestor';
 import React            from 'react';
 import styles           from 'components/Popover/Popover.scss';
-import ParseApp         from 'lib/ParseApp';
 import { createPortal } from 'react-dom';
 
 // We use this component to proxy the current tree's context
@@ -98,5 +97,4 @@ export default class Popover extends React.Component {
 Popover.contextTypes = {
   history: PropTypes.object,
   router: PropTypes.object,
-  currentApp: PropTypes.instanceOf(ParseApp)
 };

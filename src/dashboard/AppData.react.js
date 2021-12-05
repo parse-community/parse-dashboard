@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React       from 'react';
-import PropTypes   from 'lib/PropTypes';
-import AppSelector from 'dashboard/AppSelector.react';
-import AppsManager from 'lib/AppsManager';
-import history     from 'dashboard/history';
-import ParseApp    from 'lib/ParseApp';
+import React          from 'react';
+import PropTypes      from 'lib/PropTypes';
+import AppSelector    from 'dashboard/AppSelector.react';
+import AppsManager    from 'lib/AppsManager';
+import history        from 'dashboard/history';
+import { CurrentApp } from 'context/CurrentApp';
 
 class AppData extends React.Component {
   constructor(props) {
@@ -21,7 +21,6 @@ class AppData extends React.Component {
   getChildContext() {
     return {
       generatePath: this.generatePath,
-      currentApp: AppsManager.findAppBySlugOrName(this.props.params.appId)
     };
   }
 
@@ -42,16 +41,17 @@ class AppData extends React.Component {
       return <div />;
     }
     return (
-      <div>
-        {this.props.children}
-      </div>
+      <CurrentApp.Provider value={current}>
+        <div>
+          {this.props.children}
+        </div>
+      </CurrentApp.Provider>
     );
   }
 }
 
 AppData.childContextTypes = {
   generatePath: PropTypes.func,
-  currentApp: PropTypes.instanceOf(ParseApp)
 };
 
 export default AppData;
