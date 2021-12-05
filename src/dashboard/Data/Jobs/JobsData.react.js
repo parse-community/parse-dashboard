@@ -5,11 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ParseApp   from 'lib/ParseApp';
-import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import React          from 'react';
+import { CurrentApp } from 'context/currentApp';
 
 export default class JobsData extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
 
@@ -46,14 +46,14 @@ export default class JobsData extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchJobs(this.context.currentApp);
-    // this.fetchRelease(this.context.currentApp);
+    this.fetchJobs(this.context);
+    // this.fetchRelease(this.context);
   }
 
   componentWillReceiveProps(props, context) {
     if (this.context !== context) {
-      this.fetchJobs(context.currentApp);
-      // this.fetchRelease(context.currentApp);
+      this.fetchJobs(context);
+      // this.fetchRelease(context);
     }
   }
 
@@ -70,7 +70,3 @@ export default class JobsData extends React.Component {
     );
   }
 }
-
-JobsData.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

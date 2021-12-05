@@ -5,19 +5,18 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes   from 'lib/PropTypes';
 import AppsManager    from 'lib/AppsManager';
 import AppsMenu       from 'components/Sidebar/AppsMenu.react';
 import AppName        from 'components/Sidebar/AppName.react';
 import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import isInsidePopover from 'lib/isInsidePopover';
-import ParseApp       from 'lib/ParseApp';
 import Pin            from 'components/Sidebar/Pin.react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
+import { CurrentApp } from 'context/currentApp';
 
 const Sidebar = ({
   prefix,
@@ -30,7 +29,8 @@ const Sidebar = ({
   appSelector,
   primaryBackgroundColor,
   secondaryBackgroundColor
-}, { currentApp }) => {
+}) => {
+  const currentApp = useContext(CurrentApp);
   const collapseWidth = 980;
   const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
   const [ collapsed, setCollapsed ] = useState(false);
@@ -191,9 +191,5 @@ const Sidebar = ({
     </div>
   );
 }
-
-Sidebar.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
 
 export default Sidebar;

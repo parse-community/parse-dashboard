@@ -9,7 +9,6 @@ import PropTypes       from 'lib/PropTypes';
 import { ActionTypes } from 'lib/stores/JobsStore';
 import history         from 'dashboard/history';
 import JobsForm        from 'dashboard/Data/Jobs/JobsForm.react';
-import ParseApp        from 'lib/ParseApp';
 import React           from 'react';
 import subscribeTo     from 'lib/subscribeTo';
 
@@ -120,7 +119,6 @@ class JobEdit extends React.Component {
 }
 
 JobEdit.original.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp),
   generatePath: PropTypes.func,
 };
 

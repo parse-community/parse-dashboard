@@ -16,12 +16,14 @@ import PushAudiencesSelector   from 'components/PushAudiencesSelector/PushAudien
 import queryFromFilters        from 'lib/queryFromFilters';
 import React                   from 'react';
 import styles                  from './PushAudiencesData.scss';
-import { List }           from 'immutable';
+import { List }                from 'immutable';
+import { CurrentApp }          from 'context/currentApp';
 
 const XHR_KEY = 'PushAudiencesData';
 
 //TODO: lazy render options - avoid necessary calls for count if user doesn't see the audience
 export default class PushAudiencesData extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.state = {
@@ -46,7 +48,7 @@ export default class PushAudiencesData extends React.Component {
 
     this.setState({
       defaultAudience: {
-        createdAt: this.context.currentApp.createdAt,
+        createdAt: this.context.createdAt,
         name: 'Everyone',
         count: 0,
         objectId: 'everyone',
@@ -54,7 +56,7 @@ export default class PushAudiencesData extends React.Component {
       }
     });
 
-    this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
+    this.context.fetchAvailableDevices().then(({ available_devices }) => {
       this.setState({
         availableDevices: available_devices
       });
@@ -260,7 +262,3 @@ export default class PushAudiencesData extends React.Component {
     )
   }
 }
-
-PushAudiencesData.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
