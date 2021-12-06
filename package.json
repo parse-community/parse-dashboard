@@ -45,7 +45,7 @@
     "csurf": "1.11.0",
     "express": "4.17.1",
     "graphiql": "1.5.1",
-    "graphql": "15.7.0",
+    "graphql": "16.0.0",
     "history": "4.10.1",
     "immutable": "4.0.0",
     "immutable-devtools": "0.1.5",
@@ -137,7 +137,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=12.20.0"
+    "node": ">=12.22.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
