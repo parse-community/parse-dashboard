@@ -30,13 +30,13 @@ import Range                             from 'components/Range/Range.react';
 import React                             from 'react';
 import renderFlowFooterChanges           from 'lib/renderFlowFooterChanges';
 import setDifference                     from 'lib/setDifference';
-import styles                            from 'dashboard/Settings/Settings.scss';
+import settingsStyles                    from 'dashboard/Settings/Settings.scss';
 import TextInput                         from 'components/TextInput/TextInput.react';
 import Toggle                            from 'components/Toggle/Toggle.react';
 import Toolbar                           from 'components/Toolbar/Toolbar.react';
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
-import { cost, features }                from 'dashboard/Settings/GeneralSettings.scss';
+import styles                            from 'dashboard/Settings/GeneralSettings.scss';
 import { Link }                          from 'react-router-dom';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
@@ -49,8 +49,8 @@ let CurrentPlan = ({requestLimit}) => {
     '$' + ((requestLimit-30) * 10).toString();
   return (
     <div>
-      <div className={cost}>{costString}</div>
-      <div className={features}>{requestLimit.toString() + ' requests per second'}<br/>{numJobsFromRequestLimit(requestLimit).toString() + ' background job' + (numJobsFromRequestLimit(requestLimit) > 1 ? 's' : '')}</div>
+      <div className={styles.cost}>{costString}</div>
+      <div className={styles.features}>{requestLimit.toString() + ' requests per second'}<br/>{numJobsFromRequestLimit(requestLimit).toString() + ' background job' + (numJobsFromRequestLimit(requestLimit) > 1 ? 's' : '')}</div>
     </div>
 )};
 
@@ -674,7 +674,7 @@ export default class GeneralSettings extends DashboardView {
         }}
         renderForm={({ fields, setField }) => {
           let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
-          return <div className={styles.settings_page}>
+          return <div className={settingsStyles.settings_page}>
             <CurrentPlanFields
               visible={!isCollaborator}
               requestLimit={fields.requestLimit}

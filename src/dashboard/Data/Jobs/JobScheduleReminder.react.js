@@ -1,10 +1,10 @@
 import React from 'react';
-import { horizontalCenter } from 'stylesheets/base.scss'
+import baseStyles from 'stylesheets/base.scss'
 
 export default class JobScheduleReminder extends React.Component {
   render() {
     return (
-      <div className={horizontalCenter}>
+      <div className={baseStyles.horizontalCenter}>
         <p>
           {'Be noted that '}
           <b>{'parse-server doesn\'t run the jobs in the scheduled times'}</b>

@@ -1,3 +1,29 @@
+# [4.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.3...4.0.0-alpha.4) (2021-12-06)
+
+
+### Features
+
+* upgrade graphql from 15.7.0 to 16.0.0 ([#1926](https://github.com/ParsePlatform/parse-dashboard/issues/1926)) ([7c94e51](https://github.com/ParsePlatform/parse-dashboard/commit/7c94e512ed5428797823d24ac205ece59e94f3ea))
+
+
+### BREAKING CHANGES
+
+* The minimum required Node.js version is 12.22.0. ([7c94e51](7c94e51))
+
+# [4.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2021-12-06)
+
+
+### Features
+
+* upgrade parse from 3.3.1 to 3.4.0 ([#1942](https://github.com/ParsePlatform/parse-dashboard/issues/1942)) ([13a250e](https://github.com/ParsePlatform/parse-dashboard/commit/13a250e2e04ba0f12be0c2da8c9075ea8eb4d83f))
+
+# [4.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.1...4.0.0-alpha.2) (2021-12-06)
+
+
+### Bug Fixes
+
+* security upgrade qrcode from 1.4.4 to 1.5.0 ([#1930](https://github.com/ParsePlatform/parse-dashboard/issues/1930)) ([244e1bb](https://github.com/ParsePlatform/parse-dashboard/commit/244e1bba1a3fb89b9ed8c93a3d0f7163eacd2691))
+
 # [4.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.17...4.0.0-alpha.1) (2021-12-05)
 
 

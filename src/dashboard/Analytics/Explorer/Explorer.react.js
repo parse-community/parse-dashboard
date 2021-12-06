@@ -27,7 +27,7 @@ import styles                    from 'dashboard/Analytics/Explorer/Explorer.scs
 import stylesTable               from 'components/Table/Table.scss';
 import subscribeTo               from 'lib/subscribeTo';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import { verticalCenter }        from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
 
 let buildFriendlyName = (query) => {
   let name = [query.source];
@@ -335,22 +335,20 @@ class Explorer extends DashboardView {
       <Toolbar
         section='Analytics'
         subsection='Explorer'>
-        <a
-          href='javascript:;'
-          role='button'
+        <button
+          type='button'
           className={styles.toolbarAction}
           style={{ borderRight: '1px solid #66637a' }}>
           <Icon name='question-solid' width={14} height={14} fill='#66637a' />
           FAQ
-        </a>
-        <a
-          href='javascript:;'
-          role='button'
+        </button>
+        <button
+          type='button'
           onClick={this.handleDownload.bind(this)}
           className={styles.toolbarAction}>
           <Icon name='download' width={14} height={14} fill='#66637a' />
           Download
-        </a>
+        </button>
       </Toolbar>
     );
 
@@ -391,7 +389,7 @@ class Explorer extends DashboardView {
 
     let footer = (
       <div className={styles.footer}>
-        <div className={[styles.right, verticalCenter].join(' ')}>
+        <div className={[styles.right, baseStyles.verticalCenter].join(' ')}>
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}

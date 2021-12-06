@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import base          from 'stylesheets/base.scss';
+import baseStyles    from 'stylesheets/base.scss';
 import Button        from 'components/Button/Button.react';
 import CascadingView from 'components/CascadingView/CascadingView.react';
 import PropTypes     from 'lib/PropTypes';
@@ -16,7 +16,7 @@ let ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
   return (
     <div className={styles.queryPicker}>
       <div className={styles.header}>
-        <h3 className={base.verticalCenter}>Choose a query to visualize</h3>
+        <h3 className={baseStyles.verticalCenter}>Choose a query to visualize</h3>
       </div>
       <div className={styles.queryContainer}>
         {queries.map((queryGroup) => {
@@ -27,20 +27,18 @@ let ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
                 <div
                   className={styles.queryItem}
                   key={`query_${j}`}>
-                  <a
-                    href='javascript:;'
-                    role='button'
+                  <button
+                    type='button'
                     onClick={() => onSelect(query)}
                     className={styles.queryLabel}>
                     {query.name}
-                  </a>
-                  {query.preset ? null : <a
-                    href='javascript:;'
-                    role='button'
+                  </button>
+                  {query.preset ? null : <button
+                    type='button'
                     onClick={() => onDelete(query)}
                     className={styles.del}>
                     &times;
-                  </a>}
+                  </button>}
                 </div>
               );
             });
@@ -68,7 +66,7 @@ let ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
         })}
       </div>
       <div className={styles.footer}>
-        <div className={base.center} style={{ width:'95%' }}>
+        <div className={baseStyles.center} style={{ width:'95%' }}>
           <Button
             width='100%'
             value='Build a custom query'

@@ -17,7 +17,7 @@ import Parse                     from 'parse';
 import React                     from 'react';
 import styles                    from 'dashboard/Analytics/Performance/Performance.scss';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import { verticalCenter }        from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
 
 const PERFORMANCE_QUERIES = [
   {
@@ -178,7 +178,7 @@ export default class Performance extends DashboardView {
 
     let footer = (
       <div className={styles.footer}>
-        <div className={[styles.right, verticalCenter].join(' ')}>
+        <div className={[styles.right, baseStyles.verticalCenter].join(' ')}>
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}

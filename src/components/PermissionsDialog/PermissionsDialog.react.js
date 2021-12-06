@@ -5,9 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import {
-   unselectable,
-   verticalCenter }     from 'stylesheets/base.scss';
+import baseStyles       from 'stylesheets/base.scss';
 import Button           from 'components/Button/Button.react';
 import Checkbox         from 'components/Checkbox/Checkbox.react';
 import Icon             from 'components/Icon/Icon.react';
@@ -1061,13 +1059,12 @@ export default class PermissionsDialog extends React.Component {
     if (!this.state.transitioning) {
       trash = (
         <div className={styles.delete}>
-          <a
-            href="javascript:;"
-            role="button"
+          <button
+            type='button'
             onClick={this.deleteRow.bind(this, key, pointer)}
           >
             <Icon name="trash-solid" width={20} height={20} />
-          </a>
+          </button>
         </div>
       );
     }
@@ -1155,7 +1152,7 @@ export default class PermissionsDialog extends React.Component {
   }
 
   render() {
-    let classes = [styles.dialog, unselectable];
+    let classes = [styles.dialog, baseStyles.unselectable];
 
     // for 3-column CLP dialog
     if (this.props.advanced) {
@@ -1300,7 +1297,7 @@ export default class PermissionsDialog extends React.Component {
                 onClick={() => this.props.onConfirm(this.outputPerms())}
               />
             </div>
-            <div className={[styles.details, verticalCenter].join(' ')}>
+            <div className={[styles.details, baseStyles.verticalCenter].join(' ')}>
               {this.props.details}
             </div>
           </div>

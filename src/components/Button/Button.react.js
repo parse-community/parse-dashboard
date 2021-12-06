@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { unselectable } from 'stylesheets/base.scss';
+import baseStyles       from 'stylesheets/base.scss';
 import PropTypes        from 'lib/PropTypes';
 import React            from 'react';
 import styles           from 'components/Button/Button.scss';
@@ -14,7 +14,7 @@ const noop = () => {};
 
 let Button = (props) => {
   const hasOnClick = props.onClick && !props.disabled;
-  let classes = [styles.button, unselectable];
+  let classes = [styles.button, baseStyles.unselectable];
   // if a button is disabled, that overrides any color selection
   if (props.disabled) {
     classes.push(styles.disabled);
@@ -39,15 +39,14 @@ let Button = (props) => {
     styleOverride = { width: props.width, minWidth: props.width, ...props.additionalStyles };
   }
   return (
-    <a
-      href='javascript:;'
-      role='button'
+    <button
+      type='button'
       style={styleOverride}
       className={classes.join(' ')}
       onClick={clickHandler}
       onFocus={(e) => { if (props.disabled) e.target.blur(); }} >
       <span>{props.value}</span>
-    </a>
+    </button>
   );
 }
 

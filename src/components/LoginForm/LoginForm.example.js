@@ -18,7 +18,6 @@ export const demos = [
         <div style={{ background: '#06283D', height: 500, position: 'relative' }}>
           <LoginForm
             header='Access your Dashboard'
-            footer={<a href='javascript:;'>Forgot something?</a>}
             action='Log In'>
             <LoginRow
               label='Email'

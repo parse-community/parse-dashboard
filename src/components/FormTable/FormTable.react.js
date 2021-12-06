@@ -21,7 +21,7 @@ let Row = ({
       <div className={styles.header}>
         <span className={[styles.indicator, styles[color]].join(' ')} />
         <span className={styles.title}>{title}</span>
-        {typeof onDelete === 'function' ? <a href='javascript:;' role='button' className={styles.del} onClick={onDelete}>&times;</a> : null}
+        {typeof onDelete === 'function' ? <button type='button' className={styles.del} onClick={onDelete}>&times;</button> : null}
       </div>
       {notes.map(({ key, keyColor = '', value, strong }, index) => {
         return <div key={index.toString()} className={styles.info}>

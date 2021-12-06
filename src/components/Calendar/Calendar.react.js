@@ -49,8 +49,8 @@ export default class Calendar extends React.Component {
   renderMonth() {
     return (
       <div className={styles.month}>
-        <a href='javascript:;' role='button' onClick={this.handlePrev.bind(this)} />
-        <a href='javascript:;' role='button' onClick={this.handleNext.bind(this)} />
+        <button type='button' onClick={this.handlePrev.bind(this)} />
+        <button type='button' onClick={this.handleNext.bind(this)} />
         <div>{getMonth(this.state.currentMonth.getMonth()) + ' ' + this.state.currentMonth.getFullYear()}</div>
       </div>
     );
@@ -86,7 +86,7 @@ export default class Calendar extends React.Component {
           new Date(Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i))
       );
       labels.push(
-        <a href='javascript:;' role='button' key={'day' + i} className={className} onClick={onChange}>{i}</a>
+        <button type='button' key={'day' + i} className={className} onClick={onChange}>{i}</button>
       );
     }
     let classes = [styles.days];

@@ -70,6 +70,7 @@
 }
 
 .localeRemoveButton {
+  @include buttonReset;
   position: absolute;
   right: 15px;
   font-size: 12px;
