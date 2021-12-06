@@ -14,7 +14,7 @@ import PropTypes             from 'lib/PropTypes';
 import React                 from 'react';
 import ReactDOM              from 'react-dom';
 import styles                from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.scss';
-import { verticalCenter }    from 'stylesheets/base.scss';
+import baseStyles            from 'stylesheets/base.scss';
 
 export default class ExplorerActiveChartButton extends React.Component {
   constructor() {
@@ -62,7 +62,7 @@ export default class ExplorerActiveChartButton extends React.Component {
     if (!this.props.disableDropdown) {
       dropdown = (
         <div
-          className={[styles.rightArrow, verticalCenter].join(' ')}
+          className={[styles.rightArrow, baseStyles.verticalCenter].join(' ')}
           onClick={() => {
             let position = Position.inDocument(this.node);
             let align = Directions.LEFT;
@@ -82,7 +82,7 @@ export default class ExplorerActiveChartButton extends React.Component {
     return (
       <div className={styles.button}>
         <div
-          className={[styles.checkbox, verticalCenter].join(' ')}
+          className={[styles.checkbox, baseStyles.verticalCenter].join(' ')}
           onClick={this.handleCheckbox.bind(this)}
           style={{
             backgroundColor: this.state.active ? this.props.color : null,

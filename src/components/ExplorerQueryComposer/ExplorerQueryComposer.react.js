@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import base           from 'stylesheets/base.scss';
+import baseStyles     from 'stylesheets/base.scss';
 import Button         from 'components/Button/Button.react';
 import ChromeDropdown from 'components/ChromeDropdown/ChromeDropdown.react';
 import DateTimeEntry  from 'components/DateTimeEntry/DateTimeEntry.react';
@@ -584,12 +584,12 @@ export default class ExplorerQueryComposer extends React.Component {
       return (
         <div className={styles.queryComposer}>
           <div className={styles.header}>
-            <div className={[base.center, styles.headerView].join(' ')}>
+            <div className={[baseStyles.center, styles.headerView].join(' ')}>
               <h3 className={styles.headerLabel}>{query.name}</h3>
             </div>
           </div>
           <div className={styles.footer}>
-            <div className={[base.center, styles.boxContent].join(' ')}>
+            <div className={[baseStyles.center, styles.boxContent].join(' ')}>
               <Button
                 width='100%'
                 value='Dismiss query'
@@ -606,7 +606,7 @@ export default class ExplorerQueryComposer extends React.Component {
 
     if (!isNew && this.state.editing) {
       headerView = (
-        <div className={[base.center, styles.headerView].join(' ')}>
+        <div className={[baseStyles.center, styles.headerView].join(' ')}>
           <input
             type='text'
             className={[styles.headerLabel, styles.textInput].join(' ')}
@@ -631,7 +631,7 @@ export default class ExplorerQueryComposer extends React.Component {
       );
     } else {
       headerView = (
-        <div className={[base.center, styles.headerView].join(' ')}>
+        <div className={[baseStyles.center, styles.headerView].join(' ')}>
           <h3 className={styles.headerLabel}>{ this.state.name || 'Build a custom query' }</h3>
           { isNew ? null : <a
             href='javascript:;'
