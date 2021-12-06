@@ -21,8 +21,8 @@ const SELECTION_INPUT_ID = 'selectionInput';
 
 export default class ObjectPickerDialog extends React.Component {
   static contextType = CurrentApp;
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
 
     this.state = {
       data: null,

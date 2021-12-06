@@ -10,13 +10,12 @@ import history         from 'dashboard/history';
 import JobsForm        from 'dashboard/Data/Jobs/JobsForm.react';
 import React           from 'react';
 import subscribeTo     from 'lib/subscribeTo';
-import generatePath from 'lib/generatePath';
+import generatePath    from 'lib/generatePath';
+import { CurrentApp }  from 'context/currentApp';
 
 @subscribeTo('Jobs', 'jobs')
 class JobEdit extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-  }
+  static contextType = CurrentApp;
 
   submitForm(changes) {
     let schedule = {
@@ -52,8 +51,7 @@ class JobEdit extends React.Component {
     let promise = this.props.params.jobId ?
       this.props.jobs.dispatch(ActionTypes.EDIT, { jobId: this.props.params.jobId, updates: schedule }) :
       this.props.jobs.dispatch(ActionTypes.CREATE, { schedule });
-    // TODO: pass context
-    promise.then(() => {history.push(generatePath('jobs/scheduled'))});
+    promise.then(() => {history.push(generatePath(this.context, 'jobs/scheduled'))});
     return promise;
   }
 
