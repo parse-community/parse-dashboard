@@ -103,7 +103,7 @@ let FilterRow = ({
       options={constraints.map((c) => Constraints[c].name)}
       onChange={(c) => onChangeConstraint(constraintLookup[c])} />
     {compareValue(compareInfo, compareTo, onChangeCompareTo, active, parentContentId)}
-    <a role='button' href='javascript:;' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></a>
+    <button type='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></button>
   </div>
 );
 

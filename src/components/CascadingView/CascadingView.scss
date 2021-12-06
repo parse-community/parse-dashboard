@@ -27,6 +27,10 @@ $arrowColor: #343445;
   padding: 0;
 }
 
+.arrow {
+  @include buttonReset;
+}
+
 .expanded {
   @include arrow('down', 12px, 10px, $arrowColor);
   content: '';

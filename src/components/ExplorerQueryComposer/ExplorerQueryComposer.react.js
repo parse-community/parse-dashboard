@@ -278,13 +278,14 @@ export default class ExplorerQueryComposer extends React.Component {
     let deleteButton = null;
     if (!this.props.isTimeSeries || index !== 0 ) {
       deleteButton = (
-        <a
-          href='javascript:;'
-          role='button'
-          className={styles.del}
-          onClick={this.removeAdditionalQuery.bind(this, 'aggregates', index)}>
-          &times;
-        </a>
+        <div className={styles.delWrapper}>
+          <button
+            type='button'
+            className={styles.del}
+            onClick={this.removeAdditionalQuery.bind(this, 'aggregates', index)}>
+            &times;
+          </button>
+        </div>
       );
     }
 
@@ -340,13 +341,14 @@ export default class ExplorerQueryComposer extends React.Component {
     let specialGroup = this.props.isTimeSeries && index === 0;
     if (!specialGroup) {
       deleteButton = (
-        <a
-          href='javascript:;'
-          role='button'
-          className={styles.del}
-          onClick={this.removeAdditionalQuery.bind(this, 'groups', index)}>
-          &times;
-        </a>
+        <div className={styles.delWrapper}>
+          <button
+            type='button'
+            className={styles.del}
+            onClick={this.removeAdditionalQuery.bind(this, 'groups', index)}>
+            &times;
+          </button>
+        </div>
       );
     }
 
@@ -519,14 +521,15 @@ export default class ExplorerQueryComposer extends React.Component {
 
         {constraintView}
 
-        <a
-          href='javascript:;'
-          role='button'
-          className={styles.del}
-          onClick={this.removeAdditionalQuery.bind(this, 'filters', index)}>
-          &times;
-        </a>
+        <div className={styles.delWrapper}>
+          <button
+            type='button'
+            className={styles.del}
+            onClick={this.removeAdditionalQuery.bind(this, 'filters', index)}>
+            &times;
+          </button>
         </div>
+      </div>
     );
   }
 
@@ -563,13 +566,14 @@ export default class ExplorerQueryComposer extends React.Component {
             color='blue'
             width='100%' />
 
-          <a
-            href='javascript:;'
-            role='button'
-            className={styles.del}
-            onClick={this.removeAdditionalQuery.bind(this, 'orders', index)}>
-            &times;
-          </a>
+          <div className={styles.delWrapper}>
+            <button
+              type='button'
+              className={styles.del}
+              onClick={this.removeAdditionalQuery.bind(this, 'orders', index)}>
+              &times;
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -613,33 +617,38 @@ export default class ExplorerQueryComposer extends React.Component {
             value={this.state.newName}
             onChange={this.handleNameChange.bind(this)}
             placeholder={'Give your query a name'} />
-          <a
-            href='javascript:;'
-            role='button'
-            className={styles.headerButton}
-            onClick={this.handleSave.bind(this)}>
-            { this.state.isSaved ? 'Rename' : 'Save' }
-          </a>
-          <a
-            href='javascript:;'
-            role='button'
-            className={[styles.headerButton, styles.secondaryColor].join(' ')}
-            onClick={this.toggleEditing.bind(this)}>
-            Cancel
-          </a>
+          <div className={styles.headerButtonCell}>
+            <button
+              type='button'
+              className={styles.headerButton}
+              onClick={this.handleSave.bind(this)}>
+              { this.state.isSaved ? 'Rename' : 'Save' }
+            </button>
+          </div>
+          <div className={styles.headerButtonCell}>
+            <button
+              type='button'
+              className={[styles.headerButton, styles.secondaryColor].join(' ')}
+              onClick={this.toggleEditing.bind(this)}>
+              Cancel
+            </button>
+          </div>
         </div>
       );
     } else {
       headerView = (
         <div className={[baseStyles.center, styles.headerView].join(' ')}>
           <h3 className={styles.headerLabel}>{ this.state.name || 'Build a custom query' }</h3>
-          { isNew ? null : <a
-            href='javascript:;'
-            role='button'
-            className={[styles.headerButton, styles.secondaryColor].join(' ')}
-            onClick={this.toggleEditing.bind(this)}>
-            { this.state.isSaved ? 'Rename' : 'Save' }
-          </a> }
+          { isNew ? null : (
+            <div className={styles.headerButtonCell}>
+              <button
+                type='button'
+                className={[styles.headerButton, styles.secondaryColor].join(' ')}
+                onClick={this.toggleEditing.bind(this)}>
+                { this.state.isSaved ? 'Rename' : 'Save' }
+              </button>
+            </div>
+          )}
         </div>
       );
     }
