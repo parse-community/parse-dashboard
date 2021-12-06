@@ -114,7 +114,7 @@ jobs:
           - name: Node 12
             NODE_VERSION: 12.22.7
           - name: Node 14
-            NODE_VERSION: 14.18.1
+            NODE_VERSION: 14.18.2
           - name: Node 16
             NODE_VERSION: 16.10.0
       fail-fast: false
