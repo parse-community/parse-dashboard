@@ -23,10 +23,10 @@ export default class DataBrowser extends React.Component {
   constructor(props) {
     super(props);
 
-    const columnPreferences = this.context.columnPreference || {}
+    const columnPreferences = props.app.columnPreference || {}
     let order = ColumnPreferences.getOrder(
       props.columns,
-      this.context.applicationId,
+      props.app.applicationId,
       props.className,
       columnPreferences[props.className]
     );
@@ -50,12 +50,12 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
   }
 
-  componentWillReceiveProps(props, context) {
+  componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
-      const columnPreferences = context.columnPreference || {}
+      const columnPreferences = props.app.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
-        context.applicationId,
+        props.app.applicationId,
         props.className,
         columnPreferences[props.className]
       );
@@ -67,10 +67,10 @@ export default class DataBrowser extends React.Component {
       });
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
       || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
-      const columnPreferences = context.columnPreference || {}
+      const columnPreferences = props.app.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
-        context.applicationId,
+        props.app.applicationId,
         props.className,
         columnPreferences[props.className]
       );
@@ -90,7 +90,7 @@ export default class DataBrowser extends React.Component {
     if (this.saveOrderTimeout) {
       clearTimeout(this.saveOrderTimeout);
     }
-    let appId = this.context.applicationId;
+    let appId = this.props.app.applicationId;
     let className = this.props.className;
     this.saveOrderTimeout = setTimeout(() => {
       ColumnPreferences.updatePreferences(order, appId, className)
@@ -298,8 +298,8 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
-    const { preventSchemaEdits, applicationId } = this.context;
+    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, app, ...other } = this.props;
+    const { preventSchemaEdits, applicationId } = app;
     return (
       <div>
         <BrowserTable
@@ -324,9 +324,9 @@ export default class DataBrowser extends React.Component {
           className={className}
           classNameForEditors={className}
           setCurrent={this.setCurrent}
-          enableDeleteAllRows={this.context.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
-          enableExportClass={this.context.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
-          enableSecurityDialog={this.context.serverInfo.features.schemas.editClassLevelPermissions && !disableSecurityDialog && !preventSchemaEdits}
+          enableDeleteAllRows={app.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
+          enableExportClass={app.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
+          enableSecurityDialog={app.serverInfo.features.schemas.editClassLevelPermissions && !disableSecurityDialog && !preventSchemaEdits}
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
           handleColumnDragDrop={this.handleHeaderDragDrop}
