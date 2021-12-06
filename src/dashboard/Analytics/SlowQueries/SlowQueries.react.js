@@ -67,7 +67,7 @@ class SlowQueries extends TableView {
 
   componentWillMount() {
     this.fetchDropdownData(this.props);
-    this.fetchSlowQueries(this.context.currentApp);
+    this.fetchSlowQueries(this.context);
   }
 
   componentWillUnmount() {
@@ -77,7 +77,8 @@ class SlowQueries extends TableView {
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchDropdownData(nextProps);
-      this.fetchSlowQueries(nextContext.currentApp);
+      // TODO: use new context
+      this.fetchSlowQueries(nextContext);
     }
   }
 
@@ -232,7 +233,7 @@ class SlowQueries extends TableView {
           <Button
             primary={true}
             disabled={!this.state.mutated}
-            onClick={this.fetchSlowQueries.bind(this, this.context.currentApp)}
+            onClick={this.fetchSlowQueries.bind(this, this.context)}
             value='Run query' />
         )}
         />

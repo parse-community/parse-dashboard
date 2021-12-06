@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes       from 'lib/PropTypes'; 
 import { ActionTypes } from 'lib/stores/JobsStore';
 import history         from 'dashboard/history';
 import JobsForm        from 'dashboard/Data/Jobs/JobsForm.react';
 import React           from 'react';
 import subscribeTo     from 'lib/subscribeTo';
+import generatePath from 'lib/generatePath';
 
 @subscribeTo('Jobs', 'jobs')
 class JobEdit extends React.Component {
@@ -52,7 +52,8 @@ class JobEdit extends React.Component {
     let promise = this.props.params.jobId ?
       this.props.jobs.dispatch(ActionTypes.EDIT, { jobId: this.props.params.jobId, updates: schedule }) :
       this.props.jobs.dispatch(ActionTypes.CREATE, { schedule });
-    promise.then(() => {history.push(this.context.generatePath('jobs/scheduled'))});
+    // TODO: pass context
+    promise.then(() => {history.push(generatePath('jobs/scheduled'))});
     return promise;
   }
 
@@ -117,9 +118,5 @@ class JobEdit extends React.Component {
     );
   }
 }
-
-JobEdit.original.contextTypes = {
-  generatePath: PropTypes.func,
-};
 
 export default JobEdit;

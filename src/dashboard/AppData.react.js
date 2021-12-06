@@ -6,28 +6,12 @@
  * the root directory of this source tree.
  */
 import React          from 'react';
-import PropTypes      from 'lib/PropTypes';
 import AppSelector    from 'dashboard/AppSelector.react';
 import AppsManager    from 'lib/AppsManager';
 import history        from 'dashboard/history';
-import { CurrentApp } from 'context/CurrentApp';
+import { CurrentApp } from 'context/currentApp';
 
 class AppData extends React.Component {
-  constructor(props) {
-    super(props);
-    this.generatePath = this.generatePath.bind(this);
-  }
-
-  getChildContext() {
-    return {
-      generatePath: this.generatePath,
-    };
-  }
-
-  generatePath(path) {
-    return '/apps/' + this.props.params.appId + '/' + path;
-  }
-
   render() {
     if (this.props.params.appId === '_') {
       return <AppSelector />;
@@ -49,9 +33,5 @@ class AppData extends React.Component {
     );
   }
 }
-
-AppData.childContextTypes = {
-  generatePath: PropTypes.func,
-};
 
 export default AppData;

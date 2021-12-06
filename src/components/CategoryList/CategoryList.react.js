@@ -9,6 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/CategoryList/CategoryList.scss';
 import { Link }  from 'react-router-dom';
+import generatePath from 'lib/generatePath';
 
 export default class CategoryList extends React.Component {
   constructor() {
@@ -64,7 +65,8 @@ export default class CategoryList extends React.Component {
           }
           let count = c.count;
           let className = id === this.props.current ? styles.active : '';
-          let link = this.context.generatePath(
+          // TODO: pass context
+          let link = generatePath(
             (this.props.linkPrefix || '') + (c.link || id)
           );
           return (
@@ -83,8 +85,4 @@ CategoryList.propTypes = {
   categories: PropTypes.arrayOf(PropTypes.object).describe('Array of categories used to populate list.'),
   current: PropTypes.string.describe('Id of current category to be highlighted.'),
   linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
-};
-
-CategoryList.contextTypes = {
-  generatePath: PropTypes.func
 };

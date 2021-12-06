@@ -418,13 +418,13 @@ export default class GeneralSettings extends DashboardView {
           this.state.migrationMongoURL,
           this.state.migrationWarnings,
           warnings => this.setState({migrationWarnings: warnings}),
-          connectionString => this.context.currentApp.beginMigration(connectionString)
+          connectionString => this.context.beginMigration(connectionString)
         );
         promise.catch(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
         return promise;
       }}
       onClose={closeModalWithConnectionString}
-      onSuccess={() => history.push(`/apps/${this.context.currentApp.slug}/migration`)}
+      onSuccess={() => history.push(`/apps/${this.context.slug}/migration`)}
       clearFields={() => this.setState({
         migrationMongoURL: '',
         migrationWarnings: [],
@@ -456,7 +456,7 @@ export default class GeneralSettings extends DashboardView {
           this.state.newConnectionString,
           this.state.migrationWarnings,
           warnings => this.setState({migrationWarnings: warnings}),
-          connectionString => this.context.currentApp.changeConnectionString(connectionString)
+          connectionString => this.context.changeConnectionString(connectionString)
         );
         promise.catch(({ error }) => this.setState({showMongoConnectionValidationErrors: error !== 'Warnings'}));
         return promise;
@@ -500,7 +500,7 @@ export default class GeneralSettings extends DashboardView {
         (this.state.password.length > 0 || !AccountManager.currentUser().has_password)
         && this.state.transferNewOwner.length > 0
       }
-      onSubmit={() => AppsManager.transferApp(this.context.currentApp.slug, this.state.transferNewOwner, this.state.password)}
+      onSubmit={() => AppsManager.transferApp(this.context.slug, this.state.transferNewOwner, this.state.password)}
       onClose={() => this.setState({showTransferAppModal: false})}
       onSuccess={({ message }) => this.setState({transferAppSuccessMessage: message})}
       clearFields={() => this.setState({
@@ -534,7 +534,7 @@ export default class GeneralSettings extends DashboardView {
       submitText='Permanently delete this app'
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
-      onSubmit={() => AppsManager.deleteApp(this.context.currentApp.slug, this.state.password)}
+      onSubmit={() => AppsManager.deleteApp(this.context.slug, this.state.password)}
       onSuccess={() => history.push('/apps')}
       onClose={() => this.setState({showDeleteAppModal: false})}
       clearFields={() => this.setState({password: ''})}>
@@ -554,7 +554,7 @@ export default class GeneralSettings extends DashboardView {
         this.setState({
           cloneAppMessage: '',
         });
-        return AppsManager.cloneApp(this.context.currentApp.slug, this.state.cloneAppName, this.state.cloneOptionsSelection)
+        return AppsManager.cloneApp(this.context.slug, this.state.cloneAppName, this.state.cloneOptionsSelection)
       }}
       onSuccess={({notice}) => this.setState({cloneAppMessage: notice})}
       onClose={() => this.setState({showCloneAppModal: false})}
@@ -593,15 +593,15 @@ export default class GeneralSettings extends DashboardView {
 
     let initialFields = {
       requestLimit: this.props.initialFields.pricing_plan.request_limit,
-      appName: this.context.currentApp.name,
-      inProduction: this.context.currentApp.production,
+      appName: this.context.name,
+      inProduction: this.context.production,
       iTunesURL: iosUrl ? iosUrl.url : '',
       googlePlayURL: anrdoidUrl ? anrdoidUrl.url : '',
       windowsAppStoreURL: windowsUrl ? windowsUrl.url : '',
       webAppURL: webUrl ? webUrl.url : '',
       otherURL: otherURL ? otherURL.url : '',
       collaborators: this.props.initialFields.collaborators,
-      mongoURL: this.context.currentApp.settings.fields.fields.opendb_connection_string,
+      mongoURL: this.context.settings.fields.fields.opendb_connection_string,
     };
 
     let collaboratorRemovedWarningModal = this.state.removedCollaborators.length > 0 ? <Modal
@@ -632,23 +632,23 @@ export default class GeneralSettings extends DashboardView {
         onSubmit={({ changes }) => {
           let promiseList = [];
           if (changes.requestLimit !== undefined) {
-            promiseList.push(this.context.currentApp.setRequestLimit(changes.requestLimit));
+            promiseList.push(this.context.setRequestLimit(changes.requestLimit));
           }
           if (changes.appName !== undefined) {
-            promiseList.push(this.context.currentApp.setAppName(changes.appName));
+            promiseList.push(this.context.setAppName(changes.appName));
           }
           if (changes.inProduction !== undefined) {
-            promiseList.push(this.context.currentApp.setInProduction(changes.inProduction));
+            promiseList.push(this.context.setInProduction(changes.inProduction));
           }
 
           let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
           addedCollaborators.forEach(({ userEmail }) => {
-            promiseList.push(this.context.currentApp.addCollaborator(userEmail));
+            promiseList.push(this.context.addCollaborator(userEmail));
           });
 
           let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
           removedCollaborators.forEach(({ id }) => {
-            promiseList.push(this.context.currentApp.removeCollaboratorById(id));
+            promiseList.push(this.context.removeCollaboratorById(id));
           });
 
           let urlKeys = {
@@ -661,7 +661,7 @@ export default class GeneralSettings extends DashboardView {
 
           Object.keys(urlKeys).forEach(key => {
             if (changes[key] !== undefined) {
-              promiseList.push(this.context.currentApp.setAppStoreURL(urlKeys[key], changes[key]));
+              promiseList.push(this.context.setAppStoreURL(urlKeys[key], changes[key]));
             }
           });
 
@@ -706,9 +706,9 @@ export default class GeneralSettings extends DashboardView {
               isCollaborator={isCollaborator}
               hasCollaborators={initialFields.collaborators.length > 0}
               startMigration={() => this.setState({showMigrateAppModal: true})}
-              hasInProgressMigration={!!this.context.currentApp.migration}
-              appSlug={this.context.currentApp.slug}
-              cleanUpFiles={() => this.context.currentApp.cleanUpFiles().then(result => {
+              hasInProgressMigration={!!this.context.migration}
+              appSlug={this.context.slug}
+              cleanUpFiles={() => this.context.cleanUpFiles().then(result => {
                 this.setState({
                   cleanupFilesMessage: result.notice,
                   cleanupNoteColor: 'orange',
@@ -721,7 +721,7 @@ export default class GeneralSettings extends DashboardView {
               })}
               cleanUpFilesMessage={this.state.cleanupFilesMessage}
               cleanUpMessageColor={this.state.cleanupNoteColor}
-              exportData={() => this.context.currentApp.exportData().then((result) => {
+              exportData={() => this.context.exportData().then((result) => {
                 this.setState({
                   exportDataMessage: result.notice,
                   exportDataColor: 'orange',

@@ -53,7 +53,7 @@ export default class Retention extends DashboardView {
   }
 
   componentWillMount() {
-    this.fetchRetention(this.context.currentApp);
+    this.fetchRetention(this.context);
   }
 
   componentWillUnmount() {
@@ -62,7 +62,8 @@ export default class Retention extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.fetchRetention(nextContext.currentApp);
+      // TODO: use new context
+      this.fetchRetention(nextContext);
     }
   }
 

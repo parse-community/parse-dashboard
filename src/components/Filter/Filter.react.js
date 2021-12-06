@@ -10,8 +10,7 @@ import { List, Map }  from 'immutable';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
 import stringCompare  from 'lib/stringCompare';
-import ParseApp       from 'lib/ParseApp';
-import { CurrentApp } from 'context/CurrentApp';
+import { CurrentApp } from 'context/currentApp';
 
 function changeField(schema, filters, index, newField) {
   let newFilter = new Map({

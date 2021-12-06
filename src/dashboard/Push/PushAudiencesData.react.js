@@ -5,12 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes               from 'lib/PropTypes'; 
 import * as PushAudiencesStore from 'lib/stores/PushAudiencesStore';
 import * as PushConstants      from './PushConstants';
 import Button                  from 'components/Button/Button.react';
 import LoaderContainer         from 'components/LoaderContainer/LoaderContainer.react';
-import ParseApp                from 'lib/ParseApp';
 import PushAudienceDialog      from 'components/PushAudienceDialog/PushAudienceDialog.react';
 import PushAudiencesSelector   from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
 import queryFromFilters        from 'lib/queryFromFilters';

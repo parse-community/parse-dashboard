@@ -173,7 +173,7 @@ class Explorer extends DashboardView {
           to: this.state.dateRange.end.getTime() / 1000
         };
 
-        let abortableRequest = this.context.currentApp.getAnalyticsTimeSeries(payload);
+        let abortableRequest = this.context.getAnalyticsTimeSeries(payload);
         promise = abortableRequest.promise.then((result) => {
           let activeQueries = this.state.activeQueries;
           activeQueries[i].result = result.map((point) => (
