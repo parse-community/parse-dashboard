@@ -1,3 +1,17 @@
+# [4.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2021-12-06)
+
+
+### Features
+
+* upgrade parse from 3.3.1 to 3.4.0 ([#1942](https://github.com/ParsePlatform/parse-dashboard/issues/1942)) ([13a250e](https://github.com/ParsePlatform/parse-dashboard/commit/13a250e2e04ba0f12be0c2da8c9075ea8eb4d83f))
+
+# [4.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.1...4.0.0-alpha.2) (2021-12-06)
+
+
+### Bug Fixes
+
+* security upgrade qrcode from 1.4.4 to 1.5.0 ([#1930](https://github.com/ParsePlatform/parse-dashboard/issues/1930)) ([244e1bb](https://github.com/ParsePlatform/parse-dashboard/commit/244e1bba1a3fb89b9ed8c93a3d0f7163eacd2691))
+
 # [4.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.17...4.0.0-alpha.1) (2021-12-05)
 
 
