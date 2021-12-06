@@ -1,3 +1,10 @@
+# [4.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2021-12-06)
+
+
+### Features
+
+* upgrade parse from 3.3.1 to 3.4.0 ([#1942](https://github.com/ParsePlatform/parse-dashboard/issues/1942)) ([13a250e](https://github.com/ParsePlatform/parse-dashboard/commit/13a250e2e04ba0f12be0c2da8c9075ea8eb4d83f))
+
 # [4.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.1...4.0.0-alpha.2) (2021-12-06)
 
 
