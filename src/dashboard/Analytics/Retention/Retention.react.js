@@ -62,7 +62,6 @@ export default class Retention extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      // TODO: use new context
       this.fetchRetention(nextContext);
     }
   }

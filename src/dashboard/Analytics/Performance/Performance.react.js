@@ -111,7 +111,6 @@ export default class Performance extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      // TODO: use new context
       this.handleRunQuery(nextContext);
     }
   }

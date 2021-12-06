@@ -77,7 +77,6 @@ class SlowQueries extends TableView {
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
       this.fetchDropdownData(nextProps);
-      // TODO: use new context
       this.fetchSlowQueries(nextContext);
     }
   }

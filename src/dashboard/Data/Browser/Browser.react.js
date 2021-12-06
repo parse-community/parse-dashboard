@@ -167,7 +167,6 @@ class Browser extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    // TODO: use new context
     if (this.context !== nextContext) {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
@@ -182,7 +181,7 @@ class Browser extends DashboardView {
     }
   }
 
-  async prefetchData(props) {
+  async prefetchData(props, context) {
     const filters = this.extractFiltersFromQuery(props);
     const { className, entityId, relationName } = props.params;
     const isRelationRoute = entityId && relationName;
@@ -199,7 +198,7 @@ class Browser extends DashboardView {
       lastMax: -1,
       ordering: ColumnPreferences.getColumnSort(
         false,
-        this.context.applicationId,
+        context.applicationId,
         className,
       ),
       selection: {},

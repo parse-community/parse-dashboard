@@ -36,7 +36,6 @@ export default class CloudCode extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    // TODO: use new context
     if (this.context !== nextContext) {
       this.fetchSource(this.context, getPath(nextProps.params));
     }

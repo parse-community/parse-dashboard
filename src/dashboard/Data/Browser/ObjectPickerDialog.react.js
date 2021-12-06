@@ -384,6 +384,7 @@ export default class ObjectPickerDialog extends React.Component {
             </div>
           </div>
             <DataBrowser
+              app={this.context}
               count={count}
               schema={schema}
               filters={filters}
