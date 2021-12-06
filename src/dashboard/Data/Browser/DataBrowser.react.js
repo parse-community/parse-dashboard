@@ -11,7 +11,6 @@ import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react'
 import ContextMenu            from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import React                  from 'react';
-import { CurrentApp }         from 'context/currentApp';
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -19,7 +18,6 @@ import { CurrentApp }         from 'context/currentApp';
  * and the keyboard interactions for the data table.
  */
 export default class DataBrowser extends React.Component {
-  static contextType = CurrentApp;
   constructor(props) {
     super(props);
 

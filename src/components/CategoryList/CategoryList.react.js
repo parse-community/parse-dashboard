@@ -5,13 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/CategoryList/CategoryList.scss';
-import { Link }  from 'react-router-dom';
-import generatePath from 'lib/generatePath';
+import PropTypes      from 'lib/PropTypes';
+import React          from 'react';
+import styles         from 'components/CategoryList/CategoryList.scss';
+import { Link }       from 'react-router-dom';
+import generatePath   from 'lib/generatePath';
+import { CurrentApp } from 'context/currentApp';
 
 export default class CategoryList extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.listWrapperRef = React.createRef();
@@ -65,8 +67,8 @@ export default class CategoryList extends React.Component {
           }
           let count = c.count;
           let className = id === this.props.current ? styles.active : '';
-          // TODO: pass context
           let link = generatePath(
+            this.context,
             (this.props.linkPrefix || '') + (c.link || id)
           );
           return (
