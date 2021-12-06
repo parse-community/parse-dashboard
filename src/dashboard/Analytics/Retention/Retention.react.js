@@ -233,7 +233,7 @@ export default class Retention extends DashboardView {
             <Button
               primary={true}
               disabled={!this.state.mutated}
-              onClick={this.fetchRetention.bind(this, this.context.currentApp)}
+              onClick={this.fetchRetention.bind(this, this.context)}
               value='Refresh chart' />
           </div>
         </div>
