@@ -1,3 +1,15 @@
+# [4.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.3...4.0.0-alpha.4) (2021-12-06)
+
+
+### Features
+
+* upgrade graphql from 15.7.0 to 16.0.0 ([#1926](https://github.com/ParsePlatform/parse-dashboard/issues/1926)) ([7c94e51](https://github.com/ParsePlatform/parse-dashboard/commit/7c94e512ed5428797823d24ac205ece59e94f3ea))
+
+
+### BREAKING CHANGES
+
+* The minimum required Node.js version is 12.22.0. ([7c94e51](7c94e51))
+
 # [4.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2021-12-06)
 
 
