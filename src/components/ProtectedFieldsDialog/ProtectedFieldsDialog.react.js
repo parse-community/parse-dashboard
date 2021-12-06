@@ -19,9 +19,7 @@ import styles             from 'components/ProtectedFieldsDialog/ProtectedFields
 import MultiSelect        from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption  from 'components/MultiSelect/MultiSelectOption.react';
 import TrackVisibility    from 'components/TrackVisibility/TrackVisibility.react';
-import { 
-  unselectable,
-  verticalCenter }        from 'stylesheets/base.scss';
+import baseStyles         from 'stylesheets/base.scss';
 
 let origin = new Position(0, 0);
 const intersectionMargin = '10px 0px 0px 20px';
@@ -445,7 +443,7 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   render() {
-    let classes = [styles.dialog, unselectable];
+    let classes = [styles.dialog, baseStyles.unselectable];
 
     let placeholderText = 'Role/User id/name * or authenticated\u2026';
 
@@ -509,7 +507,7 @@ export default class ProtectedFieldsDialog extends React.Component {
                 onClick={() => this.props.onConfirm(this.outputPerms())}
               />
             </div>
-            <div className={[styles.details, verticalCenter].join(' ')}>
+            <div className={[styles.details, baseStyles.verticalCenter].join(' ')}>
               {this.props.details}
             </div>
           </div>

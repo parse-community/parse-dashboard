@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { center } from 'stylesheets/base.scss'
-import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/CascadingView/CascadingView.scss';
+import baseStyles from 'stylesheets/base.scss'
+import PropTypes  from 'lib/PropTypes';
+import React      from 'react';
+import styles     from 'components/CascadingView/CascadingView.scss';
 
 export default class CascadingView extends React.Component {
   constructor() {
@@ -23,7 +23,7 @@ export default class CascadingView extends React.Component {
     let expander = <button
       type='button'
       className={[styles.arrow, styles.right].join(' ')}>
-      <div className={[center, this.state.expanded ? styles.expanded : styles.collapsed].join(' ') } />
+      <div className={[baseStyles.center, this.state.expanded ? styles.expanded : styles.collapsed].join(' ') } />
     </button>;
     let childrenContainer = this.state.expanded ? (<div className={styles.childrenContainer}>
       <div className={styles.children}>{children}</div>

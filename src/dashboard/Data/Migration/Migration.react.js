@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import base                                         from 'stylesheets/base.scss';
+import baseStyles                                   from 'stylesheets/base.scss';
 import Button                                       from 'components/Button/Button.react';
 import DashboardView                                from 'dashboard/DashboardView.react';
 import FormNote                                     from 'components/FormNote/FormNote.react';
@@ -19,7 +19,6 @@ import React                                        from 'react';
 import styles                                       from 'dashboard/Data/Migration/Migration.scss';
 import Toolbar                                      from 'components/Toolbar/Toolbar.react';
 import { AsyncStatus }                              from 'lib/Constants';
-import { horizontalCenter, verticalCenter, center } from 'stylesheets/base.scss';
 
 const MIGRATION_INVALID = 0;
 const MIGRATION_NOTSTARTED = 1;
@@ -64,18 +63,18 @@ let ClassProgressBar = ({ job, last }) => {
     case MIGRATION_INITIALSYNC:
       progressDiv = <div
         style={{width: percentComplete.toString() + '%'}}
-        className={[styles.detailCompletion, base.progressBackground].join(' ')} />
+        className={[styles.detailCompletion, baseStyles.progressBackground].join(' ')} />
       break;
     case MIGRATION_DONE:
       progressDiv = <div
         style={{width: '100%'}}
-        className={[styles.detailCompletion, base.succeededBackground].join(' ')}/>
+        className={[styles.detailCompletion, baseStyles.succeededBackground].join(' ')}/>
         icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
       break;
     case MIGRATION_FATALED:
       progressDiv = <div
         style={{width: '100%'}}
-        className={[styles.detailCompletion, base.failedBackground].join(' ')}/>
+        className={[styles.detailCompletion, baseStyles.failedBackground].join(' ')}/>
         icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
   }
   return <div>
@@ -88,7 +87,7 @@ let ClassProgressBar = ({ job, last }) => {
       {job.Name}
     </div>
     <div className={styles.detailProgressWrapper}>
-      <div className={[styles.detailPercent, verticalCenter].join(' ')}>
+      <div className={[styles.detailPercent, baseStyles.verticalCenter].join(' ')}>
         <div className={styles.detailBackground}>
           {progressDiv}
         </div>
@@ -265,7 +264,7 @@ export default class Migration extends DashboardView {
               break;
           }
 
-          return <div className={[this.state.showDetails ? horizontalCenter : center, styles.content].join(' ')}>
+          return <div className={[this.state.showDetails ? baseStyles.horizontalCenter : baseStyles.center, styles.content].join(' ')}>
             <div className={styles.title}>CURRENT PROGRESS</div>
             <div className={styles.stepsWrapper}>
               <MigrationStep
