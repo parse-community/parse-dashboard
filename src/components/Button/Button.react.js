@@ -39,15 +39,14 @@ let Button = (props) => {
     styleOverride = { width: props.width, minWidth: props.width, ...props.additionalStyles };
   }
   return (
-    <a
-      href='javascript:;'
-      role='button'
+    <button
+      type='button'
       style={styleOverride}
       className={classes.join(' ')}
       onClick={clickHandler}
       onFocus={(e) => { if (props.disabled) e.target.blur(); }} >
       <span>{props.value}</span>
-    </a>
+    </button>
   );
 }
 

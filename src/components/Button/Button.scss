@@ -9,17 +9,15 @@
 
 .button {
   @include DosisFont;
+  @include buttonReset($bg: none, $border: 1px solid $blue, $padding: 0 16px);
   display: inline-block;
   height: 30px;
-  border: 1px solid $blue;
   line-height: 28px;
   outline: 0;
   text-decoration: none;
   text-align: center;
   border-radius: 5px;
-  cursor: pointer;
   min-width: 110px;
-  padding: 0 16px;
   font-size: 14px;
 
   color: $blue;
