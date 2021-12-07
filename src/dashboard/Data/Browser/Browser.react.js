@@ -167,7 +167,7 @@ class Browser extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (this.context !== nextContext) {
+    if (this.props.params.className !== nextProps.params.className) {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
