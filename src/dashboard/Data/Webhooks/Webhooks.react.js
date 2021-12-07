@@ -50,7 +50,7 @@ class Webhooks extends TableView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.webhooks.dispatch(WebhookActionTypes.FETCH);
     this.props.schema.dispatch(SchemaActionTypes.FETCH);
   }

@@ -222,7 +222,7 @@ class PushDetails extends DashboardView {
     this.xhrHandles = [];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     let promise = this.context.currentApp.fetchPushDetails(this.props.params.pushId);
     promise.then((pushDetails) => {

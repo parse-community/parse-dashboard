@@ -262,7 +262,7 @@ export default class PushIndex extends DashboardView {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.handleFetch(this.props.params.category);
     //TODO: make xhr map and generic abort for existing xhrs.
     this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {

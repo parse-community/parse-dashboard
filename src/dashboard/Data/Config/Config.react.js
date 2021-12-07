@@ -37,7 +37,7 @@ class Config extends TableView {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.config.dispatch(ActionTypes.FETCH);
   }
 

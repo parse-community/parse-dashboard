@@ -99,9 +99,7 @@ export default class Performance extends DashboardView {
       width: display.offsetWidth,
       height: display.offsetHeight
     };
-  }
 
-  componentWillMount() {
     this.handleRunQuery(this.context.currentApp);
   }
 

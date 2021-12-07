@@ -43,7 +43,7 @@ export default class PushAudiencesBaseRow extends React.Component {
     }, () => {});
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchPushSubscriberCount.call(this,this.context);
     if (this.props.id == NEW_SEGMENT_ID) {
       this.setState({ isNewSegment: true });

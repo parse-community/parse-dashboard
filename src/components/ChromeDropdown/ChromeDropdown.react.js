@@ -34,10 +34,6 @@ export default class ChromeDropdown extends React.Component {
     }
   }
 
-  componentWillMount() {
-    this.styles = this.props.styles || styles;
-  }
-
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
   }
@@ -54,7 +50,6 @@ export default class ChromeDropdown extends React.Component {
 
   render() {
     let widthStyle = { width: parseFloat(this.props.width || 140) };
-    let styles = this.styles;
     let color = this.props.color || 'purple';
 
     let label = this.props.value;
@@ -118,8 +113,5 @@ ChromeDropdown.propTypes = {
   ),
   placeholder: PropTypes.string.describe(
     'Placeholder text used in place of default selection.'
-  ),
-  styles: PropTypes.object.describe(
-    'Styles override used to provide dropdown with differnt skin.'
   ),
 };

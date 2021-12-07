@@ -17,7 +17,7 @@ export default class SidebarHeader extends React.Component {
     super();
     this.state = { };
   }
-  componentWillMount() {
+  componentDidMount() {
     let mountPath = window.PARSE_DASHBOARD_PATH;
     fetch(mountPath).then(response => {
       this.setState({ dashboardUser: response.headers.get('username') });

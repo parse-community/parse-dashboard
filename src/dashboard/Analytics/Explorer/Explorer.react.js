@@ -74,9 +74,7 @@ class Explorer extends DashboardView {
       width: display.offsetWidth,
       height: display.offsetHeight
     };
-  }
 
-  componentWillMount() {
     this.props.customQueries.dispatch(ActionTypes.LIST);
     this.props.customQueries.dispatch(ActionTypes.LIST_RECENT);
   }

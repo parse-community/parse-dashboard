@@ -152,7 +152,7 @@ class Browser extends DashboardView {
     this.dataBrowserRef = React.createRef();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { currentApp } = this.context;
     if (!currentApp.preventSchemaEdits) {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));

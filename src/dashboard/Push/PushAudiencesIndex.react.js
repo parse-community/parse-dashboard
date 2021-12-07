@@ -49,7 +49,7 @@ class PushAudiencesIndex extends DashboardView {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH,
       {

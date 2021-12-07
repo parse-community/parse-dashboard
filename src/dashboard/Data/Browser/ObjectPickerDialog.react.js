@@ -50,19 +50,20 @@ export default class ObjectPickerDialog extends React.Component {
     this.onConfirm = this.onConfirm.bind(this);
   }
 
-  async componentWillMount() {
+  componentDidMount() {
     const { filters } = this.state;
     const { className, pointerId, relation } = this.props;
-    await this.fetchData(className, filters);
-    if (pointerId) {
-      this.selectRow(pointerId, true);
-    }
-    if (relation) {
-      this.selectRelationRows(relation, filters);
-    }
-    document
-      .getElementById(SELECTION_INPUT_ID)
-      .addEventListener('focus', this.disableDataBrowserKeyControls);
+    this.fetchData(className, filters).then(() => {
+      if (pointerId) {
+        this.selectRow(pointerId, true);
+      }
+      if (relation) {
+        this.selectRelationRows(relation, filters);
+      }
+      document
+        .getElementById(SELECTION_INPUT_ID)
+        .addEventListener('focus', this.disableDataBrowserKeyControls);
+    })
   }
 
   componentWillUnmount() {

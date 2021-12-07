@@ -22,10 +22,6 @@ export default class PushExperimentDropdown extends React.Component {
     };
   }
 
-  componentWillMount() {
-    this.styles = this.props.styles || styles;
-  }
-
   componentDidMount() {
     this.node = ReactDOM.findDOMNode(this);
   }
@@ -42,7 +38,6 @@ export default class PushExperimentDropdown extends React.Component {
 
   render() {
     let widthStyle = { width: this.props.width || 140 };
-    let styles = this.styles;
     let color = this.props.color;
     let content = (
       <div className={[styles.current, styles[color]].join(' ')} onClick={() => this.setState({ open: true })}>
@@ -85,8 +80,5 @@ PushExperimentDropdown.propTypes = {
   ),
   placeHolder: PropTypes.string.describe(
     'Placeholder text used in place of default selection.'
-  ),
-  styles: PropTypes.object.describe(
-    'Styles override used to provide dropdown with differnt skin.'
   ),
 };

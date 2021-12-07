@@ -24,7 +24,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
     this.handleTargetObjectIdChange = this.handleTargetObjectIdChange.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { selection, classes, onSelectClass } = this.props;
     if (selection) {
       const currentClass = classes[0];

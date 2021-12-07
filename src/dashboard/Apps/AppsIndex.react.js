@@ -96,16 +96,16 @@ export default class AppsIndex extends React.Component {
     this.searchRef = React.createRef();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (AppsManager.apps().length === 1) {
       const [app] = AppsManager.apps();
       history.push(`/apps/${app.slug}/browser`);
-      return;
+    } else {
+      document.body.addEventListener('keydown', this.focusField);
+      AppsManager.getAllAppsIndexStats().then(() => {
+        this.forceUpdate();
+      });
     }
-    document.body.addEventListener('keydown', this.focusField);
-    AppsManager.getAllAppsIndexStats().then(() => {
-      this.forceUpdate();
-    });
   }
 
   componentWillUnmount() {

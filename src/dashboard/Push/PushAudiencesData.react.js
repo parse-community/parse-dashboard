@@ -39,7 +39,7 @@ export default class PushAudiencesData extends React.Component {
     };
   }
 
-  componentWillMount(){
+  componentDidMount(){
     if (this.props.loaded){ //case when data already fetched
       this.setState({ loading: false});
     }
