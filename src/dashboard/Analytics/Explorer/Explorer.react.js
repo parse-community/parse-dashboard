@@ -85,11 +85,9 @@ class Explorer extends DashboardView {
     this.xhrHandles.forEach(xhr => xhr && xhr.abort());
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (this.context !== nextContext) {
-      if (this.props.params.displayType !== nextProps.params.displayType) {
-        this.setState({ activeQueries: [], mutated: false });
-      }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.displayType !== nextProps.params.displayType) {
+      this.setState({ activeQueries: [], mutated: false });
       nextProps.customQueries.dispatch(ActionTypes.LIST);
       nextProps.customQueries.dispatch(ActionTypes.LIST_RECENT);
     }
