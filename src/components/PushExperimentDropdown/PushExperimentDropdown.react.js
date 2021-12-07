@@ -47,7 +47,7 @@ export default class PushExperimentDropdown extends React.Component {
       </div>
     );
     if (this.state.open) {
-      let position = Position.inWindow(this.dropdownRef);
+      let position = Position.inWindow(this.dropdownRef.current);
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
           <div style={widthStyle} className={[styles.menu, styles[color]].join(' ')}>
