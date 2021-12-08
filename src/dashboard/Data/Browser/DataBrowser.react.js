@@ -10,9 +10,7 @@ import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
 import ContextMenu            from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
-import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
-import PropTypes              from 'lib/PropTypes';
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -20,13 +18,13 @@ import PropTypes              from 'lib/PropTypes';
  * and the keyboard interactions for the data table.
  */
 export default class DataBrowser extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
 
-    const columnPreferences = context.currentApp.columnPreference || {}
+    const columnPreferences = props.app.columnPreference || {}
     let order = ColumnPreferences.getOrder(
       props.columns,
-      context.currentApp.applicationId,
+      props.app.applicationId,
       props.className,
       columnPreferences[props.className]
     );
@@ -50,12 +48,12 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
   }
 
-  componentWillReceiveProps(props, context) {
+  componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
-      const columnPreferences = context.currentApp.columnPreference || {}
+      const columnPreferences = props.app.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
-        context.currentApp.applicationId,
+        props.app.applicationId,
         props.className,
         columnPreferences[props.className]
       );
@@ -67,10 +65,10 @@ export default class DataBrowser extends React.Component {
       });
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
       || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
-      const columnPreferences = context.currentApp.columnPreference || {}
+      const columnPreferences = props.app.columnPreference || {}
       let order = ColumnPreferences.getOrder(
         props.columns,
-        context.currentApp.applicationId,
+        props.app.applicationId,
         props.className,
         columnPreferences[props.className]
       );
@@ -90,7 +88,7 @@ export default class DataBrowser extends React.Component {
     if (this.saveOrderTimeout) {
       clearTimeout(this.saveOrderTimeout);
     }
-    let appId = this.context.currentApp.applicationId;
+    let appId = this.props.app.applicationId;
     let className = this.props.className;
     this.saveOrderTimeout = setTimeout(() => {
       ColumnPreferences.updatePreferences(order, appId, className)
@@ -298,8 +296,8 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, ...other } = this.props;
-    const { preventSchemaEdits, applicationId } = this.context.currentApp;
+    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, app, ...other } = this.props;
+    const { preventSchemaEdits, applicationId } = app;
     return (
       <div>
         <BrowserTable
@@ -324,9 +322,9 @@ export default class DataBrowser extends React.Component {
           className={className}
           classNameForEditors={className}
           setCurrent={this.setCurrent}
-          enableDeleteAllRows={this.context.currentApp.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
-          enableExportClass={this.context.currentApp.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
-          enableSecurityDialog={this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions && !disableSecurityDialog && !preventSchemaEdits}
+          enableDeleteAllRows={app.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
+          enableExportClass={app.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
+          enableSecurityDialog={app.serverInfo.features.schemas.editClassLevelPermissions && !disableSecurityDialog && !preventSchemaEdits}
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
           handleColumnDragDrop={this.handleHeaderDragDrop}
@@ -345,7 +343,3 @@ export default class DataBrowser extends React.Component {
     );
   }
 }
-
-DataBrowser.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

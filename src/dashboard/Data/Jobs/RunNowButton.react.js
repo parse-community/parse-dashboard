@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button     from 'components/Button/Button.react';
-import ParseApp   from 'lib/ParseApp';
-import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import Button         from 'components/Button/Button.react';
+import React          from 'react';
+import { CurrentApp } from 'context/currentApp';
 
 export default class RunNowButton extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
 
@@ -28,7 +28,7 @@ export default class RunNowButton extends React.Component {
 
   handleClick() {
     this.setState({ progress: true });
-    this.context.currentApp.runJob(this.props.job).then(() => {
+    this.context.runJob(this.props.job).then(() => {
       this.setState({ progress: false, result: 'success' });
       this.timeout = setTimeout(() => this.setState({ result: null }), 3000);
     }, () => {
@@ -55,7 +55,3 @@ export default class RunNowButton extends React.Component {
     );
   }
 }
-
-RunNowButton.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp),
-};

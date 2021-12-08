@@ -13,6 +13,7 @@ import history       from 'dashboard/history';
 import React         from 'react';
 import styles        from 'dashboard/Data/CloudCode/CloudCode.scss';
 import Toolbar       from 'components/Toolbar/Toolbar.react';
+import generatePath from 'lib/generatePath';
 
 function getPath(params) {
   return params.splat;
@@ -31,12 +32,12 @@ export default class CloudCode extends DashboardView {
   }
 
   componentWillMount() {
-    this.fetchSource(this.context.currentApp, getPath(this.props.params));
+    this.fetchSource(this.context, getPath(this.props.params));
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.fetchSource(nextContext.currentApp, getPath(nextProps.params));
+      this.fetchSource(nextContext, getPath(nextProps.params));
     }
   }
 
@@ -52,7 +53,7 @@ export default class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          history.replace(this.context.generatePath('cloud_code/main.js'))
+          history.replace(generatePath(this.context, 'cloud_code/main.js'))
         } else {
           // Means we can load /cloud_code/<fileName>
           app.getSource(fileName).then(
@@ -79,7 +80,7 @@ export default class CloudCode extends DashboardView {
       <div style={{ overflowX: 'auto' }}>
         <div style={{ borderLeft: '1px solid #3e87b2' }}>
           <FileTree
-            linkPrefix={this.context.generatePath('cloud_code/')}
+            linkPrefix={generatePath(this.context, 'cloud_code/')}
             current={current}
             files={paths} />
         </div>
