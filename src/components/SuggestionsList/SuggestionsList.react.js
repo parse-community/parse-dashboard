@@ -19,7 +19,7 @@ export default class Suggestion extends React.Component {
       position: null
     };
 
-    this.popoverRef = React.createRef(null);
+    this.popoverRef = React.createRef();
 
     this.handleScroll = () => {
       let newPosition = this.props.fixed
