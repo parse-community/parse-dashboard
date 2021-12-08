@@ -12,7 +12,6 @@ import Popover               from 'components/Popover/Popover.react';
 import Position              from 'lib/Position';
 import PropTypes             from 'lib/PropTypes';
 import React                 from 'react';
-import ReactDOM              from 'react-dom';
 import styles                from 'components/ExplorerMenuButton/ExplorerMenuButton.scss';
 
 export default class ExplorerMenuButton extends React.Component {

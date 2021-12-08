@@ -10,7 +10,6 @@ import { MONTHS, getDateMethod }     from 'lib/DateUtils';
 import Popover                       from 'components/Popover/Popover.react';
 import Position                      from 'lib/Position';
 import React                         from 'react';
-import ReactDOM                      from 'react-dom';
 import styles                        from 'components/DateTimeInput/DateTimeInput.scss';
 
 export default class DateTimeInput extends React.Component {
@@ -21,10 +20,8 @@ export default class DateTimeInput extends React.Component {
       open: false,
       position: null,
     }
-  }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.inputRef = React.createRef();
   }
 
   toggle() {
@@ -32,10 +29,11 @@ export default class DateTimeInput extends React.Component {
       if (this.state.open) {
         return { open: false };
       }
-      let pos = Position.inDocument(this.node);
-      let height = 230 + this.node.clientWidth * 0.14;
+      let node = this.inputRef.current;
+      let pos = Position.inDocument(node);
+      let height = 230 + node.clientWidth * 0.14;
       if (this.props.fixed) {
-        pos = Position.inWindow(this.node);
+        pos = Position.inWindow(node);
         if (window.innerHeight - pos.y - height < 40) {
           pos.y = window.innerHeight - height - 40;
         }
@@ -65,7 +63,7 @@ export default class DateTimeInput extends React.Component {
           <DateTimePicker
             local={this.props.local}
             value={this.props.value}
-            width={this.node.clientWidth}
+            width={this.inputRef.current.clientWidth}
             onChange={this.props.onChange}
             close={() => this.setState({ open: false })} />
         </Popover>
@@ -89,7 +87,7 @@ export default class DateTimeInput extends React.Component {
     }
     
     return (
-      <div className={styles.input} onClick={this.props.disabled ? null : this.toggle.bind(this)}>
+      <div className={styles.input} onClick={this.props.disabled ? null : this.toggle.bind(this)} ref={this.inputRef}>
         {content}
         {popover}
       </div>
