@@ -15,7 +15,6 @@ import {
 }                       from 'components/ExplorerQueryComposer/ExplorerFilter';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import styles         from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
 
 const TABLE_SOURCES_LABEL = ['API Event', 'Custom Event'];
@@ -104,7 +103,7 @@ for (let c in Constraints) {
 
 let setFocus = (input) => {
   if (input !== null) {
-    ReactDOM.findDOMNode(input).focus();
+    input.focus();
   }
 };
 
@@ -122,7 +121,7 @@ let fieldView = (type, value, onChangeValue) => {
     case 'Number':
       return <input type='number' className={styles.formInput} style={fieldStyle} value={value} onChange={(e) => onChangeValue(validateNumeric(e.target.value) ? e.target.value : (value || ''))} />;
     case 'Date':
-      return <div style={fieldStyle}><DateTimeEntry fixed={true} className={styles.formInput} value={value || new Date()} onChange={onChangeValue} ref={setFocus}/></div>;
+      return <div style={fieldStyle}><DateTimeEntry fixed={true} className={styles.formInput} value={value || new Date()} onChange={onChangeValue} /></div>;
     default:
       throw new Error('Incompatible type ' + type + ' used to render fieldView.');
   }

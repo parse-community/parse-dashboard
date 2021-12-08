@@ -1,7 +1,6 @@
 import React from 'react';
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
-import ReactDOM from 'react-dom';
 
 import Button from 'components/Button/Button.react';
 import ColumnConfigurationItem from 'components/ColumnsConfiguration/ColumnConfigurationItem.react';
@@ -19,10 +18,8 @@ export default class ColumnsConfiguration extends React.Component {
     this.state = {
       open: false
     };
-  }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.titleRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -56,12 +53,16 @@ export default class ColumnsConfiguration extends React.Component {
 
   render() {
     const { handleColumnDragDrop, handleColumnsOrder, order, disabled } = this.props;
-    let [ title, entry ] = [styles.title, styles.entry ].map(className => (
-      <div className={className} onClick={this.toggle.bind(this)}>
-        <Icon name='manage-columns' width={14} height={14} />
-        <span>Manage Columns</span>
-      </div>
-    ));
+    const title = <div className={styles.title} onClick={this.toggle.bind(this)} ref={this.titleRef}>
+      <Icon name='manage-columns' width={14} height={14} />
+      <span>Manage Columns</span>
+    </div>
+
+    let entry = <div className={styles.entry} onClick={this.toggle.bind(this)}>
+      <Icon name='manage-columns' width={14} height={14} />
+      <span>Manage Columns</span>
+    </div>
+
     if (disabled) {
       entry = <div className={styles.entry + ' ' + styles.disabled} onClick={null}>
         <Icon name='manage-columns' width={14} height={14} />
@@ -72,7 +73,7 @@ export default class ColumnsConfiguration extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={Position.inDocument(this.node)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
+        <Popover fixed={true} position={Position.inDocument(this.titleRef.current)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
           <div className={styles.popover} id={POPOVER_CONTENT_ID}>
             {title}
             <div className={styles.body}>
