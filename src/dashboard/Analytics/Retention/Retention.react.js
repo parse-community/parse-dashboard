@@ -53,7 +53,7 @@ export default class Retention extends DashboardView {
   }
 
   componentWillMount() {
-    this.fetchRetention(this.context.currentApp);
+    this.fetchRetention(this.context);
   }
 
   componentWillUnmount() {
@@ -62,7 +62,7 @@ export default class Retention extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.fetchRetention(nextContext.currentApp);
+      this.fetchRetention(nextContext);
     }
   }
 
@@ -233,7 +233,7 @@ export default class Retention extends DashboardView {
             <Button
               primary={true}
               disabled={!this.state.mutated}
-              onClick={this.fetchRetention.bind(this, this.context.currentApp)}
+              onClick={this.fetchRetention.bind(this, this.context)}
               value='Refresh chart' />
           </div>
         </div>
