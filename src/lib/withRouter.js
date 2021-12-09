@@ -1,10 +1,10 @@
 import React from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export function withRouter(Component) {
   function render(props) {
     const params = useParams();
-    const navigate = useLocation();
+    const navigate = useNavigate();
 
     return <Component {...props} params={params} navigate={navigate} />;
   }

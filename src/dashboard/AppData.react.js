@@ -10,6 +10,7 @@ import AppSelector    from 'dashboard/AppSelector.react';
 import AppsManager    from 'lib/AppsManager';
 import { CurrentApp } from 'context/currentApp';
 import { withRouter } from 'lib/withRouter';
+import { Outlet } from 'react-router-dom';
 
 @withRouter
 class AppData extends React.Component {
@@ -27,9 +28,7 @@ class AppData extends React.Component {
     }
     return (
       <CurrentApp.Provider value={current}>
-        <div>
-          {this.props.children}
-        </div>
+        <Outlet />
       </CurrentApp.Provider>
     );
   }

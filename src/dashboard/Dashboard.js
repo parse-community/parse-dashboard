@@ -48,7 +48,7 @@ import { AsyncStatus }    from 'lib/Constants';
 import baseStyles         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
-import { BrowserRouter, Routes, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 
@@ -226,15 +226,15 @@ export default class Dashboard extends React.Component {
             <Jobs {...props} params={props.match.params}/>
           </JobsData>
         )} />
-        <Route path={props.match.path} render={() => <Redirect to="about-us" />} />
-        <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' />
+        {/* <Route path={props.match.path} render={() => <Redirect to="about-us" />} /> */}
+        {/* <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' /> */}
       </Routes>
     )
 
     const AnalyticsRoute = ({ match }) => (
       <Routes>
         <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
-        <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
+        {/* <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' /> */}
         <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
         <Route path={ match.path + '/retention' } component={Retention} />
         <Route path={ match.path + '/performance' } component={Performance} />
@@ -266,63 +266,10 @@ export default class Dashboard extends React.Component {
             <Playground />
           </ApiConsole>
         )} />
-        <Redirect from={ props.match.path } to='/apps/:appId/api_console/rest' />
+        {/* <Redirect from={ props.match.path } to='/apps/:appId/api_console/rest' /> */}
       </Routes>
     )
 
-    const AppRoute = ({ match }) => (
-      <AppData params={ match.params }>
-        <Routes>
-          <Route path={ match.path + '/getting_started' } component={Empty} />
-          <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
-          <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
-          <Route path={ match.path + '/browser' } component={BrowserRoute} />
-          <Route path={ match.path + '/cloud_code' } component={CloudCode} />
-          <Route path={ match.path + '/cloud_code/*' } component={CloudCode} />
-          <Route path={ match.path + '/webhooks' } component={Webhooks} />
-
-          <Route path={ match.path + '/jobs' } component={JobsRoute}/>
-
-          <Route path={ match.path + '/logs/:type' } render={(props) => (
-            <Logs {...props} params={props.match.params} />
-          )} />
-          <Redirect from={ match.path + '/logs' } to='/apps/:appId/logs/info' />
-
-          <Route path={ match.path + '/config' } component={Config} />
-          <Route path={ match.path + '/api_console' } component={ApiConsoleRoute} />
-          <Route path={ match.path + '/migration' } component={Migration} />
-
-
-          <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
-          <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
-
-          <Route path={ match.path + '/push/activity/:category' } render={(props) => (
-            <PushIndex {...props} params={props.match.params} />
-          )} />
-          <Route path={ match.path + '/push/audiences' } component={PushAudiencesIndex} />
-          <Route path={ match.path + '/push/new' } component={PushNew} />
-          <Route path={ match.path + '/push/:pushId' } render={(props) => (
-            <PushDetails {...props} params={props.match.params} />
-          )} />
-
-          {/* Unused routes... */}
-          <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/overview' />
-          <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
-          <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
-          <Route path={ match.path + '/settings' } component={SettingsRoute}/>
-        </Routes>
-      </AppData>
-    )
-
-    const Index = () => (
-      <div>
-        <Routes>
-          <Redirect exact from='/apps/:appId' to='/apps/:appId/browser' />
-          <Route exact path='/apps' component={AppsIndexPage} />
-          <Route path='/apps/:appId' component={AppRoute} />
-        </Routes>
-      </div>
-    )
     return (
       <BrowserRouter>
         <div>
@@ -330,10 +277,33 @@ export default class Dashboard extends React.Component {
             <title>Parse Dashboard</title>
           </Helmet>
           <Routes>
-            <Route path='/apps' component={Index} />
-            <Route path='/account/overview' component={AccountSettingsPage} />
-            <Redirect from='/account' to='/account/overview' />
-            <Redirect from='/' to='/apps' />
+            <Route index element={<Navigate replace to='/apps' />} />
+
+            <Route path='/apps'>
+              <Route index element={<AppsIndexPage />} />
+              <Route path=':appId' element={<AppData />}>
+                <Route index element={<Navigate replace to=':appId/browser' />} />
+                <Route path='getting_started' element={<Empty />} />
+                <Route path='browser/:className/:entityId/:relationName' element={<Browser />} />
+                <Route path='browser/:className' element={<Browser />} />
+                <Route path='browser' element={<Browser />} />
+                <Route path='cloud_code' element={<CloudCode />} />
+                <Route path='cloud_code/*' element={<CloudCode />} />
+                <Route path='webhooks' element={<Webhooks />} />
+                <Route path='jobs' element={<JobsRoute />}/>
+                <Route path='logs/:type' element={<Logs />} />
+                <Route path='config' element={<Config />} />
+                <Route path='api_console' element={<ApiConsoleRoute />} />
+                <Route path='migration' element={<Migration />} />
+                <Route path='push/activity/:category' element={<PushIndex />} />
+                <Route path='push/audiences' element={<PushAudiencesIndex />} />
+                <Route path='push/new' element={<PushNew />} />
+                <Route path='push/:pushId' render={<PushDetails />} />
+              </Route>
+            </Route>
+
+            <Route path='/account' element={<Navigate replace to='/account/overview' />} />
+            <Route path='/account/overview' element={<AccountSettingsPage />} />
             <Route path='*' component={FourOhFour} />
           </Routes>
         </div>

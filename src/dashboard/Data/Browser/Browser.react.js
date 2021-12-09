@@ -148,6 +148,7 @@ class Browser extends DashboardView {
     this.saveEditCloneRow = this.saveEditCloneRow.bind(this);
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
+    this.redirectToFirstClass = this.redirectToFirstClass.bind(this);
 
     this.dataBrowserRef = React.createRef();
   }
