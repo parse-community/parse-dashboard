@@ -272,41 +272,39 @@ export default class Dashboard extends React.Component {
 
     return (
       <BrowserRouter>
-        <div>
-          <Helmet>
-            <title>Parse Dashboard</title>
-          </Helmet>
-          <Routes>
-            <Route index element={<Navigate replace to='/apps' />} />
+        <Helmet>
+          <title>Parse Dashboard</title>
+        </Helmet>
+        <Routes>
+          <Route index element={<Navigate replace to='/apps' />} />
 
-            <Route path='/apps'>
-              <Route index element={<AppsIndexPage />} />
-              <Route path=':appId' element={<AppData />}>
-                <Route index element={<Navigate replace to=':appId/browser' />} />
-                <Route path='getting_started' element={<Empty />} />
-                <Route path='browser/:className/:entityId/:relationName' element={<Browser />} />
-                <Route path='browser/:className' element={<Browser />} />
-                <Route path='browser' element={<Browser />} />
-                <Route path='cloud_code' element={<CloudCode />} />
-                <Route path='cloud_code/*' element={<CloudCode />} />
-                <Route path='webhooks' element={<Webhooks />} />
-                <Route path='jobs' element={<JobsRoute />}/>
-                <Route path='logs/:type' element={<Logs />} />
-                <Route path='config' element={<Config />} />
-                <Route path='api_console' element={<ApiConsoleRoute />} />
-                <Route path='migration' element={<Migration />} />
-                <Route path='push/activity/:category' element={<PushIndex />} />
-                <Route path='push/audiences' element={<PushAudiencesIndex />} />
-                <Route path='push/new' element={<PushNew />} />
-                <Route path='push/:pushId' render={<PushDetails />} />
-              </Route>
+          <Route path='/apps'>
+            <Route index element={<AppsIndexPage />} />
+            <Route path=':appId' element={<AppData />}>
+              <Route index element={<Navigate replace to=':appId/browser' />} />
+              <Route path='getting_started' element={<Empty />} />
+              <Route path='browser/:className/:entityId/:relationName' element={<Browser />} />
+              <Route path='browser/:className' element={<Browser />} />
+              <Route path='browser' element={<Browser />} />
+              <Route path='cloud_code' element={<CloudCode />} />
+              <Route path='cloud_code/*' element={<CloudCode />} />
+              <Route path='webhooks' element={<Webhooks />} />
+              <Route path='jobs' element={<JobsRoute />}/>
+              <Route path='logs/:type' element={<Logs />} />
+              <Route path='config' element={<Config />} />
+              <Route path='api_console' element={<ApiConsoleRoute />} />
+              <Route path='migration' element={<Migration />} />
+              <Route path='push/activity/:category' element={<PushIndex />} />
+              <Route path='push/audiences' element={<PushAudiencesIndex />} />
+              <Route path='push/new' element={<PushNew />} />
+              <Route path='push/:pushId' render={<PushDetails />} />
             </Route>
+          </Route>
 
-            <Route path='/account' element={<Navigate replace to='/account/overview' />} />
-            <Route path='/account/overview' element={<AccountSettingsPage />} />
-            <Route path='*' component={FourOhFour} />
-          </Routes>
-        </div>
+          <Route path='/account' element={<Navigate replace to='/account/overview' />} />
+          <Route path='/account/overview' element={<AccountSettingsPage />} />
+          <Route path='*' component={FourOhFour} />
+        </Routes>
       </BrowserRouter>
     );
   }
