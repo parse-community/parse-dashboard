@@ -15,7 +15,6 @@ import Field                  from 'components/Field/Field.react';
 import Fieldset               from 'components/Fieldset/Fieldset.react';
 import FieldStyles            from 'components/Field/Field.scss';
 import FlowView               from 'components/FlowView/FlowView.react';
-import history                from 'dashboard/history';
 import Label                  from 'components/Label/Label.react';
 import LoaderContainer        from 'components/LoaderContainer/LoaderContainer.react';
 import Parse                  from 'parse';
@@ -33,6 +32,7 @@ import { Directions }         from 'lib/Constants';
 import { Link }               from 'react-router-dom';
 import { tableInfoBuilder }   from 'lib/PushUtils';
 import generatePath from 'lib/generatePath';
+import { withRouter } from 'lib/withRouter';
 
 const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments';
 
@@ -202,6 +202,7 @@ const DROPDOWN_KEY_GROUP_B = 'Group B';
 
 export default
 @subscribeTo('Schema', 'schema')
+@withRouter
 class PushDetails extends DashboardView {
   constructor() {
     super();
@@ -586,7 +587,7 @@ class PushDetails extends DashboardView {
       if (error) {
         promise.reject({ error });
       } else {
-        history.push(generatePath(this.context, 'push/activity'));
+        this.props.navigate(generatePath(this.context, 'push/activity'));
       }
     }, (error) => {
       promise.reject({ error });

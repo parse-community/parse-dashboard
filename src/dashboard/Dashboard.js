@@ -19,7 +19,6 @@ import Explorer           from './Analytics/Explorer/Explorer.react';
 import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
 import GeneralSettings    from './Settings/GeneralSettings.react';
 import GraphQLConsole     from './Data/ApiConsole/GraphQLConsole.react';
-import history            from 'dashboard/history';
 import HostingSettings    from './Settings/HostingSettings.react';
 import Icon               from 'components/Icon/Icon.react';
 import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
@@ -49,11 +48,7 @@ import { AsyncStatus }    from 'lib/Constants';
 import baseStyles         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
-import {
-  Router,
-  Switch,
-} from 'react-router';
-import { Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 
@@ -204,18 +199,18 @@ export default class Dashboard extends React.Component {
 
     const SettingsRoute = ({ match }) => (
       <SettingsData params={ match.params }>
-        <Switch>
+        <Routes>
           <Route path={ match.url + '/general' } component={GeneralSettings} />
           <Route path={ match.url + '/keys' } component={SecuritySettings} />
           <Route path={ match.url + '/users' } component={UsersSettings} />
           <Route path={ match.url + '/push' } component={PushSettings} />
           <Route path={ match.url + '/hosting' } component={HostingSettings} />
-        </Switch>
+        </Routes>
       </SettingsData>
     )
 
     const JobsRoute = (props) => (
-      <Switch>
+      <Routes>
         <Route exact path={ props.match.path + '/new' } render={(props) => (
           <JobsData {...props} params={props.match.params}>
             <JobEdit params={props.match.params}/>
@@ -231,19 +226,20 @@ export default class Dashboard extends React.Component {
             <Jobs {...props} params={props.match.params}/>
           </JobsData>
         )} />
+        <Route path={props.match.path} render={() => <Redirect to="about-us" />} />
         <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' />
-      </Switch>
+      </Routes>
     )
 
     const AnalyticsRoute = ({ match }) => (
-      <Switch>
+      <Routes>
         <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
         <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
         <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
         <Route path={ match.path + '/retention' } component={Retention} />
         <Route path={ match.path + '/performance' } component={Performance} />
         <Route path={ match.path + '/slow_queries' } component={SlowQueries} />
-      </Switch>
+      </Routes>
     );
 
     const BrowserRoute = (props) => {
@@ -254,7 +250,7 @@ export default class Dashboard extends React.Component {
     }
 
     const ApiConsoleRoute = (props) => (
-      <Switch>
+      <Routes>
         <Route path={ props.match.path + '/rest' } render={props => (
           <ApiConsole {...props}>
             <RestConsole />
@@ -271,12 +267,12 @@ export default class Dashboard extends React.Component {
           </ApiConsole>
         )} />
         <Redirect from={ props.match.path } to='/apps/:appId/api_console/rest' />
-      </Switch>
+      </Routes>
     )
 
     const AppRoute = ({ match }) => (
       <AppData params={ match.params }>
-        <Switch>
+        <Routes>
           <Route path={ match.path + '/getting_started' } component={Empty} />
           <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
           <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
@@ -314,34 +310,34 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
           <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
           <Route path={ match.path + '/settings' } component={SettingsRoute}/>
-        </Switch>
+        </Routes>
       </AppData>
     )
 
     const Index = () => (
       <div>
-        <Switch>
+        <Routes>
           <Redirect exact from='/apps/:appId' to='/apps/:appId/browser' />
           <Route exact path='/apps' component={AppsIndexPage} />
           <Route path='/apps/:appId' component={AppRoute} />
-        </Switch>
+        </Routes>
       </div>
     )
     return (
-      <Router history={history}>
+      <BrowserRouter>
         <div>
           <Helmet>
             <title>Parse Dashboard</title>
           </Helmet>
-          <Switch>
+          <Routes>
             <Route path='/apps' component={Index} />
             <Route path='/account/overview' component={AccountSettingsPage} />
             <Redirect from='/account' to='/account/overview' />
             <Redirect from='/' to='/apps' />
             <Route path='*' component={FourOhFour} />
-          </Switch>
+          </Routes>
         </div>
-      </Router>
+      </BrowserRouter>
     );
   }
 }

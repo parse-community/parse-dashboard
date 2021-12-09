@@ -5,13 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import history from 'dashboard/history';
 import React   from 'react';
 import styles  from 'components/FourOhFour/FourOhFour.scss';
+import { withRouter } from 'lib/withRouter';
 
 const EMOJI_COUNT = 30;
 
-export default class FourOhFour extends React.Component {
+export default
+@withRouter
+class FourOhFour extends React.Component {
   constructor() {
     super();
 
@@ -51,7 +53,7 @@ export default class FourOhFour extends React.Component {
           <div className={styles.message}>Oh no, we can't find that page!</div>
 
           <div className={styles.back}>
-            <button type='button' onClick={() => history.goBack()}>Go back</button>
+            <button type='button' onClick={() => this.props.navigate(-1)}>Go back</button>
           </div>
         </div>
       </div>

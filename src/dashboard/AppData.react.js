@@ -8,9 +8,10 @@
 import React          from 'react';
 import AppSelector    from 'dashboard/AppSelector.react';
 import AppsManager    from 'lib/AppsManager';
-import history        from 'dashboard/history';
 import { CurrentApp } from 'context/currentApp';
+import { withRouter } from 'lib/withRouter';
 
+@withRouter
 class AppData extends React.Component {
   render() {
     if (this.props.params.appId === '_') {
@@ -21,7 +22,7 @@ class AppData extends React.Component {
     if (current) {
       current.setParseKeys();
     } else {
-      history.replace('/apps');
+      this.props.navigate('/apps', { replate: true });
       return <div />;
     }
     return (

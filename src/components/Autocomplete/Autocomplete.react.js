@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import Position             from 'lib/Position';
-import PropTypes            from 'prop-types'
+import PropTypes            from 'lib/PropTypes'
 import React, { Component } from 'react';
 import ReactDOM             from 'react-dom';
 import styles               from 'components/Autocomplete/Autocomplete.scss';

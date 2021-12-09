@@ -21,7 +21,6 @@ import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSel
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import EditRowDialog                      from 'dashboard/Data/Browser/EditRowDialog.react';
 import ExportSelectedRowsDialog           from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
-import history                            from 'dashboard/history';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
 import Parse                              from 'parse';
@@ -37,12 +36,14 @@ import subscribeTo                        from 'lib/subscribeTo';
 import * as ColumnPreferences             from 'lib/ColumnPreferences';
 import { Helmet }                         from 'react-helmet';
 import generatePath from 'lib/generatePath';
+import { withRouter } from 'lib/withRouter';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
 
 export default
 @subscribeTo('Schema', 'schema')
+@withRouter
 class Browser extends DashboardView {
   constructor() {
     super();
@@ -237,7 +238,7 @@ class Browser extends DashboardView {
         }
         return a.toUpperCase() < b.toUpperCase() ? -1 : 1;
       });
-      history.replace(generatePath(this.context, 'browser/' + classes[0]));
+      this.props.navigate(generatePath(this.context, 'browser/' + classes[0]), { replace: true });
     }
   }
 
@@ -290,7 +291,7 @@ class Browser extends DashboardView {
   createClass(className) {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
-      history.push(generatePath(this.context, 'browser/' + className));
+      this.props.navigate(generatePath(this.context, 'browser/' + className));
     }).finally(() => {
       this.setState({ showCreateClassDialog: false });
     });
@@ -300,7 +301,7 @@ class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(() => {
       this.setState({showDropClassDialog: false });
       delete this.state.counts[className];
-      history.push(generatePath(this.context, 'browser'));
+      this.props.navigate(generatePath(this.context, 'browser'));
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
       if (msg) {
@@ -793,7 +794,7 @@ class Browser extends DashboardView {
       const _filters = JSON.stringify(filters.toJSON());
       const url = `browser/${source}${(filters.size === 0 ? '' : `?filters=${(encodeURIComponent(_filters))}`)}`;
       // filters param change is making the fetch call
-      history.push(generatePath(this.context, url));
+      this.props.navigate(generatePath(this.context, url));
     }
   }
 
@@ -828,7 +829,7 @@ class Browser extends DashboardView {
         filterQueryString = encodeURIComponent(JSON.stringify(filters.toJSON()));
       }
       const url = `${this.getRelationURL()}${filterQueryString ? `?filters=${filterQueryString}` : ''}`;
-      history.push(url);
+      this.props.navigate(url);
     });
   }
 
@@ -838,7 +839,7 @@ class Browser extends DashboardView {
         constraint: 'eq',
         compareTo: id
     }]);
-    history.push(generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`));
+    this.props.navigate(generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`));
   }
 
   handlePointerCmdClick({ className, id, field = 'objectId' }) {
