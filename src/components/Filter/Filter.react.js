@@ -61,8 +61,7 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }) =>
         }
 
         // Get the column preference of the current class.
-        const currentColumnPreference = currentApp.columnPreference ? currentApp.columnPreference[className]
-        : null;
+        const currentColumnPreference = currentApp.columnPreference ? currentApp.columnPreference[className] : null;
 
         // Check if the preference exists.
         if (currentColumnPreference) {
