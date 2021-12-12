@@ -1,3 +1,10 @@
+# [4.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.4...4.0.0-alpha.5) (2021-12-12)
+
+
+### Bug Fixes
+
+* opening filter menu in data browser leads to blank page ([#1958](https://github.com/ParsePlatform/parse-dashboard/issues/1958)) ([750e8b1](https://github.com/ParsePlatform/parse-dashboard/commit/750e8b1f018e37360e6577f423da005d7f773f20))
+
 # [4.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.3...4.0.0-alpha.4) (2021-12-06)
 
 
