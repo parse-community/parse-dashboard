@@ -112,7 +112,7 @@ jobs:
       matrix:
         include:
           - name: Node 12
-            NODE_VERSION: 12.22.7
+            NODE_VERSION: 12.22.8
           - name: Node 14
             NODE_VERSION: 14.18.2
           - name: Node 16
