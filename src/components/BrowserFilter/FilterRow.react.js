@@ -101,7 +101,7 @@ let FilterRow = ({
       color={active ? 'blue' : 'purple'}
       value={Constraints[currentConstraint].name}
       options={constraints.map((c) => Constraints[c].name)}
-      onChange={(c) => onChangeConstraint(constraintLookup[c])} />
+      onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)} />
     {compareValue(compareInfo, compareTo, onChangeCompareTo, active, parentContentId)}
     <button type='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></button>
   </div>
