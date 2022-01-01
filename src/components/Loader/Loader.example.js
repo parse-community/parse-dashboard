@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { center } from 'stylesheets/base.scss';
+import baseStyles from 'stylesheets/base.scss';
 import Loader from 'components/Loader/Loader.react';
 import React  from 'react';
 
@@ -21,7 +21,7 @@ export const demos = [
           margin: '10px auto',
           position: 'relative'
         }}>
-          <Loader className={center} />
+          <Loader className={baseStyles.center} />
         </div>
       );
     }

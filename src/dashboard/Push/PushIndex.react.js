@@ -21,6 +21,7 @@ import styles             from './PushIndex.scss';
 import stylesTable        from 'dashboard/TableView.scss';
 import TableHeader        from 'components/Table/TableHeader.react';
 import Toolbar            from 'components/Toolbar/Toolbar.react';
+import generatePath from 'lib/generatePath';
 
 const PUSH_TYPE_ALL = 'all';
 const PUSH_TYPE_CAMPAIGN = 'campaign';
@@ -244,7 +245,7 @@ export default class PushIndex extends DashboardView {
   handleFetch(category, page, limit){
     limit = limit || PUSH_DEFAULT_LIMIT;
     page = page || 0;
-    let promise = this.context.currentApp.fetchPushNotifications(category, page, limit);
+    let promise = this.context.fetchPushNotifications(category, page, limit);
 
     promise.then((pushes) => {
       this.setState({
@@ -265,7 +266,7 @@ export default class PushIndex extends DashboardView {
   componentWillMount() {
     this.handleFetch(this.props.params.category);
     //TODO: make xhr map and generic abort for existing xhrs.
-    this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
+    this.context.fetchAvailableDevices().then(({ available_devices }) => {
       this.setState({
         availableDevices: available_devices
       });
@@ -293,11 +294,11 @@ export default class PushIndex extends DashboardView {
   }
 
   navigateToNew() {
-    history.push(this.context.generatePath('push/new'));
+    history.push(generatePath(this.context, 'push/new'));
   }
 
   navigateToDetails(objectId) {
-    history.push(this.context.generatePath(`push/${objectId}`));
+    history.push(generatePath(this.context, `push/${objectId}`));
   }
 
   handleShowMore(page) {

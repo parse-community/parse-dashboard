@@ -46,7 +46,7 @@ import styles             from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings      from './Settings/UsersSettings.react';
 import Webhooks           from './Data/Webhooks/Webhooks.react';
 import { AsyncStatus }    from 'lib/Constants';
-import { center }         from 'stylesheets/base.scss';
+import baseStyles         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
 import {
@@ -181,12 +181,12 @@ export default class Dashboard extends React.Component {
 
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
-      return <div className={center}><Loader/></div>;
+      return <div className={baseStyles.center}><Loader/></div>;
     }
 
     if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
       return <div className={styles.empty}>
-        <div className={center}>
+        <div className={baseStyles.center}>
           <div className={styles.cloud}>
             <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
           </div>

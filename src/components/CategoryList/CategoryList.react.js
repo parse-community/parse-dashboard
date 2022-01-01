@@ -5,12 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/CategoryList/CategoryList.scss';
-import { Link }  from 'react-router-dom';
+import PropTypes      from 'lib/PropTypes';
+import React          from 'react';
+import styles         from 'components/CategoryList/CategoryList.scss';
+import { Link }       from 'react-router-dom';
+import generatePath   from 'lib/generatePath';
+import { CurrentApp } from 'context/currentApp';
 
 export default class CategoryList extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.listWrapperRef = React.createRef();
@@ -64,7 +67,8 @@ export default class CategoryList extends React.Component {
           }
           let count = c.count;
           let className = id === this.props.current ? styles.active : '';
-          let link = this.context.generatePath(
+          let link = generatePath(
+            this.context,
             (this.props.linkPrefix || '') + (c.link || id)
           );
           return (
@@ -83,8 +87,4 @@ CategoryList.propTypes = {
   categories: PropTypes.arrayOf(PropTypes.object).describe('Array of categories used to populate list.'),
   current: PropTypes.string.describe('Id of current category to be highlighted.'),
   linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
-};
-
-CategoryList.contextTypes = {
-  generatePath: PropTypes.func
 };

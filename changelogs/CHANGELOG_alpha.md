@@ -1,3 +1,69 @@
+# [4.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.4...4.0.0-alpha.5) (2021-12-12)
+
+
+### Bug Fixes
+
+* opening filter menu in data browser leads to blank page ([#1958](https://github.com/ParsePlatform/parse-dashboard/issues/1958)) ([750e8b1](https://github.com/ParsePlatform/parse-dashboard/commit/750e8b1f018e37360e6577f423da005d7f773f20))
+
+# [4.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.3...4.0.0-alpha.4) (2021-12-06)
+
+
+### Features
+
+* upgrade graphql from 15.7.0 to 16.0.0 ([#1926](https://github.com/ParsePlatform/parse-dashboard/issues/1926)) ([7c94e51](https://github.com/ParsePlatform/parse-dashboard/commit/7c94e512ed5428797823d24ac205ece59e94f3ea))
+
+
+### BREAKING CHANGES
+
+* The minimum required Node.js version is 12.22.0. ([7c94e51](7c94e51))
+
+# [4.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2021-12-06)
+
+
+### Features
+
+* upgrade parse from 3.3.1 to 3.4.0 ([#1942](https://github.com/ParsePlatform/parse-dashboard/issues/1942)) ([13a250e](https://github.com/ParsePlatform/parse-dashboard/commit/13a250e2e04ba0f12be0c2da8c9075ea8eb4d83f))
+
+# [4.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.1...4.0.0-alpha.2) (2021-12-06)
+
+
+### Bug Fixes
+
+* security upgrade qrcode from 1.4.4 to 1.5.0 ([#1930](https://github.com/ParsePlatform/parse-dashboard/issues/1930)) ([244e1bb](https://github.com/ParsePlatform/parse-dashboard/commit/244e1bba1a3fb89b9ed8c93a3d0f7163eacd2691))
+
+# [4.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.17...4.0.0-alpha.1) (2021-12-05)
+
+
+### Features
+
+* upgrade graphiql from 1.4.7 to 1.5.1 ([#1943](https://github.com/ParsePlatform/parse-dashboard/issues/1943)) ([ebb1f66](https://github.com/ParsePlatform/parse-dashboard/commit/ebb1f660f1d10921f92d05eb58b09d548e00d3a9))
+
+
+### BREAKING CHANGES
+
+* The required Node version was increased to >=12.20.0. ([ebb1f66](ebb1f66))
+
+# [3.3.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.16...3.3.0-alpha.17) (2021-12-05)
+
+
+### Bug Fixes
+
+* saving relation column fails if class has required fields ([#1937](https://github.com/ParsePlatform/parse-dashboard/issues/1937)) ([c67db08](https://github.com/ParsePlatform/parse-dashboard/commit/c67db083a9657be2d16ba566a7f6ce497fd66092))
+
+# [3.3.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.15...3.3.0-alpha.16) (2021-11-09)
+
+
+### Bug Fixes
+
+* bump graphiql from 1.4.6 to 1.4.7 ([#1920](https://github.com/ParsePlatform/parse-dashboard/issues/1920)) ([26c0dfa](https://github.com/ParsePlatform/parse-dashboard/commit/26c0dfa7eaa68194d53beaeed1ca6705f3d11a6a))
+
+# [3.3.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.14...3.3.0-alpha.15) (2021-11-02)
+
+
+### Bug Fixes
+
+* context menu in data browser not opening for cell of type number ([#1913](https://github.com/ParsePlatform/parse-dashboard/issues/1913)) ([fb0e3a9](https://github.com/ParsePlatform/parse-dashboard/commit/fb0e3a9882438069fef1d7926ec74bad6bb3eebc))
+
 # [3.3.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-alpha.13...3.3.0-alpha.14) (2021-10-30)
 
 

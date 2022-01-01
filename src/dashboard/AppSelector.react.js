@@ -15,8 +15,8 @@ import Option      from 'components/Dropdown/Option.react';
 import React       from 'react';
 
 export default class AppSelector extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     let apps = AppsManager.apps();
     let latestApp = apps[apps.length - 1];
     this.state = {
