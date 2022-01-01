@@ -20,6 +20,7 @@
     "react/react-in-jsx-scope": 1,
     "no-console": 0,
     "no-case-declarations": 0,
-    "quotes": ["error", "single"]
+    "quotes": ["error", "single"],
+    "eol-last": ["error", "always"]
   }
 }

@@ -16,11 +16,12 @@ export default class Range extends React.Component {
   constructor(props) {
     super();
     this.state = { width: props.width };
+    this.metricsRef = React.createRef();
   }
 
   componentDidMount() {
     if (!this.props.width) {
-      this.setState({ width: this.refs.metrics.clientWidth });
+      this.setState({ width: this.metricsRef.current.clientWidth });
     }
   }
 
@@ -64,7 +65,7 @@ export default class Range extends React.Component {
     return (
       <div
         style={wrapperStyle}
-        ref='metrics'
+        ref={this.metricsRef}
         className={[styles.range, input].join(' ')}>
         {tracker}
         <input

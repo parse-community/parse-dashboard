@@ -52,6 +52,13 @@ function getPosition(t) {
 }
 
 export default class Loader extends React.Component {
+  constructor() {
+    super();
+    this.dot0Ref = React.createRef();
+    this.dot1Ref = React.createRef();
+    this.dot2Ref = React.createRef();
+  }
+
   componentDidMount() {
     this.mounted = true;
     this.mountTime = new Date().getTime();
@@ -69,21 +76,21 @@ export default class Loader extends React.Component {
     let delta = new Date() - this.mountTime;
     let t = (delta / DURATION) % 1;
     let pos = getPosition(t);
-    let style = this.refs.dot0.style;
+    let style = this.dot0Ref.current.style;
     style.left = pos.x + 'px';
     style.top = pos.y + 'px';
     style.width = style.height = getRadius(t) + 'px';
 
     t = (delta / DURATION + 0.4) % 1;
     pos = getPosition(t);
-    style = this.refs.dot1.style;
+    style = this.dot1Ref.current.style;
     style.left = pos.x + 'px';
     style.top = pos.y + 'px';
     style.width = style.height = getRadius(t) + 'px';
 
     t = (delta / DURATION + 0.8) % 1;
     pos = getPosition(t);
-    style = this.refs.dot2.style;
+    style = this.dot2Ref.current.style;
     style.left = pos.x + 'px';
     style.top = pos.y + 'px';
     style.width = style.height = getRadius(t) + 'px';
@@ -98,9 +105,9 @@ export default class Loader extends React.Component {
     }
     return (
       <div className={classes}>
-        <div ref='dot0' />
-        <div ref='dot1' />
-        <div ref='dot2' />
+        <div ref={this.dot0Ref} />
+        <div ref={this.dot1Ref} />
+        <div ref={this.dot2Ref} />
       </div>
     );
   }

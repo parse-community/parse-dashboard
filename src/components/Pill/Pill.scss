@@ -9,9 +9,8 @@
 
 .pill {
   @include MonospaceFont;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: relative;
+  display: inline-block;
   color: #0E69A1;
   height: 20px;
   line-height: 20px;
@@ -22,6 +21,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   & a {
+    position: absolute;
+    right: 0;
     height: 20px;
     width: 20px;
     background: #d6e5f2;
@@ -30,6 +31,14 @@
     & svg  {
       transform: rotate(316deg);
     }
+  }
+  & .pillText {
+    position: absolute;
+    left: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 75%;
   }
 }
 

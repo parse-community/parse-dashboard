@@ -45,14 +45,14 @@ export const Directions = {
   LEFT: 'LEFT'
 };
 
-export const SpecialClasses = {
-  _User: 'User',
-  _Installation: 'Installation',
-  _Role: 'Role',
-  _Product: 'Product',
-  _Session: 'Session',
-  _PushStatus: 'PushStatus',
-};
+export const SpecialClasses = [
+  '_User',
+  '_Installation',
+  '_Role',
+  '_Product',
+  '_Session',
+  '_PushStatus',
+];
 
 export const DefaultColumns = {
   All: [ 'objectId', 'ACL', 'createdAt', 'updatedAt' ],

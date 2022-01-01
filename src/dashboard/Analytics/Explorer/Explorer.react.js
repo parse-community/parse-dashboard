@@ -23,7 +23,6 @@ import LoaderContainer           from 'components/LoaderContainer/LoaderContaine
 import Parse                     from 'parse';
 import prettyNumber              from 'lib/prettyNumber';
 import React                     from 'react';
-import ReactDOM                  from 'react-dom';
 import styles                    from 'dashboard/Analytics/Explorer/Explorer.scss';
 import stylesTable               from 'components/Table/Table.scss';
 import subscribeTo               from 'lib/subscribeTo';
@@ -66,10 +65,11 @@ class Explorer extends DashboardView {
       mutated: false
     };
     this.xhrHandles = [];
+    this.displayRef = React.createRef();
   }
 
   componentDidMount() {
-    let display = ReactDOM.findDOMNode(this.refs.display);
+    let display = this.displayRef.current;
     this.displaySize = {
       width: display.offsetWidth,
       height: display.offsetHeight
@@ -132,7 +132,7 @@ class Explorer extends DashboardView {
       // Update
       activeQueries[existingQueryIndex] = query;
     }
-    
+
     // Update the state to trigger rendering pipeline.
     this.setState({
       activeQueries,
@@ -533,7 +533,7 @@ class Explorer extends DashboardView {
 
     let content = (
       <div className={styles.content}>
-        <div ref='display' className={styles.display}>
+        <div ref={this.displayRef} className={styles.display}>
           {currentDisplay}
         </div>
         {header}

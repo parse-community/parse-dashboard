@@ -29,16 +29,18 @@ export default class GraphQLConsole extends Component {
         </div>
       );
     } else {
-      const headers = {
+      const parseHeaders = {
         'X-Parse-Application-Id': applicationId,
         'X-Parse-Master-Key': masterKey
       }
       if (clientKey) {
-        headers['X-Parse-Client-Key'] = clientKey
+        parseHeaders['X-Parse-Client-Key'] = clientKey
       }
       content = (
         <GraphiQL
-          fetcher={async graphQLParams => {
+          headers={JSON.stringify(parseHeaders)}
+          headerEditorEnabled={true}
+          fetcher={async (graphQLParams, {headers}) => {
             const data = await fetch(
               graphQLServerURL,
             {

@@ -37,7 +37,7 @@ export default class RemoveColumnDialog extends React.Component {
               placeHolder='Select a column'
               value={this.state.name}
               onChange={(name) => this.setState({ name: name })}>
-              {this.props.currentColumns.map((t) => <Option key={t} value={t}>{t}</Option>)}
+              {this.props.currentColumns.sort().map((t) => <Option key={t} value={t}>{t}</Option>)}
             </Dropdown>
           } />
       )

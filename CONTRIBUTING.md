@@ -12,7 +12,7 @@ When working on React components, use `npm run pig` and visit `localhost:4041` t
 ## Pull Requests
 We actively welcome your pull requests.
 
-1. Fork the repo and create your branch from `master`.
+1. Fork the repo and create your branch from the `alpha` branch.
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
 4. If you've updated/added an UI component, please add a screenshot.

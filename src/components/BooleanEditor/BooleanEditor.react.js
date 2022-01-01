@@ -20,6 +20,7 @@ export default class BooleanEditor extends React.Component {
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
     this.handleKey = this.handleKey.bind(this);
+    this.inputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -33,7 +34,7 @@ export default class BooleanEditor extends React.Component {
   }
 
   checkExternalClick(e) {
-    if (!hasAncestor(e.target, this.refs.input)) {
+    if (!hasAncestor(e.target, this.inputRef.current)) {
       this.props.onCommit(this.state.value);
     }
   }
@@ -46,7 +47,7 @@ export default class BooleanEditor extends React.Component {
 
   render() {
     return (
-      <div ref='input' style={{ minWidth: this.props.width }} className={styles.editor}>
+      <div ref={this.inputRef} style={{ minWidth: this.props.width }} className={styles.editor}>
         <Toggle
           type={Toggle.Types.TRUE_FALSE}
           value={this.state.value}
