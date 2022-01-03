@@ -74,8 +74,29 @@ export function getColumnSort(sortBy, appId, className) {
 export function getOrder(cols, appId, className, defaultPrefs) {
 
   let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true } ];
+  
   if (defaultPrefs) {
-    prefs = defaultPrefs;
+
+    // Check that every default pref is in the prefs array.
+    defaultPrefs.forEach(defaultPrefsItem => {
+      // If the default pref is not in the prefs: Add it.
+      if (!prefs.find(prefsItem => defaultPrefsItem.name === prefsItem.name)) {
+        prefs.push(defaultPrefsItem);
+      }
+    });
+
+    // Iterate over the current prefs 
+    prefs = prefs.map((prefsItem) => {
+      // Get the default prefs item.
+      const defaultPrefsItem = defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
+      // The values from the prefsItem object will overwrite those from the defaultPrefsItem object.
+      return {
+        // Set default width if not given.
+        width: DEFAULT_WIDTH,
+        ...defaultPrefsItem,
+        ...prefsItem,
+      }
+    });
   }
   let order = [].concat(prefs);
   let seen = {};
@@ -145,11 +166,11 @@ export function setPointerDefaultKey( appId, className, name ) {
   localStorage.removeItem(className);
 }
 
-export async function getPointerDefaultKey( appId, className ) {
-  let pointerKey = await localStorage.getItem(pointerKeyPath(appId, className));
+export function getPointerDefaultKey( appId, className ) {
+  let pointerKey = localStorage.getItem(pointerKeyPath(appId, className));
   if ( !pointerKey ) {
     // old pointer key.
-    pointerKey = await localStorage.getItem(className) || 'objectId';
+    pointerKey = localStorage.getItem(className) || 'objectId';
   }
   return pointerKey;
 }

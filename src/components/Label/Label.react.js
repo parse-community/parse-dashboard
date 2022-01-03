@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { centered } from 'components/Field/Field.scss';
+import fieldStyles  from 'components/Field/Field.scss';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
 import styles       from 'components/Label/Label.scss';
@@ -14,7 +14,7 @@ let Label = (props) => {
   let padding = (props.padding || 20) + 'px';
   return (
     <div
-      className={[styles.label, centered].join(' ')}
+      className={[styles.label, fieldStyles.centered].join(' ')}
       style={{ padding: '0 ' + padding }}>
       <div className={styles.text}>{props.text}</div>
       {props.description ? <div className={styles.description}>{props.description}</div> : null}

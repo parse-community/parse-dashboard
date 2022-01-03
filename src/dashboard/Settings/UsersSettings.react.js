@@ -182,7 +182,7 @@ export default class UsersSettings extends DashboardView {
 									newFacebookAppSecretList.splice(index, 1);
 
 									//TODO(drewgross): handle errors, display progress, etc.
-									this.context.currentApp.setConnectedFacebookApps(newFacebookAppIDList, newFacebookAppSecretList).then(() => {
+									this.context.setConnectedFacebookApps(newFacebookAppIDList, newFacebookAppSecretList).then(() => {
 										this.forceUpdate();
 									});
 								},
@@ -232,7 +232,7 @@ export default class UsersSettings extends DashboardView {
 									twitterConsumerKeyList.splice(index, 1);
 
 									//TODO(drewgross): handle errors, display progress, etc.
-									this.context.currentApp.setConnectedTwitterApps(twitterConsumerKeyList).then(() => {
+									this.context.setConnectedTwitterApps(twitterConsumerKeyList).then(() => {
 										this.forceUpdate();
 									});
 								},
@@ -262,31 +262,31 @@ export default class UsersSettings extends DashboardView {
 			onSubmit={({ changes, setField }) => {
 				let promiseList = [];
 				if (changes.requireRevocableSessions !== undefined) {
-					promiseList.push(this.context.currentApp.setRequireRevocableSessions(changes.requireRevocableSessions));
+					promiseList.push(this.context.setRequireRevocableSessions(changes.requireRevocableSessions));
 				}
 				if (changes.expireInactiveSessions !== undefined) {
-					promiseList.push(this.context.currentApp.setExpireInactiveSessions(changes.expireInactiveSessions));
+					promiseList.push(this.context.setExpireInactiveSessions(changes.expireInactiveSessions));
 				}
 				if (changes.revokeSessionOnPasswordChange !== undefined) {
-					promiseList.push(this.context.currentApp.setRevokeSessionOnPasswordChange(changes.revokeSessionOnPasswordChange));
+					promiseList.push(this.context.setRevokeSessionOnPasswordChange(changes.revokeSessionOnPasswordChange));
 				}
 				if (changes.enableNewMethodsByDefault !== undefined) {
-					promiseList.push(this.context.currentApp.setEnableNewMethodsByDefault(changes.enableNewMethodsByDefault));
+					promiseList.push(this.context.setEnableNewMethodsByDefault(changes.enableNewMethodsByDefault));
 				}
 				if (changes.allowUsernameAndPassword !== undefined) {
-					promiseList.push(this.context.currentApp.setAllowUsernameAndPassword(changes.allowUsernameAndPassword));
+					promiseList.push(this.context.setAllowUsernameAndPassword(changes.allowUsernameAndPassword));
 				}
 				if (changes.allowAnonymousUsers !== undefined) {
-					promiseList.push(this.context.currentApp.setAllowAnonymousUsers(changes.allowAnonymousUsers));
+					promiseList.push(this.context.setAllowAnonymousUsers(changes.allowAnonymousUsers));
 				}
 				if (changes.allowFacebookAuthentication !== undefined) {
-					promiseList.push(this.context.currentApp.setAllowFacebookAuth(changes.allowFacebookAuthentication));
+					promiseList.push(this.context.setAllowFacebookAuth(changes.allowFacebookAuthentication));
 				}
 				if (changes.allowCustomAuthentication !== undefined) {
-					promiseList.push(this.context.currentApp.setAllowCustomAuthentication(changes.allowCustomAuthentication));
+					promiseList.push(this.context.setAllowCustomAuthentication(changes.allowCustomAuthentication));
 				}
 				if (changes.facebookAppID !== undefined && changes.facebookAppSecret !== undefined) {
-					let fbAppPromise = this.context.currentApp.addConnectedFacebookApp(changes.facebookAppID, changes.facebookAppSecret);
+					let fbAppPromise = this.context.addConnectedFacebookApp(changes.facebookAppID, changes.facebookAppSecret);
 					fbAppPromise.then(() => {
 						setField('facebookAppID', '');
 						setField('facebookAppSecret', '');
@@ -294,14 +294,14 @@ export default class UsersSettings extends DashboardView {
 					promiseList.push(fbAppPromise);
 				}
 				if (changes.twitterConsumerKey !== undefined) {
-					let twitterAppPromise = this.context.currentApp.addConnectedTwitterApp(changes.twitterConsumerKey);
+					let twitterAppPromise = this.context.addConnectedTwitterApp(changes.twitterConsumerKey);
 					twitterAppPromise.then(() => {
 						setField('twitterConsumerKey', '');
 					});
 					promiseList.push(twitterAppPromise);
 				}
 				if (changes.allowTwitterAuthentication !== undefined) {
-					promiseList.push(this.context.currentApp.setAllowTwitterAuth(changes.allowTwitterAuthentication));
+					promiseList.push(this.context.setAllowTwitterAuth(changes.allowTwitterAuthentication));
 				}
 
 				return Promise.all(promiseList).then(() => {

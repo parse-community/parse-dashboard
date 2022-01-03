@@ -8,7 +8,7 @@
 import PropTypes                  from 'lib/PropTypes';
 import React                      from 'react';
 import styles                     from 'components/DataBrowserHeader/DataBrowserHeader.scss';
-import { unselectable }           from 'stylesheets/base.scss';
+import baseStyles                 from 'stylesheets/base.scss';
 import { DragSource, DropTarget } from 'react-dnd';
 
 const Types = {
@@ -55,7 +55,7 @@ const dataBrowserHeaderSource = {
 class DataBrowserHeader extends React.Component {
   render() {
     let { connectDragSource, connectDropTarget, name, type, targetClass, order, style, isDragging, isOver } = this.props;
-    let classes = [styles.header, unselectable];
+    let classes = [styles.header, baseStyles.unselectable];
     if (order) {
       classes.push(styles[order]);
     }

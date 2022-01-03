@@ -34,14 +34,14 @@ export default class Logs extends DashboardView {
   }
 
   componentDidMount() {
-    this.fetchLogs(this.context.currentApp, this.props.params.type);
-    // this.fetchRelease(this.context.currentApp);
+    this.fetchLogs(this.context, this.props.params.type);
+    // this.fetchRelease(this.context);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (this.context !== nextContext) {
-      this.fetchLogs(nextContext.currentApp, nextProps.params.type);
-      // this.fetchRelease(nextContext.currentApp);
+    if (this.props.params.type !== nextProps.params.type) {
+      this.fetchLogs(nextContext, nextProps.params.type);
+      // this.fetchRelease(nextContext);
     }
   }
 

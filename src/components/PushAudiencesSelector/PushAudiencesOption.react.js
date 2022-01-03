@@ -85,24 +85,22 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
             <div className={styles.subline}>
               {detailsView}
               {!this.state.isNewSegment ?
-                <a
-                  role='button'
+                <button
+                  type='button'
                   className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(' ')}
-                  href='javascript:;'
                   onClick={this.handleDetailsToggle.bind(this,this.props.query, this.props.schema)}>
                   {this.state.expandedView ? 'less details' : 'more details'}
-                </a> :
-                <a
-                  role='button'
+                </button> :
+                <button
+                  type='button'
                   className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(' ')}
-                  href='javascript:;'
                   onClick={this.props.onEditAudience.bind(undefined, {
                     name: this.props.name,
                     filters: this.props.filters,
                     query: this.props.query,
                   })}>
                   {'Edit audience'}
-                </a>
+                </button>
               }
             </div>
           </div>

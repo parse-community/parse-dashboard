@@ -5,29 +5,29 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button        from 'components/Button/Button.react';
-import Dropdown      from 'components/Dropdown/Dropdown.react';
-import Field         from 'components/Field/Field.react';
-import Fieldset      from 'components/Fieldset/Fieldset.react';
-import fieldStyle    from 'components/Field/Field.scss';
-import FlowFooter    from 'components/FlowFooter/FlowFooter.react';
-import FormNote      from 'components/FormNote/FormNote.react';
-import generateCurl  from 'dashboard/Data/ApiConsole/generateCurl';
-import JsonPrinter   from 'components/JsonPrinter/JsonPrinter.react';
-import Label         from 'components/Label/Label.react';
-import Modal         from 'components/Modal/Modal.react';
-import Option        from 'components/Dropdown/Option.react';
-import Parse         from 'parse';
-import ParseApp      from 'lib/ParseApp';
-import PropTypes     from 'lib/PropTypes';
+import Button         from 'components/Button/Button.react';
+import Dropdown       from 'components/Dropdown/Dropdown.react';
+import Field          from 'components/Field/Field.react';
+import Fieldset       from 'components/Fieldset/Fieldset.react';
+import fieldStyle     from 'components/Field/Field.scss';
+import FlowFooter     from 'components/FlowFooter/FlowFooter.react';
+import FormNote       from 'components/FormNote/FormNote.react';
+import generateCurl   from 'dashboard/Data/ApiConsole/generateCurl';
+import JsonPrinter    from 'components/JsonPrinter/JsonPrinter.react';
+import Label          from 'components/Label/Label.react';
+import Modal          from 'components/Modal/Modal.react';
+import Option         from 'components/Dropdown/Option.react';
+import Parse          from 'parse';
 import React, { Component } from 'react';
-import request       from 'dashboard/Data/ApiConsole/request';
-import styles        from 'dashboard/Data/ApiConsole/ApiConsole.scss';
-import TextInput     from 'components/TextInput/TextInput.react';
-import Toggle        from 'components/Toggle/Toggle.react';
-import Toolbar       from 'components/Toolbar/Toolbar.react';
+import request        from 'dashboard/Data/ApiConsole/request';
+import styles         from 'dashboard/Data/ApiConsole/ApiConsole.scss';
+import TextInput      from 'components/TextInput/TextInput.react';
+import Toggle         from 'components/Toggle/Toggle.react';
+import Toolbar        from 'components/Toolbar/Toolbar.react';
+import { CurrentApp } from 'context/currentApp';
 
 export default class RestConsole extends Component {
+  static contextType = CurrentApp;
   constructor() {
     super()
 
@@ -90,7 +90,7 @@ export default class RestConsole extends Component {
       options.sessionToken = this.state.sessionToken;
     }
     request(
-      this.context.currentApp,
+      this.context,
       this.state.method,
       endpoint,
       payload,
@@ -133,7 +133,7 @@ export default class RestConsole extends Component {
         options.sessionToken = this.state.sessionToken;
       }
       let content = generateCurl(
-        this.context.currentApp,
+        this.context,
         this.state.method,
         this.state.endpoint,
         payload,
@@ -192,7 +192,3 @@ export default class RestConsole extends Component {
     );
   }
 }
-
-RestConsole.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

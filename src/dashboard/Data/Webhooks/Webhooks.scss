@@ -5,13 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-@import 'stylesheets/globals.scss';
+ @import 'stylesheets/globals.scss';
 
-.toolbarAction {
-  @include buttonReset($padding: 0px 20px);
-  color: white;
-
-  > *:not(svg) {
-    margin: 5px;
-  }
+.deleteButton {
+  @include buttonReset;
 }

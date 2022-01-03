@@ -21,10 +21,7 @@ import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
 import FileInput          from 'components/FileInput/FileInput.react';
 import styles             from 'dashboard/Data/Browser/Browser.scss';
 import validateNumeric    from 'lib/validateNumeric';
-import {
-  DataTypes,
-  SpecialClasses
-}                         from 'lib/Constants';
+import { DataTypes }      from 'lib/Constants';
 
 function validColumnName(name) {
   return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
@@ -82,7 +79,7 @@ export default class AddColumnDialog extends React.Component {
         uploadingFile: true
       });
       try {
-        await parseFile.save();
+        await parseFile.save({ useMasterKey: true });
         return parseFile;
       } catch (err) {
         this.props.showNote(err.message, true);
@@ -100,7 +97,7 @@ export default class AddColumnDialog extends React.Component {
       <Dropdown
         value={this.state.target}
         onChange={(target) => this.setState({ target: target })}>
-        {this.props.classes.map((c) => <Option key={c} value={c}>{SpecialClasses[c] || c}</Option>)}
+        {this.props.classes.map((c) => <Option key={c} value={c}>{c}</Option>)}
       </Dropdown>
     );
   }
@@ -149,7 +146,7 @@ export default class AddColumnDialog extends React.Component {
     } catch (e) {
       isDefaultValueValid = defaultValue === ''
     }
-    return await this.setState({ defaultValue: formattedValue, isDefaultValueValid })
+    return this.setState({ defaultValue: formattedValue, isDefaultValueValid })
   }
 
   renderDefaultValueInput() {

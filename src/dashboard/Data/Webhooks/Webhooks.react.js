@@ -23,6 +23,7 @@ import TextInput                             from 'components/TextInput/TextInpu
 import Toolbar                               from 'components/Toolbar/Toolbar.react';
 import { ActionTypes as SchemaActionTypes }  from 'lib/stores/SchemaStore';
 import { ActionTypes as WebhookActionTypes } from 'lib/stores/WebhookStore';
+import styles                                from './Webhooks.scss'
 
 let TableWarning = ({ text }) => <div>
   <Icon name='warn-outline' fill='#343445' width={20} height={20}/><span style={{ position: 'relative', top: '2px' }}> {text}</span>
@@ -250,9 +251,9 @@ class Webhooks extends TableView {
     let rowStyle = hook.url ? { cursor: 'pointer' } : {};
     let deleteColumnContents = null;
     if (hook.url) {
-      deleteColumnContents = <a role='button' href='javascript:;' onClick={showDelete}>
+      deleteColumnContents = <button type='button' onClick={showDelete} className={styles.deleteButton}>
         <Icon name='trash-outline' fill='#343445' width={20} height={20}/>
-      </a>;
+      </button>;
     } else {
       let isOverridden = !!this.tableData().find(otherHook => otherHook.url &&
         otherHook.functionName == hook.functionName &&

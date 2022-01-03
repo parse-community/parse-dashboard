@@ -13,7 +13,7 @@ import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }          from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
 import Tooltip                   from '../Tooltip/PopperTooltip.react';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
 
@@ -30,11 +30,11 @@ export default class BrowserCell extends Component {
     };
   }
 
-  async renderCellContent() {
+  renderCellContent() {
     let content = this.props.value;
     let isNewRow = this.props.row < 0;
     this.copyableValue = content;
-    let classes = [styles.cell, unselectable];
+    let classes = [styles.cell, baseStyles.unselectable];
     if (this.props.hidden) {
       content = this.props.value !== undefined || !isNewRow ? '(hidden)' : this.props.isRequired ? '(required)' : '(undefined)';
       classes.push(styles.empty);
@@ -53,7 +53,7 @@ export default class BrowserCell extends Component {
       content = <span>&nbsp;</span>;
       classes.push(styles.empty);
     } else if (this.props.type === 'Pointer') {
-      const defaultPointerKey = await ColumnPreferences.getPointerDefaultKey(this.props.appId, this.props.value.className);
+      const defaultPointerKey = ColumnPreferences.getPointerDefaultKey(this.props.appId, this.props.value.className);
       let dataValue = this.props.value.id;
       if( defaultPointerKey !== 'objectId' ) {
         dataValue = this.props.value.get(defaultPointerKey);
@@ -175,9 +175,9 @@ export default class BrowserCell extends Component {
     this.setState({ ...this.state, content, classes })
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     if ( this.props.value !== prevProps.value ) {
-      await this.renderCellContent();
+      this.renderCellContent();
     }
     if (this.props.current) {
       const node = this.cellRef.current;
@@ -285,10 +285,17 @@ export default class BrowserCell extends Component {
       return {
         text: 'Set filter...', items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
+          const copyableValue = String(this.copyableValue);
           // Smart ellipsis for value - if it's long trim it in the middle: Lorem ipsum dolor si... aliqua
-          const value = this.copyableValue.length < 30 ? this.copyableValue :
-            `${this.copyableValue.substr(0, 20)}...${this.copyableValue.substr(this.copyableValue.length - 7)}`;
-          const text = `${this.props.field} ${definition.name}${definition.comparable ? (' ' + value) : ''}`;
+          const value =
+            copyableValue.length < 30
+              ? copyableValue
+              : `${copyableValue.substr(0, 20)}...${copyableValue.substr(
+                  copyableValue.length - 7
+                )}`;
+          const text = `${this.props.field} ${definition.name}${
+            definition.comparable ? ' ' + value : ''
+          }`;
           return {
             text,
             callback: this.pickFilter.bind(this, constraint)

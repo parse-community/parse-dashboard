@@ -1,4 +1,6 @@
-# Parse Dashboard <!-- omit in toc -->
+![parse-repository-header-dashboard](https://user-images.githubusercontent.com/5673677/138276825-9b430df8-b1f6-41d7-af32-4852a8fbc143.png)
+
+---
 
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=alpha)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Aalpha)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
@@ -20,6 +22,8 @@
 
 Parse Dashboard is a standalone dashboard for managing your [Parse Server](https://github.com/ParsePlatform/parse-server) apps.
 
+---
+
 - [Getting Started](#getting-started)
 - [Local Installation](#local-installation)
   - [Configuring Parse Dashboard](#configuring-parse-dashboard)
@@ -33,6 +37,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [App Background Color Configuration](#app-background-color-configuration)
   - [Other Configuration Options](#other-configuration-options)
     - [Prevent columns sorting](#prevent-columns-sorting)
+    - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -284,6 +289,29 @@ You can prevent some columns to be sortable by adding `preventSort` to columnPre
             "visible": true,
             "preventSort": false
           },
+        ]
+      }
+    }
+]
+```
+
+### Custom order in the filter popup
+
+If you have classes with a lot of columns and you filter them often with the same columns you can sort those to the top by extending the `columnPreference` setting with the `filterSortToTop` option:
+
+```json
+"apps": [
+  {
+    "columnPreference": {
+        "_User": [
+          {
+            "name": "objectId",
+            "filterSortToTop": true
+          },
+          {
+            "name": "email",
+            "filterSortToTop": true
+          }          
         ]
       }
     }

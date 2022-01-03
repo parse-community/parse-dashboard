@@ -8,7 +8,7 @@
 import Button                 from 'components/Button/Button.react';
 import Dropdown               from 'components/Dropdown/Dropdown.react';
 import Field                  from 'components/Field/Field.react';
-import { footer }             from 'components/Modal/Modal.scss';
+import modalStyles            from 'components/Modal/Modal.scss';
 import Label                  from 'components/Label/Label.react';
 import Modal                  from 'components/Modal/Modal.react';
 import Option                 from 'components/Dropdown/Option.react';
@@ -23,8 +23,8 @@ export default class PointerKeyDialog extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    const pointerKey = await ColumnPreferences.getPointerDefaultKey(this.props.app.applicationId, this.props.className);
+  componentDidMount() {
+    const pointerKey = ColumnPreferences.getPointerDefaultKey(this.props.app.applicationId, this.props.className);
     this.setState({ name: pointerKey });
   }
 
@@ -62,7 +62,7 @@ export default class PointerKeyDialog extends React.Component {
           this.props.onConfirm(this.state.name);
         }}
         customFooter={hasColumns ? null :
-          <div className={footer}>
+          <div className={modalStyles.footer}>
             <Button value='Okay, go back.' onClick={this.props.onCancel} />
           </div>
         }>

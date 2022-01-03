@@ -105,6 +105,7 @@ export default class BrowserFilter extends React.Component {
             <div onClick={this.toggle} style={{ cursor: 'pointer', width: this.node.clientWidth, height: this.node.clientHeight }}></div>
             <div className={styles.body}>
               <Filter
+                className={this.props.className}
                 blacklist={this.state.blacklistedFilters}
                 schema={this.props.schema}
                 filters={this.state.filters}

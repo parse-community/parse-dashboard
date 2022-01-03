@@ -5,10 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters  from 'lib/Filters';
-import { List, Map } from 'immutable';
-import PropTypes     from 'lib/PropTypes';
-import React         from 'react';
+import * as Filters   from 'lib/Filters';
+import { List, Map }  from 'immutable';
+import PropTypes      from 'lib/PropTypes';
+import React          from 'react';
+import stringCompare  from 'lib/stringCompare';
+import { CurrentApp } from 'context/currentApp';
 
 function changeField(schema, filters, index, newField) {
   let newFilter = new Map({
@@ -42,7 +44,8 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-let Filter = ({ schema, filters, renderRow, onChange, blacklist }) => {
+let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }) => {
+  const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   let available = Filters.availableFilters(schema, filters);
   return (
@@ -56,7 +59,37 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist }) => {
         if (fields.indexOf(field) < 0) {
           fields.push(field);
         }
-        fields.sort();
+
+        // Get the column preference of the current class.
+        const currentColumnPreference = currentApp.columnPreference ? currentApp.columnPreference[className] : null;
+
+        // Check if the preference exists.
+        if (currentColumnPreference) {
+          const fieldsToSortToTop = currentColumnPreference
+            .filter(item => item.filterSortToTop)
+            .map(item => item.name);
+          // Sort the fields.
+          fields.sort((a, b) => {
+            // Only "a" should sorted to the top.
+            if (fieldsToSortToTop.includes(a) && !fieldsToSortToTop.includes(b)) {
+              return -1
+            }
+            // Only "b" should sorted to the top.
+            if (!fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+              return 1;
+            }
+            // Both should sorted to the top -> they should be sorted to the same order as in the "fieldsToSortToTop" array.
+            if (fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+              return fieldsToSortToTop.indexOf(a) - fieldsToSortToTop.indexOf(b);
+            }
+            return stringCompare(a, b);
+          });
+        }
+        // If there's no preference: Use the default sort function.
+        else {
+          fields.sort();
+        }
+
         let constraints = Filters.FieldConstraints[schema[field].type].filter((c) => blacklist.indexOf(c) < 0);
         let compareType = schema[field].type;
         if (Object.prototype.hasOwnProperty.call(Filters.Constraints[constraint], 'field')) {

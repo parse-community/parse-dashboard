@@ -63,10 +63,14 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
     }
   }
 
-  .headerButton {
+  .headerButtonCell {
     display: table-cell;
     width: 40px;
     padding-left: 30px;
+  }
+
+  .headerButton {
+    @include buttonReset;
     color: white;
 
     &.secondaryColor {
@@ -104,11 +108,15 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
     }
   }
 
-  .del {
+  .delWrapper {
     display: table-cell;
     vertical-align: middle;
     width: 24px;
     padding-left: 10px;
+  }
+
+  .del {
+    @include buttonReset;
     color: #d8d8d8;
     font-size: 18px;
     line-height: 18px;

@@ -33,9 +33,8 @@
 }
 
 .addColumnButton {
-  @include DosisFont;
+  @include buttonReset($bg: #343445);
   display: inline-block;
-  background: #343445;
   height: 20px;
   width: 130px;
   text-align: center;

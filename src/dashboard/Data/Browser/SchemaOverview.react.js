@@ -49,8 +49,8 @@ class Browser extends DashboardView {
       } else if (count >= 1000) {
         count = prettyNumber(count);
       }
-      if (SpecialClasses[key]) {
-        special.push({ name: SpecialClasses[key], id: key, count: count });
+      if (SpecialClasses.includes(key)) {
+        special.push({ name: key, id: key, count: count });
       } else {
         categories.push({ name: key, count: count });
       }

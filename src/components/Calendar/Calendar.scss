@@ -17,13 +17,13 @@
 .month {
   margin-bottom: 10px;
 
-  a {
+  button {
+    @include buttonReset($border: 1px solid $blue);
     position: relative;
     display: inline-block;
     width: 14px;
     height: 14px;
     border-radius: 100%;
-    border: 1px solid $blue;
     opacity: 0.5;
     margin: 0 6px;
 
@@ -94,8 +94,8 @@
 }
 
 .days {
-  span, a {
-    @include DosisFont;
+  span, button {
+    @include buttonReset;
     display: inline-block;
     vertical-align: bottom;
     width: 26px;
@@ -122,13 +122,13 @@
     background: $darkBlue;
   }
 
-  .selected ~ a {
+  .selected ~ button {
     background: white;
   }
 }
 
 .shadeAfter {
-  .selected ~ a {
+  .selected ~ button {
     background: #efeff1;
   }
 }
