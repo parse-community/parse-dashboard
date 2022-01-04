@@ -154,6 +154,7 @@ export default class BrowserTable extends React.Component {
                     setRelation={this.props.setRelation}
                     setCopyableValue={this.props.setCopyableValue}
                     setContextMenu={this.props.setContextMenu}
+                    setDataForPreview={this.props.setDataForPreview}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
                   />
@@ -206,6 +207,7 @@ export default class BrowserTable extends React.Component {
               setRelation={this.props.setRelation}
               setCopyableValue={this.props.setCopyableValue}
               setContextMenu={this.props.setContextMenu}
+              setDataForPreview={this.props.setDataForPreview}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
             />
@@ -264,6 +266,7 @@ export default class BrowserTable extends React.Component {
           setRelation={this.props.setRelation}
           setCopyableValue={this.props.setCopyableValue}
           setContextMenu={this.props.setContextMenu}
+          setDataForPreview={this.props.setDataForPreview}
           onEditSelectedRow={this.props.onEditSelectedRow} />
       }
 

@@ -246,6 +246,28 @@ export default class BrowserCell extends Component {
     menuItems.length && setContextMenu(pageX, pageY, menuItems);
   }
 
+  onMouseMove(event) {
+    this.props.setDataForPreview();
+
+    const { pageX, pageY } = event;
+    clearTimeout(this.hoverTimer);
+
+    this.hoverTimer = setTimeout(() => {
+      this.props.setDataForPreview({
+        value: this.copyableValue,
+        type: this.props.type,
+        pageX,
+        pageY,
+      });
+    }, 400);
+  }
+  
+  onMouseOut() {
+    clearTimeout(this.hoverTimer);
+    delete this.hoverTimer;
+    this.props.setDataForPreview();
+  }
+
   getContextMenuOptions(constraints) {
     let { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
@@ -459,6 +481,8 @@ export default class BrowserCell extends Component {
             }
           }}}
         onContextMenu={this.onContextMenu.bind(this)}
+        onMouseMove={this.onMouseMove.bind(this)}
+        onMouseOut={this.onMouseOut.bind(this)}
         >
           {this.state.content}
         </span>

@@ -9,6 +9,7 @@ import copy                   from 'copy-to-clipboard';
 import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
 import ContextMenu            from 'components/ContextMenu/ContextMenu.react';
+import DataPreview            from 'components/DataPreview/DataPreview.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import ParseApp               from 'lib/ParseApp';
 import React                  from 'react';
@@ -46,6 +47,7 @@ export default class DataBrowser extends React.Component {
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
+    this.setDataForPreview = this.setDataForPreview.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -291,6 +293,10 @@ export default class DataBrowser extends React.Component {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
+  setDataForPreview(dataForPreview) {
+    this.setState({ dataForPreview });
+  }
+
   handleColumnsOrder(order, shouldReload) {
     this.setState({ order: [...order] }, () => {
       this.updatePreferences(order, shouldReload);
@@ -316,6 +322,7 @@ export default class DataBrowser extends React.Component {
           setCurrent={this.setCurrent}
           setCopyableValue={this.setCopyableValue}
           setContextMenu={this.setContextMenu}
+          setDataForPreview={this.setDataForPreview}
           onFilterChange={this.props.onFilterChange}
           {...other} />
         <BrowserToolbar
@@ -341,6 +348,7 @@ export default class DataBrowser extends React.Component {
           y={this.state.contextMenuY}
           items={this.state.contextMenuItems}
         />}
+        <DataPreview data={this.state.dataForPreview} />
       </div>
     );
   }
