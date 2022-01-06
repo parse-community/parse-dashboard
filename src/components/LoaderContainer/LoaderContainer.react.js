@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { center }   from 'stylesheets/base.scss';
+import baseStyles   from 'stylesheets/base.scss';
 import Loader       from 'components/Loader/Loader.react';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
@@ -19,7 +19,7 @@ const LoaderContainer = ({ loading, hideAnimation, children, solid = true }) => 
       {children}
     </div>
     <div className={[styles.loaderParent, loading ? styles.visible : '', solid ? styles.solid : ''].join(' ')}>
-      {(hideAnimation || !loading) ? null : <Loader className={center}/>}
+      {(hideAnimation || !loading) ? null : <Loader className={baseStyles.center}/>}
     </div>
   </div>
 );

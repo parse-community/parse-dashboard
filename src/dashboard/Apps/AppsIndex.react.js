@@ -15,7 +15,7 @@ import LiveReload    from 'components/LiveReload/LiveReload.react';
 import prettyNumber  from 'lib/prettyNumber';
 import React         from 'react';
 import styles        from 'dashboard/Apps/AppsIndex.scss';
-import { center }    from 'stylesheets/base.scss';
+import baseStyles    from 'stylesheets/base.scss';
 import AppBadge      from 'components/AppBadge/AppBadge.react';
 
 function dash(value, content) {
@@ -128,7 +128,7 @@ export default class AppsIndex extends React.Component {
     if (apps.length === 0) {
       return (
         <div className={styles.empty}>
-          <div className={center}>
+          <div className={baseStyles.center}>
             <div className={styles.cloud}>
               <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
             </div>

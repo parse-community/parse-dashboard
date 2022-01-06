@@ -13,7 +13,7 @@ import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }          from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
 import Tooltip                   from '../Tooltip/PopperTooltip.react';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
 
@@ -34,7 +34,7 @@ export default class BrowserCell extends Component {
     let content = this.props.value;
     let isNewRow = this.props.row < 0;
     this.copyableValue = content;
-    let classes = [styles.cell, unselectable];
+    let classes = [styles.cell, baseStyles.unselectable];
     if (this.props.hidden) {
       content = this.props.value !== undefined || !isNewRow ? '(hidden)' : this.props.isRequired ? '(required)' : '(undefined)';
       classes.push(styles.empty);

@@ -5,23 +5,23 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes               from 'lib/PropTypes'; 
 import * as PushAudiencesStore from 'lib/stores/PushAudiencesStore';
 import * as PushConstants      from './PushConstants';
 import Button                  from 'components/Button/Button.react';
 import LoaderContainer         from 'components/LoaderContainer/LoaderContainer.react';
-import ParseApp                from 'lib/ParseApp';
 import PushAudienceDialog      from 'components/PushAudienceDialog/PushAudienceDialog.react';
 import PushAudiencesSelector   from 'components/PushAudiencesSelector/PushAudiencesSelector.react';
 import queryFromFilters        from 'lib/queryFromFilters';
 import React                   from 'react';
 import styles                  from './PushAudiencesData.scss';
-import { List }           from 'immutable';
+import { List }                from 'immutable';
+import { CurrentApp }          from 'context/currentApp';
 
 const XHR_KEY = 'PushAudiencesData';
 
 //TODO: lazy render options - avoid necessary calls for count if user doesn't see the audience
 export default class PushAudiencesData extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.state = {
@@ -46,7 +46,7 @@ export default class PushAudiencesData extends React.Component {
 
     this.setState({
       defaultAudience: {
-        createdAt: this.context.currentApp.createdAt,
+        createdAt: this.context.createdAt,
         name: 'Everyone',
         count: 0,
         objectId: 'everyone',
@@ -54,7 +54,7 @@ export default class PushAudiencesData extends React.Component {
       }
     });
 
-    this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
+    this.context.fetchAvailableDevices().then(({ available_devices }) => {
       this.setState({
         availableDevices: available_devices
       });
@@ -260,7 +260,3 @@ export default class PushAudiencesData extends React.Component {
     )
   }
 }
-
-PushAudiencesData.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

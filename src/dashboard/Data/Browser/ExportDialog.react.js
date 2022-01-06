@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal      from 'components/Modal/Modal.react';
-import ParseApp   from 'lib/ParseApp';
-import React      from 'react';
-import PropTypes  from 'lib/PropTypes'; 
+import Modal          from 'components/Modal/Modal.react';
+import React          from 'react';
+import { CurrentApp } from 'context/currentApp';
 
 export default class ExportDialog extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.state = {
@@ -19,7 +19,7 @@ export default class ExportDialog extends React.Component {
   }
 
   componentWillMount() {
-    this.context.currentApp.getExportProgress().then((progress) => {
+    this.context.getExportProgress().then((progress) => {
       this.setState({ progress });
     });
   }
@@ -60,7 +60,3 @@ export default class ExportDialog extends React.Component {
     );
   }
 }
-
-ExportDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

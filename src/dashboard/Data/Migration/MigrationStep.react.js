@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import base            from 'stylesheets/base.scss';
+import baseStyles      from 'stylesheets/base.scss';
 import Icon            from 'components/Icon/Icon.react';
 import React           from 'react';
 import styles          from 'dashboard/Data/Migration/MigrationStep.scss';
@@ -28,19 +28,19 @@ export default ({
   switch (status) {
     case AsyncStatus.SUCCESS:
       percentComplete = 100;
-      progressClass = base.succeededBackground;
-      titleClass= base.succeededText;
+      progressClass = baseStyles.succeededBackground;
+      titleClass= baseStyles.succeededText;
       icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
       break;
     case AsyncStatus.FAILED:
       percentComplete = 100;
-      progressClass = base.failedBackground;
-      titleClass= base.failedText;
+      progressClass = baseStyles.failedBackground;
+      titleClass= baseStyles.failedText;
       icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
       break;
     case AsyncStatus.PROGRESS:
-      progressClass = base.progressBackground;
-      titleClass= base.progressText;
+      progressClass = baseStyles.progressBackground;
+      titleClass= baseStyles.progressText;
       break;
     case AsyncStatus.WAITING:
       percentComplete = 0;

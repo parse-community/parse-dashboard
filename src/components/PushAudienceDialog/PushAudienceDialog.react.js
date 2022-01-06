@@ -17,7 +17,6 @@ import Label                 from 'components/Label/Label.react';
 import Modal                 from 'components/Modal/Modal.react';
 import MultiSelect           from 'components/MultiSelect/MultiSelect.react';
 import MultiSelectOption     from 'components/MultiSelect/MultiSelectOption.react';
-import ParseApp              from 'lib/ParseApp';
 import PropTypes             from 'lib/PropTypes';
 import queryFromFilters      from 'lib/queryFromFilters';
 import React                 from 'react';
@@ -25,6 +24,7 @@ import styles                from 'components/PushAudienceDialog/PushAudienceDia
 import TextInput             from 'components/TextInput/TextInput.react';
 import Toggle                from 'components/Toggle/Toggle.react';
 import { List, Map }         from 'immutable';
+import { CurrentApp }        from 'context/currentApp';
 
 const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = true;
 const AUDIENCE_SIZE_FETCHING_ENABLED = true;
@@ -44,6 +44,7 @@ let filterFormatter = (filters, schema) => {
 }
 
 export default class PushAudienceDialog extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.xhrHandle = null;
@@ -113,7 +114,7 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   fetchAudienceSize() {
-    if (!this.context || !this.context.currentApp) { //so we don't break the PIG demo
+    if (!this.context) { //so we don't break the PIG demo
       return;
     }
 
@@ -124,7 +125,7 @@ export default class PushAudienceDialog extends React.Component {
       query = parseQuery.toJSON().where || {};
     }
     query.deviceType = { $in: this.state.platforms };
-    let {xhr, promise} = this.context.currentApp.fetchPushSubscriberCount(PushConstants.NEW_SEGMENT_ID, query);
+    let {xhr, promise} = this.context.fetchPushSubscriberCount(PushConstants.NEW_SEGMENT_ID, query);
     if (this.xhrHandle) { //cancel existing xhr - prevent from stacking
       this.xhrHandle.abort();
     }
@@ -271,10 +272,6 @@ export default class PushAudienceDialog extends React.Component {
     );
   }
 }
-
-PushAudienceDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
 
 PushAudienceDialog.propTypes = {
   editMode: PropTypes.bool.describe(

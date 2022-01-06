@@ -28,6 +28,12 @@
   background: white;
   overflow: auto;
 
+  button {
+    @include buttonReset;
+    display: block;
+    width: 100%;
+  }
+
   .option {
     color: $blue;
     border-bottom: 1px solid $borderGrey;

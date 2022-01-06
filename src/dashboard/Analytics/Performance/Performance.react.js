@@ -17,7 +17,7 @@ import Parse                     from 'parse';
 import React                     from 'react';
 import styles                    from 'dashboard/Analytics/Performance/Performance.scss';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import { verticalCenter }        from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
 
 const PERFORMANCE_QUERIES = [
   {
@@ -102,7 +102,7 @@ export default class Performance extends DashboardView {
   }
 
   componentWillMount() {
-    this.handleRunQuery(this.context.currentApp);
+    this.handleRunQuery(this.context);
   }
 
   componentWillUnmount() {
@@ -111,7 +111,7 @@ export default class Performance extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.handleRunQuery(nextContext.currentApp);
+      this.handleRunQuery(nextContext);
     }
   }
 
@@ -177,7 +177,7 @@ export default class Performance extends DashboardView {
 
     let footer = (
       <div className={styles.footer}>
-        <div className={[styles.right, verticalCenter].join(' ')}>
+        <div className={[styles.right, baseStyles.verticalCenter].join(' ')}>
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}
@@ -187,7 +187,7 @@ export default class Performance extends DashboardView {
           <Button
             primary={true}
             disabled={!this.state.mutated}
-            onClick={this.handleRunQuery.bind(this, this.context.currentApp)}
+            onClick={this.handleRunQuery.bind(this, this.context)}
             value='Run query' />
         </div>
       </div>

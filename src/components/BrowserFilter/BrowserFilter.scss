@@ -138,6 +138,7 @@
 }
 
 .remove {
+  @include buttonReset;
   display: inline-block;
   height: 14px;
   margin: 8px;

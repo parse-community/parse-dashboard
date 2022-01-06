@@ -26,6 +26,7 @@ import TableHeader              from 'components/Table/TableHeader.react';
 import Toolbar                  from 'components/Toolbar/Toolbar.react';
 import { formatAudienceSchema } from 'lib/PushUtils';
 import { List }                 from 'immutable';
+import generatePath from 'lib/generatePath';
 
 const XHR_KEY = 'PushAudiencesIndex';
 
@@ -61,7 +62,7 @@ class PushAudiencesIndex extends DashboardView {
     }).finally(() => {
       this.setState({ loading: false });
     });
-    this.context.currentApp.fetchAvailableDevices().then(({ available_devices }) => {
+    this.context.fetchAvailableDevices().then(({ available_devices }) => {
       this.setState({
         availableDevices: available_devices
       });
@@ -110,7 +111,7 @@ class PushAudiencesIndex extends DashboardView {
   }
 
   handleSendPush(objectId) {
-    history.push(this.context.generatePath(`push/new?audienceId=${objectId}`));
+    history.push(generatePath(this.context, `push/new?audienceId=${objectId}`));
   }
 
   renderRow(audience) {
