@@ -1,3 +1,10 @@
+# [4.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.6...4.0.0-alpha.7) (2022-01-13)
+
+
+### Bug Fixes
+
+* bump follow-redirects from 1.14.4 to 1.14.7 ([#1997](https://github.com/ParsePlatform/parse-dashboard/issues/1997)) ([4ca2e97](https://github.com/ParsePlatform/parse-dashboard/commit/4ca2e971890c6ee7ee88195a4c75dbb73dc5a0b1))
+
 # [4.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.5...4.0.0-alpha.6) (2022-01-13)
 
 
