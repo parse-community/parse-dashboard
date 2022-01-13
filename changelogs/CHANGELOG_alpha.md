@@ -1,3 +1,10 @@
+# [4.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.5...4.0.0-alpha.6) (2022-01-13)
+
+
+### Bug Fixes
+
+* bump markdown-it from 12.3.0 to 12.3.2 ([#1996](https://github.com/ParsePlatform/parse-dashboard/issues/1996)) ([245c22e](https://github.com/ParsePlatform/parse-dashboard/commit/245c22ea21f1af6f3e74a269d74460d5c5ea5c03))
+
 # [4.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.4...4.0.0-alpha.5) (2021-12-12)
 
 
