@@ -1,3 +1,10 @@
+# [4.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.7...4.0.0-alpha.8) (2022-01-15)
+
+
+### Bug Fixes
+
+* bump marked from 0.8.2 to 4.0.10 ([#2001](https://github.com/ParsePlatform/parse-dashboard/issues/2001)) ([ae4cc90](https://github.com/ParsePlatform/parse-dashboard/commit/ae4cc900bdbdc4425f0f30c07c6ef689c8cebe8c))
+
 # [4.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.6...4.0.0-alpha.7) (2022-01-13)
 
 
