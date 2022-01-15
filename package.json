@@ -101,7 +101,7 @@
     "http-server": "14.0.0",
     "jest": "24.8.0",
     "madge": "5.0.1",
-    "marked": "0.8.2",
+    "marked": "4.0.10",
     "node-sass": "6.0.1",
     "null-loader": "4.0.1",
     "path-to-regexp": "3.2.0",
