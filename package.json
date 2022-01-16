@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "4.0.0-alpha.7",
+  "version": "4.0.0-alpha.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -57,7 +57,7 @@
     "passport": "0.5.2",
     "passport-local": "1.0.0",
     "prismjs": "1.25.0",
-    "prop-types": "15.7.2",
+    "prop-types": "15.8.0",
     "qrcode": "1.5.0",
     "react": "16.14.0",
     "react-ace": "9.5.0",
@@ -101,7 +101,7 @@
     "http-server": "14.0.0",
     "jest": "24.8.0",
     "madge": "5.0.1",
-    "marked": "0.8.2",
+    "marked": "4.0.10",
     "node-sass": "6.0.1",
     "null-loader": "4.0.1",
     "path-to-regexp": "3.2.0",
