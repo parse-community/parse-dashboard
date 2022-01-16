@@ -25,7 +25,9 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 ---
 
 - [Getting Started](#getting-started)
-- [Local Installation](#local-installation)
+  - [Compatibility](#compatibility)
+    - [Parse Server](#parse-server)
+    - [Node.js](#nodejs)
   - [Configuring Parse Dashboard](#configuring-parse-dashboard)
     - [File](#file)
     - [Environment variables](#environment-variables)
@@ -60,10 +62,6 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 
 # Getting Started
 
-[Node.js](https://nodejs.org) version >= 12 is required to run the dashboard. You also need to be using Parse Server version 2.1.4 or higher.
-
-# Local Installation
-
 Install the dashboard from `npm`.
 
 ```
@@ -89,6 +87,25 @@ The `--dev` parameter disables production-ready security features. This paramete
 After starting the dashboard, you can visit http://localhost:4040 in your browser:
 
 ![Parse Dashboard](.github/dash-shot.png)
+
+## Compatibility
+
+### Parse Server
+Parse Dashboard is compatible with the following Parse Server versions.
+
+| Parse Dashboard Version | Parse Server Version | Compatible |
+|-------------------------|----------------------|------------|
+| >=1.0                   | >= 2.1.4             | ✅ Yes      |
+
+### Node.js
+Parse Dashboard is continuously tested with the most recent releases of Node.js to ensure compatibility. We follow the [Node.js Long Term Support plan](https://github.com/nodejs/Release) and only test against versions that are officially supported and have not reached their end-of-life date.
+
+| Version    | Latest Version | End-of-Life | Compatible   |
+|------------|----------------|-------------|--------------|
+| Node.js 12 | 12.22.9        | April 2022  | ✅ Yes        |
+| Node.js 14 | 14.18.3        | April 2023  | ✅ Yes        |
+| Node.js 16 | 16.10.0        | April 2024  | ✅ Yes        |
+| Node.js 17 | 17.x           | June 2022   | ❌ Not tested |
 
 ## Configuring Parse Dashboard
 
