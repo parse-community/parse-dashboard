@@ -401,7 +401,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (!!required) {
+          if (required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -418,7 +418,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: -1
           });
@@ -460,7 +460,7 @@ class Browser extends DashboardView {
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
-              obj.set(attr, prev);
+              obj.revert();
               this.setState({ data: this.state.data });
               this.showNote(msg, true);
             }
@@ -505,7 +505,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (!!required) {
+          if (required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -522,7 +522,7 @@ class Browser extends DashboardView {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
         if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: rowIndex
           });
