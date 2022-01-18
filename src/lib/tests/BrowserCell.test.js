@@ -29,11 +29,11 @@ describe('BrowserCell', () => {
       expect(component.props.className).not.toContain('required');
     });
 
-    it('should highlight empty string value', () => {
+    it('should not highlight empty string value', () => {
       const component = renderer.create(
         <BrowserCell value="" markRequiredField={true} isRequired={true}/>
       ).toJSON();
-      expect(component.props.className).toContain('required');
+      expect(component.props.className).not.toContain('required');
     });
 
     it('should highlight null value', () => {
