@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import CodeSnippet    from 'components/CodeSnippet/CodeSnippet.react';
-import marked         from 'marked';
+import { marked }         from 'marked';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
 import ReactDOMServer from 'react-dom/server';
