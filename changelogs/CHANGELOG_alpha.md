@@ -1,3 +1,10 @@
+# [4.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.8...4.0.0-alpha.9) (2022-01-18)
+
+
+### Bug Fixes
+
+* cannot save nullish values for required fields ([#2003](https://github.com/ParsePlatform/parse-dashboard/issues/2003)) ([e1a5497](https://github.com/ParsePlatform/parse-dashboard/commit/e1a5497d4a999d18dcf60f93cdba16d36250a7cc))
+
 # [4.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.7...4.0.0-alpha.8) (2022-01-15)
 
 
