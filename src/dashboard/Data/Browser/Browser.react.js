@@ -417,7 +417,7 @@ class Browser extends DashboardView {
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
-        if (!obj.get(name)) {
+        if (obj.get(name) == null) {
           this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: -1
@@ -521,7 +521,7 @@ class Browser extends DashboardView {
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
-        if (!obj.get(name)) {
+        if (obj.get(name) == null) {
           this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: rowIndex
