@@ -1,12 +1,14 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom';
 
 export function withRouter(Component) {
   function render(props) {
     const params = useParams();
     const navigate = useNavigate();
+    const outletContext = useOutletContext();
+    const location = useLocation();
 
-    return <Component {...props} params={params} navigate={navigate} />;
+    return <Component {...props} params={params} navigate={navigate} outletContext={outletContext} location={location} />;
   }
 
   const name = Component.displayName || Component.name;
