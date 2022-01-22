@@ -167,7 +167,7 @@ class Browser extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (this.props.params.className !== nextProps.params.className) {
+    if (this.props.params.appId !== nextProps.params.appId || this.props.params.className !== nextProps.params.className || this.props.location.search !== nextProps.location.search) {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
@@ -177,7 +177,7 @@ class Browser extends DashboardView {
       .then(() => this.handleFetchedSchema());
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
-      this.redirectToFirstClass(nextProps.schema.data.get('classes'));
+      this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
 
@@ -225,7 +225,7 @@ class Browser extends DashboardView {
     return filters;
   }
 
-  redirectToFirstClass(classList) {
+  redirectToFirstClass(classList, context) {
     if (!classList.isEmpty()) {
       let classes = Object.keys(classList.toObject());
       classes.sort((a, b) => {
@@ -237,7 +237,7 @@ class Browser extends DashboardView {
         }
         return a.toUpperCase() < b.toUpperCase() ? -1 : 1;
       });
-      history.replace(generatePath(this.context, 'browser/' + classes[0]));
+      history.replace(generatePath(context || this.context, 'browser/' + classes[0]));
     }
   }
 
