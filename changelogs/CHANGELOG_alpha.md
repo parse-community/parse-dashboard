@@ -1,3 +1,10 @@
+# [4.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.9...4.0.0-alpha.10) (2022-01-22)
+
+
+### Bug Fixes
+
+* bump nanoid from 3.1.28 to 3.2.0 ([#2008](https://github.com/ParsePlatform/parse-dashboard/issues/2008)) ([6cfe9ca](https://github.com/ParsePlatform/parse-dashboard/commit/6cfe9cae63a49013489e5683b5e16ab3c4399730))
+
 # [4.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.8...4.0.0-alpha.9) (2022-01-18)
 
 
