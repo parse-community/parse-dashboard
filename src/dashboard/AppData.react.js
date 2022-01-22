@@ -9,29 +9,32 @@ import React          from 'react';
 import AppSelector    from 'dashboard/AppSelector.react';
 import AppsManager    from 'lib/AppsManager';
 import { CurrentApp } from 'context/currentApp';
-import { withRouter } from 'lib/withRouter';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate , useParams} from 'react-router-dom';
 
-@withRouter
-class AppData extends React.Component {
-  render() {
-    if (this.props.params.appId === '_') {
-      return <AppSelector />;
-    }
-    //Find by name to catch edge cases around escaping apostrophes in URLs
-    let current = AppsManager.findAppBySlugOrName(this.props.params.appId);
-    if (current) {
-      current.setParseKeys();
-    } else {
-      this.props.navigate('/apps', { replate: true });
-      return <div />;
-    }
-    return (
-      <CurrentApp.Provider value={current}>
-        <Outlet />
-      </CurrentApp.Provider>
-    );
+
+function AppData() {
+  const navigate = useNavigate();
+  const params = useParams();
+
+  if (params.appId === '_') {
+    return <AppSelector />;
   }
+
+  // Find by name to catch edge cases around escaping apostrophes in URLs
+  let current = AppsManager.findAppBySlugOrName(params.appId);
+
+  if (current) {
+    current.setParseKeys();
+  } else {
+    navigate('/apps', { replace: true });
+    return <div />;
+  }
+
+  return (
+    <CurrentApp.Provider value={current}>
+      <Outlet />
+    </CurrentApp.Provider>
+  );
 }
 
 export default AppData;
