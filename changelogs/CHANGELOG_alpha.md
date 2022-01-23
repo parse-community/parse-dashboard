@@ -1,3 +1,10 @@
+# [4.0.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.10...4.0.0-alpha.11) (2022-01-23)
+
+
+### Bug Fixes
+
+* various UI bugs (e.g. filter data browser, switch app, upload file) ([#2010](https://github.com/ParsePlatform/parse-dashboard/issues/2010)) ([a508a58](https://github.com/ParsePlatform/parse-dashboard/commit/a508a58ce927fd7e08d249818c38f6fb1305956c))
+
 # [4.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.9...4.0.0-alpha.10) (2022-01-22)
 
 
