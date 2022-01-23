@@ -1,3 +1,10 @@
+# [4.0.0-beta.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-beta.1...4.0.0-beta.2) (2022-01-23)
+
+
+### Bug Fixes
+
+* various UI bugs (e.g. filter data browser, switch app, upload file) ([#2014](https://github.com/ParsePlatform/parse-dashboard/issues/2014)) ([785978e](https://github.com/ParsePlatform/parse-dashboard/commit/785978ecce501cf23cb7fc3d82fa3f7c7dce7f6a))
+
 # [4.0.0-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/3.3.0-beta.3...4.0.0-beta.1) (2022-01-01)
 
 
