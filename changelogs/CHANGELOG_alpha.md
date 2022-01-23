@@ -1,3 +1,10 @@
+# [4.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.13...4.0.0-alpha.14) (2022-01-23)
+
+
+### Bug Fixes
+
+* crash when checking for new dashboard release without internet connection ([#2015](https://github.com/ParsePlatform/parse-dashboard/issues/2015)) ([8c36e69](https://github.com/ParsePlatform/parse-dashboard/commit/8c36e693c08a960c4002d7d29bde7d111eff2cd4))
+
 # [4.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.12...4.0.0-alpha.13) (2022-01-23)
 
 
