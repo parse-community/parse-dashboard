@@ -9,13 +9,18 @@ var fs = require('fs');
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
 var newFeaturesInLatestVersion = [];
-packageJson('parse-dashboard', { version: 'latest', fullMetadata: true }).then(latestPackage => {
-  if (latestPackage.parseDashboardFeatures instanceof Array) {
-    newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
-      return currentVersionFeatures.indexOf(feature) === -1;
-    });
-  }
-});
+packageJson('parse-dashboard', { version: 'latest', fullMetadata: true })
+  .then(latestPackage => {
+    if (latestPackage.parseDashboardFeatures instanceof Array) {
+      newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
+        return currentVersionFeatures.indexOf(feature) === -1;
+      });
+    }
+  })
+  .catch(() => {
+    // In case of a failure make sure the final value is an empty array
+    newFeaturesInLatestVersion = [];
+  });
 
 function getMount(mountPath) {
   mountPath = mountPath || '';
