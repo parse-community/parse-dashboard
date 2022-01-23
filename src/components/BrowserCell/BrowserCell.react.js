@@ -168,7 +168,7 @@ export default class BrowserCell extends Component {
     }
     this.onContextMenu = this.onContextMenu.bind(this);
 
-    if (this.props.markRequiredField && this.props.isRequired && !this.props.value) {
+    if (this.props.markRequiredField && this.props.isRequired && this.props.value == null) {
       classes.push(styles.required);
     }
 
@@ -396,7 +396,7 @@ export default class BrowserCell extends Component {
     if ( current ) {
       classes.push(styles.current);
     }
-    if (markRequiredFieldRow === row && isRequired && !value) {
+    if (markRequiredFieldRow === row && isRequired && value == null) {
       classes.push(styles.required);
     }
 
