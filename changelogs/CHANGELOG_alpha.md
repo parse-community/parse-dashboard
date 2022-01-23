@@ -1,3 +1,10 @@
+# [4.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.12...4.0.0-alpha.13) (2022-01-23)
+
+
+### Bug Fixes
+
+* calendar widget layout partly hides last days of a month ([#1990](https://github.com/ParsePlatform/parse-dashboard/issues/1990)) ([5bd86dd](https://github.com/ParsePlatform/parse-dashboard/commit/5bd86dd0a5c7857705089cb8a57c078d62863dfc))
+
 # [4.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.11...4.0.0-alpha.12) (2022-01-23)
 
 
