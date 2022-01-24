@@ -203,12 +203,13 @@ class Browser extends DashboardView {
       ),
       selection: {},
       relation: isRelationRoute ? relation : null,
+    }, () => {
+      if (isRelationRoute) {
+        this.fetchRelation(relation, filters);
+      } else if (className) {
+        this.fetchData(className, filters);
+      }
     });
-    if (isRelationRoute) {
-      this.fetchRelation(relation, filters);
-    } else if (className) {
-      this.fetchData(className, filters);
-    }
   }
 
   extractFiltersFromQuery(props) {
