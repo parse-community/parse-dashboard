@@ -15,16 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.node-version }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+          cache: npm
       - name: Install dependencies
         run: npm ci
       - name: CI Node Engine Check
@@ -56,16 +50,10 @@ jobs:
      steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.node-version }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+          cache: npm
       - name: Install dependencies
         run: npm ci
       - name: Scan for circular dependencies
@@ -130,17 +118,11 @@ jobs:
           node_major=$(echo "${{ matrix.NODE_VERSION }}" | cut -d'.' -f1)
           echo "::set-output name=node_major::$(echo $node_major)"
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.NODE_VERSION }}
-        uses: actions/setup-node@v1
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.NODE_VERSION }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
+          cache: npm
       - name: Install dependencies (Node < 10)
         run: npm install
         if: ${{ steps.node.outputs.node_major < 10 }}
