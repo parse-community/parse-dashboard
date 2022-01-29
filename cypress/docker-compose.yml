@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:5.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123
+
+  server:
+    depends_on:
+      - mongo
+    image: parseplatform/parse-server:4.10.4
+    environment:
+      PARSE_SERVER_APPLICATION_ID: hello
+      PARSE_SERVER_MASTER_KEY: world
+      PARSE_SERVER_DATABASE_URI: mongodb://root:123@mongo:27017/parse?authSource=admin
+    ports:
+      - 1337:1337
+    volumes:
+      - .:/parse-server/config
+      - .:/parse-server/cloud

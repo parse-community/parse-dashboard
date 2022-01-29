@@ -72,7 +72,7 @@ let AppCard = ({
     Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>
     </div>;
 
-  return <li onClick={canBrowse} style={{ background: app.primaryBackgroundColor }}>
+  return <li data-test-id="apps-index-app" onClick={canBrowse} style={{ background: app.primaryBackgroundColor }}>
     <a className={styles.icon}>
       {icon ? <img src={'appicons/' + icon} width={56} height={56}/> : <Icon width={56} height={56} name='blank-app-outline' fill='#1E384D' />}
     </a>
@@ -151,6 +151,7 @@ export default class AppsIndex extends React.Component {
         <div className={styles.header}>
           <Icon width={18} height={18} name='search-outline' fill='#788c97' />
           <input
+            data-testid="apps-index-search-input"
             ref={this.searchRef}
             className={styles.search}
             onChange={this.updateSearch.bind(this)}
