@@ -1,8 +1,10 @@
 module.exports = {
   plugins: [
     ['@babel/plugin-proposal-decorators', { 'legacy': true }],
-    '@babel/transform-regenerator',
-    '@babel/transform-runtime'
+    ['@babel/transform-runtime', { corejs: 3 }],
   ],
-  presets: ['@babel/preset-react', '@babel/preset-env']
+  presets: [
+    '@babel/preset-react',
+    ['@babel/preset-env', { corejs: '3.20' }],
+  ],
 };
