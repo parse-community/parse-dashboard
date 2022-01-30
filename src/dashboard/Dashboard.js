@@ -181,7 +181,7 @@ export default class Dashboard extends React.Component {
 
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
-      return <div className={baseStyles.center}><Loader/></div>;
+      return <div className={baseStyles.center} data-cy="dashboard-loader"><Loader/></div>;
     }
 
     if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
