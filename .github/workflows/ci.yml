@@ -164,10 +164,8 @@ jobs:
       - name: Test dashboard
         uses: cypress-io/github-action@v2
         with:
-          start: |
-            npm run start
-            npm run start:cypress
-          wait-on: 'http://localhost:4040, http://localhost:4050'
+          start: npm run start
+          wait-on: 'http://localhost:4040'
           wait-on-timeout: 120
           browser: chrome
       - name: Store video artifacts

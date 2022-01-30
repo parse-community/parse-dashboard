@@ -134,8 +134,7 @@
     "madge:circular": "node_modules/.bin/madge ./src --circular",
     "semantic-release": "semantic-release",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "start:cypress": "npm run start -- --port=4050 --config=./cypress/parse-dashboard-config.json"
+    "cypress:run": "cypress run"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
