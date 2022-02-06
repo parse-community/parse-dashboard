@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import ReactJson from 'react-json-view';
 import Parse from 'parse';
 
-import PropTypes from 'lib/PropTypes';
-import ParseApp from 'lib/ParseApp';
 import CodeEditor from 'components/CodeEditor/CodeEditor.react';
 import Button from 'components/Button/Button.react';
 import SaveButton from 'components/SaveButton/SaveButton.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import { CurrentApp } from 'context/currentApp';
 
 import styles from './Playground.scss';
 
 export default class Playground extends Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.section = 'Core';
@@ -72,7 +72,7 @@ export default class Playground extends Component {
 
     try {
       const {
-        currentApp: { applicationId, masterKey, serverURL, javascriptKey }
+        applicationId, masterKey, serverURL, javascriptKey
       } = this.context;
       const originalCode = this.editor.value;
 
@@ -197,8 +197,3 @@ console.log(myObj);`}
     );
   }
 }
-
-Playground.contextTypes = {
-  generatePath: PropTypes.func,
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

@@ -34,7 +34,7 @@ export default class PushSettings extends DashboardView {
   }
 
   legacyPushSettings() {
-    window.open(`${getSiteDomain()}/apps/` + this.context.currentApp.slug + '/edit#push', '_blank');
+    window.open(`${getSiteDomain()}/apps/` + this.context.slug + '/edit#push', '_blank');
   }
 
   renderForm({fields, setField}) {
@@ -159,18 +159,18 @@ export default class PushSettings extends DashboardView {
       onSubmit={({ changes }) => {
         let promiseList = [];
         if (changes.enableClientPush !== undefined) {
-          promiseList.push(this.context.currentApp.setEnableClientPush(changes.enableClientPush));
+          promiseList.push(this.context.setEnableClientPush(changes.enableClientPush));
         }
         if (changes.enableRestPush !== undefined) {
-          promiseList.push(this.context.currentApp.setEnableRestPush(changes.enableRestPush));
+          promiseList.push(this.context.setEnableRestPush(changes.enableRestPush));
         }
         if (changes.customGCMSenderID && changes.customGCMAPIKey) {
-          promiseList.push(this.context.currentApp.addGCMCredentials(changes.customGCMSenderID, changes.customGCMAPIKey));
+          promiseList.push(this.context.addGCMCredentials(changes.customGCMSenderID, changes.customGCMAPIKey));
         }
         if (changes.gcmCredentials) { //Added creds don't show up in "changes"
           let removedGCMcredentials = setDifference(initialFields.gcmCredentials, changes.gcmCredentials, compareGCMCredentials);
           removedGCMcredentials.forEach(({ sender_id }) => {
-            promiseList.push(this.context.currentApp.deleteGCMPushCredentials(sender_id));
+            promiseList.push(this.context.deleteGCMPushCredentials(sender_id));
           });
         }
         return Promise.all(promiseList).then(() => {

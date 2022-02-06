@@ -64,6 +64,7 @@
 }
 
 .del {
+  @include buttonReset;
   position: absolute;
   top: 7px;
   right: 7px;

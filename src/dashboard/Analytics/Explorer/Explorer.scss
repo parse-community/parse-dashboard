@@ -44,7 +44,7 @@
 }
 
 .toolbarAction {
-  padding: 0px 20px;
+  @include buttonReset($padding: 0 20px);
   color: white;
 
   > *:not(svg) {

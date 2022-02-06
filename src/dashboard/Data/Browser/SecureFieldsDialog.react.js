@@ -10,8 +10,7 @@ import Parse                  from 'parse';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import ProtectedFieldsDialog  from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
-import ParseApp               from 'lib/ParseApp';
-import PropTypes              from 'prop-types';
+import { CurrentApp }         from 'context/currentApp';
 
 const pointerPrefix = 'userField:';
 
@@ -91,6 +90,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
 }
 
 export default class SecureFieldsDialog extends React.Component {
+  static contextType = CurrentApp;
   constructor(props) {
     super(props);
     this.state = { open: false };
@@ -117,7 +117,7 @@ export default class SecureFieldsDialog extends React.Component {
 
   render() {
     let dialog = null;
-    let parseServerSupportsPointerPermissions = this.context.currentApp
+    let parseServerSupportsPointerPermissions = this.context
       .serverInfo.features.schemas.editClassLevelPermissions;
     if (this.props.perms && this.state.open) {
       dialog = (
@@ -163,7 +163,3 @@ export default class SecureFieldsDialog extends React.Component {
     return dialog;
   }
 }
-
-SecureFieldsDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
