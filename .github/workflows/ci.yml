@@ -112,9 +112,9 @@ jobs:
       matrix:
         include:
           - name: Node 12
-            NODE_VERSION: 12.22.9
+            NODE_VERSION: 12.22.10
           - name: Node 14
-            NODE_VERSION: 14.18.3
+            NODE_VERSION: 14.19.0
           - name: Node 16
             NODE_VERSION: 16.10.0
       fail-fast: false
