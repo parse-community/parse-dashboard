@@ -1,38 +1,3 @@
-# [4.0.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.20...4.0.0-alpha.21) (2022-03-18)
-
-
-### Bug Fixes
-
-* upgrade otpauth from 7.0.10 to 7.0.11 ([#2061](https://github.com/ParsePlatform/parse-dashboard/issues/2061)) ([c379306](https://github.com/ParsePlatform/parse-dashboard/commit/c3793061a186d49ab09e8bd448e167078d1e4df7))
-
-# [4.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.19...4.0.0-alpha.20) (2022-03-16)
-
-
-### Features
-
-* change string filter description ([#2059](https://github.com/ParsePlatform/parse-dashboard/issues/2059)) ([bb1e184](https://github.com/ParsePlatform/parse-dashboard/commit/bb1e184272497749630964b4bd9e610d2d4cd328))
-
-# [4.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.18...4.0.0-alpha.19) (2022-03-10)
-
-
-### Bug Fixes
-
-* upgrade express from 4.17.2 to 4.17.3 ([#2058](https://github.com/ParsePlatform/parse-dashboard/issues/2058)) ([f8dc602](https://github.com/ParsePlatform/parse-dashboard/commit/f8dc6027f57143d72083f593455b23e304de934a))
-
-# [4.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.17...4.0.0-alpha.18) (2022-03-02)
-
-
-### Bug Fixes
-
-* upgrade @babel/runtime from 7.17.0 to 7.17.2 ([#2055](https://github.com/ParsePlatform/parse-dashboard/issues/2055)) ([93335e9](https://github.com/ParsePlatform/parse-dashboard/commit/93335e9ab52e7b1f203b7939abde5c12b42dd2a7))
-
-# [4.0.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.16...4.0.0-alpha.17) (2022-02-23)
-
-
-### Bug Fixes
-
-* security upgrade prismjs from 1.26.0 to 1.27.0 ([#2047](https://github.com/ParsePlatform/parse-dashboard/issues/2047)) ([3afb24e](https://github.com/ParsePlatform/parse-dashboard/commit/3afb24e708a69560732a725574953333431c1ca9))
-
 # [4.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.15...4.0.0-alpha.16) (2022-02-10)
 
 
