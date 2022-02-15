@@ -1,9 +1,9 @@
 {
-  "name": "parse-dashboard",
+  "name": "@greatminds/parse-dashboard",
   "version": "4.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ParsePlatform/parse-dashboard"
+    "url": "https://github.com/greatmindsorg/parse-dashboard"
   },
   "description": "The Parse Dashboard",
   "parseDashboardFeatures": [
