@@ -127,7 +127,6 @@
     "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "jest",
     "lint": "eslint . --ignore-path .gitignore --cache",
-    "pretest": "npm run lint",
     "generate": "node scripts/generate.js",
     "prepare": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js",
