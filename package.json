@@ -147,6 +147,9 @@
     "transform": {
       ".*": "<rootDir>/testing/preprocessor.js"
     },
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/testing/styleMock.js"
+    },
     "unmockedModulePathPatterns": [
       "react",
       "react-dom",
