@@ -1,3 +1,52 @@
+# [4.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.15...4.0.0-alpha.16) (2022-02-10)
+
+
+### Bug Fixes
+
+* adding internal class (e.g. `_User`) fails due to prefixed underscore ([#2036](https://github.com/ParsePlatform/parse-dashboard/issues/2036)) ([f80bd07](https://github.com/ParsePlatform/parse-dashboard/commit/f80bd07a42b19fc4fa2632e0147fa72812a87c2f))
+
+# [4.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.14...4.0.0-alpha.15) (2022-01-26)
+
+
+### Bug Fixes
+
+* preserve column sorting preferences in data browser ([#2016](https://github.com/ParsePlatform/parse-dashboard/issues/2016)) ([c2e6557](https://github.com/ParsePlatform/parse-dashboard/commit/c2e65573ccfa29b6d6e727e93b9552380c520f86))
+
+# [4.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.13...4.0.0-alpha.14) (2022-01-23)
+
+
+### Bug Fixes
+
+* crash when checking for new dashboard release without internet connection ([#2015](https://github.com/ParsePlatform/parse-dashboard/issues/2015)) ([8c36e69](https://github.com/ParsePlatform/parse-dashboard/commit/8c36e693c08a960c4002d7d29bde7d111eff2cd4))
+
+# [4.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.12...4.0.0-alpha.13) (2022-01-23)
+
+
+### Bug Fixes
+
+* calendar widget layout partly hides last days of a month ([#1990](https://github.com/ParsePlatform/parse-dashboard/issues/1990)) ([5bd86dd](https://github.com/ParsePlatform/parse-dashboard/commit/5bd86dd0a5c7857705089cb8a57c078d62863dfc))
+
+# [4.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.11...4.0.0-alpha.12) (2022-01-23)
+
+
+### Bug Fixes
+
+* upgrade parse from 3.4.0 to 3.4.1 ([#2011](https://github.com/ParsePlatform/parse-dashboard/issues/2011)) ([68cf9e2](https://github.com/ParsePlatform/parse-dashboard/commit/68cf9e238594df29c22a687b2976d56894897f34))
+
+# [4.0.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.10...4.0.0-alpha.11) (2022-01-23)
+
+
+### Bug Fixes
+
+* various UI bugs (e.g. filter data browser, switch app, upload file) ([#2010](https://github.com/ParsePlatform/parse-dashboard/issues/2010)) ([a508a58](https://github.com/ParsePlatform/parse-dashboard/commit/a508a58ce927fd7e08d249818c38f6fb1305956c))
+
+# [4.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.9...4.0.0-alpha.10) (2022-01-22)
+
+
+### Bug Fixes
+
+* bump nanoid from 3.1.28 to 3.2.0 ([#2008](https://github.com/ParsePlatform/parse-dashboard/issues/2008)) ([6cfe9ca](https://github.com/ParsePlatform/parse-dashboard/commit/6cfe9cae63a49013489e5683b5e16ab3c4399730))
+
 # [4.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.8...4.0.0-alpha.9) (2022-01-18)
 
 
