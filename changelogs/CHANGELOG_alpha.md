@@ -5,7 +5,6 @@
 
 * security upgrade prismjs from 1.26.0 to 1.27.0 ([#2047](https://github.com/ParsePlatform/parse-dashboard/issues/2047)) ([3afb24e](https://github.com/ParsePlatform/parse-dashboard/commit/3afb24e708a69560732a725574953333431c1ca9))
 
-
 # [4.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.15...4.0.0-alpha.16) (2022-02-10)
 
 
