@@ -1,3 +1,10 @@
+# [4.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.17...4.0.0-alpha.18) (2022-03-02)
+
+
+### Bug Fixes
+
+* upgrade @babel/runtime from 7.17.0 to 7.17.2 ([#2055](https://github.com/ParsePlatform/parse-dashboard/issues/2055)) ([93335e9](https://github.com/ParsePlatform/parse-dashboard/commit/93335e9ab52e7b1f203b7939abde5c12b42dd2a7))
+
 # [4.0.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.16...4.0.0-alpha.17) (2022-02-23)
 
 
