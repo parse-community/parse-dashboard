@@ -203,12 +203,13 @@ class Browser extends DashboardView {
       ),
       selection: {},
       relation: isRelationRoute ? relation : null,
+    }, () => {
+      if (isRelationRoute) {
+        this.fetchRelation(relation, filters);
+      } else if (className) {
+        this.fetchData(className, filters);
+      }
     });
-    if (isRelationRoute) {
-      this.fetchRelation(relation, filters);
-    } else if (className) {
-      this.fetchData(className, filters);
-    }
   }
 
   extractFiltersFromQuery(props) {
@@ -417,7 +418,7 @@ class Browser extends DashboardView {
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
-        if (!obj.get(name)) {
+        if (obj.get(name) == null) {
           this.showNote("Please enter all required fields", true);
           this.setState({
             markRequiredFieldRow: -1
@@ -521,7 +522,7 @@ class Browser extends DashboardView {
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
-        if (!obj.get(name)) {
+        if (obj.get(name) == null) {
           this.showNote("Please enter all required fields", true);
           this.setState({
             markRequiredFieldRow: rowIndex

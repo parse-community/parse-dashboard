@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1338/parse",
+      "serverURL": "http://localhost:1337/parse",
       "appId": "hello",
       "masterKey": "world",
       "appName": "",
