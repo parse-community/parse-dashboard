@@ -1,3 +1,11 @@
+# [4.0.0-beta.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-beta.3...4.0.0-beta.4) (2022-03-04)
+
+
+### Bug Fixes
+
+* adding internal class (e.g. `_User`) fails due to prefixed underscore ([#2036](https://github.com/ParsePlatform/parse-dashboard/issues/2036)) ([f80bd07](https://github.com/ParsePlatform/parse-dashboard/commit/f80bd07a42b19fc4fa2632e0147fa72812a87c2f))
+* security upgrade prismjs from 1.26.0 to 1.27.0 ([#2047](https://github.com/ParsePlatform/parse-dashboard/issues/2047)) ([3afb24e](https://github.com/ParsePlatform/parse-dashboard/commit/3afb24e708a69560732a725574953333431c1ca9))
+
 # [4.0.0-beta.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-beta.2...4.0.0-beta.3) (2022-02-06)
 
 
