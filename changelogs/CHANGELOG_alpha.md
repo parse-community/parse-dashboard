@@ -1,3 +1,10 @@
+# [4.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.18...4.0.0-alpha.19) (2022-03-10)
+
+
+### Bug Fixes
+
+* upgrade express from 4.17.2 to 4.17.3 ([#2058](https://github.com/ParsePlatform/parse-dashboard/issues/2058)) ([f8dc602](https://github.com/ParsePlatform/parse-dashboard/commit/f8dc6027f57143d72083f593455b23e304de934a))
+
 # [4.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.17...4.0.0-alpha.18) (2022-03-02)
 
 
