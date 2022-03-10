@@ -43,7 +43,7 @@
     "cookie-session": "2.0.0",
     "copy-to-clipboard": "3.3.1",
     "csurf": "1.11.0",
-    "express": "4.17.2",
+    "express": "4.17.3",
     "graphiql": "1.5.16",
     "graphql": "16.3.0",
     "history": "4.10.1",
