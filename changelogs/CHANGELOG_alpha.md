@@ -1,3 +1,10 @@
+# [4.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.19...4.0.0-alpha.20) (2022-03-16)
+
+
+### Features
+
+* change string filter description ([#2059](https://github.com/ParsePlatform/parse-dashboard/issues/2059)) ([bb1e184](https://github.com/ParsePlatform/parse-dashboard/commit/bb1e184272497749630964b4bd9e610d2d4cd328))
+
 # [4.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.18...4.0.0-alpha.19) (2022-03-10)
 
 
