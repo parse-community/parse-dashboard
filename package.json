@@ -144,9 +144,6 @@
     "roots": [
       "src/lib"
     ],
-    "setupFiles": [
-      "<rootDir>/testing/jest.setup.js"
-    ],
     "transform": {
       ".*": "<rootDir>/testing/preprocessor.js"
     },
