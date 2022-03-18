@@ -1,3 +1,10 @@
+# [4.0.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.20...4.0.0-alpha.21) (2022-03-18)
+
+
+### Bug Fixes
+
+* upgrade otpauth from 7.0.10 to 7.0.11 ([#2061](https://github.com/ParsePlatform/parse-dashboard/issues/2061)) ([c379306](https://github.com/ParsePlatform/parse-dashboard/commit/c3793061a186d49ab09e8bd448e167078d1e4df7))
+
 # [4.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.19...4.0.0-alpha.20) (2022-03-16)
 
 
