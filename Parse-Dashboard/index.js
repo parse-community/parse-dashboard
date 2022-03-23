@@ -25,6 +25,7 @@ program.option('--host [host]', 'the host to run parse-dashboard');
 program.option('--port [port]', 'the port to run parse-dashboard');
 program.option('--mountPath [mountPath]', 'the mount path to run parse-dashboard');
 program.option('--allowInsecureHTTP [allowInsecureHTTP]', 'set this flag when you are running the dashboard behind an HTTPS load balancer or proxy with early SSL termination.');
+program.option('--allowAnonymousUser [allowAnonymousUser]', 'set this to true if you do not require defined users to login. DO NOT ENABLE IN PRODUCTION SERVERS.');
 program.option('--sslKey [sslKey]', 'the path to the SSL private key.');
 program.option('--sslCert [sslCert]', 'the path to the SSL certificate.');
 program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a front-facing proxy, such as when hosting on Heroku.  Uses X-Forwarded-* headers to determine the client\'s connection and IP address.');
@@ -67,6 +68,7 @@ let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
 let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
 let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
 let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+const allowAnonymousUser = program.allowAnonymousUser || process.env.PARSE_DASHBOARD_ALLOW_ANONYMOUS_USER
 
 function handleSIGs(server) {
   const signals = {
@@ -174,7 +176,7 @@ const app = express();
 if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
 
 config.data.trustProxy = trustProxy;
-let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev };
+let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, allowAnonymousUser};
 app.use(mountPath, parseDashboard(config.data, dashboardOptions));
 let server;
 if(!configSSLKey || !configSSLCert){

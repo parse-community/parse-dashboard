@@ -171,9 +171,14 @@ export default class Dashboard extends React.Component {
         AppsManager.addApp(app);
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }.bind(this)).catch(({ error }) => {
+    }.bind(this)).catch(( error) => {
+      if (error.log) {
+        setTimeout(() => {
+          console.error(error.log);
+        }, 500);
+      }
       this.setState({
-        configLoadingError: error,
+        configLoadingError: error.error,
         configLoadingState: AsyncStatus.FAILED
       });
     });
