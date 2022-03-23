@@ -99,7 +99,7 @@ module.exports = function(config, options) {
             success: false,
             error:
               "Parse Dashboard can only be remotely accessed via HTTPS.",
-            log: "Configure a user to access Parse Dashboard. If you are running locally, use the --dev parameter to bypass allowInsecureHTTP.",
+            log: "Parse Dashboard can only be remotely accessed via HTTPS. If you are running locally, use the --dev parameter to bypass allowInsecureHTTP.",
           });
         }
 
