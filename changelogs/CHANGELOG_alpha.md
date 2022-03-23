@@ -1,3 +1,60 @@
+# [4.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.1...4.1.0-alpha.1) (2022-03-23)
+
+
+### Bug Fixes
+
+* adding internal class (e.g. `_User`) fails due to prefixed underscore ([#2036](https://github.com/ParsePlatform/parse-dashboard/issues/2036)) ([e004e70](https://github.com/ParsePlatform/parse-dashboard/commit/e004e701737718f010978b0830d64bf8e1d8c559))
+* security upgrade prismjs from 1.26.0 to 1.27.0 ([#2047](https://github.com/ParsePlatform/parse-dashboard/issues/2047)) ([ffbca12](https://github.com/ParsePlatform/parse-dashboard/commit/ffbca12c80bf32052a1a2b5d315c8a3393d82248))
+* upgrade @babel/runtime from 7.17.0 to 7.17.2 ([#2055](https://github.com/ParsePlatform/parse-dashboard/issues/2055)) ([3e8449b](https://github.com/ParsePlatform/parse-dashboard/commit/3e8449b1679f803e9d26876ccfd28f88fea814ff))
+* upgrade express from 4.17.2 to 4.17.3 ([#2058](https://github.com/ParsePlatform/parse-dashboard/issues/2058)) ([d1357de](https://github.com/ParsePlatform/parse-dashboard/commit/d1357de1281244f040499a2ca54db0faee4d882c))
+* upgrade otpauth from 7.0.10 to 7.0.11 ([#2061](https://github.com/ParsePlatform/parse-dashboard/issues/2061)) ([05c5ac8](https://github.com/ParsePlatform/parse-dashboard/commit/05c5ac87a6cf1675889e58330276dac185929a01))
+
+### Features
+
+* change string filter description ([#2059](https://github.com/ParsePlatform/parse-dashboard/issues/2059)) ([6470c8e](https://github.com/ParsePlatform/parse-dashboard/commit/6470c8e3221e3b4ec95ecd831726a914d24ff619))
+
+# [4.0.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.20...4.0.0-alpha.21) (2022-03-18)
+
+
+### Bug Fixes
+
+* upgrade otpauth from 7.0.10 to 7.0.11 ([#2061](https://github.com/ParsePlatform/parse-dashboard/issues/2061)) ([c379306](https://github.com/ParsePlatform/parse-dashboard/commit/c3793061a186d49ab09e8bd448e167078d1e4df7))
+
+# [4.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.19...4.0.0-alpha.20) (2022-03-16)
+
+
+### Features
+
+* change string filter description ([#2059](https://github.com/ParsePlatform/parse-dashboard/issues/2059)) ([bb1e184](https://github.com/ParsePlatform/parse-dashboard/commit/bb1e184272497749630964b4bd9e610d2d4cd328))
+
+# [4.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.18...4.0.0-alpha.19) (2022-03-10)
+
+
+### Bug Fixes
+
+* upgrade express from 4.17.2 to 4.17.3 ([#2058](https://github.com/ParsePlatform/parse-dashboard/issues/2058)) ([f8dc602](https://github.com/ParsePlatform/parse-dashboard/commit/f8dc6027f57143d72083f593455b23e304de934a))
+
+# [4.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.17...4.0.0-alpha.18) (2022-03-02)
+
+
+### Bug Fixes
+
+* upgrade @babel/runtime from 7.17.0 to 7.17.2 ([#2055](https://github.com/ParsePlatform/parse-dashboard/issues/2055)) ([93335e9](https://github.com/ParsePlatform/parse-dashboard/commit/93335e9ab52e7b1f203b7939abde5c12b42dd2a7))
+
+# [4.0.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.16...4.0.0-alpha.17) (2022-02-23)
+
+
+### Bug Fixes
+
+* security upgrade prismjs from 1.26.0 to 1.27.0 ([#2047](https://github.com/ParsePlatform/parse-dashboard/issues/2047)) ([3afb24e](https://github.com/ParsePlatform/parse-dashboard/commit/3afb24e708a69560732a725574953333431c1ca9))
+
+# [4.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.15...4.0.0-alpha.16) (2022-02-10)
+
+
+### Bug Fixes
+
+* adding internal class (e.g. `_User`) fails due to prefixed underscore ([#2036](https://github.com/ParsePlatform/parse-dashboard/issues/2036)) ([f80bd07](https://github.com/ParsePlatform/parse-dashboard/commit/f80bd07a42b19fc4fa2632e0147fa72812a87c2f))
+
 # [4.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.14...4.0.0-alpha.15) (2022-01-26)
 
 
