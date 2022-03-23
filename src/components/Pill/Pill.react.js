@@ -7,7 +7,7 @@
  */
 import React  from 'react';
 import styles from 'components/Pill/Pill.scss';
-import Icon from "components/Icon/Icon.react";
+import Icon from 'components/Icon/Icon.react';
 
 //TODO: refactor, may want to move onClick outside or need to make onClick able to handle link/button a11y
 let Pill = ({ value, onClick, fileDownloadLink, followClick = false, shrinkablePill = false }) => (
@@ -15,7 +15,7 @@ let Pill = ({ value, onClick, fileDownloadLink, followClick = false, shrinkableP
     className={[
       styles.pill,
       !followClick && onClick ? styles.action : void 0
-    ].join(" ")}
+    ].join(' ')}
     onClick={!followClick && onClick ? onClick : null}
   >
     <span className={!followClick && fileDownloadLink ? styles.content : shrinkablePill ? styles.pillText : ''}>{value}</span>
