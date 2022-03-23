@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "4.0.0-beta.4",
+  "version": "4.1.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -35,15 +35,15 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/runtime": "7.17.0",
+    "@babel/runtime": "7.17.2",
     "bcryptjs": "2.3.0",
-    "body-parser": "1.19.1",
+    "body-parser": "1.19.2",
     "commander": "6.2.1",
     "connect-flash": "0.1.1",
     "cookie-session": "2.0.0",
     "copy-to-clipboard": "3.3.1",
     "csurf": "1.11.0",
-    "express": "4.17.2",
+    "express": "4.17.3",
     "graphiql": "1.5.16",
     "graphql": "16.3.0",
     "history": "4.10.1",
@@ -51,7 +51,7 @@
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.0",
     "js-beautify": "1.14.0",
-    "otpauth": "7.0.10",
+    "otpauth": "7.0.11",
     "package-json": "7.0.0",
     "parse": "3.4.1",
     "passport": "0.5.2",
@@ -82,6 +82,7 @@
     "@babel/plugin-transform-runtime": "7.16.4",
     "@babel/preset-env": "7.16.4",
     "@babel/preset-react": "7.16.0",
+    "@saithodev/semantic-release-backmerge": "2.1.2",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.0",
