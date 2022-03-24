@@ -1,3 +1,10 @@
+# [4.1.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0-alpha.1...4.1.0-alpha.2) (2022-03-24)
+
+
+### Bug Fixes
+
+* security vulnerability bump minimist from 1.2.5 to 1.2.6 ([#2070](https://github.com/ParsePlatform/parse-dashboard/issues/2070)) ([9730379](https://github.com/ParsePlatform/parse-dashboard/commit/973037980aab05680072eba8a313b0f6280e12b7))
+
 # [4.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.1...4.1.0-alpha.1) (2022-03-23)
 
 
