@@ -78,9 +78,9 @@ You may set the host, port and mount path by supplying the `--host`, `--port` an
 
 The `--dev` parameter disables production-ready security features. This parameter is useful when running Parse Dashboard on Docker. Using this parameter will:
 
-- allow insecure http connections from anywhere, bypassing the option `allowInsecureHTTP`
+- allow insecure http connections from anywhere, setting the option `allowInsecureHTTP` to true
 - allow the Parse Server `masterKey` to be transmitted in cleartext without encryption
-- allow dashboard access without user authentication, bypassing the option `allowAnonymousUser`
+- allow dashboard access without user authentication, setting the option `allowAnonymousUser` to true
 
 > ⚠️ Do not use this parameter when deploying Parse Dashboard in a production environment.
 

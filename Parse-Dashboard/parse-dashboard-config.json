@@ -10,5 +10,6 @@
       "secondaryBackgroundColor": ""
     }
   ],
-  "iconsFolder": "icons"
+  "iconsFolder": "icons",
+  "dev": true
 }
