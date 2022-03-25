@@ -46,7 +46,7 @@
     "express": "4.17.3",
     "graphiql": "1.5.16",
     "graphql": "16.3.0",
-    "history": "4.10.1",
+    "history": "5.3.0",
     "immutable": "4.0.0",
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.0",
