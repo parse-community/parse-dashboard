@@ -18,7 +18,8 @@ const dashboardSettings = {
     appId: 'appId',
     masterKey: 'masterKey',
     appName: 'MyApp'
-  }]
+  }],
+  dev: true
 };
 
 // TODO: Mount parse-server
