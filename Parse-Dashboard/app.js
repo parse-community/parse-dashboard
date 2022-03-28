@@ -98,8 +98,8 @@ module.exports = function(config, options) {
           return res.send({
             success: false,
             error:
-              "Parse Dashboard can only be remotely accessed via HTTPS.",
-            log: "Parse Dashboard can only be remotely accessed via HTTPS. If you are running locally, use the --dev parameter which will set allowInsecureHTTP to true.",
+              'Parse Dashboard can only be remotely accessed via HTTPS.',
+            log: 'Parse Dashboard can only be remotely accessed via HTTPS. If you are running locally, use the --dev parameter which will set allowInsecureHTTP to true.',
           });
         }
 
@@ -107,8 +107,8 @@ module.exports = function(config, options) {
           //Accessing the dashboard requires users unless allowAnonymousUser is set to `true`
           return res.send({
             success: false,
-            error: "Configure a user to access Parse Dashboard.",
-            log: "Configure a user to access Parse Dashboard. If you are running locally, use the --dev parameter which will set allowAnonymousUser to true.",
+            error: 'Configure a user to access Parse Dashboard.',
+            log: 'Configure a user to access Parse Dashboard. If you are running locally, use the --dev parameter which will set allowAnonymousUser to true.',
           });
         }
       }
