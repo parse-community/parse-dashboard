@@ -153,3 +153,26 @@ jobs:
         run: ./scripts/before_script.sh
         env:
           CI: true
+  check-e2e:
+    name: E2E Tests Check
+    timeout-minutes: 15
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup and start MongoDB and Parse Server
+        run: docker-compose up -d
+        working-directory: cypress
+      - name: Test dashboard
+        uses: cypress-io/github-action@v2
+        with:
+          start: npm run start
+          wait-on: 'http://localhost:4040'
+          wait-on-timeout: 120
+          browser: chrome
+      - name: Store video artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-videos
+          path: cypress/videos

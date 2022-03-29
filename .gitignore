@@ -17,3 +17,6 @@ test_logs
 
 # visual studio code
 .vscode
+
+cypress/videos
+cypress/screenshots

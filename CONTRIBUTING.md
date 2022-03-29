@@ -9,8 +9,15 @@ When working on the dashboard, use `npm run dashboard` and visit `localhost:4040
 
 When working on React components, use `npm run pig` and visit `localhost:4041` to view our component library and documentation (you can have both Dashboard and PIG running at once). The demos for each component are the primary way we test components, although there are also a small number of automated tests you can run with `npm test`. If you would like to create a new component that does not exist in the component library, use `npm run generate yourComponentName` to generate boilerplate code and quickly get started.
 
+## Running the e2e tests
+We actively welcome your pull requests, please make sure your change is tested and does not break existing tests.
+
+1. Make sure you have Docker and Docker Compose installed and configured.
+2. Start testing environment with `docker-compose -f cypress/docker-compose.yml up -d`.
+3. Start the dashboard with `npm run dashboard`.
+4. Start Cypress Test Runner with `npm run cypress:open` or run tests once with `npm run cypress:run`.
+
 ## Pull Requests
-We actively welcome your pull requests.
 
 1. Fork the repo and create your branch from the `alpha` branch.
 2. If you've added code that should be tested, add tests.
