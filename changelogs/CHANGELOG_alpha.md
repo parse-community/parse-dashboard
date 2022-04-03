@@ -1,3 +1,10 @@
+# [4.1.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0-alpha.2...4.1.0-alpha.3) (2022-03-30)
+
+
+### Bug Fixes
+
+* security upgrade js-beautify from 1.14.0 to 1.14.1 ([#2077](https://github.com/ParsePlatform/parse-dashboard/issues/2077)) ([74aa7d0](https://github.com/ParsePlatform/parse-dashboard/commit/74aa7d03bebf925f90b92be76925a522c44e1031))
+
 # [4.1.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0-alpha.1...4.1.0-alpha.2) (2022-03-24)
 
 
