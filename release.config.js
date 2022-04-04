@@ -26,7 +26,7 @@ async function config() {
   // Get branch
   const branch = ref.split('/').pop();
   console.log(`Running on branch: ${branch}`);
-  
+
   // Set changelog file
   const changelogFile = `./changelogs/CHANGELOG_${branch}.md`;
   console.log(`Changelog file output to: ${changelogFile}`);
@@ -96,7 +96,7 @@ async function config() {
       ['@semantic-release/github', {
         successComment: getReleaseComment(),
         labels: ['type:ci'],
-        releasedLabels: ['state:released<%= nextRelease.channel ? `-\${nextRelease.channel}` : "" %>']
+        releasedLabels: ['state:released<%= nextRelease.channel ? `-${nextRelease.channel}` : "" %>']
       }],
     ],
   };

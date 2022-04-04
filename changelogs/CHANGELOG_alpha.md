@@ -1,3 +1,25 @@
+## [4.1.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0...4.1.1-alpha.1) (2022-04-04)
+
+
+### Bug Fixes
+
+* security upgrade js-beautify from 1.14.0 to 1.14.1 ([#2077](https://github.com/ParsePlatform/parse-dashboard/issues/2077)) ([e4ea787](https://github.com/ParsePlatform/parse-dashboard/commit/e4ea7879d88173b02d66b1339ba98805255ba82c))
+* security vulnerability bump minimist from 1.2.5 to 1.2.6 ([#2070](https://github.com/ParsePlatform/parse-dashboard/issues/2070)) ([3d0407e](https://github.com/ParsePlatform/parse-dashboard/commit/3d0407ebd75051bbbe6f0a2aba87b26475e901b9))
+
+# [4.1.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0-alpha.2...4.1.0-alpha.3) (2022-03-30)
+
+
+### Bug Fixes
+
+* security upgrade js-beautify from 1.14.0 to 1.14.1 ([#2077](https://github.com/ParsePlatform/parse-dashboard/issues/2077)) ([74aa7d0](https://github.com/ParsePlatform/parse-dashboard/commit/74aa7d03bebf925f90b92be76925a522c44e1031))
+
+# [4.1.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0-alpha.1...4.1.0-alpha.2) (2022-03-24)
+
+
+### Bug Fixes
+
+* security vulnerability bump minimist from 1.2.5 to 1.2.6 ([#2070](https://github.com/ParsePlatform/parse-dashboard/issues/2070)) ([9730379](https://github.com/ParsePlatform/parse-dashboard/commit/973037980aab05680072eba8a313b0f6280e12b7))
+
 # [4.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.1...4.1.0-alpha.1) (2022-03-23)
 
 
