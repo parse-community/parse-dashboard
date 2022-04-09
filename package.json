@@ -38,7 +38,7 @@
     "@babel/runtime": "7.17.2",
     "bcryptjs": "2.3.0",
     "body-parser": "1.19.2",
-    "commander": "9.0.0",
+    "commander": "9.1.0",
     "connect-flash": "0.1.1",
     "cookie-session": "2.0.0",
     "copy-to-clipboard": "3.3.1",
