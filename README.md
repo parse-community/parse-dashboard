@@ -78,9 +78,9 @@ You may set the host, port and mount path by supplying the `--host`, `--port` an
 
 The `--dev` parameter disables production-ready security features. This parameter is useful when running Parse Dashboard on Docker. Using this parameter will:
 
-- allow insecure http connections from anywhere, bypassing the option `allowInsecureHTTP`
+- allow insecure http connections from anywhere, setting the option `allowInsecureHTTP` to true
 - allow the Parse Server `masterKey` to be transmitted in cleartext without encryption
-- allow dashboard access without user authentication
+- allow dashboard access without user authentication, setting the option `allowAnonymousUser` to true
 
 > ⚠️ Do not use this parameter when deploying Parse Dashboard in a production environment.
 
@@ -328,7 +328,7 @@ If you have classes with a lot of columns and you filter them often with the sam
           {
             "name": "email",
             "filterSortToTop": true
-          }          
+          }
         ]
       }
     }
@@ -451,7 +451,7 @@ With MFA enabled, a user must provide a one-time password that is typically boun
 
 The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
 
-If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, 
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user,
 run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
 
 ```json

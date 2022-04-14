@@ -87,21 +87,29 @@ module.exports = function(config, options) {
         newFeaturesInLatestVersion: newFeaturesInLatestVersion,
       };
 
-      //Based on advice from Doug Wilson here:
-      //https://github.com/expressjs/express/issues/2518
-      const requestIsLocal =
-        req.connection.remoteAddress === '127.0.0.1' ||
-        req.connection.remoteAddress === '::ffff:127.0.0.1' ||
-        req.connection.remoteAddress === '::1';
-      if (!options.dev && !requestIsLocal) {
-        if (!req.secure && !options.allowInsecureHTTP) {
+      for (const key in options) {
+        if (options[key] != null && config[key] == null) {
+          config[key] = options[key];
+        }
+      }
+      if (!config.dev) {
+        if (!req.secure && !config.allowInsecureHTTP) {
           //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
-          return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
+          return res.send({
+            success: false,
+            error:
+              'Parse Dashboard can only be remotely accessed via HTTPS.',
+            log: 'Parse Dashboard can only be remotely accessed via HTTPS. If you are running locally, use the --dev parameter which will set allowInsecureHTTP to true.',
+          });
         }
 
-        if (!users) {
-          //Accessing the dashboard over the internet can only be done with username and password
-          return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
+        if (!users && config.allowAnonymousUser) {
+          //Accessing the dashboard requires users unless allowAnonymousUser is set to `true`
+          return res.send({
+            success: false,
+            error: 'Configure a user to access Parse Dashboard.',
+            log: 'Configure a user to access Parse Dashboard. If you are running locally, use the --dev parameter which will set allowAnonymousUser to true.',
+          });
         }
       }
       const authentication = req.user;
@@ -145,7 +153,7 @@ module.exports = function(config, options) {
 
       //They didn't provide auth, and have configured the dashboard to not need auth
       //(ie. didn't supply usernames and passwords)
-      if (requestIsLocal || options.dev) {
+      if (config.dev) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
         return res.json(response);
       }
