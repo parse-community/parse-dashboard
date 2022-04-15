@@ -49,7 +49,7 @@
     "history": "4.10.1",
     "immutable": "4.0.0",
     "immutable-devtools": "0.1.5",
-    "inquirer": "8.2.1",
+    "inquirer": "8.2.2",
     "js-beautify": "1.14.1",
     "otpauth": "7.0.11",
     "package-json": "7.0.0",
