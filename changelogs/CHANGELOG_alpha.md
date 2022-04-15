@@ -1,3 +1,10 @@
+## [4.1.1-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1-alpha.1...4.1.1-alpha.2) (2022-04-15)
+
+
+### Bug Fixes
+
+* security upgrade async from 2.6.3 to 2.6.4 ([#2094](https://github.com/ParsePlatform/parse-dashboard/issues/2094)) ([61e0fb7](https://github.com/ParsePlatform/parse-dashboard/commit/61e0fb729731cb7cfb825cc2775c034f4e211f1a))
+
 ## [4.1.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.0...4.1.1-alpha.1) (2022-04-04)
 
 
