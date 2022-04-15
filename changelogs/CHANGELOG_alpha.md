@@ -1,3 +1,10 @@
+## [4.1.1-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1-alpha.2...4.1.1-alpha.3) (2022-04-15)
+
+
+### Bug Fixes
+
+* data export is missing rows when exporting more than 100 rows ([#2087](https://github.com/ParsePlatform/parse-dashboard/issues/2087)) ([db2d59e](https://github.com/ParsePlatform/parse-dashboard/commit/db2d59e899357e7166b28baabf8639e8078fa759))
+
 ## [4.1.1-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1-alpha.1...4.1.1-alpha.2) (2022-04-15)
 
 
