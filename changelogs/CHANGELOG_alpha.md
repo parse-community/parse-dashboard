@@ -1,3 +1,10 @@
+## [4.1.1-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1-alpha.3...4.1.1-alpha.4) (2022-04-28)
+
+
+### Bug Fixes
+
+* security upgrade cross-fetch from 3.1.4 to 3.1.5 ([#2105](https://github.com/ParsePlatform/parse-dashboard/issues/2105)) ([ac2609f](https://github.com/ParsePlatform/parse-dashboard/commit/ac2609f9e9bbf82e61e0b627565cd25969cfd5ba))
+
 ## [4.1.1-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1-alpha.2...4.1.1-alpha.3) (2022-04-15)
 
 
