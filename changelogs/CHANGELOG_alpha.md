@@ -1,3 +1,12 @@
+## [4.1.2-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1...4.1.2-alpha.1) (2022-05-01)
+
+
+### Bug Fixes
+
+* data export is missing rows when exporting more than 100 rows ([#2087](https://github.com/ParsePlatform/parse-dashboard/issues/2087)) ([a070627](https://github.com/ParsePlatform/parse-dashboard/commit/a070627223a93a05b9784754a65f023278521efe))
+* security upgrade async from 2.6.3 to 2.6.4 ([#2094](https://github.com/ParsePlatform/parse-dashboard/issues/2094)) ([6140ef7](https://github.com/ParsePlatform/parse-dashboard/commit/6140ef78b9444741e64c6e46eb3344bc9fbf61e8))
+* security upgrade cross-fetch from 3.1.4 to 3.1.5 ([#2105](https://github.com/ParsePlatform/parse-dashboard/issues/2105)) ([24ca77f](https://github.com/ParsePlatform/parse-dashboard/commit/24ca77fbce6b580ccaccb9812a8f6dcb53304e67))
+
 ## [4.1.1-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1-alpha.3...4.1.1-alpha.4) (2022-04-28)
 
 
