@@ -60,7 +60,7 @@
     "prop-types": "15.8.1",
     "qrcode": "1.5.0",
     "react": "16.14.0",
-    "react-ace": "9.5.0",
+    "react-ace": "10.0.0",
     "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",
     "react-dom": "16.14.0",
