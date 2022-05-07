@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters  from 'lib/Filters';
-import { List, Map } from 'immutable';
-import PropTypes     from 'lib/PropTypes';
-import React         from 'react';
-import stringCompare from 'lib/stringCompare';
-import ParseApp      from 'lib/ParseApp';
+import * as Filters   from 'lib/Filters';
+import { List, Map }  from 'immutable';
+import PropTypes      from 'lib/PropTypes';
+import React          from 'react';
+import stringCompare  from 'lib/stringCompare';
+import { CurrentApp } from 'context/currentApp';
 
 function changeField(schema, filters, index, newField) {
   let newFilter = new Map({
@@ -44,7 +44,8 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }, context) => {
+let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }) => {
+  const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   let available = Filters.availableFilters(schema, filters);
   return (
@@ -60,7 +61,7 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }, co
         }
 
         // Get the column preference of the current class.
-        const currentColumnPreference = context.currentApp.columnPreference[className];
+        const currentColumnPreference = currentApp.columnPreference ? currentApp.columnPreference[className] : null;
 
         // Check if the preference exists.
         if (currentColumnPreference) {
@@ -136,8 +137,4 @@ Filter.propTypes = {
   renderRow: PropTypes.func.isRequired.describe(
     'A function for rendering a row of a filter.'
   )
-};
-
-Filter.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
 };

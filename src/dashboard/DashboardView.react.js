@@ -5,13 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes     from 'lib/PropTypes';
-import ParseApp      from 'lib/ParseApp';
-import React         from 'react';
-import Sidebar       from 'components/Sidebar/Sidebar.react';
-import styles        from 'dashboard/Dashboard.scss';
+import React          from 'react';
+import Sidebar        from 'components/Sidebar/Sidebar.react';
+import styles         from 'dashboard/Dashboard.scss';
+import { CurrentApp } from 'context/currentApp';
 
 export default class DashboardView extends React.Component {
+  static contextType = CurrentApp;
 
   /* A DashboardView renders two pieces: the sidebar, and the app itself */
   render() {
@@ -19,14 +19,14 @@ export default class DashboardView extends React.Component {
     if (typeof this.renderSidebar === 'function') {
       sidebarChildren = this.renderSidebar();
     }
-    let appSlug = (this.context.currentApp ? this.context.currentApp.slug : '');
+    let appSlug = (this.context ? this.context.slug : '');
 
-    if (!this.context.currentApp.hasCheckedForMigraton) {
-      this.context.currentApp.getMigrations().promise
+    if (!this.context.hasCheckedForMigraton) {
+      this.context.getMigrations().promise
         .then(() => this.forceUpdate(), () => {});
     }
 
-    let features = this.context.currentApp.serverInfo.features;
+    let features = this.context.serverInfo.features;
 
     let coreSubsections = [];
     if (features.schemas &&
@@ -85,7 +85,7 @@ export default class DashboardView extends React.Component {
       link: '/api_console'
     });
 
-    if (this.context.currentApp.migration) {
+    if (this.context.migration) {
       coreSubsections.push({
         name: 'Migration',
         link: '/migration',
@@ -242,8 +242,8 @@ export default class DashboardView extends React.Component {
       subsection={this.subsection}
       prefix={'/apps/' + appSlug}
       action={this.action}
-      primaryBackgroundColor={this.context.currentApp.primaryBackgroundColor}
-      secondaryBackgroundColor={this.context.currentApp.secondaryBackgroundColor}
+      primaryBackgroundColor={this.context.primaryBackgroundColor}
+      secondaryBackgroundColor={this.context.secondaryBackgroundColor}
       >
       {sidebarChildren}
     </Sidebar>);
@@ -258,8 +258,3 @@ export default class DashboardView extends React.Component {
     );
   }
 }
-
-DashboardView.contextTypes = {
-  generatePath: PropTypes.func,
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

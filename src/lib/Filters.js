@@ -59,7 +59,7 @@ export const Constraints = {
     comparable: true
   },
   stringContainsString: {
-    name: 'string contains string',
+    name: 'contains',
     field: 'String',
     composable: true,
     comparable: true

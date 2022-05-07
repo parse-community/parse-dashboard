@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes          from 'lib/PropTypes';
-import ParseApp           from 'lib/ParseApp';
 import React              from 'react';
 import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
 import styles             from 'components/PushPreview/PushPreview.scss';
 import VisiblePreview     from 'components/PushPreview/VisiblePreview.react';
+import { CurrentApp }     from 'context/currentApp';
 import {
          getDateMethod,
          MONTHS,
@@ -37,6 +36,7 @@ let timeString = (time, isLocal) => {
 }
 
 export default class PushPreview extends React.Component {
+  static contextType = CurrentApp;
   constructor(props) {
     super(props);
 
@@ -134,7 +134,7 @@ export default class PushPreview extends React.Component {
         type={this.state.currentPreview.toLowerCase().replace(/\s/, '')}
         message={previewMessage}
         time={previewTime || new Date()}
-        appName={this.context.currentApp.name}
+        appName={this.context.name}
         fade={isExperiment} />
     );
     if (!isExperiment && pushState.data_type === 'json') {
@@ -177,7 +177,3 @@ export default class PushPreview extends React.Component {
     );
   }
 }
-
-PushPreview.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

@@ -96,7 +96,7 @@ export default class HostingSettings extends DashboardView {
 							sslPublicCertError: '',
 						});
 						//TODO: do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
-						this.context.currentApp.uploadSSLPublicCertificate(file).catch(({ error }) => {
+						this.context.uploadSSLPublicCertificate(file).catch(({ error }) => {
 							this.setState({ sslPublicCertError: error });
 						}).finally(() => {
 							this.setState({ sslPublicCertUploading: false });
@@ -122,7 +122,7 @@ export default class HostingSettings extends DashboardView {
 							sslPrivateKeyError: '',
 						});
 						//TODO: do something here to indicate success and/or upload when you click the FlowView save button rather than immediately
-						this.context.currentApp.uploadSSLPrivateKey(file).catch(({ error }) => {
+						this.context.uploadSSLPrivateKey(file).catch(({ error }) => {
 							this.setState({ sslPrivateKeyError: error });
 						}).finally(() => {
 							this.setState({ sslPrivateKeyUploading: false });

@@ -102,7 +102,7 @@ export default class Performance extends DashboardView {
   }
 
   componentWillMount() {
-    this.handleRunQuery(this.context.currentApp);
+    this.handleRunQuery(this.context);
   }
 
   componentWillUnmount() {
@@ -111,7 +111,7 @@ export default class Performance extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.handleRunQuery(nextContext.currentApp);
+      this.handleRunQuery(nextContext);
     }
   }
 
@@ -187,7 +187,7 @@ export default class Performance extends DashboardView {
           <Button
             primary={true}
             disabled={!this.state.mutated}
-            onClick={this.handleRunQuery.bind(this, this.context.currentApp)}
+            onClick={this.handleRunQuery.bind(this, this.context)}
             value='Run query' />
         </div>
       </div>
