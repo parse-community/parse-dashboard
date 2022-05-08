@@ -44,4 +44,9 @@
 
 .back {
   margin-top: 40px;
+
+  button {
+    @include buttonReset;
+    color: #fff;
+  }
 }

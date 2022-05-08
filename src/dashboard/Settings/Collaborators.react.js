@@ -12,11 +12,11 @@ import FormTable           from 'components/FormTable/FormTable.react';
 import FormNote            from 'components/FormNote/FormNote.react';
 import InlineSubmitInput   from 'components/InlineSubmitInput/InlineSubmitInput.react';
 import Label               from 'components/Label/Label.react';
-import ParseApp            from 'lib/ParseApp';
 import PropTypes           from 'lib/PropTypes';
 import React               from 'react';
 import TextInput           from 'components/TextInput/TextInput.react';
 import validateEmailFormat from 'lib/validateEmailFormat';
+import { CurrentApp }      from 'context/currentApp';
 
 // Component for displaying and modifying an app's collaborator emails.
 // There is a single input field for new collaborator emails. As soon as the
@@ -29,6 +29,7 @@ import validateEmailFormat from 'lib/validateEmailFormat';
 // The parent also is responsible for passing onRemove, which is called when the
 // users removes a collaborator.
 export default class Collaborators extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
 
@@ -38,7 +39,7 @@ export default class Collaborators extends React.Component {
   handleAdd(newEmail) {
     //TODO: Show some in-progress thing while the collaborator is being validated, or maybe have some sort of
     //async validator in the parent form. Currently if you mash the add button, they same collaborator gets added many times.
-    return this.context.currentApp.validateCollaborator(newEmail).then((response) => {
+    return this.context.validateCollaborator(newEmail).then((response) => {
       // lastError logic assumes we only have 1 input field
       if (response.success) {
         let newCollaborators = this.props.collaborators.concat({ userEmail: newEmail })
@@ -122,10 +123,6 @@ export default class Collaborators extends React.Component {
     )
   }
 }
-
-Collaborators.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};
 
 Collaborators.propTypes = {
   legend: PropTypes.string.isRequired.describe(

@@ -9,7 +9,7 @@ import Button from 'components/Button/Button.react';
 import keyMirror from 'lib/keyMirror';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import { shake } from 'components/SaveButton/SaveButton.scss';
+import styles from 'components/SaveButton/SaveButton.scss';
 
 let SaveButton = ({
   state = SaveButton.States.WAITING,
@@ -39,7 +39,7 @@ let SaveButton = ({
       color = 'red';
       break;
   }
-  let className = state === SaveButton.States.FAILED ? shake : null;
+  let className = state === SaveButton.States.FAILED ? styles.shake : null;
   return <span className={className}><Button
     primary={true}
     width={'128px'}

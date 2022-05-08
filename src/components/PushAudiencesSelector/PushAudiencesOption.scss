@@ -88,6 +88,7 @@
     }
 
     .moreDetails {
+      @include buttonReset;
       color: $blue;
 
       &.hideMoreDetails {

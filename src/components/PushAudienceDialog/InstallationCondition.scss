@@ -17,7 +17,7 @@
 .description {
   margin-top: 2px;
   color: $pink;
-  cursor: pointer;
+  @include buttonReset;
 }
 
 .valueInput {

@@ -17,7 +17,7 @@ import React                   from 'react';
 import styles                  from 'dashboard/Analytics/Retention/Retention.scss';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import Tooltip                 from 'components/Tooltip/Tooltip.react';
-import { verticalCenter }      from 'stylesheets/base.scss';
+import baseStyles              from 'stylesheets/base.scss';
 
 const RETENTION_DAYS = [1, 2, 3, 4, 5, 6, 7, 8, 14, 21, 28];
 const REVERSED_RETENTION_DAYS = RETENTION_DAYS.slice().reverse();
@@ -53,7 +53,7 @@ export default class Retention extends DashboardView {
   }
 
   componentWillMount() {
-    this.fetchRetention(this.context.currentApp);
+    this.fetchRetention(this.context);
   }
 
   componentWillUnmount() {
@@ -62,7 +62,7 @@ export default class Retention extends DashboardView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.fetchRetention(nextContext.currentApp);
+      this.fetchRetention(nextContext);
     }
   }
 
@@ -224,7 +224,7 @@ export default class Retention extends DashboardView {
 
       footer = (
         <div className={styles.footer}>
-          <div className={[styles.right, verticalCenter].join(' ')}>
+          <div className={[styles.right, baseStyles.verticalCenter].join(' ')}>
             <span style={{ marginRight: '10px' }}>
               <ChromeDatePicker
                 value={this.state.date}
@@ -233,7 +233,7 @@ export default class Retention extends DashboardView {
             <Button
               primary={true}
               disabled={!this.state.mutated}
-              onClick={this.fetchRetention.bind(this, this.context.currentApp)}
+              onClick={this.fetchRetention.bind(this, this.context)}
               value='Refresh chart' />
           </div>
         </div>

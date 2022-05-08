@@ -3,8 +3,6 @@ import { List } from 'immutable';
 import Parse from 'parse';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import queryFromFilters from 'lib/queryFromFilters';
-import PropTypes from 'lib/PropTypes';
-import ParseApp from 'lib/ParseApp';
 import Modal from 'components/Modal/Modal.react';
 import Button from 'components/Button/Button.react';
 import TextInput from 'components/TextInput/TextInput.react';
@@ -15,14 +13,16 @@ import stylesToolbar from 'components/Toolbar/Toolbar.scss';
 import stylesColumnsConfiguration from 'components/ColumnsConfiguration/ColumnsConfiguration.scss';
 import stylesDataBrowserHeaderBar from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
 import stylesFooter from 'components/Modal/Modal.scss';
+import { CurrentApp } from 'context/currentApp';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
 const SELECTION_INPUT_ID = 'selectionInput';
 
 export default class ObjectPickerDialog extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  static contextType = CurrentApp;
+  constructor(props) {
+    super(props);
 
     this.state = {
       data: null,
@@ -207,7 +207,7 @@ export default class ObjectPickerDialog extends React.Component {
     Object.keys(selection).forEach(id => this.selectRow(id, true));
     ColumnPreferences.getColumnSort(
       ordering,
-      this.context.currentApp.applicationId,
+      this.context.applicationId,
       className
     );
   }
@@ -384,6 +384,7 @@ export default class ObjectPickerDialog extends React.Component {
             </div>
           </div>
             <DataBrowser
+              app={this.context}
               count={count}
               schema={schema}
               filters={filters}
@@ -406,7 +407,3 @@ export default class ObjectPickerDialog extends React.Component {
     );
   }
 }
-
-ObjectPickerDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

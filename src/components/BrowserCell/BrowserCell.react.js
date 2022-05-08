@@ -13,7 +13,7 @@ import Parse                     from 'parse';
 import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
-import { unselectable }          from 'stylesheets/base.scss';
+import baseStyles                from 'stylesheets/base.scss';
 import Tooltip                   from '../Tooltip/PopperTooltip.react';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
 
@@ -34,7 +34,7 @@ export default class BrowserCell extends Component {
     let content = this.props.value;
     let isNewRow = this.props.row < 0;
     this.copyableValue = content;
-    let classes = [styles.cell, unselectable];
+    let classes = [styles.cell, baseStyles.unselectable];
     if (this.props.hidden) {
       content = this.props.value !== undefined || !isNewRow ? '(hidden)' : this.props.isRequired ? '(required)' : '(undefined)';
       classes.push(styles.empty);
@@ -168,7 +168,7 @@ export default class BrowserCell extends Component {
     }
     this.onContextMenu = this.onContextMenu.bind(this);
 
-    if (this.props.markRequiredField && this.props.isRequired && !this.props.value) {
+    if (this.props.markRequiredField && this.props.isRequired && this.props.value == null) {
       classes.push(styles.required);
     }
 
@@ -396,7 +396,7 @@ export default class BrowserCell extends Component {
     if ( current ) {
       classes.push(styles.current);
     }
-    if (markRequiredFieldRow === row && isRequired && !value) {
+    if (markRequiredFieldRow === row && isRequired && value == null) {
       classes.push(styles.required);
     }
 

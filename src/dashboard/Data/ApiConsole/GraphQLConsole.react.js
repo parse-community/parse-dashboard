@@ -5,17 +5,17 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ParseApp      from 'lib/ParseApp';
-import PropTypes     from 'lib/PropTypes';
 import React, { Component } from 'react';
 import GraphiQL from 'graphiql';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
+import { CurrentApp } from 'context/currentApp';
 
 export default class GraphQLConsole extends Component {
+  static contextType = CurrentApp;
   render() {
-    const { applicationId, clientKey, graphQLServerURL, masterKey } = this.context.currentApp;
+    const { applicationId, clientKey, graphQLServerURL, masterKey } = this.context;
     let content;
     if (!graphQLServerURL) {
       content = (
@@ -69,7 +69,3 @@ export default class GraphQLConsole extends Component {
     );
   }
 }
-
-GraphQLConsole.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

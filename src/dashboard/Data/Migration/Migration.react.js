@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import base                                         from 'stylesheets/base.scss';
+import baseStyles                                   from 'stylesheets/base.scss';
 import Button                                       from 'components/Button/Button.react';
 import DashboardView                                from 'dashboard/DashboardView.react';
 import FormNote                                     from 'components/FormNote/FormNote.react';
@@ -19,7 +19,6 @@ import React                                        from 'react';
 import styles                                       from 'dashboard/Data/Migration/Migration.scss';
 import Toolbar                                      from 'components/Toolbar/Toolbar.react';
 import { AsyncStatus }                              from 'lib/Constants';
-import { horizontalCenter, verticalCenter, center } from 'stylesheets/base.scss';
 
 const MIGRATION_INVALID = 0;
 const MIGRATION_NOTSTARTED = 1;
@@ -64,18 +63,18 @@ let ClassProgressBar = ({ job, last }) => {
     case MIGRATION_INITIALSYNC:
       progressDiv = <div
         style={{width: percentComplete.toString() + '%'}}
-        className={[styles.detailCompletion, base.progressBackground].join(' ')} />
+        className={[styles.detailCompletion, baseStyles.progressBackground].join(' ')} />
       break;
     case MIGRATION_DONE:
       progressDiv = <div
         style={{width: '100%'}}
-        className={[styles.detailCompletion, base.succeededBackground].join(' ')}/>
+        className={[styles.detailCompletion, baseStyles.succeededBackground].join(' ')}/>
         icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
       break;
     case MIGRATION_FATALED:
       progressDiv = <div
         style={{width: '100%'}}
-        className={[styles.detailCompletion, base.failedBackground].join(' ')}/>
+        className={[styles.detailCompletion, baseStyles.failedBackground].join(' ')}/>
         icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
   }
   return <div>
@@ -88,7 +87,7 @@ let ClassProgressBar = ({ job, last }) => {
       {job.Name}
     </div>
     <div className={styles.detailProgressWrapper}>
-      <div className={[styles.detailPercent, verticalCenter].join(' ')}>
+      <div className={[styles.detailPercent, baseStyles.verticalCenter].join(' ')}>
         <div className={styles.detailBackground}>
           {progressDiv}
         </div>
@@ -126,7 +125,7 @@ export default class Migration extends DashboardView {
     return <div>
       <LiveReload
         ref={'reloaderView'}
-        source={() => this.context.currentApp.getMigrations()}
+        source={() => this.context.getMigrations()}
         render={migration => {
           if (migration === undefined) {
             return <LoaderContainer loading={true} ><div style={{minHeight: '100vh'}} className={styles.content}/></LoaderContainer>;
@@ -151,7 +150,7 @@ export default class Migration extends DashboardView {
               onClick={()=>{
                 this.setState({stoppingState: AsyncStatus.PROGRESS});
                 //No need to handle failure of this request becase it's really rare and it doesn't really matter if the user doesn't realize it failed.
-                this.context.currentApp.stopMigration().finally(() => {
+                this.context.stopMigration().finally(() => {
                   this.setState({stoppingState: AsyncStatus.WAITING});
                 });
               }}/>
@@ -160,20 +159,20 @@ export default class Migration extends DashboardView {
           let showFinalizeButton = false;
           let finalizeButton = <div className={styles.button}>
             <Button
-              disabled={this.context.currentApp.migration.migrationState !== MIGRATION_COMMITREADY}
+              disabled={this.context.migration.migrationState !== MIGRATION_COMMITREADY}
               value='Finalize'
               primary={true}
               width='160px'
               onClick={() => this.setState({commitDialogOpen: true})} />
           </div>
 
-          let collectionJobs = this.context.currentApp.migration.collectionJobs;
+          let collectionJobs = this.context.migration.collectionJobs;
           let copyState = AsyncStatus.WAITING;
           let syncState = AsyncStatus.WAITING;
           let verifyState = AsyncStatus.WAITING;
 
           let longStateDescription = '';
-          switch (this.context.currentApp.migration.migrationState) {
+          switch (this.context.migration.migrationState) {
             case MIGRATION_NOTSTARTED:
               showStopMigrationButton = true;
               showFinalizeButton = true;
@@ -183,7 +182,7 @@ export default class Migration extends DashboardView {
               longStateDescription =
               <div>
                 <div style={{paddingBottom: '10px'}}>
-                  We are copying a snapshot of your Parse hosted database into your MongoDB instance at <span className={styles.descriptionMongoName}>{this.context.currentApp.migration.destination}</span>.
+                  We are copying a snapshot of your Parse hosted database into your MongoDB instance at <span className={styles.descriptionMongoName}>{this.context.migration.destination}</span>.
                 </div>
                 <div>
                   This could take a while, depending on the amount of data. During this phase, your app continues to read and write to the Parse hosted database.
@@ -196,11 +195,11 @@ export default class Migration extends DashboardView {
               if (collectionJobs) {
                 moreDetails = <div>
                   <div className={styles.mongosBar}>
-                    <div className={styles.detailMongoName}>{this.context.currentApp.migration.source}</div>
+                    <div className={styles.detailMongoName}>{this.context.migration.source}</div>
                     {/* padding */}
                     <div className={styles.detailMongoName}>&nbsp;</div>
                     <div className={styles.detailMongoName}>&nbsp;</div>
-                    <div style={{float: 'right'}} className={styles.detailMongoName}>{this.context.currentApp.migration.destination}</div>
+                    <div style={{float: 'right'}} className={styles.detailMongoName}>{this.context.migration.destination}</div>
                   </div>
                   {Object.keys(collectionJobs).map((mongoKey, index, array) => <ClassProgressBar
                     key={mongoKey}
@@ -213,7 +212,7 @@ export default class Migration extends DashboardView {
               longStateDescription =
               <div>
                 <div style={{paddingBottom: '10px'}}>
-                  The snapshot copy has been completed, and we are now syncing any new data since the snapshot into your MongoDB instance at <span className={styles.descriptionMongoName}>{this.context.currentApp.migration.destination}</span>.
+                  The snapshot copy has been completed, and we are now syncing any new data since the snapshot into your MongoDB instance at <span className={styles.descriptionMongoName}>{this.context.migration.destination}</span>.
                 </div>
                 <div>
                   This could take a while, depending on the amount of new data. During this phase, your app continues to read and write to the Parse hosted database.
@@ -229,7 +228,7 @@ export default class Migration extends DashboardView {
               longStateDescription =
               <div>
                 <div style={{paddingBottom: '10px'}}>
-                  Your MongoDB instance at <span className={styles.descriptionMongoName}>{this.context.currentApp.migration.destination}</span> is now in sync. Browse through the data to make sure your data looks correct.
+                  Your MongoDB instance at <span className={styles.descriptionMongoName}>{this.context.migration.destination}</span> is now in sync. Browse through the data to make sure your data looks correct.
                 </div>
                 <div>
                   During this phase, your app continues to read and write to the Parse hosted database. When you are satisfied, you can finalize your migration and all reads and writes will now go to your MongoDB instance.
@@ -256,16 +255,16 @@ export default class Migration extends DashboardView {
               break;
           }
           let errorMessage = null;
-          switch (this.context.currentApp.migration.wellKnownError) {
+          switch (this.context.migration.wellKnownError) {
             case 1:
               errorMessage = 'This is an error state.';
               break;
             default:
-              errorMessage = this.context.currentApp.migration.migrationState === MIGRATION_INITIALSYNC ? null : ' ';
+              errorMessage = this.context.migration.migrationState === MIGRATION_INITIALSYNC ? null : ' ';
               break;
           }
 
-          return <div className={[this.state.showDetails ? horizontalCenter : center, styles.content].join(' ')}>
+          return <div className={[this.state.showDetails ? baseStyles.horizontalCenter : baseStyles.center, styles.content].join(' ')}>
             <div className={styles.title}>CURRENT PROGRESS</div>
             <div className={styles.stepsWrapper}>
               <MigrationStep
@@ -273,7 +272,7 @@ export default class Migration extends DashboardView {
                 description='Migrating existing data.'
                 descriptionWidth='100px'
                 status={copyState}
-                percentComplete={this.context.currentApp.migration.percentMigrated} />
+                percentComplete={this.context.migration.percentMigrated} />
               <MigrationStep
                 title='Sync'
                 description='Migrating any new data post snapshot.'
@@ -289,10 +288,10 @@ export default class Migration extends DashboardView {
             </div>
             <StatusBar
               errorMessage={errorMessage}
-              rowsMigrated={this.context.currentApp.migration.rowsMigrated}
-              classesMigrated={this.context.currentApp.migration.classesMigrated}
-              migrationSpeed={this.context.currentApp.migration.migrationSpeed}
-              secondsRemainingStr={this.context.currentApp.migration.secondsRemainingStr}
+              rowsMigrated={this.context.migration.rowsMigrated}
+              classesMigrated={this.context.migration.classesMigrated}
+              migrationSpeed={this.context.migration.migrationSpeed}
+              secondsRemainingStr={this.context.migration.secondsRemainingStr}
               detailsVisible={!this.state.showDetails} />
             {this.state.showDetails ? moreDetails : null}
             {longStateDescription ? <div className={styles.longStateDescription}>{longStateDescription}</div> : null}
@@ -311,7 +310,7 @@ export default class Migration extends DashboardView {
         onConfirm={() => {
           this.refs.reloaderView.abortXHR();
           this.setState({commitingState: AsyncStatus.PROGRESS});
-          this.context.currentApp.commitMigration().then(() => {
+          this.context.commitMigration().then(() => {
             return this.refs.reloaderView.fetchNewData();
           }).then(() => {
             this.setState({

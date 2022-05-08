@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import PropTypes         from 'lib/PropTypes'; 
 import Parse             from 'parse'
-import ParseApp          from 'lib/ParseApp';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
 import React             from 'react';
 import styles            from 'dashboard/Data/Browser/Browser.scss';
+import { CurrentApp }    from 'context/currentApp';
 
 const pointerPrefix = 'userField:';
 
@@ -86,6 +85,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
 }
 
 export default class SecurityDialog extends React.Component {
+  static contextType = CurrentApp;
   constructor() {
     super();
 
@@ -110,7 +110,7 @@ export default class SecurityDialog extends React.Component {
 
   render() {
     let dialog = null;
-    let parseServerSupportsPointerPermissions = this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions;
+    let parseServerSupportsPointerPermissions = this.context.serverInfo.features.schemas.editClassLevelPermissions;
     if (this.props.perms && this.state.open) {
       dialog = (
         <PermissionsDialog
@@ -138,7 +138,3 @@ export default class SecurityDialog extends React.Component {
     return dialog;
   }
 }
-
-SecurityDialog.contextTypes = {
-  currentApp: PropTypes.instanceOf(ParseApp)
-};

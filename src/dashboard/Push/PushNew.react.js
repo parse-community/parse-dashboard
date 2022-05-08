@@ -36,6 +36,7 @@ import Toggle                  from 'components/Toggle/Toggle.react';
 import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { extractExpiration, extractPushTime } from 'lib/extractTime';
+import generatePath from 'lib/generatePath';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
@@ -75,7 +76,7 @@ let LocalizedMessageField = ({
     <div className={styles.localeContainer}>
       <div className={styles.localeTitle}>
         <span>Localized message</span>
-        <a href='javascript:;' role='button' className={styles.localeRemoveButton} onClick={onClickRemove.bind(undefined, id, currentLocaleOption)}>REMOVE</a>
+        <button type='button' className={styles.localeRemoveButton} onClick={onClickRemove.bind(undefined, id, currentLocaleOption)}>REMOVE</button>
       </div>
       <Field
         key={`message1_${id}`}
@@ -158,9 +159,9 @@ class PushNew extends DashboardView {
       this.setState({ pushAudiencesFetched :true });
     });
 
-    const available = this.context.currentApp.isLocalizationAvailable();
+    const available = this.context.isLocalizationAvailable();
     if (available) {
-      const locales = this.context.currentApp.fetchPushLocales();
+      const locales = this.context.fetchPushLocales();
       const filteredLocales = locales.filter((locale) => !(locale === '' || locale === undefined));
       this.setState({
         isLocalizationAvailable: true,
@@ -229,7 +230,7 @@ class PushNew extends DashboardView {
         //TODO: global success message banner for passing successful creation - store should also be cleared
         const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
         if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
-          history.push(this.context.generatePath('push/activity'));
+          history.push(generatePath(this.context, 'push/activity'));
         } else {
           return;
         }
@@ -580,7 +581,7 @@ class PushNew extends DashboardView {
                     availableLocales.unshift(prevLocale);
                     setField(`translation[${prevLocale}]`, null);
 
-                    let {xhr, promise} = this.context.currentApp.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
+                    let {xhr, promise} = this.context.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
                     promise.then((localeDeviceCountMap) => {
                       this.setState({ localeDeviceCountMap })
                     });
@@ -616,7 +617,7 @@ class PushNew extends DashboardView {
                     }]),
                     availableLocales: this.state.availableLocales.slice(1)
                   }, () => {
-                    let {xhr, promise} = this.context.currentApp.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
+                    let {xhr, promise} = this.context.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
                     promise.then((localeDeviceCountMap) => {
                       this.setState({ localeDeviceCountMap })
                     });
@@ -660,7 +661,7 @@ class PushNew extends DashboardView {
         label={<Label text='Use A/B Testing' />}
         input={<Toggle value={fields.exp_enable} onChange={(value) => {
           if (!this.state.audienceSizeSuggestion) {
-            this.context.currentApp.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
+            this.context.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
               this.setState({
                 audienceSizeSuggestion: audience_size
               });
@@ -679,7 +680,7 @@ class PushNew extends DashboardView {
       {this.renderExperimentContent(fields, setField)}
     </Fieldset> : null;
 
-    const {push} = this.context.currentApp.serverInfo.features;
+    const {push} = this.context.serverInfo.features;
     const hasScheduledPushSupport = push && push.scheduledPush;
 
     const timeFieldsLegend = hasScheduledPushSupport ?
