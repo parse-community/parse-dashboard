@@ -461,7 +461,7 @@ class Browser extends DashboardView {
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
-              obj.set(attr, prev);
+              obj.revert();
               this.setState({ data: this.state.data });
               this.showNote(msg, true);
             }
@@ -1261,6 +1261,7 @@ class Browser extends DashboardView {
         objectIds.push(objectId);
       }
       query.containedIn('objectId', objectIds);
+      query.limit(objectIds.length);
     }
 
     const classColumns = this.getClassColumns(className, false);
