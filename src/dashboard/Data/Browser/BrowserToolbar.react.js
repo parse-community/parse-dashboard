@@ -326,7 +326,7 @@ let BrowserToolbar = ({
       {editCloneRows && editCloneRows.length > 0 && (
         <BrowserMenu title="Clone" icon="clone-icon">
           <MenuItem
-            text={"Cancel all pending rows"}
+            text={'Cancel all pending rows'}
             onClick={onCancelPendingEditRows}
           />
         </BrowserMenu>
