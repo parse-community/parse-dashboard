@@ -1,3 +1,10 @@
+# [4.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.14...4.0.0-alpha.15) (2022-01-26)
+
+
+### Bug Fixes
+
+* preserve column sorting preferences in data browser ([#2016](https://github.com/ParsePlatform/parse-dashboard/issues/2016)) ([c2e6557](https://github.com/ParsePlatform/parse-dashboard/commit/c2e65573ccfa29b6d6e727e93b9552380c520f86))
+
 # [4.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/4.0.0-alpha.13...4.0.0-alpha.14) (2022-01-23)
 
 
