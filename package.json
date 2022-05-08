@@ -79,8 +79,8 @@
   "devDependencies": {
     "@actions/core": "1.2.6",
     "@babel/core": "7.17.10",
-    "@babel/eslint-parser": "^7.17.0",
-    "@babel/plugin-proposal-decorators": "^7.17.9",
+    "@babel/eslint-parser": "7.17.0",
+    "@babel/plugin-proposal-decorators": "7.17.9",
     "@babel/plugin-transform-runtime": "7.17.10",
     "@babel/preset-env": "7.17.10",
     "@babel/preset-react": "7.16.7",
