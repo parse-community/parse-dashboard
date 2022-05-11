@@ -52,7 +52,7 @@
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.2",
     "js-beautify": "1.14.2",
-    "otpauth": "7.1.1",
+    "otpauth": "7.1.2",
     "package-json": "7.0.0",
     "parse": "3.4.1",
     "passport": "0.5.2",
