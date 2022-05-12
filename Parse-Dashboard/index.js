@@ -33,8 +33,9 @@ program.option('--createUser', 'helper tool to allow you to generate secure user
 program.option('--createMFA', 'helper tool to allow you to generate multi-factor authentication secrets.');
 
 program.parse(process.argv);
+const options = program.opts();
 
-for (const key in program) {
+for (const key in options) {
   const func = CLIHelper[key];
   if (func && typeof func === 'function') {
     func();
@@ -42,31 +43,31 @@ for (const key in program) {
   }
 }
 
-const host = program.host || process.env.HOST || '0.0.0.0';
-const port = program.port || process.env.PORT || 4040;
-const mountPath = program.mountPath || process.env.MOUNT_PATH || '/';
-const allowInsecureHTTP = program.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
-const cookieSessionSecret = program.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
-const trustProxy = program.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
-const dev = program.dev;
+const host = options.host || process.env.HOST || '0.0.0.0';
+const port = options.port || process.env.PORT || 4040;
+const mountPath = options.mountPath || process.env.MOUNT_PATH || '/';
+const allowInsecureHTTP = options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
+const cookieSessionSecret = options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
+const trustProxy = options.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
+const dev = options.dev;
 
 if (trustProxy && allowInsecureHTTP) {
   console.log('Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.');
   process.exit(-1);
 }
 
-let explicitConfigFileProvided = !!program.config;
+let explicitConfigFileProvided = !!options.config;
 let configFile = null;
 let configFromCLI = null;
-let configServerURL = program.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
-let configGraphQLServerURL = program.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
-let configMasterKey = program.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
-let configAppId = program.appId || process.env.PARSE_DASHBOARD_APP_ID;
-let configAppName = program.appName || process.env.PARSE_DASHBOARD_APP_NAME;
-let configUserId = program.userId || process.env.PARSE_DASHBOARD_USER_ID;
-let configUserPassword = program.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
-let configSSLKey = program.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
-let configSSLCert = program.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+let configServerURL = options.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
+let configGraphQLServerURL = options.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
+let configMasterKey = options.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
+let configAppId = options.appId || process.env.PARSE_DASHBOARD_APP_ID;
+let configAppName = options.appName || process.env.PARSE_DASHBOARD_APP_NAME;
+let configUserId = options.userId || process.env.PARSE_DASHBOARD_USER_ID;
+let configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
+let configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
+let configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 
 function handleSIGs(server) {
   const signals = {
@@ -86,7 +87,7 @@ function handleSIGs(server) {
   });
 }
 
-if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
+if (!options.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   if (configServerURL && configMasterKey && configAppId) {
     configFromCLI = {
       data: {
@@ -114,13 +115,13 @@ if (!program.config && !process.env.PARSE_DASHBOARD_CONFIG) {
   } else if (!configServerURL && !configMasterKey && !configAppName) {
     configFile = path.join(__dirname, 'parse-dashboard-config.json');
   }
-} else if (!program.config && process.env.PARSE_DASHBOARD_CONFIG) {
+} else if (!options.config && process.env.PARSE_DASHBOARD_CONFIG) {
   configFromCLI = {
     data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG)
   };
 } else {
-  configFile = program.config;
-  if (program.appId || program.serverURL || program.masterKey || program.appName || program.graphQLServerURL) {
+  configFile = options.config;
+  if (options.appId || options.serverURL || options.masterKey || options.appName || options.graphQLServerURL) {
     console.log('You must provide either a config file or other CLI options (appName, appId, masterKey, serverURL, and graphQLServerURL); not both.');
     process.exit(3);
   }

@@ -29,26 +29,26 @@ jobs:
         run: npm ci
       - name: CI Node Engine Check
         run: npm run ci:checkNodeEngine
-  # check-lint:
-  #   name: Lint
-  #   timeout-minutes: 15
-  #   runs-on: ubuntu-18.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Use Node.js ${{ env.NODE_VERSION }}
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: ${{ env.node-version }}
-  #     - name: Cache Node.js modules
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ~/.npm
-  #         key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
-  #     - name: Install dependencies
-  #       run: npm ci
-  #     - run: npm run lint
+  check-lint:
+    name: Lint
+    timeout-minutes: 15
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+      - name: Install dependencies
+        run: npm ci
+      - run: npm run lint
   check-circular:
      name: Circular Dependencies
      timeout-minutes: 5
@@ -112,9 +112,9 @@ jobs:
       matrix:
         include:
           - name: Node 12
-            NODE_VERSION: 12.22.8
+            NODE_VERSION: 12.22.12
           - name: Node 14
-            NODE_VERSION: 14.18.2
+            NODE_VERSION: 14.19.2
           - name: Node 16
             NODE_VERSION: 16.10.0
       fail-fast: false
@@ -147,6 +147,8 @@ jobs:
       - name: Install dependencies (Node >= 10)
         run: npm ci
         if: ${{ steps.node.outputs.node_major >= 10 }}
+      - name: Tests
+        run: npm test
       - name: Test bundles
         run: ./scripts/before_script.sh
         env:
