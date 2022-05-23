@@ -27,7 +27,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
       <Modal
         type={Modal.Types.INFO}
         icon='warn-outline'
-        title={this.props.selection['*'] ? 'Export all rows?' : (selectionLength === 1 ? `Export 1 selected row?` : `Export ${selectionLength} selected rows?`)}
+        title={this.props.selection['*'] ? 'Export all rows?' : (selectionLength === 1 ? 'Export 1 selected row?' : `Export ${selectionLength} selected rows?`)}
         subtitle={this.props.selection['*'] ? 'Note: Exporting is limited to the first 10,000 rows.' : ''}
         disabled={!this.valid()}
         confirmText={'Yes export'}

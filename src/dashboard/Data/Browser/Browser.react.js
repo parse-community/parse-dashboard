@@ -167,7 +167,7 @@ class Browser extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (this.props.params.className !== nextProps.params.className) {
+    if (this.props.params.appId !== nextProps.params.appId || this.props.params.className !== nextProps.params.className || this.props.location.search !== nextProps.location.search) {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
@@ -177,7 +177,7 @@ class Browser extends DashboardView {
       .then(() => this.handleFetchedSchema());
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
-      this.redirectToFirstClass(nextProps.schema.data.get('classes'));
+      this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
 
@@ -203,12 +203,13 @@ class Browser extends DashboardView {
       ),
       selection: {},
       relation: isRelationRoute ? relation : null,
+    }, () => {
+      if (isRelationRoute) {
+        this.fetchRelation(relation, filters);
+      } else if (className) {
+        this.fetchData(className, filters);
+      }
     });
-    if (isRelationRoute) {
-      this.fetchRelation(relation, filters);
-    } else if (className) {
-      this.fetchData(className, filters);
-    }
   }
 
   extractFiltersFromQuery(props) {
@@ -225,7 +226,7 @@ class Browser extends DashboardView {
     return filters;
   }
 
-  redirectToFirstClass(classList) {
+  redirectToFirstClass(classList, context) {
     if (!classList.isEmpty()) {
       let classes = Object.keys(classList.toObject());
       classes.sort((a, b) => {
@@ -237,7 +238,7 @@ class Browser extends DashboardView {
         }
         return a.toUpperCase() < b.toUpperCase() ? -1 : 1;
       });
-      history.replace(generatePath(this.context, 'browser/' + classes[0]));
+      history.replace(generatePath(context || this.context, 'browser/' + classes[0]));
     }
   }
 
@@ -401,7 +402,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (!!required) {
+          if (required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -417,8 +418,8 @@ class Browser extends DashboardView {
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
-        if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+        if (obj.get(name) == null) {
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: -1
           });
@@ -460,7 +461,7 @@ class Browser extends DashboardView {
               if (msg) {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
-              obj.set(attr, prev);
+              obj.revert();
               this.setState({ data: this.state.data });
               this.showNote(msg, true);
             }
@@ -505,7 +506,7 @@ class Browser extends DashboardView {
           if (name === 'objectId' || this.state.isUnique && name !== this.state.uniqueField) {
             return;
           }
-          if (!!required) {
+          if (required) {
             requiredCols.push(name);
           }
           if (className === '_User' && (name === 'username' || name === 'password')) {
@@ -521,8 +522,8 @@ class Browser extends DashboardView {
     if (requiredCols.length) {
       for (let idx = 0; idx < requiredCols.length; idx++) {
         const name = requiredCols[idx];
-        if (!obj.get(name)) {
-          this.showNote("Please enter all required fields", true);
+        if (obj.get(name) == null) {
+          this.showNote('Please enter all required fields', true);
           this.setState({
             markRequiredFieldRow: rowIndex
           });
@@ -1260,6 +1261,7 @@ class Browser extends DashboardView {
         objectIds.push(objectId);
       }
       query.containedIn('objectId', objectIds);
+      query.limit(objectIds.length);
     }
 
     const classColumns = this.getClassColumns(className, false);
