@@ -21,7 +21,7 @@ function changeField(schema, filters, index, newField) {
   return filters.set(index, newFilter);
 }
 
-function changeConstraint(schema, filters, index, newConstraint) {
+function changeConstraint(schema, filters, index, newConstraint, prevCompareTo) {
   let field = filters.get(index).get('field');
   let compareType = schema[field].type;
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
@@ -30,7 +30,7 @@ function changeConstraint(schema, filters, index, newConstraint) {
   let newFilter = new Map({
     field: field,
     constraint: newConstraint,
-    compareTo: Filters.DefaultComparisons[compareType]
+    compareTo: prevCompareTo ?? Filters.DefaultComparisons[compareType]
   })
   return filters.set(index, newFilter);
 }
@@ -110,8 +110,8 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }) =>
           onChangeField: newField => {
             onChange(changeField(schema, filters, i, newField));
           },
-          onChangeConstraint: newConstraint => {
-            onChange(changeConstraint(schema, filters, i, newConstraint));
+          onChangeConstraint: (newConstraint, prevCompareTo) => {
+            onChange(changeConstraint(schema, filters, i, newConstraint, prevCompareTo));
           },
           onChangeCompareTo: newCompare => {
             onChange(changeCompareTo(schema, filters, i, compareType, newCompare));
