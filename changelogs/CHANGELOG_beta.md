@@ -1,3 +1,10 @@
+## [4.1.3-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.2...4.1.3-beta.1) (2022-06-18)
+
+
+### Bug Fixes
+
+* security upgrade semver-regex from 3.1.3 to 3.1.4 ([#2154](https://github.com/ParsePlatform/parse-dashboard/issues/2154)) ([4f9090a](https://github.com/ParsePlatform/parse-dashboard/commit/4f9090ad22460913f7987964ee54f26d348ca254))
+
 ## [4.1.2-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.1...4.1.2-beta.1) (2022-06-01)
 
 
