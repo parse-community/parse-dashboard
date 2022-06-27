@@ -8,7 +8,6 @@
 import AppsManager    from 'lib/AppsManager';
 import AppsMenu       from 'components/Sidebar/AppsMenu.react';
 import AppName        from 'components/Sidebar/AppName.react';
-import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import isInsidePopover from 'lib/isInsidePopover';
 import Pin            from 'components/Sidebar/Pin.react';
 import React, { useEffect, useState, useContext } from 'react';
@@ -178,16 +177,7 @@ const Sidebar = ({
     >
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
       {sidebarContent}
-      <div className={styles.footer}>
-        {!collapsed && (
-          <>
-            <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
-            <a target='_blank' href='https://github.com/parse-community'>GitHub</a>
-            <a target='_blank' href='http://docs.parseplatform.org/'>Docs</a>
-          </>
-        )}
-        <FooterMenu isCollapsed={!appsMenuOpen && collapsed} />
-      </div>
+
     </div>
   );
 }
