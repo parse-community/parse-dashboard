@@ -17,6 +17,8 @@ import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import { CurrentApp } from 'context/currentApp';
 
+let mountPath = window.PARSE_DASHBOARD_PATH;
+
 const Sidebar = ({
   prefix,
   action,
@@ -177,7 +179,13 @@ const Sidebar = ({
     >
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
       {sidebarContent}
-
+      <div className={styles.footer}>
+        {!collapsed && (
+          <>
+            <a href={`${mountPath}logout`}>Log Out <span className={styles.emoji}>👋</span></a>
+          </>
+        )}
+      </div>
     </div>
   );
 }
