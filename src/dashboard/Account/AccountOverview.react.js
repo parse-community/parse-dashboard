@@ -332,7 +332,7 @@ export default class AccountOverview extends React.Component {
       subtitle='If you delete this account key, anything that was using it will stop working.'
       type={Modal.Types.DANGER}
       open={this.state.showDeleteAccountKeyModal}
-      submitText='Yes, delete it'
+      submitText={'Yes, delete it'}
       inProgressText={'Deleting\u2026'}
       onSubmit={() => {
         return AccountManager.deleteAccountKeyById(this.state.accountKeyIdToDelete);

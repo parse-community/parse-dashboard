@@ -68,7 +68,7 @@ export default class CreateClassDialog extends React.Component {
         subtitle='Create a new collection of objects.'
         disabled={!this.valid()}
         confirmText='Create class'
-        cancelText={'Cancel'}
+        cancelText='Cancel'
         continueText={'Create class & add columns'}
         onCancel={this.props.onCancel}
         showContinue={true}

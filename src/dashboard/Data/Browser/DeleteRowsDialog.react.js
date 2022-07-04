@@ -58,7 +58,7 @@ export default class DeleteRowsDialog extends React.Component {
         subtitle={this.props.relation ? 'You need to delete origin record. This is a reference.' : 'This action cannot be undone!'}
         disabled={!this.valid()}
         confirmText={`Yes, ${this.props.relation ? 'detach' : 'delete'}`}
-        cancelText={'Never mind, don\u2019t.'}
+        cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
         {content}

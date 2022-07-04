@@ -201,7 +201,7 @@ export default class AddColumnDialog extends React.Component {
         subtitle='Store another type of data in this class.'
         disabled={!this.valid()}
         confirmText='Add column'
-        cancelText={'Never mind, don\u2019t.'}
+        cancelText={'Cancel'}
         onCancel={this.props.onCancel}
         continueText={'Add column & continue'}
         showContinue={true}

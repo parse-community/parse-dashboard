@@ -231,7 +231,7 @@ class Jobs extends TableView {
           title='Delete job schedule?'
           subtitle='Careful, this action cannot be undone'
           confirmText='Yes, delete it'
-          cancelText={'Never mind, don\'t'}
+          cancelText='Cancel'
           onCancel={() => this.setState({ toDelete: null })}
           onConfirm={() => {
             this.setState({ toDelete: null });

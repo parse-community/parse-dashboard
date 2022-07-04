@@ -63,8 +63,8 @@ export default class AppleCerts extends React.Component {
             type={Modal.Types.DANGER}
             title='Delete this certificate'
             subtitle='Notifications will no longer be sent to the associated app.'
-            cancelText={'Cancel'}
-            confirmText={'Delete it!'}
+            cancelText='Cancel'
+            confirmText='Yes, delete it'
             onCancel={() => this.setState({ deletePending: null })}
             onConfirm={() => {
               let id = this.state.deletePending;

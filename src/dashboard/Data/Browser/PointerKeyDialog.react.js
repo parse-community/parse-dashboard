@@ -55,7 +55,7 @@ export default class PointerKeyDialog extends React.Component {
         title={'Change pointer key'}
         subtitle={hasColumns ? `The selected column will be used to represent a pointer for class "${this.props.className}"` : `There are no columns that can be set to represent a pointer for class "${this.props.className}"`}
         confirmText='Set pointer key'
-        cancelText={'Never mind, don\u2019t.'}
+        cancelText='Cancel'
         onCancel={this.props.onCancel}
         disabled={!this.state.name}
         onConfirm={() => {
