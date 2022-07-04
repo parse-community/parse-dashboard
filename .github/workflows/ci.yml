@@ -111,6 +111,8 @@ jobs:
     strategy:
       matrix:
         include:
+          - name: Node 12
+            NODE_VERSION: 12.22.12
           - name: Node 14
             NODE_VERSION: 14.19.2
           - name: Node 16
