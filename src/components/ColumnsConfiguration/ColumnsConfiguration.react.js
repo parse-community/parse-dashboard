@@ -112,13 +112,13 @@ export default class ColumnsConfiguration extends React.Component {
               <div className={styles.footer}>
                 <Button
                   color='white'
-                  value='Hide All'
+                  value='Hide all'
                   width='85px'
                   onClick={this.hideAll.bind(this)} />
                 <Button
                   color='white'
                   value='Show all'
-                  width='85px'
+                  width='90px'
                   onClick={this.showAll.bind(this)} />
               </div>
             </div>
