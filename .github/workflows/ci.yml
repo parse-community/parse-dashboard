@@ -111,12 +111,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: Node 12
-            NODE_VERSION: 12.22.12
           - name: Node 14
             NODE_VERSION: 14.19.2
           - name: Node 16
             NODE_VERSION: 16.10.0
+          - name: Node 18
+            NODE_VERSION: 18.0.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
