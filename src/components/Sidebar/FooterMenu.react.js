@@ -50,7 +50,7 @@ export default class FooterMenu extends React.Component {
           position={this.state.position}
           onExternalClick={() => this.setState({ show: false })}>
           <div className={styles.popup}>
-            <a href={`${mountPath}logout`}>Log out</a>
+            <a href={`${mountPath}logout`}>➡️ Log out</a>
           </div>
         </Popover>
       );
