@@ -145,6 +145,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
               ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
+      - name: Install dependencies (Node < 10)
+        run: npm install
+        if: ${{ steps.node.outputs.node_major < 10 }}
+      - name: Install dependencies (Node >= 10)
+        run: npm ci
+        if: ${{ steps.node.outputs.node_major >= 10 }}
       - name: Tests
         run: npm test
       - name: Test bundles
