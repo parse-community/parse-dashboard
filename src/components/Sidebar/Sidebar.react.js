@@ -8,6 +8,7 @@
 import AppsManager    from 'lib/AppsManager';
 import AppsMenu       from 'components/Sidebar/AppsMenu.react';
 import AppName        from 'components/Sidebar/AppName.react';
+import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import isInsidePopover from 'lib/isInsidePopover';
 import Pin            from 'components/Sidebar/Pin.react';
 import React, { useEffect, useState, useContext } from 'react';
@@ -17,7 +18,6 @@ import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import { CurrentApp } from 'context/currentApp';
 
-let mountPath = window.PARSE_DASHBOARD_PATH;
 
 const Sidebar = ({
   prefix,
@@ -180,11 +180,7 @@ const Sidebar = ({
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
       {sidebarContent}
       <div className={styles.footer}>
-        {!collapsed && (
-          <>
-            <a href={`${mountPath}logout`}>Log Out <span className={styles.emoji}>👋</span></a>
-          </>
-        )}
+         <FooterMenu isCollapsed={!appsMenuOpen && collapsed} />
       </div>
     </div>
   );
