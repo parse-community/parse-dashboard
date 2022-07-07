@@ -49,7 +49,7 @@ export default class DeleteParameterDialog extends React.Component {
         title={'Delete parameter?'}
         subtitle={'This action cannot be undone!'}
         disabled={!this.valid()}
-        confirmText='Yes, delete it'
+        confirmText='Yes'
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
