@@ -6,7 +6,7 @@ on:
     branches:
       - '**'
 env:
-  NODE_VERSION: 16.10.0
+  NODE_VERSION: 18.4.0
 jobs:
   check-ci:
     name: Node Engine Check
