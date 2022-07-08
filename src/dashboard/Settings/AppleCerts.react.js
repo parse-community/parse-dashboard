@@ -61,7 +61,7 @@ export default class AppleCerts extends React.Component {
         {this.state.deletePending === null ? null :
           <Modal
             type={Modal.Types.DANGER}
-            title='Delete this certificate'
+            title='Delete this certificate?'
             subtitle='Notifications will no longer be sent to the associated app.'
             cancelText='Cancel'
             confirmText='Yes'
