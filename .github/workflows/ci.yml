@@ -11,7 +11,7 @@ jobs:
   check-ci:
     name: Node Engine Check
     timeout-minutes: 15
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -32,7 +32,7 @@ jobs:
   check-lint:
     name: Lint
     timeout-minutes: 15
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -52,7 +52,7 @@ jobs:
   check-circular:
      name: Circular Dependencies
      timeout-minutes: 5
-     runs-on: ubuntu-18.04
+     runs-on: ubuntu-latest
      steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -86,7 +86,7 @@ jobs:
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
@@ -100,7 +100,7 @@ jobs:
   check-lock-file-version:
     name: NPM Lock File Version
     timeout-minutes: 5
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Check NPM lock file version
@@ -122,7 +122,7 @@ jobs:
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       NODE_VERSION: ${{ matrix.NODE_VERSION }}
     steps:
