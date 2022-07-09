@@ -43,7 +43,7 @@ export default class AttachRowsDialog extends React.Component {
         onClose={this.props.onCancel}
         onSubmit={this.handleConfirm}
         submitText="Attach"
-        inProgressText="Attaching ..."
+        inProgressText={'Attaching\u2026'}
       >
         <Field
           label={

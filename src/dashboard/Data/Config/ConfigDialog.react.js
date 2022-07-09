@@ -203,7 +203,7 @@ export default class ConfigDialog extends React.Component {
         iconSize={30}
         subtitle={'Dynamically configure parts of your app'}
         disabled={!this.valid()}
-        confirmText={newParam ? 'Create parameter' : 'Save parameter'}
+        confirmText={newParam ? 'Create' : 'Save'}
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={this.submit.bind(this)}>

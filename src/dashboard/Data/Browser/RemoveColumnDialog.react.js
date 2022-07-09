@@ -48,7 +48,7 @@ export default class RemoveColumnDialog extends React.Component {
         icon='warn-outline'
         title='Remove a column?'
         subtitle={hasColumns ? 'Be careful, this action cannot be undone.' : 'There are no removable columns on this class.'}
-        confirmText='Yes'
+        confirmText='Remove'
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         disabled={!this.state.name}
