@@ -128,7 +128,7 @@ export default class SecureFieldsDialog extends React.Component {
           protectedFields={this.props.perms.protectedFields}
           enablePointerPermissions={parseServerSupportsPointerPermissions}
           advanced={true}
-          confirmText="Save Fields"
+          confirmText="Save"
           details={
             <a
               target="_blank"

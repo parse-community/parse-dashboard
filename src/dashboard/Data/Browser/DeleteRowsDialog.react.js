@@ -57,8 +57,8 @@ export default class DeleteRowsDialog extends React.Component {
         title={this.props.selection['*'] ? `${deleteText} all rows?` : (selectionLength === 1 ? `${deleteText} this row?` : `${deleteText} ${selectionLength} rows?`)}
         subtitle={this.props.relation ? 'You need to delete origin record. This is a reference.' : 'This action cannot be undone!'}
         disabled={!this.valid()}
-        confirmText={`Yes, ${this.props.relation ? 'detach' : 'delete'}`}
-        cancelText={'Never mind, don\u2019t.'}
+        confirmText='Delete'
+        cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
         {content}
