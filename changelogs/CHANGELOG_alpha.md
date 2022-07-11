@@ -1,3 +1,10 @@
+# [4.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.1...4.2.0-alpha.2) (2022-07-11)
+
+
+### Features
+
+* improve button labels to be more concise in text ([#2207](https://github.com/ParsePlatform/parse-dashboard/issues/2207)) ([230fc14](https://github.com/ParsePlatform/parse-dashboard/commit/230fc1419db4d4de67c7e591cde415dbbe461c84))
+
 # [4.2.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.3-alpha.1...4.2.0-alpha.1) (2022-07-04)
 
 
