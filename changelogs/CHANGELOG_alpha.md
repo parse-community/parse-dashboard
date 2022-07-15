@@ -1,3 +1,10 @@
+# [4.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.2...4.2.0-alpha.3) (2022-07-15)
+
+
+### Bug Fixes
+
+* button text "Show all" in column menu is truncated ([#2208](https://github.com/ParsePlatform/parse-dashboard/issues/2208)) ([b89d044](https://github.com/ParsePlatform/parse-dashboard/commit/b89d044a504c6748932907f075819a13aa08fb51))
+
 # [4.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.1...4.2.0-alpha.2) (2022-07-11)
 
 
