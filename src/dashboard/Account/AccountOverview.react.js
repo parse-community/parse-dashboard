@@ -291,7 +291,7 @@ export default class AccountOverview extends React.Component {
       onClose={() => {
         this.setState({showAccountKeyModal: false});
       }}
-      submitText='Create Key'
+      submitText='Create'
       inProgressText={'Creating\u2026'}
       clearFields={() => {
         this.setState({accountKeyName: ''});
@@ -332,7 +332,7 @@ export default class AccountOverview extends React.Component {
       subtitle='If you delete this account key, anything that was using it will stop working.'
       type={Modal.Types.DANGER}
       open={this.state.showDeleteAccountKeyModal}
-      submitText='Yes, delete it'
+      submitText='Delete'
       inProgressText={'Deleting\u2026'}
       onSubmit={() => {
         return AccountManager.deleteAccountKeyById(this.state.accountKeyIdToDelete);

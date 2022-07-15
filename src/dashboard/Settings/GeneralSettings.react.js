@@ -409,8 +409,8 @@ export default class GeneralSettings extends DashboardView {
       iconSize={30}
       type={Modal.Types.DANGER}
       open={this.state.showMigrateAppModal}
-      submitText={this.state.migrationWarnings && this.state.migrationWarnings.length > 0 ? 'Migrate anyway' : 'Begin the migration'}
-      inProgressText={'Beginning the migration\u2026'}
+      submitText={this.state.migrationWarnings && this.state.migrationWarnings.length > 0 ? 'Migrate anyway' : 'Migrate'}
+      inProgressText={'Migrating\u2026'}
       showErrors={this.state.showMongoConnectionValidationErrors}
       width={900}
       onSubmit={() => {
@@ -463,7 +463,7 @@ export default class GeneralSettings extends DashboardView {
       }}
       onClose={closeModalWithConnectionString}
       type={Modal.Types.DANGER}
-      submitText={this.state.migrationWarnings && this.state.migrationWarnings.length > 0 ? 'Change anyway' : 'Change connection string'}
+      submitText={this.state.migrationWarnings && this.state.migrationWarnings.length > 0 ? 'Change anyway' : 'Change'}
       inProgressText={'Changing\u2026'}
       showErrors={this.state.showMongoConnectionValidationErrors}
       width={900}
@@ -494,7 +494,7 @@ export default class GeneralSettings extends DashboardView {
       iconSize={30}
       type={Modal.Types.DANGER}
       open={this.state.showTransferAppModal}
-      submitText='Transfer ownership'
+      submitText='Transfer'
       inProgressText={'Transferring\u2026'}
       enabled={
         (this.state.password.length > 0 || !AccountManager.currentUser().has_password)
@@ -531,7 +531,7 @@ export default class GeneralSettings extends DashboardView {
       subtitle='This is an irreversible action!'
       type={Modal.Types.DANGER}
       open={this.state.showDeleteAppModal}
-      submitText='Permanently delete this app'
+      submitText='Delete'
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
       onSubmit={() => AppsManager.deleteApp(this.context.slug, this.state.password)}
