@@ -1,3 +1,10 @@
+# [4.2.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.3...4.2.0-alpha.4) (2022-07-20)
+
+
+### Bug Fixes
+
+* security upgrade terser from 5.10.0 to 5.14.2 ([#2222](https://github.com/ParsePlatform/parse-dashboard/issues/2222)) ([645cfdd](https://github.com/ParsePlatform/parse-dashboard/commit/645cfdd5939aca429b988e7a7c1a1b6a68230810))
+
 # [4.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.2...4.2.0-alpha.3) (2022-07-15)
 
 
