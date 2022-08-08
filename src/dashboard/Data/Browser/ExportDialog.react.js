@@ -46,7 +46,7 @@ export default class ExportDialog extends React.Component {
         type={Modal.Types.INFO}
         icon='down-outline'
         iconSize={40}
-        title='Export this class'
+        title='Export this class?'
         subtitle={'We\'ll send you an email when your data is ready.'}
         confirmText='Export'
         cancelText='Cancel'
