@@ -35,8 +35,8 @@ export default class DropClassDialog extends React.Component {
         title='Delete this class?'
         subtitle='This action cannot be undone!'
         disabled={!this.valid()}
-        confirmText='Yes, delete.'
-        cancelText={'Never mind, don\u2019t.'}
+        confirmText='Delete'
+        cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
         <Field
