@@ -76,7 +76,7 @@
     "typescript": "4.7.4"
   },
   "devDependencies": {
-    "@actions/core": "1.2.6",
+    "@actions/core": "1.9.1",
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-decorators": "7.16.4",
     "@babel/plugin-transform-regenerator": "7.16.0",
