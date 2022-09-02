@@ -1,3 +1,10 @@
+## [4.1.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.3...4.1.4) (2022-07-03)
+
+
+### Bug Fixes
+
+* login fails with error `req.session.regenerate is not a function` ([#2196](https://github.com/ParsePlatform/parse-dashboard/issues/2196)) ([a71848c](https://github.com/ParsePlatform/parse-dashboard/commit/a71848ce44fa19e579f9731bab50a7244ab89b11))
+
 ## [4.1.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.1.2...4.1.3) (2022-07-02)
 
 
