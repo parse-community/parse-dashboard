@@ -128,7 +128,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
         iconSize={40}
         title="Attach Selected Rows to Relation"
         submitText="Attach"
-        inProgressText="Attaching ..."
+        inProgressText={'Attaching\u2026'}
         onClose={this.props.onCancel}
         onSubmit={this.handleConfirm}
       >
