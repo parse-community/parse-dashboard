@@ -55,7 +55,7 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   autoSort() {
-    const defaultOrder = ['objectId', 'email', 'username', 'password', 'createdAt', 'updatedAt','ACL', 'authData']
+    const defaultOrder = ['objectId', 'createdAt', 'updatedAt', 'ACL']
     const order = {
       default: [],
       other: []
