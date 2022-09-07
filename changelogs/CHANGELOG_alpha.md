@@ -1,3 +1,11 @@
+# [4.2.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.4...4.2.0-alpha.5) (2022-09-06)
+
+
+### Bug Fixes
+
+* login fails with error `req.session.regenerate is not a function` ([#2197](https://github.com/ParsePlatform/parse-dashboard/issues/2197)) [skip release] ([014d9c1](https://github.com/ParsePlatform/parse-dashboard/commit/014d9c15b0c4efad8b0762e5a49f6a740ead5edb))
+* unnecessary count operations in Data Browser ([#2250](https://github.com/ParsePlatform/parse-dashboard/issues/2250)) ([bfc1684](https://github.com/ParsePlatform/parse-dashboard/commit/bfc1684375b7c2120e2a4ae566e5b3c38c0ca110))
+
 # [4.2.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.3...4.2.0-alpha.4) (2022-07-20)
 
 
