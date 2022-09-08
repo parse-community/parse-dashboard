@@ -1,3 +1,10 @@
+# [4.2.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.6...4.2.0-alpha.7) (2022-09-08)
+
+
+### Bug Fixes
+
+* dashboard contains invalid html for top-level document ([#2254](https://github.com/ParsePlatform/parse-dashboard/issues/2254)) ([bbce857](https://github.com/ParsePlatform/parse-dashboard/commit/bbce8579ef634bf8e6800f3a6ab8cd650e971695))
+
 # [4.2.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.5...4.2.0-alpha.6) (2022-09-08)
 
 
