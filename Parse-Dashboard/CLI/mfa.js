@@ -101,14 +101,14 @@ const showInstructions = ({ app, username, passwordCopied, secret, url, encrypt,
 
   if (secret) {
     console.log(
-      `\n${getOrder()}. Open the authenticator app to scan the QR code above or enter this secret code:` + 
-      `\n\n   ${secret}` + 
+      `\n${getOrder()}. Open the authenticator app to scan the QR code above or enter this secret code:` +
+      `\n\n   ${secret}` +
       '\n\n   If the secret code generates incorrect one-time passwords, try this alternative:' +
-      `\n\n   ${url}` + 
+      `\n\n   ${url}` +
       `\n\n${getOrder()}. Destroy any records of the QR code and the secret code to secure the account.`
     );
   }
-  
+
   if (encrypt) {
     console.log(
       `\n${getOrder()}. Make sure that "useEncryptedPasswords" is set to "true" in your dashboard configuration.` +
@@ -189,6 +189,12 @@ module.exports = {
       if (algorithm !== 'SHA1') {
         data.mfaAlgorithm = algorithm;
       }
+      if (digits !== 6) {
+        data.mfaDigits = digits;
+      }
+      if (period !== 30) {
+        data.mfaPeriod = period;
+      }
       showQR(data.url);
     }
 
@@ -214,11 +220,16 @@ module.exports = {
 
     const { url, secret } = generateSecret({ app, username, algorithm, digits, period });
     showQR(url);
-    
     // Compose config
     const config = { mfa: secret };
     if (algorithm !== 'SHA1') {
       config.mfaAlgorithm = algorithm;
+    }
+    if (digits !== 6) {
+      config.mfaDigits = digits;
+    }
+    if (period !== 30) {
+      config.mfaPeriod = period;
     }
     showInstructions({ app, username, secret, url, config });
   }

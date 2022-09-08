@@ -16,20 +16,30 @@ export default class Login extends React.Component {
     super();
 
     let errorDiv = document.getElementById('login_errors');
+    let otpLength = 6;
     if (errorDiv) {
       this.errors = errorDiv.innerHTML;
+      try {
+        const json = JSON.parse(this.errors)
+        this.errors = json.text
+        otpLength = json.otpLength;
+      } catch (e) {
+        /* */
+      }
     }
 
     this.state = {
       forgot: false,
       username: sessionStorage.getItem('username') || '',
-      password: sessionStorage.getItem('password') || ''
+      password: sessionStorage.getItem('password') || '',
+      otp: ''
     };
     sessionStorage.clear();
     setBasePath(props.path);
     this.inputRefUser = React.createRef();
     this.inputRefPass = React.createRef();
     this.inputRefMfa = React.createRef();
+    this.otpLength = otpLength;
   }
 
   componentDidMount() {
@@ -53,6 +63,15 @@ export default class Login extends React.Component {
     const {path} = this.props;
     const updateField  = (field, e) => {
       this.setState({[field]: e.target.value});
+      if (field === 'otp' && e.target.value.length >= this.otpLength) {
+        const input = document.querySelectorAll('input');
+        for (const field of input) {
+          if (field.type === 'submit') {
+            field.click();
+            break;
+          }
+        }
+      }
     }
     const formSubmit = () => {
       sessionStorage.setItem('username', this.state.username);
@@ -96,6 +115,8 @@ export default class Login extends React.Component {
               <input
                 name='otpCode'
                 type='number'
+                value={this.state.otp}
+                onChange={e => updateField('otp', e)}
                 ref={this.inputRefMfa}
               />
             } />
