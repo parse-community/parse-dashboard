@@ -110,7 +110,7 @@ function authenticate(userToTest, usernameOnly) {
             algorithm: user.mfaAlgorithm || 'SHA1',
             secret: OTPAuth.Secret.fromBase32(user.mfa),
             digits: user.mfaDigits,
-	          period: user.mfaPeriod,
+            period: user.mfaPeriod,
           });
           const valid = totp.validate({
             token: userToTest.otpCode
