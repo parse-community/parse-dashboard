@@ -31,8 +31,7 @@ export default class Login extends React.Component {
     this.state = {
       forgot: false,
       username: sessionStorage.getItem('username') || '',
-      password: sessionStorage.getItem('password') || '',
-      otp: ''
+      password: sessionStorage.getItem('password') || ''
     };
     sessionStorage.clear();
     setBasePath(props.path);
@@ -115,7 +114,6 @@ export default class Login extends React.Component {
               <input
                 name='otpCode'
                 type='number'
-                value={this.state.otp}
                 onChange={e => updateField('otp', e)}
                 ref={this.inputRefMfa}
               />
