@@ -1,3 +1,24 @@
+# [4.2.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.7...4.2.0-alpha.8) (2022-09-08)
+
+
+### Features
+
+* add option to auto-sort columns alphabetically ([#2252](https://github.com/ParsePlatform/parse-dashboard/issues/2252)) ([2b7f20f](https://github.com/ParsePlatform/parse-dashboard/commit/2b7f20fcc088f74915b50ec1219038ba9b233c27))
+
+# [4.2.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.6...4.2.0-alpha.7) (2022-09-08)
+
+
+### Bug Fixes
+
+* dashboard contains invalid html for top-level document ([#2254](https://github.com/ParsePlatform/parse-dashboard/issues/2254)) ([bbce857](https://github.com/ParsePlatform/parse-dashboard/commit/bbce8579ef634bf8e6800f3a6ab8cd650e971695))
+
+# [4.2.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.5...4.2.0-alpha.6) (2022-09-08)
+
+
+### Features
+
+* apply filter in data browser by pressing "Enter" key ([#2256](https://github.com/ParsePlatform/parse-dashboard/issues/2256)) ([bc4f9eb](https://github.com/ParsePlatform/parse-dashboard/commit/bc4f9eb9cad9eb8e362dca20bf932cb3d1e6721c))
+
 # [4.2.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.4...4.2.0-alpha.5) (2022-09-06)
 
 
