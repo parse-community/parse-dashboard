@@ -184,22 +184,22 @@ module.exports = function(config, options) {
         </div>`
       }
       res.send(`<!DOCTYPE html>
+      <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
           </script>
-        </head>
-        <html>
           <title>Parse Dashboard</title>
-          <body>
-            <div id="login_mount"></div>
-            ${errors}
-            <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
-            <script src="${mountPath}bundles/login.bundle.js"></script>
-          </body>
-        </html>
+        </head>
+        <body>
+          <div id="login_mount"></div>
+          ${errors}
+          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
+          <script src="${mountPath}bundles/login.bundle.js"></script>
+        </body>
+      </html>
       `);
     });
 
@@ -212,20 +212,20 @@ module.exports = function(config, options) {
         res.append('username', req.user.matchingUsername);
       }
       res.send(`<!DOCTYPE html>
+      <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
           </script>
-        </head>
-        <html>
           <title>Parse Dashboard</title>
-          <body>
-            <div id="browser_mount"></div>
-            <script src="${mountPath}bundles/dashboard.bundle.js"></script>
-          </body>
-        </html>
+        </head>
+        <body>
+          <div id="browser_mount"></div>
+          <script src="${mountPath}bundles/dashboard.bundle.js"></script>
+        </body>
+      </html>
       `);
     });
   });

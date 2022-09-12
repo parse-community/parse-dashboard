@@ -1,3 +1,46 @@
+# [4.2.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.7...4.2.0-alpha.8) (2022-09-08)
+
+
+### Features
+
+* add option to auto-sort columns alphabetically ([#2252](https://github.com/ParsePlatform/parse-dashboard/issues/2252)) ([2b7f20f](https://github.com/ParsePlatform/parse-dashboard/commit/2b7f20fcc088f74915b50ec1219038ba9b233c27))
+
+# [4.2.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.6...4.2.0-alpha.7) (2022-09-08)
+
+
+### Bug Fixes
+
+* dashboard contains invalid html for top-level document ([#2254](https://github.com/ParsePlatform/parse-dashboard/issues/2254)) ([bbce857](https://github.com/ParsePlatform/parse-dashboard/commit/bbce8579ef634bf8e6800f3a6ab8cd650e971695))
+
+# [4.2.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.5...4.2.0-alpha.6) (2022-09-08)
+
+
+### Features
+
+* apply filter in data browser by pressing "Enter" key ([#2256](https://github.com/ParsePlatform/parse-dashboard/issues/2256)) ([bc4f9eb](https://github.com/ParsePlatform/parse-dashboard/commit/bc4f9eb9cad9eb8e362dca20bf932cb3d1e6721c))
+
+# [4.2.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.4...4.2.0-alpha.5) (2022-09-06)
+
+
+### Bug Fixes
+
+* login fails with error `req.session.regenerate is not a function` ([#2197](https://github.com/ParsePlatform/parse-dashboard/issues/2197)) [skip release] ([014d9c1](https://github.com/ParsePlatform/parse-dashboard/commit/014d9c15b0c4efad8b0762e5a49f6a740ead5edb))
+* unnecessary count operations in Data Browser ([#2250](https://github.com/ParsePlatform/parse-dashboard/issues/2250)) ([bfc1684](https://github.com/ParsePlatform/parse-dashboard/commit/bfc1684375b7c2120e2a4ae566e5b3c38c0ca110))
+
+# [4.2.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.3...4.2.0-alpha.4) (2022-07-20)
+
+
+### Bug Fixes
+
+* security upgrade terser from 5.10.0 to 5.14.2 ([#2222](https://github.com/ParsePlatform/parse-dashboard/issues/2222)) ([645cfdd](https://github.com/ParsePlatform/parse-dashboard/commit/645cfdd5939aca429b988e7a7c1a1b6a68230810))
+
+# [4.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.2...4.2.0-alpha.3) (2022-07-15)
+
+
+### Bug Fixes
+
+* button text "Show all" in column menu is truncated ([#2208](https://github.com/ParsePlatform/parse-dashboard/issues/2208)) ([b89d044](https://github.com/ParsePlatform/parse-dashboard/commit/b89d044a504c6748932907f075819a13aa08fb51))
+
 # [4.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.1...4.2.0-alpha.2) (2022-07-11)
 
 
