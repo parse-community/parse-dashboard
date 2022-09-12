@@ -189,10 +189,10 @@ module.exports = {
       if (algorithm !== 'SHA1') {
         data.mfaAlgorithm = algorithm;
       }
-      if (digits !== 6) {
+      if (digits != 6) {
         data.mfaDigits = digits;
       }
-      if (period !== 30) {
+      if (period != 30) {
         data.mfaPeriod = period;
       }
       showQR(data.url);
@@ -225,10 +225,10 @@ module.exports = {
     if (algorithm !== 'SHA1') {
       config.mfaAlgorithm = algorithm;
     }
-    if (digits !== 6) {
+    if (digits != 6) {
       config.mfaDigits = digits;
     }
-    if (period !== 30) {
+    if (period != 30) {
       config.mfaPeriod = period;
     }
     showInstructions({ app, username, secret, url, config });
