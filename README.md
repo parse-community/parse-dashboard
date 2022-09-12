@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=alpha)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Aalpha)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
 
-[![Node Version](https://img.shields.io/badge/nodejs-12,_14,_16-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/nodejs-12,_14,_16,_18-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
