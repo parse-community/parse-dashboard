@@ -1,3 +1,10 @@
+# [4.2.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.9...4.2.0-alpha.10) (2022-09-12)
+
+
+### Features
+
+* add Node 18 support ([#2206](https://github.com/ParsePlatform/parse-dashboard/issues/2206)) ([bc7895a](https://github.com/ParsePlatform/parse-dashboard/commit/bc7895aadacc2cc6b0bbcfe786b73d7b82527e55))
+
 # [4.2.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.8...4.2.0-alpha.9) (2022-09-12)
 
 
