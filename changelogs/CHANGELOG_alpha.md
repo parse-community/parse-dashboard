@@ -1,3 +1,17 @@
+# [4.2.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.9...4.2.0-alpha.10) (2022-09-12)
+
+
+### Features
+
+* add Node 18 support ([#2206](https://github.com/ParsePlatform/parse-dashboard/issues/2206)) ([bc7895a](https://github.com/ParsePlatform/parse-dashboard/commit/bc7895aadacc2cc6b0bbcfe786b73d7b82527e55))
+
+# [4.2.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.8...4.2.0-alpha.9) (2022-09-12)
+
+
+### Bug Fixes
+
+* login fails with error `req.session.regenerate is not a function` ([#2260](https://github.com/ParsePlatform/parse-dashboard/issues/2260)) ([1dc2b91](https://github.com/ParsePlatform/parse-dashboard/commit/1dc2b915e16a2038268f886d4c24e7b081ae0531))
+
 # [4.2.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.7...4.2.0-alpha.8) (2022-09-08)
 
 
