@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "4.2.0-alpha.5",
+  "version": "4.2.0-alpha.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -55,7 +55,7 @@
     "otpauth": "8.0.1",
     "package-json": "7.0.0",
     "parse": "3.4.2",
-    "passport": "0.5.3",
+    "passport": "0.6.0",
     "passport-local": "1.0.0",
     "prismjs": "1.28.0",
     "prop-types": "15.8.1",
