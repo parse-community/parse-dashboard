@@ -6,7 +6,7 @@ on:
     branches:
       - '**'
 env:
-  NODE_VERSION: 16.10.0
+  NODE_VERSION: 16.17.0
 jobs:
   check-ci:
     name: Node Engine Check
@@ -17,7 +17,7 @@ jobs:
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -38,7 +38,7 @@ jobs:
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -58,7 +58,7 @@ jobs:
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ env.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -116,7 +116,7 @@ jobs:
           - name: Node 14
             NODE_VERSION: 14.19.2
           - name: Node 16
-            NODE_VERSION: 16.10.0
+            NODE_VERSION: 16.17.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
