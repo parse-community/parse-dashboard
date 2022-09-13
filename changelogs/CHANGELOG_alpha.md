@@ -1,3 +1,10 @@
+# [4.2.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.10...4.2.0-alpha.11) (2022-09-13)
+
+
+### Bug Fixes
+
+* column names in data browser menu not left-aligned ([#2263](https://github.com/ParsePlatform/parse-dashboard/issues/2263)) ([fc5673a](https://github.com/ParsePlatform/parse-dashboard/commit/fc5673a0ebbc7b4d51e122dbb71172803513309e))
+
 # [4.2.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.9...4.2.0-alpha.10) (2022-09-12)
 
 
