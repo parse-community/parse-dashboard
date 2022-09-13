@@ -24,7 +24,7 @@ export default class Login extends React.Component {
         this.errors = json.text
         otpLength = json.otpLength;
       } catch (e) {
-        /* */
+        console.log(`could not pass error json: ${e}`);
       }
     }
 
@@ -113,7 +113,10 @@ export default class Login extends React.Component {
             input={
               <input
                 name='otpCode'
-                type='number'
+                type='text'
+                inputMode="numeric"
+                autoComplete='one-time-code'
+                pattern="[0-9]*"
                 onChange={e => updateField('otp', e)}
                 ref={this.inputRefMfa}
               />
