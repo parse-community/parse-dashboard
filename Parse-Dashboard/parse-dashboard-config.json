@@ -8,21 +8,6 @@
       "iconName": "",
       "primaryBackgroundColor": "",
       "secondaryBackgroundColor": ""
-    },
-    {
-      "serverURL": "http://rtmvb.we.usenimbus.com:1337/parse",
-      "appId": "GemForce-Remote",
-      "masterKey": "GemForceMasterKey", 
-      "appName": "GemForce-Remote",
-      "iconName": "",
-      "primaryBackgroundColor": "",
-      "secondaryBackgroundColor": ""
-    }
-  ],
-  "users": [
-    {
-      "user": "user",
-      "pass": "pass"
     }
   ],
   "iconsFolder": "icons"
