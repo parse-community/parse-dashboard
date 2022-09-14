@@ -49,6 +49,11 @@ import { AsyncStatus }    from 'lib/Constants';
 import baseStyles         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
+//!HERE TO START ADDED PAGES IMPORT
+import Page               from './Data/Page/Page.react';
+import Code               from './Data/Code/Code.react';
+import Triggers           from './Data/Triggers/Triggers.react';
+//!HERE TO END ADDED PAGES IMPORT
 import {
   Router,
   Switch,
@@ -296,6 +301,22 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/api_console' } component={ApiConsoleRoute} />
           <Route path={ match.path + '/migration' } component={Migration} />
 
+          //!HERE TO ADD MENU
+          <Route path={ match.path + '/page/:type' } render={(props) => (
+            <Page {...props} params={props.match.params} />
+          )} />
+          <Redirect from={ match.path + '/page' } to='/apps/:appId/page/add_new' />
+
+          <Route path={ match.path + '/code/:type' } render={(props) => (
+            <Code {...props} params={props.match.params} />
+          )} />
+          <Redirect from={ match.path + '/code' } to='/apps/:appId/code/add_new' />
+
+          <Route path={ match.path + '/triggers/:type' } render={(props) => (
+            <Triggers {...props} params={props.match.params} />
+          )} />
+          <Redirect from={ match.path + '/triggers' } to='/apps/:appId/triggers/add_new' />
+          //!HERE TO ADD MENU
 
           <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
           <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
