@@ -50,7 +50,7 @@ import baseStyles         from 'stylesheets/base.scss';
 import { get }            from 'lib/AJAX';
 import { setBasePath }    from 'lib/AJAX';
 //!HERE TO START ADDED PAGES IMPORT
-import Page               from './Data/Page/Page.react';
+import Pages              from './Data/Page/Pages.react';
 import Code               from './Data/Code/Code.react';
 import Triggers           from './Data/Triggers/Triggers.react';
 //!HERE TO END ADDED PAGES IMPORT
@@ -302,10 +302,10 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/migration' } component={Migration} />
 
           //!HERE TO ADD MENU
-          <Route path={ match.path + '/page/:type' } render={(props) => (
-            <Page {...props} params={props.match.params} />
+          <Route path={ match.path + '/pages/:type' } render={(props) => (
+            <Pages {...props} params={props.match.params} />
           )} />
-          <Redirect from={ match.path + '/page' } to='/apps/:appId/page/add_new' />
+          <Redirect from={ match.path + '/pages' } to='/apps/:appId/pages/add_new' />
 
           <Route path={ match.path + '/code/:type' } render={(props) => (
             <Code {...props} params={props.match.params} />

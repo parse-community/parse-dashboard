@@ -87,8 +87,8 @@ export default class DashboardView extends React.Component {
 
     //! HERE TO ADD MENU IN LEFT-HAND
     coreSubsections.push({
-      name: 'Page',
-      link: '/page'
+      name: 'Pages',
+      link: '/pages'
     });
 
     coreSubsections.push({

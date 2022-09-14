@@ -22,7 +22,7 @@ export default class Page extends DashboardView {
     constructor() {
         super();
         this.section = 'Core';
-        this.subsection = 'Page';
+        this.subsection = 'Pages';
 
         this.state = {
             release: undefined
@@ -32,7 +32,7 @@ export default class Page extends DashboardView {
     renderSidebar() {
         let current = this.props.params.type || '';
         return (
-            <CategoryList current={current} linkPrefix={'page/'} categories={[
+            <CategoryList current={current} linkPrefix={'pages/'} categories={[
                 { name: 'Add New', id: 'add_new' },
                 { name: 'All Pages', id: 'all_pages' }
             ]} />
@@ -44,7 +44,7 @@ export default class Page extends DashboardView {
         if (subsections[this.props.params.type]) {
             toolbar = (
                 <Toolbar
-                    section='Page'
+                    section='Pages'
                     subsection={subsections[this.props.params.type]}
                     details={ReleaseInfo({ release: this.state.release })}>
                 </Toolbar>
@@ -53,7 +53,7 @@ export default class Page extends DashboardView {
         let content = null;
         content = (
             <div className={styles.empty}>
-                Page Content
+                Pages Content
             </div>
         )
         return (
