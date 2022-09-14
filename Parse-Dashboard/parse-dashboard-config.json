@@ -2,12 +2,27 @@
   "apps": [
     {
       "serverURL": "http://localhost:1337/parse",
-      "appId": "hello",
-      "masterKey": "world",
-      "appName": "",
+      "appId": "GemForce-Local",
+      "masterKey": "GemForceMasterKey", 
+      "appName": "GemForce-Local",
       "iconName": "",
       "primaryBackgroundColor": "",
       "secondaryBackgroundColor": ""
+    },
+    {
+      "serverURL": "http://rtmvb.we.usenimbus.com:1337/parse",
+      "appId": "GemForce-Remote",
+      "masterKey": "GemForceMasterKey", 
+      "appName": "GemForce-Remote",
+      "iconName": "",
+      "primaryBackgroundColor": "",
+      "secondaryBackgroundColor": ""
+    }
+  ],
+  "users": [
+    {
+      "user": "user",
+      "pass": "pass"
     }
   ],
   "iconsFolder": "icons"

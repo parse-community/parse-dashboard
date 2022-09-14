@@ -85,6 +85,23 @@ export default class DashboardView extends React.Component {
       link: '/api_console'
     });
 
+    //! HERE TO ADD MENU IN LEFT-HAND
+    coreSubsections.push({
+      name: 'Page',
+      link: '/page'
+    });
+
+    coreSubsections.push({
+      name: 'Code',
+      link: '/code'
+    });
+
+    coreSubsections.push({
+      name: 'Triggers',
+      link: '/triggers'
+    });
+    //! HERE TO ADD MENU IN LEFT-HAND
+
     if (this.context.migration) {
       coreSubsections.push({
         name: 'Migration',
