@@ -103,9 +103,9 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | Version    | Latest Version | End-of-Life | Compatible   |
 |------------|----------------|-------------|--------------|
 | Node.js 12 | 12.22.12       | April 2022  | ✅ Yes        |
-| Node.js 14 | 14.19.2        | April 2023  | ✅ Yes        |
+| Node.js 14 | 14.20.0        | April 2023  | ✅ Yes        |
 | Node.js 16 | 16.17.0        | April 2024  | ✅ Yes        |
-| Node.js 18 | 18.5.0         | May 2025    | ✅ Yes        |
+| Node.js 18 | 18.9.0         | May 2025    | ✅ Yes        |
 
 ## Configuring Parse Dashboard
 
