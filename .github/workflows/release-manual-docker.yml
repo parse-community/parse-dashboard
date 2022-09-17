@@ -8,13 +8,13 @@ on:
     inputs:
       ref:
         default: ''
-        description: 'Reference (tag / SHA):'  
+        description: 'Reference (tag / SHA):'
 env:
   REGISTRY: docker.io
   IMAGE_NAME: parseplatform/parse-dashboard
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write

@@ -166,7 +166,7 @@ class Webhooks extends TableView {
       onClose={() => {
         this.setState({showNewWebhookModal: false});
       }}
-      submitText='Create Webhook'
+      submitText='Create'
       inProgressText={'Creating\u2026'}
       clearFields={this.clearFields.bind(this)}
       enabled={true /* TODO: do some validation here */}>
@@ -184,7 +184,7 @@ class Webhooks extends TableView {
       onClose={() => {
         this.setState({showEditWebhookModal: false});
       }}
-      submitText='Save Webhook'
+      submitText='Save'
       inProgressText={'Saving\u2026'}
       clearFields={this.clearFields.bind(this)}
       enabled={true /* TODO: do some validation here */}>
@@ -212,7 +212,7 @@ class Webhooks extends TableView {
       onClose={() => {
         this.setState({showDeleteWebhookModal: false});
       }}
-      submitText='Delete Webhook'
+      submitText='Delete'
       inProgressText={'Deleting\u2026'}
       clearFields={() => {
         this.setState({
