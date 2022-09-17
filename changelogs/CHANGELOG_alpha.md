@@ -1,3 +1,10 @@
+# [4.2.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.13...4.2.0-alpha.14) (2022-09-17)
+
+
+### Features
+
+* show skeleton as loading indicator in data browser while data is loading ([#2273](https://github.com/ParsePlatform/parse-dashboard/issues/2273)) ([059f616](https://github.com/ParsePlatform/parse-dashboard/commit/059f616718006c6f559b0b07a8da641367497d9a))
+
 # [4.2.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.12...4.2.0-alpha.13) (2022-09-17)
 
 
