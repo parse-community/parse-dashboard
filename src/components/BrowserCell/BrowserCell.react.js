@@ -335,7 +335,7 @@ export default class BrowserCell extends Component {
         cl.forEach((column, field) => {
           if (column.targetClass !== pointerClassName) { return; }
           relatedRecordsMenuItem.items.push({
-            text: className, callback: () => {
+            text: `${className}`, subtext: `${field}`, callback: () => {
               let relatedObject = value;
               if (this.props.field === 'objectId') {
                 relatedObject = new Parse.Object(pointerClassName);
