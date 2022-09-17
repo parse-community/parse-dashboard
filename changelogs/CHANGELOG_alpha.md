@@ -1,3 +1,10 @@
+# [4.2.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.12...4.2.0-alpha.13) (2022-09-17)
+
+
+### Features
+
+* add column name to related records ([#2264](https://github.com/ParsePlatform/parse-dashboard/issues/2264)) ([cc82533](https://github.com/ParsePlatform/parse-dashboard/commit/cc82533ae3066daa7b789131a76a409720d45b0b))
+
 # [4.2.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.11...4.2.0-alpha.12) (2022-09-14)
 
 
