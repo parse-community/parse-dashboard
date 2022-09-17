@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "4.2.0-alpha.5",
+  "version": "4.2.0-alpha.13",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -104,7 +104,7 @@
     "jest": "24.8.0",
     "madge": "5.0.1",
     "marked": "4.0.10",
-    "node-sass": "7.0.0",
+    "node-sass": "7.0.3",
     "null-loader": "4.0.1",
     "path-to-regexp": "3.2.0",
     "puppeteer": "3.0.0",
