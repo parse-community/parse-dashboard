@@ -17,14 +17,8 @@ export default class SidebarHeader extends React.Component {
     super();
     this.state = { };
   }
-  componentWillMount() {
-    let mountPath = window.PARSE_DASHBOARD_PATH;
-    fetch(mountPath).then(response => {
-      this.setState({ dashboardUser: response.headers.get('username') });
-    });
-  }
   render() {
-    const { isCollapsed = false } = this.props;
+    const { isCollapsed = false, dashboardUser } = this.props;
     const headerContent = isCollapsed
       ? (
         <div className={styles.logo}>
@@ -41,7 +35,7 @@ export default class SidebarHeader extends React.Component {
               <div>
                 Parse Dashboard {version}
                 <div>
-                  {this.state.dashboardUser}
+                  {dashboardUser}
                 </div>
               </div>
             </div>

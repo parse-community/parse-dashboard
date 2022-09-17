@@ -36,6 +36,10 @@ const Sidebar = ({
   const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
   const [ collapsed, setCollapsed ] = useState(false);
   const [ fixed, setFixed ] = useState(true);
+  const [dashboardUser, setDashboardUser] = useState('');
+  fetch(mountPath).then(response => {
+    setDashboardUser(response.headers.get('username'))
+  })
   let currentWidth = window.innerWidth;
 
   const windowResizeHandler = () => {
@@ -177,14 +181,14 @@ const Sidebar = ({
           : undefined
       }
     >
-      <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
+      <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} dashboardUser={dashboardUser} />
       {sidebarContent}
-      <div className={styles.footer}>
+      {dashboardUser && <div className={styles.footer}>
         <a href={`${mountPath}logout`} className={styles.more}>
         <Icon height={24} width={24} name='logout' />
         Logout
       </a>
-      </div>
+      </div> }
     </div>
   );
 }
