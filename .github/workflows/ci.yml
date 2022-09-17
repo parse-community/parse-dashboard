@@ -6,7 +6,7 @@ on:
     branches:
       - '**'
 env:
-  NODE_VERSION: 18.5.0
+  NODE_VERSION: 18.9.0
 jobs:
   check-ci:
     name: Node Engine Check
@@ -114,11 +114,11 @@ jobs:
           - name: Node 12
             NODE_VERSION: 12.22.12
           - name: Node 14
-            NODE_VERSION: 14.19.2
+            NODE_VERSION: 14.20.0
           - name: Node 16
             NODE_VERSION: 16.17.0
           - name: Node 18
-            NODE_VERSION: 18.5.0
+            NODE_VERSION: 18.9.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15

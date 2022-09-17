@@ -1,3 +1,10 @@
+# [4.2.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.11...4.2.0-alpha.12) (2022-09-14)
+
+
+### Features
+
+* auto-submit one-time password (OTP) after entering ([#2257](https://github.com/ParsePlatform/parse-dashboard/issues/2257)) ([e528705](https://github.com/ParsePlatform/parse-dashboard/commit/e5287054cff3bff368ba4e379eebf05bfb7d8bd5))
+
 # [4.2.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.10...4.2.0-alpha.11) (2022-09-13)
 
 
