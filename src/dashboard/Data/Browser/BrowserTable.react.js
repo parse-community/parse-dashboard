@@ -217,7 +217,7 @@ export default class BrowserTable extends React.Component {
                 this.props.onSaveNewRow();
                 this.props.setEditing(false);
               }}
-              additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', padding: '0'}}
+              additionalStyles={{ fontSize: '12px', height: '20px', lineHeight: '20px', margin: '5px', marginRight: '0px', padding: '0'}}
             />
             <Button
               value="Cancel"
