@@ -77,6 +77,7 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
             }}
           >
             {item.text}
+            {item.subtext && <span> - {item.subtext}</span>}
           </li>
         );
     })}
