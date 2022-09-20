@@ -1,3 +1,10 @@
+# [4.2.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.14...4.2.0-alpha.15) (2022-09-19)
+
+
+### Bug Fixes
+
+* context menu in data browser is not scrollable ([#2271](https://github.com/ParsePlatform/parse-dashboard/issues/2271)) ([6c54bd8](https://github.com/ParsePlatform/parse-dashboard/commit/6c54bd82b872d5efed827c3582b4fb3f0aa24a95))
+
 # [4.2.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.13...4.2.0-alpha.14) (2022-09-17)
 
 
