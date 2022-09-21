@@ -1,3 +1,17 @@
+# [4.2.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.15...4.2.0-alpha.16) (2022-09-21)
+
+
+### Bug Fixes
+
+* file upload dialog in data browser shows multiple times ([#2276](https://github.com/ParsePlatform/parse-dashboard/issues/2276)) ([3927340](https://github.com/ParsePlatform/parse-dashboard/commit/39273403568f7ca13a349cac53fbb6a99d8823cc))
+
+# [4.2.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.14...4.2.0-alpha.15) (2022-09-19)
+
+
+### Bug Fixes
+
+* context menu in data browser is not scrollable ([#2271](https://github.com/ParsePlatform/parse-dashboard/issues/2271)) ([6c54bd8](https://github.com/ParsePlatform/parse-dashboard/commit/6c54bd82b872d5efed827c3582b4fb3f0aa24a95))
+
 # [4.2.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.13...4.2.0-alpha.14) (2022-09-17)
 
 
