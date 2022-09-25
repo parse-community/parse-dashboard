@@ -7,12 +7,13 @@ import styles from 'components/ColumnsConfiguration/ColumnConfigurationItem.scss
 const DND_TYPE = 'ColumnConfigurationItem';
 
 export default ({ name, handleColumnDragDrop, index, onChangeVisible, visible }) => {
-  const [ { isDragging}, drag ] = useDrag({
-    item: { type: DND_TYPE, index },
-		collect: monitor => ({ isDragging: !!monitor.isDragging() })
-  });
+  const [ { isDragging}, drag ] = useDrag(() => ({
+    type: DND_TYPE,
+    item: { index },
+    collect: monitor => ({ isDragging: monitor.isDragging() })
+  }));
 
-  const [ { canDrop, isOver }, drop ] = useDrop({
+  const [ { canDrop, isOver }, drop ] = useDrop(() => ({
     accept: DND_TYPE,
     drop: item => handleColumnDragDrop(item.index, index),
     canDrop: item => item.index !== index,
@@ -20,7 +21,7 @@ export default ({ name, handleColumnDragDrop, index, onChangeVisible, visible })
       isOver: !!monitor.isOver(),
       canDrop: !!monitor.canDrop()
     })
-  });
+  }));
 
   return drag(drop(
     <section
