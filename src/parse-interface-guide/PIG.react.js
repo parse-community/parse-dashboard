@@ -20,7 +20,6 @@ let PIGRow = ({ title, children }) => <div>
   <div className={styles.row}>{children}</div>
 </div>;
 
-export default
 @withRouter
 class PIG extends React.Component {
   constructor() {
@@ -92,3 +91,5 @@ class PIG extends React.Component {
     );
   }
 }
+
+export default PIG;

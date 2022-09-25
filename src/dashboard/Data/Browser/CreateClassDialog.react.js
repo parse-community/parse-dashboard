@@ -19,7 +19,6 @@ function validClassName(name) {
   return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
 }
 
-export default
 @withRouter
 class CreateClassDialog extends React.Component {
   constructor() {
@@ -103,3 +102,5 @@ class CreateClassDialog extends React.Component {
     );
   }
 }
+
+export default CreateClassDialog;

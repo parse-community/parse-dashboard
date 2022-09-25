@@ -30,7 +30,6 @@ import { withRouter } from 'lib/withRouter';
 
 const XHR_KEY = 'PushAudiencesIndex';
 
-export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
 @withRouter
@@ -277,3 +276,5 @@ class PushAudiencesIndex extends DashboardView {
     );
   }
 }
+
+export default PushAudiencesIndex;

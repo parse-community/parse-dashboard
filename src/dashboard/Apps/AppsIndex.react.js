@@ -90,7 +90,6 @@ let AppCard = ({
   </li>
 }
 
-export default
 @withRouter
 class AppsIndex extends React.Component {
   constructor() {
@@ -173,3 +172,5 @@ class AppsIndex extends React.Component {
     );
   }
 }
+
+export default AppsIndex;

@@ -61,7 +61,6 @@ function scheduleString(data) {
 }
 
 // TODO: create scrollable view component that handles lazy fetch container on scroll
-export default
 @subscribeTo('Jobs', 'jobs')
 @withRouter
 class Jobs extends TableView {
@@ -301,3 +300,5 @@ class Jobs extends TableView {
     return null;
   }
 }
+
+export default Jobs;

@@ -14,7 +14,6 @@ import Option      from 'components/Dropdown/Option.react';
 import React       from 'react';
 import { withRouter } from 'lib/withRouter';
 
-export default
 @withRouter
 class AppSelector extends React.Component {
   constructor(props) {
@@ -60,3 +59,5 @@ class AppSelector extends React.Component {
     );
   }
 }
+
+export default AppSelector;

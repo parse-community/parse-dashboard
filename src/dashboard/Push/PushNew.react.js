@@ -121,7 +121,6 @@ let LocalizedMessageField = ({
 
 const XHR_KEY = 'PushNew';
 
-export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
 @withRouter
@@ -896,3 +895,5 @@ class PushNew extends DashboardView {
       }}/>;
   }
 }
+
+export default PushNew;

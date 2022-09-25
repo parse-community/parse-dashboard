@@ -22,7 +22,6 @@ let subsections = {
   error: 'Error'
 };
 
-export default
 @withRouter
 class Logs extends DashboardView {
   constructor() {
@@ -123,3 +122,5 @@ class Logs extends DashboardView {
     );
   }
 }
+
+export default Logs;

@@ -39,7 +39,6 @@ let buildFriendlyName = (query) => {
   return name.join(' ');
 };
 
-export default
 @subscribeTo('AnalyticsQuery', 'customQueries')
 @withRouter
 class Explorer extends DashboardView {
@@ -549,3 +548,5 @@ class Explorer extends DashboardView {
     );
   }
 }
+
+export default Explorer;

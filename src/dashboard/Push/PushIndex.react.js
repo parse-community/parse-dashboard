@@ -227,7 +227,6 @@ let getPushTime = (pushTime, updatedAt) => {
   return result;
 }
 
-export default
 @withRouter
 class PushIndex extends DashboardView {
   constructor() {
@@ -449,3 +448,5 @@ class PushIndex extends DashboardView {
     );
   }
 }
+
+export default PushIndex;

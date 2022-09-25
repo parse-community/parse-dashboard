@@ -11,7 +11,6 @@ import DashboardView from 'dashboard/DashboardView.react';
 import { Outlet } from 'react-router-dom';
 import { withRouter } from 'lib/withRouter';
 
-export default
 @withRouter
 class ApiConsole extends DashboardView {
   constructor() {
@@ -40,3 +39,5 @@ class ApiConsole extends DashboardView {
     return <Outlet />;
   }
 }
+
+export default ApiConsole;

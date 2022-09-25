@@ -41,7 +41,6 @@ import { withRouter } from 'lib/withRouter';
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
 
-export default
 @subscribeTo('Schema', 'schema')
 @withRouter
 class Browser extends DashboardView {
@@ -1786,3 +1785,5 @@ class Browser extends DashboardView {
     );
   }
 }
+
+export default Browser;

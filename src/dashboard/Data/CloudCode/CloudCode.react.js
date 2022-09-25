@@ -19,7 +19,6 @@ function getPath(params) {
   return params.splat;
 }
 
-export default
 @withRouter
 class CloudCode extends DashboardView {
   constructor() {
@@ -131,3 +130,5 @@ class CloudCode extends DashboardView {
     );
   }
 }
+
+export default CloudCode;

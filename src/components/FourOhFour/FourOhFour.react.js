@@ -11,7 +11,6 @@ import { withRouter } from 'lib/withRouter';
 
 const EMOJI_COUNT = 30;
 
-export default
 @withRouter
 class FourOhFour extends React.Component {
   constructor() {
@@ -60,3 +59,5 @@ class FourOhFour extends React.Component {
     );
   }
 }
+
+export default FourOhFour;

@@ -337,7 +337,6 @@ let ManageAppFields = ({
   </Fieldset>);
 }
 
-export default
 @withRouter
 class GeneralSettings extends DashboardView {
   constructor() {
@@ -800,3 +799,5 @@ let generalFieldsOptions = {
     friendlyName: 'other URL',
   },
 };
+
+export default GeneralSettings;
