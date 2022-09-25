@@ -8,7 +8,7 @@ export function withRouter(Component) {
     const outletContext = useOutletContext();
     const location = useLocation();
 
-    return <Component {...props} params={params} navigate={navigate} outletContext={outletContext} location={location} />;
+    return <Component {...props} {...outletContext} params={params} navigate={navigate} location={location} />;
   }
 
   const name = Component.displayName || Component.name;
