@@ -197,7 +197,18 @@ export default class Dashboard extends React.Component {
       </AccountView>
     );
 
-    const BrowserRoute = () => ShowSchemaOverview ? <SchemaOverview /> : <Browser />;
+    const SettingsRoute = (
+      <Route element={<SettingsData />}>
+        <Route path='general' element={<GeneralSettings />} />
+        <Route path='keys' element={<SecuritySettings />} />
+        <Route path='users' element={<UsersSettings />} />
+        <Route path='push' element={<PushSettings />} />
+        <Route path='hosting' element={<HostingSettings />} />
+        <Route index element={<Navigate replace to='general' />} />
+      </Route>
+    )
+
+    const BrowserRoute = ShowSchemaOverview ? SchemaOverview : Browser;
 
     return (
       <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
@@ -255,24 +266,19 @@ export default class Dashboard extends React.Component {
 
               {/* Unused routes... */}
               <Route path='analytics'>
-                <Route path='overview' component={<AnalyticsOverview />} />
-                <Route path='explorer/:displayType' component={<Explorer />} />
-                <Route path='retention' component={<Retention />} />
-                <Route path='performance' component={<Performance />} />
-                <Route path='slow_queries' component={<SlowQueries />} />
+                <Route path='overview' element={<AnalyticsOverview />} />
+                <Route path='explorer/:displayType' element={<Explorer />} />
+                <Route path='retention' element={<Retention />} />
+                <Route path='performance' element={<Performance />} />
+                <Route path='slow_queries' element={<SlowQueries />} />
                 <Route index element={<Navigate replace to='overview' />} />
                 <Route path='explorer' element={<Navigate replace to='chart' />} />
               </Route>
 
-              <Route path='settings' element={<SettingsData />}>
-                <Route path='general' element={<GeneralSettings />} />
-                <Route path='keys' element={<SecuritySettings />} />
-                <Route path='users' element={<UsersSettings />} />
-                <Route path='push' element={<PushSettings />} />
-                <Route path='hosting' element={<HostingSettings />} />
-                <Route index element={<Navigate replace to='general' />} />
-              </Route>
 
+              <Route path='settings'>
+                {SettingsRoute}
+              </Route>
             </Route>
           </Route>
 
