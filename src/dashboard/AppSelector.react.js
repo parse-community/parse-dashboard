@@ -26,7 +26,7 @@ class AppSelector extends React.Component {
   }
 
   handleConfirm() {
-    let newPath = location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
+    let newPath = this.location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
     this.props.navigate(newPath);
   }
 
