@@ -48,7 +48,7 @@ export default class SecuritySettings extends DashboardView {
       }
       open={this.state.showResetDialog}
       type={Modal.Types.DANGER}
-      submitText='Reset it'
+      submitText='Reset'
       inProgressText={'Resetting\u2026'}
       enabled={this.state.passwordInput.length > 0 || !AccountManager.currentUser().has_password}
       onSubmit={() => currentApp.resetMasterKey(this.state.passwordInput)}

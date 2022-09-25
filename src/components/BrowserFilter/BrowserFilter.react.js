@@ -78,6 +78,13 @@ export default class BrowserFilter extends React.Component {
       if (Filters.Constraints[filter.get('constraint')].hasOwnProperty('field')) {
         type = Filters.Constraints[filter.get('constraint')].field;
       }*/
+
+      // since we are preserving previous compareTo value
+      // remove compareTo for constraints which are not comparable
+      let isComparable = Filters.Constraints[filter.get('constraint')].comparable;
+      if (!isComparable) {
+        return filter.delete('compareTo')
+      }
       return filter;
     });
     this.props.onChange(formatted);
@@ -110,6 +117,7 @@ export default class BrowserFilter extends React.Component {
                 schema={this.props.schema}
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
+                onSearch={this.apply.bind(this)}
                 renderRow={props => (
                   <FilterRow {...props} active={this.props.filters.size > 0} parentContentId={POPOVER_CONTENT_ID} />
                 )}
