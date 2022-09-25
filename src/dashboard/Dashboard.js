@@ -200,7 +200,7 @@ export default class Dashboard extends React.Component {
     const BrowserRoute = () => ShowSchemaOverview ? <SchemaOverview /> : <Browser />;
 
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
         <Helmet>
           <title>Parse Dashboard</title>
         </Helmet>
