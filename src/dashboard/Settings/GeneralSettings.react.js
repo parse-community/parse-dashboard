@@ -306,7 +306,7 @@ let ManageAppFields = ({
     {cloneAppMessage ? <FormNote
       show={true}
       color='green'>
-      <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: '/apps' }}>apps page</Link>!</div>
+      <div>{cloneAppMessage} Check out the progress on your <Link to='/apps'>apps page</Link>!</div>
     </FormNote> : null}
     {!isCollaborator ? <Field
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}

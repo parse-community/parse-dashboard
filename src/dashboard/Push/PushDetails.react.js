@@ -472,7 +472,7 @@ class PushDetails extends DashboardView {
       prevLaunchGroup = (
         <div className={styles.header}>
           <div className={styles.headline}>
-            This push is the Launch Group for a previous <Link to={{ pathname: getPushDetailUrl(this.context, pushDetails.experiment_push_id) }}>experiment</Link>.
+            This push is the Launch Group for a previous <Link to={getPushDetailUrl(this.context, pushDetails.experiment_push_id)}>experiment</Link>.
           </div>
         </div>
       );
