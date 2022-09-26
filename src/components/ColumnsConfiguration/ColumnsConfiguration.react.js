@@ -54,6 +54,23 @@ export default class ColumnsConfiguration extends React.Component {
     this.props.handleColumnsOrder(this.props.order.map(order => ({ ...order, visible: false })));
   }
 
+  autoSort() {
+    const defaultOrder = ['objectId', 'createdAt', 'updatedAt', 'ACL']
+    const order = {
+      default: [],
+      other: []
+    };
+    for (const column of this.props.order) {
+      const index = defaultOrder.indexOf(column.name);
+      if (index !== -1) {
+        order.default[index] = column;
+      } else {
+        order.other.push(column)
+      }
+    }
+    this.props.handleColumnsOrder([...order.default.filter(column => column), ...order.other.sort((a,b) => a.name.localeCompare(b.name))]);
+  }
+
   render() {
     const { handleColumnDragDrop, handleColumnsOrder, order, disabled } = this.props;
     let [ title, entry ] = [styles.title, styles.entry ].map(className => (
@@ -112,14 +129,16 @@ export default class ColumnsConfiguration extends React.Component {
               <div className={styles.footer}>
                 <Button
                   color='white'
-                  value='Hide All'
-                  width='85px'
+                  value='Hide all'
                   onClick={this.hideAll.bind(this)} />
                 <Button
                   color='white'
                   value='Show all'
-                  width='85px'
                   onClick={this.showAll.bind(this)} />
+                <Button
+                  color='white'
+                  value='Autosort'
+                  onClick={this.autoSort.bind(this)} />
               </div>
             </div>
           </div>

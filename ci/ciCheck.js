@@ -28,7 +28,7 @@ async function checkNodeVersions() {
       '<12.0.0', // These versions have reached their end-of-life support date
       '>=13.0.0 <14.0.0', // These versions have reached their end-of-life support date
       '>=15.0.0 <16.0.0', // These versions have reached their end-of-life support date
-      '>=16.0.0' // Parse Dashboard is currently not officially Node 16 compatible
+      '>=17.0.0 <18.0.0', // These versions have reached their end-of-life support date
     ],
   }).check();
 }

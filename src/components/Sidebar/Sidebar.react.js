@@ -179,13 +179,6 @@ const Sidebar = ({
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
       {sidebarContent}
       <div className={styles.footer}>
-        {!collapsed && (
-          <>
-            <a target='_blank' href='http://parseplatform.org/'>Open Source Hub</a>
-            <a target='_blank' href='https://github.com/parse-community'>GitHub</a>
-            <a target='_blank' href='http://docs.parseplatform.org/'>Docs</a>
-          </>
-        )}
         <FooterMenu isCollapsed={!appsMenuOpen && collapsed} />
       </div>
     </div>

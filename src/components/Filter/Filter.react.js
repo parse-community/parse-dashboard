@@ -44,7 +44,7 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }) => {
+let Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, className }) => {
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   let available = Filters.availableFilters(schema, filters);
@@ -115,6 +115,11 @@ let Filter = ({ schema, filters, renderRow, onChange, blacklist, className }) =>
           },
           onChangeCompareTo: newCompare => {
             onChange(changeCompareTo(schema, filters, i, compareType, newCompare));
+          },
+          onKeyDown: ({key}) => {
+            if (key === 'Enter') {
+              onSearch();
+            }
           },
           onDeleteRow: () => {
             onChange(deleteRow(filters, i));
