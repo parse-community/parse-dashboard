@@ -26,8 +26,6 @@ module.exports = {
       return babel.transform(src, {
         filename: filename,
         retainLines: true,
-        plugins: [['@babel/plugin-proposal-decorators', { 'legacy': true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
-        presets: ['@babel/preset-react', '@babel/preset-env']
         // Remove propTypes for tests so we don't have to keep unmocking lib/PropTypes
         // Also it's more representative of the production environment
         //plugins: [ 'babel-plugin-remove-proptypes' ]
