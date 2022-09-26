@@ -149,6 +149,13 @@ class Browser extends DashboardView {
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
 
     this.dataBrowserRef = React.createRef();
+    window.addEventListener('popstate', () => {
+      this.setState({
+        relation: null,
+        data: null,
+      })
+      this.refresh();
+    });
   }
 
   componentWillMount() {
@@ -832,6 +839,7 @@ class Browser extends DashboardView {
       const url = `${this.getRelationURL()}${filterQueryString ? `?filters=${filterQueryString}` : ''}`;
       history.push(url);
     });
+    this.fetchRelation(relation, filters);
   }
 
   handlePointerClick({ className, id, field = 'objectId' }) {
