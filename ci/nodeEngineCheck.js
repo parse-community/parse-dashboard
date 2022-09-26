@@ -76,16 +76,20 @@ class NodeEngineCheck {
     // For each file
     for (const file of files) {
 
-      // Get node version
-      const contentString = await fs.readFile(file, 'utf-8');
-      const contentJson = JSON.parse(contentString);
-      const version = ((contentJson || {}).engines || {}).node;
-      
-      // Add response
-      response.push({
-        file: file,
-        nodeVersion: version
-      });
+      try {
+        // Get node version
+        const contentString = await fs.readFile(file, 'utf-8');
+        const contentJson = JSON.parse(contentString);
+        const version = ((contentJson || {}).engines || {}).node;
+
+        // Add response
+        response.push({
+          file: file,
+          nodeVersion: version
+        });
+      } catch {
+        console.log(`Skipping ${file} due to package.json parsing issues`);
+      }
     }
 
     // If results should be cleaned by removing undefined node versions
