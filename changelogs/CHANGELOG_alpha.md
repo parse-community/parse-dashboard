@@ -1,3 +1,10 @@
+# [5.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.2...5.0.0-alpha.3) (2022-09-27)
+
+
+### Bug Fixes
+
+* minor UI layout issues ([#2270](https://github.com/ParsePlatform/parse-dashboard/issues/2270)) ([51d083b](https://github.com/ParsePlatform/parse-dashboard/commit/51d083b218d1291fc27ee2a5f1727c5f2a1dc7d4))
+
 # [5.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.1...5.0.0-alpha.2) (2022-09-27)
 
 
