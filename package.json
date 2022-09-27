@@ -137,7 +137,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=12.22.0"
+    "node": ">=14.0.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
