@@ -28,7 +28,7 @@ jobs:
       - name: Enforce strict engine version
         run: npm config set engine-strict=true
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
   check-lint:
     name: Lint
     timeout-minutes: 15
