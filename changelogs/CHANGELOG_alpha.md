@@ -1,3 +1,15 @@
+# [5.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.17...5.0.0-alpha.1) (2022-09-27)
+
+
+### Features
+
+* remove Node 12 support ([#2277](https://github.com/ParsePlatform/parse-dashboard/issues/2277)) ([18b0e76](https://github.com/ParsePlatform/parse-dashboard/commit/18b0e76e28938f4cb3eaaed7ba3292fc622a35c7))
+
+
+### BREAKING CHANGES
+
+* This version removes support for Node 12; the new minimum required Node version is 14. ([18b0e76](18b0e76))
+
 # [4.2.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.16...4.2.0-alpha.17) (2022-09-21)
 
 
