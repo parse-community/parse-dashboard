@@ -444,7 +444,9 @@ export default class BrowserTable extends React.Component {
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.preventSchemaEdits} />
+          preventSchemaEdits={this.context.preventSchemaEdits}
+          isDataLoaded={!!this.props.data}
+        />
       </div>
     );
   }
