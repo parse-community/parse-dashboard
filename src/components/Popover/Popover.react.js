@@ -18,6 +18,9 @@ export default class Popover extends React.Component {
     this._checkExternalClick = this._checkExternalClick.bind(this);
 
     this._popoverLayer = document.createElement('div');
+    if (props.style) {
+      this._popoverLayer.style = props.style;
+    }  
   }
 
   componentDidUpdate(prevState) {
@@ -41,8 +44,17 @@ export default class Popover extends React.Component {
     this._popoverWrapper.appendChild(this._popoverLayer);
 
     if (this.props.position) {
-      this._popoverLayer.style.left = this.props.position.x + 'px';
-      this._popoverLayer.style.top = this.props.position.y + 'px';
+      // Fix position if Popover goes off the screen
+      this._popoverLayer.style.left =
+        Math.min(
+          this.props.position.x,
+          window.innerWidth - this._popoverLayer.clientWidth
+        ) + 'px';
+      this._popoverLayer.style.top =
+        Math.min(
+          this.props.position.y,
+          window.innerHeight - this._popoverLayer.clientHeight
+        ) + 'px';
     }
     if (this.props.modal) {
       this._popoverLayer.style.right = 0;
