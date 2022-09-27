@@ -117,6 +117,7 @@ export default class BrowserFilter extends React.Component {
                 schema={this.props.schema}
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
+                onSearch={this.apply.bind(this)}
                 renderRow={props => (
                   <FilterRow {...props} active={this.props.filters.size > 0} parentContentId={POPOVER_CONTENT_ID} />
                 )}

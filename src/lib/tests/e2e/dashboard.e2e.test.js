@@ -77,7 +77,6 @@ function startParseDashboardAndGetOutput(args) {
   return new Promise((resolve) => {
     const indexFilePath = path.resolve('./Parse-Dashboard/index.js');
     const child = spawn('node', [indexFilePath, ...args], { cwd: '.', timeout: timeoutInMs });
-    setTimeout(() => { child.kill(); }, timeoutInMs); // node.js 12 hack (spawn timeout option is not supported.)
 
     let output = '';
     child.on('error', () => { resolve(output); });

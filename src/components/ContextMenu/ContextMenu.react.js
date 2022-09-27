@@ -14,7 +14,7 @@ const getPositionToFitVisibleScreen = (ref) => {
 
     const elBox = ref.current.getBoundingClientRect();
     const y = (elBox.y + elBox.height) < window.innerHeight ?
-      0 : (window.innerHeight - (elBox.y + elBox.height));
+      0 : (0 - elBox.y + 100);
 
     // If there's a previous element show current next to it.
     // Try on right side first, then on left if there's no place.
@@ -45,6 +45,8 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
   const style = position ? {
     left: position.x,
     top: position.y,
+    maxHeight: '80vh',
+    overflowY: 'scroll',
     opacity: 1
   } : {};
 
@@ -75,6 +77,7 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
             }}
           >
             {item.text}
+            {item.subtext && <span> - {item.subtext}</span>}
           </li>
         );
     })}

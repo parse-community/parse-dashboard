@@ -30,13 +30,13 @@ function initialize(app, options) {
         otpCode: req.body.otpCode
       });
       if (!match.matchingUsername) {
-        return cb(null, false, { message: 'Invalid username or password' });
-      }
-      if (match.otpMissing) {
-        return cb(null, false, { message: 'Please enter your one-time password.' });
+        return cb(null, false, { message: JSON.stringify({ text: 'Invalid username or password' }) });
       }
       if (!match.otpValid) {
-        return cb(null, false, { message: 'Invalid one-time password.' });
+        return cb(null, false, { message: JSON.stringify({ text: 'Invalid one-time password.', otpLength: match.otpMissingLength || 6}) });
+      }
+      if (match.otpMissingLength) {
+        return cb(null, false, { message: JSON.stringify({ text: 'Please enter your one-time password.', otpLength: match.otpMissingLength || 6 })});
       }
       cb(null, match.matchingUsername);
     })
@@ -91,7 +91,7 @@ function authenticate(userToTest, usernameOnly) {
   let appsUserHasAccessTo = null;
   let matchingUsername = null;
   let isReadOnly = false;
-  let otpMissing = false;
+  let otpMissingLength = false;
   let otpValid = true;
 
   //they provided auth
@@ -104,17 +104,20 @@ function authenticate(userToTest, usernameOnly) {
       let usernameMatches = userToTest.name == user.user;
       if (usernameMatches && user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
-          otpMissing = true;
+          otpMissingLength = user.mfaDigits || 6;
         } else {
           const totp = new OTPAuth.TOTP({
             algorithm: user.mfaAlgorithm || 'SHA1',
-            secret: OTPAuth.Secret.fromBase32(user.mfa)
+            secret: OTPAuth.Secret.fromBase32(user.mfa),
+            digits: user.mfaDigits,
+            period: user.mfaPeriod,
           });
           const valid = totp.validate({
             token: userToTest.otpCode
           });
           if (valid === null) {
             otpValid = false;
+            otpMissingLength = user.mfaDigits || 6;
           }
         }
       }
@@ -132,7 +135,7 @@ function authenticate(userToTest, usernameOnly) {
   return {
     isAuthenticated,
     matchingUsername,
-    otpMissing,
+    otpMissingLength,
     otpValid,
     appsUserHasAccessTo,
     isReadOnly,
