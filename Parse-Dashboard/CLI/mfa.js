@@ -65,7 +65,19 @@ const generateSecret = ({ app, username, algorithm, digits, period }) => {
     secret
   });
   const url = totp.toString();
-  return { secret: secret.base32, url };
+  const config = { mfa: secret.base32 };
+  config.app = app;
+  config.url = url;
+  if (algorithm !== 'SHA1') {
+    config.mfaAlgorithm = algorithm;
+  }
+  if (digits != 6) {
+    config.mfaDigits = digits;
+  }
+  if (period != 30) {
+    config.mfaPeriod = period;
+  }
+  return { config };
 };
 const showQR = text => {
   const QRCode = require('qrcode');
@@ -77,7 +89,10 @@ const showQR = text => {
   });
 };
 
-const showInstructions = ({ app, username, passwordCopied, secret, url, encrypt, config }) => {
+const showInstructions = ({ app, username, passwordCopied, encrypt, config }) => {
+  const {secret, url} = config;
+  const mfaJSON = {...config};
+  delete mfaJSON.url;
   let orderCounter = 0;
   const getOrder = () => {
     orderCounter++;
@@ -90,7 +105,7 @@ const showInstructions = ({ app, username, passwordCopied, secret, url, encrypt,
 
   console.log(
     `\n${getOrder()}. Add the following settings for user "${username}" ${app ? `in app "${app}" ` : '' }to the Parse Dashboard configuration.` +
-    `\n\n   ${JSON.stringify(config)}`
+    `\n\n   ${JSON.stringify(mfaJSON)}`
   );
 
   if (passwordCopied) {
@@ -101,14 +116,14 @@ const showInstructions = ({ app, username, passwordCopied, secret, url, encrypt,
 
   if (secret) {
     console.log(
-      `\n${getOrder()}. Open the authenticator app to scan the QR code above or enter this secret code:` + 
-      `\n\n   ${secret}` + 
+      `\n${getOrder()}. Open the authenticator app to scan the QR code above or enter this secret code:` +
+      `\n\n   ${secret}` +
       '\n\n   If the secret code generates incorrect one-time passwords, try this alternative:' +
-      `\n\n   ${url}` + 
+      `\n\n   ${url}` +
       `\n\n${getOrder()}. Destroy any records of the QR code and the secret code to secure the account.`
     );
   }
-  
+
   if (encrypt) {
     console.log(
       `\n${getOrder()}. Make sure that "useEncryptedPasswords" is set to "true" in your dashboard configuration.` +
@@ -173,6 +188,7 @@ module.exports = {
       const salt = bcrypt.genSaltSync(10);
       data.pass = bcrypt.hashSync(data.pass, salt);
     }
+    const config = {};
     if (mfa) {
       const { app } = await inquirer.prompt([
         {
@@ -182,18 +198,13 @@ module.exports = {
         }
       ]);
       const { algorithm, digits, period } = await getAlgorithm();
-      const { secret, url } = generateSecret({ app, username, algorithm, digits, period });
-      data.mfa = secret;
-      data.app = app;
-      data.url = url;
-      if (algorithm !== 'SHA1') {
-        data.mfaAlgorithm = algorithm;
-      }
-      showQR(data.url);
+      const secret  =generateSecret({ app, username, algorithm, digits, period });
+      Object.assign(config, secret.config);
+      showQR(secret.config.url);
     }
-
-    const config = { mfa: data.mfa, user: data.user, pass: data.pass };
-    showInstructions({ app: data.app, username, passwordCopied: true, secret: data.mfa, url: data.url, encrypt, config });
+    config.user = data.user;
+    config.pass = data.pass ;
+    showInstructions({ app: data.app, username, passwordCopied: true, encrypt, config });
   },
   async createMFA() {
     console.log('');
@@ -212,14 +223,9 @@ module.exports = {
     ]);
     const { algorithm, digits, period } = await getAlgorithm();
 
-    const { url, secret } = generateSecret({ app, username, algorithm, digits, period });
-    showQR(url);
-    
+    const { config } = generateSecret({ app, username, algorithm, digits, period });
+    showQR(config.url);
     // Compose config
-    const config = { mfa: secret };
-    if (algorithm !== 'SHA1') {
-      config.mfaAlgorithm = algorithm;
-    }
-    showInstructions({ app, username, secret, url, config });
+    showInstructions({ app, username, config });
   }
 };

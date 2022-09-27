@@ -26,13 +26,13 @@ let setFocus = (input) => {
   }
 }
 
-function compareValue(info, value, onChangeCompareTo, active, parentContentId) {
+function compareValue(info, value, onChangeCompareTo, onKeyDown, active, parentContentId) {
   switch (info.type) {
     case null:
       return null;
     case 'Object':
     case 'String':
-      return <input type='text' value={value} onChange={(e) => onChangeCompareTo(e.target.value)} ref={setFocus}/>;
+      return <input type='text' value={value} onChange={(e) => onChangeCompareTo(e.target.value)} onKeyDown={onKeyDown} ref={setFocus}/>;
     case 'Pointer':
       return (
         <input
@@ -60,7 +60,9 @@ function compareValue(info, value, onChangeCompareTo, active, parentContentId) {
               val = parseFloat(e.target.value);
             }
             onChangeCompareTo(val);
-          }} />
+          }}
+          onKeyDown={onKeyDown}
+          />
       );
     case 'Date':
       return (
@@ -69,6 +71,7 @@ function compareValue(info, value, onChangeCompareTo, active, parentContentId) {
           className={styles.date}
           value={Parse._decode('date', value)}
           onChange={(value) => onChangeCompareTo(Parse._encode(value))}
+          ref={setFocus}
           parentContentId={parentContentId} />
       );
   }
@@ -84,6 +87,7 @@ let FilterRow = ({
     onChangeField,
     onChangeConstraint,
     onChangeCompareTo,
+    onKeyDown,
     onDeleteRow,
     active,
     parentContentId,
@@ -100,7 +104,7 @@ let FilterRow = ({
       value={Constraints[currentConstraint].name}
       options={constraints.map((c) => Constraints[c].name)}
       onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)} />
-    {compareValue(compareInfo, compareTo, onChangeCompareTo, active, parentContentId)}
+    {compareValue(compareInfo, compareTo, onChangeCompareTo, onKeyDown, active, parentContentId)}
     <button type='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></button>
   </div>
 );

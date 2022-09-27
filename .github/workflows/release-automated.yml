@@ -13,7 +13,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://registry.npmjs.org/
       - name: Cache Node.js modules
         uses: actions/cache@v2
@@ -38,7 +38,7 @@ jobs:
     env:
       REGISTRY: docker.io
       IMAGE_NAME: parseplatform/parse-dashboard
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write

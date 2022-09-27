@@ -56,8 +56,8 @@ export default class CloneSelectedRowsDialog extends React.Component {
         title={this.props.selection['*'] ? 'Clone all rows?' : (selectionLength === 1 ? 'Clone this row?' : `Clone ${selectionLength} rows?`)}
         subtitle={''}
         disabled={!this.valid()}
-        confirmText={'Yes clone'}
-        cancelText={'Never mind, don\u2019t.'}
+        confirmText='Clone'
+        cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}>
         {content}
