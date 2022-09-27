@@ -149,6 +149,13 @@ class Browser extends DashboardView {
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
 
     this.dataBrowserRef = React.createRef();
+    window.addEventListener('popstate', () => {
+      this.setState({
+        relation: null,
+        data: null,
+      })
+      this.refresh();
+    });
   }
 
   componentWillMount() {
@@ -171,10 +178,11 @@ class Browser extends DashboardView {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
+
+        nextProps.schema.dispatch(ActionTypes.FETCH)
+          .then(() => this.handleFetchedSchema());
       }
       this.prefetchData(nextProps, nextContext);
-      nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.handleFetchedSchema());
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
@@ -831,6 +839,7 @@ class Browser extends DashboardView {
       const url = `${this.getRelationURL()}${filterQueryString ? `?filters=${filterQueryString}` : ''}`;
       history.push(url);
     });
+    this.fetchRelation(relation, filters);
   }
 
   handlePointerClick({ className, id, field = 'objectId' }) {
