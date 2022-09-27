@@ -26,9 +26,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-12-
       - name: Enforce strict engine version
-        run: npm --version
+        run: echo "engine-strict=true" > .npmrc
       - name: Install dependencies
-        run: npm config set engine-strict true && npm install --ignore-scripts
+        run: npm install --ignore-scripts
   check-lint:
     name: Lint
     timeout-minutes: 15
