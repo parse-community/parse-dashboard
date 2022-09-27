@@ -14,7 +14,7 @@ import { DndProvider }     from 'react-dnd'
 
 export default class DataBrowserHeaderBar extends React.Component {
   render() {
-    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected } = this.props;
+    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected, isDataLoaded } = this.props;
     let elements = [
       <div key='check' className={[styles.wrap, styles.check].join(' ')}>
         {readonly
@@ -85,9 +85,32 @@ export default class DataBrowserHeaderBar extends React.Component {
       );
     }
 
+    function renderSkeleton() {
+      if (isDataLoaded) return null;
+      var skeletons = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
+      return (
+        <div className={styles.skeleton}>
+          {skeletons.map(function (opacity, index) {
+            return (
+              <div
+                key={index}
+                className={styles.skeletonRow}
+                style={{
+                  opacity,
+                }}
+              ></div>
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
       <DndProvider backend={HTML5Backend}>
-        <div className={styles.bar}>{elements}</div>
+        <div className={styles.bar}>
+          {elements}
+          {renderSkeleton()}
+        </div>
       </DndProvider>
     )
   }
