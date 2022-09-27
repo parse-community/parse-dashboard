@@ -97,7 +97,7 @@
     "cross-env": "7.0.2",
     "css-loader": "6.5.1",
     "eslint": "6.8.0",
-    "eslint-plugin-jest": "23.8.2",
+    "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-react": "7.19.0",
     "http-server": "14.0.0",
     "jest": "24.8.0",
