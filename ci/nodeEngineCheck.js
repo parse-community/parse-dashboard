@@ -75,21 +75,20 @@ class NodeEngineCheck {
 
     // For each file
     for (const file of files) {
-
-      try {
-        // Get node version
-        const contentString = await fs.readFile(file, 'utf-8');
-        const contentJson = JSON.parse(contentString);
-        const version = ((contentJson || {}).engines || {}).node;
-
-        // Add response
-        response.push({
-          file: file,
-          nodeVersion: version
-        });
-      } catch {
-        console.log(`Skipping ${file} due to package.json parsing issues`);
+      if (/eslint-plugin-react\/.*malformed.*/.test(file)) {
+        continue;
       }
+
+      // Get node version
+      const contentString = await fs.readFile(file, 'utf-8');
+      const contentJson = JSON.parse(contentString);
+      const version = ((contentJson || {}).engines || {}).node;
+
+      // Add response
+      response.push({
+        file: file,
+        nodeVersion: version
+      });
     }
 
     // If results should be cleaned by removing undefined node versions
