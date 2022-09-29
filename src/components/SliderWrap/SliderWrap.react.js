@@ -13,11 +13,10 @@ export default class SliderWrap extends React.Component {
   constructor() {
     super();
 
-    this.sliderRef = React.createRef();
+    this.metricsRef = React.createRef();
   }
 
   componentDidMount() {
-    this.metrics = this.sliderRef.current.children[0];
     if (this.props.expanded) {
       this.forceUpdate();
     }
@@ -39,27 +38,28 @@ export default class SliderWrap extends React.Component {
   render() {
     let style = {};
     let metric = this._getMetric();
-    if (!this.props.expanded || !this.metrics) {
+    let node = this.metricsRef.current;
+    if (!this.props.expanded || !node) {
       if (metric === 'width' || metric === 'both') {
         style.width = '0px';
       }
       if (metric === 'height' || metric === 'both') {
         style.height = '0px';
       }
-    } else if (this.props.expanded && this.metrics) {
+    } else if (this.props.expanded && node) {
       if (metric === 'width' || metric === 'both') {
-        style.width = this.metrics.clientWidth + 'px';
+        style.width = node.clientWidth + 'px';
       }
       if (metric === 'height' || metric === 'both') {
-        style.height = this.metrics.clientHeight + 'px';
+        style.height = node.clientHeight + 'px';
       }
     }
     if (this.props.direction === Directions.LEFT) {
       style.margin = '0 0 0 auto';
     }
     return (
-      <div className={styles.slider} style={style} ref={this.sliderRef}>
-        <div className={styles.metrics} style={this.props.block ? { display: 'block' } : {}}>
+      <div className={styles.slider} style={style}>
+        <div className={styles.metrics} style={this.props.block ? { display: 'block' } : {}} ref={this.metricsRef}>
           {this.props.children}
         </div>
       </div>
