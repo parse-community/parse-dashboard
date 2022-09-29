@@ -8,7 +8,6 @@
 import Popover  from 'components/Popover/Popover.react';
 import React    from 'react';
 import styles   from 'components/SuggestionsList/SuggestionsList.scss';
-import Position from 'lib/Position';
 
 export default class Suggestion extends React.Component {
   constructor() {
@@ -20,16 +19,6 @@ export default class Suggestion extends React.Component {
     };
 
     this.popoverRef = React.createRef();
-
-    this.handleScroll = () => {
-      let newPosition = this.props.fixed
-        ? Position.inWindow(this.node)
-        : Position.inDocument(this.node);
-      newPosition.y += this.node.offsetHeight;
-      if (this.popoverRef.current) {
-        this.popoverRef.current.setPosition(newPosition);
-      }
-    };
   }
 
   toggle() {
