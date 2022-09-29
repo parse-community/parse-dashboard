@@ -19,7 +19,7 @@ export default class ColumnsConfiguration extends React.Component {
       open: false
     };
 
-    this.titleRef = React.createRef();
+    this.entryRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -70,12 +70,12 @@ export default class ColumnsConfiguration extends React.Component {
 
   render() {
     const { handleColumnDragDrop, handleColumnsOrder, order, disabled } = this.props;
-    const title = <div className={styles.title} onClick={this.toggle.bind(this)} ref={this.titleRef}>
+    const title = <div className={styles.title} onClick={this.toggle.bind(this)}>
       <Icon name='manage-columns' width={14} height={14} />
       <span>Manage Columns</span>
     </div>
 
-    let entry = <div className={styles.entry} onClick={this.toggle.bind(this)}>
+    let entry = <div className={styles.entry} onClick={this.toggle.bind(this)} ref={this.entryRef}>
       <Icon name='manage-columns' width={14} height={14} />
       <span>Manage Columns</span>
     </div>
@@ -90,7 +90,7 @@ export default class ColumnsConfiguration extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={Position.inDocument(this.titleRef.current)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
+        <Popover fixed={true} position={Position.inDocument(this.entryRef.current)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
           <div className={styles.popover} id={POPOVER_CONTENT_ID}>
             {title}
             <div className={styles.body}>
