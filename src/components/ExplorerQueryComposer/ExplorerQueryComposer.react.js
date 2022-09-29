@@ -121,7 +121,7 @@ let fieldView = (type, value, onChangeValue) => {
     case 'Number':
       return <input type='number' className={styles.formInput} style={fieldStyle} value={value} onChange={(e) => onChangeValue(validateNumeric(e.target.value) ? e.target.value : (value || ''))} />;
     case 'Date':
-      return <div style={fieldStyle}><DateTimeEntry fixed={true} className={styles.formInput} value={value || new Date()} onChange={onChangeValue} /></div>;
+      return <div style={fieldStyle}><DateTimeEntry fixed={true} className={styles.formInput} value={value || new Date()} onChange={onChangeValue} ref={setFocus}/></div>;
     default:
       throw new Error('Incompatible type ' + type + ' used to render fieldView.');
   }
