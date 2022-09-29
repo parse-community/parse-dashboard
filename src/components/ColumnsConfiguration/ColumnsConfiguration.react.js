@@ -138,7 +138,7 @@ export default class ColumnsConfiguration extends React.Component {
                   onClick={this.showAll.bind(this)} />
                 <Button
                   color='white'
-                  value='Autosort'
+                  value='Auto-sort'
                   onClick={this.autoSort.bind(this)} />
               </div>
             </div>
