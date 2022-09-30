@@ -8,17 +8,17 @@
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/TextInput/TextInput.scss';
+import { withForwardedRef } from 'lib/withForwardedRef';
 
-export default class TextInput extends React.Component {
+class TextInput extends React.Component {
   componentWillReceiveProps(props) {
     if (props.multiline !== this.props.multiline) {
-      const previousInput = this.refs.input;
+      const node = props.forwardedRef.current;
       // wait a little while for component to re-render
       setTimeout(function() {
-        const newInput = previousInput ? this.refs.textarea : this.refs.input;
-        newInput.focus();
-        newInput.value = '';
-        newInput.value = props.value;
+        node.focus();
+        node.value = '';
+        node.value = props.value;
       }.bind(this), 1);
     }
   }
@@ -44,7 +44,7 @@ export default class TextInput extends React.Component {
     if (this.props.multiline) {
       return (
         <textarea
-          ref="textarea"
+          ref={this.props.forwardedRef}
           id={this.props.id}
           disabled={!!this.props.disabled}
           className={classes.join(' ')}
@@ -58,7 +58,7 @@ export default class TextInput extends React.Component {
     }
     return (
       <input
-        ref="input"
+        ref={this.props.forwardedRef}
         id={this.props.id}
         type={this.props.hidden ? 'password' : 'text'}
         disabled={!!this.props.disabled}
@@ -101,3 +101,5 @@ TextInput.propTypes = {
     'The height of the field. Can be a string containing any CSS unit, or a number of pixels. Default is 80px.'
   ),
 };
+
+export default withForwardedRef(TextInput);

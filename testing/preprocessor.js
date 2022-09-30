@@ -12,7 +12,9 @@ module.exports = {
   process: function (src, filename) {
     if (filename.endsWith('.scss') || filename.endsWith('.css')) {
       var matches = extractClassnames(src);
-      return 'module.exports = ' + JSON.stringify(matches);
+      return {
+        code: 'module.exports = ' + JSON.stringify(matches),
+      };
     }
 
     // Let Jest handle our custom module resolution
@@ -29,9 +31,11 @@ module.exports = {
         // Remove propTypes for tests so we don't have to keep unmocking lib/PropTypes
         // Also it's more representative of the production environment
         //plugins: [ 'babel-plugin-remove-proptypes' ]
-      }).code;
+      });
     }
 
-    return src;
+    return {
+      code: src,
+    };
   }
 };
