@@ -13,7 +13,6 @@ import Icon          from 'components/Icon/Icon.react';
 import Popover       from 'components/Popover/Popover.react';
 import Position      from 'lib/Position';
 import React         from 'react';
-import ReactDOM      from 'react-dom';
 import styles        from 'components/BrowserFilter/BrowserFilter.scss';
 import { List, Map } from 'immutable';
 
@@ -29,10 +28,7 @@ export default class BrowserFilter extends React.Component {
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters)
     };
     this.toggle = this.toggle.bind(this);
-  }
-
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.wrapRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -93,9 +89,10 @@ export default class BrowserFilter extends React.Component {
   render() {
     let popover = null;
     let buttonStyle = [styles.entry];
+    const node = this.wrapRef.current;
 
     if (this.state.open) {
-      let position = Position.inDocument(this.node);
+      let position = Position.inDocument(node);
       let popoverStyle = [styles.popover];
       buttonStyle.push(styles.title);
 
@@ -109,7 +106,7 @@ export default class BrowserFilter extends React.Component {
       popover = (
         <Popover fixed={true} position={position} onExternalClick={this.toggle} contentId={POPOVER_CONTENT_ID}>
           <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)} id={POPOVER_CONTENT_ID}>
-            <div onClick={this.toggle} style={{ cursor: 'pointer', width: this.node.clientWidth, height: this.node.clientHeight }}></div>
+            <div onClick={this.toggle} style={{ cursor: 'pointer', width: node.clientWidth, height: node.clientHeight }}></div>
             <div className={styles.body}>
               <Filter
                 className={this.props.className}
@@ -157,7 +154,7 @@ export default class BrowserFilter extends React.Component {
       buttonStyle.push(styles.disabled);
     }
     return (
-      <div className={styles.wrap}>
+      <div className={styles.wrap} ref={this.wrapRef}>
         <div className={buttonStyle.join(' ')} onClick={this.toggle}>
           <Icon name="filter-solid" width={14} height={14} />
           <span>{this.props.filters.size ? 'Filtered' : 'Filter'}</span>
