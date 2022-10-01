@@ -9,7 +9,6 @@ import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
 import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 
 export default class DateTimeEntry extends React.Component {
   constructor(props) {
@@ -20,6 +19,9 @@ export default class DateTimeEntry extends React.Component {
       position: null,
       value: props.value.toISOString ? props.value.toISOString() : props.value
     }
+
+    this.rootRef = React.createRef();
+    this.inputRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -28,25 +30,26 @@ export default class DateTimeEntry extends React.Component {
     });
   }
 
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  toggle() {
+    if (this.state.open) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 
-  toggle() {
-    this.setState(() => {
-      if (this.state.open) {
-        return { open: false };
-      }
-      let pos = Position.inDocument(this.node);
-      pos.y += this.node.clientHeight;
-      let height = 230 + this.node.clientWidth * 0.14;
-      if (window.innerHeight - pos.y - height < 40) {
-        pos.y = window.innerHeight - height - 40;
-      }
-      return {
-        open: true,
-        position: pos
-      };
+  open() {
+    let node = this.rootRef.current;
+    let pos = Position.inDocument(node);
+    pos.y += node.clientHeight;
+    let height = 230 + node.clientWidth * 0.14;
+    if (window.innerHeight - pos.y - height < 40) {
+      pos.y = window.innerHeight - height - 40;
+    }
+
+    this.setState({
+      open: true,
+      position: pos
     });
   }
 
@@ -83,6 +86,10 @@ export default class DateTimeEntry extends React.Component {
     }
   }
 
+  focus() {
+    this.open();
+  }
+
   render() {
     let popover = null;
     if (this.state.open) {
@@ -90,7 +97,7 @@ export default class DateTimeEntry extends React.Component {
         <Popover fixed={true} position={this.state.position} onExternalClick={this.close.bind(this)}  parentContentId={this.props.parentContentId}>
           <DateTimePicker
             value={this.props.value}
-            width={Math.max(this.node.clientWidth, 240)}
+            width={Math.max(this.rootRef.current.clientWidth, 240)}
             onChange={this.props.onChange}
             close={() => this.setState({ open: false })} />
         </Popover>
@@ -98,12 +105,13 @@ export default class DateTimeEntry extends React.Component {
     }
     
     return (
-      <div className={this.props.className} onClick={this.toggle.bind(this)}>
+      <div className={this.props.className} onClick={this.toggle.bind(this)} ref={this.rootRef}>
         <input
           type='text'
           value={this.state.value}
           onChange={this.inputDate.bind(this)}
-          onBlur={this.commitDate.bind(this)} />
+          onBlur={this.commitDate.bind(this)}
+          ref={this.inputRef} />
         {popover}
       </div>
     );

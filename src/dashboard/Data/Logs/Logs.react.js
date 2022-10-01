@@ -15,13 +15,15 @@ import ReleaseInfo   from 'components/ReleaseInfo/ReleaseInfo';
 import Toolbar       from 'components/Toolbar/Toolbar.react';
 
 import styles        from 'dashboard/Data/Logs/Logs.scss';
+import { withRouter } from 'lib/withRouter';
 
 let subsections = {
   info: 'Info',
   error: 'Error'
 };
 
-export default class Logs extends DashboardView {
+@withRouter
+class Logs extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';
@@ -120,3 +122,5 @@ export default class Logs extends DashboardView {
     );
   }
 }
+
+export default Logs;

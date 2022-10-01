@@ -7,6 +7,7 @@
  */
 import React          from 'react';
 import { CurrentApp } from 'context/currentApp';
+import { Outlet }     from 'react-router-dom';
 
 export default class JobsData extends React.Component {
   static contextType = CurrentApp;
@@ -58,15 +59,14 @@ export default class JobsData extends React.Component {
   }
 
   render() {
-    let child = React.Children.only(this.props.children);
-    return React.cloneElement(
-      child,
-      {
-        ...child.props,
-        availableJobs: this.state.jobs,
-        jobsInUse: this.state.inUse,
-        release: this.state.release
-      }
+    return (
+      <Outlet
+        context={{
+          availableJobs: this.state.jobs,
+          jobsInUse: this.state.inUse,
+          release: this.state.release
+        }}
+      />
     );
   }
 }
