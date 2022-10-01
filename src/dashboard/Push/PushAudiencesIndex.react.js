@@ -245,7 +245,7 @@ class PushAudiencesIndex extends DashboardView {
       }}>
     </FormModal>
 
-    if (typeof(data) !== undefined) {
+    if (typeof data !== 'undefined') {
       if (data.size === 0) {
         content = <div className={stylesTable.empty}>{this.renderEmpty()}</div>;
       } else {
