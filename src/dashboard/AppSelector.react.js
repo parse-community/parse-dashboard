@@ -8,13 +8,14 @@
 import AppsManager from 'lib/AppsManager';
 import Dropdown    from 'components/Dropdown/Dropdown.react';
 import Field       from 'components/Field/Field.react';
-import history     from 'dashboard/history';
 import Label       from 'components/Label/Label.react';
 import Modal       from 'components/Modal/Modal.react';
 import Option      from 'components/Dropdown/Option.react';
 import React       from 'react';
+import { withRouter } from 'lib/withRouter';
 
-export default class AppSelector extends React.Component {
+@withRouter
+class AppSelector extends React.Component {
   constructor(props) {
     super(props);
     let apps = AppsManager.apps();
@@ -25,12 +26,12 @@ export default class AppSelector extends React.Component {
   }
 
   handleConfirm() {
-    let newPath = location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
-    history.push(newPath);
+    let newPath = this.location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
+    this.props.navigate(newPath);
   }
 
   handleCancel() {
-    history.push('/apps');
+    this.props.navigate('/apps');
   }
 
   render() {
@@ -58,3 +59,5 @@ export default class AppSelector extends React.Component {
     );
   }
 }
+
+export default AppSelector;
