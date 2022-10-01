@@ -5,6 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@use 'sass:math';
+
 $white: #fff;
 $blue: #169cee;
 $green: #00db7c;
@@ -68,7 +70,7 @@ $sidebarCollapsedWidth: 54px;
 @mixin arrow($direction, $base, $height, $color) {
   border-style: solid;
 
-  $halfbase: $base/2;
+  $halfbase: math.div($base, 2);
 
   @if $direction == 'up' {
     border-width: 0 $halfbase $height $halfbase;
