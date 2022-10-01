@@ -248,13 +248,13 @@ export default class PushIndex extends DashboardView {
     let promise = this.context.fetchPushNotifications(category, page, limit);
 
     promise.then((pushes) => {
-      this.setState({
+      this.setState((prev) => ({
         paginationInfo: {
           has_more: (pushes.length == limit),
           page_num: page
         },
-        pushes: this.state.pushes.concat(pushes),
-      });
+        pushes: prev.pushes.concat(pushes),
+      }));
     }).finally(() => {
       this.setState({
         loading: false,

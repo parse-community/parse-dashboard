@@ -136,7 +136,7 @@ export default class Migration extends DashboardView {
               value={this.state.showDetails ? 'Show less details' : 'Show more details'}
               primary={true}
               width='160px'
-              onClick={() => this.setState({showDetails: !this.state.showDetails})} />
+              onClick={() => this.setState((prev) => ({ showDetails: !prev.showDetails }))} />
           </div>
 
           let showStopMigrationButton = false;

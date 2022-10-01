@@ -130,7 +130,7 @@ export default class GeoPointEditor extends React.Component {
         }
       }
 
-      this.setState({ [target]: validateNumeric(value) ? value : this.state[target] });
+      this.setState((prev) => ({ [target]: validateNumeric(value) ? value : prev[target] }));
     };
     return (
       <div style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>

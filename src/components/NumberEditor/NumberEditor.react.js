@@ -60,7 +60,7 @@ export default class NumberEditor extends React.Component {
   render() {
     let onChange = (e) => {
       let value = e.target.value;
-      this.setState({ value: validateNumeric(value) ? value : this.state.value });
+      this.setState((prev) => ({ value: validateNumeric(value) ? value : prev.value }));
     };
     return (
       <div style={{ width: this.props.width }} className={styles.editor}>

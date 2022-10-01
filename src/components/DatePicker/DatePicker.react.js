@@ -25,8 +25,8 @@ export default class DatePicker extends React.Component {
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState((prev) => {
+      if (prev.open) {
         return { open: false };
       }
       return {

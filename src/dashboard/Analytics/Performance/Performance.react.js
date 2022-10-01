@@ -116,9 +116,14 @@ export default class Performance extends DashboardView {
   }
 
   handleQueryToggle(index, active) {
-    let activeQueries = this.state.activeQueries;
-    activeQueries[index] = active;
-    this.setState({ activeQueries: activeQueries });
+    this.setState((prev) => {
+      let activeQueries = prev.activeQueries;
+      activeQueries[index] = active;
+
+      return {
+        activeQueries
+      };
+    });
   }
 
   handleRunQuery(app) {
@@ -135,10 +140,13 @@ export default class Performance extends DashboardView {
       });
 
       promise = promise.then((result) => {
-        let performanceData = this.state.performanceData;
-        performanceData[index] = result;
-        this.setState({
-          performanceData: performanceData
+        this.setState((prev) => {
+          let performanceData = prev.performanceData;
+          performanceData[index] = result;
+
+          return {
+            performanceData
+          };
         });
       });
 

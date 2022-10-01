@@ -277,8 +277,7 @@ class PushNew extends DashboardView {
             track={true}
             onChange={(value) => {
               setField('exp_size_in_percent', value);
-              let recipientCount = Math.floor(value * 0.01 * this.state.deviceCount);
-              this.setState({ recipientCount });
+              this.setState((prev) => ({ recipientCount: Math.floor(value * 0.01 * prev.deviceCount) }));
             }} />
           } />
       );
@@ -548,37 +547,35 @@ class PushNew extends DashboardView {
                   currentLocaleOption={message.locale}
                   localeOptions = {[message.locale].concat(this.state.availableLocales).sort()}
                   onClickRemove={(id, currentLocaleOption) => {
-                    let localizedMessages = this.state.localizedMessages;
-                    let availableLocales = this.state.availableLocales;
-                    localizedMessages.splice(id, 1);
-                    availableLocales.unshift(currentLocaleOption);
-                    this.setState({
-                      localizedMessages,
-                      availableLocales: availableLocales.sort(),
+                    this.setState((prev) => {
+                      let localizedMessages = prev.localizedMessages;
+                      localizedMessages.splice(id, 1);
+
+                      let availableLocales = prev.availableLocales;
+                      availableLocales.unshift(currentLocaleOption);
+
+                      return {
+                        localizedMessages,
+                        availableLocales: availableLocales.sort(),
+                      };
                     });
                   }}
                   deviceCount={this.state.localeDeviceCountMap[message.locale]}
                   onChangeValue={(id, locale, value) => {
-                    let localizedMessages = this.state.localizedMessages;
-                    localizedMessages[id] = {
-                      locale,
-                      value
-                    };
-                    this.setState({
-                      localizedMessages,
+                    this.setState((prev) => {
+                      let localizedMessages = prev.localizedMessages;
+                      localizedMessages[id] = {
+                        locale,
+                        value
+                      };
+
+                      return {
+                        localizedMessages,
+                      };
                     });
                     setField(`translation[${locale}]`, value);
                   }}
                   onChangeLocale={(id, locale, value, prevLocale) => {
-                    let localizedMessages = this.state.localizedMessages;
-                    let availableLocales = this.state.availableLocales;
-                    localizedMessages[id] = {
-                      locale,
-                      value
-                    };
-
-                    availableLocales.splice(availableLocales.indexOf(locale));
-                    availableLocales.unshift(prevLocale);
                     setField(`translation[${prevLocale}]`, null);
 
                     let {xhr, promise} = this.context.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
@@ -587,9 +584,21 @@ class PushNew extends DashboardView {
                     });
                     this.xhrs.push(xhr);
 
-                    this.setState({
-                      localizedMessages,
-                      availableLocales: availableLocales.sort(),
+                    this.setState((prev) => {
+                      let localizedMessages = prev.localizedMessages;
+                      let availableLocales = prev.availableLocales;
+                      localizedMessages[id] = {
+                        locale,
+                        value
+                      };
+  
+                      availableLocales.splice(availableLocales.indexOf(locale));
+                      availableLocales.unshift(prevLocale);
+
+                      return {
+                        localizedMessages,
+                        availableLocales: availableLocales.sort(),
+                      }
                     });
                     setField(`translation[${locale}]`, value);
                   }}
@@ -610,13 +619,12 @@ class PushNew extends DashboardView {
                 disabled={this.state.availableLocales.length === 0}
                 value={this.state.loadingLocale ? 'Loading locales...' : 'Add a Localization'}
                 onClick={() => {
-                  let currentLocale = this.state.availableLocales[0];
-                  this.setState({
-                    localizedMessages: this.state.localizedMessages.concat([{
-                      locale: currentLocale
+                  this.setState((prev) => ({
+                    localizedMessages: prev.localizedMessages.concat([{
+                      locale: prev.availableLocales[0]
                     }]),
-                    availableLocales: this.state.availableLocales.slice(1)
-                  }, () => {
+                    availableLocales: prev.availableLocales.slice(1)
+                  }), () => {
                     let {xhr, promise} = this.context.fetchPushLocaleDeviceCount(fields.audience_id, fields.target, this.state.locales);
                     promise.then((localeDeviceCountMap) => {
                       this.setState({ localeDeviceCountMap })
@@ -667,9 +675,9 @@ class PushNew extends DashboardView {
               });
             });
             // calculate initial recipient count
-            this.setState({
-              recipientCount: Math.floor(this.state.deviceCount * 0.5)
-            });
+            this.setState((prev) => ({
+              recipientCount: Math.floor(prev.deviceCount * 0.5)
+            }));
           }
           // disable translation if experiment is enabled
           if (fields.translation_enable && value) {

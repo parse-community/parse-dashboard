@@ -25,8 +25,8 @@ export default class Dropdown extends React.Component {
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState((prev) => {
+      if (prev.open) {
         return { open: false };
       }
       let pos = Position.inDocument(this.dropdownRef.current);

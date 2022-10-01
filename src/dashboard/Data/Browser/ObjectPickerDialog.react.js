@@ -83,17 +83,22 @@ export default class ObjectPickerDialog extends React.Component {
 
   async fetchData(source, filters = new List()) {
     const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      filteredCounts[source] = await this.fetchParseDataCount(source, filters);
-    } else {
-      delete filteredCounts[source];
-    }
-    this.setState({
-      data: data,
-      filters,
-      lastMax: MAX_ROWS_FETCHED,
-      filteredCounts: filteredCounts
+    const count = await this.fetchParseDataCount(source, filters);
+
+    this.setState((prev) => {
+      const filteredCounts = { ...prev.filteredCounts };
+      if (filters.size > 0) {
+        filteredCounts[source] = count;
+      } else {
+        delete filteredCounts[source];
+      }
+
+      return {
+        data: data,
+        filters,
+        lastMax: MAX_ROWS_FETCHED,
+        filteredCounts: filteredCounts
+      };
     });
   }
 
@@ -182,7 +187,7 @@ export default class ObjectPickerDialog extends React.Component {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState((prev) => ({ lastMax: prev.lastMax + MAX_ROWS_FETCHED }));
   }
 
   async updateFilters(filters) {

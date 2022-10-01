@@ -21,6 +21,7 @@
     "no-console": 0,
     "no-case-declarations": 0,
     "quotes": ["error", "single"],
-    "eol-last": ["error", "always"]
+    "eol-last": ["error", "always"],
+    "react/no-access-state-in-setstate": 1
   }
 }

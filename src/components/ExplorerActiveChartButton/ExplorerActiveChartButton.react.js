@@ -30,10 +30,10 @@ export default class ExplorerActiveChartButton extends React.Component {
   }
 
   handleCheckbox() {
-    let nextActiveState = !this.state.active;
-    this.props.onToggle(nextActiveState);
-    this.setState({
-      active: nextActiveState
+    this.setState((prev) => ({
+      active: !prev.active
+    }), () => {
+      this.props.onToggle(this.state.active);
     });
   }
 
@@ -67,11 +67,11 @@ export default class ExplorerActiveChartButton extends React.Component {
               position.x += this.wrapRef.current.clientWidth;
               align = Directions.RIGHT;
             }
-            this.setState({
-              open: !this.state.open,
+            this.setState((prev) => ({
+              open: !prev.open,
               position,
               align
-            });
+            }));
           }} />
       );
     }

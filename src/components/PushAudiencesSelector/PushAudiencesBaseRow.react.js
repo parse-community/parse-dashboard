@@ -25,9 +25,9 @@ export default class PushAudiencesBaseRow extends React.Component {
   handleDetailsToggle(query, schema, evt) {
     evt.preventDefault();
 
-    this.setState({
-      expandedView : !this.state.expandedView
-    });
+    this.setState((prev) => ({
+      expandedView : !prev.expandedView
+    }));
   }
 
   fetchPushSubscriberCount(context) {

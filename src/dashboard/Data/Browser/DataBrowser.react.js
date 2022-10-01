@@ -124,11 +124,13 @@ export default class DataBrowser extends React.Component {
    * @param  {Number} hoverIndex - index of headerbar moved to left of
    */
   handleHeaderDragDrop(dragIndex, hoverIndex) {
-    const newOrder = [...this.state.order];
-    const movedIndex = newOrder.splice(dragIndex, 1);
-    newOrder.splice(hoverIndex, 0, movedIndex[0]);
-    this.setState({ order: newOrder }, () => {
-      this.updatePreferences(newOrder);
+    this.setState((prev) => {
+      const newOrder = [...prev.order];
+      const movedIndex = newOrder.splice(dragIndex, 1);
+      newOrder.splice(hoverIndex, 0, movedIndex[0]);
+      return { order: newOrder };
+    }, () => {
+      this.updatePreferences(this.state.order);
     });
   }
 
@@ -199,47 +201,47 @@ export default class DataBrowser extends React.Component {
       case 37:
         // Left - standalone (move to the next visible column on the left)
         // or with ctrl/meta (excel style - move to the first visible column)
-        this.setState({
+        this.setState((prev) => ({
           current: {
-            row: this.state.current.row,
+            row: prev.current.row,
             col: (e.ctrlKey || e.metaKey) ? firstVisibleColumnIndex :
               this.getNextVisibleColumnIndex(-1, firstVisibleColumnIndex, lastVisibleColumnIndex)
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 38:
         // Up - standalone (move to the previous row)
         // or with ctrl/meta (excel style - move to the first row)
-        this.setState({
+        this.setState((prev) => ({
           current: {
-            row: (e.ctrlKey || e.metaKey) ? 0 : Math.max(this.state.current.row - 1, 0),
-            col: this.state.current.col
+            row: (e.ctrlKey || e.metaKey) ? 0 : Math.max(prev.current.row - 1, 0),
+            col: prev.current.col
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 39:
         // Right - standalone (move to the next visible column on the right)
         // or with ctrl/meta (excel style - move to the last visible column)
-        this.setState({
+        this.setState((prev) => ({
           current: {
-            row: this.state.current.row,
+            row: prev.current.row,
             col: (e.ctrlKey || e.metaKey) ? lastVisibleColumnIndex :
               this.getNextVisibleColumnIndex(1, firstVisibleColumnIndex, lastVisibleColumnIndex)
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 40:
         // Down - standalone (move to the next row)
         // or with ctrl/meta (excel style - move to the last row)
-        this.setState({
+        this.setState((prev) => ({
           current: {
-            row: (e.ctrlKey || e.metaKey) ? this.props.data.length - 1 : Math.min(this.state.current.row + 1, this.props.data.length - 1),
-            col: this.state.current.col
+            row: (e.ctrlKey || e.metaKey) ? this.props.data.length - 1 : Math.min(prev.current.row + 1, this.props.data.length - 1),
+            col: prev.current.col
           }
-        });
+        }));
         e.preventDefault();
         break;
       case 67: // C

@@ -31,9 +31,9 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   toggle() {
-    this.setState({
-      open: !this.state.open
-    })
+    this.setState((prev) => ({
+      open: !prev.open
+    }))
   }
 
   showAll() {
