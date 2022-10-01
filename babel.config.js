@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   plugins: [
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     ['@babel/transform-runtime', { corejs: 3 }],

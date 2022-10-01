@@ -13,8 +13,8 @@ import React           from 'react';
 import ReactDOM        from 'react-dom';
 import Dashboard       from './Dashboard';
 
-require('stylesheets/fonts.scss');
-require('graphiql/graphiql.min.css')
+import 'stylesheets/fonts.scss';
+import 'graphiql/graphiql.min.css';
 installDevTools(Immutable);
 
 var path = window.PARSE_DASHBOARD_PATH || '/';

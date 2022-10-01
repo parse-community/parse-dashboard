@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const inquirer = require('inquirer');
-const OTPAuth = require('otpauth');
-const { copy } = require('./utils.js');
+import crypto from 'node:crypto';
+import inquirer from 'inquirer';
+import OTPAuth from 'otpauth';
+import { copy } from './utils.js';
 const phrases = {
   enterPassword: 'Enter a password:',
   enterUsername: 'Enter a username:',
@@ -136,85 +136,60 @@ const showInstructions = ({ app, username, passwordCopied, encrypt, config }) =>
   );
 }
 
-module.exports = {
-  async createUser() {
-    const data = {};
+export async function createUser() {
+  const data = {};
 
-    console.log('');
-    const { username, password } = await inquirer.prompt([
+  console.log('');
+  const { username, password } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'username',
+      message: phrases.enterUsername
+    },
+    {
+      type: 'confirm',
+      name: 'password',
+      message: 'Do you want to auto-generate a password?'
+    }
+  ]);
+  data.user = username;
+  if (!password) {
+    const { password } = await inquirer.prompt([
       {
-        type: 'input',
-        name: 'username',
-        message: phrases.enterUsername
-      },
-      {
-        type: 'confirm',
+        type: 'password',
         name: 'password',
-        message: 'Do you want to auto-generate a password?'
+        message: phrases.enterPassword
       }
     ]);
-    data.user = username;
-    if (!password) {
-      const { password } = await inquirer.prompt([
-        {
-          type: 'password',
-          name: 'password',
-          message: phrases.enterPassword
-        }
-      ]);
-      data.pass = password;
-    } else {
-      const password = crypto.randomBytes(20).toString('base64');
-      data.pass = password;
+    data.pass = password;
+  } else {
+    const password = crypto.randomBytes(20).toString('base64');
+    data.pass = password;
+  }
+  const { mfa, encrypt } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'encrypt',
+      message: 'Should the password be encrypted? (strongly recommended, otherwise it is stored in clear-text)'
+    },
+    {
+      type: 'confirm',
+      name: 'mfa',
+      message: 'Do you want to enable multi-factor authentication?'
     }
-    const { mfa, encrypt } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'encrypt',
-        message: 'Should the password be encrypted? (strongly recommended, otherwise it is stored in clear-text)'
-      },
-      {
-        type: 'confirm',
-        name: 'mfa',
-        message: 'Do you want to enable multi-factor authentication?'
-      }
-    ]);
-    if (encrypt) {
-      // Copy the raw password to clipboard
-      copy(data.pass);
+  ]);
+  if (encrypt) {
+    // Copy the raw password to clipboard
+    copy(data.pass);
 
-      // Encrypt password
-      const bcrypt = require('bcryptjs');
-      const salt = bcrypt.genSaltSync(10);
-      data.pass = bcrypt.hashSync(data.pass, salt);
-    }
-    const config = {};
-    if (mfa) {
-      const { app } = await inquirer.prompt([
-        {
-          type: 'input',
-          name: 'app',
-          message: phrases.enterAppName
-        }
-      ]);
-      const { algorithm, digits, period } = await getAlgorithm();
-      const secret  =generateSecret({ app, username, algorithm, digits, period });
-      Object.assign(config, secret.config);
-      showQR(secret.config.url);
-    }
-    config.user = data.user;
-    config.pass = data.pass ;
-    showInstructions({ app: data.app, username, passwordCopied: true, encrypt, config });
-  },
-  async createMFA() {
-    console.log('');
-    const { username, app } = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'username',
-        message:
-          'Enter the username for which you want to enable multi-factor authentication:'
-      },
+    // Encrypt password
+    const bcrypt = require('bcryptjs');
+    const salt = bcrypt.genSaltSync(10);
+    data.pass = bcrypt.hashSync(data.pass, salt);
+  }
+  const config = {};
+  if (mfa) {
+    const { app } = await inquirer.prompt([
       {
         type: 'input',
         name: 'app',
@@ -222,10 +197,34 @@ module.exports = {
       }
     ]);
     const { algorithm, digits, period } = await getAlgorithm();
-
-    const { config } = generateSecret({ app, username, algorithm, digits, period });
-    showQR(config.url);
-    // Compose config
-    showInstructions({ app, username, config });
+    const secret  =generateSecret({ app, username, algorithm, digits, period });
+    Object.assign(config, secret.config);
+    showQR(secret.config.url);
   }
+  config.user = data.user;
+  config.pass = data.pass ;
+  showInstructions({ app: data.app, username, passwordCopied: true, encrypt, config });
 };
+
+export async function createMFA() {
+  console.log('');
+  const { username, app } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'username',
+      message:
+        'Enter the username for which you want to enable multi-factor authentication:'
+    },
+    {
+      type: 'input',
+      name: 'app',
+      message: phrases.enterAppName
+    }
+  ]);
+  const { algorithm, digits, period } = await getAlgorithm();
+
+  const { config } = generateSecret({ app, username, algorithm, digits, period });
+  showQR(config.url);
+  // Compose config
+  showInstructions({ app, username, config });
+}

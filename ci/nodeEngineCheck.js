@@ -1,7 +1,8 @@
-const core = require('@actions/core');
-const semver = require('semver');
-const fs = require('fs').promises;
-const path = require('path');
+import core from '@actions/core';
+import semver from 'semver';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 
 /**
  * This checks whether any package dependency requires a minimum node engine
@@ -150,6 +151,8 @@ class NodeEngineCheck {
 
 async function check() {
   try {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
     // Define paths
     const nodeModulesPath = path.join(__dirname, '../node_modules');
     const packageJsonPath = path.join(__dirname, '../package.json');

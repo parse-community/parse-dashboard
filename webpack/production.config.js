@@ -5,7 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-var configuration = require('./base.config.js');
+import { resolve } from 'node:path';
+import configuration from './base.config.js';
 
 configuration.mode = 'production';
 configuration.entry = {
@@ -14,6 +15,6 @@ configuration.entry = {
   PIG: './parse-interface-guide/index.js',
   quickstart: './quickstart/index.js',
 };
-configuration.output.path = require('path').resolve('./production/bundles');
+configuration.output.path = resolve('./production/bundles');
 
-module.exports = configuration;
+export default configuration;
