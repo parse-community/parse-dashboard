@@ -28,6 +28,7 @@ import stylesTable               from 'components/Table/Table.scss';
 import subscribeTo               from 'lib/subscribeTo';
 import Toolbar                   from 'components/Toolbar/Toolbar.react';
 import baseStyles                from 'stylesheets/base.scss';
+import { withRouter } from 'lib/withRouter';
 
 let buildFriendlyName = (query) => {
   let name = [query.source];
@@ -38,8 +39,8 @@ let buildFriendlyName = (query) => {
   return name.join(' ');
 };
 
-export default
 @subscribeTo('AnalyticsQuery', 'customQueries')
+@withRouter
 class Explorer extends DashboardView {
   constructor() {
     super();
@@ -547,3 +548,5 @@ class Explorer extends DashboardView {
     );
   }
 }
+
+export default Explorer;

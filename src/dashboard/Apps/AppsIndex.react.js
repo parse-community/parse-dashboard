@@ -7,7 +7,6 @@
  */
 import AppsManager   from 'lib/AppsManager';
 import FlowFooter    from 'components/FlowFooter/FlowFooter.react';
-import history       from 'dashboard/history';
 import html          from 'lib/htmlString';
 import Icon          from 'components/Icon/Icon.react';
 import joinWithFinal from 'lib/joinWithFinal';
@@ -17,6 +16,8 @@ import React         from 'react';
 import styles        from 'dashboard/Apps/AppsIndex.scss';
 import baseStyles    from 'stylesheets/base.scss';
 import AppBadge      from 'components/AppBadge/AppBadge.react';
+import { withRouter } from 'lib/withRouter';
+import { useNavigate } from 'react-router-dom';
 
 function dash(value, content) {
   if (value === undefined) {
@@ -64,7 +65,8 @@ let AppCard = ({
   app,
   icon,
 }) => {
-  let canBrowse = app.serverInfo.error ? null : () => history.push(html`/apps/${app.slug}/browser`);
+  const navigate = useNavigate();
+  let canBrowse = app.serverInfo.error ? null : () => navigate(html`/apps/${app.slug}/browser`);
   let versionMessage = app.serverInfo.error ?
     <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
     <div className={styles.serverVersion}>
@@ -88,7 +90,8 @@ let AppCard = ({
   </li>
 }
 
-export default class AppsIndex extends React.Component {
+@withRouter
+class AppsIndex extends React.Component {
   constructor() {
     super();
     this.state = { search: '' };
@@ -99,7 +102,7 @@ export default class AppsIndex extends React.Component {
   componentWillMount() {
     if (AppsManager.apps().length === 1) {
       const [app] = AppsManager.apps();
-      history.push(`/apps/${app.slug}/browser`);
+      this.props.navigate(`/apps/${app.slug}/browser`);
       return;
     }
     document.body.addEventListener('keydown', this.focusField);
@@ -169,3 +172,5 @@ export default class AppsIndex extends React.Component {
     );
   }
 }
+
+export default AppsIndex;
