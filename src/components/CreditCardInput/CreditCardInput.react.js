@@ -7,7 +7,6 @@
  */
 import PropTypes from 'lib/PropTypes';
 import React     from 'react';
-import ReactDOM  from 'react-dom';
 import styles    from 'components/CreditCardInput/CreditCardInput.scss';
 
 const VALID_REGEX = /^[\d ]*$/;
@@ -18,10 +17,12 @@ class CreditCardInput extends React.Component {
     this.state = {
       cursorPosition: 0,
     };
+
+    this.inputRef = React.createRef();
   }
 
   componentDidUpdate() {
-    ReactDOM.findDOMNode(this).setSelectionRange(this.state.cursorPosition, this.state.cursorPosition);
+    this.inputRef.current.setSelectionRange(this.state.cursorPosition, this.state.cursorPosition);
   }
 
   render() {
@@ -33,6 +34,7 @@ class CreditCardInput extends React.Component {
     }
     return (
       <input
+        ref={this.inputRef}
         type='text'
         className={styles.input}
         value={value}
