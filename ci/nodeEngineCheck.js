@@ -35,7 +35,7 @@ class NodeEngineCheck {
 
   /**
    * Returns an array of `package.json` files under the given path and subdirectories.
-   * @param {String} [basePath] The base path for recursive directory search.
+   * @param {String} basePath The base path for recursive directory search.
    */
   async getPackageFiles(basePath = this.nodeModulesPath) {
     try {
@@ -109,8 +109,9 @@ class NodeEngineCheck {
   /**
    * Returns the highest semver definition that satisfies all versions
    * in the given list.
-   * @param {String[]} versions The list of semver version ranges.
-   * @param {String} baseVersion The base version of which higher versions should be
+   * @param {Object} config
+   * @param {Object[]} config.versions The list of semver version ranges.
+   * @param {String} config.baseVersion The base version of which higher versions should be
    * determined; as a version (1.2.3), not a range (>=1.2.3).
    * @returns {String} The highest semver version.
    */
@@ -123,10 +124,10 @@ class NodeEngineCheck {
 
     // Sort by min version
     const sortedMinVersions = minVersions.sort((v1, v2) => semver.compare(v1.nodeMinVersion, v2.nodeMinVersion));
-    
+
     // Filter by higher versions
     const higherVersions = sortedMinVersions.filter(v => semver.gt(v.nodeMinVersion, baseVersion));
-    // console.log(`getHigherVersions: ${JSON.stringify(higherVersions)}`);
+
     return higherVersions;
   }
 
@@ -159,7 +160,7 @@ async function check() {
       packageJsonPath,
     });
 
-      // Get package node version of parent package
+    // Get package node version of parent package
     const parentVersion = await check.getParentVersion();
 
     // Determine parent min version
