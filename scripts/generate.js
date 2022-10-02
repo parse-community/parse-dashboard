@@ -81,18 +81,14 @@ function generateTest(name) {
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../components/${name}/${name}.react');
-
 import React                            from 'react';
 import ReactDOM                         from 'react-dom';
 
-const ${name} = require('../../components/${name}/${name}.react');
+import { demos } from '../../components/${name}/${name}.example';
 
 describe('${name}', () => {
   it('can render examples', () => {
-    jest.dontMock('../../components/${name}/${name}.example');
-    const example = require('../../components/${name}/${name}.example');
-    example.demos.forEach((example, i) => {
+    demos.forEach((example, i) => {
       example.render();
     });
   });
