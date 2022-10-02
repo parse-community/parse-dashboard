@@ -1,24 +1,25 @@
 import express from 'express';
 import path from 'node:path';
-// import packageJson from 'package-json';
+import packageJson from 'package-json';
 import csrf from 'csurf';
 import Authentication from './Authentication.js';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-var newFeaturesInLatestVersion = [];
-// packageJson('parse-dashboard', { version: 'latest', fullMetadata: true })
-//   .then(latestPackage => {
-//     if (latestPackage.parseDashboardFeatures instanceof Array) {
-//       newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
-//         return currentVersionFeatures.indexOf(feature) === -1;
-//       });
-//     }
-//   })
-//   .catch(() => {
-//     // In case of a failure make sure the final value is an empty array
-//     newFeaturesInLatestVersion = [];
-//   });
+const { parseDashboardFeatures } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+let newFeaturesInLatestVersion = [];
+packageJson('parse-dashboard', { version: 'latest', fullMetadata: true })
+  .then(latestPackage => {
+    if (Array.isArray(latestPackage.parseDashboardFeatures)) {
+      newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
+        return !parseDashboardFeatures.includes(feature);
+      });
+    }
+  })
+  .catch(() => {
+    // In case of a failure make sure the final value is an empty array
+    newFeaturesInLatestVersion = [];
+  });
 
 function getMount(mountPath) {
   mountPath = mountPath || '';
