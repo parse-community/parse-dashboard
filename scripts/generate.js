@@ -6,11 +6,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 const rootDir = path.join(__dirname, '..', 'src','components');
 const pigDir = path.join(__dirname, '..', 'src','parse-interface-guide');
@@ -34,7 +31,6 @@ function generateReact(name) {
  * the root directory of this source tree.
  */
 import PropTypes                        from 'lib/PropTypes';
-import React                            from 'react';
 import styles                           from 'components/${name}/${name}.scss';
 
 let ${name} = ({prop1}) => {
@@ -56,8 +52,7 @@ function generateExample(name) {
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React${padding(name.length - 5)} from 'react';
-import ${name}${padding(5 - name.length)} f`+ 'rom' +` 'components/${name}/${name}.react';
+import ${name}${padding(5 - name.length)} from 'components/${name}/${name}.react';
 
 export const component = ${name};
 
@@ -81,9 +76,6 @@ function generateTest(name) {
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React                            from 'react';
-import ReactDOM                         from 'react-dom';
-
 import { demos } from '../../components/${name}/${name}.example';
 
 describe('${name}', () => {
@@ -110,7 +102,7 @@ function updateComponentMap(name) {
   }
 
   return (
-`export let ${name}${spaces}= require('components/${name}/${name}.example');\n`
+`export * as ${name}${spaces}from 'components/${name}/${name}.example';\n`
   );
 }
 

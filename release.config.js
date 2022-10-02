@@ -2,8 +2,8 @@
  * Semantic Release Config
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 // Get env vars
 const ref = process.env.GITHUB_REF;

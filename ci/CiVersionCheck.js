@@ -1,7 +1,7 @@
 import core from '@actions/core';
 import semver from 'semver';
 import yaml from 'yaml';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 
 /**
  * This checks the CI version of an environment variable in a YAML file
