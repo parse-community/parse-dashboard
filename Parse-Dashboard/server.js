@@ -168,4 +168,4 @@ export default function server(options) {
     });
   }
   handleSIGs(server);
-};
+}

@@ -204,7 +204,7 @@ export async function createUser() {
   config.user = data.user;
   config.pass = data.pass ;
   showInstructions({ app: data.app, username, passwordCopied: true, encrypt, config });
-};
+}
 
 export async function createMFA() {
   console.log('');
