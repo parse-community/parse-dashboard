@@ -1,5 +1,4 @@
-jest.dontMock('../extractTime');
-const {extractExpiration, extractPushTime} = require('../extractTime');
+import { extractExpiration, extractPushTime } from '../extractTime';
 
 describe('extractPushTime', () => {
   describe('in user\'s timezone', () => {

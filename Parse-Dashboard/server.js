@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import express from 'express';
 import parseDashboard from './app.js';
 import { fileURLToPath } from 'node:url';
+import { createServer } from 'node:https';
 
 export default function server(options) {
   const host = options.host || process.env.HOST || '0.0.0.0';
@@ -159,7 +160,7 @@ export default function server(options) {
     var privateKey = fs.readFileSync(configSSLKey);
     var certificate = fs.readFileSync(configSSLCert);
 
-    server = require('https').createServer({
+    server = createServer({
       key: privateKey,
       cert: certificate
     }, app).listen(port, host, function () {

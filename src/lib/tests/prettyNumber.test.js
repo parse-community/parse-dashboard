@@ -5,8 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../prettyNumber');
-const prettyNumber = require('../prettyNumber').default;
+import prettyNumber from '../prettyNumber';
 
 describe('prettyNumber', () => {
   it('does not change small numbers', () => {

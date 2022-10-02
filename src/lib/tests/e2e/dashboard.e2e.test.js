@@ -5,14 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-
-jest.disableAutomock();
-
-const express = require('express');
-const path = require('path');
-const spawn = require('child_process').spawn;
-const ParseDashboard = require('../../../../Parse-Dashboard/app');
-const puppeteer = require('puppeteer');
+import express from 'express';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import ParseDashboard from '../../../../Parse-Dashboard/app';
+import puppeteer from 'puppeteer';
 
 const dashboardSettings = {
   apps: [{

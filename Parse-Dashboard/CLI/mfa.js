@@ -2,6 +2,8 @@ import crypto from 'node:crypto';
 import inquirer from 'inquirer';
 import OTPAuth from 'otpauth';
 import { copy } from './utils.js';
+import QRCode from 'qrcode';
+import bcrypt from 'bcryptjs';
 const phrases = {
   enterPassword: 'Enter a password:',
   enterUsername: 'Enter a username:',
@@ -80,7 +82,6 @@ const generateSecret = ({ app, username, algorithm, digits, period }) => {
   return { config };
 };
 const showQR = text => {
-  const QRCode = require('qrcode');
   QRCode.toString(text, { type: 'terminal' }, (err, url) => {
     console.log(
       '\n------------------------------------------------------------------------------' +
@@ -183,7 +184,6 @@ export async function createUser() {
     copy(data.pass);
 
     // Encrypt password
-    const bcrypt = require('bcryptjs');
     const salt = bcrypt.genSaltSync(10);
     data.pass = bcrypt.hashSync(data.pass, salt);
   }

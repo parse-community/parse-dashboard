@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'node:path';
-import packageJson from 'package-json';
+// import packageJson from 'package-json';
 import csrf from 'csurf';
 import Authentication from './Authentication.js';
 import fs from 'node:fs';

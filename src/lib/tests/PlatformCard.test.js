@@ -5,13 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../components/PlatformCard/PlatformCard.react');
+import { demos } from '../../components/PlatformCard/PlatformCard.example';
 
 describe('PlatformCard', () => {
   it('can render examples', () => {
-    jest.dontMock('../../components/PlatformCard/PlatformCard.example');
-    const example = require('../../components/PlatformCard/PlatformCard.example');
-    example.demos.forEach((example) => {
+    demos.forEach((example) => {
       example.render();
     });
   });

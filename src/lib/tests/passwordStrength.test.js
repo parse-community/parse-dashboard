@@ -5,8 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../passwordStrength');
-const passwordStrength = require('../passwordStrength').default;
+import passwordStrength from '../passwordStrength';
 
 describe('passwordStrength', () => {
   it('returns 0 for passwords that are too short', () => {

@@ -120,4 +120,4 @@ function getReleaseComment() {
   return comment;
 }
 
-module.exports = config();
+export default config();

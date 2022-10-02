@@ -5,11 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../getFileName');
-jest.mock('idb-keyval');
-
-const getFileName = require('../getFileName').default;
-const Parse = require('parse');
+import getFileName from '../getFileName';
+import Parse from 'parse';
 
 describe('getFileName', () => {
   it('get filename prefixed with hex', () => {
