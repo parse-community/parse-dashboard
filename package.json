@@ -132,7 +132,7 @@
     "semantic-release": "semantic-release"
   },
   "bin": {
-    "parse-dashboard": "./bin/parse-dashboard"
+    "parse-dashboard": "./bin/parse-dashboard.js"
   },
   "engines": {
     "node": ">=14.20.1"
@@ -150,11 +150,21 @@
       "\\.s?css$": "<rootDir>/testing/preprocessor.js"
     },
     "moduleNameMapper": {
-      "^components/(.*)$": ["<rootDir>/src/components/$1"],
-      "^dashboard/(.*)$": ["<rootDir>/src/dashboard/$1"],
-      "^lib/(.*)$": ["<rootDir>/src/lib/$1"],
-      "^context/(.*)$": ["<rootDir>/src/context/$1"],
-      "^stylesheets/(.*)$": ["<rootDir>/src/stylesheets/$1"]
+      "^components/(.*)$": [
+        "<rootDir>/src/components/$1"
+      ],
+      "^dashboard/(.*)$": [
+        "<rootDir>/src/dashboard/$1"
+      ],
+      "^lib/(.*)$": [
+        "<rootDir>/src/lib/$1"
+      ],
+      "^context/(.*)$": [
+        "<rootDir>/src/context/$1"
+      ],
+      "^stylesheets/(.*)$": [
+        "<rootDir>/src/stylesheets/$1"
+      ]
     }
   }
 }
