@@ -155,12 +155,6 @@
       "^lib/(.*)$": ["<rootDir>/src/lib/$1"],
       "^context/(.*)$": ["<rootDir>/src/context/$1"],
       "^stylesheets/(.*)$": ["<rootDir>/src/stylesheets/$1"]
-    },
-    "unmockedModulePathPatterns": [
-      "react",
-      "react-dom",
-      "react-addons-test-utils",
-      "fbjs"
-    ]
+    }
   }
 }
