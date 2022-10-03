@@ -19,6 +19,7 @@ class SvgPrepPlugin {
     this.options = { ...SvgPrepPlugin.defaultOptions, ...options };
   }
 
+  /** @param {import('webpack').Compiler} compiler */
   apply(compiler) {
     const pluginName = SvgPrepPlugin.name;
     const { webpack } = compiler;

@@ -19,6 +19,7 @@ var version = json.version;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/** @type {import('webpack').Configuration} */
 export default {
   context: path.join(__dirname, '../src'),
   output: {
