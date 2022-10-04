@@ -13,13 +13,14 @@ import Option             from 'components/Dropdown/Option.react';
 import React              from 'react';
 import { SpecialClasses } from 'lib/Constants';
 import TextInput          from 'components/TextInput/TextInput.react';
-import history            from 'dashboard/history';
+import { withRouter } from 'lib/withRouter';
 
 function validClassName(name) {
   return !!name.match(/^[a-zA-Z][_a-zA-Z0-9]*$/);
 }
 
-export default class CreateClassDialog extends React.Component {
+@withRouter
+class CreateClassDialog extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -64,19 +65,19 @@ export default class CreateClassDialog extends React.Component {
         type={Modal.Types.INFO}
         icon='plus'
         iconSize={40}
-        title='Add a new class'
-        subtitle='Create a new collection of objects.'
+        title='Create a new class?'
+        subtitle='This creates a new class to hold objects.'
         disabled={!this.valid()}
-        confirmText='Create class'
-        cancelText={'Cancel'}
-        continueText={'Create class & add columns'}
+        confirmText='Create'
+        cancelText='Cancel'
+        continueText={'Create & add columns'}
         onCancel={this.props.onCancel}
         showContinue={true}
         onContinue={async () => {
           let type = this.state.type;
           let className = type === 'Custom' ? this.state.name : type;
           await this.props.onConfirm(className);
-          history.push(`/apps/${this.props.currentAppSlug}/browser/${className}`);
+          this.props.navigate(`/apps/${this.props.currentAppSlug}/browser/${className}`);
           this.props.onAddColumn();
         }}
         onConfirm={() => {
@@ -101,3 +102,5 @@ export default class CreateClassDialog extends React.Component {
     );
   }
 }
+
+export default CreateClassDialog;

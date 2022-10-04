@@ -122,10 +122,10 @@ export default class SecurityDialog extends React.Component {
           details={<a target="_blank" href='http://docs.parseplatform.org/ios/guide/#security'>Learn more about CLPs and app security</a>}
           permissions={this.props.perms}
           userPointers={this.props.userPointers}
-          validateEntry={entry => 
+          validateEntry={entry =>
             validateEntry(this.props.userPointers, entry, parseServerSupportsPointerPermissions)}
           onCancel={this.handleClose}
-          onConfirm={perms => 
+          onConfirm={perms =>
             this.props.onChangeCLP(perms).then(this.handleClose)}
         />
       );
@@ -134,7 +134,7 @@ export default class SecurityDialog extends React.Component {
     if (this.props.disabled) {
       classes.push(styles.toolbarButtonDisabled);
     }
-  
+
     return dialog;
   }
 }

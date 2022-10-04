@@ -6,9 +6,8 @@
  * the root directory of this source tree.
  */
 import Position             from 'lib/Position';
-import PropTypes            from 'prop-types'
+import PropTypes            from 'lib/PropTypes'
 import React, { Component } from 'react';
-import ReactDOM             from 'react-dom';
 import styles               from 'components/Autocomplete/Autocomplete.scss';
 import SuggestionsList      from 'components/SuggestionsList/SuggestionsList.react';
 
@@ -32,8 +31,9 @@ export default class Autocomplete extends Component {
     this.getPosition = this.getPosition.bind(this);
     this.recalculatePosition = this.recalculatePosition.bind(this);
 
-    this.inputRef = React.createRef(null);
-    this.dropdownRef = React.createRef(null);
+    this.inputRef = React.createRef();
+    this.dropdownRef = React.createRef();
+    this.fieldRef = React.createRef();
 
     this.handleScroll = () => {
       const pos = this.getPosition();
@@ -57,23 +57,24 @@ export default class Autocomplete extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
-    this.node = ReactDOM.findDOMNode(this);
-    this.node.addEventListener('scroll', this.handleScroll);
+    this.fieldRef.current.addEventListener('scroll', this.handleScroll);
     this.recalculatePosition();
     this._ignoreBlur = false;
   }
 
   componentWillUnmount() {
-    this.node.removeEventListener('scroll', this.handleScroll);
+    this.fieldRef.current.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
   }
 
   getPosition() {
-    let newPosition = this.props.fixed
-      ? Position.inWindow(this.node)
-      : Position.inDocument(this.node);
+    const node = this.fieldRef.current;
 
-    newPosition.y += this.node.offsetHeight;
+    let newPosition = this.props.fixed
+      ? Position.inWindow(node)
+      : Position.inDocument(node);
+
+    newPosition.y += node.offsetHeight;
 
     return newPosition;
   }
@@ -321,7 +322,7 @@ export default class Autocomplete extends Component {
 
     return (
       <React.Fragment>
-        <div className={fieldClassName}>
+        <div className={fieldClassName} ref={this.fieldRef}>
           <input
             id={1}
             role={'combobox'}

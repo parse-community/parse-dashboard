@@ -22,7 +22,7 @@
   &:hover svg {
     fill: white;
   }
-  
+
   &.disabled {
     cursor: not-allowed;
     color: #66637A;
@@ -98,7 +98,7 @@
   padding: 11px 0;
   text-align: center;
 
-  > a {
+  > button {
     margin-right: 10px;
 
     &:last-child {

@@ -23,7 +23,7 @@ export default class EditRowDialog extends React.Component {
     const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
       selectedObject
     );
-    this.state = { currentObject, openObjectPickers, expandedTextAreas, showFileEditor: false };
+    this.state = { currentObject, openObjectPickers, expandedTextAreas, showFileEditor: null };
 
     this.updateCurrentObject = this.updateCurrentObject.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -224,15 +224,15 @@ export default class EditRowDialog extends React.Component {
     this.setState({ expandedTextAreas });
   }
 
-  openFileEditor() {
+  openFileEditor(column) {
     this.setState({
-      showFileEditor: true
+      showFileEditor: column
     });
   }
 
   hideFileEditor() {
     this.setState({
-      showFileEditor: false
+      showFileEditor: null
     });
   }
 
@@ -358,9 +358,9 @@ export default class EditRowDialog extends React.Component {
               <div style={{ cursor: 'pointer' }}>
                 <Pill
                   value={file ? 'Change file' : 'Select file'}
-                  onClick={() => this.openFileEditor()}
+                  onClick={() => this.openFileEditor(name)}
                 />
-                {this.state.showFileEditor && (
+                {this.state.showFileEditor === name && (
                   <FileEditor
                     value={file}
                     onCancel={this.hideFileEditor}

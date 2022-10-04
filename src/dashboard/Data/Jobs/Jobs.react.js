@@ -10,7 +10,6 @@ import Button                 from 'components/Button/Button.react';
 import * as DateUtils         from 'lib/DateUtils';
 import CategoryList           from 'components/CategoryList/CategoryList.react';
 import EmptyState             from 'components/EmptyState/EmptyState.react';
-import history                from 'dashboard/history';
 import Icon                   from 'components/Icon/Icon.react';
 import JobScheduleReminder    from 'dashboard/Data/Jobs/JobScheduleReminder.react';
 import Modal                  from 'components/Modal/Modal.react';
@@ -26,6 +25,7 @@ import TableHeader            from 'components/Table/TableHeader.react';
 import TableView              from 'dashboard/TableView.react';
 import Toolbar                from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
+import { withRouter } from 'lib/withRouter';
 
 let subsections = {
   all: 'All Jobs',
@@ -61,8 +61,8 @@ function scheduleString(data) {
 }
 
 // TODO: create scrollable view component that handles lazy fetch container on scroll
-export default
 @subscribeTo('Jobs', 'jobs')
+@withRouter
 class Jobs extends TableView {
   constructor() {
     super();
@@ -92,11 +92,11 @@ class Jobs extends TableView {
   }
 
   navigateToNew() {
-    history.push(generatePath(this.context, 'jobs/new'));
+    this.props.navigate(generatePath(this.context, 'jobs/new'));
   }
 
   navigateToJob(jobId) {
-    history.push(generatePath(this.context, `jobs/edit/${jobId}`))
+    this.props.navigate(generatePath(this.context, `jobs/edit/${jobId}`))
   }
 
   loadData() {
@@ -230,8 +230,8 @@ class Jobs extends TableView {
           type={Modal.Types.DANGER}
           title='Delete job schedule?'
           subtitle='Careful, this action cannot be undone'
-          confirmText='Yes, delete it'
-          cancelText={'Never mind, don\'t'}
+          confirmText='Delete'
+          cancelText='Cancel'
           onCancel={() => this.setState({ toDelete: null })}
           onConfirm={() => {
             this.setState({ toDelete: null });
@@ -300,3 +300,5 @@ class Jobs extends TableView {
     return null;
   }
 }
+
+export default Jobs;

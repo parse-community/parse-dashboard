@@ -23,7 +23,7 @@ const AppsMenu = ({ apps, current, height, onSelect, onPinClick }) => (
           return null;
         }
         return (
-          <Link to={{ pathname: html`/apps/${app.slug}/browser` }} key={app.slug} className={styles.menuRow} onClick={onSelect.bind(null, current.slug)}>
+          <Link to={html`/apps/${app.slug}/browser`} key={app.slug} className={styles.menuRow} onClick={onSelect.bind(null, current.slug)}>
             <span>{app.name}</span>
             <AppBadge production={app.production} />
           </Link>
