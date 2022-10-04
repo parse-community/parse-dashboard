@@ -9,17 +9,23 @@ import keyMirror from 'lib/keyMirror';
 import Parse from 'parse';
 import { Map, List } from 'immutable';
 import { registerStore } from 'lib/stores/StoreManager';
+import notification from 'lib/notification';
 
 export const ActionTypes = keyMirror(['FETCH', 'CREATE', 'EDIT', 'DELETE']);
 
 const parseURL = 'classes/Code';
 
-function normalifyData({ triggerName, triggerClass, functionName, hookURL }) {
+function normalifyData({
+  triggerName,
+  triggerClass,
+  functionName,
+  sourceCode,
+}) {
   return {
     triggerName: triggerName || '',
     collectionName: triggerClass || '',
     functionName: functionName || '',
-    url: hookURL || '',
+    code: sourceCode || '',
   };
 }
 
@@ -38,7 +44,10 @@ function CodeStore(state, action) {
       return Parse._request('POST', parseURL, newData, {
         useMasterKey: true,
       }).then(({ objectId }) => {
-        if (objectId) return state.set('code', state.get('code').push(newData));
+        if (objectId) {
+          notification('success', 'Successfully Created!');
+          return state.set('code', state.get('code').push({ ...newData, objectId }));
+        }
         return state;
       });
     case ActionTypes.EDIT:
@@ -53,10 +62,11 @@ function CodeStore(state, action) {
         }
       ).then(({ updatedAt }) => {
         if (updatedAt) {
+          notification('success', 'Successfully Updated!');
           const index = state
             .get('code')
             .findIndex((item) => item.objectId === action.objectId);
-          return state.setIn(['code', index], updatedData);
+          return state.setIn(['code', index], { ...updatedData, objectId: action.objectId });
         }
         return state;
       });
@@ -70,8 +80,10 @@ function CodeStore(state, action) {
           useMasterKey: true,
         }
       ).then(({ error }) => {
-        if (! error)
+        if (!error) {
+          notification('success', 'Successfully Removed!');
           return state.set('code', state.get('code').filter((item) => !(item.objectId === action.objectId)));
+        }
         return state;
       });
   }

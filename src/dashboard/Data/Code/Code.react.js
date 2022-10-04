@@ -24,6 +24,7 @@ import Toolbar from 'components/Toolbar/Toolbar.react';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 import { ActionTypes as CodeActionTypes } from 'lib/stores/CodeStore';
 import styles from './Code.scss';
+import ParseCodeEditor from 'components/ParseCodeEditor/ParseCodeEditor.react';
 
 let TableWarning = ({ text }) => (
   <div>
@@ -36,7 +37,7 @@ const defaultState = {
   hookType: 'function',
   functionName: '',
   triggerClass: '',
-  hookURL: '',
+  sourceCode: '',
 };
 
 export default
@@ -92,6 +93,7 @@ class Code extends TableView {
   }
 
   renderExtras() {
+    const that = this;
     let classNames = [];
     if (this.props.schema.data) {
       let classes = this.props.schema.data.get('classes');
@@ -100,7 +102,7 @@ class Code extends TableView {
       }
     }
 
-    let codeModalFields = (
+    const codeModalFields = (
       <div>
         <Field
           label={
@@ -189,28 +191,27 @@ class Code extends TableView {
             }
           />
         )}
-        <Field
-          label={<Label text="Source Code" />}
-          input={
-            <TextInput
-              disabled={this.state.showDeleteCodeModal}
-              onChange={(value) => {
-                this.setState({ hookURL: value });
-              }}
-              value={this.state.hookURL}
+        {
+          <>
+            <div className={styles.label}>Source Code</div>
+
+            <ParseCodeEditor
+              code={this.state.sourceCode}
+              setCompile={(func) => (that.compileCode = func)}
+              isModal={true}
             />
-          }
-        />
+          </>
+        }
       </div>
     );
 
-    let hookRequestData = ({
-      hookURL,
+    const hookRequestData = ({
+      sourceCode,
       hookType,
       functionName,
       triggerClass,
     }) => {
-      let data = { hookURL: hookURL };
+      let data = { sourceCode };
       if (hookType === 'function') {
         data.functionName = functionName;
       } else {
@@ -220,14 +221,15 @@ class Code extends TableView {
       return data;
     };
 
-    let newHookModal = (
+    const newHookModal = (
       <FormModal
         key="new"
         title="Create a Code"
         icon="collaborate-outline"
         iconSize={30}
         open={this.state.showNewCodeModal}
-        onSubmit={() => {
+        onSubmit={async () => {
+          this.setState({ sourceCode: await that.compileCode() });
           return this.props.code.dispatch(
             CodeActionTypes.CREATE,
             hookRequestData(this.state)
@@ -245,18 +247,20 @@ class Code extends TableView {
       </FormModal>
     );
 
-    let editHookModal = (
+    const editHookModal = (
       <FormModal
         key="edit"
         title="Change your Code"
         subtitle="Code on external servers can be edited here."
         open={this.state.showEditCodeModal}
-        onSubmit={() => {
-          if (this.state.currentObjectId)
+        onSubmit={async () => {
+          this.setState({ sourceCode: await that.compileCode() });
+          if (this.state.currentObjectId) {
             return this.props.code.dispatch(CodeActionTypes.EDIT, {
               ...hookRequestData(this.state),
               objectId: this.state.currentObjectId,
             });
+          }
         }}
         onClose={() => {
           this.setState({
@@ -273,7 +277,7 @@ class Code extends TableView {
       </FormModal>
     );
 
-    let deleteHookModal = (
+    const deleteHookModal = (
       <FormModal
         key="delete"
         title="Delete your Code"
@@ -308,34 +312,30 @@ class Code extends TableView {
   }
 
   renderRow(hook) {
-    const showEdit = hook.url
-      ? () => {
-          this.setState({
-            hookType: hook.functionName ? 'function' : hook.triggerName,
-            functionName: hook.functionName,
-            triggerClass: hook.collectionName,
-            hookURL: hook.url,
-            showEditCodeModal: true,
-            currentObjectId: hook.objectId,
-          });
-        }
-      : null;
+    const showEdit = () => {
+      this.setState({
+        hookType: hook.functionName ? 'function' : hook.triggerName,
+        functionName: hook.functionName,
+        triggerClass: hook.collectionName,
+        sourceCode: hook.code,
+        showEditCodeModal: true,
+        currentObjectId: hook.objectId,
+      });
+    };
 
-    const showDelete = hook.url
-      ? () => {
-          this.setState({
-            hookType: hook.functionName ? 'function' : hook.triggerName,
-            functionName: hook.functionName,
-            triggerClass: hook.collectionName,
-            hookURL: hook.url,
-            showDeleteCodeModal: true,
-            currentObjectId: hook.objectId,
-          });
-        }
-      : null;
-    const rowStyle = hook.url ? { cursor: 'pointer' } : {};
+    const showDelete = () => {
+      this.setState({
+        hookType: hook.functionName ? 'function' : hook.triggerName,
+        functionName: hook.functionName,
+        triggerClass: hook.collectionName,
+        sourceCode: hook.code,
+        showDeleteCodeModal: true,
+        currentObjectId: hook.objectId,
+      });
+    };
+    const rowStyle = { cursor: 'pointer' };
     let deleteColumnContents = null;
-    if (hook.url) {
+    if (hook.code) {
       deleteColumnContents = (
         <button
           type="button"
@@ -348,7 +348,7 @@ class Code extends TableView {
     } else {
       const isOverridden = !!this.tableData().find(
         (otherHook) =>
-          otherHook.url &&
+          otherHook.code &&
           otherHook.functionName == hook.functionName &&
           otherHook.triggerName == hook.triggerName
       );
@@ -368,7 +368,7 @@ class Code extends TableView {
           {hook.functionName || hook.triggerName}
         </td>
         <td style={rowStyle} onClick={showEdit} width={'40%'}>
-          {hook.url || 'Cloud Code'}
+          {hook.code || ''}
         </td>
         <td width={'10%'}>{deleteColumnContents}</td>
       </tr>
@@ -386,8 +386,8 @@ class Code extends TableView {
       <TableHeader width={20} key="Method">
         Method
       </TableHeader>,
-      <TableHeader width={40} key="Destination">
-        Destination
+      <TableHeader width={40} key="SourceCode">
+        Source Code
       </TableHeader>,
       <TableHeader width={10} key="Delete">
         &nbsp;

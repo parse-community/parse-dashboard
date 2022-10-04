@@ -10,3 +10,10 @@
 .deleteButton {
   @include buttonReset;
 }
+
+.label {
+  padding: 10px 20px; 
+  font-weight: 700; 
+  font-size: 13px; 
+  font-family: 'Noto Sans';
+}

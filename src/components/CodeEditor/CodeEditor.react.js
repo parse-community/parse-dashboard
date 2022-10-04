@@ -37,7 +37,7 @@ export default class CodeEditor extends React.Component {
       <Editor
         mode="javascript"
         theme="solarized_dark"
-        onChange={value => this.setState({ code: value })}
+        onChange={(value) => this.setState({ code: value })}
         fontSize={fontSize}
         showPrintMargin={true}
         showGutter={true}
@@ -49,6 +49,7 @@ export default class CodeEditor extends React.Component {
         enableSnippets={false}
         showLineNumbers={true}
         tabSize={2}
+        style={this.props.style ? this.props.style : {}}
       />
     );
   }
@@ -56,5 +57,5 @@ export default class CodeEditor extends React.Component {
 
 CodeEditor.propTypes = {
   fontSize: PropTypes.number.describe('Font size of the editor'),
-  placeHolder: PropTypes.string.describe('Code place holder')
+  placeHolder: PropTypes.string.describe('Code place holder'),
 };
