@@ -52,7 +52,6 @@ import { setBasePath }    from 'lib/AJAX';
 //!HERE TO START ADDED PAGES IMPORT
 import Pages              from './Data/Page/Pages.react';
 import Code               from './Data/Code/Code.react';
-import Triggers           from './Data/Triggers/Triggers.react';
 //!HERE TO END ADDED PAGES IMPORT
 import {
   Router,
@@ -307,15 +306,8 @@ export default class Dashboard extends React.Component {
           )} />
           <Redirect from={ match.path + '/pages' } to='/apps/:appId/pages/add_new' />
 
-          <Route path={ match.path + '/code/:type' } render={(props) => (
-            <Code {...props} params={props.match.params} />
-          )} />
-          <Redirect from={ match.path + '/code' } to='/apps/:appId/code/add_new' />
-
-          <Route path={ match.path + '/triggers/:type' } render={(props) => (
-            <Triggers {...props} params={props.match.params} />
-          )} />
-          <Redirect from={ match.path + '/triggers' } to='/apps/:appId/triggers/add_new' />
+          <Route path={ match.path + '/code' } render={(props) => (<Code {...props} />)} />
+          <Redirect from={ match.path + '/code' } to='/apps/:appId/code' />
           //!HERE TO ADD MENU
 
           <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />

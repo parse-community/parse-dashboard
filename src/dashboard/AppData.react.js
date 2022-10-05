@@ -10,6 +10,7 @@ import AppSelector    from 'dashboard/AppSelector.react';
 import AppsManager    from 'lib/AppsManager';
 import history        from 'dashboard/history';
 import { CurrentApp } from 'context/currentApp';
+import { Toaster }    from 'react-hot-toast';
 
 class AppData extends React.Component {
   render() {
@@ -29,6 +30,7 @@ class AppData extends React.Component {
         <div>
           {this.props.children}
         </div>
+        <Toaster/>
       </CurrentApp.Provider>
     );
   }

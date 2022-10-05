@@ -7,22 +7,13 @@
  */
  @import 'stylesheets/globals.scss';
 
- .code {
-   position: relative;
-   min-height: 100vh;
- }
- 
- .content {
-   padding: 106px 10px 10px 10px;
-   background: $logViewBackgroundColor;
-   min-height: 100vh;
- }
- 
- .empty {
-   position: absolute;
-   top: 96px;
-   left: 0;
-   right: 0;
-   bottom: 0;
- }
- 
+.deleteButton {
+  @include buttonReset;
+}
+
+.label {
+  padding: 10px 20px; 
+  font-weight: 700; 
+  font-size: 13px; 
+  font-family: 'Noto Sans';
+}
