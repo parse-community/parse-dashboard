@@ -301,10 +301,8 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/migration' } component={Migration} />
 
           //!HERE TO ADD MENU
-          <Route path={ match.path + '/pages/:type' } render={(props) => (
-            <Pages {...props} params={props.match.params} />
-          )} />
-          <Redirect from={ match.path + '/pages' } to='/apps/:appId/pages/add_new' />
+          <Route path={ match.path + '/pages' } render={(props) => (<Pages {...props}/>)} />
+          <Redirect from={ match.path + '/pages' } to='/apps/:appId/pages' />
 
           <Route path={ match.path + '/code' } render={(props) => (<Code {...props} />)} />
           <Redirect from={ match.path + '/code' } to='/apps/:appId/code' />
