@@ -8,7 +8,6 @@
 import AppsManager    from 'lib/AppsManager';
 import AppsMenu       from 'components/Sidebar/AppsMenu.react';
 import AppName        from 'components/Sidebar/AppName.react';
-import FooterMenu     from 'components/Sidebar/FooterMenu.react';
 import isInsidePopover from 'lib/isInsidePopover';
 import Pin            from 'components/Sidebar/Pin.react';
 import React, { useEffect, useState, useContext } from 'react';
@@ -17,6 +16,8 @@ import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import { CurrentApp } from 'context/currentApp';
+import Icon     from 'components/Icon/Icon.react';
+let mountPath = window.PARSE_DASHBOARD_PATH;
 
 const Sidebar = ({
   prefix,
@@ -35,6 +36,10 @@ const Sidebar = ({
   const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
   const [ collapsed, setCollapsed ] = useState(false);
   const [ fixed, setFixed ] = useState(true);
+  const [dashboardUser, setDashboardUser] = useState('');
+  fetch(mountPath).then(response => {
+    setDashboardUser(response.headers.get('username'))
+  })
   let currentWidth = window.innerWidth;
 
   const windowResizeHandler = () => {
@@ -176,11 +181,14 @@ const Sidebar = ({
           : undefined
       }
     >
-      <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} />
+      <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} dashboardUser={dashboardUser} />
       {sidebarContent}
-      <div className={styles.footer}>
-        <FooterMenu isCollapsed={!appsMenuOpen && collapsed} />
-      </div>
+      {dashboardUser && <div className={styles.footer}>
+        <a href={`${mountPath}logout`} className={styles.more}>
+        <Icon height={24} width={24} name='logout' />
+        Logout
+      </a>
+      </div> }
     </div>
   );
 }

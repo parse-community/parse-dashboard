@@ -14,7 +14,7 @@ class DemoTrackVisibility extends React.Component {
   constructor() {
     super();
 
-    this.ref = React.createRef(null);
+    this.ref = React.createRef();
 
     ///[0.00...1.00]
     const thresholds = Array(101)

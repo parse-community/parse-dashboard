@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 /*
  * Copyright (c) 2016-present, Parse, LLC
  * All rights reserved.
