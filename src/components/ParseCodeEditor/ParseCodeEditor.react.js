@@ -135,7 +135,7 @@ export default class ParseCodeEditor extends React.Component {
           ref={(editor) => (this.editor = editor)}
           style={this.props.isModal ? { height: '300px' } : {}}
         />
-        <div className={styles['console-ctn']}>
+        <div style={this.props.showConsole ? {} : { display: 'none' }} className={styles['console-ctn']}>
           <header>
             <h3>Console</h3>
             <div className={styles['buttons-ctn']}>

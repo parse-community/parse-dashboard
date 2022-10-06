@@ -13,26 +13,30 @@ import notification from 'lib/notification';
 
 export const ActionTypes = keyMirror(['FETCH', 'CREATE', 'EDIT', 'DELETE']);
 
-const parseURL = 'classes/Page';
+const parseURL = 'classes/Deploy';
 
 function normalifyData({
   name,
-  conntent,
+  collectionName,
+  functionType,
+  sourceCode,
 }) {
   return {
     name: name || '',
-    code: conntent || '',
+    collectionName: collectionName || '',
+    type: functionType || '',
+    code: sourceCode || '',
   };
 }
 
-function PageStore(state, action) {
+function DeployStore(state, action) {
   action.app.setParseKeys();
   switch (action.type) {
     case ActionTypes.FETCH:
       return Parse._request('GET', parseURL, {}, {}).then(({ results }) => {
         return Map({
           lastFetch: new Date(),
-          page: List(results),
+          deploy: List(results),
         });
       });
     case ActionTypes.CREATE:
@@ -42,7 +46,7 @@ function PageStore(state, action) {
       }).then(({ objectId }) => {
         if (objectId) {
           notification('success', 'Successfully Created!');
-          return state.set('page', state.get('page').push({ ...newData, objectId }));
+          return state.set('deploy', state.get('deploy').push({ ...newData, objectId }));
         }
         return state;
       });
@@ -60,9 +64,9 @@ function PageStore(state, action) {
         if (updatedAt) {
           notification('success', 'Successfully Updated!');
           const index = state
-            .get('page')
+            .get('deploy')
             .findIndex((item) => item.objectId === action.objectId);
-          return state.setIn(['page', index], { ...updatedData, objectId: action.objectId });
+          return state.setIn(['deploy', index], { ...updatedData, objectId: action.objectId });
         }
         return state;
       });
@@ -78,11 +82,11 @@ function PageStore(state, action) {
       ).then(({ error }) => {
         if (!error) {
           notification('success', 'Successfully Removed!');
-          return state.set('page', state.get('page').filter((item) => !(item.objectId === action.objectId)));
+          return state.set('deploy', state.get('deploy').filter((item) => !(item.objectId === action.objectId)));
         }
         return state;
       });
   }
 }
 
-registerStore('Pages', PageStore);
+registerStore('Deploy', DeployStore);

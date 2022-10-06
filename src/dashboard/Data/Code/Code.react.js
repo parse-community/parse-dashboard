@@ -160,7 +160,8 @@ class Code extends TableView {
             }
             input={
               <TextInput
-                placeholder="MyClouldFunction"
+                show
+                placeholder="MyCloudFunction"
                 disabled={!this.state.showNewCodeModal}
                 onChange={(value) => {
                   this.setState({ functionName: value });
@@ -196,6 +197,7 @@ class Code extends TableView {
             <div className={styles.label}>Source Code</div>
 
             <ParseCodeEditor
+              showConsole={false}
               code={this.state.sourceCode}
               setCompile={(func) => (that.compileCode = func)}
               isModal={true}
@@ -224,7 +226,7 @@ class Code extends TableView {
     const newHookModal = (
       <FormModal
         key="new"
-        title="Create a Code"
+        title="Create Code"
         icon="collaborate-outline"
         iconSize={30}
         open={this.state.showNewCodeModal}

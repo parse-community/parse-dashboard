@@ -2,9 +2,9 @@
   "apps": [
     {
       "serverURL": "http://localhost:1337/parse",
-      "appId": "GemForce-Local",
-      "masterKey": "GemForceMasterKey", 
-      "appName": "GemForce-Local",
+      "appId": "gemForce",
+      "masterKey": "gemForceMasterKey", 
+      "appName": "gemForce",
       "iconName": "",
       "primaryBackgroundColor": "",
       "secondaryBackgroundColor": ""

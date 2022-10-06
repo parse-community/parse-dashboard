@@ -34,23 +34,21 @@ const defaultState = {
 };
 
 export default
-@subscribeTo('Page', 'page')
+@subscribeTo('Deploy', 'deploy')
 @subscribeTo('Schema', 'schema')
-class Pages extends TableView {
+export default class Deploy extends TableView {
   constructor() {
     super();
     this.section = 'Core';
     this.subsection = 'Pages';
     this.action = new SidebarAction(
-      'Create a Page',
-      this.openNewPageModal.bind(this)
+      'Deploy Contracts',
+      this.deployContractModal.bind(this)
     );
     this.state = {
-      showNewPageModal: false,
-      showEditPageModal: false,
-      showDeletePageModal: false,
-      currentObjectId: undefined,
-
+      showDeployContractModal: false,
+      viewDeployment: false,
+      currentDeployId: undefined,
       ...defaultState,
     };
   }
@@ -69,11 +67,11 @@ class Pages extends TableView {
 
   renderToolbar() {
     return (
-      <Toolbar section="Integrations" subsection="Pages">
+      <Toolbar section="Integrations" subsection="Deploy">
         <Button
           color="white"
-          value="Create a Page"
-          onClick={this.openNewPageModal.bind(this)}
+          value="Deploy one or more Contracts"
+          onClick={this.openNewDeployModal.bind(this)}
         />
       </Toolbar>
     );
@@ -98,25 +96,15 @@ class Pages extends TableView {
     const pageModalFields = (      
       <div>
         <Field
-          label={<Label text="Page Name" />}
+          label={<Label text="Deployment Name" />}
           input={
             <TextInput
-              placeholder="PageName"
-              disabled={!this.state.showNewPageModal}
+              placeholder="DeployName"
+              disabled={!this.state.showDeployContractModal}
               onChange={(value) => {
                 this.setState({ name: value });
               }}
-              value={this.state.name}
-            />
-          }
-        />
-        <Field
-          label={<Label text="Page URL" />}
-          input={
-            <TextInput
-              placeholder="PageUrl"
-              disabled={true}
-              value={'https://direct.bitcog.co/pages/' + this.state.name.toLowerCase()}
+              value={this.state.name + ' Deploy'}
             />
           }
         />
@@ -144,10 +132,10 @@ class Pages extends TableView {
     const newHookModal = (
       <FormModal
         key="new"
-        title="Create a Page"
+        title="Deploy a Contract"
         icon="collaborate-outline"
         iconSize={30}
-        open={this.state.showNewPageModal}
+        open={this.state.showDeployContractModal}
         onSubmit={async () => {
           this.setState({ sourceCode: await that.compileCode() });
           return this.props.page.dispatch(
@@ -156,10 +144,10 @@ class Pages extends TableView {
           );
         }}
         onClose={() => {
-          this.setState({ showNewPageModal: false });
+          this.setState({ shoDeployContractModal: false });
         }}
-        submitText="Create"
-        inProgressText={'Creating\u2026'}
+        submitText="Deploy"
+        inProgressText={'Deploying\u2026'}
         clearFields={this.clearFields.bind(this)}
         enabled={true /* TODO: do some validation here */}
       >
@@ -170,9 +158,9 @@ class Pages extends TableView {
     const editHookModal = (
       <FormModal
         key="edit"
-        title="Change your Page"
-        subtitle="Page on external servers can be edited here."
-        open={this.state.showEditPageModal}
+        title="Edit your Deployment"
+        subtitle="Update the deploy's name"
+        open={this.state.showDeployContractModal}
         onSubmit={async () => {
           this.setState({ sourceCode: await that.compileCode() });
           if (this.state.currentObjectId) {
@@ -184,7 +172,7 @@ class Pages extends TableView {
         }}
         onClose={() => {
           this.setState({
-            showEditPageModal: false,
+            showDeployContractModal: false,
             currentObjectId: undefined,
           });
         }}
@@ -235,20 +223,16 @@ class Pages extends TableView {
     const showEdit = () => {
       this.setState({
         name: item.name,
-        functionType: item.type,
-        collectionName: item.collectionName,
         sourceCode: item.code,
-        showEditPageModal: true,
+        showDeployContractModal: true,
         currentObjectId: item.objectId,
       });
     };
     const showDelete = () => {
       this.setState({
         name: item.name,
-        functionType: item.type,
-        collectionName: item.collectionName,
         sourceCode: item.code,
-        showDeletePageModal: true,
+        showDeletePDeployModal: true,
         currentObjectId: item.objectId,
       });
     };
@@ -259,10 +243,7 @@ class Pages extends TableView {
           {item.name}
         </td>
         <td style={rowStyle} onClick={showEdit} width={'15%'}>
-          {item.collectionName || ''}
-        </td>
-        <td style={rowStyle} onClick={showEdit} width={'20%'}>
-          {item.type}
+          {item.networkId || ''}
         </td>
         <td style={rowStyle} onClick={showEdit} width={'40%'}>
           {item.code || ''}
@@ -281,14 +262,11 @@ class Pages extends TableView {
       <TableHeader width={15} key="Name">
         Name
       </TableHeader>,
-      <TableHeader width={15} key="CollectionName">
-        Collection Name
+      <TableHeader width={15} key="Network">
+        Network
       </TableHeader>,
-      <TableHeader width={20} key="Type">
-        Type
-      </TableHeader>,
-      <TableHeader width={40} key="SourceCode">
-        Source Code
+      <TableHeader width={40} key="Contracts">
+        Contracts
       </TableHeader>,
       <TableHeader width={10} key="Delete">
         &nbsp;
@@ -299,11 +277,11 @@ class Pages extends TableView {
   renderEmpty() {
     return (
       <EmptyState
-        title="Pages"
+        title="Deploy"
         description={<span>...</span>}
         icon="gears"
-        cta="Create a Page"
-        action={this.openNewPageModal.bind(this)}
+        cta="Deploy Smart Contracts"
+        action={this.openNewDeployModal.bind(this)}
       />
     );
   }
@@ -318,7 +296,7 @@ class Pages extends TableView {
     return undefined;
   }
 
-  openNewPageModal() {
-    this.setState({ showNewPageModal: true });
+  openNewDeployModal() {
+    this.setState({ showNewDeployModal: true });
   }
 }
