@@ -5,6 +5,7 @@ const packageJson = require('package-json');
 const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 var fs = require('fs');
+const cluster = require('cluster');
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
@@ -68,6 +69,10 @@ module.exports = function(config, options) {
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
+    const cookieSessionSecret = config.cookieSessionSecret || options.cookieSessionSecret;
+    if (cluster.isWorker && !cookieSessionSecret) {
+      console.warn('When using clusters, you must set a static cookieSessionSecret.');
+    }
     authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret });
 
     // CSRF error handler
