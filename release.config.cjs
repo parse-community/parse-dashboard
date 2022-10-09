@@ -2,8 +2,8 @@
  * Semantic Release Config
  */
 
-import fs from 'node:fs/promises';
-import path from 'node:path';
+const fs = require('fs').promises;
+const path = require('path');
 
 // Get env vars
 const ref = process.env.GITHUB_REF;
@@ -120,4 +120,4 @@ function getReleaseComment() {
   return comment;
 }
 
-export default config();
+module.exports = config();
