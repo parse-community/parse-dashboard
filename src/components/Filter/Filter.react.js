@@ -16,12 +16,13 @@ function changeField(schema, filters, index, newField) {
   const allowedConstraints = Filters.FieldConstraints[schema[newField].type];
   const current = filters.get(index);
   const constraint = current.get('constraint');
-  const compare = current.get('compareTo') ;
+  const compare = current.get('compareTo');
+  const defaultCompare = Filters.DefaultComparisons[schema[newField].type];
   const useExisting = allowedConstraints.includes(constraint);
   const newFilter = new Map({
     field: newField,
     constraint: useExisting ? constraint : Filters.FieldConstraints[schema[newField].type][0],
-    compareTo: useExisting ? compare : Filters.DefaultComparisons[schema[newField].type]
+    compareTo: (useExisting && typeof defaultCompare === typeof compare) ? compare : defaultCompare
   });
   return filters.set(index, newFilter);
 }
