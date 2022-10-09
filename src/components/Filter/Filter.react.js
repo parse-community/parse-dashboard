@@ -13,10 +13,16 @@ import stringCompare  from 'lib/stringCompare';
 import { CurrentApp } from 'context/currentApp';
 
 function changeField(schema, filters, index, newField) {
-  let newFilter = new Map({
+  const allowedConstraints = Filters.FieldConstraints[schema[newField].type];
+  const current = filters.get(index);
+  const constraint = current.get('constraint');
+  const compare = current.get('compareTo');
+  const defaultCompare = Filters.DefaultComparisons[schema[newField].type];
+  const useExisting = allowedConstraints.includes(constraint);
+  const newFilter = new Map({
     field: newField,
-    constraint: Filters.FieldConstraints[schema[newField].type][0],
-    compareTo: Filters.DefaultComparisons[schema[newField].type]
+    constraint: useExisting ? constraint : Filters.FieldConstraints[schema[newField].type][0],
+    compareTo: (useExisting && typeof defaultCompare === typeof compare) ? compare : defaultCompare
   });
   return filters.set(index, newFilter);
 }
