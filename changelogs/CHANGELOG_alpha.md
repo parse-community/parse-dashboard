@@ -1,3 +1,10 @@
+# [5.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.3...5.0.0-alpha.4) (2022-10-09)
+
+
+### Features
+
+* keep entered filter value when changing filter operator ([#2313](https://github.com/ParsePlatform/parse-dashboard/issues/2313)) ([d6d38bf](https://github.com/ParsePlatform/parse-dashboard/commit/d6d38bfc2b06360c6a1ecc990f937cd675d1ff39))
+
 # [5.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.2...5.0.0-alpha.3) (2022-09-27)
 
 
