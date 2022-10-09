@@ -35,15 +35,15 @@ export default class Calendar extends React.Component {
   }
 
   handlePrev() {
-    this.setState({
-      currentMonth: prevMonth(this.state.currentMonth)
-    });
+    this.setState((prev) => ({
+      currentMonth: prevMonth(prev.currentMonth)
+    }));
   }
 
   handleNext() {
-    this.setState({
-      currentMonth: nextMonth(this.state.currentMonth)
-    });
+    this.setState((prev) => ({
+      currentMonth: nextMonth(prev.currentMonth)
+    }));
   }
 
   renderMonth() {

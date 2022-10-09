@@ -26,9 +26,9 @@ class Toggler extends React.Component {
   }
 
   toggle() {
-    this.setState({
-      expanded: !this.state.expanded
-    });
+    this.setState((prev) => ({
+      expanded: !prev.expanded
+    }));
   }
 
   render() {

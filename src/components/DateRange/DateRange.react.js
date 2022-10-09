@@ -36,8 +36,8 @@ export default class DateRange extends React.Component {
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState((prev) => {
+      if (prev.open) {
         return { open: false };
       }
       let pos = Position.inWindow(this.wrapRef.current);
@@ -52,19 +52,23 @@ export default class DateRange extends React.Component {
   }
 
   setStart(start) {
-    let end = this.state.end;
-    if (start > end) {
-      end = daysFrom(start, 1);
-    }
-    this.setState({ start, end });
+    this.setState((prev) => {
+      let end = prev.end;
+      if (start > end) {
+        end = daysFrom(start, 1);
+      }
+      return { start, end };
+    });
   }
 
   setEnd(end) {
-    let start = this.state.start;
-    if (start > end) {
-      start = daysFrom(end, -1);
-    }
-    this.setState({ start, end });
+    this.setState((prev) => {
+      let start = prev.start;
+      if (start > end) {
+        start = daysFrom(end, -1);
+      }
+      return { start, end };
+    });
   }
 
   close() {

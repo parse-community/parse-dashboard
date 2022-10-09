@@ -23,7 +23,7 @@ export default class Suggestion extends React.Component {
 
   toggle() {
     this.setPosition();
-    this.setState({ open: !this.state.open });
+    this.setState((prev) => ({ open: !prev.open }));
   }
 
   setPosition(position) {

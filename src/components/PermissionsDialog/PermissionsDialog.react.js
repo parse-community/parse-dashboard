@@ -761,11 +761,6 @@ export default class PermissionsDialog extends React.Component {
 
           let id, name, key, newEntry;
 
-          let nextKeys;
-          let nextEntryTypes;
-          let nextPerms = this.state.perms;
-          let nextPointerPerms = this.state.pointerPerms;
-
           if (next.user || next.role) {
             id = next.user ? next.user.id : next.role.id;
             name = next.user ? next.user.get('username') : next.role.getName();
@@ -791,46 +786,48 @@ export default class PermissionsDialog extends React.Component {
             });
           }
 
-          // create new permissions
-          if (next.pointer) {
-            if (this.props.advanced) {
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'get'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'find'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'count'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'create'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'update'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'delete'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'addField'], true)
-            } else {
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'read'], true)
-              nextPointerPerms = nextPointerPerms.setIn([entry, 'write'], true)
-            }
-          } else {
-            if (this.props.advanced) {
-              nextPerms = nextPerms.setIn(['get', key], true);
-              nextPerms = nextPerms.setIn(['find', key], true);
-              nextPerms = nextPerms.setIn(['count', key], true);
-              nextPerms = nextPerms.setIn(['create', key], true);
-              nextPerms = nextPerms.setIn(['update', key], true);
-              nextPerms = nextPerms.setIn(['delete', key], true);
-              nextPerms = nextPerms.setIn(['addField', key], true);
-            } else {
-              nextPerms = nextPerms.setIn(['read', key], true);
-              nextPerms = nextPerms.setIn(['write', key], true);
-            }
-          }
-
-          nextKeys = this.state.newKeys.concat([key]);
-          nextEntryTypes = this.state.entryTypes.set(key, newEntry);
-
           return this.setState(
-            {
-              perms: nextPerms,
-              pointerPerms: nextPointerPerms,
-              newKeys: nextKeys,
-              entryTypes: nextEntryTypes,
-              newEntry: '',
-              entryError: null
+            (prev) => {
+              let nextPerms = prev.perms;
+              let nextPointerPerms = prev.pointerPerms;
+
+              // create new permissions
+              if (next.pointer) {
+                if (this.props.advanced) {
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'get'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'find'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'count'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'create'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'update'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'delete'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'addField'], true)
+                } else {
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'read'], true)
+                  nextPointerPerms = nextPointerPerms.setIn([entry, 'write'], true)
+                }
+              } else {
+                if (this.props.advanced) {
+                  nextPerms = nextPerms.setIn(['get', key], true);
+                  nextPerms = nextPerms.setIn(['find', key], true);
+                  nextPerms = nextPerms.setIn(['count', key], true);
+                  nextPerms = nextPerms.setIn(['create', key], true);
+                  nextPerms = nextPerms.setIn(['update', key], true);
+                  nextPerms = nextPerms.setIn(['delete', key], true);
+                  nextPerms = nextPerms.setIn(['addField', key], true);
+                } else {
+                  nextPerms = nextPerms.setIn(['read', key], true);
+                  nextPerms = nextPerms.setIn(['write', key], true);
+                }
+              }
+
+              return {
+                perms: nextPerms,
+                pointerPerms: nextPointerPerms,
+                newKeys: prev.newKeys.concat([key]),
+                entryTypes: prev.entryTypes.set(key, newEntry),
+                newEntry: '',
+                entryError: null
+              }
             },
             () => this.refEntry.current.resetInput()
           );
@@ -855,20 +852,25 @@ export default class PermissionsDialog extends React.Component {
     if (isPointer) {
       let index = this.state.pointers.indexOf(key);
       if (index > -1) {
-        let filtered = this.state.pointers.concat([]);
-        filtered.splice(index, 1);
-        return this.setState({
-          pointers: filtered,
-          pointerPerms: this.state.pointerPerms.delete(key)
+        return this.setState((prev) => {
+          let filtered = prev.pointers.concat([]);
+          filtered.splice(index, 1);
+
+          return {
+            pointers: filtered,
+            pointerPerms: prev.pointerPerms.delete(key)
+          };
         });
       }
       index = this.state.newKeys.indexOf(key);
       if (index > -1) {
-        let filtered = this.state.newKeys.concat([]);
-        filtered.splice(index, 1);
-        return this.setState({
-          newKeys: filtered,
-          pointerPerms: this.state.pointerPerms.delete(key)
+        return this.setState((prev) => {
+          let filtered = prev.newKeys.concat([]);
+          filtered.splice(index, 1);
+          return {
+            newKeys: filtered,
+            pointerPerms: prev.pointerPerms.delete(key)
+          };
         });
       }
     } else {
@@ -887,20 +889,24 @@ export default class PermissionsDialog extends React.Component {
         newPerms = newPerms.deleteIn(['read', key]).deleteIn(['write', key]);
       }
       if (index > -1) {
-        let filtered = this.state.keys.concat([]);
-        filtered.splice(index, 1);
-        return this.setState({
-          keys: filtered,
-          perms: newPerms
+        return this.setState((prev) => {
+          let filtered = prev.keys.concat([]);
+          filtered.splice(index, 1);
+          return {
+            keys: filtered,
+            perms: newPerms
+          };
         });
       }
       index = this.state.newKeys.indexOf(key);
       if (index > -1) {
-        let filtered = this.state.newKeys.concat([]);
-        filtered.splice(index, 1);
-        return this.setState({
-          newKeys: filtered,
-          perms: newPerms
+        return this.setState((prev) => {
+          let filtered = prev.newKeys.concat([]);
+          filtered.splice(index, 1);
+          return {
+            newKeys: filtered,
+            perms: newPerms
+          };
         });
       }
     }

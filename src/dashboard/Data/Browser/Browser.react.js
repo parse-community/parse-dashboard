@@ -327,14 +327,13 @@ class Browser extends DashboardView {
     });
   }
 
-  newColumn(payload, required) {
+  newColumn(name, payload, required) {
     return this.props.schema.dispatch(ActionTypes.ADD_COLUMN, payload)
       .then(() => {
         if (required) {
-          let requiredCols = [...this.state.requiredColumnFields, name];
-          this.setState({
-            requiredColumnFields: requiredCols
-          });
+          this.setState((prev) => ({
+            requiredColumnFields: [...prev.requiredColumnFields, name]
+          }));
         }
       })
       .catch((err) => {
@@ -351,7 +350,7 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.newColumn(payload, required).finally(() => {
+    this.newColumn(name, payload, required).finally(() => {
       this.setState({ showAddColumnDialog: false, keepAddingCols: false });
     });
   }
@@ -365,7 +364,7 @@ class Browser extends DashboardView {
       required,
       defaultValue
     };
-    this.newColumn(payload, required).finally(() => {
+    this.newColumn(name, payload, required).finally(() => {
       this.setState({ showAddColumnDialog: false, keepAddingCols: false });
       this.setState({ showAddColumnDialog: true, keepAddingCols: true });
     });
@@ -373,12 +372,11 @@ class Browser extends DashboardView {
 
   addRow() {
     if (!this.state.newObject) {
-      const relation = this.state.relation;
-      this.setState({
-        newObject: (relation ?
-          new Parse.Object(relation.targetClassName)
+      this.setState((prev) => ({
+        newObject: (prev.relation ?
+          new Parse.Object(prev.relation.targetClassName)
         : new Parse.Object(this.props.params.className) ),
-      });
+      }));
     }
   }
 
@@ -455,15 +453,15 @@ class Browser extends DashboardView {
           const targetClassName = relation.targetClassName;
           parent.save(null, { useMasterKey }).then(
             () => {
-              this.setState({
+              this.setState((prev) => ({
                 newObject: null,
-                data: [obj, ...this.state.data],
-                relationCount: this.state.relationCount + 1,
+                data: [obj, ...prev.data],
+                relationCount: prev.relationCount + 1,
                 counts: {
-                  ...this.state.counts,
-                  [targetClassName]: this.state.counts[targetClassName] + 1
+                  ...prev.counts,
+                  [targetClassName]: prev.counts[targetClassName] + 1
                 }
-              });
+              }));
             },
             error => {
               let msg = typeof error === 'string' ? error : error.message;
@@ -471,7 +469,7 @@ class Browser extends DashboardView {
                 msg = msg[0].toUpperCase() + msg.substr(1);
               }
               obj.revert();
-              this.setState({ data: this.state.data });
+              this.setState((prev) => ({ data: prev.data }));
               this.showNote(msg, true);
             }
           );
@@ -711,17 +709,21 @@ class Browser extends DashboardView {
 
   async fetchData(source, filters = new List()) {
     const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      if (this.state.isUnique) {
-        filteredCounts[source] = data.length;
+    const count = await this.fetchParseDataCount(source, filters);
+
+    this.setState((prev) => {
+      var filteredCounts = { ...prev.filteredCounts };
+      if (filters.size > 0) {
+        if (prev.isUnique) {
+          filteredCounts[source] = data.length;
+        } else {
+          filteredCounts[source] = count;
+        }
       } else {
-        filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+        delete filteredCounts[source];
       }
-    } else {
-      delete filteredCounts[source];
-    }
-    this.setState({ data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts});
+      return { data: data, filters, lastMax: MAX_ROWS_FETCHED , filteredCounts: filteredCounts};
+    });
   }
 
   async fetchRelation(relation, filters = new List()) {
@@ -791,7 +793,7 @@ class Browser extends DashboardView {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState((prev) => ({ lastMax: prev.lastMax + MAX_ROWS_FETCHED }));
   }
 
   updateFilters(filters) {
@@ -897,11 +899,13 @@ class Browser extends DashboardView {
       return;
     }
     if (isEditCloneObj) {
-      const editObjIndex = row + (this.state.editCloneRows.length + 1);
-      let cloneRows = [...this.state.editCloneRows];
-      cloneRows.splice(editObjIndex, 1, obj);
-      this.setState({
-        editCloneRows: cloneRows
+      this.setState((prev) => {
+        const editObjIndex = row + (prev.editCloneRows.length + 1);
+        let cloneRows = [...prev.editCloneRows];
+        cloneRows.splice(editObjIndex, 1, obj);
+        return {
+          editCloneRows: cloneRows
+       };
       });
       return;
     }
@@ -921,25 +925,25 @@ class Browser extends DashboardView {
           parentRelation.add(obj);
           const targetClassName = relation.targetClassName;
           parent.save(null, { useMasterKey: true }).then(() => {
-            this.setState({
+            this.setState((prev) => ({
               newObject: null,
               data: [
                 obj,
-                ...this.state.data,
+                ...prev.data,
               ],
-              relationCount: this.state.relationCount + 1,
+              relationCount: prev.relationCount + 1,
               counts: {
-                ...this.state.counts,
-                [targetClassName]: this.state.counts[targetClassName] + 1,
+                ...prev.counts,
+                [targetClassName]: prev.counts[targetClassName] + 1,
               },
-            });
+            }));
           }, (error) => {
             let msg = typeof error === 'string' ? error : error.message;
             if (msg) {
               msg = msg[0].toUpperCase() + msg.substr(1);
             }
             obj.set(attr, prev);
-            this.setState({ data: this.state.data });
+            this.setState((prev) => ({ data: prev.data }));
             this.showNote(msg, true);
           });
         } else {
@@ -968,7 +972,7 @@ class Browser extends DashboardView {
       }
       if (!isNewObject && !isEditCloneObj) {
         obj.set(attr, prev);
-        this.setState({ data: this.state.data });
+        this.setState((prev) => ({ data: prev.data }));
       }
 
       this.showNote(msg, true);
@@ -1016,9 +1020,9 @@ class Browser extends DashboardView {
             for (let i = 0; i < indexes.length; i++) {
               this.state.data.splice(indexes[i] - i, 1);
             }
-            this.setState({
-              relationCount: this.state.relationCount - toDelete.length,
-            });
+            this.setState((prev) => ({
+              relationCount: prev.relationCount - toDelete.length,
+            }));
           }
         });
       } else if (toDelete.length) {
@@ -1138,14 +1142,14 @@ class Browser extends DashboardView {
     await parent.save(null, { useMasterKey });
     // remove duplication
     this.state.data.forEach(origin => objects = objects.filter(object => object.id !== origin.id));
-    this.setState({
+    this.setState((prev) => ({
       data: [
         ...objects,
-        ...this.state.data,
+        ...prev.data,
       ],
-      relationCount: this.state.relationCount + objects.length,
+      relationCount: prev.relationCount + objects.length,
       showAttachRowsDialog: false,
-    });
+    }));
   }
 
   showAttachSelectedRowsDialog() {
@@ -1207,15 +1211,15 @@ class Browser extends DashboardView {
     }
     try {
       await Parse.Object.saveAll(toClone, { useMasterKey });
-      this.setState({
+      this.setState((prev) => ({
         selection: {},
-        data: [...toClone, ...this.state.data],
+        data: [...toClone, ...prev.data],
         showCloneSelectedRowsDialog: false,
         counts: {
-          ...this.state.counts,
-          [className]: this.state.counts[className] + toClone.length
+          ...prev.counts,
+          [className]: prev.counts[className] + toClone.length
         }
-      });
+      }));
     } catch (error) {
       //for duplicate, username missing or required field missing errors
       if (error.code === 137 || error.code === 200 || error.code === 142) {
@@ -1227,13 +1231,13 @@ class Browser extends DashboardView {
             : savedObjects.push(cloneObj);
         });
         if (savedObjects.length) {
-          this.setState({
-            data: [...savedObjects, ...this.state.data],
+          this.setState((prev) => ({
+            data: [...savedObjects, ...prev.data],
             counts: {
-              ...this.state.counts,
-              [className]: this.state.counts[className] + savedObjects.length
+              ...prev.counts,
+              [className]: prev.counts[className] + savedObjects.length
             }
-          });
+          }));
         }
         this.addEditCloneRows(failedSaveObj);
       }

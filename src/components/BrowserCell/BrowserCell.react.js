@@ -172,7 +172,7 @@ export default class BrowserCell extends Component {
       classes.push(styles.required);
     }
 
-    this.setState({ ...this.state, content, classes })
+    this.setState({ content, classes })
   }
 
   componentDidUpdate(prevProps) {

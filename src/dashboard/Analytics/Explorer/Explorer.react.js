@@ -100,52 +100,58 @@ class Explorer extends DashboardView {
   }
 
   handleQueryToggle(index, active) {
-    let activeQueries = this.state.activeQueries;
-    activeQueries[index].enabled = active;
-    this.setState({ activeQueries: activeQueries });
+    this.setState((prev) => {
+      let activeQueries = prev.activeQueries;
+      activeQueries[index].enabled = active;
+      return { activeQueries };
+    });
   }
 
   handleQuerySave(query) {
-    // Push new save result
-    let activeQueries = this.state.activeQueries;
-    let existingQueryIndex = activeQueries.findIndex((activeQuery) => {
-      if (query.localId) {
-        return query.localId === activeQuery.localId;
-      }
-      if (query.objectId) {
-        return query.objectId === activeQuery.objectId;
-      }
-      return false;
-    });
-
-    query.enabled = true;
-    if (existingQueryIndex === -1) {
-      // Push new
-      // Make random ID
-      query.localId = 'query' + new Date().getTime();
-      activeQueries.push(query);
-      if (!query.name) {
-        query.name = buildFriendlyName(query);
-      }
-    } else {
-      // Update
-      activeQueries[existingQueryIndex] = query;
-    }
-
     // Update the state to trigger rendering pipeline.
-    this.setState({
-      activeQueries,
-      mutated: true
+    this.setState((prev) => {
+      // Push new save result
+      let activeQueries = prev.activeQueries;
+      let existingQueryIndex = activeQueries.findIndex((activeQuery) => {
+        if (query.localId) {
+          return query.localId === activeQuery.localId;
+        }
+        if (query.objectId) {
+          return query.objectId === activeQuery.objectId;
+        }
+        return false;
+      });
+
+      query.enabled = true;
+      if (existingQueryIndex === -1) {
+        // Push new
+        // Make random ID
+        query.localId = 'query' + new Date().getTime();
+        activeQueries.push(query);
+        if (!query.name) {
+          query.name = buildFriendlyName(query);
+        }
+      } else {
+        // Update
+        activeQueries[existingQueryIndex] = query;
+      }
+
+      return {
+        activeQueries,
+        mutated: true
+      };
     });
   }
 
   handleQuerySelect(query) {
-    let activeQueries = this.state.activeQueries;
-    query.enabled = true;
-    activeQueries.push(query);
-    this.setState({
-      activeQueries,
-      mutated: true
+    this.setState((prev) => {
+      let activeQueries = prev.activeQueries;
+      query.enabled = true;
+      activeQueries.push(query);
+      return {
+        activeQueries,
+        mutated: true
+      };
     });
   }
 
@@ -174,46 +180,50 @@ class Explorer extends DashboardView {
 
         let abortableRequest = this.context.getAnalyticsTimeSeries(payload);
         promise = abortableRequest.promise.then((result) => {
-          let activeQueries = this.state.activeQueries;
-          activeQueries[i].result = result.map((point) => (
-            [Parse._decode('date', point[0]).getTime(), point[1]]
-          ));
-          this.setState({ activeQueries });
+          this.setState((prev) => {
+            let activeQueries = prev.activeQueries;
+            activeQueries[i].result = result.map((point) => (
+              [Parse._decode('date', point[0]).getTime(), point[1]]
+            ));
+            return { activeQueries };
+          });
         });
         xhr = abortableRequest.xhr;
       } else {
         // Custom query
         let payload = this.buildCustomQueryPayload(query);
         promise = this.props.customQueries.dispatch(ActionTypes.FETCH, payload).then(() => {
-          let activeQueries = this.state.activeQueries;
-          // Update the result based on store in background.
-          let customQueries = this.getCustomQueriesFromProps(this.props);
-          activeQueries = activeQueries.map((query) => {
-            let serverResult = null;
-            if (query.objectId) {
-              // We have predefined custom query.
-              serverResult = customQueries.find((customQuery) => {
-                return customQuery.objectId === query.objectId;
-              });
-            } else if (query.localId) {
-              // We're in the middle of custom query creation.
-              serverResult = customQueries.find((customQuery) => {
-                return customQuery.localId === query.localId;
-              });
-            }
-            // If we can't find it in the result, let's use the old one.
-            if (!serverResult) {
-              serverResult = query;
-            }
-
-            return {
-              ...query,
-              result: serverResult.result
-            };
-          });
-
           // Trigger rendering pipeline
-          this.setState({ activeQueries });
+          this.setState((prev) => {
+            let activeQueries = prev.activeQueries;
+            // Update the result based on store in background.
+            let customQueries = this.getCustomQueriesFromProps(this.props);
+            activeQueries = activeQueries.map((query) => {
+              let serverResult = null;
+              if (query.objectId) {
+                // We have predefined custom query.
+                serverResult = customQueries.find((customQuery) => {
+                  return customQuery.objectId === query.objectId;
+                });
+              } else if (query.localId) {
+                // We're in the middle of custom query creation.
+                serverResult = customQueries.find((customQuery) => {
+                  return customQuery.localId === query.localId;
+                });
+              }
+              // If we can't find it in the result, let's use the old one.
+              if (!serverResult) {
+                serverResult = query;
+              }
+  
+              return {
+                ...query,
+                result: serverResult.result
+              };
+            });
+
+            return { activeQueries };
+          });
         });
       }
 
@@ -357,9 +367,11 @@ class Explorer extends DashboardView {
           onSave={this.handleQuerySave.bind(this)}
           onToggle={this.handleQueryToggle.bind(this, i)}
           onDismiss={() => {
-            let activeQueries = this.state.activeQueries;
-            activeQueries.splice(i, 1);
-            this.setState({ activeQueries, mutated: true });
+            this.setState((prev) => {
+              let activeQueries = prev.activeQueries;
+              activeQueries.splice(i, 1);
+              return { activeQueries, mutated: true };
+            });
           }}
           isTimeSeries={isTimeSeries}
           query={query}

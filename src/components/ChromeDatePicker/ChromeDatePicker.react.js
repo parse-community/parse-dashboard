@@ -30,8 +30,8 @@ export default class ChromeDatePicker extends React.Component {
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
+    this.setState((prev) => {
+      if (prev.open) {
         return { open: false };
       }
       let pos = Position.inWindow(this.wrapRef.current);

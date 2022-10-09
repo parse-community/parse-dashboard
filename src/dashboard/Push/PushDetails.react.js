@@ -287,17 +287,17 @@ class PushDetails extends DashboardView {
           let chartDataA = formatAnalyticsData(dataA);
           let chartDataB = formatAnalyticsData(dataB);
           if (chartDataA.length > 0 || chartDataB.length > 0) {
-            this.setState({
+            this.setState((prev) => ({
               chartData: {
                 A: {
-                  color: this.state.groupColorA,
+                  color: prev.groupColorA,
                   points: chartDataA
                 },
                 B: {
-                  color: this.state.groupColorB,
+                  color: prev.groupColorB,
                   points: chartDataB
                 }
-              }});
+              }}));
           }
         }).finally(() => {
           this.setState({ loading: false })
@@ -310,13 +310,13 @@ class PushDetails extends DashboardView {
         promise.then((data) => {
           let chartData = formatAnalyticsData(data);
           if (chartData.length > 0) {
-            this.setState({
+            this.setState((prev) => ({
               chartData: {
                 pushes: {
-                  color: this.state.standardColor,
+                  color: prev.standardColor,
                   points: chartData
                 }
-              }});
+              }}));
           }
         }).finally(() => {
           this.setState({ loading: false })

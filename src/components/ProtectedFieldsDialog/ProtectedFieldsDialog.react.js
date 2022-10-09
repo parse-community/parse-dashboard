@@ -139,17 +139,13 @@ export default class ProtectedFieldsDialog extends React.Component {
               });
             }
 
-            let nextKeys = this.state.newKeys.concat([key]);
-            let nextFields = this.state.protectedFields.set(key, []);
-            let nextEntryTypes = this.state.entryTypes.set(key, newEntry);
-
-            return this.setState(
-              {
-                entryTypes: nextEntryTypes,
-                protectedFields: nextFields,
-                newKeys: nextKeys,
+            return this.setState((prev) =>
+              ({
+                entryTypes: prev.entryTypes.set(key, newEntry),
+                protectedFields: prev.protectedFields.set(key, []),
+                newKeys: prev.newKeys.concat([key]),
                 entryError: null
-              },
+              }),
               this.refEntry.current.resetInput()
             );
           }
@@ -171,18 +167,14 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   deleteRow(key) {
-    // remove from proectedFields
-    let protectedFields = this.state.protectedFields.delete(key);
+    return this.setState((prev) => ({
+      // remove from protectedFields
+      protectedFields: prev.protectedFields.delete(key),
 
-    // also remove from local state
-    let keys = this.state.keys.filter(k => k !== key);
-    let newKeys = this.state.newKeys.filter(k => k !== key);
-
-    return this.setState({
-      protectedFields,
-      newKeys,
-      keys
-    });
+      // also remove from local state
+      keys: prev.keys.filter(k => k !== key),
+      newKeys: prev.newKeys.filter(k => k !== key),
+    }));
   }
 
   outputPerms() {

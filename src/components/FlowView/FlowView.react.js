@@ -23,13 +23,16 @@ export default class FlowView extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    let newChanges = {...this.state.changes};
-    for (let k in props.initialFields) {
-      if (this.state.changes[k] === props.initialFields[k]) {
-        delete newChanges[k];
+    this.setState((prev) => {
+      let newChanges = {...prev.changes};
+      for (let k in props.initialFields) {
+        if (prev.changes[k] === props.initialFields[k]) {
+          delete newChanges[k];
+        }
       }
-    }
-    this.setState({changes: newChanges});
+
+      return {changes: newChanges};
+    });
   }
 
   currentFields() {
@@ -53,11 +56,11 @@ export default class FlowView extends React.Component {
       //Modify stored state in case component recieves new props,
       //as componentWillReceiveProps would otherwise clobber this change.
       this.state.changes[key] = value;
-      this.setState({
-        saveState: preserveSavingState ? this.state.saveState : SaveButton.States.WAITING,
+      this.setState((prev) => ({
+        saveState: preserveSavingState ? prev.saveState : SaveButton.States.WAITING,
         saveError: '',
         changes: newChanges,
-      });
+      }));
     }
   }
 
