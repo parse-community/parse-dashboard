@@ -1,9 +1,10 @@
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "http://45.76.173.202:1337/",
       "appId": "gemForce",
       "masterKey": "gemForceMasterKey", 
+      "databaseURI": "mongodb://45.76.173.202:27017/parse",
       "appName": "gemForce",
       "iconName": "",
       "primaryBackgroundColor": "",

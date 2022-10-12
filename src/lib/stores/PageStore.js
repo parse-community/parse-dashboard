@@ -85,4 +85,4 @@ function PageStore(state, action) {
   }
 }
 
-registerStore('Pages', PageStore);
+registerStore('Page', PageStore);
