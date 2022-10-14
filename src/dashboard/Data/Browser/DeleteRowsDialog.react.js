@@ -21,10 +21,15 @@ export default class DeleteRowsDialog extends React.Component {
   }
 
   valid() {
-    if (this.state.confirmation === this.props.className) {
+    const selectionLength = Object.keys(this.props.selection).length;
+
+    if (this.props.selection['*'] && this.state.confirmation.toLowerCase() === 'delete all') {
       return true;
     }
-    if (!this.props.selection['*'] && Object.keys(this.props.selection).length < 10) {
+    if (selectionLength >= 10 && this.state.confirmation.toLowerCase() === 'delete selected') {
+      return true;
+    }
+    if (!this.props.selection['*'] && selectionLength < 10) {
       return true;
     }
     return false;
@@ -33,17 +38,35 @@ export default class DeleteRowsDialog extends React.Component {
   render() {
     let content = null;
     let selectionLength = Object.keys(this.props.selection).length;
-    if (this.props.selection['*'] || selectionLength >= 10) {
+
+    if (selectionLength >= 10) {
       content = (
         <Field
           label={
             <Label
               text='Confirm this action'
-              description='Enter the current class name to continue.' />
+              description='Enter "delete selected" word to continue.' />
           }
           input={
             <TextInput
-              placeholder='Current class name'
+              placeholder='delete selected'
+              value={this.state.confirmation}
+              onChange={(confirmation) => this.setState({ confirmation })} />
+          } />
+      );
+    }
+
+    if (this.props.selection['*']) {
+      content = (
+        <Field
+          label={
+            <Label
+              text='Confirm this action'
+              description='Enter "delete all" to continue.' />
+          }
+          input={
+            <TextInput
+              placeholder='delete all'
               value={this.state.confirmation}
               onChange={(confirmation) => this.setState({ confirmation })} />
           } />
