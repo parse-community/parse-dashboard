@@ -1,3 +1,10 @@
+# [5.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.5...5.0.0-alpha.6) (2022-10-15)
+
+
+### Bug Fixes
+
+* raw value of read-only date field in data browser cannot be copied ([#2326](https://github.com/ParsePlatform/parse-dashboard/issues/2326)) ([4af7b98](https://github.com/ParsePlatform/parse-dashboard/commit/4af7b981ec1c8356c33215a49f3757a4005525a1))
+
 # [5.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.4...5.0.0-alpha.5) (2022-10-15)
 
 
