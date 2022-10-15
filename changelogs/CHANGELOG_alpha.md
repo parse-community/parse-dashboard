@@ -1,3 +1,10 @@
+# [5.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.4...5.0.0-alpha.5) (2022-10-15)
+
+
+### Features
+
+* improve distinction between deletion confirmation dialogs ([#2319](https://github.com/ParsePlatform/parse-dashboard/issues/2319)) ([23c12ff](https://github.com/ParsePlatform/parse-dashboard/commit/23c12ffbd49508de5c6e5e6155e6720e9f960fc5))
+
 # [5.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.3...5.0.0-alpha.4) (2022-10-09)
 
 
