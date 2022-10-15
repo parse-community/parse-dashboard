@@ -419,7 +419,7 @@ export default class BrowserCell extends Component {
         // Since objectId can't be edited, double click event opens edit row dialog
         if (field === 'objectId' && onEditSelectedRow) {
           onEditSelectedRow(true, value);
-        } else if (type !== 'Relation' && !readonly) {
+        } else if (type !== 'Relation') {
           onEditChange(true)
         }
       }}
