@@ -49,7 +49,12 @@ export default class StringEditor extends React.Component {
   }
 
   render() {
+    let classes = [styles.editor];
     let onChange = this.props.readonly ? () => {} : (e) => this.setState({ value: e.target.value });
+    if (this.props.readonly) {
+      classes.push(styles.readonly)
+    }
+
     if (this.props.multiline) {
       var style = { minWidth: this.props.minWidth };
       if (this.props.resizable) {
@@ -66,11 +71,12 @@ export default class StringEditor extends React.Component {
       );
     }
     return (
-      <div style={{ width: this.props.width }} className={styles.editor}>
+      <div style={{ width: this.props.width }} className={classes.join(' ')}>
         <input
           ref={this.inputRef}
           value={this.state.value}
-          onChange={onChange} />
+          onChange={onChange}
+          disabled={this.props.readonly} />
       </div>
     );
   }
