@@ -1,3 +1,10 @@
+# [5.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.6...5.0.0-alpha.7) (2022-10-17)
+
+
+### Bug Fixes
+
+* using browser navigation backward / forward button clears data browser ([#2317](https://github.com/ParsePlatform/parse-dashboard/issues/2317)) ([7d9b957](https://github.com/ParsePlatform/parse-dashboard/commit/7d9b9575184d7b03fac0e74fa785409af399d314))
+
 # [5.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.5...5.0.0-alpha.6) (2022-10-15)
 
 
