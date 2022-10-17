@@ -150,6 +150,12 @@ class Browser extends DashboardView {
     this.redirectToFirstClass = this.redirectToFirstClass.bind(this);
 
     this.dataBrowserRef = React.createRef();
+
+    window.addEventListener('popstate', () => {
+      this.setState({
+        relation: null
+      })
+    });
   }
 
   componentWillMount() {
