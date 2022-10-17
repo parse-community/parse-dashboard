@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "5.0.0-alpha.7",
+  "version": "5.0.0-beta.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
