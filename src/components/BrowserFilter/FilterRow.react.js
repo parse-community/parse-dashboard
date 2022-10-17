@@ -12,7 +12,6 @@ import Icon            from 'components/Icon/Icon.react';
 import Parse           from 'parse';
 import PropTypes       from 'lib/PropTypes';
 import React           from 'react';
-import ReactDOM        from 'react-dom';
 import styles          from 'components/BrowserFilter/BrowserFilter.scss';
 import validateNumeric from 'lib/validateNumeric';
 
@@ -23,7 +22,7 @@ for (let c in Constraints) {
 
 let setFocus = (input) => {
   if (input !== null) {
-    ReactDOM.findDOMNode(input).focus();
+    input.focus();
   }
 }
 
