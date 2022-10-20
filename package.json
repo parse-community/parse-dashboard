@@ -1,16 +1,16 @@
 {
-  "name": "parse-dashboard",
+  "name": "@gemforce/gemforce-dashboard",
   "version": "4.2.0-alpha.17",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ParsePlatform/parse-dashboard"
+    "url": "https://github.com/gemforce/gemforce-admin-ui"
   },
-  "description": "The Parse Dashboard",
+  "description": "The GemForce Dashboard",
   "parseDashboardFeatures": [
     "Data Browser",
     "Cloud Code Viewer",
     "Cloud Code Jobs Viewer and Runner",
-    "Parse Config",
+    "Gemforce Config",
     "REST API Console",
     "GraphQL API Console",
     "JS Custom Query Console",
@@ -22,14 +22,14 @@
     "Relation Editor"
   ],
   "keywords": [
-    "parse",
+    "gemforce",
     "dashboard"
   ],
-  "homepage": "https://github.com/ParsePlatform/parse-dashboard",
-  "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
+  "homepage": "https://github.com/gemforce/gemforce-admin-ui",
+  "bugs": "https://github.com/gemforce/gemforce-admin-ui/issues",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
-    "Parse-Dashboard",
+    "Gemforce-Dashboard",
     "bin",
     "README.md",
     "LICENSE"
@@ -124,25 +124,25 @@
   "scripts": {
     "ci:check": "node ./ci/ciCheck.js",
     "ci:checkNodeEngine": "node ./ci/nodeEngineCheck.js",
-    "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
-    "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
+    "dev": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+    "dashboard": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "jest",
     "lint": "eslint . --ignore-path .gitignore --cache",
     "generate": "node scripts/generate.js",
     "prepare": "webpack --config webpack/publish.config.js --progress",
-    "start": "node ./Parse-Dashboard/index.js",
+    "start": "node ./Gemforce-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular",
     "semantic-release": "semantic-release"
   },
   "bin": {
-    "parse-dashboard": "./bin/parse-dashboard"
+    "gemforce-dashboard": "./bin/gemforce-dashboard"
   },
   "engines": {
     "node": ">=12.22.0"
   },
-  "main": "Parse-Dashboard/app.js",
+  "main": "Gemforce-Dashboard/app.js",
   "jest": {
     "roots": [
       "src/lib"

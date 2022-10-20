@@ -58,7 +58,7 @@ npm manifest:
     "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
     "license": "SEE LICENSE IN LICENSE",
     "files": [
-      "Parse-Dashboard",
+      "Gemforce-Dashboard",
       "bin",
       "README.md",
       "LICENSE"
@@ -151,15 +151,15 @@ npm manifest:
     "scripts": {
       "ci:check": "node ./ci/ciCheck.js",
       "ci:checkNodeEngine": "node ./ci/nodeEngineCheck.js",
-      "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
-      "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
+      "dev": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+      "dashboard": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
       "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
       "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
       "test": "jest",
       "lint": "eslint . --ignore-path .gitignore --cache",
       "generate": "node scripts/generate.js",
       "prepare": "webpack --config webpack/publish.config.js --progress",
-      "start": "node ./Parse-Dashboard/index.js",
+      "start": "node ./Gemforce-Dashboard/index.js",
       "madge:circular": "node_modules/.bin/madge ./src --circular",
       "semantic-release": "semantic-release"
     },
@@ -169,7 +169,7 @@ npm manifest:
     "engines": {
       "node": ">=12.22.0"
     },
-    "main": "Parse-Dashboard/app.js",
+    "main": "Gemforce-Dashboard/app.js",
     "jest": {
       "roots": [
         "src/lib"

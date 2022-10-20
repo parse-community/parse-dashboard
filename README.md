@@ -630,7 +630,7 @@ The official docker image is published on [docker hub](https://hub.docker.com/r/
 Run the image with your ``config.json`` mounted as a volume
 
 ```
-docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parseplatform/parse-dashboard --dev
+docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Gemforce-Dashboard/parse-dashboard-config.json parseplatform/parse-dashboard --dev
 ```
 
 You can also pass the appId, masterKey and serverURL as arguments:
@@ -644,7 +644,7 @@ By default, the container will start the app at port 4040 inside the container. 
 In this example, we want to run the application in production mode at port 80 of the host machine.
 
 ```
-docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080 --dev
+docker run -d -p 80:8080 -v host/path/to/config.json:/src/Gemforce-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080 --dev
 ```
 
 If you are not familiar with Docker, ``--port 8080`` will be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.

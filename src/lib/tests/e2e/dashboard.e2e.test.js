@@ -11,7 +11,7 @@ jest.disableAutomock();
 const express = require('express');
 const path = require('path');
 const spawn = require('child_process').spawn;
-const ParseDashboard = require('../../../../Parse-Dashboard/app');
+const ParseDashboard = require('../../../../Gemforce-Dashboard/app');
 const puppeteer = require('puppeteer');
 
 const dashboardSettings = {
@@ -75,7 +75,7 @@ describe('Config options', () => {
 function startParseDashboardAndGetOutput(args) {
   const timeoutInMs = 1000;
   return new Promise((resolve) => {
-    const indexFilePath = path.resolve('./Parse-Dashboard/index.js');
+    const indexFilePath = path.resolve('./Gemforce-Dashboard/index.js');
     const child = spawn('node', [indexFilePath, ...args], { cwd: '.', timeout: timeoutInMs });
     setTimeout(() => { child.kill(); }, timeoutInMs); // node.js 12 hack (spawn timeout option is not supported.)
 

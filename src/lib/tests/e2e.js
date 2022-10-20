@@ -10,7 +10,7 @@ jest.disableAutomock();
 
 var express = require('express');
 var rp = require('request-promise');
-var ParseDashboard = require('../../../Parse-Dashboard/app');
+var ParseDashboard = require('../../../Gemforce-Dashboard/app');
 
 var dashboardSettings = {
   'apps': [
