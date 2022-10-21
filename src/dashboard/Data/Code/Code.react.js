@@ -141,10 +141,10 @@ class Code extends TableView {
               <DropdownOption value={'function'} key={'function'}>
                 Cloud Function
               </DropdownOption>
-              <DropdownOption value={'beforetrigger'} key={'beforetrigger'}>
+              <DropdownOption value={'beforeSave'} key={'beforeSave'}>
                 Before Trigger
               </DropdownOption>
-              <DropdownOption value={'aftertrigger'} key={'aftertrigger'}>
+              <DropdownOption value={'afterSave'} key={'afterSave'}>
                 After Trigger
               </DropdownOption>
             </Dropdown>
@@ -403,7 +403,7 @@ class Code extends TableView {
         title="Code"
         description={<span>...</span>}
         icon="gears"
-        cta="Create a Code"
+        cta="Create Code"
         action={this.openNewCodeModal.bind(this)}
       />
     );
