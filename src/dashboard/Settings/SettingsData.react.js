@@ -7,6 +7,7 @@
  */
 import React          from 'react';
 import { CurrentApp } from 'context/currentApp';
+import { Outlet } from 'react-router-dom';
 
 export default class SettingsData extends React.Component {
   static contextType = CurrentApp;
@@ -43,14 +44,13 @@ export default class SettingsData extends React.Component {
   }
 
   render() {
-    let child = React.Children.only(this.props.children);
-    return React.cloneElement(
-      child,
-      {
-        ...child.props,
-        initialFields: this.state.fields,
-        saveChanges: this.saveChanges.bind(this)
-      }
+    return (
+      <Outlet
+        context={{
+          initialFields: this.state.fields,
+          saveChanges: this.saveChanges.bind(this)
+        }}
+      />
     );
   }
 }

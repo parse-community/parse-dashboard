@@ -522,9 +522,9 @@ export default class PermissionsDialog extends React.Component {
 
     const { permissions, advanced, columns } = props;
 
-    this.refEntry = React.createRef(null);
-    this.refTable = React.createRef(null);
-    this.refScrollIndicator = React.createRef(null);
+    this.refEntry = React.createRef();
+    this.refTable = React.createRef();
+    this.refScrollIndicator = React.createRef();
 
     const callback = ([entry]) => {
       const ratio = entry.intersectionRatio;

@@ -5,12 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@use 'sass:math';
 @import 'stylesheets/globals.scss';
 
 $overviewBackground: #fbfbfc;
 $containerWidth: 720px;
 $containerPadding: 20px;
-$infoWidth: ($containerWidth - 2 * $containerPadding) / 4;
+$infoWidth: math.div($containerWidth - 2 * $containerPadding, 4);
 
 .content {
   padding: 96px 0px 48px 0px;
