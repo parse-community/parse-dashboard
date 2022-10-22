@@ -15,7 +15,6 @@ import {
 }                       from 'components/ExplorerQueryComposer/ExplorerFilter';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import styles         from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
 
 const TABLE_SOURCES_LABEL = ['API Event', 'Custom Event'];
@@ -104,7 +103,7 @@ for (let c in Constraints) {
 
 let setFocus = (input) => {
   if (input !== null) {
-    ReactDOM.findDOMNode(input).focus();
+    input.focus();
   }
 };
 

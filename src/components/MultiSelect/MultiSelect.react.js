@@ -10,7 +10,6 @@ import Popover        from 'components/Popover/Popover.react';
 import Position       from 'lib/Position';
 import PropTypes      from 'lib/PropTypes';
 import React          from 'react';
-import ReactDOM       from 'react-dom';
 import stringList     from 'lib/stringList';
 import styles         from 'components/MultiSelect/MultiSelect.scss';
 import Chip           from 'components/Chip/Chip.react';
@@ -22,10 +21,12 @@ export default class MultiSelect extends React.Component {
       open: false,
       position: null
     }
-    this.popoverRef = React.createRef(null);
+    this.popoverRef = React.createRef();
+    this.dropdownRef = React.createRef();
     this.handleScroll = () => {
-      let newPosition = this.props.fixed ? Position.inWindow(this.node) : Position.inDocument(this.node);
-      newPosition.y += this.node.offsetHeight;
+      const node = this.dropdownRef.current;
+      let newPosition = this.props.fixed ? Position.inWindow(node) : Position.inDocument(node);
+      newPosition.y += node.offsetHeight;
       if(this.popoverRef.current){
         this.popoverRef.current.setPosition(newPosition);
       }
@@ -33,9 +34,7 @@ export default class MultiSelect extends React.Component {
   }
 
   componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
     window.addEventListener('scroll', this.handleScroll)
-   
   }
   componentWillUnmount(){
     window.removeEventListener('scroll', this.handleScroll)
@@ -47,8 +46,9 @@ export default class MultiSelect extends React.Component {
   }
 
   setPosition() {
-    let newPosition = this.props.fixed ? Position.inWindow(this.node) : Position.inDocument(this.node);
-    newPosition.y += this.node.offsetHeight; //Move dropdown down below field
+    const node = this.dropdownRef.current;
+    let newPosition = this.props.fixed ? Position.inWindow(node) : Position.inDocument(node);
+    newPosition.y += node.offsetHeight; //Move dropdown down below field
     //The forceUpdate call is necessary in case the size of the field changes size during the current render.
     this.setState({ position: newPosition }, () => this.forceUpdate());
   }
@@ -59,7 +59,7 @@ export default class MultiSelect extends React.Component {
   }
 
   close(e) {
-    if (!hasAncestor(e.target, this.node)) {
+    if (!hasAncestor(e.target, this.dropdownRef.current)) {
       //In the case where the user clicks on the node, toggle() will handle closing the dropdown.
       this.setState({open: false});
     }
@@ -78,7 +78,7 @@ export default class MultiSelect extends React.Component {
   render() {
     let popover = null;
     if (this.state.open) {
-      let width = this.node.clientWidth;
+      let width = this.dropdownRef.current.clientWidth;
       
       let classes = [styles.menu];
       if (this.props.dense){
@@ -147,7 +147,7 @@ export default class MultiSelect extends React.Component {
     }
 
     return (
-      <div style={dropdownStyle} className={dropDownClasses.join(' ')}>
+      <div style={dropdownStyle} className={dropDownClasses.join(' ')} ref={this.dropdownRef}>
         <div className={classes.join(' ')} onClick={this.toggle.bind(this)}>
          {content}
         </div>

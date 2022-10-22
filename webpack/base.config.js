@@ -34,13 +34,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            plugins: [['@babel/plugin-proposal-decorators', { 'legacy': true }], '@babel/transform-regenerator', '@babel/transform-runtime'],
-            presets: ['@babel/preset-react', '@babel/preset-env']
-          },
-        },
+        use: ['babel-loader']
       }, {
         test: /\.scss$/,
         use: [
