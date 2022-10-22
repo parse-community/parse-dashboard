@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=alpha)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Aalpha)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
 
-[![Node Version](https://img.shields.io/badge/nodejs-12,_14,_16,_18-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/nodejs-14,_16,_18-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
@@ -102,8 +102,7 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 
 | Version    | Latest Version | End-of-Life | Compatible   |
 |------------|----------------|-------------|--------------|
-| Node.js 12 | 12.22.12       | April 2022  | ✅ Yes        |
-| Node.js 14 | 14.20.0        | April 2023  | ✅ Yes        |
+| Node.js 14 | 14.20.1        | April 2023  | ✅ Yes        |
 | Node.js 16 | 16.17.0        | April 2024  | ✅ Yes        |
 | Node.js 18 | 18.9.0         | May 2025    | ✅ Yes        |
 
@@ -117,7 +116,7 @@ You can also start the dashboard from the command line with a config file.  To d
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "MyApp"
@@ -147,7 +146,7 @@ HOST: "0.0.0.0"
 PORT: "4040"
 MOUNT_PATH: "/"
 PARSE_DASHBOARD_TRUST_PROXY: undefined // Or "1" to trust connection info from a proxy's X-Forwarded-* headers
-PARSE_DASHBOARD_SERVER_URL: "http://localhost:1337/parse"
+PARSE_DASHBOARD_SERVER_URL: "https://localhost/parse"
 PARSE_DASHBOARD_MASTER_KEY: "myMasterKey"
 PARSE_DASHBOARD_APP_ID: "myAppId"
 PARSE_DASHBOARD_APP_NAME: "MyApp"
@@ -168,13 +167,13 @@ Managing multiple apps from the same dashboard is also possible. Simply add addi
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse", // Self-hosted Parse Server
+      "serverURL": "https://localhost/parse", // Self-hosted Parse Server
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App"
     },
     {
-      "serverURL": "http://localhost:1337/parse2", // Self-hosted Parse Server
+      "serverURL": "https://localhost/parse2", // Self-hosted Parse Server
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App 2"
@@ -199,8 +198,8 @@ The `graphQLServerURL` option is also available through an environment variable 
 HOST: "0.0.0.0"
 PORT: "4040"
 MOUNT_PATH: "/"
-PARSE_DASHBOARD_SERVER_URL: "http://localhost:1337/parse"
-PARSE_DASHBOARD_GRAPHQL_SERVER_URL: "http://localhost:1337/graphql"
+PARSE_DASHBOARD_SERVER_URL: "https://localhost/parse"
+PARSE_DASHBOARD_GRAPHQL_SERVER_URL: "https://localhost/graphql"
 PARSE_DASHBOARD_MASTER_KEY: "myMasterKey"
 PARSE_DASHBOARD_APP_ID: "myAppId"
 PARSE_DASHBOARD_APP_NAME: "MyApp"
@@ -212,15 +211,15 @@ You can also setup the GraphQL Playground in your `parse-dashboard-config.json` 
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
-      "graphQLServerURL": "http://localhost:1337/graphql",
+      "serverURL": "https://localhost/parse",
+      "graphQLServerURL": "https://localhost/graphql",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App"
     },
     {
-      "serverURL": "http://localhost:1337/parse2",
-      "graphQLServerURL": "http://localhost:1337/graphql2",
+      "serverURL": "https://localhost/parse2",
+      "graphQLServerURL": "https://localhost/graphql2",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App 2"
@@ -241,7 +240,7 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App",
@@ -260,7 +259,7 @@ Parse Dashboard supports adding an optional background color for each app, so yo
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App",
@@ -268,7 +267,7 @@ Parse Dashboard supports adding an optional background color for each app, so yo
       "secondaryBackgroundColor": "#FF4500" // OrangeRed
     },
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App [2]",
@@ -346,7 +345,7 @@ var ParseDashboard = require('parse-dashboard');
 var dashboard = new ParseDashboard({
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "MyApp"
@@ -408,7 +407,7 @@ var trustProxy = true;
 var dashboard = new ParseDashboard({
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "MyApp"
@@ -519,7 +518,7 @@ var trustProxy = true;
 var dashboard = new ParseDashboard({
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "YOUR_READ_ONLY_MASTER_KEY",
       "appName": "MyApp"
@@ -611,7 +610,7 @@ You can provide a list of locales or languages you want to support for your dash
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
+      "serverURL": "https://localhost/parse",
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App",

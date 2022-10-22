@@ -8,32 +8,33 @@
 import React          from 'react';
 import AppSelector    from 'dashboard/AppSelector.react';
 import AppsManager    from 'lib/AppsManager';
-import history        from 'dashboard/history';
 import { CurrentApp } from 'context/currentApp';
-import { Toaster }    from 'react-hot-toast';
+import { Outlet, useNavigate , useParams} from 'react-router-dom';
 
-class AppData extends React.Component {
-  render() {
-    if (this.props.params.appId === '_') {
-      return <AppSelector />;
-    }
-    //Find by name to catch edge cases around escaping apostrophes in URLs
-    let current = AppsManager.findAppBySlugOrName(this.props.params.appId);
-    if (current) {
-      current.setParseKeys();
-    } else {
-      history.replace('/apps');
-      return <div />;
-    }
-    return (
-      <CurrentApp.Provider value={current}>
-        <div>
-          {this.props.children}
-        </div>
-        <Toaster/>
-      </CurrentApp.Provider>
-    );
+
+function AppData() {
+  const navigate = useNavigate();
+  const params = useParams();
+
+  if (params.appId === '_') {
+    return <AppSelector />;
   }
+
+  // Find by name to catch edge cases around escaping apostrophes in URLs
+  let current = AppsManager.findAppBySlugOrName(params.appId);
+
+  if (current) {
+    current.setParseKeys();
+  } else {
+    navigate('/apps', { replace: true });
+    return <div />;
+  }
+
+  return (
+    <CurrentApp.Provider value={current}>
+      <Outlet />
+    </CurrentApp.Provider>
+  );
 }
 
 export default AppData;

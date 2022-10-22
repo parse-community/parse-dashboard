@@ -1,3 +1,57 @@
+# [5.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.6...5.0.0-alpha.7) (2022-10-17)
+
+
+### Bug Fixes
+
+* using browser navigation backward / forward button clears data browser ([#2317](https://github.com/ParsePlatform/parse-dashboard/issues/2317)) ([7d9b957](https://github.com/ParsePlatform/parse-dashboard/commit/7d9b9575184d7b03fac0e74fa785409af399d314))
+
+# [5.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.5...5.0.0-alpha.6) (2022-10-15)
+
+
+### Bug Fixes
+
+* raw value of read-only date field in data browser cannot be copied ([#2326](https://github.com/ParsePlatform/parse-dashboard/issues/2326)) ([4af7b98](https://github.com/ParsePlatform/parse-dashboard/commit/4af7b981ec1c8356c33215a49f3757a4005525a1))
+
+# [5.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.4...5.0.0-alpha.5) (2022-10-15)
+
+
+### Features
+
+* improve distinction between deletion confirmation dialogs ([#2319](https://github.com/ParsePlatform/parse-dashboard/issues/2319)) ([23c12ff](https://github.com/ParsePlatform/parse-dashboard/commit/23c12ffbd49508de5c6e5e6155e6720e9f960fc5))
+
+# [5.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.3...5.0.0-alpha.4) (2022-10-09)
+
+
+### Features
+
+* keep entered filter value when changing filter operator ([#2313](https://github.com/ParsePlatform/parse-dashboard/issues/2313)) ([d6d38bf](https://github.com/ParsePlatform/parse-dashboard/commit/d6d38bfc2b06360c6a1ecc990f937cd675d1ff39))
+
+# [5.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.2...5.0.0-alpha.3) (2022-09-27)
+
+
+### Bug Fixes
+
+* minor UI layout issues ([#2270](https://github.com/ParsePlatform/parse-dashboard/issues/2270)) ([51d083b](https://github.com/ParsePlatform/parse-dashboard/commit/51d083b218d1291fc27ee2a5f1727c5f2a1dc7d4))
+
+# [5.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.1...5.0.0-alpha.2) (2022-09-27)
+
+
+### Bug Fixes
+
+* increase required Node engine version to `>=14.20.1` ([#2281](https://github.com/ParsePlatform/parse-dashboard/issues/2281)) ([50de52b](https://github.com/ParsePlatform/parse-dashboard/commit/50de52b6dddad079224e3c3b21ed16f4df347a33))
+
+# [5.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.17...5.0.0-alpha.1) (2022-09-27)
+
+
+### Features
+
+* remove Node 12 support ([#2277](https://github.com/ParsePlatform/parse-dashboard/issues/2277)) ([18b0e76](https://github.com/ParsePlatform/parse-dashboard/commit/18b0e76e28938f4cb3eaaed7ba3292fc622a35c7))
+
+
+### BREAKING CHANGES
+
+* This version removes support for Node 12; the new minimum required Node version is 14. ([18b0e76](18b0e76))
+
 # [4.2.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0-alpha.16...4.2.0-alpha.17) (2022-09-21)
 
 

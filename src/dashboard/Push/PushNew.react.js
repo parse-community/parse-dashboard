@@ -17,7 +17,6 @@ import Field                   from 'components/Field/Field.react';
 import Fieldset                from 'components/Fieldset/Fieldset.react';
 import FieldStyles             from 'components/Field/Field.scss';
 import FlowView                from 'components/FlowView/FlowView.react';
-import history                 from 'dashboard/history';
 import joinWithFinal           from 'lib/joinWithFinal';
 import Label                   from 'components/Label/Label.react';
 import Option                  from 'components/Dropdown/Option.react';
@@ -37,6 +36,7 @@ import Toolbar                 from 'components/Toolbar/Toolbar.react';
 import { Directions }          from 'lib/Constants';
 import { extractExpiration, extractPushTime } from 'lib/extractTime';
 import generatePath from 'lib/generatePath';
+import { withRouter } from 'lib/withRouter';
 
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
@@ -121,9 +121,9 @@ let LocalizedMessageField = ({
 
 const XHR_KEY = 'PushNew';
 
-export default
 @subscribeTo('Schema', 'schema')
 @subscribeTo('PushAudiences', 'pushaudiences')
+@withRouter
 class PushNew extends DashboardView {
   constructor() {
     super();
@@ -230,7 +230,7 @@ class PushNew extends DashboardView {
         //TODO: global success message banner for passing successful creation - store should also be cleared
         const PARSE_SERVER_SUPPORTS_PUSH_INDEX = false;
         if (PARSE_SERVER_SUPPORTS_PUSH_INDEX) {
-          history.push(generatePath(this.context, 'push/activity'));
+          this.props.navigate(generatePath(this.context, 'push/activity'));
         } else {
           return;
         }
@@ -895,3 +895,5 @@ class PushNew extends DashboardView {
       }}/>;
   }
 }
+
+export default PushNew;

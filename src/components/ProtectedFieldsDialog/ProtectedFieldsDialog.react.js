@@ -30,9 +30,9 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     let keys = Object.keys(protectedFields || {});
 
-    this.refEntry = React.createRef(null);
-    this.refTable = React.createRef(null);
-    this.refScrollHint = React.createRef(null);
+    this.refEntry = React.createRef();
+    this.refTable = React.createRef();
+    this.refScrollHint = React.createRef();
 
     // Intersection observer is used to avoid ugly effe t
     // when suggestion are shown whil input field is scrolled out oof viewpoort

@@ -7,7 +7,7 @@
  */
 import React      from 'react';
 import styles     from 'components/Chip/Chip.scss';
-import PropTypes  from 'prop-types'
+import PropTypes  from 'lib/PropTypes'
 import Icon       from 'components/Icon/Icon.react'
 
 let Chip = ({ value, onClose }) => (
