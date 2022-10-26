@@ -1,6 +1,10 @@
 {
   "name": "@gemforce/gemforce-dashboard",
+<<<<<<< HEAD
   "version": "4.2.0-alpha.23",
+=======
+  "version": "4.2.0-alpha.21",
+>>>>>>> fb2281d1262f15514212830b35c4f6f1cb61f6b8
   "repository": {
     "type": "git",
     "url": "https://github.com/nftgem/gemforce-admin-ui"
