@@ -18,7 +18,6 @@ import FormButton                        from 'components/FormButton/FormButton.
 import FormModal                         from 'components/FormModal/FormModal.react';
 import FormNote                          from 'components/FormNote/FormNote.react';
 import getSiteDomain                     from 'lib/getSiteDomain';
-import history                           from 'dashboard/history';
 import joinWithFinal                     from 'lib/joinWithFinal';
 import KeyField                          from 'components/KeyField/KeyField.react';
 import Label                             from 'components/Label/Label.react';
@@ -37,7 +36,8 @@ import Toolbar                           from 'components/Toolbar/Toolbar.react'
 import unique                            from 'lib/unique';
 import validateAndSubmitConnectionString from 'lib/validateAndSubmitConnectionString';
 import styles                            from 'dashboard/Settings/GeneralSettings.scss';
-import { Link }                          from 'react-router-dom';
+import { Link, useNavigate }             from 'react-router-dom';
+import { withRouter } from 'lib/withRouter';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
@@ -204,6 +204,7 @@ let ManageAppFields = ({
   transferAppMessage,
   deleteApp,
 }) => {
+  const navigate = useNavigate();
   let migrateAppField = null;
   if (!mongoURL && !hasInProgressMigration) {
     migrateAppField = <Field
@@ -225,7 +226,7 @@ let ManageAppFields = ({
         description='View your migration progress.' />}
       input={<FormButton
         color='blue'
-        onClick={() => history.push(`/apps/${appSlug}/migration`)}
+        onClick={() => navigate(`/apps/${appSlug}/migration`)}
         value='View progress' />} />
   } else {
     migrateAppField = [<Field
@@ -305,7 +306,7 @@ let ManageAppFields = ({
     {cloneAppMessage ? <FormNote
       show={true}
       color='green'>
-      <div>{cloneAppMessage} Check out the progress on your <Link to={{ pathname: '/apps' }}>apps page</Link>!</div>
+      <div>{cloneAppMessage} Check out the progress on your <Link to='/apps'>apps page</Link>!</div>
     </FormNote> : null}
     {!isCollaborator ? <Field
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
@@ -336,7 +337,8 @@ let ManageAppFields = ({
   </Fieldset>);
 }
 
-export default class GeneralSettings extends DashboardView {
+@withRouter
+class GeneralSettings extends DashboardView {
   constructor() {
     super();
     this.section = 'App Settings';
@@ -424,7 +426,7 @@ export default class GeneralSettings extends DashboardView {
         return promise;
       }}
       onClose={closeModalWithConnectionString}
-      onSuccess={() => history.push(`/apps/${this.context.slug}/migration`)}
+      onSuccess={() => this.props.navigate(`/apps/${this.context.slug}/migration`)}
       clearFields={() => this.setState({
         migrationMongoURL: '',
         migrationWarnings: [],
@@ -535,7 +537,7 @@ export default class GeneralSettings extends DashboardView {
       inProgressText={'Deleting\u2026'}
       enabled={this.state.password.length > 0}
       onSubmit={() => AppsManager.deleteApp(this.context.slug, this.state.password)}
-      onSuccess={() => history.push('/apps')}
+      onSuccess={() => this.props.navigate('/apps')}
       onClose={() => this.setState({showDeleteAppModal: false})}
       clearFields={() => this.setState({password: ''})}>
       {passwordField}
@@ -797,3 +799,5 @@ let generalFieldsOptions = {
     friendlyName: 'other URL',
   },
 };
+
+export default GeneralSettings;

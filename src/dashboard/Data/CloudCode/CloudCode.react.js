@@ -9,17 +9,18 @@ import CodeSnippet   from 'components/CodeSnippet/CodeSnippet.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState    from 'components/EmptyState/EmptyState.react';
 import FileTree      from 'components/FileTree/FileTree.react';
-import history       from 'dashboard/history';
 import React         from 'react';
 import styles        from 'dashboard/Data/CloudCode/CloudCode.scss';
 import Toolbar       from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
+import { withRouter } from 'lib/withRouter';
 
 function getPath(params) {
   return params.splat;
 }
 
-export default class CloudCode extends DashboardView {
+@withRouter
+class CloudCode extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';
@@ -53,7 +54,7 @@ export default class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          history.replace(generatePath(this.context, 'cloud_code/main.js'))
+          this.props.navigate(generatePath(this.context, 'cloud_code/main.js'), { replace: true });
         } else {
           // Means we can load /cloud_code/<fileName>
           app.getSource(fileName).then(
@@ -129,3 +130,5 @@ export default class CloudCode extends DashboardView {
     );
   }
 }
+
+export default CloudCode;

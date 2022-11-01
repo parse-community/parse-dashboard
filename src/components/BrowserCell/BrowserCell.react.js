@@ -14,7 +14,6 @@ import Pill                      from 'components/Pill/Pill.react';
 import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import baseStyles                from 'stylesheets/base.scss';
-import Tooltip                   from '../Tooltip/PopperTooltip.react';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
 
 export default class BrowserCell extends Component {
@@ -388,8 +387,7 @@ export default class BrowserCell extends Component {
   //#endregion
 
   render() {
-    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, onPointerCmdClick, row, col, field, onEditSelectedRow, readonly, isRequired, markRequiredFieldRow } = this.props;
-    let isNewRow = row < 0;
+    let { type, value, hidden, width, current, onSelect, onEditChange, setCopyableValue, onPointerCmdClick, row, col, field, onEditSelectedRow, isRequired, markRequiredFieldRow } = this.props;
 
     let classes = [...this.state.classes];
 
@@ -400,68 +398,37 @@ export default class BrowserCell extends Component {
       classes.push(styles.required);
     }
 
-    return readonly ? (
-      <Tooltip placement='bottom' tooltip='Read only (CTRL+C to copy)' visible={this.state.showTooltip}>
-        <span
-          ref={this.cellRef}
-          className={classes.join(' ')}
-          style={{ width }}
-          onClick={(e) => {
-            if (e.metaKey === true && type === 'Pointer') {
-              onPointerCmdClick(value);
-            } else {
-              onSelect({ row, col });
-              setCopyableValue(hidden ? undefined : this.copyableValue);
-            }
-          }}
-          onDoubleClick={() => {
-            if (field === 'objectId' && onEditSelectedRow) {
-              onEditSelectedRow(true, value);
-            } else {
-              this.setState({ showTooltip: true });
-              setTimeout(() => {
-                this.setState({ showTooltip: false });
-              }, 2000);
-            }
-          }}
-          onContextMenu={this.onContextMenu}
-        >
-          {row < 0 || isNewRow ? '(auto)' : this.state.content}
-        </span>
-      </Tooltip>
-    ) : (
-      <span
-        ref={this.cellRef}
-        className={classes.join(' ')}
-        style={{ width }}
-        onClick={(e) => {
-          if (e.metaKey === true && type === 'Pointer') {
-            onPointerCmdClick(value);
+    return <span
+      ref={this.cellRef}
+      className={classes.join(' ')}
+      style={{ width }}
+      onClick={(e) => {
+        if (e.metaKey === true && type === 'Pointer') {
+          onPointerCmdClick(value);
+        }
+        else {
+          onSelect({ row, col });
+          setCopyableValue(hidden ? undefined : this.copyableValue);
+        }
+      }}
+      onDoubleClick={() => {
+        // Since objectId can't be edited, double click event opens edit row dialog
+        if (field === 'objectId' && onEditSelectedRow) {
+          onEditSelectedRow(true, value);
+        } else if (type !== 'Relation') {
+          onEditChange(true)
+        }
+      }}
+      onTouchEnd={e => {
+        if (current && type !== 'Relation') {
+          // The touch event may trigger an unwanted change in the column value
+          if (['ACL', 'Boolean', 'File'].includes(type)) {
+            e.preventDefault();
           }
-          else {
-            onSelect({ row, col });
-            setCopyableValue(hidden ? undefined : this.copyableValue);
-          }
-        }}
-        onDoubleClick={() => {
-          // Since objectId can't be edited, double click event opens edit row dialog
-          if (field === 'objectId' && onEditSelectedRow) {
-            onEditSelectedRow(true, value);
-          } else if (type !== 'Relation') {
-            onEditChange(true)
-          }
-        }}
-        onTouchEnd={e => {
-          if (current && type !== 'Relation') {
-            // The touch event may trigger an unwanted change in the column value
-            if (['ACL', 'Boolean', 'File'].includes(type)) {
-              e.preventDefault();
-            }
-          }}}
-        onContextMenu={this.onContextMenu.bind(this)}
-        >
-          {this.state.content}
-        </span>
-    );
+        }}}
+      onContextMenu={this.onContextMenu.bind(this)}
+      >
+        {this.state.content}
+    </span>
   }
 }

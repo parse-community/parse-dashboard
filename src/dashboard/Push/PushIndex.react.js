@@ -11,7 +11,6 @@ import Button             from 'components/Button/Button.react';
 import CategoryList       from 'components/CategoryList/CategoryList.react';
 import DashboardView      from 'dashboard/DashboardView.react';
 import EmptyState         from 'components/EmptyState/EmptyState.react';
-import history            from 'dashboard/history';
 import LoaderContainer    from 'components/LoaderContainer/LoaderContainer.react';
 import LoaderDots         from 'components/LoaderDots/LoaderDots.react';
 import React              from 'react';
@@ -22,6 +21,7 @@ import stylesTable        from 'dashboard/TableView.scss';
 import TableHeader        from 'components/Table/TableHeader.react';
 import Toolbar            from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
+import { withRouter } from 'lib/withRouter';
 
 const PUSH_TYPE_ALL = 'all';
 const PUSH_TYPE_CAMPAIGN = 'campaign';
@@ -227,7 +227,8 @@ let getPushTime = (pushTime, updatedAt) => {
   return result;
 }
 
-export default class PushIndex extends DashboardView {
+@withRouter
+class PushIndex extends DashboardView {
   constructor() {
     super();
     this.section = 'Push';
@@ -294,11 +295,11 @@ export default class PushIndex extends DashboardView {
   }
 
   navigateToNew() {
-    history.push(generatePath(this.context, 'push/new'));
+    this.props.navigate(generatePath(this.context, 'push/new'));
   }
 
   navigateToDetails(objectId) {
-    history.push(generatePath(this.context, `push/${objectId}`));
+    this.props.navigate(generatePath(this.context, `push/${objectId}`));
   }
 
   handleShowMore(page) {
@@ -447,3 +448,5 @@ export default class PushIndex extends DashboardView {
     );
   }
 }
+
+export default PushIndex;
