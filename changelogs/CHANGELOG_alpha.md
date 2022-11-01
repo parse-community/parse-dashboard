@@ -1,3 +1,14 @@
+# [5.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.7...5.0.0-alpha.8) (2022-10-24)
+
+
+### Bug Fixes
+
+* login fails with error `req.session.regenerate is not a function` ([#2196](https://github.com/ParsePlatform/parse-dashboard/issues/2196)) ([a71848c](https://github.com/ParsePlatform/parse-dashboard/commit/a71848ce44fa19e579f9731bab50a7244ab89b11))
+
+### Features
+
+* remove limitation to refresh Cloud Jobs list only after 30 seconds ([#2332](https://github.com/ParsePlatform/parse-dashboard/issues/2332)) ([ad1132f](https://github.com/ParsePlatform/parse-dashboard/commit/ad1132fb13e854a030e769fdf7689f35d363031d))
+
 # [5.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.6...5.0.0-alpha.7) (2022-10-17)
 
 
