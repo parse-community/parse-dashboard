@@ -1,3 +1,14 @@
+# [5.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0...5.1.0-alpha.1) (2022-11-05)
+
+
+### Bug Fixes
+
+* Text selection not visible in modal dialog header ([#2340](https://github.com/ParsePlatform/parse-dashboard/issues/2340)) ([fb0e79c](https://github.com/ParsePlatform/parse-dashboard/commit/fb0e79c0837c3acce27524e798e02da667cbc5a3))
+
+### Features
+
+* remove limitation to refresh Cloud Jobs list only after 30 seconds ([#2332](https://github.com/ParsePlatform/parse-dashboard/issues/2332)) ([ad1132f](https://github.com/ParsePlatform/parse-dashboard/commit/ad1132fb13e854a030e769fdf7689f35d363031d))
+
 # [5.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.7...5.0.0-alpha.8) (2022-10-24)
 
 
