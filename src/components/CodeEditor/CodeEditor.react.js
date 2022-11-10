@@ -42,6 +42,7 @@ export default class CodeEditor extends React.Component {
         showPrintMargin={true}
         showGutter={true}
         highlightActiveLine={true}
+        height="100%"
         width="100%"
         value={code || placeHolder}
         enableBasicAutocompletion={true}
@@ -49,6 +50,7 @@ export default class CodeEditor extends React.Component {
         enableSnippets={false}
         showLineNumbers={true}
         tabSize={2}
+        editorProps={{ $blockScrolling: true }}
         style={this.props.style ? this.props.style : {}}
       />
     );
@@ -57,5 +59,5 @@ export default class CodeEditor extends React.Component {
 
 CodeEditor.propTypes = {
   fontSize: PropTypes.number.describe('Font size of the editor'),
-  placeHolder: PropTypes.string.describe('Code place holder'),
+  placeHolder: PropTypes.string.describe('Code place holder')
 };

@@ -70,6 +70,7 @@
     "react-json-view": "1.21.3",
     "react-popper-tooltip": "4.4.2",
     "react-router-dom": "6.4.1",
+    "react-split": "^2.0.14",
     "regenerator-runtime": "0.13.9",
     "semver": "7.3.7",
     "typescript": "4.8.3"
