@@ -74,3 +74,4 @@ export let TextInput                 = require('components/TextInput/TextInput.e
 export let Toggle                    = require('components/Toggle/Toggle.example');
 export let Tooltip                   = require('components/Tooltip/Tooltip.example');
 export let TrackVisibility           = require('components/TrackVisibility/TrackVisibility.example');
+export let Docs                      = require('components/Docs/Docs.example');
