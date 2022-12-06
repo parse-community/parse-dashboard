@@ -1,3 +1,10 @@
+# [5.1.0-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0...5.1.0-beta.1) (2022-11-01)
+
+
+### Features
+
+* remove limitation to refresh Cloud Jobs list only after 30 seconds ([#2332](https://github.com/ParsePlatform/parse-dashboard/issues/2332)) ([ad1132f](https://github.com/ParsePlatform/parse-dashboard/commit/ad1132fb13e854a030e769fdf7689f35d363031d))
+
 # [5.0.0-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/4.2.0...5.0.0-beta.1) (2022-10-17)
 
 

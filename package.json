@@ -61,6 +61,13 @@
     "prop-types": "15.8.1",
     "qrcode": "1.5.1",
     "react": "16.14.0",
+
+    "@mui/material": "^5.0.1",
+    "@mui/styles": "^5.0.1",
+    "@mui/system": "^5.0.1",
+
+
+
     "react-ace": "10.1.0",
     "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",

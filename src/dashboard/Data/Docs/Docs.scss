@@ -1,0 +1,259 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.browser {
+  position: fixed;
+  top: 96px;
+  left: 300px;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding-top: 30px;
+  // fix for safari scrolling issue:
+  // https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/
+  // only applying to safari as a side effect of this is emptystate component centering is off
+  &.safari {
+    -webkit-transform: translate3d(0,0,0);
+  }
+}
+
+body:global(.expanded) {
+  .browser {
+    left: $sidebarCollapsedWidth;
+  }
+}
+
+.empty {
+  position: fixed;
+  left: 300px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.toolbarSeparator {
+  display: inline-block;
+  height: 18px;
+  width: 1px;
+  background: #66637A;
+  vertical-align: bottom;
+  margin: 0 4px;
+}
+
+.toolbarButton {
+  @include NotoSansFont;
+  display: inline-block;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  height: 14px;
+  padding: 0 12px;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 4px;
+    fill: #66637A;
+  }
+
+  &:hover {
+    svg {
+      fill: white;
+    }
+  }
+
+  span {
+    vertical-align: middle;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+.toolbarButtonDisabled {
+  cursor: not-allowed;
+  color: #66637A;
+
+  &:hover svg {
+    fill: #66637A;
+  }
+}
+
+.table {
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  left: 0;
+  min-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table .empty {
+  top: 126px;
+}
+
+.tableRow {
+  @include MonospaceFont;
+  font-size: 12px;
+  white-space: nowrap;
+  height: 30px;
+  border-bottom: 1px solid #e3e3ea;
+
+  &:nth-child(odd) {
+    background: #F4F5F7;
+  }
+}
+
+.checkCell {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 31px;
+  vertical-align: top;
+  border-right: 1px solid #e3e3ea;
+  text-align: center;
+}
+
+.addRow {
+  height: 30px;
+  padding: 8px;
+
+  a {
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  svg {
+    fill: $blue;
+
+    &:hover {
+      fill: $darkBlue;
+    }
+  }
+}
+
+.addColumnToggleWrapper {
+  >:nth-child(2) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    background: #f6fafb;
+  }
+}
+
+.notificationMessage, .notificationError {
+  @include animation('fade-in 0.2s ease-out');
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  opacity: 1;
+  background: white;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 260px;
+}
+
+.notificationError {
+  border: 2px solid $red;
+  color: $red;
+}
+
+.notificationMessage {
+  border: 2px solid $blue;
+  color: $blue;
+}
+
+.notificationHide {
+  @include animation('fade-out 0.2s ease-out');
+}
+
+@include keyframes(fade-in) {
+  0% {
+    @include transform(scale(0.9));
+    opacity: 0;
+  }
+  100% {
+    @include transform(scale(1));
+    opacity: 1;
+  }
+}
+
+@include keyframes(fade-out) {
+  0% {
+    @include transform(scale(1));
+    opacity: 1;
+  }
+  100% {
+    @include transform(scale(0.9));
+    opacity: 0;
+  }
+}
+
+.editRowDialogContent {
+  max-height: 60vh;
+  overflow-y: scroll;
+}
+
+.objectPickerContent {
+  min-height: 150px;
+  max-height: 60vh;
+  overflow-y: scroll;
+
+  .browser {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 60vh;
+    width: calc(100% - 140px);
+
+    .empty {
+      position: unset;
+    }
+  }
+
+  .toolbarButton svg {
+    fill: rgba(0, 0, 0, 0.3);
+  }
+
+  .toolbarSeparator {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .selectionSection {
+    position: fixed;
+    right: 0;
+    width: 142px;
+    font-size: 12px;
+    color: #0E69A1;
+    background: #F4F5F7;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+
+    .selectionHeader {
+      background: rgb(102, 99, 122);
+      color: white;
+      height: 30px;
+      padding-top: 5px;
+      padding-left: 10px;
+      line-height: 22px;
+    }
+
+    .selectionList {
+      padding-left: 12px;
+      padding-top: 4px;
+      height: calc(60vh - 30px);
+      overflow-y: scroll;
+    }
+  }
+}
+
+.selectionInputWrapper {
+  width: calc(100% - 280px);
+  float: left;
+}

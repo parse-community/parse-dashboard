@@ -40,6 +40,11 @@ export default class DashboardView extends React.Component {
       });
     }
 
+    coreSubsections.push({
+      name: 'Docs',
+      link: '/docs'
+    });
+
     if (features.cloudCode && features.cloudCode.viewCode) {
       coreSubsections.push({
         name: 'Cloud Code',
