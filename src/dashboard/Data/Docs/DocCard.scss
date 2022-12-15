@@ -1,0 +1,18 @@
+.DocCard {
+    width: 100%;
+    min-width: 300px;
+    max-width: 450px;
+    min-height: 100px;
+    background: white;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 1px 0 0 rgba(0, 0, 0, 0.03), 0 -1px 0 0 rgba(255,255,255,0.3) inset;
+    margin: 8px;
+    padding: 5px 10px;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: nowrap;
+
+    h2 {
+        font-size: 14px;
+        font-weight: bold;
+    }
+}

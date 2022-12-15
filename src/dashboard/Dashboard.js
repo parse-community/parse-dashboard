@@ -279,7 +279,8 @@ export default class Dashboard extends React.Component {
         <Route path="browser/:className" element={<BrowserRoute />} />
         <Route path="browser" element={<BrowserRoute />} />
 
-        <Route path="docs/:contractName" element={<Docs />} />
+        <Route path="docs/:subpath" element={<Docs />} />
+        <Route path="docs/contracts/:contractName" element={<Docs />} />
         <Route path="docs" element={<Docs />} />
 
         <Route path="code" element={<Code />} />

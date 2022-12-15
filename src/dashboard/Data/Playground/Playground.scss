@@ -1,15 +1,15 @@
-* {
-  -ms-overflow-style: none;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
 .playground-ctn {
   padding-top: 96px;
   background-color: #002b36;
   height: 100%;
+
+  * {
+    -ms-overflow-style: none;
+  }
+  
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .console-ctn {

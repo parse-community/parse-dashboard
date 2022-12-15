@@ -40,11 +40,6 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    coreSubsections.push({
-      name: 'Docs',
-      link: '/docs'
-    });
-
     if (features.cloudCode && features.cloudCode.viewCode) {
       coreSubsections.push({
         name: 'Cloud Code',
@@ -100,6 +95,11 @@ export default class DashboardView extends React.Component {
       name: 'Code',
       link: '/code'
     });
+
+    coreSubsections.push({
+      name: 'Docs',
+      link: '/docs'
+    });
     //! HERE TO ADD MENU IN LEFT-HAND
 
     if (this.context.migration) {
@@ -130,6 +130,7 @@ export default class DashboardView extends React.Component {
         link: '/push/audiences'
       });
     }
+    
 
     let analyticsSidebarSections = [];
 

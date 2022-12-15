@@ -37,6 +37,9 @@
   "dependencies": {
     "@babel/runtime": "7.19.0",
     "@babel/runtime-corejs3": "7.19.1",
+    "@mui/material": "^5.0.1",
+    "@mui/styles": "^5.0.1",
+    "@mui/system": "^5.0.1",
     "bcryptjs": "2.3.0",
     "body-parser": "1.20.0",
     "commander": "9.4.0",
@@ -61,13 +64,6 @@
     "prop-types": "15.8.1",
     "qrcode": "1.5.1",
     "react": "16.14.0",
-
-    "@mui/material": "^5.0.1",
-    "@mui/styles": "^5.0.1",
-    "@mui/system": "^5.0.1",
-
-
-
     "react-ace": "10.1.0",
     "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",
@@ -75,6 +71,7 @@
     "react-helmet": "6.1.0",
     "react-hot-toast": "^2.4.0",
     "react-json-view": "1.21.3",
+    "react-masonry-component": "^6.3.0",
     "react-popper-tooltip": "4.4.2",
     "react-router-dom": "6.4.1",
     "react-split": "^2.0.14",
@@ -127,7 +124,7 @@
     "ci:check": "node ./ci/ciCheck.js",
     "ci:checkNodeEngine": "node ./ci/nodeEngineCheck.js",
     "dev": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
-    "dashboard": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
+    "dashboard": "webpack --config webpack/build.config.js --progress --watch & node ./Gemforce-Dashboard/index.js",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "jest",
