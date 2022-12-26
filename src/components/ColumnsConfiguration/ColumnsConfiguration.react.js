@@ -22,6 +22,11 @@ export default class ColumnsConfiguration extends React.Component {
     this.entryRef = React.createRef();
   }
 
+  componentDidMount() {
+    const rect = this.entryRef.current?.getBoundingClientRect();
+    this.maxWidth = rect.x + rect.width - 20 + 'px';
+  }
+
   componentWillReceiveProps(props) {
     if (props.schema !== this.props.schema) {
       this.setState({
@@ -93,7 +98,9 @@ export default class ColumnsConfiguration extends React.Component {
         <Popover fixed={true} position={Position.inDocument(this.entryRef.current)} onExternalClick={this.toggle.bind(this)} contentId={POPOVER_CONTENT_ID}>
           <div className={styles.popover} id={POPOVER_CONTENT_ID}>
             {title}
-            <div className={styles.body}>
+            <div className={styles.body} style={{
+                maxWidth: this.maxWidth,
+              }}>
               <div className={styles.columnConfigContainer}>
                 <DndProvider backend={HTML5Backend}>
                   {order.map(({ name, visible, ...rest }, index) => {
