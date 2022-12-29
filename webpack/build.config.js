@@ -13,5 +13,9 @@ configuration.entry = {
   login: './login/index.js'
 };
 configuration.output.path = require('path').resolve('./Gemforce-Dashboard/public/bundles');
+configuration.resolve = {
+  extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.css', '.scss'],
+  modules: ['src', 'node_modules'] // Assuming that your files are inside the src dir
+}
 
 module.exports = configuration;

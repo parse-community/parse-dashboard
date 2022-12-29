@@ -13,7 +13,10 @@ configuration.entry = {
   signup: './signup/index.js',
   PIG: './parse-interface-guide/index.js',
   quickstart: './quickstart/index.js',
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.css', '.scss'],
+    modules: ['src', 'node_modules'] // Assuming that your files are inside the src dir
+  },
 };
 configuration.output.path = require('path').resolve('./bundles');
-
 module.exports = configuration;
