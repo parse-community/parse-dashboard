@@ -44,6 +44,7 @@ import SchemaOverview from './Data/Browser/SchemaOverview.react';
 import SecuritySettings from './Settings/SecuritySettings.react';
 import SettingsData from './Settings/SettingsData.react';
 import SlowQueries from './Analytics/SlowQueries/SlowQueries.react';
+import TokenSales from './Data/TokenSales/TokenSale.react';
 import styles from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings from './Settings/UsersSettings.react';
 import Webhooks from './Data/Webhooks/Webhooks.react';
@@ -243,6 +244,15 @@ export default class Dashboard extends React.Component {
       </Route>
     );
 
+    const TokenSalesRoute = (
+      <Route element={<TokenSalesData />}>
+        <Route path="new" element={<TokenSaleEdit />} />
+        <Route path="edit/:tokenSaleId" element={<TokenSaleEdit />} />
+        <Route path=":section" element={<TokenSales />} />
+        <Route index element={<Navigate replace to="all" />} />
+      </Route>
+    )
+
     const AnalyticsRoute = (
       <Route>
         <Route path="overview" element={<AnalyticsOverview />} />
@@ -278,6 +288,8 @@ export default class Dashboard extends React.Component {
         />
         <Route path="browser/:className" element={<BrowserRoute />} />
         <Route path="browser" element={<BrowserRoute />} />
+        
+        <Route patth="tokensales" element={<TokenSales />}>{TokenSalesRoute}</Route>
 
         <Route path="docs/:subpath" element={<Docs />} />
         <Route path="docs/contracts/:contractName" element={<Docs />} />
