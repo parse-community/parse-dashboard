@@ -78,12 +78,12 @@ const AppsManager = {
   cloneApp(slug, name, options) {
     //Clone nothing by default
     let optionsForRuby = {
-      cloud_code: false,
-      background_jobs: false,
-      config: false,
-      schema: false,
-      app_settings: false,
-      data: false,
+      cloud_code: true,
+      background_jobs: true,
+      config: true,
+      schema: true,
+      app_settings: true,
+      data: true,
     };
     options.forEach((option) => {
       if (option !== 'data') { //Data cloning not supported yet, but api_server still requires the key to be present
