@@ -23,7 +23,7 @@ let subsections = {
 };
 
 /*
-    This page displays a list of TokenSale objects. The TokenSale object is a Parse.Object which stores NFT token sale information. This page works almost identically to the Jobs page in the Parse Dashboard, except that it displays TokenSale objects instead of Job objects. 
+    This page displays a list of TokenSale objects. The TokenSale object is a Parse.Object which stores NFT token sale information. This page works almost identically to the Jobs page in the Gemforce Dashboard, except that it displays TokenSale objects instead of Job objects. 
 */
 
 @subscribeTo('TokenSales', 'tokensales')

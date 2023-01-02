@@ -146,7 +146,7 @@ class AppsIndex extends React.Component {
         {feature}
       </strong>);
       upgradePrompt = <FlowFooter>
-        Upgrade to the <a href='https://www.npmjs.com/package/parse-dashboard' target='_blank'>latest version</a> of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
+        Upgrade to the <a href='https://www.npmjs.com/package/parse-dashboard' target='_blank'>latest version</a> of Gemforce Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
       </FlowFooter>
     }
     return (

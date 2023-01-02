@@ -78,3 +78,4 @@ export let NFTPanel                  = require('components/NFTPanel/NFTPanel.exa
 export let NFTImage                  = require('components/NFTImage/NFTImage.example');
 export let NFTBasicInfoTable         = require('components/NFTBasicInfoTable/NFTBasicInfoTable.example');
 export let NFTAttributesTable        = require('components/NFTAttributesTable/NFTAttributesTable.example');
+export let TokenSale                 = require('components/TokenSale/TokenSale.example');

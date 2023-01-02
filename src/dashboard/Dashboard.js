@@ -26,6 +26,7 @@ import Icon from 'components/Icon/Icon.react';
 import JobEdit from 'dashboard/Data/Jobs/JobEdit.react';
 import Jobs from './Data/Jobs/Jobs.react';
 import JobsData from 'dashboard/Data/Jobs/JobsData.react';
+import TokenSalesData from 'dashboard/Data/TokenSales/TokenSalesData.react';
 import Loader from 'components/Loader/Loader.react';
 import Logs from './Data/Logs/Logs.react';
 import Migration from './Data/Migration/Migration.react';
@@ -44,7 +45,9 @@ import SchemaOverview from './Data/Browser/SchemaOverview.react';
 import SecuritySettings from './Settings/SecuritySettings.react';
 import SettingsData from './Settings/SettingsData.react';
 import SlowQueries from './Analytics/SlowQueries/SlowQueries.react';
-import TokenSales from './Data/TokenSales/TokenSale.react';
+import TokenSales from './Data/TokenSales/TokenSales.react';
+import Tokens from './Data/Tokens/Tokens.react';
+import TokenSalesEdit from 'dashboard/Data/TokenSales/TokenSalesEdit.react';
 import styles from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings from './Settings/UsersSettings.react';
 import Webhooks from './Data/Webhooks/Webhooks.react';
@@ -246,8 +249,8 @@ export default class Dashboard extends React.Component {
 
     const TokenSalesRoute = (
       <Route element={<TokenSalesData />}>
-        <Route path="new" element={<TokenSaleEdit />} />
-        <Route path="edit/:tokenSaleId" element={<TokenSaleEdit />} />
+        <Route path="new" element={<TokenSalesEdit />} />
+        <Route path="edit/:tokenSaleId" element={<TokenSalesEdit />} />
         <Route path=":section" element={<TokenSales />} />
         <Route index element={<Navigate replace to="all" />} />
       </Route>
@@ -290,6 +293,7 @@ export default class Dashboard extends React.Component {
         <Route path="browser" element={<BrowserRoute />} />
         
         <Route patth="tokensales" element={<TokenSales />}>{TokenSalesRoute}</Route>
+        <Route path="tokens" element={<Tokens />} />
 
         <Route path="docs/:subpath" element={<Docs />} />
         <Route path="docs/contracts/:contractName" element={<Docs />} />

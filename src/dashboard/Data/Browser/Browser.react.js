@@ -1761,7 +1761,7 @@ class Browser extends DashboardView {
     }
 
     let notification = null;
-    const pageTitle = `${this.props.params.className} - Parse Dashboard`;
+    const pageTitle = `${this.props.params.className} - Gemforce Dashboard`;
 
     if (this.state.lastError) {
       notification = (

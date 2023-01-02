@@ -33,7 +33,7 @@ export default class SidebarHeader extends React.Component {
           <Link to='/apps'>
             <div className={styles.version}>
               <div>
-                Parse Dashboard {version}
+                Gemforce Dashboard {version}
                 <div>
                   {dashboardUser}
                 </div>

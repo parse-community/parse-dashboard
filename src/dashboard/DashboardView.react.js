@@ -40,12 +40,16 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    // if (features.cloudCode && features.cloudCode.viewCode) {
-      coreSubsections.push({
-        name: 'Cloud Code',
-        link: '/cloud_code'
-      });
-    // }
+    coreSubsections.push({
+      name: 'Tokens',
+      link: '/tokens'
+    });
+
+
+    coreSubsections.push({
+      name: 'Token Sales',
+      link: '/tokensales'
+    });
 
     //webhooks requires removal of heroku link code, then it should work.
     // if (features.hooks && features.hooks.create && features.hooks.read && features.hooks.update && features.hooks.delete) {
