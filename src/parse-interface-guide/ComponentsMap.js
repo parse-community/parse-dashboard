@@ -74,3 +74,7 @@ export let TextInput                 = require('components/TextInput/TextInput.e
 export let Toggle                    = require('components/Toggle/Toggle.example');
 export let Tooltip                   = require('components/Tooltip/Tooltip.example');
 export let TrackVisibility           = require('components/TrackVisibility/TrackVisibility.example');
+export let NFTPanel                  = require('components/NFTPanel/NFTPanel.example');
+export let NFTImage                  = require('components/NFTImage/NFTImage.example');
+export let NFTBasicInfoTable         = require('components/NFTBasicInfoTable/NFTBasicInfoTable.example');
+export let NFTAttributesTable        = require('components/NFTAttributesTable/NFTAttributesTable.example');
