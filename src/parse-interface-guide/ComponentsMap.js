@@ -79,3 +79,5 @@ export let NFTImage                  = require('components/NFTImage/NFTImage.exa
 export let NFTBasicInfoTable         = require('components/NFTBasicInfoTable/NFTBasicInfoTable.example');
 export let NFTAttributesTable        = require('components/NFTAttributesTable/NFTAttributesTable.example');
 export let TokenSale                 = require('components/TokenSale/TokenSale.example');
+export let NFTLayoutEditor           = require('components/NFTLayoutEditor/NFTLayoutEditor.example');
+export let NFTLayoutViewer           = require('components/NFTLayoutViewer/NFTLayoutViewer.example');
