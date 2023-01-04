@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../../Parse-Dashboard/Authentication.js');
+jest.dontMock('../../../Gemforce-Dashboard/Authentication.js');
 jest.dontMock('bcryptjs');
 
-const Authentication = require('../../../Parse-Dashboard/Authentication');
+const Authentication = require('../../../Gemforce-Dashboard/Authentication');
 const apps = [{appId: 'test123'}, {appId: 'test789'}];
-const readOnlyApps = apps.map((app) => { 
+const readOnlyApps = apps.map((app) => {
   app.readOnly = true;
   return app;
 });
@@ -55,7 +55,7 @@ function createAuthenticationResult(isAuthenticated, matchingUsername, appsUserH
     matchingUsername,
     appsUserHasAccessTo,
     isReadOnly,
-    otpMissing: false,
+    otpMissingLength: false,
     otpValid: true
   }
 }

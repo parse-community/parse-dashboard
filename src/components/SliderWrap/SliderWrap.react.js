@@ -6,14 +6,17 @@
  * the root directory of this source tree.
  */
 import { Directions } from 'lib/Constants';
-import React                   from 'react';
-import ReactDOM                from 'react-dom';
-import styles                  from 'components/SliderWrap/SliderWrap.scss';
+import React          from 'react';
+import styles         from 'components/SliderWrap/SliderWrap.scss';
 
 export default class SliderWrap extends React.Component {
+  constructor() {
+    super();
+
+    this.metricsRef = React.createRef();
+  }
+
   componentDidMount() {
-    let wrap = ReactDOM.findDOMNode(this);
-    this.metrics = wrap.children[0];
     if (this.props.expanded) {
       this.forceUpdate();
     }
@@ -35,19 +38,20 @@ export default class SliderWrap extends React.Component {
   render() {
     let style = {};
     let metric = this._getMetric();
-    if (!this.props.expanded || !this.metrics) {
+    let node = this.metricsRef.current;
+    if (!this.props.expanded || !node) {
       if (metric === 'width' || metric === 'both') {
         style.width = '0px';
       }
       if (metric === 'height' || metric === 'both') {
         style.height = '0px';
       }
-    } else if (this.props.expanded && this.metrics) {
+    } else if (this.props.expanded && node) {
       if (metric === 'width' || metric === 'both') {
-        style.width = this.metrics.clientWidth + 'px';
+        style.width = node.clientWidth + 'px';
       }
       if (metric === 'height' || metric === 'both') {
-        style.height = this.metrics.clientHeight + 'px';
+        style.height = node.clientHeight + 'px';
       }
     }
     if (this.props.direction === Directions.LEFT) {
@@ -55,7 +59,7 @@ export default class SliderWrap extends React.Component {
     }
     return (
       <div className={styles.slider} style={style}>
-        <div className={styles.metrics} style={this.props.block ? { display: 'block' } : {}}>
+        <div className={styles.metrics} style={this.props.block ? { display: 'block' } : {}} ref={this.metricsRef}>
           {this.props.children}
         </div>
       </div>

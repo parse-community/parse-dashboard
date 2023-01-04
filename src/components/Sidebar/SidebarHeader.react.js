@@ -17,14 +17,8 @@ export default class SidebarHeader extends React.Component {
     super();
     this.state = { };
   }
-  componentWillMount() {
-    let mountPath = window.PARSE_DASHBOARD_PATH;
-    fetch(mountPath).then(response => {
-      this.setState({ dashboardUser: response.headers.get('username') });
-    });
-  }
   render() {
-    const { isCollapsed = false } = this.props;
+    const { isCollapsed = false, dashboardUser } = this.props;
     const headerContent = isCollapsed
       ? (
         <div className={styles.logo}>
@@ -39,9 +33,9 @@ export default class SidebarHeader extends React.Component {
           <Link to='/apps'>
             <div className={styles.version}>
               <div>
-                Parse Dashboard {version}
+                Gemforce Dashboard {version}
                 <div>
-                  {this.state.dashboardUser}
+                  {dashboardUser}
                 </div>
               </div>
             </div>

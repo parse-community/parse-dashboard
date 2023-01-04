@@ -5,8 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+ @import 'stylesheets/globals.scss';
 
-import { createBrowserHistory } from 'history';
+.deleteButton {
+  @include buttonReset;
+}
 
-const path = window.PARSE_DASHBOARD_PATH || '/';
-export default createBrowserHistory({ basename: path });
+.label {
+  padding: 10px 20px; 
+  font-weight: 700; 
+  font-size: 13px; 
+  font-family: 'Noto Sans';
+}

@@ -1,11 +1,18 @@
 .playground-ctn {
   padding-top: 96px;
   background-color: #002b36;
-  height: 100vh;
+  height: 100%;
+
+  * {
+    -ms-overflow-style: none;
+  }
+  
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .console-ctn {
-  display: flex;
   align-items: center;
   justify-content: stretch;
   flex-direction: column;
@@ -29,6 +36,8 @@
   }
 
   & > section {
+    background-color: #002b36;
+    height: 100%;
     width: 100%;
   }
 }
@@ -44,4 +53,8 @@
     justify-content: flex-end;
     width: 25%;
   }
+}
+
+.split-ctn {
+  cursor: ns-resize;
 }

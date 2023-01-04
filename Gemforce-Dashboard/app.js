@@ -96,12 +96,12 @@ module.exports = function(config, options) {
       if (!options.dev && !requestIsLocal) {
         if (!req.secure && !options.allowInsecureHTTP) {
           //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
-          return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
+          return res.send({ success: false, error: 'Gemforce Dashboard can only be remotely accessed via HTTPS' });
         }
 
         if (!users) {
           //Accessing the dashboard over the internet can only be done with username and password
-          return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
+          return res.send({ success: false, error: 'Configure a user to access Gemforce Dashboard remotely' });
         }
       }
       const authentication = req.user;
@@ -184,22 +184,22 @@ module.exports = function(config, options) {
         </div>`
       }
       res.send(`<!DOCTYPE html>
+      <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
           </script>
+          <title>Gemforce Dashboard</title>
         </head>
-        <html>
-          <title>Parse Dashboard</title>
-          <body>
-            <div id="login_mount"></div>
-            ${errors}
-            <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
-            <script src="${mountPath}bundles/login.bundle.js"></script>
-          </body>
-        </html>
+        <body>
+          <div id="login_mount"></div>
+          ${errors}
+          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
+          <script src="${mountPath}bundles/login.bundle.js"></script>
+        </body>
+      </html>
       `);
     });
 
@@ -212,20 +212,20 @@ module.exports = function(config, options) {
         res.append('username', req.user.matchingUsername);
       }
       res.send(`<!DOCTYPE html>
+      <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
           </script>
+          <title>Gemforce Dashboard</title>
         </head>
-        <html>
-          <title>Parse Dashboard</title>
-          <body>
-            <div id="browser_mount"></div>
-            <script src="${mountPath}bundles/dashboard.bundle.js"></script>
-          </body>
-        </html>
+        <body>
+          <div id="browser_mount"></div>
+          <script src="${mountPath}bundles/dashboard.bundle.js"></script>
+        </body>
+      </html>
       `);
     });
   });

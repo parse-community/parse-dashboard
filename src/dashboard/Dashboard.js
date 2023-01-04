@@ -5,57 +5,59 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountOverview    from './Account/AccountOverview.react';
-import AccountView        from './AccountView.react';
-import AnalyticsOverview  from './Analytics/Overview/Overview.react';
-import ApiConsole         from './Data/ApiConsole/ApiConsole.react';
-import AppData            from './AppData.react';
-import AppsIndex          from './Apps/AppsIndex.react';
-import AppsManager        from 'lib/AppsManager';
-import Browser            from './Data/Browser/Browser.react';
-import Deployments        from './Data/Deployments/Deployments.react';
-import DeploymentsData    from './Data/Deployments/DeploymentsData.react';
-import CloudCode          from './Data/CloudCode/CloudCode.react';
-import Config             from './Data/Config/Config.react';
-import Explorer           from './Analytics/Explorer/Explorer.react';
-import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
-import GeneralSettings    from './Settings/GeneralSettings.react';
-import GraphQLConsole     from './Data/ApiConsole/GraphQLConsole.react';
-import history            from 'dashboard/history';
-import HostingSettings    from './Settings/HostingSettings.react';
-import Icon               from 'components/Icon/Icon.react';
-import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
-import Jobs               from './Data/Jobs/Jobs.react';
-import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
-import Loader             from 'components/Loader/Loader.react';
-import Logs               from './Data/Logs/Logs.react';
-import Migration          from './Data/Migration/Migration.react';
-import ParseApp           from 'lib/ParseApp';
-import Performance        from './Analytics/Performance/Performance.react';
+import AccountOverview from './Account/AccountOverview.react';
+import AccountView from './AccountView.react';
+import AnalyticsOverview from './Analytics/Overview/Overview.react';
+import ApiConsole from './Data/ApiConsole/ApiConsole.react';
+import AppData from './AppData.react';
+import AppsIndex from './Apps/AppsIndex.react';
+import AppsManager from 'lib/AppsManager';
+import Browser from './Data/Browser/Browser.react';
+import CloudCode from './Data/CloudCode/CloudCode.react';
+import Code from './Data/Code/Code.react';
+import Docs from './Data/Docs/Docs.react';
+import Deployments from './Data/Deployments/Deployments.react';
+import DeploymentsData from './Data/Deployments/DeploymentsData.react';
+import Config from './Data/Config/Config.react';
+import Explorer from './Analytics/Explorer/Explorer.react';
+import FourOhFour from 'components/FourOhFour/FourOhFour.react';
+import GeneralSettings from './Settings/GeneralSettings.react';
+import GraphQLConsole from './Data/ApiConsole/GraphQLConsole.react';
+import HostingSettings from './Settings/HostingSettings.react';
+import Icon from 'components/Icon/Icon.react';
+import JobEdit from 'dashboard/Data/Jobs/JobEdit.react';
+import Jobs from './Data/Jobs/Jobs.react';
+import JobsData from 'dashboard/Data/Jobs/JobsData.react';
+import TokenSalesData from 'dashboard/Data/TokenSales/TokenSalesData.react';
+import Loader from 'components/Loader/Loader.react';
+import Logs from './Data/Logs/Logs.react';
+import Migration from './Data/Migration/Migration.react';
+import Pages from './Data/Page/Pages.react';
+import ParseApp from 'lib/ParseApp';
+import Performance from './Analytics/Performance/Performance.react';
 import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
-import PushDetails        from './Push/PushDetails.react';
-import PushIndex          from './Push/PushIndex.react';
-import PushNew            from './Push/PushNew.react';
-import PushSettings       from './Settings/PushSettings.react';
-import React              from 'react';
-import RestConsole        from './Data/ApiConsole/RestConsole.react';
-import Retention          from './Analytics/Retention/Retention.react';
-import SchemaOverview     from './Data/Browser/SchemaOverview.react';
-import SecuritySettings   from './Settings/SecuritySettings.react';
-import SettingsData       from './Settings/SettingsData.react';
-import SlowQueries        from './Analytics/SlowQueries/SlowQueries.react';
-import styles             from 'dashboard/Apps/AppsIndex.scss';
-import UsersSettings      from './Settings/UsersSettings.react';
-import Webhooks           from './Data/Webhooks/Webhooks.react';
-import { AsyncStatus }    from 'lib/Constants';
-import baseStyles         from 'stylesheets/base.scss';
-import { get }            from 'lib/AJAX';
-import { setBasePath }    from 'lib/AJAX';
-import {
-  Router,
-  Switch,
-} from 'react-router';
-import { Route, Redirect } from 'react-router-dom';
+import PushDetails from './Push/PushDetails.react';
+import PushIndex from './Push/PushIndex.react';
+import PushNew from './Push/PushNew.react';
+import PushSettings from './Settings/PushSettings.react';
+import React from 'react';
+import RestConsole from './Data/ApiConsole/RestConsole.react';
+import Retention from './Analytics/Retention/Retention.react';
+import SchemaOverview from './Data/Browser/SchemaOverview.react';
+import SecuritySettings from './Settings/SecuritySettings.react';
+import SettingsData from './Settings/SettingsData.react';
+import SlowQueries from './Analytics/SlowQueries/SlowQueries.react';
+import TokenSales from './Data/TokenSales/TokenSales.react';
+import Tokens from './Data/Tokens/Tokens.react';
+import TokenSalesEdit from 'dashboard/Data/TokenSales/TokenSalesEdit.react';
+import styles from 'dashboard/Apps/AppsIndex.scss';
+import UsersSettings from './Settings/UsersSettings.react';
+import Webhooks from './Data/Webhooks/Webhooks.react';
+import { AsyncStatus } from 'lib/Constants';
+import baseStyles from 'stylesheets/base.scss';
+import { get } from 'lib/AJAX';
+import { setBasePath } from 'lib/AJAX';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 
@@ -68,10 +70,10 @@ class Empty extends React.Component {
 }
 
 const AccountSettingsPage = () => (
-    <AccountView section='Account Settings'>
-      <AccountOverview />
-    </AccountView>
-  );
+  <AccountView section="Account Settings">
+    <AccountOverview />
+  </AccountView>
+);
 
 const PARSE_DOT_COM_SERVER_INFO = {
   features: {
@@ -81,33 +83,33 @@ const PARSE_DOT_COM_SERVER_INFO = {
       addClass: true,
       removeClass: true,
       clearAllDataFromClass: false, //This still goes through ruby
-      exportClass: false, //Still goes through ruby
+      exportClass: false //Still goes through ruby
     },
     cloudCode: {
-      viewCode: true,
+      viewCode: true
     },
     hooks: {
       create: true,
       read: true,
       update: true,
-      delete: true,
+      delete: true
     },
     logs: {
       info: true,
-      error: true,
+      error: true
     },
     globalConfig: {
       create: true,
       read: true,
       update: true,
-      delete: true,
+      delete: true
     },
     playground: {
       evalCode: true
     }
   },
-  parseServerVersion: 'Parse.com',
-}
+  parseServerVersion: 'Parse.com'
+};
 
 export default class Dashboard extends React.Component {
   constructor(props) {
@@ -115,7 +117,7 @@ export default class Dashboard extends React.Component {
     this.state = {
       configLoadingError: '',
       configLoadingState: AsyncStatus.PROGRESS,
-      newFeaturesInLatestVersion: [],
+      newFeaturesInLatestVersion: []
     };
     setBasePath(props.path);
     sessionStorage.removeItem('username');
@@ -123,137 +125,161 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
-      this.setState({ newFeaturesInLatestVersion });
-      let appInfoPromises = apps.map(app => {
-        if (app.serverURL.startsWith('https://api.parse.com/1')) {
-          //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
-          //it supports and can hard code them
-          app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
-          return Promise.resolve(app);
-        } else {
-          app.serverInfo = {}
-          return new ParseApp(app).apiRequest(
-            'GET',
-            'serverInfo',
-            {},
-            { useMasterKey: true }
-          ).then(serverInfo => {
-            app.serverInfo = serverInfo;
-            return app;
-          }, error => {
-            if (error.code === 100) {
-              app.serverInfo = {
-                error: 'unable to connect to server',
-                enabledFeatures: {},
-                parseServerVersion: 'unknown'
-              }
-              return Promise.resolve(app);
-            } else if (error.code === 107) {
-              app.serverInfo = {
-                error: 'server version too low',
-                enabledFeatures: {},
-                parseServerVersion: 'unknown'
-              }
-              return Promise.resolve(app);
-            } else {
-              app.serverInfo = {
-                error: error.message || 'unknown error',
-                enabledFeatures: {},
-                parseServerVersion: 'unknown'
-              }
-              return Promise.resolve(app);
-            }
+    get('/parse-dashboard-config.json')
+      .then(({ apps, newFeaturesInLatestVersion = [] }) => {
+        this.setState({ newFeaturesInLatestVersion });
+        let appInfoPromises = apps.map((app) => {
+          if (app.serverURL.startsWith('https://api.parse.com/1')) {
+            //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
+            //it supports and can hard code them
+            app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
+            return Promise.resolve(app);
+          } else {
+            app.serverInfo = {};
+            return new ParseApp(app)
+              .apiRequest('GET', 'serverInfo', {}, { useMasterKey: true })
+              .then(
+                (serverInfo) => {
+                  app.serverInfo = serverInfo;
+                  return app;
+                },
+                (error) => {
+                  if (error.code === 100) {
+                    app.serverInfo = {
+                      error: 'unable to connect to server',
+                      enabledFeatures: {},
+                      parseServerVersion: 'unknown'
+                    };
+                    return Promise.resolve(app);
+                  } else if (error.code === 107) {
+                    app.serverInfo = {
+                      error: 'server version too low',
+                      enabledFeatures: {},
+                      parseServerVersion: 'unknown'
+                    };
+                    return Promise.resolve(app);
+                  } else {
+                    app.serverInfo = {
+                      error: error.message || 'unknown error',
+                      enabledFeatures: {},
+                      parseServerVersion: 'unknown'
+                    };
+                    return Promise.resolve(app);
+                  }
+                }
+              );
+          }
+        });
+        return Promise.all(appInfoPromises);
+      })
+      .then(
+        function (resolvedApps) {
+          resolvedApps.forEach((app) => {
+            AppsManager.addApp(app);
           });
-        }
+          this.setState({ configLoadingState: AsyncStatus.SUCCESS });
+        }.bind(this)
+      )
+      .catch(({ error }) => {
+        this.setState({
+          configLoadingError: error,
+          configLoadingState: AsyncStatus.FAILED
+        });
       });
-      return Promise.all(appInfoPromises);
-    }).then(function(resolvedApps) {
-      resolvedApps.forEach(app => {
-        AppsManager.addApp(app);
-      });
-      this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }.bind(this)).catch(({ error }) => {
-      this.setState({
-        configLoadingError: error,
-        configLoadingState: AsyncStatus.FAILED
-      });
-    });
   }
 
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
-      return <div className={baseStyles.center}><Loader/></div>;
+      return (
+        <div className={baseStyles.center}>
+          <Loader />
+        </div>
+      );
     }
 
-    if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
-      return <div className={styles.empty}>
-        <div className={baseStyles.center}>
-          <div className={styles.cloud}>
-            <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
+    if (
+      this.state.configLoadingError &&
+      this.state.configLoadingError.length > 0
+    ) {
+      return (
+        <div className={styles.empty}>
+          <div className={baseStyles.center}>
+            <div className={styles.cloud}>
+              <Icon
+                width={110}
+                height={110}
+                name="cloud-surprise"
+                fill="#1e3b4d"
+              />
+            </div>
+            {/* use non-breaking hyphen for the error message to keep the filename on one line */}
+            <div className={styles.loadingError}>
+              {this.state.configLoadingError.replace(/-/g, '\u2011')}
+            </div>
           </div>
-          {/* use non-breaking hyphen for the error message to keep the filename on one line */}
-          <div className={styles.loadingError}>{this.state.configLoadingError.replace(/-/g, '\u2011')}</div>
         </div>
-      </div>
+      );
     }
 
     const AppsIndexPage = () => (
-      <AccountView section='Your Apps'>
-        <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
+      <AccountView section="Your Apps">
+        <AppsIndex
+          newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}
+        />
       </AccountView>
     );
 
-    const SettingsRoute = ({ match }) => (
-      <SettingsData params={ match.params }>
-        <Switch>
-          <Route path={ match.url + '/general' } component={GeneralSettings} />
-          <Route path={ match.url + '/keys' } component={SecuritySettings} />
-          <Route path={ match.url + '/users' } component={UsersSettings} />
-          <Route path={ match.url + '/push' } component={PushSettings} />
-          <Route path={ match.url + '/hosting' } component={HostingSettings} />
-        </Switch>
-      </SettingsData>
-    )
-
-    const JobsRoute = (props) => (
-      <Switch>
-        <Route exact path={ props.match.path + '/new' } render={(props) => (
-          <JobsData {...props} params={props.match.params}>
-            <JobEdit params={props.match.params}/>
-          </JobsData>
-        )} />
-        <Route path={ props.match.path + '/edit/:jobId' } render={(props) => (
-          <JobsData {...props} params={props.match.params}>
-            <JobEdit params={props.match.params}/>
-          </JobsData>
-        )} />
-        <Route path={ props.match.path + '/:section' } render={(props) => (
-          <JobsData {...props} params={props.match.params}>
-            <Jobs {...props} params={props.match.params}/>
-          </JobsData>
-        )} />
-        <Redirect from={ props.match.path } to='/apps/:appId/jobs/all' />
-      </Switch>
-    )
-
-    const AnalyticsRoute = ({ match }) => (
-      <Switch>
-        <Route path={ match.path + '/overview' } component={AnalyticsOverview} />
-        <Redirect exact from={ match.path + '/explorer' } to='/apps/:appId/analytics/explorer/chart' />
-        <Route path={ match.path + '/explorer/:displayType' } component={Explorer} />
-        <Route path={ match.path + '/retention' } component={Retention} />
-        <Route path={ match.path + '/performance' } component={Performance} />
-        <Route path={ match.path + '/slow_queries' } component={SlowQueries} />
-      </Switch>
+    const SettingsRoute = (
+      <Route element={<SettingsData />}>
+        <Route path="general" element={<GeneralSettings />} />
+        <Route path="keys" element={<SecuritySettings />} />
+        <Route path="users" element={<UsersSettings />} />
+        <Route path="push" element={<PushSettings />} />
+        <Route path="hosting" element={<HostingSettings />} />
+        <Route index element={<Navigate replace to="general" />} />
+      </Route>
     );
 
-    const BrowserRoute = (props) => {
-      if (ShowSchemaOverview) {
-        return <SchemaOverview {...props} params={props.match.params} />
-      }
-      return <Browser {...props} params={ props.match.params } />
-    }
+    const JobsRoute = (
+      <Route element={<JobsData />}>
+        <Route path="new" element={<JobEdit />} />
+        <Route path="edit/:jobId" element={<JobEdit />} />
+        <Route path=":section" element={<Jobs />} />
+        <Route index element={<Navigate replace to="all" />} />
+      </Route>
+    );
+
+    const TokenSalesRoute = (
+      <Route element={<TokenSalesData />}>
+        <Route path="new" element={<TokenSalesEdit />} />
+        <Route path="edit/:tokenSaleId" element={<TokenSalesEdit />} />
+        <Route path=":section" element={<TokenSales />} />
+        <Route index element={<Navigate replace to="all" />} />
+      </Route>
+    )
+
+    const AnalyticsRoute = (
+      <Route>
+        <Route path="overview" element={<AnalyticsOverview />} />
+        <Route path="explorer/:displayType" element={<Explorer />} />
+        <Route path="retention" element={<Retention />} />
+        <Route path="performance" element={<Performance />} />
+        <Route path="slow_queries" element={<SlowQueries />} />
+        <Route index element={<Navigate replace to="overview" />} />
+        <Route path="explorer" element={<Navigate replace to="chart" />} />
+      </Route>
+    );
+
+    const BrowserRoute = ShowSchemaOverview ? SchemaOverview : Browser;
+
+    const ApiConsoleRoute = (
+      <Route element={<ApiConsole />}>
+        <Route path="rest" element={<RestConsole />} />
+        <Route path="graphql" element={<GraphQLConsole />} />
+        <Route path="js_console" element={<Playground />} />
+        <Route index element={<Navigate replace to="rest" />} />
+      </Route>
+    );
 
     const DeploymentsRoute = (props) => {
       return (
@@ -272,96 +298,81 @@ export default class Dashboard extends React.Component {
       );
     };
 
-    const ApiConsoleRoute = (props) => (
-      <Switch>
-        <Route path={ props.match.path + '/rest' } render={props => (
-          <ApiConsole {...props}>
-            <RestConsole />
-          </ApiConsole>
-        )} />
-        <Route path={ props.match.path + '/graphql' } render={props => (
-          <ApiConsole {...props}>
-            <GraphQLConsole />
-          </ApiConsole>
-        )} />
-        <Route path={ props.match.path + '/js_console' } render={props => (
-          <ApiConsole {...props}>
-            <Playground />
-          </ApiConsole>
-        )} />
-        <Redirect from={ props.match.path } to='/apps/:appId/api_console/rest' />
-      </Switch>
-    )
+    const AppRoute = (
+      <Route element={<AppData />}>
+        <Route index element={<Navigate replace to="browser" />} />
 
-    const AppRoute = ({ match }) => (
-      <AppData params={ match.params }>
-        <Switch>
-          <Route path={ match.path + '/getting_started' } component={Empty} />
-          <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
-          <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
-          <Route path={ match.path + '/browser' } component={BrowserRoute} />
-          <Route path={ match.path + '/deployments' } component={DeploymentsRoute} />
-          <Route path={ match.path + '/cloud_code' } component={CloudCode} />
-          <Route path={ match.path + '/cloud_code/*' } component={CloudCode} />
-          <Route path={ match.path + '/webhooks' } component={Webhooks} />
+        <Route path="getting_started" element={<Empty />} />
 
-          <Route path={ match.path + '/jobs' } component={JobsRoute}/>
+        <Route
+          path="browser/:className/:entityId/:relationName"
+          element={<BrowserRoute />}
+        />
+        <Route path="browser/:className" element={<BrowserRoute />} />
+        <Route path="browser" element={<BrowserRoute />} />
+        
+        <Route patth="tokensales" element={<TokenSales />}>{TokenSalesRoute}</Route>
+        <Route path="tokens" element={<Tokens />} />
 
-          <Route path={ match.path + '/logs/:type' } render={(props) => (
-            <Logs {...props} params={props.match.params} />
-          )} />
-          <Redirect from={ match.path + '/logs' } to='/apps/:appId/logs/info' />
+        <Route path="docs/:subpath" element={<Docs />} />
+        <Route path="docs/contracts/:contractName" element={<Docs />} />
+        <Route path="docs" element={<Docs />} />
 
-          <Route path={ match.path + '/config' } component={Config} />
-          <Route path={ match.path + '/api_console' } component={ApiConsoleRoute} />
-          <Route path={ match.path + '/migration' } component={Migration} />
+        <Route path="/deployments" element={<DeploymentsRoute />} />
 
+        <Route path="code" element={<Code />} />
+        <Route path="cloud_code" element={<CloudCode />} />
+        <Route path="cloud_code/*" element={<CloudCode />} />
+        <Route path="webhooks" element={<Webhooks />} />
 
-          <Redirect exact from={ match.path + '/push' } to='/apps/:appId/push/new' />
-          <Redirect exact from={ match.path + '/push/activity' } to='/apps/:appId/push/activity/all'  />
+        <Route path="jobs">{JobsRoute}</Route>
 
-          <Route path={ match.path + '/push/activity/:category' } render={(props) => (
-            <PushIndex {...props} params={props.match.params} />
-          )} />
-          <Route path={ match.path + '/push/audiences' } component={PushAudiencesIndex} />
-          <Route path={ match.path + '/push/new' } component={PushNew} />
-          <Route path={ match.path + '/push/:pushId' } render={(props) => (
-            <PushDetails {...props} params={props.match.params} />
-          )} />
+        <Route path="logs/:type" element={<Logs />} />
+        <Route path="logs" element={<Navigate replace to="info" />} />
 
-          {/* Unused routes... */}
-          <Redirect exact from={ match.path + '/analytics' } to='/apps/:appId/analytics/overview' />
-          <Route path={ match.path + '/analytics' } component={AnalyticsRoute}/>
-          <Redirect exact from={ match.path + '/settings' } to='/apps/:appId/settings/general' />
-          <Route path={ match.path + '/settings' } component={SettingsRoute}/>
-        </Switch>
-      </AppData>
-    )
+        <Route path="config" element={<Config />} />
 
-    const Index = () => (
-      <div>
-        <Switch>
-          <Redirect exact from='/apps/:appId' to='/apps/:appId/browser' />
-          <Route exact path='/apps' component={AppsIndexPage} />
-          <Route path='/apps/:appId' component={AppRoute} />
-        </Switch>
-      </div>
-    )
+        <Route path="api_console">{ApiConsoleRoute}</Route>
+
+        <Route path="migration" element={<Migration />} />
+
+        <Route path="pages" element={<Pages />} />
+
+        <Route path="push" element={<Navigate replace to="new" />} />
+        <Route path="push/activity" element={<Navigate replace to="all" />} />
+
+        <Route path="push/activity/:category" element={<PushIndex />} />
+        <Route path="push/audiences" element={<PushAudiencesIndex />} />
+        <Route path="push/new" element={<PushNew />} />
+        <Route path="push/:pushId" element={<PushDetails />} />
+
+        {/* Unused routes... */}
+        <Route path="analytics">{AnalyticsRoute}</Route>
+
+        <Route path="settings">{SettingsRoute}</Route>
+      </Route>
+    );
+
+    const Index = (
+      <Route>
+        <Route index element={<AppsIndexPage />} />
+        <Route path=":appId">{AppRoute}</Route>
+      </Route>
+    );
+
     return (
-      <Router history={history}>
-        <div>
-          <Helmet>
-            <title>Parse Dashboard</title>
-          </Helmet>
-          <Switch>
-            <Route path='/apps' component={Index} />
-            <Route path='/account/overview' component={AccountSettingsPage} />
-            <Redirect from='/account' to='/account/overview' />
-            <Redirect from='/' to='/apps' />
-            <Route path='*' component={FourOhFour} />
-          </Switch>
-        </div>
-      </Router>
+      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
+        <Helmet>
+          <title>Gemforce Dashboard</title>
+        </Helmet>
+        <Routes>
+          <Route path="/apps">{Index}</Route>
+          <Route path="account/overview" element={<AccountSettingsPage />} />
+          <Route path="account" element={<Navigate replace to="overview" />} />
+          <Route index element={<Navigate replace to="/apps" />} />
+          <Route path="*" element={<FourOhFour />} />
+        </Routes>
+      </BrowserRouter>
     );
   }
 }

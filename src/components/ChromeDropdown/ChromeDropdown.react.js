@@ -9,7 +9,6 @@ import Popover   from 'components/Popover/Popover.react';
 import PropTypes from 'lib/PropTypes';
 import Position  from 'lib/Position';
 import React     from 'react';
-import ReactDOM  from 'react-dom';
 import styles    from 'components/ChromeDropdown/ChromeDropdown.scss';
 
 export default class ChromeDropdown extends React.Component {
@@ -20,6 +19,8 @@ export default class ChromeDropdown extends React.Component {
       open: false,
       selected: false,
     };
+
+    this.dropdownRef = React.createRef();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,10 +37,6 @@ export default class ChromeDropdown extends React.Component {
 
   componentWillMount() {
     this.styles = this.props.styles || styles;
-  }
-
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
   }
 
   select(value, e) {
@@ -72,8 +69,8 @@ export default class ChromeDropdown extends React.Component {
     );
 
     if (this.state.open) {
-      let position = Position.inWindow(this.node);
-      let measuredWidth = parseFloat(this.node.offsetWidth);
+      let position = Position.inWindow(this.dropdownRef.current);
+      let measuredWidth = parseFloat(this.dropdownRef.current.offsetWidth);
       widthStyle = { width: measuredWidth };
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
@@ -93,7 +90,7 @@ export default class ChromeDropdown extends React.Component {
     }
 
     return (
-      <div style={widthStyle} className={styles.dropdown}>
+      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef}>
         {content}
       </div>
     );

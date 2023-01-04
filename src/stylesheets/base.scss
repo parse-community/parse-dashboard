@@ -34,16 +34,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::-moz-selection {
-  color: white;
-  background: $blue;
-}
-
-::selection {
-  color: white;
-  background: $blue;
-}
-
 a {
   color: $blue;
   cursor: pointer;

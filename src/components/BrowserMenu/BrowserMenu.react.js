@@ -10,7 +10,6 @@ import Icon         from 'components/Icon/Icon.react';
 import Position     from 'lib/Position';
 import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
-import ReactDOM     from 'react-dom';
 import styles       from 'components/BrowserMenu/BrowserMenu.scss';
 
 export default class BrowserMenu extends React.Component {
@@ -18,16 +17,13 @@ export default class BrowserMenu extends React.Component {
     super();
 
     this.state = { open: false };
-  }
-
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+    this.wrapRef = React.createRef();
   }
 
   render() {
     let menu = null;
     if (this.state.open) {
-      let position = Position.inDocument(this.node);
+      let position = Position.inDocument(this.wrapRef.current);
       let titleStyle = [styles.title];
       if (this.props.active) {
         titleStyle.push(styles.active);
@@ -39,7 +35,7 @@ export default class BrowserMenu extends React.Component {
               <Icon name={this.props.icon} width={14} height={14} />
               <span>{this.props.title}</span>
             </div>
-            <div className={styles.body} style={{ minWidth: this.node.clientWidth }}>
+            <div className={styles.body} style={{ minWidth: this.wrapRef.current.clientWidth }}>
               {React.Children.map(this.props.children, (child) => (
                 React.cloneElement(child, { ...child.props, onClick: () => {
                   this.setState({ open: false });
@@ -66,7 +62,7 @@ export default class BrowserMenu extends React.Component {
       };
     }
     return (
-      <div className={styles.wrap}>
+      <div className={styles.wrap} ref={this.wrapRef}>
         <div className={classes.join(' ')} onClick={onClick}>
           <Icon name={this.props.icon} width={14} height={14} />
           <span>{this.props.title}</span>

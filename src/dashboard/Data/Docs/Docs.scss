@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.content {
+  padding: 103px 10px 10px 7px;
+  background: #d1dde4;
+  min-height: 100vh;
+}
+
+body:global(.expanded) {
+  .browser {
+    left: $sidebarCollapsedWidth;
+  }
+}
+
+.empty {
+  position: fixed;
+  left: 300px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.toolbarSeparator {
+  display: inline-block;
+  height: 18px;
+  width: 1px;
+  background: #66637A;
+  vertical-align: bottom;
+  margin: 0 4px;
+}
+
+.notificationMessage, .notificationError {
+  @include animation('fade-in 0.2s ease-out');
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  opacity: 1;
+  background: white;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 260px;
+}
+
+.notificationError {
+  border: 2px solid $red;
+  color: $red;
+}
+
+.notificationMessage {
+  border: 2px solid $blue;
+  color: $blue;
+}
+
+.notificationHide {
+  @include animation('fade-out 0.2s ease-out');
+}
+
+@include keyframes(fade-in) {
+  0% {
+    @include transform(scale(0.9));
+    opacity: 0;
+  }
+  100% {
+    @include transform(scale(1));
+    opacity: 1;
+  }
+}
+
+@include keyframes(fade-out) {
+  0% {
+    @include transform(scale(1));
+    opacity: 1;
+  }
+  100% {
+    @include transform(scale(0.9));
+    opacity: 0;
+  }
+}
+  .toolbarButton svg {
+    fill: rgba(0, 0, 0, 0.3);
+  }
+
+  .toolbarSeparator {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .selectionSection {
+    position: fixed;
+    right: 0;
+    width: 142px;
+    font-size: 12px;
+    color: #0E69A1;
+    background: #F4F5F7;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+
+    .selectionHeader {
+      background: rgb(102, 99, 122);
+      color: white;
+      height: 30px;
+      padding-top: 5px;
+      padding-left: 10px;
+      line-height: 22px;
+    }
+
+    .selectionList {
+      padding-left: 12px;
+      padding-top: 4px;
+      height: calc(60vh - 30px);
+      overflow-y: scroll;
+    }
+  }
