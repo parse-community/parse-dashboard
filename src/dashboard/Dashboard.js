@@ -13,6 +13,8 @@ import AppData            from './AppData.react';
 import AppsIndex          from './Apps/AppsIndex.react';
 import AppsManager        from 'lib/AppsManager';
 import Browser            from './Data/Browser/Browser.react';
+import Deployments        from './Data/Deployments/Deployments.react';
+import DeploymentsData    from './Data/Deployments/DeploymentsData.react';
 import CloudCode          from './Data/CloudCode/CloudCode.react';
 import Config             from './Data/Config/Config.react';
 import Explorer           from './Analytics/Explorer/Explorer.react';
@@ -253,6 +255,23 @@ export default class Dashboard extends React.Component {
       return <Browser {...props} params={ props.match.params } />
     }
 
+    const DeploymentsRoute = (props) => {
+      return (
+        <Switch>
+          <Route
+            exact
+            path={props.match.path + '/:section'}
+            render={(props) => (
+              <DeploymentsData {...props} params={props.match.params}>
+                <Deployments {...props} params={props.match.params} />
+              </DeploymentsData>
+            )}
+          />
+          <Redirect from={props.match.path} to="/apps/:appId/deployments/all" />
+        </Switch>
+      );
+    };
+
     const ApiConsoleRoute = (props) => (
       <Switch>
         <Route path={ props.match.path + '/rest' } render={props => (
@@ -281,6 +300,7 @@ export default class Dashboard extends React.Component {
           <Route path={ match.path + '/browser/:className/:entityId/:relationName' } component={BrowserRoute} />
           <Route path={ match.path + '/browser/:className' } component={BrowserRoute} />
           <Route path={ match.path + '/browser' } component={BrowserRoute} />
+          <Route path={ match.path + '/deployments' } component={DeploymentsRoute} />
           <Route path={ match.path + '/cloud_code' } component={CloudCode} />
           <Route path={ match.path + '/cloud_code/*' } component={CloudCode} />
           <Route path={ match.path + '/webhooks' } component={Webhooks} />

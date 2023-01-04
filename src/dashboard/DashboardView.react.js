@@ -85,6 +85,11 @@ export default class DashboardView extends React.Component {
       link: '/api_console'
     });
 
+    coreSubsections.push({
+      name: 'Deployments',
+      link: '/deployments'
+    });
+
     if (this.context.migration) {
       coreSubsections.push({
         name: 'Migration',
@@ -113,6 +118,14 @@ export default class DashboardView extends React.Component {
         link: '/push/audiences'
       });
     }
+
+    let diamonSubsections = [];
+
+    diamonSubsections.push({
+      name: 'Add Facets to Diamond',
+      link: '/'
+    });
+
 
     let analyticsSidebarSections = [];
 
@@ -213,6 +226,16 @@ export default class DashboardView extends React.Component {
         link: '/push',
         style: {paddingLeft: '16px'},
         subsections: pushSubsections,
+      });
+    }
+
+    if(diamonSubsections.length > 0) {
+      appSidebarSections.push({
+        name: 'Diamond',
+        icon: 'unity',
+        link: '/',
+        style: {paddingLeft: '16px'},
+        subsections: diamonSubsections,
       });
     }
 
