@@ -77,7 +77,6 @@
 #           name: preview-spec
 #           path: event.json
 #           retention-days: 2
-
 #   delete-preview:
 #     name: Call for Preview Deletion
 #     runs-on: ubuntu-latest
