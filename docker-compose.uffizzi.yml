@@ -11,6 +11,7 @@ x-uffizzi:
     share_to_github: true
 
 services:
+
   postgres:
       image: postgres
       environment:
