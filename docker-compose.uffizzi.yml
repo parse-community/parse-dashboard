@@ -54,7 +54,7 @@ services:
         - PARSE_DASHBOARD_APP_NAME=MyParseApp
         - PARSE_DASHBOARD_USER_ID=admin
         - PARSE_DASHBOARD_USER_PASSWORD=password
-        - MOUNT_PATH=/dashboard
+        - MOUNT_PATH=/
         - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
         entrypoint: /bin/sh
         command:
@@ -65,11 +65,11 @@ services:
             limits:
               memory: 1000M
 
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx-uffizzi:/etc/nginx
-      - ./nginx-uffizzi/html:/usr/share/nginx/html
+  # nginx:
+  #   image: nginx:alpine
+  #   volumes:
+  #     - ./nginx-uffizzi:/etc/nginx
+  #     - ./nginx-uffizzi/html:/usr/share/nginx/html
 
 volumes:
   postgres_data:
