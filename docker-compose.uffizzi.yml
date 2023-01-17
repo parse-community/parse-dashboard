@@ -65,11 +65,5 @@ services:
             limits:
               memory: 1000M
 
-  # nginx:
-  #   image: nginx:alpine
-  #   volumes:
-  #     - ./nginx-uffizzi:/etc/nginx
-  #     - ./nginx-uffizzi/html:/usr/share/nginx/html
-
 volumes:
   postgres_data:
