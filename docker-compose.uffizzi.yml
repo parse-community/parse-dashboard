@@ -3,7 +3,7 @@ version: '3'
 # uffizzi integration
 x-uffizzi:
   ingress:
-    service: portal
+    service: dashboard
     port: 4040
   continuous_previews:
     deploy_preview_when_pull_request_is_opened: true
