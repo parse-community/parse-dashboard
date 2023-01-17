@@ -44,7 +44,7 @@ services:
 
   dashboard:
         build:
-          context: ./
+          context: .
           dockerfile: ./Dockerfile
         ports:
             - "4040:4040"
