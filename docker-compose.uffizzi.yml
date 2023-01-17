@@ -41,6 +41,7 @@ services:
           resources:
             limits:
               memory: 1000M
+
   dashboard:
         build:
           context: ./
