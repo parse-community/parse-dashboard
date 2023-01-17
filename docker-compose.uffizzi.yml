@@ -59,7 +59,7 @@ services:
         entrypoint: /bin/sh
         command:
          - "-c"
-         - "PARSE_DASHBOARD_SERVER_URL=$$UFFIZZI_URL/parse node Parse-Dashboard/index.js"
+         - "PARSE_DASHBOARD_SERVER_URL=http://localhost:1337/parse node Parse-Dashboard/index.js"
         deploy:
           resources:
             limits:
