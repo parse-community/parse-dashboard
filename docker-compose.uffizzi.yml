@@ -3,8 +3,8 @@ version: '3'
 # uffizzi integration
 x-uffizzi:
   ingress:
-    service: nginx
-    port: 8081
+    service: portal
+    port: 4040
   continuous_previews:
     deploy_preview_when_pull_request_is_opened: true
     delete_preview_when_pull_request_is_closed: true
@@ -54,22 +54,22 @@ services:
         - PARSE_DASHBOARD_APP_NAME=MyParseApp
         - PARSE_DASHBOARD_USER_ID=admin
         - PARSE_DASHBOARD_USER_PASSWORD=password
-        - MOUNT_PATH=/dashboard
+        - MOUNT_PATH=/
         - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
         entrypoint: /bin/sh
         command:
          - "-c"
-         - "PARSE_DASHBOARD_SERVER_URL=$UFFIZZI_URL/parse node Parse-Dashboard/index.js"
+         - "PARSE_DASHBOARD_SERVER_URL=http://localhost:1337/parse node Parse-Dashboard/index.js"
         deploy:
           resources:
             limits:
               memory: 1000M
 
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx-uffizzi:/etc/nginx
-      - ./nginx-uffizzi/html:/usr/share/nginx/html
+  # nginx:
+  #   image: nginx:alpine
+  #   volumes:
+  #     - ./nginx-uffizzi:/etc/nginx
+  #     - ./nginx-uffizzi/html:/usr/share/nginx/html
 
 volumes:
   postgres_data:
