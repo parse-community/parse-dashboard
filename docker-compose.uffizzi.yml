@@ -59,7 +59,7 @@ services:
         entrypoint: /bin/sh
         command:
          - "-c"
-         - "echo $UFFIZZI_URL && PARSE_DASHBOARD_SERVER_URL=$UFFIZZI_URL/parse node Parse-Dashboard/index.js"
+         - "echo $UFFIZZI_URL && PARSE_DASHBOARD_SERVER_URL=https://deployment-11340-parse-dashboard-581404562.app.uffizzi.com/parse node Parse-Dashboard/index.js"
         #- PARSE_DASHBOARD_COOKIE_SESSION_SECRET=AB8849B6-D725-4A75-AA73-AB7103F0363F
         deploy:
           resources:
