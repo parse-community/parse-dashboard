@@ -59,7 +59,7 @@ services:
         entrypoint: /bin/sh
         command:
          - "-c"
-         - "echo $UFFIZZI_URL && PARSE_DASHBOARD_SERVER_URL=https://deployment-11340-parse-dashboard-581404562.app.uffizzi.com/parse node Parse-Dashboard/index.js"
+         - "PARSE_DASHBOARD_SERVER_URL=https://deployment-11340-parse-dashboard-581404562.app.uffizzi.com/parse node Parse-Dashboard/index.js"
         deploy:
           resources:
             limits:
