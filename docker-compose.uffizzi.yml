@@ -42,7 +42,9 @@ services:
             limits:
               memory: 1000M
   dashboard:
-        image: "${PARSE_DASHBOARD_IMAGE}"
+        build:
+          context: ./
+          dockerfile: ./Dockerfile
         ports:
             - "4040:4040"
         environment:
