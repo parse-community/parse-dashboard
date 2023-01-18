@@ -3,11 +3,10 @@ version: '3'
 # uffizzi integration
 x-uffizzi:
   ingress:
-    service: nginx
-    port: 8081
+    service: dashboard
+    port: 4040
 
 services:
-
   postgres:
       image: postgres
       environment:
@@ -37,8 +36,11 @@ services:
           resources:
             limits:
               memory: 1000M
+
   dashboard:
-        image: "${PARSE_DASHBOARD_IMAGE}"
+        build:
+          context: .
+          dockerfile: ./Dockerfile
         ports:
             - "4040:4040"
         environment:
@@ -49,11 +51,12 @@ services:
         - PARSE_DASHBOARD_USER_PASSWORD=password
         - MOUNT_PATH=/dashboard
         - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
+        # - TRUST_PROXY=1
+        - PARSE_DASHBOARD_SERVER_URL=http://127.0.0.1:1337/parse - ERR CONN REFUSED
         entrypoint: /bin/sh
         command:
          - "-c"
-         - "PARSE_DASHBOARD_SERVER_URL=$$UFFIZZI_URL/parse node Parse-Dashboard/index.js"
-        #- PARSE_DASHBOARD_COOKIE_SESSION_SECRET=AB8849B6-D725-4A75-AA73-AB7103F0363F
+         - "export PARSE_DASHBOARD_SERVER_URL=$$UFFIZZI_URL/parse && node Parse-Dashboard/index.js"
         deploy:
           resources:
             limits:
@@ -67,4 +70,3 @@ services:
 
 volumes:
   postgres_data:
-
