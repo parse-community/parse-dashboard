@@ -61,7 +61,7 @@ services:
         entrypoint: /bin/sh
         command:
          - "-c"
-         - "export PARSE_DASHBOARD_SERVER_URL=$$UFFIZZI_URL/parse node Parse-Dashboard/index.js"
+         - "export PARSE_DASHBOARD_SERVER_URL=$$UFFIZZI_URL/parse && node Parse-Dashboard/index.js"
         deploy:
           resources:
             limits:
