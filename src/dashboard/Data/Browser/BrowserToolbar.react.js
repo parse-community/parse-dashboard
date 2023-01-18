@@ -46,6 +46,7 @@ let BrowserToolbar = ({
   onDropClass,
   onChangeCLP,
   onRefresh,
+  onImport,
   onEditPermissions,
   hidePerms,
   isUnique,
@@ -260,6 +261,11 @@ let BrowserToolbar = ({
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
+      <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onImport}>
+        <Icon name="up-solid" width={14} height={14} />
+        <span>Import</span>
+      </a>
+      <div className={styles.toolbarSeparator} />
       <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
         <Icon name="refresh-solid" width={14} height={14} />
         <span>Refresh</span>

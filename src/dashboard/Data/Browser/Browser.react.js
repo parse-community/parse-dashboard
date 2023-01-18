@@ -16,6 +16,7 @@ import DeleteRowsDialog                   from 'dashboard/Data/Browser/DeleteRow
 import DropClassDialog                    from 'dashboard/Data/Browser/DropClassDialog.react';
 import EmptyState                         from 'components/EmptyState/EmptyState.react';
 import ExportDialog                       from 'dashboard/Data/Browser/ExportDialog.react';
+import ImportDialog                       from 'dashboard/Data/Browser/ImportDialog.react';
 import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
@@ -56,6 +57,7 @@ class Browser extends DashboardView {
       showRemoveColumnDialog: false,
       showDropClassDialog: false,
       showExportDialog: false,
+      showImportDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
       showPointerKeyDialog: false,
@@ -101,6 +103,7 @@ class Browser extends DashboardView {
     this.showDeleteRows = this.showDeleteRows.bind(this);
     this.showDropClass = this.showDropClass.bind(this);
     this.showExport = this.showExport.bind(this);
+    this.showImport = this.showImport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
@@ -275,6 +278,10 @@ class Browser extends DashboardView {
 
   showExport() {
     this.setState({ showExportDialog: true });
+  }
+
+  showImport() {
+    this.setState({ showImportDialog: true });
   }
 
   async login(username, password) {
@@ -1089,6 +1096,7 @@ class Browser extends DashboardView {
       this.state.showRemoveColumnDialog ||
       this.state.showDropClassDialog ||
       this.state.showExportDialog ||
+      this.state.showImportDialog ||
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
       this.state.showAttachSelectedRowsDialog ||
@@ -1539,6 +1547,7 @@ class Browser extends DashboardView {
             onExport={this.showExport}
             onChangeCLP={this.handleCLPChange}
             onRefresh={this.refresh}
+            onImport={this.showImport}
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
@@ -1659,7 +1668,15 @@ class Browser extends DashboardView {
           onCancel={() => this.setState({ showExportDialog: false })}
           onConfirm={() => this.exportClass(className)} />
       );
-    } else if (this.state.showAttachRowsDialog) {
+    }
+    else if (this.state.showImportDialog) {
+      extras = (
+        <ImportDialog
+          className={className}
+          onCancel={() => this.setState({ showImportDialog: false })}
+          onConfirm={() => this.exportClass(className)} />
+      );
+    }else if (this.state.showAttachRowsDialog) {
       extras = (
         <AttachRowsDialog
           relation={this.state.relation}
