@@ -55,8 +55,8 @@ services:
         - PARSE_DASHBOARD_USER_ID=admin
         - PARSE_DASHBOARD_USER_PASSWORD=password
         - MOUNT_PATH=/dashboard
-        # - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
-        - TRUST_PROXY=1
+        - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
+        # - TRUST_PROXY=1
         # - PARSE_DASHBOARD_SERVER_URL=http://127.0.0.1:1337/parse
         entrypoint: /bin/sh
         command:
