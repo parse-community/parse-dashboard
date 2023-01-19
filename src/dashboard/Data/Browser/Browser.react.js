@@ -1352,6 +1352,98 @@ class Browser extends DashboardView {
     document.body.removeChild(element);
   }
 
+  async confirmImport(file) {
+    this.setState({ showImportDialog: null });
+    const className = this.props.params.className;
+    const classColumns = this.getClassColumns(className, false);
+    const columnsObject = {};
+    classColumns.forEach((column) => {
+      columnsObject[column.name] = column;
+    });
+    const { base64, type}  = file._source;
+    if (type === 'text/csv') {
+      const csvToArray =(text) => {
+        let p = '', row = [''], ret = [row], i = 0, r = 0, s = !0, l;
+        for (l of text) {
+            if ('"' === l) {
+                if (s && l === p) row[i] += l;
+                s = !s;
+            } else if (',' === l && s) l = row[++i] = '';
+            else if ('\n' === l && s) {
+                if ('\r' === p) row[i] = row[i].slice(0, -1);
+                row = ret[++r] = [l = '']; i = 0;
+            } else row[i] += l;
+            p = l;
+        }
+        return ret;
+      };
+      const csv = atob(base64);
+      const [columns, ...rows] = csvToArray(csv);
+      await Parse.Object.saveAll(rows.filter(row => row.join() !== '').map(row => {
+        const json = {className};
+        for (let i = 1; i < row.length; i++) {
+          const column = columns[i];
+          const value = row[i];
+          if (value === 'null') {
+            continue;
+          }
+          const {type, targetClass, name} = columnsObject[column] || {};
+          if (type === 'Relation') {
+            json[column] = {
+              __type: 'Relation',
+              className: targetClass,
+            };
+            continue;
+          }
+          if (type === 'Pointer') {
+            json[column] = {
+              __type: 'Pointer',
+              className: targetClass,
+              objectId: value,
+            };
+            continue;
+          }
+          if (name === 'ACL') {
+            json.ACL = new Parse.ACL(JSON.parse(value));
+            continue;
+          }
+          if (type === 'Date') {
+            json[column] = new Date(value);
+            continue;
+          }
+          if (type === 'Boolean') {
+            json[column] = value === 'true';
+            continue;
+          }
+          if (type === 'String') {
+            json[column] = value;
+            continue;
+          }
+          if (type === 'Number') {
+            json[column] = Number(value);
+            continue;
+          }
+          try {
+            json[column] = JSON.parse(value);
+          } catch (e) {
+            /* */
+          }
+        }
+        return Parse.Object.fromJSON(json, false, true);
+      }), {useMasterKey: true});
+    }
+    this.refresh();
+
+    // Deliver to browser to download file
+    // const element = document.createElement('a');
+    // const file = new Blob([csvString], { type: 'text/csv' });
+    // element.href = URL.createObjectURL(file);
+    // element.download = `${className}.csv`;
+    // document.body.appendChild(element); // Required for this to work in FireFox
+    // element.click();
+    // document.body.removeChild(element);
+  }
+
   getClassRelationColumns(className) {
     const currentClassName = this.props.params.className;
     return this.getClassColumns(className, false)
@@ -1674,7 +1766,7 @@ class Browser extends DashboardView {
         <ImportDialog
           className={className}
           onCancel={() => this.setState({ showImportDialog: false })}
-          onConfirm={() => this.exportClass(className)} />
+          onConfirm={(file) => this.confirmImport(file)} />
       );
     }else if (this.state.showAttachRowsDialog) {
       extras = (
