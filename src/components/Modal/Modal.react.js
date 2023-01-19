@@ -38,7 +38,10 @@ let Modal = (({
   progress = false,
   customFooter,
   textModal = false,
+  resizable = false,
   width,
+  minWidth = 540,
+  maxWidth = 860,
   continueText,
   onContinue,
   showContinue,
@@ -52,6 +55,10 @@ let Modal = (({
       return c;
     });
   }
+
+  const modalRef = React.useRef(null);
+  const [isResizing, setResizing] = React.useState(false);
+  const [currentWidth, setCurrentWidth] = React.useState(width);
 
   let footer = customFooter || (
     <div style={{textAlign: buttonsInCenter ? 'center' : 'right'}} className={styles.footer}>
@@ -80,9 +87,37 @@ let Modal = (({
     {children}
   </div> : children;
 
+  React.useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isResizing) {
+        const { x } = modalRef.current.getBoundingClientRect();
+
+        if (e.clientX >= x + minWidth && e.clientX <= x + maxWidth) {
+          setCurrentWidth(e.clientX - x);
+        }
+      }
+    }
+
+    const handleMouseUp = () => {
+      setResizing(false);
+    }
+
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
+  }, [isResizing]);
+
+  const handleMouseDown = () => {
+    setResizing(true);
+  }
+
   return (
     <Popover fadeIn={true} fixed={true} position={origin} modal={true} color='rgba(17,13,17,0.8)'>
-      <div className={[styles.modal, styles[type]].join(' ')} style={{ width }}>
+      <div className={[styles.modal, styles[type], isResizing ? styles.noTransition : ''].join(' ')} style={{ width: currentWidth }} ref={modalRef}>
         <div className={styles.header}>
           <div style={{top: React.Children.count(subtitle) === 0 ? '37px' : '25px'}} className={styles.title}>{title}</div>
           <div className={styles.subtitle}>{subtitle}</div>
@@ -93,6 +128,18 @@ let Modal = (({
         </div>
         {wrappedChildren}
         {footer}
+        {resizable && (
+          <svg
+            className={styles.resizeHandle}
+            viewBox="0 0 24 24"
+            onMouseDown={handleMouseDown}
+            >
+            <path
+              fill="#a5a5b4"
+              d="M22,22H20V20H22V22M22,18H20V16H22V18M18,22H16V20H18V22M18,18H16V16H18V18M14,22H12V20H14V22M22,14H20V12H22V14Z"
+              />
+          </svg>
+        )}
       </div>
     </Popover>
   );
@@ -120,7 +167,10 @@ Modal.propTypes = {
   progress: PropTypes.bool.describe('Passed to the confirm button.'),
   customFooter: PropTypes.node.describe('used to fill any custom footer use case.'),
   textModal: PropTypes.bool.describe('Used for modals that contain only text to pad the text.'),
+  resizable: PropTypes.bool.describe('If true, the modal will be resizable with handle in the bottom right corner'),
   width: PropTypes.number.describe('custom width of modal.'),
+  minWidth: PropTypes.number.describe('minimum width of modal when resizing the width'),
+  maxWidth: PropTypes.number.describe('maximum width of modal when resizing the width'),
   buttonsInCenter: PropTypes.bool.describe('If true, the buttons will appear in the center of the modal, instead of to the right. By default, the buttons appear on the right unless the modal contains no children, in which case they appear in the center.'),
 };
 

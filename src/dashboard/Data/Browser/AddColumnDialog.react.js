@@ -194,6 +194,7 @@ export default class AddColumnDialog extends React.Component {
     );
     return (
       <Modal
+        resizable
         type={Modal.Types.INFO}
         icon='ellipses'
         iconSize={30}
