@@ -29,21 +29,6 @@ export default class ImportDialog extends React.Component {
     });
   }
 
-  inProgress() {
-    if (this.state.progress === undefined) {
-      return false;
-    }
-    let found = false;
-    if (Array.isArray(this.state.progress)) {
-      this.state.progress.forEach((obj) => {
-        if (obj.id === this.props.className) {
-          found = true;
-        }
-      });
-    }
-    return found;
-  }
-
   openFileEditor() {
     this.setState({
       showFileEditor: true
@@ -58,7 +43,6 @@ export default class ImportDialog extends React.Component {
   }
 
   render() {
-    let inProgress = this.inProgress();
     return (
       <div>
       <Modal
