@@ -70,6 +70,8 @@ class Browser extends DashboardView {
       filters: new List(),
       ordering: '-createdAt',
       selection: {},
+      exporting: false,
+      exportingCount: 0,
 
       data: null,
       lastMax: -1,
@@ -1255,15 +1257,12 @@ class Browser extends DashboardView {
     });
   }
 
-  async confirmExportSelectedRows(rows) {
-    this.setState({ rowsToExport: null });
+  async confirmExportSelectedRows(rows, type) {
+    this.setState({ rowsToExport: null, exporting: true, exportingCount: 0 });
     const className = this.props.params.className;
     const query = new Parse.Query(className);
 
-    if (rows['*']) {
-      // Export all
-      query.limit(10000);
-    } else {
+    if (!rows['*']) {
       // Export selected
       const objectIds = [];
       for (const objectId in this.state.rowsToExport) {
@@ -1273,6 +1272,8 @@ class Browser extends DashboardView {
       query.limit(objectIds.length);
     }
 
+
+    const processObjects = (objects) => {
     const classColumns = this.getClassColumns(className, false);
     // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
     const columnsObject = {};
@@ -1286,7 +1287,21 @@ class Browser extends DashboardView {
       className
     ).filter(column => column.visible);
 
-    const objects = await query.find({ useMasterKey: true });
+    if (type === '.json') {
+      const element = document.createElement('a');
+      const file = new Blob([JSON.stringify(objects.map(obj => {
+        const json = obj._toFullJSON();
+        delete json.__type;
+        return json;
+      }), null, 2)], { type: 'application/json' });
+      element.href = URL.createObjectURL(file);
+      element.download = `${className}.json`;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+      document.body.removeChild(element);
+      return;
+    }
+
     let csvString = columns.map(column => column.name).join(',') + '\n';
     for (const object of objects) {
       const row = columns.map(column => {
@@ -1342,6 +1357,37 @@ class Browser extends DashboardView {
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
     document.body.removeChild(element);
+    }
+
+    if (!rows["*"]) {
+      const objects = await query.find({ useMasterKey: true });
+      processObjects(objects);
+      this.setState({ exporting: false, exportingCount: objects.length });
+    } else {
+      let batch = [];
+      let completion = null;
+      query.each(
+        (obj) => {
+          batch.push(obj);
+          if (batch.length % 10 === 0) {
+            this.setState({exportingCount: batch.length});
+          }
+          const one_gigabyte = Math.pow(2, 30);
+          const size = new TextEncoder().encode(JSON.stringify(batch)).length / one_gigabyte;
+          if (size.length > 1) {
+            processObjects(batch);
+            batch = [];
+          }
+          clearTimeout(completion);
+          completion = setTimeout(() => {
+            processObjects(batch);
+            batch = [];
+            this.setState({ exporting: false, exportingCount: 0 });
+          }, 5000);
+        },
+        { useMasterKey: true }
+      );
+    }
   }
 
   getClassRelationColumns(className) {
@@ -1755,7 +1801,7 @@ class Browser extends DashboardView {
           className={className}
           selection={this.state.rowsToExport}
           onCancel={this.cancelExportSelectedRows}
-          onConfirm={() => this.confirmExportSelectedRows(this.state.rowsToExport)}
+          onConfirm={(type) => this.confirmExportSelectedRows(this.state.rowsToExport, type)}
         />
       );
     }
@@ -1770,6 +1816,11 @@ class Browser extends DashboardView {
     } else if (this.state.lastNote) {
       notification = (
         <Notification note={this.state.lastNote} isErrorNote={false}/>
+      );
+    }
+    else if (this.state.exporting) {
+      notification = (
+        <Notification note={`Exporting ${this.state.exportingCount}+ objects...`} isErrorNote={false}/>
       );
     }
     return (

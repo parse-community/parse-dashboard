@@ -7,13 +7,18 @@
  */
 import Modal     from 'components/Modal/Modal.react';
 import React     from 'react';
+import Dropdown    from 'components/Dropdown/Dropdown.react';
+import Field       from 'components/Field/Field.react';
+import Label       from 'components/Label/Label.react';
+import Option      from 'components/Dropdown/Option.react';
 
 export default class ExportSelectedRowsDialog extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      confirmation: ''
+      confirmation: '',
+      exportType: '.csv'
     };
   }
 
@@ -28,13 +33,22 @@ export default class ExportSelectedRowsDialog extends React.Component {
         type={Modal.Types.INFO}
         icon='warn-outline'
         title={this.props.selection['*'] ? 'Export all rows?' : (selectionLength === 1 ? 'Export 1 selected row?' : `Export ${selectionLength} selected rows?`)}
-        subtitle={this.props.selection['*'] ? 'Note: Exporting is limited to the first 10,000 rows.' : ''}
+        subtitle={this.props.selection['*'] ? 'Note: This will export mutliple files with maximum 1gb each. This might take a while.' : ''}
         disabled={!this.valid()}
         confirmText='Export'
         cancelText='Cancel'
         onCancel={this.props.onCancel}
-        onConfirm={this.props.onConfirm}>
-        {}
+        onConfirm={() => this.props.onConfirm(this.state.exportType)}>
+        <Field
+          label={<Label text='Select export type' />}
+          input={
+            <Dropdown
+              value={this.state.exportType}
+              onChange={(exportType) => this.setState({ exportType })}>
+                <Option value='.csv'>.csv</Option>
+                <Option value='.json'>.json</Option>
+            </Dropdown>
+          } />
       </Modal>
     );
   }
