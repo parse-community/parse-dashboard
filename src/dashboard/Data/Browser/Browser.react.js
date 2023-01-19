@@ -1262,13 +1262,13 @@ class Browser extends DashboardView {
     const className = this.props.params.className;
     const query = new Parse.Query(className);
 
-    if (!rows["*"]) {
+    if (!rows['*']) {
       // Export selected
       const objectIds = [];
       for (const objectId in this.state.rowsToExport) {
         objectIds.push(objectId);
       }
-      query.containedIn("objectId", objectIds);
+      query.containedIn('objectId', objectIds);
       query.limit(objectIds.length);
     }
 
@@ -1286,8 +1286,8 @@ class Browser extends DashboardView {
         className
       ).filter((column) => column.visible);
 
-      if (type === ".json") {
-        const element = document.createElement("a");
+      if (type === '.json') {
+        const element = document.createElement('a');
         const file = new Blob(
           [
             JSON.stringify(
@@ -1300,7 +1300,7 @@ class Browser extends DashboardView {
               indentation ? 2 : null,
             ),
           ],
-          { type: "application/json" }
+          { type: 'application/json' }
         );
         element.href = URL.createObjectURL(file);
         element.download = `${className}.json`;
@@ -1310,22 +1310,22 @@ class Browser extends DashboardView {
         return;
       }
 
-      let csvString = columns.map((column) => column.name).join(",") + "\n";
+      let csvString = columns.map((column) => column.name).join(',') + '\n';
       for (const object of objects) {
         const row = columns
           .map((column) => {
             const type = columnsObject[column.name].type;
-            if (column.name === "objectId") {
+            if (column.name === 'objectId') {
               return object.id;
-            } else if (type === "Relation" || type === "Pointer") {
+            } else if (type === 'Relation' || type === 'Pointer') {
               if (object.get(column.name)) {
                 return object.get(column.name).id;
               } else {
-                return "";
+                return '';
               }
             } else {
               let colValue;
-              if (column.name === "ACL") {
+              if (column.name === 'ACL') {
                 colValue = object.getACL();
               } else {
                 colValue = object.get(column.name);
@@ -1333,18 +1333,18 @@ class Browser extends DashboardView {
               // Stringify objects and arrays
               if (
                 Object.prototype.toString.call(colValue) ===
-                  "[object Object]" ||
-                Object.prototype.toString.call(colValue) === "[object Array]"
+                  '[object Object]' ||
+                Object.prototype.toString.call(colValue) === '[object Array]'
               ) {
                 colValue = JSON.stringify(colValue);
               }
-              if (typeof colValue === "string") {
+              if (typeof colValue === 'string') {
                 if (colValue.includes('"')) {
                   // Has quote in data, escape and quote
                   // If the value contains both a quote and delimiter, adding quotes and escaping will take care of both scenarios
                   colValue = colValue.split('"').join('""');
                   return `"${colValue}"`;
-                } else if (colValue.includes(",")) {
+                } else if (colValue.includes(',')) {
                   // Has delimiter in data, surround with quote (which the value doesn't already contain)
                   return `"${colValue}"`;
                 } else {
@@ -1353,19 +1353,19 @@ class Browser extends DashboardView {
                 }
               } else if (colValue === undefined) {
                 // Export as empty CSV field
-                return "";
+                return '';
               } else {
                 return `${colValue}`;
               }
             }
           })
-          .join(",");
-        csvString += row + "\n";
+          .join(',');
+        csvString += row + '\n';
       }
 
       // Deliver to browser to download file
-      const element = document.createElement("a");
-      const file = new Blob([csvString], { type: "text/csv" });
+      const element = document.createElement('a');
+      const file = new Blob([csvString], { type: 'text/csv' });
       element.href = URL.createObjectURL(file);
       element.download = `${className}.csv`;
       document.body.appendChild(element); // Required for this to work in FireFox
@@ -1373,7 +1373,7 @@ class Browser extends DashboardView {
       document.body.removeChild(element);
     };
 
-    if (!rows["*"]) {
+    if (!rows['*']) {
       const objects = await query.find({ useMasterKey: true });
       processObjects(objects);
       this.setState({ exporting: false, exportingCount: objects.length });
