@@ -5,12 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal     from 'components/Modal/Modal.react';
-import React     from 'react';
+import Modal       from 'components/Modal/Modal.react';
+import React       from 'react';
 import Dropdown    from 'components/Dropdown/Dropdown.react';
 import Field       from 'components/Field/Field.react';
 import Label       from 'components/Label/Label.react';
 import Option      from 'components/Dropdown/Option.react';
+import Toggle      from 'components/Toggle/Toggle.react';
 
 export default class ExportSelectedRowsDialog extends React.Component {
   constructor() {
@@ -18,7 +19,8 @@ export default class ExportSelectedRowsDialog extends React.Component {
 
     this.state = {
       confirmation: '',
-      exportType: '.csv'
+      exportType: '.csv',
+      indentation: true,
     };
   }
 
@@ -38,7 +40,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
         confirmText='Export'
         cancelText='Cancel'
         onCancel={this.props.onCancel}
-        onConfirm={() => this.props.onConfirm(this.state.exportType)}>
+        onConfirm={() => this.props.onConfirm(this.state.exportType, this.state.indentation)}>
         <Field
           label={<Label text='Select export type' />}
           input={
@@ -49,6 +51,10 @@ export default class ExportSelectedRowsDialog extends React.Component {
                 <Option value='.json'>.json</Option>
             </Dropdown>
           } />
+        {this.state.exportType === '.json' && <Field
+          label={<Label text='Indentation' />}
+          input={<Toggle value={this.state.indentation} type={Toggle.Types.YES_NO} onChange={(indentation) => {this.setState({indentation})}} />} />
+          }
       </Modal>
     );
   }

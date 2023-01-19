@@ -1257,7 +1257,7 @@ class Browser extends DashboardView {
     });
   }
 
-  async confirmExportSelectedRows(rows, type) {
+  async confirmExportSelectedRows(rows, type, indentation) {
     this.setState({ rowsToExport: null, exporting: true, exportingCount: 0 });
     const className = this.props.params.className;
     const query = new Parse.Query(className);
@@ -1297,7 +1297,7 @@ class Browser extends DashboardView {
                 return json;
               }),
               null,
-              2
+              indentation ? 2 : null,
             ),
           ],
           { type: "application/json" }
@@ -1379,10 +1379,9 @@ class Browser extends DashboardView {
       this.setState({ exporting: false, exportingCount: objects.length });
     } else {
       let batch = [];
-      let completion = null;
-      query.each(
+      query.eachBatch(
         (obj) => {
-          batch.push(obj);
+          batch.push(...obj);
           if (batch.length % 10 === 0) {
             this.setState({ exportingCount: batch.length });
           }
@@ -1394,12 +1393,11 @@ class Browser extends DashboardView {
             processObjects(batch);
             batch = [];
           }
-          clearTimeout(completion);
-          completion = setTimeout(() => {
+          if (obj.length !== 100) {
             processObjects(batch);
             batch = [];
             this.setState({ exporting: false, exportingCount: 0 });
-          }, 5000);
+          }
         },
         { useMasterKey: true }
       );
@@ -1817,7 +1815,7 @@ class Browser extends DashboardView {
           className={className}
           selection={this.state.rowsToExport}
           onCancel={this.cancelExportSelectedRows}
-          onConfirm={(type) => this.confirmExportSelectedRows(this.state.rowsToExport, type)}
+          onConfirm={(type, indentation) => this.confirmExportSelectedRows(this.state.rowsToExport, type, indentation)}
         />
       );
     }
