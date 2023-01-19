@@ -66,13 +66,13 @@ export default class ImportDialog extends React.Component {
         icon='up-outline'
         iconSize={40}
         title={`Import Data into ${this.props.className}`}
-        subtitle='Note: If rows have a className, they will be imported into that class.'
+        subtitle='Note: Please make sure columns are defined in SCHEMA to import.'
         confirmText='Import'
         cancelText='Cancel'
         disabled={!this.state.file}
         buttonsInCenter={true}
         onCancel={this.props.onCancel}
-        onConfirm={this.props.onConfirm}>
+        onConfirm={() => this.props.onConfirm(this.state.file)}>
           <div style={{ padding: '25px' }}>
               {this.state.file && <Pill value={getFileName(this.state.file) }/>}
               <div style={{ cursor: 'pointer' }}>
