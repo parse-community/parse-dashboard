@@ -1262,102 +1262,116 @@ class Browser extends DashboardView {
     const className = this.props.params.className;
     const query = new Parse.Query(className);
 
-    if (!rows['*']) {
+    if (!rows["*"]) {
       // Export selected
       const objectIds = [];
       for (const objectId in this.state.rowsToExport) {
         objectIds.push(objectId);
       }
-      query.containedIn('objectId', objectIds);
+      query.containedIn("objectId", objectIds);
       query.limit(objectIds.length);
     }
 
-
     const processObjects = (objects) => {
-    const classColumns = this.getClassColumns(className, false);
-    // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
-    const columnsObject = {};
-    classColumns.forEach((column) => {
-      columnsObject[column.name] = column;
-    });
-    // get ordered list of class columns
-    const columns = ColumnPreferences.getOrder(
-      columnsObject,
-      this.context.applicationId,
-      className
-    ).filter(column => column.visible);
+      const classColumns = this.getClassColumns(className, false);
+      // create object with classColumns as property keys needed for ColumnPreferences.getOrder function
+      const columnsObject = {};
+      classColumns.forEach((column) => {
+        columnsObject[column.name] = column;
+      });
+      // get ordered list of class columns
+      const columns = ColumnPreferences.getOrder(
+        columnsObject,
+        this.context.applicationId,
+        className
+      ).filter((column) => column.visible);
 
-    if (type === '.json') {
-      const element = document.createElement('a');
-      const file = new Blob([JSON.stringify(objects.map(obj => {
-        const json = obj._toFullJSON();
-        delete json.__type;
-        return json;
-      }), null, 2)], { type: 'application/json' });
+      if (type === ".json") {
+        const element = document.createElement("a");
+        const file = new Blob(
+          [
+            JSON.stringify(
+              objects.map((obj) => {
+                const json = obj._toFullJSON();
+                delete json.__type;
+                return json;
+              }),
+              null,
+              2
+            ),
+          ],
+          { type: "application/json" }
+        );
+        element.href = URL.createObjectURL(file);
+        element.download = `${className}.json`;
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
+        document.body.removeChild(element);
+        return;
+      }
+
+      let csvString = columns.map((column) => column.name).join(",") + "\n";
+      for (const object of objects) {
+        const row = columns
+          .map((column) => {
+            const type = columnsObject[column.name].type;
+            if (column.name === "objectId") {
+              return object.id;
+            } else if (type === "Relation" || type === "Pointer") {
+              if (object.get(column.name)) {
+                return object.get(column.name).id;
+              } else {
+                return "";
+              }
+            } else {
+              let colValue;
+              if (column.name === "ACL") {
+                colValue = object.getACL();
+              } else {
+                colValue = object.get(column.name);
+              }
+              // Stringify objects and arrays
+              if (
+                Object.prototype.toString.call(colValue) ===
+                  "[object Object]" ||
+                Object.prototype.toString.call(colValue) === "[object Array]"
+              ) {
+                colValue = JSON.stringify(colValue);
+              }
+              if (typeof colValue === "string") {
+                if (colValue.includes('"')) {
+                  // Has quote in data, escape and quote
+                  // If the value contains both a quote and delimiter, adding quotes and escaping will take care of both scenarios
+                  colValue = colValue.split('"').join('""');
+                  return `"${colValue}"`;
+                } else if (colValue.includes(",")) {
+                  // Has delimiter in data, surround with quote (which the value doesn't already contain)
+                  return `"${colValue}"`;
+                } else {
+                  // No quote or delimiter, just include plainly
+                  return `${colValue}`;
+                }
+              } else if (colValue === undefined) {
+                // Export as empty CSV field
+                return "";
+              } else {
+                return `${colValue}`;
+              }
+            }
+          })
+          .join(",");
+        csvString += row + "\n";
+      }
+
+      // Deliver to browser to download file
+      const element = document.createElement("a");
+      const file = new Blob([csvString], { type: "text/csv" });
       element.href = URL.createObjectURL(file);
-      element.download = `${className}.json`;
+      element.download = `${className}.csv`;
       document.body.appendChild(element); // Required for this to work in FireFox
       element.click();
       document.body.removeChild(element);
-      return;
-    }
-
-    let csvString = columns.map(column => column.name).join(',') + '\n';
-    for (const object of objects) {
-      const row = columns.map(column => {
-        const type = columnsObject[column.name].type;
-        if (column.name === 'objectId') {
-          return object.id;
-        } else if (type === 'Relation' || type === 'Pointer') {
-          if (object.get(column.name)) {
-            return  object.get(column.name).id
-          } else {
-            return ''
-          }
-        } else {
-          let colValue;
-          if (column.name === 'ACL') {
-            colValue = object.getACL();
-          } else {
-            colValue = object.get(column.name);
-          }
-          // Stringify objects and arrays
-          if (Object.prototype.toString.call(colValue) === '[object Object]' || Object.prototype.toString.call(colValue) === '[object Array]') {
-            colValue = JSON.stringify(colValue);
-          }
-          if(typeof colValue === 'string') {
-            if (colValue.includes('"')) {
-              // Has quote in data, escape and quote
-              // If the value contains both a quote and delimiter, adding quotes and escaping will take care of both scenarios
-              colValue = colValue.split('"').join('""');
-              return `"${colValue}"`;
-            } else if (colValue.includes(',')) {
-              // Has delimiter in data, surround with quote (which the value doesn't already contain)
-              return `"${colValue}"`;
-            } else {
-              // No quote or delimiter, just include plainly
-              return `${colValue}`;
-            }
-          } else if (colValue === undefined) {
-            // Export as empty CSV field
-            return '';
-          } else {
-            return `${colValue}`;
-          }
-        }
-      }).join(',');
-      csvString += row + '\n';
-    }
-
-    // Deliver to browser to download file
-    const element = document.createElement('a');
-    const file = new Blob([csvString], { type: 'text/csv' });
-    element.href = URL.createObjectURL(file);
-    element.download = `${className}.csv`;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element);
-    }
+    };
 
     if (!rows["*"]) {
       const objects = await query.find({ useMasterKey: true });
@@ -1370,10 +1384,12 @@ class Browser extends DashboardView {
         (obj) => {
           batch.push(obj);
           if (batch.length % 10 === 0) {
-            this.setState({exportingCount: batch.length});
+            this.setState({ exportingCount: batch.length });
           }
           const one_gigabyte = Math.pow(2, 30);
-          const size = new TextEncoder().encode(JSON.stringify(batch)).length / one_gigabyte;
+          const size =
+            new TextEncoder().encode(JSON.stringify(batch)).length /
+            one_gigabyte;
           if (size.length > 1) {
             processObjects(batch);
             batch = [];
