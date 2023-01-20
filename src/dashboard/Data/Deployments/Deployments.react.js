@@ -6,9 +6,10 @@ import Toolbar from "components/Toolbar/Toolbar.react";
 import CategoryList from "components/CategoryList/CategoryList.react";
 import ReleaseInfo from "components/ReleaseInfo/ReleaseInfo";
 import TableHeader from "components/Table/TableHeader.react";
-
+import { withRouter } from "lib/withRouter";
 import React from "react";
 
+@withRouter
 export default class Deployments extends TableView {
   constructor() {
     super();
@@ -20,7 +21,7 @@ export default class Deployments extends TableView {
   }
 
   renderSidebar() {
-    let current = this.props.params.section || "";
+    let current = this.props.params?.section || "";
     return this.props.availableDeployments ? (
       <CategoryList
         current={current}
@@ -101,7 +102,7 @@ export default class Deployments extends TableView {
 
   tableData() {
     let data = undefined;
-    if (this.props.params.section === "all") {
+    if (this.props.params && this.props.params.section === "all") {
       data = this.props.availableDeployments;
     }
     return data;
@@ -109,7 +110,7 @@ export default class Deployments extends TableView {
 
   renderToolbar() {
     let subsections = this.props.subSections;
-    if (subsections[this.props.params.section]) {
+    if (this.props.params && subsections[this.props.params.section]) {
       return (
         <Toolbar
           section="Deployments"

@@ -10,41 +10,42 @@ import { CurrentApp } from "context/currentApp";
 import { Outlet } from "react-router-dom";
 import Parse from "parse";
 
-export default class TokenSalesData extends React.Component {
+export default class TokensData extends React.Component {
   static contextType = CurrentApp;
   constructor() {
     super();
 
     this.state = {
-      tokenSales: undefined,
+      tokens: undefined,
     };
   }
 
-  async fetchTokenSales() {
-    const parentObjectQuery = new Parse.Query("MultiSaleCreated__e");
+  async fetchTokens() {
+    const parentObjectQuery = new Parse.Query("Token");
     const response = await parentObjectQuery.findAll({ useMasterKey: true });
     let result = [];
     response.forEach((parseObj) => {
       result.push(parseObj.toJSON());
     });
-    this.setState({ tokenSales: result });
+    this.setState({ tokens: result });
   }
 
   componentDidMount() {
-    this.fetchTokenSales();
+    this.fetchTokens();
   }
 
   componentWillReceiveProps(props, context) {
     if (this.context !== context) {
-      this.fetchTokenSales();
+      this.fetchTokens();
     }
   }
 
   render() {
+    console.log(this.state.tokens);
     return (
       <Outlet
         context={{
-          availableTokenSales: this.state.tokenSales,
+          tokens: this.state.tokens,
         }}
       />
     );
