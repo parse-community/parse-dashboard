@@ -259,7 +259,7 @@ let BrowserToolbar = ({
             onClick={() => onExportSelectedRows({ '*': true })}
           />
           <MenuItem
-            text={'Export SCHEMA'}
+            text={'Export schema'}
             onClick={() => onExportSchema()}
           />
         </BrowserMenu>
