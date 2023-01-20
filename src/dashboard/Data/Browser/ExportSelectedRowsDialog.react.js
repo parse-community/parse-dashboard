@@ -35,7 +35,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
         type={Modal.Types.INFO}
         icon='warn-outline'
         title={this.props.selection['*'] ? 'Export all rows?' : (selectionLength === 1 ? 'Export 1 selected row?' : `Export ${selectionLength} selected rows?`)}
-        subtitle={this.props.selection['*'] ? 'Note: This will export mutliple files with maximum 1gb each. This might take a while.' : ''}
+        subtitle={this.props.selection['*'] ? 'Large datasets are exported as multiple files of up to 1 GB each.' : ''}
         disabled={!this.valid()}
         confirmText='Export'
         cancelText='Cancel'
