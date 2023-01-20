@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2016-present, Parse, LLC
- * All rights reserved.
- *
- * This source code is licensed under the license found in the LICENSE file in
- * the root directory of this source tree.
- */
 import Modal          from 'components/Modal/Modal.react';
 import FileEditor     from 'components/FileEditor/FileEditor.react';
 import React          from 'react';
@@ -13,20 +6,12 @@ import getFileName from 'lib/getFileName';
 import { CurrentApp } from 'context/currentApp';
 
 export default class ImportDialog extends React.Component {
-  static contextType = CurrentApp;
   constructor() {
     super();
     this.state = {
-      progress: undefined,
       file: null,
       showFileEditor: false
     };
-  }
-
-  componentWillMount() {
-    this.context.getExportProgress().then((progress) => {
-      this.setState({ progress });
-    });
   }
 
   openFileEditor() {
@@ -67,7 +52,7 @@ export default class ImportDialog extends React.Component {
                 {this.state.showFileEditor && (
                   <FileEditor
                     value={this.state.file}
-                    accept='.json,.csv'
+                    accept='.csv'
                     onCommit={(file) => this.hideFileEditor(file)}
                     onCancel={() => this.hideFileEditor()}
                   />

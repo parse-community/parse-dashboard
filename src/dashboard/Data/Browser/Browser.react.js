@@ -1433,15 +1433,6 @@ class Browser extends DashboardView {
       }), {useMasterKey: true});
     }
     this.refresh();
-
-    // Deliver to browser to download file
-    // const element = document.createElement('a');
-    // const file = new Blob([csvString], { type: 'text/csv' });
-    // element.href = URL.createObjectURL(file);
-    // element.download = `${className}.csv`;
-    // document.body.appendChild(element); // Required for this to work in FireFox
-    // element.click();
-    // document.body.removeChild(element);
   }
 
   getClassRelationColumns(className) {
