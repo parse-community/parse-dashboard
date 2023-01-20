@@ -293,6 +293,27 @@ export default class DashboardView extends React.Component {
     );
 
     let content = <div className={styles.content}>{this.renderContent()}</div>;
+    const canRoute = [...coreSubsections, ...pushSubsections]
+      .map(({ link }) => link.split('/')[1])
+      .includes(this.state.route);
+
+    if (!canRoute) {
+      content = (
+        <div className={styles.empty}>
+          <div className={baseStyles.center}>
+            <div className={styles.cloud}>
+              <Icon
+                width={110}
+                height={110}
+                name="cloud-surprise"
+                fill="#1e3b4d"
+              />
+            </div>
+            <div className={styles.loadingError}>Feature unavailable</div>
+          </div>
+        </div>
+      );
+    }
 
     if (this.context.serverInfo.error) {
       content = (
@@ -315,28 +336,6 @@ export default class DashboardView extends React.Component {
               width="120px"
               onClick={() => location.reload()}
             />
-          </div>
-        </div>
-      );
-    }
-
-    const canRoute = [...coreSubsections, ...pushSubsections]
-      .map(({ link }) => link.split('/')[1])
-      .includes(this.state.route);
-
-    if (!canRoute) {
-      content = (
-        <div className={styles.empty}>
-          <div className={baseStyles.center}>
-            <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
-            </div>
-            <div className={styles.loadingError}>Feature unavailable</div>
           </div>
         </div>
       );
