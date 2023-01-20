@@ -1,3 +1,10 @@
+# [5.1.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.1...5.1.0-alpha.2) (2023-01-20)
+
+
+### Bug Fixes
+
+* Blank screen shown if server is unreachable; unsupported pages are accessible via direct URLs ([#2363](https://github.com/ParsePlatform/parse-dashboard/issues/2363)) ([9855258](https://github.com/ParsePlatform/parse-dashboard/commit/98552584df4d8d75d65d3e394b4acad522117a96))
+
 # [5.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0...5.1.0-alpha.1) (2022-11-05)
 
 
