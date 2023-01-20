@@ -333,32 +333,31 @@ class Browser extends DashboardView {
     try {
       this.showNote('Exporting schema...');
       this.setState({ showExportSchemaDialog: false });
-    let schema = [];
-    if (all) {
-      schema = await Parse.Schema.all();
-    } else {
-      schema = await new Parse.Schema(className).get();
+      let schema = [];
+      if (all) {
+        schema = await Parse.Schema.all();
+      } else {
+        schema = await new Parse.Schema(className).get();
+      }
+      const element = document.createElement('a');
+      const file = new Blob(
+        [
+          JSON.stringify(
+            schema,
+            null,
+            2,
+          ),
+        ],
+        { type: 'application/json' }
+      );
+      element.href = URL.createObjectURL(file);
+      element.download = `${all ? 'schema' : className}.json`;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+      document.body.removeChild(element);
+    } catch (msg) {
+      this.showNote(msg, true);
     }
-    const element = document.createElement('a');
-        const file = new Blob(
-          [
-            JSON.stringify(
-              schema,
-              null,
-              2,
-            ),
-          ],
-          { type: 'application/json' }
-        );
-        element.href = URL.createObjectURL(file);
-        element.download = `${all ? 'schema' : className}.json`;
-        document.body.appendChild(element); // Required for this to work in FireFox
-        element.click();
-        document.body.removeChild(element);
-  } catch (msg) {
-    this.showNote(msg, true);
-  }
-
   }
 
   newColumn(payload, required) {

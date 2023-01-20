@@ -45,16 +45,16 @@ export default class ExportSchemaDialog extends React.Component {
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={() => this.props.onConfirm(this.state.className, this.state.all)}>
-          {!this.state.all &&
-        <Field
-          label={<Label text='Select class' />}
-          input={
-            <Dropdown
-              value={this.state.className}
-              onChange={(className) => this.setState({ className })}>
+        {!this.state.all &&
+          <Field
+            label={<Label text='Select class' />}
+            input={
+              <Dropdown
+                value={this.state.className}
+                onChange={(className) => this.setState({ className })}>
                 {this.state.classes.map(schema => <Option value={schema} key={schema}>{schema}</Option>)}
-            </Dropdown>
-          } />
+              </Dropdown>
+            } />
         }
         <Field
           label={<Label text='Export all classes' />}
