@@ -21,6 +21,7 @@ import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSel
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import EditRowDialog                      from 'dashboard/Data/Browser/EditRowDialog.react';
 import ExportSelectedRowsDialog           from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
+import ExportSchemaDialog                 from 'dashboard/Data/Browser/ExportSchemaDialog.react';
 import { List, Map }                      from 'immutable';
 import Notification                       from 'dashboard/Data/Browser/Notification.react';
 import Parse                              from 'parse';
@@ -56,6 +57,7 @@ class Browser extends DashboardView {
       showRemoveColumnDialog: false,
       showDropClassDialog: false,
       showExportDialog: false,
+      showExportSchemaDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
       showPointerKeyDialog: false,
@@ -90,7 +92,7 @@ class Browser extends DashboardView {
       requiredColumnFields: [],
 
       useMasterKey: true,
-      currentUser: Parse.User.current()
+      currentUser: Parse.User.current(),
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -116,6 +118,7 @@ class Browser extends DashboardView {
     this.confirmCloneSelectedRows = this.confirmCloneSelectedRows.bind(this);
     this.cancelCloneSelectedRows = this.cancelCloneSelectedRows.bind(this);
     this.showExportSelectedRowsDialog = this.showExportSelectedRowsDialog.bind(this);
+    this.showExportSchemaDialog = this.showExportSchemaDialog.bind(this);
     this.confirmExportSelectedRows = this.confirmExportSelectedRows.bind(this);
     this.cancelExportSelectedRows = this.cancelExportSelectedRows.bind(this);
     this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
@@ -326,6 +329,37 @@ class Browser extends DashboardView {
     this.context.exportClass(className).finally(() => {
       this.setState({ showExportDialog: false });
     });
+  }
+
+  async exportSchema(className, all) {
+    try {
+      this.showNote('Exporting schema...');
+      this.setState({ showExportSchemaDialog: false });
+      let schema = [];
+      if (all) {
+        schema = await Parse.Schema.all();
+      } else {
+        schema = await new Parse.Schema(className).get();
+      }
+      const element = document.createElement('a');
+      const file = new Blob(
+        [
+          JSON.stringify(
+            schema,
+            null,
+            2,
+          ),
+        ],
+        { type: 'application/json' }
+      );
+      element.href = URL.createObjectURL(file);
+      element.download = `${all ? 'schema' : className}.json`;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+      document.body.removeChild(element);
+    } catch (msg) {
+      this.showNote(msg, true);
+    }
   }
 
   newColumn(payload, required) {
@@ -1091,6 +1125,7 @@ class Browser extends DashboardView {
       this.state.showRemoveColumnDialog ||
       this.state.showDropClassDialog ||
       this.state.showExportDialog ||
+      this.state.showExportSchema ||
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
       this.state.showAttachSelectedRowsDialog ||
@@ -1249,6 +1284,12 @@ class Browser extends DashboardView {
     this.setState({
       rowsToExport: rows
     });
+  }
+
+  showExportSchemaDialog() {
+    this.setState({
+      showExportSchemaDialog: true
+    })
   }
 
   cancelExportSelectedRows() {
@@ -1605,6 +1646,7 @@ class Browser extends DashboardView {
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
             onExportSelectedRows={this.showExportSelectedRowsDialog}
+            onExportSchema={this.showExportSchemaDialog}
 
             onSaveNewRow={this.saveNewRow}
             onShowPointerKey={this.showPointerKeyDialog}
@@ -1718,6 +1760,14 @@ class Browser extends DashboardView {
           className={className}
           onCancel={() => this.setState({ showExportDialog: false })}
           onConfirm={() => this.exportClass(className)} />
+      );
+    } else if (this.state.showExportSchemaDialog) {
+      extras = (
+        <ExportSchemaDialog
+          className={className}
+          schema={this.props.schema.data.get('classes')}
+          onCancel={() => this.setState({ showExportSchemaDialog: false })}
+          onConfirm={(...args) => this.exportSchema(...args)} />
       );
     } else if (this.state.showAttachRowsDialog) {
       extras = (
