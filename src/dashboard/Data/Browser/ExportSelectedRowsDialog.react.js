@@ -12,6 +12,8 @@ import Field       from 'components/Field/Field.react';
 import Label       from 'components/Label/Label.react';
 import Option      from 'components/Dropdown/Option.react';
 import Toggle      from 'components/Toggle/Toggle.react';
+import TextInput   from 'components/TextInput/TextInput.react';
+import styles      from 'dashboard/Data/Browser/ExportSelectedRowsDialog.scss';
 
 export default class ExportSelectedRowsDialog extends React.Component {
   constructor() {
@@ -25,11 +27,28 @@ export default class ExportSelectedRowsDialog extends React.Component {
   }
 
   valid() {
+    if (this.state.confirmation !== 'export all') {
+      return false;
+    }
     return true;
   }
 
+  formatBytes(bytes) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const decimals = 2
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`
+}
+
+
   render() {
     let selectionLength = Object.keys(this.props.selection).length;
+    const fileSize = new TextEncoder().encode(JSON.stringify(this.props.data, null, this.state.exportType === '.json' && this.state.indentation ? 2 : null)).length / this.props.data.length
     return (
       <Modal
         type={Modal.Types.INFO}
@@ -41,6 +60,9 @@ export default class ExportSelectedRowsDialog extends React.Component {
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={() => this.props.onConfirm(this.state.exportType, this.state.indentation)}>
+        <div className={styles.row} >
+          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize)}</span>}/>
+        </div>
         <Field
           label={<Label text='Select export type' />}
           input={
@@ -55,6 +77,18 @@ export default class ExportSelectedRowsDialog extends React.Component {
           label={<Label text='Indentation' />}
           input={<Toggle value={this.state.indentation} type={Toggle.Types.YES_NO} onChange={(indentation) => {this.setState({indentation})}} />} />
           }
+        <Field
+          label={
+            <Label
+              text='Confirm Export all'
+              description='Enter "export all" to continue.' />
+          }
+          input={
+            <TextInput
+              placeholder='export all'
+              value={this.state.confirmation}
+              onChange={(confirmation) => this.setState({ confirmation })} />
+          } />
       </Modal>
     );
   }

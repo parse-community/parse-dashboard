@@ -1864,6 +1864,8 @@ class Browser extends DashboardView {
         <ExportSelectedRowsDialog
           className={className}
           selection={this.state.rowsToExport}
+          count={this.state.counts[className]}
+          data={this.state.data}
           onCancel={this.cancelExportSelectedRows}
           onConfirm={(type, indentation) => this.confirmExportSelectedRows(this.state.rowsToExport, type, indentation)}
         />
