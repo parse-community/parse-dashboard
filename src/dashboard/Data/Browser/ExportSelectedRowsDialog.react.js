@@ -61,7 +61,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
         onCancel={this.props.onCancel}
         onConfirm={() => this.props.onConfirm(this.state.exportType, this.state.indentation)}>
         <div className={styles.row} >
-          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize)}</span>}/>
+          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize * this.props.count)}</span>}/>
         </div>
         <Field
           label={<Label text='Select export type' />}
