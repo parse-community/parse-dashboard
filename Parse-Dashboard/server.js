@@ -19,7 +19,7 @@ module.exports = (options) => {
   const allowInsecureHTTP = options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
   const cookieSessionSecret = options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
   const trustProxy = options.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
-  const cookieSessionMaxAge = options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_MAX_AGE;
+  const cookieSessionMaxAge = options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE;
   const dev = options.dev;
 
   if (trustProxy && allowInsecureHTTP) {
