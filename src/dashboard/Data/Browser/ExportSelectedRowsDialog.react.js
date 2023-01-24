@@ -27,6 +27,9 @@ export default class ExportSelectedRowsDialog extends React.Component {
   }
 
   valid() {
+    if (!this.props.selection['*']) {
+      return true;
+    }
     if (this.state.confirmation !== 'export all') {
       return false;
     }
@@ -60,9 +63,10 @@ export default class ExportSelectedRowsDialog extends React.Component {
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={() => this.props.onConfirm(this.state.exportType, this.state.indentation)}>
-        <div className={styles.row} >
-          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize * this.props.count)}</span>}/>
+        {this.props.selection['*'] && <div className={styles.row} >
+          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize * this.props.count)}<br/>⚠️ Exporting all rows may significantly impact resources.</span>}/>
         </div>
+        }
         <Field
           label={<Label text='Select export type' />}
           input={
@@ -77,7 +81,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
           label={<Label text='Indentation' />}
           input={<Toggle value={this.state.indentation} type={Toggle.Types.YES_NO} onChange={(indentation) => {this.setState({indentation})}} />} />
           }
-        <Field
+        {this.props.selection['*'] && <Field
           label={
             <Label
               text='Confirm Export all'
@@ -89,6 +93,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
               value={this.state.confirmation}
               onChange={(confirmation) => this.setState({ confirmation })} />
           } />
+        }
       </Modal>
     );
   }
