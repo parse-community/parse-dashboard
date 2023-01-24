@@ -54,13 +54,13 @@ function initialize(app, options) {
   });
 
   var cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
-  const cookieMaxAge = options.cookieMaxAge;
+  const cookieSessionMaxAge = options.cookieSessionMaxAge;
   app.use(require('connect-flash')());
   app.use(require('body-parser').urlencoded({ extended: true }));
   app.use(require('cookie-session')({
     key    : 'parse_dash',
     secret : cookieSessionSecret,
-    maxAge : cookieMaxAge
+    maxAge : cookieSessionMaxAge
   }));
   app.use(passport.initialize());
   app.use(passport.session());
