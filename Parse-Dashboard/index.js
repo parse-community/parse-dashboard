@@ -28,7 +28,7 @@ program.option('--trustProxy [trustProxy]', 'set this flag when you are behind a
 program.option('--cookieSessionSecret [cookieSessionSecret]', 'set the cookie session secret, defaults to a random string. You should set that value if you want sessions to work across multiple server, or across restarts');
 program.option('--createUser', 'helper tool to allow you to generate secure user passwords and secrets. Use this on trusted devices only.');
 program.option('--createMFA', 'helper tool to allow you to generate multi-factor authentication secrets.');
-program.option('--cookieSessionMaxAge [cookieSessionMaxAge]', 'set the cookie maxAge, defaults to session');
+program.option('--cookieSessionMaxAge [cookieSessionMaxAge]', '(Optional) Sets the time in seconds for when the session cookie will be deleted and the dashboard user has to re-login; defaults to `undefined` which means the cookie will be deleted when the browser session ends.');
 
 program.action(async (options) => {
   for (const key in options) {
