@@ -1,3 +1,10 @@
+# [5.1.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.3...5.1.0-alpha.4) (2023-01-25)
+
+
+### Bug Fixes
+
+* Add dashboard option `cookieSessionMaxAge` to keep user logged in across browser sessions ([#2366](https://github.com/ParsePlatform/parse-dashboard/issues/2366)) ([9ea95fc](https://github.com/ParsePlatform/parse-dashboard/commit/9ea95fc62103b52cf4fac1d1b567334b5298b318))
+
 # [5.1.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.2...5.1.0-alpha.3) (2023-01-20)
 
 
