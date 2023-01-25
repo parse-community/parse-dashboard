@@ -1,3 +1,24 @@
+# [5.1.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.3...5.1.0-alpha.4) (2023-01-25)
+
+
+### Bug Fixes
+
+* Add dashboard option `cookieSessionMaxAge` to keep user logged in across browser sessions ([#2366](https://github.com/ParsePlatform/parse-dashboard/issues/2366)) ([9ea95fc](https://github.com/ParsePlatform/parse-dashboard/commit/9ea95fc62103b52cf4fac1d1b567334b5298b318))
+
+# [5.1.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.2...5.1.0-alpha.3) (2023-01-20)
+
+
+### Features
+
+* Add schema export ([#2362](https://github.com/ParsePlatform/parse-dashboard/issues/2362)) ([33df049](https://github.com/ParsePlatform/parse-dashboard/commit/33df0495a02c4e77f48b3566032bf5686227cce7))
+
+# [5.1.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.1...5.1.0-alpha.2) (2023-01-20)
+
+
+### Bug Fixes
+
+* Blank screen shown if server is unreachable; unsupported pages are accessible via direct URLs ([#2363](https://github.com/ParsePlatform/parse-dashboard/issues/2363)) ([9855258](https://github.com/ParsePlatform/parse-dashboard/commit/98552584df4d8d75d65d3e394b4acad522117a96))
+
 # [5.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0...5.1.0-alpha.1) (2022-11-05)
 
 
