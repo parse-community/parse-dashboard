@@ -68,11 +68,17 @@ function initialize(app, options) {
 
   app.post('/login',
     csrf(),
-    passport.authenticate('local', {
-      successRedirect: `${self.mountPath}apps`,
-      failureRedirect: `${self.mountPath}login`,
-      failureFlash : true
-    })
+      (req,res,next) => {
+        let redirect = 'apps';
+        if (req.body.redirect) {
+          redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
+        }
+        return passport.authenticate('local', {
+          successRedirect: `${self.mountPath}${redirect}`,
+          failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
+          failureFlash : true
+        })(req, res, next)
+    },
   );
 
   app.get('/logout', function(req, res){
