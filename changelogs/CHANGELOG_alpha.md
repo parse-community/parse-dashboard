@@ -1,3 +1,10 @@
+# [5.1.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.4...5.1.0-alpha.5) (2023-01-25)
+
+
+### Features
+
+* Add export all rows of a class and export in JSON format ([#2361](https://github.com/ParsePlatform/parse-dashboard/issues/2361)) ([9eb36a1](https://github.com/ParsePlatform/parse-dashboard/commit/9eb36a183b8b337960f6e8563ad686958001a22b))
+
 # [5.1.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.3...5.1.0-alpha.4) (2023-01-25)
 
 
