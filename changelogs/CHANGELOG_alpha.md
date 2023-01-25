@@ -1,3 +1,10 @@
+# [5.1.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.5...5.1.0-alpha.6) (2023-01-25)
+
+
+### Bug Fixes
+
+* Navigation to page fails if user re-login is required ([#2369](https://github.com/ParsePlatform/parse-dashboard/issues/2369)) ([0db6f55](https://github.com/ParsePlatform/parse-dashboard/commit/0db6f5559f9b7bb1f5a282c6182810ca89945032))
+
 # [5.1.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.4...5.1.0-alpha.5) (2023-01-25)
 
 
