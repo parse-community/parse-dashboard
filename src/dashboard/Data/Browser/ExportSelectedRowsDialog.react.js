@@ -83,7 +83,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
         {this.props.selection['*'] && <Field
           label={
             <Label
-              text='Confirm Export all'
+              text='Confirm this action'
               description='Enter "export all" to continue.' />
           }
           input={
