@@ -57,14 +57,13 @@ export default class ExportSelectedRowsDialog extends React.Component {
         type={Modal.Types.INFO}
         icon='warn-outline'
         title={this.props.selection['*'] ? 'Export all rows?' : (selectionLength === 1 ? 'Export 1 selected row?' : `Export ${selectionLength} selected rows?`)}
-        subtitle={this.props.selection['*'] ? 'Large datasets are exported as multiple files of up to 1 GB each.' : ''}
         disabled={!this.valid()}
         confirmText='Export'
         cancelText='Cancel'
         onCancel={this.props.onCancel}
         onConfirm={() => this.props.onConfirm(this.state.exportType, this.state.indentation)}>
         {this.props.selection['*'] && <div className={styles.row} >
-          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize * this.props.count)}<br/>⚠️ Exporting all rows may significantly impact resources.</span>}/>
+          <Label text="Do you really want to export all rows?" description={<span className={styles.label}>Estimated row count: {this.props.count}<br/>Estimated export size: {this.formatBytes(fileSize * this.props.count)}<br/><br/>⚠️ Exporting all rows may severely impact server or database resources.<br/>Large datasets are exported as multiple files of up to 1 GB each.</span>}/>
         </div>
         }
         <Field
