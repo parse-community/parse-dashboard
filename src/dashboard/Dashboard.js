@@ -138,21 +138,21 @@ export default class Dashboard extends React.Component {
             if (error.code === 100) {
               app.serverInfo = {
                 error: 'unable to connect to server',
-                enabledFeatures: {},
+                features: {},
                 parseServerVersion: 'unknown'
               }
               return Promise.resolve(app);
             } else if (error.code === 107) {
               app.serverInfo = {
                 error: 'server version too low',
-                enabledFeatures: {},
+                features: {},
                 parseServerVersion: 'unknown'
               }
               return Promise.resolve(app);
             } else {
               app.serverInfo = {
                 error: error.message || 'unknown error',
-                enabledFeatures: {},
+                features: {},
                 parseServerVersion: 'unknown'
               }
               return Promise.resolve(app);
