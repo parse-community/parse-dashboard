@@ -6,8 +6,6 @@
  * the root directory of this source tree.
  */
 import Button from 'components/Button/Button.react';
-import Dropdown from 'components/Dropdown/Dropdown.react';
-import DropdownOption from 'components/Dropdown/Option.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Field from 'components/Field/Field.react';
 import FormModal from 'components/FormModal/FormModal.react';
@@ -28,13 +26,13 @@ import ParseCodeEditor from 'components/ParseCodeEditor/ParseCodeEditor.react';
 
 const defaultState = {
   name: '',
-  functionType: '',
-  collectionName: '',
   sourceCode: '',
 };
 
+const PAGE_URL = 'https://direct.bitcog.co/pages/';
+
 export default
-@subscribeTo('Page', 'page')
+@subscribeTo('Pages', 'pages')
 @subscribeTo('Schema', 'schema')
 class Pages extends TableView {
   constructor() {
@@ -56,7 +54,7 @@ class Pages extends TableView {
   }
 
   componentWillMount() {
-    this.props.page.dispatch(PageActionTypes.FETCH);
+    this.props.pages.dispatch(PageActionTypes.FETCH);
     this.props.schema.dispatch(SchemaActionTypes.FETCH);
   }
 
@@ -87,13 +85,6 @@ class Pages extends TableView {
 
   renderExtras() {
     const that = this;
-    let classNames = [];
-    if (this.props.schema.data) {
-      let classes = this.props.schema.data.get('classes');
-      if (classes) {
-        classNames = Object.keys(classes.toObject());
-      }
-    }
 
     const pageModalFields = (      
       <div>
@@ -116,7 +107,8 @@ class Pages extends TableView {
             <TextInput
               placeholder="PageUrl"
               disabled={true}
-              value={'https://direct.bitcog.co/pages/' + this.state.name.toLowerCase()}
+              onChange={() => {}}
+              value={PAGE_URL + this.state.name.toLowerCase()}
             />
           }
         />
@@ -135,10 +127,8 @@ class Pages extends TableView {
     const hookRequestData = ({
       sourceCode,
       name,
-      functionType,
-      collectionName,
     }) => {
-      return {sourceCode, name, functionType, collectionName};
+      return { content: sourceCode, name };
     };
 
     const newHookModal = (
@@ -150,7 +140,7 @@ class Pages extends TableView {
         open={this.state.showNewPageModal}
         onSubmit={async () => {
           this.setState({ sourceCode: await that.compileCode() });
-          return this.props.page.dispatch(
+          return this.props.pages.dispatch(
             PageActionTypes.CREATE,
             hookRequestData(this.state)
           );
@@ -176,7 +166,7 @@ class Pages extends TableView {
         onSubmit={async () => {
           this.setState({ sourceCode: await that.compileCode() });
           if (this.state.currentObjectId) {
-            return this.props.page.dispatch(PageActionTypes.EDIT, {
+            return this.props.pages.dispatch(PageActionTypes.EDIT, {
               ...hookRequestData(this.state),
               objectId: this.state.currentObjectId,
             });
@@ -206,7 +196,7 @@ class Pages extends TableView {
         type={Modal.Types.DANGER}
         onSubmit={() => {
           if (this.state.currentObjectId)
-            return this.props.page.dispatch(PageActionTypes.DELETE, {
+            return this.props.pages.dispatch(PageActionTypes.DELETE, {
               objectId: this.state.currentObjectId,
             });
         }}
@@ -235,8 +225,6 @@ class Pages extends TableView {
     const showEdit = () => {
       this.setState({
         name: item.name,
-        functionType: item.type,
-        collectionName: item.collectionName,
         sourceCode: item.code,
         showEditPageModal: true,
         currentObjectId: item.objectId,
@@ -245,8 +233,6 @@ class Pages extends TableView {
     const showDelete = () => {
       this.setState({
         name: item.name,
-        functionType: item.type,
-        collectionName: item.collectionName,
         sourceCode: item.code,
         showDeletePageModal: true,
         currentObjectId: item.objectId,
@@ -258,13 +244,10 @@ class Pages extends TableView {
         <td style={rowStyle} onClick={showEdit} width={'15%'}>
           {item.name}
         </td>
-        <td style={rowStyle} onClick={showEdit} width={'15%'}>
-          {item.collectionName || ''}
+        <td style={rowStyle} onClick={showEdit} width={'45%'}>
+          {PAGE_URL + item.name.toLowerCase() || ''}
         </td>
-        <td style={rowStyle} onClick={showEdit} width={'20%'}>
-          {item.type}
-        </td>
-        <td style={rowStyle} onClick={showEdit} width={'40%'}>
+        <td style={rowStyle} onClick={showEdit} width={'30%'}>
           {item.code || ''}
         </td>
         <td width={'10%'}>
@@ -278,16 +261,13 @@ class Pages extends TableView {
 
   renderHeaders() {
     return [
-      <TableHeader width={15} key="Name">
-        Name
+      <TableHeader width={15} key="PageName">
+        Page Name
       </TableHeader>,
-      <TableHeader width={15} key="CollectionName">
-        Collection Name
+      <TableHeader width={45} key="PageURL">
+        Page URL
       </TableHeader>,
-      <TableHeader width={20} key="Type">
-        Type
-      </TableHeader>,
-      <TableHeader width={40} key="SourceCode">
+      <TableHeader width={30} key="SourceCode">
         Source Code
       </TableHeader>,
       <TableHeader width={10} key="Delete">
@@ -309,8 +289,8 @@ class Pages extends TableView {
   }
 
   tableData() {
-    if (this.props.page.data) {
-      let hooks = this.props.page.data.get('page');
+    if (this.props.pages.data) {
+      let hooks = this.props.pages.data.get('page');
       if (hooks) {
         return hooks.toArray();
       }

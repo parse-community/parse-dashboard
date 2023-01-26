@@ -17,11 +17,11 @@ const parseURL = 'classes/Page';
 
 function normalifyData({
   name,
-  conntent,
+  content,
 }) {
   return {
     name: name || '',
-    code: conntent || '',
+    code: content || '',
   };
 }
 
