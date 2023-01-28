@@ -173,7 +173,7 @@ module.exports = function(config, options) {
     }
 
     app.get('/login', csrf(), function(req, res) {
-      const redirectURL = req.url.includes('?redirect=') && req.url.split('?redirect=')[1];
+      const redirectURL = req.url.includes('?redirect=') && req.url.split('?redirect=')[1].length > 1 && req.url.split('?redirect=')[1];
       if (!users || (req.user && req.user.isAuthenticated)) {
         return res.redirect(`${mountPath}${redirectURL || 'apps'}`);
       }
@@ -207,7 +207,11 @@ module.exports = function(config, options) {
     // For every other request, go to index.html. Let client-side handle the rest.
     app.get('/*', function(req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
-        return res.redirect(`${mountPath}login?redirect=${req.url.replace('/login', '')}`);
+        const redirect = req.url.replace('/login', '');
+        if (redirect.length > 1) {
+          return res.redirect(`${mountPath}login?redirect=${redirect}`);
+        }
+        return res.redirect(`${mountPath}login`);
       }
       if (users && req.user && req.user.matchingUsername ) {
         res.append('username', req.user.matchingUsername);
