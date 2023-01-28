@@ -34,7 +34,7 @@ export default class Login extends React.Component {
       forgot: false,
       username: sessionStorage.getItem('username') || '',
       password: sessionStorage.getItem('password') || '',
-      redirect
+      redirect: redirect !== '/' ? redirect : undefined
     };
     sessionStorage.clear();
     setBasePath(props.path);
