@@ -28,10 +28,13 @@ export default class Login extends React.Component {
       }
     }
 
+    const url = new URL(window.location);
+    const redirect = url.searchParams.get('redirect');
     this.state = {
       forgot: false,
       username: sessionStorage.getItem('username') || '',
-      password: sessionStorage.getItem('password') || ''
+      password: sessionStorage.getItem('password') || '',
+      redirect: redirect !== '/' ? redirect : undefined
     };
     sessionStorage.clear();
     setBasePath(props.path);
@@ -106,6 +109,11 @@ export default class Login extends React.Component {
               ref={this.inputRefPass}
             />
           } />
+          {this.state.redirect && <input
+              name='redirect'
+              type='hidden'
+              value={this.state.redirect}
+            />}
         {
           this.errors && this.errors.includes('one-time') ?
           <LoginRow

@@ -8,82 +8,124 @@
 import React          from 'react';
 import Sidebar        from 'components/Sidebar/Sidebar.react';
 import styles         from 'dashboard/Dashboard.scss';
+import Icon           from 'components/Icon/Icon.react';
+import baseStyles     from 'stylesheets/base.scss';
+import Button         from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class DashboardView extends React.Component {
   static contextType = CurrentApp;
-
   /* A DashboardView renders two pieces: the sidebar, and the app itself */
+
+  constructor() {
+    super();
+    this.state = {
+      route: '',
+    };
+  }
+
+  componentDidUpdate() {
+    this.onRouteChanged();
+  }
+  componentDidMount() {
+    this.onRouteChanged();
+  }
+
+  onRouteChanged() {
+    const path = this.props.location?.pathname ?? window.location.pathname;
+    const route = path.split('apps')[1].split('/')[2];
+    if (route !== this.state.route) {
+      this.setState({ route });
+    }
+  }
+
   render() {
     let sidebarChildren = null;
     if (typeof this.renderSidebar === 'function') {
       sidebarChildren = this.renderSidebar();
     }
-    let appSlug = (this.context ? this.context.slug : '');
+    let appSlug = this.context ? this.context.slug : '';
 
     if (!this.context.hasCheckedForMigraton) {
-      this.context.getMigrations().promise
-        .then(() => this.forceUpdate(), () => {});
+      this.context.getMigrations().promise.then(
+        () => this.forceUpdate(),
+        () => {}
+      );
     }
 
     let features = this.context.serverInfo.features;
 
     let coreSubsections = [];
-    if (features.schemas &&
+    if (
+      features.schemas &&
       features.schemas.addField &&
       features.schemas.removeField &&
       features.schemas.addClass &&
-      features.schemas.removeClass) {
+      features.schemas.removeClass
+    ) {
       coreSubsections.push({
         name: 'Browser',
-        link: '/browser'
+        link: '/browser',
       });
     }
 
     if (features.cloudCode && features.cloudCode.viewCode) {
       coreSubsections.push({
         name: 'Cloud Code',
-        link: '/cloud_code'
+        link: '/cloud_code',
       });
     }
 
     //webhooks requires removal of heroku link code, then it should work.
-    if (features.hooks && features.hooks.create && features.hooks.read && features.hooks.update && features.hooks.delete) {
+    if (
+      features.hooks &&
+      features.hooks.create &&
+      features.hooks.read &&
+      features.hooks.update &&
+      features.hooks.delete
+    ) {
       coreSubsections.push({
         name: 'Webhooks',
-        link: '/webhooks'
+        link: '/webhooks',
       });
     }
 
     if (features.cloudCode && features.cloudCode.jobs) {
       coreSubsections.push({
         name: 'Jobs',
-        link: '/jobs'
+        link: '/jobs',
       });
     }
 
-    if (features.logs && Object.keys(features.logs).some(key => features.logs[key])) {
+    if (
+      features.logs &&
+      Object.keys(features.logs).some((key) => features.logs[key])
+    ) {
       coreSubsections.push({
         name: 'Logs',
-        link: '/logs'
+        link: '/logs',
       });
     }
 
-    if (features.globalConfig &&
+    if (
+      features.globalConfig &&
       features.globalConfig.create &&
       features.globalConfig.read &&
       features.globalConfig.update &&
-      features.globalConfig.delete) {
+      features.globalConfig.delete
+    ) {
       coreSubsections.push({
         name: 'Config',
-        link: '/config'
+        link: '/config',
       });
     }
 
-    coreSubsections.push({
-      name: 'API Console',
-      link: '/api_console'
-    });
+    if (!this.context.serverInfo.error) {
+      coreSubsections.push({
+        name: 'API Console',
+        link: '/api_console',
+      });
+    }
 
     if (this.context.migration) {
       coreSubsections.push({
@@ -96,21 +138,21 @@ export default class DashboardView extends React.Component {
     if (features.push && features.push.immediatePush) {
       pushSubsections.push({
         name: 'Send New Push',
-        link: '/push/new'
+        link: '/push/new',
       });
     }
 
     if (features.push && features.push.storedPushData) {
       pushSubsections.push({
         name: 'Past Pushes',
-        link: '/push/activity'
+        link: '/push/activity',
       });
     }
 
     if (features.push && features.push.pushAudiences) {
       pushSubsections.push({
         name: 'Audiences',
-        link: '/push/audiences'
+        link: '/push/audiences',
       });
     }
 
@@ -195,7 +237,7 @@ export default class DashboardView extends React.Component {
       });
     }*/
 
-    let appSidebarSections = []
+    let appSidebarSections = [];
 
     if (coreSubsections.length > 0) {
       appSidebarSections.push({
@@ -211,7 +253,7 @@ export default class DashboardView extends React.Component {
         name: 'Push',
         icon: 'push-outline',
         link: '/push',
-        style: {paddingLeft: '16px'},
+        style: { paddingLeft: '16px' },
         subsections: pushSubsections,
       });
     }
@@ -221,7 +263,7 @@ export default class DashboardView extends React.Component {
         name: 'Analytics',
         icon: 'analytics-outline',
         link: '/analytics',
-        subsections: analyticsSidebarSections
+        subsections: analyticsSidebarSections,
       });
     }
 
@@ -230,29 +272,77 @@ export default class DashboardView extends React.Component {
         name: 'App Settings',
         icon: 'gear-solid',
         link: '/settings',
-        subsections: settingsSections
+        subsections: settingsSections,
       });
     }
 
     let sidebar = (
-    <Sidebar
-      sections={appSidebarSections}
-      appSelector={true}
-      section={this.section}
-      subsection={this.subsection}
-      prefix={'/apps/' + appSlug}
-      action={this.action}
-      primaryBackgroundColor={this.context.primaryBackgroundColor}
-      secondaryBackgroundColor={this.context.secondaryBackgroundColor}
+      <Sidebar
+        sections={appSidebarSections}
+        appSelector={true}
+        section={this.section}
+        subsection={this.subsection}
+        prefix={'/apps/' + appSlug}
+        action={this.action}
+        primaryBackgroundColor={this.context.primaryBackgroundColor}
+        secondaryBackgroundColor={this.context.secondaryBackgroundColor}
       >
-      {sidebarChildren}
-    </Sidebar>);
+        {sidebarChildren}
+      </Sidebar>
+    );
+
+    let content = <div className={styles.content}>{this.renderContent()}</div>;
+    const canRoute = [...coreSubsections, ...pushSubsections]
+      .map(({ link }) => link.split('/')[1])
+      .includes(this.state.route);
+
+    if (!canRoute) {
+      content = (
+        <div className={styles.empty}>
+          <div className={baseStyles.center}>
+            <div className={styles.cloud}>
+              <Icon
+                width={110}
+                height={110}
+                name="cloud-surprise"
+                fill="#1e3b4d"
+              />
+            </div>
+            <div className={styles.loadingError}>Feature unavailable</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (this.context.serverInfo.error) {
+      content = (
+        <div className={styles.empty}>
+          <div className={baseStyles.center}>
+            <div className={styles.cloud}>
+              <Icon
+                width={110}
+                height={110}
+                name="cloud-surprise"
+                fill="#1e3b4d"
+              />
+            </div>
+            <div className={styles.loadingError}>
+              {this.context.serverInfo.error.replace(/-/g, '\u2011')}
+            </div>
+            <Button
+              color="white"
+              value="Reload"
+              width="120px"
+              onClick={() => location.reload()}
+            />
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className={styles.dashboard}>
-        <div className={styles.content}>
-          {this.renderContent()}
-        </div>
+        {content}
         {sidebar}
       </div>
     );

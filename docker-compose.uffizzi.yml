@@ -1,0 +1,75 @@
+version: '3'
+
+# uffizzi integration
+x-uffizzi:
+  ingress:
+    service: nginx
+    port: 8081
+  continuous_previews:
+    deploy_preview_when_pull_request_is_opened: true
+    delete_preview_when_pull_request_is_closed: true
+    share_to_github: true
+    
+services:
+
+  postgres:
+      image: postgres
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=password
+        - POSTGRES_DB=postgres
+      ports:
+        - "5432:5432"
+      deploy:
+            resources:
+              limits:
+                memory: 1000M
+      volumes:
+        - postgres_data:/var/lib/postgresql
+
+  parse:
+        image: parseplatform/parse-server:latest
+        environment:
+        - PARSE_SERVER_APPLICATION_ID=parse
+        - PARSE_SERVER_MASTER_KEY=parse@master123!
+        - PARSE_SERVER_DATABASE_URI=postgresql://postgres:password@localhost:5432/postgres
+        - PARSE_SERVER_MOUNT_PATH=/parse
+        - PORT=1337
+        ports:
+          - '1337:1337'
+        deploy:
+          resources:
+            limits:
+              memory: 1000M
+
+  dashboard:
+        build:
+          context: .
+          dockerfile: ./Dockerfile
+        ports:
+            - "4040:4040"
+        environment:
+        - PARSE_DASHBOARD_MASTER_KEY=parse@master123!
+        - PARSE_DASHBOARD_APP_ID=parse
+        - PARSE_DASHBOARD_APP_NAME=PreviewApp
+        - PARSE_DASHBOARD_USER_ID=user
+        - PARSE_DASHBOARD_USER_PASSWORD=pass
+        - MOUNT_PATH=/dashboard
+        - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
+        entrypoint: /bin/sh
+        command:
+         - "-c"
+         - "PARSE_DASHBOARD_SERVER_URL=$$UFFIZZI_URL/parse node Parse-Dashboard/index.js"
+        deploy:
+          resources:
+            limits:
+              memory: 1000M
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx-uffizzi:/etc/nginx
+      - ./nginx-uffizzi/html:/usr/share/nginx/html
+
+volumes:
+  postgres_data:
