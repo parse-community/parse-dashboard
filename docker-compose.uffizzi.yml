@@ -51,9 +51,9 @@ services:
         environment:
         - PARSE_DASHBOARD_MASTER_KEY=parse@master123!
         - PARSE_DASHBOARD_APP_ID=parse
-        - PARSE_DASHBOARD_APP_NAME=MyParseApp
-        - PARSE_DASHBOARD_USER_ID=admin
-        - PARSE_DASHBOARD_USER_PASSWORD=password
+        - PARSE_DASHBOARD_APP_NAME=ExampleApp
+        - PARSE_DASHBOARD_USER_ID=user
+        - PARSE_DASHBOARD_USER_PASSWORD=pass
         - MOUNT_PATH=/dashboard
         - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
         entrypoint: /bin/sh
