@@ -24,7 +24,7 @@ export default class Login extends React.Component {
         this.errors = json.text
         otpLength = json.otpLength;
       } catch (e) {
-        this.errors = `could not pass error json: ${e}`;
+        this.errors = this.errors ?? `Error: ${JSON.stringify(e)}`;
       }
     }
 
