@@ -242,7 +242,7 @@ export default class DashboardView extends React.Component {
 
     if (coreSubsections.length > 0) {
       appSidebarSections.push({
-        name: 'Core',
+        name: 'Core - TEST PR',
         icon: 'core',
         link: '/browser',
         subsections: coreSubsections,
