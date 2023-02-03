@@ -253,7 +253,6 @@ export default class Dashboard extends React.Component {
         <Route path=":section" element={<TokenSales />} />
         <Route index element={<Navigate replace to="all" />} />
       </Route>
-    )
     );
 
     const TokenRoute = (
