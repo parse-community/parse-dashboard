@@ -32,15 +32,33 @@ export default class TokensDialog extends React.Component {
     };
   }
   valid() {
-    // Add validations here
+    if (
+      !this.state.tokenId ||
+      !this.state.type ||
+      !this.state.owner ||
+      !this.state.address
+    ) {
+      return false;
+    }
     return true;
+  }
+
+  cancel() {
+    this.setState({
+      tokenId: "",
+      type: "",
+      owner: "",
+      address: "",
+    });
+    this.props.onCancel();
   }
 
   submit() {
     this.props.onConfirm({
-      name: this.state.name,
-      value: GET_VALUE[this.state.type](this.state.value),
-      masterKeyOnly: this.state.masterKeyOnly,
+      tokenId: this.state.tokenId,
+      type: this.state.type,
+      owner: this.state.owner,
+      address: this.state.address,
     });
   }
 
@@ -65,7 +83,6 @@ export default class TokensDialog extends React.Component {
             <TextInput
               placeholder={"xxxxx"}
               value={this.state.tokenId}
-              disabled={this.props.tokenId.length > 0}
               onChange={(tokenId) => this.setState({ tokenId })}
             />
           }
@@ -76,7 +93,6 @@ export default class TokensDialog extends React.Component {
             <TextInput
               placeholder={"ERC721"}
               value={this.state.type}
-              disabled={this.props.type.length > 0}
               onChange={(type) => this.setState({ type })}
             />
           }
@@ -87,7 +103,6 @@ export default class TokensDialog extends React.Component {
             <TextInput
               placeholder={"0x...."}
               value={this.state.owner}
-              disabled={this.props.owner.length > 0}
               onChange={(owner) => this.setState({ owner })}
             />
           }
@@ -98,7 +113,6 @@ export default class TokensDialog extends React.Component {
             <TextInput
               placeholder={"0x...."}
               value={this.state.address}
-              disabled={this.props.address.length > 0}
               onChange={(address) => this.setState({ address })}
             />
           }

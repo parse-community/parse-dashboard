@@ -378,14 +378,6 @@ class TokenSales extends TableView {
             <Icon name="refresh-solid" width={14} height={14} />
             <span>Refresh</span>
           </a>
-          {this.props.availableTokenSales &&
-          this.props.availableTokenSales.length > 0 ? (
-            <Button
-              color="white"
-              value="Edit token sale"
-              onClick={this.navigateToNew.bind(this)}
-            />
-          ) : null}
         </Toolbar>
       );
     }

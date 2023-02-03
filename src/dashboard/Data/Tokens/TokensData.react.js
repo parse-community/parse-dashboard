@@ -14,7 +14,7 @@ export default class TokensData extends React.Component {
   static contextType = CurrentApp;
   constructor() {
     super();
-
+    this.fetchTokens = this.fetchTokens.bind(this);
     this.state = {
       tokens: undefined,
     };
@@ -27,10 +27,15 @@ export default class TokensData extends React.Component {
     response.forEach((parseObj) => {
       result.push(parseObj.toJSON());
     });
+    console.log(result);
     this.setState({ tokens: result });
   }
 
   componentDidMount() {
+    this.fetchTokens();
+  }
+
+  refetch() {
     this.fetchTokens();
   }
 
@@ -41,11 +46,11 @@ export default class TokensData extends React.Component {
   }
 
   render() {
-    console.log(this.state.tokens);
     return (
       <Outlet
         context={{
           tokens: this.state.tokens,
+          refetch: this.fetchTokens.bind(this),
         }}
       />
     );

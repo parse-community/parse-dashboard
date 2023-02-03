@@ -61,6 +61,7 @@ import { setBasePath } from "lib/AJAX";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Playground from "./Data/Playground/Playground.react";
+import BatchActions from "./Data/BatchActions/BatchActions.react";
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -328,6 +329,8 @@ export default class Dashboard extends React.Component {
 
         <Route path="tokensales">{TokenSalesRoute}</Route>
         <Route path="tokens">{TokenRoute}</Route>
+
+        <Route path="batch-actions" element={<BatchActions />} />
 
         <Route path="docs/:subpath" element={<Docs />} />
         <Route path="docs/contracts/:contractName" element={<Docs />} />

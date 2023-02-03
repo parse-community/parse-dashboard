@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /*
  * Copyright (c) 2016-present, Parse, LLC
  * All rights reserved.
@@ -65,8 +66,16 @@ class Tokens extends TableView {
     if (this.state.modalOpen) {
       extras = (
         <TokenDialog
-          // onConfirm={this.saveParam.bind(this)}
-          onCancel={() => this.setState({ modalOpen: false })}
+          onConfirm={this.saveToken.bind(this)}
+          onCancel={() =>
+            this.setState({
+              modalOpen: false,
+              modalTokenId: "",
+              modalType: "",
+              modalOwner: "",
+              modalAddress: "",
+            })
+          }
           tokenId={this.state.modalTokenId}
           type={this.state.modalType}
           owner={this.state.modalOwner}
@@ -93,6 +102,8 @@ class Tokens extends TableView {
       .then(async (object) => {
         object.destroy({});
         this.setState({ showDeleteParameterDialog: false });
+        this.props.refetch();
+        this.forceUpdate();
       })
       .catch((error) => {
         console.error(error);
@@ -170,17 +181,28 @@ class Tokens extends TableView {
     return this.props.tokens;
   }
 
-  saveToken({ name, value }) {
-    this.props.tokens
-      .dispatch(ActionTypes.SET, { token: name, value: value })
-      .then(
-        () => {
-          this.setState({ modalOpen: false });
-        },
-        () => {
-          // Catch the error
+  saveToken({ tokenId, type, owner, address }) {
+    var tokenQuery = new Parse.Query("Token");
+    tokenQuery.equalTo("tokenId", tokenId);
+    tokenQuery
+      .first({ useMasterKey: true })
+      .then(async (object) => {
+        if (!object) {
+          object = new Parse.Object("Token");
         }
-      );
+        object.set("tokenId", tokenId);
+        object.set("type", type);
+        object.set("owner", owner);
+        object.set("address", address);
+
+        await object.save();
+        this.setState({ modalOpen: false });
+        this.props.refetch();
+        this.forceUpdate();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   createToken() {

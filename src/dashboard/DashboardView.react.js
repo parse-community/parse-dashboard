@@ -45,12 +45,6 @@ export default class DashboardView extends React.Component {
       link: '/tokens'
     });
 
-
-    coreSubsections.push({
-      name: 'Token Sales',
-      link: '/tokensales'
-    });
-
     //webhooks requires removal of heroku link code, then it should work.
     // if (features.hooks && features.hooks.create && features.hooks.read && features.hooks.update && features.hooks.delete) {
       coreSubsections.push({
@@ -113,6 +107,11 @@ export default class DashboardView extends React.Component {
     coreSubsections.push({
       name: 'Docs',
       link: '/docs'
+    });
+
+    coreSubsections.push({
+      name: 'Batch Actions',
+      link: '/batch-actions'
     });
     //! HERE TO ADD MENU IN LEFT-HAND
 
