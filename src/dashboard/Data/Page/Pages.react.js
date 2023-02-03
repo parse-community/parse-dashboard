@@ -31,10 +31,9 @@ const defaultState = {
 
 const PAGE_URL = 'https://direct.bitcog.co/pages/';
 
-export default
-@subscribeTo('Pages', 'pages')
+// @subscribeTo('Pages', 'pages')
 @subscribeTo('Schema', 'schema')
-class Pages extends TableView {
+export default class Pages extends TableView {
   constructor() {
     super();
     this.section = 'Core';

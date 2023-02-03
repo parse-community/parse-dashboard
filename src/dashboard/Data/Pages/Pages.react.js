@@ -33,7 +33,6 @@ const defaultState = {
   sourceCode: '',
 };
 
-export default
 @subscribeTo('Page', 'page')
 @subscribeTo('Schema', 'schema')
 class Pages extends TableView {
@@ -322,3 +321,5 @@ class Pages extends TableView {
     this.setState({ showNewPageModal: true });
   }
 }
+
+export default Pages;

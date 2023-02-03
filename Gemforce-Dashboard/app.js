@@ -68,7 +68,7 @@ module.exports = function(config, options) {
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
-    authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret });
+    authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret, cookieSessionMaxAge: options.cookieSessionMaxAge });
 
     // CSRF error handler
     app.use(function (err, req, res, next) {
@@ -173,8 +173,9 @@ module.exports = function(config, options) {
     }
 
     app.get('/login', csrf(), function(req, res) {
+      const redirectURL = req.url.includes('?redirect=') && req.url.split('?redirect=')[1].length > 1 && req.url.split('?redirect=')[1];
       if (!users || (req.user && req.user.isAuthenticated)) {
-        return res.redirect(`${mountPath}apps`);
+        return res.redirect(`${mountPath}${redirectURL || 'apps'}`);
       }
 
       let errors = req.flash('error');
@@ -206,6 +207,10 @@ module.exports = function(config, options) {
     // For every other request, go to index.html. Let client-side handle the rest.
     app.get('/*', function(req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
+        const redirect = req.url.replace('/login', '');
+        if (redirect.length > 1) {
+          return res.redirect(`${mountPath}login?redirect=${redirect}`);
+        }
         return res.redirect(`${mountPath}login`);
       }
       if (users && req.user && req.user.matchingUsername ) {

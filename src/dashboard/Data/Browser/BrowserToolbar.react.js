@@ -40,6 +40,7 @@ let BrowserToolbar = ({
   onAttachSelectedRows,
   onCloneSelectedRows,
   onExportSelectedRows,
+  onExportSchema,
   onExport,
   onRemoveColumn,
   onDeleteRows,
@@ -256,6 +257,10 @@ let BrowserToolbar = ({
           <MenuItem
             text={'Export all rows'}
             onClick={() => onExportSelectedRows({ '*': true })}
+          />
+          <MenuItem
+            text={'Export schema'}
+            onClick={() => onExportSchema()}
           />
         </BrowserMenu>
       )}
