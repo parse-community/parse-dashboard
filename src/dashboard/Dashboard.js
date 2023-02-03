@@ -5,59 +5,63 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountOverview from './Account/AccountOverview.react';
-import AccountView from './AccountView.react';
-import AnalyticsOverview from './Analytics/Overview/Overview.react';
-import ApiConsole from './Data/ApiConsole/ApiConsole.react';
-import AppData from './AppData.react';
-import AppsIndex from './Apps/AppsIndex.react';
-import AppsManager from 'lib/AppsManager';
-import Browser from './Data/Browser/Browser.react';
-import CloudCode from './Data/CloudCode/CloudCode.react';
-import Code from './Data/Code/Code.react';
-import Docs from './Data/Docs/Docs.react';
-import Config from './Data/Config/Config.react';
-import Explorer from './Analytics/Explorer/Explorer.react';
-import FourOhFour from 'components/FourOhFour/FourOhFour.react';
-import GeneralSettings from './Settings/GeneralSettings.react';
-import GraphQLConsole from './Data/ApiConsole/GraphQLConsole.react';
-import HostingSettings from './Settings/HostingSettings.react';
-import Icon from 'components/Icon/Icon.react';
-import JobEdit from 'dashboard/Data/Jobs/JobEdit.react';
-import Jobs from './Data/Jobs/Jobs.react';
-import JobsData from 'dashboard/Data/Jobs/JobsData.react';
-import TokenSalesData from 'dashboard/Data/TokenSales/TokenSalesData.react';
-import Loader from 'components/Loader/Loader.react';
-import Logs from './Data/Logs/Logs.react';
-import Migration from './Data/Migration/Migration.react';
-import Pages from './Data/Page/Pages.react';
-import ParseApp from 'lib/ParseApp';
-import Performance from './Analytics/Performance/Performance.react';
-import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
-import PushDetails from './Push/PushDetails.react';
-import PushIndex from './Push/PushIndex.react';
-import PushNew from './Push/PushNew.react';
-import PushSettings from './Settings/PushSettings.react';
-import React from 'react';
-import RestConsole from './Data/ApiConsole/RestConsole.react';
-import Retention from './Analytics/Retention/Retention.react';
-import SchemaOverview from './Data/Browser/SchemaOverview.react';
-import SecuritySettings from './Settings/SecuritySettings.react';
-import SettingsData from './Settings/SettingsData.react';
-import SlowQueries from './Analytics/SlowQueries/SlowQueries.react';
-import TokenSales from './Data/TokenSales/TokenSales.react';
-import Tokens from './Data/Tokens/Tokens.react';
-import TokenSalesEdit from 'dashboard/Data/TokenSales/TokenSalesEdit.react';
-import styles from 'dashboard/Apps/AppsIndex.scss';
-import UsersSettings from './Settings/UsersSettings.react';
-import Webhooks from './Data/Webhooks/Webhooks.react';
-import { AsyncStatus } from 'lib/Constants';
-import baseStyles from 'stylesheets/base.scss';
-import { get } from 'lib/AJAX';
-import { setBasePath } from 'lib/AJAX';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import Playground from './Data/Playground/Playground.react';
+import AccountOverview from "./Account/AccountOverview.react";
+import AccountView from "./AccountView.react";
+import AnalyticsOverview from "./Analytics/Overview/Overview.react";
+import ApiConsole from "./Data/ApiConsole/ApiConsole.react";
+import AppData from "./AppData.react";
+import AppsIndex from "./Apps/AppsIndex.react";
+import AppsManager from "lib/AppsManager";
+import Browser from "./Data/Browser/Browser.react";
+import CloudCode from "./Data/CloudCode/CloudCode.react";
+import Code from "./Data/Code/Code.react";
+import Docs from "./Data/Docs/Docs.react";
+import Deployments from "./Data/Deployments/Deployments.react";
+import DeploymentsData from "./Data/Deployments/DeploymentsData.react";
+import Config from "./Data/Config/Config.react";
+import Explorer from "./Analytics/Explorer/Explorer.react";
+import FourOhFour from "components/FourOhFour/FourOhFour.react";
+import GeneralSettings from "./Settings/GeneralSettings.react";
+import GraphQLConsole from "./Data/ApiConsole/GraphQLConsole.react";
+import HostingSettings from "./Settings/HostingSettings.react";
+import Icon from "components/Icon/Icon.react";
+import JobEdit from "dashboard/Data/Jobs/JobEdit.react";
+import Jobs from "./Data/Jobs/Jobs.react";
+import JobsData from "dashboard/Data/Jobs/JobsData.react";
+import TokenSalesData from "dashboard/Data/TokenSales/TokenSalesData.react";
+import Loader from "components/Loader/Loader.react";
+import Logs from "./Data/Logs/Logs.react";
+import Migration from "./Data/Migration/Migration.react";
+import Pages from "./Data/Page/Pages.react";
+import ParseApp from "lib/ParseApp";
+import Performance from "./Analytics/Performance/Performance.react";
+import PushAudiencesIndex from "./Push/PushAudiencesIndex.react";
+import PushDetails from "./Push/PushDetails.react";
+import PushIndex from "./Push/PushIndex.react";
+import PushNew from "./Push/PushNew.react";
+import PushSettings from "./Settings/PushSettings.react";
+import React from "react";
+import RestConsole from "./Data/ApiConsole/RestConsole.react";
+import Retention from "./Analytics/Retention/Retention.react";
+import SchemaOverview from "./Data/Browser/SchemaOverview.react";
+import SecuritySettings from "./Settings/SecuritySettings.react";
+import SettingsData from "./Settings/SettingsData.react";
+import SlowQueries from "./Analytics/SlowQueries/SlowQueries.react";
+import TokenSales from "./Data/TokenSales/TokenSales.react";
+import Tokens from "./Data/Tokens/Tokens.react";
+import TokensData from "./Data/Tokens/TokensData.react";
+import TokenSalesEdit from "dashboard/Data/TokenSales/TokenSalesEdit.react";
+import styles from "dashboard/Apps/AppsIndex.scss";
+import UsersSettings from "./Settings/UsersSettings.react";
+import Webhooks from "./Data/Webhooks/Webhooks.react";
+import { AsyncStatus } from "lib/Constants";
+import baseStyles from "stylesheets/base.scss";
+import { get } from "lib/AJAX";
+import { setBasePath } from "lib/AJAX";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import Playground from "./Data/Playground/Playground.react";
+import BatchActions from "./Data/BatchActions/BatchActions.react";
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -81,45 +85,45 @@ const PARSE_DOT_COM_SERVER_INFO = {
       addClass: true,
       removeClass: true,
       clearAllDataFromClass: false, //This still goes through ruby
-      exportClass: false //Still goes through ruby
+      exportClass: false, //Still goes through ruby
     },
     cloudCode: {
-      viewCode: true
+      viewCode: true,
     },
     hooks: {
       create: true,
       read: true,
       update: true,
-      delete: true
+      delete: true,
     },
     logs: {
       info: true,
-      error: true
+      error: true,
     },
     globalConfig: {
       create: true,
       read: true,
       update: true,
-      delete: true
+      delete: true,
     },
     playground: {
-      evalCode: true
-    }
+      evalCode: true,
+    },
   },
-  parseServerVersion: 'Parse.com'
+  parseServerVersion: "Parse.com",
 };
 
 export default class Dashboard extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      configLoadingError: '',
+      configLoadingError: "",
       configLoadingState: AsyncStatus.PROGRESS,
-      newFeaturesInLatestVersion: []
+      newFeaturesInLatestVersion: [],
     };
     setBasePath(props.path);
-    sessionStorage.removeItem('username');
-    sessionStorage.removeItem('password');
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("password");
   }
 
   componentDidMount() {
@@ -207,7 +211,7 @@ export default class Dashboard extends React.Component {
             </div>
             {/* use non-breaking hyphen for the error message to keep the filename on one line */}
             <div className={styles.loadingError}>
-              {this.state.configLoadingError.replace(/-/g, '\u2011')}
+              {this.state.configLoadingError.replace(/-/g, "\u2011")}
             </div>
           </div>
         </div>
@@ -249,7 +253,14 @@ export default class Dashboard extends React.Component {
         <Route path=":section" element={<TokenSales />} />
         <Route index element={<Navigate replace to="all" />} />
       </Route>
-    )
+    );
+
+    const TokenRoute = (
+      <Route element={<TokensData />}>
+        <Route path=":section" element={<Tokens />} />
+        <Route index element={<Navigate replace to="all" />} />
+      </Route>
+    );
 
     const AnalyticsRoute = (
       <Route>
@@ -274,6 +285,30 @@ export default class Dashboard extends React.Component {
       </Route>
     );
 
+    const DeploymentsRoute = (
+      <Route element={<DeploymentsData />}>
+        <Route path=":section" element={<Deployments />} />
+        <Route index element={<Navigate replace to="all" />} />
+      </Route>
+    );
+
+    // const DeploymentsRoute = (props) => {
+    //   return (
+    //     <Switch>
+    //       <Route
+    //         exact
+    //         path={props.match.path + '/:section'}
+    //         render={(props) => (
+    //           <DeploymentsData {...props} params={props.match.params}>
+    //             <Deployments {...props} params={props.match.params} />
+    //           </DeploymentsData>
+    //         )}
+    //       />
+    //       <Redirect from={props.match.path} to="/apps/:appId/deployments/all" />
+    //     </Switch>
+    //   );
+    // };
+
     const AppRoute = (
       <Route element={<AppData />}>
         <Route index element={<Navigate replace to="browser" />} />
@@ -286,13 +321,17 @@ export default class Dashboard extends React.Component {
         />
         <Route path="browser/:className" element={<BrowserRoute />} />
         <Route path="browser" element={<BrowserRoute />} />
-        
-        <Route patth="tokensales" element={<TokenSales />}>{TokenSalesRoute}</Route>
-        <Route path="tokens" element={<Tokens />} />
+
+        <Route path="tokensales">{TokenSalesRoute}</Route>
+        <Route path="tokens">{TokenRoute}</Route>
+
+        <Route path="batch-actions" element={<BatchActions />} />
 
         <Route path="docs/:subpath" element={<Docs />} />
         <Route path="docs/contracts/:contractName" element={<Docs />} />
         <Route path="docs" element={<Docs />} />
+
+        <Route path="deployments">{DeploymentsRoute}</Route>
 
         <Route path="code" element={<Code />} />
         <Route path="cloud_code" element={<CloudCode />} />
@@ -335,7 +374,7 @@ export default class Dashboard extends React.Component {
     );
 
     return (
-      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
+      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || "/"}>
         <Helmet>
           <title>Gemforce Dashboard</title>
         </Helmet>

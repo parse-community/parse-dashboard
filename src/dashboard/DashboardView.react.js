@@ -81,12 +81,6 @@ export default class DashboardView extends React.Component {
       link: '/tokens'
     });
 
-
-    coreSubsections.push({
-      name: 'Token Sales',
-      link: '/tokensales'
-    });
-
     //webhooks requires removal of heroku link code, then it should work.
     if (
       features.hooks &&
@@ -138,6 +132,16 @@ export default class DashboardView extends React.Component {
       });
     }
 
+    coreSubsections.push({
+      name: 'Deployments',
+      link: '/deployments'
+    });
+
+    coreSubsections.push({
+      name: 'TokenSales',
+      link: '/tokensales'
+    });
+
     //! HERE TO ADD MENU IN LEFT-HAND
     coreSubsections.push({
       name: 'Pages',
@@ -152,6 +156,11 @@ export default class DashboardView extends React.Component {
     coreSubsections.push({
       name: 'Docs',
       link: '/docs'
+    });
+
+    coreSubsections.push({
+      name: 'Batch Actions',
+      link: '/batch-actions'
     });
     //! HERE TO ADD MENU IN LEFT-HAND
 
@@ -183,7 +192,6 @@ export default class DashboardView extends React.Component {
         link: '/push/audiences',
       });
     }
-    
 
     let analyticsSidebarSections = [];
 

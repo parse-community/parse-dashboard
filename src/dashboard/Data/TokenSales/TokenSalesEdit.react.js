@@ -5,13 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { ActionTypes } from 'lib/stores/TokenSalesStore';
-import JobsForm        from 'dashboard/Data/TokenSales/TokenSalesForm.react';
-import React           from 'react';
-import subscribeTo     from 'lib/subscribeTo';
-import generatePath    from 'lib/generatePath';
-import { CurrentApp }  from 'context/currentApp';
-import { withRouter } from 'lib/withRouter';
+import TokenSalesForm from "dashboard/Data/TokenSales/TokenSalesForm.react";
+import React from "react";
+import Parse from "parse";
+import { CurrentApp } from "context/currentApp";
+import { withRouter } from "lib/withRouter";
+import generatePath from "lib/generatePath";
 
 /*
     token sale fields:
@@ -54,56 +53,65 @@ import { withRouter } from 'lib/withRouter';
     ]
 */
 
-@subscribeTo('TokenSales', 'tokensales')
+// @subscribeTo("TokenSales", "tokensales")
 @withRouter
 class TokensSaleEdit extends React.Component {
-    static contextType = CurrentApp;
+  static contextType = CurrentApp;
 
-    submitForm(changes) {
-        let tokenSale = {
-            token_sale: {
-                name: changes.name,
-                description: changes.description,
-                tokenAddress: changes.tokenAddress,
-                maxSupply: changes.maxSupply,
-                price: changes.price,
-                saleImage: changes.saleImage,
-                startDate: changes.startDate.toISOString(),
-                endDate: changes.endDate.toISOString(),
-                minPurchase: changes.minPurchase,
-                maxPurchase: changes.maxPurchase,
-                whitelist: changes.whitelist,
-                whitelistEnabled: changes.whitelistEnabled,
-                whitelistOnly: changes.whitelistOnly,
-                kycEnabled: changes.kycEnabled,
-                kycProvider: changes.kycProvider,
-                rarities: changes.rarities,
-                attributes: changes.attributes
-            }
-        }
+  submitForm(changes) {
+    const updatePromise = new Promise((resolve, reject) => {
+      var multiSaleQuery = new Parse.Query("MultiSaleCreated__e");
+      multiSaleQuery.equalTo("tokenSaleId", changes.tokenSaleId);
+      multiSaleQuery
+        .first({ useMasterKey: true })
+        .then(async (object) => {
+          let jsonObj = object.toJSON();
+          jsonObj.settings[8] = changes.name;
+          jsonObj.settings[7] = changes.symbol;
+          jsonObj.settings[13] = changes.totalSupply;
+          jsonObj.settings[20][0] = changes.price;
+          jsonObj.settings[11] = changes.startTime;
+          jsonObj.settings[12] = changes.endTime;
+          jsonObj.settings[10] = changes.status;
+          object.set("settings", jsonObj.settings);
+          await object.save();
+          resolve();
+        })
+        .catch((err) => {
+          console.error(err);
+          reject(err);
+        });
+    });
+    return updatePromise.then(() => {
+      this.forceUpdate();
+      this.props.navigate(generatePath(this.context, "tokensales/all"));
+    });
+  }
 
-        let promise = this.props.params.tokenSaleId ?
-            this.props.tokensales.dispatch(ActionTypes.EDIT, { tokenSaleId: this.props.params.tokenSaleId, updates: tokenSale }) :
-            this.props.tokensales.dispatch(ActionTypes.CREATE, { tokenSale });
-        promise.then(() => {this.props.navigate(generatePath(this.context, 'tokensales'))});
-        return promise;
+  render() {
+    const tokenSale = this.props.availableTokenSales.filter(
+      (tokensale) => tokensale.tokenSaleId === this.props.params.tokenSaleId
+    );
+    let initialFields = {};
+    if (tokenSale.length) {
+      initialFields["tokenSaleId"] = tokenSale[0].tokenSaleId;
+      initialFields["name"] = tokenSale[0].settings[8];
+      initialFields["symbol"] = tokenSale[0].settings[7];
+      initialFields["totalSupply"] = tokenSale[0].settings[13];
+      initialFields["price"] = tokenSale[0].settings[20][0];
+      initialFields["startTime"] = tokenSale[0].settings[11];
+      initialFields["endTime"] = tokenSale[0].settings[12];
+      initialFields["status"] = tokenSale[0].settings[10];
     }
-
-    componentWillMount() {
-        this.props.tokensales.dispatch(ActionTypes.FETCH);
-    }
-
-    render() {
-        return (
-            <div>
-                <JobsForm
-                    onSubmit={this.submitForm.bind(this)}
-                    job={this.props.tokensales.get(this.props.params.tokenSaleId)}
-                    jobs={this.props.tokensales}
-                    params={this.props.params}
-                    />
-            </div>
-        );
-    }
+    return (
+      <div>
+        <TokenSalesForm
+          onSubmit={this.submitForm.bind(this)}
+          initialFields={initialFields}
+          params={this.props.params}
+        />
+      </div>
+    );
+  }
 }
 export default TokensSaleEdit;
