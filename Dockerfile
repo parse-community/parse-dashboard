@@ -35,8 +35,8 @@ COPY --from=build /src/prod_node_modules /src/node_modules
 COPY --from=build /src/package*.json /src/
 
 # Copy compiled src dirs
-COPY --from=build /src/Parse-Dashboard/ /src/Parse-Dashboard/
+COPY --from=base /src/Gemforce-Dashboard/ /src/Gemforce-Dashboard/
 
 USER node
 
-ENTRYPOINT ["node", "Parse-Dashboard/index.js"]
+ENTRYPOINT ["node", "Gemforce-Dashboard/index.js"]

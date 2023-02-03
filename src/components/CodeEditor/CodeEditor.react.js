@@ -37,11 +37,12 @@ export default class CodeEditor extends React.Component {
       <Editor
         mode="javascript"
         theme="solarized_dark"
-        onChange={value => this.setState({ code: value })}
+        onChange={(value) => this.setState({ code: value })}
         fontSize={fontSize}
         showPrintMargin={true}
         showGutter={true}
         highlightActiveLine={true}
+        height="100%"
         width="100%"
         value={code || placeHolder}
         enableBasicAutocompletion={true}
@@ -49,6 +50,8 @@ export default class CodeEditor extends React.Component {
         enableSnippets={false}
         showLineNumbers={true}
         tabSize={2}
+        editorProps={{ $blockScrolling: true }}
+        style={this.props.style ? this.props.style : {}}
       />
     );
   }

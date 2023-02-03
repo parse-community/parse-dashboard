@@ -104,7 +104,7 @@ const showInstructions = ({ app, username, passwordCopied, encrypt, config }) =>
   );
 
   console.log(
-    `\n${getOrder()}. Add the following settings for user "${username}" ${app ? `in app "${app}" ` : '' }to the Parse Dashboard configuration.` +
+    `\n${getOrder()}. Add the following settings for user "${username}" ${app ? `in app "${app}" ` : '' }to the Gemforce Dashboard configuration.` +
     `\n\n   ${JSON.stringify(mfaJSON)}`
   );
 

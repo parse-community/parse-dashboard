@@ -30,6 +30,7 @@ module.exports = {
     modules: [path.join(__dirname, '../node_modules')]
   },
   module: {
+
     rules: [
       {
         test: /\.js$/,

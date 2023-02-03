@@ -1,16 +1,16 @@
 {
-  "name": "parse-dashboard",
-  "version": "5.1.0-alpha.8",
+  "name": "@gemforce/gemforce-dashboard",
+  "version": "4.2.0-alpha.23",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ParsePlatform/parse-dashboard"
+    "url": "https://github.com/nftgem/gemforce-admin-ui"
   },
-  "description": "The Parse Dashboard",
+  "description": "The GemForce Dashboard",
   "parseDashboardFeatures": [
     "Data Browser",
     "Cloud Code Viewer",
     "Cloud Code Jobs Viewer and Runner",
-    "Parse Config",
+    "Gemforce Config",
     "REST API Console",
     "GraphQL API Console",
     "JS Custom Query Console",
@@ -22,14 +22,14 @@
     "Relation Editor"
   ],
   "keywords": [
-    "parse",
+    "gemforce",
     "dashboard"
   ],
-  "homepage": "https://github.com/ParsePlatform/parse-dashboard",
-  "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
+  "homepage": "https://github.com/nftgem/gemforce-admin-ui",
+  "bugs": "https://github.com/nftgem/gemforce-admin-ui/issues",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
-    "Parse-Dashboard",
+    "Gemforce-Dashboard",
     "bin",
     "README.md",
     "LICENSE"
@@ -37,6 +37,9 @@
   "dependencies": {
     "@babel/runtime": "7.19.0",
     "@babel/runtime-corejs3": "7.19.1",
+    "@mui/material": "^5.0.1",
+    "@mui/styles": "^5.0.1",
+    "@mui/system": "^5.0.1",
     "bcryptjs": "2.3.0",
     "body-parser": "1.20.0",
     "commander": "9.4.0",
@@ -66,9 +69,12 @@
     "react-dnd-html5-backend": "10.0.2",
     "react-dom": "16.14.0",
     "react-helmet": "6.1.0",
+    "react-hot-toast": "^2.4.0",
     "react-json-view": "1.21.3",
+    "react-masonry-component": "^6.3.0",
     "react-popper-tooltip": "4.4.2",
     "react-router-dom": "6.4.1",
+    "react-split": "^2.0.14",
     "regenerator-runtime": "0.13.9",
     "semver": "7.3.7",
     "typescript": "4.8.3"
@@ -117,25 +123,25 @@
   "scripts": {
     "ci:check": "node ./ci/ciCheck.js",
     "ci:checkNodeEngine": "node ./ci/nodeEngineCheck.js",
-    "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
-    "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
+    "dev": "node ./Gemforce-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+    "dashboard": "webpack --config webpack/build.config.js --progress --watch & node ./Gemforce-Dashboard/index.js",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "jest",
     "lint": "eslint . --ignore-path .gitignore --cache",
     "generate": "node scripts/generate.js",
     "prepare": "webpack --config webpack/publish.config.js --progress",
-    "start": "node ./Parse-Dashboard/index.js",
+    "start": "node ./Gemforce-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular",
     "semantic-release": "semantic-release"
   },
   "bin": {
-    "parse-dashboard": "./bin/parse-dashboard"
+    "gemforce-dashboard": "./bin/gemforce-dashboard"
   },
   "engines": {
     "node": ">=14.20.1"
   },
-  "main": "Parse-Dashboard/app.js",
+  "main": "Gemforce-Dashboard/app.js",
   "jest": {
     "roots": [
       "src/lib"

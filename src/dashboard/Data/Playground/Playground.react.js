@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactJson from 'react-json-view';
 import Parse from 'parse';
+import Split from 'react-split';
 
 import CodeEditor from 'components/CodeEditor/CodeEditor.react';
 import Button from 'components/Button/Button.react';
@@ -33,7 +34,7 @@ export default class Playground extends Component {
       this.setState(({ results }) => ({
         results: [
           ...results,
-          ...args.map(arg => ({
+          ...args.map((arg) => ({
             log:
               typeof arg === 'object'
                 ? Array.isArray(arg)
@@ -51,7 +52,7 @@ export default class Playground extends Component {
       this.setState(({ results }) => ({
         results: [
           ...results,
-          ...args.map(arg => ({
+          ...args.map((arg) => ({
             log:
               arg instanceof Error
                 ? { message: arg.message, name: arg.name, stack: arg.stack }
@@ -71,9 +72,8 @@ export default class Playground extends Component {
     const [originalConsoleLog, originalConsoleError] = this.overrideConsole();
 
     try {
-      const {
-        applicationId, masterKey, serverURL, javascriptKey
-      } = this.context;
+      const { applicationId, masterKey, serverURL, javascriptKey } =
+        this.context;
       const originalCode = this.editor.value;
 
       const finalCode = `return (async function(){
@@ -138,6 +138,11 @@ export default class Playground extends Component {
         this.editor.value = initialCode;
       }
     }
+    // split.js doesn't seem like they want to fix the cursor issues
+    // on hover effect that gets stripped after first drag anytime soon
+    // so until then we will set the cursor type manually
+    const gutter = document.querySelector('.gutter-vertical');
+    gutter.classList.add(styles['split-ctn']);
   }
 
   render() {
@@ -147,51 +152,59 @@ export default class Playground extends Component {
       <div className={styles['playground-ctn']}>
         <Toolbar section={this.section} subsection={this.subsection} />
         <div style={{ minHeight: '25vh' }}>
-          <CodeEditor
-            placeHolder={`const myObj = new Parse.Object('MyClass');
+          <Split
+            direction="vertical"
+            cursor="row-resize"
+            sizes={[90, 10]}
+            minSize={[10, 10]}
+            style={{ height: 'calc(100vh - 9vh)' }}
+          >
+            <CodeEditor
+              placeHolder={`const myObj = new Parse.Object('MyClass');
 myObj.set('myField', 'Hello World!')
 await myObj.save();
 console.log(myObj);`}
-            ref={editor => (this.editor = editor)}
-          />
-          <div className={styles['console-ctn']}>
-            <header>
-              <h3>Console</h3>
-              <div className={styles['buttons-ctn']}>
-                <div>
-                  <div style={{ marginRight: '15px' }}>
-                    {window.localStorage && (
-                      <SaveButton
-                        state={savingState}
-                        primary={false}
-                        color="white"
-                        onClick={() => this.saveCode()}
-                        progress={saving}
-                      />
-                    )}
+              ref={(editor) => (this.editor = editor)}
+            />
+            <div className={styles['console-ctn']}>
+              <header>
+                <h3>Console</h3>
+                <div className={styles['buttons-ctn']}>
+                  <div>
+                    <div style={{ marginRight: '15px' }}>
+                      {window.localStorage && (
+                        <SaveButton
+                          state={savingState}
+                          primary={false}
+                          color="white"
+                          onClick={() => this.saveCode()}
+                          progress={saving}
+                        />
+                      )}
+                    </div>
+                    <Button
+                      value={'Run'}
+                      primary={false}
+                      onClick={() => this.runCode()}
+                      progress={running}
+                      color="white"
+                    />
                   </div>
-                  <Button
-                    value={'Run'}
-                    primary={false}
-                    onClick={() => this.runCode()}
-                    progress={running}
-                    color="white"
-                  />
                 </div>
-              </div>
-            </header>
-            <section>
-              {results.map(({ log, name }, i) => (
-                <ReactJson
-                  key={i + `${log}`}
-                  src={log}
-                  collapsed={1}
-                  theme="solarized"
-                  name={name}
-                />
-              ))}
-            </section>
-          </div>
+              </header>
+              <section>
+                {results.map(({ log, name }, i) => (
+                  <ReactJson
+                    key={i + `${log}`}
+                    src={log}
+                    collapsed={1}
+                    theme="solarized"
+                    name={name}
+                  />
+                ))}
+              </section>
+            </div>
+          </Split>
         </div>
       </div>
     );
