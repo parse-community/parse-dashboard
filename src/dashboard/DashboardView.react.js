@@ -162,6 +162,11 @@ export default class DashboardView extends React.Component {
       name: 'Batch Actions',
       link: '/batch-actions'
     });
+
+    coreSubsections.push({
+      name: 'IPFS Upload',
+      link: '/upload'
+    });
     //! HERE TO ADD MENU IN LEFT-HAND
 
     if (this.context.migration) {

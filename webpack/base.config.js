@@ -9,6 +9,7 @@
 
 var path = require('path');
 var SvgPrepPlugin = require('./plugins/svg-prep');
+require('dotenv').config();
 
 // pulls in package.json and gets version
 var webpack = require('webpack');
@@ -77,7 +78,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        'version' : JSON.stringify(version)
+        'version' : JSON.stringify(version),
+        'projectId': JSON.stringify(process.env.PROJECT_ID),
+        'projectSecret': JSON.stringify(process.env.PROJECT_SECRET)
       }
     })
   ]

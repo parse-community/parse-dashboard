@@ -1,0 +1,16 @@
+@import 'stylesheets/globals.scss';
+
+.container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.fileInput {
+    position: absolute;
+    top: calc(50% + 163px);
+    width: 100%;
+}
+
+.row {
+    padding: 0 16px;
+}

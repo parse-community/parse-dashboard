@@ -62,6 +62,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Playground from "./Data/Playground/Playground.react";
 import BatchActions from "./Data/BatchActions/BatchActions.react";
+import IpfsUpload from "./Data/IpfsUpload/IpfsUpload.react";
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -358,6 +359,8 @@ export default class Dashboard extends React.Component {
         <Route path="push/audiences" element={<PushAudiencesIndex />} />
         <Route path="push/new" element={<PushNew />} />
         <Route path="push/:pushId" element={<PushDetails />} />
+
+        <Route path="upload" element={<IpfsUpload />} />
 
         {/* Unused routes... */}
         <Route path="analytics">{AnalyticsRoute}</Route>

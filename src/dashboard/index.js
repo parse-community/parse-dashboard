@@ -14,7 +14,7 @@ import ReactDOM        from 'react-dom';
 import Dashboard       from './Dashboard';
 
 require('stylesheets/fonts.scss');
-require('graphiql/graphiql.min.css')
+require('graphiql/graphiql.min.css');
 installDevTools(Immutable);
 
 var path = window.PARSE_DASHBOARD_PATH || '/';
