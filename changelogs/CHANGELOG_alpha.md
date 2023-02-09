@@ -1,3 +1,10 @@
+# [5.1.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.7...5.1.0-alpha.8) (2023-01-29)
+
+
+### Bug Fixes
+
+* Internal error message on login with missing credential ([#2370](https://github.com/ParsePlatform/parse-dashboard/issues/2370)) ([9a6a31f](https://github.com/ParsePlatform/parse-dashboard/commit/9a6a31f7d45d1402bfc3a988bef21c4a5bb1b123))
+
 # [5.1.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.6...5.1.0-alpha.7) (2023-01-28)
 
 
