@@ -1,3 +1,10 @@
+# [5.1.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.8...5.1.0-alpha.9) (2023-02-11)
+
+
+### Bug Fixes
+
+* Screen goes blank when trying to add column of type `Object` or `GeoPoint` ([#2384](https://github.com/ParsePlatform/parse-dashboard/issues/2384)) ([0886386](https://github.com/ParsePlatform/parse-dashboard/commit/08863868b90455116232b2b73a39391ba990c30c))
+
 # [5.1.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.7...5.1.0-alpha.8) (2023-01-29)
 
 
