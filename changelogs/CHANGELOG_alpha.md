@@ -1,3 +1,10 @@
+# [5.1.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.9...5.1.0-alpha.10) (2023-02-13)
+
+
+### Bug Fixes
+
+* Data browser dialog "No data to display" may be outside of visible area in Safari browser ([#2387](https://github.com/ParsePlatform/parse-dashboard/issues/2387)) ([52bba62](https://github.com/ParsePlatform/parse-dashboard/commit/52bba6246cd05c255ca562dcb32da5b104f9908e))
+
 # [5.1.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.8...5.1.0-alpha.9) (2023-02-11)
 
 
