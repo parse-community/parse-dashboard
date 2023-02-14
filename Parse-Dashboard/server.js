@@ -20,6 +20,7 @@ export default function server(options) {
   const allowInsecureHTTP = options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
   const cookieSessionSecret = options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
   const trustProxy = options.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
+  const cookieSessionMaxAge = options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE;
   const dev = options.dev;
 
   if (trustProxy && allowInsecureHTTP) {
@@ -147,7 +148,7 @@ export default function server(options) {
   if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
 
   config.data.trustProxy = trustProxy;
-  let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev };
+  let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   let server;
   if(!configSSLKey || !configSSLCert){

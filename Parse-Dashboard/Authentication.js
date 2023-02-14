@@ -57,25 +57,30 @@ function initialize(app, options) {
   });
 
   var cookieSessionSecret = options.cookieSessionSecret || randomBytes(64).toString('hex');
+  const cookieSessionMaxAge = options.cookieSessionMaxAge;
   app.use(connectFlash());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieSession({
     key    : 'parse_dash',
     secret : cookieSessionSecret,
-    cookie : {
-      maxAge: (2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks
-    }
+    maxAge : cookieSessionMaxAge
   }));
   app.use(passport.initialize());
   app.use(passport.session());
 
   app.post('/login',
     csrf(),
-    passport.authenticate('local', {
-      successRedirect: `${self.mountPath}apps`,
-      failureRedirect: `${self.mountPath}login`,
-      failureFlash : true
-    })
+      (req,res,next) => {
+        let redirect = 'apps';
+        if (req.body.redirect) {
+          redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
+        }
+        return passport.authenticate('local', {
+          successRedirect: `${self.mountPath}${redirect}`,
+          failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
+          failureFlash : true
+        })(req, res, next)
+    },
   );
 
   app.get('/logout', function(req, res){
