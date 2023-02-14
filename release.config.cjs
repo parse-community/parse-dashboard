@@ -35,7 +35,7 @@ async function config() {
   await loadTemplates();
 
   const config = {
-    branches: [
+    backmergeBranches: [
       'release',
       { name: 'alpha', prerelease: true },
       { name: 'beta', prerelease: true },
