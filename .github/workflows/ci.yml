@@ -13,18 +13,12 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - name: CI Node Engine Check
@@ -34,18 +28,12 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - run: npm run lint
@@ -54,18 +42,12 @@ jobs:
      timeout-minutes: 15
      runs-on: ubuntu-latest
      steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - name: Scan for circular dependencies
@@ -88,13 +70,13 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       - name: Build docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           platforms: ${{ matrix.DOCKER_PLATFORM }}
   check-lock-file-version:
@@ -102,7 +84,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check NPM lock file version
         uses: mansona/npm-lockfile-version@v1
         with:
@@ -124,31 +106,14 @@ jobs:
     env:
       NODE_VERSION: ${{ matrix.NODE_VERSION }}
     steps:
-      - name: Determine major node version
-        id: node
-        run: |
-          node_major=$(echo "${{ matrix.NODE_VERSION }}" | cut -d'.' -f1)
-          echo "::set-output name=node_major::$(echo $node_major)"
-      - name: Fix usage of insecure GitHub protocol
-        run: sudo git config --system url."https://github".insteadOf "git://github"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.NODE_VERSION }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
-      - name: Install dependencies (Node < 10)
-        run: npm install
-        if: ${{ steps.node.outputs.node_major < 10 }}
-      - name: Install dependencies (Node >= 10)
+          cache: 'npm'
+      - name: Install dependencies
         run: npm ci
-        if: ${{ steps.node.outputs.node_major >= 10 }}
       - name: Tests
         run: npm test
       - name: Test bundles
