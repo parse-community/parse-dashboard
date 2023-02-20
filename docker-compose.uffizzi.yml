@@ -9,7 +9,7 @@ x-uffizzi:
     deploy_preview_when_pull_request_is_opened: true
     delete_preview_when_pull_request_is_closed: true
     share_to_github: true
-    
+
 services:
 
   postgres:
@@ -56,6 +56,7 @@ services:
         - PARSE_DASHBOARD_USER_PASSWORD=pass
         - MOUNT_PATH=/dashboard
         - PARSE_DASHBOARD_ALLOW_INSECURE_HTTP=1
+        - PARSE_DASHBOARD_STRICT_CSP=true
         entrypoint: /bin/sh
         command:
          - "-c"

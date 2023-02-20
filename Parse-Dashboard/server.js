@@ -17,7 +17,7 @@ module.exports = (options) => {
   const port = options.port || process.env.PORT || 4040;
   const mountPath = options.mountPath || process.env.MOUNT_PATH || '/';
   const allowInsecureHTTP = options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
-  const strictCSP = options.strictCSP || process.env.PARSE_DASHBOARD_STRICT_CSP || true;
+  const strictCSP = options.strictCSP || process.env.PARSE_DASHBOARD_STRICT_CSP;
   const cookieSessionSecret = options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
   const trustProxy = options.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
   const cookieSessionMaxAge = options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE;
