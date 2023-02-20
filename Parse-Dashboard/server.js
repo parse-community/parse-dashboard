@@ -17,6 +17,7 @@ module.exports = (options) => {
   const port = options.port || process.env.PORT || 4040;
   const mountPath = options.mountPath || process.env.MOUNT_PATH || '/';
   const allowInsecureHTTP = options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
+  const strictCSP = options.strictCSP || process.env.PARSE_DASHBOARD_STRICT_CSP;
   const cookieSessionSecret = options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
   const trustProxy = options.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
   const cookieSessionMaxAge = options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE;
@@ -142,11 +143,22 @@ module.exports = (options) => {
   }
 
   const app = express();
+  const nonce = options.CSPNonce || process.env.PARSE_DASHBOARD_CSP_NONCE || require('crypto').randomBytes(64).toString('hex')
+  if (strictCSP) {
+    const connectSrcs = config.data.apps.map(app => new URL(app.serverURL).origin);
+    app.use(function (req, res, next) {
+      res.setHeader(
+        'Content-Security-Policy',
+        `default-src 'self'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}' https://fonts.googleapis.com; frame-src 'self'; connect-src 'self' ${connectSrcs.join(' ')};`
+      );
+      next();
+    });
+  }
 
   if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
 
   config.data.trustProxy = trustProxy;
-  let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
+  let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge, CSPNonce: nonce };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   let server;
   if(!configSSLKey || !configSSLCert){

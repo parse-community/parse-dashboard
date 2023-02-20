@@ -46,7 +46,7 @@ SvgPrepPlugin.prototype.apply = function(compiler) {
           .filter({ removeIds: true, noFill: true })
           .output();
 
-        compilation.emitAsset(this.options.output, new RawSource(sprited));
+        compilation.emitAsset(this.options.output, new RawSource(sprited.replace('style="display:none"', '')));
       });
   });
 }

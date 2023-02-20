@@ -62,6 +62,10 @@ module.exports = function(config, options) {
     app.enable('trust proxy');
   }
 
+  if (options.strictCSP && !options.CSPNonce) {
+    options.CSPNonce = require('crypto').randomBytes(64).toString('hex');
+  }
+
   // wait for app to mount in order to get mountpath
   app.on('mount', function() {
     const mountPath = getMount(app.mountpath);
@@ -188,8 +192,11 @@ module.exports = function(config, options) {
       <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
+          <script nonce="${options.CSPNonce}">
+            window.nonce = "${options.CSPNonce}";
+          </script>
           <base href="${mountPath}"/>
-          <script>
+          <script nonce="${options.CSPNonce}">
             PARSE_DASHBOARD_PATH = "${mountPath}";
           </script>
           <title>Parse Dashboard</title>
@@ -197,8 +204,8 @@ module.exports = function(config, options) {
         <body>
           <div id="login_mount"></div>
           ${errors}
-          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
-          <script src="${mountPath}bundles/login.bundle.js"></script>
+          <script nonce="${options.CSPNonce}" id="csrf" type="application/json">"${req.csrfToken()}"</script>
+          <script nonce="${options.CSPNonce}" src="${mountPath}bundles/login.bundle.js"></script>
         </body>
       </html>
       `);
@@ -221,14 +228,15 @@ module.exports = function(config, options) {
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
           <base href="${mountPath}"/>
-          <script>
+          <script nonce="${options.CSPNonce}">
+            window.__CSP_NONCE = "${options.CSPNonce}";
             PARSE_DASHBOARD_PATH = "${mountPath}";
           </script>
           <title>Parse Dashboard</title>
         </head>
         <body>
           <div id="browser_mount"></div>
-          <script src="${mountPath}bundles/dashboard.bundle.js"></script>
+          <script nonce="${options.CSPNonce}" src="${mountPath}bundles/dashboard.bundle.js"></script>
         </body>
       </html>
       `);
