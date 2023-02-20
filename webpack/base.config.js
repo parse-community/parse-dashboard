@@ -17,7 +17,7 @@ var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 var version = json.version;
 module.exports = {
   context: path.join(__dirname, '../src'),
-  devtool: "source-map",
+  devtool: 'source-map',
   output: {
     filename: '[name].bundle.js',
     publicPath: 'bundles/',
