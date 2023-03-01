@@ -11,15 +11,10 @@ import styles from 'components/TextInput/TextInput.scss';
 import { withForwardedRef } from 'lib/withForwardedRef';
 
 class TextInput extends React.Component {
-  componentWillReceiveProps(props) {
+  componentDidUpdate(props) {
     if (props.multiline !== this.props.multiline) {
       const node = props.forwardedRef.current;
-      // wait a little while for component to re-render
-      setTimeout(function() {
-        node.focus();
-        node.value = '';
-        node.value = props.value;
-      }.bind(this), 1);
+      node.focus();
     }
   }
 

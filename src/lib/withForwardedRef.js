@@ -2,7 +2,9 @@ import React from 'react';
 
 export function withForwardedRef(Component) {
   function render(props, ref) {
-    return <Component {...props} forwardedRef={ref} />;
+    const innerRef = React.useRef();
+    React.useImperativeHandle(ref, () => innerRef.current, [props.multiline]);
+    return <Component {...props} forwardedRef={innerRef} />;
   }
 
   const name = Component.displayName || Component.name;
