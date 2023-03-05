@@ -1,3 +1,10 @@
+# [5.1.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.11...5.1.0-alpha.12) (2023-03-05)
+
+
+### Bug Fixes
+
+* Uncaught error when editing Number field in Edit Row dialog ([#2401](https://github.com/ParsePlatform/parse-dashboard/issues/2401)) ([26bd6fa](https://github.com/ParsePlatform/parse-dashboard/commit/26bd6fa39be1076621856a9c86dcd1307f8f7fdd))
+
 # [5.1.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.10...5.1.0-alpha.11) (2023-03-05)
 
 
