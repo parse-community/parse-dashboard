@@ -59,7 +59,6 @@ export default class BrowserFilter extends React.Component {
       confirmName: false
     }));
     this.props.setCurrent(null);
-    console.log('isOpen', this.state.open);
   }
 
   addRow() {

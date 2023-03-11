@@ -112,20 +112,18 @@ export default class CategoryList extends React.Component {
               </div>
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
-                  console.log({ filterData });
                   const { name, filter } = filterData;
                   const url = `${this.props.linkPrefix}${
                     c.name
                   }?filters=${encodeURIComponent(filter)}`;
                   return (
-                    <div className={styles.link}>
+                    <div className={styles.childLink}>
                       <Link
                         onClick={(e) => {
                           e.preventDefault();
                           this.props.filterClicked(url);
                         }}
                         key={name + index}
-                        style={{display: 'flex'}}
                       >
                         <span>{name}</span>
                       </Link>

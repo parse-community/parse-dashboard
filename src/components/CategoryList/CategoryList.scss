@@ -87,3 +87,17 @@
     }
   }
 }
+
+.childLink {
+  display: flex;
+  a {
+    &:first-of-type {
+      flex-grow: 1;
+      display: flex;
+    }
+    span {
+      text-align: left !important;
+      margin-left: 14px;
+    }
+  }
+}
