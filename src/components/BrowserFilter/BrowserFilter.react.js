@@ -11,6 +11,9 @@ import Filter        from 'components/Filter/Filter.react';
 import FilterRow     from 'components/BrowserFilter/FilterRow.react';
 import Icon          from 'components/Icon/Icon.react';
 import Popover       from 'components/Popover/Popover.react';
+import Field         from 'components/Field/Field.react';
+import TextInput     from 'components/TextInput/TextInput.react';
+import Label         from 'components/Label/Label.react';
 import Position      from 'lib/Position';
 import React         from 'react';
 import styles        from 'components/BrowserFilter/BrowserFilter.scss';
@@ -25,9 +28,12 @@ export default class BrowserFilter extends React.Component {
     this.state = {
       open: false,
       filters: new List(),
+      confirmName: false,
+      name: '',
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters)
     };
     this.toggle = this.toggle.bind(this);
+    this.save = this.save.bind(this);
     this.wrapRef = React.createRef();
   }
 
@@ -48,9 +54,12 @@ export default class BrowserFilter extends React.Component {
     }
     this.setState(prevState => ({
       open: !prevState.open,
-      filters: filters
+      filters: filters,
+      name: '',
+      confirmName: false
     }));
     this.props.setCurrent(null);
+    console.log('isOpen', this.state.open);
   }
 
   addRow() {
@@ -86,6 +95,19 @@ export default class BrowserFilter extends React.Component {
     this.props.onChange(formatted);
   }
 
+  save() {
+    let formatted = this.state.filters.map(filter => {
+      let isComparable = Filters.Constraints[filter.get('constraint')].comparable;
+      if (!isComparable) {
+        return filter.delete('compareTo')
+      }
+      return filter;
+    });
+    console.log('save clicked')
+    this.props.onSaveFilter(formatted, this.state.name);
+    this.toggle();
+  }
+
   render() {
     let popover = null;
     let buttonStyle = [styles.entry];
@@ -118,7 +140,11 @@ export default class BrowserFilter extends React.Component {
                 renderRow={props => (
                   <FilterRow {...props} active={this.props.filters.size > 0} parentContentId={POPOVER_CONTENT_ID} />
                 )}
-              />
+                />
+                {this.state.confirmName && <Field
+                  label={<Label text='What should we this filter?' />}
+                  input={<TextInput placeholder='Give it a good name...' value={this.state.name} onChange={(name) => this.setState({ name })} />}
+                />}
               <div className={styles.footer}>
                 <Button
                   color="white"
@@ -137,10 +163,18 @@ export default class BrowserFilter extends React.Component {
                 <Button
                   color="white"
                   primary={true}
-                  value="Apply these filters"
-                  width="245px"
+                  value={this.state.confirmName ? "Confirm" : "Save filters"}
+                  width="120px"
+                  onClick={() => this.state.confirmName ? this.save() : this.setState({confirmName: true})}
+                />
+                <Button
+                  color="white"
+                  primary={true}
+                  value="Apply filters"
+                  width="120px"
                   onClick={this.apply.bind(this)}
                 />
+
               </div>
             </div>
           </div>
