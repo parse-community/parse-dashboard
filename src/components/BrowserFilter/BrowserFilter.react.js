@@ -103,7 +103,6 @@ export default class BrowserFilter extends React.Component {
       }
       return filter;
     });
-    console.log('save clicked')
     this.props.onSaveFilter(formatted, this.state.name);
     this.toggle();
   }

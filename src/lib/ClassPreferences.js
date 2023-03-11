@@ -20,7 +20,6 @@ export function getPreferences(appId, className) {
       filters: [],
     });
   } catch (e) {
-    console.log({e});
     // Fails in Safari private browsing
     entry = null;
   }
