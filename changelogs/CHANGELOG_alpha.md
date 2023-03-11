@@ -1,3 +1,24 @@
+# [5.1.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.12...5.1.0-alpha.13) (2023-03-07)
+
+
+### Features
+
+* Sort Cloud Code Jobs alphabetically ([#2402](https://github.com/ParsePlatform/parse-dashboard/issues/2402)) ([77fc372](https://github.com/ParsePlatform/parse-dashboard/commit/77fc372bedb9fb4eca728c1bc076e823c5bc3a2c))
+
+# [5.1.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.11...5.1.0-alpha.12) (2023-03-05)
+
+
+### Bug Fixes
+
+* Uncaught error when editing Number field in Edit Row dialog ([#2401](https://github.com/ParsePlatform/parse-dashboard/issues/2401)) ([26bd6fa](https://github.com/ParsePlatform/parse-dashboard/commit/26bd6fa39be1076621856a9c86dcd1307f8f7fdd))
+
+# [5.1.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.10...5.1.0-alpha.11) (2023-03-05)
+
+
+### Features
+
+* Data types and pointer classes are sorted alphabetically in dialog to add new column ([#2400](https://github.com/ParsePlatform/parse-dashboard/issues/2400)) ([d9d285b](https://github.com/ParsePlatform/parse-dashboard/commit/d9d285b7f90434d3bb138c2c765272498e3f09c3))
+
 # [5.1.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.9...5.1.0-alpha.10) (2023-02-13)
 
 

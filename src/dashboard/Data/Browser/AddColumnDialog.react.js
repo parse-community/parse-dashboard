@@ -97,7 +97,7 @@ export default class AddColumnDialog extends React.Component {
       <Dropdown
         value={this.state.target}
         onChange={(target) => this.setState({ target: target })}>
-        {this.props.classes.map((c) => <Option key={c} value={c}>{c}</Option>)}
+        {this.props.classes.sort((a, b) => a.localeCompare(b)).map((c) => <Option key={c} value={c}>{c}</Option>)}
       </Dropdown>
     );
   }
@@ -189,7 +189,7 @@ export default class AddColumnDialog extends React.Component {
       <Dropdown
         value={this.state.type}
         onChange={(type) => this.setState({ type: type, defaultValue: undefined, required: false })}>
-        {DataTypes.map((t) => <Option key={t} value={t}>{t}</Option>)}
+        {DataTypes.sort((a, b) => a.localeCompare(b)).map((t) => <Option key={t} value={t}>{t}</Option>)}
       </Dropdown>
     );
     return (
