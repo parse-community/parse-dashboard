@@ -11,7 +11,6 @@ import styles from 'components/CategoryList/CategoryList.scss';
 import { Link } from 'react-router-dom';
 import generatePath from 'lib/generatePath';
 import { CurrentApp } from 'context/currentApp';
-import SidebarAction from 'components/Sidebar/SidebarAction';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;
@@ -76,7 +75,7 @@ export default class CategoryList extends React.Component {
     }
     return (
       <div ref={this.listWrapperRef} className={styles.class_list}>
-        {this.props.categories.map((c, index) => {
+        {this.props.categories.map(c => {
           let id = c.id || c.name;
           if (c.type === 'separator') {
             return <hr key={id} className={styles.separator} />;

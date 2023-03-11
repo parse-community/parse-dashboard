@@ -519,7 +519,7 @@ class Browser extends DashboardView {
     obj.save(null, { useMasterKey }).then(
       (objectSaved) => {
         let msg =
-          objectSaved.className + " with id '" + objectSaved.id + "' created";
+          objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
         this.showNote(msg, false);
 
         const state = { data: this.state.data };
@@ -633,9 +633,9 @@ class Browser extends DashboardView {
       (objectSaved) => {
         let msg =
           objectSaved.className +
-          " with id '" +
+          ' with id \'' +
           objectSaved.id +
-          "' " +
+          '\' ' +
           'created';
         this.showNote(msg, false);
 
@@ -1106,7 +1106,7 @@ class Browser extends DashboardView {
     obj.save(null, { useMasterKey }).then(
       (objectSaved) => {
         let msg =
-          objectSaved.className + " with id '" + objectSaved.id + "' updated";
+          objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
         this.showNote(msg, false);
 
         const state = {
@@ -1237,7 +1237,7 @@ class Browser extends DashboardView {
 
             if (toDeleteObjectIds.length == 1) {
               deletedNote =
-                className + " with id '" + toDeleteObjectIds[0] + "' deleted";
+                className + ' with id \'' + toDeleteObjectIds[0] + '\' deleted';
             } else {
               deletedNote =
                 toDeleteObjectIds.length + ' ' + className + ' objects deleted';
@@ -1268,9 +1268,9 @@ class Browser extends DashboardView {
                 errorDeletingNote =
                   'Error deleting ' +
                   className +
-                  " with id '" +
+                  ' with id \'' +
                   error.errors[0].object.id +
-                  "'";
+                  '\'';
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
                   'Error deleting ' +
@@ -1293,9 +1293,9 @@ class Browser extends DashboardView {
                 errorDeletingNote =
                   'Error deleting ' +
                   className +
-                  " with id '" +
+                  ' with id \'' +
                   toDeleteObjectIds[0] +
-                  "'";
+                  '\'';
               } else {
                 errorDeletingNote =
                   'Error deleting ' +

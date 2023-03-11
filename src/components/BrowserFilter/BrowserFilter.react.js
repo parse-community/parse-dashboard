@@ -162,7 +162,7 @@ export default class BrowserFilter extends React.Component {
                 <Button
                   color="white"
                   primary={true}
-                  value={this.state.confirmName ? "Confirm" : "Save filters"}
+                  value={this.state.confirmName ? 'Confirm' : 'Save filters'}
                   width="120px"
                   onClick={() => this.state.confirmName ? this.save() : this.setState({confirmName: true})}
                 />
