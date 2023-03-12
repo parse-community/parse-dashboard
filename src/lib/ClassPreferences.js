@@ -1,4 +1,4 @@
-const VERSION = 'v1'; // In case we ever need to invalidate these
+const VERSION = 1; // In case we ever need to invalidate these
 let cache = {};
 export function updatePreferences(prefs, appId, className) {
   try {

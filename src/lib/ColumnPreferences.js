@@ -74,7 +74,7 @@ export function getColumnSort(sortBy, appId, className) {
 export function getOrder(cols, appId, className, defaultPrefs) {
 
   let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true } ];
-  
+
   if (defaultPrefs) {
 
     // Check that every default pref is in the prefs array.
@@ -85,7 +85,7 @@ export function getOrder(cols, appId, className, defaultPrefs) {
       }
     });
 
-    // Iterate over the current prefs 
+    // Iterate over the current prefs
     prefs = prefs.map((prefsItem) => {
       // Get the default prefs item.
       const defaultPrefsItem = defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
