@@ -75,26 +75,18 @@ export default class CategoryList extends React.Component {
     }
     return (
       <div ref={this.listWrapperRef} className={styles.class_list}>
-        {this.props.categories.map(c => {
+        {this.props.categories.map((c) => {
           let id = c.id || c.name;
           if (c.type === 'separator') {
             return <hr key={id} className={styles.separator} />;
           }
           let count = c.count;
           let className = id === this.props.current ? styles.active : '';
-          let link = generatePath(
-            this.context,
-            (this.props.linkPrefix || '') + (c.link || id)
-          );
+          let link = generatePath(this.context, (this.props.linkPrefix || '') + (c.link || id));
           return (
             <div>
               <div className={styles.link}>
-                <Link
-                  title={c.name}
-                  to={{ pathname: link }}
-                  className={className}
-                  key={id}
-                >
+                <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
@@ -103,9 +95,7 @@ export default class CategoryList extends React.Component {
                     className={styles.expand}
                     onClick={(e) => this.toggleDropdown(e, id)}
                     style={{
-                      transform: this.state.openClasses.includes(id)
-                        ? 'scaleY(-1)'
-                        : 'scaleY(1)',
+                      transform: this.state.openClasses.includes(id) ? 'scaleY(-1)' : 'scaleY(1)',
                     }}
                   ></a>
                 )}
@@ -113,9 +103,7 @@ export default class CategoryList extends React.Component {
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
                   const { name, filter } = filterData;
-                  const url = `${this.props.linkPrefix}${
-                    c.name
-                  }?filters=${encodeURIComponent(filter)}`;
+                  const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}`;
                   return (
                     <div className={styles.childLink}>
                       <Link
@@ -133,7 +121,9 @@ export default class CategoryList extends React.Component {
                           e.preventDefault();
                           this.props.removeFilter(filterData);
                         }}
-                      >×</a>
+                      >
+                        ×
+                      </a>
                     </div>
                   );
                 })}
@@ -146,13 +136,7 @@ export default class CategoryList extends React.Component {
 }
 
 CategoryList.propTypes = {
-  categories: PropTypes.arrayOf(PropTypes.object).describe(
-    'Array of categories used to populate list.'
-  ),
-  current: PropTypes.string.describe(
-    'Id of current category to be highlighted.'
-  ),
-  linkPrefix: PropTypes.string.describe(
-    'Link prefix used to generate link path.'
-  ),
+  categories: PropTypes.arrayOf(PropTypes.object).describe('Array of categories used to populate list.'),
+  current: PropTypes.string.describe('Id of current category to be highlighted.'),
+  linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
 };
