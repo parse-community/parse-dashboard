@@ -102,9 +102,6 @@ class Browser extends DashboardView {
     this.fetchRelationCount = this.fetchRelationCount.bind(this);
     this.fetchNextPage = this.fetchNextPage.bind(this);
     this.updateFilters = this.updateFilters.bind(this);
-    this.saveFilters = this.saveFilters.bind(this);
-    this.filterClicked = this.filterClicked.bind(this);
-    this.removeFilter = this.removeFilter.bind(this);
     this.showRemoveColumn = this.showRemoveColumn.bind(this);
     this.showDeleteRows = this.showDeleteRows.bind(this);
     this.showDropClass = this.showDropClass.bind(this);
@@ -840,7 +837,6 @@ class Browser extends DashboardView {
       const _filters = JSON.stringify(filters.toJSON());
       const url = `browser/${source}${filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`}`;
       // filters param change is making the fetch call
-      console.log(generatePath(this.context, url));
       this.props.navigate(generatePath(this.context, url));
     }
   }
@@ -856,10 +852,6 @@ class Browser extends DashboardView {
     }
     ClassPreferences.updatePreferences(preferences, this.context.applicationId, this.props.params.className);
     super.forceUpdate();
-  }
-
-  filterClicked(url) {
-    this.props.navigate(generatePath(this.context, url));
   }
 
   removeFilter(filter) {
@@ -1541,7 +1533,7 @@ class Browser extends DashboardView {
       allCategories.push(row);
     }
 
-    return <CategoryList current={current} linkPrefix={'browser/'} filterClicked={this.filterClicked} removeFilter={this.removeFilter} categories={allCategories} />;
+    return <CategoryList current={current} linkPrefix={'browser/'} filterClicked={(url) => this.props.navigate(generatePath(this.context, url))} removeFilter={(filter) => this.removeFilter(filter)} categories={allCategories} />;
   }
 
   showNote(message, isError) {
@@ -1658,7 +1650,7 @@ class Browser extends DashboardView {
             schema={this.props.schema}
             filters={this.state.filters}
             onFilterChange={this.updateFilters}
-            onFilterSave={this.saveFilters}
+            onFilterSave={(...args) => this.saveFilters(...args)}
             onRemoveColumn={this.showRemoveColumn}
             onDeleteRows={this.showDeleteRows}
             onDropClass={this.showDropClass}
