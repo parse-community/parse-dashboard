@@ -98,7 +98,7 @@ export default class CategoryList extends React.Component {
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
-                {c.filters.length !== 0 && (
+                {(c.filters || []).length !== 0 && (
                   <a
                     className={styles.expand}
                     onClick={(e) => this.toggleDropdown(e, id)}
