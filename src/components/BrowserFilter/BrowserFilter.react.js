@@ -33,7 +33,6 @@ export default class BrowserFilter extends React.Component {
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
     };
     this.toggle = this.toggle.bind(this);
-    this.save = this.save.bind(this);
     this.wrapRef = React.createRef();
   }
 
@@ -147,9 +146,9 @@ export default class BrowserFilter extends React.Component {
               {!this.state.confirmName && (
                 <div className={styles.footer}>
                   <Button color="white" value="Save" width="120px" onClick={() => this.setState({ confirmName: true })} />
-                  <Button color="white" value="Clear all" disabled={this.state.filters.size === 0} width="120px" onClick={this.clear.bind(this)} />
-                  <Button color="white" value="Add" disabled={Object.keys(available).length === 0} width="120px" onClick={this.addRow.bind(this)} />
-                  <Button color="white" primary={true} value="Apply" width="120px" onClick={this.apply.bind(this)} />
+                  <Button color="white" value="Clear all" disabled={this.state.filters.size === 0} width="120px" onClick={() => this.clear()} />
+                  <Button color="white" value="Add" disabled={Object.keys(available).length === 0} width="120px" onClick={() => this.addRow()} />
+                  <Button color="white" primary={true} value="Apply" width="120px" onClick={() => this.apply()} />
                 </div>
               )}
             </div>
