@@ -173,7 +173,7 @@ export default class BrowserFilter extends React.Component {
               />
               {this.state.confirmName && (
                 <Field
-                  label={<Label text="What should we this filter?" />}
+                  label={<Label text="Filter view name" />}
                   input={
                     <TextInput
                       placeholder="Give it a good name..."
