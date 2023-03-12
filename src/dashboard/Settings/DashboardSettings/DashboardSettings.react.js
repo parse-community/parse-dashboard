@@ -17,7 +17,7 @@ import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import bcrypt from 'bcryptjs';
-import * as OTPAuth from 'OTPAuth';
+import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
 
 export default class DashboardSettings extends DashboardView {
