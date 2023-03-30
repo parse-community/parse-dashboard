@@ -157,6 +157,7 @@ export default class BrowserTable extends React.Component {
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
                     showNote={this.props.showNote}
                     onRefresh={this.props.onRefresh}
+                    scripts={this.context.scripts}
                   />
                   <Button
                     value="Clone"
@@ -211,6 +212,7 @@ export default class BrowserTable extends React.Component {
               markRequiredFieldRow={this.props.markRequiredFieldRow}
               showNote={this.props.showNote}
               onRefresh={this.props.onRefresh}
+              scripts={this.context.scripts}
             />
             <Button
               value="Add"
@@ -270,6 +272,7 @@ export default class BrowserTable extends React.Component {
           onEditSelectedRow={this.props.onEditSelectedRow}
           showNote={this.props.showNote}
           onRefresh={this.props.onRefresh}
+          scripts={this.context.scripts}
           />
       }
 

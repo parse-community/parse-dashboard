@@ -15,9 +15,7 @@ import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import baseStyles                from 'stylesheets/base.scss';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
-import { CurrentApp }         from 'context/currentApp';
 export default class BrowserCell extends Component {
-  static contextType = CurrentApp;
   constructor() {
     super();
 
@@ -277,7 +275,7 @@ export default class BrowserCell extends Component {
       });
     }
 
-    const validScripts = (this.context.scripts || []).filter(script => script.classes?.includes(this.props.className));
+    const validScripts = (this.props.scripts || []).filter(script => script.classes?.includes(this.props.className));
     if (validScripts.length) {
       onEditSelectedRow && contextMenuOptions.push({
         text: 'Scripts',

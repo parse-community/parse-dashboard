@@ -103,6 +103,7 @@ export default class BrowserRow extends Component {
               onEditSelectedRow={onEditSelectedRow}
               showNote={this.props.showNote}
               onRefresh={this.props.onRefresh}
+              scripts={this.props.scripts}
               />
           );
         })}
