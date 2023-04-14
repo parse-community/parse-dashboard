@@ -857,7 +857,7 @@ class Browser extends DashboardView {
 
   getRelationURL() {
     const relation = this.state.relation;
-    const className = relation.parent.className;
+    const className = this.props.params.className;
     const entityId = relation.parent.id;
     const relationName = relation.key;
     return generatePath(this.context, `browser/${className}/${entityId}/${relationName}`);
