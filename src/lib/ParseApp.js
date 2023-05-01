@@ -532,10 +532,6 @@ export default class ParseApp {
   }
 
   getJobStatus() {
-    // Cache it for a 30s
-    if (new Date() - this.jobStatus.lastFetched < 30000) {
-      return Promise.resolve(this.jobStatus.status);
-    }
     let query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
     return query.find({ useMasterKey: true }).then((status) => {

@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: CI Node Engine Check
         run: npm run ci:checkNodeEngine
   check-lint:
@@ -47,11 +47,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - run: npm run lint
   check-circular:
      name: Circular Dependencies
-     timeout-minutes: 5
+     timeout-minutes: 15
      runs-on: ubuntu-latest
      steps:
       - uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Scan for circular dependencies
         run: npm run madge:circular
   check-docker:
@@ -143,12 +143,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
               ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-
-      - name: Install dependencies (Node < 10)
-        run: npm install
-        if: ${{ steps.node.outputs.node_major < 10 }}
-      - name: Install dependencies (Node >= 10)
+      - name: Install dependencies
         run: npm ci
-        if: ${{ steps.node.outputs.node_major >= 10 }}
       - name: Tests
         run: npm test
       - name: Test bundles

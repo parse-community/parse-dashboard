@@ -1,3 +1,88 @@
+# [5.1.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.9...5.1.0-alpha.10) (2023-02-13)
+
+
+### Bug Fixes
+
+* Data browser dialog "No data to display" may be outside of visible area in Safari browser ([#2387](https://github.com/ParsePlatform/parse-dashboard/issues/2387)) ([52bba62](https://github.com/ParsePlatform/parse-dashboard/commit/52bba6246cd05c255ca562dcb32da5b104f9908e))
+
+# [5.1.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.8...5.1.0-alpha.9) (2023-02-11)
+
+
+### Bug Fixes
+
+* Screen goes blank when trying to add column of type `Object` or `GeoPoint` ([#2384](https://github.com/ParsePlatform/parse-dashboard/issues/2384)) ([0886386](https://github.com/ParsePlatform/parse-dashboard/commit/08863868b90455116232b2b73a39391ba990c30c))
+
+# [5.1.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.7...5.1.0-alpha.8) (2023-01-29)
+
+
+### Bug Fixes
+
+* Internal error message on login with missing credential ([#2370](https://github.com/ParsePlatform/parse-dashboard/issues/2370)) ([9a6a31f](https://github.com/ParsePlatform/parse-dashboard/commit/9a6a31f7d45d1402bfc3a988bef21c4a5bb1b123))
+
+# [5.1.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.6...5.1.0-alpha.7) (2023-01-28)
+
+
+### Bug Fixes
+
+* Dashboard may display blank page when selecting an app after login ([#2375](https://github.com/ParsePlatform/parse-dashboard/issues/2375)) ([f399b91](https://github.com/ParsePlatform/parse-dashboard/commit/f399b913490f15a0d3be8dde7242dd0b825fa02e))
+
+# [5.1.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.5...5.1.0-alpha.6) (2023-01-25)
+
+
+### Bug Fixes
+
+* Navigation to page fails if user re-login is required ([#2369](https://github.com/ParsePlatform/parse-dashboard/issues/2369)) ([0db6f55](https://github.com/ParsePlatform/parse-dashboard/commit/0db6f5559f9b7bb1f5a282c6182810ca89945032))
+
+# [5.1.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.4...5.1.0-alpha.5) (2023-01-25)
+
+
+### Features
+
+* Add export all rows of a class and export in JSON format ([#2361](https://github.com/ParsePlatform/parse-dashboard/issues/2361)) ([9eb36a1](https://github.com/ParsePlatform/parse-dashboard/commit/9eb36a183b8b337960f6e8563ad686958001a22b))
+
+# [5.1.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.3...5.1.0-alpha.4) (2023-01-25)
+
+
+### Bug Fixes
+
+* Add dashboard option `cookieSessionMaxAge` to keep user logged in across browser sessions ([#2366](https://github.com/ParsePlatform/parse-dashboard/issues/2366)) ([9ea95fc](https://github.com/ParsePlatform/parse-dashboard/commit/9ea95fc62103b52cf4fac1d1b567334b5298b318))
+
+# [5.1.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.2...5.1.0-alpha.3) (2023-01-20)
+
+
+### Features
+
+* Add schema export ([#2362](https://github.com/ParsePlatform/parse-dashboard/issues/2362)) ([33df049](https://github.com/ParsePlatform/parse-dashboard/commit/33df0495a02c4e77f48b3566032bf5686227cce7))
+
+# [5.1.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.1...5.1.0-alpha.2) (2023-01-20)
+
+
+### Bug Fixes
+
+* Blank screen shown if server is unreachable; unsupported pages are accessible via direct URLs ([#2363](https://github.com/ParsePlatform/parse-dashboard/issues/2363)) ([9855258](https://github.com/ParsePlatform/parse-dashboard/commit/98552584df4d8d75d65d3e394b4acad522117a96))
+
+# [5.1.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0...5.1.0-alpha.1) (2022-11-05)
+
+
+### Bug Fixes
+
+* Text selection not visible in modal dialog header ([#2340](https://github.com/ParsePlatform/parse-dashboard/issues/2340)) ([fb0e79c](https://github.com/ParsePlatform/parse-dashboard/commit/fb0e79c0837c3acce27524e798e02da667cbc5a3))
+
+### Features
+
+* remove limitation to refresh Cloud Jobs list only after 30 seconds ([#2332](https://github.com/ParsePlatform/parse-dashboard/issues/2332)) ([ad1132f](https://github.com/ParsePlatform/parse-dashboard/commit/ad1132fb13e854a030e769fdf7689f35d363031d))
+
+# [5.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.7...5.0.0-alpha.8) (2022-10-24)
+
+
+### Bug Fixes
+
+* login fails with error `req.session.regenerate is not a function` ([#2196](https://github.com/ParsePlatform/parse-dashboard/issues/2196)) ([a71848c](https://github.com/ParsePlatform/parse-dashboard/commit/a71848ce44fa19e579f9731bab50a7244ab89b11))
+
+### Features
+
+* remove limitation to refresh Cloud Jobs list only after 30 seconds ([#2332](https://github.com/ParsePlatform/parse-dashboard/issues/2332)) ([ad1132f](https://github.com/ParsePlatform/parse-dashboard/commit/ad1132fb13e854a030e769fdf7689f35d363031d))
+
 # [5.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.0.0-alpha.6...5.0.0-alpha.7) (2022-10-17)
 
 
