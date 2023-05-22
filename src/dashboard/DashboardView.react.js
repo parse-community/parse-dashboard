@@ -198,7 +198,10 @@ export default class DashboardView extends React.Component {
     }
     */
 
-    let settingsSections = [];
+    const settingsSections = [{
+      name: 'Dashboard',
+      link: '/settings/dashboard'
+    }];
 
     // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
     /*
@@ -292,7 +295,7 @@ export default class DashboardView extends React.Component {
     );
 
     let content = <div className={styles.content}>{this.renderContent()}</div>;
-    const canRoute = [...coreSubsections, ...pushSubsections]
+    const canRoute = [...coreSubsections, ...pushSubsections, ...settingsSections]
       .map(({ link }) => link.split('/')[1])
       .includes(this.state.route);
 
