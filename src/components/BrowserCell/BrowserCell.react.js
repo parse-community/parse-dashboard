@@ -285,8 +285,8 @@ export default class BrowserCell extends Component {
             callback: async () => {
               try {
                 const object = Parse.Object.extend(this.props.className).createWithoutData(this.props.objectId);
-                await Parse.Cloud.run(script.cloudCodeFunction, {object: object.toPointer()}, {useMasterKey: true});
-                this.props.showNote(`${script.title} ran with object ${object.id}}`);
+                const response = await Parse.Cloud.run(script.cloudCodeFunction, {object: object.toPointer()}, {useMasterKey: true});
+                this.props.showNote(response || `${script.title} ran with object ${object.id}}`);
                 this.props.onRefresh();
               } catch (e) {
                 this.props.showNote(e.message, true);
