@@ -42,6 +42,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Other Configuration Options](#other-configuration-options)
     - [Prevent columns sorting](#prevent-columns-sorting)
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
+    - [Custom Cloud Code scripts](#custom-cloud-code-scripts)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -329,11 +330,68 @@ If you have classes with a lot of columns and you filter them often with the sam
           {
             "name": "email",
             "filterSortToTop": true
-          }          
+          }
         ]
       }
     }
 ]
+```
+
+### Custom Cloud Code scripts
+
+You can specify custom cloud code scripts with the `scripts` option:
+
+
+```json
+"apps": [
+  {
+    "scripts": [
+      {
+        "title": "Delete Account",
+        "classes": ["_User"],
+        "cloudCodeFunction": "deleteAccount"
+      }
+    ]
+  }
+]
+```
+
+Next, define a cloud function within the connected Parse Server.
+
+**Parse Server 2.1.4 > 4.4.0**
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (!req.master || !req.params.object) {
+    throw 'Unauthorized';
+  }
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+});
+```
+
+**Parse Server 4.4.0 > 6.2.0**
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+**Parse Server 6.2.0+**
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
 ```
 
 # Running as Express Middleware
@@ -452,7 +510,7 @@ With MFA enabled, a user must provide a one-time password that is typically boun
 
 The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
 
-If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, 
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user,
 run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
 
 ```json
