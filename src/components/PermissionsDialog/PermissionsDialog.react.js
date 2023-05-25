@@ -971,7 +971,21 @@ export default class PermissionsDialog extends React.Component {
     return output;
   }
 
+  urlForKey(key) {
+    let isRole = key.startsWith('role:')
+    let className = isRole ? '_Role' : '_User';
+    let field = isRole ? 'name' : 'objectId';
+    let value = isRole ? key.replace('role:', '') : key
+    let filters = JSON.stringify([{
+      field,
+      constraint: 'eq',
+      compareTo: value
+    }]);
+    return window.location.href.split('browser/')[0] + `browser/${className}?filters=${encodeURIComponent(filters)}`;
+  }
+
   renderRow(key, columns, types) {
+
     const pill = text => (
       <span className={styles.pillType}>
         <Pill value={text} />
@@ -982,14 +996,16 @@ export default class PermissionsDialog extends React.Component {
     const type = (types && types.get(key)) || {};
 
     let pointer = this.state.pointerPerms.has(key);
-    let label = <span>{key}</span>;
+    let label = <span><a target="_blank" href={this.urlForKey(key)} >{key}</a></span>;
 
     if (type.user) {
       label = (
         <span>
           <p>
             <span>
-              <span className={styles.selectable}>{type.user.id}</span>
+              <span className={styles.selectable}>
+                <a target="_blank" href={this.urlForKey(key)} >{type.user.id}</a>
+              </span>
               {pill('User')}
             </span>
           </p>
@@ -1005,7 +1021,7 @@ export default class PermissionsDialog extends React.Component {
           <p>
             <span>
               <span className={styles.prefix}>{'role:'}</span>
-              {type.role.name}
+                <a target="_blank" href={this.urlForKey(key)} >{type.role.name}</a>
             </span>
           </p>
           <p className={styles.hint}>
