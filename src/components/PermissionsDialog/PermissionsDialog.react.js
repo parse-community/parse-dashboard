@@ -20,6 +20,8 @@ import Toggle           from 'components/Toggle/Toggle.react';
 import Autocomplete     from 'components/Autocomplete/Autocomplete.react';
 import { Map, fromJS }  from 'immutable';
 import TrackVisibility  from 'components/TrackVisibility/TrackVisibility.react';
+import {CurrentApp} from '../../context/currentApp';
+import generatePath from '../../lib/generatePath';
 
 let origin = new Position(0, 0);
 
@@ -517,6 +519,8 @@ function renderPointerCheckboxes(
 
 const intersectionMargin = '10px 0px 0px 20px';
 export default class PermissionsDialog extends React.Component {
+  static contextType = CurrentApp;
+
   constructor(props) {
     super(props);
 
@@ -989,7 +993,7 @@ export default class PermissionsDialog extends React.Component {
       constraint: 'eq',
       compareTo: value
     }]);
-    return window.location.href.split('browser/')[0] + `browser/${className}?filters=${encodeURIComponent(filters)}`;
+    return generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`);
   }
 
   renderRow(key, columns, types) {
