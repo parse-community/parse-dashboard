@@ -647,7 +647,15 @@ export default class PermissionsDialog extends React.Component {
       let key;
       let value = {};
 
-      if (type === 'user') {
+      if(typeof entry === 'string') {
+        key = type + ':' + entry;
+        value[type] = {
+          name: entry,
+          id: undefined
+        };
+      }
+
+      else if (type === 'user') {
         key = entry.id;
         value[type] = {
           name: entry.get('username'),
@@ -655,7 +663,7 @@ export default class PermissionsDialog extends React.Component {
         };
       }
 
-      if (type === 'role') {
+      else if (type === 'role') {
         key = 'role:' + entry.getName();
         value[type] = {
           name: entry.getName(),
@@ -663,7 +671,7 @@ export default class PermissionsDialog extends React.Component {
         };
       }
 
-      if (type === 'pointer') {
+      else if (type === 'pointer') {
         key = entry;
         value[type] = true;
       }
@@ -1010,8 +1018,7 @@ export default class PermissionsDialog extends React.Component {
             </span>
           </p>
           <p className={styles.hint}>
-            {'username: '}
-            <span className={styles.selectable}>{type.user.name}</span>
+            username: <span className={styles.selectable} style={{color:type.user.name ? undefined : '#f00'}}>{type.user.name ?? 'USER NOT FOUND'}</span>
           </p>
         </span>
       );
@@ -1025,7 +1032,7 @@ export default class PermissionsDialog extends React.Component {
             </span>
           </p>
           <p className={styles.hint}>
-            id: <span className={styles.selectable}>{type.role.id}</span>
+            id: <span className={styles.selectable} style={{color:type.role.id ? undefined : '#f00'}}>{type.role.id ?? 'ROLE NOT FOUND'}</span>
           </p>
         </span>
       );
