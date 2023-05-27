@@ -1,3 +1,17 @@
+# [5.2.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.3...5.2.0-alpha.4) (2023-05-27)
+
+
+### Bug Fixes
+
+* Incorrect date picker position in data browser filter dialog ([#2425](https://github.com/ParsePlatform/parse-dashboard/issues/2425)) ([b96b48f](https://github.com/ParsePlatform/parse-dashboard/commit/b96b48fdd5ce452783e0887c36231971a1822173))
+
+# [5.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.2...5.2.0-alpha.3) (2023-05-27)
+
+
+### Bug Fixes
+
+* Empty table in data browser when navigating back using the "back” button ([#2423](https://github.com/ParsePlatform/parse-dashboard/issues/2423)) ([6f3dab6](https://github.com/ParsePlatform/parse-dashboard/commit/6f3dab60c257c76345235acfd3e43aafadeb84c8))
+
 # [5.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.1...5.2.0-alpha.2) (2023-05-27)
 
 
