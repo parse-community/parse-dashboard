@@ -1,3 +1,10 @@
+# [5.2.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.6...5.2.0-alpha.7) (2023-05-27)
+
+
+### Bug Fixes
+
+* File uploading status not updating in data browser ([#2422](https://github.com/ParsePlatform/parse-dashboard/issues/2422)) ([e761f97](https://github.com/ParsePlatform/parse-dashboard/commit/e761f9715a8366466c6620994ce698adbbfc48cd))
+
 # [5.2.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.5...5.2.0-alpha.6) (2023-05-27)
 
 
