@@ -1,3 +1,10 @@
+# [5.2.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.7...5.2.0-alpha.8) (2023-05-27)
+
+
+### Bug Fixes
+
+* Cannot navigate to nested relation field in data browser ([#2420](https://github.com/ParsePlatform/parse-dashboard/issues/2420)) ([e7ace9e](https://github.com/ParsePlatform/parse-dashboard/commit/e7ace9efa068b92c5cf0e5ccdad169ac7d71e81a))
+
 # [5.2.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.6...5.2.0-alpha.7) (2023-05-27)
 
 
