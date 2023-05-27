@@ -92,7 +92,7 @@ export default class BrowserCell extends Component {
       this.copyableValue = this.props.value.id;
     }
     else if (this.props.type === 'Array') {
-      if ( this.props.value[0] && typeof this.props.value[0] === 'object' && this.props.value[0].__type === 'Pointer' ) {
+      if ( this.props.value[0] && typeof this.props.value[0] === 'object' && this.props.value[0].__type === 'Pointer' && typeof this.props.onPointerClick === 'function' ) {
         const array = [];
         this.props.value.map( (v, i) => {
           if ( typeof v !== 'object' || v.__type !== 'Pointer' ) {
