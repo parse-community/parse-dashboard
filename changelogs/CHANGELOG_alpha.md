@@ -1,3 +1,10 @@
+# [5.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.2...5.2.0-alpha.3) (2023-05-27)
+
+
+### Bug Fixes
+
+* Empty table in data browser when navigating back using the "back” button ([#2423](https://github.com/ParsePlatform/parse-dashboard/issues/2423)) ([6f3dab6](https://github.com/ParsePlatform/parse-dashboard/commit/6f3dab60c257c76345235acfd3e43aafadeb84c8))
+
 # [5.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.1...5.2.0-alpha.2) (2023-05-27)
 
 
