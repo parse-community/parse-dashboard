@@ -177,6 +177,9 @@ export default class BrowserCell extends Component {
   componentDidUpdate(prevProps) {
     if ( this.props.value !== prevProps.value ) {
       this.renderCellContent();
+      this.props.value._previousSave
+        ?.then(() => this.renderCellContent())
+        ?.catch(err => console.log(err))
     }
     if (this.props.current) {
       const node = this.cellRef.current;
