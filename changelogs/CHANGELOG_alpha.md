@@ -1,3 +1,10 @@
+# [5.2.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.4...5.2.0-alpha.5) (2023-05-27)
+
+
+### Bug Fixes
+
+* Back button in data browser disappears after page refresh ([#2421](https://github.com/ParsePlatform/parse-dashboard/issues/2421)) ([6c5f19f](https://github.com/ParsePlatform/parse-dashboard/commit/6c5f19f6ed2cda1f1f0dc59bdaed3ae49f264380))
+
 # [5.2.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.3...5.2.0-alpha.4) (2023-05-27)
 
 
