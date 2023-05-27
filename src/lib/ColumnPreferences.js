@@ -45,6 +45,23 @@ export function getPreferences(appId, className) {
   }
 }
 
+export function getAllPreferences(appId) {
+  const storageKeys = Object.keys(localStorage);
+  const result = {};
+  for (const key of storageKeys) {
+    const split = key.split(':')
+    if (split.length <= 1) {
+      continue;
+    }
+    const className = split.at(-1);
+    const preferences = getPreferences(appId, className);
+    if (preferences) {
+      result[className] = preferences;
+    }
+  }
+  return result;
+}
+
 export function getColumnSort(sortBy, appId, className) {
   let cachedSort = getPreferences(appId, COLUMN_SORT) || [ { name: className, value: DEFAULT_COLUMN_SORT } ];
   let ordering = [].concat(cachedSort);
@@ -74,7 +91,7 @@ export function getColumnSort(sortBy, appId, className) {
 export function getOrder(cols, appId, className, defaultPrefs) {
 
   let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true } ];
-  
+
   if (defaultPrefs) {
 
     // Check that every default pref is in the prefs array.
@@ -85,7 +102,7 @@ export function getOrder(cols, appId, className, defaultPrefs) {
       }
     });
 
-    // Iterate over the current prefs 
+    // Iterate over the current prefs
     prefs = prefs.map((prefsItem) => {
       // Get the default prefs item.
       const defaultPrefsItem = defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
