@@ -1022,7 +1022,7 @@ export default class PermissionsDialog extends React.Component {
             </span>
           </p>
           <p className={styles.hint}>
-            username: <span className={styles.selectable} style={{color:type.user.name ? undefined : '#f00'}}>{type.user.name ?? 'USER NOT FOUND'}</span>
+            username: <span className={styles.selectable} style={{color:type.user.name ? undefined : '#f00'}}>{type.user.name ?? 'user not found'}</span>
           </p>
         </span>
       );
@@ -1036,7 +1036,7 @@ export default class PermissionsDialog extends React.Component {
             </span>
           </p>
           <p className={styles.hint}>
-            id: <span className={styles.selectable} style={{color:type.role.id ? undefined : '#f00'}}>{type.role.id ?? 'ROLE NOT FOUND'}</span>
+            id: <span className={styles.selectable} style={{color:type.role.id ? undefined : '#f00'}}>{type.role.id ?? 'role not found'}</span>
           </p>
         </span>
       );
