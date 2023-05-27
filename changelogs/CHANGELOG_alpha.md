@@ -1,3 +1,10 @@
+# [5.2.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.8...5.2.0-alpha.9) (2023-05-27)
+
+
+### Bug Fixes
+
+* Dashboard crashes when adding a row with modal in a class that contains a pointer to another class that contains an array of pointers ([#2416](https://github.com/ParsePlatform/parse-dashboard/issues/2416)) ([286269f](https://github.com/ParsePlatform/parse-dashboard/commit/286269f3e2c4e1c83b14003ce72caaf1f39b16c1))
+
 # [5.2.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.7...5.2.0-alpha.8) (2023-05-27)
 
 
