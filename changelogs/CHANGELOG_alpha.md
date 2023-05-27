@@ -1,3 +1,23 @@
+# [5.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.1...5.2.0-alpha.2) (2023-05-27)
+
+
+### Features
+
+* Add links to users and roles in ACL dialog and handle invalid entries ([#2436](https://github.com/ParsePlatform/parse-dashboard/issues/2436)) ([a20cb8e](https://github.com/ParsePlatform/parse-dashboard/commit/a20cb8e534d3fecd8d337463864b15048772a9a5))
+
+# [5.2.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0...5.2.0-alpha.1) (2023-05-21)
+
+
+### Bug Fixes
+
+* Uncaught error when editing Number field in Edit Row dialog ([#2401](https://github.com/ParsePlatform/parse-dashboard/issues/2401)) ([26bd6fa](https://github.com/ParsePlatform/parse-dashboard/commit/26bd6fa39be1076621856a9c86dcd1307f8f7fdd))
+
+### Features
+
+* Add visual configurator for Parse Dashboard settings ([#2406](https://github.com/ParsePlatform/parse-dashboard/issues/2406)) ([228d839](https://github.com/ParsePlatform/parse-dashboard/commit/228d83903fd8698da7b96a5b74699f3ff2d5dad4))
+* Data types and pointer classes are sorted alphabetically in dialog to add new column ([#2400](https://github.com/ParsePlatform/parse-dashboard/issues/2400)) ([d9d285b](https://github.com/ParsePlatform/parse-dashboard/commit/d9d285b7f90434d3bb138c2c765272498e3f09c3))
+* Sort Cloud Code Jobs alphabetically ([#2402](https://github.com/ParsePlatform/parse-dashboard/issues/2402)) ([77fc372](https://github.com/ParsePlatform/parse-dashboard/commit/77fc372bedb9fb4eca728c1bc076e823c5bc3a2c))
+
 # [5.1.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0-alpha.12...5.1.0-alpha.13) (2023-03-07)
 
 
