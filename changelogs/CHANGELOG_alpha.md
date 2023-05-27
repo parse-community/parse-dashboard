@@ -1,3 +1,10 @@
+# [5.2.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.5...5.2.0-alpha.6) (2023-05-27)
+
+
+### Bug Fixes
+
+* Text input cursor jumps to first position when writing long text ([#2413](https://github.com/ParsePlatform/parse-dashboard/issues/2413)) ([422ffb2](https://github.com/ParsePlatform/parse-dashboard/commit/422ffb2897bb2664eb47b5aaad5094a8b39431bf))
+
 # [5.2.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.4...5.2.0-alpha.5) (2023-05-27)
 
 
