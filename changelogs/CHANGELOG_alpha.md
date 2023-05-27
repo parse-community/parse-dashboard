@@ -1,3 +1,10 @@
+# [5.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.1...5.2.0-alpha.2) (2023-05-27)
+
+
+### Features
+
+* Add links to users and roles in ACL dialog and handle invalid entries ([#2436](https://github.com/ParsePlatform/parse-dashboard/issues/2436)) ([a20cb8e](https://github.com/ParsePlatform/parse-dashboard/commit/a20cb8e534d3fecd8d337463864b15048772a9a5))
+
 # [5.2.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.1.0...5.2.0-alpha.1) (2023-05-21)
 
 
