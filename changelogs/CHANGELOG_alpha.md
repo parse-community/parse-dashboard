@@ -1,3 +1,10 @@
+# [5.2.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.9...5.2.0-alpha.10) (2023-06-01)
+
+
+### Bug Fixes
+
+* Option missing for Parse Config parameter to require master key ([#2440](https://github.com/ParsePlatform/parse-dashboard/issues/2440)) ([6623369](https://github.com/ParsePlatform/parse-dashboard/commit/66233698b333422f306dc7024949aef2ea028f34))
+
 # [5.2.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.8...5.2.0-alpha.9) (2023-05-27)
 
 
