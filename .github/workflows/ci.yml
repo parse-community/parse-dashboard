@@ -151,3 +151,6 @@ jobs:
         run: ./scripts/before_script.sh
         env:
           CI: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
