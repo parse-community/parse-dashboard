@@ -1,3 +1,10 @@
+# [5.2.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.10...5.2.0-alpha.11) (2023-06-08)
+
+
+### Bug Fixes
+
+* Scroll position is preserved when re-opening the same class in data browser via navigation bar ([#2445](https://github.com/ParsePlatform/parse-dashboard/issues/2445)) ([667675c](https://github.com/ParsePlatform/parse-dashboard/commit/667675c031b0483be210a88da3b159f5f815d6fb))
+
 # [5.2.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.9...5.2.0-alpha.10) (2023-06-01)
 
 
