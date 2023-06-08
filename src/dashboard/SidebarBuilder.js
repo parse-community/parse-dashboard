@@ -5,8 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
-import Sidebar        from 'components/Sidebar/Sidebar.react';
+import React from 'react';
+import Sidebar from 'components/Sidebar/Sidebar.react';
+import { Translation } from 'react-i18next';
 
 let accountSidebarSections = [
   {
@@ -25,11 +26,19 @@ export function buildAccountSidebar(options) {
     section,
     subsection
   } = options;
+
   return (
-    <Sidebar
-      sections={accountSidebarSections}
-      section={section}
-      subsection={subsection}
-      prefix={''} />
+    <Translation>{
+      t =>
+        <Sidebar
+          sections={accountSidebarSections.map(function (value) {
+            value["name"] = t(value["name"]);
+            return value;
+          })}
+          section={section}
+          subsection={subsection}
+          prefix={''} />
+    }
+    </Translation>
   );
 }

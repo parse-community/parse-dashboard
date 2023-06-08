@@ -7,15 +7,21 @@
  */
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import Immutable       from 'immutable';
+import Immutable from 'immutable';
 import installDevTools from 'immutable-devtools';
-import React           from 'react';
-import ReactDOM        from 'react-dom';
-import Dashboard       from './Dashboard';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Dashboard from './Dashboard';
+
+import './i18n';
+import { useTranslation } from 'react-i18next';
 
 require('stylesheets/fonts.scss');
 require('graphiql/graphiql.min.css')
 installDevTools(Immutable);
 
 var path = window.PARSE_DASHBOARD_PATH || '/';
-ReactDOM.render(<Dashboard path={path}/>, document.getElementById('browser_mount'));
+ReactDOM.render(<Dashboard path={path} />, document.getElementById('browser_mount'));
+
+const { t } = useTranslation();
+global.t = t;

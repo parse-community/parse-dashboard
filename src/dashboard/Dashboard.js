@@ -5,53 +5,55 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AccountOverview    from './Account/AccountOverview.react';
-import AccountView        from './AccountView.react';
-import AnalyticsOverview  from './Analytics/Overview/Overview.react';
-import ApiConsole         from './Data/ApiConsole/ApiConsole.react';
-import AppData            from './AppData.react';
-import AppsIndex          from './Apps/AppsIndex.react';
-import AppsManager        from 'lib/AppsManager';
-import Browser            from './Data/Browser/Browser.react';
-import CloudCode          from './Data/CloudCode/CloudCode.react';
-import Config             from './Data/Config/Config.react';
-import Explorer           from './Analytics/Explorer/Explorer.react';
-import FourOhFour         from 'components/FourOhFour/FourOhFour.react';
-import GeneralSettings    from './Settings/GeneralSettings.react';
-import GraphQLConsole     from './Data/ApiConsole/GraphQLConsole.react';
-import HostingSettings    from './Settings/HostingSettings.react';
-import Icon               from 'components/Icon/Icon.react';
-import JobEdit            from 'dashboard/Data/Jobs/JobEdit.react';
-import Jobs               from './Data/Jobs/Jobs.react';
-import JobsData           from 'dashboard/Data/Jobs/JobsData.react';
-import Loader             from 'components/Loader/Loader.react';
-import Logs               from './Data/Logs/Logs.react';
-import Migration          from './Data/Migration/Migration.react';
-import ParseApp           from 'lib/ParseApp';
-import Performance        from './Analytics/Performance/Performance.react';
+import AccountOverview from './Account/AccountOverview.react';
+import AccountView from './AccountView.react';
+import AnalyticsOverview from './Analytics/Overview/Overview.react';
+import ApiConsole from './Data/ApiConsole/ApiConsole.react';
+import AppData from './AppData.react';
+import AppsIndex from './Apps/AppsIndex.react';
+import AppsManager from 'lib/AppsManager';
+import Browser from './Data/Browser/Browser.react';
+import CloudCode from './Data/CloudCode/CloudCode.react';
+import Config from './Data/Config/Config.react';
+import Explorer from './Analytics/Explorer/Explorer.react';
+import FourOhFour from 'components/FourOhFour/FourOhFour.react';
+import GeneralSettings from './Settings/GeneralSettings.react';
+import GraphQLConsole from './Data/ApiConsole/GraphQLConsole.react';
+import HostingSettings from './Settings/HostingSettings.react';
+import Icon from 'components/Icon/Icon.react';
+import JobEdit from 'dashboard/Data/Jobs/JobEdit.react';
+import Jobs from './Data/Jobs/Jobs.react';
+import JobsData from 'dashboard/Data/Jobs/JobsData.react';
+import Loader from 'components/Loader/Loader.react';
+import Logs from './Data/Logs/Logs.react';
+import Migration from './Data/Migration/Migration.react';
+import ParseApp from 'lib/ParseApp';
+import Performance from './Analytics/Performance/Performance.react';
 import PushAudiencesIndex from './Push/PushAudiencesIndex.react';
-import PushDetails        from './Push/PushDetails.react';
-import PushIndex          from './Push/PushIndex.react';
-import PushNew            from './Push/PushNew.react';
-import PushSettings       from './Settings/PushSettings.react';
-import React              from 'react';
-import RestConsole        from './Data/ApiConsole/RestConsole.react';
-import Retention          from './Analytics/Retention/Retention.react';
-import SchemaOverview     from './Data/Browser/SchemaOverview.react';
-import SecuritySettings   from './Settings/SecuritySettings.react';
-import SettingsData       from './Settings/SettingsData.react';
-import SlowQueries        from './Analytics/SlowQueries/SlowQueries.react';
-import styles             from 'dashboard/Apps/AppsIndex.scss';
-import UsersSettings      from './Settings/UsersSettings.react';
-import Webhooks           from './Data/Webhooks/Webhooks.react';
-import { AsyncStatus }    from 'lib/Constants';
-import baseStyles         from 'stylesheets/base.scss';
-import { get }            from 'lib/AJAX';
-import { setBasePath }    from 'lib/AJAX';
+import PushDetails from './Push/PushDetails.react';
+import PushIndex from './Push/PushIndex.react';
+import PushNew from './Push/PushNew.react';
+import PushSettings from './Settings/PushSettings.react';
+import React from 'react';
+import RestConsole from './Data/ApiConsole/RestConsole.react';
+import Retention from './Analytics/Retention/Retention.react';
+import SchemaOverview from './Data/Browser/SchemaOverview.react';
+import SecuritySettings from './Settings/SecuritySettings.react';
+import SettingsData from './Settings/SettingsData.react';
+import SlowQueries from './Analytics/SlowQueries/SlowQueries.react';
+import styles from 'dashboard/Apps/AppsIndex.scss';
+import UsersSettings from './Settings/UsersSettings.react';
+import Webhooks from './Data/Webhooks/Webhooks.react';
+import { AsyncStatus } from 'lib/Constants';
+import baseStyles from 'stylesheets/base.scss';
+import { get } from 'lib/AJAX';
+import { setBasePath } from 'lib/AJAX';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
+
+import { Translation } from 'react-i18next';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -62,10 +64,10 @@ class Empty extends React.Component {
 }
 
 const AccountSettingsPage = () => (
-    <AccountView section='Account Settings'>
-      <AccountOverview />
-    </AccountView>
-  );
+  <AccountView section='Account Settings'>
+    <AccountOverview />
+  </AccountView>
+);
 
 const PARSE_DOT_COM_SERVER_INFO = {
   features: {
@@ -162,7 +164,7 @@ export default class Dashboard extends React.Component {
         }
       });
       return Promise.all(appInfoPromises);
-    }).then(function(resolvedApps) {
+    }).then(function (resolvedApps) {
       resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
@@ -177,7 +179,7 @@ export default class Dashboard extends React.Component {
 
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
-      return <div className={baseStyles.center}><Loader/></div>;
+      return <div className={baseStyles.center}><Loader /></div>;
     }
 
     if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
@@ -193,9 +195,12 @@ export default class Dashboard extends React.Component {
     }
 
     const AppsIndexPage = () => (
-      <AccountView section='Your Apps'>
-        <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
-      </AccountView>
+      <Translation>
+        {t =>
+          <AccountView section={t('Your Apps')}>
+            <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion} />
+          </AccountView>}
+      </Translation>
     );
 
     const SettingsRoute = (
