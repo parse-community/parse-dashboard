@@ -42,7 +42,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Other Configuration Options](#other-configuration-options)
     - [Prevent columns sorting](#prevent-columns-sorting)
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
-    - [Custom Cloud Code scripts](#custom-cloud-code-scripts)
+    - [Scripts](#scripts)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
