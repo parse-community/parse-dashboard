@@ -16,10 +16,10 @@ import React from 'react';
 import styles from 'dashboard/Apps/AppsIndex.scss';
 import baseStyles from 'stylesheets/base.scss';
 import AppBadge from 'components/AppBadge/AppBadge.react';
-import { withRouter } from 'lib/withRouter';
-import { useNavigate } from 'react-router-dom';
+import {withRouter} from 'lib/withRouter';
+import {useNavigate} from 'react-router-dom';
 
-import { Translation, useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 function dash(value, content) {
   if (value === undefined) {
@@ -30,25 +30,26 @@ function dash(value, content) {
   }
   return content;
 }
+
 /* eslint-disable no-unused-vars */
-let CloningNote = ({ app, clone_status, clone_progress }) => {
+let CloningNote = ({app, clone_status, clone_progress}) => {
   /* eslint-enable */
   if (clone_status === 'failed') {
     //TODO: add a way to delete failed clones, like in old dash
     return <div>Clone failed</div>
   }
   let progress = <LiveReload
-    initialData={[{ appId: app.applicationId, progress: clone_progress }]}
+    initialData={[{appId: app.applicationId, progress: clone_progress}]}
     source='/apps/cloning_progress'
     render={data => {
-      let currentAppProgress = data.find(({ appId }) => appId === app.applicationId);
+      let currentAppProgress = data.find(({appId}) => appId === app.applicationId);
       let progressStr = currentAppProgress ? currentAppProgress.progress.toString() : '0';
       return <span>{progressStr}</span>;
-    }} />
+    }}/>
   return <div>Cloning is {progress}% complete</div>
 };
 
-let CountsSection = ({ className, title, children }) =>
+let CountsSection = ({className, title, children}) =>
   <div className={className}>
     <div className={styles.section}>{title}</div>
     {children}
@@ -68,7 +69,7 @@ let AppCard = ({
                  icon,
                }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   let canBrowse = app.serverInfo.error ? null : () => navigate(html`/apps/${app.slug}/browser`);
   let versionMessage = app.serverInfo.error ?
@@ -78,18 +79,18 @@ let AppCard = ({
       {t('Server version')}: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>
     </div>;
 
-  return <li onClick={canBrowse} style={{ background: app.primaryBackgroundColor }}>
+  return <li onClick={canBrowse} style={{background: app.primaryBackgroundColor}}>
     <a className={styles.icon}>
-      {icon ? <img src={'appicons/' + icon} width={56} height={56} /> : <Icon width={56} height={56} name='blank-app-outline' fill='#1E384D' />}
+      {icon ? <img src={'appicons/' + icon} width={56} height={56}/> : <Icon width={56} height={56} name='blank-app-outline' fill='#1E384D'/>}
     </a>
     <div className={styles.details}>
       <a className={styles.appname}>{app.name}</a>
       {versionMessage}
     </div>
     <CountsSection className={styles.glance} title={t('At a glance')}>
-      <AppBadge production={app.production} />
-      <Metric number={dash(app.users, prettyNumber(app.users))} label={t('total users')} />
-      <Metric number={dash(app.installations, prettyNumber(app.installations))} label={t('total installations')} />
+      <AppBadge production={app.production}/>
+      <Metric number={dash(app.users, prettyNumber(app.users))} label={t('total users')}/>
+      <Metric number={dash(app.installations, prettyNumber(app.installations))} label={t('total installations')}/>
     </CountsSection>
   </li>
 }
@@ -98,7 +99,7 @@ let AppCard = ({
 class AppsIndex extends React.Component {
   constructor() {
     super();
-    this.state = { search: '' };
+    this.state = {search: ''};
     this.focusField = this.focusField.bind(this);
     this.searchRef = React.createRef();
   }
@@ -120,7 +121,7 @@ class AppsIndex extends React.Component {
   }
 
   updateSearch(e) {
-    this.setState({ search: e.target.value });
+    this.setState({search: e.target.value});
   }
 
   focusField() {
@@ -137,7 +138,7 @@ class AppsIndex extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
+              <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d'/>
             </div>
             <div className={styles.alert}>You don't have any apps</div>
           </div>
@@ -154,29 +155,26 @@ class AppsIndex extends React.Component {
       </FlowFooter>
     }
 
-    return (<Translation>
-        {
-          t => <div className={styles.index}>
-            <div className={styles.header}>
-              <Icon width={18} height={18} name='search-outline' fill='#788c97' />
-              <input
-                ref={this.searchRef}
-                className={styles.search}
-                onChange={this.updateSearch.bind(this)}
-                value={this.state.search}
-                placeholder={t('Start typing to filter')} />
-            </div>
-            <ul className={styles.apps}>
-              {apps.map(app =>
-                app.name.toLowerCase().indexOf(search) > -1 ?
-                  <AppCard key={app.slug} app={app} icon={app.icon ? app.icon : null} /> :
-                  null
-              )}
-            </ul>
-            {upgradePrompt}
-          </div>
-        }
-      </Translation>
+    const {t} = useTranslation();
+    return (<div className={styles.index}>
+        <div className={styles.header}>
+          <Icon width={18} height={18} name='search-outline' fill='#788c97'/>
+          <input
+            ref={this.searchRef}
+            className={styles.search}
+            onChange={this.updateSearch.bind(this)}
+            value={this.state.search}
+            placeholder={t('Start typing to filter')}/>
+        </div>
+        <ul className={styles.apps}>
+          {apps.map(app =>
+            app.name.toLowerCase().indexOf(search) > -1 ?
+              <AppCard key={app.slug} app={app} icon={app.icon ? app.icon : null}/> :
+              null
+          )}
+        </ul>
+        {upgradePrompt}
+      </div>
     );
   }
 }

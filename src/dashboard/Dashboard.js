@@ -44,16 +44,16 @@ import SlowQueries from './Analytics/SlowQueries/SlowQueries.react';
 import styles from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings from './Settings/UsersSettings.react';
 import Webhooks from './Data/Webhooks/Webhooks.react';
-import { AsyncStatus } from 'lib/Constants';
+import {AsyncStatus} from 'lib/Constants';
 import baseStyles from 'stylesheets/base.scss';
-import { get } from 'lib/AJAX';
-import { setBasePath } from 'lib/AJAX';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import {get} from 'lib/AJAX';
+import {setBasePath} from 'lib/AJAX';
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import {Helmet} from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
 
-import { Translation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -65,7 +65,7 @@ class Empty extends React.Component {
 
 const AccountSettingsPage = () => (
   <AccountView section='Account Settings'>
-    <AccountOverview />
+    <AccountOverview/>
   </AccountView>
 );
 
@@ -119,8 +119,8 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
-      this.setState({ newFeaturesInLatestVersion });
+    get('/parse-dashboard-config.json').then(({apps, newFeaturesInLatestVersion = []}) => {
+      this.setState({newFeaturesInLatestVersion});
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -133,7 +133,7 @@ export default class Dashboard extends React.Component {
             'GET',
             'serverInfo',
             {},
-            { useMasterKey: true }
+            {useMasterKey: true}
           ).then(serverInfo => {
             app.serverInfo = serverInfo;
             return app;
@@ -168,8 +168,8 @@ export default class Dashboard extends React.Component {
       resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
-      this.setState({ configLoadingState: AsyncStatus.SUCCESS });
-    }.bind(this)).catch(({ error }) => {
+      this.setState({configLoadingState: AsyncStatus.SUCCESS});
+    }.bind(this)).catch(({error}) => {
       this.setState({
         configLoadingError: error,
         configLoadingState: AsyncStatus.FAILED
@@ -179,14 +179,14 @@ export default class Dashboard extends React.Component {
 
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
-      return <div className={baseStyles.center}><Loader /></div>;
+      return <div className={baseStyles.center}><Loader/></div>;
     }
 
     if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
       return <div className={styles.empty}>
         <div className={baseStyles.center}>
           <div className={styles.cloud}>
-            <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d' />
+            <Icon width={110} height={110} name='cloud-surprise' fill='#1e3b4d'/>
           </div>
           {/* use non-breaking hyphen for the error message to keep the filename on one line */}
           <div className={styles.loadingError}>{this.state.configLoadingError.replace(/-/g, '\u2011')}</div>
@@ -194,95 +194,93 @@ export default class Dashboard extends React.Component {
       </div>
     }
 
+    const {t} = useTranslation();
     const AppsIndexPage = () => (
-      <Translation>
-        {t =>
-          <AccountView section={t('Your Apps')}>
-            <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion} />
-          </AccountView>}
-      </Translation>
+      <AccountView section={t('Your Apps')}>
+        <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}/>
+      </AccountView>
     );
 
     const SettingsRoute = (
-      <Route element={<SettingsData />}>
-        <Route path='dashboard' element={<DashboardSettings />} />
-        <Route path='general' element={<GeneralSettings />} />
-        <Route path='keys' element={<SecuritySettings />} />
-        <Route path='users' element={<UsersSettings />} />
-        <Route path='push' element={<PushSettings />} />
-        <Route path='hosting' element={<HostingSettings />} />
-        <Route index element={<Navigate replace to='dashboard' />} />
+      <Route element={<SettingsData/>}>
+        <Route path='dashboard' element={<DashboardSettings/>}/>
+        <Route path='general' element={<GeneralSettings/>}/>
+        <Route path='keys' element={<SecuritySettings/>}/>
+        <Route path='users' element={<UsersSettings/>}/>
+        <Route path='push' element={<PushSettings/>}/>
+        <Route path='hosting' element={<HostingSettings/>}/>
+        <Route index element={<Navigate replace to='dashboard'/>}/>
       </Route>
     )
 
     const JobsRoute = (
-      <Route element={<JobsData />}>
-        <Route path='new' element={<JobEdit />} />
-        <Route path='edit/:jobId' element={<JobEdit />} />
-        <Route path=':section' element={<Jobs />} />
-        <Route index element={<Navigate replace to='all' />} />
+      <Route element={<JobsData/>}>
+        <Route path='new' element={<JobEdit/>}/>
+        <Route path='edit/:jobId' element={<JobEdit/>}/>
+        <Route path=':section' element={<Jobs/>}/>
+        <Route index element={<Navigate replace to='all'/>}/>
       </Route>
     )
 
     const AnalyticsRoute = (
       <Route>
-        <Route path='overview' element={<AnalyticsOverview />} />
-        <Route path='explorer/:displayType' element={<Explorer />} />
-        <Route path='retention' element={<Retention />} />
-        <Route path='performance' element={<Performance />} />
-        <Route path='slow_queries' element={<SlowQueries />} />
-        <Route index element={<Navigate replace to='overview' />} />
-        <Route path='explorer' element={<Navigate replace to='chart' />} />
+        <Route path='overview' element={<AnalyticsOverview/>}/>
+        <Route path='explorer/:displayType' element={<Explorer/>}/>
+        <Route path='retention' element={<Retention/>}/>
+        <Route path='performance' element={<Performance/>}/>
+        <Route path='slow_queries' element={<SlowQueries/>}/>
+        <Route index element={<Navigate replace to='overview'/>}/>
+        <Route path='explorer' element={<Navigate replace to='chart'/>}/>
       </Route>
     )
 
     const BrowserRoute = ShowSchemaOverview ? SchemaOverview : Browser;
 
     const ApiConsoleRoute = (
-      <Route element={<ApiConsole />}>
-        <Route path='rest' element={<RestConsole />} />
-        <Route path='graphql' element={<GraphQLConsole />} />
-        <Route path='js_console' element={<Playground />} />
-        <Route index element={<Navigate replace to='rest' />} />
+      <Route element={<ApiConsole/>}>
+        <Route path='rest' element={<RestConsole/>}/>
+        <Route path='graphql' element={<GraphQLConsole/>}/>
+        <Route path='js_console' element={<Playground/>}/>
+        <Route index element={<Navigate replace to='rest'/>}/>
       </Route>
     )
 
     const AppRoute = (
-      <Route element={<AppData />}>
-        <Route index element={<Navigate replace to='browser' />} />
+      <Route element={<AppData/>}>
+        <Route index element={<Navigate replace to='browser'/>}/>
 
-        <Route path='getting_started' element={<Empty />} />
+        <Route path='getting_started' element={<Empty/>}/>
 
-        <Route path='browser/:className/:entityId/:relationName' element={<BrowserRoute />} />
-        <Route path='browser/:className' element={<BrowserRoute />} />
-        <Route path='browser' element={<BrowserRoute />} />
+        <Route path='browser/:className/:entityId/:relationName' element={<BrowserRoute/>}/>
+        <Route path='browser/:className' element={<BrowserRoute/>}/>
+        <Route path='browser' element={<BrowserRoute/>}/>
 
-        <Route path='cloud_code' element={<CloudCode />} />
-        <Route path='cloud_code/*' element={<CloudCode />} />
-        <Route path='webhooks' element={<Webhooks />} />
+        <Route path='cloud_code' element={<CloudCode/>}/>
+        <Route path='cloud_code/*' element={<CloudCode/>}/>
+        <Route path='webhooks' element={<Webhooks/>}/>
 
         <Route path='jobs'>
           {JobsRoute}
         </Route>
 
-        <Route path='logs/:type' element={<Logs />} />
-        <Route path='logs' element={<Navigate replace to='info' />} />
+        <Route path='logs/:type' element={<Logs/>}/>
+        <Route path='logs' element={<Navigate replace to='info'/>}/>
 
-        <Route path='config' element={<Config />} />
+        <Route path='config' element={<Config/>}/>
 
         <Route path='api_console'>
           {ApiConsoleRoute}
         </Route>
 
-        <Route path='migration' element={<Migration />} />
+        <Route path='migration' element={<Migration/>}/>
 
-        <Route path='push' element={<Navigate replace to='new' />} />
-        <Route path='push/activity' element={<Navigate replace to='all' />} />
+        <Route path='push' element={<Navigate replace to='new'/>}/>
+        <Route path='push/activity' element={<Navigate replace to='all'/>}/>
 
-        <Route path='push/activity/:category' element={<PushIndex />} />
-        <Route path='push/audiences' element={<PushAudiencesIndex />} />
-        <Route path='push/new' element={<PushNew />} />
-        <Route path='push/:pushId' element={<PushDetails />} />
+        <Route path='push/activity/:category' element={<PushIndex/>}/>
+        <Route path='push/audiences' element={<PushAudiencesIndex/>}/>
+        <Route path='push/new' element={<PushNew/>}/>
+        <Route path='push/:pushId' element={<PushDetails/>}/>
 
         {/* Unused routes... */}
         <Route path='analytics'>
@@ -297,7 +295,7 @@ export default class Dashboard extends React.Component {
 
     const Index = (
       <Route>
-        <Route index element={<AppsIndexPage />} />
+        <Route index element={<AppsIndexPage/>}/>
         <Route path=':appId'>
           {AppRoute}
         </Route>
@@ -313,10 +311,10 @@ export default class Dashboard extends React.Component {
           <Route path='/apps'>
             {Index}
           </Route>
-          <Route path='account/overview' element={<AccountSettingsPage />} />
-          <Route path='account' element={<Navigate replace to='overview' />} />
-          <Route index element={<Navigate replace to='/apps' />} />
-          <Route path='*' element={<FourOhFour />} />
+          <Route path='account/overview' element={<AccountSettingsPage/>}/>
+          <Route path='account' element={<Navigate replace to='overview'/>}/>
+          <Route index element={<Navigate replace to='/apps'/>}/>
+          <Route path='*' element={<FourOhFour/>}/>
         </Routes>
       </BrowserRouter>
     );

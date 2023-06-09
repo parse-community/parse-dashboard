@@ -7,7 +7,7 @@
  */
 import React from 'react';
 import Sidebar from 'components/Sidebar/Sidebar.react';
-import { Translation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 let accountSidebarSections = [
   {
@@ -27,18 +27,15 @@ export function buildAccountSidebar(options) {
     subsection
   } = options;
 
+  const {t} = useTranslation();
   return (
-    <Translation>{
-      t =>
-        <Sidebar
-          sections={accountSidebarSections.map(function (value) {
-            value["name"] = t(value["name"]);
-            return value;
-          })}
-          section={section}
-          subsection={subsection}
-          prefix={''} />
-    }
-    </Translation>
+    <Sidebar
+      sections={accountSidebarSections.map(function (value) {
+        value["name"] = t(value["name"]);
+        return value;
+      })}
+      section={section}
+      subsection={subsection}
+      prefix={''}/>
   );
 }
