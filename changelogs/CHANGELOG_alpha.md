@@ -1,3 +1,10 @@
+# [5.2.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.11...5.2.0-alpha.12) (2023-06-09)
+
+
+### Features
+
+* Add filter views to save frequently used filters in data browser ([#2404](https://github.com/ParsePlatform/parse-dashboard/issues/2404)) ([a9ec3a9](https://github.com/ParsePlatform/parse-dashboard/commit/a9ec3a915ff354304f382c17e8d5311b2c96d7ff))
+
 # [5.2.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.10...5.2.0-alpha.11) (2023-06-08)
 
 
