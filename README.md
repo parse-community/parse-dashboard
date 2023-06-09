@@ -356,7 +356,7 @@ You can specify custom cloud code scripts with the `scripts` option:
 ]
 ```
 
-Next, define a cloud function within the connected Parse Server.
+Next, define a Cloud Function within the connected Parse Server:
 
 **Parse Server 2.1.4 > 4.4.0**
 
