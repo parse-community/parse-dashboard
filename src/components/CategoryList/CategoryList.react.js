@@ -136,7 +136,7 @@ export default class CategoryList extends React.Component {
               </div>
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
-                  const { name, filter } = filterData;
+                  const { name, filter, readonly } = filterData;
                   const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}`;
                   return (
                     <div className={styles.childLink}>
@@ -150,6 +150,7 @@ export default class CategoryList extends React.Component {
                       >
                         <span>{name}</span>
                       </Link>
+                      {!readonly &&
                       <a
                         className={styles.close}
                         onClick={(e) => {
@@ -159,6 +160,7 @@ export default class CategoryList extends React.Component {
                       >
                         ×
                       </a>
+                      }
                     </div>
                   );
                 })}
