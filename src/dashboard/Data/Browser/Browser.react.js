@@ -1533,7 +1533,7 @@ class Browser extends DashboardView {
       allCategories.push(row);
     }
 
-    return <CategoryList current={current} linkPrefix={'browser/'} filterClicked={(url) => this.props.navigate(generatePath(this.context, url))} removeFilter={(filter) => this.removeFilter(filter)} categories={allCategories} />;
+    return <CategoryList current={current} params={this.props.location?.search} linkPrefix={'browser/'} filterClicked={(url) => this.props.navigate(generatePath(this.context, url))} removeFilter={(filter) => this.removeFilter(filter)} categories={allCategories} />;
   }
 
   showNote(message, isError) {

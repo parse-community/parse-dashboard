@@ -74,7 +74,7 @@
   margin-right: 20px;
   padding-left: 0px !important;
   &:after {
-    @include arrow('down', 10px, 7px, #fff);
+    @include arrow('down', 10px, 7px, #8fb9cf);
     content: '';
     margin-left: 10px;
   }
@@ -98,6 +98,9 @@
     span {
       text-align: left !important;
       margin-left: 14px;
+      display: flex;
+      flex-grow: 1;
+      margin-right: 0px !important;
     }
   }
 }
