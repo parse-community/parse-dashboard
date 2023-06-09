@@ -182,7 +182,7 @@ class Browser extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (this.props.params.appId !== nextProps.params.appId || this.props.params.className !== nextProps.params.className || this.props.location.search !== nextProps.location.search) {
+    if (this.props.params.appId !== nextProps.params.appId || this.props.params.className !== nextProps.params.className || this.props.location.search !== nextProps.location.search || this.props.params?.relationName !== nextProps.params?.relationName) {
       if (this.props.params.appId !== nextProps.params.appId || !this.props.params.className) {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
@@ -864,7 +864,7 @@ class Browser extends DashboardView {
 
   getRelationURL() {
     const relation = this.state.relation;
-    const className = this.props.params.className;
+    const className = relation.parent.className;
     const entityId = relation.parent.id;
     const relationName = relation.key;
     return generatePath(this.context, `browser/${className}/${entityId}/${relationName}`);

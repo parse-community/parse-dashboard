@@ -24,6 +24,7 @@ export default class BrowserFilter extends React.Component {
 
     this.state = {
       open: false,
+      editMode: true,
       filters: new List(),
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters)
     };
@@ -48,7 +49,8 @@ export default class BrowserFilter extends React.Component {
     }
     this.setState(prevState => ({
       open: !prevState.open,
-      filters: filters
+      filters: filters,
+      editMode: this.props.filters.size === 0
     }));
     this.props.setCurrent(null);
   }
@@ -59,7 +61,8 @@ export default class BrowserFilter extends React.Component {
     this.setState(({ filters }) => ({
       filters: filters.push(
         new Map({ field: field, constraint: available[field][0] })
-      )
+      ),
+      editMode: true
     }));
   }
 
@@ -116,7 +119,7 @@ export default class BrowserFilter extends React.Component {
                 onChange={filters => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
                 renderRow={props => (
-                  <FilterRow {...props} active={this.props.filters.size > 0} parentContentId={POPOVER_CONTENT_ID} />
+                  <FilterRow {...props} active={this.props.filters.size > 0} editMode={this.state.editMode} parentContentId={POPOVER_CONTENT_ID} />
                 )}
               />
               <div className={styles.footer}>

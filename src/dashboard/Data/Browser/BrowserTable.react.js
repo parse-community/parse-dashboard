@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import BrowserRow             from 'components/BrowserRow/BrowserRow.react';
-import * as browserUtils      from 'lib/browserUtils';
 import DataBrowserHeaderBar   from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
 import Editor                 from 'dashboard/Data/Browser/Editor.react';
 import EmptyState             from 'components/EmptyState/EmptyState.react';
@@ -48,6 +47,10 @@ export default class BrowserTable extends React.Component {
     } else if (this.props.ordering !== props.ordering) {
       this.setState({ offset: 0 });
       this.tableRef.current.scrollTop = 0;
+    } else if (this.props.filters.size !== props.filters.size) {
+      this.setState({ offset: 0 }, () => {
+        this.tableRef.current.scrollTop = 0;
+      });
     }
   }
 
@@ -429,7 +432,7 @@ export default class BrowserTable extends React.Component {
     }
 
     return (
-      <div className={[styles.browser, browserUtils.isSafari() ? styles.safari : ''].join(' ')}>
+      <div className={styles.browser}>
         {table}
         <DataBrowserHeaderBar
           selected={

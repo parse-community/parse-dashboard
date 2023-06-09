@@ -5,6 +5,6 @@ module.exports = {
   ],
   presets: [
     '@babel/preset-react',
-    ['@babel/preset-env', { corejs: '3.25', useBuiltIns: 'entry' }],
+    ['@babel/preset-env', { corejs: '3.28', useBuiltIns: 'entry' }],
   ],
 };
