@@ -337,9 +337,9 @@ If you have classes with a lot of columns and you filter them often with the sam
 ]
 ```
 
-### Custom Cloud Code scripts
+### Scripts
 
-You can specify custom cloud code scripts with the `scripts` option:
+You can specify scripts to execute Cloud Functions with the `scripts` option:
 
 
 ```json
