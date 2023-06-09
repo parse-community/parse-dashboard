@@ -358,7 +358,34 @@ You can specify scripts to execute Cloud Functions with the `scripts` option:
 
 Next, define a Cloud Function within the connected Parse Server:
 
-**Parse Server 2.1.4 > 4.4.0**
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+For older versions of Parse Server:
+
+<details>
+<summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+</details>
+
+<details>
+<summary>Parse Server &gt;=2.1.4 &lt;4.4.0</summary>
 
 ```js
 Parse.Cloud.define('deleteAccount', async (req) => {
@@ -371,28 +398,7 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 });
 ```
 
-**Parse Server 4.4.0 > 6.2.0**
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  req.params.object = Parse.Object.fromJSON(req.params.object);
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-}, {
-  requireMaster: true
-});
-```
-
-**Parse Server 6.2.0+**
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-}, {
-  requireMaster: true
-});
-```
+</details>
 
 # Running as Express Middleware
 
