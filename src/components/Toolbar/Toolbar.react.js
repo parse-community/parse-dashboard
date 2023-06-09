@@ -15,7 +15,7 @@ let Toolbar = (props) => {
   const action = useNavigationType();
   const navigate = useNavigate();
   let backButton;
-  if ((props.relation || (props.filters && props.filters.size)) && action !== NavigationType.Pop) {
+  if (props.relation || ((props.filters && props.filters.size) && action !== NavigationType.Pop)) {
     backButton = (
       <a
         className={styles.iconButton}

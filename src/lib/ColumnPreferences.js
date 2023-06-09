@@ -45,6 +45,23 @@ export function getPreferences(appId, className) {
   }
 }
 
+export function getAllPreferences(appId) {
+  const storageKeys = Object.keys(localStorage);
+  const result = {};
+  for (const key of storageKeys) {
+    const split = key.split(':')
+    if (split.length <= 1) {
+      continue;
+    }
+    const className = split.at(-1);
+    const preferences = getPreferences(appId, className);
+    if (preferences) {
+      result[className] = preferences;
+    }
+  }
+  return result;
+}
+
 export function getColumnSort(sortBy, appId, className) {
   let cachedSort = getPreferences(appId, COLUMN_SORT) || [ { name: className, value: DEFAULT_COLUMN_SORT } ];
   let ordering = [].concat(cachedSort);

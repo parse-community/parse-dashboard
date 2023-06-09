@@ -27,6 +27,7 @@ export default class BrowserFilter extends React.Component {
 
     this.state = {
       open: false,
+      editMode: true,
       filters: new List(),
       confirmName: false,
       name: '',
@@ -54,6 +55,7 @@ export default class BrowserFilter extends React.Component {
       filters: filters,
       name: '',
       confirmName: false,
+      editMode: this.props.filters.size === 0
     }));
     this.props.setCurrent(null);
   }
@@ -62,7 +64,10 @@ export default class BrowserFilter extends React.Component {
     let available = Filters.availableFilters(this.props.schema, this.state.filters, this.state.blacklistedFilters);
     let field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
-      filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+      filters: filters.push(
+        new Map({ field: field, constraint: available[field][0] })
+      ),
+      editMode: true
     }));
   }
 
@@ -134,7 +139,9 @@ export default class BrowserFilter extends React.Component {
                 filters={this.state.filters}
                 onChange={(filters) => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
-                renderRow={(props) => <FilterRow {...props} active={this.props.filters.size > 0} parentContentId={POPOVER_CONTENT_ID} />}
+                renderRow={props => (
+                  <FilterRow {...props} active={this.props.filters.size > 0} editMode={this.state.editMode} parentContentId={POPOVER_CONTENT_ID} />
+                )}
               />
               {this.state.confirmName && <Field label={<Label text="Filter view name" />} input={<TextInput placeholder="Give it a good name..." value={this.state.name} onChange={(name) => this.setState({ name })} />} />}
               {this.state.confirmName && (
