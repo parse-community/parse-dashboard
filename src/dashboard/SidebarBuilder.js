@@ -31,7 +31,7 @@ export function buildAccountSidebar(options) {
   return (
     <Sidebar
       sections={accountSidebarSections.map(function (value) {
-        value["name"] = t(value["name"]);
+        value['name'] = t(value['name']);
         return value;
       })}
       section={section}
