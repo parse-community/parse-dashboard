@@ -127,8 +127,8 @@ export default class BrowserCell extends Component {
     } else if (this.props.type === 'Object' || this.props.type === 'Bytes') {
       this.copyableValue = content = JSON.stringify(this.props.value);
     } else if (this.props.type === 'File') {
-      const fileName = this.props.value.url() ? getFileName(this.props.value) : 'Uploading\u2026';
-      content = <Pill value={fileName} fileDownloadLink={this.props.value.url()} shrinkablePill />;
+      const fileName = this.props.value.url?.() ? getFileName(this.props.value) : 'Uploading\u2026';
+      content = <Pill value={fileName} fileDownloadLink={this.props.value.url?.()} shrinkablePill />;
       this.copyableValue = fileName;
     } else if (this.props.type === 'ACL') {
       let pieces = [];

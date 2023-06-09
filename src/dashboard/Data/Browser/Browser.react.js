@@ -16,6 +16,7 @@ import DeleteRowsDialog                   from 'dashboard/Data/Browser/DeleteRow
 import DropClassDialog                    from 'dashboard/Data/Browser/DropClassDialog.react';
 import EmptyState                         from 'components/EmptyState/EmptyState.react';
 import ExportDialog                       from 'dashboard/Data/Browser/ExportDialog.react';
+import ImportDialog                       from 'dashboard/Data/Browser/ImportDialog.react';
 import AttachRowsDialog                   from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog           from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
 import CloneSelectedRowsDialog            from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
@@ -57,6 +58,7 @@ class Browser extends DashboardView {
       showRemoveColumnDialog: false,
       showDropClassDialog: false,
       showExportDialog: false,
+      showImportDialog: false,
       showExportSchemaDialog: false,
       showAttachRowsDialog: false,
       showEditRowDialog: false,
@@ -105,6 +107,7 @@ class Browser extends DashboardView {
     this.showDeleteRows = this.showDeleteRows.bind(this);
     this.showDropClass = this.showDropClass.bind(this);
     this.showExport = this.showExport.bind(this);
+    this.showImport = this.showImport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
@@ -280,6 +283,10 @@ class Browser extends DashboardView {
 
   showExport() {
     this.setState({ showExportDialog: true });
+  }
+
+  showImport() {
+    this.setState({ showImportDialog: true });
   }
 
   async login(username, password) {
@@ -1125,6 +1132,7 @@ class Browser extends DashboardView {
       this.state.showRemoveColumnDialog ||
       this.state.showDropClassDialog ||
       this.state.showExportDialog ||
+      this.state.showImportDialog ||
       this.state.showExportSchema ||
       this.state.rowsToDelete ||
       this.state.showAttachRowsDialog ||
@@ -1445,6 +1453,89 @@ class Browser extends DashboardView {
     }
   }
 
+  async confirmImport(file) {
+    this.setState({ showImportDialog: null });
+    const className = this.props.params.className;
+    const classColumns = this.getClassColumns(className, false);
+    const columnsObject = {};
+    classColumns.forEach((column) => {
+      columnsObject[column.name] = column;
+    });
+    const { base64, type}  = file._source;
+    if (type === 'text/csv') {
+      const csvToArray =(text) => {
+        let p = '', row = [''], ret = [row], i = 0, r = 0, s = !0, l;
+        for (l of text) {
+            if ('"' === l) {
+                if (s && l === p) row[i] += l;
+                s = !s;
+            } else if (',' === l && s) l = row[++i] = '';
+            else if ('\n' === l && s) {
+                if ('\r' === p) row[i] = row[i].slice(0, -1);
+                row = ret[++r] = [l = '']; i = 0;
+            } else row[i] += l;
+            p = l;
+        }
+        return ret;
+      };
+      const csv = atob(base64);
+      const [columns, ...rows] = csvToArray(csv);
+      await Parse.Object.saveAll(rows.filter(row => row.join() !== '').map(row => {
+        const json = {className};
+        for (let i = 1; i < row.length; i++) {
+          const column = columns[i];
+          const value = row[i];
+          if (value === 'null') {
+            continue;
+          }
+          const {type, targetClass, name} = columnsObject[column] || {};
+          if (type === 'Relation') {
+            json[column] = {
+              __type: 'Relation',
+              className: targetClass,
+            };
+            continue;
+          }
+          if (type === 'Pointer') {
+            json[column] = {
+              __type: 'Pointer',
+              className: targetClass,
+              objectId: value,
+            };
+            continue;
+          }
+          if (name === 'ACL') {
+            json.ACL = new Parse.ACL(JSON.parse(value));
+            continue;
+          }
+          if (type === 'Date') {
+            json[column] = new Date(value);
+            continue;
+          }
+          if (type === 'Boolean') {
+            json[column] = value === 'true';
+            continue;
+          }
+          if (type === 'String') {
+            json[column] = value;
+            continue;
+          }
+          if (type === 'Number') {
+            json[column] = Number(value);
+            continue;
+          }
+          try {
+            json[column] = JSON.parse(value);
+          } catch (e) {
+            /* */
+          }
+        }
+        return Parse.Object.fromJSON(json, false, true);
+      }), {useMasterKey: true});
+    }
+    this.refresh();
+  }
+
   getClassRelationColumns(className) {
     const currentClassName = this.props.params.className;
     return this.getClassColumns(className, false)
@@ -1640,6 +1731,7 @@ class Browser extends DashboardView {
             onExport={this.showExport}
             onChangeCLP={this.handleCLPChange}
             onRefresh={this.refresh}
+            onImport={this.showImport}
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
@@ -1761,6 +1853,14 @@ class Browser extends DashboardView {
           onCancel={() => this.setState({ showExportDialog: false })}
           onConfirm={() => this.exportClass(className)} />
       );
+    }
+    else if (this.state.showImportDialog) {
+      extras = (
+        <ImportDialog
+          className={className}
+          onCancel={() => this.setState({ showImportDialog: false })}
+          onConfirm={(file) => this.confirmImport(file)} />
+      );
     } else if (this.state.showExportSchemaDialog) {
       extras = (
         <ExportSchemaDialog
@@ -1776,7 +1876,7 @@ class Browser extends DashboardView {
           onCancel={this.cancelAttachRows}
           onConfirm={this.confirmAttachRows}
         />
-      )
+      );
     } else if (this.state.showAttachSelectedRowsDialog) {
       extras = (
         <AttachSelectedRowsDialog
