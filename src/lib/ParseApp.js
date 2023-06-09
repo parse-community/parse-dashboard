@@ -102,12 +102,10 @@ export default class ParseApp {
 
     if (classPreference) {
       for (const className in classPreference) {
-        const preferences = getPreferences(appId, className) || {filters: []};
-        console.log(preferences.filters);
-        const {filters} = classPreference[className];
+        const preferences = getPreferences(appId, className) || { filters: [] };
+        const { filters } = classPreference[className];
         for (const filter of filters) {
           filter.readonly = true;
-          // console.log(JSON.stringify(row) === JSON.stringify(filter), filter);
           if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
             continue;
           }
