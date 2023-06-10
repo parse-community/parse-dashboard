@@ -2,8 +2,8 @@
  * Semantic Release Config
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 
 // Get env vars
 const ref = process.env.GITHUB_REF;
@@ -105,13 +105,9 @@ async function config() {
 
 async function loadTemplates() {
   for (const template of Object.keys(templates)) {
-    const text = await readFile(path.resolve(__dirname, resourcePath, templates[template].file));
+    const text = await readFile(resolve(__dirname, resourcePath, templates[template].file), 'utf-8');
     templates[template].text = text;
   }
-}
-
-async function readFile(filePath) {
-  return await fs.readFile(filePath, 'utf-8');
 }
 
 function getReleaseComment() {
@@ -120,4 +116,4 @@ function getReleaseComment() {
   return comment;
 }
 
-module.exports = config();
+export default config();
