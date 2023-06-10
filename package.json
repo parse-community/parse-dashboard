@@ -1,5 +1,6 @@
 {
   "name": "parse-dashboard",
+  "type": "module",
   "version": "5.2.0-alpha.13",
   "repository": {
     "type": "git",
