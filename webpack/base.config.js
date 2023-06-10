@@ -7,16 +7,20 @@
  */
 //This file should be imported by another config file, like build.config.js
 
-var path = require('path');
-var SvgPrepPlugin = require('./plugins/svg-prep');
+import path from 'path';
+import SvgPrepPlugin from './plugins/svg-prep.js';
+import { fileURLToPath } from 'node:url';
 
 // pulls in package.json and gets version
-var webpack = require('webpack');
-var fs = require('fs');
+import webpack from 'webpack';
+import fs from 'node:fs';
 var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 var version = json.version;
 
-module.exports = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/** @type {import('webpack').Configuration} */
+export default {
   context: path.join(__dirname, '../src'),
   output: {
     filename: '[name].bundle.js',
@@ -34,8 +38,12 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: ['babel-loader']
-      }, {
+        use: ['babel-loader'],
+        resolve: {
+          fullySpecified: false,
+        }
+      },
+      {
         test: /\.scss$/,
         use: [
           'style-loader',

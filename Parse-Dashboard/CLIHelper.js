@@ -1,6 +1,6 @@
-const { createUser, createMFA } = require('./CLI/mfa');
+import { createUser, createMFA } from './CLI/mfa.js';
 
-module.exports = {
+export default {
   createUser,
-  createMFA
+  createMFA,
 };

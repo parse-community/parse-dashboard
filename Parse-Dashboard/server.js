@@ -6,13 +6,14 @@
  * the root directory of this source tree.
  */
 // Command line tool for npm start
-'use strict'
-const path = require('path');
-const fs = require('fs');
-const express = require('express');
-const parseDashboard = require('./app');
+import path from 'node:path';
+import fs from 'node:fs';
+import express from 'express';
+import parseDashboard from './app.js';
+import { fileURLToPath } from 'node:url';
+import { createServer } from 'node:https';
 
-module.exports = (options) => {
+export default function server(options) {
   const host = options.host || process.env.HOST || '0.0.0.0';
   const port = options.port || process.env.PORT || 4040;
   const mountPath = options.mountPath || process.env.MOUNT_PATH || '/';
@@ -84,6 +85,7 @@ module.exports = (options) => {
         ];
       }
     } else if (!configServerURL && !configMasterKey && !configAppName) {
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
       configFile = path.join(__dirname, 'parse-dashboard-config.json');
     }
   } else if (!options.config && process.env.PARSE_DASHBOARD_CONFIG) {
@@ -159,7 +161,7 @@ module.exports = (options) => {
     var privateKey = fs.readFileSync(configSSLKey);
     var certificate = fs.readFileSync(configSSLCert);
 
-    server = require('https').createServer({
+    server = createServer({
       key: privateKey,
       cert: certificate
     }, app).listen(port, host, function () {
@@ -167,4 +169,4 @@ module.exports = (options) => {
     });
   }
   handleSIGs(server);
-};
+}

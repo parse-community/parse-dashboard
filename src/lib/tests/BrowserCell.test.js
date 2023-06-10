@@ -5,12 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../components/BrowserCell/BrowserCell.react');
-jest.mock('idb-keyval');
-
-import React     from 'react';
+import React from 'react';
 import renderer from 'react-test-renderer';
-const BrowserCell = require('../../components/BrowserCell/BrowserCell.react').default;
+import BrowserCell from '../../components/BrowserCell/BrowserCell.react';
 
 describe('BrowserCell', () => {
 

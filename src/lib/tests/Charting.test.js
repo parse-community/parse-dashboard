@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../Charting');
-const Charting = require('../Charting');
+import { timeAxisBuckets, valueAxisBuckets } from '../Charting';
 
 describe('timeAxisBuckets', () => {
   it('determines an appropriate bucket size and boundaries', () => {
-    expect(Charting.timeAxisBuckets(new Date(Date.UTC(2015, 2, 1, 10, 10, 10)), new Date(Date.UTC(2015, 2, 2, 10, 10, 10)))).toEqual(
+    expect(timeAxisBuckets(new Date(Date.UTC(2015, 2, 1, 10, 10, 10)), new Date(Date.UTC(2015, 2, 2, 10, 10, 10)))).toEqual(
       [
         new Date(Date.UTC(2015, 2, 1, 10, 0, 0)),
         new Date(Date.UTC(2015, 2, 1, 11, 0, 0)),
@@ -41,7 +40,7 @@ describe('timeAxisBuckets', () => {
       ]
     );
 
-    expect(Charting.timeAxisBuckets(new Date(Date.UTC(2015, 2, 1, 10, 10, 10)), new Date(Date.UTC(2015, 2, 7, 10, 10, 10)))).toEqual(
+    expect(timeAxisBuckets(new Date(Date.UTC(2015, 2, 1, 10, 10, 10)), new Date(Date.UTC(2015, 2, 7, 10, 10, 10)))).toEqual(
       [
         new Date(Date.UTC(2015, 2, 1, 0, 0, 0)),
         new Date(Date.UTC(2015, 2, 2, 0, 0, 0)),
@@ -54,12 +53,12 @@ describe('timeAxisBuckets', () => {
       ]
     );
 
-    expect(Charting.timeAxisBuckets(
+    expect(timeAxisBuckets(
       new Date(Date.UTC(2015, 2, 1, 10, 10, 10)),
       new Date(Date.UTC(2015, 3, 7, 10, 10, 10))
     ).length).toBe(39);
 
-    expect(Charting.timeAxisBuckets(new Date(Date.UTC(2015, 2, 1, 10, 10, 10)), new Date(Date.UTC(2015, 4, 1, 10, 10, 10)))).toEqual(
+    expect(timeAxisBuckets(new Date(Date.UTC(2015, 2, 1, 10, 10, 10)), new Date(Date.UTC(2015, 4, 1, 10, 10, 10)))).toEqual(
       [
         new Date(Date.UTC(2015, 2, 1, 0, 0, 0)),
         new Date(Date.UTC(2015, 3, 1, 0, 0, 0)),
@@ -72,11 +71,11 @@ describe('timeAxisBuckets', () => {
 
 describe('valueAxisBuckets', () => {
   it('determines an appropriate bucket size and boundaries', () => {
-    expect(Charting.valueAxisBuckets(4)).toEqual([0, 1, 2, 3, 4, 5]);
-    expect(Charting.valueAxisBuckets(6)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
-    expect(Charting.valueAxisBuckets(14)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    expect(Charting.valueAxisBuckets(15)).toEqual([0, 10, 20]);
-    expect(Charting.valueAxisBuckets(62)).toEqual([0, 10, 20, 30, 40, 50, 60, 70]);
-    expect(Charting.valueAxisBuckets(160)).toEqual([0, 100, 200]);
+    expect(valueAxisBuckets(4)).toEqual([0, 1, 2, 3, 4, 5]);
+    expect(valueAxisBuckets(6)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+    expect(valueAxisBuckets(14)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+    expect(valueAxisBuckets(15)).toEqual([0, 10, 20]);
+    expect(valueAxisBuckets(62)).toEqual([0, 10, 20, 30, 40, 50, 60, 70]);
+    expect(valueAxisBuckets(160)).toEqual([0, 100, 200]);
   });
 });

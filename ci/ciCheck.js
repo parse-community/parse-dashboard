@@ -1,7 +1,5 @@
-'use strict'
-
-const CiVersionCheck = require('./CiVersionCheck');
-const allNodeVersions = require('all-node-versions');
+import CiVersionCheck from './CiVersionCheck.js';
+import allNodeVersions from 'all-node-versions';
 
 async function check() {
   // Run checks

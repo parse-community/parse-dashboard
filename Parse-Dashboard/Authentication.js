@@ -1,9 +1,12 @@
-'use strict';
-var bcrypt = require('bcryptjs');
-var csrf = require('csurf');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-const OTPAuth = require('otpauth')
+import bcrypt from 'bcryptjs';
+import csrf from 'csurf';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import OTPAuth from 'otpauth';
+import { randomBytes } from 'node:crypto';
+import connectFlash from 'connect-flash';
+import bodyParser from 'body-parser';
+import cookieSession from 'cookie-session';
 
 /**
  * Constructor for Authentication class
@@ -53,11 +56,11 @@ function initialize(app, options) {
     cb(null, user);
   });
 
-  var cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
+  var cookieSessionSecret = options.cookieSessionSecret || randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
-  app.use(require('connect-flash')());
-  app.use(require('body-parser').urlencoded({ extended: true }));
-  app.use(require('cookie-session')({
+  app.use(connectFlash());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cookieSession({
     key    : 'parse_dash',
     secret : cookieSessionSecret,
     maxAge : cookieSessionMaxAge
@@ -150,4 +153,4 @@ function authenticate(userToTest, usernameOnly) {
 Authentication.prototype.initialize = initialize;
 Authentication.prototype.authenticate = authenticate;
 
-module.exports = Authentication;
+export default Authentication;

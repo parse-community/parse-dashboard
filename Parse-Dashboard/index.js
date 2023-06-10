@@ -6,11 +6,10 @@
  * the root directory of this source tree.
  */
 // Command line tool for npm start
-'use strict'
-const CLIHelper = require('./CLIHelper.js');
-const startServer = require('./server');
+import CLIHelper from './CLIHelper.js';
+import startServer from './server.js';
+import { program } from 'commander';
 
-const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
 program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
 program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');

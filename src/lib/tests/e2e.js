@@ -5,12 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-
-jest.disableAutomock();
-
-var express = require('express');
-var rp = require('request-promise');
-var ParseDashboard = require('../../../Parse-Dashboard/app');
+import express from 'express';
+import rp from 'request-promise';
+import ParseDashboard from '../../../Parse-Dashboard/app';
 
 var dashboardSettings = {
   'apps': [

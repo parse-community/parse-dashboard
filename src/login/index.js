@@ -9,7 +9,7 @@ import Login    from './Login';
 import React    from 'react';
 import ReactDOM from 'react-dom';
 
-require('stylesheets/fonts.scss');
+import 'stylesheets/fonts.scss';
 
 // App entry point
 

@@ -1,19 +1,18 @@
-'use strict';
-const express = require('express');
-const path = require('path');
-const packageJson = require('package-json');
-const csrf = require('csurf');
-const Authentication = require('./Authentication.js');
-var fs = require('fs');
+import express from 'express';
+import path from 'node:path';
+import packageJson from 'package-json';
+import csrf from 'csurf';
+import Authentication from './Authentication.js';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
-
-var newFeaturesInLatestVersion = [];
+const { parseDashboardFeatures } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+let newFeaturesInLatestVersion = [];
 packageJson('parse-dashboard', { version: 'latest', fullMetadata: true })
   .then(latestPackage => {
-    if (latestPackage.parseDashboardFeatures instanceof Array) {
+    if (Array.isArray(latestPackage.parseDashboardFeatures)) {
       newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
-        return currentVersionFeatures.indexOf(feature) === -1;
+        return !parseDashboardFeatures.includes(feature);
       });
     }
   })
@@ -51,9 +50,10 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   }
 }
 
-module.exports = function(config, options) {
+export default function app(config, options) {
   options = options || {};
   var app = express();
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
 

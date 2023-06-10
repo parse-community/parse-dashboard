@@ -5,11 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.dontMock('../../components/Button/Button.react');
-
-import React     from 'react';
+import React from 'react';
 import renderer from 'react-test-renderer';
-const Button = require('../../components/Button/Button.react').default;
+import Button from '../../components/Button/Button.react';
 
 describe('Button', () => {
   it('has a default state', () => {
