@@ -1,3 +1,10 @@
+# [5.2.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.13...5.2.0-alpha.14) (2023-06-10)
+
+
+### Bug Fixes
+
+* Hitting backspace key in data browser crashes dashboard ([#2456](https://github.com/ParsePlatform/parse-dashboard/issues/2456)) ([32aeea2](https://github.com/ParsePlatform/parse-dashboard/commit/32aeea244d81404579f55adf25244c11e3a797d1))
+
 # [5.2.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.12...5.2.0-alpha.13) (2023-06-10)
 
 
