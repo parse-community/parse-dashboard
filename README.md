@@ -338,7 +338,7 @@ If you have classes with a lot of columns and you filter them often with the sam
 
 ### Persistent Filters
 
-`classPreference` allows for filters to be saved across sessions. To save the current filters, navigate to *App Settings > Export Class Preferences*.
+The `classPreference` setting allows for data browser filters to be saved across sessions. To save the current filters, navigate to *App Settings > Export Class Preferences*.
 
 For example:
 
