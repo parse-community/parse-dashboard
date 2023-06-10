@@ -58,7 +58,6 @@ class Config extends TableView {
   }
 
   renderExtras() {
-    const { currentApp = {} } = this.context;
     let extras = null;
     if (this.state.modalOpen) {
       extras = (
@@ -69,7 +68,7 @@ class Config extends TableView {
           type={this.state.modalType}
           value={this.state.modalValue}
           masterKeyOnly={this.state.modalMasterKeyOnly}
-          parseServerVersion={currentApp.serverInfo && currentApp.serverInfo.parseServerVersion} />
+          parseServerVersion={this.context.serverInfo?.parseServerVersion} />
       );
     } else if (this.state.showDeleteParameterDialog) {
       extras = (
@@ -129,7 +128,7 @@ class Config extends TableView {
       }
       openModal()
     }
-  
+
     let openDeleteParameterDialog = () => this.setState({
       showDeleteParameterDialog: true,
       modalParam: data.param

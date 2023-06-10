@@ -316,6 +316,7 @@ export default class DataBrowser extends React.Component {
           setCopyableValue={this.setCopyableValue}
           setContextMenu={this.setContextMenu}
           onFilterChange={this.props.onFilterChange}
+          onFilterSave={this.props.onFilterSave}
           {...other} />
         <BrowserToolbar
           count={count}
