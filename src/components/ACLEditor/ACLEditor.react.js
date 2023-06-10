@@ -9,8 +9,10 @@ import Parse             from 'parse';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
 import React             from 'react';
 
-function validateEntry(text) {
+function validateEntry(text, returnInvalid = true) {
 
+  let type = 'unknown';
+  let entry = text;
   let userQuery;
   let roleQuery;
 
@@ -19,22 +21,26 @@ function validateEntry(text) {
   }
 
   if (text.startsWith('user:')) {
+    type = 'user';
     // no need to query roles
     roleQuery = {
       find: () => Promise.resolve([])
     };
 
     let user = text.substring(5);
+    entry = user;
     userQuery = new Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
       new Parse.Query(Parse.User).equalTo('objectId', user)
     );
   } else if (text.startsWith('role:')) {
+    type = 'role';
     // no need to query users
     userQuery = {
       find: () => Promise.resolve([])
     };
     let role = text.substring(5);
+    entry = role;
     roleQuery = new Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
       new Parse.Query(Parse.Role).equalTo('objectId', role)
@@ -61,6 +67,9 @@ function validateEntry(text) {
     } else if (role.length > 0) {
       return { entry: role[0], type: 'role' };
     } else {
+      if(returnInvalid) {
+        return Promise.resolve({entry, type})
+      }
       return Promise.reject();
     }
   });
