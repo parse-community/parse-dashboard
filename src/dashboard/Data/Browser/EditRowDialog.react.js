@@ -14,6 +14,7 @@ import ObjectPickerDialog from 'dashboard/Data/Browser/ObjectPickerDialog.react'
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import getFileName from 'lib/getFileName';
 import encode from 'parse/lib/browser/encode';
+import validateNumeric from 'lib/validateNumeric';
 
 export default class EditRowDialog extends React.Component {
   constructor(props) {
@@ -291,8 +292,8 @@ export default class EditRowDialog extends React.Component {
               disabled={isDisabled}
               value={currentObject[name]}
               placeholder={val === undefined ? '(undefined)' : ''}
-              onChange={newValue => this.updateCurrentObject(newValue, name)}
-              onBlur={newValue => this.handleChange(parseFloat(newValue), name)}
+              onChange={newValue => this.updateCurrentObject(validateNumeric(newValue) ? newValue : currentObject[name], name)}
+              onBlur={newValue => this.handleChange(validateNumeric(parseFloat(newValue)) ? parseFloat(newValue) : undefined, name)}
             />
           );
           break;

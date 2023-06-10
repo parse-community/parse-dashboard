@@ -1,0 +1,28 @@
+.copyData {
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+.newUser {
+  max-height: 100px;
+  overflow-y: scroll;
+}
+.settings_page {
+  padding: 120px 0 80px 0;
+}
+.footer {
+  display: flex;
+  padding: 10px;
+  justify-content: end;
+  gap: 10px;
+}
+.password {
+  display: flex;
+  gap: 4px;
+}
+.userData {
+  padding: 10px;
+}
+.mfa {
+  display: block;
+  margin-top: 10px;
+}

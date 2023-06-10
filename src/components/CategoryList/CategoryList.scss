@@ -37,7 +37,6 @@
         width: 50px;
         text-align: right;
       }
-
       &:last-of-type {
         margin-right: 50px;
         overflow: hidden;
@@ -61,4 +60,47 @@
   background-color: #3e87b2;
   border: 0;
   height: 1px;
+}
+
+.close {
+  font-size: 20px !important;
+  font-weight: bold !important;
+}
+.expand {
+  display: flex !important;
+  align-items: center;
+  cursor: pointer;
+  width: 0px;
+  margin-right: 20px;
+  padding-left: 0px !important;
+  &:after {
+    @include arrow('down', 10px, 7px, #8fb9cf);
+    content: '';
+    margin-left: 10px;
+  }
+}
+.link {
+  display: flex;
+  a {
+    &:first-of-type {
+      flex-grow: 1
+    }
+  }
+}
+
+.childLink {
+  display: flex;
+  a {
+    &:first-of-type {
+      flex-grow: 1;
+      display: flex;
+    }
+    span {
+      text-align: left !important;
+      margin-left: 14px;
+      display: flex;
+      flex-grow: 1;
+      margin-right: 0px !important;
+    }
+  }
 }
