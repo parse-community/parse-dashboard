@@ -16,6 +16,7 @@ import Toolbar from 'components/Toolbar/Toolbar.react';
 import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
+import * as ClassPreferences from 'lib/ClassPreferences';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
@@ -38,9 +39,10 @@ export default class DashboardSettings extends DashboardView {
       message: null,
       passwordInput: '',
       passwordHidden: true,
-      columnData: {
+      copyData: {
         data: '',
         show: false,
+        type: ''
       },
       newUser: {
         data: '',
@@ -53,7 +55,14 @@ export default class DashboardSettings extends DashboardView {
   getColumns() {
     const data = ColumnPreferences.getAllPreferences(this.context.applicationId);
     this.setState({
-      columnData: { data: JSON.stringify(data, null, 2), show: true },
+      copyData: { data: JSON.stringify(data, null, 2), show: true, type: 'Column Preferences' },
+    });
+  }
+
+  getClasses() {
+    const data = ClassPreferences.getAllPreferences(this.context.applicationId);
+    this.setState({
+      copyData: { data: JSON.stringify(data, null, 2), show: true, type: 'Class Preferences' },
     });
   }
 
@@ -190,14 +199,14 @@ export default class DashboardSettings extends DashboardView {
         <Field input={<Button color="blue" value="Create" width="120px" onClick={() => this.createUser()} />} />
       </Fieldset>
     );
-    const columnPreferences = (
+    const copyData = (
       <div>
-        <div className={styles.columnData}>
-          <CodeSnippet source={this.state.columnData.data} language="json" />
+        <div className={styles.copyData}>
+          <CodeSnippet source={this.state.copyData.data} language="json" />
         </div>
         <div className={styles.footer}>
-          <Button color="blue" value="Copy" width="120px" onClick={() => this.copy(this.state.columnData.data, 'Column Preferences')} />
-          <Button primary={true} value="Done" width="120px" onClick={() => this.setState({ columnData: { data: '', show: false } })} />
+          <Button color="blue" value="Copy" width="120px" onClick={() => this.copy(this.state.copyData.data, this.state.copyData.type)} />
+          <Button primary={true} value="Done" width="120px" onClick={() => this.setState({ copyData: { data: '', show: false } })} />
         </div>
       </div>
     );
@@ -225,9 +234,10 @@ export default class DashboardSettings extends DashboardView {
       <div className={styles.settings_page}>
         <Fieldset legend="Dashboard Configuration">
           <Field label={<Label text="Export Column Preferences" />} input={<FormButton color="blue" value="Export" onClick={() => this.getColumns()} />} />
+          <Field label={<Label text="Export Class Preferences" />} input={<FormButton color="blue" value="Export" onClick={() => this.getClasses()} />} />
           <Field label={<Label text="Create New User" />} input={<FormButton color="blue" value="Create" onClick={() => this.setState({ createUserInput: true })} />} />
         </Fieldset>
-        {this.state.columnData.show && columnPreferences}
+        {this.state.copyData.show && copyData}
         {this.state.createUserInput && createUserInput}
         {this.state.newUser.show && userData}
         <Toolbar section="Settings" subsection="Dashboard Configuration" />

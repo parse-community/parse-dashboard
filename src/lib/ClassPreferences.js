@@ -38,3 +38,26 @@ export function getPreferences(appId, className) {
 function path(appId, className) {
   return `ParseDashboard:${VERSION}:${appId}:ClassPreference:${className}`;
 }
+
+export function getAllPreferences(appId) {
+  const storageKeys = Object.keys(localStorage);
+  const result = {};
+  for (const key of storageKeys) {
+    const split = key.split(':')
+    if (split.length <= 1 || split[2] !== appId) {
+      continue;
+    }
+    const className = split.at(-1);
+    const preferences = getPreferences(appId, className);
+    if (preferences) {
+      preferences.filters = preferences.filters.map(filter => {
+        if (typeof filter.filter === 'string') {
+          filter.filter = JSON.parse(filter.filter);
+        }
+        return filter;
+      });
+      result[className] = preferences;
+    }
+  }
+  return result;
+}
