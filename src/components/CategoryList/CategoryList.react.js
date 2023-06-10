@@ -150,7 +150,6 @@ export default class CategoryList extends React.Component {
                       >
                         <span>{name}</span>
                       </Link>
-                      {!readonly &&
                       <a
                         className={styles.close}
                         onClick={(e) => {
@@ -160,7 +159,6 @@ export default class CategoryList extends React.Component {
                       >
                         ×
                       </a>
-                      }
                     </div>
                   );
                 })}

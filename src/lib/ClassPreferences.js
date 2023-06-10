@@ -50,6 +50,12 @@ export function getAllPreferences(appId) {
     const className = split.at(-1);
     const preferences = getPreferences(appId, className);
     if (preferences) {
+      preferences.filters = preferences.filters.map(filter => {
+        if (typeof filter.filter === 'string') {
+          filter.filter = JSON.parse(filter.filter);
+        }
+        return filter;
+      });
       result[className] = preferences;
     }
   }

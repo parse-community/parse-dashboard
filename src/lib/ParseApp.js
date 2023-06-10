@@ -105,7 +105,9 @@ export default class ParseApp {
         const preferences = getPreferences(appId, className) || { filters: [] };
         const { filters } = classPreference[className];
         for (const filter of filters) {
-          filter.readonly = true;
+          if (Array.isArray(filter.filter)) {
+            filter.filter = JSON.stringify(filter.filter);
+          }
           if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
             continue;
           }

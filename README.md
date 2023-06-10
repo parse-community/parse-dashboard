@@ -348,7 +348,12 @@ For example:
     "_Role": {
       "filters": [{
         "name": "Filter Name",
-        "filter": "[{\"field\":\"objectId\",\"constraint\":\"exists\"}]"
+        "filter": [
+          {
+            "field": "objectId",
+            "constraint": "exists"
+          }
+        ]
       }]
     }
   }
