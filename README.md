@@ -338,7 +338,7 @@ If you have classes with a lot of columns and you filter them often with the sam
 
 ### Persistent Filters
 
-The `classPreference` setting allows for data browser filters to be saved across sessions. To save the current filters, navigate to *App Settings > Export Class Preferences*.
+The filters you save in the data browser of Parse Dashboard are only available for the current dashboard user in the current browser session. To make filters permanently available for all dashboard users of an app, you can define filters in the `classPreference` setting.
 
 For example:
 
@@ -359,6 +359,8 @@ For example:
   }
 }]
 ```
+
+You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under *App Settings > Export Class Preferences*.
 
 # Running as Express Middleware
 
