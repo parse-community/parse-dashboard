@@ -476,8 +476,7 @@ With MFA enabled, a user must provide a one-time password that is typically boun
 
 The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
 
-If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user,
-run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
 
 ```json
 {
