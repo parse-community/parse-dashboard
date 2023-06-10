@@ -343,19 +343,16 @@ The `classPreference` setting allows for data browser filters to be saved across
 For example:
 
 ```json
-"apps": [
-  {
-    "classPreference": {
-        "_Role": {
-          "filters": [
-            {
-              "name": "Filter Name",
-              "filter": "[{\"field\":\"objectId\",\"constraint\":\"exists\"}]"
-            }
-          ]
-        }
-      }
-]
+"apps": [{
+  "classPreference": {
+    "_Role": {
+      "filters": [{
+        "name": "Filter Name",
+        "filter": "[{\"field\":\"objectId\",\"constraint\":\"exists\"}]"
+      }]
+    }
+  }
+}]
 ```
 
 # Running as Express Middleware
