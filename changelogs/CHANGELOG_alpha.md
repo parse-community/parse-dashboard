@@ -1,3 +1,10 @@
+# [5.2.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.14...5.2.0-alpha.15) (2023-06-11)
+
+
+### Bug Fixes
+
+* Vertical scrollbar in data browser is outside visible area when scrolling horizontally ([#2457](https://github.com/ParsePlatform/parse-dashboard/issues/2457)) ([5acac3f](https://github.com/ParsePlatform/parse-dashboard/commit/5acac3fb5c74cbb24ec96b721d874fbc36096c39))
+
 # [5.2.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.13...5.2.0-alpha.14) (2023-06-10)
 
 
