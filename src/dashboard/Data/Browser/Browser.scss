@@ -15,7 +15,6 @@
   bottom: 0;
   overflow: auto;
   width: calc(100% - 300px);
-  padding-top: 30px;
 }
 
 body:global(.expanded) {
@@ -85,7 +84,6 @@ body:global(.expanded) {
   bottom: 0;
   left: 0;
   width: 100%;
-  overflow: auto;
 }
 
 .table .empty {
