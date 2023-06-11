@@ -14,12 +14,13 @@
   right: 0;
   bottom: 0;
   overflow: auto;
-  padding-top: 30px;
+  width: calc(100% - 300px);
 }
 
 body:global(.expanded) {
   .browser {
     left: $sidebarCollapsedWidth;
+    width: calc(100% - $sidebarCollapsedWidth);
   }
 }
 
@@ -82,9 +83,7 @@ body:global(.expanded) {
   top: 30px;
   bottom: 0;
   left: 0;
-  min-width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  width: 100%;
 }
 
 .table .empty {
