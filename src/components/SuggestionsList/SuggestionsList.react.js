@@ -35,13 +35,15 @@ export default class Suggestion extends React.Component {
   }
 
   render() {
-  const { 
+  const {
     position,
     onExternalClick,
     suggestions,
     suggestionsStyle,
+    suggestionsItemStyle,
     activeSuggestion,
-    onClick} = this.props;
+    onClick,
+    onMouseDown} = this.props;
 
     return (
       <Popover
@@ -49,6 +51,7 @@ export default class Suggestion extends React.Component {
       position={position}
       ref={this.popoverRef}
       onExternalClick={onExternalClick}
+      data-popover-type="inner"
     >
       <ul style={suggestionsStyle} className={styles.suggestions}>
         {suggestions.map((suggestion, index) => {
@@ -57,7 +60,7 @@ export default class Suggestion extends React.Component {
             className = styles.active;
           }
           return (
-            <li className={className} key={suggestion} onClick={onClick}>
+            <li style={suggestionsItemStyle} className={className} key={suggestion} onMouseDown={onMouseDown} onClick={onClick}>
               {suggestion}
             </li>
           );
