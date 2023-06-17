@@ -99,31 +99,31 @@ let FilterRow = ({
       <div className={styles.row}>
         <Autocomplete
           inputStyle={{
-            transition: "0s background-color ease-in-out",
+            transition: '0s background-color ease-in-out',
           }}
           suggestionsStyle={{
-            width: "140px",
-            maxHeight: "360px",
-            overflowY: "auto",
-            fontSize: "14px",
-            background: "#343445",
-            borderBottomLeftRadius: "5px",
-            borderBottomRightRadius: "5px",
-            color: "white",
-            cursor: "pointer",
+            width: '140px',
+            maxHeight: '360px',
+            overflowY: 'auto',
+            fontSize: '14px',
+            background: '#343445',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
+            color: 'white',
+            cursor: 'pointer',
           }}
           suggestionsItemStyle={{
-            background: "#343445",
-            color: "white",
-            height: "30px",
-            lineHeight: "30px",
-            borderBottom: "0px",
+            background: '#343445',
+            color: 'white',
+            height: '30px',
+            lineHeight: '30px',
+            borderBottom: '0px',
           }}
           containerStyle={{
-            display: "inline-block",
-            width: "140px",
-            verticalAlign: "top",
-            height: "30px",
+            display: 'inline-block',
+            width: '140px',
+            verticalAlign: 'top',
+            height: '30px',
           }}
           strict={true}
           value={currentField}
