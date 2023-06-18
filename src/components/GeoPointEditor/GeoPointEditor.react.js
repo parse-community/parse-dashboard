@@ -114,7 +114,7 @@ export default class GeoPointEditor extends React.Component {
           return null;
         }
 
-        let values = match[0].replace(/[\(\)]/g, '').split(',');
+        let values = match[0].replace(/[()]/g, '').split(',');
 
         values = values.map(val => val.trim());
 
