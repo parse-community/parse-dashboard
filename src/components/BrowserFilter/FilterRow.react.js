@@ -95,6 +95,20 @@ let FilterRow = ({
       }
     }, [])
 
+    // This will add https://github.com/parse-community/parse-dashboard/pull/2463#issuecomment-1595918018
+    const buildSuggestions = (input) => {
+      const lowerCaseInput = input.toLowerCase();
+      return fields.filter((field) => {
+        let inputIndex = 0;
+        for (let i = 0; i < field.length; i++) {
+          if (field[i].toLowerCase() === lowerCaseInput[inputIndex]) {
+            inputIndex++;
+          }
+        }
+        return inputIndex === lowerCaseInput.length;
+      });
+    };
+
     return (
       <div className={styles.row}>
         <Autocomplete
@@ -129,7 +143,7 @@ let FilterRow = ({
           value={currentField}
           suggestions={fields}
           onChange={onChangeField}
-          buildSuggestions={(input) => fields.filter((s) => s.startsWith(input))}
+          buildSuggestions={buildSuggestions}
           buildLabel={() => ''}
         />
         <ChromeDropdown
