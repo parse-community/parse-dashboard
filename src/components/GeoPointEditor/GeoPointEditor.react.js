@@ -106,26 +106,32 @@ export default class GeoPointEditor extends React.Component {
       let value = e.target.value;
 
       if (!validateNumeric(value)) {
-        var values = value.split(',');
+        // This regex will match this form of input: (x, y) or (x,y) or x, y or x,y
+        const regex = /\((-?\d+\.?\d*),\s*(-?\d+\.?\d*)\)|(-?\d+\.?\d*),\s*(-?\d+\.?\d*)/;
+        const match = value.match(regex);
 
-        if (values.length == 2) {
-          values = values.map(val => val.trim());
+        if (!match) {
+          return null;
+        }
 
-          if (values[0].length > 0 && validateNumeric(values[0])) {
+        let values = match[0].replace(/[\(\)]/g, '').split(',');
 
-            if (values[1].length <= 0 || !validateNumeric(values[1])) {
-              this.setState({ latitude: values[0] });
-              this.longitudeRef.current.focus();
-              this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
-              return;
-            }
+        values = values.map(val => val.trim());
 
-            if (validateNumeric(values[1])) {
-              this.setState({ latitude: values[0] });
-              this.setState({ longitude: values[1] });
-              this.longitudeRef.current.focus();
-              return;
-            }
+        if (values[0].length > 0 && validateNumeric(values[0])) {
+
+          if (values[1].length <= 0 || !validateNumeric(values[1])) {
+            this.setState({ latitude: values[0] });
+            this.longitudeRef.current.focus();
+            this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
+            return;
+          }
+
+          if (validateNumeric(values[1])) {
+            this.setState({ latitude: values[0] });
+            this.setState({ longitude: values[1] });
+            this.longitudeRef.current.focus();
+            return;
           }
         }
       }
