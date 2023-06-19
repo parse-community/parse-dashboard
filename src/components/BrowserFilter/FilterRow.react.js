@@ -95,18 +95,9 @@ let FilterRow = ({
       }
     }, [])
 
-    // This will add https://github.com/parse-community/parse-dashboard/pull/2463#issuecomment-1595918018
     const buildSuggestions = (input) => {
-      const lowerCaseInput = input.toLowerCase();
-      return fields.filter((field) => {
-        let inputIndex = 0;
-        for (let i = 0; i < field.length; i++) {
-          if (field[i].toLowerCase() === lowerCaseInput[inputIndex]) {
-            inputIndex++;
-          }
-        }
-        return inputIndex === lowerCaseInput.length;
-      });
+      const regex = new RegExp(input.split('').join('.*?'), 'i');
+      return fields.filter(f => regex.test(f));
     };
 
     return (
