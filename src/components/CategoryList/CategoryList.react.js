@@ -102,7 +102,7 @@ export default class CategoryList extends React.Component {
           let count = c.count;
           let className = id === this.props.current ? styles.active : '';
           let selectedFilter = null;
-          if (this.state.openClasses.includes(id)) {
+            if (this.state.openClasses.includes(id) && id === this.props.current) {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
               const queryFilter = query.get('filters')
