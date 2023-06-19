@@ -108,7 +108,7 @@ export default class GeoPointEditor extends React.Component {
       if (!validateNumeric(value)) {
         // This regex will match this form of input: (x, y) or (x,y) or x, y or x,y and many more
         const regex =
-          /[\[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
+          /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
         const match = regex.exec(value);
 
         if (!match) {
