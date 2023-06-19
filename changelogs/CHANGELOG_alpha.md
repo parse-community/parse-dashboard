@@ -1,3 +1,10 @@
+# [5.2.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.16...5.2.0-alpha.17) (2023-06-19)
+
+
+### Features
+
+* Add typing with auto-complete to select a filter field in the data browser ([#2463](https://github.com/ParsePlatform/parse-dashboard/issues/2463)) ([257f76b](https://github.com/ParsePlatform/parse-dashboard/commit/257f76bbf8d1e880e3b7b704edee2eebf76451c8))
+
 # [5.2.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.15...5.2.0-alpha.16) (2023-06-19)
 
 
