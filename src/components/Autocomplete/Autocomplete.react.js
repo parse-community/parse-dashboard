@@ -23,6 +23,7 @@ export default class Autocomplete extends Component {
     this.onBlur = this.onBlur.bind(this);
 
     this.onClick = this.onClick.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onInputClick = this.onInputClick.bind(this);
@@ -46,10 +47,11 @@ export default class Autocomplete extends Component {
     };
 
     this.state = {
+      valueFromSuggestion: props.strict ? props.value ?? props.suggestions[0] : '',
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: '',
+      userInput: props.strict ? props.value ?? props.suggestions[0] : '',
       label: props.label,
       position: null
     };
@@ -60,6 +62,7 @@ export default class Autocomplete extends Component {
     this.fieldRef.current.addEventListener('scroll', this.handleScroll);
     this.recalculatePosition();
     this._ignoreBlur = false;
+    this._suggestionClicked = false;
   }
 
   componentWillUnmount() {
@@ -120,11 +123,12 @@ export default class Autocomplete extends Component {
       error: undefined
     });
 
-    this.props.onChange && this.props.onChange(userInput);
+    if (!this.props.strict) this.props.onChange && this.props.onChange(userInput);
   }
 
   onClick(e) {
     const userInput = e.currentTarget.innerText;
+    if (this.props.strict) this.props.onChange && this.props.onChange(userInput);
     const label = this.props.label || this.props.buildLabel(userInput);
 
     this.inputRef.current.focus();
@@ -144,15 +148,33 @@ export default class Autocomplete extends Component {
     );
   }
 
+  onMouseDown(e) {
+    this._suggestionClicked = true;
+    this.props.onMouseDown && this.props.onMouseDown(e);
+  }
+
   onFocus(e) {
     if (!this._ignoreBlur && !this.state.showSuggestions) {
       this._ignoreBlur = true;
     }
-
+    if(this.props.strict) e.target.select();
     this.activate(e);
   }
 
   onBlur(e) {
+    if (this.props.strict) {
+      if (!this._suggestionClicked) {
+        if (!this.props.suggestions.includes(this.state.userInput)) {
+          this.setState({ userInput: this.state.valueFromSuggestion });
+          this.props.onChange &&
+            this.props.onChange(this.state.valueFromSuggestion);
+        } else {
+          this.setState({ valueFromSuggestion: this.state.userInput });
+          this.props.onChange && this.props.onChange(this.state.userInput);
+        }
+      }
+      this._suggestionClicked = false;
+    }
     this.props.onBlur && this.props.onBlur(e);
   }
 
@@ -279,9 +301,10 @@ export default class Autocomplete extends Component {
       onChange,
       onClick,
       onBlur,
+      onMouseDown,
       onFocus,
       onKeyDown,
-      props: { suggestionsStyle, inputStyle, placeholder, error },
+      props: {suggestionsStyle, suggestionsItemStyle, inputStyle, containerStyle, placeholder, error },
       state: {
         activeSuggestion,
         filteredSuggestions,
@@ -314,19 +337,21 @@ export default class Autocomplete extends Component {
           onExternalClick={onExternalClick}
           suggestions={filteredSuggestions}
           suggestionsStyle={suggestionsStyle}
+          suggestionsItemStyle={suggestionsItemStyle}
           activeSuggestion={activeSuggestion}
           onClick={onClick}
+          onMouseDown={onMouseDown}
         />
       );
     }
 
     return (
       <React.Fragment>
-        <div className={fieldClassName} ref={this.fieldRef}>
+        <div style={containerStyle} className={fieldClassName} ref={this.fieldRef}>
           <input
             id={1}
             role={'combobox'}
-            autoComplete='off'
+            autoComplete="new-password"
             className={inputClasses}
             placeholder={placeholder}
             ref={this.inputRef}
