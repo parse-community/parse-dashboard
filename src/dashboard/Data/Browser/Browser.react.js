@@ -42,6 +42,7 @@ import { withRouter } from 'lib/withRouter';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
+const BROWSER_LAST_LOCATION = 'brower_last_location';
 
 @subscribeTo('Schema', 'schema')
 @withRouter
@@ -175,6 +176,22 @@ class Browser extends DashboardView {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
       this.prefetchData(this.props, this.context);
+    }
+  }
+
+  componentDidMount() {
+    if (window.localStorage) {
+      const pathname = window.localStorage.getItem(BROWSER_LAST_LOCATION);
+      window.localStorage.removeItem(BROWSER_LAST_LOCATION)
+      if(pathname) {
+        setTimeout(function() { this.props.navigate(pathname) }.bind(this))
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if (window.localStorage) {
+      window.localStorage.setItem(BROWSER_LAST_LOCATION, this.props.location.pathname + this.props.location.search);
     }
   }
 
