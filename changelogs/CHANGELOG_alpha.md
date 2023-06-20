@@ -1,3 +1,10 @@
+# [5.2.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.17...5.2.0-alpha.18) (2023-06-20)
+
+
+### Bug Fixes
+
+* Pasting location coordinates into field of type `GeoPoint` does not work in data browser ([#2464](https://github.com/ParsePlatform/parse-dashboard/issues/2464)) ([a8ce343](https://github.com/ParsePlatform/parse-dashboard/commit/a8ce3436a4ffe76ccf892965fa21dc2a467e2d14))
+
 # [5.2.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.16...5.2.0-alpha.17) (2023-06-19)
 
 
