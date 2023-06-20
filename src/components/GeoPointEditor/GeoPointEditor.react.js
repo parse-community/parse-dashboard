@@ -106,8 +106,7 @@ export default class GeoPointEditor extends React.Component {
       let value = e.target.value;
 
       if (!validateNumeric(value)) {
-        const regex =
-          /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
+        const regex = /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
         const match = regex.exec(value);
 
         if (!match) {
