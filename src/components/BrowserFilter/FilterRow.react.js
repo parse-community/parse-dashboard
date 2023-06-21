@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import ChromeDropdown  from 'components/ChromeDropdown/ChromeDropdown.react';
+import Autocomplete    from 'components/Autocomplete/Autocomplete.react';
 import { Constraints } from 'lib/Filters';
 import DateTimeEntry   from 'components/DateTimeEntry/DateTimeEntry.react';
 import Icon            from 'components/Icon/Icon.react';
@@ -92,15 +93,50 @@ let FilterRow = ({
       if (input !== null && editMode) {
         input.focus();
       }
-    }, [])    
+    }, [])
+
+    const buildSuggestions = (input) => {
+      const regex = new RegExp(input.split('').join('.*?'), 'i');
+      return fields.filter(f => regex.test(f));
+    };
 
     return (
       <div className={styles.row}>
-        <ChromeDropdown
-          color={active ? 'blue' : 'purple'}
+        <Autocomplete
+          inputStyle={{
+            transition: '0s background-color ease-in-out',
+          }}
+          suggestionsStyle={{
+            width: '140px',
+            maxHeight: '360px',
+            overflowY: 'auto',
+            fontSize: '14px',
+            background: '#343445',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
+            color: 'white',
+            cursor: 'pointer',
+          }}
+          suggestionsItemStyle={{
+            background: '#343445',
+            color: 'white',
+            height: '30px',
+            lineHeight: '30px',
+            borderBottom: '0px',
+          }}
+          containerStyle={{
+            display: 'inline-block',
+            width: '140px',
+            verticalAlign: 'top',
+            height: '30px',
+          }}
+          strict={true}
           value={currentField}
-          options={fields}
-          onChange={onChangeField} />
+          suggestions={fields}
+          onChange={onChangeField}
+          buildSuggestions={buildSuggestions}
+          buildLabel={() => ''}
+        />
         <ChromeDropdown
           width={compareInfo.type ? '175' : '325'}
           color={active ? 'blue' : 'purple'}
