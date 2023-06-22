@@ -354,7 +354,7 @@ export default class EditRowDialog extends React.Component {
           let file = selectedObject[name];
           let fileName = file && file.url() ? getFileName(file) : '';
           inputComponent = (
-            <div style={{ padding: '25px' }}>
+            <div style={{ padding: '25px', maxWidth: '100%' }}>
               {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
               <div style={{ cursor: 'pointer' }}>
                 <Pill

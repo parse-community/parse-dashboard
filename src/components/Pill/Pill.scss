@@ -10,7 +10,7 @@
 .pill {
   @include MonospaceFont;
   position: relative;
-  display: inline-block;
+  display: flex;
   color: #0E69A1;
   height: 20px;
   line-height: 20px;
@@ -21,7 +21,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   & a {
-    position: absolute;
     right: 0;
     height: 20px;
     width: 20px;
@@ -43,7 +42,7 @@
 }
 
 .content {
-  width: 80%;
+  width: 90%;
   text-overflow: ellipsis;
   overflow: hidden;
   text-align: left;
