@@ -59,6 +59,10 @@ export default class Popover extends React.Component {
       this._popoverLayer.dataset.parentContentId = this.props.parentContentId;
     }
 
+    if (this.props['data-popover-type']) {
+      this._popoverLayer.setAttribute('data-popover-type', this.props['data-popover-type']);
+    }
+
     document.body.addEventListener('click', this._checkExternalClick);
   }
 
@@ -79,8 +83,12 @@ export default class Popover extends React.Component {
       ? document.getElementById(contentId)
       : this._popoverLayer;
     const isChromeDropdown = e.target.parentNode.classList.contains('chromeDropdown');
+    // Find the inner popover element so on clicking inside it
+    // we can prevent external click function
+    const innerPopover = e.target.closest('[data-popover-type="inner"]');
     if (
       !hasAncestor(e.target, popoverWrapper, contentId) &&
+      !innerPopover &&
       this.props.onExternalClick &&
       !isChromeDropdown
     ) {

@@ -46,7 +46,8 @@ export default class ParseApp {
     preventSchemaEdits,
     graphQLServerURL,
     columnPreference,
-    classPreference
+    scripts,
+    classPreference,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -73,6 +74,7 @@ export default class ParseApp {
     this.preventSchemaEdits = preventSchemaEdits || false;
     this.graphQLServerURL = graphQLServerURL;
     this.columnPreference = columnPreference;
+    this.scripts = scripts;
 
     if(!supportedPushLocales) {
       console.warn('Missing push locales for \'' + appName + '\', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications');
