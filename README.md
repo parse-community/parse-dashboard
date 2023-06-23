@@ -382,7 +382,7 @@ You can specify scripts to execute Cloud Functions with the `scripts` option:
 ]
 ```
 
-Next, define a Cloud Function within the connected Parse Server, and set `encodePointerInCloudFunction` in the server configuration to `true`:
+Next, define a Cloud Function within the connected Parse Server, and set `encodeParseObjectInCloudFunction` in the server configuration to `true`:
 
 ```js
 Parse.Cloud.define('deleteAccount', async (req) => {
