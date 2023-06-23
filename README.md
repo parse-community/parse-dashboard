@@ -396,7 +396,7 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 For older versions of Parse Server:
 
 <details>
-<summary>encodePointerInCloudFunction set to false</summary>
+<summary> encodeParseObjectInCloudFunction set to false</summary>
 
 ```js
 Parse.Cloud.define('deleteAccount', async (req) => {
