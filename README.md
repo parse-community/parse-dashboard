@@ -382,7 +382,7 @@ You can specify scripts to execute Cloud Functions with the `scripts` option:
 ]
 ```
 
-Next, define a Cloud Function within the connected Parse Server, and set `encodeParseObjectInCloudFunction` in the server configuration to `true`:
+Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
 
 ```js
 Parse.Cloud.define('deleteAccount', async (req) => {
@@ -392,23 +392,11 @@ Parse.Cloud.define('deleteAccount', async (req) => {
   requireMaster: true
 });
 ```
+
+⚠️ Depending on your Parse Server version you may need to set the Parse Server option `encodeParseObjectInCloudFunction` to `true` so that the selected object in the data browser is made available in the Cloud Function as an instance of `Parse.Object`. If the option is not set, is set to `false`, or you are using an older version of Parse Server, the object needs to be manually converted from a JSON object to a `Parse.Object` instance with `req.params.object = Parse.Object.fromJSON(req.params.object);`, before you can call any `Parse.Object` properties and methods on it.
 
 For older versions of Parse Server:
 
-<details>
-<summary> encodeParseObjectInCloudFunction set to false</summary>
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  req.params.object = Parse.Object.fromJSON(req.params.object);
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-}, {
-  requireMaster: true
-});
-```
-
-</details>
 <details>
 <summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
 
