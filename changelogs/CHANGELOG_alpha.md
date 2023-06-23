@@ -1,3 +1,10 @@
+# [5.2.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.18...5.2.0-alpha.19) (2023-06-23)
+
+
+### Features
+
+* Add Cloud Function execution on Parse Object in data browser ([#2409](https://github.com/ParsePlatform/parse-dashboard/issues/2409)) ([996ce91](https://github.com/ParsePlatform/parse-dashboard/commit/996ce916bfedb92c36deede4c234dde8c0554cbb))
+
 # [5.2.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.17...5.2.0-alpha.18) (2023-06-20)
 
 
