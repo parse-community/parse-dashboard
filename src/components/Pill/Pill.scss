@@ -5,55 +5,57 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-@import 'stylesheets/globals.scss';
+ @import 'stylesheets/globals.scss';
 
-.pill {
-  @include MonospaceFont;
-  position: relative;
-  display: flex;
-  color: #0E69A1;
-  height: 20px;
-  line-height: 20px;
-  border-radius: 10px;
-  font-size: 11px;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  & a {
-    right: 0;
-    height: 20px;
-    width: 20px;
-    background: #d6e5f2;
-    border-radius: 50%;
-    margin-left: 5px;
-    & svg  {
-      transform: rotate(316deg);
-    }
-  }
-  & .pillText {
-    position: absolute;
-    left: 0;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 75%;
-  }
-}
-
-.content {
-  width: 90%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  text-align: left;
-  height: 100%;
-  white-space: nowrap;
-}
-
-.iconAction {
-  cursor: pointer;
-}
-
-.disableIconAction {
-  cursor: initial;
-}
+ .pill {
+   @include MonospaceFont;
+   position: relative;
+   display: inline-block;
+   color: #0E69A1;
+   height: 20px;
+   line-height: 20px;
+   border-radius: 10px;
+   font-size: 11px;
+   width: 100%;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   & a {
+     position: absolute;
+     right: 0;
+     height: 20px;
+     width: 20px;
+     background: #d6e5f2;
+     border-radius: 50%;
+     margin-left: 5px;
+     & svg  {
+       transform: rotate(316deg);
+     }
+   }
+   & .pillText {
+     position: absolute;
+     left: 0;
+     text-overflow: ellipsis;
+     overflow: hidden;
+     white-space: nowrap;
+     width: 75%;
+   }
+ }
+ 
+ .content {
+   width: 80%;
+   text-overflow: ellipsis;
+   overflow: hidden;
+   text-align: left;
+   height: 100%;
+   white-space: nowrap;
+ }
+ 
+ .iconAction {
+   cursor: pointer;
+ }
+ 
+ .disableIconAction {
+   cursor: initial;
+ }
+ 
