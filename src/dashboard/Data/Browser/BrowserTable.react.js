@@ -159,6 +159,9 @@ export default class BrowserTable extends React.Component {
                     setContextMenu={this.props.setContextMenu}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
+                    showNote={this.props.showNote}
+                    onRefresh={this.props.onRefresh}
+                    scripts={this.context.scripts}
                   />
                   <Button
                     value="Clone"
@@ -211,6 +214,9 @@ export default class BrowserTable extends React.Component {
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
+              showNote={this.props.showNote}
+              onRefresh={this.props.onRefresh}
+              scripts={this.context.scripts}
             />
             <Button
               value="Add"
@@ -267,7 +273,11 @@ export default class BrowserTable extends React.Component {
           setRelation={this.props.setRelation}
           setCopyableValue={this.props.setCopyableValue}
           setContextMenu={this.props.setContextMenu}
-          onEditSelectedRow={this.props.onEditSelectedRow} />
+          onEditSelectedRow={this.props.onEditSelectedRow}
+          showNote={this.props.showNote}
+          onRefresh={this.props.onRefresh}
+          scripts={this.context.scripts}
+          />
       }
 
       if (this.props.editing) {

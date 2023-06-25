@@ -100,7 +100,11 @@ export default class BrowserRow extends Component {
               markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
               setContextMenu={setContextMenu}
-              onEditSelectedRow={onEditSelectedRow} />
+              onEditSelectedRow={onEditSelectedRow}
+              showNote={this.props.showNote}
+              onRefresh={this.props.onRefresh}
+              scripts={this.props.scripts}
+              />
           );
         })}
       </div>
