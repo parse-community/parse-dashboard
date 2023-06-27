@@ -246,26 +246,16 @@ export default class Autocomplete extends Component {
   onKeyDown(e) {
     const { activeSuggestion, filteredSuggestions } = this.state;
 
-    // Enter
-    const { userInput } = this.state;
-
-      if (e.keyCode === 13) {
-            if (userInput && userInput.length > 0) {
-        this.props.onSubmit(userInput);
-      }
-    } else if (e.keyCode === 9) {
-      // Tab
-      // do not type it
-      e.preventDefault();
-
-      e.stopPropagation();
-      // move focus to input
-      this.inputRef.current.focus();
+    if (e.keyCode === 13 || e.key === 'Enter') {
       this.setState({
         active: true,
         activeSuggestion: 0,
         showSuggestions: false,
         userInput: filteredSuggestions[activeSuggestion]
+      });
+    } else if (e.keyCode === 9) {
+      this.setState({
+        showSuggestions: false,
       });
     } else if (e.keyCode === 38) {
       // arrow up
@@ -279,7 +269,7 @@ export default class Autocomplete extends Component {
       });
     } else if (e.keyCode === 40) {
       // arrow down
-      if (activeSuggestion - 1 === filteredSuggestions.length) {
+      if (activeSuggestion === filteredSuggestions.length - 1) {
         return;
       }
 
@@ -341,6 +331,7 @@ export default class Autocomplete extends Component {
           activeSuggestion={activeSuggestion}
           onClick={onClick}
           onMouseDown={onMouseDown}
+          onKeyDown={onKeyDown}
         />
       );
     }
