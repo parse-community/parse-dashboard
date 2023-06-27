@@ -18,9 +18,7 @@ export default class ExecuteScriptDialog extends React.Component {
   render() {
     return (
       <Modal
-        type={
-          this.props.type === "info" ? Modal.Types.INFO : Modal.Types.DANGER
-        }
+        type={this.props.type === 'info' ? Modal.Types.INFO : Modal.Types.DANGER}
         icon="warn-outline"
         title={this.props.scriptName}
         subtitle="Confirm that you want to run this script."
@@ -29,7 +27,7 @@ export default class ExecuteScriptDialog extends React.Component {
         onCancel={this.props.onCancel}
         onConfirm={this.props.onConfirm}
       >
-        <div className={[labelStyles.label, labelStyles.text, styles.action].join(" ")}>
+        <div className={[labelStyles.label, labelStyles.text, styles.action].join(' ')}>
           {`Do you want to run script "${this.props.scriptName}" on "${this.props.className}" object "${this.props.objectId}"?`}
         </div>
       </Modal>
