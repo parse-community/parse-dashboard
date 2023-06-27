@@ -15,16 +15,20 @@ import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import baseStyles                from 'stylesheets/base.scss';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
+import ExecuteScriptDialog       from 'dashboard/Data/Browser/ExecuteScriptDialog.react';
+
 export default class BrowserCell extends Component {
   constructor() {
     super();
 
     this.cellRef = React.createRef();
     this.copyableValue = undefined;
+    this.selectedScript = null;
     this.state = {
       showTooltip: false,
       content: null,
-      classes: []
+      classes: [],
+      showExecuteScriptDialog: false,
     };
   }
 
@@ -208,7 +212,7 @@ export default class BrowserCell extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.content ) {
+    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.content || nextState.showExecuteScriptDialog !== this.state.showExecuteScriptDialog) {
       return true;
     }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
@@ -278,6 +282,7 @@ export default class BrowserCell extends Component {
       });
     }
 
+    const { className, objectId } = this.props;
     const validScripts = (this.props.scripts || []).filter(script => script.classes?.includes(this.props.className));
     if (validScripts.length) {
       onEditSelectedRow && contextMenuOptions.push({
@@ -285,16 +290,12 @@ export default class BrowserCell extends Component {
         items: validScripts.map(script => {
           return {
             text: script.title,
-            callback: async () => {
-              try {
-                const object = Parse.Object.extend(this.props.className).createWithoutData(this.props.objectId);
-                const response = await Parse.Cloud.run(script.cloudCodeFunction, {object: object.toPointer()}, {useMasterKey: true});
-                this.props.showNote(response || `${script.title} ran with object ${object.id}}`);
-                this.props.onRefresh();
-              } catch (e) {
-                this.props.showNote(e.message, true);
-                console.log(`Could not run ${script.title}: ${e}`);
-              }
+            callback: () => {
+              this.selectedScript = { ...script, className, objectId };
+              if(script.showConfirmationDialog)
+                this.toggleExecuteScriptDialog();
+              else
+                this.executeSript(script);
             }
           }
         })
@@ -302,6 +303,30 @@ export default class BrowserCell extends Component {
     }
 
     return contextMenuOptions;
+  }
+
+  async executeSript(script) {
+      try {
+        const object = Parse.Object.extend(
+          this.props.className
+        ).createWithoutData(this.props.objectId);
+        const response = await Parse.Cloud.run(
+          script.cloudCodeFunction,
+          { object: object.toPointer() },
+          { useMasterKey: true }
+        );
+        this.props.showNote(
+          response || `${script.title} ran with object ${object.id}}`
+        );
+        this.props.onRefresh();
+      } catch (e) {
+        this.props.showNote(e.message, true);
+        console.log(`Could not run ${script.title}: ${e}`);
+      }
+  }
+
+  toggleExecuteScriptDialog(){
+    this.setState((prevState) => ({ showExecuteScriptDialog: !prevState.showExecuteScriptDialog }));
   }
 
   getSetFilterContextMenuOption(constraints) {
@@ -423,6 +448,22 @@ export default class BrowserCell extends Component {
       classes.push(styles.required);
     }
 
+    let extras = null;
+    if (this.state.showExecuteScriptDialog)
+      extras = (
+        <ExecuteScriptDialog
+          className={this.selectedScript.className}
+          objectId={this.selectedScript.objectId}
+          scriptName={this.selectedScript.title}
+          type={this.selectedScript.confirmationDialogStyle}
+          onCancel={() => this.toggleExecuteScriptDialog()}
+          onConfirm={() => {
+            this.executeSript(this.selectedScript);
+            this.toggleExecuteScriptDialog();
+          }}
+        />
+      );
+
     return <span
       ref={this.cellRef}
       className={classes.join(' ')}
@@ -454,6 +495,7 @@ export default class BrowserCell extends Component {
       onContextMenu={this.onContextMenu.bind(this)}
       >
         {this.state.content}
+        {extras}
     </span>
   }
 }
