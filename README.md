@@ -31,7 +31,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Parse Server](#parse-server)
     - [Node.js](#nodejs)
   - [Configuring Parse Dashboard](#configuring-parse-dashboard)
-    - [Options Overview](#options-overview)
+    - [Options](#options)
     - [File](#file)
     - [Environment variables](#environment-variables)
       - [Multiple apps](#multiple-apps)
@@ -113,7 +113,7 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 
 ## Configuring Parse Dashboard
 
-### Options Overview
+### Options
 
 | Parameter                              | Type                | Optional | Default | Example              | Description                                                                                                                                 |
 |----------------------------------------|---------------------|----------|---------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
