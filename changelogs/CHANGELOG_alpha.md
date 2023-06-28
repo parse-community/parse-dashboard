@@ -1,3 +1,24 @@
+# [5.2.0-alpha.24](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.23...5.2.0-alpha.24) (2023-06-28)
+
+
+### Features
+
+* Add support for confirmation dialog before script execution in data browser ([#2481](https://github.com/ParsePlatform/parse-dashboard/issues/2481)) ([64d3913](https://github.com/ParsePlatform/parse-dashboard/commit/64d391320bbdb519af8ff93fe8579315ef48e36e))
+
+# [5.2.0-alpha.23](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.22...5.2.0-alpha.23) (2023-06-28)
+
+
+### Features
+
+* Add parameter `selectedField` to script payload to determine which object field was selected when script was invoked ([#2483](https://github.com/ParsePlatform/parse-dashboard/issues/2483)) ([e98d653](https://github.com/ParsePlatform/parse-dashboard/commit/e98d653b96787720dad5310c5af98869e2ac2923))
+
+# [5.2.0-alpha.22](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.21...5.2.0-alpha.22) (2023-06-27)
+
+
+### Features
+
+* Add refresh button to Cloud Config page ([#2480](https://github.com/ParsePlatform/parse-dashboard/issues/2480)) ([be212b0](https://github.com/ParsePlatform/parse-dashboard/commit/be212b0ad6c777f7c5ee9a74cac0affa63faa1c1))
+
 # [5.2.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.20...5.2.0-alpha.21) (2023-06-24)
 
 
