@@ -29,7 +29,7 @@ export default class BrowserCell extends Component {
       showTooltip: false,
       content: null,
       classes: [],
-      showExecuteScriptDialog: false,
+      showConfirmationDialog: false,
     };
   }
 
@@ -213,7 +213,7 @@ export default class BrowserCell extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.content || nextState.showExecuteScriptDialog !== this.state.showExecuteScriptDialog) {
+    if (nextState.showTooltip !== this.state.showTooltip || nextState.content !== this.state.content || nextState.showConfirmationDialog !== this.state.showConfirmationDialog) {
       return true;
     }
     const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
@@ -294,7 +294,7 @@ export default class BrowserCell extends Component {
             callback: () => {
               this.selectedScript = { ...script, className, objectId };
               if(script.showConfirmationDialog)
-                this.toggleExecuteScriptDialog();
+                this.toggleConfirmationDialog();
               else
                 this.executeSript(script);
             }
@@ -318,8 +318,8 @@ export default class BrowserCell extends Component {
     }
   }
 
-  toggleExecuteScriptDialog(){
-    this.setState((prevState) => ({ showExecuteScriptDialog: !prevState.showExecuteScriptDialog }));
+  toggleConfirmationDialog(){
+    this.setState((prevState) => ({ showConfirmationDialog: !prevState.showConfirmationDialog }));
   }
 
   getSetFilterContextMenuOption(constraints) {
@@ -442,19 +442,19 @@ export default class BrowserCell extends Component {
     }
 
     let extras = null;
-    if (this.state.showExecuteScriptDialog)
+    if (this.state.showConfirmationDialog)
       extras = (
         <Modal
-          type={this.selectedScript.type === "info" ? Modal.Types.INFO : Modal.Types.DANGER}
+          type={this.selectedScript.type === 'info' ? Modal.Types.INFO : Modal.Types.DANGER}
           icon="warn-outline"
           title={this.selectedScript.title}
           subtitle="Confirm that you want to run this script."
           confirmText="Continue"
           cancelText="Cancel"
-          onCancel={() => this.toggleExecuteScriptDialog()}
+          onCancel={() => this.toggleConfirmationDialog()}
           onConfirm={() => {
             this.executeSript(this.selectedScript);
-            this.toggleExecuteScriptDialog();
+            this.toggleConfirmationDialog();
           }}
         >
           <div className={[labelStyles.label, labelStyles.text, styles.action].join(' ')}>
