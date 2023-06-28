@@ -445,7 +445,7 @@ export default class BrowserCell extends Component {
     if (this.state.showConfirmationDialog)
       extras = (
         <Modal
-          type={this.selectedScript.type === 'info' ? Modal.Types.INFO : Modal.Types.DANGER}
+          type={this.selectedScript.confirmationDialogStyle === 'info' ? Modal.Types.INFO : Modal.Types.DANGER}
           icon="warn-outline"
           title={this.selectedScript.title}
           subtitle="Confirm that you want to run this script."
