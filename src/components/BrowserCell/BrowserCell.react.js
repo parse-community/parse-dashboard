@@ -15,7 +15,8 @@ import React, { Component }      from 'react';
 import styles                    from 'components/BrowserCell/BrowserCell.scss';
 import baseStyles                from 'stylesheets/base.scss';
 import * as ColumnPreferences    from 'lib/ColumnPreferences';
-import ExecuteScriptDialog       from 'dashboard/Data/Browser/ExecuteScriptDialog.react';
+import labelStyles               from 'components/Label/Label.scss';
+import Modal        from 'components/Modal/Modal.react';
 
 export default class BrowserCell extends Component {
   constructor() {
@@ -306,23 +307,15 @@ export default class BrowserCell extends Component {
   }
 
   async executeSript(script) {
-      try {
-        const object = Parse.Object.extend(
-          this.props.className
-        ).createWithoutData(this.props.objectId);
-        const response = await Parse.Cloud.run(
-          script.cloudCodeFunction,
-          { object: object.toPointer() },
-          { useMasterKey: true }
-        );
-        this.props.showNote(
-          response || `${script.title} ran with object ${object.id}}`
-        );
-        this.props.onRefresh();
-      } catch (e) {
-        this.props.showNote(e.message, true);
-        console.log(`Could not run ${script.title}: ${e}`);
-      }
+    try {
+      const object = Parse.Object.extend(this.props.className).createWithoutData(this.props.objectId);
+      const response = await Parse.Cloud.run(script.cloudCodeFunction, {object: object.toPointer()}, {useMasterKey: true});
+      this.props.showNote(response || `Ran script "${script.title}" on "${this.props.className}" object "${object.id}".`);
+      this.props.onRefresh();
+    } catch (e) {
+      this.props.showNote(e.message, true);
+      console.log(`Could not run ${script.title}: ${e}`);
+    }
   }
 
   toggleExecuteScriptDialog(){
@@ -451,17 +444,23 @@ export default class BrowserCell extends Component {
     let extras = null;
     if (this.state.showExecuteScriptDialog)
       extras = (
-        <ExecuteScriptDialog
-          className={this.selectedScript.className}
-          objectId={this.selectedScript.objectId}
-          scriptName={this.selectedScript.title}
-          type={this.selectedScript.confirmationDialogStyle}
+        <Modal
+          type={this.selectedScript.type === "info" ? Modal.Types.INFO : Modal.Types.DANGER}
+          icon="warn-outline"
+          title={this.selectedScript.title}
+          subtitle="Confirm that you want to run this script."
+          confirmText="Continue"
+          cancelText="Cancel"
           onCancel={() => this.toggleExecuteScriptDialog()}
           onConfirm={() => {
             this.executeSript(this.selectedScript);
             this.toggleExecuteScriptDialog();
           }}
-        />
+        >
+          <div className={[labelStyles.label, labelStyles.text, styles.action].join(' ')}>
+            {`Do you want to run script "${this.selectedScript.title}" on "${this.selectedScript.className}" object "${this.selectedScript.objectId}"?`}
+          </div>
+        </Modal>
       );
 
     return <span
