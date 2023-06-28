@@ -375,7 +375,9 @@ You can specify scripts to execute Cloud Functions with the `scripts` option:
       {
         "title": "Delete Account",
         "classes": ["_User"],
-        "cloudCodeFunction": "deleteAccount"
+        "cloudCodeFunction": "deleteAccount",
+        "showConfirmationDialog": true,
+        "confirmationDialogStyle": "critical" // or "info" for blue style
       }
     ]
   }
