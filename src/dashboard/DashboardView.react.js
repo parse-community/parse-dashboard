@@ -201,6 +201,9 @@ export default class DashboardView extends React.Component {
     const settingsSections = [{
       name: 'Dashboard',
       link: '/settings/dashboard'
+    }, {
+      name: 'Security',
+      link: '/settings/security',
     }];
 
     // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
