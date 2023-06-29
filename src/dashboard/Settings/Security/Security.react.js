@@ -53,7 +53,7 @@ export default class Security extends DashboardView {
     }
     return (
       <div>
-        <Fieldset legend="Result">
+        <Fieldset legend="Overall Security Status">
           <Field labelWidth={30} label={<Label text="Status" />} input={<Label text={this.state.data.state} style={{ color: this.state.data.state === 'fail' ? 'red' : 'green' }} />} />
           <Field labelWidth={30} label={<Label text="Version" />} input={<Label text={this.state.data.version} />} />
         </Fieldset>
