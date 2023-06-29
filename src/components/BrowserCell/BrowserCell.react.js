@@ -283,14 +283,41 @@ export default class BrowserCell extends Component {
       });
     }
 
-    const { className, objectId } = this.props;
-    const validScripts = (this.props.scripts || []).filter(script => script.classes?.includes(this.props.className));
+    const { className, objectId,field, scripts = [] } = this.props;
+    let validator = null;
+    const validScripts = (scripts || []).filter(script => {
+      if (script.classes?.includes(className)) {
+        return true;
+      }
+      for (const script of script?.classes || []) {
+        if (script?.name !== className) {
+          continue;
+        }
+        const fields = script?.fields || [];
+        if (script?.fields.includes(field) || script?.fields.includes('*')) {
+          return true;
+        }
+        for (const currentField of fields) {
+          if (Object.prototype.toString.call(currentField) === '[object Object]') {
+            if (currentField.name === field) {
+              if (typeof currentField.validator === 'string') {
+                validator = eval(currentField.validator);
+              } else {
+                validator = currentField.validator;
+              }
+              return true;
+            }
+          }
+        }
+      }
+    });
     if (validScripts.length) {
       onEditSelectedRow && contextMenuOptions.push({
         text: 'Scripts',
         items: validScripts.map(script => {
           return {
             text: script.title,
+            disabled: validator?.(this.props.value, field) === false,
             callback: () => {
               this.selectedScript = { ...script, className, objectId };
               if(script.showConfirmationDialog)
