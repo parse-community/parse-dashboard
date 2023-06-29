@@ -1,3 +1,10 @@
+# [5.2.0-alpha.25](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.24...5.2.0-alpha.25) (2023-06-29)
+
+
+### Bug Fixes
+
+* Incorrect highlight maker position in class list in data browser ([#2490](https://github.com/ParsePlatform/parse-dashboard/issues/2490)) ([8c28d24](https://github.com/ParsePlatform/parse-dashboard/commit/8c28d245cfe5d9558ffd276b9660f73449c4f35a))
+
 # [5.2.0-alpha.24](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.23...5.2.0-alpha.24) (2023-06-28)
 
 
