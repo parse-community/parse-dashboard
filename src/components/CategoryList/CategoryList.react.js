@@ -66,7 +66,10 @@ export default class CategoryList extends React.Component {
           this.highlight.style.top = height + 'px';
           return;
         }
-        if (this.state.openClasses.includes(id)) {
+        if (id === 'classSeparator') {
+          height += 13;
+        }
+        else if (this.state.openClasses.includes(id)) {
           height = height + (20 * (c.filters.length + 1))
         } else {
           height += 20;
