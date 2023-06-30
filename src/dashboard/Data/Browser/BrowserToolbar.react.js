@@ -71,6 +71,8 @@ let BrowserToolbar = ({
   login,
   logout,
   toggleMasterKeyUsage,
+
+  shortcutsMenu,
 }) => {
   let selectionLength = Object.keys(selection).length;
   let isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -280,6 +282,7 @@ let BrowserToolbar = ({
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}
+        showFilters={shortcutsMenu.showFilters}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {perms && enableSecurityDialog ? (

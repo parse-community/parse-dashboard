@@ -26,9 +26,8 @@
 
 .active,
 .suggestions li:hover {
-  color: #0e69a1 !important;
+  background-color: #159cee !important;
   cursor: pointer;
-  font-weight: 500 !important;
 }
 
 .suggestions li:not(:last-of-type) {

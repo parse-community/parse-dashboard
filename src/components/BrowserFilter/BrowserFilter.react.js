@@ -41,6 +41,9 @@ export default class BrowserFilter extends React.Component {
     if (props.className !== this.props.className) {
       this.setState({ open: false });
     }
+    if (props.showFilters !== this.props.showFilters) {
+      this.toggle();
+    }
   }
 
   toggle() {
