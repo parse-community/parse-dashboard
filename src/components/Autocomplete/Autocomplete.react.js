@@ -63,6 +63,11 @@ export default class Autocomplete extends Component {
     this.recalculatePosition();
     this._ignoreBlur = false;
     this._suggestionClicked = false;
+    if(this.props.autoFocus){
+      setTimeout(() => {
+          this.inputRef.current.focus();
+      }, 0);
+    }
   }
 
   componentWillUnmount() {
@@ -342,7 +347,7 @@ export default class Autocomplete extends Component {
           <input
             id={1}
             role={'combobox'}
-            autoComplete="new-password"
+            autoComplete="off"
             className={inputClasses}
             placeholder={placeholder}
             ref={this.inputRef}
