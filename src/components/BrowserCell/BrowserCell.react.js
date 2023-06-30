@@ -283,7 +283,7 @@ export default class BrowserCell extends Component {
       });
     }
 
-    const { className, objectId,field, scripts = [] } = this.props;
+    const { className, objectId,field, scripts = [], rowValue } = this.props;
     let validator = null;
     const validScripts = (scripts || []).filter(script => {
       if (script.classes?.includes(className)) {
@@ -317,13 +317,15 @@ export default class BrowserCell extends Component {
         items: validScripts.map(script => {
           return {
             text: script.title,
-            disabled: validator?.(this.props.value, field) === false,
+            disabled: validator?.(this.props.rowValue, field) === false,
             callback: () => {
               this.selectedScript = { ...script, className, objectId };
-              if(script.showConfirmationDialog)
+              if (script.showConfirmationDialog) {
                 this.toggleConfirmationDialog();
-              else
+              }
+              else {
                 this.executeSript(script);
+              }
             }
           }
         })
