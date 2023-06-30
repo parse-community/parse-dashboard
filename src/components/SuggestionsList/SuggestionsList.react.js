@@ -43,7 +43,8 @@ export default class Suggestion extends React.Component {
     suggestionsItemStyle,
     activeSuggestion,
     onClick,
-    onMouseDown} = this.props;
+    onMouseDown,
+    onKeyDown} = this.props;
 
     return (
       <Popover
@@ -53,7 +54,7 @@ export default class Suggestion extends React.Component {
       onExternalClick={onExternalClick}
       data-popover-type="inner"
     >
-      <ul style={suggestionsStyle} className={styles.suggestions}>
+      <ul style={suggestionsStyle} className={styles.suggestions} onKeyDown={onKeyDown}>
         {suggestions.map((suggestion, index) => {
           let className;
           if (index === activeSuggestion) {

@@ -95,6 +95,10 @@ class Browser extends DashboardView {
 
       useMasterKey: true,
       currentUser: Parse.User.current(),
+
+      shortcutsMenu: {
+        showFilters: false
+      },
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -155,6 +159,7 @@ class Browser extends DashboardView {
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
     this.redirectToFirstClass = this.redirectToFirstClass.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
 
     this.dataBrowserRef = React.createRef();
 
@@ -187,12 +192,14 @@ class Browser extends DashboardView {
         setTimeout(function() { this.props.navigate(pathname) }.bind(this))
       }
     }
+    document.addEventListener('keydown', this.handleKeyPress);
   }
 
   componentWillUnmount() {
     if (window.localStorage) {
       window.localStorage.setItem(BROWSER_LAST_LOCATION, this.props.location.pathname + this.props.location.search);
     }
+    document.removeEventListener('keydown', this.handleKeyPress);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -1608,6 +1615,14 @@ class Browser extends DashboardView {
     this.setState({ showPointerKeyDialog: false });
   }
 
+  handleKeyPress = (event) => {
+    if(document.activeElement.tagName === 'BODY') {
+      if (event.keyCode === 70) {
+        this.setState(prevState => ({ shortcutsMenu: { showFilters: !prevState.shortcutsMenu.showFilters }}));
+      }
+    }
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1717,6 +1732,7 @@ class Browser extends DashboardView {
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote}
+            shortcutsMenu={this.state.shortcutsMenu}
           />
         );
       }

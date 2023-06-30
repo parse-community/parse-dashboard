@@ -112,6 +112,7 @@ let Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, class
           currentConstraint: constraint,
           compareTo,
           key: field + '-' + constraint + '-' + i,
+          autoFocus: i === 0,
 
           onChangeField: newField => {
             onChange(changeField(schema, filters, i, newField));

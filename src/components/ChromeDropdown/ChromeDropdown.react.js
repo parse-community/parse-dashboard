@@ -90,7 +90,7 @@ export default class ChromeDropdown extends React.Component {
     }
 
     return (
-      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef}>
+      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef} tabIndex={0}>
         {content}
       </div>
     );

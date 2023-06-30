@@ -86,7 +86,8 @@ let FilterRow = ({
     onDeleteRow,
     active,
     parentContentId,
-    editMode
+    editMode,
+    autoFocus,
   }) => {
 
     let setFocus = useCallback((input) => {
@@ -136,6 +137,7 @@ let FilterRow = ({
           onChange={onChangeField}
           buildSuggestions={buildSuggestions}
           buildLabel={() => ''}
+          autoFocus={autoFocus}
         />
         <ChromeDropdown
           width={compareInfo.type ? '175' : '325'}
