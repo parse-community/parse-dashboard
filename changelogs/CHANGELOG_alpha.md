@@ -1,3 +1,10 @@
+# [5.2.0-alpha.27](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.26...5.2.0-alpha.27) (2023-06-30)
+
+
+### Bug Fixes
+
+* Adding a file when adding a new row in the data browser doesn't show filename ([#2471](https://github.com/ParsePlatform/parse-dashboard/issues/2471)) ([5bbb94e](https://github.com/ParsePlatform/parse-dashboard/commit/5bbb94e5b5266af5ed770d0241605eb859699831))
+
 # [5.2.0-alpha.26](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.25...5.2.0-alpha.26) (2023-06-30)
 
 
