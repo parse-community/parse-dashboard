@@ -19,6 +19,7 @@ import subscribeTo            from 'lib/subscribeTo';
 import TableHeader            from 'components/Table/TableHeader.react';
 import TableView              from 'dashboard/TableView.react';
 import Toolbar                from 'components/Toolbar/Toolbar.react';
+import browserStyles          from 'dashboard/Data/Browser/Browser.scss';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -38,7 +39,7 @@ class Config extends TableView {
   }
 
   componentWillMount() {
-    this.props.config.dispatch(ActionTypes.FETCH);
+    this.loadData();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -47,12 +48,29 @@ class Config extends TableView {
     }
   }
 
+  onRefresh() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.props.config.dispatch(ActionTypes.FETCH);
+  }
+
   renderToolbar() {
     return (
-      <Toolbar
-        section='Core'
-        subsection='Config'>
-        <Button color='white' value='Create a parameter' onClick={this.createParameter.bind(this)} />
+      <Toolbar section="Core" subsection="Config">
+        <a
+          className={browserStyles.toolbarButton}
+          onClick={this.onRefresh.bind(this)}
+        >
+          <Icon name="refresh-solid" width={14} height={14} />
+          <span>Refresh</span>
+        </a>
+        <Button
+          color="white"
+          value="Create a parameter"
+          onClick={this.createParameter.bind(this)}
+        />
       </Toolbar>
     );
   }
