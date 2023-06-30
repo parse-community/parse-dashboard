@@ -1,3 +1,24 @@
+# [5.2.0-alpha.25](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.24...5.2.0-alpha.25) (2023-06-29)
+
+
+### Bug Fixes
+
+* Incorrect highlight maker position in class list in data browser ([#2490](https://github.com/ParsePlatform/parse-dashboard/issues/2490)) ([8c28d24](https://github.com/ParsePlatform/parse-dashboard/commit/8c28d245cfe5d9558ffd276b9660f73449c4f35a))
+
+# [5.2.0-alpha.24](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.23...5.2.0-alpha.24) (2023-06-28)
+
+
+### Features
+
+* Add support for confirmation dialog before script execution in data browser ([#2481](https://github.com/ParsePlatform/parse-dashboard/issues/2481)) ([64d3913](https://github.com/ParsePlatform/parse-dashboard/commit/64d391320bbdb519af8ff93fe8579315ef48e36e))
+
+# [5.2.0-alpha.23](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.22...5.2.0-alpha.23) (2023-06-28)
+
+
+### Features
+
+* Add parameter `selectedField` to script payload to determine which object field was selected when script was invoked ([#2483](https://github.com/ParsePlatform/parse-dashboard/issues/2483)) ([e98d653](https://github.com/ParsePlatform/parse-dashboard/commit/e98d653b96787720dad5310c5af98869e2ac2923))
+
 # [5.2.0-alpha.22](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.21...5.2.0-alpha.22) (2023-06-27)
 
 
