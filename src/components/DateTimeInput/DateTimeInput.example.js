@@ -38,9 +38,7 @@ export const demos = [
     render: () => (
       <div style={{ width: 500, margin: '0 auto' }}>
         <Field
-          label={
-            <Label text="When should we deliver the notification in UTC time?" />
-          }
+          label={<Label text="When should we deliver the notification in UTC time?" />}
           input={<DateTimeInputDemo />}
         />
       </div>
@@ -50,9 +48,7 @@ export const demos = [
     render: () => (
       <div style={{ width: 500, margin: '0 auto' }}>
         <Field
-          label={
-            <Label text="When should we deliver the notification in local time?" />
-          }
+          label={<Label text="When should we deliver the notification in local time?" />}
           input={<DateTimeInputDemo local={true} />}
         />
       </div>

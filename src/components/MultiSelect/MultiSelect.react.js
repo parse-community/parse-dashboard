@@ -25,9 +25,7 @@ export default class MultiSelect extends React.Component {
     this.dropdownRef = React.createRef();
     this.handleScroll = () => {
       const node = this.dropdownRef.current;
-      const newPosition = this.props.fixed
-        ? Position.inWindow(node)
-        : Position.inDocument(node);
+      const newPosition = this.props.fixed ? Position.inWindow(node) : Position.inDocument(node);
       newPosition.y += node.offsetHeight;
       if (this.popoverRef.current) {
         this.popoverRef.current.setPosition(newPosition);
@@ -49,9 +47,7 @@ export default class MultiSelect extends React.Component {
 
   setPosition() {
     const node = this.dropdownRef.current;
-    const newPosition = this.props.fixed
-      ? Position.inWindow(node)
-      : Position.inDocument(node);
+    const newPosition = this.props.fixed ? Position.inWindow(node) : Position.inDocument(node);
     newPosition.y += node.offsetHeight; //Move dropdown down below field
     //The forceUpdate call is necessary in case the size of the field changes size during the current render.
     this.setState({ position: newPosition }, () => this.forceUpdate());
@@ -72,7 +68,7 @@ export default class MultiSelect extends React.Component {
   select(value) {
     let newValue = value;
     if (this.props.value.indexOf(value) > -1) {
-      newValue = this.props.value.filter((v) => v !== value);
+      newValue = this.props.value.filter(v => v !== value);
     } else {
       newValue = this.props.value.concat([value]);
     }
@@ -97,13 +93,11 @@ export default class MultiSelect extends React.Component {
           onExternalClick={this.close.bind(this)}
         >
           <div style={{ width }} className={classes.join(' ')}>
-            {React.Children.map(this.props.children, (c) =>
+            {React.Children.map(this.props.children, c =>
               React.cloneElement(c, {
                 ...c.props,
                 checked: this.props.value.indexOf(c.props.value) > -1,
-                onClick: c.props.disabled
-                  ? null
-                  : this.select.bind(this, c.props.value),
+                onClick: c.props.disabled ? null : this.select.bind(this, c.props.value),
               })
             )}
           </div>
@@ -113,7 +107,7 @@ export default class MultiSelect extends React.Component {
 
     const selection = [];
     const classes = [styles.current];
-    React.Children.forEach(this.props.children, (c) => {
+    React.Children.forEach(this.props.children, c => {
       if (this.props.value.indexOf(c.props.value) > -1) {
         selection.push(c.props.children);
       }
@@ -147,7 +141,7 @@ export default class MultiSelect extends React.Component {
             <Chip
               value={item}
               key={'chip-' + index}
-              onClose={(removed) => {
+              onClose={removed => {
                 if (removed) {
                   this.select(removed);
                 }
@@ -161,11 +155,7 @@ export default class MultiSelect extends React.Component {
     }
 
     return (
-      <div
-        style={dropdownStyle}
-        className={dropDownClasses.join(' ')}
-        ref={this.dropdownRef}
-      >
+      <div style={dropdownStyle} className={dropDownClasses.join(' ')} ref={this.dropdownRef}>
         <div className={classes.join(' ')} onClick={this.toggle.bind(this)}>
           {content}
         </div>
@@ -188,9 +178,7 @@ MultiSelect.propTypes = {
   placeHolder: PropTypes.string.describe(
     'Option placeholder text to be displayed when no options are chosen.'
   ),
-  endDelineator: PropTypes.string.describe(
-    'End delineator to separate last selected option.'
-  ),
+  endDelineator: PropTypes.string.describe('End delineator to separate last selected option.'),
   dense: PropTypes.bool.describe('Mini variant - less height'),
   chips: PropTypes.bool.describe('Display chip for every selected item'),
 };

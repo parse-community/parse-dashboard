@@ -12,7 +12,7 @@ import { dateStringUTC } from 'lib/DateUtils';
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
 const CertsTable = ({ certs, onDelete, uploadPending }) => {
-  const tableData = certs.map((c) => {
+  const tableData = certs.map(c => {
     let color = '';
     let expiresKeyColor = '';
     const isExpired = new Date(c.expiration) < Date.now();

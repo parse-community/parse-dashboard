@@ -75,11 +75,7 @@ export default class Performance extends DashboardView {
     const date = new Date();
     this.state = {
       dateRange: {
-        start: new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate() - 1
-        ),
+        start: new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1),
         end: date,
       },
       loading: true,
@@ -106,7 +102,7 @@ export default class Performance extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.xhrHandles.forEach((xhr) => xhr.abort());
+    this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -136,7 +132,7 @@ export default class Performance extends DashboardView {
 
       let promise = res.promise;
       const xhr = res.xhr;
-      promise = promise.then((result) => {
+      promise = promise.then(result => {
         const performanceData = this.state.performanceData;
         performanceData[index] = result;
         this.setState({
@@ -180,9 +176,7 @@ export default class Performance extends DashboardView {
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}
-              onChange={(newValue) =>
-                this.setState({ dateRange: newValue, mutated: true })
-              }
+              onChange={newValue => this.setState({ dateRange: newValue, mutated: true })}
               align={Directions.RIGHT}
             />
           </span>
@@ -204,10 +198,7 @@ export default class Performance extends DashboardView {
 
       if (Array.isArray(data)) {
         // Handle Request Limit
-        const points = data.map((point) => [
-          Parse._decode('date', point[0]).getTime(),
-          point[1],
-        ]);
+        const points = data.map(point => [Parse._decode('date', point[0]).getTime(), point[1]]);
 
         chartData[PERFORMANCE_QUERIES[i].name] = {
           color: ChartColorSchemes[i],
@@ -218,10 +209,7 @@ export default class Performance extends DashboardView {
         for (const key in data.cached) {
           const cachedPoints = data.cached[key];
           points = points.concat(
-            cachedPoints.map((point) => [
-              Parse._decode('date', point[0]).getTime(),
-              point[1],
-            ])
+            cachedPoints.map(point => [Parse._decode('date', point[0]).getTime(), point[1]])
           );
         }
 
@@ -236,11 +224,7 @@ export default class Performance extends DashboardView {
     let chart = null;
     if (Object.keys(chartData).length > 0) {
       chart = (
-        <Chart
-          width={this.displaySize.width}
-          height={this.displaySize.height}
-          data={chartData}
-        />
+        <Chart width={this.displaySize.width} height={this.displaySize.height} data={chartData} />
       );
     }
 

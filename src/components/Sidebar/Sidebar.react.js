@@ -37,7 +37,7 @@ const Sidebar = ({
   const [collapsed, setCollapsed] = useState(false);
   const [fixed, setFixed] = useState(true);
   const [dashboardUser, setDashboardUser] = useState('');
-  fetch(mountPath).then((response) => {
+  fetch(mountPath).then(response => {
     setDashboardUser(response.headers.get('username'));
   });
   let currentWidth = window.innerWidth;
@@ -49,14 +49,8 @@ const Sidebar = ({
       }
       setCollapsed(true);
       setFixed(false);
-    } else if (
-      window.innerWidth > collapseWidth &&
-      currentWidth <= collapseWidth
-    ) {
-      document.body.className = document.body.className.replace(
-        ' expanded',
-        ''
-      );
+    } else if (window.innerWidth > collapseWidth && currentWidth <= collapseWidth) {
+      document.body.className = document.body.className.replace(' expanded', '');
       setCollapsed(false);
       setFixed(true);
     }
@@ -82,7 +76,7 @@ const Sidebar = ({
     }
   }
 
-  const _subMenu = (subsections) => {
+  const _subMenu = subsections => {
     if (!subsections) {
       return null;
     }
@@ -179,7 +173,7 @@ const Sidebar = ({
       onMouseEnter={!fixed && collapsed ? () => setCollapsed(false) : undefined}
       onMouseLeave={
         !collapsed && !fixed
-          ? (e) => {
+          ? e => {
             if (!isInsidePopover(e.relatedTarget)) {
               setAppsMenuOpen(false);
               setCollapsed(true);
@@ -188,10 +182,7 @@ const Sidebar = ({
           : undefined
       }
     >
-      <SidebarHeader
-        isCollapsed={!appsMenuOpen && collapsed}
-        dashboardUser={dashboardUser}
-      />
+      <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} dashboardUser={dashboardUser} />
       {sidebarContent}
       {dashboardUser && (
         <div className={styles.footer}>

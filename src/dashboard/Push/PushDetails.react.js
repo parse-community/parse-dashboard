@@ -34,10 +34,9 @@ import { tableInfoBuilder } from 'lib/PushUtils';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 
-const EXP_STATS_URL =
-  'http://docs.parseplatform.org/ios/guide/#push-experiments';
+const EXP_STATS_URL = 'http://docs.parseplatform.org/ios/guide/#push-experiments';
 
-const getMessage = (payload) => {
+const getMessage = payload => {
   if (payload) {
     const payloadJSON = JSON.parse(payload);
     if (payloadJSON.alert && payloadJSON.alert.body) {
@@ -52,10 +51,7 @@ const getMessage = (payload) => {
 };
 
 const getFormattedTime = ({ time, is_local }) => {
-  let formattedTime = DateUtils.yearMonthDayTimeFormatter(
-    new Date(time),
-    !is_local
-  );
+  let formattedTime = DateUtils.yearMonthDayTimeFormatter(new Date(time), !is_local);
   if (is_local) {
     formattedTime += ' Local Time';
   }
@@ -69,9 +65,7 @@ const getSentInfo = (sendTime, expiration) => {
   }
 
   const fmtSendTime = getFormattedTime({ time: sendTime });
-  const fmtExpiration = expiration
-    ? getFormattedTime({ time: expiration * 1000 })
-    : null;
+  const fmtExpiration = expiration ? getFormattedTime({ time: expiration * 1000 }) : null;
   if (expiration) {
     return `Sent ${fmtSendTime} and expires ${fmtExpiration}`;
   } else {
@@ -132,12 +126,10 @@ const getStatusTable = (pushDetails, deferDeliveries) => {
             {!deferDeliveries ? (
               <tr key="pushesSent" className={tableStyles.tr}>
                 <td className={tableStyles.td} width={'65%'}>
-                  <div className={styles.deliveryName}>
-                    Successful Deliveries
-                  </div>
+                  <div className={styles.deliveryName}>Successful Deliveries</div>
                   <div className={styles.deliveryMessage}>
-                    Give your test a memorable name so you remember what you
-                    were testing when you see the results.
+                    Give your test a memorable name so you remember what you were testing when you
+                    see the results.
                   </div>
                 </td>
                 <td className={tableStyles.td} width={'35%'}>
@@ -184,7 +176,7 @@ const getTargetTable = (query, schema) => {
   }
 };
 
-const getExperimentLoser = (winner) => {
+const getExperimentLoser = winner => {
   return winner === 'A' ? 'B' : 'A';
 };
 
@@ -192,9 +184,7 @@ const getExperimentPartial = (pushDetails, type, isMessageType, style) => {
   return (
     <div className={styles[`group${type.toUpperCase()}`]}>
       <div style={style} className={styles.headerTitle}>
-        {isMessageType
-          ? `GROUP ${type.toUpperCase()} MESSAGE`
-          : `GROUP ${type.toUpperCase()} TIME`}
+        {isMessageType ? `GROUP ${type.toUpperCase()} MESSAGE` : `GROUP ${type.toUpperCase()} TIME`}
       </div>
       <div className={styles.headline}>
         {isMessageType
@@ -216,17 +206,13 @@ const getExperimentPartial = (pushDetails, type, isMessageType, style) => {
   );
 };
 
-const getPushDetailUrl = (context, pushId) =>
-  generatePath(context, `push/${pushId}`);
+const getPushDetailUrl = (context, pushId) => generatePath(context, `push/${pushId}`);
 
-const formatAnalyticsData = (data) => {
+const formatAnalyticsData = data => {
   if (!data) {
     return [];
   }
-  return data.map((point) => [
-    Parse._decode('date', point[0]).getTime(),
-    point[1],
-  ]);
+  return data.map(point => [Parse._decode('date', point[0]).getTime(), point[1]]);
 };
 
 const COLOR_MAP = {
@@ -264,30 +250,19 @@ class PushDetails extends DashboardView {
   componentWillMount() {
     this.props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
     const promise = this.context.fetchPushDetails(this.props.params.pushId);
-    promise.then((pushDetails) => {
+    promise.then(pushDetails => {
       if (!pushDetails) {
         return null;
       }
       this.setState({ pushDetails });
-      if (
-        pushDetails.statistics &&
-        pushDetails.statistics.confidence_interval
-      ) {
+      if (pushDetails.statistics && pushDetails.statistics.confidence_interval) {
         this.setState({
-          groupColorA:
-            pushDetails.statistics.winner === 'A'
-              ? COLOR_MAP.green
-              : COLOR_MAP.red,
-          groupColorB:
-            pushDetails.statistics.winner !== 'A'
-              ? COLOR_MAP.green
-              : COLOR_MAP.red,
+          groupColorA: pushDetails.statistics.winner === 'A' ? COLOR_MAP.green : COLOR_MAP.red,
+          groupColorB: pushDetails.statistics.winner !== 'A' ? COLOR_MAP.green : COLOR_MAP.red,
           groupStatusA: pushDetails.statistics.winner === 'A' ? 'WINNER!' : '',
           groupStatusB: pushDetails.statistics.winner !== 'A' ? 'WINNER!' : '',
           selectedGroup:
-            pushDetails.statistics.winner === 'A'
-              ? DROPDOWN_KEY_GROUP_A
-              : DROPDOWN_KEY_GROUP_B,
+            pushDetails.statistics.winner === 'A' ? DROPDOWN_KEY_GROUP_A : DROPDOWN_KEY_GROUP_B,
         });
       }
 
@@ -305,9 +280,7 @@ class PushDetails extends DashboardView {
       }
 
       const toDate = Math.round(new Date(pushDetails.to_date).getTime() / 1000);
-      const fromDate = Math.round(
-        new Date(pushDetails.from_date).getTime() / 1000
-      );
+      const fromDate = Math.round(new Date(pushDetails.from_date).getTime() / 1000);
 
       const query = {
         endpoint: 'app_opened_from_push_with_id',
@@ -365,7 +338,7 @@ class PushDetails extends DashboardView {
           pushStatusID: pushStatusID,
         });
         promise
-          .then((data) => {
+          .then(data => {
             const chartData = formatAnalyticsData(data);
             if (chartData.length > 0) {
               this.setState({
@@ -387,7 +360,7 @@ class PushDetails extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.xhrHandles.forEach((xhr) => xhr.abort());
+    this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -395,7 +368,7 @@ class PushDetails extends DashboardView {
       this.setState({ loading: true });
       this.context
         .fetchPushDetails(nextProps.params.pushId)
-        .then((pushDetails) => {
+        .then(pushDetails => {
           this.setState({ pushDetails });
         })
         .finally(() => {
@@ -425,9 +398,7 @@ class PushDetails extends DashboardView {
     ) {
       const headline = statistics.confidence_interval ? (
         <div>
-          <span styles={{ color: COLOR_MAP.green }}>
-            Group {statistics.winner}
-          </span>
+          <span styles={{ color: COLOR_MAP.green }}>Group {statistics.winner}</span>
           is the winner!
         </div>
       ) : (
@@ -439,24 +410,14 @@ class PushDetails extends DashboardView {
         subline.push(
           <div key="subline_1">
             We are highly confident that if this experiment were repeated,{' '}
-            <span
-              styles={{ color: this.state[`groupColor${statistics.winner}`] }}
-            >
+            <span styles={{ color: this.state[`groupColor${statistics.winner}`] }}>
               {pushDetails.exp_type} {statistics.winner}
             </span>{' '}
             would yield an open rate that&#8217;s
             <span>{statistics.confidence_interval[0]}</span>&mdash;
-            <span>
-              {
-                statistics.confidence_interval[
-                  statistics.confidence_interval.length - 1
-                ]
-              }
-            </span>
+            <span>{statistics.confidence_interval[statistics.confidence_interval.length - 1]}</span>
             percentage points higher than sending{' '}
-            <span
-              styles={{ color: this.state[`groupColor${statistics.winner}`] }}
-            >
+            <span styles={{ color: this.state[`groupColor${statistics.winner}`] }}>
               {getExperimentLoser(statistics.winner)}
             </span>
             .
@@ -475,9 +436,7 @@ class PushDetails extends DashboardView {
             )}{' '}
             to the Launch Group (devices outside groups A & B).{' '}
             {
-              <Link
-                to={getPushDetailUrl(this.context, pushDetails.launch_push_id)}
-              >
+              <Link to={getPushDetailUrl(this.context, pushDetails.launch_push_id)}>
                 View Results
               </Link>
             }
@@ -486,8 +445,7 @@ class PushDetails extends DashboardView {
       } else {
         subline.push(
           <div key="subline_2">
-            You allocated all of this campaign&#8217;s devices to test groups A
-            & B. {learnMore}
+            You allocated all of this campaign&#8217;s devices to test groups A & B. {learnMore}
           </div>
         );
       }
@@ -505,8 +463,7 @@ class PushDetails extends DashboardView {
         ? 'Group {statistics.winner} is the winner!'
         : 'Not enough data to automatically determine the winner';
       const subline = [];
-      const launchGroupFragment =
-        'These devices are outside test groups A & B.';
+      const launchGroupFragment = 'These devices are outside test groups A & B.';
 
       subline.push(
         <div className={styles.flowFooterHeader} key="subline_0">
@@ -517,50 +474,38 @@ class PushDetails extends DashboardView {
       if (statistics.confidence_interval) {
         subline.push(
           <div key="subline_1">
-            We are highly confident that sending {statistics.winner} to the
-            Launch Group will yield an open rate that&#8217;s
+            We are highly confident that sending {statistics.winner} to the Launch Group will yield
+            an open rate that&#8217;s
             <span>{statistics.confidence_interval[0]}</span>&mdash;
-            <span>
-              {
-                statistics.confidence_interval[
-                  statistics.confidence_interval.length - 1
-                ]
-              }
-            </span>
-            percentage points higher than sending{' '}
-            {getExperimentLoser(statistics.winner)}. {learnMore}
+            <span>{statistics.confidence_interval[statistics.confidence_interval.length - 1]}</span>
+            percentage points higher than sending {getExperimentLoser(statistics.winner)}.{' '}
+            {learnMore}
           </div>
         );
       }
 
       if (pushDetails.launch_info && pushDetails.launch_info.recipient_count) {
         <div key="sublime_2">
-          Your Launch Group is{' '}
-          <strong>{pushDetails.launch_info.percent}%</strong> (approximately{' '}
-          <strong>
-            {prettyNumber(pushDetails.launch_info.recipient_count)}
-          </strong>
-          ) of the devices in this campaign. {launchGroupFragment}
+          Your Launch Group is <strong>{pushDetails.launch_info.percent}%</strong> (approximately{' '}
+          <strong>{prettyNumber(pushDetails.launch_info.recipient_count)}</strong>) of the devices
+          in this campaign. {launchGroupFragment}
         </div>;
       } else {
         subline.push(
           <div key="sublime_2">
-            Your Launch Group is{' '}
-            <strong>{pushDetails.launch_info.percent}%</strong> of the devices
+            Your Launch Group is <strong>{pushDetails.launch_info.percent}%</strong> of the devices
             in this campaign. {launchGroupFragment}
           </div>
         );
       }
 
       if (statistics.confidence_interval) {
-        subline.push(
-          <strong key="subline_3">Send the winner to the Launch Group.</strong>
-        );
+        subline.push(<strong key="subline_3">Send the winner to the Launch Group.</strong>);
       } else {
         subline.push(
           <div key="subline_3">
-            We recommend waiting for more data from test groups, but you can
-            still choose a message and send it to the Launch Group.
+            We recommend waiting for more data from test groups, but you can still choose a message
+            and send it to the Launch Group.
           </div>
         );
       }
@@ -597,12 +542,7 @@ class PushDetails extends DashboardView {
         <div className={styles.header}>
           <div className={styles.headline}>
             This push is the Launch Group for a previous{' '}
-            <Link
-              to={getPushDetailUrl(
-                this.context,
-                pushDetails.experiment_push_id
-              )}
-            >
+            <Link to={getPushDetailUrl(this.context, pushDetails.experiment_push_id)}>
               experiment
             </Link>
             .
@@ -625,18 +565,13 @@ class PushDetails extends DashboardView {
           {!isMessageType ? (
             <div className={[styles.header, styles.messageHeader].join(' ')}>
               <div className={styles.headerTitle}>MESSAGE SENT</div>
-              <div className={styles.headline}>
-                {getMessage(pushDetails.group_a.payload)}
-              </div>
+              <div className={styles.headline}>{getMessage(pushDetails.group_a.payload)}</div>
             </div>
           ) : null}
           {prevLaunchGroup}
           {experimentInfo}
           <div className={styles.groupA}>
-            <div
-              className={styles.openRateTitle}
-              style={{ color: this.state.groupColorA }}
-            >
+            <div className={styles.openRateTitle} style={{ color: this.state.groupColorA }}>
               {this.state.groupStatusA}
             </div>
             <PushOpenRate
@@ -647,10 +582,7 @@ class PushDetails extends DashboardView {
             />
           </div>
           <div className={styles.groupB}>
-            <div
-              className={styles.openRateTitle}
-              style={{ color: this.state.groupColorB }}
-            >
+            <div className={styles.openRateTitle} style={{ color: this.state.groupColorB }}>
               {this.state.groupStatusB}
             </div>
             <PushOpenRate
@@ -676,10 +608,7 @@ class PushDetails extends DashboardView {
               <div className={styles.headline}>{alert}</div>
             )}
             <div className={styles.subline}>
-              {getSentInfo(
-                pushDetails.get('pushTime'),
-                pushDetails.get('expiration')
-              )}
+              {getSentInfo(pushDetails.get('pushTime'), pushDetails.get('expiration'))}
             </div>
           </div>
           {prevLaunchGroup}
@@ -705,7 +634,7 @@ class PushDetails extends DashboardView {
             width={800}
             height={400}
             data={this.state.chartData}
-            formatter={(value) => value + ' push' + (value !== 1 ? 'es' : '')}
+            formatter={value => value + ' push' + (value !== 1 ? 'es' : '')}
           />
         </div>
       );
@@ -725,11 +654,7 @@ class PushDetails extends DashboardView {
         });
       }
     }
-    return getTargetTable(
-      this.state.pushDetails.get('query'),
-      schema,
-      tableStyles
-    );
+    return getTargetTable(this.state.pushDetails.get('query'), schema, tableStyles);
   }
 
   renderStatusTable() {
@@ -748,7 +673,7 @@ class PushDetails extends DashboardView {
           this.props.navigate(generatePath(this.context, 'push/activity'));
         }
       },
-      (error) => {
+      error => {
         promise.reject({ error });
       }
     );
@@ -784,10 +709,7 @@ class PushDetails extends DashboardView {
           labelWidth={60}
           label={<Label text="When should we deliver this?" />}
           input={
-            <DateTimeInput
-              value={fields.push_time}
-              onChange={setField.bind(null, 'push_time')}
-            />
+            <DateTimeInput value={fields.push_time} onChange={setField.bind(null, 'push_time')} />
           }
         />
       );
@@ -803,12 +725,7 @@ class PushDetails extends DashboardView {
               description="This will send the message to users in their local timezones."
             />
           }
-          input={
-            <Toggle
-              value={fields.localTime}
-              onChange={setField.bind(null, 'localTime')}
-            />
-          }
+          input={<Toggle value={fields.localTime} onChange={setField.bind(null, 'localTime')} />}
         />,
         <SliderWrap
           key="slider"
@@ -834,7 +751,7 @@ class PushDetails extends DashboardView {
       color = this.state.groupColorB;
     }
 
-    const colorKey = Object.keys(COLOR_MAP).find((key) => {
+    const colorKey = Object.keys(COLOR_MAP).find(key => {
       return COLOR_MAP[key] === color;
     });
 
@@ -844,7 +761,7 @@ class PushDetails extends DashboardView {
         width={'155'}
         placeholder={'Choose a group'}
         value={this.state.selectedGroup}
-        onChange={(selectedGroup) => {
+        onChange={selectedGroup => {
           //TODO: (peterjs) we should avoid content matching
           const selectedGroupId =
             selectedGroup === DROPDOWN_KEY_GROUP_A
@@ -889,10 +806,7 @@ class PushDetails extends DashboardView {
           <Field
             label={<Label text="Should this notification expire?" />}
             input={
-              <Toggle
-                value={fields.push_expires}
-                onChange={setField.bind(null, 'push_expires')}
-              />
+              <Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />
             }
           />
           {PushHelper.renderExpirationContent(fields, setField)}
@@ -906,8 +820,7 @@ class PushDetails extends DashboardView {
     if (this.state.loading) {
       return;
     }
-    const { isFlowView, experimentInfo, flowFooterDetails } =
-      this.experimentInfoHelper();
+    const { isFlowView, experimentInfo, flowFooterDetails } = this.experimentInfoHelper();
     return (
       <div className={styles.detailsWrapper}>
         <LoaderContainer loading={this.state.loading}>
@@ -938,10 +851,8 @@ class PushDetails extends DashboardView {
             renderForm={this.renderForm.bind(this, flowFooterDetails)}
             defaultFooterMessage={flowFooterDetails}
             footerContents={() => flowFooterDetails}
-            validate={() =>
-              this.state.selectedGroup === undefined ? 'use default' : ''
-            }
-            secondaryButton={(args) => this.renderSecondaryFooterButton(args)}
+            validate={() => (this.state.selectedGroup === undefined ? 'use default' : '')}
+            secondaryButton={args => this.renderSecondaryFooterButton(args)}
           />
         ) : null}
         <Toolbar

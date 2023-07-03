@@ -9,10 +9,7 @@ import baseStyles from 'stylesheets/base.scss';
 import Button from 'components/Button/Button.react';
 import ChromeDropdown from 'components/ChromeDropdown/ChromeDropdown.react';
 import DateTimeEntry from 'components/DateTimeEntry/DateTimeEntry.react';
-import {
-  Constraints,
-  FieldConstraints,
-} from 'components/ExplorerQueryComposer/ExplorerFilter';
+import { Constraints, FieldConstraints } from 'components/ExplorerQueryComposer/ExplorerFilter';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
@@ -103,7 +100,7 @@ for (const c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-const setFocus = (input) => {
+const setFocus = input => {
   if (input !== null) {
     input.focus();
   }
@@ -129,7 +126,7 @@ const fieldView = (type, value, onChangeValue) => {
           className={styles.formInput}
           style={fieldStyle}
           value={value}
-          onChange={(e) => onChangeValue(e.target.value)}
+          onChange={e => onChangeValue(e.target.value)}
           ref={setFocus}
         />
       );
@@ -140,10 +137,8 @@ const fieldView = (type, value, onChangeValue) => {
           className={styles.formInput}
           style={fieldStyle}
           value={value}
-          onChange={(e) =>
-            onChangeValue(
-              validateNumeric(e.target.value) ? e.target.value : value || ''
-            )
+          onChange={e =>
+            onChangeValue(validateNumeric(e.target.value) ? e.target.value : value || '')
           }
         />
       );
@@ -160,9 +155,7 @@ const fieldView = (type, value, onChangeValue) => {
         </div>
       );
     default:
-      throw new Error(
-        'Incompatible type ' + type + ' used to render fieldView.'
-      );
+      throw new Error('Incompatible type ' + type + ' used to render fieldView.');
   }
 };
 
@@ -249,9 +242,7 @@ export default class ExplorerQueryComposer extends React.Component {
       limit: this.state.limit,
       filters: this.state.filters,
       // Only pass them if order is valid
-      orders: this.state.orders.filter(
-        (order) => order.col !== null && order.col !== undefined
-      ),
+      orders: this.state.orders.filter(order => order.col !== null && order.col !== undefined),
       localId: query.localId,
       objectId: query.objectId,
     });
@@ -343,7 +334,7 @@ export default class ExplorerQueryComposer extends React.Component {
           <ChromeDropdown
             value={aggregate.op}
             options={AGGREGATE_TYPE_LABELS}
-            onChange={(val) => {
+            onChange={val => {
               const aggregates = this.state.aggregates;
               aggregates[index] = {
                 op: val,
@@ -362,20 +353,17 @@ export default class ExplorerQueryComposer extends React.Component {
           </div>
           <ChromeDropdown
             value={aggregate.col}
-            options={FIELD_LABELS[this.state.source].filter((field) => {
+            options={FIELD_LABELS[this.state.source].filter(field => {
               switch (aggregate.op) {
                 case 'Sum':
                 case 'Median':
                 case 'Average':
-                  return (
-                    FIELD_TYPE[field] === 'Number' ||
-                    FIELD_TYPE[field] === 'Date'
-                  );
+                  return FIELD_TYPE[field] === 'Number' || FIELD_TYPE[field] === 'Date';
                 default:
                   return true;
               }
             })}
-            onChange={(val) => {
+            onChange={val => {
               const aggregates = this.state.aggregates;
               aggregates[index].col = val;
               this.setState({ aggregates });
@@ -412,12 +400,8 @@ export default class ExplorerQueryComposer extends React.Component {
         <div className={styles.formLabel}>Grouping</div>
         <ChromeDropdown
           value={grouping}
-          options={
-            specialGroup
-              ? REQUIRED_GROUPING_LABELS
-              : FIELD_LABELS[this.state.source]
-          }
-          onChange={(val) => {
+          options={specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]}
+          onChange={val => {
             const groups = this.state.groups;
             groups[index] = val;
             this.setState({ groups });
@@ -432,10 +416,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   renderFilter(filter, index = 0) {
-    const type = Object.prototype.hasOwnProperty.call(
-      Constraints[filter.op],
-      'field'
-    )
+    const type = Object.prototype.hasOwnProperty.call(Constraints[filter.op], 'field')
       ? Constraints[filter.op].field
       : FIELD_TYPE[filter.col];
 
@@ -453,10 +434,8 @@ export default class ExplorerQueryComposer extends React.Component {
               width="51%"
               color="blue"
               value={Constraints[filter.json_scalar_op].name}
-              options={FieldConstraints['JSONValue'].map(
-                (c) => Constraints[c].name
-              )}
-              onChange={(val) => {
+              options={FieldConstraints['JSONValue'].map(c => Constraints[c].name)}
+              onChange={val => {
                 const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
@@ -472,7 +451,7 @@ export default class ExplorerQueryComposer extends React.Component {
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={filter.val}
-              onChange={(e) => {
+              onChange={e => {
                 const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
@@ -496,10 +475,8 @@ export default class ExplorerQueryComposer extends React.Component {
               width="51%"
               color="blue"
               value={Constraints[filter.op].name}
-              options={availableFilters[filter.col].map(
-                (c) => Constraints[c].name
-              )}
-              onChange={(val) => {
+              options={availableFilters[filter.col].map(c => Constraints[c].name)}
+              onChange={val => {
                 const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
@@ -513,7 +490,7 @@ export default class ExplorerQueryComposer extends React.Component {
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={constraintInputValue}
-              onChange={(e) => {
+              onChange={e => {
                 const filters = this.state.filters;
                 let newFilter = null;
                 if (isJSONView) {
@@ -548,10 +525,8 @@ export default class ExplorerQueryComposer extends React.Component {
             width={type ? '33%' : '65%'}
             color="blue"
             value={Constraints[filter.op].name}
-            options={availableFilters[filter.col].map(
-              (c) => Constraints[c].name
-            )}
-            onChange={(val) => {
+            options={availableFilters[filter.col].map(c => Constraints[c].name)}
+            onChange={val => {
               const filters = this.state.filters;
               filters[index] = {
                 col: filter.col,
@@ -562,7 +537,7 @@ export default class ExplorerQueryComposer extends React.Component {
             }}
           />
 
-          {fieldView(type, filter.val, (val) => {
+          {fieldView(type, filter.val, val => {
             const filters = this.state.filters;
             filters[index] = {
               col: filter.col,
@@ -584,7 +559,7 @@ export default class ExplorerQueryComposer extends React.Component {
             color="blue"
             value={filter.col}
             options={FIELD_LABELS[this.state.source]}
-            onChange={(val) => {
+            onChange={val => {
               const filters = this.state.filters;
               filters[index] = {
                 col: val,
@@ -620,7 +595,7 @@ export default class ExplorerQueryComposer extends React.Component {
             placeholder="Column"
             value={order.col}
             options={this.getOrderOptions()}
-            onChange={(val) => {
+            onChange={val => {
               const orders = this.state.orders;
               orders[index] = {
                 col: val,
@@ -637,7 +612,7 @@ export default class ExplorerQueryComposer extends React.Component {
           <ChromeDropdown
             value={order.asc}
             options={ORDER_LABELS}
-            onChange={(val) => {
+            onChange={val => {
               const orders = this.state.orders;
               orders[index].asc = val;
               this.setState({ orders });
@@ -724,16 +699,12 @@ export default class ExplorerQueryComposer extends React.Component {
     } else {
       headerView = (
         <div className={[baseStyles.center, styles.headerView].join(' ')}>
-          <h3 className={styles.headerLabel}>
-            {this.state.name || 'Build a custom query'}
-          </h3>
+          <h3 className={styles.headerLabel}>{this.state.name || 'Build a custom query'}</h3>
           {isNew ? null : (
             <div className={styles.headerButtonCell}>
               <button
                 type="button"
-                className={[styles.headerButton, styles.secondaryColor].join(
-                  ' '
-                )}
+                className={[styles.headerButton, styles.secondaryColor].join(' ')}
                 onClick={this.toggleEditing.bind(this)}
               >
                 {this.state.isSaved ? 'Rename' : 'Save'}
@@ -757,9 +728,7 @@ export default class ExplorerQueryComposer extends React.Component {
       );
 
       group = (
-        <div className={styles.queryComposerBox}>
-          {this.renderGroup(this.state.groups[0])}
-        </div>
+        <div className={styles.queryComposerBox}>{this.renderGroup(this.state.groups[0])}</div>
       );
     } else {
       // On table/json view, we hide aggregate and group. And we also show limit.
@@ -772,9 +741,7 @@ export default class ExplorerQueryComposer extends React.Component {
               className={styles.formInput}
               style={{ width: '100%' }}
               value={this.state.limit}
-              onChange={(event) =>
-                this.setState({ limit: event.nativeEvent.target.value })
-              }
+              onChange={event => this.setState({ limit: event.nativeEvent.target.value })}
             />
           </div>
         </div>
@@ -797,9 +764,7 @@ export default class ExplorerQueryComposer extends React.Component {
       </div>
     ));
 
-    const extraGroupModels = isTimeSeries
-      ? this.state.groups.slice(1)
-      : this.state.groups;
+    const extraGroupModels = isTimeSeries ? this.state.groups.slice(1) : this.state.groups;
     const extraGroups = extraGroupModels.map((group, i) => (
       <div className={styles.queryComposerBox} key={`group_${i + 1}`}>
         {this.renderGroup(group, i + offset)}
@@ -843,12 +808,7 @@ export default class ExplorerQueryComposer extends React.Component {
       footerButton = (
         <div className={styles.boxContent}>
           <span className={styles.twoButton}>
-            <Button
-              width="100%"
-              value="Dismiss query"
-              color="white"
-              onClick={onDismiss}
-            />
+            <Button width="100%" value="Dismiss query" color="white" onClick={onDismiss} />
           </span>
           <span className={styles.twoButton}>
             <Button
@@ -927,12 +887,8 @@ export default class ExplorerQueryComposer extends React.Component {
 
 ExplorerQueryComposer.propTypes = {
   query: PropTypes.object.describe('The query to be edited by this composer.'),
-  onSave: PropTypes.func.isRequired.describe(
-    'Function to be called on query created/saved.'
-  ),
-  onDismiss: PropTypes.func.describe(
-    'Function to be called on dismiss button clicked.'
-  ),
+  onSave: PropTypes.func.isRequired.describe('Function to be called on query created/saved.'),
+  onDismiss: PropTypes.func.describe('Function to be called on dismiss button clicked.'),
   isNew: PropTypes.bool.describe(
     'True if the composer is trying to compose a new query. ' +
       'False if the composer is editing an existing one.'

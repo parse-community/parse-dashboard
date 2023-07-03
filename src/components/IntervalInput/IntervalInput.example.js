@@ -37,10 +37,7 @@ export const demos = [
   {
     render: () => (
       <div style={{ width: 500, margin: '0 auto' }}>
-        <Field
-          label={<Label text="How often should it repeat?" />}
-          input={<IntervalDemo />}
-        />
+        <Field label={<Label text="How often should it repeat?" />} input={<IntervalDemo />} />
       </div>
     ),
   },

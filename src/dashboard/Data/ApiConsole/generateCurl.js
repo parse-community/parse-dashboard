@@ -10,11 +10,8 @@
  * Used to escape the POST body and GET parameters
  * when exporting a request to cURL
  */
-const escapeValueForCURL = (value) => {
-  return value
-    .replace(/\\/g, '\\\\')
-    .replace(/"/g, '\\"')
-    .replace(/\$/g, '\\$');
+const escapeValueForCURL = value => {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
 };
 
 export default function generateCurl(app, method, path, body, options) {

@@ -11,9 +11,7 @@ import styles from 'components/StatusIndicator/StatusIndicator.scss';
 
 const StatusIndicator = ({ text, color }) => {
   color = color || 'blue';
-  return (
-    <span className={[styles.status, styles[color]].join(' ')}>{text}</span>
-  );
+  return <span className={[styles.status, styles[color]].join(' ')}>{text}</span>;
 };
 
 StatusIndicator.propTypes = {

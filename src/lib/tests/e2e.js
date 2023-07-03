@@ -24,10 +24,10 @@ const dashboardSettings = {
 };
 
 describe('e2e', () => {
-  it('loads the dashboard on /dashboard', (done) => {
+  it('loads the dashboard on /dashboard', done => {
     const app = express();
     let server;
-    const p = new Promise((resolve) => {
+    const p = new Promise(resolve => {
       app.use('/dashboard', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
@@ -35,20 +35,20 @@ describe('e2e', () => {
       .then(() => {
         return rp('http://localhost:5051/dashboard');
       })
-      .then((result) => {
+      .then(result => {
         const bundleLocation = result.match(/<script src="([^"]*)">/)[1];
         return rp('http://localhost:5051' + bundleLocation);
       })
-      .then((bundleText) => {
+      .then(bundleText => {
         expect(bundleText.length).toBeGreaterThan(1000000);
         server.close(done);
       });
   });
 
-  it('loads the dashboard on /', (done) => {
+  it('loads the dashboard on /', done => {
     const app = express();
     let server;
-    const p = new Promise((resolve) => {
+    const p = new Promise(resolve => {
       app.use('/', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
@@ -56,11 +56,11 @@ describe('e2e', () => {
       .then(() => {
         return rp('http://localhost:5051');
       })
-      .then((result) => {
+      .then(result => {
         const bundleLocation = result.match(/<script src="([^"]*)">/)[1];
         return rp('http://localhost:5051' + bundleLocation);
       })
-      .then((bundleText) => {
+      .then(bundleText => {
         expect(bundleText.length).toBeGreaterThan(1000000);
         server.close(done);
       });

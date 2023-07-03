@@ -39,7 +39,7 @@ const AppsManager = {
     if (connectionURL) {
       payload.parse_app.connectionString = connectionURL;
     }
-    return post('/apps', payload).then((response) => {
+    return post('/apps', payload).then(response => {
       const newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;
@@ -47,30 +47,26 @@ const AppsManager = {
   },
 
   deleteApp(slug, password) {
-    return del('/apps/' + slug + '?password_confirm_delete=' + password).then(
-      () => {
-        for (let i = 0; i < appsStore.length; i++) {
-          if (appsStore[i].slug == slug) {
-            appsStore.splice(i, 1);
-            return;
-          }
+    return del('/apps/' + slug + '?password_confirm_delete=' + password).then(() => {
+      for (let i = 0; i < appsStore.length; i++) {
+        if (appsStore[i].slug == slug) {
+          appsStore.splice(i, 1);
+          return;
         }
       }
-    );
+    });
   },
 
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
     return Promise.all(
-      this.apps().map((app) => {
+      this.apps().map(app => {
         if (app.serverInfo.error) {
           return;
         }
         return Promise.all([
-          app
-            .getClassCount('_Installation')
-            .then((count) => (app.installations = count)),
-          app.getClassCount('_User').then((count) => (app.users = count)),
+          app.getClassCount('_Installation').then(count => (app.installations = count)),
+          app.getClassCount('_User').then(count => (app.users = count)),
         ]);
       })
     );
@@ -89,7 +85,7 @@ const AppsManager = {
       app_settings: false,
       data: false,
     };
-    options.forEach((option) => {
+    options.forEach(option => {
       if (option !== 'data') {
         //Data cloning not supported yet, but api_server still requires the key to be present
         optionsForRuby[option] = true;

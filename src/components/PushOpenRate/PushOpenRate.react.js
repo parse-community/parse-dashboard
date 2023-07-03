@@ -71,19 +71,13 @@ const PushOpenRate = ({
       ) : null}
       <div
         style={customStyles[isWinner ? 'inverse' : 'standard']}
-        className={[
-          styles.percent,
-          styles[color + (isWinner ? '_inv' : '')],
-        ].join(' ')}
+        className={[styles.percent, styles[color + (isWinner ? '_inv' : '')]].join(' ')}
       >
         {/*<div className={styles.rate}>{rateStr}%</div>*/}
         <div className={styles.rate}>N/A</div>
         <div className={styles.rate_label}>Open Rate</div>
       </div>
-      <div
-        className={styles.count_wrap}
-        style={{ float: 'left', width: '50%' }}
-      >
+      <div className={styles.count_wrap} style={{ float: 'left', width: '50%' }}>
         {/*<div className={styles.count}>{numOpened}</div>*/}
         <div className={styles.count}>N/A</div>
         <div className={styles.count_label}>Push Opens</div>
@@ -104,10 +98,6 @@ PushOpenRate.propTypes = {
   color: PropTypes.oneOf(['blue', 'yellow', 'pink']).isRequired.describe(
     'Color of text and circle'
   ),
-  isExperiment: PropTypes.bool.describe(
-    'Whether or not this is an A/B test group'
-  ),
-  isWinner: PropTypes.bool.describe(
-    'Whether or not this group won the A/B test'
-  ),
+  isExperiment: PropTypes.bool.describe('Whether or not this is an A/B test group'),
+  isWinner: PropTypes.bool.describe('Whether or not this group won the A/B test'),
 };

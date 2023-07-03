@@ -26,42 +26,23 @@ export const demos = [
       <Wrapper>
         <Fieldset>
           <Field
-            label={
-              <Label
-                text="Text input"
-                description="This one is a single line"
-              />
-            }
+            label={<Label text="Text input" description="This one is a single line" />}
             input={<TextInput onChange={function () {}} />}
           />
           <Field
-            label={
-              <Label text="Text input" description="This one is multiline" />
-            }
+            label={<Label text="Text input" description="This one is multiline" />}
             input={<TextInput multiline={true} onChange={function () {}} />}
           />
           <Field
-            label={
-              <Label text="Code input" description="This one is monospaced" />
-            }
+            label={<Label text="Code input" description="This one is monospaced" />}
             input={<TextInput monospace={true} onChange={function () {}} />}
           />
           <Field
-            label={
-              <Label text="Disabled input" description="This one is disabled" />
-            }
-            input={
-              <TextInput
-                placeholder="Disabled"
-                disabled={true}
-                onChange={function () {}}
-              />
-            }
+            label={<Label text="Disabled input" description="This one is disabled" />}
+            input={<TextInput placeholder="Disabled" disabled={true} onChange={function () {}} />}
           />
           <Field
-            label={
-              <Label text="Taller input" description="This one is taller" />
-            }
+            label={<Label text="Taller input" description="This one is taller" />}
             input={
               <div className={styles.textarea_wrap}>
                 <TextInput

@@ -76,10 +76,9 @@ export default class PushAudiencesData extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.pushAudiencesStore.dispatch(
-      PushAudiencesStore.ActionTypes.ABORT_FETCH,
-      { xhrKey: XHR_KEY }
-    );
+    this.props.pushAudiencesStore.dispatch(PushAudiencesStore.ActionTypes.ABORT_FETCH, {
+      xhrKey: XHR_KEY,
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,10 +117,7 @@ export default class PushAudiencesData extends React.Component {
    * @param  {[type]} options.saveForFuture [description]
    * @return {[type]}                       [description]
    */
-  createAudience(
-    modalState,
-    { platforms, name, formattedFilters, saveForFuture, filters }
-  ) {
+  createAudience(modalState, { platforms, name, formattedFilters, saveForFuture, filters }) {
     this.setState({
       createProgress: true,
       createErrorMessage: '',
@@ -160,7 +156,7 @@ export default class PushAudiencesData extends React.Component {
             stateSettings.createProgress = false;
             this.setState(stateSettings);
           },
-          (e) => {
+          e => {
             this.setState({
               createErrorMessage: e.message,
               createProgress: false,
@@ -201,9 +197,7 @@ export default class PushAudiencesData extends React.Component {
     const showMoreContent = showMore ? (
       <div className={styles.showMoreWrap}>
         <Button
-          value={
-            this.state.loading ? 'Fetching all audiences' : 'Show all audiences'
-          }
+          value={this.state.loading ? 'Fetching all audiences' : 'Show all audiences'}
           onClick={this.handleShowMoreClick.bind(this)}
         />
       </div>

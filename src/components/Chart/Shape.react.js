@@ -9,26 +9,17 @@ import React from 'react';
 import styles from 'components/Chart/Chart.scss';
 
 function joinPoints(points) {
-  return points.map((p) => p.join(',')).join(' ');
+  return points.map(p => p.join(',')).join(' ');
 }
 
 const Shape = ({ x, y, fill, index }) => {
   const style = { fill: fill, stroke: 'white', strokeWidth: 2 };
   switch (index % 7) {
     case 0:
-      return (
-        <circle className={styles.grow} cx={x} cy={y} r={4} style={style} />
-      );
+      return <circle className={styles.grow} cx={x} cy={y} r={4} style={style} />;
     case 1:
       return (
-        <rect
-          className={styles.grow}
-          x={x - 4}
-          y={y - 4}
-          width={8}
-          height={8}
-          style={style}
-        />
+        <rect className={styles.grow} x={x - 4} y={y - 4} width={8} height={8} style={style} />
       );
     case 2:
       return (

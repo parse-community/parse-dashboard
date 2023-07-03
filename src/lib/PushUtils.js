@@ -17,7 +17,7 @@ import React from 'react';
 import stringList from 'lib/stringList';
 
 // formats pointers into human readable form
-const pointerToReadbleValue = (value) => {
+const pointerToReadbleValue = value => {
   return value.className + ':' + value.objectId;
 };
 
@@ -27,7 +27,7 @@ const pointerToReadbleValue = (value) => {
  * @param {Object}
  * @return {String}
  */
-const objectToReadable = (value) => {
+const objectToReadable = value => {
   if (value === undefined || value === null) {
     return '';
   }
@@ -85,9 +85,7 @@ const humanizedList = (value, inclusive, all) => {
       if (all) {
         prefix = 'both ';
       }
-      res = `${prefix}${objectToReadable(value[0])} ${join} ${objectToReadable(
-        value[1]
-      )}`;
+      res = `${prefix}${objectToReadable(value[0])} ${join} ${objectToReadable(value[1])}`;
       break;
     default:
       prefix = all ? 'all of' : 'any of';
@@ -134,17 +132,9 @@ const formatConstraintComponent = (key, operation, value, schema) => {
     case '$all':
       const isInclusive = operation === '$in';
       if (!value.constructor === Array) {
-        res = [
-          key,
-          `constraint is malformed (${operation} operator requires an array)`,
-          '',
-        ];
+        res = [key, `constraint is malformed (${operation} operator requires an array)`, ''];
       } else if (!schema[key]) {
-        res = [
-          '',
-          `Cannot perform operation on non-existent column ${key}`,
-          '',
-        ];
+        res = ['', `Cannot perform operation on non-existent column ${key}`, ''];
       } else if (schema[key]['type'] === 'Array') {
         const isAll = operation === '$all';
         res = [
@@ -172,9 +162,7 @@ const formatStructure = (key, constraints, schema) => {
   const rows = [];
   for (const prop in constraints) {
     if (Object.prototype.hasOwnProperty.call(constraints, prop)) {
-      rows.push(
-        formatConstraintComponent(key, prop, constraints[prop], schema)
-      );
+      rows.push(formatConstraintComponent(key, prop, constraints[prop], schema));
     }
   }
   return rows;
@@ -217,8 +205,8 @@ export function formatConstraint(key, constraints, schema) {
  * @param  {Array} devices - platform list
  * @return {Array} platform list in friendly form
  */
-const devicesToReadableList = (devices) => {
-  return devices.map((device) => {
+const devicesToReadableList = devices => {
+  return devices.map(device => {
     return PushConstants.DEVICE_MAP[device];
   });
 };
@@ -242,7 +230,7 @@ export function shortInfoBuilder(query, schema) {
   for (const entry in query) {
     if (entry !== 'deviceType') {
       //filter out deviceType entry
-      formatConstraint(entry, query[entry], schema).forEach((constraint) => {
+      formatConstraint(entry, query[entry], schema).forEach(constraint => {
         constraint.forEach(([key, description, value]) => {
           otherConstraints.push([key, description, value].join(' '));
         });
@@ -269,16 +257,14 @@ export function largeInfoBuilder(query, schema, styles = {}) {
   const platformRows = [];
 
   for (const platform in platforms) {
-    platformRows.push(
-      <li key={`platforms${platform}`}>{platforms[platform]}</li>
-    );
+    platformRows.push(<li key={`platforms${platform}`}>{platforms[platform]}</li>);
   }
 
   const conditionRows = [];
   for (const entry in query) {
     if (entry !== 'deviceType') {
       //filter out deviceType entry
-      formatConstraint(entry, query[entry], schema).forEach((constraint) => {
+      formatConstraint(entry, query[entry], schema).forEach(constraint => {
         constraint.forEach(([key, description, value]) => {
           conditionRows.push(
             <li key={`condition${entry}`}>
@@ -297,9 +283,7 @@ export function largeInfoBuilder(query, schema, styles = {}) {
       </ul>
       {conditionRows.length > 0 ? (
         <ul className={styles.installationInfo}>
-          <li className={styles.detailsHeaderListItem}>
-            INSTALLATION CONDITIONS
-          </li>
+          <li className={styles.detailsHeaderListItem}>INSTALLATION CONDITIONS</li>
           {conditionRows}
         </ul>
       ) : null}
@@ -355,20 +339,16 @@ export function tableInfoBuilder(query, schema, styles = {}) {
   for (const entry in query) {
     if (entry !== 'deviceType') {
       //filter out deviceType entry
-      formatConstraint(entry, query[entry], schema).forEach((constraint) => {
+      formatConstraint(entry, query[entry], schema).forEach(constraint => {
         if (constraint && Array.isArray(constraint[0])) {
           // case 1: contraint = [[key, description, value]]
           constraint.forEach(([key, description, value]) => {
-            tableInfoRows.push(
-              tableInfoBuilderHelper(styles, key, description, value)
-            );
+            tableInfoRows.push(tableInfoBuilderHelper(styles, key, description, value));
           });
         } else {
           // case 2: contraint = [key, description, value]
           const [key, description, value] = constraint;
-          tableInfoRows.push(
-            tableInfoBuilderHelper(styles, key, description, value)
-          );
+          tableInfoRows.push(tableInfoBuilderHelper(styles, key, description, value));
         }
       });
     }

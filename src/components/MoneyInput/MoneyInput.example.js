@@ -30,9 +30,7 @@ export const demos = [
           />
           <Field
             label={<Label text="Disabled" />}
-            input={
-              <MoneyInput value={9.99} enabled={false} onChange={() => {}} />
-            }
+            input={<MoneyInput value={9.99} enabled={false} onChange={() => {}} />}
           />
         </Fieldset>
       </Wrapper>

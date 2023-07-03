@@ -110,15 +110,15 @@ export default class Overview extends DashboardView {
   }
 
   componentWillUnmount() {
-    AUDIENCE_META.forEach((metaGroup) => {
-      metaGroup.forEach((meta) => {
+    AUDIENCE_META.forEach(metaGroup => {
+      metaGroup.forEach(meta => {
         if (this.state[meta.key].xhr) {
           this.state[meta.key].xhr.abort();
         }
       });
     });
 
-    BILLING_META.forEach((meta) => {
+    BILLING_META.forEach(meta => {
       if (this.state[meta.key].xhr) {
         this.state[meta.key].xhr.abort();
       }
@@ -132,7 +132,7 @@ export default class Overview extends DashboardView {
     for (const key in overview) {
       const item = overview[key];
       item.promise.then(
-        (value) => {
+        value => {
           this.setState({
             [key]: {
               promise: item.promise,
@@ -140,7 +140,7 @@ export default class Overview extends DashboardView {
             },
           });
         },
-        (error) => {
+        error => {
           this.setState({
             [key]: {
               promise: item.promise,
@@ -156,8 +156,8 @@ export default class Overview extends DashboardView {
     const toolbar = <Toolbar section="Analytics" subsection="Overview" />;
     const infoContainerStyle = { padding: '12px 16px' };
 
-    const audienceViews = AUDIENCE_META.map((metaGroup) =>
-      metaGroup.map((meta) => {
+    const audienceViews = AUDIENCE_META.map(metaGroup =>
+      metaGroup.map(meta => {
         const obj = this.state[meta.key];
         let number = 0;
         let increasing = true;
@@ -179,13 +179,9 @@ export default class Overview extends DashboardView {
         } else {
           content = (
             <div>
-              <span className={styles.infoNumber}>
-                {prettyNumber(number, 3)}
-              </span>
+              <span className={styles.infoNumber}>{prettyNumber(number, 3)}</span>
               {meta.hideArrow ? null : (
-                <span
-                  className={increasing ? styles.upArrow : styles.downArrow}
-                />
+                <span className={increasing ? styles.upArrow : styles.downArrow} />
               )}
             </div>
           );
@@ -193,11 +189,7 @@ export default class Overview extends DashboardView {
 
         return (
           <div className={styles.activityInfo} key={meta.key}>
-            <LoaderContainer
-              loading={loading}
-              hideAnimation={true}
-              solid={false}
-            >
+            <LoaderContainer loading={loading} hideAnimation={true} solid={false}>
               <div style={infoContainerStyle}>
                 {content}
                 <div className={styles.infoLabel}>{meta.label}</div>
@@ -208,7 +200,7 @@ export default class Overview extends DashboardView {
       })
     );
 
-    const billingViews = BILLING_META.map((meta) => {
+    const billingViews = BILLING_META.map(meta => {
       const obj = this.state[meta.key];
       let total = 0;
       let limit = 1;
@@ -252,9 +244,7 @@ export default class Overview extends DashboardView {
             {this.state.error !== undefined ? (
               <div>
                 <Icon name="cloud-sad" fill="#ff395e" width={88} height={64} />
-                <h2 style={{ color: '#ff395e' }}>
-                  There is an issue with your app!
-                </h2>
+                <h2 style={{ color: '#ff395e' }}>There is an issue with your app!</h2>
                 <div>{this.state.error}</div>
                 <Button
                   onClick={() => {
@@ -267,12 +257,7 @@ export default class Overview extends DashboardView {
               </div>
             ) : (
               <div>
-                <Icon
-                  name="cloud-happy"
-                  fill="#00db7c"
-                  width={88}
-                  height={64}
-                />
+                <Icon name="cloud-happy" fill="#00db7c" width={88} height={64} />
                 <h2>Your app is healthy!</h2>
               </div>
             )}

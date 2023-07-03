@@ -18,7 +18,4 @@ require('graphiql/graphiql.min.css');
 installDevTools(Immutable);
 
 const path = window.PARSE_DASHBOARD_PATH || '/';
-ReactDOM.render(
-  <Dashboard path={path} />,
-  document.getElementById('browser_mount')
-);
+ReactDOM.render(<Dashboard path={path} />, document.getElementById('browser_mount'));

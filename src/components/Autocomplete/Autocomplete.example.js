@@ -18,16 +18,13 @@ class AutocompleteDemo extends React.Component {
       suggestions: ['aaa', 'abc', 'xxx', 'xyz'],
     };
 
-    this.onSubmit = (input) => console.log('onSubmit: ' + input);
-    this.onUserInput = (input) => {
+    this.onSubmit = input => console.log('onSubmit: ' + input);
+    this.onUserInput = input => {
       console.log(`input: ${input}`);
     };
-    this.buildLabel = (input) =>
-      input.length > 0
-        ? `You've typed ${input.length} characters`
-        : 'Start typing';
-    this.buildSuggestions = (input) =>
-      this.state.suggestions.filter((s) => s.startsWith(input));
+    this.buildLabel = input =>
+      input.length > 0 ? `You've typed ${input.length} characters` : 'Start typing';
+    this.buildSuggestions = input => this.state.suggestions.filter(s => s.startsWith(input));
   }
 
   render() {

@@ -54,9 +54,7 @@ export default class FlowView extends React.Component {
       //as componentWillReceiveProps would otherwise clobber this change.
       this.state.changes[key] = value;
       this.setState({
-        saveState: preserveSavingState
-          ? this.state.saveState
-          : SaveButton.States.WAITING,
+        saveState: preserveSavingState ? this.state.saveState : SaveButton.States.WAITING,
         saveError: '',
         changes: newChanges,
       });
@@ -119,9 +117,7 @@ export default class FlowView extends React.Component {
       shouldShowFooter = true;
     } else if (shouldShowFooter) {
       shouldShowFooter = Object.keys(changes).length > 0;
-      footerMessage = shouldShowFooter
-        ? footerContents({ changes, fields })
-        : '';
+      footerMessage = shouldShowFooter ? footerContents({ changes, fields }) : '';
     }
 
     const saveButton = (
@@ -140,12 +136,7 @@ export default class FlowView extends React.Component {
             .catch(({ message, error, notice, errors = [] }) => {
               this.setState({
                 saveState: SaveButton.States.FAILED,
-                saveError:
-                  errors.join(' ') ||
-                  message ||
-                  error ||
-                  notice ||
-                  'An error occurred',
+                saveError: errors.join(' ') || message || error || notice || 'An error occurred',
               });
             });
         }}

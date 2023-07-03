@@ -31,18 +31,9 @@ export default class GeoPointEditor extends React.Component {
     if (!this.props.disableAutoFocus) {
       this.latitudeRef.current.focus();
     }
-    this.latitudeRef.current.setSelectionRange(
-      0,
-      String(this.state.latitude).length
-    );
-    this.latitudeRef.current.addEventListener(
-      'keypress',
-      this.handleKeyLatitude
-    );
-    this.longitudeRef.current.addEventListener(
-      'keypress',
-      this.handleKeyLongitude
-    );
+    this.latitudeRef.current.setSelectionRange(0, String(this.state.latitude).length);
+    this.latitudeRef.current.addEventListener('keypress', this.handleKeyLatitude);
+    this.longitudeRef.current.addEventListener('keypress', this.handleKeyLongitude);
   }
 
   componentWillReceiveProps(props) {
@@ -57,14 +48,8 @@ export default class GeoPointEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.latitudeRef.current.removeEventListener(
-      'keypress',
-      this.handleKeyLatitude
-    );
-    this.longitudeRef.current.removeEventListener(
-      'keypress',
-      this.handleKeyLongitude
-    );
+    this.latitudeRef.current.removeEventListener('keypress', this.handleKeyLatitude);
+    this.longitudeRef.current.removeEventListener('keypress', this.handleKeyLongitude);
   }
 
   checkExternalClick() {
@@ -87,10 +72,7 @@ export default class GeoPointEditor extends React.Component {
   handleKeyLatitude(e) {
     if (e.keyCode === 13 || e.keyCode === 44) {
       this.longitudeRef.current.focus();
-      this.longitudeRef.current.setSelectionRange(
-        0,
-        String(this.state.longitude).length
-      );
+      this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
     }
   }
 
@@ -131,8 +113,7 @@ export default class GeoPointEditor extends React.Component {
       const value = e.target.value;
 
       if (!validateNumeric(value)) {
-        const regex =
-          /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
+        const regex = /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
         const match = regex.exec(value);
 
         if (!match) {
@@ -145,10 +126,7 @@ export default class GeoPointEditor extends React.Component {
           if (values[1].length <= 0 || !validateNumeric(values[1])) {
             this.setState({ latitude: values[0] });
             this.longitudeRef.current.focus();
-            this.longitudeRef.current.setSelectionRange(
-              0,
-              String(this.state.longitude).length
-            );
+            this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
             return;
           }
 
@@ -166,10 +144,7 @@ export default class GeoPointEditor extends React.Component {
       });
     };
     return (
-      <div
-        style={{ width: this.props.width, ...this.props.style }}
-        className={styles.editor}
-      >
+      <div style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>
         <input
           ref={this.latitudeRef}
           value={this.state.latitude}

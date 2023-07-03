@@ -21,7 +21,5 @@ const JsonPrinter = ({ object }) => (
 export default JsonPrinter;
 
 JsonPrinter.propTypes = {
-  object: PropTypes.any.describe(
-    'The JavaScript object to stringify and print.'
-  ),
+  object: PropTypes.any.describe('The JavaScript object to stringify and print.'),
 };

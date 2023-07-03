@@ -11,9 +11,7 @@ import styles from 'components/GeoPointInput/GeoPointInput.scss';
 export default class GeoPointInput extends React.Component {
   handleLatitude(e) {
     if (isNaN(e.target.value)) {
-      this.props.onChange(
-        this.props.value || { latitude: '0.0', longitude: '0.0' }
-      );
+      this.props.onChange(this.props.value || { latitude: '0.0', longitude: '0.0' });
       return;
     }
     this.props.onChange({
@@ -24,9 +22,7 @@ export default class GeoPointInput extends React.Component {
 
   handleLongitude(e) {
     if (isNaN(e.target.value)) {
-      this.props.onChange(
-        this.props.value || { latitude: '0.0', longitude: '0.0' }
-      );
+      this.props.onChange(this.props.value || { latitude: '0.0', longitude: '0.0' });
       return;
     }
     this.props.onChange({

@@ -12,9 +12,7 @@ export default class JobScheduleReminder extends React.Component {
         </p>
         <p>
           {'Please take a look at the '}
-          <a href="http://docs.parseplatform.org/parse-server/guide/#jobs">
-            {'docs'}
-          </a>
+          <a href="http://docs.parseplatform.org/parse-server/guide/#jobs">{'docs'}</a>
           {' on how to do that.'}
         </p>
       </div>

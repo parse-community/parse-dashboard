@@ -106,24 +106,21 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    const headers = this.props.order.map(
-      ({ name, width, visible, preventSort, required }) => ({
-        width: width,
-        name: name,
-        type: this.props.columns[name].type,
-        targetClass: this.props.columns[name].targetClass,
-        order: ordering.col === name ? ordering.direction : null,
-        visible,
-        preventSort,
-        required,
-      })
-    );
+    const headers = this.props.order.map(({ name, width, visible, preventSort, required }) => ({
+      width: width,
+      name: name,
+      type: this.props.columns[name].type,
+      targetClass: this.props.columns[name].targetClass,
+      order: ordering.col === name ? ordering.direction : null,
+      visible,
+      preventSort,
+      required,
+    }));
     let editor = null;
     let table = <div ref={this.tableRef} />;
     if (this.props.data) {
       const rowWidth = this.props.order.reduce(
-        (rowWidth, { visible, width }) =>
-          visible ? rowWidth + width : rowWidth,
+        (rowWidth, { visible, width }) => (visible ? rowWidth + width : rowWidth),
         this.props.onAddRow ? 210 : 0
       );
       let editCloneRows;
@@ -137,9 +134,7 @@ export default class BrowserTable extends React.Component {
                   ? this.props.current.col
                   : undefined;
               const isEditingRow =
-                this.props.current &&
-                this.props.current.row === index &&
-                !!this.props.editing;
+                this.props.current && this.props.current.row === index && !!this.props.editing;
               return (
                 <div key={index} style={{ borderBottom: '1px solid #169CEE' }}>
                   <BrowserRow
@@ -211,9 +206,7 @@ export default class BrowserTable extends React.Component {
       let newRow;
       if (this.props.newObject && this.state.offset <= 0) {
         const currentCol =
-          this.props.current && this.props.current.row === -1
-            ? this.props.current.col
-            : undefined;
+          this.props.current && this.props.current.row === -1 ? this.props.current.col : undefined;
         newRow = (
           <div style={{ borderBottom: '1px solid #169CEE' }}>
             <BrowserRow
@@ -277,24 +270,17 @@ export default class BrowserTable extends React.Component {
         );
       }
       const rows = [];
-      const end = Math.min(
-        this.state.offset + MAX_ROWS,
-        this.props.data.length
-      );
+      const end = Math.min(this.state.offset + MAX_ROWS, this.props.data.length);
       for (let i = this.state.offset; i < end; i++) {
         const index = i - this.state.offset;
         const obj = this.props.data[i];
         const currentCol =
-          this.props.current && this.props.current.row === i
-            ? this.props.current.col
-            : undefined;
+          this.props.current && this.props.current.row === i ? this.props.current.col : undefined;
 
         // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
         // since the "obj" instance will only be updated when the update request is done.
         const isEditingRow =
-          this.props.current &&
-          this.props.current.row === i &&
-          !!this.props.editing;
+          this.props.current && this.props.current.row === i && !!this.props.editing;
         rows[index] = (
           <BrowserRow
             appId={this.props.appId}
@@ -335,10 +321,7 @@ export default class BrowserTable extends React.Component {
         if (this.props.current) {
           if (this.props.current.row < 0 && this.state.offset === 0) {
             visible = true;
-          } else if (
-            this.props.current.row >= this.state.offset &&
-            this.props.current.row < end
-          ) {
+          } else if (this.props.current.row >= this.state.offset && this.props.current.row < end) {
             visible = true;
           }
         }
@@ -347,10 +330,7 @@ export default class BrowserTable extends React.Component {
           const { type, targetClass } = this.props.columns[name];
           let readonly = this.props.isUnique || READ_ONLY.indexOf(name) > -1;
           if (name === 'sessionToken') {
-            if (
-              this.props.className === '_User' ||
-              this.props.className === '_Session'
-            ) {
+            if (this.props.className === '_User' || this.props.className === '_Session') {
               readonly = true;
             }
           }
@@ -383,11 +363,7 @@ export default class BrowserTable extends React.Component {
             if (!this.props.isUnique) {
               value = obj.id;
             }
-          } else if (
-            name === 'ACL' &&
-            this.props.className === '_User' &&
-            !value
-          ) {
+          } else if (name === 'ACL' && this.props.className === '_User' && !value) {
             value = new Parse.ACL({
               '*': { read: true },
               [obj.id]: { read: true, write: true },
@@ -399,9 +375,7 @@ export default class BrowserTable extends React.Component {
           if (this.props.current.row < -1 && this.props.editCloneRows) {
             //for edit clone rows
             wrapTop =
-              2 *
-              ROW_HEIGHT *
-              (this.props.current.row + (this.props.editCloneRows.length + 1));
+              2 * ROW_HEIGHT * (this.props.current.row + (this.props.editCloneRows.length + 1));
           }
           if (this.props.current.row > -1 && this.props.newObject) {
             //for data rows when there's new row
@@ -426,13 +400,9 @@ export default class BrowserTable extends React.Component {
                 value={value}
                 readonly={readonly}
                 width={width}
-                onCommit={(newValue) => {
+                onCommit={newValue => {
                   if (newValue !== value) {
-                    this.props.updateRow(
-                      this.props.current.row,
-                      name,
-                      newValue
-                    );
+                    this.props.updateRow(this.props.current.row, name, newValue);
                   }
                   this.props.setEditing(false);
                 }}
@@ -474,9 +444,7 @@ export default class BrowserTable extends React.Component {
       if (this.props.newObject || this.props.data.length > 0) {
         table = (
           <div className={styles.table} ref={this.tableRef}>
-            <div
-              style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }}
-            />
+            <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
             {editCloneRows}
             {newRow}
             {rows}
@@ -484,8 +452,7 @@ export default class BrowserTable extends React.Component {
               style={{
                 height: Math.max(
                   0,
-                  (this.props.data.length - this.state.offset - MAX_ROWS) *
-                    ROW_HEIGHT
+                  (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT
                 ),
               }}
             />
@@ -510,10 +477,7 @@ export default class BrowserTable extends React.Component {
               ) : (
                 <EmptyState
                   title="No data to display"
-                  description={
-                    this.props.onAddRow &&
-                    'Add a row to store an object in this class.'
-                  }
+                  description={this.props.onAddRow && 'Add a row to store an object in this class.'}
                   icon="files-solid"
                   cta={this.props.onAddRow && 'Add a row'}
                   action={this.props.onAddRow}
@@ -532,13 +496,11 @@ export default class BrowserTable extends React.Component {
           selected={
             !!this.props.selection &&
             !!this.props.data &&
-            Object.values(this.props.selection).filter((checked) => checked)
-              .length === this.props.data.length
+            Object.values(this.props.selection).filter(checked => checked).length ===
+              this.props.data.length
           }
-          selectAll={(checked) =>
-            this.props.data.forEach(({ id }) =>
-              this.props.selectRow(id, checked)
-            )
+          selectAll={checked =>
+            this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
           }
           headers={headers}
           updateOrdering={this.props.updateOrdering}

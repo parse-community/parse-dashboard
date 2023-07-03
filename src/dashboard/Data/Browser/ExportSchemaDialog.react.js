@@ -43,9 +43,7 @@ export default class ExportSchemaDialog extends React.Component {
         confirmText="Export"
         cancelText="Cancel"
         onCancel={this.props.onCancel}
-        onConfirm={() =>
-          this.props.onConfirm(this.state.className, this.state.all)
-        }
+        onConfirm={() => this.props.onConfirm(this.state.className, this.state.all)}
       >
         {!this.state.all && (
           <Field
@@ -53,9 +51,9 @@ export default class ExportSchemaDialog extends React.Component {
             input={
               <Dropdown
                 value={this.state.className}
-                onChange={(className) => this.setState({ className })}
+                onChange={className => this.setState({ className })}
               >
-                {this.state.classes.map((schema) => (
+                {this.state.classes.map(schema => (
                   <Option value={schema} key={schema}>
                     {schema}
                   </Option>
@@ -70,7 +68,7 @@ export default class ExportSchemaDialog extends React.Component {
             <Toggle
               value={this.state.all}
               type={Toggle.Types.YES_NO}
-              onChange={(all) => {
+              onChange={all => {
                 this.setState({ all });
               }}
             />

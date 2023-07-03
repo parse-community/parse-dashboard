@@ -45,8 +45,7 @@ function scheduleString(data) {
     if (data.repeatMinutes === 1440) {
       schedule += 'Every day, ';
     } else if (data.repeatMinutes > 60) {
-      schedule +=
-        'Each day, every ' + ((data.repeatMinutes / 60) | 0) + ' hours, ';
+      schedule += 'Each day, every ' + ((data.repeatMinutes / 60) | 0) + ' hours, ';
     } else {
       schedule += 'Each day, every ' + data.repeatMinutes + ' minutes, ';
     }
@@ -57,11 +56,7 @@ function scheduleString(data) {
   }
   const runAt = new Date(data.startAfter);
   schedule +=
-    runAt.getUTCMonth() +
-    '/' +
-    runAt.getUTCDate() +
-    '/' +
-    String(runAt.getUTCFullYear()).substr(2);
+    runAt.getUTCMonth() + '/' + runAt.getUTCDate() + '/' + String(runAt.getUTCFullYear()).substr(2);
   schedule +=
     ' at ' +
     (runAt.getUTCHours() < 10 ? '0' : '') +
@@ -70,11 +65,7 @@ function scheduleString(data) {
     (runAt.getUTCMinutes() < 10 ? '0' : '') +
     runAt.getUTCMinutes() +
     '.';
-  return (
-    <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
-      {schedule}
-    </div>
-  );
+  return <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>{schedule}</div>;
 }
 
 // TODO: create scrollable view component that handles lazy fetch container on scroll
@@ -100,10 +91,7 @@ class Jobs extends TableView {
   componentWillReceiveProps(nextProps) {
     if (nextProps.availableJobs) {
       if (nextProps.availableJobs.length > 0) {
-        this.action = new SidebarAction(
-          'Schedule a job',
-          this.navigateToNew.bind(this)
-        );
+        this.action = new SidebarAction('Schedule a job', this.navigateToNew.bind(this));
         return;
       }
     }
@@ -123,7 +111,7 @@ class Jobs extends TableView {
     this.props.jobs.dispatch(ActionTypes.FETCH).finally(() => {
       this.setState({ loading: false });
     });
-    this.context.getJobStatus().then((status) => {
+    this.context.getJobStatus().then(status => {
       this.setState({ jobStatus: status });
     });
   }
@@ -161,11 +149,7 @@ class Jobs extends TableView {
           <td style={{ width: '20%' }}>{scheduleString(data)}</td>
           <td className={styles.buttonCell}>
             <RunNowButton job={data} width={'100px'} />
-            <Button
-              width={'80px'}
-              value="Edit"
-              onClick={() => this.navigateToJob(data.objectId)}
-            />
+            <Button width={'80px'} value="Edit" onClick={() => this.navigateToJob(data.objectId)} />
             <Button
               width={'80px'}
               color="red"
@@ -179,26 +163,17 @@ class Jobs extends TableView {
       return (
         <tr key={data.objectId}>
           <td style={{ width: '20%' }}>{data.jobName}</td>
+          <td style={{ width: '20%' }}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
           <td style={{ width: '20%' }}>
-            {DateUtils.dateStringUTC(new Date(data.createdAt))}
+            {data.finishedAt ? DateUtils.dateStringUTC(new Date(data.finishedAt.iso)) : ''}
           </td>
           <td style={{ width: '20%' }}>
-            {data.finishedAt
-              ? DateUtils.dateStringUTC(new Date(data.finishedAt.iso))
-              : ''}
-          </td>
-          <td style={{ width: '20%' }}>
-            <div
-              style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}
-            >
+            <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
               {data.message}
             </div>
           </td>
           <td style={{ width: '20%' }}>
-            <StatusIndicator
-              text={data.status}
-              color={statusColors[data.status]}
-            />
+            <StatusIndicator text={data.status} color={statusColors[data.status]} />
           </td>
         </tr>
       );
@@ -328,7 +303,7 @@ class Jobs extends TableView {
         }
       }
       if (data) {
-        data = data.sort().map((jobName) => {
+        data = data.sort().map(jobName => {
           return { jobName };
         });
       }
@@ -362,19 +337,12 @@ class Jobs extends TableView {
           subsection={subsections[this.props.params.section]}
           details={ReleaseInfo({ release: this.props.release })}
         >
-          <a
-            className={browserStyles.toolbarButton}
-            onClick={this.onRefresh.bind(this)}
-          >
+          <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
             <Icon name="refresh-solid" width={14} height={14} />
             <span>Refresh</span>
           </a>
           {this.props.availableJobs && this.props.availableJobs.length > 0 ? (
-            <Button
-              color="white"
-              value="Schedule a job"
-              onClick={this.navigateToNew.bind(this)}
-            />
+            <Button color="white" value="Schedule a job" onClick={this.navigateToNew.bind(this)} />
           ) : null}
         </Toolbar>
       );

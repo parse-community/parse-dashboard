@@ -10,7 +10,7 @@ jest.dontMock('bcryptjs');
 
 const Authentication = require('../../../Parse-Dashboard/Authentication');
 const apps = [{ appId: 'test123' }, { appId: 'test789' }];
-const readOnlyApps = apps.map((app) => {
+const readOnlyApps = apps.map(app => {
   app.readOnly = true;
   return app;
 });
@@ -68,9 +68,9 @@ function createAuthenticationResult(
 describe('Authentication', () => {
   it('does not authenticate with no users', () => {
     const authentication = new Authentication(null, false);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard', pass: 'abc123' })
-    ).toEqual(createAuthenticationResult(false, null, null));
+    expect(authentication.authenticate({ name: 'parse.dashboard', pass: 'abc123' })).toEqual(
+      createAuthenticationResult(false, null, null)
+    );
   });
 
   it('does not authenticate with no auth', () => {
@@ -82,51 +82,51 @@ describe('Authentication', () => {
 
   it('does not authenticate invalid user', () => {
     const authentication = new Authentication(unencryptedUsers, false);
-    expect(
-      authentication.authenticate({ name: 'parse.invalid', pass: 'abc123' })
-    ).toEqual(createAuthenticationResult(false, null, null));
+    expect(authentication.authenticate({ name: 'parse.invalid', pass: 'abc123' })).toEqual(
+      createAuthenticationResult(false, null, null)
+    );
   });
 
   it('does not authenticate valid user with invalid unencrypted password', () => {
     const authentication = new Authentication(unencryptedUsers, false);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard', pass: 'xyz789' })
-    ).toEqual(createAuthenticationResult(false, null, null));
+    expect(authentication.authenticate({ name: 'parse.dashboard', pass: 'xyz789' })).toEqual(
+      createAuthenticationResult(false, null, null)
+    );
   });
 
   it('authenticates valid user with valid unencrypted password', () => {
     const authentication = new Authentication(unencryptedUsers, false);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard', pass: 'abc123' })
-    ).toEqual(createAuthenticationResult(true, 'parse.dashboard', null));
+    expect(authentication.authenticate({ name: 'parse.dashboard', pass: 'abc123' })).toEqual(
+      createAuthenticationResult(true, 'parse.dashboard', null)
+    );
   });
 
   it('returns apps if valid user', () => {
     const authentication = new Authentication(unencryptedUsers, false);
-    expect(
-      authentication.authenticate({ name: 'parse.apps', pass: 'xyz789' })
-    ).toEqual(createAuthenticationResult(true, 'parse.apps', apps));
+    expect(authentication.authenticate({ name: 'parse.apps', pass: 'xyz789' })).toEqual(
+      createAuthenticationResult(true, 'parse.apps', apps)
+    );
   });
 
   it('authenticates valid user with valid encrypted password', () => {
     const authentication = new Authentication(encryptedUsers, true);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard', pass: 'abc123' })
-    ).toEqual(createAuthenticationResult(true, 'parse.dashboard', null));
+    expect(authentication.authenticate({ name: 'parse.dashboard', pass: 'abc123' })).toEqual(
+      createAuthenticationResult(true, 'parse.dashboard', null)
+    );
   });
 
   it('does not authenticate valid user with invalid encrypted password', () => {
     const authentication = new Authentication(encryptedUsers, true);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard', pass: 'xyz789' })
-    ).toEqual(createAuthenticationResult(false, null, null));
+    expect(authentication.authenticate({ name: 'parse.dashboard', pass: 'xyz789' })).toEqual(
+      createAuthenticationResult(false, null, null)
+    );
   });
 
   it('authenticates valid user with valid username and usernameOnly', () => {
     const authentication = new Authentication(unencryptedUsers, false);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard' }, true)
-    ).toEqual(createAuthenticationResult(true, 'parse.dashboard', null));
+    expect(authentication.authenticate({ name: 'parse.dashboard' }, true)).toEqual(
+      createAuthenticationResult(true, 'parse.dashboard', null)
+    );
   });
 
   it('does not authenticate valid user with valid username and no usernameOnly', () => {
@@ -138,16 +138,16 @@ describe('Authentication', () => {
 
   it('authenticates valid user with valid username and usernameOnly and encrypted password', () => {
     const authentication = new Authentication(encryptedUsers, true);
-    expect(
-      authentication.authenticate({ name: 'parse.dashboard' }, true)
-    ).toEqual(createAuthenticationResult(true, 'parse.dashboard', null));
+    expect(authentication.authenticate({ name: 'parse.dashboard' }, true)).toEqual(
+      createAuthenticationResult(true, 'parse.dashboard', null)
+    );
   });
 
   it('makes readOnly auth when specified', () => {
     const authentication = new Authentication(unencryptedUsers, false);
-    expect(
-      authentication.authenticate({ name: 'parse.readonly', pass: 'abc123' })
-    ).toEqual(createAuthenticationResult(true, 'parse.readonly', null, true));
+    expect(authentication.authenticate({ name: 'parse.readonly', pass: 'abc123' })).toEqual(
+      createAuthenticationResult(true, 'parse.readonly', null, true)
+    );
   });
 
   it('makes readOnly auth when specified in apps', () => {
@@ -157,13 +157,6 @@ describe('Authentication', () => {
         name: 'parse.readonly.apps',
         pass: 'abc123',
       })
-    ).toEqual(
-      createAuthenticationResult(
-        true,
-        'parse.readonly.apps',
-        readOnlyApps,
-        false
-      )
-    );
+    ).toEqual(createAuthenticationResult(true, 'parse.readonly.apps', readOnlyApps, false));
   });
 });

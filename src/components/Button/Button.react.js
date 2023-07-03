@@ -12,7 +12,7 @@ import styles from 'components/Button/Button.scss';
 
 const noop = () => {};
 
-const Button = (props) => {
+const Button = props => {
   const hasOnClick = props.onClick && !props.disabled;
   const classes = [styles.button, baseStyles.unselectable];
   // if a button is disabled, that overrides any color selection
@@ -48,7 +48,7 @@ const Button = (props) => {
       style={styleOverride}
       className={classes.join(' ')}
       onClick={clickHandler}
-      onFocus={(e) => {
+      onFocus={e => {
         if (props.disabled) {
           e.target.blur();
         }
@@ -70,12 +70,8 @@ Button.propTypes = {
     'Determines whether a button can be clicked. Disabled buttons will ' +
       'appear grayed out, and will not fire onClick events.'
   ),
-  color: PropTypes.oneOf(['blue', 'green', 'red', 'white']).describe(
-    'The color of the button.'
-  ),
-  onClick: PropTypes.func.describe(
-    'A function to be called when the button is clicked.'
-  ),
+  color: PropTypes.oneOf(['blue', 'green', 'red', 'white']).describe('The color of the button.'),
+  onClick: PropTypes.func.describe('A function to be called when the button is clicked.'),
   value: PropTypes.string.isRequired.describe(
     'The content of the button. This can be any renderable content.'
   ),

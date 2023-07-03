@@ -18,9 +18,7 @@ export const demos = [
         <EmptyState
           icon={'icon_cloudCode'}
           title={'You don\u2019t have any data here'}
-          description={
-            'Once you create some data, you will be able to see it here'
-          }
+          description={'Once you create some data, you will be able to see it here'}
           cta={'CTA for this data'}
           action={() => alert('CTA was clicked')}
         ></EmptyState>
@@ -34,9 +32,7 @@ export const demos = [
         <EmptyState
           icon={'icon_cloudCode'}
           title={'You don\u2019t have any data here'}
-          description={
-            'Once you create some data, you will be able to see it here'
-          }
+          description={'Once you create some data, you will be able to see it here'}
           cta={'CTA for this data'}
           action={'someLink'}
         ></EmptyState>

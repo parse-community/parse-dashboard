@@ -62,10 +62,7 @@ export default class DragHandle extends React.Component {
 
   mouseMoveHandler() {
     if (this.state.dragging) {
-      this.props.onDrag(
-        this.lastEvent.pageX - this.x,
-        this.lastEvent.pageY - this.y
-      );
+      this.props.onDrag(this.lastEvent.pageX - this.x, this.lastEvent.pageY - this.y);
       this.x = this.lastEvent.pageX;
       this.y = this.lastEvent.pageY;
     }

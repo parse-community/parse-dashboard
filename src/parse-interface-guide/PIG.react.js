@@ -44,24 +44,21 @@ class PIG extends React.Component {
           type="text"
           placeholder="Filter components..."
           className={styles.searchField}
-          onChange={(e) => {
+          onChange={e => {
             const query = e.target.value.trim();
             this.setState({ query });
           }}
         />
-        {components.map((name) => {
-          return name.toLowerCase().indexOf(this.state.query.toLowerCase()) !==
-            -1 ? (
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? styles.active : undefined
-                }
-                key={name}
-                to={`/${name}`}
-              >
-                {name}
-              </NavLink>
-            ) : null;
+        {components.map(name => {
+          return name.toLowerCase().indexOf(this.state.query.toLowerCase()) !== -1 ? (
+            <NavLink
+              className={({ isActive }) => (isActive ? styles.active : undefined)}
+              key={name}
+              to={`/${name}`}
+            >
+              {name}
+            </NavLink>
+          ) : null;
         })}
       </div>
     );
@@ -77,9 +74,7 @@ class PIG extends React.Component {
       <div className={styles.content}>
         <h1>
           &lt;
-          <span className={styles.component_name}>
-            {componentInfo.component.name}
-          </span>
+          <span className={styles.component_name}>{componentInfo.component.name}</span>
           &gt;
         </h1>
         <PropsTable component={componentInfo.component} />
@@ -91,10 +86,7 @@ class PIG extends React.Component {
             <PIGRow title={(demo.name || '') + ' Source'}>
               <CodeSnippet
                 source={beautify(
-                  (typeof demo.render === 'function'
-                    ? demo.render
-                    : demo
-                  ).toString()
+                  (typeof demo.render === 'function' ? demo.render : demo).toString()
                 )}
                 language="javascript"
                 fullPage={false}

@@ -70,7 +70,7 @@ const DEFAULT_EMPTY_STATE_CONTENT = {
   cta: 'Get started with Parse Push',
 };
 
-const getPushStatusType = (pushData) => {
+const getPushStatusType = pushData => {
   if (pushData[PushConstants.EXPERIMENT_FIELD]) {
     return PUSH_TYPE_EXPERIMENT;
   } else if (pushData[PushConstants.TRANSLATION_ID_FIELD]) {
@@ -82,7 +82,7 @@ const getPushStatusType = (pushData) => {
   }
 };
 
-const isChannelTargeted = (pushData) => {
+const isChannelTargeted = pushData => {
   const query = pushData[PushConstants.QUERY_FIELD];
   if (!query) {
     return false;
@@ -128,7 +128,7 @@ const getPushTarget = (pushData, availableDevices) => {
   return 'Everyone';
 };
 
-const getPushName = (pushData) => {
+const getPushName = pushData => {
   const title = pushData[PushConstants.TITLE_FIELD];
   if (title) {
     return <strong>{title}</strong>;
@@ -142,22 +142,17 @@ const getPushName = (pushData) => {
     if (typeof payload === 'object') {
       if (typeof payload.alert === 'string') {
         return payload.alert;
-      } else if (
-        typeof payload.alert === 'object' &&
-        payload.alert.title !== undefined
-      ) {
+      } else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
         return payload.alert.title;
       }
-      return payload.alert
-        ? JSON.stringify(payload.alert)
-        : JSON.stringify(payload);
+      return payload.alert ? JSON.stringify(payload.alert) : JSON.stringify(payload);
     } else {
       return '';
     }
   }
 };
 
-const getPushCount = (pushData) => {
+const getPushCount = pushData => {
   const count = pushData[PushConstants.SENT_FIELD];
   if (count != undefined) {
     return <strong>{count}</strong>;
@@ -189,29 +184,21 @@ const emptyStateContent = {
   },
 };
 
-const getExperimentInfo = (experiment) => {
+const getExperimentInfo = experiment => {
   if (!experiment) {
     return '';
   }
-  return (
-    <div className={styles.experimentLabel}>
-      {EXPERIMENT_GROUP[experiment.group]}
-    </div>
-  );
+  return <div className={styles.experimentLabel}>{EXPERIMENT_GROUP[experiment.group]}</div>;
 };
 
-const getTranslationInfo = (translationLocale) => {
+const getTranslationInfo = translationLocale => {
   if (!translationLocale) {
     return '';
   }
-  return (
-    <div className={styles.translationLabel}>
-      {translationLocale.toUpperCase()}
-    </div>
-  );
+  return <div className={styles.translationLabel}>{translationLocale.toUpperCase()}</div>;
 };
 
-const formatStatus = (status) => {
+const formatStatus = status => {
   const color = PUSH_STATUS_COLOR[status];
   const text = PUSH_STATUS_CONTENT[status];
   return <StatusIndicator color={color} text={text} />;
@@ -240,10 +227,7 @@ class PushIndex extends DashboardView {
     super();
     this.section = 'Push';
     this.subsection = 'Past Pushes';
-    this.action = new SidebarAction(
-      'Send a push',
-      this.navigateToNew.bind(this)
-    );
+    this.action = new SidebarAction('Send a push', this.navigateToNew.bind(this));
     this.state = {
       pushes: [],
       loading: true,
@@ -259,7 +243,7 @@ class PushIndex extends DashboardView {
     const promise = this.context.fetchPushNotifications(category, page, limit);
 
     promise
-      .then((pushes) => {
+      .then(pushes => {
         this.setState({
           paginationInfo: {
             has_more: pushes.length == limit,
@@ -356,27 +340,17 @@ class PushIndex extends DashboardView {
   renderRow(push) {
     //TODO: special experimentation case for type
     return (
-      <tr
-        key={push.id}
-        onClick={this.navigateToDetails.bind(this, push.id)}
-        className={styles.tr}
-      >
+      <tr key={push.id} onClick={this.navigateToDetails.bind(this, push.id)} className={styles.tr}>
         <td className={styles.colType}>{getPushStatusType(push.attributes)}</td>
         <td className={styles.colTarget}>
           {getTranslationInfo(push.attributes.translation_locale)}
           {getExperimentInfo(push.attributes.experiment)}
           {getPushTarget(push.attributes, this.state.availableDevices)}
         </td>
-        <td className={styles.colPushesSent}>
-          {getPushCount(push.attributes)}
-        </td>
+        <td className={styles.colPushesSent}>{getPushCount(push.attributes)}</td>
         <td className={styles.colName}>{getPushName(push.attributes)}</td>
-        <td className={styles.colTime}>
-          {getPushTime(push.attributes.pushTime, push.updatedAt)}
-        </td>
-        <td className={styles.colStatus}>
-          {formatStatus(push.attributes.status)}
-        </td>
+        <td className={styles.colTime}>{getPushTime(push.attributes.pushTime, push.updatedAt)}</td>
+        <td className={styles.colStatus}>{formatStatus(push.attributes.status)}</td>
       </tr>
     );
   }
@@ -388,11 +362,7 @@ class PushIndex extends DashboardView {
         subsection={PUSH_CATEGORIES[this.props.params.category]}
         details={'push'}
       >
-        <Button
-          color="white"
-          value="Send a push"
-          onClick={this.navigateToNew.bind(this)}
-        />
+        <Button color="white" value="Send a push" onClick={this.navigateToNew.bind(this)} />
       </Toolbar>
     );
   }
@@ -435,10 +405,7 @@ class PushIndex extends DashboardView {
             progress={this.state.showMoreLoading}
             color="blue"
             value="Show more"
-            onClick={this.handleShowMore.bind(
-              this,
-              paginationInfo.page_num + 1
-            )}
+            onClick={this.handleShowMore.bind(this, paginationInfo.page_num + 1)}
           />
         </div>
       );
@@ -471,14 +438,12 @@ class PushIndex extends DashboardView {
         console.warn('tableData() needs to return an array of objects');
       } else {
         if (data.length === 0) {
-          content = (
-            <div className={stylesTable.empty}>{this.renderEmpty()}</div>
-          );
+          content = <div className={stylesTable.empty}>{this.renderEmpty()}</div>;
         } else {
           content = (
             <div className={stylesTable.rows}>
               <table>
-                <tbody>{data.map((row) => this.renderRow(row))}</tbody>
+                <tbody>{data.map(row => this.renderRow(row))}</tbody>
               </table>
             </div>
           );

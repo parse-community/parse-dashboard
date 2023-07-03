@@ -120,7 +120,7 @@ export default class Dashboard extends React.Component {
     get('/parse-dashboard-config.json')
       .then(({ apps, newFeaturesInLatestVersion = [] }) => {
         this.setState({ newFeaturesInLatestVersion });
-        const appInfoPromises = apps.map((app) => {
+        const appInfoPromises = apps.map(app => {
           if (app.serverURL.startsWith('https://api.parse.com/1')) {
             //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
             //it supports and can hard code them
@@ -131,11 +131,11 @@ export default class Dashboard extends React.Component {
             return new ParseApp(app)
               .apiRequest('GET', 'serverInfo', {}, { useMasterKey: true })
               .then(
-                (serverInfo) => {
+                serverInfo => {
                   app.serverInfo = serverInfo;
                   return app;
                 },
-                (error) => {
+                error => {
                   if (error.code === 100) {
                     app.serverInfo = {
                       error: 'unable to connect to server',
@@ -166,7 +166,7 @@ export default class Dashboard extends React.Component {
       })
       .then(
         function (resolvedApps) {
-          resolvedApps.forEach((app) => {
+          resolvedApps.forEach(app => {
             AppsManager.addApp(app);
           });
           this.setState({ configLoadingState: AsyncStatus.SUCCESS });
@@ -189,20 +189,12 @@ export default class Dashboard extends React.Component {
       );
     }
 
-    if (
-      this.state.configLoadingError &&
-      this.state.configLoadingError.length > 0
-    ) {
+    if (this.state.configLoadingError && this.state.configLoadingError.length > 0) {
       return (
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
+              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
             {/* use non-breaking hyphen for the error message to keep the filename on one line */}
             <div className={styles.loadingError}>
@@ -215,9 +207,7 @@ export default class Dashboard extends React.Component {
 
     const AppsIndexPage = () => (
       <AccountView section="Your Apps">
-        <AppsIndex
-          newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion}
-        />
+        <AppsIndex newFeaturesInLatestVersion={this.state.newFeaturesInLatestVersion} />
       </AccountView>
     );
 
@@ -271,10 +261,7 @@ export default class Dashboard extends React.Component {
 
         <Route path="getting_started" element={<Empty />} />
 
-        <Route
-          path="browser/:className/:entityId/:relationName"
-          element={<BrowserRoute />}
-        />
+        <Route path="browser/:className/:entityId/:relationName" element={<BrowserRoute />} />
         <Route path="browser/:className" element={<BrowserRoute />} />
         <Route path="browser" element={<BrowserRoute />} />
 

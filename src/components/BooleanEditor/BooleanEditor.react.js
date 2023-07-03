@@ -47,15 +47,11 @@ export default class BooleanEditor extends React.Component {
 
   render() {
     return (
-      <div
-        ref={this.inputRef}
-        style={{ minWidth: this.props.width }}
-        className={styles.editor}
-      >
+      <div ref={this.inputRef} style={{ minWidth: this.props.width }} className={styles.editor}>
         <Toggle
           type={Toggle.Types.TRUE_FALSE}
           value={this.state.value}
-          onChange={(value) => this.setState({ value })}
+          onChange={value => this.setState({ value })}
         />
       </div>
     );

@@ -25,7 +25,7 @@ export default class ChromeDropdown extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.keyValueMap = {};
-    nextProps.options.forEach((value) => {
+    nextProps.options.forEach(value => {
       if (value instanceof Object) {
         this.keyValueMap[value.key] = value.value;
       }
@@ -88,7 +88,7 @@ export default class ChromeDropdown extends React.Component {
             style={widthStyle}
             className={[styles.menu, styles[color], 'chromeDropdown'].join(' ')}
           >
-            {this.props.options.map((o) => {
+            {this.props.options.map(o => {
               let key = o;
               let value = o;
               if (o instanceof Object) {
@@ -107,11 +107,7 @@ export default class ChromeDropdown extends React.Component {
     }
 
     return (
-      <div
-        style={widthStyle}
-        className={styles.dropdown}
-        ref={this.dropdownRef}
-      >
+      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef}>
         {content}
       </div>
     );
@@ -119,23 +115,13 @@ export default class ChromeDropdown extends React.Component {
 }
 
 ChromeDropdown.propTypes = {
-  color: PropTypes.oneOf(['blue', 'purple']).describe(
-    'Determines the color of the dropdown.'
-  ),
-  value: PropTypes.string.isRequired.describe(
-    'The current value of the dropdown.'
-  ),
+  color: PropTypes.oneOf(['blue', 'purple']).describe('Determines the color of the dropdown.'),
+  value: PropTypes.string.isRequired.describe('The current value of the dropdown.'),
   options: PropTypes.array.isRequired.describe(
     'An array of options available in the dropdown. Can be an array of string or array of { key, value }'
   ),
-  onChange: PropTypes.func.isRequired.describe(
-    'A function called when the dropdown is changed.'
-  ),
+  onChange: PropTypes.func.isRequired.describe('A function called when the dropdown is changed.'),
   width: PropTypes.string.describe('An optional width override.'),
-  placeholder: PropTypes.string.describe(
-    'Placeholder text used in place of default selection.'
-  ),
-  styles: PropTypes.object.describe(
-    'Styles override used to provide dropdown with differnt skin.'
-  ),
+  placeholder: PropTypes.string.describe('Placeholder text used in place of default selection.'),
+  styles: PropTypes.object.describe('Styles override used to provide dropdown with differnt skin.'),
 };

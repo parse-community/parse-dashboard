@@ -97,7 +97,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Get"
             checked={get.checked}
-            onChange={(value) => onChange(rowId, 'get', value)}
+            onChange={value => onChange(rowId, 'get', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -108,7 +108,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Find"
             checked={find.checked}
-            onChange={(value) => onChange(rowId, 'find', value)}
+            onChange={value => onChange(rowId, 'find', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -119,7 +119,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Count"
             checked={count.checked}
-            onChange={(value) => onChange(rowId, 'count', value)}
+            onChange={value => onChange(rowId, 'count', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -130,7 +130,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Create"
             checked={create.checked}
-            onChange={(value) => onChange(rowId, 'create', value)}
+            onChange={value => onChange(rowId, 'create', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -141,7 +141,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Update"
             checked={update.checked}
-            onChange={(value) => onChange(rowId, 'update', value)}
+            onChange={value => onChange(rowId, 'update', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -152,7 +152,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Delete"
             checked={del.checked}
-            onChange={(value) => onChange(rowId, 'delete', value)}
+            onChange={value => onChange(rowId, 'delete', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -163,7 +163,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           <Checkbox
             label="Add field"
             checked={addField.checked}
-            onChange={(value) => onChange(rowId, 'addField', value)}
+            onChange={value => onChange(rowId, 'addField', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -179,12 +179,10 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
   const writeChecked = create.checked && update.checked && del.checked;
 
   const indeterminateRead =
-    [get, find, count].some((s) => s.checked) &&
-    [get, find, count].some((s) => !s.checked);
+    [get, find, count].some(s => s.checked) && [get, find, count].some(s => !s.checked);
 
   const indeterminateWrite =
-    [create, update, del].some((s) => s.checked) &&
-    [create, update, del].some((s) => !s.checked);
+    [create, update, del].some(s => s.checked) && [create, update, del].some(s => !s.checked);
 
   return [
     <div key="second" className={[styles.check, styles.second].join(' ')}>
@@ -193,7 +191,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           label="Read"
           checked={readChecked}
           indeterminate={indeterminateRead}
-          onChange={(value) => onChange(rowId, ['get', 'find', 'count'], value)}
+          onChange={value => onChange(rowId, ['get', 'find', 'count'], value)}
         />
       ) : (
         <Icon name="check" width={20} height={20} />
@@ -205,9 +203,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
           label="Write"
           checked={writeChecked}
           indeterminate={indeterminateWrite}
-          onChange={(value) =>
-            onChange(rowId, ['create', 'update', 'delete'], value)
-          }
+          onChange={value => onChange(rowId, ['create', 'update', 'delete'], value)}
         />
       ) : (
         <Icon name="check" width={20} height={20} />
@@ -218,7 +214,7 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
         <Checkbox
           label="Add field"
           checked={addField.checked}
-          onChange={(value) => onChange(rowId, ['addField'], value)}
+          onChange={value => onChange(rowId, ['addField'], value)}
         />
       ) : (
         <Icon name="check" width={20} height={20} />
@@ -240,18 +236,12 @@ function renderSimpleCheckboxes(rowId, perms, onChange) {
   const isPublicRow = rowId === '*';
 
   const showReadCheckbox =
-    isAuthRow ||
-    (!onlyAuthRead && isPublicRow) ||
-    (!onlyAuthRead && !allowPublicRead);
+    isAuthRow || (!onlyAuthRead && isPublicRow) || (!onlyAuthRead && !allowPublicRead);
   const showWriteCheckbox =
-    isAuthRow ||
-    (!onlyAuthWrite && isPublicRow) ||
-    (!onlyAuthWrite && !allowPublicWrite);
+    isAuthRow || (!onlyAuthWrite && isPublicRow) || (!onlyAuthWrite && !allowPublicWrite);
 
-  const readChecked =
-    perms.get('read').get(rowId) || allowPublicRead || isAuthRow;
-  const writeChecked =
-    perms.get('write').get(rowId) || allowPublicWrite || isAuthRow;
+  const readChecked = perms.get('read').get(rowId) || allowPublicRead || isAuthRow;
+  const writeChecked = perms.get('write').get(rowId) || allowPublicWrite || isAuthRow;
 
   return [
     <div key="second" className={[styles.check, styles.second].join(' ')}>
@@ -259,7 +249,7 @@ function renderSimpleCheckboxes(rowId, perms, onChange) {
         <Checkbox
           label="Read"
           checked={readChecked}
-          onChange={(value) => onChange(rowId, 'read', value)}
+          onChange={value => onChange(rowId, 'read', value)}
         />
       ) : (
         <Icon name="check" width={20} height={20} />
@@ -270,7 +260,7 @@ function renderSimpleCheckboxes(rowId, perms, onChange) {
         <Checkbox
           label="Write"
           checked={writeChecked}
-          onChange={(value) => onChange(rowId, 'write', value)}
+          onChange={value => onChange(rowId, 'write', value)}
         />
       ) : (
         <Icon name="check" width={20} height={20} />
@@ -279,25 +269,14 @@ function renderSimpleCheckboxes(rowId, perms, onChange) {
   ];
 }
 
-function renderPointerCheckboxes(
-  rowId,
-  perms,
-  pointerPerms,
-  advanced,
-  onChange
-) {
+function renderPointerCheckboxes(rowId, perms, pointerPerms, advanced, onChange) {
   const get = resolvePointerPermission(perms, pointerPerms, rowId, 'get');
   const find = resolvePointerPermission(perms, pointerPerms, rowId, 'find');
   const count = resolvePointerPermission(perms, pointerPerms, rowId, 'count');
   const create = resolvePointerPermission(perms, pointerPerms, rowId, 'create');
   const update = resolvePointerPermission(perms, pointerPerms, rowId, 'update');
   const del = resolvePointerPermission(perms, pointerPerms, rowId, 'delete');
-  const addField = resolvePointerPermission(
-    perms,
-    pointerPerms,
-    rowId,
-    'addField'
-  );
+  const addField = resolvePointerPermission(perms, pointerPerms, rowId, 'addField');
 
   // whether this field is listed under readUserFields[]
   const readUserFields = pointerPerms.get('read');
@@ -311,8 +290,7 @@ function renderPointerCheckboxes(
 
   const write = {
     checked:
-      writeUserFields ||
-      (create.checked && update.checked && del.checked && addField.checked),
+      writeUserFields || (create.checked && update.checked && del.checked && addField.checked),
     editable: true,
   };
 
@@ -325,9 +303,7 @@ function renderPointerCheckboxes(
     //for read
     const publicReadGrouped = perms.getIn(['read', '*']);
     const publicReadGranular =
-      perms.getIn(['get', '*']) &&
-      perms.getIn(['find', '*']) &&
-      perms.getIn(['count', '*']);
+      perms.getIn(['get', '*']) && perms.getIn(['find', '*']) && perms.getIn(['count', '*']);
 
     // for write
     const publicWriteGrouped = perms.getIn(['write', '*']);
@@ -373,13 +349,13 @@ function renderPointerCheckboxes(
     // not all permissions have same value !(all checked || all unchecked)
     const indeterminateRead =
       !readUserFields &&
-      [get, find, count].some((s) => s.checked) &&
-      [get, find, count].some((s) => !s.checked);
+      [get, find, count].some(s => s.checked) &&
+      [get, find, count].some(s => !s.checked);
 
     const indeterminateWrite =
       !writeUserFields &&
-      [create, update, del, addField].some((s) => s.checked) &&
-      [create, update, del, addField].some((s) => !s.checked);
+      [create, update, del, addField].some(s => s.checked) &&
+      [create, update, del, addField].some(s => !s.checked);
 
     cols.push(
       <div key="second" className={[styles.check, styles.second].join(' ')}>
@@ -390,7 +366,7 @@ function renderPointerCheckboxes(
             label="Read"
             checked={read.checked}
             indeterminate={indeterminateRead}
-            onChange={(value) => onChange(rowId, 'read', value)}
+            onChange={value => onChange(rowId, 'read', value)}
           />
         )}
       </div>
@@ -413,7 +389,7 @@ function renderPointerCheckboxes(
               label="Write and Add field"
               indeterminate={indeterminateWrite}
               checked={write.checked}
-              onChange={(value) => onChange(rowId, 'write', value)}
+              onChange={value => onChange(rowId, 'write', value)}
             />
           </div>
         </div>
@@ -427,7 +403,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Get"
             checked={get.checked}
-            onChange={(value) => onChange(rowId, 'get', value)}
+            onChange={value => onChange(rowId, 'get', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -440,7 +416,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Find"
             checked={find.checked}
-            onChange={(value) => onChange(rowId, 'find', value)}
+            onChange={value => onChange(rowId, 'find', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -453,7 +429,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Count"
             checked={count.checked}
-            onChange={(value) => onChange(rowId, 'count', value)}
+            onChange={value => onChange(rowId, 'count', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -467,7 +443,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Create"
             checked={create.checked}
-            onChange={(value) => onChange(rowId, 'create', value)}
+            onChange={value => onChange(rowId, 'create', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -480,7 +456,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Update"
             checked={update.checked}
-            onChange={(value) => onChange(rowId, 'update', value)}
+            onChange={value => onChange(rowId, 'update', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -493,7 +469,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Delete"
             checked={del.checked}
-            onChange={(value) => onChange(rowId, 'delete', value)}
+            onChange={value => onChange(rowId, 'delete', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -506,7 +482,7 @@ function renderPointerCheckboxes(
           <Checkbox
             label="Add field"
             checked={addField.checked}
-            onChange={(value) => onChange(rowId, 'addField', value)}
+            onChange={value => onChange(rowId, 'addField', value)}
           />
         ) : (
           <Icon name="check" width={20} height={20} />
@@ -551,12 +527,8 @@ export default class PermissionsDialog extends React.Component {
     const uniqueKeys = [...(advanced ? ['requiresAuthentication'] : []), '*'];
     const perms = {};
     for (const k in permissions) {
-      if (
-        k !== 'readUserFields' &&
-        k !== 'writeUserFields' &&
-        k !== 'protectedFields'
-      ) {
-        Object.keys(permissions[k]).forEach((key) => {
+      if (k !== 'readUserFields' && k !== 'writeUserFields' && k !== 'protectedFields') {
+        Object.keys(permissions[k]).forEach(key => {
           if (key === 'pointerFields') {
             //pointerFields is not a regular entity; processed later
             return;
@@ -593,12 +565,9 @@ export default class PermissionsDialog extends React.Component {
 
       // The double check is necessary because the permissions object seems to be empty when accessing the CLP section
       // if the class was recently created.
-      (pointerPermsSubset.get =
-        (permissions.get && permissions.get.pointerFields) || []),
-      (pointerPermsSubset.find =
-          (permissions.find && permissions.find.pointerFields) || []),
-      (pointerPermsSubset.count =
-          (permissions.count && permissions.count.pointerFields) || []),
+      (pointerPermsSubset.get = (permissions.get && permissions.get.pointerFields) || []),
+      (pointerPermsSubset.find = (permissions.find && permissions.find.pointerFields) || []),
+      (pointerPermsSubset.count = (permissions.count && permissions.count.pointerFields) || []),
       (pointerPermsSubset.create =
           (permissions.create && permissions.create.pointerFields) || []),
       (pointerPermsSubset.update =
@@ -616,10 +585,7 @@ export default class PermissionsDialog extends React.Component {
     for (const action in pointerPermsSubset) {
       // action holds array of field names
       for (const field of pointerPermsSubset[action]) {
-        pointerPerms[field] = Object.assign(
-          { [action]: true },
-          pointerPerms[field]
-        );
+        pointerPerms[field] = Object.assign({ [action]: true }, pointerPerms[field]);
       }
     }
     // preserve protectedFields
@@ -648,8 +614,8 @@ export default class PermissionsDialog extends React.Component {
     // to render correct pills and details.
     const rows = await Promise.all(
       this.state.keys
-        .filter((key) => !['requiresAuthentication', '*'].includes(key))
-        .map((key) => this.props.validateEntry(key))
+        .filter(key => !['requiresAuthentication', '*'].includes(key))
+        .map(key => this.props.validateEntry(key))
     );
 
     let entryTypes = new Map({});
@@ -687,10 +653,10 @@ export default class PermissionsDialog extends React.Component {
   }
 
   toggleField(rowId, type, value) {
-    this.setState((state) => {
+    this.setState(state => {
       let perms = state.perms;
       if (Array.isArray(type)) {
-        type.forEach((t) => {
+        type.forEach(t => {
           perms = perms.setIn([t, rowId], value);
         });
       } else {
@@ -701,7 +667,7 @@ export default class PermissionsDialog extends React.Component {
   }
 
   togglePointer(field, action, value) {
-    this.setState((state) => {
+    this.setState(state => {
       let pointerPerms = state.pointerPerms;
 
       // toggle the value clicked
@@ -731,7 +697,7 @@ export default class PermissionsDialog extends React.Component {
         // if granular action changed to true
         if (value) {
           // if all become checked, unset them as granulars and enable write group instead
-          if (!group.some((op) => !pointerPerms.getIn([field, op]))) {
+          if (!group.some(op => !pointerPerms.getIn([field, op]))) {
             for (const op of group) {
               pointerPerms = pointerPerms.setIn([field, op], false);
             }
@@ -746,8 +712,8 @@ export default class PermissionsDialog extends React.Component {
             pointerPerms = pointerPerms.setIn([field, groupKey], false);
             // and enable all granular actions except the one unchecked
             group
-              .filter((op) => op !== action)
-              .forEach((op) => {
+              .filter(op => op !== action)
+              .forEach(op => {
                 pointerPerms = pointerPerms.setIn([field, op], true);
               });
           }
@@ -792,10 +758,7 @@ export default class PermissionsDialog extends React.Component {
           }
 
           // check if key already in list
-          if (
-            this.state.keys.indexOf(key) > -1 ||
-            this.state.newKeys.indexOf(key) > -1
-          ) {
+          if (this.state.keys.indexOf(key) > -1 || this.state.newKeys.indexOf(key) > -1) {
             return this.setState({
               entryError: 'You already have a row for this object',
             });
@@ -807,22 +770,10 @@ export default class PermissionsDialog extends React.Component {
               nextPointerPerms = nextPointerPerms.setIn([entry, 'get'], true);
               nextPointerPerms = nextPointerPerms.setIn([entry, 'find'], true);
               nextPointerPerms = nextPointerPerms.setIn([entry, 'count'], true);
-              nextPointerPerms = nextPointerPerms.setIn(
-                [entry, 'create'],
-                true
-              );
-              nextPointerPerms = nextPointerPerms.setIn(
-                [entry, 'update'],
-                true
-              );
-              nextPointerPerms = nextPointerPerms.setIn(
-                [entry, 'delete'],
-                true
-              );
-              nextPointerPerms = nextPointerPerms.setIn(
-                [entry, 'addField'],
-                true
-              );
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'create'], true);
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'update'], true);
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'delete'], true);
+              nextPointerPerms = nextPointerPerms.setIn([entry, 'addField'], true);
             } else {
               nextPointerPerms = nextPointerPerms.setIn([entry, 'read'], true);
               nextPointerPerms = nextPointerPerms.setIn([entry, 'write'], true);
@@ -860,8 +811,7 @@ export default class PermissionsDialog extends React.Component {
         () => {
           if (this.props.advanced && this.props.enablePointerPermissions) {
             this.setState({
-              entryError:
-                'Role, User or field not found. Enter a valid id, name or column',
+              entryError: 'Role, User or field not found. Enter a valid id, name or column',
             });
           } else {
             this.setState({
@@ -932,18 +882,10 @@ export default class PermissionsDialog extends React.Component {
     const output = {};
     let fields = ['read', 'write'];
     if (this.props.advanced) {
-      fields = [
-        'get',
-        'find',
-        'count',
-        'create',
-        'update',
-        'delete',
-        'addField',
-      ];
+      fields = ['get', 'find', 'count', 'create', 'update', 'delete', 'addField'];
     }
 
-    fields.forEach((field) => {
+    fields.forEach(field => {
       output[field] = {};
       this.state.perms.get(field).forEach((v, k) => {
         if (k === 'pointerFields') {
@@ -969,7 +911,7 @@ export default class PermissionsDialog extends React.Component {
         writeUserFields.push(key);
       }
 
-      fields.forEach((op) => {
+      fields.forEach(op => {
         if (perms.get(op)) {
           if (!output[op].pointerFields) {
             output[op].pointerFields = [];
@@ -1012,7 +954,7 @@ export default class PermissionsDialog extends React.Component {
   }
 
   renderRow(key, columns, types) {
-    const pill = (text) => (
+    const pill = text => (
       <span className={styles.pillType}>
         <Pill value={text} />
       </span>
@@ -1111,21 +1053,14 @@ export default class PermissionsDialog extends React.Component {
           this.toggleField.bind(this)
         );
       } else {
-        content = renderSimpleCheckboxes(
-          key,
-          this.state.perms,
-          this.toggleField.bind(this)
-        );
+        content = renderSimpleCheckboxes(key, this.state.perms, this.toggleField.bind(this));
       }
     }
     let trash = null;
     if (!this.state.transitioning) {
       trash = (
         <div className={styles.delete}>
-          <button
-            type="button"
-            onClick={this.deleteRow.bind(this, key, pointer)}
-          >
+          <button type="button" onClick={this.deleteRow.bind(this, key, pointer)}>
             <Icon name="trash-solid" width={20} height={20} />
           </button>
         </div>
@@ -1152,11 +1087,7 @@ export default class PermissionsDialog extends React.Component {
         this.toggleField.bind(this)
       );
     }
-    return renderSimpleCheckboxes(
-      '*',
-      this.state.perms,
-      this.toggleField.bind(this)
-    );
+    return renderSimpleCheckboxes('*', this.state.perms, this.toggleField.bind(this));
   }
 
   renderAuthenticatedCheckboxes() {
@@ -1198,12 +1129,12 @@ export default class PermissionsDialog extends React.Component {
 
     // "userPointer:" fields that were not added yet
     const unusedPointerFields = userPointers.filter(
-      (ptr) => !allKeys.includes(ptr) && ptr.includes(input)
+      ptr => !allKeys.includes(ptr) && ptr.includes(input)
     );
 
     // roles
     const prefixes = ['role:']
-      .filter((o) => o.startsWith(input) && o.length > input.length) // filter matching input
+      .filter(o => o.startsWith(input) && o.length > input.length) // filter matching input
       .concat(...unusedPointerFields);
 
     // pointer fields that are not applied yet;
@@ -1234,13 +1165,7 @@ export default class PermissionsDialog extends React.Component {
     }
 
     return (
-      <Popover
-        fadeIn={true}
-        fixed={true}
-        position={origin}
-        modal={true}
-        color="rgba(17,13,17,0.8)"
-      >
+      <Popover fadeIn={true} fixed={true} position={origin} modal={true} color="rgba(17,13,17,0.8)">
         <div className={classes.join(' ')}>
           <div className={styles.header}>
             {this.props.title}
@@ -1256,9 +1181,7 @@ export default class PermissionsDialog extends React.Component {
                 <Icon name="gear-solid" width={20} height={20} />
               </div>
             ) : null}
-            {this.props.advanced && this.state.showLevels ? (
-              <div className={styles.arrow} />
-            ) : null}
+            {this.props.advanced && this.state.showLevels ? <div className={styles.arrow} /> : null}
           </div>
           <SliderWrap expanded={this.state.showLevels}>
             <div className={styles.level}>
@@ -1269,15 +1192,12 @@ export default class PermissionsDialog extends React.Component {
                 type={Toggle.Types.TWO_WAY}
                 optionLeft="Simple"
                 optionRight="Advanced"
-                onChange={(level) => {
+                onChange={level => {
                   if (this.state.transitioning || this.state.level === level) {
                     return;
                   }
                   this.setState({ level, transitioning: true });
-                  setTimeout(
-                    () => this.setState({ transitioning: false }),
-                    700
-                  );
+                  setTimeout(() => this.setState({ transitioning: false }), 700);
                 }}
               />
             </div>
@@ -1289,9 +1209,7 @@ export default class PermissionsDialog extends React.Component {
           </div>
           <div
             className={styles.tableWrap}
-            onScroll={
-              this.refEntry.current && this.refEntry.current.recalculatePosition
-            }
+            onScroll={this.refEntry.current && this.refEntry.current.recalculatePosition}
           >
             <div className={styles.table} ref={this.refTable}>
               <div className={[styles.overlay, styles.second].join(' ')} />
@@ -1312,15 +1230,11 @@ export default class PermissionsDialog extends React.Component {
 
               {this.state.keys
                 .slice(this.props.advanced ? 2 : 1)
-                .map((key) =>
-                  this.renderRow(key, this.state.columns, this.state.entryTypes)
-                )}
+                .map(key => this.renderRow(key, this.state.columns, this.state.entryTypes))}
               {this.props.advanced
-                ? this.state.pointers.map((pointer) =>
-                  this.renderRow(pointer, this.state.columns)
-                )
+                ? this.state.pointers.map(pointer => this.renderRow(pointer, this.state.columns))
                 : null}
-              {this.state.newKeys.map((key) =>
+              {this.state.newKeys.map(key =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
               )}
 
@@ -1337,13 +1251,13 @@ export default class PermissionsDialog extends React.Component {
                       margin: '-6px 0px 0px 21px',
                       width: '290px',
                     }}
-                    onChange={(input) => {
+                    onChange={input => {
                       this.setState({ newEntry: input, entryError: undefined });
                     }}
                     onSubmit={this.checkEntry.bind(this)}
                     placeholder={placeholderText}
-                    buildSuggestions={(input) => this.suggestInput(input)}
-                    buildLabel={(input) => this.buildLabel(input)}
+                    buildSuggestions={input => this.suggestInput(input)}
+                    buildLabel={input => this.buildLabel(input)}
                     error={this.state.entryError}
                   />
                 </TrackVisibility>
@@ -1360,9 +1274,7 @@ export default class PermissionsDialog extends React.Component {
                 onClick={() => this.props.onConfirm(this.outputPerms())}
               />
             </div>
-            <div
-              className={[styles.details, baseStyles.verticalCenter].join(' ')}
-            >
+            <div className={[styles.details, baseStyles.verticalCenter].join(' ')}>
               {this.props.details}
             </div>
           </div>

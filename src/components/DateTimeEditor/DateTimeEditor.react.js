@@ -55,7 +55,7 @@ export default class DateTimeEditor extends React.Component {
   }
 
   toggle() {
-    this.setState((state) => ({ open: !state.open }));
+    this.setState(state => ({ open: !state.open }));
   }
 
   inputDate(e) {
@@ -100,13 +100,9 @@ export default class DateTimeEditor extends React.Component {
           <DateTimePicker
             value={this.state.value}
             width={240}
-            onChange={(value) =>
-              this.setState({ value: value, text: value.toISOString() })
-            }
+            onChange={value => this.setState({ value: value, text: value.toISOString() })}
             close={() =>
-              this.setState({ open: false }, () =>
-                this.props.onCommit(this.state.value)
-              )
+              this.setState({ open: false }, () => this.props.onCommit(this.state.value))
             }
           />
         </div>
@@ -114,17 +110,13 @@ export default class DateTimeEditor extends React.Component {
     }
 
     return (
-      <div
-        ref={this.editorRef}
-        style={{ width: this.props.width }}
-        className={styles.editor}
-      >
+      <div ref={this.editorRef} style={{ width: this.props.width }} className={styles.editor}>
         <input
           autoFocus
           type="text"
           ref={this.inputRef}
           value={this.state.text}
-          onFocus={(e) => e.target.select()}
+          onFocus={e => e.target.select()}
           onClick={this.toggle.bind(this)}
           onChange={this.inputDate.bind(this)}
           onBlur={this.commitDate.bind(this)}

@@ -47,9 +47,7 @@ export default class EditRowDialog extends React.Component {
       const { currentObject, openObjectPickers, expandedTextAreas } =
         this.initializeState(newSelectedObject);
       this.setState({ currentObject, openObjectPickers, expandedTextAreas });
-    } else if (
-      newSelectedObject.updatedAt !== previousSelectedObject.updatedAt
-    ) {
+    } else if (newSelectedObject.updatedAt !== previousSelectedObject.updatedAt) {
       this.updateCurrentObjectFromProps(newSelectedObject);
     }
   }
@@ -59,7 +57,7 @@ export default class EditRowDialog extends React.Component {
     const currentObject = { ...newObject };
     const openObjectPickers = {};
     const expandedTextAreas = {};
-    columns.forEach((column) => {
+    columns.forEach(column => {
       const { name, type } = column;
       if (['Array', 'Object'].indexOf(type) >= 0) {
         // This is needed to avoid unwanted conversions of objects to Parse.Objects.
@@ -74,9 +72,7 @@ export default class EditRowDialog extends React.Component {
       }
       if (type === 'Polygon') {
         const stringifyValue = JSON.stringify(
-          (currentObject[name] && currentObject[name].coordinates) || [
-            ['lat', 'lon'],
-          ],
+          (currentObject[name] && currentObject[name].coordinates) || [['lat', 'lon']],
           null,
           4
         );
@@ -101,7 +97,7 @@ export default class EditRowDialog extends React.Component {
   updateCurrentObjectFromProps(newObject) {
     const { columns } = this.props;
     const { currentObject, expandedTextAreas } = this.state;
-    columns.forEach((column) => {
+    columns.forEach(column => {
       const { name, type } = column;
       if (['String', 'Number'].indexOf(type) >= 0) {
         currentObject[name] = newObject[name];
@@ -135,26 +131,15 @@ export default class EditRowDialog extends React.Component {
         currentObject.password = '';
       }
     }
-    const {
-      selectedObject,
-      className,
-      updateRow,
-      confirmAttachSelectedRows,
-      useMasterKey,
-    } = this.props;
+    const { selectedObject, className, updateRow, confirmAttachSelectedRows, useMasterKey } =
+      this.props;
     if (type === 'Relation') {
       if (toDelete.length > 0) {
         selectedObject[name].remove(toDelete);
         selectedObject[name].parent.save(null, { useMasterKey });
       }
       if (newValue.length > 0) {
-        confirmAttachSelectedRows(
-          className,
-          selectedObject.id,
-          name,
-          newValue,
-          targetClass
-        );
+        confirmAttachSelectedRows(className, selectedObject.id, name, newValue, targetClass);
       }
       this.toggleObjectPicker(name, false);
     } else {
@@ -162,9 +147,7 @@ export default class EditRowDialog extends React.Component {
         const { selectedObject } = this.props;
         const { currentObject, expandedTextAreas } = this.state;
         const oldStringifyValue = JSON.stringify(
-          type === 'Polygon'
-            ? selectedObject[name].coordinates
-            : selectedObject[name],
+          type === 'Polygon' ? selectedObject[name].coordinates : selectedObject[name],
           null,
           4
         );
@@ -200,7 +183,7 @@ export default class EditRowDialog extends React.Component {
   openAcl() {
     const { selectedObject, columns, handleShowAcl } = this.props;
     const { row } = selectedObject;
-    const col = columns.findIndex((c) => c.name === 'ACL');
+    const col = columns.findIndex(c => c.name === 'ACL');
     handleShowAcl(row, col);
   }
 
@@ -241,21 +224,13 @@ export default class EditRowDialog extends React.Component {
   }
 
   render() {
-    const {
-      selectedObject,
-      className,
-      columns,
-      onClose,
-      schema,
-      useMasterKey,
-    } = this.props;
+    const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
     const { currentObject, openObjectPickers, expandedTextAreas } = this.state;
 
-    const fields = columns.map((column) => {
+    const fields = columns.map(column => {
       const { name, type, targetClass } = column;
 
-      const isHidden =
-        ['objectId', 'createdAt', 'updatedAt', 'ACL'].indexOf(name) >= 0;
+      const isHidden = ['objectId', 'createdAt', 'updatedAt', 'ACL'].indexOf(name) >= 0;
 
       if (isHidden) {
         return;
@@ -265,9 +240,7 @@ export default class EditRowDialog extends React.Component {
 
       const isDisabled =
         (className === '_User' && ['authData'].indexOf(name) >= 0) ||
-        (selectedObject.id &&
-          className === '_Role' &&
-          ['name'].indexOf(name) >= 0) ||
+        (selectedObject.id && className === '_Role' && ['name'].indexOf(name) >= 0) ||
         (className === '_Session' &&
           [
             'sessionToken',
@@ -283,22 +256,14 @@ export default class EditRowDialog extends React.Component {
         case 'String':
           inputComponent = (
             <TextInput
-              multiline={
-                currentObject[name] && currentObject[name].length > 25
-                  ? true
-                  : false
-              }
+              multiline={currentObject[name] && currentObject[name].length > 25 ? true : false}
               disabled={isDisabled}
               placeholder={
-                name === 'password'
-                  ? '(hidden)'
-                  : val === undefined
-                    ? '(undefined)'
-                    : ''
+                name === 'password' ? '(hidden)' : val === undefined ? '(undefined)' : ''
               }
               value={currentObject[name]}
-              onChange={(newValue) => this.updateCurrentObject(newValue, name)}
-              onBlur={(newValue) => this.handleChange(newValue, name)}
+              onChange={newValue => this.updateCurrentObject(newValue, name)}
+              onBlur={newValue => this.handleChange(newValue, name)}
             />
           );
           break;
@@ -308,17 +273,15 @@ export default class EditRowDialog extends React.Component {
               disabled={isDisabled}
               value={currentObject[name]}
               placeholder={val === undefined ? '(undefined)' : ''}
-              onChange={(newValue) =>
+              onChange={newValue =>
                 this.updateCurrentObject(
                   validateNumeric(newValue) ? newValue : currentObject[name],
                   name
                 )
               }
-              onBlur={(newValue) =>
+              onBlur={newValue =>
                 this.handleChange(
-                  validateNumeric(parseFloat(newValue))
-                    ? parseFloat(newValue)
-                    : undefined,
+                  validateNumeric(parseFloat(newValue)) ? parseFloat(newValue) : undefined,
                   name
                 )
               }
@@ -339,10 +302,8 @@ export default class EditRowDialog extends React.Component {
               disabled={isDisabled}
               placeholder={val === undefined && '(undefined)'}
               value={currentObject[name]}
-              onChange={(newValue) => this.updateCurrentObject(newValue, name)}
-              onBlur={(newValue) =>
-                this.handleChange(JSON.parse(newValue), name, type)
-              }
+              onChange={newValue => this.updateCurrentObject(newValue, name)}
+              onBlur={newValue => this.handleChange(JSON.parse(newValue), name, type)}
             />
           );
           break;
@@ -357,7 +318,7 @@ export default class EditRowDialog extends React.Component {
             <Toggle
               type={Toggle.Types.TRUE_FALSE}
               value={selectedObject[name]}
-              onChange={(newValue) => this.handleChange(newValue, name)}
+              onChange={newValue => this.handleChange(newValue, name)}
             />
           );
           break;
@@ -366,7 +327,7 @@ export default class EditRowDialog extends React.Component {
             <DateTimeInput
               disabled={isDisabled}
               value={selectedObject[name]}
-              onChange={(newValue) => this.handleChange(newValue, name)}
+              onChange={newValue => this.handleChange(newValue, name)}
             />
           );
           break;
@@ -377,18 +338,14 @@ export default class EditRowDialog extends React.Component {
                 disableAutoFocus={true}
                 value={selectedObject[name]}
                 style={{ position: 'inherit' }}
-                onCommit={(newValue) => this.handleChange(newValue, name)}
+                onCommit={newValue => this.handleChange(newValue, name)}
               />
             </div>
           );
           break;
         case 'File':
           const file = selectedObject[name];
-          const fileName = file
-            ? file.url()
-              ? getFileName(file)
-              : file.name()
-            : '';
+          const fileName = file ? (file.url() ? getFileName(file) : file.name()) : '';
           inputComponent = (
             <div className={[styles.editRowDialogFileCell]}>
               {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
@@ -401,7 +358,7 @@ export default class EditRowDialog extends React.Component {
                   <FileEditor
                     value={file}
                     onCancel={this.hideFileEditor}
-                    onCommit={(newValue) => this.handleChange(newValue, name)}
+                    onCommit={newValue => this.handleChange(newValue, name)}
                   />
                 )}
               </div>
@@ -416,9 +373,7 @@ export default class EditRowDialog extends React.Component {
               column={column}
               className={targetClass}
               pointerId={pointerId}
-              onConfirm={(newValue) =>
-                this.handleChange(newValue, name, type, targetClass)
-              }
+              onConfirm={newValue => this.handleChange(newValue, name, type, targetClass)}
               onCancel={() => this.toggleObjectPicker(name, false)}
               useMasterKey={useMasterKey}
             />
@@ -437,17 +392,13 @@ export default class EditRowDialog extends React.Component {
                   followClick={true}
                 />
               )}
-              <Pill
-                onClick={() => this.toggleObjectPicker(name, true)}
-                value={`Select ${name}`}
-              />
+              <Pill onClick={() => this.toggleObjectPicker(name, true)} value={`Select ${name}`} />
             </div>
           );
           break;
         case 'Relation':
           // fallback if selectedObject is just saved, so it still doesn't have relation properites set
-          const relation =
-            selectedObject[name] || new Parse.Relation(selectedObject, name);
+          const relation = selectedObject[name] || new Parse.Relation(selectedObject, name);
           relation.targetClassName = targetClass;
 
           inputComponent = openObjectPickers[name] ? (
@@ -493,10 +444,7 @@ export default class EditRowDialog extends React.Component {
           {targetClass ? `${type} <${targetClass}>` : type}
           <div style={{ marginTop: '2px' }}>
             {expandedTextAreas[name] && expandedTextAreas[name].rows > 3 && (
-              <a
-                style={{ color: '#169cee' }}
-                onClick={() => this.toggleExpandTextArea(name)}
-              >
+              <a style={{ color: '#169cee' }} onClick={() => this.toggleExpandTextArea(name)}>
                 {expandedTextAreas[name].expanded ? 'collapse' : 'expand'}
               </a>
             )}
@@ -535,14 +483,12 @@ export default class EditRowDialog extends React.Component {
           <div style={{ paddingTop: '5px', fontSize: '12px' }}>
             {selectedObject.createdAt && (
               <p>
-                CreatedAt{' '}
-                <strong>{dateStringUTC(selectedObject.createdAt)}</strong>
+                CreatedAt <strong>{dateStringUTC(selectedObject.createdAt)}</strong>
               </p>
             )}
             {selectedObject.updatedAt && (
               <p>
-                UpdatedAt{' '}
-                <strong>{dateStringUTC(selectedObject.updatedAt)}</strong>
+                UpdatedAt <strong>{dateStringUTC(selectedObject.updatedAt)}</strong>
               </p>
             )}
           </div>

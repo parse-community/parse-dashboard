@@ -23,9 +23,7 @@ export default class FileInput extends React.Component {
       return <span className={styles.label}>{escape(this.props.value)}</span>;
     }
     if (this.props.value.name && !this.props.value.url) {
-      return (
-        <span className={styles.label}>{escape(this.props.value.name)}</span>
-      );
+      return <span className={styles.label}>{escape(this.props.value.name)}</span>;
     }
     if (this.props.value.name && this.props.value.url) {
       return (

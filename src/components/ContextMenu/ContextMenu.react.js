@@ -9,19 +9,17 @@ import PropTypes from 'lib/PropTypes';
 import React, { useState, useEffect, useRef } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
-const getPositionToFitVisibleScreen = (ref) => {
+const getPositionToFitVisibleScreen = ref => {
   if (ref.current) {
     const elBox = ref.current.getBoundingClientRect();
-    const y =
-      elBox.y + elBox.height < window.innerHeight ? 0 : 0 - elBox.y + 100;
+    const y = elBox.y + elBox.height < window.innerHeight ? 0 : 0 - elBox.y + 100;
 
     // If there's a previous element show current next to it.
     // Try on right side first, then on left if there's no place.
     const prevEl = ref.current.previousSibling;
     if (prevEl) {
       const prevElBox = prevEl.getBoundingClientRect();
-      const showOnRight =
-        prevElBox.x + prevElBox.width + elBox.width < window.innerWidth;
+      const showOnRight = prevElBox.x + prevElBox.width + elBox.width < window.innerWidth;
       return {
         x: showOnRight ? prevElBox.width : -elBox.width,
         y,
@@ -122,7 +120,7 @@ const ContextMenu = ({ x, y, items }) => {
     return null;
   }
 
-  const getItemsFromLevel = (level) => {
+  const getItemsFromLevel = level => {
     let result = items;
     for (let index = 1; index <= level; index++) {
       result = result[path[index]].items;

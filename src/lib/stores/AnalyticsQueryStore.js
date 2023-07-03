@@ -64,7 +64,7 @@ for (const key in LABEL_TO_KEY_MAPPING) {
 
 const LAST_FETCH_TIMEOUT = 60000;
 
-const queryToPayload = (query) => {
+const queryToPayload = query => {
   const payload = {
     sources: [LABEL_TO_KEY_MAPPING[query.source]],
     enabled: query.enabled,
@@ -82,7 +82,7 @@ const queryToPayload = (query) => {
     }));
   }
   if (query.groups && query.groups.length > 0) {
-    payload.groups = query.groups.map((group) => LABEL_TO_KEY_MAPPING[group]);
+    payload.groups = query.groups.map(group => LABEL_TO_KEY_MAPPING[group]);
   }
   if (query.filters && query.filters.length > 0) {
     payload.filters = query.filters.map(({ col, op, val }) => ({
@@ -110,7 +110,7 @@ const queryToPayload = (query) => {
   return payload;
 };
 
-const payloadToQuery = (payload) => {
+const payloadToQuery = payload => {
   const query = {
     name: payload.name,
     source: KEY_TO_LABEL_MAPPING[payload.sources[0]],
@@ -127,7 +127,7 @@ const payloadToQuery = (payload) => {
     }));
   }
   if (payload.groups) {
-    query.groups = payload.groups.map((group) => KEY_TO_LABEL_MAPPING[group]);
+    query.groups = payload.groups.map(group => KEY_TO_LABEL_MAPPING[group]);
   }
   if (payload.filters) {
     query.filters = payload.filters.map(({ col, op, val }) => ({
@@ -181,10 +181,10 @@ function AnalyticsQueryStore(state, action) {
       } else {
         type = 'recent';
       }
-      return get(`${urlPrefix}/more?type=${type}&skip=0`).then((results) => {
+      return get(`${urlPrefix}/more?type=${type}&skip=0`).then(results => {
         const queries = {};
         if (results) {
-          results.forEach((payload) => {
+          results.forEach(payload => {
             queries[payload.objectId] = payloadToQuery(payload);
           });
         }
@@ -192,7 +192,7 @@ function AnalyticsQueryStore(state, action) {
       });
     case ActionTypes.FETCH:
     case ActionTypes.CREATE:
-      return post(urlPrefix, queryToPayload(action.query)).then((result) => {
+      return post(urlPrefix, queryToPayload(action.query)).then(result => {
         result.objectId = result.id;
 
         const realResult = result[LABEL_TO_KEY_MAPPING[action.query.source]];
@@ -202,10 +202,7 @@ function AnalyticsQueryStore(state, action) {
         });
       });
     case ActionTypes.UPDATE:
-      return put(
-        `${urlPrefix}/${action.query.objectId}`,
-        queryToPayload(action.query)
-      ).then(() => {
+      return put(`${urlPrefix}/${action.query.objectId}`, queryToPayload(action.query)).then(() => {
         return state.setIn(['queries', action.query.objectId], action.query);
       });
     case ActionTypes.DELETE:

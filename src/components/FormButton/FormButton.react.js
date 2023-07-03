@@ -9,7 +9,7 @@ import Button from 'components/Button/Button.react';
 import React from 'react';
 import styles from 'components/FormButton/FormButton.scss';
 
-const FormButton = (props) => (
+const FormButton = props => (
   <div className={styles.input}>
     <Button {...props} primary={true} width="80%" />
   </div>

@@ -71,9 +71,7 @@ export default class DateRange extends React.Component {
   }
 
   rangeString() {
-    return `${monthDayStringUTC(this.state.start)} - ${monthDayStringUTC(
-      this.state.end
-    )}`;
+    return `${monthDayStringUTC(this.state.start)} - ${monthDayStringUTC(this.state.end)}`;
   }
 
   render() {
@@ -97,23 +95,18 @@ export default class DateRange extends React.Component {
             <div className={styles.calendars}>
               <Calendar
                 value={this.state.start}
-                onChange={(start) => this.setStart(start)}
+                onChange={start => this.setStart(start)}
                 shadeAfter={renderShade}
               />
               <Calendar
                 value={this.state.end}
-                onChange={(end) => this.setEnd(end)}
+                onChange={end => this.setEnd(end)}
                 shadeBefore={renderShade}
               />
             </div>
             <div className={styles.range} onClick={this.close.bind(this)}>
               <span>{this.rangeString()}</span>
-              <Icon
-                width={18}
-                height={18}
-                name="calendar-solid"
-                fill="#169CEE"
-              />
+              <Icon width={18} height={18} name="calendar-solid" fill="#169CEE" />
             </div>
           </div>
         </Popover>
@@ -128,11 +121,7 @@ export default class DateRange extends React.Component {
     }
 
     return (
-      <div
-        className={styles.wrap}
-        onClick={this.toggle.bind(this)}
-        ref={this.wrapRef}
-      >
+      <div className={styles.wrap} onClick={this.toggle.bind(this)} ref={this.wrapRef}>
         {content}
         {popover}
       </div>

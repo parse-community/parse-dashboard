@@ -21,8 +21,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleColumnChange = this.handleColumnChange.bind(this);
-    this.handleTargetObjectIdChange =
-      this.handleTargetObjectIdChange.bind(this);
+    this.handleTargetObjectIdChange = this.handleTargetObjectIdChange.bind(this);
   }
 
   componentWillMount() {
@@ -49,14 +48,8 @@ export default class AttachSelectedRowsDialog extends React.Component {
   }
 
   handleConfirm() {
-    const { currentClass, currentColumn, targetObjectId, objectIds } =
-      this.state;
-    return this.props.onConfirm(
-      currentClass,
-      targetObjectId,
-      currentColumn,
-      objectIds
-    );
+    const { currentClass, currentColumn, targetObjectId, objectIds } = this.state;
+    return this.props.onConfirm(currentClass, targetObjectId, currentColumn, objectIds);
   }
 
   handleClassChange(className) {
@@ -81,18 +74,10 @@ export default class AttachSelectedRowsDialog extends React.Component {
     if (this.state.touchableColumns.length) {
       targetRelationSelector = (
         <Field
-          label={
-            <Label
-              text="Target Relation"
-              description="Target class's relation column"
-            />
-          }
+          label={<Label text="Target Relation" description="Target class's relation column" />}
           input={
-            <Dropdown
-              value={this.state.currentColumn}
-              onChange={this.handleColumnChange}
-            >
-              {this.state.touchableColumns.map((column) => (
+            <Dropdown value={this.state.currentColumn} onChange={this.handleColumnChange}>
+              {this.state.touchableColumns.map(column => (
                 <Option key={column} value={column}>
                   {column}
                 </Option>
@@ -106,10 +91,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
       targetEntityIdInsert = (
         <Field
           label={
-            <Label
-              text="Target objectId"
-              description={`${this.state.currentClass} objectId`}
-            />
+            <Label text="Target objectId" description={`${this.state.currentClass} objectId`} />
           }
           input={
             <TextInput
@@ -133,18 +115,10 @@ export default class AttachSelectedRowsDialog extends React.Component {
         onSubmit={this.handleConfirm}
       >
         <Field
-          label={
-            <Label
-              text="Target Class"
-              description="Target relation's parent class"
-            />
-          }
+          label={<Label text="Target Class" description="Target relation's parent class" />}
           input={
-            <Dropdown
-              value={this.state.currentClass}
-              onChange={this.handleClassChange}
-            >
-              {classes.map((className) => (
+            <Dropdown value={this.state.currentClass} onChange={this.handleClassChange}>
+              {classes.map(className => (
                 <Option key={className} value={className}>
                   {className}
                 </Option>

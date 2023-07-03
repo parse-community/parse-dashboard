@@ -22,10 +22,7 @@ class CreditCardInput extends React.Component {
   }
 
   componentDidUpdate() {
-    this.inputRef.current.setSelectionRange(
-      this.state.cursorPosition,
-      this.state.cursorPosition
-    );
+    this.inputRef.current.setSelectionRange(this.state.cursorPosition, this.state.cursorPosition);
   }
 
   render() {
@@ -47,7 +44,7 @@ class CreditCardInput extends React.Component {
             onChange('');
           }
         }}
-        onChange={(e) => {
+        onChange={e => {
           const newValue = e.target.value;
           if (VALID_REGEX.test(newValue)) {
             onChange(newValue.replace(/\s/g, ''));
@@ -65,13 +62,9 @@ class CreditCardInput extends React.Component {
 export default CreditCardInput;
 
 CreditCardInput.propTypes = {
-  value: PropTypes.string.describe(
-    'The current value of the controlled input.'
-  ),
+  value: PropTypes.string.describe('The current value of the controlled input.'),
   lastFour: PropTypes.string.describe(
     'If provided, and the current value is falsy, the input will render as "•••• •••• •••• {lastFour}"'
   ),
-  onChange: PropTypes.func.describe(
-    'A function called when the input is changed.'
-  ),
+  onChange: PropTypes.func.describe('A function called when the input is changed.'),
 };

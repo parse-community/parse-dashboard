@@ -20,29 +20,16 @@ function WebhookStore(state, action) {
   action.app.setParseKeys();
   switch (action.type) {
     case ActionTypes.FETCH:
-      const functionsPromise = Parse._request(
-        'GET',
-        'hooks/functions',
-        {},
-        { useMasterKey: true }
-      );
-      const triggersPromise = Parse._request(
-        'GET',
-        'hooks/triggers',
-        {},
-        { useMasterKey: true }
-      );
-      return Promise.all([functionsPromise, triggersPromise]).then(
-        ([functions, triggers]) => {
-          return Map({
-            lastFetch: new Date(),
-            webhooks: List(functions.concat(triggers)),
-          });
-        }
-      );
+      const functionsPromise = Parse._request('GET', 'hooks/functions', {}, { useMasterKey: true });
+      const triggersPromise = Parse._request('GET', 'hooks/triggers', {}, { useMasterKey: true });
+      return Promise.all([functionsPromise, triggersPromise]).then(([functions, triggers]) => {
+        return Map({
+          lastFetch: new Date(),
+          webhooks: List(functions.concat(triggers)),
+        });
+      });
     case ActionTypes.CREATE:
-      const addHookToStore = (hook) =>
-        state.set('webhooks', state.get('webhooks').push(hook));
+      const addHookToStore = hook => state.set('webhooks', state.get('webhooks').push(hook));
       if (action.functionName !== undefined) {
         return Parse._request(
           'POST',
@@ -74,12 +61,10 @@ function WebhookStore(state, action) {
             url: action.hookURL,
           },
           { useMasterKey: true }
-        ).then((hook) => {
+        ).then(hook => {
           const index = state
             .get('webhooks')
-            .findIndex(
-              (existingHook) => existingHook.functionName === hook.functionName
-            );
+            .findIndex(existingHook => existingHook.functionName === hook.functionName);
           return state.setIn(['webhooks', index], hook);
         });
       } else {
@@ -90,11 +75,11 @@ function WebhookStore(state, action) {
             url: action.hookURL,
           },
           { useMasterKey: true }
-        ).then((hook) => {
+        ).then(hook => {
           const index = state
             .get('webhooks')
             .findIndex(
-              (existingHook) =>
+              existingHook =>
                 existingHook.className === hook.className &&
                 existingHook.triggerName === hook.triggerName
             );
@@ -113,10 +98,7 @@ function WebhookStore(state, action) {
             'webhooks',
             state
               .get('webhooks')
-              .filter(
-                (existingHook) =>
-                  existingHook.functionName != action.functionName
-              )
+              .filter(existingHook => existingHook.functionName != action.functionName)
           );
         });
       } else {
@@ -131,7 +113,7 @@ function WebhookStore(state, action) {
             state
               .get('webhooks')
               .filter(
-                (existingHook) =>
+                existingHook =>
                   !(
                     existingHook.className === action.triggerClass &&
                     existingHook.triggerName == action.triggerName

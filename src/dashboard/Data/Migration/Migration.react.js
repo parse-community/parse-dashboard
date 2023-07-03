@@ -45,28 +45,16 @@ const StatusBar = ({
   secondsRemainingStr,
   detailsVisible,
 }) => {
-  const classes = [
-    styles.statusBar,
-    detailsVisible ? styles.statusBottomCorners : '',
-  ];
+  const classes = [styles.statusBar, detailsVisible ? styles.statusBottomCorners : ''];
   if (errorMessage) {
     classes.push(styles.migrationStatusError);
     return <div className={classes.join(' ')}>{errorMessage}</div>;
   }
   return (
     <div className={classes.join(' ')}>
-      <StatusBarNote
-        note="Rows Migrated: "
-        value={prettyNumber(rowsMigrated)}
-      />
-      <StatusBarNote
-        note="Classes Migrated: "
-        value={prettyNumber(classesMigrated)}
-      />
-      <StatusBarNote
-        note="Speed: "
-        value={prettyNumber(migrationSpeed) + ' rows/s'}
-      />
+      <StatusBarNote note="Rows Migrated: " value={prettyNumber(rowsMigrated)} />
+      <StatusBarNote note="Classes Migrated: " value={prettyNumber(classesMigrated)} />
+      <StatusBarNote note="Speed: " value={prettyNumber(migrationSpeed) + ' rows/s'} />
       <StatusBarNote note="ETA: " value={secondsRemainingStr} />
     </div>
   );
@@ -74,8 +62,7 @@ const StatusBar = ({
 
 const ClassProgressBar = ({ job, last }) => {
   const percentComplete =
-    (100 * job.InsertPosition) /
-    (job.ExpectedDocumentMinimum || job.ExpectedDocumentsApprox);
+    (100 * job.InsertPosition) / (job.ExpectedDocumentMinimum || job.ExpectedDocumentsApprox);
   let progressDiv = null;
   let icon = null;
   switch (job.State) {
@@ -83,10 +70,7 @@ const ClassProgressBar = ({ job, last }) => {
       progressDiv = (
         <div
           style={{ width: percentComplete.toString() + '%' }}
-          className={[
-            styles.detailCompletion,
-            baseStyles.progressBackground,
-          ].join(' ')}
+          className={[styles.detailCompletion, baseStyles.progressBackground].join(' ')}
         />
       );
       break;
@@ -94,10 +78,7 @@ const ClassProgressBar = ({ job, last }) => {
       progressDiv = (
         <div
           style={{ width: '100%' }}
-          className={[
-            styles.detailCompletion,
-            baseStyles.succeededBackground,
-          ].join(' ')}
+          className={[styles.detailCompletion, baseStyles.succeededBackground].join(' ')}
         />
       );
       icon = <Icon name="check-solid" fill="#00db7c" width={15} height={15} />;
@@ -106,10 +87,7 @@ const ClassProgressBar = ({ job, last }) => {
       progressDiv = (
         <div
           style={{ width: '100%' }}
-          className={[
-            styles.detailCompletion,
-            baseStyles.failedBackground,
-          ].join(' ')}
+          className={[styles.detailCompletion, baseStyles.failedBackground].join(' ')}
         />
       );
       icon = <Icon name="x-solid" fill="#ff395e" width={15} height={15} />;
@@ -126,11 +104,7 @@ const ClassProgressBar = ({ job, last }) => {
         {job.Name}
       </div>
       <div className={styles.detailProgressWrapper}>
-        <div
-          className={[styles.detailPercent, baseStyles.verticalCenter].join(
-            ' '
-          )}
-        >
+        <div className={[styles.detailPercent, baseStyles.verticalCenter].join(' ')}>
           <div className={styles.detailBackground}>{progressDiv}</div>
         </div>
         <div className={styles.detailIcon}>{icon}</div>
@@ -168,14 +142,11 @@ export default class Migration extends DashboardView {
         <LiveReload
           ref={'reloaderView'}
           source={() => this.context.getMigrations()}
-          render={(migration) => {
+          render={migration => {
             if (migration === undefined) {
               return (
                 <LoaderContainer loading={true}>
-                  <div
-                    style={{ minHeight: '100vh' }}
-                    className={styles.content}
-                  />
+                  <div style={{ minHeight: '100vh' }} className={styles.content} />
                 </LoaderContainer>
               );
             }
@@ -183,16 +154,10 @@ export default class Migration extends DashboardView {
             const moreDetailsButton = (
               <div className={styles.button}>
                 <Button
-                  value={
-                    this.state.showDetails
-                      ? 'Show less details'
-                      : 'Show more details'
-                  }
+                  value={this.state.showDetails ? 'Show less details' : 'Show more details'}
                   primary={true}
                   width="160px"
-                  onClick={() =>
-                    this.setState({ showDetails: !this.state.showDetails })
-                  }
+                  onClick={() => this.setState({ showDetails: !this.state.showDetails })}
                 />
               </div>
             );
@@ -221,10 +186,7 @@ export default class Migration extends DashboardView {
             const finalizeButton = (
               <div className={styles.button}>
                 <Button
-                  disabled={
-                    this.context.migration.migrationState !==
-                    MIGRATION_COMMITREADY
-                  }
+                  disabled={this.context.migration.migrationState !== MIGRATION_COMMITREADY}
                   value="Finalize"
                   primary={true}
                   width="160px"
@@ -249,17 +211,16 @@ export default class Migration extends DashboardView {
                 longStateDescription = (
                   <div>
                     <div style={{ paddingBottom: '10px' }}>
-                      We are copying a snapshot of your Parse hosted database
-                      into your MongoDB instance at{' '}
+                      We are copying a snapshot of your Parse hosted database into your MongoDB
+                      instance at{' '}
                       <span className={styles.descriptionMongoName}>
                         {this.context.migration.destination}
                       </span>
                       .
                     </div>
                     <div>
-                      This could take a while, depending on the amount of data.
-                      During this phase, your app continues to read and write to
-                      the Parse hosted database.
+                      This could take a while, depending on the amount of data. During this phase,
+                      your app continues to read and write to the Parse hosted database.
                     </div>
                   </div>
                 );
@@ -277,22 +238,17 @@ export default class Migration extends DashboardView {
                         {/* padding */}
                         <div className={styles.detailMongoName}>&nbsp;</div>
                         <div className={styles.detailMongoName}>&nbsp;</div>
-                        <div
-                          style={{ float: 'right' }}
-                          className={styles.detailMongoName}
-                        >
+                        <div style={{ float: 'right' }} className={styles.detailMongoName}>
                           {this.context.migration.destination}
                         </div>
                       </div>
-                      {Object.keys(collectionJobs).map(
-                        (mongoKey, index, array) => (
-                          <ClassProgressBar
-                            key={mongoKey}
-                            job={collectionJobs[mongoKey]}
-                            last={index === array.length - 1}
-                          />
-                        )
-                      )}
+                      {Object.keys(collectionJobs).map((mongoKey, index, array) => (
+                        <ClassProgressBar
+                          key={mongoKey}
+                          job={collectionJobs[mongoKey]}
+                          last={index === array.length - 1}
+                        />
+                      ))}
                     </div>
                   );
                 }
@@ -301,18 +257,16 @@ export default class Migration extends DashboardView {
                 longStateDescription = (
                   <div>
                     <div style={{ paddingBottom: '10px' }}>
-                      The snapshot copy has been completed, and we are now
-                      syncing any new data since the snapshot into your MongoDB
-                      instance at{' '}
+                      The snapshot copy has been completed, and we are now syncing any new data
+                      since the snapshot into your MongoDB instance at{' '}
                       <span className={styles.descriptionMongoName}>
                         {this.context.migration.destination}
                       </span>
                       .
                     </div>
                     <div>
-                      This could take a while, depending on the amount of new
-                      data. During this phase, your app continues to read and
-                      write to the Parse hosted database.
+                      This could take a while, depending on the amount of new data. During this
+                      phase, your app continues to read and write to the Parse hosted database.
                     </div>
                   </div>
                 );
@@ -330,14 +284,12 @@ export default class Migration extends DashboardView {
                       <span className={styles.descriptionMongoName}>
                         {this.context.migration.destination}
                       </span>{' '}
-                      is now in sync. Browse through the data to make sure your
-                      data looks correct.
+                      is now in sync. Browse through the data to make sure your data looks correct.
                     </div>
                     <div>
-                      During this phase, your app continues to read and write to
-                      the Parse hosted database. When you are satisfied, you can
-                      finalize your migration and all reads and writes will now
-                      go to your MongoDB instance.
+                      During this phase, your app continues to read and write to the Parse hosted
+                      database. When you are satisfied, you can finalize your migration and all
+                      reads and writes will now go to your MongoDB instance.
                     </div>
                   </div>
                 );
@@ -368,19 +320,14 @@ export default class Migration extends DashboardView {
                 break;
               default:
                 errorMessage =
-                  this.context.migration.migrationState ===
-                  MIGRATION_INITIALSYNC
-                    ? null
-                    : ' ';
+                  this.context.migration.migrationState === MIGRATION_INITIALSYNC ? null : ' ';
                 break;
             }
 
             return (
               <div
                 className={[
-                  this.state.showDetails
-                    ? baseStyles.horizontalCenter
-                    : baseStyles.center,
+                  this.state.showDetails ? baseStyles.horizontalCenter : baseStyles.center,
                   styles.content,
                 ].join(' ')}
               >
@@ -413,16 +360,12 @@ export default class Migration extends DashboardView {
                   rowsMigrated={this.context.migration.rowsMigrated}
                   classesMigrated={this.context.migration.classesMigrated}
                   migrationSpeed={this.context.migration.migrationSpeed}
-                  secondsRemainingStr={
-                    this.context.migration.secondsRemainingStr
-                  }
+                  secondsRemainingStr={this.context.migration.secondsRemainingStr}
                   detailsVisible={!this.state.showDetails}
                 />
                 {this.state.showDetails ? moreDetails : null}
                 {longStateDescription ? (
-                  <div className={styles.longStateDescription}>
-                    {longStateDescription}
-                  </div>
+                  <div className={styles.longStateDescription}>{longStateDescription}</div>
                 ) : null}
                 {showStopMigrationButton ? stopMigrationButton : null}
                 {moreDetails ? moreDetailsButton : null}
@@ -460,21 +403,14 @@ export default class Migration extends DashboardView {
             progress={this.state.commitingState === AsyncStatus.PROGRESS}
             buttonsInCenter={true}
           >
-            <div
-              style={{ padding: '17px 55px 10px 55px', textAlign: 'center' }}
-            >
-              After you commit to using your new database, you cannot switch
-              back to using a Parse managed database! You will be responsible
-              for your own imports, exports, backups, indexes, monitoring, and
-              other database administration. Are you sure you want to continue?
+            <div style={{ padding: '17px 55px 10px 55px', textAlign: 'center' }}>
+              After you commit to using your new database, you cannot switch back to using a Parse
+              managed database! You will be responsible for your own imports, exports, backups,
+              indexes, monitoring, and other database administration. Are you sure you want to
+              continue?
             </div>
-            <FormNote
-              show={this.state.commitingState === AsyncStatus.FAILED}
-              color="red"
-            >
-              <div>
-                We were unable to commit your migration. Please try again.
-              </div>
+            <FormNote show={this.state.commitingState === AsyncStatus.FAILED} color="red">
+              <div>We were unable to commit your migration. Please try again.</div>
             </FormNote>
           </Modal>
         ) : null}

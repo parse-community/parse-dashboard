@@ -100,12 +100,12 @@ export default class DateTimePicker extends React.Component {
       <div
         style={{ width: this.props.width }}
         className={styles.picker}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <Calendar
           local={this.props.local}
           value={this.props.value}
-          onChange={(newValue) => {
+          onChange={newValue => {
             const timeRef = this.props.value || hoursFrom(new Date(), 1);
             const newDate = this.props.local
               ? new Date(
@@ -129,11 +129,7 @@ export default class DateTimePicker extends React.Component {
         />
         <div className={styles.time}>
           <div style={{ float: 'left' }}>
-            <input
-              type="text"
-              value={this.state.hours}
-              onChange={this.changeHours.bind(this)}
-            />
+            <input type="text" value={this.state.hours} onChange={this.changeHours.bind(this)} />
             <span> : </span>
             <input
               type="text"
@@ -141,11 +137,7 @@ export default class DateTimePicker extends React.Component {
               onChange={this.changeMinutes.bind(this)}
             />
           </div>
-          <Button
-            value="Set time"
-            onClick={this.commitTime.bind(this)}
-            primary={true}
-          />
+          <Button value="Set time" onClick={this.commitTime.bind(this)} primary={true} />
         </div>
       </div>
     );
@@ -155,13 +147,7 @@ export default class DateTimePicker extends React.Component {
 DateTimePicker.propTypes = {
   value: PropTypes.instanceOf(Date).describe('The current date of the picker.'),
   width: PropTypes.number.isRequired.describe('The width of the calendar.'),
-  onChange: PropTypes.func.isRequired.describe(
-    'A function to call when a new date is selected.'
-  ),
-  close: PropTypes.func.describe(
-    'An optional function to call to close the calendar.'
-  ),
-  local: PropTypes.bool.describe(
-    'An option flag to set when using a local DateTimeInput.'
-  ),
+  onChange: PropTypes.func.isRequired.describe('A function to call when a new date is selected.'),
+  close: PropTypes.func.describe('An optional function to call to close the calendar.'),
+  local: PropTypes.bool.describe('An option flag to set when using a local DateTimeInput.'),
 };

@@ -6,5 +6,5 @@
  * the root directory of this source tree.
  */
 export default function (array, key) {
-  return array.map((item) => item[key]);
+  return array.map(item => item[key]);
 }

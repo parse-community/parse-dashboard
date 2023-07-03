@@ -36,12 +36,7 @@ class SaveDemo extends React.Component {
   }
 
   render() {
-    return (
-      <SaveButton
-        state={this.state.saveState}
-        onClick={this.handleClick.bind(this)}
-      />
-    );
+    return <SaveButton state={this.state.saveState} onClick={this.handleClick.bind(this)} />;
   }
 }
 

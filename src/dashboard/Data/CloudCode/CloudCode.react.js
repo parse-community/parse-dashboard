@@ -44,7 +44,7 @@ class CloudCode extends DashboardView {
 
   fetchSource(app, fileName) {
     app.getLatestRelease().then(
-      (release) => {
+      release => {
         this.setState({ files: release.files, source: undefined });
 
         if (!release.files || Object.keys(release.files).length === 0) {
@@ -54,14 +54,11 @@ class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          this.props.navigate(
-            generatePath(this.context, 'cloud_code/main.js'),
-            { replace: true }
-          );
+          this.props.navigate(generatePath(this.context, 'cloud_code/main.js'), { replace: true });
         } else {
           // Means we can load /cloud_code/<fileName>
           app.getSource(fileName).then(
-            (source) => this.setState({ source: source }),
+            source => this.setState({ source: source }),
             () => this.setState({ source: undefined })
           );
         }
@@ -108,10 +105,7 @@ class CloudCode extends DashboardView {
               'When you deploy your cloud code, you\u2019ll be able to see your files here'
             }
             cta="Get started with Cloud Code"
-            action={() =>
-              (window.location =
-                'http://docs.parseplatform.org/cloudcode/guide')
-            }
+            action={() => (window.location = 'http://docs.parseplatform.org/cloudcode/guide')}
           />
         </div>
       );

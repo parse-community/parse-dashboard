@@ -17,9 +17,7 @@ export const demos = [
   },
   {
     name: 'DonutChart without Dominant Value',
-    render: () => (
-      <DonutChart segments={[0.2, 0.25, 0.3, 0.4]} label="Installations" />
-    ),
+    render: () => <DonutChart segments={[0.2, 0.25, 0.3, 0.4]} label="Installations" />,
   },
   {
     name: 'Progress Bar with DonutChart',

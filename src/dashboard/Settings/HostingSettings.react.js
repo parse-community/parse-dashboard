@@ -62,10 +62,7 @@ export default class HostingSettings extends DashboardView {
     );
 
     const customDomainsFields = (
-      <Fieldset
-        legend="Custom Domains"
-        description="Use this Parse app with your own custom URLs."
-      >
+      <Fieldset legend="Custom Domains" description="Use this Parse app with your own custom URLs.">
         <Field
           labelWidth={62}
           label={
@@ -121,7 +118,7 @@ export default class HostingSettings extends DashboardView {
           input={
             <FileInput
               disabled={this.state.sslPublicCertUploading}
-              onChange={(file) => {
+              onChange={file => {
                 this.setState({
                   sslPublicCertUploading: true,
                   sslPublicCertError: '',
@@ -153,7 +150,7 @@ export default class HostingSettings extends DashboardView {
           input={
             <FileInput
               disabled={this.state.sslPrivateKeyUploading}
-              onChange={(file) => {
+              onChange={file => {
                 this.setState({
                   sslPrivateKeyUploading: true,
                   sslPrivateKeyError: '',
@@ -204,9 +201,7 @@ export default class HostingSettings extends DashboardView {
           label={
             <Label
               text="Display name"
-              description={
-                'The name we\u2019ll use when sending emails from your app.'
-              }
+              description={'The name we\u2019ll use when sending emails from your app.'}
             />
           }
           input={
@@ -300,8 +295,7 @@ export default class HostingSettings extends DashboardView {
               //getSiteDomain() is required here and not for the other templates because this template is an erb file, as opposed to the others which are html.
               description={
                 <span>
-                  This page will be loaded when users click on a reset password
-                  link.{' '}
+                  This page will be loaded when users click on a reset password link.{' '}
                   <a
                     href={getSiteDomain() + '/apps/choose_password'}
                     download="choose_password.html"
@@ -328,12 +322,8 @@ export default class HostingSettings extends DashboardView {
               text={'Custom “password changed” page'}
               description={
                 <span>
-                  This page will be loaded when users successfully change their
-                  password.{' '}
-                  <a
-                    href="/apps/password_reset_success.html"
-                    download="password_updated.html"
-                  >
+                  This page will be loaded when users successfully change their password.{' '}
+                  <a href="/apps/password_reset_success.html" download="password_updated.html">
                     Download the template
                   </a>
                   .
@@ -356,12 +346,8 @@ export default class HostingSettings extends DashboardView {
               text={'Custom “email verified” page'}
               description={
                 <span>
-                  This page will be loaded when users verify their email
-                  address.{' '}
-                  <a
-                    href="/apps/verify_email_success.html"
-                    download="email_verification.html"
-                  >
+                  This page will be loaded when users verify their email address.{' '}
+                  <a href="/apps/verify_email_success.html" download="email_verification.html">
                     Download the template
                   </a>
                   .
@@ -384,12 +370,9 @@ export default class HostingSettings extends DashboardView {
               text={'Custom 404 page'}
               description={
                 <span>
-                  This page will be loaded whenever users mistype the reset
-                  password or verify email links.{' '}
-                  <a
-                    href="/apps/invalid_link.html"
-                    download="invalid_link.html"
-                  >
+                  This page will be loaded whenever users mistype the reset password or verify email
+                  links.{' '}
+                  <a href="/apps/invalid_link.html" download="invalid_link.html">
                     Download the template
                   </a>
                   .
@@ -421,10 +404,7 @@ export default class HostingSettings extends DashboardView {
               description={
                 <span>
                   Upload{' '}
-                  <a
-                    href="/apps/user_management"
-                    download="user_management.html"
-                  >
+                  <a href="/apps/user_management" download="user_management.html">
                     this file
                   </a>{' '}
                   to your server and tell us where you put it.

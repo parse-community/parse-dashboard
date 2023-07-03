@@ -70,19 +70,11 @@ export default class ChromeDatePicker extends React.Component {
         >
           <div className={classes.join(' ')}>
             <div className={styles.calendar}>
-              <Calendar
-                value={this.props.value}
-                onChange={this.onChange.bind(this)}
-              />
+              <Calendar value={this.props.value} onChange={this.onChange.bind(this)} />
             </div>
             <div className={styles.chrome} onClick={this.close.bind(this)}>
               <span>{`${monthDayStringUTC(this.props.value)}`}</span>
-              <Icon
-                width={18}
-                height={18}
-                name="calendar-solid"
-                fill="#169CEE"
-              />
+              <Icon width={18} height={18} name="calendar-solid" fill="#169CEE" />
             </div>
           </div>
         </Popover>
@@ -97,11 +89,7 @@ export default class ChromeDatePicker extends React.Component {
     }
 
     return (
-      <div
-        className={styles.wrap}
-        onClick={this.toggle.bind(this)}
-        ref={this.wrapRef}
-      >
+      <div className={styles.wrap} onClick={this.toggle.bind(this)} ref={this.wrapRef}>
         {content}
         {popover}
       </div>

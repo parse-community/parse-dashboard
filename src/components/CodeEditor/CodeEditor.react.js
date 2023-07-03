@@ -37,7 +37,7 @@ export default class CodeEditor extends React.Component {
       <Editor
         mode="javascript"
         theme="solarized_dark"
-        onChange={(value) => this.setState({ code: value })}
+        onChange={value => this.setState({ code: value })}
         fontSize={fontSize}
         showPrintMargin={true}
         showGutter={true}

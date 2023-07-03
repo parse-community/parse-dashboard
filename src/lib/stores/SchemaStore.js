@@ -61,16 +61,9 @@ function SchemaStore(state, action) {
         });
     case ActionTypes.DROP_CLASS:
       return action.app
-        .apiRequest(
-          'DELETE',
-          'schemas/' + action.className,
-          {},
-          { useMasterKey: true }
-        )
+        .apiRequest('DELETE', 'schemas/' + action.className, {}, { useMasterKey: true })
         .then(() => {
-          return state
-            .deleteIn(['classes', action.className])
-            .deleteIn(['CLPs', action.className]);
+          return state.deleteIn(['classes', action.className]).deleteIn(['CLPs', action.className]);
         });
     case ActionTypes.ADD_COLUMN:
       const newField = {

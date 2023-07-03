@@ -106,19 +106,12 @@ const BrowserToolbar = ({
   if (relation) {
     menu = (
       <BrowserMenu title="Edit" icon="edit-solid" setCurrent={setCurrent}>
-        <MenuItem
-          text={`Create ${relation.targetClassName} and attach`}
-          onClick={onAddRow}
-        />
+        <MenuItem text={`Create ${relation.targetClassName} and attach`} onClick={onAddRow} />
         <MenuItem text="Attach existing row" onClick={onAttachRows} />
         <Separator />
         <MenuItem
           disabled={selectionLength === 0}
-          text={
-            selectionLength === 1 && !selection['*']
-              ? 'Detach this row'
-              : 'Detach these rows'
-          }
+          text={selectionLength === 1 && !selection['*'] ? 'Detach this row' : 'Detach these rows'}
           onClick={() => onDeleteRows(selection)}
         />
       </BrowserMenu>
@@ -153,9 +146,7 @@ const BrowserToolbar = ({
         <Separator />
         <MenuItem
           disabled={!selectionLength}
-          text={`Attach ${
-            selectionLength <= 1 ? 'this row' : 'these rows'
-          } to relation`}
+          text={`Attach ${selectionLength <= 1 ? 'this row' : 'these rows'} to relation`}
           onClick={onAttachSelectedRows}
         />
         <Separator />
@@ -167,11 +158,7 @@ const BrowserToolbar = ({
         <Separator />
         <MenuItem
           disabled={selectionLength === 0}
-          text={
-            selectionLength === 1 && !selection['*']
-              ? 'Delete this row'
-              : 'Delete these rows'
-          }
+          text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)}
         />
         {enableColumnManipulation ? (
@@ -180,10 +167,7 @@ const BrowserToolbar = ({
           <noscript />
         )}
         {enableDeleteAllRows ? (
-          <MenuItem
-            text="Delete all rows"
-            onClick={() => onDeleteRows({ '*': true })}
-          />
+          <MenuItem text="Delete all rows" onClick={() => onDeleteRows({ '*': true })} />
         ) : (
           <noscript />
         )}
@@ -193,11 +177,7 @@ const BrowserToolbar = ({
           <noscript />
         )}
         {enableExportClass ? <Separator /> : <noscript />}
-        {enableExportClass ? (
-          <MenuItem text="Export this data" onClick={onExport} />
-        ) : (
-          <noscript />
-        )}
+        {enableExportClass ? <MenuItem text="Export this data" onClick={onExport} /> : <noscript />}
       </BrowserMenu>
     );
   }
@@ -273,12 +253,7 @@ const BrowserToolbar = ({
       />
       <div className={styles.toolbarSeparator} />
       {onAddRow && (
-        <LoginDialog
-          ref={loginDialogRef}
-          currentUser={currentUser}
-          login={login}
-          logout={logout}
-        />
+        <LoginDialog ref={loginDialogRef} currentUser={currentUser} login={login} logout={logout} />
       )}
       {onAddRow && (
         <BrowserMenu
@@ -288,10 +263,7 @@ const BrowserToolbar = ({
           active={!!currentUser}
           disabled={isPendingEditCloneRows}
         >
-          <MenuItem
-            text={currentUser ? 'Switch User' : 'As User'}
-            onClick={showLogin}
-          />
+          <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
           {currentUser ? (
             <MenuItem
               text={
@@ -340,23 +312,15 @@ const BrowserToolbar = ({
         >
           <MenuItem
             disabled={!selectionLength}
-            text={`Export ${selectionLength} selected ${
-              selectionLength <= 1 ? 'row' : 'rows'
-            }`}
+            text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'}`}
             onClick={() => onExportSelectedRows(selection)}
           />
-          <MenuItem
-            text={'Export all rows'}
-            onClick={() => onExportSelectedRows({ '*': true })}
-          />
+          <MenuItem text={'Export all rows'} onClick={() => onExportSelectedRows({ '*': true })} />
           <MenuItem text={'Export schema'} onClick={() => onExportSchema()} />
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
-      <a
-        className={classes.join(' ')}
-        onClick={isPendingEditCloneRows ? null : onRefresh}
-      >
+      <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
         <Icon name="refresh-solid" width={14} height={14} />
         <span>Refresh</span>
       </a>
@@ -413,21 +377,12 @@ const BrowserToolbar = ({
       ) : (
         <noscript />
       )}
-      {enableSecurityDialog ? (
-        <div className={styles.toolbarSeparator} />
-      ) : (
-        <noscript />
-      )}
+      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
       {menu}
-      {editCloneRows && editCloneRows.length > 0 && (
-        <div className={styles.toolbarSeparator} />
-      )}
+      {editCloneRows && editCloneRows.length > 0 && <div className={styles.toolbarSeparator} />}
       {editCloneRows && editCloneRows.length > 0 && (
         <BrowserMenu title="Clone" icon="clone-icon">
-          <MenuItem
-            text={'Cancel all pending rows'}
-            onClick={onCancelPendingEditRows}
-          />
+          <MenuItem text={'Cancel all pending rows'} onClick={onCancelPendingEditRows} />
         </BrowserMenu>
       )}
     </Toolbar>

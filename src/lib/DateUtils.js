@@ -68,11 +68,7 @@ export function prevMonth(date) {
 
 export function daysInMonth(date) {
   const next = nextMonth(date);
-  const lastDay = new Date(
-    next.getFullYear(),
-    next.getMonth(),
-    next.getDate() - 1
-  );
+  const lastDay = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
   return lastDay.getDate();
 }
 

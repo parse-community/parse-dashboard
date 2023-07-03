@@ -15,13 +15,9 @@ export default function validateAndSubmitConnectionString(
   submit
 ) {
   return get(
-    '/validate_mongo_connection_string?' +
-      encodeFormData('connection_string', connectionString)
-  ).then((result) => {
-    if (
-      result.warnings &&
-      result.warnings.every((warning) => ignoredWarnings.indexOf(warning))
-    ) {
+    '/validate_mongo_connection_string?' + encodeFormData('connection_string', connectionString)
+  ).then(result => {
+    if (result.warnings && result.warnings.every(warning => ignoredWarnings.indexOf(warning))) {
       // If they have already seen the current set of warnings and want to continue anyway,
       // just let them. If there are new warnings, show those warnings.
       stoppedWithWarnings(result.warnings);

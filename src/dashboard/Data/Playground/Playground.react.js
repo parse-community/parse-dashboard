@@ -33,7 +33,7 @@ export default class Playground extends Component {
       this.setState(({ results }) => ({
         results: [
           ...results,
-          ...args.map((arg) => ({
+          ...args.map(arg => ({
             log:
               typeof arg === 'object'
                 ? Array.isArray(arg)
@@ -51,7 +51,7 @@ export default class Playground extends Component {
       this.setState(({ results }) => ({
         results: [
           ...results,
-          ...args.map((arg) => ({
+          ...args.map(arg => ({
             log:
               arg instanceof Error
                 ? { message: arg.message, name: arg.name, stack: arg.stack }
@@ -71,15 +71,12 @@ export default class Playground extends Component {
     const [originalConsoleLog, originalConsoleError] = this.overrideConsole();
 
     try {
-      const { applicationId, masterKey, serverURL, javascriptKey } =
-        this.context;
+      const { applicationId, masterKey, serverURL, javascriptKey } = this.context;
       const originalCode = this.editor.value;
 
       const finalCode = `return (async function(){
         try{
-          Parse.initialize('${applicationId}', ${
-  javascriptKey ? `'${javascriptKey}'` : undefined
-});
+          Parse.initialize('${applicationId}', ${javascriptKey ? `'${javascriptKey}'` : undefined});
           Parse.masterKey = '${masterKey}';
           Parse.serverUrl = '${serverURL}';
 
@@ -112,10 +109,7 @@ export default class Playground extends Component {
         savingState: SaveButton.States.SUCCEEDED,
       });
 
-      setTimeout(
-        () => this.setState({ savingState: SaveButton.States.WAITING }),
-        3000
-      );
+      setTimeout(() => this.setState({ savingState: SaveButton.States.WAITING }), 3000);
     } catch (e) {
       console.error(e);
       this.setState({ saving: false, savingState: SaveButton.States.FAILED });
@@ -151,7 +145,7 @@ export default class Playground extends Component {
 myObj.set('myField', 'Hello World!')
 await myObj.save();
 console.log(myObj);`}
-            ref={(editor) => (this.editor = editor)}
+            ref={editor => (this.editor = editor)}
           />
           <div className={styles['console-ctn']}>
             <header>

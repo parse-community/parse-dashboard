@@ -44,15 +44,12 @@ export default class LiveReload extends React.Component {
       clearTimeout(this.timer);
     };
     promise
-      .then((data) => {
+      .then(data => {
         this.setState({ currentData: data });
       })
       .finally(() => {
         if (this.shouldContinueReloading) {
-          this.timer = setTimeout(
-            this.fetchNewData.bind(this),
-            this.refreshIntervalMillis
-          );
+          this.timer = setTimeout(this.fetchNewData.bind(this), this.refreshIntervalMillis);
         }
       });
     return promise;
@@ -63,10 +60,7 @@ export default class LiveReload extends React.Component {
     if (!this.state.currentData) {
       this.fetchNewData();
     } else {
-      this.timer = setTimeout(
-        this.fetchNewData.bind(this),
-        this.refreshIntervalMillis
-      );
+      this.timer = setTimeout(this.fetchNewData.bind(this), this.refreshIntervalMillis);
     }
   }
 
@@ -85,10 +79,7 @@ LiveReload.propTypes = {
   refreshIntervalMillis: PropTypes.number.describe(
     'How often to refresh the data, in milliseconds. Defaults to 1s.'
   ),
-  source: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired.describe(
+  source: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired.describe(
     'Either a URL to fetch updates from, or a function that returns a promise that fetches update, or a function that returns { promise, xhr }.'
   ),
   render: PropTypes.func.isRequired.describe(

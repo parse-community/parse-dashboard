@@ -9,22 +9,13 @@ import React from 'react';
 import PropTypes from 'lib/PropTypes';
 import styles from 'components/FlowFooter/FlowFooter.scss';
 
-const FlowFooter = ({
-  primary,
-  secondary,
-  errorMessage,
-  borderTop,
-  children,
-}) => (
+const FlowFooter = ({ primary, secondary, errorMessage, borderTop, children }) => (
   <div className={styles.footer} style={borderTop ? { borderTop } : null}>
     <div className={styles.right}>
       {secondary}
       {primary}
     </div>
-    <div
-      role="alert"
-      className={[styles.content, errorMessage ? styles.error : ''].join(' ')}
-    >
+    <div role="alert" className={[styles.content, errorMessage ? styles.error : ''].join(' ')}>
       {errorMessage || children}
     </div>
   </div>

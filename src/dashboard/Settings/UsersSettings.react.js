@@ -35,18 +35,14 @@ export default class UsersSettings extends DashboardView {
       return toolbar;
     }
     const initialFields = {
-      requireRevocableSessions:
-        this.props.initialFields.require_revocable_session,
+      requireRevocableSessions: this.props.initialFields.require_revocable_session,
       expireInactiveSessions: this.props.initialFields.expire_revocable_session,
-      revokeSessionOnPasswordChange:
-        this.props.initialFields.revoke_on_password_reset,
+      revokeSessionOnPasswordChange: this.props.initialFields.revoke_on_password_reset,
 
       enableNewMethodsByDefault:
         this.props.initialFields.auth_options_attributes._enable_by_default,
-      allowUsernameAndPassword:
-        this.props.initialFields.auth_options_attributes.username.enabled,
-      allowAnonymousUsers:
-        this.props.initialFields.auth_options_attributes.anonymous.enabled,
+      allowUsernameAndPassword: this.props.initialFields.auth_options_attributes.username.enabled,
+      allowAnonymousUsers: this.props.initialFields.auth_options_attributes.anonymous.enabled,
       allowCustomAuthentication: (
         this.props.initialFields.auth_options_attributes.custom || {
           enabled: false,
@@ -55,20 +51,16 @@ export default class UsersSettings extends DashboardView {
 
       allowFacebookAuthentication:
         this.props.initialFields.auth_options_attributes.facebook.enabled,
-      facebookAppIDList:
-        this.props.initialFields.auth_options_attributes.facebook.app_ids || [],
+      facebookAppIDList: this.props.initialFields.auth_options_attributes.facebook.app_ids || [],
       facebookAppSecretList:
-        this.props.initialFields.auth_options_attributes.facebook.app_secrets ||
-        [],
+        this.props.initialFields.auth_options_attributes.facebook.app_secrets || [],
 
       facebookAppID: '',
       facebookAppSecret: '',
 
-      allowTwitterAuthentication:
-        this.props.initialFields.auth_options_attributes.twitter.enabled,
+      allowTwitterAuthentication: this.props.initialFields.auth_options_attributes.twitter.enabled,
       twitterConsumerKeysList:
-        this.props.initialFields.auth_options_attributes.twitter
-          .consumer_keys || [],
+        this.props.initialFields.auth_options_attributes.twitter.consumer_keys || [],
 
       twitterConsumerKey: '',
     };
@@ -90,9 +82,8 @@ export default class UsersSettings extends DashboardView {
                 text="Require revocable sessions"
                 description={
                   <span>
-                    Disable legacy session tokens to make your app more secure.
-                    If enabled, all requests with legacy tokens will error.{' '}
-                    <a>Learn more</a>
+                    Disable legacy session tokens to make your app more secure. If enabled, all
+                    requests with legacy tokens will error. <a>Learn more</a>
                   </span>
                 }
               />
@@ -111,8 +102,8 @@ export default class UsersSettings extends DashboardView {
                 text="Expire inactive sessions"
                 description={
                   <span>
-                    We’ll automatically delete revocable sessions that have not
-                    made an API request in the last year.
+                    We’ll automatically delete revocable sessions that have not made an API request
+                    in the last year.
                   </span>
                 }
               />
@@ -132,8 +123,7 @@ export default class UsersSettings extends DashboardView {
                 description={
                   <span>
                     When a user changes or resets their password, we’ll <br />
-                    automatically delete all Session objects associated with
-                    this user.
+                    automatically delete all Session objects associated with this user.
                   </span>
                 }
               />
@@ -170,9 +160,7 @@ export default class UsersSettings extends DashboardView {
           />
           <Field
             labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-            label={
-              <Label text="Allow username and password-based authentication" />
-            }
+            label={<Label text="Allow username and password-based authentication" />}
             input={
               <Toggle
                 onChange={setField.bind(this, 'allowUsernameAndPassword')}
@@ -203,7 +191,7 @@ export default class UsersSettings extends DashboardView {
             label={<Label text="Allow Facebook authentication" />}
             input={
               <Toggle
-                onChange={(enabled) => {
+                onChange={enabled => {
                   setField('allowFacebookAuthentication', enabled);
                   if (!enabled) {
                     setField('facebookAppID', '');
@@ -245,20 +233,15 @@ export default class UsersSettings extends DashboardView {
                     title: 'App #' + (index + 1).toString(),
                     color: 'green',
                     onDelete: () => {
-                      const newFacebookAppIDList =
-                        fields.facebookAppIDList.slice();
+                      const newFacebookAppIDList = fields.facebookAppIDList.slice();
                       newFacebookAppIDList.splice(index, 1);
 
-                      const newFacebookAppSecretList =
-                        fields.facebookAppSecretList.slice();
+                      const newFacebookAppSecretList = fields.facebookAppSecretList.slice();
                       newFacebookAppSecretList.splice(index, 1);
 
                       //TODO(drewgross): handle errors, display progress, etc.
                       this.context
-                        .setConnectedFacebookApps(
-                          newFacebookAppIDList,
-                          newFacebookAppSecretList
-                        )
+                        .setConnectedFacebookApps(newFacebookAppIDList, newFacebookAppSecretList)
                         .then(() => {
                           this.forceUpdate();
                         });
@@ -283,7 +266,7 @@ export default class UsersSettings extends DashboardView {
             label={<Label text="Allow Twitter authentication" />}
             input={
               <Toggle
-                onChange={(enabled) => {
+                onChange={enabled => {
                   setField('allowTwitterAuthentication', enabled);
                   if (!enabled) {
                     setField('twitterConsumerKey', '');
@@ -317,16 +300,13 @@ export default class UsersSettings extends DashboardView {
                     title: 'App #' + (index + 1).toString(),
                     color: 'green',
                     onDelete: () => {
-                      const twitterConsumerKeyList =
-                        fields.twitterConsumerKeysList.slice();
+                      const twitterConsumerKeyList = fields.twitterConsumerKeysList.slice();
                       twitterConsumerKeyList.splice(index, 1);
 
                       //TODO(drewgross): handle errors, display progress, etc.
-                      this.context
-                        .setConnectedTwitterApps(twitterConsumerKeyList)
-                        .then(() => {
-                          this.forceUpdate();
-                        });
+                      this.context.setConnectedTwitterApps(twitterConsumerKeyList).then(() => {
+                        this.forceUpdate();
+                      });
                     },
                     notes: [
                       {
@@ -363,62 +343,43 @@ export default class UsersSettings extends DashboardView {
           const promiseList = [];
           if (changes.requireRevocableSessions !== undefined) {
             promiseList.push(
-              this.context.setRequireRevocableSessions(
-                changes.requireRevocableSessions
-              )
+              this.context.setRequireRevocableSessions(changes.requireRevocableSessions)
             );
           }
           if (changes.expireInactiveSessions !== undefined) {
             promiseList.push(
-              this.context.setExpireInactiveSessions(
-                changes.expireInactiveSessions
-              )
+              this.context.setExpireInactiveSessions(changes.expireInactiveSessions)
             );
           }
           if (changes.revokeSessionOnPasswordChange !== undefined) {
             promiseList.push(
-              this.context.setRevokeSessionOnPasswordChange(
-                changes.revokeSessionOnPasswordChange
-              )
+              this.context.setRevokeSessionOnPasswordChange(changes.revokeSessionOnPasswordChange)
             );
           }
           if (changes.enableNewMethodsByDefault !== undefined) {
             promiseList.push(
-              this.context.setEnableNewMethodsByDefault(
-                changes.enableNewMethodsByDefault
-              )
+              this.context.setEnableNewMethodsByDefault(changes.enableNewMethodsByDefault)
             );
           }
           if (changes.allowUsernameAndPassword !== undefined) {
             promiseList.push(
-              this.context.setAllowUsernameAndPassword(
-                changes.allowUsernameAndPassword
-              )
+              this.context.setAllowUsernameAndPassword(changes.allowUsernameAndPassword)
             );
           }
           if (changes.allowAnonymousUsers !== undefined) {
-            promiseList.push(
-              this.context.setAllowAnonymousUsers(changes.allowAnonymousUsers)
-            );
+            promiseList.push(this.context.setAllowAnonymousUsers(changes.allowAnonymousUsers));
           }
           if (changes.allowFacebookAuthentication !== undefined) {
             promiseList.push(
-              this.context.setAllowFacebookAuth(
-                changes.allowFacebookAuthentication
-              )
+              this.context.setAllowFacebookAuth(changes.allowFacebookAuthentication)
             );
           }
           if (changes.allowCustomAuthentication !== undefined) {
             promiseList.push(
-              this.context.setAllowCustomAuthentication(
-                changes.allowCustomAuthentication
-              )
+              this.context.setAllowCustomAuthentication(changes.allowCustomAuthentication)
             );
           }
-          if (
-            changes.facebookAppID !== undefined &&
-            changes.facebookAppSecret !== undefined
-          ) {
+          if (changes.facebookAppID !== undefined && changes.facebookAppSecret !== undefined) {
             const fbAppPromise = this.context.addConnectedFacebookApp(
               changes.facebookAppID,
               changes.facebookAppSecret
@@ -439,18 +400,14 @@ export default class UsersSettings extends DashboardView {
             promiseList.push(twitterAppPromise);
           }
           if (changes.allowTwitterAuthentication !== undefined) {
-            promiseList.push(
-              this.context.setAllowTwitterAuth(
-                changes.allowTwitterAuthentication
-              )
-            );
+            promiseList.push(this.context.setAllowTwitterAuth(changes.allowTwitterAuthentication));
           }
 
           return Promise.all(promiseList)
             .then(() => {
               this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
             })
-            .catch((errors) => {
+            .catch(errors => {
               return Promise.reject({
                 error: unique(pluck(errors, 'error')).join(' '),
               });

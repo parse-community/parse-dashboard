@@ -52,18 +52,12 @@ export default class RestConsole extends Component {
       return;
     }
     Parse.Query.or(
-      new Parse.Query(Parse.User).equalTo(
-        'username',
-        this.state.runAsIdentifier
-      ),
-      new Parse.Query(Parse.User).equalTo(
-        'objectId',
-        this.state.runAsIdentifier
-      )
+      new Parse.Query(Parse.User).equalTo('username', this.state.runAsIdentifier),
+      new Parse.Query(Parse.User).equalTo('objectId', this.state.runAsIdentifier)
     )
       .first({ useMasterKey: true })
       .then(
-        (found) => {
+        found => {
           if (found) {
             if (found.getSessionToken()) {
               this.setState({
@@ -77,7 +71,7 @@ export default class RestConsole extends Component {
                 .equalTo('user', found)
                 .first({ useMasterKey: true })
                 .then(
-                  (session) => {
+                  session => {
                     if (session) {
                       this.setState({
                         sessionToken: session.getSessionToken(),
@@ -86,16 +80,14 @@ export default class RestConsole extends Component {
                       });
                     } else {
                       this.setState({
-                        error:
-                          'Unable to find any active sessions for that user.',
+                        error: 'Unable to find any active sessions for that user.',
                         fetchingUser: false,
                       });
                     }
                   },
                   () => {
                     this.setState({
-                      error:
-                        'Unable to find any active sessions for that user.',
+                      error: 'Unable to find any active sessions for that user.',
                       fetchingUser: false,
                     });
                   }
@@ -120,12 +112,9 @@ export default class RestConsole extends Component {
 
   makeRequest() {
     const endpoint =
-      this.state.endpoint +
-      (this.state.method === 'GET' ? `?${this.state.parameters}` : '');
+      this.state.endpoint + (this.state.method === 'GET' ? `?${this.state.parameters}` : '');
     const payload =
-      this.state.method === 'DELETE' || this.state.method === 'GET'
-        ? null
-        : this.state.parameters;
+      this.state.method === 'DELETE' || this.state.method === 'GET' ? null : this.state.parameters;
     const options = {};
     if (this.state.useMasterKey) {
       options.useMasterKey = true;
@@ -133,12 +122,10 @@ export default class RestConsole extends Component {
     if (this.state.sessionToken) {
       options.sessionToken = this.state.sessionToken;
     }
-    request(this.context, this.state.method, endpoint, payload, options).then(
-      (response) => {
-        this.setState({ response });
-        document.body.scrollTop = 540;
-      }
-    );
+    request(this.context, this.state.method, endpoint, payload, options).then(response => {
+      this.setState({ response });
+      document.body.scrollTop = 540;
+    });
   }
 
   showCurl() {
@@ -147,10 +134,7 @@ export default class RestConsole extends Component {
 
   render() {
     const methodDropdown = (
-      <Dropdown
-        onChange={(method) => this.setState({ method })}
-        value={this.state.method}
-      >
+      <Dropdown onChange={method => this.setState({ method })} value={this.state.method}>
         <Option value="GET">GET</Option>
         <Option value="POST">POST</Option>
         <Option value="PUT">PUT</Option>
@@ -169,8 +153,7 @@ export default class RestConsole extends Component {
 
     let modal = null;
     if (this.state.curlModal) {
-      const payload =
-        this.state.method === 'DELETE' ? null : this.state.parameters;
+      const payload = this.state.method === 'DELETE' ? null : this.state.parameters;
       const options = {};
       if (this.state.useMasterKey) {
         options.useMasterKey = true;
@@ -211,10 +194,7 @@ export default class RestConsole extends Component {
           legend="Send a test query"
           description="Try out some queries, and take a look at what they return."
         >
-          <Field
-            label={<Label text="What type of request?" />}
-            input={methodDropdown}
-          />
+          <Field label={<Label text="What type of request?" />} input={methodDropdown} />
           <Field
             label={
               <Label
@@ -224,10 +204,7 @@ export default class RestConsole extends Component {
                     Not sure what endpoint you need?
                     <br />
                     Take a look at our{' '}
-                    <a href="http://docs.parseplatform.org/rest/guide/">
-                      REST API guide
-                    </a>
-                    .
+                    <a href="http://docs.parseplatform.org/rest/guide/">REST API guide</a>.
                   </span>
                 }
               />
@@ -237,21 +214,16 @@ export default class RestConsole extends Component {
                 value={this.state.endpoint}
                 monospace={true}
                 placeholder={'classes/_User'}
-                onChange={(endpoint) => this.setState({ endpoint })}
+                onChange={endpoint => this.setState({ endpoint })}
               />
             }
           />
           <Field
-            label={
-              <Label
-                text="Use Master Key?"
-                description={'This will bypass any ACL/CLPs.'}
-              />
-            }
+            label={<Label text="Use Master Key?" description={'This will bypass any ACL/CLPs.'} />}
             input={
               <Toggle
                 value={this.state.useMasterKey}
-                onChange={(useMasterKey) => this.setState({ useMasterKey })}
+                onChange={useMasterKey => this.setState({ useMasterKey })}
               />
             }
           />
@@ -269,9 +241,7 @@ export default class RestConsole extends Component {
                 value={this.state.runAsIdentifier}
                 monospace={true}
                 placeholder={'Username or ID'}
-                onChange={(runAsIdentifier) =>
-                  this.setState({ runAsIdentifier })
-                }
+                onChange={runAsIdentifier => this.setState({ runAsIdentifier })}
                 onBlur={this.fetchUser.bind(this)}
               />
             }
@@ -286,10 +256,7 @@ export default class RestConsole extends Component {
                 description={
                   <span>
                     Learn more about query parameters in our{' '}
-                    <a href="http://docs.parseplatform.org/rest/guide/#queries">
-                      REST API guide
-                    </a>
-                    .
+                    <a href="http://docs.parseplatform.org/rest/guide/#queries">REST API guide</a>.
                   </span>
                 }
               />
@@ -300,7 +267,7 @@ export default class RestConsole extends Component {
                 monospace={true}
                 multiline={true}
                 placeholder={parameterPlaceholder}
-                onChange={(parameters) => this.setState({ parameters })}
+                onChange={parameters => this.setState({ parameters })}
               />
             }
           />
@@ -322,11 +289,7 @@ export default class RestConsole extends Component {
             />
           }
           secondary={
-            <Button
-              disabled={hasError}
-              value="Export to cURL"
-              onClick={this.showCurl.bind(this)}
-            />
+            <Button disabled={hasError} value="Export to cURL" onClick={this.showCurl.bind(this)} />
           }
         />
         {modal}

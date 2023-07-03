@@ -67,11 +67,8 @@ export default class Dropdown extends React.Component {
       const popoverChildren = (
         <SliderWrap direction={Directions.DOWN} expanded={true}>
           <div style={{ width }} className={styles.menu}>
-            {React.Children.map(this.props.children, (c) => (
-              <button
-                type="button"
-                onClick={this.select.bind(this, c.props.value)}
-              >
+            {React.Children.map(this.props.children, c => (
+              <button type="button" onClick={this.select.bind(this, c.props.value)}>
                 {c}
               </button>
             ))}
@@ -89,15 +86,13 @@ export default class Dropdown extends React.Component {
       );
     }
     let content = null;
-    React.Children.forEach(this.props.children, (c) => {
+    React.Children.forEach(this.props.children, c => {
       if (!content && c.props.value === this.props.value) {
         content = c;
       }
     });
     if (!content) {
-      content = (
-        <div className={styles.placeHolder}>{this.props.placeHolder}</div>
-      );
+      content = <div className={styles.placeHolder}>{this.props.placeHolder}</div>;
     }
     let dropdownStyle = {};
     if (this.props.width) {
@@ -111,16 +106,9 @@ export default class Dropdown extends React.Component {
       dropdownClasses.push(styles.disabled);
     }
     return (
-      <div
-        style={dropdownStyle}
-        className={dropdownClasses.join(' ')}
-        ref={this.dropdownRef}
-      >
+      <div style={dropdownStyle} className={dropdownClasses.join(' ')} ref={this.dropdownRef}>
         <div
-          className={[
-            styles.current,
-            this.props.hideArrow ? styles.hideArrow : '',
-          ].join(' ')}
+          className={[styles.current, this.props.hideArrow ? styles.hideArrow : ''].join(' ')}
           onClick={this.toggle.bind(this)}
         >
           {content}
@@ -135,9 +123,7 @@ Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired.describe(
     'A function called when the dropdown is changed. It receives the new value as the only parameter.'
   ),
-  value: PropTypes.string.describe(
-    'The currently-selected value of this controlled input.'
-  ),
+  value: PropTypes.string.describe('The currently-selected value of this controlled input.'),
   disabled: PropTypes.bool.describe('Set to true to disable the dropdown.'),
   children: PropTypes.node.isRequired.describe(
     'The children of Dropdown should only be <Option> components.'
@@ -145,8 +131,6 @@ Dropdown.propTypes = {
   fixed: PropTypes.bool.describe(
     'Fixes the dropdown in place. Set to true in modals or other places where you don\u2019t want the dropdown to move when you scroll.'
   ),
-  placeHolder: PropTypes.string.describe(
-    'Placeholder text used in place of default selection.'
-  ),
+  placeHolder: PropTypes.string.describe('Placeholder text used in place of default selection.'),
   hideArrow: PropTypes.bool.describe('Flag to hide the dropdown arrow.'),
 };

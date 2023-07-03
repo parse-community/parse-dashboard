@@ -72,7 +72,7 @@ export const demos = [
             ],
           },
         }}
-        formatter={(value) => value + ' arbitrary units'}
+        formatter={value => value + ' arbitrary units'}
       />
     ),
   },

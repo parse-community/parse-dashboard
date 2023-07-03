@@ -22,7 +22,7 @@ import baseStyles from 'stylesheets/base.scss';
 const RETENTION_DAYS = [1, 2, 3, 4, 5, 6, 7, 8, 14, 21, 28];
 const REVERSED_RETENTION_DAYS = RETENTION_DAYS.slice().reverse();
 
-const retentionChartColor = (percent) => {
+const retentionChartColor = percent => {
   let red, blue, green;
   if (percent > 50) {
     red = 23 + ((percent - 50) * 2 * 11) / 100;
@@ -34,15 +34,7 @@ const retentionChartColor = (percent) => {
     blue = 237 + (percent * 2 * 18) / 100;
   }
   //return without decimals since css doesn't allow them
-  return (
-    'rgb(' +
-    red.toFixed(0) +
-    ', ' +
-    green.toFixed(0) +
-    ', ' +
-    blue.toFixed(0) +
-    ')'
-  );
+  return 'rgb(' + red.toFixed(0) + ', ' + green.toFixed(0) + ', ' + blue.toFixed(0) + ')';
 };
 
 export default class Retention extends DashboardView {
@@ -65,7 +57,7 @@ export default class Retention extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.xhrHandles.forEach((xhr) => xhr.abort());
+    this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -78,8 +70,7 @@ export default class Retention extends DashboardView {
     this.setState({ loading: true }, () => {
       const { promise, xhr } = app.getAnalyticsRetention(this.state.date);
       promise.then(
-        (result) =>
-          this.setState({ retentions: result.content, loading: false }),
+        result => this.setState({ retentions: result.content, loading: false }),
         () => this.setState({ retentions: null, loading: false })
       );
       this.xhrHandles = [xhr];
@@ -113,9 +104,8 @@ export default class Retention extends DashboardView {
         <Tooltip
           value={
             <div>
-              <b>{active}</b> of <b>{total}</b> users who signed up on{' '}
-              <b>{monthDayPretty}</b> were still active on their{' '}
-              <b>{englishOrdinalIndicator(day)} day</b>
+              <b>{active}</b> of <b>{total}</b> users who signed up on <b>{monthDayPretty}</b> were
+              still active on their <b>{englishOrdinalIndicator(day)} day</b>
             </div>
           }
         >
@@ -130,7 +120,7 @@ export default class Retention extends DashboardView {
   renderRetentionAverage(day) {
     let total = 0;
     let active = 0;
-    RETENTION_DAYS.forEach((daysAgo) => {
+    RETENTION_DAYS.forEach(daysAgo => {
       if (daysAgo < day) {
         return;
       }
@@ -158,8 +148,7 @@ export default class Retention extends DashboardView {
 
   renderDayAndTotalUser(daysAgo) {
     // We can assume this.state.retentions has correct data here. Otherwise let it crash.
-    const dayData =
-      this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
+    const dayData = this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
     const date = DateUtils.daysFrom(this.state.date, -daysAgo);
     const formattedDate = DateUtils.monthDayStringUTC(date);
     const formattedDateSplit = formattedDate.split(' ');
@@ -174,26 +163,19 @@ export default class Retention extends DashboardView {
         </div>
         <div className={styles.YaxisLabelUsers}>
           {daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : ''}
-          <span className={styles.YaxisLabelNumber}>
-            {prettyNumber(dayData.total)}
-          </span>
+          <span className={styles.YaxisLabelNumber}>{prettyNumber(dayData.total)}</span>
         </div>
       </td>
     );
   }
 
   renderContent() {
-    const toolbar = (
-      <Toolbar section="Analytics" subsection="Retention"></Toolbar>
-    );
+    const toolbar = <Toolbar section="Analytics" subsection="Retention"></Toolbar>;
 
     let chart = null;
     let footer = null;
 
-    if (
-      !this.state.retentions ||
-      Object.keys(this.state.retentions).length === 0
-    ) {
+    if (!this.state.retentions || Object.keys(this.state.retentions).length === 0) {
       chart = (
         <EmptyState
           title={'You don\'t have any user retention data for this period.'}
@@ -212,7 +194,7 @@ export default class Retention extends DashboardView {
             <tr key="header_days_ago" className={styles.divider}>
               <td className={styles.tableHeader}>Still active after</td>
               <td></td>
-              {RETENTION_DAYS.map((day) => (
+              {RETENTION_DAYS.map(day => (
                 <td
                   key={'header_' + day}
                   className={styles.tableHeader}
@@ -224,21 +206,17 @@ export default class Retention extends DashboardView {
             </tr>
 
             <tr key="header_average" className={styles.divider}>
-              <td className={[styles.average, styles.tableHeader].join(' ')}>
-                Average
-              </td>
+              <td className={[styles.average, styles.tableHeader].join(' ')}>Average</td>
               <td></td>
-              {RETENTION_DAYS.map((day) => this.renderRetentionAverage(day))}
+              {RETENTION_DAYS.map(day => this.renderRetentionAverage(day))}
             </tr>
 
-            {REVERSED_RETENTION_DAYS.map((daysAgo) => {
+            {REVERSED_RETENTION_DAYS.map(daysAgo => {
               return (
                 <tr key={'row_' + daysAgo} className={styles.tableRow}>
-                  <td className={styles.YaxisSignedUp}>
-                    {daysAgo === 28 ? 'Signed up' : ''}
-                  </td>
+                  <td className={styles.YaxisSignedUp}>{daysAgo === 28 ? 'Signed up' : ''}</td>
                   {this.renderDayAndTotalUser(daysAgo)}
-                  {RETENTION_DAYS.map((day) => {
+                  {RETENTION_DAYS.map(day => {
                     // Only render until daysAgo
                     if (day > daysAgo) {
                       return null;
@@ -259,9 +237,7 @@ export default class Retention extends DashboardView {
             <span style={{ marginRight: '10px' }}>
               <ChromeDatePicker
                 value={this.state.date}
-                onChange={(newValue) =>
-                  this.setState({ date: newValue, mutated: true })
-                }
+                onChange={newValue => this.setState({ date: newValue, mutated: true })}
               />
             </span>
             <Button

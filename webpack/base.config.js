@@ -24,11 +24,7 @@ module.exports = {
     assetModuleFilename: 'img/[hash][ext]',
   },
   resolve: {
-    modules: [
-      __dirname,
-      path.join(__dirname, '../src'),
-      path.join(__dirname, '../node_modules'),
-    ],
+    modules: [__dirname, path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')],
   },
   resolveLoader: {
     modules: [path.join(__dirname, '../node_modules')],

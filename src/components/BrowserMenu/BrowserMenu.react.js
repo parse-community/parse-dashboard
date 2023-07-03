@@ -35,18 +35,12 @@ export default class BrowserMenu extends React.Component {
           onExternalClick={() => this.setState({ open: false })}
         >
           <div className={styles.menu}>
-            <div
-              className={titleStyle.join(' ')}
-              onClick={() => this.setState({ open: false })}
-            >
+            <div className={titleStyle.join(' ')} onClick={() => this.setState({ open: false })}>
               <Icon name={this.props.icon} width={14} height={14} />
               <span>{this.props.title}</span>
             </div>
-            <div
-              className={styles.body}
-              style={{ minWidth: this.wrapRef.current.clientWidth }}
-            >
-              {React.Children.map(this.props.children, (child) =>
+            <div className={styles.body} style={{ minWidth: this.wrapRef.current.clientWidth }}>
+              {React.Children.map(this.props.children, child =>
                 React.cloneElement(child, {
                   ...child.props,
                   onClick: () => {
@@ -87,9 +81,7 @@ export default class BrowserMenu extends React.Component {
 }
 
 BrowserMenu.propTypes = {
-  icon: PropTypes.string.isRequired.describe(
-    'The name of the icon to place in the menu.'
-  ),
+  icon: PropTypes.string.isRequired.describe('The name of the icon to place in the menu.'),
   title: PropTypes.string.isRequired.describe('The title text of the menu.'),
   children: PropTypes.arrayOf(PropTypes.node).describe(
     'The contents of the menu when open. It should be a set of MenuItem and Separator components.'

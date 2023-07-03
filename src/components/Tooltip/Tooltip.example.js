@@ -18,8 +18,8 @@ export const demos = [
       <Tooltip
         value={
           <div>
-            Some tooltip here. It might contain awesome <pre>formatting</pre>{' '}
-            and not just simple text
+            Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple
+            text
           </div>
         }
       >
@@ -34,8 +34,8 @@ export const demos = [
         <Tooltip
           value={
             <div>
-              Some tooltip here. It might contain awesome <pre>formatting</pre>{' '}
-              and not just simple text
+              Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple
+              text
             </div>
           }
         >
@@ -44,8 +44,8 @@ export const demos = [
         <Tooltip
           value={
             <div>
-              Some tooltip here. It might contain awesome <pre>formatting</pre>{' '}
-              and not just simple text
+              Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple
+              text
             </div>
           }
         >
@@ -54,8 +54,8 @@ export const demos = [
         <Tooltip
           value={
             <div>
-              Some tooltip here. It might contain awesome <pre>formatting</pre>{' '}
-              and not just simple text
+              Some tooltip here. It might contain awesome <pre>formatting</pre> and not just simple
+              text
             </div>
           }
         >

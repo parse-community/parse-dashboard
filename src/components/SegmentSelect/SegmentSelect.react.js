@@ -11,7 +11,7 @@ import styles from 'components/SegmentSelect/SegmentSelect.scss';
 
 const SegmentSelect = ({ values, current, onChange }) => (
   <div className={styles.row}>
-    {values.map((v) => (
+    {values.map(v => (
       <a
         key={v}
         className={v === current ? styles.current : null}

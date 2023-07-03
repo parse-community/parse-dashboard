@@ -23,7 +23,7 @@ export default function subscribeTo(name, prop) {
       }, [currentApp]);
 
       React.useEffect(() => {
-        const handleNewData = (newData) => {
+        const handleNewData = newData => {
           if (data !== newData) {
             setData(newData);
           }

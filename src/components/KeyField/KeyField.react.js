@@ -41,12 +41,8 @@ export default class KeyField extends React.Component {
 }
 
 KeyField.propTypes = {
-  children: PropTypes.node.describe(
-    'The contents of the field. Ideally, this is an app key.'
-  ),
-  hidden: PropTypes.bool.describe(
-    'Determines whether the field is initially hidden'
-  ),
+  children: PropTypes.node.describe('The contents of the field. Ideally, this is an app key.'),
+  hidden: PropTypes.bool.describe('Determines whether the field is initially hidden'),
   name: PropTypes.string.describe(
     'If the field is initially hidden, this name will be used in the button used to show it. If the value is NAME, the button will contain the text "Show NAME Key"'
   ),

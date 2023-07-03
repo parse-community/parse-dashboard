@@ -61,14 +61,10 @@ export default class DataBrowser extends React.Component {
         order: order,
         current: null,
         editing: false,
-        simplifiedSchema: this.getSimplifiedSchema(
-          props.schema,
-          props.className
-        ),
+        simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
       });
     } else if (
-      Object.keys(props.columns).length !==
-        Object.keys(this.props.columns).length ||
+      Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
       (props.isUnique && props.uniqueField !== this.props.uniqueField)
     ) {
       const columnPreferences = props.app.columnPreference || {};
@@ -221,10 +217,7 @@ export default class DataBrowser extends React.Component {
         // or with ctrl/meta (excel style - move to the first row)
         this.setState({
           current: {
-            row:
-              e.ctrlKey || e.metaKey
-                ? 0
-                : Math.max(this.state.current.row - 1, 0),
+            row: e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0),
             col: this.state.current.col,
           },
         });
@@ -256,20 +249,14 @@ export default class DataBrowser extends React.Component {
             row:
               e.ctrlKey || e.metaKey
                 ? this.props.data.length - 1
-                : Math.min(
-                  this.state.current.row + 1,
-                  this.props.data.length - 1
-                ),
+                : Math.min(this.state.current.row + 1, this.props.data.length - 1),
             col: this.state.current.col,
           },
         });
         e.preventDefault();
         break;
       case 67: // C
-        if (
-          (e.ctrlKey || e.metaKey) &&
-          this.state.copyableValue !== undefined
-        ) {
+        if ((e.ctrlKey || e.metaKey) && this.state.copyableValue !== undefined) {
           copy(this.state.copyableValue); // Copies current cell value to clipboard
           if (this.props.showNote) {
             this.props.showNote('Value copied to clipboard', false);
@@ -368,12 +355,9 @@ export default class DataBrowser extends React.Component {
           classNameForEditors={className}
           setCurrent={this.setCurrent}
           enableDeleteAllRows={
-            app.serverInfo.features.schemas.clearAllDataFromClass &&
-            !preventSchemaEdits
+            app.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits
           }
-          enableExportClass={
-            app.serverInfo.features.schemas.exportClass && !preventSchemaEdits
-          }
+          enableExportClass={app.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
           enableSecurityDialog={
             app.serverInfo.features.schemas.editClassLevelPermissions &&
             !disableSecurityDialog &&

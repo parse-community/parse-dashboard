@@ -27,10 +27,7 @@ class Config extends TableView {
     super();
     this.section = 'Core';
     this.subsection = 'Config';
-    this.action = new SidebarAction(
-      'Create a parameter',
-      this.createParameter.bind(this)
-    );
+    this.action = new SidebarAction('Create a parameter', this.createParameter.bind(this));
     this.state = {
       modalOpen: false,
       showDeleteParameterDialog: false,
@@ -62,10 +59,7 @@ class Config extends TableView {
   renderToolbar() {
     return (
       <Toolbar section="Core" subsection="Config">
-        <a
-          className={browserStyles.toolbarButton}
-          onClick={this.onRefresh.bind(this)}
-        >
+        <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
           <Icon name="refresh-solid" width={14} height={14} />
           <span>Refresh</span>
         </a>
@@ -219,8 +213,7 @@ class Config extends TableView {
     let data = undefined;
     if (this.props.config.data) {
       const params = this.props.config.data.get('params');
-      const masterKeyOnlyParams =
-        this.props.config.data.get('masterKeyOnly') || {};
+      const masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
       if (params) {
         data = [];
         params.forEach((value, param) => {

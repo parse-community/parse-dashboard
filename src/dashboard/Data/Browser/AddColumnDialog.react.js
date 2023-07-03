@@ -67,7 +67,7 @@ export default class AddColumnDialog extends React.Component {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = error => reject(error);
     });
   }
 
@@ -94,13 +94,10 @@ export default class AddColumnDialog extends React.Component {
 
   renderClassDropdown() {
     return (
-      <Dropdown
-        value={this.state.target}
-        onChange={(target) => this.setState({ target: target })}
-      >
+      <Dropdown value={this.state.target} onChange={target => this.setState({ target: target })}>
         {this.props.classes
           .sort((a, b) => a.localeCompare(b))
-          .map((c) => (
+          .map(c => (
             <Option key={c} value={c}>
               {c}
             </Option>
@@ -154,11 +151,7 @@ export default class AddColumnDialog extends React.Component {
           break;
         case 'Boolean':
           formattedValue =
-            defaultValue === 'True'
-              ? true
-              : defaultValue === 'False'
-                ? false
-                : undefined;
+            defaultValue === 'True' ? true : defaultValue === 'False' ? false : undefined;
           break;
         case 'File':
           formattedValue = await this.handleFile(defaultValue);
@@ -181,9 +174,7 @@ export default class AddColumnDialog extends React.Component {
           <TextInput
             placeholder="Set here a default value"
             multiline={true}
-            onChange={async (defaultValue) =>
-              await this.handleDefaultValueChange(defaultValue)
-            }
+            onChange={async defaultValue => await this.handleDefaultValueChange(defaultValue)}
           />
         );
       case 'Number':
@@ -192,27 +183,20 @@ export default class AddColumnDialog extends React.Component {
         return (
           <TextInput
             placeholder={
-              type === 'Pointer'
-                ? 'Set a valid object ID here'
-                : 'Set a default value here'
+              type === 'Pointer' ? 'Set a valid object ID here' : 'Set a default value here'
             }
-            onChange={async (defaultValue) =>
-              await this.handleDefaultValueChange(defaultValue)
-            }
+            onChange={async defaultValue => await this.handleDefaultValueChange(defaultValue)}
           />
         );
       case 'Date':
         return (
           <DateTimeInput
             value={
-              this.state.defaultValue &&
-              this.state.defaultValue.__type === 'Date'
+              this.state.defaultValue && this.state.defaultValue.__type === 'Date'
                 ? this.state.defaultValue.iso
                 : undefined
             }
-            onChange={async (defaultValue) =>
-              await this.handleDefaultValueChange(defaultValue)
-            }
+            onChange={async defaultValue => await this.handleDefaultValueChange(defaultValue)}
           />
         );
       case 'Boolean':
@@ -226,9 +210,7 @@ export default class AddColumnDialog extends React.Component {
                   ? 'False'
                   : 'None'
             }
-            onChange={async (defaultValue) =>
-              await this.handleDefaultValueChange(defaultValue)
-            }
+            onChange={async defaultValue => await this.handleDefaultValueChange(defaultValue)}
           />
         );
       case 'File':
@@ -236,9 +218,7 @@ export default class AddColumnDialog extends React.Component {
           <FileInput
             value={this.state.defaultValue ? this.state.defaultValue._name : ''}
             uploading={this.state.uploadingFile}
-            onChange={async (defaultValue) =>
-              await this.handleDefaultValueChange(defaultValue)
-            }
+            onChange={async defaultValue => await this.handleDefaultValueChange(defaultValue)}
           />
         );
     }
@@ -248,7 +228,7 @@ export default class AddColumnDialog extends React.Component {
     const typeDropdown = (
       <Dropdown
         value={this.state.type}
-        onChange={(type) =>
+        onChange={type =>
           this.setState({
             type: type,
             defaultValue: undefined,
@@ -256,7 +236,7 @@ export default class AddColumnDialog extends React.Component {
           })
         }
       >
-        {DataTypes.sort((a, b) => a.localeCompare(b)).map((t) => (
+        {DataTypes.sort((a, b) => a.localeCompare(b)).map(t => (
           <Option key={t} value={t}>
             {t}
           </Option>
@@ -288,10 +268,7 @@ export default class AddColumnDialog extends React.Component {
           input={typeDropdown}
         />
         {this.state.type === 'Pointer' || this.state.type === 'Relation' ? (
-          <Field
-            label={<Label text="Target class" />}
-            input={this.renderClassDropdown()}
-          />
+          <Field label={<Label text="Target class" />} input={this.renderClassDropdown()} />
         ) : null}
         <Field
           label={
@@ -306,7 +283,7 @@ export default class AddColumnDialog extends React.Component {
             <TextInput
               placeholder="Give it a good name..."
               value={this.state.name}
-              onChange={(name) => this.setState({ name })}
+              onChange={name => this.setState({ name })}
             />
           }
         />
@@ -343,7 +320,7 @@ export default class AddColumnDialog extends React.Component {
                     <Toggle
                       value={this.state.required}
                       type={Toggle.Types.YES_NO}
-                      onChange={(required) => this.setState({ required })}
+                      onChange={required => this.setState({ required })}
                       additionalStyles={{ margin: '0px' }}
                     />
                   }

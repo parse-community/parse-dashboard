@@ -34,15 +34,12 @@ export default (changes, initial, fieldOptions) => {
         // If a boolean is changing, display whether it is now enabled or disabled.
         booleanChanges.push(
           <strong key={key}>
-            {changes[key] ? 'enabled' : 'disabled'}{' '}
-            {fieldOptions[key].friendlyName}
+            {changes[key] ? 'enabled' : 'disabled'} {fieldOptions[key].friendlyName}
           </strong>
         );
       } else if (fieldOptions[key].type === 'addition') {
         // If a new value is being added to a list, display that it has been added.
-        additions.push(
-          <strong key={key}>{fieldOptions[key].friendlyName}</strong>
-        );
+        additions.push(<strong key={key}>{fieldOptions[key].friendlyName}</strong>);
       } else if (fieldOptions[key].showTo && changes[key] !== '') {
         // If the caller wants to display the new value, and there is a new value,
         // display what has changed, what it has changed to, and what it changed from if requested.
@@ -105,9 +102,7 @@ export default (changes, initial, fieldOptions) => {
         }
       } else {
         // If the caller specifies no options, just display what has been changed.
-        stringChanges.push(
-          <strong key={key}>{fieldOptions[key].friendlyName}</strong>
-        );
+        stringChanges.push(<strong key={key}>{fieldOptions[key].friendlyName}</strong>);
       }
     }
   }
@@ -146,13 +141,7 @@ export default (changes, initial, fieldOptions) => {
   return (
     <span>
       You've{' '}
-      {joinWithFinal(
-        null,
-        allChangeNodes,
-        ', ',
-        allChangeNodes.length < 3 ? ' and ' : ', and '
-      )}
-      .
+      {joinWithFinal(null, allChangeNodes, ', ', allChangeNodes.length < 3 ? ' and ' : ', and ')}.
     </span>
   );
 };

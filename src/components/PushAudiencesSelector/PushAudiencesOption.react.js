@@ -64,10 +64,7 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
     return (
       <label
         htmlFor={inputId}
-        className={[
-          styles.row,
-          this.props.id === 'everyone' ? styles.everyone : '',
-        ].join(' ')}
+        className={[styles.row, this.props.id === 'everyone' ? styles.everyone : ''].join(' ')}
       >
         <div className={[styles.cell, styles.col1].join(' ')}>
           <RadioButton
@@ -83,21 +80,10 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
             <div className={styles.headline}>
               {this.props.icon ? (
                 <div className={styles.icon}>
-                  <Icon
-                    width={18}
-                    height={18}
-                    fill="#343445"
-                    name={this.props.icon}
-                  />
+                  <Icon width={18} height={18} fill="#343445" name={this.props.icon} />
                 </div>
               ) : null}
-              <span
-                style={
-                  this.props.icon
-                    ? { verticalAlign: 'top', paddingLeft: 5 }
-                    : {}
-                }
-              >
+              <span style={this.props.icon ? { verticalAlign: 'top', paddingLeft: 5 } : {}}>
                 {this.props.name}
               </span>
             </div>
@@ -110,11 +96,7 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
                     styles.moreDetails,
                     !this.props.query ? styles.hideMoreDetails : '',
                   ].join(' ')}
-                  onClick={this.handleDetailsToggle.bind(
-                    this,
-                    this.props.query,
-                    this.props.schema
-                  )}
+                  onClick={this.handleDetailsToggle.bind(this, this.props.query, this.props.schema)}
                 >
                   {this.state.expandedView ? 'less details' : 'more details'}
                 </button>
@@ -139,10 +121,7 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
         </div>
         {AUDIENCE_SIZE_FETCHING_ENABLED ? (
           <div className={[styles.cell, styles.col2].join(' ')}>
-            {PushUtils.formatCountDetails(
-              this.state.count,
-              this.state.approximate
-            )}
+            {PushUtils.formatCountDetails(this.state.count, this.state.approximate)}
           </div>
         ) : null}
         {AUDIENCE_CREATED_DATE_ENABLED ? (
@@ -156,30 +135,18 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
 }
 
 PushAudiencesOption.propTypes = {
-  id: PropTypes.string.isRequired.describe(
-    'The id of the push audience option.'
-  ),
+  id: PropTypes.string.isRequired.describe('The id of the push audience option.'),
   name: PropTypes.string.describe('The name of the push audience option.'),
-  createdAt: PropTypes.instanceOf(Date).describe(
-    'The size of the push audience option.'
-  ),
+  createdAt: PropTypes.instanceOf(Date).describe('The size of the push audience option.'),
   query: PropTypes.object.describe(
     'Key value pair of installation condition info for the specific audience'
   ),
-  isChecked: PropTypes.bool.describe(
-    'Boolean describing if option is currently selected.'
-  ),
-  onChange: PropTypes.func.isRequired.describe(
-    'Callback that is executed on option change.'
-  ),
-  isDisabled: PropTypes.bool.describe(
-    'Boolean describing if option is disabled.'
-  ),
+  isChecked: PropTypes.bool.describe('Boolean describing if option is currently selected.'),
+  onChange: PropTypes.func.isRequired.describe('Callback that is executed on option change.'),
+  isDisabled: PropTypes.bool.describe('Boolean describing if option is disabled.'),
   schema: PropTypes.object.describe('Schema of installation.'),
   onEditAudience: PropTypes.func.isRequired.describe(
     'Callback that is executed on click of edit audience for new segment.'
   ),
-  icon: PropTypes.string.describe(
-    'Specifiying icon for option. Used for "Everyone" case.'
-  ),
+  icon: PropTypes.string.describe('Specifiying icon for option. Used for "Everyone" case.'),
 };

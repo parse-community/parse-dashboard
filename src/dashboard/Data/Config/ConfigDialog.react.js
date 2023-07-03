@@ -21,16 +21,7 @@ import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
 
-const PARAM_TYPES = [
-  'Boolean',
-  'String',
-  'Number',
-  'Date',
-  'Object',
-  'Array',
-  'GeoPoint',
-  'File',
-];
+const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
 
 function numberValidator(onChange) {
   return function (next) {
@@ -47,11 +38,7 @@ function saveFile(onChange, file) {
 
 const EDITORS = {
   Boolean: (value, onChange) => (
-    <Toggle
-      type={Toggle.Types.TRUE_FALSE}
-      value={!!value}
-      onChange={onChange}
-    />
+    <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange) => (
     <TextInput multiline={true} value={value || ''} onChange={onChange} />
@@ -59,9 +46,7 @@ const EDITORS = {
   Number: (value, onChange) => (
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
   ),
-  Date: (value, onChange) => (
-    <DateTimeInput fixed={true} value={value} onChange={onChange} />
-  ),
+  Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange) => (
     <TextInput
       multiline={true}
@@ -80,9 +65,7 @@ const EDITORS = {
       onChange={onChange}
     />
   ),
-  GeoPoint: (value, onChange) => (
-    <GeoPointInput value={value} onChange={onChange} />
-  ),
+  GeoPoint: (value, onChange) => <GeoPointInput value={value} onChange={onChange} />,
   File: (value, onChange) => (
     <FileInput
       value={value ? { name: value.name(), url: value.url() } : null}
@@ -92,18 +75,18 @@ const EDITORS = {
 };
 
 const GET_VALUE = {
-  Boolean: (value) => !!value,
-  String: (value) => value,
-  Number: (value) => parseFloat(value),
-  Date: (value) => value,
-  Object: (value) => JSON.parse(value),
-  Array: (value) => JSON.parse(value),
-  GeoPoint: (value) =>
+  Boolean: value => !!value,
+  String: value => value,
+  Number: value => parseFloat(value),
+  Date: value => value,
+  Object: value => JSON.parse(value),
+  Array: value => JSON.parse(value),
+  GeoPoint: value =>
     new Parse.GeoPoint({
       latitude: value.latitude,
       longitude: value.longitude,
     }),
-  File: (value) => value,
+  File: value => value,
 };
 
 export default class ConfigDialog extends React.Component {
@@ -161,10 +144,7 @@ export default class ConfigDialog extends React.Component {
         if (!val || typeof val !== 'object') {
           return false;
         }
-        if (
-          isNaN(parseFloat(val.latitude)) ||
-          isNaN(parseFloat(val.longitude))
-        ) {
+        if (isNaN(parseFloat(val.latitude)) || isNaN(parseFloat(val.longitude))) {
           return false;
         }
         if (
@@ -201,9 +181,9 @@ export default class ConfigDialog extends React.Component {
         fixed={true}
         value={this.state.type}
         disabled={this.props.param.length > 0}
-        onChange={(type) => this.setState({ type: type, value: null })}
+        onChange={type => this.setState({ type: type, value: null })}
       >
-        {PARAM_TYPES.map((t) => (
+        {PARAM_TYPES.map(t => (
           <Option key={t} value={t}>
             {t}
           </Option>
@@ -224,18 +204,13 @@ export default class ConfigDialog extends React.Component {
         onConfirm={this.submit.bind(this)}
       >
         <Field
-          label={
-            <Label
-              text="Parameter Name"
-              description="A unique identifier for this value"
-            />
-          }
+          label={<Label text="Parameter Name" description="A unique identifier for this value" />}
           input={
             <TextInput
               placeholder={'New parameter'}
               value={this.state.name}
               disabled={this.props.param.length > 0}
-              onChange={(name) => this.setState({ name })}
+              onChange={name => this.setState({ name })}
             />
           }
         />
@@ -247,7 +222,7 @@ export default class ConfigDialog extends React.Component {
               description="Use this to configure your app. You can change it at any time."
             />
           }
-          input={EDITORS[this.state.type](this.state.value, (value) => {
+          input={EDITORS[this.state.type](this.state.value, value => {
             this.setState({ value });
           })}
         />
@@ -270,7 +245,7 @@ export default class ConfigDialog extends React.Component {
                   <Toggle
                     type={Toggle.Types.YES_NO}
                     value={this.state.masterKeyOnly}
-                    onChange={(masterKeyOnly) => this.setState({ masterKeyOnly })}
+                    onChange={masterKeyOnly => this.setState({ masterKeyOnly })}
                     additionalStyles={{ margin: '0px' }}
                   />
                 }

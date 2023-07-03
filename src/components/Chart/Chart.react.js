@@ -26,20 +26,10 @@ function sortPoints(a, b) {
 
 function formatDate(date) {
   const str = DateUtils.getMonth(date.getMonth()) + ' ' + date.getDate();
-  if (
-    date.getUTCHours() === 0 &&
-    date.getUTCMinutes() === 0 &&
-    date.getUTCSeconds() === 0
-  ) {
+  if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
     return str;
   }
-  return (
-    str +
-    ' ' +
-    date.getHours() +
-    (date.getMinutes() < 10 ? ':0' : ':') +
-    date.getMinutes()
-  );
+  return str + ' ' + date.getHours() + (date.getMinutes() < 10 ? ':0' : ':') + date.getMinutes();
 }
 
 export default class Chart extends React.Component {
@@ -108,7 +98,7 @@ export default class Chart extends React.Component {
       );
       const path = (
         <path
-          d={'M' + points.map((p) => p.join(' ')).join(' L')}
+          d={'M' + points.map(p => p.join(' ')).join(' L')}
           style={{ stroke: color, fill: 'none', strokeWidth: 2 }}
         />
       );
@@ -138,13 +128,11 @@ export default class Chart extends React.Component {
     }
     const labels = valueBuckets.slice(1, valueBuckets.length - 1);
     const labelHeights = labels.map(
-      (label) =>
-        chartHeight * (1 - label / valueBuckets[valueBuckets.length - 1])
+      label => chartHeight * (1 - label / valueBuckets[valueBuckets.length - 1])
     );
     const tickPoints = timeBuckets.map(
-      (t) =>
-        (chartWidth * (t - timeBuckets[0])) /
-        (timeBuckets[timeBuckets.length - 1] - timeBuckets[0])
+      t =>
+        (chartWidth * (t - timeBuckets[0])) / (timeBuckets[timeBuckets.length - 1] - timeBuckets[0])
     );
     let last = null;
     const tickLabels = timeBuckets.map((t, i) => {
@@ -184,15 +172,10 @@ export default class Chart extends React.Component {
           }}
         >
           <div className={classes.join(' ')} style={style}>
-            <div className={styles.popupTime}>
-              {formatDate(this.state.hoverTime)}
-            </div>
+            <div className={styles.popupTime}>{formatDate(this.state.hoverTime)}</div>
             <div className={styles.popupValue}>
               {this.props.formatter
-                ? this.props.formatter(
-                  this.state.hoverValue,
-                  this.state.hoverLabel
-                )
+                ? this.props.formatter(this.state.hoverValue, this.state.hoverLabel)
                 : this.state.hoverValue}
             </div>
           </div>
@@ -203,11 +186,7 @@ export default class Chart extends React.Component {
       <div className={styles.chart} style={{ width: width, height: height }}>
         <div className={styles.yAxis}>
           {labels.map((v, i) => (
-            <div
-              key={v}
-              className={styles.label}
-              style={{ top: labelHeights[i] }}
-            >
+            <div key={v} className={styles.label} style={{ top: labelHeights[i] }}>
               {prettyNumber(v)}
             </div>
           ))}
@@ -225,7 +204,7 @@ export default class Chart extends React.Component {
         </div>
         <svg width={chartWidth + 10} height={chartHeight + 10}>
           <g>
-            {labelHeights.map((h) => (
+            {labelHeights.map(h => (
               <path
                 key={'horiz_' + h}
                 d={'M0 ' + h + ' H' + chartWidth}

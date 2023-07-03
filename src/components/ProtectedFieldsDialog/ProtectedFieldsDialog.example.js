@@ -91,7 +91,7 @@ class ProtectedFieldsDemo extends React.Component {
             });
           }}
           onClose={() => {}}
-          onConfirm={(perms) => {
+          onConfirm={perms => {
             console.log(perms);
           }}
         />

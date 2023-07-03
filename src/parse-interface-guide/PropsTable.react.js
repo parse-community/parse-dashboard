@@ -13,19 +13,17 @@ function typeString(prop) {
     case 'Enum':
       return 'Enum { ' + prop._values.join(', ') + ' }';
     case 'Union':
-      return prop._classes.map((c) => c._id).join(' | ');
+      return prop._classes.map(c => c._id).join(' | ');
     default:
       return prop._id;
   }
 }
 
-const PropsRow = (p) => (
+const PropsRow = p => (
   <div className={styles.row}>
     <div>
       <span className={styles.prop_name}>{p.name}</span>
-      {p.required ? (
-        <span className={styles.prop_required}>[Required]</span>
-      ) : null}
+      {p.required ? <span className={styles.prop_required}>[Required]</span> : null}
       <span className={styles.prop_type}>{p.type}</span>
     </div>
     <p>{p.description}</p>
@@ -59,7 +57,7 @@ export default class PropsTable extends React.Component {
     return (
       <div className={styles.table}>
         <div className={styles.header}>Props</div>
-        {propInfo.map((p) => (
+        {propInfo.map(p => (
           <PropsRow key={p.name} {...p} />
         ))}
       </div>

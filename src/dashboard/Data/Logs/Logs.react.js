@@ -5,29 +5,29 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import CategoryList from "components/CategoryList/CategoryList.react";
-import DashboardView from "dashboard/DashboardView.react";
-import EmptyState from "components/EmptyState/EmptyState.react";
-import LogView from "components/LogView/LogView.react";
-import LogViewEntry from "components/LogView/LogViewEntry.react";
-import React from "react";
-import ReleaseInfo from "components/ReleaseInfo/ReleaseInfo";
-import Toolbar from "components/Toolbar/Toolbar.react";
+import CategoryList from 'components/CategoryList/CategoryList.react';
+import DashboardView from 'dashboard/DashboardView.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
+import LogView from 'components/LogView/LogView.react';
+import LogViewEntry from 'components/LogView/LogViewEntry.react';
+import React from 'react';
+import ReleaseInfo from 'components/ReleaseInfo/ReleaseInfo';
+import Toolbar from 'components/Toolbar/Toolbar.react';
 
-import styles from "dashboard/Data/Logs/Logs.scss";
-import { withRouter } from "lib/withRouter";
+import styles from 'dashboard/Data/Logs/Logs.scss';
+import { withRouter } from 'lib/withRouter';
 
 const subsections = {
-  info: "Info",
-  error: "Error",
+  info: 'Info',
+  error: 'Error',
 };
 
 @withRouter
 class Logs extends DashboardView {
   constructor() {
     super();
-    this.section = "Core";
-    this.subsection = "Logs";
+    this.section = 'Core';
+    this.subsection = 'Logs';
 
     this.state = {
       logs: undefined,
@@ -48,9 +48,9 @@ class Logs extends DashboardView {
   }
 
   fetchLogs(app, type) {
-    const typeParam = (type || "INFO").toUpperCase();
+    const typeParam = (type || 'INFO').toUpperCase();
     app.getLogs(typeParam).then(
-      (logs) => this.setState({ logs }),
+      logs => this.setState({ logs }),
       () => this.setState({ logs: [] })
     );
   }
@@ -68,14 +68,14 @@ class Logs extends DashboardView {
   */
 
   renderSidebar() {
-    const current = this.props.params.type || "";
+    const current = this.props.params.type || '';
     return (
       <CategoryList
         current={current}
-        linkPrefix={"logs/"}
+        linkPrefix={'logs/'}
         categories={[
-          { name: "Info", id: "info" },
-          { name: "Error", id: "error" },
+          { name: 'Info', id: 'info' },
+          { name: 'Error', id: 'error' },
         ]}
       />
     );
@@ -103,10 +103,7 @@ class Logs extends DashboardView {
             title="No logs in the last 30 days"
             description="When you start using Cloud Code, your logs will show up here."
             cta="Learn more"
-            action={() =>
-              (window.location =
-                "http://docs.parseplatform.org/cloudcode/guide")
-            }
+            action={() => (window.location = 'http://docs.parseplatform.org/cloudcode/guide')}
           />
         </div>
       );
@@ -115,11 +112,7 @@ class Logs extends DashboardView {
         <div className={styles.content}>
           <LogView>
             {this.state.logs.map(({ message, timestamp }) => (
-              <LogViewEntry
-                key={timestamp}
-                text={message}
-                timestamp={timestamp}
-              />
+              <LogViewEntry key={timestamp} text={message} timestamp={timestamp} />
             ))}
           </LogView>
         </div>

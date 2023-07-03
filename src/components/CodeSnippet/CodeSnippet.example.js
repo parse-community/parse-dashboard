@@ -30,12 +30,7 @@ Parse.Cloud.define('hello', function(req, resp) {
         awesome: true,
       };
 
-      return (
-        <CodeSnippet
-          source={JSON.stringify(obj, null, 4)}
-          language="javascript"
-        />
-      );
+      return <CodeSnippet source={JSON.stringify(obj, null, 4)} language="javascript" />;
     },
   },
 ];

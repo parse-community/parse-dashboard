@@ -18,25 +18,18 @@ const Pill = ({
   shrinkablePill = false,
 }) => (
   <span
-    className={[
-      styles.pill,
-      !followClick && onClick ? styles.action : void 0,
-    ].join(' ')}
+    className={[styles.pill, !followClick && onClick ? styles.action : void 0].join(' ')}
     onClick={!followClick && onClick ? onClick : null}
   >
     <span
       className={
-        !followClick && fileDownloadLink
-          ? styles.content
-          : shrinkablePill
-            ? styles.pillText
-            : ''
+        !followClick && fileDownloadLink ? styles.content : shrinkablePill ? styles.pillText : ''
       }
     >
       {value}
     </span>
     {followClick && (
-      <a onClick={(e) => !e.metaKey && onClick()}>
+      <a onClick={e => !e.metaKey && onClick()}>
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}

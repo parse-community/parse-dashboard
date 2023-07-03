@@ -12,9 +12,7 @@ let subCount = 0;
 
 export function registerStore(name, store, isGlobal) {
   if (stores[name]) {
-    throw new Error(
-      'Conflict! Attempted to register multiple stores with the name ' + name
-    );
+    throw new Error('Conflict! Attempted to register multiple stores with the name ' + name);
   }
 
   stores[name] = {
@@ -27,14 +25,10 @@ export function registerStore(name, store, isGlobal) {
 export function getStore(name) {
   const storeData = stores[name];
   if (!storeData) {
-    throw new Error(
-      'Unknown store! Attempted to retrieve store with the name ' + name
-    );
+    throw new Error('Unknown store! Attempted to retrieve store with the name ' + name);
   }
 
-  const stateGetter = storeData.isGlobal
-    ? StateManager.getGlobalState
-    : StateManager.getAppState;
+  const stateGetter = storeData.isGlobal ? StateManager.getGlobalState : StateManager.getAppState;
 
   return {
     getData: stateGetter.bind(null, name),
@@ -43,7 +37,7 @@ export function getStore(name) {
       const action = { ...params, type, app };
       const newState = storeData.store(stateGetter(name, app), action);
       if (newState instanceof Promise) {
-        return newState.then((result) => {
+        return newState.then(result => {
           if (storeData.isGlobal) {
             StateManager.setGlobalState(name, result);
           } else {

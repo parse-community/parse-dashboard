@@ -59,12 +59,7 @@ class Browser extends DashboardView {
     });
     special.sort((a, b) => stringCompare(a.name, b.name));
     categories.sort((a, b) => stringCompare(a.name, b.name));
-    return (
-      <CategoryList
-        linkPrefix={'browser/'}
-        categories={special.concat(categories)}
-      />
-    );
+    return <CategoryList linkPrefix={'browser/'} categories={special.concat(categories)} />;
   }
 
   renderContent() {

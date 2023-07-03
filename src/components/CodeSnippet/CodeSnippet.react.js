@@ -51,9 +51,7 @@ CodeSnippet.propTypes = {
   source: PropTypes.string.isRequired.describe(
     'The source code to be rendered with syntax-highlighting.'
   ),
-  language: PropTypes.string.describe(
-    'The programming language of the snippet.'
-  ),
+  language: PropTypes.string.describe('The programming language of the snippet.'),
   fullPage: PropTypes.bool.describe(
     'Pass false if this component doesn\'t need to fill the whole page.'
   ),

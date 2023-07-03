@@ -97,10 +97,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    if (
-      features.logs &&
-      Object.keys(features.logs).some((key) => features.logs[key])
-    ) {
+    if (features.logs && Object.keys(features.logs).some(key => features.logs[key])) {
       coreSubsections.push({
         name: 'Logs',
         link: '/logs',
@@ -297,11 +294,7 @@ export default class DashboardView extends React.Component {
     );
 
     let content = <div className={styles.content}>{this.renderContent()}</div>;
-    const canRoute = [
-      ...coreSubsections,
-      ...pushSubsections,
-      ...settingsSections,
-    ]
+    const canRoute = [...coreSubsections, ...pushSubsections, ...settingsSections]
       .map(({ link }) => link.split('/')[1])
       .includes(this.state.route);
 
@@ -310,12 +303,7 @@ export default class DashboardView extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
+              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
             <div className={styles.loadingError}>Feature unavailable</div>
           </div>
@@ -328,22 +316,12 @@ export default class DashboardView extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
+              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
             <div className={styles.loadingError}>
               {this.context.serverInfo.error.replace(/-/g, '\u2011')}
             </div>
-            <Button
-              color="white"
-              value="Reload"
-              width="120px"
-              onClick={() => location.reload()}
-            />
+            <Button color="white" value="Reload" width="120px" onClick={() => location.reload()} />
           </div>
         </div>
       );

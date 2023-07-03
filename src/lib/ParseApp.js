@@ -70,9 +70,7 @@ export default class ParseApp {
     this.icon = iconName;
     this.primaryBackgroundColor = primaryBackgroundColor;
     this.secondaryBackgroundColor = secondaryBackgroundColor;
-    this.supportedPushLocales = supportedPushLocales
-      ? supportedPushLocales
-      : [];
+    this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
     this.preventSchemaEdits = preventSchemaEdits || false;
     this.graphQLServerURL = graphQLServerURL;
     this.columnPreference = columnPreference;
@@ -116,11 +114,7 @@ export default class ParseApp {
           if (Array.isArray(filter.filter)) {
             filter.filter = JSON.stringify(filter.filter);
           }
-          if (
-            preferences.filters.some(
-              (row) => JSON.stringify(row) === JSON.stringify(filter)
-            )
-          ) {
+          if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
             continue;
           }
           preferences.filters.push(filter);
@@ -160,7 +154,7 @@ export default class ParseApp {
    */
   getSource(fileName) {
     return this.getLatestRelease()
-      .then((release) => {
+      .then(release => {
         if (release.files === null) {
           // No release yet
           return Promise.resolve(null);
@@ -179,7 +173,7 @@ export default class ParseApp {
           useMasterKey: true,
         });
       })
-      .then((source) => {
+      .then(source => {
         if (this.latestRelease.files) {
           this.latestRelease.files[fileName].source = source;
         }
@@ -193,12 +187,7 @@ export default class ParseApp {
     if (new Date() - this.latestRelease.lastFetched < 60000) {
       return Promise.resolve(this.latestRelease);
     }
-    return this.apiRequest(
-      'GET',
-      'releases/latest',
-      {},
-      { useMasterKey: true }
-    ).then((release) => {
+    return this.apiRequest('GET', 'releases/latest', {}, { useMasterKey: true }).then(release => {
       this.latestRelease.lastFetched = new Date();
       this.latestRelease.files = null;
 
@@ -246,7 +235,7 @@ export default class ParseApp {
       }
     }
     const p = new Parse.Query(className).count({ useMasterKey: true });
-    p.then((count) => {
+    p.then(count => {
       this.classCounts.counts[className] = count;
       this.classCounts.lastFetched[className] = new Date();
     });
@@ -261,9 +250,7 @@ export default class ParseApp {
 
   getAnalyticsRetention(time) {
     time = Math.round(time.getTime() / 1000);
-    return AJAX.abortableGet(
-      '/apps/' + this.slug + '/analytics_retention?at=' + time
-    );
+    return AJAX.abortableGet('/apps/' + this.slug + '/analytics_retention?at=' + time);
   }
 
   getAnalyticsOverview(time) {
@@ -277,7 +264,7 @@ export default class ParseApp {
       'weekly_installations',
       'monthly_installations',
       'total_installations',
-    ].map((activity) => {
+    ].map(activity => {
       const res = AJAX.abortableGet(
         '/apps/' +
           this.slug +
@@ -288,7 +275,7 @@ export default class ParseApp {
       );
       let promise = res.promise;
       const xhr = res.xhr;
-      promise = promise.then((result) =>
+      promise = promise.then(result =>
         result.total === undefined ? result.content : result.total
       );
       return { xhr, promise };
@@ -298,7 +285,7 @@ export default class ParseApp {
       'billing_file_storage',
       'billing_database_storage',
       'billing_data_transfer',
-    ].map((billing) => AJAX.abortableGet('/apps/' + this.slug + '/' + billing));
+    ].map(billing => AJAX.abortableGet('/apps/' + this.slug + '/' + billing));
 
     const allPromises = audiencePromises.concat(billingPromises);
 
@@ -318,8 +305,7 @@ export default class ParseApp {
   }
 
   getAnalyticsTimeSeries(query) {
-    const path =
-      '/apps/' + this.slug + '/analytics?' + encodeFormData(null, query);
+    const path = '/apps/' + this.slug + '/analytics?' + encodeFormData(null, query);
     const res = AJAX.abortableGet(path);
     let promise = res.promise;
     const xhr = res.xhr;
@@ -399,7 +385,7 @@ export default class ParseApp {
       return Promise.resolve(this.settings.fields);
     }
     const path = '/apps/' + this.slug + '/dashboard_ajax/settings';
-    return AJAX.get(path).then((fields) => {
+    return AJAX.get(path).then(fields => {
       for (const f in fields) {
         this.settings.fields[f] = fields[f];
         this.settings.lastFetched = new Date();
@@ -440,10 +426,7 @@ export default class ParseApp {
 
   validateCollaborator(email) {
     const path =
-      '/apps/' +
-      this.slug +
-      '/collaborations/validate?email=' +
-      encodeURIComponent(email);
+      '/apps/' + this.slug + '/collaborations/validate?email=' + encodeURIComponent(email);
     return AJAX.get(path);
   }
 
@@ -485,8 +468,7 @@ export default class ParseApp {
   }
 
   fetchPushAudienceSizeSuggestion() {
-    const path =
-      '/apps/' + this.slug + '/push_notifications/audience_size_suggestion';
+    const path = '/apps/' + this.slug + '/push_notifications/audience_size_suggestion';
     return AJAX.get(path);
   }
 
@@ -510,9 +492,7 @@ export default class ParseApp {
     path += `?where=${encodeURI(JSON.stringify(where || {}))}`;
     path += `&locales=${encodeURI(JSON.stringify(locales))}`;
     urlsSeparator = '&';
-    return AJAX.abortableGet(
-      audienceId ? `${path}${urlsSeparator}audienceId=${audienceId}` : path
-    );
+    return AJAX.abortableGet(audienceId ? `${path}${urlsSeparator}audienceId=${audienceId}` : path);
   }
 
   fetchAvailableDevices() {
@@ -527,8 +507,9 @@ export default class ParseApp {
       //TODO: this currently works because everything that uses collaborators
       // happens to re-render after this call anyway, but really the collaborators
       // should be updated properly in a store or AppsManager or something
-      this.settings.fields.fields.collaborators =
-        this.settings.fields.fields.collaborators.filter((c) => c.id != id);
+      this.settings.fields.fields.collaborators = this.settings.fields.fields.collaborators.filter(
+        c => c.id != id
+      );
     });
     return promise;
   }
@@ -577,9 +558,7 @@ export default class ParseApp {
   setInProduction(inProduction) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[parse_app_metadata][production]': inProduction
-        ? 'true'
-        : 'false',
+      'parse_app[parse_app_metadata][production]': inProduction ? 'true' : 'false',
     });
     promise.then(() => {
       this.production = inProduction;
@@ -613,8 +592,8 @@ export default class ParseApp {
   getJobStatus() {
     const query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
-    return query.find({ useMasterKey: true }).then((status) => {
-      status = status.map((jobStatus) => {
+    return query.find({ useMasterKey: true }).then(status => {
+      status = status.map(jobStatus => {
         return jobStatus.toJSON();
       });
       this.jobStatus = {
@@ -661,8 +640,7 @@ export default class ParseApp {
     const path = '/apps/' + this.slug + '/change_connection_string';
     const promise = AJAX.post(path, { connection_string: newConnectionString });
     promise.then(() => {
-      this.settings.fields.fields.opendb_connection_string =
-        newConnectionString;
+      this.settings.fields.fields.opendb_connection_string = newConnectionString;
     });
     return promise;
   }
@@ -725,16 +703,13 @@ export default class ParseApp {
   setEnableNewMethodsByDefault(require) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][_enable_by_default_as_bool]': require
-        ? 'true'
-        : 'false',
+      'parse_app[auth_options_attributes][_enable_by_default_as_bool]': require ? 'true' : 'false',
     });
     promise.then(() => {
       //TODO: this currently works because everything that uses this
       // happens to re-render after this call anyway, but really this
       // should be updated properly in a store or AppsManager or something
-      this.settings.fields.fields.auth_options_attributes._enable_by_default =
-        require;
+      this.settings.fields.fields.auth_options_attributes._enable_by_default = require;
     });
     return promise;
   }
@@ -742,15 +717,15 @@ export default class ParseApp {
   setAllowUsernameAndPassword(require) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][username_attributes][enabled_as_bool]':
-        require ? 'true' : 'false',
+      'parse_app[auth_options_attributes][username_attributes][enabled_as_bool]': require
+        ? 'true'
+        : 'false',
     });
     promise.then(() => {
       //TODO: this currently works because everything that uses this
       // happens to re-render after this call anyway, but really this
       // should be updated properly in a store or AppsManager or something
-      this.settings.fields.fields.auth_options_attributes.username.enabled =
-        require;
+      this.settings.fields.fields.auth_options_attributes.username.enabled = require;
     });
     return promise;
   }
@@ -758,15 +733,15 @@ export default class ParseApp {
   setAllowAnonymousUsers(require) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][anonymous_attributes][enabled_as_bool]':
-        require ? 'true' : 'false',
+      'parse_app[auth_options_attributes][anonymous_attributes][enabled_as_bool]': require
+        ? 'true'
+        : 'false',
     });
     promise.then(() => {
       //TODO: this currently works because everything that uses this
       // happens to re-render after this call anyway, but really this
       // should be updated properly in a store or AppsManager or something
-      this.settings.fields.fields.auth_options_attributes.anonymous.enabled =
-        require;
+      this.settings.fields.fields.auth_options_attributes.anonymous.enabled = require;
     });
     return promise;
   }
@@ -774,15 +749,15 @@ export default class ParseApp {
   setAllowCustomAuthentication(require) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][custom_attributes][enabled_as_bool]':
-        require ? 'true' : 'false',
+      'parse_app[auth_options_attributes][custom_attributes][enabled_as_bool]': require
+        ? 'true'
+        : 'false',
     });
     promise.then(() => {
       //TODO: this currently works because everything that uses this
       // happens to re-render after this call anyway, but really this
       // should be updated properly in a store or AppsManager or something
-      this.settings.fields.fields.auth_options_attributes.custom.enabled =
-        require;
+      this.settings.fields.fields.auth_options_attributes.custom.enabled = require;
     });
     return promise;
   }
@@ -790,16 +765,13 @@ export default class ParseApp {
   setConnectedFacebookApps(idList, secretList) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][facebook_attributes][app_ids_as_list]':
-        idList.join(','),
+      'parse_app[auth_options_attributes][facebook_attributes][app_ids_as_list]': idList.join(','),
       'parse_app[auth_options_attributes][facebook_attributes][app_secrets_as_list]':
         secretList.join(','),
     });
     promise.then(() => {
-      this.settings.fields.fields.auth_options_attributes.facebook.app_ids =
-        idList;
-      this.settings.fields.fields.auth_options_attributes.facebook.app_secrets =
-        secretList;
+      this.settings.fields.fields.auth_options_attributes.facebook.app_ids = idList;
+      this.settings.fields.fields.auth_options_attributes.facebook.app_secrets = secretList;
     });
     return promise;
   }
@@ -809,8 +781,7 @@ export default class ParseApp {
       this.settings.fields.fields.auth_options_attributes.facebook.app_ids || []
     ).concat(newId);
     const allSecrets = (
-      this.settings.fields.fields.auth_options_attributes.facebook
-        .app_secrets || []
+      this.settings.fields.fields.auth_options_attributes.facebook.app_secrets || []
     ).concat(newSecret);
     return this.setConnectedFacebookApps(allIds, allSecrets);
   }
@@ -818,12 +789,12 @@ export default class ParseApp {
   setAllowFacebookAuth(enable) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][facebook_attributes][enabled_as_bool]':
-        enable ? 'true' : 'false',
+      'parse_app[auth_options_attributes][facebook_attributes][enabled_as_bool]': enable
+        ? 'true'
+        : 'false',
     });
     promise.then(() => {
-      this.settings.fields.fields.auth_options_attributes.facebook.enabled =
-        !!enable;
+      this.settings.fields.fields.auth_options_attributes.facebook.enabled = !!enable;
     });
     return promise;
   }
@@ -835,16 +806,14 @@ export default class ParseApp {
         consumerKeyList.join(','),
     });
     promise.then(() => {
-      this.settings.fields.fields.auth_options_attributes.twitter.consumer_keys =
-        consumerKeyList;
+      this.settings.fields.fields.auth_options_attributes.twitter.consumer_keys = consumerKeyList;
     });
     return promise;
   }
 
   addConnectedTwitterApp(newConsumerKey) {
     const allKeys = (
-      this.settings.fields.fields.auth_options_attributes.twitter
-        .consumer_keys || []
+      this.settings.fields.fields.auth_options_attributes.twitter.consumer_keys || []
     ).concat(newConsumerKey);
     return this.setConnectedTwitterApps(allKeys);
   }
@@ -852,12 +821,12 @@ export default class ParseApp {
   setAllowTwitterAuth(allow) {
     const path = '/apps/' + this.slug;
     const promise = AJAX.put(path, {
-      'parse_app[auth_options_attributes][twitter_attributes][enabled_as_bool]':
-        allow ? 'true' : 'false',
+      'parse_app[auth_options_attributes][twitter_attributes][enabled_as_bool]': allow
+        ? 'true'
+        : 'false',
     });
     promise.then(() => {
-      this.settings.fields.fields.auth_options_attributes.twitter.enabled =
-        !!allow;
+      this.settings.fields.fields.auth_options_attributes.twitter.enabled = !!allow;
     });
     return promise;
   }
@@ -883,17 +852,11 @@ export default class ParseApp {
   }
 
   deleteGCMPushCredentials(GCMSenderID) {
-    const path =
-      '/apps/' +
-      this.slug +
-      '/delete_gcm_push_credential?gcm_sender_id=' +
-      GCMSenderID;
+    const path = '/apps/' + this.slug + '/delete_gcm_push_credential?gcm_sender_id=' + GCMSenderID;
     const promise = AJAX.get(path);
     promise.then(() => {
       this.settings.fields.fields.gcm_credentials =
-        this.settings.fields.fields.gcm_credentials.filter(
-          (cred) => cred.sender_id != GCMSenderID
-        );
+        this.settings.fields.fields.gcm_credentials.filter(cred => cred.sender_id != GCMSenderID);
     });
     return promise;
   }

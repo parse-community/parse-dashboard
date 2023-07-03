@@ -58,7 +58,7 @@ export default class FileEditor extends React.Component {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = error => reject(error);
     });
   }
 

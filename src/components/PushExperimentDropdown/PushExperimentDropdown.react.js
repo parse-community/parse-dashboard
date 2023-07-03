@@ -50,9 +50,7 @@ export default class PushExperimentDropdown extends React.Component {
         onClick={() => this.setState({ open: true })}
       >
         <div>
-          {!this.state.selected &&
-          this.props.placeholder &&
-          this.props.value === undefined
+          {!this.state.selected && this.props.placeholder && this.props.value === undefined
             ? this.props.placeholder
             : this.props.value}
         </div>
@@ -66,16 +64,9 @@ export default class PushExperimentDropdown extends React.Component {
           position={position}
           onExternalClick={() => this.setState({ open: false })}
         >
-          <div
-            style={widthStyle}
-            className={[styles.menu, styles[color]].join(' ')}
-          >
+          <div style={widthStyle} className={[styles.menu, styles[color]].join(' ')}>
             {this.props.options.map(({ key, style }) => (
-              <div
-                key={key}
-                style={style}
-                onClick={this.select.bind(this, key)}
-              >
+              <div key={key} style={style} onClick={this.select.bind(this, key)}>
                 {key}
               </div>
             ))}
@@ -84,11 +75,7 @@ export default class PushExperimentDropdown extends React.Component {
       );
     }
     return (
-      <div
-        style={widthStyle}
-        className={styles.dropdown}
-        ref={this.dropdownRef}
-      >
+      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef}>
         {content}
       </div>
     );
@@ -97,20 +84,12 @@ export default class PushExperimentDropdown extends React.Component {
 
 PushExperimentDropdown.propTypes = {
   color: PropTypes.string.describe('Determines the color of the dropdown.'),
-  value: PropTypes.string.isRequired.describe(
-    'The current value of the dropdown.'
-  ),
+  value: PropTypes.string.isRequired.describe('The current value of the dropdown.'),
   options: PropTypes.arrayOf(PropTypes.object).isRequired.describe(
     'An array of options available in the dropdown.'
   ),
-  onChange: PropTypes.func.isRequired.describe(
-    'A function called when the dropdown is changed.'
-  ),
+  onChange: PropTypes.func.isRequired.describe('A function called when the dropdown is changed.'),
   width: PropTypes.string.describe('An optional width override.'),
-  placeHolder: PropTypes.string.describe(
-    'Placeholder text used in place of default selection.'
-  ),
-  styles: PropTypes.object.describe(
-    'Styles override used to provide dropdown with differnt skin.'
-  ),
+  placeHolder: PropTypes.string.describe('Placeholder text used in place of default selection.'),
+  styles: PropTypes.object.describe('Styles override used to provide dropdown with differnt skin.'),
 };

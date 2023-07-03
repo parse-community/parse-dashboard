@@ -23,10 +23,7 @@ export default class SliderWrap extends React.Component {
   }
 
   _getMetric() {
-    if (
-      this.props.direction === Directions.LEFT ||
-      this.props.direction === Directions.RIGHT
-    ) {
+    if (this.props.direction === Directions.LEFT || this.props.direction === Directions.RIGHT) {
       return 'width';
     }
     if (

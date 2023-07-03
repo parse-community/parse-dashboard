@@ -19,13 +19,7 @@ export const demos = [
       <Fieldset legend="I am Legend" description="I am description.">
         <Field
           label={<Label text="Label Text" description="Label Description" />}
-          input={
-            <Toggle
-              value={true}
-              type={Toggle.Types.YES_NO}
-              onChange={function () {}}
-            />
-          }
+          input={<Toggle value={true} type={Toggle.Types.YES_NO} onChange={function () {}} />}
         />
       </Fieldset>
     ),

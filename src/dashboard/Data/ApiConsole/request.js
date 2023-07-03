@@ -23,7 +23,7 @@ export default function request(app, method, path, body, options) {
   if (options.sessionToken) {
     xhr.setRequestHeader('X-Parse-Session-Token', options.sessionToken);
   }
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     xhr.onload = function () {
       let response = xhr.responseText;
       try {

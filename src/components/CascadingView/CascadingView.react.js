@@ -58,13 +58,10 @@ export default class CascadingView extends React.Component {
 
 CascadingView.propTypes = {
   content: PropTypes.node.isRequired.describe(
-    'The content of the CascadingView itself. ' +
-      'It can be any renderable content.'
+    'The content of the CascadingView itself. ' + 'It can be any renderable content.'
   ),
   className: PropTypes.string.describe(
     'A CSS class name to be applied to the collapsed CascadingView.'
   ),
-  children: PropTypes.node.isRequired.describe(
-    'The children of CascadingView.'
-  ),
+  children: PropTypes.node.isRequired.describe('The children of CascadingView.'),
 };

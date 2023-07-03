@@ -34,10 +34,7 @@ export default class PushSettings extends DashboardView {
   }
 
   legacyPushSettings() {
-    window.open(
-      `${getSiteDomain()}/apps/` + this.context.slug + '/edit#push',
-      '_blank'
-    );
+    window.open(`${getSiteDomain()}/apps/` + this.context.slug + '/edit#push', '_blank');
   }
 
   renderForm({ fields, setField }) {
@@ -129,8 +126,7 @@ export default class PushSettings extends DashboardView {
                       setField(
                         'gcmCredentials',
                         fields.gcmCredentials.filter(
-                          (oldCred) =>
-                            !compareGCMCredentials(oldCred, credential)
+                          oldCred => !compareGCMCredentials(oldCred, credential)
                         )
                       ),
                     notes: [
@@ -153,19 +149,11 @@ export default class PushSettings extends DashboardView {
     );
 
     const windowsPushFields = (
-      <Fieldset
-        legend="Windows Push Credentials"
-        description="Enable push for Windows apps."
-      >
+      <Fieldset legend="Windows Push Credentials" description="Enable push for Windows apps.">
         <Field
           labelWidth={DEFAULT_LABEL_WIDTH}
           label={<Label text="Windows Keys" />}
-          input={
-            <FormButton
-              onClick={this.legacyPushSettings.bind(this)}
-              value="Configure"
-            />
-          }
+          input={<FormButton onClick={this.legacyPushSettings.bind(this)} value="Configure" />}
         />
         {/* TODO(drewgross): make Push Credentials component
       <Field
@@ -219,21 +207,14 @@ export default class PushSettings extends DashboardView {
         onSubmit={({ changes }) => {
           const promiseList = [];
           if (changes.enableClientPush !== undefined) {
-            promiseList.push(
-              this.context.setEnableClientPush(changes.enableClientPush)
-            );
+            promiseList.push(this.context.setEnableClientPush(changes.enableClientPush));
           }
           if (changes.enableRestPush !== undefined) {
-            promiseList.push(
-              this.context.setEnableRestPush(changes.enableRestPush)
-            );
+            promiseList.push(this.context.setEnableRestPush(changes.enableRestPush));
           }
           if (changes.customGCMSenderID && changes.customGCMAPIKey) {
             promiseList.push(
-              this.context.addGCMCredentials(
-                changes.customGCMSenderID,
-                changes.customGCMAPIKey
-              )
+              this.context.addGCMCredentials(changes.customGCMSenderID, changes.customGCMAPIKey)
             );
           }
           if (changes.gcmCredentials) {
@@ -244,16 +225,14 @@ export default class PushSettings extends DashboardView {
               compareGCMCredentials
             );
             removedGCMcredentials.forEach(({ sender_id }) => {
-              promiseList.push(
-                this.context.deleteGCMPushCredentials(sender_id)
-              );
+              promiseList.push(this.context.deleteGCMPushCredentials(sender_id));
             });
           }
           return Promise.all(promiseList)
             .then(() => {
               this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
             })
-            .catch((errors) => {
+            .catch(errors => {
               return Promise.reject({
                 error: unique(pluck(errors, 'error')).join(' '),
               });

@@ -77,27 +77,19 @@ export default class DateTimeInput extends React.Component {
 
     let content = null;
     if (!this.props.value) {
-      content = (
-        <div className={styles.placeholder}>Pick a date and time&hellip;</div>
-      );
+      content = <div className={styles.placeholder}>Pick a date and time&hellip;</div>;
     } else {
       content = (
         <div className={styles.value}>
           <strong>
-            {MONTHS[
-              this.props.value[getDateMethod(this.props.local, 'getMonth')]()
-            ].substr(0, 3) +
+            {MONTHS[this.props.value[getDateMethod(this.props.local, 'getMonth')]()].substr(0, 3) +
               ' ' +
               this.props.value[getDateMethod(this.props.local, 'getDate')]()}
           </strong>
           <span> at </span>
           <strong>
             {this.props.value[getDateMethod(this.props.local, 'getHours')]()}:
-            {(this.props.value[
-              getDateMethod(this.props.local, 'getMinutes')
-            ]() < 10
-              ? '0'
-              : '') +
+            {(this.props.value[getDateMethod(this.props.local, 'getMinutes')]() < 10 ? '0' : '') +
               this.props.value[getDateMethod(this.props.local, 'getMinutes')]()}
           </strong>
           {!this.props.local ? <span> UTC</span> : null}

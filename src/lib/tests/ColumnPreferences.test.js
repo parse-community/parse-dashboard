@@ -82,28 +82,24 @@ describe('ColumnPreferences', () => {
       'testapp',
       'Klass'
     );
-    expect(
-      ColumnPreferences.getOrder(
-        { objectId: {}, createdAt: {} },
-        'testapp',
-        'Klass'
-      )
-    ).toEqual([
-      {
-        cached: true,
-        required: false,
-        name: 'objectId',
-        width: 100,
-        visible: true,
-      },
-      {
-        cached: true,
-        required: false,
-        name: 'createdAt',
-        width: 150,
-        visible: true,
-      },
-    ]);
+    expect(ColumnPreferences.getOrder({ objectId: {}, createdAt: {} }, 'testapp', 'Klass')).toEqual(
+      [
+        {
+          cached: true,
+          required: false,
+          name: 'objectId',
+          width: 100,
+          visible: true,
+        },
+        {
+          cached: true,
+          required: false,
+          name: 'createdAt',
+          width: 150,
+          visible: true,
+        },
+      ]
+    );
   });
 
   it('tacks unknown columns onto the end', () => {
@@ -195,11 +191,7 @@ describe('ColumnPreferences', () => {
       'Klass'
     );
     expect(
-      ColumnPreferences.getOrder(
-        { objectId: {}, createdAt: {}, updatedAt: {} },
-        'testapp',
-        'Klass'
-      )
+      ColumnPreferences.getOrder({ objectId: {}, createdAt: {}, updatedAt: {} }, 'testapp', 'Klass')
     ).toEqual([
       {
         cached: true,
@@ -248,11 +240,7 @@ describe('ColumnPreferences', () => {
     ]);
 
     expect(
-      ColumnPreferences.getOrder(
-        { objectId: {}, updatedAt: {}, someField: {} },
-        'testapp',
-        'Klass'
-      )
+      ColumnPreferences.getOrder({ objectId: {}, updatedAt: {}, someField: {} }, 'testapp', 'Klass')
     ).toEqual([
       {
         cached: true,

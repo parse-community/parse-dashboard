@@ -41,7 +41,7 @@ const APP_VERSIONS_EXPLORER_QUERY = {
   localId: 'slow_query_app_version_query',
 };
 
-const formatQuery = (query) => {
+const formatQuery = query => {
   return query;
 };
 
@@ -60,11 +60,7 @@ class SlowQueries extends TableView {
       loading: true,
       mutated: false,
       dateRange: {
-        start: new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate() - 1
-        ),
+        start: new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1),
         end: date,
       },
       className: undefined,
@@ -80,7 +76,7 @@ class SlowQueries extends TableView {
   }
 
   componentWillUnmount() {
-    this.xhrHandles.forEach((xhr) => xhr.abort());
+    this.xhrHandles.forEach(xhr => xhr.abort());
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -119,7 +115,7 @@ class SlowQueries extends TableView {
         dateRange.end
       );
       promise.then(
-        (result) =>
+        result =>
           this.setState({
             slowQueries: result || [],
             loading: false,
@@ -143,11 +139,11 @@ class SlowQueries extends TableView {
     // Get app versions using Explorer endpoint
     const queries = this.props.customQueries.data.get('queries') || [];
     const appVersionExplorerQuery = queries.find(
-      (query) => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId
+      query => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId
     );
     const appVersions = {};
     if (appVersionExplorerQuery && appVersionExplorerQuery.result) {
-      appVersionExplorerQuery.result.forEach((value) => {
+      appVersionExplorerQuery.result.forEach(value => {
         const os = value['OS'];
         const version = value['App Display Version'];
         if (os === null || version === null) {
@@ -184,7 +180,7 @@ class SlowQueries extends TableView {
             classNameOptions={classOptions}
             osOptions={osOptions}
             versionOptions={appVersions[this.state.os] || ['Version']}
-            onChange={(newValue) =>
+            onChange={newValue =>
               this.setState({
                 ...newValue,
                 mutated: true,
@@ -241,10 +237,7 @@ class SlowQueries extends TableView {
         description={'You haven\'t executed any queries.'}
         icon="gears"
         cta="Get started with Query"
-        action={() =>
-          (window.location =
-            'http://docs.parseplatform.org/rest/guide/#queries')
-        }
+        action={() => (window.location = 'http://docs.parseplatform.org/rest/guide/#queries')}
       />
     );
   }
@@ -257,9 +250,7 @@ class SlowQueries extends TableView {
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}
-              onChange={(newValue) =>
-                this.setState({ dateRange: newValue, mutated: true })
-              }
+              onChange={newValue => this.setState({ dateRange: newValue, mutated: true })}
               align={Directions.RIGHT}
             />
           </span>

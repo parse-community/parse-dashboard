@@ -169,16 +169,7 @@ export const FieldConstraints = {
   Pointer: ['exists', 'dne', 'eq', 'neq', 'unique'],
   Boolean: ['exists', 'dne', 'eq', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
-  String: [
-    'exists',
-    'dne',
-    'eq',
-    'neq',
-    'starts',
-    'ends',
-    'stringContainsString',
-    'unique',
-  ],
+  String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
   Date: ['exists', 'dne', 'before', 'after', 'unique'],
   Object: [
     'exists',
@@ -222,7 +213,7 @@ export function availableFilters(schema, currentFilters, blacklist) {
   blacklist = blacklist || [];
   const disabled = {};
   if (currentFilters) {
-    currentFilters.forEach((filter) => {
+    currentFilters.forEach(filter => {
       if (!Constraints[filter.get('constraint')].composable) {
         disabled[filter.get('field')] = true;
       }
@@ -237,9 +228,7 @@ export function availableFilters(schema, currentFilters, blacklist) {
     if (!FieldConstraints[type]) {
       continue;
     }
-    available[col] = FieldConstraints[type].filter(
-      (c) => blacklist.indexOf(c) < 0
-    );
+    available[col] = FieldConstraints[type].filter(c => blacklist.indexOf(c) < 0);
   }
   return available;
 }

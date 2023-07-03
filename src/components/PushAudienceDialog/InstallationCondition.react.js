@@ -23,7 +23,7 @@ for (const c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-const setFocus = (input) => {
+const setFocus = input => {
   if (input !== null) {
     input.focus();
   }
@@ -39,7 +39,7 @@ function compareValue(info, value, onChangeCompareTo) {
         <TextInput
           placeholder="value"
           value={value}
-          onChange={(_value) => onChangeCompareTo(_value)}
+          onChange={_value => onChangeCompareTo(_value)}
           ref={setFocus}
         />
       );
@@ -48,7 +48,7 @@ function compareValue(info, value, onChangeCompareTo) {
         <TextInput
           placeholder="value"
           value={value.objectId || ''}
-          onChange={(_value) => {
+          onChange={_value => {
             const obj = new Parse.Object(info.targetClass);
             obj.id = _value;
             onChangeCompareTo(Parse._encode(obj.toPointer()));
@@ -60,9 +60,9 @@ function compareValue(info, value, onChangeCompareTo) {
       return (
         <Dropdown
           value={value ? 'True' : 'False'}
-          onChange={(_value) => onChangeCompareTo(_value === 'True')}
+          onChange={_value => onChangeCompareTo(_value === 'True')}
         >
-          {['True', 'False'].map((value) => (
+          {['True', 'False'].map(value => (
             <Option value={value} key={value}>
               {value}
             </Option>
@@ -75,10 +75,8 @@ function compareValue(info, value, onChangeCompareTo) {
           placeholder="value"
           className={styles.conditionValue}
           value={value}
-          onChange={(_value) =>
-            onChangeCompareTo(
-              validateNumeric(_value) ? Number(_value) : Number(value)
-            )
+          onChange={_value =>
+            onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))
           }
           ref={setFocus}
         />
@@ -89,7 +87,7 @@ function compareValue(info, value, onChangeCompareTo) {
           fixed={true}
           className={styles.date}
           value={Parse._decode('date', value)}
-          onChange={(_value) => onChangeCompareTo(Parse._encode(_value))}
+          onChange={_value => onChangeCompareTo(Parse._encode(_value))}
           ref={setFocus}
         />
       );
@@ -137,16 +135,13 @@ export default class InstallationCondition extends React.Component {
             fixed={true}
             hideArrow={true}
             value={Constraints[this.props.currentConstraint].name}
-            onChange={(c) => this.props.onChangeConstraint(constraintLookup[c])}
+            onChange={c => this.props.onChangeConstraint(constraintLookup[c])}
             placeHolder="is"
             className={styles.conditionDropdown}
           >
             {this.props.constraints.map(function (object, i) {
               return (
-                <Option
-                  value={Constraints[object].name}
-                  key={`constraintOpt${i}`}
-                >
+                <Option value={Constraints[object].name} key={`constraintOpt${i}`}>
                   {Constraints[object].name}
                 </Option>
               );
@@ -154,21 +149,13 @@ export default class InstallationCondition extends React.Component {
           </Dropdown>
         </div>
         <div className={[styles.conditionInput, styles.valueInput].join(' ')}>
-          {compareValue(
-            this.props.compareInfo,
-            this.props.compareTo,
-            this.props.onChangeCompareTo
-          )}
+          {compareValue(this.props.compareInfo, this.props.compareTo, this.props.onChangeCompareTo)}
         </div>
       </div>
     );
 
     const labelDescription = (
-      <button
-        type="button"
-        className={styles.description}
-        onClick={this.props.onDeleteRow}
-      >
+      <button type="button" className={styles.description} onClick={this.props.onDeleteRow}>
         Remove
       </button>
     );
@@ -176,9 +163,7 @@ export default class InstallationCondition extends React.Component {
     return (
       <Field
         labelWidth={30}
-        label={
-          <Label text="Installation Condition" description={labelDescription} />
-        }
+        label={<Label text="Installation Condition" description={labelDescription} />}
         input={input}
       />
     );

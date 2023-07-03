@@ -30,13 +30,10 @@ const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = true;
 const AUDIENCE_SIZE_FETCHING_ENABLED = true;
 
 const filterFormatter = (filters, schema) => {
-  return filters.map((filter) => {
+  return filters.map(filter => {
     let type = schema[filter.get('field')];
     if (
-      Object.prototype.hasOwnProperty.call(
-        Filters.Constraints[filter.get('constraint')],
-        'field'
-      )
+      Object.prototype.hasOwnProperty.call(Filters.Constraints[filter.get('constraint')], 'field')
     ) {
       type = Filters.Constraints[filter.get('constraint')].field;
     }
@@ -102,16 +99,11 @@ export default class PushAudienceDialog extends React.Component {
       });
       return;
     }
-    const available = Filters.availableFilters(
-      this.props.schema,
-      this.state.filters
-    );
+    const available = Filters.availableFilters(this.props.schema, this.state.filters);
     const field = Object.keys(available)[0];
     this.setState(
       ({ filters }) => ({
-        filters: filters.push(
-          new Map({ field: field, constraint: available[field][0] })
-        ),
+        filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
       }),
       this.fetchAudienceSize.bind(this)
     );
@@ -180,10 +172,7 @@ export default class PushAudienceDialog extends React.Component {
     // TODO: handle misconfigured device link
     for (const index in availableDevices) {
       options.push(
-        <MultiSelectOption
-          key={`device${index}`}
-          value={availableDevices[index]}
-        >
+        <MultiSelectOption key={`device${index}`} value={availableDevices[index]}>
           {PushConstants.DEVICE_MAP[availableDevices[index]]}
         </MultiSelectOption>
       );
@@ -216,19 +205,14 @@ export default class PushAudienceDialog extends React.Component {
         <Button
           primary={true}
           progress={this.props.progress}
-          value={
-            this.props.progress ? 'Creating audience...' : 'Use this audience'
-          }
+          value={this.props.progress ? 'Creating audience...' : 'Use this audience'}
           color="blue"
           disabled={!this.valid()}
           onClick={this.props.primaryAction.bind(undefined, {
             platforms: this.state.platforms,
             name: this.state.audienceName,
             filters: this.state.filters,
-            formattedFilters: filterFormatter(
-              this.state.filters,
-              this.props.schema
-            ),
+            formattedFilters: filterFormatter(this.state.filters, this.props.schema),
             saveForFuture: this.state.saveForFuture,
           })}
         />
@@ -302,10 +286,10 @@ export default class PushAudienceDialog extends React.Component {
           <Filter
             schema={this.props.schema}
             filters={this.state.filters}
-            onChange={(filters) => {
+            onChange={filters => {
               this.setState({ filters }, this.fetchAudienceSize.bind(this));
             }}
-            renderRow={(props) => <InstallationCondition {...props} />}
+            renderRow={props => <InstallationCondition {...props} />}
           />
         </div>
         <div
@@ -315,9 +299,7 @@ export default class PushAudienceDialog extends React.Component {
           ].join(' ')}
         >
           <Button
-            value={
-              nonEmptyConditions ? 'Add another condition' : 'Add a condition'
-            }
+            value={nonEmptyConditions ? 'Add another condition' : 'Add a condition'}
             onClick={this.handleAddCondition.bind(this)}
           />
         </div>

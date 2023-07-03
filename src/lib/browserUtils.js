@@ -7,7 +7,5 @@
  */
 
 export function isChrome() {
-  return (
-    /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
-  );
+  return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 }

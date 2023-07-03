@@ -54,11 +54,8 @@ class CreateClassDialog extends React.Component {
     }
 
     const typeDropdown = (
-      <Dropdown
-        value={this.state.type}
-        onChange={(type) => this.setState({ type: type, name: '' })}
-      >
-        {availableClasses.map((t) => (
+      <Dropdown value={this.state.type} onChange={type => this.setState({ type: type, name: '' })}>
+        {availableClasses.map(t => (
           <Option key={t} value={t}>
             {t}
           </Option>
@@ -82,9 +79,7 @@ class CreateClassDialog extends React.Component {
           const type = this.state.type;
           const className = type === 'Custom' ? this.state.name : type;
           await this.props.onConfirm(className);
-          this.props.navigate(
-            `/apps/${this.props.currentAppSlug}/browser/${className}`
-          );
+          this.props.navigate(`/apps/${this.props.currentAppSlug}/browser/${className}`);
           this.props.onAddColumn();
         }}
         onConfirm={() => {
@@ -94,10 +89,7 @@ class CreateClassDialog extends React.Component {
         }}
       >
         {availableClasses.length > 1 ? (
-          <Field
-            label={<Label text="What type of class do you need?" />}
-            input={typeDropdown}
-          />
+          <Field label={<Label text="What type of class do you need?" />} input={typeDropdown} />
         ) : null}
         {this.state.type === 'Custom' ? (
           <Field
@@ -113,7 +105,7 @@ class CreateClassDialog extends React.Component {
               <TextInput
                 placeholder="Give it a good name..."
                 value={this.state.name}
-                onChange={(name) => this.setState({ name })}
+                onChange={name => this.setState({ name })}
               />
             }
           />

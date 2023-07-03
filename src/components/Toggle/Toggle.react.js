@@ -13,10 +13,7 @@ import baseStyles from 'stylesheets/base.scss';
 
 export default class Toggle extends React.Component {
   toLeft() {
-    if (
-      this.props.type === Toggle.Types.TWO_WAY ||
-      this.props.type === Toggle.Types.CUSTOM
-    ) {
+    if (this.props.type === Toggle.Types.TWO_WAY || this.props.type === Toggle.Types.CUSTOM) {
       this.props.onChange(this.props.optionLeft);
     } else {
       this.props.onChange(false);
@@ -24,10 +21,7 @@ export default class Toggle extends React.Component {
   }
 
   toRight() {
-    if (
-      this.props.type === Toggle.Types.TWO_WAY ||
-      this.props.type === Toggle.Types.CUSTOM
-    ) {
+    if (this.props.type === Toggle.Types.TWO_WAY || this.props.type === Toggle.Types.CUSTOM) {
       this.props.onChange(this.props.optionRight);
     } else {
       this.props.onChange(true);
@@ -35,10 +29,7 @@ export default class Toggle extends React.Component {
   }
 
   toggle() {
-    if (
-      this.props.type === Toggle.Types.TWO_WAY ||
-      this.props.type === Toggle.Types.CUSTOM
-    ) {
+    if (this.props.type === Toggle.Types.TWO_WAY || this.props.type === Toggle.Types.CUSTOM) {
       if (this.props.value === this.props.optionLeft) {
         this.props.onChange(this.props.optionRight);
       } else {
@@ -70,9 +61,7 @@ export default class Toggle extends React.Component {
         break;
       case Toggle.Types.TWO_WAY:
         if (!this.props.optionLeft || !this.props.optionRight) {
-          throw new Error(
-            'TWO_WAY toggle must provide optionLeft and optionRight props.'
-          );
+          throw new Error('TWO_WAY toggle must provide optionLeft and optionRight props.');
         }
         labelLeft = this.props.optionLeft;
         labelRight = this.props.optionRight;
@@ -113,11 +102,7 @@ export default class Toggle extends React.Component {
     if (this.props.switchNoMargin) {
       switchClasses.push(styles.switchNoMargin);
     }
-    const toggleClasses = [
-      styles.toggle,
-      baseStyles.unselectable,
-      fieldStyles.input,
-    ];
+    const toggleClasses = [styles.toggle, baseStyles.unselectable, fieldStyles.input];
     if (left) {
       toggleClasses.push(styles.left);
     }
@@ -125,19 +110,13 @@ export default class Toggle extends React.Component {
       toggleClasses.push(styles.darkBg);
     }
     return (
-      <div
-        className={toggleClasses.join(' ')}
-        style={this.props.additionalStyles || {}}
-      >
+      <div className={toggleClasses.join(' ')} style={this.props.additionalStyles || {}}>
         {labelLeft && (
           <span className={styles.label} onClick={this.toLeft.bind(this)}>
             {labelLeft}
           </span>
         )}
-        <span
-          className={switchClasses.join(' ')}
-          onClick={this.toggle.bind(this)}
-        ></span>
+        <span className={switchClasses.join(' ')} onClick={this.toggle.bind(this)}></span>
         {labelRight && (
           <span className={styles.label} onClick={this.toRight.bind(this)}>
             {labelRight}
@@ -166,9 +145,7 @@ Toggle.propTypes = {
     'Flag describing is toggle is colored. [For Toggle.Type.CUSTOM]'
   ),
   darkBg: PropTypes.bool,
-  additionalStyles: PropTypes.object.describe(
-    'Additional styles for Toggle component.'
-  ),
+  additionalStyles: PropTypes.object.describe('Additional styles for Toggle component.'),
 };
 
 Toggle.Types = {

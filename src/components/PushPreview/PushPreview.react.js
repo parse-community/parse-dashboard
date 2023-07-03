@@ -58,7 +58,7 @@ export default class PushPreview extends React.Component {
       this.props.audiences.data &&
       this.props.audiences.data.get('audiences')
     ) {
-      this.props.audiences.data.get('audiences').forEach((a) => {
+      this.props.audiences.data.get('audiences').forEach(a => {
         if (a.objectId === pushState.audience_id) {
           audienceName = a.name;
           count = a.size;
@@ -70,9 +70,7 @@ export default class PushPreview extends React.Component {
       <div className={styles.section}>
         <div className={styles.title}>Message</div>
         <Row label="Message:" content={pushState.data} />
-        {pushState.increment_badge ? (
-          <Row label="Badge:" content="Increment" />
-        ) : null}
+        {pushState.increment_badge ? <Row label="Badge:" content="Increment" /> : null}
       </div>
     );
     if (isExperiment && pushState.exp_type === 'message') {
@@ -83,28 +81,17 @@ export default class PushPreview extends React.Component {
           <Row label="Testing:" content="Message" />
           <Row label="Message A:" content={pushState.data1} />
           <Row label="Message B:" content={pushState.data2} />
-          {pushState.increment_badge ? (
-            <Row label="Badge:" content="Increment" />
-          ) : null}
-          <Row
-            label="Test size:"
-            content={pushState.exp_size_in_percent + '%'}
-          />
+          {pushState.increment_badge ? <Row label="Badge:" content="Increment" /> : null}
+          <Row label="Test size:" content={pushState.exp_size_in_percent + '%'} />
         </div>
       );
     }
     let expiration = 'Never';
     if (pushState.push_expires) {
       if (pushState.expiration_time_type === 'time') {
-        expiration = timeString(
-          pushState.expiration_time,
-          pushState.local_time
-        );
+        expiration = timeString(pushState.expiration_time, pushState.local_time);
       } else {
-        expiration =
-          pushState.expiration_interval_num +
-          ' ' +
-          pushState.expiration_interval_unit;
+        expiration = pushState.expiration_interval_num + ' ' + pushState.expiration_interval_unit;
       }
     }
     let timePreview = (
@@ -118,10 +105,7 @@ export default class PushPreview extends React.Component {
               : timeString(pushState.push_time_iso, pushState.local_time)
           }
         />
-        <Row
-          label="Time Zone:"
-          content={pushState.local_time ? 'User' : 'GMT'}
-        />
+        <Row label="Time Zone:" content={pushState.local_time ? 'User' : 'GMT'} />
         <Row label="Expiration:" content={expiration} />
       </div>
     );
@@ -134,36 +118,21 @@ export default class PushPreview extends React.Component {
           <Row label="Testing:" content="Time" />
           <Row
             label="Time A:"
-            content={timeString(
-              pushState.push_time_1_iso,
-              pushState.local_time
-            )}
+            content={timeString(pushState.push_time_1_iso, pushState.local_time)}
           />
           <Row
             label="Time B:"
-            content={timeString(
-              pushState.push_time_2_iso,
-              pushState.local_time
-            )}
+            content={timeString(pushState.push_time_2_iso, pushState.local_time)}
           />
-          <Row
-            label="Time Zone:"
-            content={pushState.local_time ? 'User' : 'GMT'}
-          />
+          <Row label="Time Zone:" content={pushState.local_time ? 'User' : 'GMT'} />
           <Row label="Expiration:" content={expiration} />
-          <Row
-            label="Test size:"
-            content={pushState.exp_size_in_percent + '%'}
-          />
+          <Row label="Test size:" content={pushState.exp_size_in_percent + '%'} />
         </div>
       );
     }
     let previewMessage = pushState.data;
     if (isExperiment && pushState.exp_type === 'message') {
-      previewMessage =
-        this.state.currentTest === 'Group A'
-          ? pushState.data1
-          : pushState.data2;
+      previewMessage = this.state.currentTest === 'Group A' ? pushState.data1 : pushState.data2;
     }
     let previewTime = new Date();
     if (isExperiment && pushState.exp_type === 'time') {
@@ -188,15 +157,9 @@ export default class PushPreview extends React.Component {
     if (!isExperiment && pushState.data_type === 'json') {
       previewContent = null;
     } else if (isExperiment) {
-      if (
-        this.state.currentTest === 'Group A' &&
-        pushState.data_type_1 === 'json'
-      ) {
+      if (this.state.currentTest === 'Group A' && pushState.data_type_1 === 'json') {
         previewContent = null;
-      } else if (
-        this.state.currentTest === 'Group B' &&
-        pushState.data_type_2 === 'json'
-      ) {
+      } else if (this.state.currentTest === 'Group B' && pushState.data_type_2 === 'json') {
         previewContent = null;
       }
     }
@@ -220,7 +183,7 @@ export default class PushPreview extends React.Component {
               <SegmentSelect
                 values={['iOS', 'Android', 'OS X', 'Windows']}
                 current={this.state.currentPreview}
-                onChange={(currentPreview) => this.setState({ currentPreview })}
+                onChange={currentPreview => this.setState({ currentPreview })}
               />
             </div>
           ) : null}
@@ -229,7 +192,7 @@ export default class PushPreview extends React.Component {
               <SegmentSelect
                 values={['Group A', 'Group B']}
                 current={this.state.currentTest}
-                onChange={(currentTest) => this.setState({ currentTest })}
+                onChange={currentTest => this.setState({ currentTest })}
               />
             </div>
           ) : null}

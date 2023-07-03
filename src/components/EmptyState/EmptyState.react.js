@@ -26,9 +26,7 @@ const ctaButton = (cta, action) => {
         </a>
       );
     } else {
-      return (
-        <Button value={cta} color={'blue'} primary={true} onClick={action} />
-      );
+      return <Button value={cta} color={'blue'} primary={true} onClick={action} />;
     }
   } else {
     return null;
@@ -57,9 +55,7 @@ const EmptyState = ({
 );
 
 EmptyState.propTypes = {
-  icon: PropTypes.string.describe(
-    'The name of the large icon that appears in the empty state.'
-  ),
+  icon: PropTypes.string.describe('The name of the large icon that appears in the empty state.'),
   title: PropTypes.string.describe(
     'Help text that explains why this is an empty state; ' +
       'usually because you haven\u2019t created any data here.'
@@ -72,13 +68,8 @@ EmptyState.propTypes = {
   action: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).describe(
     'An href link or a click handler that is forwarded to the CTA button.'
   ),
-  secondaryCta: PropTypes.string.describe(
-    'The text that appears in the secondary CTA button.'
-  ),
-  secondaryAction: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).describe(
+  secondaryCta: PropTypes.string.describe('The text that appears in the secondary CTA button.'),
+  secondaryAction: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).describe(
     'An href link or a click handler that is forwarded to the secondary CTA button.'
   ),
 };

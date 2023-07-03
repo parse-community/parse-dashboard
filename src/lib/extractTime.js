@@ -1,10 +1,5 @@
 export function extractPushTime(changes) {
-  const {
-    local_time: isLocalTime,
-    push_time_type,
-    push_time,
-    push_time_iso,
-  } = changes;
+  const { local_time: isLocalTime, push_time_type, push_time, push_time_iso } = changes;
 
   if (push_time_type === 'time') {
     if (isLocalTime) {

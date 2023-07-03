@@ -27,12 +27,7 @@ const AccountManager = {
     return currentUser || {};
   },
 
-  resetPasswordAndEmailAndName(
-    currentPassword,
-    newPassword,
-    newEmail,
-    newName
-  ) {
+  resetPasswordAndEmailAndName(currentPassword, newPassword, newEmail, newName) {
     const path = '/account';
     return put(path, {
       confirm_password: currentPassword,
@@ -45,7 +40,7 @@ const AccountManager = {
   createAccountKey(keyName) {
     const path = '/account/keys';
     const promise = post(path, { name: keyName });
-    promise.then((newKey) => {
+    promise.then(newKey => {
       const hiddenKey = {
         ...newKey,
         token: '\u2022\u2022' + newKey.token.substr(newKey.token.length - 4),
@@ -63,9 +58,7 @@ const AccountManager = {
     promise.then(() => {
       //TODO: delete the account key better. This currently only works because everywhere that uses
       // the account keys happens to rerender after the account keys change anyway.
-      currentUser.account_keys = currentUser.account_keys.filter(
-        (key) => key.id != id
-      );
+      currentUser.account_keys = currentUser.account_keys.filter(key => key.id != id);
     });
     return promise;
   },
@@ -74,7 +67,7 @@ const AccountManager = {
     const path = '/account/linked_accounts';
     const { xhr, promise } = abortableGet(path);
     xhrMap[xhrKey] = xhr;
-    promise.then((result) => {
+    promise.then(result => {
       this.linkedAccounts = result;
     });
     return promise;

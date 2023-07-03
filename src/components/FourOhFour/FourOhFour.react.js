@@ -48,11 +48,7 @@ class FourOhFour extends React.Component {
         <div className={styles.wrap}>
           <div className={styles.error}>
             4
-            <div
-              className={styles.emoji}
-              style={{ backgroundPosition: offset + 'px 0px' }}
-            />
-            4
+            <div className={styles.emoji} style={{ backgroundPosition: offset + 'px 0px' }} />4
           </div>
           <div className={styles.message}>Oh no, we can't find that page!</div>
 

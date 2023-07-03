@@ -113,11 +113,7 @@ export default class DateTimeEntry extends React.Component {
     }
 
     return (
-      <div
-        className={this.props.className}
-        onClick={this.toggle.bind(this)}
-        ref={this.rootRef}
-      >
+      <div className={this.props.className} onClick={this.toggle.bind(this)} ref={this.rootRef}>
         <input
           type="text"
           value={this.state.value}

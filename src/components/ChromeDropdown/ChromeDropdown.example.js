@@ -22,7 +22,7 @@ class DropdownDemo extends React.Component {
       <ChromeDropdown
         value={this.state.color}
         color={this.state.color.toLowerCase()}
-        onChange={(color) => this.setState({ color })}
+        onChange={color => this.setState({ color })}
         options={['Blue', 'Purple']}
       />
     );
@@ -42,7 +42,7 @@ class DropdownDemo2 extends React.Component {
         placeholder={'Choose a color'}
         value={this.state.color}
         color={this.state.color.toLowerCase()}
-        onChange={(color) => this.setState({ color })}
+        onChange={color => this.setState({ color })}
         options={['Blue', 'Purple']}
       />
     );
@@ -62,7 +62,7 @@ class DropdownDemo3 extends React.Component {
         placeholder={'Choose a color'}
         value={this.state.color}
         color={this.state.color}
-        onChange={(color) => this.setState({ color })}
+        onChange={color => this.setState({ color })}
         options={[
           {
             key: 'blue',

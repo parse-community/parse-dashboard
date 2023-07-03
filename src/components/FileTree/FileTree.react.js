@@ -33,7 +33,7 @@ export default class FileTree extends React.Component {
       dir = (
         <div
           className={styles.directory}
-          onClick={() => this.setState((state) => ({ open: !state.open }))}
+          onClick={() => this.setState(state => ({ open: !state.open }))}
         >
           <Icon
             width={14}
@@ -50,7 +50,7 @@ export default class FileTree extends React.Component {
     if (this.state.open) {
       const dirs = {};
       const files = [];
-      this.props.files.forEach((f) => {
+      this.props.files.forEach(f => {
         const folderEnd = f.indexOf('/');
         if (folderEnd > -1) {
           const folder = f.substr(0, folderEnd);
@@ -66,30 +66,23 @@ export default class FileTree extends React.Component {
       folders.sort();
       content = (
         <div className={styles.contents}>
-          {folders.map((f) => (
+          {folders.map(f => (
             <FileTree
               key={'dir_' + f}
               name={f}
               files={dirs[f]}
-              prefix={
-                this.props.name ? this.props.prefix + this.props.name + '/' : ''
-              }
+              prefix={this.props.name ? this.props.prefix + this.props.name + '/' : ''}
               linkPrefix={this.props.linkPrefix}
               current={this.props.current}
             />
           ))}
-          {files.map((f) => {
-            const path =
-              (this.props.name
-                ? this.props.prefix + this.props.name + '/'
-                : '') + f;
+          {files.map(f => {
+            const path = (this.props.name ? this.props.prefix + this.props.name + '/' : '') + f;
             const isCurrent = this.props.current === path;
             return (
               <Link
                 key={'f_' + f}
-                className={[styles.file, isCurrent ? styles.current : ''].join(
-                  ' '
-                )}
+                className={[styles.file, isCurrent ? styles.current : ''].join(' ')}
                 to={{ pathname: this.props.linkPrefix + path }}
               >
                 {f}

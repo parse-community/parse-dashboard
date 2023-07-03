@@ -53,9 +53,7 @@ export default class DashboardSettings extends DashboardView {
   }
 
   getColumns() {
-    const data = ColumnPreferences.getAllPreferences(
-      this.context.applicationId
-    );
+    const data = ColumnPreferences.getAllPreferences(this.context.applicationId);
     this.setState({
       copyData: {
         data: JSON.stringify(data, null, 2),
@@ -141,8 +139,7 @@ export default class DashboardSettings extends DashboardView {
   }
 
   generatePassword() {
-    const chars =
-      '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const pwordLength = 20;
     let password = '';
 
@@ -178,7 +175,7 @@ export default class DashboardSettings extends DashboardView {
             <TextInput
               value={this.state.username}
               placeholder="Username"
-              onChange={(username) => this.setState({ username })}
+              onChange={username => this.setState({ username })}
             />
           }
         />
@@ -196,11 +193,7 @@ export default class DashboardSettings extends DashboardView {
                     }
                   >
                     <Icon
-                      name={
-                        this.state.passwordHidden
-                          ? 'visibility'
-                          : 'visibility_off'
-                      }
+                      name={this.state.passwordHidden ? 'visibility' : 'visibility_off'}
                       width={18}
                       height={18}
                       fill="rgba(0,0,0,0.4)"
@@ -208,11 +201,7 @@ export default class DashboardSettings extends DashboardView {
                   </a>
                 </div>
               }
-              description={
-                <a onClick={() => this.generatePassword()}>
-                  Generate strong password
-                </a>
-              }
+              description={<a onClick={() => this.generatePassword()}>Generate strong password</a>}
             />
           }
           input={
@@ -220,7 +209,7 @@ export default class DashboardSettings extends DashboardView {
               hidden={this.state.passwordHidden}
               value={this.state.password}
               placeholder="Password"
-              onChange={(password) => this.setState({ password })}
+              onChange={password => this.setState({ password })}
             />
           }
         />
@@ -230,7 +219,7 @@ export default class DashboardSettings extends DashboardView {
             <Toggle
               value={this.state.encrypt}
               type={Toggle.Types.YES_NO}
-              onChange={(encrypt) => this.setState({ encrypt })}
+              onChange={encrypt => this.setState({ encrypt })}
             />
           }
         />
@@ -240,7 +229,7 @@ export default class DashboardSettings extends DashboardView {
             <Toggle
               value={this.state.mfa}
               type={Toggle.Types.YES_NO}
-              onChange={(mfa) => this.setState({ mfa })}
+              onChange={mfa => this.setState({ mfa })}
             />
           }
         />
@@ -250,7 +239,7 @@ export default class DashboardSettings extends DashboardView {
             input={
               <Dropdown
                 value={this.state.mfaAlgorithm}
-                onChange={(mfaAlgorithm) => this.setState({ mfaAlgorithm })}
+                onChange={mfaAlgorithm => this.setState({ mfaAlgorithm })}
               >
                 {[
                   'SHA1',
@@ -262,7 +251,7 @@ export default class DashboardSettings extends DashboardView {
                   'SHA3-256',
                   'SHA3-384',
                   'SHA3-512',
-                ].map((column) => (
+                ].map(column => (
                   <Option key={column} value={column}>
                     {column}
                   </Option>
@@ -274,45 +263,32 @@ export default class DashboardSettings extends DashboardView {
         {this.state.mfa && (
           <Field
             label={
-              <Label
-                text="MFA Digits"
-                description="How many digits long should the MFA code be"
-              />
+              <Label text="MFA Digits" description="How many digits long should the MFA code be" />
             }
             input={
               <TextInput
                 value={`${this.state.mfaDigits}`}
                 placeholder="6"
-                onChange={(mfaDigits) => this.setState({ mfaDigits })}
+                onChange={mfaDigits => this.setState({ mfaDigits })}
               />
             }
           />
         )}
         {this.state.mfa && (
           <Field
-            label={
-              <Label
-                text="MFA Period"
-                description="How many long should the MFA last for"
-              />
-            }
+            label={<Label text="MFA Period" description="How many long should the MFA last for" />}
             input={
               <TextInput
                 value={`${this.state.mfaPeriod}`}
                 placeholder="30"
-                onChange={(mfaPeriod) => this.setState({ mfaPeriod })}
+                onChange={mfaPeriod => this.setState({ mfaPeriod })}
               />
             }
           />
         )}
         <Field
           input={
-            <Button
-              color="blue"
-              value="Create"
-              width="120px"
-              onClick={() => this.createUser()}
-            />
+            <Button color="blue" value="Create" width="120px" onClick={() => this.createUser()} />
           }
         />
       </Fieldset>
@@ -327,17 +303,13 @@ export default class DashboardSettings extends DashboardView {
             color="blue"
             value="Copy"
             width="120px"
-            onClick={() =>
-              this.copy(this.state.copyData.data, this.state.copyData.type)
-            }
+            onClick={() => this.copy(this.state.copyData.data, this.state.copyData.type)}
           />
           <Button
             primary={true}
             value="Done"
             width="120px"
-            onClick={() =>
-              this.setState({ copyData: { data: '', show: false } })
-            }
+            onClick={() => this.setState({ copyData: { data: '', show: false } })}
           />
         </div>
       </div>
@@ -346,9 +318,7 @@ export default class DashboardSettings extends DashboardView {
       <div className={styles.userData}>
         Add the following data to your Parse Dashboard configuration "users":
         {this.state.encrypt && (
-          <div>
-            Make sure the dashboard option useEncryptedPasswords is set to true.
-          </div>
+          <div>Make sure the dashboard option useEncryptedPasswords is set to true.</div>
         )}
         <div className={styles.newUser}>
           <CodeSnippet source={this.state.newUser.data} language="json" />
@@ -395,23 +365,11 @@ export default class DashboardSettings extends DashboardView {
         <Fieldset legend="Dashboard Configuration">
           <Field
             label={<Label text="Export Column Preferences" />}
-            input={
-              <FormButton
-                color="blue"
-                value="Export"
-                onClick={() => this.getColumns()}
-              />
-            }
+            input={<FormButton color="blue" value="Export" onClick={() => this.getColumns()} />}
           />
           <Field
             label={<Label text="Export Class Preferences" />}
-            input={
-              <FormButton
-                color="blue"
-                value="Export"
-                onClick={() => this.getClasses()}
-              />
-            }
+            input={<FormButton color="blue" value="Export" onClick={() => this.getClasses()} />}
           />
           <Field
             label={<Label text="Create New User" />}

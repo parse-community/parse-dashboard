@@ -26,7 +26,5 @@ export default Tooltip;
 
 Tooltip.propTypes = {
   value: PropTypes.node.isRequired.describe('The tooltip text.'),
-  children: PropTypes.node.describe(
-    'The content that should reveal a tooltip when hovered.'
-  ),
+  children: PropTypes.node.describe('The content that should reveal a tooltip when hovered.'),
 };

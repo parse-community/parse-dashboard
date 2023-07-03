@@ -21,10 +21,7 @@ class ApiConsole extends DashboardView {
 
   renderSidebar() {
     const { pathname } = this.props.location;
-    const current = pathname.substr(
-      pathname.lastIndexOf('/') + 1,
-      pathname.length - 1
-    );
+    const current = pathname.substr(pathname.lastIndexOf('/') + 1, pathname.length - 1);
     return (
       <CategoryList
         current={current}

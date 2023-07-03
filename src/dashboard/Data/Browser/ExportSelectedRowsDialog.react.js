@@ -47,9 +47,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
 
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${
-      sizes[i]
-    }`;
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`;
   }
 
   render() {
@@ -77,9 +75,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
         confirmText="Export"
         cancelText="Cancel"
         onCancel={this.props.onCancel}
-        onConfirm={() =>
-          this.props.onConfirm(this.state.exportType, this.state.indentation)
-        }
+        onConfirm={() => this.props.onConfirm(this.state.exportType, this.state.indentation)}
       >
         {this.props.selection['*'] && (
           <div className={styles.row}>
@@ -89,15 +85,12 @@ export default class ExportSelectedRowsDialog extends React.Component {
                 <span className={styles.label}>
                   Estimated row count: {this.props.count}
                   <br />
-                  Estimated export size:{' '}
-                  {this.formatBytes(fileSize * this.props.count)}
+                  Estimated export size: {this.formatBytes(fileSize * this.props.count)}
                   <br />
                   <br />
-                  ⚠️ Exporting all rows may severely impact server or database
-                  resources.
+                  ⚠️ Exporting all rows may severely impact server or database resources.
                   <br />
-                  Large datasets are exported as multiple files of up to 1 GB
-                  each.
+                  Large datasets are exported as multiple files of up to 1 GB each.
                 </span>
               }
             />
@@ -108,7 +101,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
           input={
             <Dropdown
               value={this.state.exportType}
-              onChange={(exportType) => this.setState({ exportType })}
+              onChange={exportType => this.setState({ exportType })}
             >
               <Option value=".csv">.csv</Option>
               <Option value=".json">.json</Option>
@@ -122,7 +115,7 @@ export default class ExportSelectedRowsDialog extends React.Component {
               <Toggle
                 value={this.state.indentation}
                 type={Toggle.Types.YES_NO}
-                onChange={(indentation) => {
+                onChange={indentation => {
                   this.setState({ indentation });
                 }}
               />
@@ -132,16 +125,13 @@ export default class ExportSelectedRowsDialog extends React.Component {
         {this.props.selection['*'] && (
           <Field
             label={
-              <Label
-                text="Confirm this action"
-                description='Enter "export all" to continue.'
-              />
+              <Label text="Confirm this action" description='Enter "export all" to continue.' />
             }
             input={
               <TextInput
                 placeholder="export all"
                 value={this.state.confirmation}
-                onChange={(confirmation) => this.setState({ confirmation })}
+                onChange={confirmation => this.setState({ confirmation })}
               />
             }
           />

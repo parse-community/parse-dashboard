@@ -100,14 +100,9 @@ export function renderExpirationContent(fields, setField) {
           <DateTimeInput
             local={fields.local_time}
             value={fields.expiration_time_iso}
-            onChange={(value) => {
+            onChange={value => {
               setField('expiration_time_iso', value);
-              setPushTimeField(
-                setField,
-                'expiration_time',
-                value,
-                fields.local_time
-              );
+              setPushTimeField(setField, 'expiration_time', value, fields.local_time);
             }}
           />
         }
@@ -149,12 +144,9 @@ export function renderExpirationContent(fields, setField) {
             <Dropdown
               width="60%"
               value={fields.expiration_interval_unit}
-              onChange={(value) => {
+              onChange={value => {
                 //handle case when interval num is out of expected range
-                if (
-                  value === 'hours' &&
-                  Number(fields.expiration_interval_num) > 24
-                ) {
+                if (value === 'hours' && Number(fields.expiration_interval_num) > 24) {
                   setField('expiration_interval_num', '24');
                 }
                 setField('expiration_interval_unit', value);

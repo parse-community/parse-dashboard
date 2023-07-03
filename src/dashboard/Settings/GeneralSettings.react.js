@@ -41,11 +41,10 @@ import { withRouter } from 'lib/withRouter';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
-const numJobsFromRequestLimit = (limit) => Math.floor((limit - 10) / 20);
+const numJobsFromRequestLimit = limit => Math.floor((limit - 10) / 20);
 
 const CurrentPlan = ({ requestLimit }) => {
-  const costString =
-    requestLimit === 30 ? 'Free' : '$' + ((requestLimit - 30) * 10).toString();
+  const costString = requestLimit === 30 ? 'Free' : '$' + ((requestLimit - 30) * 10).toString();
   return (
     <div>
       <div className={styles.cost}>{costString}</div>
@@ -82,18 +81,12 @@ const CurrentPlanFields = ({ visible, requestLimit, setRequestLimit }) =>
             color="#169CEE"
             value={requestLimit}
             track={true}
-            units={(value) => {
+            units={value => {
               const numJobs = numJobsFromRequestLimit(value);
-              return (
-                value +
-                'req/s & ' +
-                numJobs +
-                ' job' +
-                (numJobs == 1 ? '' : 's')
-              );
+              return value + 'req/s & ' + numJobs + ' job' + (numJobs == 1 ? '' : 's');
             }}
             width={220}
-            onChange={(limit) => {
+            onChange={limit => {
               if (limit < 30) {
                 limit = 30;
               }
@@ -128,10 +121,7 @@ const AppInformationFields = ({
   otherURL,
   setOtherURL,
 }) => (
-  <Fieldset
-    legend="App Information"
-    description="Update general information about your app."
-  >
+  <Fieldset legend="App Information" description="Update general information about your app.">
     <Field
       labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
       label={<Label text="App name" />}
@@ -145,26 +135,14 @@ const AppInformationFields = ({
           description="Flip this switch when you launch. This will help us track your traffic and allow us to properly scale your app."
         />
       }
-      input={
-        <Toggle
-          value={inProduction}
-          type={Toggle.Types.YES_NO}
-          onChange={setInProduction}
-        />
-      }
+      input={<Toggle value={inProduction} type={Toggle.Types.YES_NO} onChange={setInProduction} />}
     />
     {inProduction ? (
       <div>
         <Field
           labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
           label={<Label text="iTunes App Store URL" />}
-          input={
-            <TextInput
-              value={iTunesURL}
-              placeholder="Where is it?"
-              onChange={setiTunesURL}
-            />
-          }
+          input={<TextInput value={iTunesURL} placeholder="Where is it?" onChange={setiTunesURL} />}
         />
         <Field
           labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
@@ -191,24 +169,12 @@ const AppInformationFields = ({
         <Field
           labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
           label={<Label text="Web App URL" />}
-          input={
-            <TextInput
-              value={webAppURL}
-              placeholder="Where is it?"
-              onChange={setWebAppURL}
-            />
-          }
+          input={<TextInput value={webAppURL} placeholder="Where is it?" onChange={setWebAppURL} />}
         />
         <Field
           labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
           label={<Label text="Other URL" />}
-          input={
-            <TextInput
-              value={otherURL}
-              placeholder="Where is it?"
-              onChange={setOtherURL}
-            />
-          }
+          input={<TextInput value={otherURL} placeholder="Where is it?" onChange={setOtherURL} />}
         />
       </div>
     ) : null}
@@ -265,9 +231,7 @@ const ManageAppFields = ({
             description="Move your data and queries to your own database."
           />
         }
-        input={
-          <FormButton color="red" onClick={startMigration} value="Migrate" />
-        }
+        input={<FormButton color="red" onClick={startMigration} value="Migrate" />}
       />
     );
   } else if (hasInProgressMigration) {
@@ -275,10 +239,7 @@ const ManageAppFields = ({
       <Field
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
         label={
-          <Label
-            text="Migrate to external database"
-            description="View your migration progress."
-          />
+          <Label text="Migrate to external database" description="View your migration progress." />
         }
         input={
           <FormButton
@@ -316,10 +277,7 @@ const ManageAppFields = ({
         key="new"
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
         label={
-          <Label
-            text="Change connection string"
-            description="Upgrate or change your database."
-          />
+          <Label text="Change connection string" description="Upgrate or change your database." />
         }
         input={
           <FormButton
@@ -333,10 +291,7 @@ const ManageAppFields = ({
     ];
   }
   return (
-    <Fieldset
-      legend="App Management"
-      description="These options will affect your entire app."
-    >
+    <Fieldset legend="App Management" description="These options will affect your entire app.">
       <Field
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
         label={
@@ -360,10 +315,7 @@ const ManageAppFields = ({
       <Field
         labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
         label={
-          <Label
-            text="Export app data"
-            description={'We firmly believe in data portability.'}
-          />
+          <Label text="Export app data" description={'We firmly believe in data portability.'} />
         }
         //TODO: Add export progress view when designs are ready.
         input={<FormButton onClick={exportData} value="Export Data" />}
@@ -392,8 +344,7 @@ const ManageAppFields = ({
       {cloneAppMessage ? (
         <FormNote show={true} color="green">
           <div>
-            {cloneAppMessage} Check out the progress on your{' '}
-            <Link to="/apps">apps page</Link>!
+            {cloneAppMessage} Check out the progress on your <Link to="/apps">apps page</Link>!
           </div>
         </FormNote>
       ) : null}
@@ -421,9 +372,7 @@ const ManageAppFields = ({
           }
         />
       ) : null}
-      {transferAppMessage ? (
-        <FormNote color="green">{transferAppMessage}</FormNote>
-      ) : null}
+      {transferAppMessage ? <FormNote color="green">{transferAppMessage}</FormNote> : null}
       {!isCollaborator ? (
         <Field
           labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
@@ -438,13 +387,7 @@ const ManageAppFields = ({
               }
             />
           }
-          input={
-            <FormButton
-              color="red"
-              value="Delete this app"
-              onClick={deleteApp}
-            />
-          }
+          input={<FormButton color="red" value="Delete this app" onClick={deleteApp} />}
         />
       ) : null}
     </Fieldset>
@@ -499,17 +442,14 @@ class GeneralSettings extends DashboardView {
       <Field
         labelWidth={60}
         label={
-          <Label
-            text="Your password"
-            description={'We want to make sure it\u2019s really you.'}
-          />
+          <Label text="Your password" description={'We want to make sure it\u2019s really you.'} />
         }
         input={
           <TextInput
             hidden={true}
             value={this.state.password}
             placeholder="Password"
-            onChange={(newValue) => {
+            onChange={newValue => {
               this.setState({ password: newValue });
             }}
           />
@@ -534,8 +474,7 @@ class GeneralSettings extends DashboardView {
         type={Modal.Types.DANGER}
         open={this.state.showMigrateAppModal}
         submitText={
-          this.state.migrationWarnings &&
-          this.state.migrationWarnings.length > 0
+          this.state.migrationWarnings && this.state.migrationWarnings.length > 0
             ? 'Migrate anyway'
             : 'Migrate'
         }
@@ -546,8 +485,8 @@ class GeneralSettings extends DashboardView {
           const promise = validateAndSubmitConnectionString(
             this.state.migrationMongoURL,
             this.state.migrationWarnings,
-            (warnings) => this.setState({ migrationWarnings: warnings }),
-            (connectionString) => this.context.beginMigration(connectionString)
+            warnings => this.setState({ migrationWarnings: warnings }),
+            connectionString => this.context.beginMigration(connectionString)
           );
           promise.catch(({ error }) =>
             this.setState({
@@ -557,9 +496,7 @@ class GeneralSettings extends DashboardView {
           return promise;
         }}
         onClose={closeModalWithConnectionString}
-        onSuccess={() =>
-          this.props.navigate(`/apps/${this.context.slug}/migration`)
-        }
+        onSuccess={() => this.props.navigate(`/apps/${this.context.slug}/migration`)}
         clearFields={() =>
           this.setState({
             migrationMongoURL: '',
@@ -574,11 +511,8 @@ class GeneralSettings extends DashboardView {
               text="Your database connection string."
               description={
                 <span>
-                  This database must be prepared to handle all of your app's
-                  queries and data. Read{' '}
-                  <a href={getSiteDomain() + '/docs/server/guide#migrating'}>
-                    our migration guide
-                  </a>{' '}
+                  This database must be prepared to handle all of your app's queries and data. Read{' '}
+                  <a href={getSiteDomain() + '/docs/server/guide#migrating'}>our migration guide</a>{' '}
                   to learn how to create a database.
                 </span>
               }
@@ -589,7 +523,7 @@ class GeneralSettings extends DashboardView {
               height={100}
               placeholder="mongodb://..."
               value={this.state.migrationMongoURL}
-              onChange={(value) =>
+              onChange={value =>
                 this.setState({
                   migrationMongoURL: value,
                   migrationWarnings: [],
@@ -599,7 +533,7 @@ class GeneralSettings extends DashboardView {
             />
           }
         />
-        {this.state.migrationWarnings.map((warning) => (
+        {this.state.migrationWarnings.map(warning => (
           <FormNote key={warning} show={true} color="orange">
             {warning}
           </FormNote>
@@ -610,17 +544,14 @@ class GeneralSettings extends DashboardView {
     const changeConnectionStringModal = (
       <FormModal
         title="Change Connection String"
-        subtitle={
-          'Immediately switch your connection string for your app\'s database.'
-        }
+        subtitle={'Immediately switch your connection string for your app\'s database.'}
         open={this.state.showChangeConnectionStringModal}
         onSubmit={() => {
           const promise = validateAndSubmitConnectionString(
             this.state.newConnectionString,
             this.state.migrationWarnings,
-            (warnings) => this.setState({ migrationWarnings: warnings }),
-            (connectionString) =>
-              this.context.changeConnectionString(connectionString)
+            warnings => this.setState({ migrationWarnings: warnings }),
+            connectionString => this.context.changeConnectionString(connectionString)
           );
           promise.catch(({ error }) =>
             this.setState({
@@ -632,8 +563,7 @@ class GeneralSettings extends DashboardView {
         onClose={closeModalWithConnectionString}
         type={Modal.Types.DANGER}
         submitText={
-          this.state.migrationWarnings &&
-          this.state.migrationWarnings.length > 0
+          this.state.migrationWarnings && this.state.migrationWarnings.length > 0
             ? 'Change anyway'
             : 'Change'
         }
@@ -659,7 +589,7 @@ class GeneralSettings extends DashboardView {
             <TextInput
               placeholder="mongodb://..."
               value={this.state.newConnectionString}
-              onChange={(value) =>
+              onChange={value =>
                 this.setState({
                   newConnectionString: value,
                   migrationWarnings: [],
@@ -669,7 +599,7 @@ class GeneralSettings extends DashboardView {
             />
           }
         />
-        {this.state.migrationWarnings.map((warning) => (
+        {this.state.migrationWarnings.map(warning => (
           <FormNote key={warning} show={true} color="orange">
             {warning}
           </FormNote>
@@ -688,8 +618,7 @@ class GeneralSettings extends DashboardView {
         submitText="Transfer"
         inProgressText={'Transferring\u2026'}
         enabled={
-          (this.state.password.length > 0 ||
-            !AccountManager.currentUser().has_password) &&
+          (this.state.password.length > 0 || !AccountManager.currentUser().has_password) &&
           this.state.transferNewOwner.length > 0
         }
         onSubmit={() =>
@@ -700,9 +629,7 @@ class GeneralSettings extends DashboardView {
           )
         }
         onClose={() => this.setState({ showTransferAppModal: false })}
-        onSuccess={({ message }) =>
-          this.setState({ transferAppSuccessMessage: message })
-        }
+        onSuccess={({ message }) => this.setState({ transferAppSuccessMessage: message })}
         clearFields={() =>
           this.setState({
             password: '',
@@ -722,20 +649,13 @@ class GeneralSettings extends DashboardView {
             <Dropdown
               fixed={true}
               value={this.state.transferNewOwner}
-              onChange={(collaborator) =>
-                this.setState({ transferNewOwner: collaborator })
-              }
+              onChange={collaborator => this.setState({ transferNewOwner: collaborator })}
             >
-              {((this.props.initialFields || {}).collaborators || []).map(
-                (collaborator) => (
-                  <DropdownOption
-                    key={collaborator.id.toString()}
-                    value={collaborator.userEmail}
-                  >
-                    {collaborator.userEmail}
-                  </DropdownOption>
-                )
-              )}
+              {((this.props.initialFields || {}).collaborators || []).map(collaborator => (
+                <DropdownOption key={collaborator.id.toString()} value={collaborator.userEmail}>
+                  {collaborator.userEmail}
+                </DropdownOption>
+              ))}
             </Dropdown>
           }
         />
@@ -754,9 +674,7 @@ class GeneralSettings extends DashboardView {
         submitText="Delete"
         inProgressText={'Deleting\u2026'}
         enabled={this.state.password.length > 0}
-        onSubmit={() =>
-          AppsManager.deleteApp(this.context.slug, this.state.password)
-        }
+        onSubmit={() => AppsManager.deleteApp(this.context.slug, this.state.password)}
         onSuccess={() => this.props.navigate('/apps')}
         onClose={() => this.setState({ showDeleteAppModal: false })}
         clearFields={() => this.setState({ password: '' })}
@@ -790,12 +708,7 @@ class GeneralSettings extends DashboardView {
         clearFields={() =>
           this.setState({
             cloneAppName: '',
-            cloneOptionsSelection: [
-              'schema',
-              'app_settings',
-              'config',
-              'cloud_code',
-            ],
+            cloneOptionsSelection: ['schema', 'app_settings', 'config', 'cloud_code'],
           })
         }
       >
@@ -805,7 +718,7 @@ class GeneralSettings extends DashboardView {
           input={
             <TextInput
               value={this.state.cloneAppName}
-              onChange={(value) => this.setState({ cloneAppName: value })}
+              onChange={value => this.setState({ cloneAppName: value })}
             />
           }
         />
@@ -816,42 +729,24 @@ class GeneralSettings extends DashboardView {
             <MultiSelect
               fixed={true}
               value={this.state.cloneOptionsSelection}
-              onChange={(options) =>
-                this.setState({ cloneOptionsSelection: options })
-              }
+              onChange={options => this.setState({ cloneOptionsSelection: options })}
             >
               <MultiSelectOption value="schema">Schema</MultiSelectOption>
-              <MultiSelectOption value="app_settings">
-                App Settings
-              </MultiSelectOption>
+              <MultiSelectOption value="app_settings">App Settings</MultiSelectOption>
               <MultiSelectOption value="config">Config</MultiSelectOption>
-              <MultiSelectOption value="cloud_code">
-                Cloud Code
-              </MultiSelectOption>
-              <MultiSelectOption value="background_jobs">
-                Background Jobs
-              </MultiSelectOption>
+              <MultiSelectOption value="cloud_code">Cloud Code</MultiSelectOption>
+              <MultiSelectOption value="background_jobs">Background Jobs</MultiSelectOption>
             </MultiSelect>
           }
         />
       </FormModal>
     );
 
-    const iosUrl = this.props.initialFields.urls.find(
-      ({ platform }) => platform === 'ios'
-    );
-    const anrdoidUrl = this.props.initialFields.urls.find(
-      ({ platform }) => platform === 'android'
-    );
-    const windowsUrl = this.props.initialFields.urls.find(
-      ({ platform }) => platform === 'win'
-    );
-    const webUrl = this.props.initialFields.urls.find(
-      ({ platform }) => platform === 'web'
-    );
-    const otherURL = this.props.initialFields.urls.find(
-      ({ platform }) => platform === 'other'
-    );
+    const iosUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'ios');
+    const anrdoidUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'android');
+    const windowsUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'win');
+    const webUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'web');
+    const otherURL = this.props.initialFields.urls.find(({ platform }) => platform === 'other');
 
     const initialFields = {
       requestLimit: this.props.initialFields.pricing_plan.request_limit,
@@ -883,16 +778,14 @@ class GeneralSettings extends DashboardView {
             <strong>
               {joinWithFinal(
                 '',
-                this.state.removedCollaborators.map(
-                  (c) => c.userName || c.userEmail
-                ),
+                this.state.removedCollaborators.map(c => c.userName || c.userEmail),
                 ', ',
                 ' and '
               )}
             </strong>{' '}
-            from this app. If they had saved the master key, they may still have
-            access via an SDK or the API. To be sure, you can reset your master
-            key in the Keys section of app settings.
+            from this app. If they had saved the master key, they may still have access via an SDK
+            or the API. To be sure, you can reset your master key in the Keys section of app
+            settings.
           </span>
         </Modal>
       ) : null;
@@ -907,10 +800,7 @@ class GeneralSettings extends DashboardView {
         allCollabs,
         compareCollaborators
       );
-      if (
-        addedCollaborators.length === 0 &&
-        removedCollaborators.length === 0
-      ) {
+      if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
         //This is neccessary because the footer computes whether or not show a change by reference equality.
         allCollabs = initialFields.collaborators;
       }
@@ -922,26 +812,18 @@ class GeneralSettings extends DashboardView {
         <FlowView
           initialFields={initialFields}
           footerContents={({ changes }) =>
-            renderFlowFooterChanges(
-              changes,
-              initialFields,
-              generalFieldsOptions
-            )
+            renderFlowFooterChanges(changes, initialFields, generalFieldsOptions)
           }
           onSubmit={({ changes }) => {
             const promiseList = [];
             if (changes.requestLimit !== undefined) {
-              promiseList.push(
-                this.context.setRequestLimit(changes.requestLimit)
-              );
+              promiseList.push(this.context.setRequestLimit(changes.requestLimit));
             }
             if (changes.appName !== undefined) {
               promiseList.push(this.context.setAppName(changes.appName));
             }
             if (changes.inProduction !== undefined) {
-              promiseList.push(
-                this.context.setInProduction(changes.inProduction)
-              );
+              promiseList.push(this.context.setInProduction(changes.inProduction));
             }
 
             const addedCollaborators = setDifference(
@@ -970,11 +852,9 @@ class GeneralSettings extends DashboardView {
               otherURL: 'other',
             };
 
-            Object.keys(urlKeys).forEach((key) => {
+            Object.keys(urlKeys).forEach(key => {
               if (changes[key] !== undefined) {
-                promiseList.push(
-                  this.context.setAppStoreURL(urlKeys[key], changes[key])
-                );
+                promiseList.push(this.context.setAppStoreURL(urlKeys[key], changes[key]));
               }
             });
 
@@ -983,7 +863,7 @@ class GeneralSettings extends DashboardView {
                 this.forceUpdate(); //Need to forceUpdate to see changes applied to source ParseApp
                 this.setState({ removedCollaborators: removedCollaborators });
               })
-              .catch((errors) => {
+              .catch(errors => {
                 return Promise.reject({
                   error: unique(pluck(errors, 'error')).join(' '),
                 });
@@ -991,8 +871,7 @@ class GeneralSettings extends DashboardView {
           }}
           renderForm={({ fields, setField }) => {
             const isCollaborator =
-              AccountManager.currentUser().email !==
-              this.props.initialFields.owner_email;
+              AccountManager.currentUser().email !== this.props.initialFields.owner_email;
             return (
               <div className={settingsStyles.settings_page}>
                 <CurrentPlanFields
@@ -1010,10 +889,7 @@ class GeneralSettings extends DashboardView {
                   googlePlayURL={fields.googlePlayURL}
                   setGooglePlayURL={setField.bind(this, 'googlePlayURL')}
                   windowsAppStoreURL={fields.windowsAppStoreURL}
-                  setWindowsAppStoreURL={setField.bind(
-                    this,
-                    'windowsAppStoreURL'
-                  )}
+                  setWindowsAppStoreURL={setField.bind(this, 'windowsAppStoreURL')}
                   webAppURL={fields.webAppURL}
                   setWebAppURL={setField.bind(this, 'webAppURL')}
                   otherURL={fields.otherURL}
@@ -1024,10 +900,7 @@ class GeneralSettings extends DashboardView {
                   ownerEmail={this.props.initialFields.owner_email}
                   viewerEmail={AccountManager.currentUser().email}
                   addCollaborator={setCollaborators.bind(undefined, setField)}
-                  removeCollaborator={setCollaborators.bind(
-                    undefined,
-                    setField
-                  )}
+                  removeCollaborator={setCollaborators.bind(undefined, setField)}
                 />
                 <ManageAppFields
                   mongoURL={fields.mongoURL}
@@ -1036,21 +909,19 @@ class GeneralSettings extends DashboardView {
                   }
                   isCollaborator={isCollaborator}
                   hasCollaborators={initialFields.collaborators.length > 0}
-                  startMigration={() =>
-                    this.setState({ showMigrateAppModal: true })
-                  }
+                  startMigration={() => this.setState({ showMigrateAppModal: true })}
                   hasInProgressMigration={!!this.context.migration}
                   appSlug={this.context.slug}
                   cleanUpFiles={() =>
                     this.context
                       .cleanUpFiles()
-                      .then((result) => {
+                      .then(result => {
                         this.setState({
                           cleanupFilesMessage: result.notice,
                           cleanupNoteColor: 'orange',
                         });
                       })
-                      .catch((e) => {
+                      .catch(e => {
                         this.setState({
                           cleanupFilesMessage: e.error,
                           cleanupNoteColor: 'red',
@@ -1062,13 +933,13 @@ class GeneralSettings extends DashboardView {
                   exportData={() =>
                     this.context
                       .exportData()
-                      .then((result) => {
+                      .then(result => {
                         this.setState({
                           exportDataMessage: result.notice,
                           exportDataColor: 'orange',
                         });
                       })
-                      .catch((e) => {
+                      .catch(e => {
                         this.setState({
                           exportDataMessage: e.error,
                           exportDataColor: 'red',
@@ -1109,8 +980,7 @@ class GeneralSettings extends DashboardView {
   }
 }
 
-const compareCollaborators = (collab1, collab2) =>
-  collab1.userEmail === collab2.userEmail;
+const compareCollaborators = (collab1, collab2) => collab1.userEmail === collab2.userEmail;
 
 const generalFieldsOptions = {
   requestLimit: {

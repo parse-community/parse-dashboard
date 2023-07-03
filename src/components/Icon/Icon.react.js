@@ -26,12 +26,8 @@ const Icon = ({ name, fill, width, height }) => {
 export default Icon;
 
 Icon.propTypes = {
-  name: PropTypes.string.isRequired.describe(
-    'The icon name. This will be the name found in the '
-  ),
+  name: PropTypes.string.isRequired.describe('The icon name. This will be the name found in the '),
   width: PropTypes.number.isRequired.describe('The icon width, in pixels.'),
   height: PropTypes.number.isRequired.describe('The icon height, in pixels.'),
-  fill: PropTypes.string.describe(
-    'A valid color, used as the fill property for the SVG.'
-  ),
+  fill: PropTypes.string.describe('A valid color, used as the fill property for the SVG.'),
 };

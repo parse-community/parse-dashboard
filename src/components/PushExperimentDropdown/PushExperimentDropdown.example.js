@@ -23,7 +23,7 @@ class PushExperimentDropdownDemo extends React.Component {
         placeholder="Choose a group"
         value={this.state.color}
         color={this.state.color.toLowerCase()}
-        onChange={(color) => this.setState({ color })}
+        onChange={color => this.setState({ color })}
         options={[
           { key: 'Group A (winner)', style: { color: 'green' } },
           { key: 'Group B (loser)', style: { color: 'red' } },

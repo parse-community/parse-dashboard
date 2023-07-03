@@ -13,12 +13,7 @@ import styles from 'components/LoaderContainer/LoaderContainer.scss';
 
 //Loader wrapper component
 //Wraps child component with a layer and <Loader/> centered
-const LoaderContainer = ({
-  loading,
-  hideAnimation,
-  children,
-  solid = true,
-}) => (
+const LoaderContainer = ({ loading, hideAnimation, children, solid = true }) => (
   <div className={styles.loaderContainer}>
     <div className={styles.children}>{children}</div>
     <div
@@ -28,9 +23,7 @@ const LoaderContainer = ({
         solid ? styles.solid : '',
       ].join(' ')}
     >
-      {hideAnimation || !loading ? null : (
-        <Loader className={baseStyles.center} />
-      )}
+      {hideAnimation || !loading ? null : <Loader className={baseStyles.center} />}
     </div>
   </div>
 );
@@ -41,9 +34,7 @@ LoaderContainer.propTypes = {
   loading: PropTypes.bool.describe(
     'State of the loader (true displays loader, false hides loader).'
   ),
-  hideAnimation: PropTypes.bool.describe(
-    'Whether to hide the animation within the container.'
-  ),
+  hideAnimation: PropTypes.bool.describe('Whether to hide the animation within the container.'),
   solid: PropTypes.bool.describe(
     'Optional flag to have an solid background. Defaults to true. If false an opacity of 70% is used.'
   ),

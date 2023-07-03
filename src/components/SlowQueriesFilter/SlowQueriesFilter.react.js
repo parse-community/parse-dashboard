@@ -43,10 +43,7 @@ export default class SlowQueriesFilter extends React.Component {
       popover = (
         <Popover fixed={false} position={position}>
           <div className={popoverStyle.join(' ')}>
-            <div
-              className={styles.title}
-              onClick={() => this.setState({ open: false })}
-            >
+            <div className={styles.title} onClick={() => this.setState({ open: false })}>
               <Icon name="filter-solid" width={14} height={14} />
               <span>Filter</span>
             </div>
@@ -56,19 +53,19 @@ export default class SlowQueriesFilter extends React.Component {
                   color={active ? 'blue' : 'purple'}
                   value={className || 'Class'}
                   options={this.props.classNameOptions}
-                  onChange={(className) => this.props.onChange({ className })}
+                  onChange={className => this.props.onChange({ className })}
                 />
                 <ChromeDropdown
                   color={active ? 'blue' : 'purple'}
                   value={os || 'OS'}
                   options={this.props.osOptions}
-                  onChange={(os) => this.props.onChange({ os })}
+                  onChange={os => this.props.onChange({ os })}
                 />
                 <ChromeDropdown
                   color={active ? 'blue' : 'purple'}
                   value={version || 'Version'}
                   options={this.props.versionOptions}
-                  onChange={(version) => this.props.onChange({ version })}
+                  onChange={version => this.props.onChange({ version })}
                 />
               </div>
             </div>
@@ -82,10 +79,7 @@ export default class SlowQueriesFilter extends React.Component {
     }
     return (
       <div className={styles.wrap} ref={this.wrapRef}>
-        <div
-          className={buttonStyle.join(' ')}
-          onClick={() => this.setState({ open: true })}
-        >
+        <div className={buttonStyle.join(' ')} onClick={() => this.setState({ open: true })}>
           <Icon name="filter-solid" width={14} height={14} />
           <span>Filter</span>
         </div>
@@ -99,14 +93,8 @@ SlowQueriesFilter.propTypes = {
   className: PropTypes.string.describe('Filtered class name.'),
   os: PropTypes.string.describe('Filtered OS.'),
   version: PropTypes.string.describe('Filtered app version.'),
-  classNameOptions: PropTypes.arrayOf(PropTypes.string).describe(
-    'Options for class names.'
-  ),
+  classNameOptions: PropTypes.arrayOf(PropTypes.string).describe('Options for class names.'),
   osOptions: PropTypes.arrayOf(PropTypes.string).describe('Options for OSes.'),
-  versionOptions: PropTypes.arrayOf(PropTypes.string).describe(
-    'Options for app versions.'
-  ),
-  onChange: PropTypes.func.isRequired.describe(
-    'Function to be called when the filter is changed.'
-  ),
+  versionOptions: PropTypes.arrayOf(PropTypes.string).describe('Options for app versions.'),
+  onChange: PropTypes.func.isRequired.describe('Function to be called when the filter is changed.'),
 };

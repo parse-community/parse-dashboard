@@ -58,7 +58,7 @@ export default class NumberEditor extends React.Component {
   }
 
   render() {
-    const onChange = (e) => {
+    const onChange = e => {
       const value = e.target.value;
       this.setState({
         value: validateNumeric(value) ? value : this.state.value,
@@ -66,11 +66,7 @@ export default class NumberEditor extends React.Component {
     };
     return (
       <div style={{ width: this.props.width }} className={styles.editor}>
-        <input
-          ref={this.inputRef}
-          value={this.state.value}
-          onChange={onChange}
-        />
+        <input ref={this.inputRef} value={this.state.value} onChange={onChange} />
       </div>
     );
   }

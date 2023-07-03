@@ -58,9 +58,7 @@ export const demos = [
     render: () => (
       <div style={{ width: 500, margin: '0 auto' }}>
         <Field
-          label={
-            <Label text="What are your favorite colors with new end delineator?" />
-          }
+          label={<Label text="What are your favorite colors with new end delineator?" />}
           input={<MultiSelectDemo endDelineator="or" />}
         />
       </div>

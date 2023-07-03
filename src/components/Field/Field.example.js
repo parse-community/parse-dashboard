@@ -18,14 +18,9 @@ export const demos = [
     render: () => (
       <Field
         label={
-          <Label
-            text="Are you a monster hunter?"
-            description="Or have you become the monster"
-          />
+          <Label text="Are you a monster hunter?" description="Or have you become the monster" />
         }
-        input={
-          <Toggle value={true} type={Toggle.Types.YES_NO} onChange={() => {}} />
-        }
+        input={<Toggle value={true} type={Toggle.Types.YES_NO} onChange={() => {}} />}
       />
     ),
   },
@@ -40,14 +35,7 @@ export const demos = [
             description="And has a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long description."
           />
         }
-        input={
-          <TextInput
-            value=""
-            height={'100%'}
-            multiline={true}
-            onChange={() => {}}
-          />
-        }
+        input={<TextInput value="" height={'100%'} multiline={true} onChange={() => {}} />}
       />
     ),
   },

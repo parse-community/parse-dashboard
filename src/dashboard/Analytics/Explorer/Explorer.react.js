@@ -30,7 +30,7 @@ import Toolbar from 'components/Toolbar/Toolbar.react';
 import baseStyles from 'stylesheets/base.scss';
 import { withRouter } from 'lib/withRouter';
 
-const buildFriendlyName = (query) => {
+const buildFriendlyName = query => {
   const name = [query.source];
   if (query.groups && query.groups.length > 0) {
     name.push('grouped by');
@@ -55,11 +55,7 @@ class Explorer extends DashboardView {
     this.state = {
       activeQueries: [],
       dateRange: {
-        start: new Date(
-          date.getFullYear(),
-          date.getMonth() - 1,
-          date.getDate()
-        ),
+        start: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
         end: date,
       },
       loading: false,
@@ -83,7 +79,7 @@ class Explorer extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.xhrHandles.forEach((xhr) => xhr && xhr.abort());
+    this.xhrHandles.forEach(xhr => xhr && xhr.abort());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -108,7 +104,7 @@ class Explorer extends DashboardView {
   handleQuerySave(query) {
     // Push new save result
     const activeQueries = this.state.activeQueries;
-    const existingQueryIndex = activeQueries.findIndex((activeQuery) => {
+    const existingQueryIndex = activeQueries.findIndex(activeQuery => {
       if (query.localId) {
         return query.localId === activeQuery.localId;
       }
@@ -173,9 +169,9 @@ class Explorer extends DashboardView {
         };
 
         const abortableRequest = this.context.getAnalyticsTimeSeries(payload);
-        promise = abortableRequest.promise.then((result) => {
+        promise = abortableRequest.promise.then(result => {
           const activeQueries = this.state.activeQueries;
-          activeQueries[i].result = result.map((point) => [
+          activeQueries[i].result = result.map(point => [
             Parse._decode('date', point[0]).getTime(),
             point[1],
           ]);
@@ -185,39 +181,37 @@ class Explorer extends DashboardView {
       } else {
         // Custom query
         const payload = this.buildCustomQueryPayload(query);
-        promise = this.props.customQueries
-          .dispatch(ActionTypes.FETCH, payload)
-          .then(() => {
-            let activeQueries = this.state.activeQueries;
-            // Update the result based on store in background.
-            const customQueries = this.getCustomQueriesFromProps(this.props);
-            activeQueries = activeQueries.map((query) => {
-              let serverResult = null;
-              if (query.objectId) {
-                // We have predefined custom query.
-                serverResult = customQueries.find((customQuery) => {
-                  return customQuery.objectId === query.objectId;
-                });
-              } else if (query.localId) {
-                // We're in the middle of custom query creation.
-                serverResult = customQueries.find((customQuery) => {
-                  return customQuery.localId === query.localId;
-                });
-              }
-              // If we can't find it in the result, let's use the old one.
-              if (!serverResult) {
-                serverResult = query;
-              }
+        promise = this.props.customQueries.dispatch(ActionTypes.FETCH, payload).then(() => {
+          let activeQueries = this.state.activeQueries;
+          // Update the result based on store in background.
+          const customQueries = this.getCustomQueriesFromProps(this.props);
+          activeQueries = activeQueries.map(query => {
+            let serverResult = null;
+            if (query.objectId) {
+              // We have predefined custom query.
+              serverResult = customQueries.find(customQuery => {
+                return customQuery.objectId === query.objectId;
+              });
+            } else if (query.localId) {
+              // We're in the middle of custom query creation.
+              serverResult = customQueries.find(customQuery => {
+                return customQuery.localId === query.localId;
+              });
+            }
+            // If we can't find it in the result, let's use the old one.
+            if (!serverResult) {
+              serverResult = query;
+            }
 
-              return {
-                ...query,
-                result: serverResult.result,
-              };
-            });
-
-            // Trigger rendering pipeline
-            this.setState({ activeQueries });
+            return {
+              ...query,
+              result: serverResult.result,
+            };
           });
+
+          // Trigger rendering pipeline
+          this.setState({ activeQueries });
+        });
       }
 
       promises.push(promise);
@@ -233,7 +227,7 @@ class Explorer extends DashboardView {
 
   handleDownload() {
     const csvDeclaration = 'data:text/csv;charset=utf-8,';
-    const csvRows = this.state.activeQueries.map((query) => {
+    const csvRows = this.state.activeQueries.map(query => {
       switch (this.props.params.displayType) {
         case 'chart':
           const columns = ['time'];
@@ -273,9 +267,7 @@ class Explorer extends DashboardView {
           // ]
           // into
           // [[foo, a], [bar, b], [baz, c]]
-          csvArray = csvArray.concat(
-            query.result.map((result) => keys.map((key) => result[key]))
-          );
+          csvArray = csvArray.concat(query.result.map(result => keys.map(key => result[key])));
 
           return csvArray.join('\n');
       }
@@ -322,10 +314,10 @@ class Explorer extends DashboardView {
     const isTimeSeries = displayType === 'chart';
     const explorerQueries = this.getCustomQueriesFromProps(this.props);
     const savedQueries = explorerQueries.filter(
-      (query) => query.type === displayType && query.isSaved
+      query => query.type === displayType && query.isSaved
     );
     const recentQueries = explorerQueries.filter(
-      (query) => query.type === displayType && !query.isSaved
+      query => query.type === displayType && !query.isSaved
     );
 
     let queries = [];
@@ -406,17 +398,13 @@ class Explorer extends DashboardView {
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}
-              onChange={(newValue) =>
-                this.setState({ dateRange: newValue, mutated: true })
-              }
+              onChange={newValue => this.setState({ dateRange: newValue, mutated: true })}
               align={Directions.RIGHT}
             />
           </span>
           <Button
             primary={true}
-            disabled={
-              this.state.activeQueries.length === 0 || !this.state.mutated
-            }
+            disabled={this.state.activeQueries.length === 0 || !this.state.mutated}
             onClick={this.handleRunQuery.bind(this)}
             value="Run query"
           />
@@ -430,9 +418,7 @@ class Explorer extends DashboardView {
         <EmptyState
           title={'No queries to display.'}
           icon="analytics-outline"
-          description={
-            'Use the "Add query" button above to visualize your data.'
-          }
+          description={'Use the "Add query" button above to visualize your data.'}
         />
       );
     } else {
@@ -471,9 +457,7 @@ class Explorer extends DashboardView {
                 width={this.displaySize.width}
                 height={this.displaySize.height}
                 data={chartData}
-                formatter={(value, label) =>
-                  `${label} ${prettyNumber(value, 3)}`
-                }
+                formatter={(value, label) => `${label} ${prettyNumber(value, 3)}`}
               />
             );
           }
@@ -492,7 +476,7 @@ class Explorer extends DashboardView {
             }
 
             const width = Math.floor(100 / query.result[0].length);
-            const headers = query.result[0].map((header) => (
+            const headers = query.result[0].map(header => (
               <th
                 key={header}
                 className={[stylesTable.header, styles.td].join(' ')}
@@ -522,10 +506,7 @@ class Explorer extends DashboardView {
               <div key={`chart${i}`}>
                 <div className={stylesTable.rows}>
                   <table className={styles.table}>
-                    <thead
-                      className={stylesTable.headers}
-                      style={{ position: 'initial' }}
-                    >
+                    <thead className={stylesTable.headers} style={{ position: 'initial' }}>
                       <tr>{headers}</tr>
                     </thead>
                     <tbody>{rows}</tbody>

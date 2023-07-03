@@ -116,7 +116,7 @@ class DialogDemo extends React.Component {
               });
             }}
             coolumns={columns}
-            onConfirm={(perms) => {
+            onConfirm={perms => {
               console.log(perms);
             }}
           />
@@ -149,7 +149,7 @@ class DialogDemo extends React.Component {
                 showAdvanced: false,
               });
             }}
-            onConfirm={(perms) => {
+            onConfirm={perms => {
               console.log(perms);
             }}
           />

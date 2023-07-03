@@ -21,8 +21,8 @@ const IntervalInput = ({ count, unit, onChange }) => {
     );
   }
 
-  const countChange = (newCount) => onChange(parseInt(newCount, 10), unit);
-  const unitChange = (newUnit) => {
+  const countChange = newCount => onChange(parseInt(newCount, 10), unit);
+  const unitChange = newUnit => {
     if (newUnit === 'minute') {
       return onChange(count, newUnit);
     } else {

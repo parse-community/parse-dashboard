@@ -39,13 +39,9 @@ const CloningNote = ({ app, clone_status, clone_progress }) => {
     <LiveReload
       initialData={[{ appId: app.applicationId, progress: clone_progress }]}
       source="/apps/cloning_progress"
-      render={(data) => {
-        const currentAppProgress = data.find(
-          ({ appId }) => appId === app.applicationId
-        );
-        const progressStr = currentAppProgress
-          ? currentAppProgress.progress.toString()
-          : '0';
+      render={data => {
+        const currentAppProgress = data.find(({ appId }) => appId === app.applicationId);
+        const progressStr = currentAppProgress ? currentAppProgress.progress.toString() : '0';
         return <span>{progressStr}</span>;
       }}
     />
@@ -60,7 +56,7 @@ const CountsSection = ({ className, title, children }) => (
   </div>
 );
 
-const Metric = (props) => {
+const Metric = props => {
   return (
     <div className={styles.count}>
       <div className={styles.number}>{props.number}</div>
@@ -71,22 +67,16 @@ const Metric = (props) => {
 
 const AppCard = ({ app, icon }) => {
   const navigate = useNavigate();
-  const canBrowse = app.serverInfo.error
-    ? null
-    : () => navigate(html`/apps/${app.slug}/browser`);
+  const canBrowse = app.serverInfo.error ? null : () => navigate(html`/apps/${app.slug}/browser`);
   const versionMessage = app.serverInfo.error ? (
     <div className={styles.serverVersion}>
-      Server not reachable:{' '}
-      <span className={styles.ago}>{app.serverInfo.error.toString()}</span>
+      Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span>
     </div>
   ) : (
     <div className={styles.serverVersion}>
-      Server URL:{' '}
-      <span className={styles.ago}>{app.serverURL || 'unknown'}</span>
+      Server URL: <span className={styles.ago}>{app.serverURL || 'unknown'}</span>
       Server version:{' '}
-      <span className={styles.ago}>
-        {app.serverInfo.parseServerVersion || 'unknown'}
-      </span>
+      <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>
     </div>
   );
 
@@ -96,12 +86,7 @@ const AppCard = ({ app, icon }) => {
         {icon ? (
           <img src={'appicons/' + icon} width={56} height={56} />
         ) : (
-          <Icon
-            width={56}
-            height={56}
-            name="blank-app-outline"
-            fill="#1E384D"
-          />
+          <Icon width={56} height={56} name="blank-app-outline" fill="#1E384D" />
         )}
       </a>
       <div className={styles.details}>
@@ -110,10 +95,7 @@ const AppCard = ({ app, icon }) => {
       </div>
       <CountsSection className={styles.glance} title="At a glance">
         <AppBadge production={app.production} />
-        <Metric
-          number={dash(app.users, prettyNumber(app.users))}
-          label="total users"
-        />
+        <Metric number={dash(app.users, prettyNumber(app.users))} label="total users" />
         <Metric
           number={dash(app.installations, prettyNumber(app.installations))}
           label="total installations"
@@ -166,12 +148,7 @@ class AppsIndex extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
+              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
             <div className={styles.alert}>You don't have any apps</div>
           </div>
@@ -180,20 +157,16 @@ class AppsIndex extends React.Component {
     }
     let upgradePrompt = null;
     if (this.props.newFeaturesInLatestVersion.length > 0) {
-      const newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(
-        (feature) => <strong>{feature}</strong>
-      );
+      const newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => (
+        <strong>{feature}</strong>
+      ));
       upgradePrompt = (
         <FlowFooter>
           Upgrade to the{' '}
-          <a
-            href="https://www.npmjs.com/package/parse-dashboard"
-            target="_blank"
-          >
+          <a href="https://www.npmjs.com/package/parse-dashboard" target="_blank">
             latest version
           </a>{' '}
-          of Parse Dashboard to get access to:{' '}
-          {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
+          of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.
         </FlowFooter>
       );
     }
@@ -210,13 +183,9 @@ class AppsIndex extends React.Component {
           />
         </div>
         <ul className={styles.apps}>
-          {apps.map((app) =>
+          {apps.map(app =>
             app.name.toLowerCase().indexOf(search) > -1 ? (
-              <AppCard
-                key={app.slug}
-                app={app}
-                icon={app.icon ? app.icon : null}
-              />
+              <AppCard key={app.slug} app={app} icon={app.icon ? app.icon : null} />
             ) : null
           )}
         </ul>

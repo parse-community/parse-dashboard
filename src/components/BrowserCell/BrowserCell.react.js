@@ -135,7 +135,7 @@ export default class BrowserCell extends Component {
         });
         this.copyableValue = content = (
           <ul>
-            {array.map((a) => (
+            {array.map(a => (
               <li>{a}</li>
             ))}
           </ul>
@@ -163,13 +163,7 @@ export default class BrowserCell extends Component {
           ? getFileName(this.props.value)
           : this.props.value.name()
         : 'Uploading\u2026';
-      content = (
-        <Pill
-          value={fileName}
-          fileDownloadLink={this.props.value.url()}
-          shrinkablePill
-        />
-      );
+      content = <Pill value={fileName} fileDownloadLink={this.props.value.url()} shrinkablePill />;
       this.copyableValue = fileName;
     } else if (this.props.type === 'ACL') {
       const pieces = [];
@@ -196,9 +190,7 @@ export default class BrowserCell extends Component {
       this.copyableValue =
         content = `(${this.props.value.latitude}, ${this.props.value.longitude})`;
     } else if (this.props.type === 'Polygon') {
-      this.copyableValue = content = this.props.value.coordinates.map(
-        (coord) => `(${coord})`
-      );
+      this.copyableValue = content = this.props.value.coordinates.map(coord => `(${coord})`);
     } else if (this.props.type === 'Relation') {
       content = this.props.setRelation ? (
         <div style={{ textAlign: 'center' }}>
@@ -216,11 +208,7 @@ export default class BrowserCell extends Component {
     }
     this.onContextMenu = this.onContextMenu.bind(this);
 
-    if (
-      this.props.markRequiredField &&
-      this.props.isRequired &&
-      this.props.value == null
-    ) {
+    if (this.props.markRequiredField && this.props.isRequired && this.props.value == null) {
       classes.push(styles.required);
     }
 
@@ -232,7 +220,7 @@ export default class BrowserCell extends Component {
       this.renderCellContent();
       this.props.value?._previousSave
         ?.then(() => this.renderCellContent())
-        ?.catch((err) => console.log(err));
+        ?.catch(err => console.log(err));
     }
     if (this.props.current) {
       const node = this.cellRef.current;
@@ -271,12 +259,8 @@ export default class BrowserCell extends Component {
     }
     const shallowVerifyProps = [
       ...new Set(Object.keys(this.props).concat(Object.keys(nextProps))),
-    ].filter((propName) => propName !== 'value');
-    if (
-      shallowVerifyProps.some(
-        (propName) => this.props[propName] !== nextProps[propName]
-      )
-    ) {
+    ].filter(propName => propName !== 'value');
+    if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
       return true;
     }
     const { value } = this.props;
@@ -299,15 +283,7 @@ export default class BrowserCell extends Component {
     }
     event.preventDefault();
 
-    const {
-      field,
-      hidden,
-      onSelect,
-      setCopyableValue,
-      setContextMenu,
-      row,
-      col,
-    } = this.props;
+    const { field, hidden, onSelect, setCopyableValue, setContextMenu, row, col } = this.props;
 
     onSelect({ row, col });
     setCopyableValue(hidden ? undefined : this.copyableValue);
@@ -328,20 +304,14 @@ export default class BrowserCell extends Component {
     const { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
 
-    const setFilterContextMenuOption =
-      this.getSetFilterContextMenuOption(constraints);
-    setFilterContextMenuOption &&
-      contextMenuOptions.push(setFilterContextMenuOption);
+    const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
+    setFilterContextMenuOption && contextMenuOptions.push(setFilterContextMenuOption);
 
-    const addFilterContextMenuOption =
-      this.getAddFilterContextMenuOption(constraints);
-    addFilterContextMenuOption &&
-      contextMenuOptions.push(addFilterContextMenuOption);
+    const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
+    addFilterContextMenuOption && contextMenuOptions.push(addFilterContextMenuOption);
 
-    const relatedObjectsContextMenuOption =
-      this.getRelatedObjectsContextMenuOption();
-    relatedObjectsContextMenuOption &&
-      contextMenuOptions.push(relatedObjectsContextMenuOption);
+    const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
+    relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
     !readonly &&
       onEditSelectedRow &&
@@ -365,14 +335,14 @@ export default class BrowserCell extends Component {
     }
 
     const { className, objectId } = this.props;
-    const validScripts = (this.props.scripts || []).filter((script) =>
+    const validScripts = (this.props.scripts || []).filter(script =>
       script.classes?.includes(this.props.className)
     );
     if (validScripts.length) {
       onEditSelectedRow &&
         contextMenuOptions.push({
           text: 'Scripts',
-          items: validScripts.map((script) => {
+          items: validScripts.map(script => {
             return {
               text: script.title,
               callback: () => {
@@ -393,9 +363,9 @@ export default class BrowserCell extends Component {
 
   async executeSript(script) {
     try {
-      const object = Parse.Object.extend(
-        this.props.className
-      ).createWithoutData(this.props.objectId);
+      const object = Parse.Object.extend(this.props.className).createWithoutData(
+        this.props.objectId
+      );
       const response = await Parse.Cloud.run(
         script.cloudCodeFunction,
         { object: object.toPointer() },
@@ -413,7 +383,7 @@ export default class BrowserCell extends Component {
   }
 
   toggleConfirmationDialog() {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       showConfirmationDialog: !prevState.showConfirmationDialog,
     }));
   }
@@ -422,7 +392,7 @@ export default class BrowserCell extends Component {
     if (constraints) {
       return {
         text: 'Set filter...',
-        items: constraints.map((constraint) => {
+        items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           const copyableValue = String(this.copyableValue);
           // Smart ellipsis for value - if it's long trim it in the middle: Lorem ipsum dolor si... aliqua
@@ -448,7 +418,7 @@ export default class BrowserCell extends Component {
     if (constraints && this.props.filters && this.props.filters.size > 0) {
       return {
         text: 'Add filter...',
-        items: constraints.map((constraint) => {
+        items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           const text = `${this.props.field} ${definition.name}${
             definition.comparable ? ' ' + this.copyableValue : ''
@@ -470,8 +440,7 @@ export default class BrowserCell extends Component {
     const { value, schema, onPointerClick } = this.props;
 
     const pointerClassName =
-      (value && value.className) ||
-      (this.props.field === 'objectId' && this.props.className);
+      (value && value.className) || (this.props.field === 'objectId' && this.props.className);
     if (pointerClassName) {
       const relatedRecordsMenuItem = {
         text: 'Get related records from...',
@@ -504,9 +473,7 @@ export default class BrowserCell extends Component {
           });
         });
 
-      return relatedRecordsMenuItem.items.length
-        ? relatedRecordsMenuItem
-        : undefined;
+      return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
     }
   }
 
@@ -599,13 +566,7 @@ export default class BrowserCell extends Component {
             this.toggleConfirmationDialog();
           }}
         >
-          <div
-            className={[
-              labelStyles.label,
-              labelStyles.text,
-              styles.action,
-            ].join(' ')}
-          >
+          <div className={[labelStyles.label, labelStyles.text, styles.action].join(' ')}>
             {`Do you want to run script "${this.selectedScript.title}" on "${this.selectedScript.className}" object "${this.selectedScript.objectId}"?`}
           </div>
         </Modal>
@@ -617,7 +578,7 @@ export default class BrowserCell extends Component {
         ref={this.cellRef}
         className={classes.join(' ')}
         style={{ width }}
-        onClick={(e) => {
+        onClick={e => {
           if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
           } else {
@@ -633,7 +594,7 @@ export default class BrowserCell extends Component {
             onEditChange(true);
           }
         }}
-        onTouchEnd={(e) => {
+        onTouchEnd={e => {
           if (current && type !== 'Relation') {
             // The touch event may trigger an unwanted change in the column value
             if (['ACL', 'Boolean', 'File'].includes(type)) {

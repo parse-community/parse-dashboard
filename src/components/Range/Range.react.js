@@ -30,8 +30,7 @@ export default class Range extends React.Component {
   }
 
   buildGradient() {
-    const fillLevel =
-      (this.props.value / (this.props.max - this.props.min)) * 100 + '%';
+    const fillLevel = (this.props.value / (this.props.max - this.props.min)) * 100 + '%';
     const fillColor = this.props.color || DEFAULT_COLOR;
     return `linear-gradient(90deg, ${fillColor}, ${fillColor} ${fillLevel}, #e0e0ea ${fillLevel}, #e0e0ea)`;
   }
@@ -40,9 +39,7 @@ export default class Range extends React.Component {
     let trackerStyle = {};
     if (this.state.width) {
       const left =
-        (this.props.value / (this.props.max - this.props.min)) *
-          (this.state.width - 24) +
-        11;
+        (this.props.value / (this.props.max - this.props.min)) * (this.state.width - 24) + 11;
       trackerStyle = { left };
     }
     if (this.props.color) {
@@ -92,15 +89,9 @@ Range.propTypes = {
   step: PropTypes.number.describe(
     'Adjusts the granularity of the slider. If this is set, the slider will only move in increments of this size.'
   ),
-  value: PropTypes.number.isRequired.describe(
-    'The current value of this controlled input'
-  ),
-  onChange: PropTypes.func.isRequired.describe(
-    'A function called whenever the input is adjusted'
-  ),
-  width: PropTypes.number.describe(
-    'The physical width, in pixels, of the slider track'
-  ),
+  value: PropTypes.number.isRequired.describe('The current value of this controlled input'),
+  onChange: PropTypes.func.isRequired.describe('A function called whenever the input is adjusted'),
+  width: PropTypes.number.describe('The physical width, in pixels, of the slider track'),
   units: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).describe(
     'A string displayed as after the number in the tracker, or a function that accepts the value of the tracker, and returns the string to be displayed in the tracker.'
   ),

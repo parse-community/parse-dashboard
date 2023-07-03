@@ -86,10 +86,9 @@ class PushAudiencesIndex extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.props.pushaudiences.dispatch(
-      PushAudiencesStore.ActionTypes.ABORT_FETCH,
-      { xhrKey: XHR_KEY }
-    );
+    this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.ABORT_FETCH, {
+      xhrKey: XHR_KEY,
+    });
   }
 
   handleCreateAudienceClick() {
@@ -99,8 +98,7 @@ class PushAudiencesIndex extends DashboardView {
   }
 
   tableData() {
-    const schema =
-      formatAudienceSchema(this.props.schema.data.get('classes')) || {};
+    const schema = formatAudienceSchema(this.props.schema.data.get('classes')) || {};
     const pushAudienceData = this.props.pushaudiences.data;
     let audiences = undefined;
 
@@ -121,9 +119,7 @@ class PushAudiencesIndex extends DashboardView {
   }
 
   handleSendPush(objectId) {
-    this.props.navigate(
-      generatePath(this.context, `push/new?audienceId=${objectId}`)
-    );
+    this.props.navigate(generatePath(this.context, `push/new?audienceId=${objectId}`));
   }
 
   renderRow(audience) {
@@ -250,8 +246,7 @@ class PushAudiencesIndex extends DashboardView {
 
     const deleteSubtitle = (
       <div>
-        Are you sure you want to delete{' '}
-        <strong>{this.state.deleteionAudienceName}</strong>?
+        Are you sure you want to delete <strong>{this.state.deleteionAudienceName}</strong>?
       </div>
     );
 
@@ -265,10 +260,9 @@ class PushAudiencesIndex extends DashboardView {
         submitText="Delete"
         inProgressText={'Deleting\u2026'}
         onSubmit={() => {
-          return this.props.pushaudiences.dispatch(
-            PushAudiencesStore.ActionTypes.DESTROY,
-            { objectId: this.state.deletionAudienceId }
-          );
+          return this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.DESTROY, {
+            objectId: this.state.deletionAudienceId,
+          });
         }}
         onSuccess={() => {
           this.setState({
@@ -288,7 +282,7 @@ class PushAudiencesIndex extends DashboardView {
         content = (
           <div className={stylesTable.rows}>
             <table>
-              <tbody>{data.map((row) => this.renderRow(row))}</tbody>
+              <tbody>{data.map(row => this.renderRow(row))}</tbody>
             </table>
           </div>
         );

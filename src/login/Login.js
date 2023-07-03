@@ -47,10 +47,7 @@ export default class Login extends React.Component {
   componentDidMount() {
     if (this.errors) {
       const e = this.errors.toLowerCase();
-      if (
-        e.includes('missing credentials') ||
-        e.includes('invalid username or password')
-      ) {
+      if (e.includes('missing credentials') || e.includes('invalid username or password')) {
         if (this.inputRefUser.current.value.length < 1) {
           this.inputRefUser.current.focus();
         } else {
@@ -97,7 +94,7 @@ export default class Login extends React.Component {
               name="username"
               type="username"
               value={this.state.username}
-              onChange={(e) => updateField('username', e)}
+              onChange={e => updateField('username', e)}
               ref={this.inputRefUser}
             />
           }
@@ -109,14 +106,12 @@ export default class Login extends React.Component {
               name="password"
               type="password"
               value={this.state.password}
-              onChange={(e) => updateField('password', e)}
+              onChange={e => updateField('password', e)}
               ref={this.inputRefPass}
             />
           }
         />
-        {this.state.redirect && (
-          <input name="redirect" type="hidden" value={this.state.redirect} />
-        )}
+        {this.state.redirect && <input name="redirect" type="hidden" value={this.state.redirect} />}
         {this.errors && this.errors.includes('one-time') ? (
           <LoginRow
             label="OTP"
@@ -127,7 +122,7 @@ export default class Login extends React.Component {
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 pattern="[0-9]*"
-                onChange={(e) => updateField('otp', e)}
+                onChange={e => updateField('otp', e)}
                 ref={this.inputRefMfa}
               />
             }

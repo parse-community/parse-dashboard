@@ -55,7 +55,7 @@ export default class AccountOverview extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    AccountManager.fetchLinkedAccounts(XHR_KEY).then((linkedAccounts) => {
+    AccountManager.fetchLinkedAccounts(XHR_KEY).then(linkedAccounts => {
       if (this.mounted) {
         this.setState({ linkedAccounts });
       }
@@ -102,18 +102,12 @@ export default class AccountOverview extends React.Component {
             serviceName="Facebook"
             metadata={this.state.linkedAccounts['facebook']}
           />
-          <AccountLinkField
-            serviceName="GitHub"
-            metadata={this.state.linkedAccounts['github']}
-          />
+          <AccountLinkField serviceName="GitHub" metadata={this.state.linkedAccounts['github']} />
           <AccountLinkField
             serviceName="Google"
             metadata={this.state.linkedAccounts['google_oauth2']}
           />
-          <AccountLinkField
-            serviceName="Heroku"
-            metadata={this.state.linkedAccounts['heroku']}
-          />
+          <AccountLinkField serviceName="Heroku" metadata={this.state.linkedAccounts['heroku']} />
         </Fieldset>
       ) : null;
 
@@ -140,7 +134,7 @@ export default class AccountOverview extends React.Component {
             label={<Label text="Existing keys" />}
             input={
               <FormTable
-                items={AccountManager.currentUser().account_keys.map((key) => ({
+                items={AccountManager.currentUser().account_keys.map(key => ({
                   title: key.name,
                   onDelete: () => {
                     this.setState({
@@ -170,28 +164,17 @@ export default class AccountOverview extends React.Component {
     );
 
     const billingInfoFields = (
-      <Fieldset
-        legend="Billing Info"
-        description="Update your payment information."
-      >
+      <Fieldset legend="Billing Info" description="Update your payment information.">
         {fields.accountCredit > 0 ? (
           <Field
             labelWidth={DEFAULT_LABEL_WIDTH}
             label={
               <Label
                 text="Account credit"
-                description={
-                  'If you incur any expenses, we\u2019ll use this first'
-                }
+                description={'If you incur any expenses, we\u2019ll use this first'}
               />
             }
-            input={
-              <MoneyInput
-                value={fields.accountCredit}
-                enabled={false}
-                onChange={() => {}}
-              />
-            }
+            input={<MoneyInput value={fields.accountCredit} enabled={false} onChange={() => {}} />}
           />
         ) : null}
         {/* TODO
@@ -287,7 +270,7 @@ export default class AccountOverview extends React.Component {
           input={
             <TextInput
               value={this.state.name}
-              onChange={(value) => {
+              onChange={value => {
                 this.setState({
                   name: value,
                 });
@@ -306,7 +289,7 @@ export default class AccountOverview extends React.Component {
           input={
             <TextInput
               value={this.state.email}
-              onChange={(value) => {
+              onChange={value => {
                 this.setState({
                   email: value,
                 });
@@ -321,7 +304,7 @@ export default class AccountOverview extends React.Component {
           input={
             <TextInput
               value={this.state.newPassword}
-              onChange={(newValue) => {
+              onChange={newValue => {
                 this.setState({ newPassword: newValue });
               }}
               hidden={true}
@@ -334,7 +317,7 @@ export default class AccountOverview extends React.Component {
           input={
             <TextInput
               value={this.state.currentPassword}
-              onChange={(newValue) => {
+              onChange={newValue => {
                 this.setState({ currentPassword: newValue });
               }}
               hidden={true}
@@ -353,7 +336,7 @@ export default class AccountOverview extends React.Component {
         onSubmit={() => {
           return AccountManager.createAccountKey(this.state.accountKeyName);
         }}
-        onSuccess={(newKey) => {
+        onSuccess={newKey => {
           this.setState({
             showNewAccountKeyModal: true,
             newAccountKey: newKey.token,
@@ -374,7 +357,7 @@ export default class AccountOverview extends React.Component {
           input={
             <TextInput
               value={this.state.accountKeyName}
-              onChange={(newValue) => {
+              onChange={newValue => {
                 this.setState({ accountKeyName: newValue });
               }}
               placeholder="Work Laptop"
@@ -414,9 +397,7 @@ export default class AccountOverview extends React.Component {
         submitText="Delete"
         inProgressText={'Deleting\u2026'}
         onSubmit={() => {
-          return AccountManager.deleteAccountKeyById(
-            this.state.accountKeyIdToDelete
-          );
+          return AccountManager.deleteAccountKeyById(this.state.accountKeyIdToDelete);
         }}
         onClose={() => {
           this.setState({ showDeleteAccountKeyModal: false });
@@ -454,11 +435,7 @@ export default class AccountOverview extends React.Component {
       <FlowView
         initialFields={initialFields}
         footerContents={({ changes }) =>
-          renderFlowFooterChanges(
-            changes,
-            initialFields,
-            accountOverviewFooterSettings
-          )
+          renderFlowFooterChanges(changes, initialFields, accountOverviewFooterSettings)
         }
         onSubmit={() => {
           const promiseList = [];

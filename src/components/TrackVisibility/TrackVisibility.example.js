@@ -41,15 +41,11 @@ class DemoTrackVisibility extends React.Component {
       <React.Fragment>
         <div>{'Yellow block is ' + this.state.visibility + '% visible'}</div>
         <div ref={this.ref} style={{ height: '420px', overflowY: 'scroll' }}>
-          <div style={{ height: '420px', backgroundColor: '#00A34D' }}>
-            {'Scroll down'}
-          </div>
+          <div style={{ height: '420px', backgroundColor: '#00A34D' }}>{'Scroll down'}</div>
           <TrackVisibility observer={this.observer}>
             <div style={{ height: '140px', backgroundColor: '#F7EB00' }} />
           </TrackVisibility>
-          <div style={{ height: '420px', backgroundColor: '#EB2922' }}>
-            {'Scroll up'}
-          </div>
+          <div style={{ height: '420px', backgroundColor: '#EB2922' }}>{'Scroll up'}</div>
         </div>
       </React.Fragment>
     );

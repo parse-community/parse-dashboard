@@ -23,7 +23,7 @@ class Demo extends React.Component {
       <ExpirationDateInput
         month={this.state.month}
         year={this.state.year}
-        onChange={(change) => this.setState(change)}
+        onChange={change => this.setState(change)}
       />
     );
   }

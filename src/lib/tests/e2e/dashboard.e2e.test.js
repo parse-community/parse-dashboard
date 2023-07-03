@@ -30,7 +30,7 @@ describe('dashboard e2e', () => {
   it('can keep mount path on redirect', async () => {
     let server;
     const mount = '/dashboard';
-    const launchApp = new Promise((resolve) => {
+    const launchApp = new Promise(resolve => {
       const app = express();
       app.use(mount, ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
@@ -54,19 +54,11 @@ describe('dashboard e2e', () => {
 describe('Config options', () => {
   it('should start with port option', async () => {
     const result = await startParseDashboardAndGetOutput(['--port', '4041']);
-    expect(result).toContain(
-      'The dashboard is now available at http://0.0.0.0:4041/'
-    );
+    expect(result).toContain('The dashboard is now available at http://0.0.0.0:4041/');
   });
 
   it('should reject to start if config and other options are combined', async () => {
-    const args = [
-      '--appId',
-      '--serverURL',
-      '--masterKey',
-      '--appName',
-      '--graphQLServerURL',
-    ];
+    const args = ['--appId', '--serverURL', '--masterKey', '--appName', '--graphQLServerURL'];
 
     for (const arg of args) {
       const result = await startParseDashboardAndGetOutput([
@@ -84,7 +76,7 @@ describe('Config options', () => {
 
 function startParseDashboardAndGetOutput(args) {
   const timeoutInMs = 1000;
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const indexFilePath = path.resolve('./Parse-Dashboard/index.js');
     const child = spawn('node', [indexFilePath, ...args], {
       cwd: '.',
@@ -100,13 +92,13 @@ function startParseDashboardAndGetOutput(args) {
     });
 
     if (child.stdout) {
-      child.stdout.on('data', (data) => {
+      child.stdout.on('data', data => {
         output += `STDOUT: ${data}\n`;
       });
     }
 
     if (child.stderr) {
-      child.stderr.on('data', (data) => {
+      child.stderr.on('data', data => {
         output += `STDERROR: ${data}\n`;
       });
     }

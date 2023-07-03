@@ -40,22 +40,7 @@ const DonutChart = ({
     let endX = radius * Math.cos(angle) + centerX;
     let endY = -radius * Math.sin(angle) + centerY;
 
-    let path = [
-      'M',
-      centerY,
-      centerY,
-      'L',
-      lastX,
-      lastY,
-      'A',
-      radius,
-      radius,
-      0,
-      0,
-      1,
-      endX,
-      endY,
-    ];
+    let path = ['M', centerY, centerY, 'L', lastX, lastY, 'A', radius, radius, 0, 0, 1, endX, endY];
     if (arc > Math.PI) {
       angle = alpha - arc;
       endX = radius * Math.cos(angle) + centerX;
@@ -84,12 +69,7 @@ const DonutChart = ({
   return (
     <svg style={{ width: diameter, height: diameter }}>
       {paths}
-      <circle
-        className={styles.donutCenter}
-        cx={centerX}
-        cy={centerY}
-        r={centerX * 0.8}
-      />
+      <circle className={styles.donutCenter} cx={centerX} cy={centerY} r={centerX * 0.8} />
       {segments.map((segment, i) => (
         <text
           className={styles.donutValue}
@@ -101,12 +81,7 @@ const DonutChart = ({
           {printPercentage ? ((segment / sum) * 100).toFixed(2) + '%' : segment}
         </text>
       ))}
-      <text
-        className={styles.donutLabel}
-        textAnchor="middle"
-        x={centerX}
-        y={centerY + 20}
-      >
+      <text className={styles.donutLabel} textAnchor="middle" x={centerX} y={centerY + 20}>
         {label}
       </text>
     </svg>
@@ -116,9 +91,7 @@ const DonutChart = ({
 export default DonutChart;
 
 DonutChart.propTypes = {
-  segments: PropTypes.arrayOf(PropTypes.number).isRequired.describe(
-    'Values of the DonutChart.'
-  ),
+  segments: PropTypes.arrayOf(PropTypes.number).isRequired.describe('Values of the DonutChart.'),
   diameter: PropTypes.number.describe('Width and height of the DonutChart.'),
   label: PropTypes.string.describe(
     'Additional string to be appended after each rendered value in DonutChart.'

@@ -43,9 +43,9 @@ export default class PointerKeyDialog extends React.Component {
             <Dropdown
               placeHolder="Select a column"
               value={this.state.name}
-              onChange={(name) => this.setState({ name: name })}
+              onChange={name => this.setState({ name: name })}
             >
-              {currentColumns.map((t) => (
+              {currentColumns.map(t => (
                 <Option key={t} value={t}>
                   {t}
                 </Option>

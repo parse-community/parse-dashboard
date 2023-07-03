@@ -31,16 +31,13 @@ export default class DeleteParameterDialog extends React.Component {
     const content = (
       <Field
         label={
-          <Label
-            text="Confirm this action"
-            description="Enter the parameter name to continue."
-          />
+          <Label text="Confirm this action" description="Enter the parameter name to continue." />
         }
         input={
           <TextInput
             placeholder="Parameter name"
             value={this.state.confirmation}
-            onChange={(confirmation) => this.setState({ confirmation })}
+            onChange={confirmation => this.setState({ confirmation })}
           />
         }
       />

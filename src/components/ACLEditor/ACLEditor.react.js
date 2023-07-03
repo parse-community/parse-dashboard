@@ -125,7 +125,7 @@ const ACLEditor = ({ value, onCommit }) => (
     onCancel={() => {
       onCommit(value);
     }}
-    onConfirm={(perms) => {
+    onConfirm={perms => {
       onCommit(toACL(perms));
     }}
   />

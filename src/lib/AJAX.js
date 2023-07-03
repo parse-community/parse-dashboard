@@ -68,10 +68,7 @@ export function request(
         p.reject(this.responseText);
         return;
       }
-      if (
-        Object.prototype.hasOwnProperty.call(json, 'success') &&
-        json.success === false
-      ) {
+      if (Object.prototype.hasOwnProperty.call(json, 'success') && json.success === false) {
         p.reject(json);
       } else {
         p.resolve(json);
@@ -92,8 +89,7 @@ export function request(
         p.reject(this.responseText);
         return;
       }
-      const message =
-        json.message || json.error || json.notice || 'Request Error';
+      const message = json.message || json.error || json.notice || 'Request Error';
       p.reject({
         success: false,
         message: message,
@@ -115,10 +111,7 @@ export function request(
     if (body instanceof FormData) {
       xhr.send(body);
     } else {
-      xhr.setRequestHeader(
-        'Content-Type',
-        'application/x-www-form-urlencoded; charset=UTF-8'
-      );
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
       // Encode it as a url parameter string
       const formData = [];
       for (const k in body) {

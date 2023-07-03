@@ -16,7 +16,7 @@ const MoneyInput = ({ enabled = true, value, onChange = () => {} }) => {
       disabled={!enabled}
       className={styles.moneyInput}
       value={'$' + value.toString()}
-      onChange={(e) => {
+      onChange={e => {
         onChange(e.nativeEvent.target.value);
       }}
     />
@@ -30,7 +30,5 @@ MoneyInput.propTypes = {
   onChange: PropTypes.func.describe(
     'A function fired when the input is changed. It receives the new value as its only parameter.'
   ),
-  value: PropTypes.number.isRequired.describe(
-    'The current value of the controlled input.'
-  ),
+  value: PropTypes.number.isRequired.describe('The current value of the controlled input.'),
 };

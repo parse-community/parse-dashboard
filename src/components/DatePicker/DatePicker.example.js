@@ -23,12 +23,7 @@ class DatePickerDemo extends React.Component {
   }
 
   render() {
-    return (
-      <DatePicker
-        value={this.state.value}
-        onChange={this.handleChange.bind(this)}
-      />
-    );
+    return <DatePicker value={this.state.value} onChange={this.handleChange.bind(this)} />;
   }
 }
 

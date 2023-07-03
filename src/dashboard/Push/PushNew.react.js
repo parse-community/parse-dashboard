@@ -41,24 +41,18 @@ import { withRouter } from 'lib/withRouter';
 const PARSE_SERVER_SUPPORTS_AB_TESTING = false;
 
 const formatErrorMessage = (emptyInputMessages, key) => {
-  const boldMessages = emptyInputMessages.map((message) => {
+  const boldMessages = emptyInputMessages.map(message => {
     return <strong key={message}>{message}</strong>;
   });
   return (
     <div key={key}>
-      Your{' '}
-      {joinWithFinal(
-        null,
-        boldMessages,
-        ', ',
-        boldMessages.length < 3 ? ' and ' : ', and '
-      )}{' '}
+      Your {joinWithFinal(null, boldMessages, ', ', boldMessages.length < 3 ? ' and ' : ', and ')}{' '}
       can’t be empty.
     </div>
   );
 };
 
-const isValidJSON = (input) => {
+const isValidJSON = input => {
   let parsedJSON = null;
   try {
     parsedJSON = JSON.parse(input);
@@ -106,9 +100,7 @@ const LocalizedMessageField = ({
             multiline={true}
             height={200}
             monospace={monospace}
-            placeholder={
-              monospace ? '{\n  \u2026\n}' : 'Type your localized message\u2026'
-            }
+            placeholder={monospace ? '{\n  \u2026\n}' : 'Type your localized message\u2026'}
             value={data}
             onChange={onChangeValue.bind(undefined, id, currentLocaleOption)}
           />
@@ -123,9 +115,7 @@ const LocalizedMessageField = ({
               <div>
                 <span>Which locale are you targeting?</span>
                 {deviceCount !== undefined ? (
-                  <div className={styles.localedeviceCount}>
-                    {deviceCountSegment}
-                  </div>
+                  <div className={styles.localedeviceCount}>{deviceCountSegment}</div>
                 ) : null}
               </div>
             }
@@ -134,18 +124,12 @@ const LocalizedMessageField = ({
         input={
           <Dropdown
             value={currentLocaleOption}
-            onChange={(nextLocaleOption) =>
-              onChangeLocale.call(
-                undefined,
-                id,
-                nextLocaleOption,
-                data,
-                currentLocaleOption
-              )
+            onChange={nextLocaleOption =>
+              onChangeLocale.call(undefined, id, nextLocaleOption, data, currentLocaleOption)
             }
           >
             {localeOptions && localeOptions.length > 0
-              ? localeOptions.map((option) => {
+              ? localeOptions.map(option => {
                 return <Option value={option}>{option}</Option>;
               })
               : null}
@@ -191,18 +175,14 @@ class PushNew extends DashboardView {
       options.min = PushConstants.INITIAL_PAGE_SIZE;
       this.setState({ initialAudienceId: query.get('audienceId') });
     }
-    this.props.pushaudiences
-      .dispatch(PushAudiencesStore.ActionTypes.FETCH, options)
-      .then(() => {
-        this.setState({ pushAudiencesFetched: true });
-      });
+    this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.FETCH, options).then(() => {
+      this.setState({ pushAudiencesFetched: true });
+    });
 
     const available = this.context.isLocalizationAvailable();
     if (available) {
       const locales = this.context.fetchPushLocales();
-      const filteredLocales = locales.filter(
-        (locale) => !(locale === '' || locale === undefined)
-      );
+      const filteredLocales = locales.filter(locale => !(locale === '' || locale === undefined));
       this.setState({
         isLocalizationAvailable: true,
         locales: filteredLocales,
@@ -215,11 +195,10 @@ class PushNew extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.props.pushaudiences.dispatch(
-      PushAudiencesStore.ActionTypes.ABORT_FETCH,
-      { xhrKey: XHR_KEY }
-    );
-    this.xhrs.forEach((xhr) => {
+    this.props.pushaudiences.dispatch(PushAudiencesStore.ActionTypes.ABORT_FETCH, {
+      xhrKey: XHR_KEY,
+    });
+    this.xhrs.forEach(xhr => {
       if (xhr.abort) {
         xhr.abort();
       }
@@ -230,9 +209,7 @@ class PushNew extends DashboardView {
 
   handlePushSubmit(changes) {
     const payload =
-      changes.data_type === 'json'
-        ? JSON.parse(changes.data)
-        : { alert: changes.data };
+      changes.data_type === 'json' ? JSON.parse(changes.data) : { alert: changes.data };
     if (changes.increment_badge) {
       payload.badge = 'Increment';
     }
@@ -241,7 +218,7 @@ class PushNew extends DashboardView {
 
     // Gather the translations, and inject into the payload
     const needle = 'translation[';
-    Object.keys(changes).forEach((key) => {
+    Object.keys(changes).forEach(key => {
       // translations are stored as `tranlation[lang]` strings as keys,
       // this is why we slice it this way
       if (key.indexOf(needle) === 0) {
@@ -259,15 +236,12 @@ class PushNew extends DashboardView {
 
     const audience_id = changes.audience_id;
     // Only set the audience ID if it is a saved audience.
-    if (
-      audience_id != PushConstants.NEW_SEGMENT_ID &&
-      audience_id != 'everyone'
-    ) {
+    if (audience_id != PushConstants.NEW_SEGMENT_ID && audience_id != 'everyone') {
       body.audience_id = audience_id;
       const pushAudience = this.props.pushaudiences.data
         .get('audiences')
         .toJS()
-        .find((a) => a.objectId === audience_id);
+        .find(a => a.objectId === audience_id);
       body.where = pushAudience.query;
     }
 
@@ -348,11 +322,9 @@ class PushNew extends DashboardView {
               value={fields.exp_size_in_percent}
               units="%"
               track={true}
-              onChange={(value) => {
+              onChange={value => {
                 setField('exp_size_in_percent', value);
-                const recipientCount = Math.floor(
-                  value * 0.01 * this.state.deviceCount
-                );
+                const recipientCount = Math.floor(value * 0.01 * this.state.deviceCount);
                 this.setState({ recipientCount });
               }}
             />
@@ -377,10 +349,7 @@ class PushNew extends DashboardView {
             }
           } else {
             // backend returns -1 for suggestion not available
-            if (
-              this.state.recipientCount < 5000 &&
-              fields.exp_size_in_percent < 100
-            ) {
+            if (this.state.recipientCount < 5000 && fields.exp_size_in_percent < 100) {
               testSizeText = allDevicesText;
             }
           }
@@ -396,21 +365,14 @@ class PushNew extends DashboardView {
           </SliderWrap>
         );
         experimentContent.push(
-          <SliderWrap
-            key="slider-2"
-            direction={Directions.DOWN}
-            expanded={true}
-            block={true}
-          >
+          <SliderWrap key="slider-2" direction={Directions.DOWN} expanded={true} block={true}>
             <div className={styles.info}>
               <div>
-                Your campaign will be tested with{' '}
-                <strong>{this.state.recipientCount}</strong>{' '}
+                Your campaign will be tested with <strong>{this.state.recipientCount}</strong>{' '}
                 {this.state.recipientCount === 1 ? 'device' : 'devices'}
               </div>
               <div className={styles.infoSubline}>
-                (after your experiment is over, you’ll be able to send the
-                winner to the rest)
+                (after your experiment is over, you’ll be able to send the winner to the rest)
               </div>
             </div>
           </SliderWrap>
@@ -430,23 +392,16 @@ class PushNew extends DashboardView {
           label={
             <Label
               text="When should we deliver Message A?"
-              description={PushHelper.setTimeFieldDescription(
-                fields.local_time
-              )}
+              description={PushHelper.setTimeFieldDescription(fields.local_time)}
             />
           }
           input={
             <DateTimeInput
               local={fields.local_time}
               value={fields.push_time_1_iso}
-              onChange={(value) => {
+              onChange={value => {
                 setField('push_time_1_iso', value);
-                PushHelper.setPushTimeField(
-                  setField,
-                  'push_time_1',
-                  value,
-                  fields.local_time
-                );
+                PushHelper.setPushTimeField(setField, 'push_time_1', value, fields.local_time);
               }}
             />
           }
@@ -459,23 +414,16 @@ class PushNew extends DashboardView {
           label={
             <Label
               text="When should we deliver Message B?"
-              description={PushHelper.setTimeFieldDescription(
-                fields.local_time
-              )}
+              description={PushHelper.setTimeFieldDescription(fields.local_time)}
             />
           }
           input={
             <DateTimeInput
               local={fields.local_time}
               value={fields.push_time_2_iso}
-              onChange={(value) => {
+              onChange={value => {
                 setField('push_time_2_iso', value);
-                PushHelper.setPushTimeField(
-                  setField,
-                  'push_time_2',
-                  value,
-                  fields.local_time
-                );
+                PushHelper.setPushTimeField(setField, 'push_time_2', value, fields.local_time);
               }}
             />
           }
@@ -505,8 +453,7 @@ class PushNew extends DashboardView {
       //immediately when exp off, or immediately when experiment on with type message
       if (
         fields.push_time_type !== 'now' &&
-        (!fields.exp_enable ||
-          (fields.exp_enable && fields.exp_type === 'message'))
+        (!fields.exp_enable || (fields.exp_enable && fields.exp_type === 'message'))
       ) {
         deliveryContent.push(
           <Field
@@ -515,23 +462,16 @@ class PushNew extends DashboardView {
             label={
               <Label
                 text="When should we deliver this?"
-                description={PushHelper.setTimeFieldDescription(
-                  fields.local_time
-                )}
+                description={PushHelper.setTimeFieldDescription(fields.local_time)}
               />
             }
             input={
               <DateTimeInput
                 local={fields.local_time}
                 value={fields.push_time_iso}
-                onChange={(value) => {
+                onChange={value => {
                   setField('push_time_iso', value);
-                  PushHelper.setPushTimeField(
-                    setField,
-                    'push_time',
-                    value,
-                    fields.local_time
-                  );
+                  PushHelper.setPushTimeField(setField, 'push_time', value, fields.local_time);
                 }}
               />
             }
@@ -541,10 +481,7 @@ class PushNew extends DashboardView {
     }
 
     //TODO: disable user selection of invalid date or show error message in footer
-    if (
-      fields.push_time_type !== 'now' ||
-      (fields.exp_enable && fields.exp_type === 'time')
-    ) {
+    if (fields.push_time_type !== 'now' || (fields.exp_enable && fields.exp_type === 'time')) {
       return deliveryContent.concat([
         <Field
           key="local_time"
@@ -557,13 +494,8 @@ class PushNew extends DashboardView {
           input={
             <Toggle
               value={fields.local_time}
-              onChange={(value) => {
-                PushHelper.localTimeFormater(
-                  setField,
-                  'push_time',
-                  fields.push_time_iso,
-                  value
-                );
+              onChange={value => {
+                PushHelper.localTimeFormater(setField, 'push_time', fields.push_time_iso, value);
                 PushHelper.localTimeFormater(
                   setField,
                   'push_time_1',
@@ -635,9 +567,7 @@ class PushNew extends DashboardView {
               multiline={true}
               height={200}
               monospace={monospaceA}
-              placeholder={
-                monospace ? '{\n  \u2026\n}' : 'Type your message\u2026'
-              }
+              placeholder={monospace ? '{\n  \u2026\n}' : 'Type your message\u2026'}
               value={fields.data1}
               onChange={setField.bind(null, 'data1')}
             />
@@ -669,9 +599,7 @@ class PushNew extends DashboardView {
               multiline={true}
               height={200}
               monospace={monospaceB}
-              placeholder={
-                monospace ? '{\n  \u2026\n}' : 'Type your message\u2026'
-              }
+              placeholder={monospace ? '{\n  \u2026\n}' : 'Type your message\u2026'}
               value={fields.data2}
               onChange={setField.bind(null, 'data2')}
             />
@@ -706,9 +634,7 @@ class PushNew extends DashboardView {
             multiline={true}
             height={200}
             monospace={monospace}
-            placeholder={
-              monospace ? '{\n  \u2026\n}' : 'Type your message\u2026'
-            }
+            placeholder={monospace ? '{\n  \u2026\n}' : 'Type your message\u2026'}
             value={fields.data}
             onChange={setField.bind(null, 'data')}
           />
@@ -741,7 +667,7 @@ class PushNew extends DashboardView {
           input={
             <Toggle
               value={fields.translation_enable}
-              onChange={(value) => {
+              onChange={value => {
                 setField('translation_enable', value || null);
               }}
             />
@@ -756,9 +682,7 @@ class PushNew extends DashboardView {
         translationSegment.push(
           <div
             key="addLocalizationButton"
-            className={[FieldStyles.field, styles.localizationSegment].join(
-              ' '
-            )}
+            className={[FieldStyles.field, styles.localizationSegment].join(' ')}
           >
             <div>
               {this.state.localizedMessages.map((message, i) => {
@@ -766,9 +690,7 @@ class PushNew extends DashboardView {
                   <LocalizedMessageField
                     id={i}
                     currentLocaleOption={message.locale}
-                    localeOptions={[message.locale]
-                      .concat(this.state.availableLocales)
-                      .sort()}
+                    localeOptions={[message.locale].concat(this.state.availableLocales).sort()}
                     onClickRemove={(id, currentLocaleOption) => {
                       const localizedMessages = this.state.localizedMessages;
                       const availableLocales = this.state.availableLocales;
@@ -779,9 +701,7 @@ class PushNew extends DashboardView {
                         availableLocales: availableLocales.sort(),
                       });
                     }}
-                    deviceCount={
-                      this.state.localeDeviceCountMap[message.locale]
-                    }
+                    deviceCount={this.state.localeDeviceCountMap[message.locale]}
                     onChangeValue={(id, locale, value) => {
                       const localizedMessages = this.state.localizedMessages;
                       localizedMessages[id] = {
@@ -805,13 +725,12 @@ class PushNew extends DashboardView {
                       availableLocales.unshift(prevLocale);
                       setField(`translation[${prevLocale}]`, null);
 
-                      const { xhr, promise } =
-                        this.context.fetchPushLocaleDeviceCount(
-                          fields.audience_id,
-                          fields.target,
-                          this.state.locales
-                        );
-                      promise.then((localeDeviceCountMap) => {
+                      const { xhr, promise } = this.context.fetchPushLocaleDeviceCount(
+                        fields.audience_id,
+                        fields.target,
+                        this.state.locales
+                      );
+                      promise.then(localeDeviceCountMap => {
                         this.setState({ localeDeviceCountMap });
                       });
                       this.xhrs.push(xhr);
@@ -835,43 +754,37 @@ class PushNew extends DashboardView {
               >
                 Please follow this guide to setup the push locales feature
               </a>
-            ) : !this.state.loadingLocale &&
-              this.state.availableLocales.length === 0 ? null : (
-                <Button
-                  progress={this.state.loadingLocale}
-                  disabled={this.state.availableLocales.length === 0}
-                  value={
-                    this.state.loadingLocale
-                      ? 'Loading locales...'
-                      : 'Add a Localization'
-                  }
-                  onClick={() => {
-                    const currentLocale = this.state.availableLocales[0];
-                    this.setState(
-                      {
-                        localizedMessages: this.state.localizedMessages.concat([
-                          {
-                            locale: currentLocale,
-                          },
-                        ]),
-                        availableLocales: this.state.availableLocales.slice(1),
-                      },
-                      () => {
-                        const { xhr, promise } =
-                        this.context.fetchPushLocaleDeviceCount(
-                          fields.audience_id,
-                          fields.target,
-                          this.state.locales
-                        );
-                        promise.then((localeDeviceCountMap) => {
-                          this.setState({ localeDeviceCountMap });
-                        });
-                        this.xhrs.push(xhr);
-                      }
-                    );
-                  }}
-                />
-              )}
+            ) : !this.state.loadingLocale && this.state.availableLocales.length === 0 ? null : (
+              <Button
+                progress={this.state.loadingLocale}
+                disabled={this.state.availableLocales.length === 0}
+                value={this.state.loadingLocale ? 'Loading locales...' : 'Add a Localization'}
+                onClick={() => {
+                  const currentLocale = this.state.availableLocales[0];
+                  this.setState(
+                    {
+                      localizedMessages: this.state.localizedMessages.concat([
+                        {
+                          locale: currentLocale,
+                        },
+                      ]),
+                      availableLocales: this.state.availableLocales.slice(1),
+                    },
+                    () => {
+                      const { xhr, promise } = this.context.fetchPushLocaleDeviceCount(
+                        fields.audience_id,
+                        fields.target,
+                        this.state.locales
+                      );
+                      promise.then(localeDeviceCountMap => {
+                        this.setState({ localeDeviceCountMap });
+                      });
+                      this.xhrs.push(xhr);
+                    }
+                  );
+                }}
+              />
+            )}
           </div>
         );
       }
@@ -896,10 +809,7 @@ class PushNew extends DashboardView {
               if (queryOrFilters instanceof Parse.Query) {
                 setField('target', queryOrFilters);
               } else {
-                setField(
-                  'target',
-                  queryFromFilters('_Installation', queryOrFilters)
-                );
+                setField('target', queryFromFilters('_Installation', queryOrFilters));
               }
             }
           }}
@@ -918,15 +828,13 @@ class PushNew extends DashboardView {
           input={
             <Toggle
               value={fields.exp_enable}
-              onChange={(value) => {
+              onChange={value => {
                 if (!this.state.audienceSizeSuggestion) {
-                  this.context
-                    .fetchPushAudienceSizeSuggestion()
-                    .then(({ audience_size }) => {
-                      this.setState({
-                        audienceSizeSuggestion: audience_size,
-                      });
+                  this.context.fetchPushAudienceSizeSuggestion().then(({ audience_size }) => {
+                    this.setState({
+                      audienceSizeSuggestion: audience_size,
                     });
+                  });
                   // calculate initial recipient count
                   this.setState({
                     recipientCount: Math.floor(this.state.deviceCount * 0.5),
@@ -948,9 +856,7 @@ class PushNew extends DashboardView {
     const { push } = this.context.serverInfo.features;
     const hasScheduledPushSupport = push && push.scheduledPush;
 
-    const timeFieldsLegend = hasScheduledPushSupport
-      ? 'Choose a delivery time'
-      : 'Choose expiry';
+    const timeFieldsLegend = hasScheduledPushSupport ? 'Choose a delivery time' : 'Choose expiry';
 
     const timeFieldsDescription = hasScheduledPushSupport
       ? 'We can send the campaign immediately, or any time in the next 2 weeks.'
@@ -958,16 +864,11 @@ class PushNew extends DashboardView {
 
     const deliveryTimeFields = hasScheduledPushSupport ? (
       <Fieldset legend={timeFieldsLegend} description={timeFieldsDescription}>
-        {hasScheduledPushSupport
-          ? this.renderDeliveryContent(fields, setField)
-          : null}
+        {hasScheduledPushSupport ? this.renderDeliveryContent(fields, setField) : null}
         <Field
           label={<Label text="Should this notification expire?" />}
           input={
-            <Toggle
-              value={fields.push_expires}
-              onChange={setField.bind(null, 'push_expires')}
-            />
+            <Toggle value={fields.push_expires} onChange={setField.bind(null, 'push_expires')} />
           }
         />
         {PushHelper.renderExpirationContent(fields, setField)}
@@ -987,7 +888,7 @@ class PushNew extends DashboardView {
           input={
             <Toggle
               value={fields.increment_badge}
-              onChange={(value) => {
+              onChange={value => {
                 setField('increment_badge', value || null);
               }}
             />
@@ -998,10 +899,7 @@ class PushNew extends DashboardView {
     );
 
     const previewFields = (
-      <Fieldset
-        legend="Preview"
-        description="Double check that everything looks good!"
-      >
+      <Fieldset legend="Preview" description="Double check that everything looks good!">
         <PushPreview pushState={fields} audiences={this.props.pushaudiences} />
       </Fieldset>
     );
@@ -1057,7 +955,7 @@ class PushNew extends DashboardView {
 
       // localized message is empty
       if (changes.translation_enable) {
-        this.state.localizedMessages.forEach((message) => {
+        this.state.localizedMessages.forEach(message => {
           if (!message.value || message.value.trim() === '') {
             emptyInputMessages.push(`message for ${message.locale} locale`);
           }
@@ -1133,8 +1031,7 @@ class PushNew extends DashboardView {
     if (emptyInputMessages.length > 0) {
       return (
         <div>
-          {formatErrorMessage(emptyInputMessages, 'empty-inputs')}{' '}
-          {invalidInputMessages}
+          {formatErrorMessage(emptyInputMessages, 'empty-inputs')} {invalidInputMessages}
         </div>
       );
     } else {
@@ -1193,9 +1090,7 @@ class PushNew extends DashboardView {
             deviceNote = (
               <span>
                 This notification will be sent to{' '}
-                <strong>{`${count} ${
-                  count === 1 ? 'device' : 'devices'
-                }`}</strong>
+                <strong>{`${count} ${count === 1 ? 'device' : 'devices'}`}</strong>
                 .&nbsp;
               </span>
             );
@@ -1209,9 +1104,7 @@ class PushNew extends DashboardView {
               <span>
                 It will be sent{' '}
                 <strong>
-                  {changes.push_time_type === 'now'
-                    ? 'immediately'
-                    : String(changes.push_time)}
+                  {changes.push_time_type === 'now' ? 'immediately' : String(changes.push_time)}
                 </strong>
                 .&nbsp;
               </span>

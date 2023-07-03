@@ -37,10 +37,7 @@ export default class PushAudiencesBaseRow extends React.Component {
     }
     const query = this.props.id === NEW_SEGMENT_ID ? this.props.query : null;
     //Added count fetch logic directly to component
-    const { xhr, promise } = context.fetchPushSubscriberCount(
-      this.props.id,
-      query
-    );
+    const { xhr, promise } = context.fetchPushSubscriberCount(this.props.id, query);
     this.xhrHandle = xhr;
     promise.then(
       ({ approximate, count }) => {

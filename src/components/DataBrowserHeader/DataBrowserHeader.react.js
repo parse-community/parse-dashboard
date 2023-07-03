@@ -44,22 +44,14 @@ const dataBrowserHeaderSource = {
   },
 };
 
-@DropTarget(
-  Types.DATA_BROWSER_HEADER,
-  dataBrowserHeaderTarget,
-  (connect, monitor) => ({
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-  })
-)
-@DragSource(
-  Types.DATA_BROWSER_HEADER,
-  dataBrowserHeaderSource,
-  (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
-  })
-)
+@DropTarget(Types.DATA_BROWSER_HEADER, dataBrowserHeaderTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+}))
+@DragSource(Types.DATA_BROWSER_HEADER, dataBrowserHeaderSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging(),
+}))
 class DataBrowserHeader extends React.Component {
   render() {
     const {
@@ -87,9 +79,7 @@ class DataBrowserHeader extends React.Component {
       connectDropTarget(
         <div className={classes.join(' ')} style={style}>
           <div className={styles.name}>{name}</div>
-          <div className={styles.type}>
-            {targetClass ? `${type} <${targetClass}>` : type}
-          </div>
+          <div className={styles.type}>{targetClass ? `${type} <${targetClass}>` : type}</div>
         </div>
       )
     );
@@ -101,9 +91,7 @@ export default DataBrowserHeader;
 DataBrowserHeader.propTypes = {
   name: PropTypes.string.isRequired.describe('The name of the column.'),
   type: PropTypes.string.describe('The type of the column.'),
-  targetClass: PropTypes.string.describe(
-    'The target class for a Pointer or Relation.'
-  ),
+  targetClass: PropTypes.string.describe('The target class for a Pointer or Relation.'),
   order: PropTypes.oneOf(['ascending', 'descending']).describe(
     'A sort ordering that displays as an arrow in the header.'
   ),

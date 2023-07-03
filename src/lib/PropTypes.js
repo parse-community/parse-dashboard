@@ -78,10 +78,7 @@ Types = {
   },
 
   objectOf: function (valueType) {
-    return wrapType(
-      PropTypes.objectOf(valueType),
-      `Object<String, ${valueType._id}>`
-    );
+    return wrapType(PropTypes.objectOf(valueType), `Object<String, ${valueType._id}>`);
   },
 
   shape: function (shape) {

@@ -10,11 +10,7 @@ import React from 'react';
 import styles from 'components/AppBadge/AppBadge.scss';
 
 const AppBadge = ({ production }) => (
-  <span
-    className={
-      production ? [styles.badge, styles.prod].join(' ') : styles.badge
-    }
-  >
+  <span className={production ? [styles.badge, styles.prod].join(' ') : styles.badge}>
     {production ? 'PROD' : 'DEV'}
   </span>
 );
@@ -22,7 +18,5 @@ const AppBadge = ({ production }) => (
 export default AppBadge;
 
 AppBadge.propTypes = {
-  production: PropTypes.bool.describe(
-    'Indicates whether the app is in production mode or not.'
-  ),
+  production: PropTypes.bool.describe('Indicates whether the app is in production mode or not.'),
 };

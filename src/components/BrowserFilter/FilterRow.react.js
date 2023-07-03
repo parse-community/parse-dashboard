@@ -39,7 +39,7 @@ function compareValue(
         <input
           type="text"
           value={value}
-          onChange={(e) => onChangeCompareTo(e.target.value)}
+          onChange={e => onChangeCompareTo(e.target.value)}
           onKeyDown={onKeyDown}
           ref={setFocus}
         />
@@ -49,7 +49,7 @@ function compareValue(
         <input
           type="text"
           value={value.objectId || ''}
-          onChange={(e) => {
+          onChange={e => {
             const obj = new Parse.Object(info.targetClass);
             obj.id = e.target.value;
             onChangeCompareTo(obj.toPointer());
@@ -63,7 +63,7 @@ function compareValue(
           color={active ? 'blue' : 'purple'}
           value={value ? 'True' : 'False'}
           options={['True', 'False']}
-          onChange={(val) => onChangeCompareTo(val === 'True')}
+          onChange={val => onChangeCompareTo(val === 'True')}
         />
       );
     case 'Number':
@@ -71,7 +71,7 @@ function compareValue(
         <input
           type="text"
           value={value}
-          onChange={(e) => {
+          onChange={e => {
             let val = value;
             if (!e.target.value.length || e.target.value === '-') {
               val = e.target.value;
@@ -89,7 +89,7 @@ function compareValue(
           fixed={true}
           className={styles.date}
           value={Parse._decode('date', value)}
-          onChange={(value) => onChangeCompareTo(Parse._encode(value))}
+          onChange={value => onChangeCompareTo(Parse._encode(value))}
           ref={setFocus}
           parentContentId={parentContentId}
         />
@@ -113,15 +113,15 @@ const FilterRow = ({
   parentContentId,
   editMode,
 }) => {
-  const setFocus = useCallback((input) => {
+  const setFocus = useCallback(input => {
     if (input !== null && editMode) {
       input.focus();
     }
   }, []);
 
-  const buildSuggestions = (input) => {
+  const buildSuggestions = input => {
     const regex = new RegExp(input.split('').join('.*?'), 'i');
-    return fields.filter((f) => regex.test(f));
+    return fields.filter(f => regex.test(f));
   };
 
   return (
@@ -165,8 +165,8 @@ const FilterRow = ({
         width={compareInfo.type ? '175' : '325'}
         color={active ? 'blue' : 'purple'}
         value={Constraints[currentConstraint].name}
-        options={constraints.map((c) => Constraints[c].name)}
-        onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)}
+        options={constraints.map(c => Constraints[c].name)}
+        onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
       />
       {compareValue(
         compareInfo,
@@ -178,12 +178,7 @@ const FilterRow = ({
         setFocus
       )}
       <button type="button" className={styles.remove} onClick={onDeleteRow}>
-        <Icon
-          name="minus-solid"
-          width={14}
-          height={14}
-          fill="rgba(0,0,0,0.4)"
-        />
+        <Icon name="minus-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />
       </button>
     </div>
   );

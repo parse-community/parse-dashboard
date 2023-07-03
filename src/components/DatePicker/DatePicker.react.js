@@ -47,19 +47,13 @@ export default class DatePicker extends React.Component {
     if (this.state.open) {
       const width = this.inputRef.current.clientWidth;
       popover = (
-        <Popover
-          position={this.state.position}
-          onExternalClick={this.close.bind(this)}
-        >
+        <Popover position={this.state.position} onExternalClick={this.close.bind(this)}>
           <SliderWrap direction={Directions.DOWN} expanded={true}>
             <div style={{ width }} className={styles.picker}>
               <Calendar
                 value={this.props.value}
-                onChange={(newValue) => {
-                  this.setState(
-                    { open: false },
-                    this.props.onChange.bind(null, newValue)
-                  );
+                onChange={newValue => {
+                  this.setState({ open: false }, this.props.onChange.bind(null, newValue));
                 }}
               />
             </div>
@@ -83,11 +77,7 @@ export default class DatePicker extends React.Component {
     }
 
     return (
-      <div
-        className={styles.input}
-        onClick={this.toggle.bind(this)}
-        ref={this.inputRef}
-      >
+      <div className={styles.input} onClick={this.toggle.bind(this)} ref={this.inputRef}>
         {content}
         {popover}
       </div>

@@ -26,10 +26,7 @@ class AppSelector extends React.Component {
   }
 
   handleConfirm() {
-    const newPath = this.location.pathname.replace(
-      /\/_(\/|$)/,
-      '/' + this.state.slug + '/'
-    );
+    const newPath = this.location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
     this.props.navigate(newPath);
   }
 
@@ -51,11 +48,8 @@ class AppSelector extends React.Component {
         <Field
           label={<Label text="Select one of your apps" />}
           input={
-            <Dropdown
-              value={this.state.slug}
-              onChange={(slug) => this.setState({ slug })}
-            >
-              {apps.map((app) => (
+            <Dropdown value={this.state.slug} onChange={slug => this.setState({ slug })}>
+              {apps.map(app => (
                 <Option key={app.slug} value={app.slug}>
                   {app.name}
                 </Option>

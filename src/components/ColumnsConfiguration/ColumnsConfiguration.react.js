@@ -38,7 +38,7 @@ export default class ColumnsConfiguration extends React.Component {
 
   showAll() {
     let shouldReload = false;
-    const updatedOrder = this.props.order.map((field) => {
+    const updatedOrder = this.props.order.map(field => {
       if (!shouldReload && !field.cached) {
         shouldReload = true;
       }
@@ -48,9 +48,7 @@ export default class ColumnsConfiguration extends React.Component {
   }
 
   hideAll() {
-    this.props.handleColumnsOrder(
-      this.props.order.map((order) => ({ ...order, visible: false }))
-    );
+    this.props.handleColumnsOrder(this.props.order.map(order => ({ ...order, visible: false })));
   }
 
   autoSort() {
@@ -68,14 +66,13 @@ export default class ColumnsConfiguration extends React.Component {
       }
     }
     this.props.handleColumnsOrder([
-      ...order.default.filter((column) => column),
+      ...order.default.filter(column => column),
       ...order.other.sort((a, b) => a.name.localeCompare(b.name)),
     ]);
   }
 
   render() {
-    const { handleColumnDragDrop, handleColumnsOrder, order, disabled } =
-      this.props;
+    const { handleColumnDragDrop, handleColumnsOrder, order, disabled } = this.props;
     const title = (
       <div className={styles.title} onClick={this.toggle.bind(this)}>
         <Icon name="manage-columns" width={14} height={14} />
@@ -84,11 +81,7 @@ export default class ColumnsConfiguration extends React.Component {
     );
 
     let entry = (
-      <div
-        className={styles.entry}
-        onClick={this.toggle.bind(this)}
-        ref={this.entryRef}
-      >
+      <div className={styles.entry} onClick={this.toggle.bind(this)} ref={this.entryRef}>
         <Icon name="manage-columns" width={14} height={14} />
         <span>Manage Columns</span>
       </div>
@@ -124,7 +117,7 @@ export default class ColumnsConfiguration extends React.Component {
                         index={index}
                         name={name}
                         visible={visible}
-                        onChangeVisible={(visible) => {
+                        onChangeVisible={visible => {
                           const updatedOrder = [...order];
                           updatedOrder[index] = {
                             ...rest,
@@ -142,10 +135,7 @@ export default class ColumnsConfiguration extends React.Component {
                           ) {
                             shouldReload = false;
                           }
-                          if (
-                            this.props.className === '_User' &&
-                            name === 'password'
-                          ) {
+                          if (this.props.className === '_User' && name === 'password') {
                             shouldReload = false;
                           }
                           if (updatedOrder[index].cached) {
@@ -160,21 +150,9 @@ export default class ColumnsConfiguration extends React.Component {
                 </DndProvider>
               </div>
               <div className={styles.footer}>
-                <Button
-                  color="white"
-                  value="Hide all"
-                  onClick={this.hideAll.bind(this)}
-                />
-                <Button
-                  color="white"
-                  value="Show all"
-                  onClick={this.showAll.bind(this)}
-                />
-                <Button
-                  color="white"
-                  value="Auto-sort"
-                  onClick={this.autoSort.bind(this)}
-                />
+                <Button color="white" value="Hide all" onClick={this.hideAll.bind(this)} />
+                <Button color="white" value="Show all" onClick={this.showAll.bind(this)} />
+                <Button color="white" value="Auto-sort" onClick={this.autoSort.bind(this)} />
               </div>
             </div>
           </div>

@@ -28,69 +28,50 @@ export default class DataBrowserHeaderBar extends React.Component {
     const elements = [
       <div key="check" className={[styles.wrap, styles.check].join(' ')}>
         {readonly ? null : (
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={(e) => selectAll(e.target.checked)}
-          />
+          <input type="checkbox" checked={selected} onChange={e => selectAll(e.target.checked)} />
         )}
       </div>,
     ];
 
-    headers.forEach(
-      ({ width, name, type, targetClass, order, visible, preventSort }, i) => {
-        if (!visible) {
-          return;
-        }
-        const wrapStyle = { width };
-        if (i % 2) {
-          wrapStyle.background = '#726F85';
-        } else {
-          wrapStyle.background = '#66637A';
-        }
-        let onClick = null;
-        if (
-          !preventSort &&
-          (type === 'String' ||
-            type === 'Number' ||
-            type === 'Date' ||
-            type === 'Boolean')
-        ) {
-          onClick = () =>
-            updateOrdering((order === 'descending' ? '' : '-') + name);
-        }
-
-        let className = styles.wrap;
-        if (preventSort) {
-          className += ` ${styles.preventSort} `;
-        }
-
-        elements.push(
-          <div
-            onClick={onClick}
-            key={'header' + i}
-            className={className}
-            style={wrapStyle}
-          >
-            <DataBrowserHeader
-              name={name}
-              type={type}
-              targetClass={targetClass}
-              order={order}
-              index={i}
-              moveDataBrowserHeader={this.props.handleDragDrop}
-            />
-          </div>
-        );
-        elements.push(
-          <DragHandle
-            key={'handle' + i}
-            className={styles.handle}
-            onDrag={onResize.bind(null, i)}
-          />
-        );
+    headers.forEach(({ width, name, type, targetClass, order, visible, preventSort }, i) => {
+      if (!visible) {
+        return;
       }
-    );
+      const wrapStyle = { width };
+      if (i % 2) {
+        wrapStyle.background = '#726F85';
+      } else {
+        wrapStyle.background = '#66637A';
+      }
+      let onClick = null;
+      if (
+        !preventSort &&
+        (type === 'String' || type === 'Number' || type === 'Date' || type === 'Boolean')
+      ) {
+        onClick = () => updateOrdering((order === 'descending' ? '' : '-') + name);
+      }
+
+      let className = styles.wrap;
+      if (preventSort) {
+        className += ` ${styles.preventSort} `;
+      }
+
+      elements.push(
+        <div onClick={onClick} key={'header' + i} className={className} style={wrapStyle}>
+          <DataBrowserHeader
+            name={name}
+            type={type}
+            targetClass={targetClass}
+            order={order}
+            index={i}
+            moveDataBrowserHeader={this.props.handleDragDrop}
+          />
+        </div>
+      );
+      elements.push(
+        <DragHandle key={'handle' + i} className={styles.handle} onDrag={onResize.bind(null, i)} />
+      );
+    });
 
     if (onAddColumn) {
       const finalStyle = {};
@@ -101,11 +82,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       elements.push(
         readonly || preventSchemaEdits ? null : (
           <div key="add" className={styles.addColumn} style={finalStyle}>
-            <button
-              type="button"
-              className={styles.addColumnButton}
-              onClick={onAddColumn}
-            >
+            <button type="button" className={styles.addColumnButton} onClick={onAddColumn}>
               Add a new column
             </button>
           </div>

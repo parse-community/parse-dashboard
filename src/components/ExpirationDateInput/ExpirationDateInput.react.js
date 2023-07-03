@@ -36,18 +36,14 @@ const ExpirationDateInput = ({ month, year, onChange }) => {
       <Dropdown
         width="40%"
         value={String(month)}
-        onChange={(value) =>
-          onChange({ month: parseInt(value, 10), year: year })
-        }
+        onChange={value => onChange({ month: parseInt(value, 10), year: year })}
       >
         {months}
       </Dropdown>
       <Dropdown
         width="60%"
         value={String(year)}
-        onChange={(value) =>
-          onChange({ month: month, year: parseInt(value, 10) })
-        }
+        onChange={value => onChange({ month: month, year: parseInt(value, 10) })}
       >
         {years}
       </Dropdown>

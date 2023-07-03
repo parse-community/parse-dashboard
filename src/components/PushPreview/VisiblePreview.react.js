@@ -28,9 +28,7 @@ const VisiblePreview = ({ type, message, time, appName, fade, isLocal }) => {
   if (type === 'ios') {
     notificationTime = (
       <div className={styles.notifTime}>
-        {DateUtils.WEEKDAYS[
-          time[DateUtils.getDateMethod(isLocal, 'getDay')]()
-        ].substr(0, 3) +
+        {DateUtils.WEEKDAYS[time[DateUtils.getDateMethod(isLocal, 'getDay')]()].substr(0, 3) +
           ' ' +
           timeString}
       </div>

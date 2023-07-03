@@ -97,22 +97,18 @@ export function getOrder(cols, appId, className, defaultPrefs) {
 
   if (defaultPrefs) {
     // Check that every default pref is in the prefs array.
-    defaultPrefs.forEach((defaultPrefsItem) => {
+    defaultPrefs.forEach(defaultPrefsItem => {
       // If the default pref is not in the prefs: Add it.
-      if (
-        !prefs.find((prefsItem) => defaultPrefsItem.name === prefsItem.name)
-      ) {
+      if (!prefs.find(prefsItem => defaultPrefsItem.name === prefsItem.name)) {
         prefs.push(defaultPrefsItem);
       }
     });
 
     // Iterate over the current prefs
-    prefs = prefs.map((prefsItem) => {
+    prefs = prefs.map(prefsItem => {
       // Get the default prefs item.
       const defaultPrefsItem =
-        defaultPrefs.find(
-          (defaultPrefsItem) => defaultPrefsItem.name === prefsItem.name
-        ) || {};
+        defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
       // The values from the prefsItem object will overwrite those from the defaultPrefsItem object.
       return {
         // Set default width if not given.

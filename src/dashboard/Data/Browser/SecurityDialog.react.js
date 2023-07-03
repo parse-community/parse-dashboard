@@ -15,9 +15,7 @@ const pointerPrefix = 'userField:';
 
 function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
   if (parseServerSupportsPointerPermissions) {
-    const fieldName = text.startsWith(pointerPrefix)
-      ? text.substring(pointerPrefix.length)
-      : text;
+    const fieldName = text.startsWith(pointerPrefix) ? text.substring(pointerPrefix.length) : text;
     if (pointers.includes(fieldName)) {
       return Promise.resolve({ entry: fieldName, type: 'pointer' });
     }
@@ -120,26 +118,17 @@ export default class SecurityDialog extends React.Component {
           confirmText="Save CLP"
           columns={this.props.columns}
           details={
-            <a
-              target="_blank"
-              href="http://docs.parseplatform.org/ios/guide/#security"
-            >
+            <a target="_blank" href="http://docs.parseplatform.org/ios/guide/#security">
               Learn more about CLPs and app security
             </a>
           }
           permissions={this.props.perms}
           userPointers={this.props.userPointers}
-          validateEntry={(entry) =>
-            validateEntry(
-              this.props.userPointers,
-              entry,
-              parseServerSupportsPointerPermissions
-            )
+          validateEntry={entry =>
+            validateEntry(this.props.userPointers, entry, parseServerSupportsPointerPermissions)
           }
           onCancel={this.handleClose}
-          onConfirm={(perms) =>
-            this.props.onChangeCLP(perms).then(this.handleClose)
-          }
+          onConfirm={perms => this.props.onChangeCLP(perms).then(this.handleClose)}
         />
       );
     }

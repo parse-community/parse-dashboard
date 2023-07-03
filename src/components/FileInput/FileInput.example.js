@@ -26,26 +26,11 @@ export const demos = [
           input={<FileInput value="my_file.txt" onChange={function () {}} />}
         />
         <Field
-          label={
-            <Label
-              text="Object value"
-              description="But this object has no URL"
-            />
-          }
-          input={
-            <FileInput
-              value={{ name: 'my_file.txt' }}
-              onChange={function () {}}
-            />
-          }
+          label={<Label text="Object value" description="But this object has no URL" />}
+          input={<FileInput value={{ name: 'my_file.txt' }} onChange={function () {}} />}
         />
         <Field
-          label={
-            <Label
-              text="Object value"
-              description="This object has a name and a value"
-            />
-          }
+          label={<Label text="Object value" description="This object has a name and a value" />}
           input={
             <FileInput
               value={{ name: 'my_file.txt', url: 'https://www.parse.com' }}

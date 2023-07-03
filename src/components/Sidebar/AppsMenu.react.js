@@ -14,10 +14,7 @@ import styles from 'components/Sidebar/Sidebar.scss';
 import baseStyles from 'stylesheets/base.scss';
 
 const AppsMenu = ({ apps, current, height, onSelect, onPinClick }) => (
-  <div
-    style={{ height }}
-    className={[styles.appsMenu, baseStyles.unselectable].join(' ')}
-  >
+  <div style={{ height }} className={[styles.appsMenu, baseStyles.unselectable].join(' ')}>
     <AppName
       name={current.name}
       onClick={onSelect.bind(null, current.slug)}
@@ -25,7 +22,7 @@ const AppsMenu = ({ apps, current, height, onSelect, onPinClick }) => (
     />
     <div className={styles.menuSection}>All Apps</div>
     <div className={styles.appListContainer}>
-      {apps.map((app) => {
+      {apps.map(app => {
         if (app.slug === current.slug) {
           return null;
         }

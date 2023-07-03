@@ -9,14 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/Field/Field.scss';
 
-const Field = ({
-  label,
-  input,
-  labelWidth = 50,
-  labelPadding,
-  height,
-  className,
-}) => {
+const Field = ({ label, input, labelWidth = 50, labelPadding, height, className }) => {
   const classes = [styles.field];
   if (className) {
     classes.push(className);
@@ -30,16 +23,10 @@ const Field = ({
   }
   return (
     <div className={classes.join(' ')}>
-      <div
-        className={styles.left}
-        style={{ width: labelWidth + '% ', height: height }}
-      >
+      <div className={styles.left} style={{ width: labelWidth + '% ', height: height }}>
         {label}
       </div>
-      <div
-        className={styles.right}
-        style={{ marginLeft: labelWidth + '%', height: height }}
-      >
+      <div className={styles.right} style={{ marginLeft: labelWidth + '%', height: height }}>
         {input}
       </div>
     </div>

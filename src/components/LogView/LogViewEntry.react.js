@@ -20,9 +20,9 @@ const TIMESTAMP_REGEX = [
   '(\\])', // Any Single Character 2
 ].join('');
 
-const isError = (str) => str[0] === 'E';
+const isError = str => str[0] === 'E';
 
-const getLogEntryInfo = (str) => {
+const getLogEntryInfo = str => {
   const re = getTimestampRegex();
   const timeStampStr = str.match(re) ? str.match(re)[0] : '';
   return {
@@ -50,7 +50,5 @@ const LogViewEntry = ({ text = '', timestamp }) => {
 export default LogViewEntry;
 
 LogViewEntry.propTypes = {
-  text: PropTypes.string.isRequired.describe(
-    'The content of the log view entry.'
-  ),
+  text: PropTypes.string.isRequired.describe('The content of the log view entry.'),
 };

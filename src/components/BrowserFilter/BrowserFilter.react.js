@@ -31,9 +31,7 @@ export default class BrowserFilter extends React.Component {
       filters: new List(),
       confirmName: false,
       name: '',
-      blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(
-        props.blacklistedFilters
-      ),
+      blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -54,11 +52,9 @@ export default class BrowserFilter extends React.Component {
         this.state.blacklistedFilters
       );
       const field = Object.keys(available)[0];
-      filters = new List([
-        new Map({ field: field, constraint: available[field][0] }),
-      ]);
+      filters = new List([new Map({ field: field, constraint: available[field][0] })]);
     }
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       open: !prevState.open,
       filters: filters,
       name: '',
@@ -76,9 +72,7 @@ export default class BrowserFilter extends React.Component {
     );
     const field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
-      filters: filters.push(
-        new Map({ field: field, constraint: available[field][0] })
-      ),
+      filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
       editMode: true,
     }));
   }
@@ -88,7 +82,7 @@ export default class BrowserFilter extends React.Component {
   }
 
   apply() {
-    const formatted = this.state.filters.map((filter) => {
+    const formatted = this.state.filters.map(filter => {
       // TODO: type is unused?
       /*let type = this.props.schema[filter.get('field')].type;
       if (Filters.Constraints[filter.get('constraint')].hasOwnProperty('field')) {
@@ -97,8 +91,7 @@ export default class BrowserFilter extends React.Component {
 
       // since we are preserving previous compareTo value
       // remove compareTo for constraints which are not comparable
-      const isComparable =
-        Filters.Constraints[filter.get('constraint')].comparable;
+      const isComparable = Filters.Constraints[filter.get('constraint')].comparable;
       if (!isComparable) {
         return filter.delete('compareTo');
       }
@@ -108,9 +101,8 @@ export default class BrowserFilter extends React.Component {
   }
 
   save() {
-    const formatted = this.state.filters.map((filter) => {
-      const isComparable =
-        Filters.Constraints[filter.get('constraint')].comparable;
+    const formatted = this.state.filters.map(filter => {
+      const isComparable = Filters.Constraints[filter.get('constraint')].comparable;
       if (!isComparable) {
         return filter.delete('compareTo');
       }
@@ -133,10 +125,7 @@ export default class BrowserFilter extends React.Component {
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
       }
-      const available = Filters.availableFilters(
-        this.props.schema,
-        this.state.filters
-      );
+      const available = Filters.availableFilters(this.props.schema, this.state.filters);
       popover = (
         <Popover
           fixed={true}
@@ -163,9 +152,9 @@ export default class BrowserFilter extends React.Component {
                 blacklist={this.state.blacklistedFilters}
                 schema={this.props.schema}
                 filters={this.state.filters}
-                onChange={(filters) => this.setState({ filters: filters })}
+                onChange={filters => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
-                renderRow={(props) => (
+                renderRow={props => (
                   <FilterRow
                     {...props}
                     active={this.props.filters.size > 0}
@@ -181,7 +170,7 @@ export default class BrowserFilter extends React.Component {
                     <TextInput
                       placeholder="Give it a good name..."
                       value={this.state.name}
-                      onChange={(name) => this.setState({ name })}
+                      onChange={name => this.setState({ name })}
                     />
                   }
                 />

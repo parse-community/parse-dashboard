@@ -15,8 +15,7 @@ import { CurrentApp } from 'context/currentApp';
 export default class GraphQLConsole extends Component {
   static contextType = CurrentApp;
   render() {
-    const { applicationId, clientKey, graphQLServerURL, masterKey } =
-      this.context;
+    const { applicationId, clientKey, graphQLServerURL, masterKey } = this.context;
     let content;
     if (!graphQLServerURL) {
       content = (

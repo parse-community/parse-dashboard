@@ -44,8 +44,7 @@ class JobEdit extends React.Component {
       if (changes.repeatType === 'daily') {
         interval = 1440;
       } else {
-        interval =
-          changes.intervalCount * (changes.intervalUnit === 'hour' ? 60 : 1);
+        interval = changes.intervalCount * (changes.intervalUnit === 'hour' ? 60 : 1);
       }
       schedule.job_schedule.repeatMinutes = interval;
     }
@@ -68,13 +67,10 @@ class JobEdit extends React.Component {
 
   render() {
     if (this.props.params.jobId) {
-      if (
-        this.props.jobs.data.get('jobs') &&
-        this.props.jobs.data.get('jobs').size
-      ) {
+      if (this.props.jobs.data.get('jobs') && this.props.jobs.data.get('jobs').size) {
         const data = this.props.jobs.data
           .get('jobs')
-          .filter((obj) => obj.objectId === this.props.params.jobId)
+          .filter(obj => obj.objectId === this.props.params.jobId)
           .first();
         if (data) {
           const initialFields = {
@@ -122,13 +118,7 @@ class JobEdit extends React.Component {
       }
       return null;
     }
-    return (
-      <JobsForm
-        {...this.props}
-        submitForm={this.submitForm.bind(this)}
-        initialFields={{}}
-      />
-    );
+    return <JobsForm {...this.props} submitForm={this.submitForm.bind(this)} initialFields={{}} />;
   }
 }
 

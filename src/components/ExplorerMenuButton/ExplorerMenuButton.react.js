@@ -136,12 +136,8 @@ ExplorerMenuButton.propTypes = {
   onSave: PropTypes.func.describe(
     'Function to be called when an analytics query is sucessfully composed.'
   ),
-  onSelect: PropTypes.func.describe(
-    'Function to be called when a query is being selected.'
-  ),
-  onDelete: PropTypes.func.describe(
-    'Function to be called when a query is being deleted.'
-  ),
+  onSelect: PropTypes.func.describe('Function to be called when a query is being selected.'),
+  onDelete: PropTypes.func.describe('Function to be called when a query is being deleted.'),
   isTimeSeries: PropTypes.bool.describe(
     'If set to true, add default grouping (day, hour) and aggregate to the composer. ' +
       'Otherwise, render limit inside the composer.'

@@ -35,10 +35,7 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
         {PushUtils.shortInfoBuilder(this.props.query, this.props.schema)}
       </div>
     );
-    const countDetails = PushUtils.formatCountDetails(
-      this.state.count,
-      this.state.approximate
-    );
+    const countDetails = PushUtils.formatCountDetails(this.state.count, this.state.approximate);
     return (
       <tr>
         <td className={styles.colName}>
@@ -56,15 +53,10 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
           {detailsView}
           <button
             type="button"
-            className={[
-              styles.moreDetails,
-              !this.props.query ? styles.hideMoreDetails : '',
-            ].join(' ')}
-            onClick={this.handleDetailsToggle.bind(
-              this,
-              this.props.query,
-              this.props.schema
+            className={[styles.moreDetails, !this.props.query ? styles.hideMoreDetails : ''].join(
+              ' '
             )}
+            onClick={this.handleDetailsToggle.bind(this, this.props.query, this.props.schema)}
           >
             {this.state.expandedView ? 'less details' : 'more details'}
           </button>
@@ -77,19 +69,9 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
           <button
             className={styles.removeIcon}
             type="button"
-            onClick={this.props.onDelete.bind(
-              undefined,
-              this.props.id,
-              this.props.name
-            )}
+            onClick={this.props.onDelete.bind(undefined, this.props.id, this.props.name)}
           >
-            <Icon
-              name="trash-outline"
-              fill="#343445"
-              width={20}
-              height={20}
-              role="button"
-            />
+            <Icon name="trash-outline" fill="#343445" width={20} height={20} role="button" />
           </button>
         </td>
       </tr>
@@ -98,24 +80,14 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
 }
 
 PushAudiencesIndexRow.propTypes = {
-  id: PropTypes.string.isRequired.describe(
-    'The id of the push audience option.'
-  ),
+  id: PropTypes.string.isRequired.describe('The id of the push audience option.'),
   name: PropTypes.string.describe('The name of the push audience option.'),
-  createdAt: PropTypes.instanceOf(Date).describe(
-    'The size of the push audience option.'
-  ),
+  createdAt: PropTypes.instanceOf(Date).describe('The size of the push audience option.'),
   query: PropTypes.object.describe(
     'Key value pair of installation condition info for the specific audience.'
   ),
   schema: PropTypes.object.describe('Schema of installation.'),
-  timesUsed: PropTypes.number.describe(
-    'Number of times audience has been used.'
-  ),
-  onDelete: PropTypes.func.describe(
-    'Callback to be executed on click of delete button.'
-  ),
-  onSendPush: PropTypes.func.describe(
-    'Callback to be executed on send push button.'
-  ),
+  timesUsed: PropTypes.number.describe('Number of times audience has been used.'),
+  onDelete: PropTypes.func.describe('Callback to be executed on click of delete button.'),
+  onSendPush: PropTypes.func.describe('Callback to be executed on send push button.'),
 };

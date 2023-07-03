@@ -23,7 +23,7 @@ class Demo extends React.Component {
       <SegmentSelect
         values={['iOS', 'Android', 'OS X', 'Windows']}
         current={this.state.current}
-        onChange={(current) => this.setState({ current })}
+        onChange={current => this.setState({ current })}
       />
     );
   }

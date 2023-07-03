@@ -54,7 +54,7 @@ export default class DropClassDialog extends React.Component {
             <TextInput
               placeholder="Current class name"
               value={this.state.confirmation}
-              onChange={(confirmation) => this.setState({ confirmation })}
+              onChange={confirmation => this.setState({ confirmation })}
             />
           }
         />

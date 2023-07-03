@@ -10,7 +10,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/Label/Label.scss';
 
-const Label = (props) => {
+const Label = props => {
   const padding = (props.padding || 20) + 'px';
   return (
     <div
@@ -18,9 +18,7 @@ const Label = (props) => {
       style={{ padding: '0 ' + padding }}
     >
       <div className={styles.text}>{props.text}</div>
-      {props.description ? (
-        <div className={styles.description}>{props.description}</div>
-      ) : null}
+      {props.description ? <div className={styles.description}>{props.description}</div> : null}
     </div>
   );
 };
@@ -30,7 +28,5 @@ export default Label;
 Label.propTypes = {
   text: PropTypes.node.describe('The main text/node of the label.'),
   description: PropTypes.node.describe('The secondary text/node of the label.'),
-  padding: PropTypes.number.describe(
-    'Allows you to override the left-right padding of the label.'
-  ),
+  padding: PropTypes.number.describe('Allows you to override the left-right padding of the label.'),
 };

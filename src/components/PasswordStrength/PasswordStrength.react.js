@@ -19,13 +19,7 @@ const PasswordStrength = ({ strength }) => {
     <div className={styles.strength}>
       <div className={strength === 2 ? styles.green : styles.grey} />
       <div
-        className={
-          strength === 2
-            ? styles.green
-            : strength === 1
-              ? styles.yellow
-              : styles.grey
-        }
+        className={strength === 2 ? styles.green : strength === 1 ? styles.yellow : styles.grey}
       />
       <div
         className={
@@ -38,9 +32,7 @@ const PasswordStrength = ({ strength }) => {
                 : styles.grey
         }
       />
-      {strength > -1 ? (
-        <div className={styles.tip}>{tips[strength]}</div>
-      ) : null}
+      {strength > -1 ? <div className={styles.tip}>{tips[strength]}</div> : null}
     </div>
   );
 };

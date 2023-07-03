@@ -24,10 +24,7 @@ export default class CloneSelectedRowsDialog extends React.Component {
     if (this.state.confirmation === this.props.className) {
       return true;
     }
-    if (
-      !this.props.selection['*'] &&
-      Object.keys(this.props.selection).length < 10
-    ) {
+    if (!this.props.selection['*'] && Object.keys(this.props.selection).length < 10) {
       return true;
     }
     return false;
@@ -49,7 +46,7 @@ export default class CloneSelectedRowsDialog extends React.Component {
             <TextInput
               placeholder="Current class name"
               value={this.state.confirmation}
-              onChange={(confirmation) => this.setState({ confirmation })}
+              onChange={confirmation => this.setState({ confirmation })}
             />
           }
         />

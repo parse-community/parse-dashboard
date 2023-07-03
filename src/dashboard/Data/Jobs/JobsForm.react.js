@@ -171,18 +171,10 @@ export default class JobsForm extends DashboardView {
             }
           />
           <Field
-            label={
-              <Label
-                text="Cloud job"
-                description="Pick which cloud code job to run"
-              />
-            }
+            label={<Label text="Cloud job" description="Pick which cloud code job to run" />}
             input={
-              <Dropdown
-                value={fields.job}
-                onChange={setField.bind(null, 'job')}
-              >
-                {jobs.map((job) => (
+              <Dropdown value={fields.job} onChange={setField.bind(null, 'job')}>
+                {jobs.map(job => (
                   <Option key={job} value={job}>
                     {job}
                   </Option>
@@ -217,10 +209,7 @@ export default class JobsForm extends DashboardView {
             <Field
               label={<Label text="Start immediately?" />}
               input={
-                <Toggle
-                  value={fields.immediate}
-                  onChange={setField.bind(null, 'immediate')}
-                />
+                <Toggle value={fields.immediate} onChange={setField.bind(null, 'immediate')} />
               }
             />
           )}
@@ -244,12 +233,7 @@ export default class JobsForm extends DashboardView {
                 description="You can schedule a job to run once every day, or on an interval"
               />
             }
-            input={
-              <Toggle
-                value={fields.repeat}
-                onChange={setField.bind(null, 'repeat')}
-              />
-            }
+            input={<Toggle value={fields.repeat} onChange={setField.bind(null, 'repeat')} />}
           />
           {this.renderRepeatFields(fields, setField)}
         </Fieldset>
@@ -268,7 +252,7 @@ export default class JobsForm extends DashboardView {
         initialChanges={this.initialChanges()}
         initialFields={this.props.initialFields}
         renderForm={this.renderForm.bind(this)}
-        showFooter={(changes) => changes.job !== ''}
+        showFooter={changes => changes.job !== ''}
         submitText="Schedule"
         onSubmit={({ fields }) => this.props.submitForm(fields)}
         inProgressText={'Scheduling\u2026'}
@@ -300,11 +284,7 @@ export default class JobsForm extends DashboardView {
           if (fields.immediate) {
             pieces.push(<strong>immediately</strong>, '.');
           } else {
-            pieces.push(
-              'on ',
-              <strong>{dateStringUTC(fields.runAt)}</strong>,
-              '.'
-            );
+            pieces.push('on ', <strong>{dateStringUTC(fields.runAt)}</strong>, '.');
           }
           if (fields.repeat) {
             pieces.push(' It will repeat ');
@@ -318,10 +298,7 @@ export default class JobsForm extends DashboardView {
               );
             } else {
               pieces.push(
-                <strong>
-                  {'every ' +
-                    pluralize(fields.intervalCount, fields.intervalUnit)}
-                </strong>,
+                <strong>{'every ' + pluralize(fields.intervalCount, fields.intervalUnit)}</strong>,
                 ' after ',
                 <strong>
                   {fields.repeatStartHour}:{fields.repeatStartMinute} UTC

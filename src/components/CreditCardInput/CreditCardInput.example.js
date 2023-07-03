@@ -21,7 +21,7 @@ class Demo extends React.Component {
       <CreditCardInput
         value={this.state.value}
         lastFour={this.props.lastFour}
-        onChange={(value) => this.setState({ value })}
+        onChange={value => this.setState({ value })}
       />
     );
   }
@@ -40,10 +40,7 @@ export const demos = [
   {
     render: () => (
       <div style={{ width: 500, margin: '0 auto' }}>
-        <Field
-          label={<Label text="Prefilled with last four" />}
-          input={<Demo lastFour="1234" />}
-        />
+        <Field label={<Label text="Prefilled with last four" />} input={<Demo lastFour="1234" />} />
       </div>
     ),
   },

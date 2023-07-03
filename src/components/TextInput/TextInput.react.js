@@ -16,10 +16,7 @@ class TextInput extends React.Component {
       const node = props.forwardedRef.current;
       node.focus();
       if (this.props.value) {
-        node.setSelectionRange(
-          this.props.value.length,
-          this.props.value.length
-        );
+        node.setSelectionRange(this.props.value.length, this.props.value.length);
       }
     }
   }
@@ -51,9 +48,7 @@ class TextInput extends React.Component {
           className={classes.join(' ')}
           rows={this.props.rows && this.props.rows > 3 ? this.props.rows : null}
           style={
-            this.props.rows && this.props.rows > 3
-              ? null
-              : { height: this.props.height || 80 }
+            this.props.rows && this.props.rows > 3 ? null : { height: this.props.height || 80 }
           }
           placeholder={this.props.placeholder}
           value={this.props.value}
@@ -84,21 +79,15 @@ TextInput.propTypes = {
     'Determines whether the input is formatted with a monospace font'
   ),
   disabled: PropTypes.bool.describe('Determines whether the input is disabled'),
-  hidden: PropTypes.bool.describe(
-    'Determines whether the contents are hidden (password field)'
-  ),
+  hidden: PropTypes.bool.describe('Determines whether the contents are hidden (password field)'),
   multiline: PropTypes.bool.describe(
     'Determines whether the input is a multiline input (<textarea>), or has a single input line.'
   ),
   onChange: PropTypes.func.isRequired.describe(
     'A function fired when the input is changed. It receives the new value as its only parameter.'
   ),
-  onBlur: PropTypes.func.describe(
-    'A function fired when the input is blurred.'
-  ),
-  placeholder: PropTypes.string.describe(
-    'A placeholder string, for when the input is empty'
-  ),
+  onBlur: PropTypes.func.describe('A function fired when the input is blurred.'),
+  placeholder: PropTypes.string.describe('A placeholder string, for when the input is empty'),
   value: PropTypes.string.describe('The current value of the controlled input'),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).describe(
     'The height of the field. Can be a string containing any CSS unit, or a number of pixels. Default is 80px.'

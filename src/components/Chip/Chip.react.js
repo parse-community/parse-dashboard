@@ -14,7 +14,7 @@ const Chip = ({ value, onClose }) => (
   <div className={[styles.chip].join(' ')}>
     <div className={[styles.content].join(' ')}>{value}</div>
     <div
-      onClick={(e) => {
+      onClick={e => {
         try {
           e.stopPropagation();
           e.nativeEvent.stopPropagation();
@@ -36,7 +36,5 @@ Chip.propTypes = {
   onClose: PropTypes.func.isRequired.describe(
     'A function called when the close button clicked. It receives the value of as the only parameter.'
   ),
-  value: PropTypes.string.isRequired.describe(
-    'The string to be rendered inside chip.'
-  ),
+  value: PropTypes.string.isRequired.describe('The string to be rendered inside chip.'),
 };

@@ -10,12 +10,7 @@ import Parse from 'parse';
 import { List, Map } from 'immutable';
 import { registerStore } from 'lib/stores/StoreManager';
 
-export const ActionTypes = keyMirror([
-  'FETCH',
-  'CREATE',
-  'DESTROY',
-  'ABORT_FETCH',
-]);
+export const ActionTypes = keyMirror(['FETCH', 'CREATE', 'DESTROY', 'ABORT_FETCH']);
 
 const LASTFETCHTIMEOUT = 60000;
 // Audience state should be an Immutable Map with the following fields:
@@ -31,17 +26,12 @@ function PushAudiencesStore(state, action) {
     case ActionTypes.FETCH:
       if (state && new Date() - state.get('lastFetch') < LASTFETCHTIMEOUT) {
         //check for stale store
-        if (
-          state.get('audiences') &&
-          state.get('audiences').size >= (action.min || 0)
-        ) {
+        if (state.get('audiences') && state.get('audiences').size >= (action.min || 0)) {
           //check for valid audience size
           return Promise.resolve(state);
         }
       }
-      const path = action.limit
-        ? `push_audiences?limit=${action.limit}`
-        : 'push_audiences';
+      const path = action.limit ? `push_audiences?limit=${action.limit}` : 'push_audiences';
       const promise = Parse._request('GET', path, {}, { useMasterKey: true });
 
       return promise.then(({ results, showMore }) => {
@@ -58,7 +48,7 @@ function PushAudiencesStore(state, action) {
         { query: action.query, name: action.name },
         { useMasterKey: true }
       ).then(({ new_audience }) => {
-        return state.update('audiences', (audiences) => {
+        return state.update('audiences', audiences => {
           return audiences.unshift({
             createdAt: new Date(),
             name: action.name,
@@ -75,7 +65,7 @@ function PushAudiencesStore(state, action) {
         {},
         { useMasterKey: true }
       ).then(() => {
-        return state.update('audiences', (audiences) => {
+        return state.update('audiences', audiences => {
           const index = audiences.findIndex(function (audience) {
             return audience.objectId === action.objectId;
           });

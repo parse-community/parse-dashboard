@@ -30,11 +30,7 @@ const Row = ({ title, notes = [], color = 'blue', onDelete, keyWidth }) => {
             >
               {key}
             </span>
-            {strong ? (
-              <strong>{value}</strong>
-            ) : (
-              <span className={styles.din}>{value}</span>
-            )}
+            {strong ? <strong>{value}</strong> : <span className={styles.din}>{value}</span>}
           </div>
         );
       })}

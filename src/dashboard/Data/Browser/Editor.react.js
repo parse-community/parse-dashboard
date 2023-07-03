@@ -16,17 +16,7 @@ import decode from 'parse/lib/browser/decode';
 import React from 'react';
 import StringEditor from 'components/StringEditor/StringEditor.react';
 
-const Editor = ({
-  top,
-  left,
-  type,
-  targetClass,
-  value,
-  readonly,
-  width,
-  onCommit,
-  onCancel,
-}) => {
+const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, onCancel }) => {
   let content = null;
   if (type === 'String') {
     content = (
@@ -40,7 +30,7 @@ const Editor = ({
       />
     );
   } else if (type === 'Array' || type === 'Object') {
-    const encodeCommit = (json) => {
+    const encodeCommit = json => {
       try {
         const obj = decode(JSON.parse(json));
         onCommit(obj);
@@ -58,17 +48,13 @@ const Editor = ({
       />
     );
   } else if (type === 'Polygon') {
-    const encodeCommit = (json) => {
+    const encodeCommit = json => {
       try {
         const coordinates = JSON.parse(json);
         if (coordinates.length < 3) {
           throw 'Polygon must have at least 3 coordinates';
         }
-        if (
-          value &&
-          value.coordinates &&
-          value.coordinates.length === coordinates.length
-        ) {
+        if (value && value.coordinates && value.coordinates.length === coordinates.length) {
           const dirty = coordinates.some((coord, index) => {
             if (
               value.coordinates[index][0] !== coord[0] ||
@@ -92,11 +78,7 @@ const Editor = ({
     };
     content = (
       <StringEditor
-        value={JSON.stringify(
-          (value && value.coordinates) || [['lat', 'lon']],
-          null,
-          2
-        )}
+        value={JSON.stringify((value && value.coordinates) || [['lat', 'lon']], null, 2)}
         resizable={true}
         multiline={true}
         width={width}
@@ -114,35 +96,20 @@ const Editor = ({
         />
       );
     } else {
-      content = (
-        <DateTimeEditor
-          value={value || new Date()}
-          width={width}
-          onCommit={onCommit}
-        />
-      );
+      content = <DateTimeEditor value={value || new Date()} width={width} onCommit={onCommit} />;
     }
   } else if (type === 'Boolean') {
     content = <BooleanEditor value={value} width={width} onCommit={onCommit} />;
   } else if (type === 'Number') {
     content = <NumberEditor value={value} width={width} onCommit={onCommit} />;
   } else if (type === 'GeoPoint') {
-    content = (
-      <GeoPointEditor value={value} width={width} onCommit={onCommit} />
-    );
+    content = <GeoPointEditor value={value} width={width} onCommit={onCommit} />;
   } else if (type === 'File') {
-    content = (
-      <FileEditor
-        value={value}
-        width={width}
-        onCommit={onCommit}
-        onCancel={onCancel}
-      />
-    );
+    content = <FileEditor value={value} width={width} onCommit={onCommit} onCancel={onCancel} />;
   } else if (type === 'ACL') {
     content = <ACLEditor value={value} onCommit={onCommit} />;
   } else if (type === 'Pointer') {
-    const encodeCommit = (pointer) => {
+    const encodeCommit = pointer => {
       if (pointer.length === 0) {
         onCommit(undefined);
       } else {
@@ -154,18 +121,10 @@ const Editor = ({
         );
       }
     };
-    content = (
-      <StringEditor
-        value={value ? value.id : ''}
-        width={width}
-        onCommit={encodeCommit}
-      />
-    );
+    content = <StringEditor value={value ? value.id : ''} width={width} onCommit={encodeCommit} />;
   }
 
-  return (
-    <div style={{ position: 'absolute', top: top, left: left }}>{content}</div>
-  );
+  return <div style={{ position: 'absolute', top: top, left: left }}>{content}</div>;
 };
 
 export default Editor;

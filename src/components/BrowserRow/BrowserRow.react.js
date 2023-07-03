@@ -9,20 +9,14 @@ export default class BrowserRow extends Component {
   shouldComponentUpdate(nextProps) {
     const shallowVerifyProps = [
       ...new Set(Object.keys(this.props).concat(Object.keys(nextProps))),
-    ].filter((propName) => propName !== 'obj');
-    if (
-      shallowVerifyProps.some(
-        (propName) => this.props[propName] !== nextProps[propName]
-      )
-    ) {
+    ].filter(propName => propName !== 'obj');
+    if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
       return true;
     }
     const { obj } = this.props;
     const { obj: nextObj } = nextProps;
     const isRefDifferent = obj !== nextObj;
-    return isRefDifferent
-      ? JSON.stringify(obj) !== JSON.stringify(nextObj)
-      : isRefDifferent;
+    return isRefDifferent ? JSON.stringify(obj) !== JSON.stringify(nextObj) : isRefDifferent;
   }
 
   render() {
@@ -72,7 +66,7 @@ export default class BrowserRow extends Component {
           <input
             type="checkbox"
             checked={selection['*'] || selection[obj.id]}
-            onChange={(e) => selectRow(obj.id, e.target.checked)}
+            onChange={e => selectRow(obj.id, e.target.checked)}
           />
         </span>
         {order.map(({ name, width, visible }, j) => {

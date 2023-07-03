@@ -41,7 +41,7 @@ export default class Collaborators extends React.Component {
     //async validator in the parent form. Currently if you mash the add button, they same collaborator gets added many times.
     return this.context
       .validateCollaborator(newEmail)
-      .then((response) => {
+      .then(response => {
         // lastError logic assumes we only have 1 input field
         if (response.success) {
           const newCollaborators = this.props.collaborators.concat({
@@ -62,7 +62,7 @@ export default class Collaborators extends React.Component {
 
   handleDelete(collaborator) {
     const newCollaborators = this.props.collaborators.filter(
-      (oldCollaborator) => oldCollaborator.userEmail !== collaborator.userEmail
+      oldCollaborator => oldCollaborator.userEmail !== collaborator.userEmail
     );
     this.props.onRemove(collaborator, newCollaborators);
   }
@@ -70,7 +70,7 @@ export default class Collaborators extends React.Component {
   validateEmail(email) {
     // We allow mixed-case emails for Parse accounts
     const isExistingCollaborator = !!this.props.collaborators.find(
-      (collab) => email.toLowerCase() === collab.userEmail.toLowerCase()
+      collab => email.toLowerCase() === collab.userEmail.toLowerCase()
     );
     return (
       validateEmailFormat(email) &&
@@ -90,15 +90,15 @@ export default class Collaborators extends React.Component {
                 text="Add new collaborator"
                 description={
                   <span>
-                    Collaborators will have read/write access but cannot <br />{' '}
-                    delete the app or add more collaborators.
+                    Collaborators will have read/write access but cannot <br /> delete the app or
+                    add more collaborators.
                   </span>
                 }
               />
             }
             input={
               <InlineSubmitInput
-                validate={(email) => this.validateEmail(email)}
+                validate={email => this.validateEmail(email)}
                 placeholder="What&#39;s their email?"
                 onSubmit={this.handleAdd.bind(this)}
                 submitButtonText="ADD"
@@ -109,13 +109,7 @@ export default class Collaborators extends React.Component {
           <Field
             labelWidth={62}
             label={<Label text="App Owner" />}
-            input={
-              <TextInput
-                value={this.props.owner_email}
-                onChange={() => {}}
-                disabled={true}
-              />
-            }
+            input={<TextInput value={this.props.owner_email} onChange={() => {}} disabled={true} />}
           />
         )}
         {this.state.lastError !== '' ? (
@@ -129,7 +123,7 @@ export default class Collaborators extends React.Component {
             labelWidth={62}
             input={
               <FormTable
-                items={this.props.collaborators.map((collaborator) => {
+                items={this.props.collaborators.map(collaborator => {
                   const canDelete =
                     this.props.viewer_email === this.props.owner_email ||
                     collaborator.userEmail === this.props.viewer_email;
@@ -137,9 +131,7 @@ export default class Collaborators extends React.Component {
                   return {
                     title: collaborator.userName || collaborator.userEmail,
                     color: 'green',
-                    onDelete: canDelete
-                      ? this.handleDelete.bind(this, collaborator)
-                      : undefined,
+                    onDelete: canDelete ? this.handleDelete.bind(this, collaborator) : undefined,
                     notes: [
                       {
                         key: 'Email',

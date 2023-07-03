@@ -71,7 +71,7 @@ export default class Calendar extends React.Component {
   renderWeekdays() {
     return (
       <div className={styles.weekdays}>
-        {WEEKDAYS.map((w) => (
+        {WEEKDAYS.map(w => (
           <span key={w}>{w.substr(0, 2)}</span>
         ))}
       </div>
@@ -93,32 +93,18 @@ export default class Calendar extends React.Component {
     }
     for (let i = 1; i <= days; i++) {
       const isSelected =
-        isValueMonth &&
-        this.props.value[getDateMethod(this.props.local, 'getDate')]() === i;
+        isValueMonth && this.props.value[getDateMethod(this.props.local, 'getDate')]() === i;
       const className = isSelected ? styles.selected : '';
       const onChange = this.props.onChange.bind(
         null,
         this.props.local
-          ? new Date(
-            this.state.currentMonth.getFullYear(),
-            this.state.currentMonth.getMonth(),
-            i
-          )
+          ? new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
           : new Date(
-            Date.UTC(
-              this.state.currentMonth.getFullYear(),
-              this.state.currentMonth.getMonth(),
-              i
-            )
+            Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
           )
       );
       labels.push(
-        <button
-          type="button"
-          key={'day' + i}
-          className={className}
-          onClick={onChange}
-        >
+        <button type="button" key={'day' + i} className={className} onClick={onChange}>
           {i}
         </button>
       );
@@ -149,10 +135,6 @@ Calendar.propTypes = {
   onChange: PropTypes.func.isRequired.describe(
     'A callback fired when a new date is selected. It receives a Date object as its only parameter.'
   ),
-  shadeBefore: PropTypes.bool.describe(
-    'Whether to shade the dates before the current selection'
-  ),
-  shadeAfter: PropTypes.bool.describe(
-    'Whether to shade the dates after the current selection'
-  ),
+  shadeBefore: PropTypes.bool.describe('Whether to shade the dates before the current selection'),
+  shadeAfter: PropTypes.bool.describe('Whether to shade the dates after the current selection'),
 };

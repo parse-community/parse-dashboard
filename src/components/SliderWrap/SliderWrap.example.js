@@ -36,9 +36,7 @@ class Toggler extends React.Component {
 
     return (
       <div style={{ padding: '10px 0', width: '400px' }}>
-        <a onClick={this.toggle.bind(this)}>
-          {this.state.expanded ? 'Close' : 'Open'}
-        </a>
+        <a onClick={this.toggle.bind(this)}>{this.state.expanded ? 'Close' : 'Open'}</a>
         <SliderWrap {...otherProps} expanded={this.state.expanded}>
           <div style={contentStyle}>{children}</div>
         </SliderWrap>

@@ -29,7 +29,7 @@ export default class InlineSubmitInput extends React.Component {
   }
 
   handleSubmit() {
-    this.props.onSubmit(this.state.value).then((shouldClearInput) => {
+    this.props.onSubmit(this.state.value).then(shouldClearInput => {
       if (shouldClearInput) {
         this.handleInputChange('');
       }
@@ -47,11 +47,7 @@ export default class InlineSubmitInput extends React.Component {
           />
         </div>
         {this.state.showButton ? (
-          <button
-            type="button"
-            className={styles.button}
-            onClick={this.handleSubmit.bind(this)}
-          >
+          <button type="button" className={styles.button} onClick={this.handleSubmit.bind(this)}>
             <span>{this.props.submitButtonText}</span>
           </button>
         ) : null}
@@ -70,7 +66,5 @@ InlineSubmitInput.propTypes = {
   validate: PropTypes.func.describe(
     'A function fired when the input is changed. It receives the new value as its only parameter, and must return a boolean for whether to show the submit button.'
   ),
-  placeholder: PropTypes.string.describe(
-    'A placeholder string, for when the input is empty'
-  ),
+  placeholder: PropTypes.string.describe('A placeholder string, for when the input is empty'),
 };

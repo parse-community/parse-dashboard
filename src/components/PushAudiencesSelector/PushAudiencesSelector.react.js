@@ -15,13 +15,7 @@ import { fromJS } from 'immutable';
 const AUDIENCE_SIZE_FETCHING_ENABLED = true;
 const AUDIENCE_CREATED_DATE_ENABLED = true;
 
-const PushAudiencesOptions = ({
-  current,
-  onChange,
-  onEditAudience,
-  schema,
-  audiences,
-}) => (
+const PushAudiencesOptions = ({ current, onChange, onEditAudience, schema, audiences }) => (
   <div>
     {audiences.map(({ icon, objectId, name, query, createdAt, filters }) => {
       const queryOrFilters =
@@ -102,21 +96,15 @@ const PushAudiencesSelector = ({
 );
 
 PushAudiencesSelector.propTypes = {
-  audiences: PropTypes.object.isRequired.describe(
-    'Immutable List of push audiences.'
-  ),
+  audiences: PropTypes.object.isRequired.describe('Immutable List of push audiences.'),
   defaultAudience: PropTypes.object.describe(
     'Default push audience option. Not added to the store. Everyone.'
   ),
   newSegment: PropTypes.object.describe(
     'New segment (one time use) push audience option. Not added to the store.'
   ),
-  current: PropTypes.string.isRequired.describe(
-    'id of the currently selected row.'
-  ),
-  onChange: PropTypes.func.isRequired.describe(
-    'callback to be executed when option has changed'
-  ),
+  current: PropTypes.string.isRequired.describe('id of the currently selected row.'),
+  onChange: PropTypes.func.isRequired.describe('callback to be executed when option has changed'),
   schema: PropTypes.object.describe('Schema of installation'),
   onEditAudience: PropTypes.func.isRequired.describe(
     'Callback that is executed on click of edit audience for new segment.'

@@ -55,21 +55,14 @@ const SidebarSection = ({
           <span>{name}</span>
         </div>
       ) : (
-        <Link
-          style={style}
-          className={styles.section_header}
-          to={{ pathname: link || '' }}
-        >
+        <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>
           {iconContent}
           <span>{name}</span>
         </Link>
       )}
 
       {children ? (
-        <div
-          className={styles.section_contents}
-          style={{ background: secondaryBackgroundColor }}
-        >
+        <div className={styles.section_contents} style={{ background: secondaryBackgroundColor }}>
           {children}
         </div>
       ) : null}

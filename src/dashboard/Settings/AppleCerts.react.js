@@ -24,7 +24,7 @@ export default class AppleCerts extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.context.getAppleCerts().then((certs) => {
+    this.context.getAppleCerts().then(certs => {
       if (this.mounted) {
         this.setState({ certs });
       }
@@ -37,11 +37,11 @@ export default class AppleCerts extends React.Component {
 
   handleUpload(file) {
     this.context.uploadAppleCert(file).then(
-      (cert) => {
+      cert => {
         this.state.certs.unshift(cert);
         this.setState({ uploadPending: false });
       },
-      (err) => {
+      err => {
         this.setState({ uploadPending: false, error: err.error });
       }
     );
@@ -81,7 +81,7 @@ export default class AppleCerts extends React.Component {
                     }
                   }
                 },
-                (err) => {
+                err => {
                   this.setState({ deletePending: null, error: err.error });
                 }
               );

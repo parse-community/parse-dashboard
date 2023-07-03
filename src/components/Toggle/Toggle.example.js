@@ -19,7 +19,7 @@ class ToggleWrapper extends React.Component {
       <Toggle
         {...this.props}
         value={this.state.value}
-        onChange={(value) => this.setState({ value })}
+        onChange={value => this.setState({ value })}
       />
     );
   }
@@ -43,11 +43,7 @@ export const demos = [
   {
     name: 'Two-Way Toggle',
     render: () => (
-      <ToggleWrapper
-        type={Toggle.Types.TWO_WAY}
-        optionLeft="Hourly"
-        optionRight="Daily"
-      />
+      <ToggleWrapper type={Toggle.Types.TWO_WAY} optionLeft="Hourly" optionRight="Daily" />
     ),
   },
   {

@@ -19,7 +19,7 @@ export default class ExportDialog extends React.Component {
   }
 
   componentWillMount() {
-    this.context.getExportProgress().then((progress) => {
+    this.context.getExportProgress().then(progress => {
       this.setState({ progress });
     });
   }
@@ -30,7 +30,7 @@ export default class ExportDialog extends React.Component {
     }
     let found = false;
     if (Array.isArray(this.state.progress)) {
-      this.state.progress.forEach((obj) => {
+      this.state.progress.forEach(obj => {
         if (obj.id === this.props.className) {
           found = true;
         }
@@ -57,8 +57,8 @@ export default class ExportDialog extends React.Component {
       >
         {inProgress ? (
           <div style={{ padding: 20 }}>
-            You are currently exporting this class. We'll send you an email when
-            that data is available for you to download.
+            You are currently exporting this class. We'll send you an email when that data is
+            available for you to download.
           </div>
         ) : null}
       </Modal>

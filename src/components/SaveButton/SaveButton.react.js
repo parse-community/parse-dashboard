@@ -67,18 +67,10 @@ SaveButton.propTypes = {
   onClick: PropTypes.func.describe(
     'Click handler. Actived if button is clicked while enabled and in WAITING state.'
   ),
-  waitingText: PropTypes.string.describe(
-    'Text for WAITING state. Defaults to "Save changes".'
-  ),
-  savingText: PropTypes.string.describe(
-    'Text for SAVING state. Defaults to "Saving\u2025".'
-  ),
-  failedText: PropTypes.string.describe(
-    'Text for FAILED state. Defaults to "Save failed".'
-  ),
-  succeededText: PropTypes.string.describe(
-    'Text for SUCCEEDED state. Defaults to "Saved!".'
-  ),
+  waitingText: PropTypes.string.describe('Text for WAITING state. Defaults to "Save changes".'),
+  savingText: PropTypes.string.describe('Text for SAVING state. Defaults to "Saving\u2025".'),
+  failedText: PropTypes.string.describe('Text for FAILED state. Defaults to "Save failed".'),
+  succeededText: PropTypes.string.describe('Text for SUCCEEDED state. Defaults to "Saved!".'),
   disabled: PropTypes.bool.describe('Disables button if in WAITING state.'),
   ...forwardedButtonProps,
 };

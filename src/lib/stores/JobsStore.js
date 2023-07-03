@@ -24,16 +24,14 @@ function JobsStore(state, action) {
         return Promise.resolve(state);
       }
       path = 'cloud_code/jobs?per_page=50';
-      return Parse._request('GET', path, {}, { useMasterKey: true }).then(
-        (results) => {
-          return Map({ lastFetch: new Date(), jobs: List(results) });
-        }
-      );
+      return Parse._request('GET', path, {}, { useMasterKey: true }).then(results => {
+        return Map({ lastFetch: new Date(), jobs: List(results) });
+      });
     case ActionTypes.CREATE:
       path = 'cloud_code/jobs';
       return Parse._request('POST', path, action.schedule, {
         useMasterKey: true,
-      }).then((result) => {
+      }).then(result => {
         const { ...schedule } = action.schedule.job_schedule;
         schedule.objectId = result.objectId;
         schedule.startAfter = schedule.startAfter || new Date().toISOString();
@@ -44,9 +42,7 @@ function JobsStore(state, action) {
       return Parse._request('PUT', path, action.updates, {
         useMasterKey: true,
       }).then(() => {
-        const index = state
-          .get('jobs')
-          .findIndex((j) => j.objectId === action.jobId);
+        const index = state.get('jobs').findIndex(j => j.objectId === action.jobId);
         const current = state.get('jobs').get(index);
         const { ...update } = action.updates.job_schedule;
         update.objectId = current.objectId;
@@ -57,9 +53,7 @@ function JobsStore(state, action) {
       path = `cloud_code/jobs/${action.jobId}`;
       return Parse._request('DELETE', path, {}, { useMasterKey: true }).then(
         () => {
-          const index = state
-            .get('jobs')
-            .findIndex((j) => j.objectId === action.jobId);
+          const index = state.get('jobs').findIndex(j => j.objectId === action.jobId);
           return state.set('jobs', state.get('jobs').delete(index));
         },
         () => {

@@ -152,9 +152,7 @@ ExplorerActiveChartButton.propTypes = {
   onDismiss: PropTypes.func.describe(
     'Function to be called when current chart is being dismissed from list of active charts.'
   ),
-  color: PropTypes.string.describe(
-    'The color of the checkbox and the chart to be rendered.'
-  ),
+  color: PropTypes.string.describe('The color of the checkbox and the chart to be rendered.'),
   disableDropdown: PropTypes.bool.describe(
     'If set to true, disable dropdown to pick/compose the query.'
   ),

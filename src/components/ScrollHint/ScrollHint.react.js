@@ -21,10 +21,7 @@ export default class ScrollHint extends React.Component {
   render() {
     const { active } = this.state;
 
-    const classes = [
-      styles.scrollHint,
-      active ? styles.active : undefined,
-    ].join(' ');
+    const classes = [styles.scrollHint, active ? styles.active : undefined].join(' ');
 
     return <div className={classes}></div>;
   }

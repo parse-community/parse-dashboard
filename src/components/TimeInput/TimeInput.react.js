@@ -34,23 +34,13 @@ for (let i = 0; i < 60; i++) {
 const TimeInput = ({ hours, minutes, onChange }) => {
   return (
     <div>
-      <div
-        style={{ width: '50%', display: 'inline-block', verticalAlign: 'top' }}
-      >
-        <Dropdown
-          value={hours}
-          onChange={(newHours) => onChange(newHours, minutes)}
-        >
+      <div style={{ width: '50%', display: 'inline-block', verticalAlign: 'top' }}>
+        <Dropdown value={hours} onChange={newHours => onChange(newHours, minutes)}>
           {hourOptions}
         </Dropdown>
       </div>
-      <div
-        style={{ width: '50%', display: 'inline-block', verticalAlign: 'top' }}
-      >
-        <Dropdown
-          value={minutes}
-          onChange={(newMinutes) => onChange(hours, newMinutes)}
-        >
+      <div style={{ width: '50%', display: 'inline-block', verticalAlign: 'top' }}>
+        <Dropdown value={minutes} onChange={newMinutes => onChange(hours, newMinutes)}>
           {minuteOptions}
         </Dropdown>
       </div>

@@ -14,9 +14,7 @@ import ReactDOMServer from 'react-dom/server';
 // Refer to https://github.com/chjj/marked.
 const renderer = new marked.Renderer();
 renderer.code = (code, lang) => {
-  const snippet = (
-    <CodeSnippet source={code} language={lang} fullPage={false} />
-  );
+  const snippet = <CodeSnippet source={code} language={lang} fullPage={false} />;
 
   return ReactDOMServer.renderToString(snippet);
 };
@@ -36,7 +34,5 @@ const Markdown = ({ content }) => {
 export default Markdown;
 
 Markdown.propTypes = {
-  content: PropTypes.string.isRequired.describe(
-    'The content that will be rendered as markdown.'
-  ),
+  content: PropTypes.string.isRequired.describe('The content that will be rendered as markdown.'),
 };

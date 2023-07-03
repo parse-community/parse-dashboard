@@ -42,9 +42,7 @@ export const demos = [
     ),
   },
   {
-    render: () => (
-      <PushCerts certs={undefined} onUpload={() => {}} onDelete={() => {}} />
-    ),
+    render: () => <PushCerts certs={undefined} onUpload={() => {}} onDelete={() => {}} />,
   },
   {
     render: () => (

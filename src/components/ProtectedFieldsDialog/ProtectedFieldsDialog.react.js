@@ -65,9 +65,7 @@ export default class ProtectedFieldsDialog extends React.Component {
 
   async componentDidMount() {
     // validate existing entries, also preserve their types (to render correct pills).
-    const rows = await Promise.all(
-      this.state.keys.map((key) => this.props.validateEntry(key))
-    );
+    const rows = await Promise.all(this.state.keys.map(key => this.props.validateEntry(key)));
 
     let entryTypes = new Map({});
 
@@ -130,10 +128,7 @@ export default class ProtectedFieldsDialog extends React.Component {
           }
 
           if (key) {
-            if (
-              this.state.keys.includes(key) ||
-              this.state.newKeys.includes(key)
-            ) {
+            if (this.state.keys.includes(key) || this.state.newKeys.includes(key)) {
               return this.setState({
                 entryError: 'You already have a row for this object',
               });
@@ -157,8 +152,7 @@ export default class ProtectedFieldsDialog extends React.Component {
         () => {
           if (this.props.enablePointerPermissions) {
             this.setState({
-              entryError:
-                'Role, User or field not found. Enter a valid id, name or column.',
+              entryError: 'Role, User or field not found. Enter a valid id, name or column.',
             });
           } else {
             this.setState({
@@ -175,8 +169,8 @@ export default class ProtectedFieldsDialog extends React.Component {
     const protectedFields = this.state.protectedFields.delete(key);
 
     // also remove from local state
-    const keys = this.state.keys.filter((k) => k !== key);
-    const newKeys = this.state.newKeys.filter((k) => k !== key);
+    const keys = this.state.keys.filter(k => k !== key);
+    const newKeys = this.state.newKeys.filter(k => k !== key);
 
     return this.setState({
       protectedFields,
@@ -192,7 +186,7 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   onChange(key, newValue) {
-    this.setState((state) => {
+    this.setState(state => {
       let protectedFields = state.protectedFields;
       protectedFields = protectedFields.set(key, newValue);
       return { protectedFields };
@@ -243,8 +237,7 @@ export default class ProtectedFieldsDialog extends React.Component {
       );
     }
 
-    const placeholder =
-      'All fields allowed.' + (noAvailableFields ? '' : ' Click to protect.');
+    const placeholder = 'All fields allowed.' + (noAvailableFields ? '' : ' Click to protect.');
 
     return (
       <div className={(styles.second, styles.multiselect)}>
@@ -252,7 +245,7 @@ export default class ProtectedFieldsDialog extends React.Component {
           fixed={false}
           dense={true}
           chips={true}
-          onChange={(s) => {
+          onChange={s => {
             this.onChange(key, s);
           }}
           value={values}
@@ -265,7 +258,7 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   renderRow(key, columns, types) {
-    const pill = (text) => (
+    const pill = text => (
       <span className={styles.pillType}>
         <Pill value={text} />
       </span>
@@ -302,8 +295,7 @@ export default class ProtectedFieldsDialog extends React.Component {
             </span>
           </p>
           <p className={styles.hint}>
-            username:{' '}
-            <span className={styles.selectable}>{type.user.name}</span>
+            username: <span className={styles.selectable}>{type.user.name}</span>
           </p>
         </span>
       );
@@ -348,11 +340,7 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     let content = null;
     if (!this.state.transitioning) {
-      content = this.renderSelector(
-        key,
-        this.state.columns,
-        this.state.protectedFields.get(key)
-      );
+      content = this.renderSelector(key, this.state.columns, this.state.protectedFields.get(key));
     }
     let trash = null;
     if (!this.state.transitioning) {
@@ -392,11 +380,11 @@ export default class ProtectedFieldsDialog extends React.Component {
     const allKeys = [...keys, ...newKeys];
 
     const availablePointerFields = userPointers
-      .map((ptr) => `userField:${ptr}`)
-      .filter((ptr) => !allKeys.includes(ptr) && ptr.includes(input));
+      .map(ptr => `userField:${ptr}`)
+      .filter(ptr => !allKeys.includes(ptr) && ptr.includes(input));
 
     const possiblePrefix = ['role:']
-      .filter((o) => o.startsWith(input) && o.length > input.length) // filter matching prefixes
+      .filter(o => o.startsWith(input) && o.length > input.length) // filter matching prefixes
       .concat(...availablePointerFields); //
 
     // pointer fields that are not applied yet;
@@ -404,8 +392,7 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     // do not suggest unique rows that are already added;
     const uniqueOptions = ['*', 'authenticated'].filter(
-      (key) =>
-        !allKeys.includes(key) && (input.length == 0 || key.startsWith(input))
+      key => !allKeys.includes(key) && (input.length == 0 || key.startsWith(input))
     );
 
     availableFields.push(...uniqueOptions);
@@ -459,11 +446,11 @@ export default class ProtectedFieldsDialog extends React.Component {
           <div className={styles.tableWrap}>
             <div className={styles.table} ref={this.refTable}>
               <div className={[styles.overlay, styles.second].join(' ')} />
-              {this.state.keys.map((key) =>
+              {this.state.keys.map(key =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
               )}
 
-              {this.state.newKeys.map((key) =>
+              {this.state.newKeys.map(key =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
               )}
 
@@ -480,11 +467,11 @@ export default class ProtectedFieldsDialog extends React.Component {
                       margin: '-6px 0px 0px 20px',
                       width: '400px',
                     }}
-                    onChange={(e) => this.onUserInput(e)}
+                    onChange={e => this.onUserInput(e)}
                     onSubmit={this.checkEntry.bind(this)}
                     placeholder={placeholderText}
-                    buildSuggestions={(input) => this.suggestInput(input)}
-                    buildLabel={(input) => this.buildLabel(input)}
+                    buildSuggestions={input => this.suggestInput(input)}
+                    buildLabel={input => this.buildLabel(input)}
                     error={this.state.entryError}
                   />
                 </TrackVisibility>
@@ -505,9 +492,7 @@ export default class ProtectedFieldsDialog extends React.Component {
                 onClick={() => this.props.onConfirm(this.outputPerms())}
               />
             </div>
-            <div
-              className={[styles.details, baseStyles.verticalCenter].join(' ')}
-            >
+            <div className={[styles.details, baseStyles.verticalCenter].join(' ')}>
               {this.props.details}
             </div>
           </div>

@@ -41,7 +41,7 @@ export default class TableView extends DashboardView {
           content = (
             <div className={styles.rows}>
               <table>
-                <tbody>{data.map((row) => this.renderRow(row))}</tbody>
+                <tbody>{data.map(row => this.renderRow(row))}</tbody>
               </table>
               {footer}
             </div>
