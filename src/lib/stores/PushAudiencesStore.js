@@ -37,27 +37,27 @@ function PushAudiencesStore(state, action) {
       });
     case ActionTypes.CREATE:
       return Parse._request('POST', 'push_audiences', { query: action.query, name: action.name, }, { useMasterKey: true })
-          .then(({ new_audience }) => {
-            return state.update('audiences',(audiences) => {
-              return audiences.unshift({
-                createdAt: new Date(),
-                name: action.name,
-                objectId: new_audience ? new_audience.objectId || -1 : -1,
-                count: 0,
-                query: JSON.parse(action.query),
-              });
+        .then(({ new_audience }) => {
+          return state.update('audiences',(audiences) => {
+            return audiences.unshift({
+              createdAt: new Date(),
+              name: action.name,
+              objectId: new_audience ? new_audience.objectId || -1 : -1,
+              count: 0,
+              query: JSON.parse(action.query),
             });
           });
+        });
     case ActionTypes.DESTROY:
       return Parse._request('DELETE', `push_audiences/${action.objectId}`, {}, { useMasterKey: true })
-          .then(() => {
-            return state.update('audiences',(audiences) => {
-              let index = audiences.findIndex(function(audience) {
-                return audience.objectId === action.objectId;
-              });
-              return audiences.delete(index);
+        .then(() => {
+          return state.update('audiences',(audiences) => {
+            const index = audiences.findIndex(function(audience) {
+              return audience.objectId === action.objectId;
             });
+            return audiences.delete(index);
           });
+        });
     case ActionTypes.ABORT_FETCH:
       return Promise.resolve(state);
   }

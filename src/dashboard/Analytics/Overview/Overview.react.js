@@ -126,11 +126,11 @@ export default class Overview extends DashboardView {
   }
 
   fetchOverview(app) {
-    let overview = app.getAnalyticsOverview(new Date());
+    const overview = app.getAnalyticsOverview(new Date());
     this.setState(overview);
 
-    for (let key in overview) {
-      let item = overview[key];
+    for (const key in overview) {
+      const item = overview[key];
       item.promise.then(
         (value) => {
           this.setState({
@@ -153,19 +153,19 @@ export default class Overview extends DashboardView {
   }
 
   renderContent() {
-    let toolbar = (
+    const toolbar = (
       <Toolbar
         section='Analytics'
         subsection='Overview' />
     );
-    let infoContainerStyle = { padding: '12px 16px' };
+    const infoContainerStyle = { padding: '12px 16px' };
 
-    let audienceViews = AUDIENCE_META.map((metaGroup) => (
+    const audienceViews = AUDIENCE_META.map((metaGroup) => (
       metaGroup.map((meta) => {
-        let obj = this.state[meta.key];
+        const obj = this.state[meta.key];
         let number = 0;
         let increasing = true;
-        let loading = obj.value === undefined && obj.error === undefined;
+        const loading = obj.value === undefined && obj.error === undefined;
 
         if (obj.value !== undefined) {
           // If it's an array, means it's in [current, 1 week ago, 2 weeks ago] format.
@@ -202,11 +202,11 @@ export default class Overview extends DashboardView {
       })
     ));
 
-    let billingViews = BILLING_META.map((meta) => {
-      let obj = this.state[meta.key];
+    const billingViews = BILLING_META.map((meta) => {
+      const obj = this.state[meta.key];
       let total = 0;
       let limit = 1;
-      let loading = obj.value === undefined && obj.error === undefined;
+      const loading = obj.value === undefined && obj.error === undefined;
 
       if (obj.value !== undefined) {
         total = obj.value.total;

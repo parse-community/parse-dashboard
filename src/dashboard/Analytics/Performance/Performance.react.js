@@ -72,7 +72,7 @@ export default class Performance extends DashboardView {
       width: 800,
       height: 400
     };
-    let date = new Date();
+    const date = new Date();
     this.state = {
       dateRange: {
         start: new Date(
@@ -94,7 +94,7 @@ export default class Performance extends DashboardView {
   }
 
   componentDidMount() {
-    let display = this.displayRef;
+    const display = this.displayRef;
     this.displaySize = {
       width: display.offsetWidth,
       height: display.offsetHeight
@@ -116,7 +116,7 @@ export default class Performance extends DashboardView {
   }
 
   handleQueryToggle(index, active) {
-    let activeQueries = this.state.activeQueries;
+    const activeQueries = this.state.activeQueries;
     activeQueries[index] = active;
     this.setState({ activeQueries: activeQueries });
   }
@@ -125,7 +125,7 @@ export default class Performance extends DashboardView {
     this.setState({
       loading: true
     });
-    let promises = [];
+    const promises = [];
     this.xhrHandles = [];
     PERFORMANCE_QUERIES.forEach((query, index) => {
       let { promise, xhr } = app.getAnalyticsTimeSeries({
@@ -135,7 +135,7 @@ export default class Performance extends DashboardView {
       });
 
       promise = promise.then((result) => {
-        let performanceData = this.state.performanceData;
+        const performanceData = this.state.performanceData;
         performanceData[index] = result;
         this.setState({
           performanceData: performanceData
@@ -154,13 +154,13 @@ export default class Performance extends DashboardView {
   }
 
   renderContent() {
-    let toolbar = (
+    const toolbar = (
       <Toolbar
         section='Analytics'
         subsection='Performance' />
     );
 
-    let header = (
+    const header = (
       <div className={styles.header}>
         {PERFORMANCE_QUERIES.map((query, i) => (
           <div className={styles.activeQueryWrap} key={`query${i}`}>
@@ -175,7 +175,7 @@ export default class Performance extends DashboardView {
       </div>
     );
 
-    let footer = (
+    const footer = (
       <div className={styles.footer}>
         <div className={[styles.right, baseStyles.verticalCenter].join(' ')}>
           <span style={{ marginRight: '10px' }}>
@@ -193,7 +193,7 @@ export default class Performance extends DashboardView {
       </div>
     );
 
-    let chartData = {};
+    const chartData = {};
     this.state.performanceData.forEach((data, i) => {
       if (!this.state.activeQueries[i]) {
         return null;
@@ -201,7 +201,7 @@ export default class Performance extends DashboardView {
 
       if (Array.isArray(data)) {
         // Handle Request Limit
-        let points = data.map((point) => (
+        const points = data.map((point) => (
           [Parse._decode('date', point[0]).getTime(), point[1]]
         ));
 
@@ -211,8 +211,8 @@ export default class Performance extends DashboardView {
         };
       } else {
         let points = [];
-        for (let key in data.cached) {
-          let cachedPoints = data.cached[key];
+        for (const key in data.cached) {
+          const cachedPoints = data.cached[key];
           points = points.concat(cachedPoints.map((point) => (
             [Parse._decode('date', point[0]).getTime(), point[1]]
           )));
@@ -236,7 +236,7 @@ export default class Performance extends DashboardView {
       );
     }
 
-    let content = (
+    const content = (
       <LoaderContainer loading={this.state.loading} solid={false}>
         <div className={styles.content}>
           <div ref={this.displayRef} className={styles.display}>

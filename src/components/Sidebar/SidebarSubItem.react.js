@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
 
-let SidebarSubItem = ({ active, name, action, link, children }) => {
+const SidebarSubItem = ({ active, name, action, link, children }) => {
   if (active) {
     return (
       <div>

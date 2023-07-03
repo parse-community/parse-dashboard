@@ -35,8 +35,8 @@ function SchemaStore(state, action) {
         {},
         { useMasterKey: true }
       ).then(({ results }) => {
-        let classes = {};
-        let CLPs = {};
+        const classes = {};
+        const CLPs = {};
         if (results) {
           results.forEach(({ className, fields, classLevelPermissions }) => {
             classes[className] = Map(fields);
@@ -57,8 +57,8 @@ function SchemaStore(state, action) {
         { useMasterKey: true }
       ).then(({ fields, classLevelPermissions }) => {
         return state
-        .setIn(['classes', action.className], Map(fields))
-        .setIn(['CLPs', action.className], Map(classLevelPermissions));
+          .setIn(['classes', action.className], Map(fields))
+          .setIn(['CLPs', action.className], Map(classLevelPermissions));
       });
     case ActionTypes.DROP_CLASS:
       return action.app.apiRequest(
@@ -68,11 +68,11 @@ function SchemaStore(state, action) {
         { useMasterKey: true }
       ).then(() => {
         return state
-        .deleteIn(['classes', action.className])
-        .deleteIn(['CLPs', action.className]);
+          .deleteIn(['classes', action.className])
+          .deleteIn(['CLPs', action.className]);
       });
     case ActionTypes.ADD_COLUMN:
-      let newField = {
+      const newField = {
         [action.name]: {
           type: action.columnType,
           required: action.required,
@@ -91,7 +91,7 @@ function SchemaStore(state, action) {
         return state.setIn(['classes', action.className], Map(fields));
       });
     case ActionTypes.DROP_COLUMN:
-      let droppedField = {
+      const droppedField = {
         [action.name]: {
           __op: 'Delete'
         }

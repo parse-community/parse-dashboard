@@ -22,16 +22,16 @@ import baseStyles              from 'stylesheets/base.scss';
 const RETENTION_DAYS = [1, 2, 3, 4, 5, 6, 7, 8, 14, 21, 28];
 const REVERSED_RETENTION_DAYS = RETENTION_DAYS.slice().reverse();
 
-let retentionChartColor = percent => {
+const retentionChartColor = percent => {
   let red, blue, green;
   if (percent > 50) {
-    red   = 23 + ( ( percent - 50 ) * 2 ) * 11 / 100;
-    green = 166 - ( ( percent - 50 ) * 2 ) * 166 / 100;
+    red   = 23 + ((percent - 50) * 2) * 11 / 100;
+    green = 166 - ((percent - 50) * 2) * 166 / 100;
     blue  = 255;
   } else {
-    red   = 228 - ( percent * 2 ) * 205 / 100;
-    green = 233 - ( percent * 2 ) * 67 / 100;
-    blue  = 237 + ( percent * 2 ) * 18 / 100;
+    red   = 228 - (percent * 2) * 205 / 100;
+    green = 233 - (percent * 2) * 67 / 100;
+    blue  = 237 + (percent * 2) * 18 / 100;
   }
   //return without decimals since css doesn't allow them
   return 'rgb(' + red.toFixed(0) + ', ' + green.toFixed(0) + ', ' + blue.toFixed(0) + ')';
@@ -68,7 +68,7 @@ export default class Retention extends DashboardView {
 
   fetchRetention(app) {
     this.setState({ loading: true }, () => {
-      let { promise, xhr } = app.getAnalyticsRetention(this.state.date);
+      const { promise, xhr } = app.getAnalyticsRetention(this.state.date);
       promise.then(
         (result) => this.setState({ retentions: result.content, loading: false }),
         () => this.setState({ retentions: null, loading: false })
@@ -82,18 +82,18 @@ export default class Retention extends DashboardView {
     let active = 0;
     // Somehow it's possible to miss some data. Probably a backend issue, but it's
     // not easily reproducible locally.
-    let dayData = this.state.retentions['days_old_' + daysAgo] && this.state.retentions['days_old_' + daysAgo]['day_' + day];
+    const dayData = this.state.retentions['days_old_' + daysAgo] && this.state.retentions['days_old_' + daysAgo]['day_' + day];
     if (dayData) {
       total = dayData.total;
       active = dayData.active;
     }
-    let percentage = (active / (total || 1) * 100).toFixed(1);
-    let color = retentionChartColor(percentage);
-    let style = {
+    const percentage = (active / (total || 1) * 100).toFixed(1);
+    const color = retentionChartColor(percentage);
+    const style = {
       backgroundColor: color,
       borderColor: color
     };
-    let monthDayPretty = DateUtils.monthDayStringUTC(DateUtils.daysFrom(this.state.date, day - daysAgo));
+    const monthDayPretty = DateUtils.monthDayStringUTC(DateUtils.daysFrom(this.state.date, day - daysAgo));
 
     return (
       <td key={'col_' + daysAgo + ' _' + day}>
@@ -101,7 +101,7 @@ export default class Retention extends DashboardView {
           <div>
             <b>{active}</b> of <b>{total}</b> users who signed up on <b>{monthDayPretty}</b> were still active on their <b>{englishOrdinalIndicator(day)} day</b>
           </div>
-          )}>
+        )}>
           <div className={styles.retentionCell} style={style}>{percentage}%</div>
         </Tooltip>
       </td>
@@ -115,7 +115,7 @@ export default class Retention extends DashboardView {
       if (daysAgo < day) {
         return;
       }
-      let dayData = this.state.retentions['days_old_' + daysAgo] && this.state.retentions['days_old_' + daysAgo]['day_' + day];
+      const dayData = this.state.retentions['days_old_' + daysAgo] && this.state.retentions['days_old_' + daysAgo]['day_' + day];
       // Somehow it's possible to miss some data. Probably a backend issue, but it's
       // not easily reproducible locally.
       if (dayData) {
@@ -123,7 +123,7 @@ export default class Retention extends DashboardView {
         active += dayData.active;
       }
     });
-    let percentage = (active / (total || 1) * 100).toFixed(1);
+    const percentage = (active / (total || 1) * 100).toFixed(1);
     return (
       <td
         key={'average_' + day}
@@ -136,21 +136,21 @@ export default class Retention extends DashboardView {
 
   renderDayAndTotalUser(daysAgo) {
     // We can assume this.state.retentions has correct data here. Otherwise let it crash.
-    let dayData = this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
-    let date = DateUtils.daysFrom(this.state.date, -daysAgo);
-    let formattedDate = DateUtils.monthDayStringUTC(date);
-    let formattedDateSplit = formattedDate.split(' ');
-    let formattedDateMonth = formattedDateSplit[0];
-    let formattedDateDay   = formattedDateSplit[1];
+    const dayData = this.state.retentions['days_old_' + daysAgo]['day_' + daysAgo];
+    const date = DateUtils.daysFrom(this.state.date, -daysAgo);
+    const formattedDate = DateUtils.monthDayStringUTC(date);
+    const formattedDateSplit = formattedDate.split(' ');
+    const formattedDateMonth = formattedDateSplit[0];
+    const formattedDateDay   = formattedDateSplit[1];
 
     return (
       <td key={'header_' + daysAgo} className={styles.YaxisLabel}>
-        <div className={styles.YaxisLabelDate}> 
-          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')} 
+        <div className={styles.YaxisLabelDate}>
+          {(daysAgo === 28 || formattedDateDay === '1' ? formattedDateMonth : '')}
           <span className={styles.YaxisLabelNumber}> {formattedDateDay}</span>
         </div>
         <div className={styles.YaxisLabelUsers}>
-          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')} 
+          {(daysAgo === 28 || formattedDateDay === '1' ? 'Users ' : '')}
           <span className={styles.YaxisLabelNumber}>{prettyNumber(dayData.total)}</span>
         </div>
       </td>
@@ -158,7 +158,7 @@ export default class Retention extends DashboardView {
   }
 
   renderContent() {
-    let toolbar = (
+    const toolbar = (
       <Toolbar
         section='Analytics'
         subsection='Retention'>
@@ -240,7 +240,7 @@ export default class Retention extends DashboardView {
       );
     }
 
-    let content = (
+    const content = (
       <LoaderContainer loading={this.state.loading}>
         <div className={styles.content}>
           {chart}

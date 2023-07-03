@@ -11,7 +11,7 @@ import styles from 'dashboard/Dashboard.scss';
 
 export default class AccountView extends React.Component {
   render() {
-    let sidebar = buildAccountSidebar({
+    const sidebar = buildAccountSidebar({
       section: this.props.section,
       subsection: this.props.subsection
     });

@@ -29,18 +29,18 @@ export default ({
     case AsyncStatus.SUCCESS:
       percentComplete = 100;
       progressClass = baseStyles.succeededBackground;
-      titleClass= baseStyles.succeededText;
+      titleClass = baseStyles.succeededText;
       icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
       break;
     case AsyncStatus.FAILED:
       percentComplete = 100;
       progressClass = baseStyles.failedBackground;
-      titleClass= baseStyles.failedText;
+      titleClass = baseStyles.failedText;
       icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
       break;
     case AsyncStatus.PROGRESS:
       progressClass = baseStyles.progressBackground;
-      titleClass= baseStyles.progressText;
+      titleClass = baseStyles.progressText;
       break;
     case AsyncStatus.WAITING:
       percentComplete = 0;

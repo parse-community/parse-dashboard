@@ -14,14 +14,14 @@ import React        from 'react';
 import PropTypes    from 'lib/PropTypes';
 import styles       from 'components/Modal/Modal.scss';
 
-let origin = new Position(0, 0);
-let buttonColors = {
+const origin = new Position(0, 0);
+const buttonColors = {
   danger: 'red',
   info: 'blue',
   valid: 'green'
 };
 
-let Modal = (({
+const Modal = (({
   type = Modal.Types.INFO,
   icon,
   iconSize = 36,
@@ -53,7 +53,7 @@ let Modal = (({
     });
   }
 
-  let footer = customFooter || (
+  const footer = customFooter || (
     <div style={{textAlign: buttonsInCenter ? 'center' : 'right'}} className={styles.footer}>
       {showCancel && <Button
         value={cancelText}
@@ -76,7 +76,7 @@ let Modal = (({
     </div>
   );
 
-  let wrappedChildren = textModal ? <div className={styles.textModal}>
+  const wrappedChildren = textModal ? <div className={styles.textModal}>
     {children}
   </div> : children;
 

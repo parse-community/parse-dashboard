@@ -36,14 +36,14 @@ export default function subscribeTo(name, prop) {
         }
       }, [])
 
-      let dispatch = (type, params={}) => {
+      const dispatch = (type, params = {}) => {
         if (store.isGlobal) {
           return store.dispatch(type, params);
         }
         return store.dispatch(type, params, currentApp);
       };
 
-      let extras = {
+      const extras = {
         [prop]: {
           data,
           dispatch,

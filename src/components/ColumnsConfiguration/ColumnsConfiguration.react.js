@@ -38,7 +38,7 @@ export default class ColumnsConfiguration extends React.Component {
 
   showAll() {
     let shouldReload = false;
-    let updatedOrder = this.props.order.map(field => {
+    const updatedOrder = this.props.order.map(field => {
       if (!shouldReload && !field.cached) {
         shouldReload = true;
       }

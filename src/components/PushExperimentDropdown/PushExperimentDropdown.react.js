@@ -15,7 +15,7 @@ export default class PushExperimentDropdown extends React.Component {
   constructor() {
     super();
 
-    this.state = { 
+    this.state = {
       open: false,
       selected: false,
     };
@@ -29,7 +29,7 @@ export default class PushExperimentDropdown extends React.Component {
 
   select(value, e) {
     e.stopPropagation();
-    this.setState({ 
+    this.setState({
       open: false,
       selected: true,
     }, () => {
@@ -38,16 +38,16 @@ export default class PushExperimentDropdown extends React.Component {
   }
 
   render() {
-    let widthStyle = { width: this.props.width || 140 };
-    let styles = this.styles;
-    let color = this.props.color;
+    const widthStyle = { width: this.props.width || 140 };
+    const styles = this.styles;
+    const color = this.props.color;
     let content = (
       <div className={[styles.current, styles[color]].join(' ')} onClick={() => this.setState({ open: true })}>
         <div>{!this.state.selected && this.props.placeholder && this.props.value === undefined ? this.props.placeholder : this.props.value}</div>
       </div>
     );
     if (this.state.open) {
-      let position = Position.inWindow(this.dropdownRef.current);
+      const position = Position.inWindow(this.dropdownRef.current);
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
           <div style={widthStyle} className={[styles.menu, styles[color]].join(' ')}>

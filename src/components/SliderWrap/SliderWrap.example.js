@@ -9,7 +9,7 @@ import { Directions } from 'lib/Constants';
 import React                   from 'react';
 import SliderWrap              from 'components/SliderWrap/SliderWrap.react';
 
-let contentStyle = {
+const contentStyle = {
   background: '#67c0ff',
   color: '#ffffff',
   width: '200px',
@@ -32,7 +32,7 @@ class Toggler extends React.Component {
   }
 
   render() {
-    let { children, ...otherProps } = this.props;
+    const { children, ...otherProps } = this.props;
 
     return (
       <div style={{ padding: '10px 0', width: '400px' }}>

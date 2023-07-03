@@ -12,8 +12,8 @@ function joinPoints(points) {
   return points.map((p) => p.join(',')).join(' ');
 }
 
-let Shape = ({ x, y, fill, index }) => {
-  let style = { fill: fill, stroke: 'white', strokeWidth: 2 };
+const Shape = ({ x, y, fill, index }) => {
+  const style = { fill: fill, stroke: 'white', strokeWidth: 2 };
   switch (index % 7) {
     case 0:
       return <circle className={styles.grow} cx={x} cy={y} r={4} style={style} />;

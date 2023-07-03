@@ -8,7 +8,7 @@
 import React          from 'react';
 import Sidebar        from 'components/Sidebar/Sidebar.react';
 
-let accountSidebarSections = [
+const accountSidebarSections = [
   {
     name: 'Your Apps',
     icon: 'blank-app-outline',
@@ -21,7 +21,7 @@ let accountSidebarSections = [
 ];
 
 export function buildAccountSidebar(options) {
-  let {
+  const {
     section,
     subsection
   } = options;

@@ -22,7 +22,7 @@ export default class DataBrowser extends React.Component {
     super(props);
 
     const columnPreferences = props.app.columnPreference || {}
-    let order = ColumnPreferences.getOrder(
+    const order = ColumnPreferences.getOrder(
       props.columns,
       props.app.applicationId,
       props.className,
@@ -51,7 +51,7 @@ export default class DataBrowser extends React.Component {
   componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
       const columnPreferences = props.app.columnPreference || {}
-      let order = ColumnPreferences.getOrder(
+      const order = ColumnPreferences.getOrder(
         props.columns,
         props.app.applicationId,
         props.className,
@@ -66,7 +66,7 @@ export default class DataBrowser extends React.Component {
     } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
       || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
       const columnPreferences = props.app.columnPreference || {}
-      let order = ColumnPreferences.getOrder(
+      const order = ColumnPreferences.getOrder(
         props.columns,
         props.app.applicationId,
         props.className,
@@ -88,8 +88,8 @@ export default class DataBrowser extends React.Component {
     if (this.saveOrderTimeout) {
       clearTimeout(this.saveOrderTimeout);
     }
-    let appId = this.props.app.applicationId;
-    let className = this.props.className;
+    const appId = this.props.app.applicationId;
+    const className = this.props.className;
     this.saveOrderTimeout = setTimeout(() => {
       ColumnPreferences.updatePreferences(order, appId, className)
       shouldReload && this.props.onRefresh();
@@ -185,8 +185,8 @@ export default class DataBrowser extends React.Component {
       case 8:
       case 46:
         // Backspace or Delete
-        let colName = this.state.order[this.state.current.col].name;
-        let col = this.props.columns[colName];
+        const colName = this.state.order[this.state.current.col].name;
+        const col = this.props.columns[colName];
         if (col.type !== 'Relation') {
           this.props.updateRow(
             this.state.current.row,
@@ -297,7 +297,7 @@ export default class DataBrowser extends React.Component {
   }
 
   render() {
-    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, app, ...other } = this.props;
+    const { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, app, ...other } = this.props;
     const { preventSchemaEdits, applicationId } = app;
     return (
       <div>

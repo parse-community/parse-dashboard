@@ -14,8 +14,8 @@ import { CurrentApp }    from 'context/currentApp';
 const pointerPrefix = 'userField:';
 
 function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
-   if (parseServerSupportsPointerPermissions) {
-    let fieldName = text.startsWith(pointerPrefix)
+  if (parseServerSupportsPointerPermissions) {
+    const fieldName = text.startsWith(pointerPrefix)
       ? text.substring(pointerPrefix.length)
       : text;
     if (pointers.includes(fieldName)) {
@@ -35,7 +35,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
   }
 
   if (text.startsWith('user:')) {
-    let user = text.substring(5);
+    const user = text.substring(5);
 
     userQuery = new Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
@@ -47,7 +47,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
     };
 
   } else if (text.startsWith('role:')) {
-    let role = text.substring(5);
+    const role = text.substring(5);
 
     roleQuery = new Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
@@ -110,7 +110,7 @@ export default class SecurityDialog extends React.Component {
 
   render() {
     let dialog = null;
-    let parseServerSupportsPointerPermissions = this.context.serverInfo.features.schemas.editClassLevelPermissions;
+    const parseServerSupportsPointerPermissions = this.context.serverInfo.features.schemas.editClassLevelPermissions;
     if (this.props.perms && this.state.open) {
       dialog = (
         <PermissionsDialog
@@ -130,7 +130,7 @@ export default class SecurityDialog extends React.Component {
         />
       );
     }
-    let classes = [styles.toolbarButton];
+    const classes = [styles.toolbarButton];
     if (this.props.disabled) {
       classes.push(styles.toolbarButtonDisabled);
     }

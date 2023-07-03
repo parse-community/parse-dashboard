@@ -16,7 +16,7 @@ export default class FileTree extends React.Component {
 
     let open = !props.name;
     if (props.current && props.name) {
-      let dirPath = (props.prefix || '') + props.name + '/';
+      const dirPath = (props.prefix || '') + props.name + '/';
       if (props.current.startsWith(dirPath)) {
         open = true;
       }
@@ -40,12 +40,12 @@ export default class FileTree extends React.Component {
 
     let content = null;
     if (this.state.open) {
-      let dirs = {};
-      let files = [];
+      const dirs = {};
+      const files = [];
       this.props.files.forEach((f) => {
-        let folderEnd = f.indexOf('/');
+        const folderEnd = f.indexOf('/');
         if (folderEnd > -1) {
-          let folder = f.substr(0, folderEnd);
+          const folder = f.substr(0, folderEnd);
           if (!dirs[folder]) {
             dirs[folder] = [];
           }
@@ -54,7 +54,7 @@ export default class FileTree extends React.Component {
           files.push(f);
         }
       });
-      let folders = Object.keys(dirs);
+      const folders = Object.keys(dirs);
       folders.sort();
       content = (
         <div className={styles.contents}>
@@ -68,8 +68,8 @@ export default class FileTree extends React.Component {
               current={this.props.current}/>
           ))}
           {files.map((f) => {
-            let path = (this.props.name ? this.props.prefix + this.props.name + '/' : '') + f;
-            let isCurrent = this.props.current === path;
+            const path = (this.props.name ? this.props.prefix + this.props.name + '/' : '') + f;
+            const isCurrent = this.props.current === path;
             return (
               <Link
                 key={'f_' + f}

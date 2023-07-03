@@ -28,7 +28,7 @@ export default class FileEditor extends React.Component {
   componentDidMount() {
     document.body.addEventListener('click', this.checkExternalClick);
     document.body.addEventListener('keypress', this.handleKey);
-    let fileInputElement = document.getElementById('fileInput');
+    const fileInputElement = document.getElementById('fileInput');
     if (fileInputElement) {
       fileInputElement.click();
     }
@@ -68,9 +68,9 @@ export default class FileEditor extends React.Component {
   }
 
   async handleChange(e) {
-    let file = e.target.files[0];
+    const file = e.target.files[0];
     if (file) {
-      let base64 = await this.getBase64(file);
+      const base64 = await this.getBase64(file);
       this.props.onCommit(new Parse.File(file.name, { base64 }));
     }
   }

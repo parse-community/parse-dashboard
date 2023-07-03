@@ -17,7 +17,7 @@ import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles         from 'components/Sidebar/Sidebar.scss';
 import { CurrentApp } from 'context/currentApp';
 import Icon     from 'components/Icon/Icon.react';
-let mountPath = window.PARSE_DASHBOARD_PATH;
+const mountPath = window.PARSE_DASHBOARD_PATH;
 
 const Sidebar = ({
   prefix,
@@ -152,7 +152,7 @@ const Sidebar = ({
                 active={active}
                 primaryBackgroundColor={primaryBackgroundColor}
                 secondaryBackgroundColor={secondaryBackgroundColor}
-                >
+              >
                 {!collapsed && active ? _subMenu(subsections) : null}
               </SidebarSection>
             );
@@ -185,9 +185,9 @@ const Sidebar = ({
       {sidebarContent}
       {dashboardUser && <div className={styles.footer}>
         <a href={`${mountPath}logout`} className={styles.more}>
-        <Icon height={24} width={24} name='logout' />
+          <Icon height={24} width={24} name='logout' />
         Logout
-      </a>
+        </a>
       </div> }
     </div>
   );

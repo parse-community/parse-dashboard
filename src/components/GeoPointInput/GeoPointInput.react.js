@@ -32,7 +32,7 @@ export default class GeoPointInput extends React.Component {
   }
 
   render() {
-    let value = this.props.value || { latitude: '0.0', longitude: '0.0' };
+    const value = this.props.value || { latitude: '0.0', longitude: '0.0' };
     return (
       <div className={styles.geopoint}>
         <div className={styles.labels}>

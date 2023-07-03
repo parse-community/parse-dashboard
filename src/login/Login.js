@@ -15,7 +15,7 @@ export default class Login extends React.Component {
   constructor(props) {
     super();
 
-    let errorDiv = document.getElementById('login_errors');
+    const errorDiv = document.getElementById('login_errors');
     let otpLength = 6;
     if (errorDiv) {
       this.errors = errorDiv.innerHTML;
@@ -86,7 +86,7 @@ export default class Login extends React.Component {
         action='Log In'
         endpoint={`${path}login`}
         formSubmit={formSubmit}
-        >
+      >
         <LoginRow
           label='Username'
           input={
@@ -109,27 +109,27 @@ export default class Login extends React.Component {
               ref={this.inputRefPass}
             />
           } />
-          {this.state.redirect && <input
-              name='redirect'
-              type='hidden'
-              value={this.state.redirect}
-            />}
+        {this.state.redirect && <input
+          name='redirect'
+          type='hidden'
+          value={this.state.redirect}
+        />}
         {
           this.errors && this.errors.includes('one-time') ?
-          <LoginRow
-            label='OTP'
-            input={
-              <input
-                name='otpCode'
-                type='text'
-                inputMode="numeric"
-                autoComplete='one-time-code'
-                pattern="[0-9]*"
-                onChange={e => updateField('otp', e)}
-                ref={this.inputRefMfa}
-              />
-            } />
-          : null
+            <LoginRow
+              label='OTP'
+              input={
+                <input
+                  name='otpCode'
+                  type='text'
+                  inputMode="numeric"
+                  autoComplete='one-time-code'
+                  pattern="[0-9]*"
+                  onChange={e => updateField('otp', e)}
+                  ref={this.inputRefMfa}
+                />
+              } />
+            : null
         }
         {this.errors ?
           <div className={styles.error}>

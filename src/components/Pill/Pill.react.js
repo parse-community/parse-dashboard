@@ -10,7 +10,7 @@ import styles from 'components/Pill/Pill.scss';
 import Icon from 'components/Icon/Icon.react';
 
 //TODO: refactor, may want to move onClick outside or need to make onClick able to handle link/button a11y
-let Pill = ({ value, onClick, fileDownloadLink, followClick = false, shrinkablePill = false }) => (
+const Pill = ({ value, onClick, fileDownloadLink, followClick = false, shrinkablePill = false }) => (
   <span
     className={[
       styles.pill,

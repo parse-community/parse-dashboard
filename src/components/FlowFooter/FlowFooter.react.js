@@ -9,7 +9,7 @@ import React     from 'react';
 import PropTypes from 'lib/PropTypes';
 import styles    from 'components/FlowFooter/FlowFooter.scss';
 
-let FlowFooter = ({ primary, secondary, errorMessage, borderTop, children }) => (
+const FlowFooter = ({ primary, secondary, errorMessage, borderTop, children }) => (
   <div className={styles.footer} style={borderTop ? { borderTop } : null}>
     <div className={styles.right}>
       {secondary}

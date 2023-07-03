@@ -33,7 +33,7 @@ class TextInput extends React.Component {
   }
 
   render() {
-    let classes = [styles.text_input];
+    const classes = [styles.text_input];
     if (this.props.monospace) {
       classes.push(styles.monospace);
     }

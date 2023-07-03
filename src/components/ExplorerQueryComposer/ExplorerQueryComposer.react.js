@@ -80,8 +80,8 @@ const FIELD_TYPE = {
   'Latency (s)'         : 'Number',
 };
 
-let availableFilters = {};
-for (let field in FIELD_TYPE) {
+const availableFilters = {};
+for (const field in FIELD_TYPE) {
   availableFilters[field] = FieldConstraints[FIELD_TYPE[field]];
 }
 
@@ -96,12 +96,12 @@ const NON_TIMESERIES_DEFAULT_STATE = {
   limit: 100
 };
 
-let constraintLookup = {};
-for (let c in Constraints) {
+const constraintLookup = {};
+for (const c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-let setFocus = (input) => {
+const setFocus = (input) => {
   if (input !== null) {
     input.focus();
   }
@@ -111,8 +111,8 @@ function validateNumeric() {
   return true;
 }
 
-let fieldView = (type, value, onChangeValue) => {
-  let fieldStyle = { width: '32%', marginLeft: '1%', display: 'inline-block' };
+const fieldView = (type, value, onChangeValue) => {
+  const fieldStyle = { width: '32%', marginLeft: '1%', display: 'inline-block' };
   switch (type) {
     case null:
       return null;
@@ -131,7 +131,7 @@ export default class ExplorerQueryComposer extends React.Component {
   constructor(props) {
     super();
 
-    let initialState = this.getInitialStateFromProps(props);
+    const initialState = this.getInitialStateFromProps(props);
     this.state = {
       // newName is used to revert the edit if cancelled.
       newName: '',
@@ -142,7 +142,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   getInitialStateFromProps(props) {
-    let query = props.query || {};
+    const query = props.query || {};
     let defaultState = {};
     if (props.isTimeSeries) {
       defaultState = {
@@ -168,7 +168,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   getOrderOptions() {
-    let options = [];
+    const options = [];
     this.state.aggregates.forEach((value, index) => {
       options.push({
         key: 'aggregate|' + index,
@@ -187,7 +187,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let initialState = this.getInitialStateFromProps(nextProps);
+    const initialState = this.getInitialStateFromProps(nextProps);
     this.setState({ ...initialState });
   }
 
@@ -199,7 +199,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   handleSave() {
-    let query = this.props.query || {};
+    const query = this.props.query || {};
     this.props.onSave({
       source: this.state.source,
       name: this.state.name,
@@ -261,7 +261,7 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   handleSourceChange(newSource) {
-    let initialState = this.getInitialStateFromProps(this.props);
+    const initialState = this.getInitialStateFromProps(this.props);
     this.setState({
       ...initialState,
       source: newSource
@@ -273,9 +273,9 @@ export default class ExplorerQueryComposer extends React.Component {
     this.setState({ [stateKey]: this.state[stateKey] });
   }
 
-  renderAggregate(aggregate, index=0) {
+  renderAggregate(aggregate, index = 0) {
     let deleteButton = null;
-    if (!this.props.isTimeSeries || index !== 0 ) {
+    if (!this.props.isTimeSeries || index !== 0) {
       deleteButton = (
         <div className={styles.delWrapper}>
           <button
@@ -296,7 +296,7 @@ export default class ExplorerQueryComposer extends React.Component {
             value={aggregate.op}
             options={AGGREGATE_TYPE_LABELS}
             onChange={(val) => {
-              let aggregates = this.state.aggregates;
+              const aggregates = this.state.aggregates;
               aggregates[index] = {
                 op: val,
                 col: FIELD_LABELS[this.state.source][0]
@@ -322,7 +322,7 @@ export default class ExplorerQueryComposer extends React.Component {
               }
             })}
             onChange={(val) => {
-              let aggregates = this.state.aggregates;
+              const aggregates = this.state.aggregates;
               aggregates[index].col = val;
               this.setState({ aggregates });
             }}
@@ -335,9 +335,9 @@ export default class ExplorerQueryComposer extends React.Component {
     );
   }
 
-  renderGroup(grouping, index=0) {
+  renderGroup(grouping, index = 0) {
     let deleteButton = null;
-    let specialGroup = this.props.isTimeSeries && index === 0;
+    const specialGroup = this.props.isTimeSeries && index === 0;
     if (!specialGroup) {
       deleteButton = (
         <div className={styles.delWrapper}>
@@ -358,7 +358,7 @@ export default class ExplorerQueryComposer extends React.Component {
           value={grouping}
           options={specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]}
           onChange={(val) => {
-            let groups = this.state.groups;
+            const groups = this.state.groups;
             groups[index] = val;
             this.setState({ groups });
           }}
@@ -370,12 +370,12 @@ export default class ExplorerQueryComposer extends React.Component {
     );
   }
 
-  renderFilter(filter, index=0) {
-    let type = Object.prototype.hasOwnProperty.call(Constraints[filter.op], 'field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
+  renderFilter(filter, index = 0) {
+    const type = Object.prototype.hasOwnProperty.call(Constraints[filter.op], 'field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
 
     let constraintView = null;
     if (type === 'JSON') {
-      let isJSONView = filter.op === 'json_extract_scalar';
+      const isJSONView = filter.op === 'json_extract_scalar';
 
       let jsonView = null;
       if (isJSONView) {
@@ -389,7 +389,7 @@ export default class ExplorerQueryComposer extends React.Component {
               value={Constraints[filter.json_scalar_op].name}
               options={FieldConstraints['JSONValue'].map((c) => Constraints[c].name)}
               onChange={(val) => {
-                let filters = this.state.filters;
+                const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
                   op: filter.op,
@@ -404,7 +404,7 @@ export default class ExplorerQueryComposer extends React.Component {
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={filter.val}
               onChange={(e) => {
-                let filters = this.state.filters;
+                const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
                   op: filter.op,
@@ -418,7 +418,7 @@ export default class ExplorerQueryComposer extends React.Component {
         );
       }
 
-      let constraintInputValue = isJSONView ? filter.json_path : filter.val;
+      const constraintInputValue = isJSONView ? filter.json_path : filter.val;
       constraintView = (
         <div style={{ width: '65%', display: 'inline-block' }}>
           <div>
@@ -428,7 +428,7 @@ export default class ExplorerQueryComposer extends React.Component {
               value={Constraints[filter.op].name}
               options={availableFilters[filter.col].map((c) => Constraints[c].name)}
               onChange={(val) => {
-                let filters = this.state.filters;
+                const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
                   op: constraintLookup[val],
@@ -441,7 +441,7 @@ export default class ExplorerQueryComposer extends React.Component {
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
               value={constraintInputValue}
               onChange={(e) => {
-                let filters = this.state.filters;
+                const filters = this.state.filters;
                 let newFilter = null;
                 if (isJSONView) {
                   newFilter = {
@@ -476,7 +476,7 @@ export default class ExplorerQueryComposer extends React.Component {
             value={Constraints[filter.op].name}
             options={availableFilters[filter.col].map((c) => Constraints[c].name)}
             onChange={(val) => {
-              let filters = this.state.filters;
+              const filters = this.state.filters;
               filters[index] = {
                 col: filter.col,
                 op: constraintLookup[val],
@@ -486,7 +486,7 @@ export default class ExplorerQueryComposer extends React.Component {
             }} />
 
           {fieldView(type, filter.val, (val) => {
-            let filters = this.state.filters;
+            const filters = this.state.filters;
             filters[index] = {
               col: filter.col,
               op: filter.op,
@@ -508,7 +508,7 @@ export default class ExplorerQueryComposer extends React.Component {
             value={filter.col}
             options={FIELD_LABELS[this.state.source]}
             onChange={(val) => {
-              let filters = this.state.filters;
+              const filters = this.state.filters;
               filters[index] = {
                 col: val,
                 op: '$eq',
@@ -542,7 +542,7 @@ export default class ExplorerQueryComposer extends React.Component {
             value={order.col}
             options={this.getOrderOptions()}
             onChange={(val) => {
-              let orders = this.state.orders;
+              const orders = this.state.orders;
               orders[index] = {
                 col: val,
                 asc: ORDER_LABELS[0]
@@ -558,7 +558,7 @@ export default class ExplorerQueryComposer extends React.Component {
             value={order.asc}
             options={ORDER_LABELS}
             onChange={(val) => {
-              let orders = this.state.orders;
+              const orders = this.state.orders;
               orders[index].asc = val;
               this.setState({ orders });
             }}
@@ -692,22 +692,22 @@ export default class ExplorerQueryComposer extends React.Component {
       ));
     }
 
-    let offset = isTimeSeries ? 1 : 0;
-    let extraAggregateModels = isTimeSeries ? this.state.aggregates.slice(1) : this.state.aggregates;
-    let extraAggregates = extraAggregateModels.map((aggregate, i) => (
+    const offset = isTimeSeries ? 1 : 0;
+    const extraAggregateModels = isTimeSeries ? this.state.aggregates.slice(1) : this.state.aggregates;
+    const extraAggregates = extraAggregateModels.map((aggregate, i) => (
       <div className={styles.queryComposerBox} key={`aggregate_${i + 1}`}>
         {this.renderAggregate(aggregate, i + offset)}
       </div>
     ));
 
-    let extraGroupModels = isTimeSeries ? this.state.groups.slice(1) : this.state.groups;
-    let extraGroups = extraGroupModels.map((group, i) => (
+    const extraGroupModels = isTimeSeries ? this.state.groups.slice(1) : this.state.groups;
+    const extraGroups = extraGroupModels.map((group, i) => (
       <div className={styles.queryComposerBox} key={`group_${i + 1}`}>
         {this.renderGroup(group, i + offset)}
       </div>
     ));
 
-    let filters = this.state.filters.map((filter, i) => (
+    const filters = this.state.filters.map((filter, i) => (
       <div className={styles.queryComposerBox} key={`filter_${i}`}>
         {this.renderFilter(filter, i)}
       </div>

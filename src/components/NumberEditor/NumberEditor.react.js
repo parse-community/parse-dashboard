@@ -58,8 +58,8 @@ export default class NumberEditor extends React.Component {
   }
 
   render() {
-    let onChange = (e) => {
-      let value = e.target.value;
+    const onChange = (e) => {
+      const value = e.target.value;
       this.setState({ value: validateNumeric(value) ? value : this.state.value });
     };
     return (

@@ -11,19 +11,19 @@ import styles             from 'components/PushPreview/PushPreview.scss';
 import VisiblePreview     from 'components/PushPreview/VisiblePreview.react';
 import { CurrentApp }     from 'context/currentApp';
 import {
-         getDateMethod,
-         MONTHS,
-         pad,
-       }                from 'lib/DateUtils';
+  getDateMethod,
+  MONTHS,
+  pad,
+}                from 'lib/DateUtils';
 
-let Row = ({ label, content }) => (
+const Row = ({ label, content }) => (
   <div className={styles.row}>
     <div className={styles.rowLabel}>{label}</div>
     <div className={styles.rowContent}>{content}</div>
   </div>
 );
 
-let timeString = (time, isLocal) => {
+const timeString = (time, isLocal) => {
   if (time && time.constructor === Date) {
     return (
       <div>
@@ -47,8 +47,8 @@ export default class PushPreview extends React.Component {
   }
 
   render() {
-    let pushState = this.props.pushState;
-    let isExperiment = !!pushState.exp_enable;
+    const pushState = this.props.pushState;
+    const isExperiment = !!pushState.exp_enable;
     let audienceName = 'Everyone';
     let count = -1;
     if (pushState.audience_id === 'new_segment') {

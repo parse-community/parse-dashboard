@@ -256,7 +256,7 @@ class Browser extends DashboardView {
 
   redirectToFirstClass(classList, context) {
     if (!classList.isEmpty()) {
-      let classes = Object.keys(classList.toObject());
+      const classes = Object.keys(classList.toObject());
       classes.sort((a, b) => {
         if (a[0] === '_' && b[0] !== '_') {
           return -1;
@@ -381,7 +381,7 @@ class Browser extends DashboardView {
       .dispatch(ActionTypes.ADD_COLUMN, payload)
       .then(() => {
         if (required) {
-          let requiredCols = [...this.state.requiredColumnFields, name];
+          const requiredCols = [...this.state.requiredColumnFields, name];
           this.setState({
             requiredColumnFields: requiredCols,
           });
@@ -393,7 +393,7 @@ class Browser extends DashboardView {
   }
 
   addColumn({ type, name, target, required, defaultValue }) {
-    let payload = {
+    const payload = {
       className: this.props.params.className,
       columnType: type,
       name: name,
@@ -407,7 +407,7 @@ class Browser extends DashboardView {
   }
 
   addColumnAndContinue({ type, name, target, required, defaultValue }) {
-    let payload = {
+    const payload = {
       className: this.props.params.className,
       columnType: type,
       name: name,
@@ -452,9 +452,9 @@ class Browser extends DashboardView {
 
     // check if required fields are missing
     const className = this.state.newObject.className;
-    let requiredCols = [];
+    const requiredCols = [];
     if (className) {
-      let classColumns = this.props.schema.data.get('classes').get(className);
+      const classColumns = this.props.schema.data.get('classes').get(className);
       classColumns.forEach(({ required }, name) => {
         if (name === 'objectId' || (this.state.isUnique && name !== this.state.uniqueField)) {
           return;
@@ -491,7 +491,7 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       (objectSaved) => {
-        let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
+        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
         this.showNote(msg, false);
 
         const state = { data: this.state.data };
@@ -554,9 +554,9 @@ class Browser extends DashboardView {
 
     // check if required fields are missing
     const className = this.props.params.className;
-    let requiredCols = [];
+    const requiredCols = [];
     if (className) {
-      let classColumns = this.props.schema.data.get('classes').get(className);
+      const classColumns = this.props.schema.data.get('classes').get(className);
       classColumns.forEach(({ required }, name) => {
         if (name === 'objectId' || (this.state.isUnique && name !== this.state.uniqueField)) {
           return;
@@ -594,7 +594,7 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       (objectSaved) => {
-        let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
+        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
         this.showNote(msg, false);
 
         const state = {
@@ -653,12 +653,12 @@ class Browser extends DashboardView {
   }
 
   removeColumn(name) {
-    let payload = {
+    const payload = {
       className: this.props.params.className,
       name: name,
     };
     this.props.schema.dispatch(ActionTypes.DROP_COLUMN, payload).finally(() => {
-      let state = { showRemoveColumnDialog: false };
+      const state = { showRemoveColumnDialog: false };
       if (this.state.ordering === name || this.state.ordering === '-' + name) {
         state.ordering = '-createdAt';
       }
@@ -741,7 +741,7 @@ class Browser extends DashboardView {
     let columns = ColumnPreferences.getPreferences(this.context.applicationId, className);
     if (columns) {
       columns = columns.filter((clmn) => !clmn.visible).map((clmn) => clmn.name);
-      for (let columnsKey in columns) {
+      for (const columnsKey in columns) {
         query.exclude(columns[columnsKey]);
       }
       ColumnPreferences.updateCachedColumns(this.context.applicationId, className);
@@ -796,12 +796,12 @@ class Browser extends DashboardView {
     if (!this.state.data || this.state.isUnique) {
       return null;
     }
-    let className = this.props.params.className;
-    let source = this.state.relation || className;
+    const className = this.props.params.className;
+    const source = this.state.relation || className;
     let query = queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
-      let equalityQuery = queryFromFilters(source, this.state.filters);
+      const equalityQuery = queryFromFilters(source, this.state.filters);
       let field = this.state.ordering;
       let ascending = true;
       let comp = this.state.data[this.state.data.length - 1].get(field);
@@ -885,7 +885,7 @@ class Browser extends DashboardView {
   }
 
   updateOrdering(ordering) {
-    let source = this.state.relation || this.props.params.className;
+    const source = this.state.relation || this.props.params.className;
     this.setState(
       {
         ordering: ordering,
@@ -923,7 +923,7 @@ class Browser extends DashboardView {
   }
 
   handlePointerClick({ className, id, field = 'objectId' }) {
-    let filters = JSON.stringify([
+    const filters = JSON.stringify([
       {
         field,
         constraint: 'eq',
@@ -934,7 +934,7 @@ class Browser extends DashboardView {
   }
 
   handlePointerCmdClick({ className, id, field = 'objectId' }) {
-    let filters = JSON.stringify([
+    const filters = JSON.stringify([
       {
         field,
         constraint: 'eq',
@@ -945,7 +945,7 @@ class Browser extends DashboardView {
   }
 
   handleCLPChange(clp) {
-    let p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
+    const p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
       className: this.props.params.className,
       clp,
     });
@@ -954,8 +954,8 @@ class Browser extends DashboardView {
   }
 
   updateRow(row, attr, value) {
-    let isNewObject = row === -1;
-    let isEditCloneObj = row < -1;
+    const isNewObject = row === -1;
+    const isEditCloneObj = row < -1;
     let obj = isNewObject ? this.state.newObject : this.state.data[row];
     if (isEditCloneObj) {
       obj = this.state.editCloneRows[row + (this.state.editCloneRows.length + 1)];
@@ -981,7 +981,7 @@ class Browser extends DashboardView {
     }
     if (isEditCloneObj) {
       const editObjIndex = row + (this.state.editCloneRows.length + 1);
-      let cloneRows = [...this.state.editCloneRows];
+      const cloneRows = [...this.state.editCloneRows];
       cloneRows.splice(editObjIndex, 1, obj);
       this.setState({
         editCloneRows: cloneRows,
@@ -992,7 +992,7 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       (objectSaved) => {
-        let msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
+        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
         this.showNote(msg, false);
 
         const state = {
@@ -1064,7 +1064,7 @@ class Browser extends DashboardView {
 
   deleteRows(rows) {
     this.setState({ rowsToDelete: null, selection: {} });
-    let className = this.props.params.className;
+    const className = this.props.params.className;
     if (!this.state.relation && rows['*']) {
       this.context.clearCollection(className).then(() => {
         if (this.props.params.className === className) {
@@ -1077,11 +1077,11 @@ class Browser extends DashboardView {
         }
       });
     } else {
-      let indexes = [];
-      let toDelete = [];
-      let seeking = Object.keys(rows).length;
+      const indexes = [];
+      const toDelete = [];
+      const seeking = Object.keys(rows).length;
       for (let i = 0; i < this.state.data.length && indexes.length < seeking; i++) {
-        let obj = this.state.data[i];
+        const obj = this.state.data[i];
         if (!obj || !obj.id) {
           continue;
         }
@@ -1097,7 +1097,7 @@ class Browser extends DashboardView {
       });
 
       const { useMasterKey } = this.state;
-      let relation = this.state.relation;
+      const relation = this.state.relation;
       if (relation && toDelete.length) {
         relation.remove(toDelete);
         relation.parent.save(null, { useMasterKey }).then(() => {
@@ -1288,7 +1288,7 @@ class Browser extends DashboardView {
     const objects = await query.find({ useMasterKey });
     const toClone = [];
     for (const object of objects) {
-      let clonedObj = object.clone();
+      const clonedObj = object.clone();
       if (className === '_User') {
         clonedObj.set('username', undefined);
         clonedObj.set('authData', undefined);
@@ -1309,8 +1309,8 @@ class Browser extends DashboardView {
     } catch (error) {
       //for duplicate, username missing or required field missing errors
       if (error.code === 137 || error.code === 200 || error.code === 142) {
-        let failedSaveObj = [];
-        let savedObjects = [];
+        const failedSaveObj = [];
+        const savedObjects = [];
         toClone.forEach((cloneObj) => {
           cloneObj.dirty() ? failedSaveObj.push(cloneObj) : savedObjects.push(cloneObj);
         });
@@ -1518,13 +1518,13 @@ class Browser extends DashboardView {
   }
 
   renderSidebar() {
-    let current = this.props.params.className || '';
-    let classes = this.props.schema.data.get('classes');
+    const current = this.props.params.className || '';
+    const classes = this.props.schema.data.get('classes');
     if (!classes) {
       return null;
     }
-    let special = [];
-    let categories = [];
+    const special = [];
+    const categories = [];
     classes.forEach((value, key) => {
       let count = this.state.counts[key];
       if (count === undefined) {
@@ -1614,7 +1614,7 @@ class Browser extends DashboardView {
     if (this.state.relation) {
       className = this.state.relation.targetClassName;
     }
-    let classes = this.props.schema.data.get('classes');
+    const classes = this.props.schema.data.get('classes');
     if (classes) {
       if (classes.size === 0) {
         browser = (
@@ -1723,13 +1723,13 @@ class Browser extends DashboardView {
     }
     let extras = null;
     if (this.state.showPointerKeyDialog) {
-      let currentColumns = this.getClassColumns(className).map((column) => column.name);
+      const currentColumns = this.getClassColumns(className).map((column) => column.name);
       extras = <PointerKeyDialog app={this.context} className={className} currentColumns={currentColumns} onCancel={() => this.setState({ showPointerKeyDialog: false })} onConfirm={this.onChangeDefaultKey} />;
     } else if (this.state.showCreateClassDialog) {
       extras = <CreateClassDialog currentAppSlug={this.context.slug} onAddColumn={this.showAddColumn} currentClasses={this.props.schema.data.get('classes').keySeq().toArray()} onCancel={() => this.setState({ showCreateClassDialog: false })} onConfirm={this.createClass} />;
     } else if (this.state.showAddColumnDialog) {
       const currentApp = this.context || {};
-      let currentColumns = [];
+      const currentColumns = [];
       classes.get(className).forEach((field, name) => {
         currentColumns.push(name);
       });
@@ -1746,7 +1746,7 @@ class Browser extends DashboardView {
         />
       );
     } else if (this.state.showRemoveColumnDialog) {
-      let currentColumns = this.getClassColumns(className).map((column) => column.name);
+      const currentColumns = this.getClassColumns(className).map((column) => column.name);
       extras = <RemoveColumnDialog currentColumns={currentColumns} onCancel={() => this.setState({ showRemoveColumnDialog: false })} onConfirm={this.removeColumn} />;
     } else if (this.state.rowsToDelete) {
       extras = <DeleteRowsDialog className={className} selection={this.state.rowsToDelete} relation={this.state.relation} onCancel={() => this.setState({ rowsToDelete: null })} onConfirm={() => this.deleteRows(this.state.rowsToDelete)} />;

@@ -32,7 +32,7 @@ const APP_VERSIONS_EXPLORER_QUERY = {
   localId: 'slow_query_app_version_query'
 };
 
-let formatQuery = (query) => {
+const formatQuery = (query) => {
   return query;
 };
 
@@ -45,7 +45,7 @@ class SlowQueries extends TableView {
     this.section = 'Analytics';
     this.subsection = 'Slow Queries';
 
-    let date = new Date();
+    const date = new Date();
     this.state = {
       slowQueries: [],
       loading: true,
@@ -83,7 +83,7 @@ class SlowQueries extends TableView {
 
   fetchDropdownData(props) {
     props.schema.dispatch(SchemaStore.ActionTypes.FETCH);
-    let payload = {
+    const payload = {
       ...APP_VERSIONS_EXPLORER_QUERY,
       from: this.state.dateRange.start.getTime(),
       to: this.state.dateRange.end.getTime()
@@ -99,10 +99,10 @@ class SlowQueries extends TableView {
   }
 
   fetchSlowQueries(app) {
-    let { className, os, version, dateRange } = this.state;
+    const { className, os, version, dateRange } = this.state;
 
     this.setState({ loading: true }, () => {
-      let { promise, xhr } = app.getAnalyticsSlowQueries(className, os, version, dateRange.start, dateRange.end);
+      const { promise, xhr } = app.getAnalyticsSlowQueries(className, os, version, dateRange.start, dateRange.end);
       promise.then(
         (result) => this.setState({ slowQueries: result || [], loading: false, mutated: false }),
         () => this.setState({ slowQueries: [], loading: false, mutated: false })
@@ -121,13 +121,13 @@ class SlowQueries extends TableView {
 
   renderToolbar() {
     // Get app versions using Explorer endpoint
-    let queries = this.props.customQueries.data.get('queries') || [];
-    let appVersionExplorerQuery = queries.find((query) => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId);
-    let appVersions = {};
+    const queries = this.props.customQueries.data.get('queries') || [];
+    const appVersionExplorerQuery = queries.find((query) => query.localId === APP_VERSIONS_EXPLORER_QUERY.localId);
+    const appVersions = {};
     if (appVersionExplorerQuery && appVersionExplorerQuery.result) {
       appVersionExplorerQuery.result.forEach((value) => {
-        let os = value['OS'];
-        let version = value['App Display Version'];
+        const os = value['OS'];
+        const version = value['App Display Version'];
         if (os === null || version === null) return;
         if (Object.prototype.hasOwnProperty.call(appVersions, os)) {
           appVersions[os].push(version);
@@ -144,7 +144,7 @@ class SlowQueries extends TableView {
 
     // Get class names using Schema endpoint
     let classOptions = ['Class'];
-    let classList = this.props.schema.data.get('classes');
+    const classList = this.props.schema.data.get('classes');
     if (classList && !classList.isEmpty()) {
       classOptions = Object.keys(classList.toObject());
     }
@@ -176,7 +176,7 @@ class SlowQueries extends TableView {
     }
 
     return (
-       <Toolbar
+      <Toolbar
         section='Analytics'
         subsection='Slow Queries'>
         {actions}
@@ -234,7 +234,7 @@ class SlowQueries extends TableView {
             onClick={this.fetchSlowQueries.bind(this, this.context)}
             value='Run query' />
         )}
-        />
+      />
     );
   }
 }

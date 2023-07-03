@@ -102,8 +102,8 @@ export default class GeoPointEditor extends React.Component {
   }
 
   render() {
-    let onChange = (target, e) => {
-      let value = e.target.value;
+    const onChange = (target, e) => {
+      const value = e.target.value;
 
       if (!validateNumeric(value)) {
         const regex = /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;

@@ -30,7 +30,7 @@ export default class ExplorerActiveChartButton extends React.Component {
   }
 
   handleCheckbox() {
-    let nextActiveState = !this.state.active;
+    const nextActiveState = !this.state.active;
     this.props.onToggle(nextActiveState);
     this.setState({
       active: nextActiveState
@@ -61,7 +61,7 @@ export default class ExplorerActiveChartButton extends React.Component {
         <div
           className={[styles.rightArrow, baseStyles.verticalCenter].join(' ')}
           onClick={() => {
-            let position = Position.inDocument(this.wrapRef.current);
+            const position = Position.inDocument(this.wrapRef.current);
             let align = Directions.LEFT;
             if (position.x > 700) {
               position.x += this.wrapRef.current.clientWidth;
@@ -95,10 +95,10 @@ export default class ExplorerActiveChartButton extends React.Component {
 
   render() {
     let popover = null;
-    let content = this.renderButton();
+    const content = this.renderButton();
 
     if (this.state.open) {
-      let classes = [styles.composerContainer];
+      const classes = [styles.composerContainer];
       let calloutStyle = { marginLeft: '10px' };
       if (this.state.align === Directions.RIGHT) {
         classes.push(styles.right);

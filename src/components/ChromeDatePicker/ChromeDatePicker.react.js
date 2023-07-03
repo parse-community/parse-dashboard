@@ -34,7 +34,7 @@ export default class ChromeDatePicker extends React.Component {
       if (this.state.open) {
         return { open: false };
       }
-      let pos = Position.inWindow(this.wrapRef.current);
+      const pos = Position.inWindow(this.wrapRef.current);
       if (this.props.align === Directions.RIGHT) {
         pos.x += this.wrapRef.current.clientWidth;
       }
@@ -60,7 +60,7 @@ export default class ChromeDatePicker extends React.Component {
     let popover = null;
     let content = null;
     if (this.state.open) {
-      let classes = [styles.open];
+      const classes = [styles.open];
       if (this.props.align === Directions.RIGHT) {
         classes.push(styles.right);
       }

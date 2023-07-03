@@ -34,9 +34,9 @@ export default class PushAudiencesBaseRow extends React.Component {
     if (!context) { //so we don't break the PIG demo
       return;
     }
-    let query = this.props.id === NEW_SEGMENT_ID ? this.props.query : null;
+    const query = this.props.id === NEW_SEGMENT_ID ? this.props.query : null;
     //Added count fetch logic directly to component
-    let {xhr, promise} = context.fetchPushSubscriberCount(this.props.id, query);
+    const {xhr, promise} = context.fetchPushSubscriberCount(this.props.id, query);
     this.xhrHandle = xhr;
     promise.then(({ approximate, count }) => {
       this.setState({ approximate, count });

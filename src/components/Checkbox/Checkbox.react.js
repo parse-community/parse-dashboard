@@ -9,8 +9,8 @@ import Icon   from 'components/Icon/Icon.react';
 import React  from 'react';
 import styles from 'components/Checkbox/Checkbox.scss';
 
-let Checkbox = ({ label, checked, indeterminate, onChange }) => {
-  let classes = [styles.input];
+const Checkbox = ({ label, checked, indeterminate, onChange }) => {
+  const classes = [styles.input];
   if (checked) {
     classes.push(styles.checked);
   } else if (indeterminate) {

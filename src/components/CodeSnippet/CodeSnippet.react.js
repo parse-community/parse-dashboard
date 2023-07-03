@@ -31,12 +31,12 @@ export default class CodeSnippet extends React.Component {
   }
 
   render() {
-    let { fullPage = true, lineNumbers = true } = this.props;
-    let classes = ['language-' + this.props.language];
+    const { fullPage = true, lineNumbers = true } = this.props;
+    const classes = ['language-' + this.props.language];
     if (lineNumbers) {
       classes.push('line-numbers');
     }
-    let pageStyle = fullPage ? { minHeight: 'calc(100vh - 96px)'} : {};
+    const pageStyle = fullPage ? { minHeight: 'calc(100vh - 96px)'} : {};
     return (
       <pre style={{ margin: 0, ...pageStyle}} className={classes.join(' ')}>
         <code style={pageStyle} ref={this.codeRef}>{this.props.source}</code>

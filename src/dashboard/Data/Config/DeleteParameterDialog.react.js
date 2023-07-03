@@ -28,7 +28,7 @@ export default class DeleteParameterDialog extends React.Component {
   }
 
   render() {
-    let content = (
+    const content = (
       <Field
         label={
           <Label

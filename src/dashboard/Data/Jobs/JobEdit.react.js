@@ -19,7 +19,7 @@ class JobEdit extends React.Component {
   static contextType = CurrentApp;
 
   submitForm(changes) {
-    let schedule = {
+    const schedule = {
       job_schedule: {
         params: changes.parameter || '{}',
         daysOfWeek: [1, 1, 1, 1, 1, 1, 1]
@@ -49,7 +49,7 @@ class JobEdit extends React.Component {
       schedule.job_schedule.repeatMinutes = interval;
     }
 
-    let promise = this.props.params.jobId ?
+    const promise = this.props.params.jobId ?
       this.props.jobs.dispatch(ActionTypes.EDIT, { jobId: this.props.params.jobId, updates: schedule }) :
       this.props.jobs.dispatch(ActionTypes.CREATE, { schedule });
     promise.then(() => {this.props.navigate(generatePath(this.context, 'jobs/scheduled'))});
@@ -63,9 +63,9 @@ class JobEdit extends React.Component {
   render() {
     if (this.props.params.jobId) {
       if (this.props.jobs.data.get('jobs') && this.props.jobs.data.get('jobs').size) {
-        let data = this.props.jobs.data.get('jobs').filter((obj) => obj.objectId === this.props.params.jobId).first();
+        const data = this.props.jobs.data.get('jobs').filter((obj) => obj.objectId === this.props.params.jobId).first();
         if (data) {
-          let initialFields = {
+          const initialFields = {
             description: data.description,
             job: data.jobName,
             parameter: data.params
@@ -89,7 +89,7 @@ class JobEdit extends React.Component {
             initialFields.runAt = new Date(data.startAfter);
           }
           if (data.timeOfDay) {
-            let split = data.timeOfDay.split(':');
+            const split = data.timeOfDay.split(':');
             initialFields.repeatStartHour = split[0] || '12';
             if (split[0][0] === '0') {
               initialFields.repeatStartHour = split[0].substr(1);

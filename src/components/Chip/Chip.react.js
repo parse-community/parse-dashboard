@@ -10,25 +10,25 @@ import styles     from 'components/Chip/Chip.scss';
 import PropTypes  from 'lib/PropTypes'
 import Icon       from 'components/Icon/Icon.react'
 
-let Chip = ({ value, onClose }) => (
+const Chip = ({ value, onClose }) => (
   <div className={[styles.chip].join(' ')}>
     <div className={[styles.content].join(' ')}>{value}</div>
     <div onClick={e=>{
-        try{
-          e.stopPropagation();
-          e.nativeEvent.stopPropagation();
-        } catch(e){
-          console.error(e);
-        }
-
-        onClose(value);
+      try{
+        e.stopPropagation();
+        e.nativeEvent.stopPropagation();
+      } catch(e){
+        console.error(e);
       }
+
+      onClose(value);
+    }
     }>
-    <Icon name='chip-close'
+      <Icon name='chip-close'
         viewBox="0 0 24 24"
         height={12}
         width={12}
-       />
+      />
 
     </div>
   </div>

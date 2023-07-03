@@ -39,10 +39,10 @@ export default class DateTimeEntry extends React.Component {
   }
 
   open() {
-    let node = this.rootRef.current;
-    let pos = Position.inDocument(node);
+    const node = this.rootRef.current;
+    const pos = Position.inDocument(node);
     pos.y += node.clientHeight;
-    let height = 230 + node.clientWidth * 0.14;
+    const height = 230 + node.clientWidth * 0.14;
     if (window.innerHeight - pos.y - height < 40) {
       pos.y = window.innerHeight - height - 40;
     }
@@ -67,11 +67,11 @@ export default class DateTimeEntry extends React.Component {
     if (this.state.value === this.props.value.toISOString()) {
       return;
     }
-    let date = new Date(this.state.value);
+    const date = new Date(this.state.value);
     if (isNaN(date.getTime())) {
       this.setState({ value: this.props.value.toISOString() });
     } else if (!this.state.value.toLowerCase().endsWith('z')) {
-      let utc = new Date(Date.UTC(
+      const utc = new Date(Date.UTC(
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
@@ -103,7 +103,7 @@ export default class DateTimeEntry extends React.Component {
         </Popover>
       );
     }
-    
+
     return (
       <div className={this.props.className} onClick={this.toggle.bind(this)} ref={this.rootRef}>
         <input

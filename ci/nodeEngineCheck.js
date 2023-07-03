@@ -46,7 +46,7 @@ class NodeEngineCheck {
       const dirents = await fs.readdir(basePath, { withFileTypes: true });
       const validFiles = dirents.filter(d => d.name.toLowerCase() == 'package.json').map(d => path.join(basePath, d.name));
       files.push(...validFiles);
-      
+
       // For each directory entry
       for (const dirent of dirents) {
         if (dirent.isDirectory()) {

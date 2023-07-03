@@ -23,7 +23,7 @@ function wrapType(type, id) {
     type.isRequired._values = type._values;
   }
   type.describe = function(description) {
-    let wrapped = function(...args) {
+    const wrapped = function(...args) {
       return type.apply(type, args);
     }
     wrapped._id = type._id;

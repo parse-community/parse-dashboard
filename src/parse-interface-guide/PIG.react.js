@@ -15,7 +15,7 @@ import beautify           from 'js-beautify';
 import CodeSnippet        from 'components/CodeSnippet/CodeSnippet.react';
 import { withRouter }     from 'lib/withRouter';
 
-let PIGRow = ({ title, children }) => <div>
+const PIGRow = ({ title, children }) => <div>
   <div className={styles.header}>{title}</div>
   <div className={styles.row}>{children}</div>
 </div>;
@@ -31,7 +31,7 @@ class PIG extends React.Component {
   }
 
   renderSidebar() {
-    let components = Object.keys(ComponentsMap);
+    const components = Object.keys(ComponentsMap);
     return (
       <div className={styles.sidebar}>
         <div className={styles.iconWrap}>
@@ -43,7 +43,7 @@ class PIG extends React.Component {
           placeholder='Filter components...'
           className={styles.searchField}
           onChange={(e) => {
-            let query = e.target.value.trim();
+            const query = e.target.value.trim();
             this.setState({query});
           }}/>
         {components.map((name) => {
@@ -60,7 +60,7 @@ class PIG extends React.Component {
     if (!componentInfo) {
       componentInfo = ComponentsMap[Object.keys(ComponentsMap)[0]];
     }
-    let demos = componentInfo.demos || [];
+    const demos = componentInfo.demos || [];
     return (
       <div className={styles.content}>
         <h1>&lt;<span className={styles.component_name}>{componentInfo.component.name}</span>&gt;</h1>

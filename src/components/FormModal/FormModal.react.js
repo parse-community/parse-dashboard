@@ -20,7 +20,7 @@ export default class FormModal extends React.Component {
   }
 
   render() {
-    let {
+    const {
       children,
       open,
       submitText = 'Confirm',
@@ -33,7 +33,7 @@ export default class FormModal extends React.Component {
       showErrors = true,
       ...modalProps
     } = this.props;
-    let showModal = open || this.state.inProgress;
+    const showModal = open || this.state.inProgress;
     if (!modalProps.type) {
       if (this.state.errorMessage.length > 0) {
         modalProps.type = Modal.Types.DANGER;
@@ -81,7 +81,7 @@ export default class FormModal extends React.Component {
   }
 }
 
-let { ...forwardedModalProps} = Modal.propTypes;
+const { ...forwardedModalProps} = Modal.propTypes;
 FormModal.propTypes = {
   ...forwardedModalProps,
   children: PropTypes.node.describe('The form elements to be rendered in the modal.'),

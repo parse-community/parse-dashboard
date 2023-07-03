@@ -16,7 +16,7 @@ export const demos = [
     render() {
       return (
         <RadioButton />
-     );
+      );
     },
   },
   {

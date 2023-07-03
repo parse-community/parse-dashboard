@@ -10,8 +10,8 @@ import PropTypes    from 'lib/PropTypes';
 import React        from 'react';
 import styles       from 'components/Label/Label.scss';
 
-let Label = (props) => {
-  let padding = (props.padding || 20) + 'px';
+const Label = (props) => {
+  const padding = (props.padding || 20) + 'px';
   return (
     <div
       className={[styles.label, fieldStyles.centered].join(' ')}

@@ -12,9 +12,9 @@ import React          from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 // Refer to https://github.com/chjj/marked.
-let renderer = new marked.Renderer();
+const renderer = new marked.Renderer();
 renderer.code = (code, lang) => {
-  let snippet = (
+  const snippet = (
     <CodeSnippet
       source={code}
       language={lang}
@@ -24,8 +24,8 @@ renderer.code = (code, lang) => {
   return ReactDOMServer.renderToString(snippet);
 };
 
-let Markdown = ({ content }) => {
-  let rawHtml = marked(content, {
+const Markdown = ({ content }) => {
+  const rawHtml = marked(content, {
     sanitize: true,
     renderer: renderer,
   });

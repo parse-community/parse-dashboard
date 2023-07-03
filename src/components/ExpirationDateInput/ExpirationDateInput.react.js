@@ -10,19 +10,19 @@ import Option from 'components/Dropdown/Option.react';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 
-let months = [];
+const months = [];
 for (let i = 1; i <= 12; i++) {
-  let value = (i < 10 ? '0' : '') + String(i);
+  const value = (i < 10 ? '0' : '') + String(i);
   months.push(<Option key={'m' + i} value={String(i)}>{value}</Option>);
 }
-let years = [];
-let startYear = new Date().getFullYear();
+const years = [];
+const startYear = new Date().getFullYear();
 for (let i = 0; i < 10; i++) {
-  let value = String(startYear + i);
+  const value = String(startYear + i);
   years.push(<Option key={'y' + i} value={value}>{value}</Option>);
 }
 
-let ExpirationDateInput = ({ month, year, onChange }) => {
+const ExpirationDateInput = ({ month, year, onChange }) => {
   return (
     <div>
       <Dropdown

@@ -67,7 +67,7 @@ export default class AppleCerts extends React.Component {
             confirmText='Delete'
             onCancel={() => this.setState({ deletePending: null })}
             onConfirm={() => {
-              let id = this.state.deletePending;
+              const id = this.state.deletePending;
               this.context.deleteAppleCert(id).then(() => {
                 for (let i = 0; i < this.state.certs.length; i++) {
                   if (this.state.certs[i].id === id) {

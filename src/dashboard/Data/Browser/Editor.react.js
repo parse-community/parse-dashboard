@@ -16,7 +16,7 @@ import decode         from 'parse/lib/browser/decode';
 import React          from 'react';
 import StringEditor   from 'components/StringEditor/StringEditor.react';
 
-let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, onCancel }) => {
+const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, onCancel }) => {
   let content = null;
   if (type === 'String') {
     content = (
@@ -29,9 +29,9 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, 
         resizable={true} />
     );
   } else if (type === 'Array' || type === 'Object') {
-    let encodeCommit = (json) => {
+    const encodeCommit = (json) => {
       try {
-        let obj = decode(JSON.parse(json));
+        const obj = decode(JSON.parse(json));
         onCommit(obj);
       } catch (e) {
         onCommit(value);
@@ -46,14 +46,14 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, 
         onCommit={encodeCommit} />
     );
   } else if (type === 'Polygon') {
-    let encodeCommit = (json) => {
+    const encodeCommit = (json) => {
       try {
-        let coordinates = JSON.parse(json);
+        const coordinates = JSON.parse(json);
         if (coordinates.length < 3) {
           throw 'Polygon must have at least 3 coordinates';
         }
         if (value && value.coordinates && value.coordinates.length === coordinates.length) {
-          let dirty = coordinates.some((coord, index) => {
+          const dirty = coordinates.some((coord, index) => {
             if (value.coordinates[index][0] !== coord[0] || value.coordinates[index][1] !== coord[1]) {
               return true;
             }
@@ -62,7 +62,7 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, 
             throw 'No change in coordinates';
           }
         }
-        let obj = {
+        const obj = {
           '__type': 'Polygon',
           coordinates
         }
@@ -129,7 +129,7 @@ let Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, 
         onCommit={onCommit} />
     );
   } else if (type === 'Pointer') {
-    let encodeCommit = (pointer) => {
+    const encodeCommit = (pointer) => {
       if (pointer.length === 0) {
         onCommit(undefined);
       } else {

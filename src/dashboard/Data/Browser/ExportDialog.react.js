@@ -40,7 +40,7 @@ export default class ExportDialog extends React.Component {
   }
 
   render() {
-    let inProgress = this.inProgress();
+    const inProgress = this.inProgress();
     return (
       <Modal
         type={Modal.Types.INFO}

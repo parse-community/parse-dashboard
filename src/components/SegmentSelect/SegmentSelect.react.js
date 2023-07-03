@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/SegmentSelect/SegmentSelect.scss';
 
-let SegmentSelect = ({ values, current, onChange }) => (
+const SegmentSelect = ({ values, current, onChange }) => (
   <div className={styles.row}>
     {values.map((v) => (
       <a

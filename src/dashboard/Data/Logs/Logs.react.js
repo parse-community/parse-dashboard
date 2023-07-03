@@ -17,7 +17,7 @@ import Toolbar       from 'components/Toolbar/Toolbar.react';
 import styles        from 'dashboard/Data/Logs/Logs.scss';
 import { withRouter } from 'lib/withRouter';
 
-let subsections = {
+const subsections = {
   info: 'Info',
   error: 'Error'
 };
@@ -48,7 +48,7 @@ class Logs extends DashboardView {
   }
 
   fetchLogs(app, type) {
-    let typeParam = (type || 'INFO').toUpperCase();
+    const typeParam = (type || 'INFO').toUpperCase();
     app.getLogs(typeParam).then(
       (logs) => this.setState({ logs }),
       () => this.setState({ logs: [] })
@@ -68,7 +68,7 @@ class Logs extends DashboardView {
   */
 
   renderSidebar() {
-    let current = this.props.params.type || '';
+    const current = this.props.params.type || '';
     return (
       <CategoryList current={current} linkPrefix={'logs/'} categories={[
         { name: 'Info', id: 'info' },

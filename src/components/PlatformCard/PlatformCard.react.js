@@ -16,7 +16,7 @@ const FILL = {
   red: '#ff395e',
 };
 
-let PlatformCard = ({ platform, name, subtitle, color }) => {
+const PlatformCard = ({ platform, name, subtitle, color }) => {
   return (
     <div className={styles.card}>
       <div className={styles.left}><Icon name={platform} fill={FILL[color]} width={50} height={50} /></div>

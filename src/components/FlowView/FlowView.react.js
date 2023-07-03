@@ -23,8 +23,8 @@ export default class FlowView extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    let newChanges = {...this.state.changes};
-    for (let k in props.initialFields) {
+    const newChanges = {...this.state.changes};
+    for (const k in props.initialFields) {
       if (this.state.changes[k] === props.initialFields[k]) {
         delete newChanges[k];
       }
@@ -33,11 +33,11 @@ export default class FlowView extends React.Component {
   }
 
   currentFields() {
-    let fields = {};
-    for (let k in this.props.initialFields) {
+    const fields = {};
+    for (const k in this.props.initialFields) {
       fields[k] = this.props.initialFields[k];
     }
-    for (let k in this.state.changes) {
+    for (const k in this.state.changes) {
       fields[k] = this.state.changes[k];
     }
     return fields;
@@ -45,7 +45,7 @@ export default class FlowView extends React.Component {
 
   setField(key, value, preserveSavingState = false) {
     if (this.state.saveState !== SaveButton.States.SAVING) {
-      let newChanges = {...this.state.changes};
+      const newChanges = {...this.state.changes};
       newChanges[key] = value;
       if (newChanges[key] === this.props.initialFields[key]) {
         delete newChanges[key];
@@ -72,7 +72,7 @@ export default class FlowView extends React.Component {
   }
 
   render() {
-    let {
+    const {
       inProgressText,
       submitText,
       showFooter = () => true,
@@ -88,18 +88,18 @@ export default class FlowView extends React.Component {
         value='Cancel'
       />,
     } = this.props;
-    let {
+    const {
       changes,
       saveState,
       saveError,
     } = this.state;
-    let setField = this.setField.bind(this);
-    let resetFields = this.resetFields.bind(this);
-    let fields = this.currentFields();
-    let form = renderForm({ fields, changes, setField, resetFields });
+    const setField = this.setField.bind(this);
+    const resetFields = this.resetFields.bind(this);
+    const fields = this.currentFields();
+    const form = renderForm({ fields, changes, setField, resetFields });
 
-    let invalidFormMessage = validate({ changes, fields });
-    let hasFormValidationError = React.isValidElement(invalidFormMessage) || (invalidFormMessage && invalidFormMessage.length > 0);
+    const invalidFormMessage = validate({ changes, fields });
+    const hasFormValidationError = React.isValidElement(invalidFormMessage) || (invalidFormMessage && invalidFormMessage.length > 0);
     let errorMessage = '';
     let footerMessage = null;
     let shouldShowFooter = showFooter(changes);
@@ -120,7 +120,7 @@ export default class FlowView extends React.Component {
       footerMessage = shouldShowFooter ? footerContents({ changes, fields }) : '';
     }
 
-    let saveButton = <SaveButton
+    const saveButton = <SaveButton
       state={saveState}
       waitingText={submitText}
       savingText={inProgressText}
@@ -139,7 +139,7 @@ export default class FlowView extends React.Component {
       }}
     />;
 
-    let footer = shouldShowFooter ? <FlowFooter
+    const footer = shouldShowFooter ? <FlowFooter
       primary={saveButton}
       secondary={secondaryButton({ setField })}
       errorMessage={errorMessage}>

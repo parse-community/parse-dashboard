@@ -36,12 +36,12 @@ class Browser extends DashboardView {
 
   renderSidebar() {
     //TODO: refactor this to share code with Browser.react and actually fetch counts
-    let classes = this.props.schema.data.get('classes');
+    const classes = this.props.schema.data.get('classes');
     if (!classes) {
       return null;
     }
-    let special = [];
-    let categories = [];
+    const special = [];
+    const categories = [];
     classes.forEach((value, key) => {
       let count = this.state.counts[key];
       if (count === undefined) {

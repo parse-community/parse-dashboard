@@ -60,8 +60,8 @@ export default class Dropdown extends React.Component {
   render() {
     let popover = null;
     if (this.state.open && !this.props.disabled) {
-      let width = this.dropdownRef.current.clientWidth;
-      let popoverChildren = (
+      const width = this.dropdownRef.current.clientWidth;
+      const popoverChildren = (
         <SliderWrap direction={Directions.DOWN} expanded={true}>
           <div style={{ width }} className={styles.menu}>
             {React.Children.map(this.props.children, c => (
@@ -95,7 +95,7 @@ export default class Dropdown extends React.Component {
         float: 'left'
       };
     }
-    let dropdownClasses = [styles.dropdown];
+    const dropdownClasses = [styles.dropdown];
     if (this.props.disabled) {
       dropdownClasses.push(styles.disabled);
     }

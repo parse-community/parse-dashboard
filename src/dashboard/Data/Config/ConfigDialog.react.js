@@ -41,7 +41,7 @@ function numberValidator(onChange) {
 }
 
 function saveFile(onChange, file) {
-  let value = new Parse.File(file.name, file);
+  const value = new Parse.File(file.name, file);
   value.save({ useMasterKey: true }).then(() => onChange(value));
 }
 
@@ -136,7 +136,7 @@ export default class ConfigDialog extends React.Component {
         return !isNaN(new Date(this.state.value));
       case 'Object':
         try {
-          let obj = JSON.parse(this.state.value);
+          const obj = JSON.parse(this.state.value);
           if (obj && typeof obj === 'object') {
             return true;
           }
@@ -146,7 +146,7 @@ export default class ConfigDialog extends React.Component {
         }
       case 'Array':
         try {
-          let obj = JSON.parse(this.state.value);
+          const obj = JSON.parse(this.state.value);
           if (obj && Array.isArray(obj)) {
             return true;
           }
@@ -155,7 +155,7 @@ export default class ConfigDialog extends React.Component {
           return false;
         }
       case 'GeoPoint':
-        let val = this.state.value;
+        const val = this.state.value;
         if (!val || typeof val !== 'object') {
           return false;
         }
@@ -167,7 +167,7 @@ export default class ConfigDialog extends React.Component {
         }
         return true;
       case 'File':
-        let fileVal = this.state.value;
+        const fileVal = this.state.value;
         if (fileVal && fileVal.url()) {
           return true;
         }
@@ -185,8 +185,8 @@ export default class ConfigDialog extends React.Component {
   }
 
   render() {
-    let newParam = !this.props.param;
-    let typeDropdown = (
+    const newParam = !this.props.param;
+    const typeDropdown = (
       <Dropdown
         fixed={true}
         value={this.state.type}
@@ -240,7 +240,7 @@ export default class ConfigDialog extends React.Component {
             that is the minimum version that supports this feature.
           */
           semver.valid(this.props.parseServerVersion) && semver.gte(this.props.parseServerVersion, '3.9.0')
-          ? <Field
+            ? <Field
               label={
                 <Label
                   text='Requires master key?'
@@ -255,7 +255,7 @@ export default class ConfigDialog extends React.Component {
               }
               className={styles.addColumnToggleWrapper}
             />
-          : null
+            : null
         }
       </Modal>
     );

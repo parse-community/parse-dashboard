@@ -12,7 +12,7 @@ import { DndProvider }     from 'react-dnd'
 
 export const component = DataBrowserHeader;
 
-let lightBg = { background: 'rgba(224,224,234,0.10)' };
+const lightBg = { background: 'rgba(224,224,234,0.10)' };
 
 class HeadersDemo extends React.Component {
   render() {

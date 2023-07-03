@@ -25,7 +25,7 @@ function sortPoints(a, b) {
 }
 
 function formatDate(date) {
-  let str = DateUtils.getMonth(date.getMonth()) + ' ' + date.getDate();
+  const str = DateUtils.getMonth(date.getMonth()) + ' ' + date.getDate();
   if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
     return str;
   }
@@ -59,17 +59,17 @@ export default class Chart extends React.Component {
   }
 
   render() {
-    let { width, height, data } = this.props;
-    let plotting = {};
+    const { width, height, data } = this.props;
+    const plotting = {};
     let minX = Infinity;
     let maxX = -Infinity;
     let maxY = -Infinity;
 
-    let chartWidth = width - MARGIN_LEFT - MARGIN_RIGHT;
-    let chartHeight = height - MARGIN_TOP - MARGIN_BOTTOM;
+    const chartWidth = width - MARGIN_LEFT - MARGIN_RIGHT;
+    const chartHeight = height - MARGIN_TOP - MARGIN_BOTTOM;
 
-    for (let key in data) {
-      let ordered = data[key].points.map(([x, y]) => [x, y]).sort(sortPoints);
+    for (const key in data) {
+      const ordered = data[key].points.map(([x, y]) => [x, y]).sort(sortPoints);
       for (let i = 0; i < ordered.length; i++) {
         if (ordered[i][0] < minX) {
           minX = ordered[i][0];
@@ -83,14 +83,14 @@ export default class Chart extends React.Component {
       }
       plotting[key] = { data: ordered, index: data[key].index };
     }
-    let timeBuckets = Charting.timeAxisBuckets(minX, maxX);
-    let valueBuckets = Charting.valueAxisBuckets(maxY || 10);
-    let groups = [];
-    for (let key in plotting) {
-      let color = data[key].color;
-      let index = data[key].index || 0;
-      let points = Charting.getDataPoints(chartWidth, chartHeight, timeBuckets, valueBuckets, plotting[key].data);
-      let path = <path d={'M' + points.map((p) => p.join(' ')).join(' L')} style={{ stroke: color, fill: 'none', strokeWidth: 2 }} />;
+    const timeBuckets = Charting.timeAxisBuckets(minX, maxX);
+    const valueBuckets = Charting.valueAxisBuckets(maxY || 10);
+    const groups = [];
+    for (const key in plotting) {
+      const color = data[key].color;
+      const index = data[key].index || 0;
+      const points = Charting.getDataPoints(chartWidth, chartHeight, timeBuckets, valueBuckets, plotting[key].data);
+      const path = <path d={'M' + points.map((p) => p.join(' ')).join(' L')} style={{ stroke: color, fill: 'none', strokeWidth: 2 }} />;
       groups.push(
         <g key={key}>
           {path}
@@ -106,11 +106,11 @@ export default class Chart extends React.Component {
         </g>
       );
     }
-    let labels = valueBuckets.slice(1, valueBuckets.length - 1);
-    let labelHeights = labels.map((label) => chartHeight * (1 - label / valueBuckets[valueBuckets.length - 1]));
-    let tickPoints = timeBuckets.map((t) => chartWidth * (t - timeBuckets[0]) / (timeBuckets[timeBuckets.length - 1] - timeBuckets[0]));
+    const labels = valueBuckets.slice(1, valueBuckets.length - 1);
+    const labelHeights = labels.map((label) => chartHeight * (1 - label / valueBuckets[valueBuckets.length - 1]));
+    const tickPoints = timeBuckets.map((t) => chartWidth * (t - timeBuckets[0]) / (timeBuckets[timeBuckets.length - 1] - timeBuckets[0]));
     let last = null;
-    let tickLabels = timeBuckets.map((t, i) => {
+    const tickLabels = timeBuckets.map((t, i) => {
       let text = '';
       if (timeBuckets.length > 20 && i % 2 === 0) {
         return '';
@@ -128,11 +128,11 @@ export default class Chart extends React.Component {
     });
     let popup = null;
     if (this.state.hoverValue !== null) {
-      let style = {
+      const style = {
         color: this.state.hoverColor,
         borderColor: this.state.hoverColor,
       };
-      let classes = [styles.popup];
+      const classes = [styles.popup];
       if (this.state.hoverPosition.x < 200) {
         classes.push(styles.popupRight);
       } else {
@@ -182,7 +182,7 @@ Chart.propTypes = {
     'The height of the chart.'
   ),
   data: PropTypes.object.isRequired.describe(
-    'The data to graph. It is a map of data names to objects containing two keys: ' + 
+    'The data to graph. It is a map of data names to objects containing two keys: ' +
     '"color," the color to use for the lines, and "points," an array of tuples containing time-value data.'
   ),
   formatter: PropTypes.func.describe(

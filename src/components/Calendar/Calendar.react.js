@@ -20,7 +20,7 @@ import styles    from 'components/Calendar/Calendar.scss';
 export default class Calendar extends React.Component {
   constructor(props) {
     super();
-    let now = props.value || new Date();
+    const now = props.value || new Date();
     this.state = {
       currentMonth: new Date(now[getDateMethod(props.local, 'getFullYear')](), now[getDateMethod(props.local, 'getMonth')](), 1)
     };
@@ -65,21 +65,21 @@ export default class Calendar extends React.Component {
   }
 
   renderDays() {
-    let isValueMonth = (
+    const isValueMonth = (
       this.props.value &&
       this.props.value[getDateMethod(this.props.local, 'getFullYear')]() === this.state.currentMonth.getFullYear() &&
       this.props.value[getDateMethod(this.props.local, 'getMonth')]() === this.state.currentMonth.getMonth()
     );
-    let offset = this.state.currentMonth.getDay();
-    let days = daysInMonth(this.state.currentMonth);
-    let labels = [];
+    const offset = this.state.currentMonth.getDay();
+    const days = daysInMonth(this.state.currentMonth);
+    const labels = [];
     for (let i = 0; i < offset; i++) {
       labels.push(<span key={'pad' + i} />);
     }
     for (let i = 1; i <= days; i++) {
-      let isSelected = isValueMonth && (this.props.value[getDateMethod(this.props.local, 'getDate')]() === i);
-      let className = isSelected ? styles.selected : '';
-      let onChange = this.props.onChange.bind(
+      const isSelected = isValueMonth && (this.props.value[getDateMethod(this.props.local, 'getDate')]() === i);
+      const className = isSelected ? styles.selected : '';
+      const onChange = this.props.onChange.bind(
         null,
         this.props.local ?
           new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i) :
@@ -89,7 +89,7 @@ export default class Calendar extends React.Component {
         <button type='button' key={'day' + i} className={className} onClick={onChange}>{i}</button>
       );
     }
-    let classes = [styles.days];
+    const classes = [styles.days];
     if (isValueMonth && this.props.shadeBefore) {
       classes.push(styles.shadeBefore);
     }

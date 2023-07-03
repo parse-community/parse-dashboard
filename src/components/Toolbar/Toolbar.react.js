@@ -11,7 +11,7 @@ import Icon      from 'components/Icon/Icon.react';
 import styles    from 'components/Toolbar/Toolbar.scss';
 import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom';
 
-let Toolbar = (props) => {
+const Toolbar = (props) => {
   const action = useNavigationType();
   const navigate = useNavigate();
   let backButton;

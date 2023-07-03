@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 export default function request(app, method, path, body, options) {
-  let xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
   if (path.startsWith('/') && app.serverURL.endsWith('/')) {
     path = path.substr(1);
   }

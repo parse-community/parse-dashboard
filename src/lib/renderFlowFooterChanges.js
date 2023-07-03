@@ -23,12 +23,12 @@ import setDifference from 'lib/setDifference';
 // Note: key_name is snake_case because in most cases it will come directly from ruby, which
 // uses snake_case
 export default (changes, initial, fieldOptions) => {
-  let booleanChanges = [];
-  let stringChangesWithTo = [];
-  let stringChanges = [];
-  let additions = [];
-  let setChanges = [];
-  for (let key in changes) {
+  const booleanChanges = [];
+  const stringChangesWithTo = [];
+  const stringChanges = [];
+  const additions = [];
+  const setChanges = [];
+  for (const key in changes) {
     if (fieldOptions[key]) {
       if (fieldOptions[key].type === 'boolean') {
 
@@ -52,16 +52,16 @@ export default (changes, initial, fieldOptions) => {
           {fieldOptions[key].showTo ? <span> to <strong>{changes[key]}</strong></span> : null}
         </span>);
       } else if (fieldOptions[key].type === 'set') {
-        let additionsToSet = setDifference(changes[key], initial[key], fieldOptions[key].equalityPredicate);
-        let removalsFromSet = setDifference(initial[key], changes[key], fieldOptions[key].equalityPredicate);
+        const additionsToSet = setDifference(changes[key], initial[key], fieldOptions[key].equalityPredicate);
+        const removalsFromSet = setDifference(initial[key], changes[key], fieldOptions[key].equalityPredicate);
 
-        let friendlyAddition = additionsToSet.length > 1 ? fieldOptions[key].friendlyNamePlural : fieldOptions[key].friendlyName;
-        let friendlyRemoval = removalsFromSet.length > 1 ? fieldOptions[key].friendlyNamePlural : fieldOptions[key].friendlyName;
+        const friendlyAddition = additionsToSet.length > 1 ? fieldOptions[key].friendlyNamePlural : fieldOptions[key].friendlyName;
+        const friendlyRemoval = removalsFromSet.length > 1 ? fieldOptions[key].friendlyNamePlural : fieldOptions[key].friendlyName;
         if (additionsToSet.length > 0) {
-          setChanges.push(<span key={key+'added'}>added <strong>{additionsToSet.length} {friendlyAddition}</strong></span>);
+          setChanges.push(<span key={key + 'added'}>added <strong>{additionsToSet.length} {friendlyAddition}</strong></span>);
         }
         if (removalsFromSet.length > 0) {
-          setChanges.push(<span key={key+'removed'}>removed <strong>{removalsFromSet.length} {friendlyRemoval}</strong></span>);
+          setChanges.push(<span key={key + 'removed'}>removed <strong>{removalsFromSet.length} {friendlyRemoval}</strong></span>);
         }
 
       } else {
@@ -73,11 +73,11 @@ export default (changes, initial, fieldOptions) => {
     }
   }
 
-  let renderChangeList = (prefix, changes, isLastList) => {
+  const renderChangeList = (prefix, changes, isLastList) => {
     return joinWithFinal(prefix, changes, ', ', isLastList ? ' and ' : ', ');
   };
 
-  let changesList = [
+  const changesList = [
     {
       changes: booleanChanges,
       prefix: null,
@@ -99,7 +99,7 @@ export default (changes, initial, fieldOptions) => {
       prefix: 'changed your ',
     },
   ];
-  let allChangeNodes = changesList.filter(({ changes }) => changes.length > 0).map(({ changes, prefix }, index, wholeList) =>
+  const allChangeNodes = changesList.filter(({ changes }) => changes.length > 0).map(({ changes, prefix }, index, wholeList) =>
     renderChangeList(prefix, changes, index === wholeList.length - 1)
   );
   return <span>

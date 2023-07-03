@@ -27,13 +27,13 @@ import Toolbar                from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 
-let subsections = {
+const subsections = {
   all: 'All Jobs',
   scheduled: 'Scheduled Jobs',
   status: 'Job Status'
 };
 
-let statusColors = {
+const statusColors = {
   succeeded: 'green',
   failed: 'red',
   running: 'blue'
@@ -54,7 +54,7 @@ function scheduleString(data) {
   } else {
     schedule = 'On ';
   }
-  let runAt = new Date(data.startAfter);
+  const runAt = new Date(data.startAfter);
   schedule += runAt.getUTCMonth() + '/' + runAt.getUTCDate() + '/' + String(runAt.getUTCFullYear()).substr(2);
   schedule += ' at ' + (runAt.getUTCHours() < 10 ? '0' : '') + runAt.getUTCHours() + ':' + (runAt.getUTCMinutes() < 10 ? '0' : '') + runAt.getUTCMinutes() + '.';
   return <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>{schedule}</div>;
@@ -109,7 +109,7 @@ class Jobs extends TableView {
   }
 
   renderSidebar() {
-    let current = this.props.params.section || '';
+    const current = this.props.params.section || '';
     return (
       <CategoryList current={current} linkPrefix={'jobs/'} categories={[
         { name: 'All Jobs', id: 'all' },
@@ -259,9 +259,9 @@ class Jobs extends TableView {
           return { jobName };
         });
       }
-    } else if (this.props.params.section === 'scheduled' ) {
+    } else if (this.props.params.section === 'scheduled') {
       if (this.props.jobs.data) {
-        let jobs = this.props.jobs.data.get('jobs');
+        const jobs = this.props.jobs.data.get('jobs');
         if (jobs) {
           data = jobs.toArray();
         }

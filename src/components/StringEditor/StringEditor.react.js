@@ -49,8 +49,8 @@ export default class StringEditor extends React.Component {
   }
 
   render() {
-    let classes = [styles.editor];
-    let onChange = this.props.readonly ? () => {} : (e) => this.setState({ value: e.target.value });
+    const classes = [styles.editor];
+    const onChange = this.props.readonly ? () => {} : (e) => this.setState({ value: e.target.value });
     if (this.props.readonly) {
       classes.push(styles.readonly)
     }

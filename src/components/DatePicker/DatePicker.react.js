@@ -45,7 +45,7 @@ export default class DatePicker extends React.Component {
   render() {
     let popover = null;
     if (this.state.open) {
-      let width = this.inputRef.current.clientWidth;
+      const width = this.inputRef.current.clientWidth;
       popover = (
         <Popover position={this.state.position} onExternalClick={this.close.bind(this)}>
           <SliderWrap direction={Directions.DOWN} expanded={true}>
@@ -69,7 +69,7 @@ export default class DatePicker extends React.Component {
         </div>
       );
     }
-    
+
     return (
       <div className={styles.input} onClick={this.toggle.bind(this)} ref={this.inputRef}>
         {content}

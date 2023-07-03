@@ -8,7 +8,7 @@
 import React        from 'react';
 import styles       from 'components/RadioButton/RadioButton.scss';
 
-let RadioButton = (props) => {
+const RadioButton = (props) => {
   const parentClassName = props.parentClassName || '';
   props = Object.assign({}, props);
   delete props.parentClassName;

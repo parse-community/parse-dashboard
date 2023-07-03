@@ -22,10 +22,10 @@ const MONOCHROME_COLORS = [
   '#e0e0ea'
 ];
 
-let DonutChart = ({ segments=[], diameter=200, label='', isMonochrome=false, printPercentage=false }) => {
-  let centerX = diameter / 2;
-  let centerY = centerX;
-  let radius = centerX * 0.9;
+const DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = false, printPercentage = false }) => {
+  const centerX = diameter / 2;
+  const centerY = centerX;
+  const radius = centerX * 0.9;
 
   let lastX = centerX;
   let lastY = centerY - radius;
@@ -36,9 +36,9 @@ let DonutChart = ({ segments=[], diameter=200, label='', isMonochrome=false, pri
     sum += segments[i];
   }
 
-  let paths = [];
+  const paths = [];
   for (let i = 0; i < segments.length; ++i) {
-    let arc = segments[i] / sum * 2 * Math.PI;
+    const arc = segments[i] / sum * 2 * Math.PI;
     let angle = alpha - Math.min(arc, Math.PI);
     let endX = radius * Math.cos(angle) + centerX;
     let endY = -radius * Math.sin(angle) + centerY;

@@ -27,7 +27,7 @@ function validateEntry(text, returnInvalid = true) {
       find: () => Promise.resolve([])
     };
 
-    let user = text.substring(5);
+    const user = text.substring(5);
     entry = user;
     userQuery = new Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
@@ -39,7 +39,7 @@ function validateEntry(text, returnInvalid = true) {
     userQuery = {
       find: () => Promise.resolve([])
     };
-    let role = text.substring(5);
+    const role = text.substring(5);
     entry = role;
     roleQuery = new Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
@@ -79,9 +79,9 @@ function toPerms(acl) {
   if (!acl) {
     return { read: { '*': true }, write: { '*': true } };
   }
-  let json = acl.toJSON();
-  let perms = { read: {}, write: {} };
-  for (let key in json) {
+  const json = acl.toJSON();
+  const perms = { read: {}, write: {} };
+  for (const key in json) {
     if (json[key].read) {
       perms.read[key] = true;
     }
@@ -93,13 +93,13 @@ function toPerms(acl) {
 }
 
 function toACL(perms) {
-  let acl = {};
-  for (let key in perms.read) {
+  const acl = {};
+  for (const key in perms.read) {
     if (perms.read[key]) {
       acl[key] = { read: true };
     }
   }
-  for (let key in perms.write) {
+  for (const key in perms.write) {
     if (perms.write[key]) {
       if (acl[key]) {
         acl[key].write = true;
@@ -111,7 +111,7 @@ function toACL(perms) {
   return new Parse.ACL(acl);
 }
 
-let ACLEditor = ({ value, onCommit }) => (
+const ACLEditor = ({ value, onCommit }) => (
   <PermissionsDialog
     title='Edit Access Control List (ACL)'
     advanced={false}

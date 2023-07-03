@@ -21,7 +21,7 @@ class PushCerts extends React.Component {
   }
 
   render() {
-    let renderTable = this.props.uploadPending || (this.props.certs && this.props.certs.length > 0);
+    const renderTable = this.props.uploadPending || (this.props.certs && this.props.certs.length > 0);
     return (
       <Fieldset
         legend='Apple Push Certificates'

@@ -7,7 +7,7 @@
  */
 import howLongAgo from 'lib/howLongAgo';
 
-let ReleaseInfo = ({ release }) => {
+const ReleaseInfo = ({ release }) => {
   if (!release) {
     return '';
   }

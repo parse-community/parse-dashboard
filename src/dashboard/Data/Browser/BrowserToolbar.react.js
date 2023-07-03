@@ -20,7 +20,7 @@ import SecureFieldsDialog   from 'dashboard/Data/Browser/SecureFieldsDialog.reac
 import LoginDialog          from 'dashboard/Data/Browser/LoginDialog.react';
 import Toggle               from 'components/Toggle/Toggle.react';
 
-let BrowserToolbar = ({
+const BrowserToolbar = ({
   className,
   classNameForEditors,
   count,
@@ -72,21 +72,21 @@ let BrowserToolbar = ({
   logout,
   toggleMasterKeyUsage,
 }) => {
-  let selectionLength = Object.keys(selection).length;
-  let isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
-  let details = [];
+  const selectionLength = Object.keys(selection).length;
+  const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
+  const details = [];
   if (count !== undefined) {
-      if (count === 1) {
-        details.push('1 object');
-      } else {
-        details.push(prettyNumber(count) + ' objects');
-      }
+    if (count === 1) {
+      details.push('1 object');
+    } else {
+      details.push(prettyNumber(count) + ' objects');
+    }
   }
 
   if (!relation && !isUnique) {
     if (perms && !hidePerms) {
-      let read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
-      let write = perms.create && perms.update && perms.delete && perms.create['*'] && perms.update['*'] && perms.delete['*'];
+      const read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
+      const write = perms.create && perms.update && perms.delete && perms.create['*'] && perms.update['*'] && perms.delete['*'];
       if (read && write) {
         details.push('Public Read and Write enabled');
       } else if (read) {
@@ -189,15 +189,15 @@ let BrowserToolbar = ({
       if (col === 'objectId' || isUnique && col !== uniqueField) {
         return;
       }
-      if ((type ==='Pointer' && targetClass === '_User') || type === 'Array' ) {
+      if ((type === 'Pointer' && targetClass === '_User') || type === 'Array') {
         userPointers.push(col);
       }
     });
   }
 
-  let clpDialogRef = useRef(null);
-  let protectedDialogRef = useRef(null);
-  let loginDialogRef = useRef(null);
+  const clpDialogRef = useRef(null);
+  const protectedDialogRef = useRef(null);
+  const loginDialogRef = useRef(null);
 
   const showCLP = ()=> clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
@@ -236,15 +236,15 @@ let BrowserToolbar = ({
       )}
       {onAddRow && (
         <BrowserMenu
-            setCurrent={setCurrent}
-            title={currentUser ? 'Browsing' : 'Browse'}
-            icon="users-solid"
-            active={!!currentUser}
-            disabled={isPendingEditCloneRows}
-          >
-            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
-            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
-            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+          setCurrent={setCurrent}
+          title={currentUser ? 'Browsing' : 'Browse'}
+          icon="users-solid"
+          active={!!currentUser}
+          disabled={isPendingEditCloneRows}
+        >
+          <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+          {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
+          {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}

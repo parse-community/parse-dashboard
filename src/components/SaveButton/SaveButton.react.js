@@ -11,7 +11,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/SaveButton/SaveButton.scss';
 
-let SaveButton = ({
+const SaveButton = ({
   state = SaveButton.States.WAITING,
   onClick,
   waitingText = 'Save changes',
@@ -39,7 +39,7 @@ let SaveButton = ({
       color = 'red';
       break;
   }
-  let className = state === SaveButton.States.FAILED ? styles.shake : null;
+  const className = state === SaveButton.States.FAILED ? styles.shake : null;
   return <span className={className}><Button
     primary={true}
     width={'128px'}
@@ -54,7 +54,7 @@ let SaveButton = ({
 
 SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED']);
 
-let {...forwardedButtonProps} = Button.propTypes;
+const {...forwardedButtonProps} = Button.propTypes;
 delete forwardedButtonProps.value;
 SaveButton.propTypes = {
   state: PropTypes.string.describe('SaveButton.States.(SAVING|SUCCEEDED|FAILED|WAITING). Defaults to WAITING.'),

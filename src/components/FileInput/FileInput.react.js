@@ -11,7 +11,7 @@ import styles     from 'components/FileInput/FileInput.scss';
 
 export default class FileInput extends React.Component {
   handleChange(e) {
-    let file = e.target.files[0];
+    const file = e.target.files[0];
     this.props.onChange(file);
   }
 
@@ -38,7 +38,7 @@ export default class FileInput extends React.Component {
   }
 
   render() {
-    let inputProps = {
+    const inputProps = {
       type: 'file',
       value: '',
       disabled: this.props.disabled,
@@ -47,8 +47,8 @@ export default class FileInput extends React.Component {
     if (this.props.accept) {
       inputProps.accept = this.props.accept;
     }
-    let label = this.renderLabel();
-    let buttonStyles = [styles.button];
+    const label = this.renderLabel();
+    const buttonStyles = [styles.button];
     if (this.props.disabled || this.props.uploading) {
       buttonStyles.push(styles.disabled);
     }

@@ -6,18 +6,18 @@
  * the root directory of this source tree.
  */
 import React             from 'react';
-import ProtectedFieldsDialog 
-                         from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
+import ProtectedFieldsDialog
+  from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
 import Button            from 'components/Button/Button.react';
 
 export const component = ProtectedFieldsDialog;
 
 
 function validateDemo(text) {
-  if (text===('*')) {
+  if (text === ('*')) {
     return Promise.resolve({ entry: '*' , type:'public'});
   }
-  if (text===('authenticated')) {
+  if (text === ('authenticated')) {
     return Promise.resolve({ entry: 'authenticated' , type:'auth'});
   }
   if (text.startsWith('u')) {
@@ -73,28 +73,28 @@ class ProtectedFieldsDemo extends React.Component {
             });
           }}/>
 
-          <ProtectedFieldsDialog
-            title='Edit Protected Fields'
-            advanced={true}
-            confirmText='Save'
-            details={<a href='#'>Learn more about CLPs and app security</a>}
-            protectedFields={{
-              '*': ['password', 'email'],
-              'userField:ptr_owner': [],
-              'us3r1d': ['password']
-            }}
-            userPointers={userPointers}
-            columns={columns}
-            validateEntry={validateDemo}
-            onCancel={() => {
-              this.setState({
-                show: false,
-              });
-            }}
-            onClose={()=>{}}
-            onConfirm={(perms) => {
-              console.log(perms);
-            }} />
+        <ProtectedFieldsDialog
+          title='Edit Protected Fields'
+          advanced={true}
+          confirmText='Save'
+          details={<a href='#'>Learn more about CLPs and app security</a>}
+          protectedFields={{
+            '*': ['password', 'email'],
+            'userField:ptr_owner': [],
+            'us3r1d': ['password']
+          }}
+          userPointers={userPointers}
+          columns={columns}
+          validateEntry={validateDemo}
+          onCancel={() => {
+            this.setState({
+              show: false,
+            });
+          }}
+          onClose={()=>{}}
+          onConfirm={(perms) => {
+            console.log(perms);
+          }} />
       </div>
     );
   }

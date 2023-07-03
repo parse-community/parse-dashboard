@@ -28,7 +28,7 @@ class PushAudiencesSelectorDemo extends React.Component {
   }
 }
 
-let mockData = [
+const mockData = [
   {
     objectId: '1',
     name: 'Everyone',
@@ -41,13 +41,13 @@ let mockData = [
     count: 148,
     createdAt: new Date(1444757195683)
   },
-    {
+  {
     objectId: '3',
     name: 'Completed Checkout <30 days',
     count: 148,
     createdAt: new Date(1444757195683)
   },
-    {
+  {
     objectId: '4',
     name: 'New Users',
     count: 148,

@@ -79,8 +79,8 @@ export default class Playground extends Component {
       const finalCode = `return (async function(){
         try{
           Parse.initialize('${applicationId}', ${
-        javascriptKey ? `'${javascriptKey}'` : undefined
-      });
+  javascriptKey ? `'${javascriptKey}'` : undefined
+});
           Parse.masterKey = '${masterKey}';
           Parse.serverUrl = '${serverURL}';
 

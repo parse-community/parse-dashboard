@@ -66,14 +66,14 @@ export default class DateTimeEditor extends React.Component {
     if (this.state.text === this.props.value.toISOString()) {
       return;
     }
-    let date = new Date(this.state.text);
+    const date = new Date(this.state.text);
     if (isNaN(date.getTime())) {
       this.setState({ value: this.props.value, text: this.props.value.toISOString() });
     } else {
       if (this.state.text.endsWith('Z')) {
         this.setState({ value: date });
       } else {
-        let utc = new Date(Date.UTC(
+        const utc = new Date(Date.UTC(
           date.getFullYear(),
           date.getMonth(),
           date.getDate(),

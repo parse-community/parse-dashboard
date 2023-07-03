@@ -15,7 +15,7 @@ import styles                               from 'components/DateTimePicker/Date
 export default class DateTimePicker extends React.Component {
   constructor(props) {
     super();
-    let timeRef = props.value || hoursFrom(new Date(), 1);
+    const timeRef = props.value || hoursFrom(new Date(), 1);
     this.state = {
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
       minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
@@ -23,7 +23,7 @@ export default class DateTimePicker extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    let timeRef = props.value || hoursFrom(new Date(), 1);
+    const timeRef = props.value || hoursFrom(new Date(), 1);
     this.setState({
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
       minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
@@ -31,7 +31,7 @@ export default class DateTimePicker extends React.Component {
   }
 
   changeHours(e) {
-    let hoursString = e.target.value;
+    const hoursString = e.target.value;
     if (hoursString === '') {
       return this.setState({ hours: '' });
     }
@@ -49,7 +49,7 @@ export default class DateTimePicker extends React.Component {
   }
 
   changeMinutes(e) {
-    let minutesString = e.target.value;
+    const minutesString = e.target.value;
     if (minutesString === '') {
       return this.setState({ minutes: '' });
     }
@@ -67,21 +67,21 @@ export default class DateTimePicker extends React.Component {
   }
 
   commitTime() {
-    let dateRef = this.props.value || new Date();
-    let newDate = this.props.local ? new Date(
+    const dateRef = this.props.value || new Date();
+    const newDate = this.props.local ? new Date(
       dateRef.getFullYear(),
       dateRef.getMonth(),
       dateRef.getDate(),
       parseInt(this.state.hours, 10),
       parseInt(this.state.minutes, 10)
     ) :
-    new Date(Date.UTC(
-      dateRef.getUTCFullYear(),
-      dateRef.getUTCMonth(),
-      dateRef.getUTCDate(),
-      parseInt(this.state.hours, 10),
-      parseInt(this.state.minutes, 10)
-    ));
+      new Date(Date.UTC(
+        dateRef.getUTCFullYear(),
+        dateRef.getUTCMonth(),
+        dateRef.getUTCDate(),
+        parseInt(this.state.hours, 10),
+        parseInt(this.state.minutes, 10)
+      ));
     this.props.onChange(newDate);
     if (this.props.close) {
       this.props.close();
@@ -92,21 +92,21 @@ export default class DateTimePicker extends React.Component {
     return (
       <div style={{ width: this.props.width }} className={styles.picker} onClick={(e) => e.stopPropagation()} >
         <Calendar local={this.props.local} value={this.props.value} onChange={(newValue) => {
-          let timeRef = this.props.value || hoursFrom(new Date(), 1);
-          let newDate = this.props.local ? new Date(
+          const timeRef = this.props.value || hoursFrom(new Date(), 1);
+          const newDate = this.props.local ? new Date(
             newValue.getFullYear(),
             newValue.getMonth(),
             newValue.getDate(),
             timeRef.getHours(),
             timeRef.getMinutes()
           ) :
-          new Date(Date.UTC(
-            newValue.getUTCFullYear(),
-            newValue.getUTCMonth(),
-            newValue.getUTCDate(),
-            timeRef.getUTCHours(),
-            timeRef.getUTCMinutes()
-          ));
+            new Date(Date.UTC(
+              newValue.getUTCFullYear(),
+              newValue.getUTCMonth(),
+              newValue.getUTCDate(),
+              timeRef.getUTCHours(),
+              timeRef.getUTCMinutes()
+            ));
           this.props.onChange(newDate);
         }} />
         <div className={styles.time}>

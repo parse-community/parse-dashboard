@@ -9,12 +9,12 @@ import Dropdown from 'components/Dropdown/Dropdown.react';
 import Option   from 'components/Dropdown/Option.react';
 import React    from 'react';
 
-let hourOptions = [];
+const hourOptions = [];
 for (let i = 0; i < 24; i++) {
   hourOptions.push(<Option key={`hour_${i}`} value={String(i)}>{i}</Option>);
 }
 
-let minuteOptions = [];
+const minuteOptions = [];
 for (let i = 0; i < 60; i++) {
   let content = String(i);
   if (content.length === 1) {
@@ -23,7 +23,7 @@ for (let i = 0; i < 60; i++) {
   minuteOptions.push(<Option key={`minute_${i}`} value={content}>{content}</Option>);
 }
 
-let TimeInput = ({ hours, minutes, onChange }) => {
+const TimeInput = ({ hours, minutes, onChange }) => {
   return (
     <div>
       <div style={{ width: '50%', display: 'inline-block', verticalAlign: 'top' }}>

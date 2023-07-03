@@ -32,7 +32,7 @@ export default class ExplorerMenuButton extends React.Component {
       if (this.state.currentView) {
         return { currentView: null };
       }
-      let position = Position.inDocument(this.wrapRef.current);
+      const position = Position.inDocument(this.wrapRef.current);
       let align = Directions.LEFT;
       if (position.x > 700) {
         position.x += this.wrapRef.current.clientWidth;
@@ -71,11 +71,11 @@ export default class ExplorerMenuButton extends React.Component {
 
   render() {
     let popover = null;
-    let content = this.renderButton();
+    const content = this.renderButton();
 
     if (this.state.currentView) {
       let queryMenu = null;
-      let classes = [styles.queryMenuContainer];
+      const classes = [styles.queryMenuContainer];
       let calloutStyle = { marginLeft: '10px' };
       if (this.state.align === Directions.RIGHT) {
         classes.push(styles.right);

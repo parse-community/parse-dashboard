@@ -51,8 +51,8 @@ export default class ChromeDropdown extends React.Component {
 
   render() {
     let widthStyle = { width: parseFloat(this.props.width || 140) };
-    let styles = this.styles;
-    let color = this.props.color || 'purple';
+    const styles = this.styles;
+    const color = this.props.color || 'purple';
 
     let label = this.props.value;
     if (this.keyValueMap) {
@@ -69,8 +69,8 @@ export default class ChromeDropdown extends React.Component {
     );
 
     if (this.state.open) {
-      let position = Position.inWindow(this.dropdownRef.current);
-      let measuredWidth = parseFloat(this.dropdownRef.current.offsetWidth);
+      const position = Position.inWindow(this.dropdownRef.current);
+      const measuredWidth = parseFloat(this.dropdownRef.current.offsetWidth);
       widthStyle = { width: measuredWidth };
       content = (
         <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>

@@ -25,7 +25,7 @@ import { ActionTypes as SchemaActionTypes }  from 'lib/stores/SchemaStore';
 import { ActionTypes as WebhookActionTypes } from 'lib/stores/WebhookStore';
 import styles                                from './Webhooks.scss'
 
-let TableWarning = ({ text }) => <div>
+const TableWarning = ({ text }) => <div>
   <Icon name='warn-outline' fill='#343445' width={20} height={20}/><span style={{ position: 'relative', top: '2px' }}> {text}</span>
 </div>;
 
@@ -85,13 +85,13 @@ class Webhooks extends TableView {
   renderExtras() {
     let classNames = [];
     if (this.props.schema.data) {
-      let classes = this.props.schema.data.get('classes')
+      const classes = this.props.schema.data.get('classes')
       if (classes) {
         classNames = Object.keys(classes.toObject());
       }
     }
 
-    let webhookModalFields = <div>
+    const webhookModalFields = <div>
       <Field
         label={<Label
           text='Webhook type'
@@ -110,41 +110,41 @@ class Webhooks extends TableView {
           <DropdownOption value={'beforeDelete'} key={'beforeDelete'}>beforeDelete</DropdownOption>
           <DropdownOption value={'afterDelete'} key={'afterDelete'}>afterDelete</DropdownOption>
         </Dropdown>} />
-        {this.state.hookType === 'function' ? <Field
-          label={<Label text='Function name' description='This is how you will reference your webhook'/>}
-          input={<TextInput
-            placeholder='MyWebhook'
-            disabled={!this.state.showNewWebhookModal}
-            onChange={value => {
-              this.setState({functionName: value});
-            }}
-            value={this.state.functionName}
-          />} /> : <Field
-          label={<Label text='Choose a Class'/>}
-          input={<Dropdown
-            disabled={!this.state.showNewWebhookModal}
-            onChange={value => {
-              this.setState({triggerClass: value});
-            }}
-            value={this.state.triggerClass}
-            fixed={true}>
-              {/*TODO(drewgross)(non-blocking) display special classes without leading underscore*/}
-              {classNames.map(name => <DropdownOption key={name} value={name}>{name}</DropdownOption>)}
-          </Dropdown>} />
-        }
-        <Field
-          label={<Label text='Webhook URL' />}
-          input={<TextInput
-            disabled={this.state.showDeleteWebhookModal}
-            onChange={value => {
-              this.setState({hookURL: value})
-            }}
-            value={this.state.hookURL}
-          />} />
+      {this.state.hookType === 'function' ? <Field
+        label={<Label text='Function name' description='This is how you will reference your webhook'/>}
+        input={<TextInput
+          placeholder='MyWebhook'
+          disabled={!this.state.showNewWebhookModal}
+          onChange={value => {
+            this.setState({functionName: value});
+          }}
+          value={this.state.functionName}
+        />} /> : <Field
+        label={<Label text='Choose a Class'/>}
+        input={<Dropdown
+          disabled={!this.state.showNewWebhookModal}
+          onChange={value => {
+            this.setState({triggerClass: value});
+          }}
+          value={this.state.triggerClass}
+          fixed={true}>
+          {/*TODO(drewgross)(non-blocking) display special classes without leading underscore*/}
+          {classNames.map(name => <DropdownOption key={name} value={name}>{name}</DropdownOption>)}
+        </Dropdown>} />
+      }
+      <Field
+        label={<Label text='Webhook URL' />}
+        input={<TextInput
+          disabled={this.state.showDeleteWebhookModal}
+          onChange={value => {
+            this.setState({hookURL: value})
+          }}
+          value={this.state.hookURL}
+        />} />
     </div>
 
-    let hookRequestData = ({hookURL, hookType, functionName, triggerClass}) => {
-      let data = { hookURL: hookURL };
+    const hookRequestData = ({hookURL, hookType, functionName, triggerClass}) => {
+      const data = { hookURL: hookURL };
       if (hookType === 'function') {
         data.functionName = functionName;
       } else {
@@ -154,7 +154,7 @@ class Webhooks extends TableView {
       return data;
     };
 
-    let newHookModal = <FormModal
+    const newHookModal = <FormModal
       key='new'
       title='Create a Webhook'
       icon='collaborate-outline'
@@ -173,7 +173,7 @@ class Webhooks extends TableView {
       {webhookModalFields}
     </FormModal>;
 
-    let editHookModal = <FormModal
+    const editHookModal = <FormModal
       key='edit'
       title='Change your Webhook'
       subtitle='Webhooks on external servers can be edited here.'
@@ -191,7 +191,7 @@ class Webhooks extends TableView {
       {webhookModalFields}
     </FormModal>;
 
-    let deleteHookModal = <FormModal
+    const deleteHookModal = <FormModal
       key='delete'
       title='Delete your Webhook'
       subtitle='Webhooks on external servers can be deleted here.'
@@ -229,7 +229,7 @@ class Webhooks extends TableView {
   }
 
   renderRow(hook) {
-    let showEdit = hook.url ? () => {
+    const showEdit = hook.url ? () => {
       this.setState({
         hookType: hook.functionName ? 'function' : hook.triggerName,
         functionName: hook.functionName,
@@ -239,7 +239,7 @@ class Webhooks extends TableView {
       });
     } : null;
 
-    let showDelete = hook.url ? () => {
+    const showDelete = hook.url ? () => {
       this.setState({
         hookType: hook.functionName ? 'function' : hook.triggerName,
         functionName: hook.functionName,
@@ -248,14 +248,14 @@ class Webhooks extends TableView {
         showDeleteWebhookModal: true,
       });
     } : null;
-    let rowStyle = hook.url ? { cursor: 'pointer' } : {};
+    const rowStyle = hook.url ? { cursor: 'pointer' } : {};
     let deleteColumnContents = null;
     if (hook.url) {
       deleteColumnContents = <button type='button' onClick={showDelete} className={styles.deleteButton}>
         <Icon name='trash-outline' fill='#343445' width={20} height={20}/>
       </button>;
     } else {
-      let isOverridden = !!this.tableData().find(otherHook => otherHook.url &&
+      const isOverridden = !!this.tableData().find(otherHook => otherHook.url &&
         otherHook.functionName == hook.functionName &&
         otherHook.triggerName == hook.triggerName);
       if (isOverridden) {
@@ -293,7 +293,7 @@ class Webhooks extends TableView {
 
   tableData() {
     if (this.props.webhooks.data) {
-      let hooks = this.props.webhooks.data.get('webhooks');
+      const hooks = this.props.webhooks.data.get('webhooks');
       if (hooks) {
         return hooks.toArray();
       }

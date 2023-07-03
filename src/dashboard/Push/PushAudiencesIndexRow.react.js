@@ -28,14 +28,14 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
   }
 
   render() {
-    let detailsView = this.state.expandedView ?
+    const detailsView = this.state.expandedView ?
       PushUtils.largeInfoBuilder(this.props.query, this.props.schema, styles) :
       (
         <div className={styles.shortInfo}>
           {PushUtils.shortInfoBuilder(this.props.query, this.props.schema)}
         </div>
       );
-    let countDetails = PushUtils.formatCountDetails(this.state.count, this.state.approximate);
+    const countDetails = PushUtils.formatCountDetails(this.state.count, this.state.approximate);
     return (
       <tr>
         <td className={styles.colName}>

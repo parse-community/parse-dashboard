@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/StatusIndicator/StatusIndicator.scss';
 
-let StatusIndicator = ({ text, color }) => {
+const StatusIndicator = ({ text, color }) => {
   color = color || 'blue';
   return (
     <span className={[styles.status, styles[color]].join(' ')}>

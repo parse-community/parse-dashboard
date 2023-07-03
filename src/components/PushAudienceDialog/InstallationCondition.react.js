@@ -18,19 +18,19 @@ import styles          from 'components/PushAudienceDialog/InstallationCondition
 import TextInput       from 'components/TextInput/TextInput.react';
 import validateNumeric from 'lib/validateNumeric';
 
-let constraintLookup = {};
-for (let c in Constraints) {
+const constraintLookup = {};
+for (const c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-let setFocus = (input) => {
+const setFocus = (input) => {
   if (input !== null) {
     input.focus();
   }
 }
 
 function compareValue(info, value, onChangeCompareTo) {
-  let type = info.type;
+  const type = info.type;
   switch (type) {
     case null:
       return <div className={styles.empty}>-</div>;
@@ -41,7 +41,7 @@ function compareValue(info, value, onChangeCompareTo) {
         placeholder='value'
         value={value.objectId || ''}
         onChange={(_value) => {
-          let obj = new Parse.Object(info.targetClass);
+          const obj = new Parse.Object(info.targetClass);
           obj.id = _value;
           onChangeCompareTo(Parse._encode(obj.toPointer()));
         }}
@@ -50,8 +50,8 @@ function compareValue(info, value, onChangeCompareTo) {
       return <Dropdown
         value={value ? 'True' : 'False'}
         onChange={(_value) => onChangeCompareTo(_value === 'True')} >
-          {['True', 'False'].map(value => <Option value={value} key={value}>{value}</Option>)}
-        </Dropdown>
+        {['True', 'False'].map(value => <Option value={value} key={value}>{value}</Option>)}
+      </Dropdown>
     case 'Number':
       return <TextInput placeholder='value' className={styles.conditionValue} value={value} onChange={(_value) => onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))} ref={setFocus}/>;
     case 'Date':
@@ -74,13 +74,13 @@ export default class InstallationCondition extends React.Component {
   }
 
   handleChange(type, selection) {
-    let stateChange = {};
+    const stateChange = {};
     stateChange[type] = selection;
     this.setState(stateChange);
   }
 
   render() {
-    let input = (
+    const input = (
       <div>
         <div className={styles.conditionInput}>
           <Dropdown
@@ -114,7 +114,7 @@ export default class InstallationCondition extends React.Component {
       </div>
     );
 
-    let labelDescription = (
+    const labelDescription = (
       <button
         type='button'
         className={styles.description}

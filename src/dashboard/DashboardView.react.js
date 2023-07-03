@@ -44,7 +44,7 @@ export default class DashboardView extends React.Component {
     if (typeof this.renderSidebar === 'function') {
       sidebarChildren = this.renderSidebar();
     }
-    let appSlug = this.context ? this.context.slug : '';
+    const appSlug = this.context ? this.context.slug : '';
 
     if (!this.context.hasCheckedForMigraton) {
       this.context.getMigrations().promise.then(
@@ -53,9 +53,9 @@ export default class DashboardView extends React.Component {
       );
     }
 
-    let features = this.context.serverInfo.features;
+    const features = this.context.serverInfo.features;
 
-    let coreSubsections = [];
+    const coreSubsections = [];
     if (
       features.schemas &&
       features.schemas.addField &&
@@ -133,7 +133,7 @@ export default class DashboardView extends React.Component {
         link: '/migration',
       });
     }
-    let pushSubsections = [];
+    const pushSubsections = [];
 
     if (features.push && features.push.immediatePush) {
       pushSubsections.push({
@@ -156,7 +156,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    let analyticsSidebarSections = [];
+    const analyticsSidebarSections = [];
 
     //These analytics pages may never make it into parse server
     /*
@@ -240,7 +240,7 @@ export default class DashboardView extends React.Component {
       });
     }*/
 
-    let appSidebarSections = [];
+    const appSidebarSections = [];
 
     if (coreSubsections.length > 0) {
       appSidebarSections.push({
@@ -279,7 +279,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    let sidebar = (
+    const sidebar = (
       <Sidebar
         sections={appSidebarSections}
         appSelector={true}

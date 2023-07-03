@@ -46,14 +46,14 @@ class CreateClassDialog extends React.Component {
   }
 
   render() {
-    let availableClasses = ['Custom'];
-    for (let raw of SpecialClasses) {
+    const availableClasses = ['Custom'];
+    for (const raw of SpecialClasses) {
       if (raw !== '_Session' && !this.props.currentClasses.includes(raw)) {
         availableClasses.push(raw);
       }
     }
 
-    let typeDropdown = (
+    const typeDropdown = (
       <Dropdown
         value={this.state.type}
         onChange={(type) => this.setState({ type: type, name: '' })}>
@@ -74,24 +74,24 @@ class CreateClassDialog extends React.Component {
         onCancel={this.props.onCancel}
         showContinue={true}
         onContinue={async () => {
-          let type = this.state.type;
-          let className = type === 'Custom' ? this.state.name : type;
+          const type = this.state.type;
+          const className = type === 'Custom' ? this.state.name : type;
           await this.props.onConfirm(className);
           this.props.navigate(`/apps/${this.props.currentAppSlug}/browser/${className}`);
           this.props.onAddColumn();
         }}
         onConfirm={() => {
-          let type = this.state.type;
-          let className = type === 'Custom' ? this.state.name : type;
+          const type = this.state.type;
+          const className = type === 'Custom' ? this.state.name : type;
           this.props.onConfirm(className);
         }}>
         {availableClasses.length > 1 ?
           <Field
-          label={
-            <Label
-              text='What type of class do you need?' />
-          }
-          input={typeDropdown} /> : null
+            label={
+              <Label
+                text='What type of class do you need?' />
+            }
+            input={typeDropdown} /> : null
         }
         {this.state.type === 'Custom' ?
           <Field

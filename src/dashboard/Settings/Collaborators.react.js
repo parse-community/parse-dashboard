@@ -42,7 +42,7 @@ export default class Collaborators extends React.Component {
     return this.context.validateCollaborator(newEmail).then((response) => {
       // lastError logic assumes we only have 1 input field
       if (response.success) {
-        let newCollaborators = this.props.collaborators.concat({ userEmail: newEmail })
+        const newCollaborators = this.props.collaborators.concat({ userEmail: newEmail })
         this.setState({ lastError: '' });
         this.props.onAdd(newEmail, newCollaborators);
         return true;
@@ -56,13 +56,13 @@ export default class Collaborators extends React.Component {
   }
 
   handleDelete(collaborator) {
-    let newCollaborators = this.props.collaborators.filter(oldCollaborator => oldCollaborator.userEmail !== collaborator.userEmail);
+    const newCollaborators = this.props.collaborators.filter(oldCollaborator => oldCollaborator.userEmail !== collaborator.userEmail);
     this.props.onRemove(collaborator, newCollaborators);
   }
 
   validateEmail(email) {
     // We allow mixed-case emails for Parse accounts
-    let isExistingCollaborator = !!this.props.collaborators.find(collab => email.toLowerCase() === collab.userEmail.toLowerCase());
+    const isExistingCollaborator = !!this.props.collaborators.find(collab => email.toLowerCase() === collab.userEmail.toLowerCase());
     return validateEmailFormat(email) &&
       !isExistingCollaborator &&
       AccountManager.currentUser().email.toLowerCase() !== email.toLowerCase();
@@ -102,7 +102,7 @@ export default class Collaborators extends React.Component {
             input={<FormTable
               items={
                 this.props.collaborators.map(collaborator => {
-                  let canDelete = this.props.viewer_email === this.props.owner_email || collaborator.userEmail === this.props.viewer_email;
+                  const canDelete = this.props.viewer_email === this.props.owner_email || collaborator.userEmail === this.props.viewer_email;
                   //TODO(drewgross): add a warning modal for when you are removing yourself as a collaborator, as that is irreversable
                   return {
                     title: collaborator.userName || collaborator.userEmail,

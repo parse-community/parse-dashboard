@@ -24,7 +24,7 @@ export const demos = [
         label='Installations' />
     )
   }, {
-        name: 'Progress Bar with DonutChart',
+    name: 'Progress Bar with DonutChart',
     render: () => (
       <DonutChart
         segments={[20, 100]}

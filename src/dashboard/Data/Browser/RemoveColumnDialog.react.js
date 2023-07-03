@@ -24,14 +24,14 @@ export default class RemoveColumnDialog extends React.Component {
 
   render() {
     let content = null;
-    let hasColumns = this.props.currentColumns.length > 0;
+    const hasColumns = this.props.currentColumns.length > 0;
     if (hasColumns) {
       content = (
         <Field
           label={
             <Label
               text='Which column?' />
-            }
+          }
           input={
             <Dropdown
               placeHolder='Select a column'

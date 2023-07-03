@@ -29,9 +29,9 @@ export default class DateTimeInput extends React.Component {
       if (this.state.open) {
         return { open: false };
       }
-      let node = this.inputRef.current;
+      const node = this.inputRef.current;
       let pos = Position.inDocument(node);
-      let height = 230 + node.clientWidth * 0.14;
+      const height = 230 + node.clientWidth * 0.14;
       if (this.props.fixed) {
         pos = Position.inWindow(node);
         if (window.innerHeight - pos.y - height < 40) {
@@ -85,7 +85,7 @@ export default class DateTimeInput extends React.Component {
         </div>
       );
     }
-    
+
     return (
       <div className={styles.input} onClick={this.props.disabled ? null : this.toggle.bind(this)} ref={this.inputRef}>
         {content}

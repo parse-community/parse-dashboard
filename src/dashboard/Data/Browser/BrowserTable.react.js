@@ -102,7 +102,7 @@ export default class BrowserTable extends React.Component {
       }
     }
 
-    let headers = this.props.order.map(({ name, width, visible, preventSort, required }) => (
+    const headers = this.props.order.map(({ name, width, visible, preventSort, required }) => (
       {
         width: width,
         name: name,
@@ -126,7 +126,7 @@ export default class BrowserTable extends React.Component {
         editCloneRows = (
           <div>
             {this.props.editCloneRows.map((cloneRow, idx) => {
-              let index = (this.props.editCloneRows.length + 1) * -1 + idx;
+              const index = (this.props.editCloneRows.length + 1) * -1 + idx;
               const currentCol = this.props.current && this.props.current.row === index ? this.props.current.col : undefined;
               const isEditingRow = this.props.current && this.props.current.row === index && !!this.props.editing;
               return (
@@ -237,11 +237,11 @@ export default class BrowserTable extends React.Component {
           </div>
         );
       }
-      let rows = [];
-      let end = Math.min(this.state.offset + MAX_ROWS, this.props.data.length);
+      const rows = [];
+      const end = Math.min(this.state.offset + MAX_ROWS, this.props.data.length);
       for (let i = this.state.offset; i < end; i++) {
-        let index = i - this.state.offset;
-        let obj = this.props.data[i];
+        const index = i - this.state.offset;
+        const obj = this.props.data[i];
         const currentCol = this.props.current && this.props.current.row === i ? this.props.current.col : undefined;
 
         // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
@@ -277,7 +277,7 @@ export default class BrowserTable extends React.Component {
           showNote={this.props.showNote}
           onRefresh={this.props.onRefresh}
           scripts={this.context.scripts}
-          />
+        />
       }
 
       if (this.props.editing) {
@@ -290,8 +290,8 @@ export default class BrowserTable extends React.Component {
           }
         }
         if (visible) {
-          let { name, width } = this.props.order[this.props.current.col];
-          let { type, targetClass } = this.props.columns[name];
+          const { name, width } = this.props.order[this.props.current.col];
+          const { type, targetClass } = this.props.columns[name];
           let readonly = this.props.isUnique || READ_ONLY.indexOf(name) > -1;
           if (name === 'sessionToken') {
             if (this.props.className === '_User' || this.props.className === '_Session') {

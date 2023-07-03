@@ -68,13 +68,13 @@ class CloudCode extends DashboardView {
   }
 
   renderSidebar() {
-    let current = getPath(this.props.params) || '';
-    let files = this.state.files;
+    const current = getPath(this.props.params) || '';
+    const files = this.state.files;
     if (!files) {
       return null;
     }
-    let paths = [];
-    for (let key in files) {
+    const paths = [];
+    for (const key in files) {
       paths.push(key);
     }
     return (
@@ -92,7 +92,7 @@ class CloudCode extends DashboardView {
   renderContent() {
     let toolbar = null;
     let content = null;
-    let fileName = getPath(this.props.params);
+    const fileName = getPath(this.props.params);
 
     if (!this.state.files || Object.keys(this.state.files).length === 0) {
       content = (
@@ -111,7 +111,7 @@ class CloudCode extends DashboardView {
           section='Cloud Code'
           subsection={fileName} />;
 
-        let source = this.state.files[fileName];
+        const source = this.state.files[fileName];
         if (source && source.source) {
           content = (
             <div className={styles.content}>

@@ -8,8 +8,8 @@
 import React  from 'react';
 import styles from 'components/Table/Table.scss';
 
-let TableHeader = ({ width, ...props }) => {
-  let style = {};
+const TableHeader = ({ width, ...props }) => {
+  const style = {};
   if (width !== undefined) {
     style.width = width + '%';
   }

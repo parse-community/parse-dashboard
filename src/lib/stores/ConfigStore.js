@@ -38,8 +38,8 @@ function ConfigStore(state, action) {
         { useMasterKey: true }
       ).then(() => {
         return state
-        .setIn(['params', action.param], action.value)
-        .setIn(['masterKeyOnly', action.param], action.masterKeyOnly);
+          .setIn(['params', action.param], action.value)
+          .setIn(['masterKeyOnly', action.param], action.masterKeyOnly);
       });
     case ActionTypes.DELETE:
       return Parse._request(

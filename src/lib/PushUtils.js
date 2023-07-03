@@ -17,7 +17,7 @@ import React              from 'react';
 import stringList         from 'lib/stringList';
 
 // formats pointers into human readable form
-let pointerToReadbleValue = (value) => {
+const pointerToReadbleValue = (value) => {
   return value.className + ':' + value.objectId
 }
 
@@ -27,12 +27,12 @@ let pointerToReadbleValue = (value) => {
  * @param {Object}
  * @return {String}
  */
-let objectToReadable = (value) => {
+const objectToReadable = (value) => {
   if (value === undefined || value === null) {
     return '';
   }
 
-  let typeValue = value['__type'];
+  const typeValue = value['__type'];
   let res = '';
   switch(typeValue) {
     case 'Pointer':
@@ -69,11 +69,11 @@ let objectToReadable = (value) => {
  * @param  {Boolean}
  * @return {String}
  */
-let humanizedList = (value, inclusive, all) => {
+const humanizedList = (value, inclusive, all) => {
   if(!value.constructor === Array){
     return '';
   }
-  let join = all ? 'and' : 'or';
+  const join = all ? 'and' : 'or';
   let prefix = '';
   let res = '';
   switch (value.length) {
@@ -89,7 +89,7 @@ let humanizedList = (value, inclusive, all) => {
       break;
     default:
       prefix = all ? 'all of' : 'any of';
-      res = `${join} ${objectToReadable(value[value.length-1])}`;
+      res = `${join} ${objectToReadable(value[value.length - 1])}`;
       break;
   }
   return res;
@@ -106,7 +106,7 @@ let humanizedList = (value, inclusive, all) => {
  * @param  {Object}
  * @return {Array}
  */
-let formatConstraintComponent = (key, operation, value, schema) => {
+const formatConstraintComponent = (key, operation, value, schema) => {
   let res = null;
   switch (operation) {
     case '$lt':
@@ -130,16 +130,16 @@ let formatConstraintComponent = (key, operation, value, schema) => {
     case '$in':
     case '$nin':
     case '$all':
-      let isInclusive = operation === '$in';
+      const isInclusive = operation === '$in';
       if(!value.constructor === Array) {
         res = [key, `constraint is malformed (${operation} operator requires an array)`, ''];
       } else if (!schema[key]) {
         res = ['', `Cannot perform operation on non-existent column ${key}`, ''];
       } else if (schema[key]['type'] === 'Array'){
-        let isAll = operation === '$all';
+        const isAll = operation === '$all';
         res = [key,
-         isInclusive || isAll ? 'contains' : 'does not contain',
-         humanizedList(value, isInclusive, isAll)];
+          isInclusive || isAll ? 'contains' : 'does not contain',
+          humanizedList(value, isInclusive, isAll)];
       }
       break;
     default:
@@ -156,9 +156,9 @@ let formatConstraintComponent = (key, operation, value, schema) => {
  * @param  {Object}
  * @return {Array}
  */
-let formatStructure = (key, constraints, schema) => {
-  let rows = [];
-  for(let prop in constraints){
+const formatStructure = (key, constraints, schema) => {
+  const rows = [];
+  for(const prop in constraints){
     if(Object.prototype.hasOwnProperty.call(constraints, prop)){
       rows.push(formatConstraintComponent(key, prop, constraints[prop], schema));
     }
@@ -182,7 +182,7 @@ export function formatConstraint(key, constraints, schema) {
     rows.push(formatStructure(key, constraints, schema));
   } else if(constraints.constructor === Array) {
     // legacy comment: Not sure how we want to display grouped subclauses
-    for(let i = 0; i<constraints.length; i++) {
+    for(let i = 0; i < constraints.length; i++) {
       if(constraints[i].constructor === Object){
         rows = rows.concat(formatStructure(key, constraints[i], schema));
       } else {
@@ -203,7 +203,7 @@ export function formatConstraint(key, constraints, schema) {
  * @param  {Array} devices - platform list
  * @return {Array} platform list in friendly form
  */
-let devicesToReadableList = (devices) => {
+const devicesToReadableList = (devices) => {
   return devices.map((device) => {
     return PushConstants.DEVICE_MAP[device];
   });
@@ -220,9 +220,9 @@ export function shortInfoBuilder(query, schema) {
     return '';
   }
 
-  let platformString = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']).join(', ') : '';
-  let otherConstraints = [];
-  for(let entry in query){
+  const platformString = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']).join(', ') : '';
+  const otherConstraints = [];
+  for(const entry in query){
     if(entry !== 'deviceType'){ //filter out deviceType entry
       formatConstraint(entry, query[entry], schema).forEach(
         (constraint) => {
@@ -248,10 +248,10 @@ export function largeInfoBuilder(query, schema, styles = {}) {
   if(!query) {
     return;
   }
-  let platforms = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']) : [];
-  let platformRows = [];
+  const platforms = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']) : [];
+  const platformRows = [];
 
-  for (let platform in platforms) {
+  for (const platform in platforms) {
     platformRows.push(
       <li key={`platforms${platform}`}>
         {platforms[platform]}
@@ -259,8 +259,8 @@ export function largeInfoBuilder(query, schema, styles = {}) {
     );
   }
 
-  let conditionRows = [];
-  for(let entry in query){
+  const conditionRows = [];
+  for(const entry in query){
     if(entry !== 'deviceType'){ //filter out deviceType entry
       formatConstraint(entry, query[entry], schema).forEach(
         (constraint) => {
@@ -294,7 +294,7 @@ export function largeInfoBuilder(query, schema, styles = {}) {
   )
 }
 
-let tableInfoBuilderHelper = (styles, key, description, value) => {
+const tableInfoBuilderHelper = (styles, key, description, value) => {
   return (
     <tr className={styles.tr}>
       <td className={styles.td}>{key}</td>
@@ -313,14 +313,14 @@ export function tableInfoBuilder(query, schema, styles = {}) {
     return;
   }
 
-  let platforms = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']) : [];
+  const platforms = query.deviceType && query.deviceType['$in'] ? devicesToReadableList(query.deviceType['$in']) : [];
   // special case: ex: {deviceType: "ios"}
   if (query.deviceType && query.deviceType.constructor === String) {
     platforms.push(query.deviceType)
   }
 
-  let platformStr = stringList(platforms, 'or');
-  let tableInfoRows = [];
+  const platformStr = stringList(platforms, 'or');
+  const tableInfoRows = [];
 
   if (platformStr) {
     tableInfoRows.push(
@@ -332,7 +332,7 @@ export function tableInfoBuilder(query, schema, styles = {}) {
     );
   }
 
-  for(let entry in query){
+  for(const entry in query){
     if(entry !== 'deviceType'){ //filter out deviceType entry
       formatConstraint(entry, query[entry], schema).forEach(
         (constraint) => {
@@ -345,7 +345,7 @@ export function tableInfoBuilder(query, schema, styles = {}) {
             );
           } else {
             // case 2: contraint = [key, description, value]
-            let [key, description, value] = constraint;
+            const [key, description, value] = constraint;
             tableInfoRows.push(tableInfoBuilderHelper(styles, key, description, value));
           }
         }
@@ -366,9 +366,9 @@ export function formatCountDetails(count, approximate) {
 }
 
 export function formatAudienceSchema(classes) {
-  let schema = {};
+  const schema = {};
   if(classes){
-    let installations = classes.get('_Installation');
+    const installations = classes.get('_Installation');
     if(typeof(installations) !== 'undefined'){
       installations.forEach((type, col) => {
         schema[col] = type;

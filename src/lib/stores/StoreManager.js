@@ -7,7 +7,7 @@
  */
 import * as StateManager from 'lib/stores/StateManager';
 
-let stores = {};
+const stores = {};
 let subCount = 0;
 
 export function registerStore(name, store, isGlobal) {
@@ -25,14 +25,14 @@ export function registerStore(name, store, isGlobal) {
 }
 
 export function getStore(name) {
-  let storeData = stores[name];
+  const storeData = stores[name];
   if (!storeData) {
     throw new Error(
       'Unknown store! Attempted to retrieve store with the name ' + name
     );
   }
 
-  let stateGetter = (storeData.isGlobal ?
+  const stateGetter = (storeData.isGlobal ?
     StateManager.getGlobalState :
     StateManager.getAppState
   );
@@ -41,8 +41,8 @@ export function getStore(name) {
     getData: stateGetter.bind(null, name),
     isGlobal: storeData.isGlobal,
     dispatch(type, params, app) {
-      let action = {...params, type, app};
-      let newState = storeData.store(stateGetter(name, app), action);
+      const action = {...params, type, app};
+      const newState = storeData.store(stateGetter(name, app), action);
       if (newState instanceof Promise) {
         return newState.then((result) => {
           if (storeData.isGlobal) {
@@ -50,7 +50,7 @@ export function getStore(name) {
           } else {
             StateManager.setAppState(name, app, result);
           }
-          for (let id in storeData.subscribers) {
+          for (const id in storeData.subscribers) {
             storeData.subscribers[id](result);
           }
         });
@@ -60,13 +60,13 @@ export function getStore(name) {
         } else {
           StateManager.setAppState(name, app, newState);
         }
-        for (let id in storeData.subscribers) {
+        for (const id in storeData.subscribers) {
           storeData.subscribers[id](newState);
         }
       }
     },
     subscribe(cb) {
-      let id = 'sub' + subCount++;
+      const id = 'sub' + subCount++;
       storeData.subscribers[id] = cb;
       return id;
     },

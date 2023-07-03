@@ -16,7 +16,7 @@ import { pad }       from 'lib/DateUtils';
 
 export function setTimeFieldDescription(isLocal) {
   return isLocal ? 'LOCAL TIME' : null;
-} 
+}
 
 /**
  * Sets the field with or without 'Z' ending based on isLocal flag
@@ -28,13 +28,13 @@ export function setTimeFieldDescription(isLocal) {
  */
 export function setPushTimeField(setField, field, value, isLocal) {
   if (isLocal && value.constructor === Date) {
-    let _value = value.getFullYear()
+    const _value = value.getFullYear()
       + '-' + pad(value.getMonth() + 1)
       + '-' + pad(value.getDate())
       + 'T' + pad(value.getHours())
       + ':' + pad(value.getMinutes())
       + ':' + pad(value.getSeconds())
-      + '.' + String((value.getMilliseconds()/1000).toFixed(3)).slice(2, 5);
+      + '.' + String((value.getMilliseconds() / 1000).toFixed(3)).slice(2, 5);
     setField(field, _value);
   } else {
     setField(field, value);
@@ -50,8 +50,8 @@ export function setPushTimeField(setField, field, value, isLocal) {
  */
 export function localTimeFormater(setField, field, value, isLocal) {
   if (value && value.constructor === Date) {
-    let offset = value.getTimezoneOffset()*60*1000;
-    let newDate = new Date(value.getTime() + (isLocal ? offset : -offset ));
+    const offset = value.getTimezoneOffset() * 60 * 1000;
+    const newDate = new Date(value.getTime() + (isLocal ? offset : -offset));
     setField(field + '_iso', newDate);
     setPushTimeField(setField, field, newDate, isLocal);
   }
@@ -61,7 +61,7 @@ export function renderExpirationContent(fields, setField) {
   if (!fields.push_expires) {
     return null;
   }
-  let expirationContent = [
+  const expirationContent = [
     <Field
       key='expiration_time_type'
       label={<Label text='What type of expiration?' />}
@@ -88,19 +88,19 @@ export function renderExpirationContent(fields, setField) {
             onChange={(value) => {
               setField('expiration_time_iso', value);
               setPushTimeField(setField, 'expiration_time', value, fields.local_time);
-            }} /> 
+            }} />
         } />
     );
   } else {
-    let expirationIntervalNums = [];
-    let unit = fields.expiration_interval_unit === 'hours' ? 24 : 30;
+    const expirationIntervalNums = [];
+    const unit = fields.expiration_interval_unit === 'hours' ? 24 : 30;
     for (let i = 1; i <= unit; i++) {
       expirationIntervalNums.push(
         <Option key={'intervalNums' + i} value={`${i}`}>{i}</Option>
       );
     }
 
-    let expirationIntervalUnits = [
+    const expirationIntervalUnits = [
       <Option key={'intervalUnitHours'} value={'hours'}>{fields.expiration_interval_num === '1' ? 'Hour' : 'Hours'}</Option>,
       <Option key={'intervalUnitDays'} value={'days'}>{fields.expiration_interval_num === '1' ? 'Day' : 'Days'}</Option>
     ];
@@ -122,7 +122,7 @@ export function renderExpirationContent(fields, setField) {
               value={fields.expiration_interval_unit}
               onChange={(value) => {
                 //handle case when interval num is out of expected range
-                if (value === 'hours' && Number(fields.expiration_interval_num) > 24 ) {
+                if (value === 'hours' && Number(fields.expiration_interval_num) > 24) {
                   setField('expiration_interval_num', '24');
                 }
                 setField('expiration_interval_unit', value);

@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/FormTable/FormTable.scss';
 
-let Row = ({
+const Row = ({
   title,
   notes = [],
   color = 'blue',
@@ -33,7 +33,7 @@ let Row = ({
   );
 };
 
-let FormTable = ({ items, keyWidth = '70px' }) => (
+const FormTable = ({ items, keyWidth = '70px' }) => (
   <div className={styles.table}>
     {items.map((item, index) => <Row key={index.toString()} keyWidth={keyWidth} {...item} />)}
   </div>

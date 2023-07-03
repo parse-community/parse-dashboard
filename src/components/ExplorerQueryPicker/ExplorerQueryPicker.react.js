@@ -12,7 +12,7 @@ import PropTypes     from 'lib/PropTypes';
 import React         from 'react';
 import styles        from 'components/ExplorerQueryPicker/ExplorerQueryPicker.scss';
 
-let ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
+const ExplorerQueryPicker = ({ queries, onCompose, onSelect, onDelete }) => {
   return (
     <div className={styles.queryPicker}>
       <div className={styles.header}>

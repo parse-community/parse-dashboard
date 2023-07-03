@@ -130,24 +130,24 @@ class Config extends TableView {
       }
       type = type.substr(0, 1).toUpperCase() + type.substr(1);
     }
-    let openModal = () => this.setState({
+    const openModal = () => this.setState({
       modalOpen: true,
       modalParam: data.param,
       modalType: type,
       modalValue: modalValue,
       modalMasterKeyOnly: data.masterKeyOnly
     });
-    let columnStyleLarge = { width: '30%', cursor: 'pointer' };
-    let columnStyleSmall = { width: '15%', cursor: 'pointer' };
+    const columnStyleLarge = { width: '30%', cursor: 'pointer' };
+    const columnStyleSmall = { width: '15%', cursor: 'pointer' };
 
-    let openModalValueColumn = () => {
+    const openModalValueColumn = () => {
       if (data.value instanceof Parse.File) {
         return
       }
       openModal()
     }
 
-    let openDeleteParameterDialog = () => this.setState({
+    const openDeleteParameterDialog = () => this.setState({
       showDeleteParameterDialog: true,
       modalParam: data.param
     });
@@ -190,13 +190,13 @@ class Config extends TableView {
   tableData() {
     let data = undefined;
     if (this.props.config.data) {
-      let params = this.props.config.data.get('params');
-      let masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
+      const params = this.props.config.data.get('params');
+      const masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
       if (params) {
         data = [];
         params.forEach((value, param) => {
-          let masterKeyOnly = masterKeyOnlyParams.get(param) || false;
-          let type = typeof value;
+          const masterKeyOnly = masterKeyOnlyParams.get(param) || false;
+          const type = typeof value;
           if (type === 'object' && value.__type == 'File') {
             value = Parse.File.fromJSON(value);
           }

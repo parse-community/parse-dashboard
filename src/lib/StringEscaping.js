@@ -14,12 +14,12 @@ const UNESCAPE_MAP = {
   '&quot;': '"'
 };
 const ESCAPE_MAP = {};
-for (let k in UNESCAPE_MAP) {
+for (const k in UNESCAPE_MAP) {
   ESCAPE_MAP[UNESCAPE_MAP[k]] = k;
 }
 
-let escapeMatcher = RegExp('(?:' + (Object.keys(ESCAPE_MAP).join('|')) + ')', 'g');
-let unescapeMatcher = RegExp('(?:' + (Object.keys(UNESCAPE_MAP).join('|')) + ')', 'g');
+const escapeMatcher = RegExp('(?:' + (Object.keys(ESCAPE_MAP).join('|')) + ')', 'g');
+const unescapeMatcher = RegExp('(?:' + (Object.keys(UNESCAPE_MAP).join('|')) + ')', 'g');
 
 export function escape(str) {
   return str.replace(escapeMatcher, function(ch) {

@@ -8,8 +8,8 @@
 import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 
-let Icon = ({ name, fill, width, height }) => {
-  let props = {
+const Icon = ({ name, fill, width, height }) => {
+  const props = {
     width: width,
     height: height
   };

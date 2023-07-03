@@ -48,9 +48,9 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
   }
 
   render() {
-    let inputId=[FORM_PREFIX, this.props.id].join('_');
+    const inputId = [FORM_PREFIX, this.props.id].join('_');
 
-    let detailsView = this.state.expandedView ?
+    const detailsView = this.state.expandedView ?
       PushUtils.largeInfoBuilder(this.props.query, this.props.schema, styles) :
       (
         <div className={styles.shortInfo}>

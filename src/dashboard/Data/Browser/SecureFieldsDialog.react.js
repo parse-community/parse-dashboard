@@ -16,7 +16,7 @@ const pointerPrefix = 'userField:';
 
 function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
   if (parseServerSupportsPointerPermissions) {
-    let fieldName = text.startsWith(pointerPrefix)
+    const fieldName = text.startsWith(pointerPrefix)
       ? text.substring(pointerPrefix.length)
       : text;
     if (pointers.includes(fieldName)) {
@@ -47,7 +47,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
       find: () => Promise.resolve([])
     };
 
-    let user = text.substring(5);
+    const user = text.substring(5);
     userQuery = new Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
       new Parse.Query(Parse.User).equalTo('objectId', user)
@@ -57,7 +57,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
     userQuery = {
       find: () => Promise.resolve([])
     };
-    let role = text.substring(5);
+    const role = text.substring(5);
     roleQuery = new Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
       new Parse.Query(Parse.Role).equalTo('objectId', role)
@@ -117,7 +117,7 @@ export default class SecureFieldsDialog extends React.Component {
 
   render() {
     let dialog = null;
-    let parseServerSupportsPointerPermissions = this.context
+    const parseServerSupportsPointerPermissions = this.context
       .serverInfo.features.schemas.editClassLevelPermissions;
     if (this.props.perms && this.state.open) {
       dialog = (
@@ -146,7 +146,7 @@ export default class SecureFieldsDialog extends React.Component {
           }
           onCancel={this.handleClose}
           onConfirm={protectedFields => {
-            let newPerms = this.props.perms;
+            const newPerms = this.props.perms;
             newPerms.protectedFields = protectedFields;
             this.props
               .onChangeCLP(newPerms)
@@ -155,7 +155,7 @@ export default class SecureFieldsDialog extends React.Component {
         />
       );
     }
-    let classes = [styles.toolbarButton];
+    const classes = [styles.toolbarButton];
     if (this.props.disabled) {
       classes.push(styles.toolbarButtonDisabled);
     }

@@ -13,7 +13,7 @@ export const component = ExplorerMenuButton;
 export const demos = [
   {
     render: () => {
-      let queries = [
+      const queries = [
         {
           name: 'Audience',
           children: [

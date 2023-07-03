@@ -9,11 +9,11 @@ import { abortableGet, put, post, del } from 'lib/AJAX';
 import { unescape }                     from 'lib/StringEscaping';
 
 let currentUser = null;
-let xhrMap = {};
+const xhrMap = {};
 
-let AccountManager = {
+const AccountManager = {
   init() {
-    let accountData = document.getElementById('accountData');
+    const accountData = document.getElementById('accountData');
     if (!accountData) {
       return;
     }
@@ -28,7 +28,7 @@ let AccountManager = {
   },
 
   resetPasswordAndEmailAndName(currentPassword, newPassword, newEmail, newName) {
-    let path = '/account';
+    const path = '/account';
     return put(path, {
       confirm_password: currentPassword,
       'user[password]':newPassword,
@@ -38,10 +38,10 @@ let AccountManager = {
   },
 
   createAccountKey(keyName) {
-    let path = '/account/keys';
-    let promise = post(path, {name: keyName});
+    const path = '/account/keys';
+    const promise = post(path, {name: keyName});
     promise.then(newKey => {
-      let hiddenKey = {...newKey, token: '\u2022\u2022' + newKey.token.substr(newKey.token.length - 4)};
+      const hiddenKey = {...newKey, token: '\u2022\u2022' + newKey.token.substr(newKey.token.length - 4)};
       //TODO: save the account key better. This currently only works because everywhere that uses
       // the account keys happens to rerender after the account keys change anyway.
       currentUser.account_keys.unshift(hiddenKey);
@@ -50,8 +50,8 @@ let AccountManager = {
   },
 
   deleteAccountKeyById(id) {
-    let path = '/account/keys/' + id.toString();
-    let promise = del(path);
+    const path = '/account/keys/' + id.toString();
+    const promise = del(path);
     promise.then(() => {
 
       //TODO: delete the account key better. This currently only works because everywhere that uses
@@ -62,8 +62,8 @@ let AccountManager = {
   },
 
   fetchLinkedAccounts(xhrKey) {
-    let path = '/account/linked_accounts';
-    let {xhr, promise} = abortableGet(path);
+    const path = '/account/linked_accounts';
+    const {xhr, promise} = abortableGet(path);
     xhrMap[xhrKey] = xhr;
     promise.then((result) => {
       this.linkedAccounts = result;

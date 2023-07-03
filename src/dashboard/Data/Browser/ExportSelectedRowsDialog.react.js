@@ -46,11 +46,11 @@ export default class ExportSelectedRowsDialog extends React.Component {
     const i = Math.floor(Math.log(bytes) / Math.log(k))
 
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`
-}
+  }
 
 
   render() {
-    let selectionLength = Object.keys(this.props.selection).length;
+    const selectionLength = Object.keys(this.props.selection).length;
     const fileSize = new TextEncoder().encode(JSON.stringify(this.props.data, null, this.state.exportType === '.json' && this.state.indentation ? 2 : null)).length / this.props.data.length
     return (
       <Modal
@@ -72,14 +72,14 @@ export default class ExportSelectedRowsDialog extends React.Component {
             <Dropdown
               value={this.state.exportType}
               onChange={(exportType) => this.setState({ exportType })}>
-                <Option value='.csv'>.csv</Option>
-                <Option value='.json'>.json</Option>
+              <Option value='.csv'>.csv</Option>
+              <Option value='.json'>.json</Option>
             </Dropdown>
           } />
         {this.state.exportType === '.json' && <Field
           label={<Label text='Indentation' />}
           input={<Toggle value={this.state.indentation} type={Toggle.Types.YES_NO} onChange={(indentation) => {this.setState({indentation})}} />} />
-          }
+        }
         {this.props.selection['*'] && <Field
           label={
             <Label

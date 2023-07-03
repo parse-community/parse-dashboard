@@ -35,17 +35,17 @@ export const demos = [
       <div>
         <div style={{ width: '50%', float: 'left' }}>
           <PushOpenRate numOpened={102}
-                        numSent={4342}
-                        color='yellow'
-                        isExperiment={true}
-                        isWinner={true}/>
+            numSent={4342}
+            color='yellow'
+            isExperiment={true}
+            isWinner={true}/>
         </div>
         <div style={{ marginLeft: '50%' }}>
           <PushOpenRate numOpened={5}
-                        numSent={3223}
-                        color='pink'
-                        isExperiment={true}
-                        isWinner={false}/>
+            numSent={3223}
+            color='pink'
+            isExperiment={true}
+            isWinner={false}/>
         </div>
       </div>
     )
@@ -56,17 +56,17 @@ export const demos = [
       <div>
         <div style={{ width: '50%', float: 'left' }}>
           <PushOpenRate numOpened={232}
-                        numSent={12413}
-                        color='yellow'
-                        isExperiment={true}
-                        isWinner={false}/>
+            numSent={12413}
+            color='yellow'
+            isExperiment={true}
+            isWinner={false}/>
         </div>
         <div style={{ marginLeft: '50%' }}>
           <PushOpenRate numOpened={455}
-                        numSent={13419}
-                        color='pink'
-                        isExperiment={true}
-                        isWinner={true}/>
+            numSent={13419}
+            color='pink'
+            isExperiment={true}
+            isWinner={true}/>
         </div>
       </div>
     )

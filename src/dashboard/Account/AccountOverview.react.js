@@ -67,7 +67,7 @@ export default class AccountOverview extends React.Component {
   }
 
   renderForm({fields}) {
-    let accountInfoFields = <Fieldset
+    const accountInfoFields = <Fieldset
       legend='Account Info'
       description='Update the personal information linked to this account.'>
       <Field
@@ -84,10 +84,10 @@ export default class AccountOverview extends React.Component {
         } />
     </Fieldset>;
 
-    let linkedAccountsFields = this.state.linkedAccounts !== null ?
+    const linkedAccountsFields = this.state.linkedAccounts !== null ?
       <Fieldset
-          legend='Linked Accounts'
-          description='Manage the accounts you have linked to Parse.' >
+        legend='Linked Accounts'
+        description='Manage the accounts you have linked to Parse.' >
         <AccountLinkField
           serviceName='Facebook'
           metadata={this.state.linkedAccounts['facebook']} />
@@ -102,7 +102,7 @@ export default class AccountOverview extends React.Component {
           metadata={this.state.linkedAccounts['heroku']} />
       </Fieldset> : null;
 
-    let accountKeysFields = <Fieldset
+    const accountKeysFields = <Fieldset
       legend='Account Keys'
       description='These allow you to access your Parse apps without using a password.'>
       <Field
@@ -143,7 +143,7 @@ export default class AccountOverview extends React.Component {
         } /> : null}
     </Fieldset>;
 
-    let billingInfoFields = <Fieldset
+    const billingInfoFields = <Fieldset
       legend='Billing Info'
       description='Update your payment information.'>
       {fields.accountCredit > 0 ? <Field
@@ -208,7 +208,7 @@ export default class AccountOverview extends React.Component {
 
     </Fieldset>;
 
-    let changePasswordModal = <FormModal
+    const changePasswordModal = <FormModal
       title='Change your login information'
       icon='users-solid'
       iconSize={30}
@@ -274,7 +274,7 @@ export default class AccountOverview extends React.Component {
           hidden={true} />} />
     </FormModal>;
 
-    let accountKeyModal = <FormModal
+    const accountKeyModal = <FormModal
       title='Create an account key'
       icon='keys-solid'
       iconSize={30}
@@ -307,7 +307,7 @@ export default class AccountOverview extends React.Component {
           placeholder='Work Laptop' /> } />
     </FormModal>
 
-    let newAccountKeyModal = this.state.showNewAccountKeyModal ? <Modal
+    const newAccountKeyModal = this.state.showNewAccountKeyModal ? <Modal
       title='Key Created!'
       subtitle={'Copy it now, you won’t be able to see it again.'}
       icon='check'
@@ -327,7 +327,7 @@ export default class AccountOverview extends React.Component {
       </KeyField>
     </Modal> : null;
 
-    let deleteAccountKeyModal = <FormModal
+    const deleteAccountKeyModal = <FormModal
       title='Are you sure?'
       subtitle='If you delete this account key, anything that was using it will stop working.'
       type={Modal.Types.DANGER}
@@ -358,8 +358,8 @@ export default class AccountOverview extends React.Component {
   }
 
   render() {
-    let user = AccountManager.currentUser();
-    let initialFields = {
+    const user = AccountManager.currentUser();
+    const initialFields = {
       accountCredit: user.stripe_credit,
       cc_last4: user.cc_last4, //null means user has not added a credit card
       ccSecurityCode: '',
@@ -369,7 +369,7 @@ export default class AccountOverview extends React.Component {
       initialFields={initialFields}
       footerContents={({changes}) => renderFlowFooterChanges(changes, initialFields, accountOverviewFooterSettings)}
       onSubmit={() => {
-        let promiseList = [];
+        const promiseList = [];
         /* eslint-disable */
         if (changes.cc !== undefined) {
           //TODO change credit card number
@@ -381,7 +381,7 @@ export default class AccountOverview extends React.Component {
   }
 }
 
-let accountOverviewFooterSettings = {
+const accountOverviewFooterSettings = {
   cc: {
     friendlyName: 'credit card information',
   },

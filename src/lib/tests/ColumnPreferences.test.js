@@ -11,7 +11,7 @@
 jest.dontMock('../ColumnPreferences');
 const ColumnPreferences = require('../ColumnPreferences');
 
-let mockStorage = {};
+const mockStorage = {};
 window.localStorage = {
   setItem(key, value) {
     mockStorage[key] = value;

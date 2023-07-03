@@ -20,11 +20,11 @@ const TIMESTAMP_REGEX = [
   '(\\])'  // Any Single Character 2
 ].join('');
 
-let isError = (str) => str[0] === 'E';
+const isError = (str) => str[0] === 'E';
 
-let getLogEntryInfo = (str) => {
-  let re = getTimestampRegex();
-  let timeStampStr = str.match(re) ? str.match(re)[0] : '';
+const getLogEntryInfo = (str) => {
+  const re = getTimestampRegex();
+  const timeStampStr = str.match(re) ? str.match(re)[0] : '';
   return {
     time: timeStampStr,
     content: str.replace(timeStampStr,''),
@@ -33,14 +33,14 @@ let getLogEntryInfo = (str) => {
 }
 
 //example timestamp: 'I2015-09-30T00:36:45.522Z]'
-let getTimestampRegex = () => new RegExp(TIMESTAMP_REGEX,['i']);
+const getTimestampRegex = () => new RegExp(TIMESTAMP_REGEX,['i']);
 
-let LogViewEntry = ({
+const LogViewEntry = ({
   text = '',
   timestamp,
 }) => {
-  let logEntryInfo = getLogEntryInfo(text);
-  let classes = [styles.entry, logEntryInfo.error ? styles.error: ''];
+  const logEntryInfo = getLogEntryInfo(text);
+  const classes = [styles.entry, logEntryInfo.error ? styles.error : ''];
   return (
     <li className={classes.join(' ')}>
       {/* handle the timestamp format used by both Parse Server and Parse.com */}

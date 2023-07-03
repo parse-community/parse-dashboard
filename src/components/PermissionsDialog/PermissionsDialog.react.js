@@ -23,25 +23,25 @@ import TrackVisibility  from 'components/TrackVisibility/TrackVisibility.react';
 import {CurrentApp} from '../../context/currentApp';
 import generatePath from '../../lib/generatePath';
 
-let origin = new Position(0, 0);
+const origin = new Position(0, 0);
 
 function resolvePermission(perms, rowId, column) {
-  let isPublicRow = rowId === '*';
-  let isAuthRow = rowId === 'requiresAuthentication'; // exists only on CLP
-  let isEntryRow = !isAuthRow && !isPublicRow;
+  const isPublicRow = rowId === '*';
+  const isAuthRow = rowId === 'requiresAuthentication'; // exists only on CLP
+  const isEntryRow = !isAuthRow && !isPublicRow;
 
-  let publicAccess = perms.get(column).get('*');
-  let auth = perms.get(column).get('requiresAuthentication');
-  let checked = perms.get(column).get(rowId);
+  const publicAccess = perms.get(column).get('*');
+  const auth = perms.get(column).get('requiresAuthentication');
+  const checked = perms.get(column).get(rowId);
 
-  let forceChecked = publicAccess && !auth;
-  let indeterminate = isPublicRow && auth;
+  const forceChecked = publicAccess && !auth;
+  const indeterminate = isPublicRow && auth;
   // the logic is:
   // Checkbox is shown for:
   //  - Public row: always
   //  - Authn row:  always
   //  - Entry row:  when requires auth OR not Public
-  let editable = isPublicRow || isAuthRow || (isEntryRow && !forceChecked);
+  const editable = isPublicRow || isAuthRow || (isEntryRow && !forceChecked);
 
   return {
     checked,
@@ -51,8 +51,8 @@ function resolvePermission(perms, rowId, column) {
 }
 
 function resolvePointerPermission(perms, pointerPerms, rowId, column) {
-  let publicAccess = perms.get(column) && perms.get(column).get('*');
-  let auth = perms.get(column).get('requiresAuthentication');
+  const publicAccess = perms.get(column) && perms.get(column).get('*');
+  const auth = perms.get(column).get('requiresAuthentication');
 
   // Pointer permission can be grouped as read/write
   let permsGroup;
@@ -65,15 +65,15 @@ function resolvePointerPermission(perms, pointerPerms, rowId, column) {
     permsGroup = 'write';
   }
 
-  let checked = pointerPerms.get(permsGroup) || pointerPerms.get(column); //pointerPerms.get(permsGroup) && pointerPerms.get(permsGroup).get(rowId);
+  const checked = pointerPerms.get(permsGroup) || pointerPerms.get(column); //pointerPerms.get(permsGroup) && pointerPerms.get(permsGroup).get(rowId);
 
-  let forceChecked = publicAccess && !auth;
+  const forceChecked = publicAccess && !auth;
 
   // Checkbox is shown for:
   //  - Public row: always
   //  - Authn row:  always
   //  - Entry row:  when requires auth OR not Public
-  let editable = !forceChecked;
+  const editable = !forceChecked;
 
   return {
     checked,
@@ -82,13 +82,13 @@ function resolvePointerPermission(perms, pointerPerms, rowId, column) {
 }
 
 function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
-  let get = resolvePermission(perms, rowId, 'get');
-  let find = resolvePermission(perms, rowId, 'find');
-  let count = resolvePermission(perms, rowId, 'count');
-  let create = resolvePermission(perms, rowId, 'create');
-  let update = resolvePermission(perms, rowId, 'update');
-  let del = resolvePermission(perms, rowId, 'delete');
-  let addField = resolvePermission(perms, rowId, 'addField');
+  const get = resolvePermission(perms, rowId, 'get');
+  const find = resolvePermission(perms, rowId, 'find');
+  const count = resolvePermission(perms, rowId, 'count');
+  const create = resolvePermission(perms, rowId, 'create');
+  const update = resolvePermission(perms, rowId, 'update');
+  const del = resolvePermission(perms, rowId, 'delete');
+  const addField = resolvePermission(perms, rowId, 'addField');
 
   if (advanced) {
     return [
@@ -172,17 +172,17 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
     ];
   }
 
-  let showReadCheckbox = find.editable || get.editable || count.editable;
-  let showWriteCheckbox = create.editable || update.editable || del.editable;
+  const showReadCheckbox = find.editable || get.editable || count.editable;
+  const showWriteCheckbox = create.editable || update.editable || del.editable;
 
-  let readChecked = find.checked && get.checked && count.checked;
-  let writeChecked = create.checked && update.checked && del.checked;
+  const readChecked = find.checked && get.checked && count.checked;
+  const writeChecked = create.checked && update.checked && del.checked;
 
-  let indeterminateRead =
+  const indeterminateRead =
     [get, find, count].some(s => s.checked) &&
     [get, find, count].some(s => !s.checked);
 
-  let indeterminateWrite =
+  const indeterminateWrite =
     [create, update, del].some(s => s.checked) &&
     [create, update, del].some(s => !s.checked);
 
@@ -229,28 +229,28 @@ function renderAdvancedCheckboxes(rowId, perms, advanced, onChange) {
 
 function renderSimpleCheckboxes(rowId, perms, onChange) {
   // Public state
-  let allowPublicRead = perms.get('read').get('*');
-  let allowPublicWrite = perms.get('write').get('*');
+  const allowPublicRead = perms.get('read').get('*');
+  const allowPublicWrite = perms.get('write').get('*');
 
   // requireAuthentication state
-  let onlyAuthRead = perms.get('read').get('requiresAuthentication');
-  let onlyAuthWrite = perms.get('write').get('requiresAuthentication');
+  const onlyAuthRead = perms.get('read').get('requiresAuthentication');
+  const onlyAuthWrite = perms.get('write').get('requiresAuthentication');
 
-  let isAuthRow = rowId === 'requiresAuthentication';
-  let isPublicRow = rowId === '*';
+  const isAuthRow = rowId === 'requiresAuthentication';
+  const isPublicRow = rowId === '*';
 
-  let showReadCheckbox =
+  const showReadCheckbox =
     isAuthRow ||
     (!onlyAuthRead && isPublicRow) ||
     (!onlyAuthRead && !allowPublicRead);
-  let showWriteCheckbox =
+  const showWriteCheckbox =
     isAuthRow ||
     (!onlyAuthWrite && isPublicRow) ||
     (!onlyAuthWrite && !allowPublicWrite);
 
-  let readChecked =
+  const readChecked =
     perms.get('read').get(rowId) || allowPublicRead || isAuthRow;
-  let writeChecked =
+  const writeChecked =
     perms.get('write').get(rowId) || allowPublicWrite || isAuthRow;
 
   return [
@@ -286,13 +286,13 @@ function renderPointerCheckboxes(
   advanced,
   onChange
 ) {
-  let get = resolvePointerPermission(perms, pointerPerms, rowId, 'get');
-  let find = resolvePointerPermission(perms, pointerPerms, rowId, 'find');
-  let count = resolvePointerPermission(perms, pointerPerms, rowId, 'count');
-  let create = resolvePointerPermission(perms, pointerPerms, rowId, 'create');
-  let update = resolvePointerPermission(perms, pointerPerms, rowId, 'update');
-  let del = resolvePointerPermission(perms, pointerPerms, rowId, 'delete');
-  let addField = resolvePointerPermission(
+  const get = resolvePointerPermission(perms, pointerPerms, rowId, 'get');
+  const find = resolvePointerPermission(perms, pointerPerms, rowId, 'find');
+  const count = resolvePointerPermission(perms, pointerPerms, rowId, 'count');
+  const create = resolvePointerPermission(perms, pointerPerms, rowId, 'create');
+  const update = resolvePointerPermission(perms, pointerPerms, rowId, 'update');
+  const del = resolvePointerPermission(perms, pointerPerms, rowId, 'delete');
+  const addField = resolvePointerPermission(
     perms,
     pointerPerms,
     rowId,
@@ -300,83 +300,83 @@ function renderPointerCheckboxes(
   );
 
   // whether this field is listed under readUserFields[]
-  let readUserFields = pointerPerms.get('read');
+  const readUserFields = pointerPerms.get('read');
   // or writeUserFields[]
-  let writeUserFields = pointerPerms.get('write');
+  const writeUserFields = pointerPerms.get('write');
 
-  let read = {
+  const read = {
     checked: readUserFields || (get.checked && find.checked && count.checked),
     editable: true
   };
 
-  let write = {
+  const write = {
     checked:
       writeUserFields ||
       (create.checked && update.checked && del.checked && addField.checked),
     editable: true
   };
 
-  let cols = [];
+  const cols = [];
 
   if (!advanced) {
     // simple view mode
     // detect whether public access is enabled
 
     //for read
-    let publicReadGrouped = perms.getIn(['read', '*']);
-    let publicReadGranular =
+    const publicReadGrouped = perms.getIn(['read', '*']);
+    const publicReadGranular =
       perms.getIn(['get', '*']) &&
       perms.getIn(['find', '*']) &&
       perms.getIn(['count', '*']);
 
     // for write
-    let publicWriteGrouped = perms.getIn(['write', '*']);
-    let publicWriteGranular =
+    const publicWriteGrouped = perms.getIn(['write', '*']);
+    const publicWriteGranular =
       perms.getIn(['create', '*']) &&
       perms.getIn(['update', '*']) &&
       perms.getIn(['delete', '*']) &&
       perms.getIn(['addField', '*']);
 
     // assume public access is on when it is set either for group or for each operation
-    let publicRead = publicReadGrouped || publicReadGranular;
-    let publicWrite = publicWriteGrouped || publicWriteGranular;
+    const publicRead = publicReadGrouped || publicReadGranular;
+    const publicWrite = publicWriteGrouped || publicWriteGranular;
 
     // --------------
     // detect whether auth is required
     // for read
-    let readAuthGroup = perms.getIn(['read', 'requiresAuthentication']);
-    let readAuthSeparate =
+    const readAuthGroup = perms.getIn(['read', 'requiresAuthentication']);
+    const readAuthSeparate =
       perms.getIn(['get', 'requiresAuthentication']) &&
       perms.getIn(['find', 'requiresAuthentication']) &&
       perms.getIn(['count', 'requiresAuthentication']);
 
     // for write
-    let writeAuthGroup = perms.getIn(['write', 'requiresAuthentication']);
-    let writeAuthSeparate =
+    const writeAuthGroup = perms.getIn(['write', 'requiresAuthentication']);
+    const writeAuthSeparate =
       perms.getIn(['create', 'requiresAuthentication']) &&
       perms.getIn(['update', 'requiresAuthentication']) &&
       perms.getIn(['delete', 'requiresAuthentication']) &&
       perms.getIn(['addField', 'requiresAuthentication']);
 
     // assume auth is required when it's set either for group or for each operation
-    let readAuth = readAuthGroup || readAuthSeparate;
-    let writeAuth = writeAuthGroup || writeAuthSeparate;
+    const readAuth = readAuthGroup || readAuthSeparate;
+    const writeAuth = writeAuthGroup || writeAuthSeparate;
 
     // when all ops have public access and none requiure auth, show non-editable checked icon
-    let readForceChecked = publicRead && !readAuth;
-    let writeForceChecked = publicWrite && !writeAuth;
+    const readForceChecked = publicRead && !readAuth;
+    const writeForceChecked = publicWrite && !writeAuth;
 
     // --------------
     // detect whether to show indeterminate checkbox (dash icon)
     // in simple view indeterminate happens when:
     // {read/write}UserFields is not set and
     // not all permissions have same value !(all checked || all unchecked)
-    let indeterminateRead =
+    const indeterminateRead =
       !readUserFields &&
       [get, find, count].some(s => s.checked) &&
       [get, find, count].some(s => !s.checked);
 
-    let indeterminateWrite =
+    const indeterminateWrite =
       !writeUserFields &&
       [create, update, del, addField].some(s => s.checked) &&
       [create, update, del, addField].some(s => !s.checked);
@@ -548,9 +548,9 @@ export default class PermissionsDialog extends React.Component {
     this.suggestInput = this.suggestInput.bind(this);
     this.buildLabel = this.buildLabel.bind(this);
 
-    let uniqueKeys = [...(advanced ? ['requiresAuthentication'] : []), '*'];
-    let perms = {};
-    for (let k in permissions) {
+    const uniqueKeys = [...(advanced ? ['requiresAuthentication'] : []), '*'];
+    const perms = {};
+    for (const k in permissions) {
       if (
         k !== 'readUserFields' &&
         k !== 'writeUserFields' &&
@@ -576,7 +576,7 @@ export default class PermissionsDialog extends React.Component {
       }
     }
 
-    let pointerPermsSubset = {
+    const pointerPermsSubset = {
       read: permissions.readUserFields || [],
       write: permissions.writeUserFields || []
     };
@@ -594,15 +594,15 @@ export default class PermissionsDialog extends React.Component {
       // The double check is necessary because the permissions object seems to be empty when accessing the CLP section
       // if the class was recently created.
       (pointerPermsSubset.get = permissions.get && permissions.get.pointerFields || []),
-        (pointerPermsSubset.find = permissions.find && permissions.find.pointerFields || []),
-        (pointerPermsSubset.count = permissions.count && permissions.count.pointerFields || []),
-        (pointerPermsSubset.create = permissions.create && permissions.create.pointerFields || []),
-        (pointerPermsSubset.update = permissions.update && permissions.update.pointerFields || []),
-        (pointerPermsSubset.delete = permissions.delete && permissions.delete.pointerFields || []),
-        (pointerPermsSubset.addField = permissions.addField && permissions.addField.pointerFields || []);
+      (pointerPermsSubset.find = permissions.find && permissions.find.pointerFields || []),
+      (pointerPermsSubset.count = permissions.count && permissions.count.pointerFields || []),
+      (pointerPermsSubset.create = permissions.create && permissions.create.pointerFields || []),
+      (pointerPermsSubset.update = permissions.update && permissions.update.pointerFields || []),
+      (pointerPermsSubset.delete = permissions.delete && permissions.delete.pointerFields || []),
+      (pointerPermsSubset.addField = permissions.addField && permissions.addField.pointerFields || []);
     }
 
-    let pointerPerms = {};
+    const pointerPerms = {};
 
     // form an object where each pointer-field name holds operations it has access to
     // e.g. { [field]: {  read: true, create: true}, [field2]: {read: true,} ...}
@@ -649,7 +649,7 @@ export default class PermissionsDialog extends React.Component {
 
     for (const { entry, type } of rows) {
       let key;
-      let value = {};
+      const value = {};
 
       if(typeof entry === 'string') {
         key = type + ':' + entry;
@@ -763,7 +763,7 @@ export default class PermissionsDialog extends React.Component {
     if (this.props.validateEntry) {
       this.props.validateEntry(input).then(
         ({ type, entry }) => {
-          let next = { [type]: entry };
+          const next = { [type]: entry };
 
           if (next.public) {
             return this.setState({
@@ -867,7 +867,7 @@ export default class PermissionsDialog extends React.Component {
     if (isPointer) {
       let index = this.state.pointers.indexOf(key);
       if (index > -1) {
-        let filtered = this.state.pointers.concat([]);
+        const filtered = this.state.pointers.concat([]);
         filtered.splice(index, 1);
         return this.setState({
           pointers: filtered,
@@ -876,7 +876,7 @@ export default class PermissionsDialog extends React.Component {
       }
       index = this.state.newKeys.indexOf(key);
       if (index > -1) {
-        let filtered = this.state.newKeys.concat([]);
+        const filtered = this.state.newKeys.concat([]);
         filtered.splice(index, 1);
         return this.setState({
           newKeys: filtered,
@@ -899,7 +899,7 @@ export default class PermissionsDialog extends React.Component {
         newPerms = newPerms.deleteIn(['read', key]).deleteIn(['write', key]);
       }
       if (index > -1) {
-        let filtered = this.state.keys.concat([]);
+        const filtered = this.state.keys.concat([]);
         filtered.splice(index, 1);
         return this.setState({
           keys: filtered,
@@ -908,7 +908,7 @@ export default class PermissionsDialog extends React.Component {
       }
       index = this.state.newKeys.indexOf(key);
       if (index > -1) {
-        let filtered = this.state.newKeys.concat([]);
+        const filtered = this.state.newKeys.concat([]);
         filtered.splice(index, 1);
         return this.setState({
           newKeys: filtered,
@@ -919,7 +919,7 @@ export default class PermissionsDialog extends React.Component {
   }
 
   outputPerms() {
-    let output = {};
+    const output = {};
     let fields = ['read', 'write'];
     if (this.props.advanced) {
       fields = [
@@ -949,8 +949,8 @@ export default class PermissionsDialog extends React.Component {
       });
     });
 
-    let readUserFields = [];
-    let writeUserFields = [];
+    const readUserFields = [];
+    const writeUserFields = [];
     this.state.pointerPerms.forEach((perms, key) => {
       if (perms.get('read')) {
         readUserFields.push(key);
@@ -984,11 +984,11 @@ export default class PermissionsDialog extends React.Component {
   }
 
   urlForKey(key) {
-    let isRole = key.startsWith('role:')
-    let className = isRole ? '_Role' : '_User';
-    let field = isRole ? 'name' : 'objectId';
-    let value = isRole ? key.replace('role:', '') : key
-    let filters = JSON.stringify([{
+    const isRole = key.startsWith('role:')
+    const className = isRole ? '_Role' : '_User';
+    const field = isRole ? 'name' : 'objectId';
+    const value = isRole ? key.replace('role:', '') : key
+    const filters = JSON.stringify([{
       field,
       constraint: 'eq',
       compareTo: value
@@ -1007,7 +1007,7 @@ export default class PermissionsDialog extends React.Component {
     // types is immutable.js Map
     const type = (types && types.get(key)) || {};
 
-    let pointer = this.state.pointerPerms.has(key);
+    const pointer = this.state.pointerPerms.has(key);
     let label = <span><a target="_blank" href={this.urlForKey(key)} >{key}</a></span>;
 
     if (type.user) {
@@ -1032,7 +1032,7 @@ export default class PermissionsDialog extends React.Component {
           <p>
             <span>
               <span className={styles.prefix}>{'role:'}</span>
-                <a target="_blank" href={this.urlForKey(key)} >{type.role.name}</a>
+              <a target="_blank" href={this.urlForKey(key)} >{type.role.name}</a>
             </span>
           </p>
           <p className={styles.hint}>
@@ -1042,9 +1042,9 @@ export default class PermissionsDialog extends React.Component {
       );
     } else if (pointer) {
       // get class info from schema
-      let { type, targetClass } = columns[key];
+      const { type, targetClass } = columns[key];
 
-      let pillText = type + (targetClass ? `<${targetClass}>` : '');
+      const pillText = type + (targetClass ? `<${targetClass}>` : '');
 
       label = (
         <span>
@@ -1161,17 +1161,17 @@ export default class PermissionsDialog extends React.Component {
     const allKeys = [...keys, ...newKeys];
 
     // "userPointer:" fields that were not added yet
-    let unusedPointerFields = userPointers.filter(
+    const unusedPointerFields = userPointers.filter(
       ptr => !allKeys.includes(ptr) && ptr.includes(input)
     );
 
     // roles
-    let prefixes = ['role:']
+    const prefixes = ['role:']
       .filter(o => o.startsWith(input) && o.length > input.length) // filter matching input
       .concat(...unusedPointerFields);
 
     // pointer fields that are not applied yet;
-    let availableFields = [];
+    const availableFields = [];
 
     availableFields.push(...prefixes);
 
@@ -1179,7 +1179,7 @@ export default class PermissionsDialog extends React.Component {
   }
 
   render() {
-    let classes = [styles.dialog, baseStyles.unselectable];
+    const classes = [styles.dialog, baseStyles.unselectable];
 
     // for 3-column CLP dialog
     if (this.props.advanced) {
@@ -1281,8 +1281,8 @@ export default class PermissionsDialog extends React.Component {
                 )}
               {this.props.advanced
                 ? this.state.pointers.map(pointer =>
-                    this.renderRow(pointer, this.state.columns)
-                  )
+                  this.renderRow(pointer, this.state.columns)
+                )
                 : null}
               {this.state.newKeys.map(key =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
@@ -1309,7 +1309,7 @@ export default class PermissionsDialog extends React.Component {
                     buildSuggestions={input => this.suggestInput(input)}
                     buildLabel={input => this.buildLabel(input)}
                     error={this.state.entryError}
-                 />
+                  />
                 </TrackVisibility>
               </div>
             </div>

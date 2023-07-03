@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/Fieldset/Fieldset.scss';
 
-let Fieldset = ({ legend, description, children }) => (
+const Fieldset = ({ legend, description, children }) => (
   <div className={styles.fieldset}>
     <div className={styles.legend}>{legend}</div>
     <div className={styles.description}>{description}</div>

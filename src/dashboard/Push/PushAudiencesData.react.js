@@ -116,7 +116,7 @@ export default class PushAudiencesData extends React.Component {
       createErrorMessage: '',
     });
     let query = {};
-    let parseQuery = queryFromFilters('_Installation', formattedFilters);
+    const parseQuery = queryFromFilters('_Installation', formattedFilters);
 
     if (parseQuery && parseQuery.toJSON()) {
       query = parseQuery.toJSON().where || {};
@@ -129,14 +129,14 @@ export default class PushAudiencesData extends React.Component {
     parseQuery.containedIn('deviceType', platforms);
     if (!saveForFuture) {
       this.props.onChange(PushConstants.NEW_SEGMENT_ID, parseQuery, 1 /* TODO: get the read device count */);
-    }    
+    }
 
     if (saveForFuture){
       this.props.pushAudiencesStore.dispatch(PushAudiencesStore.ActionTypes.CREATE, {
         query: JSON.stringify(query),
         name,
       }).then(() => {
-        let stateSettings = {};
+        const stateSettings = {};
         stateSettings[modalState] = false;
         stateSettings.newlyCreatedSegment = true;
         stateSettings.createProgress = false;
@@ -148,7 +148,7 @@ export default class PushAudiencesData extends React.Component {
         });
       });
     } else { //saveAudience one time use audience
-      let stateSettings = {
+      const stateSettings = {
         newSegment: {
           createdAt: new Date(),
           name: 'New Segment',
@@ -166,9 +166,9 @@ export default class PushAudiencesData extends React.Component {
   }
 
   render() {
-    let { pushAudiencesStore, current, ...otherProps } = this.props;
+    const { pushAudiencesStore, current, ...otherProps } = this.props;
 
-    let pushAudienceData = pushAudiencesStore.data;
+    const pushAudienceData = pushAudiencesStore.data;
     let audiences = null;
     let showMore = false;
 
@@ -177,13 +177,13 @@ export default class PushAudiencesData extends React.Component {
       showMore = pushAudienceData.get('showMore') || false;
     }
 
-    let showMoreContent = showMore ? (
+    const showMoreContent = showMore ? (
       <div className={styles.showMoreWrap}>
         <Button value={this.state.loading ? 'Fetching all audiences' : 'Show all audiences'} onClick={this.handleShowMoreClick.bind(this)}/>
       </div>
     ) : null;
 
-    let createAudienceButton = (
+    const createAudienceButton = (
       <div className={styles.pushAudienceDialog}>
         <Button
           value='Create an audience'
@@ -209,7 +209,7 @@ export default class PushAudiencesData extends React.Component {
       </div>
     );
 
-    let editAudienceModal = (
+    const editAudienceModal = (
       <div className={styles.pushAudienceDialog}>
         <PushAudienceDialog
           availableDevices={this.state.availableDevices}

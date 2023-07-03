@@ -32,7 +32,7 @@ export default class CloneSelectedRowsDialog extends React.Component {
 
   render() {
     let content = null;
-    let selectionLength = Object.keys(this.props.selection).length;
+    const selectionLength = Object.keys(this.props.selection).length;
     if (this.props.selection['*'] || selectionLength >= 10) {
       content = (
         <Field

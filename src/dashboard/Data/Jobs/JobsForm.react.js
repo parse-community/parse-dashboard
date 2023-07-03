@@ -34,7 +34,7 @@ export default class JobsForm extends DashboardView {
 
   initialChanges() {
     if (this.props.initialFields.job) {
-      let changes = {};
+      const changes = {};
       if (!this.props.initialFields.repeatType) {
         changes.repeatType = 'daily';
       }
@@ -71,7 +71,7 @@ export default class JobsForm extends DashboardView {
     if (!fields.repeat) {
       return null;
     }
-    let rows = [
+    const rows = [
       <Field
         key='repeatType'
         label={<Label text='How should it repeat?' />}
@@ -212,7 +212,7 @@ export default class JobsForm extends DashboardView {
         if (!fields.job.length && !fields.description.length) {
           return '';
         }
-        let errorMessages = [];
+        const errorMessages = [];
         if (!fields.description.length) {
           errorMessages.push('A description is required.');
         }
@@ -230,7 +230,7 @@ export default class JobsForm extends DashboardView {
         return errorMessages.join(' ');
       }}
       footerContents={({fields}) => {
-        let pieces = [];
+        const pieces = [];
         pieces.push(<strong>{fields.job}</strong>, ' will run ');
         if (fields.immediate) {
           pieces.push(<strong>immediately</strong>, '.')

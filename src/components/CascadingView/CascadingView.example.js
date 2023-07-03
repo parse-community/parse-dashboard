@@ -27,7 +27,7 @@ export const demos = [
   },
   {
     render: () => {
-      let contents = [];
+      const contents = [];
       for (let i = 0; i < 4; ++i) {
         contents.push(
           <CascadingView

@@ -11,7 +11,7 @@ import React        from 'react';
 
 export const component = JsonPrinter;
 
-let json = {
+const json = {
   results: [
     {
       name: 'Apples',

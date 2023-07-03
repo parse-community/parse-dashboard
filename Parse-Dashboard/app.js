@@ -38,16 +38,16 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
 
     fs.stat(path, function(err) {
       if (err) {
-          if ('ENOENT' == err.code) {// file does not exist
-              console.warn('Icon with file name: ' + iconName +' couldn\'t be found in icons folder!');
-          } else {
-            console.log(
-              'An error occurd while checking for icons, please check permission!');
-          }
+        if ('ENOENT' == err.code) {// file does not exist
+          console.warn('Icon with file name: ' + iconName + ' couldn\'t be found in icons folder!');
+        } else {
+          console.log(
+            'An error occurd while checking for icons, please check permission!');
+        }
       } else {
-          //every thing was ok so for example you can read it and send it to client
+        //every thing was ok so for example you can read it and send it to client
       }
-  } );
+    });
   }
 }
 
@@ -81,8 +81,8 @@ module.exports = function(config, options) {
 
     // Serve the configuration.
     app.get('/parse-dashboard-config.json', function(req, res) {
-      let apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
-      let response = {
+      const apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
+      const response = {
         apps: apps,
         newFeaturesInLatestVersion: newFeaturesInLatestVersion,
       };
@@ -213,7 +213,7 @@ module.exports = function(config, options) {
         }
         return res.redirect(`${mountPath}login`);
       }
-      if (users && req.user && req.user.matchingUsername ) {
+      if (users && req.user && req.user.matchingUsername) {
         res.append('username', req.user.matchingUsername);
       }
       res.send(`<!DOCTYPE html>

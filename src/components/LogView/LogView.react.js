@@ -8,7 +8,7 @@
 import React        from 'react';
 import styles       from 'components/LogView/LogView.scss';
 
-let LogView = (props) => {
+const LogView = (props) => {
   return (
     <ol className={styles.view}>
       {props.children}

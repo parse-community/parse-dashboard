@@ -53,7 +53,7 @@ const PushAudiencesOptions = ({
   })}
 </div>
 
-let PushAudiencesSelector = ({
+const PushAudiencesSelector = ({
   defaultAudience,
   newSegment,
   audiences,

@@ -10,7 +10,7 @@ import PushAudiencesOption from 'components/PushAudiencesSelector/PushAudiencesO
 
 export const component = PushAudiencesOption;
 
-let mockData = {
+const mockData = {
   id: '1',
   name: 'Everyone',
   createdAt: new Date(1444757195683)
@@ -18,16 +18,16 @@ let mockData = {
 
 export const demos = [
   {
-  render() {
-    return (
-      <PushAudiencesOption
-        id={mockData.id}
-        inputId={mockData.inputId}
-        name={mockData.name}
-        createdAt={mockData.createdAt}
-        inputName='test'
-      />
-    );
+    render() {
+      return (
+        <PushAudiencesOption
+          id={mockData.id}
+          inputId={mockData.inputId}
+          name={mockData.name}
+          createdAt={mockData.createdAt}
+          inputName='test'
+        />
+      );
+    }
   }
-}
 ];

@@ -24,20 +24,20 @@ export class AccountLinkField extends React.Component {
     return (
       <div>
         <form ref={this.modifyRef}
-              method='post'
-              action={this.props.metadata.linked ?
-                      this.props.metadata.deauthorize_url :
-                      this.props.metadata.authorize_url}>
+          method='post'
+          action={this.props.metadata.linked ?
+            this.props.metadata.deauthorize_url :
+            this.props.metadata.authorize_url}>
           <CSRFInput />
         </form>
         <Field
           labelWidth={DEFAULT_LABEL_WIDTH}
           label={<Label text={this.props.serviceName} />}
           input={<FormButton
-          value={this.props.metadata.linked ?
-                 'Unlink ' + this.props.serviceName :
-                 'Connect ' + this.props.serviceName}
-          onClick={() => this.modifyRef.current.submit()} />}/>
+            value={this.props.metadata.linked ?
+              'Unlink ' + this.props.serviceName :
+              'Connect ' + this.props.serviceName}
+            onClick={() => this.modifyRef.current.submit()} />}/>
       </div>
     );
   }

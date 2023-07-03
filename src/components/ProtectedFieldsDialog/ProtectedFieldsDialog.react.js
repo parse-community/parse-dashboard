@@ -21,14 +21,14 @@ import MultiSelectOption  from 'components/MultiSelect/MultiSelectOption.react';
 import TrackVisibility    from 'components/TrackVisibility/TrackVisibility.react';
 import baseStyles         from 'stylesheets/base.scss';
 
-let origin = new Position(0, 0);
+const origin = new Position(0, 0);
 const intersectionMargin = '10px 0px 0px 20px';
 
 export default class ProtectedFieldsDialog extends React.Component {
   constructor({ protectedFields, columns }) {
     super();
 
-    let keys = Object.keys(protectedFields || {});
+    const keys = Object.keys(protectedFields || {});
 
     this.refEntry = React.createRef();
     this.refTable = React.createRef();
@@ -73,7 +73,7 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     for (const { entry, type } of rows) {
       let key;
-      let value = {};
+      const value = {};
 
       if (type === 'user') {
         key = entry.id;
@@ -109,12 +109,12 @@ export default class ProtectedFieldsDialog extends React.Component {
     if (this.props.validateEntry) {
       this.props.validateEntry(input).then(
         ({ type, entry }) => {
-          let next = { [type]: entry };
+          const next = { [type]: entry };
 
           let key;
           let name;
           let id;
-          let newEntry = {};
+          const newEntry = {};
 
           if (next.user || next.role) {
             // entry for saving
@@ -139,9 +139,9 @@ export default class ProtectedFieldsDialog extends React.Component {
               });
             }
 
-            let nextKeys = this.state.newKeys.concat([key]);
-            let nextFields = this.state.protectedFields.set(key, []);
-            let nextEntryTypes = this.state.entryTypes.set(key, newEntry);
+            const nextKeys = this.state.newKeys.concat([key]);
+            const nextFields = this.state.protectedFields.set(key, []);
+            const nextEntryTypes = this.state.entryTypes.set(key, newEntry);
 
             return this.setState(
               {
@@ -172,11 +172,11 @@ export default class ProtectedFieldsDialog extends React.Component {
 
   deleteRow(key) {
     // remove from proectedFields
-    let protectedFields = this.state.protectedFields.delete(key);
+    const protectedFields = this.state.protectedFields.delete(key);
 
     // also remove from local state
-    let keys = this.state.keys.filter(k => k !== key);
-    let newKeys = this.state.newKeys.filter(k => k !== key);
+    const keys = this.state.keys.filter(k => k !== key);
+    const newKeys = this.state.newKeys.filter(k => k !== key);
 
     return this.setState({
       protectedFields,
@@ -186,7 +186,7 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   outputPerms() {
-    let output = this.state.protectedFields.toObject();
+    const output = this.state.protectedFields.toObject();
 
     return output;
   }
@@ -207,11 +207,11 @@ export default class ProtectedFieldsDialog extends React.Component {
    * Renders Dropdown allowing to pick multiple fields for an entity (row).
    */
   renderSelector(key, schema, selected) {
-    let options = [];
-    let values = selected || [];
+    const options = [];
+    const values = selected || [];
 
-    let entries = Object.entries(schema);
-    for (let [field, { type, targetClass }] of entries) {
+    const entries = Object.entries(schema);
+    for (const [field, { type, targetClass }] of entries) {
       if (
         field === 'objectId' ||
         field === 'createdAt' ||
@@ -221,7 +221,7 @@ export default class ProtectedFieldsDialog extends React.Component {
         continue;
       }
 
-      let pillText = type + (targetClass ? `<${targetClass}>` : '');
+      const pillText = type + (targetClass ? `<${targetClass}>` : '');
 
       options.push(
         <MultiSelectOption key={`col-${field}`} value={field} dense={true}>
@@ -233,17 +233,17 @@ export default class ProtectedFieldsDialog extends React.Component {
       );
     }
 
-    let noAvailableFields = options.length === 0;
+    const noAvailableFields = options.length === 0;
 
     if(noAvailableFields){
       options.push(
         <MultiSelectOption  disabled={true} dense={true}>
-        {'This class has no fields to protect'}
+          {'This class has no fields to protect'}
         </MultiSelectOption>
       )
     }
 
-    const placeholder = 'All fields allowed.'+ (noAvailableFields ? '': ' Click to protect.');
+    const placeholder = 'All fields allowed.' + (noAvailableFields ? '' : ' Click to protect.');
 
     return (
       <div className={(styles.second, styles.multiselect)}>
@@ -330,8 +330,8 @@ export default class ProtectedFieldsDialog extends React.Component {
     }
 
     if (type.pointer) {
-      let { type, targetClass } = columns[key.substring(10)];
-      let pillText = type + (targetClass ? `<${targetClass}>` : '');
+      const { type, targetClass } = columns[key.substring(10)];
+      const pillText = type + (targetClass ? `<${targetClass}>` : '');
 
       label = (
         <span>
@@ -393,19 +393,19 @@ export default class ProtectedFieldsDialog extends React.Component {
     const newKeys = this.state.newKeys;
     const allKeys = [...keys, ...newKeys];
 
-    let availablePointerFields = userPointers
+    const availablePointerFields = userPointers
       .map(ptr => `userField:${ptr}`)
       .filter(ptr => !allKeys.includes(ptr) && ptr.includes(input));
 
-    let possiblePrefix = ['role:']
+    const possiblePrefix = ['role:']
       .filter(o => o.startsWith(input) && o.length > input.length) // filter matching prefixes
       .concat(...availablePointerFields); //
 
     // pointer fields that are not applied yet;
-    let availableFields = [];
+    const availableFields = [];
 
     // do not suggest unique rows that are already added;
-    let uniqueOptions = ['*', 'authenticated'].filter(
+    const uniqueOptions = ['*', 'authenticated'].filter(
       key =>
         !allKeys.includes(key) && (input.length == 0 || key.startsWith(input))
     );
@@ -443,9 +443,9 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   render() {
-    let classes = [styles.dialog, baseStyles.unselectable];
+    const classes = [styles.dialog, baseStyles.unselectable];
 
-    let placeholderText = 'Role/User id/name * or authenticated\u2026';
+    const placeholderText = 'Role/User id/name * or authenticated\u2026';
 
     return (
       <Popover

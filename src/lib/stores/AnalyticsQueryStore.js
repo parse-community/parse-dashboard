@@ -57,15 +57,15 @@ const LABEL_TO_KEY_MAPPING = {
 };
 
 // This is basically a const, but it's not declared inline.
-let KEY_TO_LABEL_MAPPING = {};
-for (let key in LABEL_TO_KEY_MAPPING) {
+const KEY_TO_LABEL_MAPPING = {};
+for (const key in LABEL_TO_KEY_MAPPING) {
   KEY_TO_LABEL_MAPPING[LABEL_TO_KEY_MAPPING[key]] = key;
 }
 
 const LAST_FETCH_TIMEOUT = 60000;
 
-let queryToPayload = (query) => {
-  let payload = {
+const queryToPayload = (query) => {
+  const payload = {
     sources: [LABEL_TO_KEY_MAPPING[query.source]],
     enabled: query.enabled,
     type: LABEL_TO_KEY_MAPPING[query.type],
@@ -110,8 +110,8 @@ let queryToPayload = (query) => {
   return payload;
 };
 
-let payloadToQuery = (payload) => {
-  let query = {
+const payloadToQuery = (payload) => {
+  const query = {
     name: payload.name,
     source: KEY_TO_LABEL_MAPPING[payload.sources[0]],
     enabled: payload.enabled,
@@ -167,7 +167,7 @@ export const ActionTypes = keyMirror([
 
 function AnalyticsQueryStore(state, action) {
   action.app.setParseKeys();
-  let urlPrefix = `/apps/${action.app.slug}/explorer`;
+  const urlPrefix = `/apps/${action.app.slug}/explorer`;
 
   switch (action.type) {
     case ActionTypes.LIST:
@@ -182,7 +182,7 @@ function AnalyticsQueryStore(state, action) {
         type = 'recent';
       }
       return get(`${urlPrefix}/more?type=${type}&skip=0`).then((results) => {
-        let queries = {};
+        const queries = {};
         if (results) {
           results.forEach((payload) => {
             queries[payload.objectId] = payloadToQuery(payload);
@@ -195,7 +195,7 @@ function AnalyticsQueryStore(state, action) {
       return post(urlPrefix, queryToPayload(action.query)).then((result) => {
         result.objectId = result.id;
 
-        let realResult = result[LABEL_TO_KEY_MAPPING[action.query.source]];
+        const realResult = result[LABEL_TO_KEY_MAPPING[action.query.source]];
         return state.setIn(['queries', result.id], { ...action.query, result: realResult });
       });
     case ActionTypes.UPDATE:

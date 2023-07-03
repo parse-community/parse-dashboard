@@ -29,30 +29,30 @@ function dash(value, content) {
   return content;
 }
 /* eslint-disable no-unused-vars */
-let CloningNote = ({ app, clone_status, clone_progress }) => {
+const CloningNote = ({ app, clone_status, clone_progress }) => {
 /* eslint-enable */
   if (clone_status === 'failed') {
     //TODO: add a way to delete failed clones, like in old dash
     return <div>Clone failed</div>
   }
-  let progress = <LiveReload
+  const progress = <LiveReload
     initialData={[{appId: app.applicationId, progress: clone_progress}]}
     source='/apps/cloning_progress'
     render={data => {
-      let currentAppProgress = data.find(({ appId }) => appId === app.applicationId);
-      let progressStr = currentAppProgress ? currentAppProgress.progress.toString() : '0';
+      const currentAppProgress = data.find(({ appId }) => appId === app.applicationId);
+      const progressStr = currentAppProgress ? currentAppProgress.progress.toString() : '0';
       return <span>{progressStr}</span>;
     }}/>
   return <div>Cloning is {progress}% complete</div>
 };
 
-let CountsSection = ({ className, title, children }) =>
- <div className={className}>
-   <div className={styles.section}>{title}</div>
-   {children}
- </div>
+const CountsSection = ({ className, title, children }) =>
+  <div className={className}>
+    <div className={styles.section}>{title}</div>
+    {children}
+  </div>
 
-let Metric = (props) => {
+const Metric = (props) => {
   return (
     <div className={styles.count}>
       <div className={styles.number}>{props.number}</div>
@@ -61,14 +61,14 @@ let Metric = (props) => {
   );
 };
 
-let AppCard = ({
+const AppCard = ({
   app,
   icon,
 }) => {
   const navigate = useNavigate();
-  let canBrowse = app.serverInfo.error ? null : () => navigate(html`/apps/${app.slug}/browser`);
-  let versionMessage = app.serverInfo.error ?
-    <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div>:
+  const canBrowse = app.serverInfo.error ? null : () => navigate(html`/apps/${app.slug}/browser`);
+  const versionMessage = app.serverInfo.error ?
+    <div className={styles.serverVersion}>Server not reachable: <span className={styles.ago}>{app.serverInfo.error.toString()}</span></div> :
     <div className={styles.serverVersion}>
     Server URL: <span className={styles.ago}>{app.serverURL || 'unknown'}</span>
     Server version: <span className={styles.ago}>{app.serverInfo.parseServerVersion || 'unknown'}</span>
@@ -126,8 +126,8 @@ class AppsIndex extends React.Component {
   }
 
   render() {
-    let search = this.state.search.toLowerCase();
-    let apps = AppsManager.apps();
+    const search = this.state.search.toLowerCase();
+    const apps = AppsManager.apps();
     if (apps.length === 0) {
       return (
         <div className={styles.empty}>
@@ -142,7 +142,7 @@ class AppsIndex extends React.Component {
     }
     let upgradePrompt = null;
     if (this.props.newFeaturesInLatestVersion.length > 0) {
-      let newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => <strong>
+      const newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => <strong>
         {feature}
       </strong>);
       upgradePrompt = <FlowFooter>

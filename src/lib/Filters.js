@@ -211,7 +211,7 @@ export const DefaultComparisons = {
 //   blacklist is an optional array of constraints to ignore
 export function availableFilters(schema, currentFilters, blacklist) {
   blacklist = blacklist || [];
-  let disabled = {};
+  const disabled = {};
   if (currentFilters) {
     currentFilters.forEach((filter) => {
       if (!Constraints[filter.get('constraint')].composable) {
@@ -219,12 +219,12 @@ export function availableFilters(schema, currentFilters, blacklist) {
       }
     });
   }
-  let available = {};
-  for (let col in schema) {
+  const available = {};
+  for (const col in schema) {
     if (disabled[col]) {
       continue;
     }
-    let type = schema[col].type;
+    const type = schema[col].type;
     if (!FieldConstraints[type]) {
       continue;
     }

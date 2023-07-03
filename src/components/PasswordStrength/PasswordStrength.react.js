@@ -14,7 +14,7 @@ const tips = [
   'Looks great'
 ];
 
-let PasswordStrength = ({ strength }) => {
+const PasswordStrength = ({ strength }) => {
   return (
     <div className={styles.strength}>
       <div className={strength === 2 ? styles.green : styles.grey} />

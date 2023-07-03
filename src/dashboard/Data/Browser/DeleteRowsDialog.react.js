@@ -37,7 +37,7 @@ export default class DeleteRowsDialog extends React.Component {
 
   render() {
     let content = null;
-    let selectionLength = Object.keys(this.props.selection).length;
+    const selectionLength = Object.keys(this.props.selection).length;
 
     if (selectionLength >= 10) {
       content = (

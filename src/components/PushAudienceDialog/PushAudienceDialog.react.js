@@ -29,7 +29,7 @@ import { CurrentApp }        from 'context/currentApp';
 const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = true;
 const AUDIENCE_SIZE_FETCHING_ENABLED = true;
 
-let filterFormatter = (filters, schema) => {
+const filterFormatter = (filters, schema) => {
   return filters.map((filter) => {
     let type = schema[filter.get('field')];
     if (Object.prototype.hasOwnProperty.call(Filters.Constraints[filter.get('constraint')], 'field')) {
@@ -61,12 +61,12 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   componentWillMount() {
-    let stateSettings = {};
-    let audienceInfo = this.props.audienceInfo;
+    const stateSettings = {};
+    const audienceInfo = this.props.audienceInfo;
     //this case is only for 'New Segment' to prepopulate existing audience
     if (audienceInfo) {
       if (audienceInfo.query) {
-        let { deviceType } = audienceInfo.query;
+        const { deviceType } = audienceInfo.query;
         stateSettings.platforms = deviceType.$in || [];
       }
       if (audienceInfo.filters) {
@@ -97,8 +97,8 @@ export default class PushAudienceDialog extends React.Component {
       this.setState({ errorMessage: 'You first need to create the Installation class before adding conditions to an audience.' });
       return;
     }
-    let available = Filters.availableFilters(this.props.schema, this.state.filters);
-    let field = Object.keys(available)[0];
+    const available = Filters.availableFilters(this.props.schema, this.state.filters);
+    const field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
       filters: filters.push(new Map({ field: field, constraint: available[field][0] }))
     }), this.fetchAudienceSize.bind(this));
@@ -119,13 +119,13 @@ export default class PushAudienceDialog extends React.Component {
     }
 
     let query = {};
-    let parseQuery = queryFromFilters('_Installation', this.state.filters);
+    const parseQuery = queryFromFilters('_Installation', this.state.filters);
 
     if (parseQuery && parseQuery.toJSON()) {
       query = parseQuery.toJSON().where || {};
     }
     query.deviceType = { $in: this.state.platforms };
-    let {xhr, promise} = this.context.fetchPushSubscriberCount(PushConstants.NEW_SEGMENT_ID, query);
+    const {xhr, promise} = this.context.fetchPushSubscriberCount(PushConstants.NEW_SEGMENT_ID, query);
     if (this.xhrHandle) { //cancel existing xhr - prevent from stacking
       this.xhrHandle.abort();
     }
@@ -151,11 +151,11 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   render() {
-    let options = [];
-    let availableDevices = this.props.availableDevices;
+    const options = [];
+    const availableDevices = this.props.availableDevices;
     // TODO: handle empty case when 0 devices - should display link to device creation.
     // TODO: handle misconfigured device link
-    for (let index in availableDevices) {
+    for (const index in availableDevices) {
       options.push(
         <MultiSelectOption
           key={`device${index}`}
@@ -164,7 +164,7 @@ export default class PushAudienceDialog extends React.Component {
         </MultiSelectOption>
       );
     }
-    let platformSelect = (
+    const platformSelect = (
       <MultiSelect
         endDelineator='or'
         fixed={true}
@@ -174,9 +174,9 @@ export default class PushAudienceDialog extends React.Component {
         {options}
       </MultiSelect>
     );
-    let nonEmptyConditions = this.state.filters.size !== 0 ? true : false;
-    let audienceSize = PushUtils.formatCountDetails(this.state.audienceSize, this.state.approximate);
-    let customFooter = (
+    const nonEmptyConditions = this.state.filters.size !== 0 ? true : false;
+    const audienceSize = PushUtils.formatCountDetails(this.state.audienceSize, this.state.approximate);
+    const customFooter = (
       <div className={styles.footer}>
         {AUDIENCE_SIZE_FETCHING_ENABLED ? <div
           className={styles.audienceSize}>
@@ -203,7 +203,7 @@ export default class PushAudienceDialog extends React.Component {
       </div>
     );
 
-    let futureUseSegment = [];
+    const futureUseSegment = [];
 
     if (!this.props.disableNewSegment) {
       if (PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES) {
@@ -246,18 +246,18 @@ export default class PushAudienceDialog extends React.Component {
           label={<Label text='Which platforms should be included?' />}
           input={platformSelect} />
         <div className={styles.filter}>
-        <Filter
-          schema={this.props.schema}
-          filters={this.state.filters}
-          onChange={(filters) =>
+          <Filter
+            schema={this.props.schema}
+            filters={this.state.filters}
+            onChange={(filters) =>
             {
               this.setState(
                 { filters },
                 this.fetchAudienceSize.bind(this)
               );
             }
-          }
-          renderRow={(props) => <InstallationCondition {...props} />} />
+            }
+            renderRow={(props) => <InstallationCondition {...props} />} />
         </div>
         <div className={[styles.addConditions, nonEmptyConditions ? styles.nonEmptyConditions : ''].join(' ')}>
           <Button value={nonEmptyConditions ? 'Add another condition' : 'Add a condition'} onClick={this.handleAddCondition.bind(this)}/>

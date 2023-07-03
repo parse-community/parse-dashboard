@@ -37,8 +37,8 @@ export default class SecuritySettings extends DashboardView {
   }
 
   renderForm({ fields, setField}) {
-    let currentApp = this.context;
-    let resetDialog = <FormModal
+    const currentApp = this.context;
+    const resetDialog = <FormModal
       title='Reset Master Key'
       icon='keys-solid'
       iconSize={30}
@@ -66,7 +66,7 @@ export default class SecuritySettings extends DashboardView {
             placeholder='Password' />
         } /> : null}
     </FormModal>
-    let permissions = this.props.initialFields ?
+    const permissions = this.props.initialFields ?
       <Fieldset legend='App Permissions' description='Helpful in development, but turn this off when you launch.'>
         <Field
           labelWidth={60}

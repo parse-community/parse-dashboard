@@ -8,7 +8,7 @@
 import ParseApp           from 'lib/ParseApp';
 import { post, del } from 'lib/AJAX';
 
-let appsStore = [];
+const appsStore = [];
 
 const AppsManager = {
   addApp(raw) {
@@ -23,7 +23,7 @@ const AppsManager = {
   },
 
   findAppBySlugOrName(slugOrName) {
-    let apps = this.apps();
+    const apps = this.apps();
     for (let i = apps.length; i--;) {
       if (apps[i].slug === slugOrName || apps[i].name === slugOrName) {
         return apps[i];
@@ -33,14 +33,14 @@ const AppsManager = {
   },
 
   create(name, connectionURL) {
-    let payload = {
+    const payload = {
       parse_app: { name }
     };
     if (connectionURL) {
       payload.parse_app.connectionString = connectionURL;
     }
     return post('/apps', payload).then((response) => {
-      let newApp = new ParseApp(response.app);
+      const newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;
     });
@@ -77,7 +77,7 @@ const AppsManager = {
   // indicating which parts of the app to clone.
   cloneApp(slug, name, options) {
     //Clone nothing by default
-    let optionsForRuby = {
+    const optionsForRuby = {
       cloud_code: false,
       background_jobs: false,
       config: false,
@@ -90,8 +90,8 @@ const AppsManager = {
         optionsForRuby[option] = true;
       }
     });
-    let path = '/apps/' + slug + '/clone_app';
-    let request = post(path, {
+    const path = '/apps/' + slug + '/clone_app';
+    const request = post(path, {
       app_name: name,
       options: optionsForRuby,
     });
@@ -105,7 +105,7 @@ const AppsManager = {
   },
 
   transferApp(slug, newOwner, password) {
-    let payload = {
+    const payload = {
       new_owner_email: newOwner,
     }
     if (password) {
@@ -114,7 +114,7 @@ const AppsManager = {
       payload.password_confirm_transfer = password;
     }
 
-    let promise = post('/apps/' + slug + '/transfer', payload);
+    const promise = post('/apps/' + slug + '/transfer', payload);
     promise.then(() => {
       //TODO modify appsStore to reflect transfer
     });

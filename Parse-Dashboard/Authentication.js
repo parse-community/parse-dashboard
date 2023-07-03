@@ -67,16 +67,16 @@ function initialize(app, options) {
 
   app.post('/login',
     csrf(),
-      (req,res,next) => {
-        let redirect = 'apps';
-        if (req.body.redirect) {
-          redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
-        }
-        return passport.authenticate('local', {
-          successRedirect: `${self.mountPath}${redirect}`,
-          failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
-          failureFlash : true
-        })(req, res, next)
+    (req,res,next) => {
+      let redirect = 'apps';
+      if (req.body.redirect) {
+        redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
+      }
+      return passport.authenticate('local', {
+        successRedirect: `${self.mountPath}${redirect}`,
+        failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
+        failureFlash : true
+      })(req, res, next)
     },
   );
 
@@ -100,13 +100,13 @@ function authenticate(userToTest, usernameOnly) {
   let otpValid = true;
 
   //they provided auth
-  let isAuthenticated = userToTest &&
+  const isAuthenticated = userToTest &&
     //there are configured users
     this.validUsers &&
     //the provided auth matches one of the users
     this.validUsers.find(user => {
       let isAuthenticated = false;
-      let usernameMatches = userToTest.name == user.user;
+      const usernameMatches = userToTest.name == user.user;
       if (usernameMatches && user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
           otpMissingLength = user.mfaDigits || 6;
@@ -126,7 +126,7 @@ function authenticate(userToTest, usernameOnly) {
           }
         }
       }
-      let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
+      const passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
       if (usernameMatches && (usernameOnly || passwordMatches)) {
         isAuthenticated = true;
         matchingUsername = user.user;

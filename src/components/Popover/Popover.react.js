@@ -33,7 +33,7 @@ export default class Popover extends React.Component {
       document.body.appendChild(this._popoverWrapper);
     }
 
-    let wrapperStyle = this.props.fixed
+    const wrapperStyle = this.props.fixed
       ? styles.fixed_wrapper
       : styles.popover_wrapper;
 

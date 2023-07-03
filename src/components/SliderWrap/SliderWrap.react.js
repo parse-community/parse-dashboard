@@ -36,9 +36,9 @@ export default class SliderWrap extends React.Component {
   }
 
   render() {
-    let style = {};
-    let metric = this._getMetric();
-    let node = this.metricsRef.current;
+    const style = {};
+    const metric = this._getMetric();
+    const node = this.metricsRef.current;
     if (!this.props.expanded || !node) {
       if (metric === 'width' || metric === 'both') {
         style.width = '0px';

@@ -37,7 +37,7 @@ SvgPrepPlugin.prototype.apply = function(compiler) {
         }
 
         // TODO: Keep track of file hashes, so we can avoid recompiling when none have changed
-        let files = fs
+        const files = fs
           .readdirSync(this.options.source)
           .filter((name) => name.endsWith('.svg'))
           .map((name) => path.join(this.options.source, name));

@@ -54,37 +54,37 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
     {items.map((item, index) => {
       if (item.items) {
         return (
-            <li
-              key={`menu-section-${level}-${index}`}
-              className={styles.item}
-              onMouseEnter={() => {
-                const newPath = path.slice(0, level + 1);
-                newPath.push(index);
-                setPath(newPath);
-              }}
-            >
-              {item.text}
-            </li>
-          );
-      }
-      return (
           <li
             key={`menu-section-${level}-${index}`}
-            className={styles.option}
-            onClick={() => {
-              item.callback && item.callback();
-              hide();
+            className={styles.item}
+            onMouseEnter={() => {
+              const newPath = path.slice(0, level + 1);
+              newPath.push(index);
+              setPath(newPath);
             }}
           >
             {item.text}
-            {item.subtext && <span> - {item.subtext}</span>}
           </li>
         );
+      }
+      return (
+        <li
+          key={`menu-section-${level}-${index}`}
+          className={styles.option}
+          onClick={() => {
+            item.callback && item.callback();
+            hide();
+          }}
+        >
+          {item.text}
+          {item.subtext && <span> - {item.subtext}</span>}
+        </li>
+      );
     })}
   </ul>);
 }
 
-let ContextMenu = ({ x, y, items }) => {
+const ContextMenu = ({ x, y, items }) => {
 
   const [path, setPath] = useState([0]);
   const [visible, setVisible] = useState(true);

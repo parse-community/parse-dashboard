@@ -111,7 +111,7 @@ export default class ObjectPickerDialog extends React.Component {
 
     query.limit(MAX_ROWS_FETCHED);
 
-    let promise = query.find({ useMasterKey });
+    const promise = query.find({ useMasterKey });
 
     const data = await promise;
     return data;
@@ -128,12 +128,12 @@ export default class ObjectPickerDialog extends React.Component {
     if (!this.state.data) {
       return null;
     }
-    let className = this.props.className;
-    let source = this.state.relation || className;
+    const className = this.props.className;
+    const source = this.state.relation || className;
     let query = queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
-      let equalityQuery = queryFromFilters(source, this.state.filters);
+      const equalityQuery = queryFromFilters(source, this.state.filters);
       let field = this.state.ordering;
       let ascending = true;
       let comp = this.state.data[this.state.data.length - 1].get(field);
@@ -383,25 +383,25 @@ export default class ObjectPickerDialog extends React.Component {
               })}
             </div>
           </div>
-            <DataBrowser
-              app={this.context}
-              count={count}
-              schema={schema}
-              filters={filters}
-              onFilterChange={this.updateFilters}
-              onRefresh={this.refresh}
-              columns={columns}
-              className={className}
-              fetchNextPage={this.fetchNextPage}
-              maxFetched={lastMax}
-              selectRow={this.selectRow}
-              selection={selection}
-              data={data}
-              ordering={ordering}
-              disableKeyControls={disableDataBrowserKeyControls}
-              disableSecurityDialog={true}
-              updateOrdering={this.updateOrdering}
-            />
+          <DataBrowser
+            app={this.context}
+            count={count}
+            schema={schema}
+            filters={filters}
+            onFilterChange={this.updateFilters}
+            onRefresh={this.refresh}
+            columns={columns}
+            className={className}
+            fetchNextPage={this.fetchNextPage}
+            maxFetched={lastMax}
+            selectRow={this.selectRow}
+            selection={selection}
+            data={data}
+            ordering={ordering}
+            disableKeyControls={disableDataBrowserKeyControls}
+            disableSecurityDialog={true}
+            updateOrdering={this.updateOrdering}
+          />
         </div>
       </Modal>
     );

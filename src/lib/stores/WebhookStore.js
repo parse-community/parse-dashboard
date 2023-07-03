@@ -21,13 +21,13 @@ function WebhookStore(state, action) {
   action.app.setParseKeys();
   switch (action.type) {
     case ActionTypes.FETCH:
-      let functionsPromise = Parse._request(
+      const functionsPromise = Parse._request(
         'GET',
         'hooks/functions',
         {},
         { useMasterKey: true }
       );
-      let triggersPromise = Parse._request(
+      const triggersPromise = Parse._request(
         'GET',
         'hooks/triggers',
         {},
@@ -35,12 +35,12 @@ function WebhookStore(state, action) {
       );
       return Promise.all([functionsPromise, triggersPromise]).then((
         [functions,
-        triggers]
+          triggers]
       ) => {
         return Map({ lastFetch: new Date(), webhooks: List(functions.concat(triggers))});
       });
     case ActionTypes.CREATE:
-      let addHookToStore = hook => state.set('webhooks', state.get('webhooks').push(hook));
+      const addHookToStore = hook => state.set('webhooks', state.get('webhooks').push(hook));
       if (action.functionName !== undefined) {
         return Parse._request(
           'POST',
@@ -73,7 +73,7 @@ function WebhookStore(state, action) {
           },
           { useMasterKey: true }
         ).then((hook) => {
-          let index = state.get('webhooks').findIndex(existingHook => existingHook.functionName === hook.functionName);
+          const index = state.get('webhooks').findIndex(existingHook => existingHook.functionName === hook.functionName);
           return state.setIn(['webhooks', index], hook);
         })
       } else {
@@ -85,7 +85,7 @@ function WebhookStore(state, action) {
           },
           { useMasterKey: true }
         ).then(hook => {
-          let index = state.get('webhooks').findIndex(existingHook =>
+          const index = state.get('webhooks').findIndex(existingHook =>
             existingHook.className === hook.className && existingHook.triggerName === hook.triggerName
           );
           return state.setIn(['webhooks', index], hook);

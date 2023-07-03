@@ -61,7 +61,7 @@ export default class EditRowDialog extends React.Component {
         // "Parse._encoding" is responsible to convert Parse data into raw data.
         // Since array and object are generic types, we want to render them the way
         // they were stored in the database.
-        let val = encode(currentObject[name], undefined, true);
+        const val = encode(currentObject[name], undefined, true);
         const stringifyValue = JSON.stringify(val, null, 4);
         currentObject[name] = stringifyValue;
         const rows = stringifyValue ? stringifyValue.split('\n').length : 1;
@@ -184,9 +184,9 @@ export default class EditRowDialog extends React.Component {
         const pointerId = newValue[0];
         newValue = pointerId
           ? Parse.Object.fromJSON({
-              className: targetClass,
-              objectId: pointerId
-            })
+            className: targetClass,
+            objectId: pointerId
+          })
           : undefined;
         this.toggleObjectPicker(name, false);
       }
@@ -268,7 +268,7 @@ export default class EditRowDialog extends React.Component {
             'restricted'
           ].indexOf(name) >= 0);
 
-      let val = currentObject[name];
+      const val = currentObject[name];
       switch (type) {
         case 'String':
           inputComponent = (
@@ -351,8 +351,8 @@ export default class EditRowDialog extends React.Component {
           );
           break;
         case 'File':
-          let file = selectedObject[name];
-          let fileName = file ? file.url() ? getFileName(file) : file.name() : '';
+          const file = selectedObject[name];
+          const fileName = file ? file.url() ? getFileName(file) : file.name() : '';
           inputComponent = (
             <div className={[styles.editRowDialogFileCell]}>
               {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
@@ -375,17 +375,17 @@ export default class EditRowDialog extends React.Component {
         case 'Pointer':
           const pointerId = selectedObject[name] && selectedObject[name].id;
           inputComponent = openObjectPickers[name] ? (
-              <ObjectPickerDialog
-                schema={schema}
-                column={column}
-                className={targetClass}
-                pointerId={pointerId}
-                onConfirm={newValue =>
-                  this.handleChange(newValue, name, type, targetClass)
-                }
-                onCancel={() => this.toggleObjectPicker(name, false)}
-                useMasterKey={useMasterKey}
-              />
+            <ObjectPickerDialog
+              schema={schema}
+              column={column}
+              className={targetClass}
+              pointerId={pointerId}
+              onConfirm={newValue =>
+                this.handleChange(newValue, name, type, targetClass)
+              }
+              onCancel={() => this.toggleObjectPicker(name, false)}
+              useMasterKey={useMasterKey}
+            />
           ) : (
             <div
               style={{
@@ -415,17 +415,17 @@ export default class EditRowDialog extends React.Component {
           relation.targetClassName = targetClass;
 
           inputComponent = openObjectPickers[name] ? (
-              <ObjectPickerDialog
-                schema={schema}
-                column={column}
-                className={targetClass}
-                relation={relation}
-                onConfirm={(newValue, toDelete) =>
-                  this.handleChange(newValue, name, type, targetClass, toDelete)
-                }
-                onCancel={() => this.toggleObjectPicker(name, false)}
-                useMasterKey={useMasterKey}
-              />
+            <ObjectPickerDialog
+              schema={schema}
+              column={column}
+              className={targetClass}
+              relation={relation}
+              onConfirm={(newValue, toDelete) =>
+                this.handleChange(newValue, name, type, targetClass, toDelete)
+              }
+              onCancel={() => this.toggleObjectPicker(name, false)}
+              useMasterKey={useMasterKey}
+            />
           ) : (
             selectedObject.id && (
               <div

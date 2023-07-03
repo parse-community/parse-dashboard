@@ -14,22 +14,22 @@ import { DndProvider }     from 'react-dnd'
 
 export default class DataBrowserHeaderBar extends React.Component {
   render() {
-    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected, isDataLoaded } = this.props;
-    let elements = [
+    const { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected, isDataLoaded } = this.props;
+    const elements = [
       <div key='check' className={[styles.wrap, styles.check].join(' ')}>
         {readonly
           ? null
           : <input
-              type='checkbox'
-              checked={selected}
-              onChange={(e) => selectAll(e.target.checked)} />
+            type='checkbox'
+            checked={selected}
+            onChange={(e) => selectAll(e.target.checked)} />
         }
       </div>
     ];
 
     headers.forEach(({ width, name, type, targetClass, order, visible, preventSort }, i) => {
       if (!visible) return;
-      let wrapStyle = { width };
+      const wrapStyle = { width };
       if (i % 2) {
         wrapStyle.background = '#726F85';
       } else {
@@ -66,7 +66,7 @@ export default class DataBrowserHeaderBar extends React.Component {
     });
 
     if (onAddColumn) {
-      let finalStyle = {};
+      const finalStyle = {};
       if (headers.length % 2) {
         finalStyle.background = 'rgba(224,224,234,0.10)';
       }

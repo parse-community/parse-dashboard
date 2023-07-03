@@ -21,7 +21,7 @@ function AppData() {
   }
 
   // Find by name to catch edge cases around escaping apostrophes in URLs
-  let current = AppsManager.findAppBySlugOrName(params.appId);
+  const current = AppsManager.findAppBySlugOrName(params.appId);
 
   if (current) {
     current.setParseKeys();

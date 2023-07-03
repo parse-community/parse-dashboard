@@ -90,8 +90,8 @@ class PushAudiencesIndex extends DashboardView {
   }
 
   tableData() {
-    let schema = formatAudienceSchema(this.props.schema.data.get('classes')) || {};
-    let pushAudienceData = this.props.pushaudiences.data;
+    const schema = formatAudienceSchema(this.props.schema.data.get('classes')) || {};
+    const pushAudienceData = this.props.pushaudiences.data;
     let audiences = undefined;
 
     if (pushAudienceData) {
@@ -178,7 +178,7 @@ class PushAudiencesIndex extends DashboardView {
   createAudience(modalState, { platforms, name, formattedFilters }){
     let query = {};
 
-    let parseQuery = queryFromFilters('_Installation', formattedFilters);
+    const parseQuery = queryFromFilters('_Installation', formattedFilters);
 
     if (parseQuery && parseQuery.toJSON()){
       query = parseQuery.toJSON().where || {};
@@ -197,12 +197,12 @@ class PushAudiencesIndex extends DashboardView {
   }
 
   renderContent() {
-    let toolbar = this.renderToolbar();
-    let data = this.tableData();
+    const toolbar = this.renderToolbar();
+    const data = this.tableData();
     let content = null;
     let headers = null;
 
-    let createAudienceModal = this.state.showCreateAudienceModal ? (
+    const createAudienceModal = this.state.showCreateAudienceModal ? (
       <PushAudienceDialog
         availableDevices={this.state.availableDevices}
         schema={this.schema}
@@ -214,16 +214,16 @@ class PushAudiencesIndex extends DashboardView {
             showCreateAudienceModal: false
           });
         }}/>
-      ) :
+    ) :
       null;
 
-    let deleteSubtitle = (
+    const deleteSubtitle = (
       <div>
         Are you sure you want to delete <strong>{this.state.deleteionAudienceName}</strong>?
       </div>
     );
 
-    let deleteAudienceModal = <FormModal
+    const deleteAudienceModal = <FormModal
       icon='warn-outline'
       title='Delete Audience'
       subtitle={deleteSubtitle}
@@ -261,7 +261,7 @@ class PushAudiencesIndex extends DashboardView {
         headers = this.renderHeaders();
       }
     }
-    let extras = this.renderExtras ? this.renderExtras() : null;
+    const extras = this.renderExtras ? this.renderExtras() : null;
     return (
       <div>
         <LoaderContainer loading={this.state.loading}>

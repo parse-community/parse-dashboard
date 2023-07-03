@@ -62,10 +62,10 @@ class Empty extends React.Component {
 }
 
 const AccountSettingsPage = () => (
-    <AccountView section='Account Settings'>
-      <AccountOverview />
-    </AccountView>
-  );
+  <AccountView section='Account Settings'>
+    <AccountOverview />
+  </AccountView>
+);
 
 const PARSE_DOT_COM_SERVER_INFO = {
   features: {
@@ -119,7 +119,7 @@ export default class Dashboard extends React.Component {
   componentDidMount() {
     get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
-      let appInfoPromises = apps.map(app => {
+      const appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them

@@ -73,7 +73,7 @@ export default class AddColumnDialog extends React.Component {
 
   async handleFile(file) {
     if (file) {
-      let base64 = await this.getBase64(file);
+      const base64 = await this.getBase64(file);
       const parseFile = new Parse.File(file.name, { base64 });
       this.setState({
         uploadingFile: true
@@ -185,7 +185,7 @@ export default class AddColumnDialog extends React.Component {
 
 
   render() {
-    let typeDropdown = (
+    const typeDropdown = (
       <Dropdown
         value={this.state.type}
         onChange={(type) => this.setState({ type: type, defaultValue: undefined, required: false })}>

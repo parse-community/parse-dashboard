@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/MoneyInput/MoneyInput.scss';
 
-let MoneyInput = ({ enabled = true, value, onChange = () => {}}) => {
+const MoneyInput = ({ enabled = true, value, onChange = () => {}}) => {
   return <input
     type={'text'}
     disabled={!enabled}

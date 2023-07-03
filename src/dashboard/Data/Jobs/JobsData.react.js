@@ -35,7 +35,7 @@ export default class JobsData extends React.Component {
   fetchJobs(app) {
     app.getAvailableJobs().then(
       ({ jobs, in_use }) => {
-        let available = [];
+        const available = [];
         for (let i = 0; i < jobs.length; i++) {
           if (in_use.indexOf(jobs[i]) < 0) {
             available.push(jobs[i]);

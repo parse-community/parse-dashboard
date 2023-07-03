@@ -54,8 +54,8 @@ const dataBrowserHeaderSource = {
 }))
 class DataBrowserHeader extends React.Component {
   render() {
-    let { connectDragSource, connectDropTarget, name, type, targetClass, order, style, isDragging, isOver } = this.props;
-    let classes = [styles.header, baseStyles.unselectable];
+    const { connectDragSource, connectDropTarget, name, type, targetClass, order, style, isDragging, isOver } = this.props;
+    const classes = [styles.header, baseStyles.unselectable];
     if (order) {
       classes.push(styles[order]);
     }

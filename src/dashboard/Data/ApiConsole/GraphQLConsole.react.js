@@ -43,17 +43,17 @@ export default class GraphQLConsole extends Component {
           fetcher={async (graphQLParams, {headers}) => {
             const data = await fetch(
               graphQLServerURL,
-            {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                ...headers
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  ...headers
+                },
+                body: JSON.stringify(graphQLParams),
               },
-              body: JSON.stringify(graphQLParams),
-            },
-          );
-          return data.json().catch(() => data.text());
+            );
+            return data.json().catch(() => data.text());
           }}
         />
       );

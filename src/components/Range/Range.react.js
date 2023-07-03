@@ -30,15 +30,15 @@ export default class Range extends React.Component {
   }
 
   buildGradient() {
-    let fillLevel = this.props.value / (this.props.max - this.props.min) * 100 + '%';
-    let fillColor = this.props.color || DEFAULT_COLOR;
+    const fillLevel = this.props.value / (this.props.max - this.props.min) * 100 + '%';
+    const fillColor = this.props.color || DEFAULT_COLOR;
     return `linear-gradient(90deg, ${fillColor}, ${fillColor} ${fillLevel}, #e0e0ea ${fillLevel}, #e0e0ea)`;
   }
 
   render() {
     let trackerStyle = {};
     if (this.state.width) {
-      let left = this.props.value / (this.props.max - this.props.min) * (this.state.width - 24) + 11;
+      const left = this.props.value / (this.props.max - this.props.min) * (this.state.width - 24) + 11;
       trackerStyle = { left };
     }
     if (this.props.color) {
@@ -46,7 +46,7 @@ export default class Range extends React.Component {
       trackerStyle.borderTopColor = this.props.color;
     }
     let tracker = null;
-    let unitsText = (typeof this.props.units === 'function') ?
+    const unitsText = (typeof this.props.units === 'function') ?
       this.props.units(this.props.value) :
       this.props.value + (this.props.units || '');
     if (this.props.track && this.state.width) {
@@ -58,7 +58,7 @@ export default class Range extends React.Component {
         </div>
       );
     }
-    let wrapperStyle = {};
+    const wrapperStyle = {};
     if (this.props.width) {
       wrapperStyle.width = this.props.width;
     }

@@ -22,14 +22,14 @@ class DragDemo extends React.Component {
 
   handleDrag(dx, dy) {
     this.setState(({ x, y }) => {
-      let newX = Math.max(0, Math.min(x + dx, 480));
-      let newY = Math.max(0, Math.min(y + dy, 480));
+      const newX = Math.max(0, Math.min(x + dx, 480));
+      const newY = Math.max(0, Math.min(y + dy, 480));
       return { x: newX, y: newY };
     });
   }
 
   render() {
-    let style = {
+    const style = {
       width: 20,
       height: 20,
       background: '#5298fc',
@@ -53,8 +53,8 @@ class DragDemo extends React.Component {
   }
 }
 
-let lightBg = { background: 'rgba(224,224,234,0.10)' };
-let handleStyle = {
+const lightBg = { background: 'rgba(224,224,234,0.10)' };
+const handleStyle = {
   position: 'relative',
   display: 'inline-block',
   width: 4,

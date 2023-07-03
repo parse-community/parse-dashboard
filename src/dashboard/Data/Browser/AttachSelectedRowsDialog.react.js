@@ -78,49 +78,49 @@ export default class AttachSelectedRowsDialog extends React.Component {
     } = this.props;
     let targetRelationSelector;
     let targetEntityIdInsert;
-      if (this.state.touchableColumns.length) {
-        targetRelationSelector = (
-          <Field
-            label={
-              <Label
-                text="Target Relation"
-                description="Target class's relation column"
-              />
-            }
-            input={
-              <Dropdown
-                value={this.state.currentColumn}
-                onChange={this.handleColumnChange}
-              >
-                {this.state.touchableColumns.map(column => (
-                  <Option key={column} value={column}>
-                    {column}
-                  </Option>
-                ))}
-              </Dropdown>
-            }
-          />
-        );
-      }
-      if (this.state.currentColumn) {
-        targetEntityIdInsert = (
-          <Field
-            label={
-              <Label
-                text="Target objectId"
-                description={`${this.state.currentClass} objectId`}
-              />
-            }
-            input={
-              <TextInput
-                placeholder="ox0QZFl7eg, qs81Q72lTL, etc..."
-                value={this.state.targetObjectId}
-                onChange={this.handleTargetObjectIdChange}
-              />
-            }
-          />
-        );
-      }
+    if (this.state.touchableColumns.length) {
+      targetRelationSelector = (
+        <Field
+          label={
+            <Label
+              text="Target Relation"
+              description="Target class's relation column"
+            />
+          }
+          input={
+            <Dropdown
+              value={this.state.currentColumn}
+              onChange={this.handleColumnChange}
+            >
+              {this.state.touchableColumns.map(column => (
+                <Option key={column} value={column}>
+                  {column}
+                </Option>
+              ))}
+            </Dropdown>
+          }
+        />
+      );
+    }
+    if (this.state.currentColumn) {
+      targetEntityIdInsert = (
+        <Field
+          label={
+            <Label
+              text="Target objectId"
+              description={`${this.state.currentClass} objectId`}
+            />
+          }
+          input={
+            <TextInput
+              placeholder="ox0QZFl7eg, qs81Q72lTL, etc..."
+              value={this.state.targetObjectId}
+              onChange={this.handleTargetObjectIdChange}
+            />
+          }
+        />
+      );
+    }
     return (
       <FormModal
         open

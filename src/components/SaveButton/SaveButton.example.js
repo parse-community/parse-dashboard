@@ -23,7 +23,7 @@ class SaveDemo extends React.Component {
   handleClick() {
     this.setState({ saveState: SaveButton.States.SAVING });
     setTimeout(() => {
-      let next = this.state.nextState === SaveButton.States.SUCCEEDED ?
+      const next = this.state.nextState === SaveButton.States.SUCCEEDED ?
         SaveButton.States.FAILED :
         SaveButton.States.SUCCEEDED;
       this.setState({ saveState: this.state.nextState, nextState: next });

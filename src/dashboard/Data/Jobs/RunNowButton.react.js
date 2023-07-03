@@ -38,7 +38,7 @@ export default class RunNowButton extends React.Component {
   }
 
   render() {
-    let { ...other } = this.props;
+    const { ...other } = this.props;
     let value = 'Run now';
     if (this.state.result === 'error') {
       value = 'Failed.';

@@ -41,20 +41,20 @@ import { withRouter } from 'lib/withRouter';
 
 const DEFAULT_SETTINGS_LABEL_WIDTH = 62;
 
-let numJobsFromRequestLimit = (limit) => Math.floor((limit-10)/20);
+const numJobsFromRequestLimit = (limit) => Math.floor((limit - 10) / 20);
 
-let CurrentPlan = ({requestLimit}) => {
-  let costString = requestLimit === 30 ?
+const CurrentPlan = ({requestLimit}) => {
+  const costString = requestLimit === 30 ?
     'Free' :
-    '$' + ((requestLimit-30) * 10).toString();
+    '$' + ((requestLimit - 30) * 10).toString();
   return (
     <div>
       <div className={styles.cost}>{costString}</div>
       <div className={styles.features}>{requestLimit.toString() + ' requests per second'}<br/>{numJobsFromRequestLimit(requestLimit).toString() + ' background job' + (numJobsFromRequestLimit(requestLimit) > 1 ? 's' : '')}</div>
     </div>
-)};
+  )};
 
-let CurrentPlanFields = ({
+const CurrentPlanFields = ({
   visible,
   requestLimit,
   setRequestLimit,
@@ -74,7 +74,7 @@ let CurrentPlanFields = ({
       value={requestLimit}
       track={true}
       units={value => {
-        let numJobs = numJobsFromRequestLimit(value);
+        const numJobs = numJobsFromRequestLimit(value);
         return value + 'req/s & ' + numJobs + ' job' + (numJobs == 1 ? '' : 's')
       }}
       width={220}
@@ -90,7 +90,7 @@ let CurrentPlanFields = ({
     input={<CurrentPlan requestLimit={requestLimit} />} />
 </Fieldset> : <noscript/>;
 
-let AppInformationFields = ({
+const AppInformationFields = ({
   appName,
   setAppName,
   inProduction,
@@ -169,7 +169,7 @@ let AppInformationFields = ({
   </div> : null }
 </Fieldset>;
 
-let CollaboratorsFields = ({
+const CollaboratorsFields = ({
   collaborators,
   ownerEmail,
   viewerEmail,
@@ -184,7 +184,7 @@ let CollaboratorsFields = ({
   onAdd={addCollaborator}
   onRemove={removeCollaborator} />;
 
-let ManageAppFields = ({
+const ManageAppFields = ({
   isCollaborator,
   hasCollaborators,
   mongoURL,
@@ -264,77 +264,77 @@ let ManageAppFields = ({
   }
   return (
     <Fieldset
-    legend='App Management'
-    description='These options will affect your entire app.' >
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Clean up app'
-        description={<span>This will delete any files that <br/>are not referenced by any objects.</span>} />}
-      input={<FormButton
-        onClick={cleanUpFiles}
-        value='Clean Up Files'/>} />
-    {cleanUpFilesMessage ? <FormNote
-      show={true}
-      color={cleanUpMessageColor}>
-      <div>{cleanUpFilesMessage}</div>
-    </FormNote> : null}
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Export app data'
-        description={'We firmly believe in data portability.'} />}
-      //TODO: Add export progress view when designs are ready.
-      input={<FormButton
-        onClick={exportData}
-        value='Export Data'/>} />
-    {exportDataMessage ? <FormNote
-      show={true}
-      color={exportMessageColor}>
-      <div>{exportDataMessage}</div>
-    </FormNote> : null}
-    {migrateAppField}
-    <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Clone app'
-        description={<span>Choose what you want to carry over <br/>and create a copy of this Parse app.</span>} />}
-      input={<FormButton
-        value='Clone this app'
-        onClick={cloneApp} />
-      } />
-    {cloneAppMessage ? <FormNote
-      show={true}
-      color='green'>
-      <div>{cloneAppMessage} Check out the progress on your <Link to='/apps'>apps page</Link>!</div>
-    </FormNote> : null}
-    {!isCollaborator ? <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Transfer app'
-        description={<span>Give an existing collaborator <br/>ownership over this app.</span>} />
-      }
-      input={<FormButton
-        value='Transfer this app'
-        color='red'
-        disabled={!hasCollaborators}
-        onClick={transferApp} />
-      } /> : null}
-    {transferAppMessage ? <FormNote
-      color='green'>
-      {transferAppMessage}
-    </FormNote> : null}
-    {!isCollaborator ? <Field
-      labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
-      label={<Label
-        text='Delete app'
-        description={<span>Completely remove any trace <br/>of this app's existence.</span>} />}
-      input={<FormButton
-        color='red'
-        value='Delete this app'
-        onClick={deleteApp} />
-      } /> : null}
-  </Fieldset>);
+      legend='App Management'
+      description='These options will affect your entire app.' >
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Clean up app'
+          description={<span>This will delete any files that <br/>are not referenced by any objects.</span>} />}
+        input={<FormButton
+          onClick={cleanUpFiles}
+          value='Clean Up Files'/>} />
+      {cleanUpFilesMessage ? <FormNote
+        show={true}
+        color={cleanUpMessageColor}>
+        <div>{cleanUpFilesMessage}</div>
+      </FormNote> : null}
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Export app data'
+          description={'We firmly believe in data portability.'} />}
+        //TODO: Add export progress view when designs are ready.
+        input={<FormButton
+          onClick={exportData}
+          value='Export Data'/>} />
+      {exportDataMessage ? <FormNote
+        show={true}
+        color={exportMessageColor}>
+        <div>{exportDataMessage}</div>
+      </FormNote> : null}
+      {migrateAppField}
+      <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Clone app'
+          description={<span>Choose what you want to carry over <br/>and create a copy of this Parse app.</span>} />}
+        input={<FormButton
+          value='Clone this app'
+          onClick={cloneApp} />
+        } />
+      {cloneAppMessage ? <FormNote
+        show={true}
+        color='green'>
+        <div>{cloneAppMessage} Check out the progress on your <Link to='/apps'>apps page</Link>!</div>
+      </FormNote> : null}
+      {!isCollaborator ? <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Transfer app'
+          description={<span>Give an existing collaborator <br/>ownership over this app.</span>} />
+        }
+        input={<FormButton
+          value='Transfer this app'
+          color='red'
+          disabled={!hasCollaborators}
+          onClick={transferApp} />
+        } /> : null}
+      {transferAppMessage ? <FormNote
+        color='green'>
+        {transferAppMessage}
+      </FormNote> : null}
+      {!isCollaborator ? <Field
+        labelWidth={DEFAULT_SETTINGS_LABEL_WIDTH}
+        label={<Label
+          text='Delete app'
+          description={<span>Completely remove any trace <br/>of this app's existence.</span>} />}
+        input={<FormButton
+          color='red'
+          value='Delete this app'
+          onClick={deleteApp} />
+        } /> : null}
+    </Fieldset>);
 }
 
 @withRouter
@@ -381,7 +381,7 @@ class GeneralSettings extends DashboardView {
     if (!this.props.initialFields) {
       return <Toolbar section='Settings' subsection='General' />
     }
-    let passwordField = (
+    const passwordField = (
       <Field
         labelWidth={60}
         label={<Label
@@ -397,14 +397,14 @@ class GeneralSettings extends DashboardView {
           }} />} />
     )
 
-    let closeModalWithConnectionString = () => this.setState({
+    const closeModalWithConnectionString = () => this.setState({
       showChangeConnectionStringModal: false,
       showMigrateAppModal: false,
       showMongoConnectionValidationErrors: false,
       migrationWarnings: [],
     });
 
-    let migrateAppModal = <FormModal
+    const migrateAppModal = <FormModal
       title='Migrate app'
       subtitle='Begin migrating data to your own database.'
       icon='gear-solid'
@@ -416,7 +416,7 @@ class GeneralSettings extends DashboardView {
       showErrors={this.state.showMongoConnectionValidationErrors}
       width={900}
       onSubmit={() => {
-        let promise = validateAndSubmitConnectionString(
+        const promise = validateAndSubmitConnectionString(
           this.state.migrationMongoURL,
           this.state.migrationWarnings,
           warnings => this.setState({migrationWarnings: warnings}),
@@ -449,12 +449,12 @@ class GeneralSettings extends DashboardView {
       {this.state.migrationWarnings.map(warning => <FormNote key={warning} show={true} color='orange'>{warning}</FormNote>)}
     </FormModal>;
 
-    let changeConnectionStringModal = <FormModal
+    const changeConnectionStringModal = <FormModal
       title='Change Connection String'
       subtitle={'Immediately switch your connection string for your app\'s database.'}
       open={this.state.showChangeConnectionStringModal}
       onSubmit={() => {
-        let promise = validateAndSubmitConnectionString(
+        const promise = validateAndSubmitConnectionString(
           this.state.newConnectionString,
           this.state.migrationWarnings,
           warnings => this.setState({migrationWarnings: warnings}),
@@ -489,7 +489,7 @@ class GeneralSettings extends DashboardView {
       {this.state.migrationWarnings.map(warning => <FormNote key={warning}show={true} color='orange'>{warning}</FormNote>)}
     </FormModal>
 
-    let transferAppModal = <FormModal
+    const transferAppModal = <FormModal
       title='Transfer App Ownership'
       subtitle='This is an irreversible action!'
       icon='users-solid'
@@ -508,7 +508,7 @@ class GeneralSettings extends DashboardView {
       clearFields={() => this.setState({
         password: '',
         transferNewOwner: '',
-        })}>
+      })}>
       <Field
         labelWidth={60}
         label={<Label
@@ -519,14 +519,14 @@ class GeneralSettings extends DashboardView {
           fixed={true}
           value={this.state.transferNewOwner}
           onChange={(collaborator) => this.setState({transferNewOwner: collaborator})}>
-            {((this.props.initialFields||{}).collaborators||[]).map(collaborator =>
-              <DropdownOption key={collaborator.id.toString()} value={collaborator.userEmail}>{collaborator.userEmail}</DropdownOption>
-            )}
+          {((this.props.initialFields || {}).collaborators || []).map(collaborator =>
+            <DropdownOption key={collaborator.id.toString()} value={collaborator.userEmail}>{collaborator.userEmail}</DropdownOption>
+          )}
         </Dropdown>} />
       {AccountManager.currentUser().has_password ? passwordField : null}
     </FormModal>;
 
-    let deleteAppModal = <FormModal
+    const deleteAppModal = <FormModal
       title='Delete App'
       icon='trash-solid'
       iconSize={30}
@@ -543,7 +543,7 @@ class GeneralSettings extends DashboardView {
       {passwordField}
     </FormModal>
 
-    let cloneAppModal = <FormModal
+    const cloneAppModal = <FormModal
       title='Clone App'
       icon='files-outline'
       iconSize={30}
@@ -570,7 +570,7 @@ class GeneralSettings extends DashboardView {
         input={<TextInput
           value={this.state.cloneAppName}
           onChange={value => this.setState({cloneAppName: value})
-        } /> } />
+          } /> } />
       <Field
         labelWidth={35}
         label={<Label text='What should we include in the clone?' />}
@@ -587,13 +587,13 @@ class GeneralSettings extends DashboardView {
         </MultiSelect>} />
     </FormModal>;
 
-    let iosUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'ios');
-    let anrdoidUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'android');
-    let windowsUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'win');
-    let webUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'web');
-    let otherURL = this.props.initialFields.urls.find(({ platform }) => platform === 'other');
+    const iosUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'ios');
+    const anrdoidUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'android');
+    const windowsUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'win');
+    const webUrl = this.props.initialFields.urls.find(({ platform }) => platform === 'web');
+    const otherURL = this.props.initialFields.urls.find(({ platform }) => platform === 'other');
 
-    let initialFields = {
+    const initialFields = {
       requestLimit: this.props.initialFields.pricing_plan.request_limit,
       appName: this.context.name,
       inProduction: this.context.production,
@@ -606,7 +606,7 @@ class GeneralSettings extends DashboardView {
       mongoURL: this.context.settings.fields.fields.opendb_connection_string,
     };
 
-    let collaboratorRemovedWarningModal = this.state.removedCollaborators.length > 0 ? <Modal
+    const collaboratorRemovedWarningModal = this.state.removedCollaborators.length > 0 ? <Modal
       title='Check Master Key Access'
       icon='keys-solid'
       type={Modal.Types.DANGER}
@@ -617,9 +617,9 @@ class GeneralSettings extends DashboardView {
       textModal={true}>
       <span>We have removed <strong>{joinWithFinal('', this.state.removedCollaborators.map(c => c.userName || c.userEmail), ', ', ' and ')}</strong> from this app. If they had saved the master key, they may still have access via an SDK or the API. To be sure, you can reset your master key in the Keys section of app settings.</span>
     </Modal> : null;
-    let setCollaborators = (setField, unused, allCollabs) => {
-      let addedCollaborators = setDifference(allCollabs, initialFields.collaborators, compareCollaborators);
-      let removedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
+    const setCollaborators = (setField, unused, allCollabs) => {
+      const addedCollaborators = setDifference(allCollabs, initialFields.collaborators, compareCollaborators);
+      const removedCollaborators = setDifference(initialFields.collaborators, allCollabs, compareCollaborators);
       if (addedCollaborators.length === 0 && removedCollaborators.length === 0) {
         //This is neccessary because the footer computes whether or not show a change by reference equality.
         allCollabs = initialFields.collaborators;
@@ -632,7 +632,7 @@ class GeneralSettings extends DashboardView {
         initialFields={initialFields}
         footerContents={({changes}) => renderFlowFooterChanges(changes, initialFields, generalFieldsOptions)}
         onSubmit={({ changes }) => {
-          let promiseList = [];
+          const promiseList = [];
           if (changes.requestLimit !== undefined) {
             promiseList.push(this.context.setRequestLimit(changes.requestLimit));
           }
@@ -643,17 +643,17 @@ class GeneralSettings extends DashboardView {
             promiseList.push(this.context.setInProduction(changes.inProduction));
           }
 
-          let addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
+          const addedCollaborators = setDifference(changes.collaborators, initialFields.collaborators, compareCollaborators);
           addedCollaborators.forEach(({ userEmail }) => {
             promiseList.push(this.context.addCollaborator(userEmail));
           });
 
-          let removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
+          const removedCollaborators = setDifference(initialFields.collaborators, changes.collaborators, compareCollaborators);
           removedCollaborators.forEach(({ id }) => {
             promiseList.push(this.context.removeCollaboratorById(id));
           });
 
-          let urlKeys = {
+          const urlKeys = {
             iTunesURL: 'ios',
             googlePlayURL: 'android',
             windowsAppStoreURL: 'win',
@@ -675,7 +675,7 @@ class GeneralSettings extends DashboardView {
           });
         }}
         renderForm={({ fields, setField }) => {
-          let isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
+          const isCollaborator = AccountManager.currentUser().email !== this.props.initialFields.owner_email;
           return <div className={settingsStyles.settings_page}>
             <CurrentPlanFields
               visible={!isCollaborator}
@@ -760,9 +760,9 @@ class GeneralSettings extends DashboardView {
   }
 }
 
-let compareCollaborators = (collab1, collab2) => collab1.userEmail === collab2.userEmail;
+const compareCollaborators = (collab1, collab2) => collab1.userEmail === collab2.userEmail;
 
-let generalFieldsOptions = {
+const generalFieldsOptions = {
   requestLimit: {
     friendlyName: 'request limit',
     showTo: true,

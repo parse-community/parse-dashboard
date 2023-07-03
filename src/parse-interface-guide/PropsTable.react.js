@@ -32,12 +32,12 @@ const PropsRow = (p) => (
 
 export default class PropsTable extends React.Component {
   render() {
-    let component = this.props.component;
-    let requiredProps = [];
-    let optionalProps = [];
+    const component = this.props.component;
+    const requiredProps = [];
+    const optionalProps = [];
     if (component.propTypes) {
-      for (let p in component.propTypes) {
-        let info = {
+      for (const p in component.propTypes) {
+        const info = {
           name: p,
           type: typeString(component.propTypes[p]),
           required: component.propTypes[p]._required,
@@ -53,7 +53,7 @@ export default class PropsTable extends React.Component {
         }
       }
     }
-    let propInfo = requiredProps.concat(optionalProps);
+    const propInfo = requiredProps.concat(optionalProps);
     return (
       <div className={styles.table}>
         <div className={styles.header}>Props</div>

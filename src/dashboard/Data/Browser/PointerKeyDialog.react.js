@@ -30,15 +30,15 @@ export default class PointerKeyDialog extends React.Component {
 
   render() {
     let content = null;
-    let hasColumns = this.props.currentColumns.length > 0;
-    let currentColumns = [...this.props.currentColumns, 'objectId'];
+    const hasColumns = this.props.currentColumns.length > 0;
+    const currentColumns = [...this.props.currentColumns, 'objectId'];
     if (hasColumns) {
       content = (
         <Field
           label={
             <Label
               text='PointerKey' />
-            }
+          }
           input={
             <Dropdown
               placeHolder='Select a column'

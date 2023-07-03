@@ -75,8 +75,8 @@ export function prevMonth(date) {
 }
 
 export function daysInMonth(date) {
-  let next = nextMonth(date);
-  let lastDay = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
+  const next = nextMonth(date);
+  const lastDay = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
   return lastDay.getDate();
 }
 
@@ -114,12 +114,12 @@ export function dateStringUTC(date) {
   let full = String(date.getUTCDate()) + ' ' +
     shortMonth(date.getUTCMonth()) + ' ' +
     String(date.getUTCFullYear()) + ' at ';
-  let time = {
+  const time = {
     hours: String(date.getUTCHours()),
     minutes: String(date.getUTCMinutes()),
     seconds: String(date.getUTCSeconds())
   };
-  for (let k in time) {
+  for (const k in time) {
     if (time[k].length < 2) {
       time[k] = '0' + time[k];
     }
@@ -142,7 +142,7 @@ export function yearMonthDayFormatter(date) {
 }
 
 export function yearMonthDayTimeFormatter(date, timeZone) {
-  let options = {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false};
+  const options = {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false};
   if (timeZone) {
     options.timeZoneName = 'short';
   }

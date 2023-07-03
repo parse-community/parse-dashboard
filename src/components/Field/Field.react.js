@@ -9,8 +9,8 @@ import PropTypes from 'lib/PropTypes';
 import React     from 'react';
 import styles    from 'components/Field/Field.scss';
 
-let Field = ({label, input, labelWidth = 50, labelPadding, height, className}) => {
-  let classes = [styles.field];
+const Field = ({label, input, labelWidth = 50, labelPadding, height, className}) => {
+  const classes = [styles.field];
   if (className) {
     classes.push(className);
   }

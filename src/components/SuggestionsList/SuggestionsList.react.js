@@ -27,7 +27,7 @@ export default class Suggestion extends React.Component {
   }
 
   setPosition(position) {
-   this.popoverRef.current && this.popoverRef.current.setPosition(position);
+    this.popoverRef.current && this.popoverRef.current.setPosition(position);
   }
 
   close() {
@@ -35,38 +35,38 @@ export default class Suggestion extends React.Component {
   }
 
   render() {
-  const {
-    position,
-    onExternalClick,
-    suggestions,
-    suggestionsStyle,
-    suggestionsItemStyle,
-    activeSuggestion,
-    onClick,
-    onMouseDown} = this.props;
+    const {
+      position,
+      onExternalClick,
+      suggestions,
+      suggestionsStyle,
+      suggestionsItemStyle,
+      activeSuggestion,
+      onClick,
+      onMouseDown} = this.props;
 
     return (
       <Popover
-      fixed={false}
-      position={position}
-      ref={this.popoverRef}
-      onExternalClick={onExternalClick}
-      data-popover-type="inner"
-    >
-      <ul style={suggestionsStyle} className={styles.suggestions}>
-        {suggestions.map((suggestion, index) => {
-          let className;
-          if (index === activeSuggestion) {
-            className = styles.active;
-          }
-          return (
-            <li style={suggestionsItemStyle} className={className} key={suggestion} onMouseDown={onMouseDown} onClick={onClick}>
-              {suggestion}
-            </li>
-          );
-        })}
-      </ul>
-    </Popover>
+        fixed={false}
+        position={position}
+        ref={this.popoverRef}
+        onExternalClick={onExternalClick}
+        data-popover-type="inner"
+      >
+        <ul style={suggestionsStyle} className={styles.suggestions}>
+          {suggestions.map((suggestion, index) => {
+            let className;
+            if (index === activeSuggestion) {
+              className = styles.active;
+            }
+            return (
+              <li style={suggestionsItemStyle} className={className} key={suggestion} onMouseDown={onMouseDown} onClick={onClick}>
+                {suggestion}
+              </li>
+            );
+          })}
+        </ul>
+      </Popover>
     );
   }
 }

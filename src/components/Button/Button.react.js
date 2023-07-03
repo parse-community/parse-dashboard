@@ -12,9 +12,9 @@ import styles           from 'components/Button/Button.scss';
 
 const noop = () => {};
 
-let Button = (props) => {
+const Button = (props) => {
   const hasOnClick = props.onClick && !props.disabled;
-  let classes = [styles.button, baseStyles.unselectable];
+  const classes = [styles.button, baseStyles.unselectable];
   // if a button is disabled, that overrides any color selection
   if (props.disabled) {
     classes.push(styles.disabled);
@@ -33,7 +33,7 @@ let Button = (props) => {
       classes.push(styles.progress);
     }
   }
-  let clickHandler = hasOnClick ? props.onClick : noop;
+  const clickHandler = hasOnClick ? props.onClick : noop;
   let styleOverride = null;
   if (props.width) {
     styleOverride = { width: props.width, minWidth: props.width, ...props.additionalStyles };

@@ -70,7 +70,7 @@ const DEFAULT_EMPTY_STATE_CONTENT = {
   cta: 'Get started with Parse Push'
 };
 
-let getPushStatusType = (pushData) => {
+const getPushStatusType = (pushData) => {
   if(pushData[PushConstants.EXPERIMENT_FIELD]){
     return PUSH_TYPE_EXPERIMENT;
   } else if (pushData[PushConstants.TRANSLATION_ID_FIELD]){
@@ -82,23 +82,23 @@ let getPushStatusType = (pushData) => {
   }
 }
 
-let isChannelTargeted = (pushData) => {
-  let query = pushData[PushConstants.QUERY_FIELD];
+const isChannelTargeted = (pushData) => {
+  const query = pushData[PushConstants.QUERY_FIELD];
   if(!query) {
     return false;
   }
 
-  let queryJSON = JSON.parse(query);
-  let channels = queryJSON.channels;
+  const queryJSON = JSON.parse(query);
+  const channels = queryJSON.channels;
   if (!channels) {
     return false;
   }
 
-  let inClause = (channels.constructor === Object) && channels['$in'];
-  let eqClause = channels.constructor === String;
+  const inClause = (channels.constructor === Object) && channels['$in'];
+  const eqClause = channels.constructor === String;
   let additionalKeys = false;
 
-  for (let key in queryJSON) {
+  for (const key in queryJSON) {
     if (Object.prototype.hasOwnProperty.call(queryJSON, key)) {
       if (key !== 'deviceType' && key !== 'channels') {
         additionalKeys = true;
@@ -109,7 +109,7 @@ let isChannelTargeted = (pushData) => {
   return (inClause || eqClause) && !additionalKeys;
 }
 
-let getPushTarget = (pushData, availableDevices) => {
+const getPushTarget = (pushData, availableDevices) => {
   if (isChannelTargeted(pushData)){
     return 'Channels';
   }
@@ -117,15 +117,15 @@ let getPushTarget = (pushData, availableDevices) => {
     return (<LoaderDots />);
   }
 
-  let query = JSON.parse(pushData.query);
+  const query = JSON.parse(pushData.query);
   if (query.deviceType && query.deviceType['$in'] && query.deviceType['$in'].length < availableDevices.length) {
     return 'Segment';
   }
   return 'Everyone';
 }
 
-let getPushName = (pushData) => {
-  let title = pushData[PushConstants.TITLE_FIELD];
+const getPushName = (pushData) => {
+  const title = pushData[PushConstants.TITLE_FIELD];
   if(title){
     return (
       <strong>{title}</strong>
@@ -138,8 +138,8 @@ let getPushName = (pushData) => {
     if (typeof payload === 'object') {
       if (typeof payload.alert === 'string') {
         return payload.alert;
-			} else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
-				return payload.alert.title;
+      } else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
+        return payload.alert.title;
       }
       return payload.alert ? JSON.stringify(payload.alert) : JSON.stringify(payload);
     } else {
@@ -148,8 +148,8 @@ let getPushName = (pushData) => {
   }
 }
 
-let getPushCount = (pushData) => {
-  let count = pushData[PushConstants.SENT_FIELD];
+const getPushCount = (pushData) => {
+  const count = pushData[PushConstants.SENT_FIELD];
   if(count != undefined){
     return (
       <strong>{count}</strong>
@@ -161,7 +161,7 @@ let getPushCount = (pushData) => {
   }
 }
 
-let emptyStateContent = {
+const emptyStateContent = {
   'all': {
     title: 'No pushes to display yet.',
     description: DEFAULT_EMPTY_STATE_CONTENT.description,
@@ -184,7 +184,7 @@ let emptyStateContent = {
   }
 };
 
-let getExperimentInfo = (experiment) => {
+const getExperimentInfo = (experiment) => {
   if(!experiment){
     return '';
   }
@@ -193,7 +193,7 @@ let getExperimentInfo = (experiment) => {
   );
 }
 
-let getTranslationInfo = (translationLocale) => {
+const getTranslationInfo = (translationLocale) => {
   if(!translationLocale){
     return '';
   }
@@ -202,27 +202,27 @@ let getTranslationInfo = (translationLocale) => {
   );
 }
 
-let formatStatus = (status) => {
-  let color = PUSH_STATUS_COLOR[status];
-  let text = PUSH_STATUS_CONTENT[status];
+const formatStatus = (status) => {
+  const color = PUSH_STATUS_COLOR[status];
+  const text = PUSH_STATUS_CONTENT[status];
   return (
     <StatusIndicator color={color} text={text} />
   );
 }
 
-let getPushTime = (pushTime, updatedAt) => {
-  let time = pushTime || updatedAt;
-  let dateTime = new Date(time);
-  let isLocal = typeof time === 'string' && time.indexOf('Z') === -1;
-  let timeContent = DateUtils.yearMonthDayTimeFormatter(dateTime, !isLocal);
-  let result  = [];
+const getPushTime = (pushTime, updatedAt) => {
+  const time = pushTime || updatedAt;
+  const dateTime = new Date(time);
+  const isLocal = typeof time === 'string' && time.indexOf('Z') === -1;
+  const timeContent = DateUtils.yearMonthDayTimeFormatter(dateTime, !isLocal);
+  const result  = [];
   if (isLocal) {
     result.push(
       <div key='localTime' className={styles.localTimeLabel}>LOCAL TIME</div>
     );
   }
   result.push(
-     <div key='timeContent'>{timeContent}</div>
+    <div key='timeContent'>{timeContent}</div>
   );
   return result;
 }
@@ -246,7 +246,7 @@ class PushIndex extends DashboardView {
   handleFetch(category, page, limit){
     limit = limit || PUSH_DEFAULT_LIMIT;
     page = page || 0;
-    let promise = this.context.fetchPushNotifications(category, page, limit);
+    const promise = this.context.fetchPushNotifications(category, page, limit);
 
     promise.then((pushes) => {
       this.setState({
@@ -320,7 +320,7 @@ class PushIndex extends DashboardView {
   }
 
   renderSidebar() {
-    let current = this.props.params.category || '';
+    const current = this.props.params.category || '';
     return (
       <CategoryList current={current} linkPrefix={'push/activity/'} categories={[
         { name: PUSH_CATEGORIES[PUSH_TYPE_ALL],
@@ -331,7 +331,7 @@ class PushIndex extends DashboardView {
         //   id: PUSH_TYPE_EXPERIMENT},
         // { name: PUSH_CATEGORIES[PUSH_TYPE_API],
         //   id: PUSH_TYPE_API},
-        ]} />
+      ]} />
     );
   }
 
@@ -377,7 +377,7 @@ class PushIndex extends DashboardView {
 
   //NOTE: current solution is 'Show more' button. Can be changed to infinite scroll if req.
   renderExtras() {
-    let paginationInfo = this.state.paginationInfo;
+    const paginationInfo = this.state.paginationInfo;
 
     if (!paginationInfo) {
       return null;
@@ -395,7 +395,7 @@ class PushIndex extends DashboardView {
   }
 
   renderEmpty() {
-    let type = this.props.params.category || PUSH_TYPE_ALL;
+    const type = this.props.params.category || PUSH_TYPE_ALL;
     return (
       <EmptyState
         title={emptyStateContent[type].title}
@@ -408,8 +408,8 @@ class PushIndex extends DashboardView {
 
   //using custom renderContent as location of 'extras' are in different location
   renderContent() {
-    let toolbar = this.renderToolbar();
-    let data = this.tableData();
+    const toolbar = this.renderToolbar();
+    const data = this.tableData();
     let content = null;
     let headers = null;
     if (data !== undefined) {
@@ -432,8 +432,8 @@ class PushIndex extends DashboardView {
         }
       }
     }
-    let extras = this.renderExtras ? this.renderExtras() : null;
-    let loading = this.state ? this.state.loading : false;
+    const extras = this.renderExtras ? this.renderExtras() : null;
+    const loading = this.state ? this.state.loading : false;
     return (
       <div>
         <LoaderContainer loading={loading}>

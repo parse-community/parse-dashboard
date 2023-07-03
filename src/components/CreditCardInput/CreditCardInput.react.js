@@ -44,7 +44,7 @@ class CreditCardInput extends React.Component {
           }
         }}
         onChange={e => {
-          let newValue = e.target.value;
+          const newValue = e.target.value;
           if (VALID_REGEX.test(newValue)) {
             onChange(newValue.replace(/\s/g, ''));
             this.setState({cursorPosition: e.target.selectionStart});

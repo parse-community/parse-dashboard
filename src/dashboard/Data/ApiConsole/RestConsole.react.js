@@ -52,8 +52,8 @@ export default class RestConsole extends Component {
       return;
     }
     Parse.Query.or(
-      new Parse.Query(Parse.User).equalTo('username', this.state.runAsIdentifier ),
-      new Parse.Query(Parse.User).equalTo('objectId', this.state.runAsIdentifier )
+      new Parse.Query(Parse.User).equalTo('username', this.state.runAsIdentifier),
+      new Parse.Query(Parse.User).equalTo('objectId', this.state.runAsIdentifier)
     ).first({ useMasterKey: true }).then((found) => {
       if (found) {
         if (found.getSessionToken()) {
@@ -80,9 +80,9 @@ export default class RestConsole extends Component {
   }
 
   makeRequest() {
-    let endpoint = this.state.endpoint + (this.state.method === 'GET' ? `?${this.state.parameters}` : '');
-    let payload = (this.state.method === 'DELETE' || this.state.method === 'GET') ? null : this.state.parameters;
-    let options = {};
+    const endpoint = this.state.endpoint + (this.state.method === 'GET' ? `?${this.state.parameters}` : '');
+    const payload = (this.state.method === 'DELETE' || this.state.method === 'GET') ? null : this.state.parameters;
+    const options = {};
     if (this.state.useMasterKey) {
       options.useMasterKey = true;
     }
@@ -114,7 +114,7 @@ export default class RestConsole extends Component {
         <Option value='DELETE'>DELETE</Option>
       </Dropdown>
 
-    let hasError = this.state.fetchingUser ||
+    const hasError = this.state.fetchingUser ||
                    this.state.endpoint.length === 0 ||
                    (this.state.runAsIdentifier.length > 0 && !this.state.sessionToken);
     let parameterPlaceholder = 'where={"username":"johndoe"}';
@@ -124,15 +124,15 @@ export default class RestConsole extends Component {
 
     let modal = null;
     if (this.state.curlModal) {
-      let payload = this.state.method === 'DELETE' ? null : this.state.parameters;
-      let options = {};
+      const payload = this.state.method === 'DELETE' ? null : this.state.parameters;
+      const options = {};
       if (this.state.useMasterKey) {
         options.useMasterKey = true;
       }
       if (this.state.sessionToken) {
         options.sessionToken = this.state.sessionToken;
       }
-      let content = generateCurl(
+      const content = generateCurl(
         this.context,
         this.state.method,
         this.state.endpoint,

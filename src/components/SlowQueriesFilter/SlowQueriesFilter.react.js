@@ -31,12 +31,12 @@ export default class SlowQueriesFilter extends React.Component {
   }
 
   render() {
-    let { className, os, version } = this.props;
+    const { className, os, version } = this.props;
     let popover = null;
-    let active = className || os || version;
+    const active = className || os || version;
     if (this.state.open) {
-      let position = Position.inDocument(this.wrapRef.current);
-      let popoverStyle = [styles.popover];
+      const position = Position.inDocument(this.wrapRef.current);
+      const popoverStyle = [styles.popover];
       if (active) {
         popoverStyle.push(styles.active);
       }
@@ -70,7 +70,7 @@ export default class SlowQueriesFilter extends React.Component {
         </Popover>
       );
     }
-    let buttonStyle = [styles.entry];
+    const buttonStyle = [styles.entry];
     if (active) {
       buttonStyle.push(styles.active);
     }

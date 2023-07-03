@@ -10,8 +10,8 @@ import { Link } from 'react-router-dom';
 import React    from 'react';
 import styles   from 'components/Sidebar/Sidebar.scss';
 
-let SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor, isCollapsed }) => {
-  let classes = [styles.section];
+const SidebarSection = ({ active, children, name, link, icon, style, primaryBackgroundColor, secondaryBackgroundColor, isCollapsed }) => {
+  const classes = [styles.section];
   if (active) {
     classes.push(styles.active);
   }

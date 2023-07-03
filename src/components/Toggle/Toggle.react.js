@@ -41,7 +41,7 @@ export default class Toggle extends React.Component {
   }
 
   render() {
-    let type = this.props.type;
+    const type = this.props.type;
     let labelLeft = '';
     let labelRight = '';
     let colored = false;
@@ -92,14 +92,14 @@ export default class Toggle extends React.Component {
         break;
     }
 
-    let switchClasses = [styles.switch];
+    const switchClasses = [styles.switch];
     if (colored) {
       switchClasses.push(styles.colored);
     }
     if (this.props.switchNoMargin) {
       switchClasses.push(styles.switchNoMargin);
     }
-    let toggleClasses = [styles.toggle, baseStyles.unselectable, fieldStyles.input];
+    const toggleClasses = [styles.toggle, baseStyles.unselectable, fieldStyles.input];
     if (left) {
       toggleClasses.push(styles.left);
     }

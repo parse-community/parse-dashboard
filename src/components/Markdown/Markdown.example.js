@@ -14,7 +14,7 @@ export const demos = [
   {
     name: 'Demo name',
     render: () => {
-      let content = `
+      const content = `
 **bold** *italic*
 
 ~~This code is a mistake~~

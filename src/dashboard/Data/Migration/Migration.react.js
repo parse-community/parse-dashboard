@@ -30,11 +30,11 @@ const MIGRATION_DONE = 6;
 const MIGRATION_FATALED = 7;
 const MIGRATION_STOPPED = 8;
 
-let StatusBarNote = ({note, value}) => <span className={styles.statusNote}>
+const StatusBarNote = ({note, value}) => <span className={styles.statusNote}>
   {note}<span className={styles.infoText}>{value}</span>
 </span>;
 
-let StatusBar = ({
+const StatusBar = ({
   errorMessage,
   rowsMigrated,
   classesMigrated,
@@ -42,7 +42,7 @@ let StatusBar = ({
   secondsRemainingStr,
   detailsVisible,
 }) => {
-  let classes = [styles.statusBar, detailsVisible ? styles.statusBottomCorners : ''];
+  const classes = [styles.statusBar, detailsVisible ? styles.statusBottomCorners : ''];
   if (errorMessage) {
     classes.push(styles.migrationStatusError);
     return <div className={classes.join(' ')}>{errorMessage}</div>
@@ -55,8 +55,8 @@ let StatusBar = ({
   </div>
 }
 
-let ClassProgressBar = ({ job, last }) => {
-  let percentComplete = 100 * job.InsertPosition / (job.ExpectedDocumentMinimum || job.ExpectedDocumentsApprox);
+const ClassProgressBar = ({ job, last }) => {
+  const percentComplete = 100 * job.InsertPosition / (job.ExpectedDocumentMinimum || job.ExpectedDocumentsApprox);
   let progressDiv = null;
   let icon = null;
   switch (job.State) {
@@ -69,18 +69,18 @@ let ClassProgressBar = ({ job, last }) => {
       progressDiv = <div
         style={{width: '100%'}}
         className={[styles.detailCompletion, baseStyles.succeededBackground].join(' ')}/>
-        icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
+      icon = <Icon name='check-solid' fill='#00db7c' width={15} height={15}/>;
       break;
     case MIGRATION_FATALED:
       progressDiv = <div
         style={{width: '100%'}}
         className={[styles.detailCompletion, baseStyles.failedBackground].join(' ')}/>
-        icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
+      icon = <Icon name='x-solid' fill='#ff395e' width={15} height={15}/>;
   }
   return <div>
     <div
       style={{
-        borderBottomLeftRadius: last ? '5px': 0,
+        borderBottomLeftRadius: last ? '5px' : 0,
         marginBottom: last ? '20px' : 0,
       }}
       className={styles.detailClassName}>
@@ -131,7 +131,7 @@ export default class Migration extends DashboardView {
             return <LoaderContainer loading={true} ><div style={{minHeight: '100vh'}} className={styles.content}/></LoaderContainer>;
           }
           let moreDetails = null;
-          let moreDetailsButton = <div className={styles.button}>
+          const moreDetailsButton = <div className={styles.button}>
             <Button
               value={this.state.showDetails ? 'Show less details' : 'Show more details'}
               primary={true}
@@ -140,7 +140,7 @@ export default class Migration extends DashboardView {
           </div>
 
           let showStopMigrationButton = false;
-          let stopMigrationButton = <div className={styles.button}>
+          const stopMigrationButton = <div className={styles.button}>
             <Button
               value='Stop the migration'
               primary={true}
@@ -157,7 +157,7 @@ export default class Migration extends DashboardView {
           </div>;
 
           let showFinalizeButton = false;
-          let finalizeButton = <div className={styles.button}>
+          const finalizeButton = <div className={styles.button}>
             <Button
               disabled={this.context.migration.migrationState !== MIGRATION_COMMITREADY}
               value='Finalize'
@@ -166,7 +166,7 @@ export default class Migration extends DashboardView {
               onClick={() => this.setState({commitDialogOpen: true})} />
           </div>
 
-          let collectionJobs = this.context.migration.collectionJobs;
+          const collectionJobs = this.context.migration.collectionJobs;
           let copyState = AsyncStatus.WAITING;
           let syncState = AsyncStatus.WAITING;
           let verifyState = AsyncStatus.WAITING;
@@ -323,13 +323,13 @@ export default class Migration extends DashboardView {
         }}
         progress={this.state.commitingState === AsyncStatus.PROGRESS}
         buttonsInCenter={true}>
-          <div style={{padding: '17px 55px 10px 55px', textAlign: 'center'}}>After you commit to using your new database, you cannot switch back to using a Parse managed database! You will be responsible for your own imports, exports, backups, indexes, monitoring, and other database administration. Are you sure you want to continue?</div>
-          <FormNote
-            show={this.state.commitingState === AsyncStatus.FAILED}
-            color='red'>
-            <div>We were unable to commit your migration. Please try again.</div>
-          </FormNote>
+        <div style={{padding: '17px 55px 10px 55px', textAlign: 'center'}}>After you commit to using your new database, you cannot switch back to using a Parse managed database! You will be responsible for your own imports, exports, backups, indexes, monitoring, and other database administration. Are you sure you want to continue?</div>
+        <FormNote
+          show={this.state.commitingState === AsyncStatus.FAILED}
+          color='red'>
+          <div>We were unable to commit your migration. Please try again.</div>
+        </FormNote>
       </Modal> : null}
     </div>;
-    }
+  }
 }

@@ -18,15 +18,15 @@ import { withRouter } from 'lib/withRouter';
 class AppSelector extends React.Component {
   constructor(props) {
     super(props);
-    let apps = AppsManager.apps();
-    let latestApp = apps[apps.length - 1];
+    const apps = AppsManager.apps();
+    const latestApp = apps[apps.length - 1];
     this.state = {
       slug: latestApp.slug
     };
   }
 
   handleConfirm() {
-    let newPath = this.location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
+    const newPath = this.location.pathname.replace(/\/_(\/|$)/, '/' + this.state.slug + '/');
     this.props.navigate(newPath);
   }
 
@@ -35,7 +35,7 @@ class AppSelector extends React.Component {
   }
 
   render() {
-    let apps = AppsManager.apps();
+    const apps = AppsManager.apps();
     return (
       <Modal
         title='Hold up!'

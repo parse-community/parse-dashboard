@@ -1,5 +1,5 @@
 const VERSION = 1; // In case we ever need to invalidate these
-let cache = {};
+const cache = {};
 export function updatePreferences(prefs, appId, className) {
   try {
     localStorage.setItem(path(appId, className), JSON.stringify(prefs));
@@ -27,7 +27,7 @@ export function getPreferences(appId, className) {
     return null;
   }
   try {
-    let prefs = JSON.parse(entry);
+    const prefs = JSON.parse(entry);
     cache[appId] = cache[appId] || {};
     cache[appId][className] = prefs;
     return prefs;

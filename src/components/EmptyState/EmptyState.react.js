@@ -13,7 +13,7 @@ import styles       from 'components/EmptyState/EmptyState.scss';
 import stylesButton from 'components/Button/Button.scss';
 import baseStyles   from 'stylesheets/base.scss';
 
-let ctaButton = (cta, action) => {
+const ctaButton = (cta, action) => {
   if (cta) {
     if (action.constructor === String) {
       return (
@@ -23,11 +23,11 @@ let ctaButton = (cta, action) => {
       );
     } else {
       return (
-       <Button
-        value={cta}
-        color={'blue'}
-        primary={true}
-        onClick={action} />
+        <Button
+          value={cta}
+          color={'blue'}
+          primary={true}
+          onClick={action} />
       );
     }
   } else {
@@ -35,14 +35,14 @@ let ctaButton = (cta, action) => {
   }
 }
 
-let EmptyState = ({
-  icon='',
-  title='',
-  description='',
-  cta='',
-  action=() => {},
-  secondaryCta='',
-  secondaryAction=() => {},
+const EmptyState = ({
+  icon = '',
+  title = '',
+  description = '',
+  cta = '',
+  action = () => {},
+  secondaryCta = '',
+  secondaryAction = () => {},
 }) => (
   <div className={baseStyles.center}>
     <div className={styles.icon}>

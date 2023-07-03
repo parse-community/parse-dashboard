@@ -23,8 +23,8 @@ export default class BrowserMenu extends React.Component {
   render() {
     let menu = null;
     if (this.state.open) {
-      let position = Position.inDocument(this.wrapRef.current);
-      let titleStyle = [styles.title];
+      const position = Position.inDocument(this.wrapRef.current);
+      const titleStyle = [styles.title];
       if (this.props.active) {
         titleStyle.push(styles.active);
       }

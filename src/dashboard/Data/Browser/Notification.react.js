@@ -52,8 +52,8 @@ export default class Notification extends React.Component {
       return null;
     }
 
-    let bottomRight = new Position(window.innerWidth, window.innerHeight);
-    let classes = [];
+    const bottomRight = new Position(window.innerWidth, window.innerHeight);
+    const classes = [];
 
     if (this.state.isErrorNote) {
       classes.push(styles.notificationError);

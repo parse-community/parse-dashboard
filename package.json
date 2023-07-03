@@ -123,7 +123,7 @@
     "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "jest",
     "lint": "eslint . --ignore-path .gitignore --cache",
-    "lint:fix": "eslint . --fix --cache ./",
+    "lint:fix": "DEBUG=eslint:cli-engine eslint --fix --cache ./",
     "generate": "node scripts/generate.js",
     "prepare": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js",

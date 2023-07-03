@@ -131,8 +131,8 @@ export default class DashboardSettings extends DashboardView {
   }
 
   generatePassword() {
-    let chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let pwordLength = 20;
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const pwordLength = 20;
     let password = '';
 
     const array = new Uint32Array(chars.length);

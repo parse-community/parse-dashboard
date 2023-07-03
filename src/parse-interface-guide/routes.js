@@ -10,11 +10,11 @@ import React             from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 const routes = (
-<BrowserRouter>
-  <Routes>
-    <Route path='*' element={<PIG />} />
-  </Routes>
-</BrowserRouter>
+  <BrowserRouter>
+    <Routes>
+      <Route path='*' element={<PIG />} />
+    </Routes>
+  </BrowserRouter>
 );
 
 export default routes

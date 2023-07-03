@@ -8,8 +8,8 @@
 import React  from 'react';
 import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
-let MenuItem = ({ text, disabled, active, greenActive, onClick }) => {
-  let classes = [styles.item];
+const MenuItem = ({ text, disabled, active, greenActive, onClick }) => {
+  const classes = [styles.item];
   if (disabled) {
     classes.push(styles.disabled);
   }

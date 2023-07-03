@@ -24,23 +24,23 @@ function getRateString(rateNum) {
   return rateStr;
 }
 
-let PushOpenRate = ({
-    numOpened,
-    numSent,
-    color,
-    isExperiment = false,
-    isWinner = false,
-    customColor,
-  }) => {
+const PushOpenRate = ({
+  numOpened,
+  numSent,
+  color,
+  isExperiment = false,
+  isWinner = false,
+  customColor,
+}) => {
   let rateNum = numOpened / numSent * 100;
   if(isNaN(rateNum)){ //check for case when numSent is 0
     rateNum = 0;
   }
   /* eslint-disable no-unused-vars */
-  let rateStr = getRateString(rateNum);
+  const rateStr = getRateString(rateNum);
   /* eslint-enable */
 
-  let customStyles = {
+  const customStyles = {
     standardColor: {},
     inverseColor: {},
   };

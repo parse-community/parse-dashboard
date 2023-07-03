@@ -38,7 +38,7 @@ export default class PushSettings extends DashboardView {
   }
 
   renderForm({fields, setField}) {
-    let pushSettingsFields = <Fieldset
+    const pushSettingsFields = <Fieldset
       legend='Push Notification Settings'
       description='Secure push notifications for your app.'>
       <Field
@@ -59,7 +59,7 @@ export default class PushSettings extends DashboardView {
           value={fields.enableRestPush}/>}/>
     </Fieldset>;
 
-    let androidPushFields = <Fieldset
+    const androidPushFields = <Fieldset
       legend='Android Push Credentials'
       description='This information is not necessary for most Parse apps. It is only necessary if you import GCM registration IDs from another push provider via the installation upload API.'>
       <Field
@@ -85,33 +85,33 @@ export default class PushSettings extends DashboardView {
         label={<Label text='Existing Credentials' />}
         input={
           (<FormTable
-          items={fields.gcmCredentials.map((credential, index) => {
-            return {
-              title: 'Credential #' + (index + 1).toString(),
-              onDelete: () => setField('gcmCredentials', fields.gcmCredentials.filter(oldCred =>
-                !compareGCMCredentials(oldCred, credential)
-              )),
-              notes: [
-                {
-                  key: 'Sender ID',
-                  value: credential.sender_id,
-                },
-                {
-                  key: 'API Key',
-                  value: credential.api_key,
-                }
-              ],
-            };
-          })}/>)}/> : null}
+            items={fields.gcmCredentials.map((credential, index) => {
+              return {
+                title: 'Credential #' + (index + 1).toString(),
+                onDelete: () => setField('gcmCredentials', fields.gcmCredentials.filter(oldCred =>
+                  !compareGCMCredentials(oldCred, credential)
+                )),
+                notes: [
+                  {
+                    key: 'Sender ID',
+                    value: credential.sender_id,
+                  },
+                  {
+                    key: 'API Key',
+                    value: credential.api_key,
+                  }
+                ],
+              };
+            })}/>)}/> : null}
     </Fieldset>;
 
-    let windowsPushFields = <Fieldset
+    const windowsPushFields = <Fieldset
       legend='Windows Push Credentials'
       description='Enable push for Windows apps.'>
       <Field
         labelWidth={DEFAULT_LABEL_WIDTH}
         label={<Label
-              text='Windows Keys' />}
+          text='Windows Keys' />}
         input={<FormButton onClick={this.legacyPushSettings.bind(this)} value='Configure'/>} />
       {/* TODO(drewgross): make Push Credentials component
       <Field
@@ -145,7 +145,7 @@ export default class PushSettings extends DashboardView {
       return null;
     }
 
-    let initialFields = {
+    const initialFields = {
       enableClientPush: this.props.initialFields.client_push_enabled,
       enableRestPush: this.props.initialFields.rest_push_enabled,
       gcmCredentials: this.props.initialFields.gcm_credentials,
@@ -157,7 +157,7 @@ export default class PushSettings extends DashboardView {
       initialFields={initialFields}
       footerContents={({ changes }) => renderFlowFooterChanges(changes, initialFields, pushFieldOptions)}
       onSubmit={({ changes }) => {
-        let promiseList = [];
+        const promiseList = [];
         if (changes.enableClientPush !== undefined) {
           promiseList.push(this.context.setEnableClientPush(changes.enableClientPush));
         }
@@ -168,7 +168,7 @@ export default class PushSettings extends DashboardView {
           promiseList.push(this.context.addGCMCredentials(changes.customGCMSenderID, changes.customGCMAPIKey));
         }
         if (changes.gcmCredentials) { //Added creds don't show up in "changes"
-          let removedGCMcredentials = setDifference(initialFields.gcmCredentials, changes.gcmCredentials, compareGCMCredentials);
+          const removedGCMcredentials = setDifference(initialFields.gcmCredentials, changes.gcmCredentials, compareGCMCredentials);
           removedGCMcredentials.forEach(({ sender_id }) => {
             promiseList.push(this.context.deleteGCMPushCredentials(sender_id));
           });
@@ -193,9 +193,9 @@ export default class PushSettings extends DashboardView {
   }
 }
 
-let compareGCMCredentials = (c1, c2) => c1.sender_id === c2.sender_id;
+const compareGCMCredentials = (c1, c2) => c1.sender_id === c2.sender_id;
 
-let pushFieldOptions = {
+const pushFieldOptions = {
   enableClientPush: {
     friendlyName: 'client push',
     type: 'boolean',

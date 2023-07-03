@@ -28,12 +28,12 @@ function changeField(schema, filters, index, newField) {
 }
 
 function changeConstraint(schema, filters, index, newConstraint, prevCompareTo) {
-  let field = filters.get(index).get('field');
+  const field = filters.get(index).get('field');
   let compareType = schema[field].type;
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
     compareType = Filters.Constraints[newConstraint].field;
   }
-  let newFilter = new Map({
+  const newFilter = new Map({
     field: field,
     constraint: newConstraint,
     compareTo: prevCompareTo ?? Filters.DefaultComparisons[compareType]
@@ -42,7 +42,7 @@ function changeConstraint(schema, filters, index, newConstraint, prevCompareTo) 
 }
 
 function changeCompareTo(schema, filters, index, type, newCompare) {
-  let newValue = newCompare;
+  const newValue = newCompare;
   return filters.set(index, filters.get(index).set('compareTo', newValue));
 }
 
@@ -50,18 +50,18 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-let Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, className }) => {
+const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, className }) => {
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
-  let available = Filters.availableFilters(schema, filters);
+  const available = Filters.availableFilters(schema, filters);
   return (
     <div>
       {filters.toArray().map((filter, i) => {
-        let field = filter.get('field');
-        let constraint = filter.get('constraint');
-        let compareTo = filter.get('compareTo');
+        const field = filter.get('field');
+        const constraint = filter.get('constraint');
+        const compareTo = filter.get('compareTo');
 
-        let fields = Object.keys(available).concat([]);
+        const fields = Object.keys(available).concat([]);
         if (fields.indexOf(field) < 0) {
           fields.push(field);
         }
@@ -96,7 +96,7 @@ let Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, class
           fields.sort();
         }
 
-        let constraints = Filters.FieldConstraints[schema[field].type].filter((c) => blacklist.indexOf(c) < 0);
+        const constraints = Filters.FieldConstraints[schema[field].type].filter((c) => blacklist.indexOf(c) < 0);
         let compareType = schema[field].type;
         if (Object.prototype.hasOwnProperty.call(Filters.Constraints[constraint], 'field')) {
           compareType = Filters.Constraints[constraint].field;

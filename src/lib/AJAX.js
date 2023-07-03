@@ -12,7 +12,7 @@ let basePath = '';
 export function setBasePath(newBasePath) {
   basePath = newBasePath || '';
   if (basePath.endsWith('/')) {
-    basePath = basePath.slice(0, basePath.length-1);
+    basePath = basePath.slice(0, basePath.length - 1);
   }
 }
 
@@ -24,7 +24,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
       && !url.startsWith(basePath + '/')) {
     url = basePath + url;
   }
-  let xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
     xhr.setRequestHeader('X-CSRF-Token', CSRFManager.getToken());
@@ -35,7 +35,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
   xhr.withCredentials = withCredentials;
   let resolve;
   let reject;
-  let p = new Promise((res, rej) => {
+  const p = new Promise((res, rej) => {
     resolve = res;
     reject = rej;
   });
@@ -80,7 +80,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
         p.reject(this.responseText)
         return;
       }
-      let message = json.message || json.error || json.notice || 'Request Error';
+      const message = json.message || json.error || json.notice || 'Request Error';
       p.reject({
         success: false,
         message: message,
@@ -107,8 +107,8 @@ export function request(method, url, body, abortable = false, withCredentials = 
         'application/x-www-form-urlencoded; charset=UTF-8'
       );
       // Encode it as a url parameter string
-      let formData = [];
-      for (let k in body) {
+      const formData = [];
+      for (const k in body) {
         formData.push(encodeFormData(k, body[k]));
       }
       xhr.send(formData.join('&'));
