@@ -6,20 +6,20 @@
  * the root directory of this source tree.
  */
 import * as PushConstants from './PushConstants';
-import * as DateUtils     from 'lib/DateUtils';
-import Button             from 'components/Button/Button.react';
-import CategoryList       from 'components/CategoryList/CategoryList.react';
-import DashboardView      from 'dashboard/DashboardView.react';
-import EmptyState         from 'components/EmptyState/EmptyState.react';
-import LoaderContainer    from 'components/LoaderContainer/LoaderContainer.react';
-import LoaderDots         from 'components/LoaderDots/LoaderDots.react';
-import React              from 'react';
-import SidebarAction      from 'components/Sidebar/SidebarAction';
-import StatusIndicator    from 'components/StatusIndicator/StatusIndicator.react';
-import styles             from './PushIndex.scss';
-import stylesTable        from 'dashboard/TableView.scss';
-import TableHeader        from 'components/Table/TableHeader.react';
-import Toolbar            from 'components/Toolbar/Toolbar.react';
+import * as DateUtils from 'lib/DateUtils';
+import Button from 'components/Button/Button.react';
+import CategoryList from 'components/CategoryList/CategoryList.react';
+import DashboardView from 'dashboard/DashboardView.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
+import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
+import LoaderDots from 'components/LoaderDots/LoaderDots.react';
+import React from 'react';
+import SidebarAction from 'components/Sidebar/SidebarAction';
+import StatusIndicator from 'components/StatusIndicator/StatusIndicator.react';
+import styles from './PushIndex.scss';
+import stylesTable from 'dashboard/TableView.scss';
+import TableHeader from 'components/Table/TableHeader.react';
+import Toolbar from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 
@@ -63,28 +63,28 @@ const EXPERIMENT_GROUP = {
   A: 'GROUP B',
   B: 'GROUP A',
   launch: 'LAUNCH GROUP',
-}
+};
 
 const DEFAULT_EMPTY_STATE_CONTENT = {
   description: 'You may need to configure push notifications for your app.',
-  cta: 'Get started with Parse Push'
+  cta: 'Get started with Parse Push',
 };
 
 const getPushStatusType = (pushData) => {
-  if(pushData[PushConstants.EXPERIMENT_FIELD]){
+  if (pushData[PushConstants.EXPERIMENT_FIELD]) {
     return PUSH_TYPE_EXPERIMENT;
-  } else if (pushData[PushConstants.TRANSLATION_ID_FIELD]){
+  } else if (pushData[PushConstants.TRANSLATION_ID_FIELD]) {
     return PUSH_TYPE_TRANSLATION;
-  } else if (pushData[PushConstants.SOURCE_FIELD] === 'webui'){
+  } else if (pushData[PushConstants.SOURCE_FIELD] === 'webui') {
     return PUSH_TYPE_CAMPAIGN;
   } else {
     return PUSH_TYPE_API;
   }
-}
+};
 
 const isChannelTargeted = (pushData) => {
   const query = pushData[PushConstants.QUERY_FIELD];
-  if(!query) {
+  if (!query) {
     return false;
   }
 
@@ -94,7 +94,7 @@ const isChannelTargeted = (pushData) => {
     return false;
   }
 
-  const inClause = (channels.constructor === Object) && channels['$in'];
+  const inClause = channels.constructor === Object && channels['$in'];
   const eqClause = channels.constructor === String;
   let additionalKeys = false;
 
@@ -107,175 +107,190 @@ const isChannelTargeted = (pushData) => {
   }
 
   return (inClause || eqClause) && !additionalKeys;
-}
+};
 
 const getPushTarget = (pushData, availableDevices) => {
-  if (isChannelTargeted(pushData)){
+  if (isChannelTargeted(pushData)) {
     return 'Channels';
   }
   if (availableDevices === undefined) {
-    return (<LoaderDots />);
+    return <LoaderDots />;
   }
 
   const query = JSON.parse(pushData.query);
-  if (query.deviceType && query.deviceType['$in'] && query.deviceType['$in'].length < availableDevices.length) {
+  if (
+    query.deviceType &&
+    query.deviceType['$in'] &&
+    query.deviceType['$in'].length < availableDevices.length
+  ) {
     return 'Segment';
   }
   return 'Everyone';
-}
+};
 
 const getPushName = (pushData) => {
   const title = pushData[PushConstants.TITLE_FIELD];
-  if(title){
-    return (
-      <strong>{title}</strong>
-    );
+  if (title) {
+    return <strong>{title}</strong>;
   } else {
     let payload = pushData[PushConstants.PAYLOAD_FIELD] || '';
     try {
       payload = JSON.parse(payload);
-    } catch(e) {/**/}
+    } catch (e) {
+      /**/
+    }
     if (typeof payload === 'object') {
       if (typeof payload.alert === 'string') {
         return payload.alert;
-      } else if (typeof payload.alert === 'object' && payload.alert.title !== undefined) {
+      } else if (
+        typeof payload.alert === 'object' &&
+        payload.alert.title !== undefined
+      ) {
         return payload.alert.title;
       }
-      return payload.alert ? JSON.stringify(payload.alert) : JSON.stringify(payload);
+      return payload.alert
+        ? JSON.stringify(payload.alert)
+        : JSON.stringify(payload);
     } else {
       return '';
     }
   }
-}
+};
 
 const getPushCount = (pushData) => {
   const count = pushData[PushConstants.SENT_FIELD];
-  if(count != undefined){
-    return (
-      <strong>{count}</strong>
-    );
+  if (count != undefined) {
+    return <strong>{count}</strong>;
   } else {
-    return (
-      <strong>N/A</strong>
-    );
+    return <strong>N/A</strong>;
   }
-}
+};
 
 const emptyStateContent = {
-  'all': {
+  all: {
     title: 'No pushes to display yet.',
     description: DEFAULT_EMPTY_STATE_CONTENT.description,
     cta: DEFAULT_EMPTY_STATE_CONTENT.cta,
   },
-  'campaign': {
+  campaign: {
     title: 'No push campaigns to display yet.',
     description: DEFAULT_EMPTY_STATE_CONTENT.description,
     cta: DEFAULT_EMPTY_STATE_CONTENT.cta,
   },
-  'experiment': {
+  experiment: {
     title: 'No push experiments to display yet',
     description: DEFAULT_EMPTY_STATE_CONTENT.description,
     cta: DEFAULT_EMPTY_STATE_CONTENT.cta,
   },
-  'api': {
+  api: {
     title: 'No API pushes to display yet',
     description: DEFAULT_EMPTY_STATE_CONTENT.description,
     cta: DEFAULT_EMPTY_STATE_CONTENT.cta,
-  }
+  },
 };
 
 const getExperimentInfo = (experiment) => {
-  if(!experiment){
+  if (!experiment) {
     return '';
   }
   return (
-    <div className={styles.experimentLabel}>{EXPERIMENT_GROUP[experiment.group]}</div>
+    <div className={styles.experimentLabel}>
+      {EXPERIMENT_GROUP[experiment.group]}
+    </div>
   );
-}
+};
 
 const getTranslationInfo = (translationLocale) => {
-  if(!translationLocale){
+  if (!translationLocale) {
     return '';
   }
   return (
-    <div className={styles.translationLabel}>{translationLocale.toUpperCase()}</div>
+    <div className={styles.translationLabel}>
+      {translationLocale.toUpperCase()}
+    </div>
   );
-}
+};
 
 const formatStatus = (status) => {
   const color = PUSH_STATUS_COLOR[status];
   const text = PUSH_STATUS_CONTENT[status];
-  return (
-    <StatusIndicator color={color} text={text} />
-  );
-}
+  return <StatusIndicator color={color} text={text} />;
+};
 
 const getPushTime = (pushTime, updatedAt) => {
   const time = pushTime || updatedAt;
   const dateTime = new Date(time);
   const isLocal = typeof time === 'string' && time.indexOf('Z') === -1;
   const timeContent = DateUtils.yearMonthDayTimeFormatter(dateTime, !isLocal);
-  const result  = [];
+  const result = [];
   if (isLocal) {
     result.push(
-      <div key='localTime' className={styles.localTimeLabel}>LOCAL TIME</div>
+      <div key="localTime" className={styles.localTimeLabel}>
+        LOCAL TIME
+      </div>
     );
   }
-  result.push(
-    <div key='timeContent'>{timeContent}</div>
-  );
+  result.push(<div key="timeContent">{timeContent}</div>);
   return result;
-}
+};
 
 @withRouter
 class PushIndex extends DashboardView {
   constructor() {
     super();
     this.section = 'Push';
-    this.subsection = 'Past Pushes'
-    this.action = new SidebarAction('Send a push', this.navigateToNew.bind(this));
+    this.subsection = 'Past Pushes';
+    this.action = new SidebarAction(
+      'Send a push',
+      this.navigateToNew.bind(this)
+    );
     this.state = {
       pushes: [],
       loading: true,
       paginationInfo: undefined,
       availableDevices: undefined,
-    }
+    };
     this.xhrHandle = null;
   }
 
-  handleFetch(category, page, limit){
+  handleFetch(category, page, limit) {
     limit = limit || PUSH_DEFAULT_LIMIT;
     page = page || 0;
     const promise = this.context.fetchPushNotifications(category, page, limit);
 
-    promise.then((pushes) => {
-      this.setState({
-        paginationInfo: {
-          has_more: (pushes.length == limit),
-          page_num: page
-        },
-        pushes: this.state.pushes.concat(pushes),
+    promise
+      .then((pushes) => {
+        this.setState({
+          paginationInfo: {
+            has_more: pushes.length == limit,
+            page_num: page,
+          },
+          pushes: this.state.pushes.concat(pushes),
+        });
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+          showMoreLoading: false,
+        });
       });
-    }).finally(() => {
-      this.setState({
-        loading: false,
-        showMoreLoading: false,
-      });
-    });
   }
 
   componentWillMount() {
     this.handleFetch(this.props.params.category);
     //TODO: make xhr map and generic abort for existing xhrs.
-    this.context.fetchAvailableDevices().then(({ available_devices }) => {
-      this.setState({
-        availableDevices: available_devices
-      });
-    }, () => {
-      this.setState({
-        availableDevices: PushConstants.DEFAULT_DEVICES
-      });
-    });
+    this.context.fetchAvailableDevices().then(
+      ({ available_devices }) => {
+        this.setState({
+          availableDevices: available_devices,
+        });
+      },
+      () => {
+        this.setState({
+          availableDevices: PushConstants.DEFAULT_DEVICES,
+        });
+      }
+    );
   }
 
   componentWillUnmount() {
@@ -322,33 +337,46 @@ class PushIndex extends DashboardView {
   renderSidebar() {
     const current = this.props.params.category || '';
     return (
-      <CategoryList current={current} linkPrefix={'push/activity/'} categories={[
-        { name: PUSH_CATEGORIES[PUSH_TYPE_ALL],
-          id: PUSH_TYPE_ALL},
-        // { name: PUSH_CATEGORIES[PUSH_TYPE_CAMPAIGN],
-        //   id: PUSH_TYPE_CAMPAIGN},
-        // { name: PUSH_CATEGORIES[PUSH_TYPE_EXPERIMENT],
-        //   id: PUSH_TYPE_EXPERIMENT},
-        // { name: PUSH_CATEGORIES[PUSH_TYPE_API],
-        //   id: PUSH_TYPE_API},
-      ]} />
+      <CategoryList
+        current={current}
+        linkPrefix={'push/activity/'}
+        categories={[
+          { name: PUSH_CATEGORIES[PUSH_TYPE_ALL], id: PUSH_TYPE_ALL },
+          // { name: PUSH_CATEGORIES[PUSH_TYPE_CAMPAIGN],
+          //   id: PUSH_TYPE_CAMPAIGN},
+          // { name: PUSH_CATEGORIES[PUSH_TYPE_EXPERIMENT],
+          //   id: PUSH_TYPE_EXPERIMENT},
+          // { name: PUSH_CATEGORIES[PUSH_TYPE_API],
+          //   id: PUSH_TYPE_API},
+        ]}
+      />
     );
   }
 
   renderRow(push) {
     //TODO: special experimentation case for type
     return (
-      <tr key={push.id} onClick={this.navigateToDetails.bind(this, push.id)} className={styles.tr}>
+      <tr
+        key={push.id}
+        onClick={this.navigateToDetails.bind(this, push.id)}
+        className={styles.tr}
+      >
         <td className={styles.colType}>{getPushStatusType(push.attributes)}</td>
         <td className={styles.colTarget}>
           {getTranslationInfo(push.attributes.translation_locale)}
           {getExperimentInfo(push.attributes.experiment)}
           {getPushTarget(push.attributes, this.state.availableDevices)}
         </td>
-        <td className={styles.colPushesSent}>{getPushCount(push.attributes)}</td>
+        <td className={styles.colPushesSent}>
+          {getPushCount(push.attributes)}
+        </td>
         <td className={styles.colName}>{getPushName(push.attributes)}</td>
-        <td className={styles.colTime}>{getPushTime(push.attributes.pushTime, push.updatedAt)}</td>
-        <td className={styles.colStatus}>{formatStatus(push.attributes.status)}</td>
+        <td className={styles.colTime}>
+          {getPushTime(push.attributes.pushTime, push.updatedAt)}
+        </td>
+        <td className={styles.colStatus}>
+          {formatStatus(push.attributes.status)}
+        </td>
       </tr>
     );
   }
@@ -356,22 +384,39 @@ class PushIndex extends DashboardView {
   renderToolbar() {
     return (
       <Toolbar
-        section='Push'
+        section="Push"
         subsection={PUSH_CATEGORIES[this.props.params.category]}
-        details={'push'}>
-        <Button color='white' value='Send a push' onClick={this.navigateToNew.bind(this)} />
+        details={'push'}
+      >
+        <Button
+          color="white"
+          value="Send a push"
+          onClick={this.navigateToNew.bind(this)}
+        />
       </Toolbar>
     );
   }
 
   renderHeaders() {
     return [
-      <TableHeader key='type' width={10}>Type</TableHeader>,
-      <TableHeader key='target' width={15}>Target</TableHeader>,
-      <TableHeader key='pushes_sent' width={15}>Pushes Sent</TableHeader>,
-      <TableHeader key='name' width={30}>Name</TableHeader>,
-      <TableHeader key='time' width={20}>Time</TableHeader>,
-      <TableHeader key='status' width={10}>Status</TableHeader>,
+      <TableHeader key="type" width={10}>
+        Type
+      </TableHeader>,
+      <TableHeader key="target" width={15}>
+        Target
+      </TableHeader>,
+      <TableHeader key="pushes_sent" width={15}>
+        Pushes Sent
+      </TableHeader>,
+      <TableHeader key="name" width={30}>
+        Name
+      </TableHeader>,
+      <TableHeader key="time" width={20}>
+        Time
+      </TableHeader>,
+      <TableHeader key="status" width={10}>
+        Status
+      </TableHeader>,
     ];
   }
 
@@ -383,10 +428,18 @@ class PushIndex extends DashboardView {
       return null;
     }
 
-    if(paginationInfo.has_more && !this.state.loading){
+    if (paginationInfo.has_more && !this.state.loading) {
       return (
         <div className={styles.showMore}>
-          <Button progress={this.state.showMoreLoading} color='blue' value='Show more' onClick={this.handleShowMore.bind(this, paginationInfo.page_num + 1)} />
+          <Button
+            progress={this.state.showMoreLoading}
+            color="blue"
+            value="Show more"
+            onClick={this.handleShowMore.bind(
+              this,
+              paginationInfo.page_num + 1
+            )}
+          />
         </div>
       );
     } else {
@@ -400,9 +453,10 @@ class PushIndex extends DashboardView {
       <EmptyState
         title={emptyStateContent[type].title}
         description={emptyStateContent[type].description}
-        icon='push-solid'
+        icon="push-solid"
         cta={emptyStateContent[type].cta}
-        action={'http://docs.parseplatform.org/ios/guide/#push-notifications'} />
+        action={'http://docs.parseplatform.org/ios/guide/#push-notifications'}
+      />
     );
   }
 
@@ -417,14 +471,14 @@ class PushIndex extends DashboardView {
         console.warn('tableData() needs to return an array of objects');
       } else {
         if (data.length === 0) {
-          content = <div className={stylesTable.empty}>{this.renderEmpty()}</div>;
+          content = (
+            <div className={stylesTable.empty}>{this.renderEmpty()}</div>
+          );
         } else {
           content = (
             <div className={stylesTable.rows}>
               <table>
-                <tbody>
-                  {data.map((row) => this.renderRow(row))}
-                </tbody>
+                <tbody>{data.map((row) => this.renderRow(row))}</tbody>
               </table>
             </div>
           );

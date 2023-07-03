@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
+import React from 'react';
 
 export default class DragHandle extends React.Component {
   constructor() {
@@ -22,7 +22,7 @@ export default class DragHandle extends React.Component {
     this.y = 0;
 
     this.state = {
-      dragging: false
+      dragging: false,
     };
   }
 
@@ -62,7 +62,10 @@ export default class DragHandle extends React.Component {
 
   mouseMoveHandler() {
     if (this.state.dragging) {
-      this.props.onDrag(this.lastEvent.pageX - this.x, this.lastEvent.pageY - this.y);
+      this.props.onDrag(
+        this.lastEvent.pageX - this.x,
+        this.lastEvent.pageY - this.y
+      );
       this.x = this.lastEvent.pageX;
       this.y = this.lastEvent.pageY;
     }
@@ -77,5 +80,5 @@ export default class DragHandle extends React.Component {
 DragHandle.propTypes = {
   onDrag: PropTypes.func.isRequired.describe(
     'A function called when the handle is dragged. It takes deltas for X and Y as the two parameters.'
-  )
-}
+  ),
+};

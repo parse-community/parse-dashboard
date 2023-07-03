@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import baseStyles       from 'stylesheets/base.scss';
-import PropTypes        from 'lib/PropTypes';
-import React            from 'react';
-import styles           from 'components/Button/Button.scss';
+import baseStyles from 'stylesheets/base.scss';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import styles from 'components/Button/Button.scss';
 
 const noop = () => {};
 
@@ -36,30 +36,39 @@ const Button = (props) => {
   const clickHandler = hasOnClick ? props.onClick : noop;
   let styleOverride = null;
   if (props.width) {
-    styleOverride = { width: props.width, minWidth: props.width, ...props.additionalStyles };
+    styleOverride = {
+      width: props.width,
+      minWidth: props.width,
+      ...props.additionalStyles,
+    };
   }
   return (
     <button
-      type='button'
+      type="button"
       style={styleOverride}
       className={classes.join(' ')}
       onClick={clickHandler}
-      onFocus={(e) => { if (props.disabled) e.target.blur(); }} >
+      onFocus={(e) => {
+        if (props.disabled) {
+          e.target.blur();
+        }
+      }}
+    >
       <span>{props.value}</span>
     </button>
   );
-}
+};
 
 export default Button;
 
 Button.propTypes = {
   primary: PropTypes.bool.describe(
     'Determines whether the button represents a Primary action. ' +
-    'Primary buttons appear filled, while normal buttons are outlines.'
+      'Primary buttons appear filled, while normal buttons are outlines.'
   ),
   disabled: PropTypes.bool.describe(
     'Determines whether a button can be clicked. Disabled buttons will ' +
-    'appear grayed out, and will not fire onClick events.'
+      'appear grayed out, and will not fire onClick events.'
   ),
   color: PropTypes.oneOf(['blue', 'green', 'red', 'white']).describe(
     'The color of the button.'

@@ -15,7 +15,7 @@ export default class FileEditor extends React.Component {
     super();
 
     this.state = {
-      value: props.value
+      value: props.value,
     };
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
@@ -58,7 +58,7 @@ export default class FileEditor extends React.Component {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   }
 
@@ -78,9 +78,18 @@ export default class FileEditor extends React.Component {
   render() {
     const file = this.props.value;
     return (
-      <div ref={this.inputRef} style={{ minWidth: this.props.width, display: 'none' }} className={styles.editor}>
+      <div
+        ref={this.inputRef}
+        style={{ minWidth: this.props.width, display: 'none' }}
+        className={styles.editor}
+      >
         <a className={styles.upload}>
-          <input ref={this.fileInputRef} id='fileInput' type='file' onChange={this.handleChange.bind(this)} />
+          <input
+            ref={this.fileInputRef}
+            id="fileInput"
+            type="file"
+            onChange={this.handleChange.bind(this)}
+          />
           <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
       </div>

@@ -22,7 +22,7 @@ export function extractExpiration(changes) {
     expiration_time_type,
     expiration_interval_unit,
     expiration_interval_num,
-    expiration_time
+    expiration_time,
   } = changes;
 
   if (push_expires) {

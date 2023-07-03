@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import Prism     from 'prismjs';
+import React from 'react';
+import Prism from 'prismjs';
 
 import './CodeSnippet.css';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
@@ -36,10 +36,12 @@ export default class CodeSnippet extends React.Component {
     if (lineNumbers) {
       classes.push('line-numbers');
     }
-    const pageStyle = fullPage ? { minHeight: 'calc(100vh - 96px)'} : {};
+    const pageStyle = fullPage ? { minHeight: 'calc(100vh - 96px)' } : {};
     return (
-      <pre style={{ margin: 0, ...pageStyle}} className={classes.join(' ')}>
-        <code style={pageStyle} ref={this.codeRef}>{this.props.source}</code>
+      <pre style={{ margin: 0, ...pageStyle }} className={classes.join(' ')}>
+        <code style={pageStyle} ref={this.codeRef}>
+          {this.props.source}
+        </code>
       </pre>
     );
   }
@@ -57,5 +59,5 @@ CodeSnippet.propTypes = {
   ),
   lineNumbers: PropTypes.bool.describe(
     'Pass false if this component doesn\'t need to print line numbers.'
-  )
+  ),
 };

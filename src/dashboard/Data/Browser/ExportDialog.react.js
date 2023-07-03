@@ -5,8 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal          from 'components/Modal/Modal.react';
-import React          from 'react';
+import Modal from 'components/Modal/Modal.react';
+import React from 'react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class ExportDialog extends React.Component {
@@ -14,7 +14,7 @@ export default class ExportDialog extends React.Component {
   constructor() {
     super();
     this.state = {
-      progress: undefined
+      progress: undefined,
     };
   }
 
@@ -44,18 +44,23 @@ export default class ExportDialog extends React.Component {
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon='down-outline'
+        icon="down-outline"
         iconSize={40}
-        title='Export this class?'
+        title="Export this class?"
         subtitle={'We\'ll send you an email when your data is ready.'}
-        confirmText='Export'
-        cancelText='Cancel'
+        confirmText="Export"
+        cancelText="Cancel"
         disabled={this.state.progress === undefined || inProgress}
         buttonsInCenter={true}
         onCancel={this.props.onCancel}
-        onConfirm={this.props.onConfirm}>
-        {inProgress ?
-          <div style={{ padding: 20 }}>You are currently exporting this class. We'll send you an email when that data is available for you to download.</div> : null}
+        onConfirm={this.props.onConfirm}
+      >
+        {inProgress ? (
+          <div style={{ padding: 20 }}>
+            You are currently exporting this class. We'll send you an email when
+            that data is available for you to download.
+          </div>
+        ) : null}
       </Modal>
     );
   }

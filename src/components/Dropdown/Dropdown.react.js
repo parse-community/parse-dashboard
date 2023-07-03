@@ -6,20 +6,20 @@
  * the root directory of this source tree.
  */
 import { Directions } from 'lib/Constants';
-import Popover        from 'components/Popover/Popover.react';
-import Position       from 'lib/Position';
-import PropTypes      from 'lib/PropTypes';
-import React          from 'react';
-import SliderWrap     from 'components/SliderWrap/SliderWrap.react';
-import styles         from 'components/Dropdown/Dropdown.scss';
+import Popover from 'components/Popover/Popover.react';
+import Position from 'lib/Position';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import SliderWrap from 'components/SliderWrap/SliderWrap.react';
+import styles from 'components/Dropdown/Dropdown.scss';
 
 export default class Dropdown extends React.Component {
   constructor() {
     super();
     this.state = {
       open: false,
-      position: null
-    }
+      position: null,
+    };
 
     this.dropdownRef = React.createRef();
   }
@@ -35,14 +35,14 @@ export default class Dropdown extends React.Component {
       }
       return {
         open: true,
-        position: pos
+        position: pos,
       };
     });
   }
 
   close() {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
@@ -50,11 +50,14 @@ export default class Dropdown extends React.Component {
     if (value === this.props.value) {
       return this.setState({ open: false });
     }
-    this.setState({
-      open: false
-    }, () => {
-      this.props.onChange(value);
-    });
+    this.setState(
+      {
+        open: false,
+      },
+      () => {
+        this.props.onChange(value);
+      }
+    );
   }
 
   render() {
@@ -64,35 +67,43 @@ export default class Dropdown extends React.Component {
       const popoverChildren = (
         <SliderWrap direction={Directions.DOWN} expanded={true}>
           <div style={{ width }} className={styles.menu}>
-            {React.Children.map(this.props.children, c => (
-              <button type='button' onClick={this.select.bind(this, c.props.value)}>{c}</button>
+            {React.Children.map(this.props.children, (c) => (
+              <button
+                type="button"
+                onClick={this.select.bind(this, c.props.value)}
+              >
+                {c}
+              </button>
             ))}
           </div>
         </SliderWrap>
       );
-      popover =
-        <Popover fixed={this.props.fixed} position={this.state.position} onExternalClick={this.close.bind(this)}>
+      popover = (
+        <Popover
+          fixed={this.props.fixed}
+          position={this.state.position}
+          onExternalClick={this.close.bind(this)}
+        >
           {popoverChildren}
-        </Popover>;
+        </Popover>
+      );
     }
     let content = null;
-    React.Children.forEach(this.props.children, c => {
+    React.Children.forEach(this.props.children, (c) => {
       if (!content && c.props.value === this.props.value) {
         content = c;
       }
     });
     if (!content) {
       content = (
-        <div className={styles.placeHolder}>
-          {this.props.placeHolder}
-        </div>
+        <div className={styles.placeHolder}>{this.props.placeHolder}</div>
       );
     }
     let dropdownStyle = {};
     if (this.props.width) {
       dropdownStyle = {
         width: this.props.width,
-        float: 'left'
+        float: 'left',
       };
     }
     const dropdownClasses = [styles.dropdown];
@@ -100,8 +111,18 @@ export default class Dropdown extends React.Component {
       dropdownClasses.push(styles.disabled);
     }
     return (
-      <div style={dropdownStyle} className={dropdownClasses.join(' ')} ref={this.dropdownRef}>
-        <div className={[styles.current, this.props.hideArrow ? styles.hideArrow : ''].join(' ')} onClick={this.toggle.bind(this)}>
+      <div
+        style={dropdownStyle}
+        className={dropdownClasses.join(' ')}
+        ref={this.dropdownRef}
+      >
+        <div
+          className={[
+            styles.current,
+            this.props.hideArrow ? styles.hideArrow : '',
+          ].join(' ')}
+          onClick={this.toggle.bind(this)}
+        >
           {content}
         </div>
         {popover}
@@ -127,7 +148,5 @@ Dropdown.propTypes = {
   placeHolder: PropTypes.string.describe(
     'Placeholder text used in place of default selection.'
   ),
-  hideArrow: PropTypes.bool.describe(
-    'Flag to hide the dropdown arrow.'
-  ),
-}
+  hideArrow: PropTypes.bool.describe('Flag to hide the dropdown arrow.'),
+};

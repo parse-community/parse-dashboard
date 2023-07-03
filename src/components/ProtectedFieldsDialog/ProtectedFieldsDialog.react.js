@@ -5,21 +5,21 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import hasAncestor        from 'lib/hasAncestor';
-import Button             from 'components/Button/Button.react';
-import Autocomplete       from 'components/Autocomplete/Autocomplete.react';
-import Icon               from 'components/Icon/Icon.react';
-import { Map }            from 'immutable';
-import Pill               from 'components/Pill/Pill.react';
-import Popover            from 'components/Popover/Popover.react';
-import Position           from 'lib/Position';
-import React              from 'react';
-import ScrollHint         from 'components/ScrollHint/ScrollHint.react'
-import styles             from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.scss';
-import MultiSelect        from 'components/MultiSelect/MultiSelect.react';
-import MultiSelectOption  from 'components/MultiSelect/MultiSelectOption.react';
-import TrackVisibility    from 'components/TrackVisibility/TrackVisibility.react';
-import baseStyles         from 'stylesheets/base.scss';
+import hasAncestor from 'lib/hasAncestor';
+import Button from 'components/Button/Button.react';
+import Autocomplete from 'components/Autocomplete/Autocomplete.react';
+import Icon from 'components/Icon/Icon.react';
+import { Map } from 'immutable';
+import Pill from 'components/Pill/Pill.react';
+import Popover from 'components/Popover/Popover.react';
+import Position from 'lib/Position';
+import React from 'react';
+import ScrollHint from 'components/ScrollHint/ScrollHint.react';
+import styles from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.scss';
+import MultiSelect from 'components/MultiSelect/MultiSelect.react';
+import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';
+import TrackVisibility from 'components/TrackVisibility/TrackVisibility.react';
+import baseStyles from 'stylesheets/base.scss';
 
 const origin = new Position(0, 0);
 const intersectionMargin = '10px 0px 0px 20px';
@@ -48,7 +48,7 @@ export default class ProtectedFieldsDialog extends React.Component {
     this.observer = new IntersectionObserver(callback, {
       root: this.refTable.current,
       rootMargin: intersectionMargin,
-      threshold: [0.92]
+      threshold: [0.92],
     });
 
     this.state = {
@@ -59,14 +59,14 @@ export default class ProtectedFieldsDialog extends React.Component {
       keys,
       newEntry: '',
       entryError: null,
-      newKeys: []
+      newKeys: [],
     };
   }
 
   async componentDidMount() {
     // validate existing entries, also preserve their types (to render correct pills).
     const rows = await Promise.all(
-      this.state.keys.map(key => this.props.validateEntry(key))
+      this.state.keys.map((key) => this.props.validateEntry(key))
     );
 
     let entryTypes = new Map({});
@@ -79,7 +79,7 @@ export default class ProtectedFieldsDialog extends React.Component {
         key = entry.id;
         value[type] = {
           name: entry.get('username'),
-          id: entry.id
+          id: entry.id,
         };
       }
 
@@ -87,7 +87,7 @@ export default class ProtectedFieldsDialog extends React.Component {
         key = 'role:' + entry.getName();
         value[type] = {
           name: entry.getName(),
-          id: entry.id
+          id: entry.id,
         };
       }
 
@@ -135,7 +135,7 @@ export default class ProtectedFieldsDialog extends React.Component {
               this.state.newKeys.includes(key)
             ) {
               return this.setState({
-                entryError: 'You already have a row for this object'
+                entryError: 'You already have a row for this object',
               });
             }
 
@@ -148,7 +148,7 @@ export default class ProtectedFieldsDialog extends React.Component {
                 entryTypes: nextEntryTypes,
                 protectedFields: nextFields,
                 newKeys: nextKeys,
-                entryError: null
+                entryError: null,
               },
               this.refEntry.current.resetInput()
             );
@@ -158,11 +158,11 @@ export default class ProtectedFieldsDialog extends React.Component {
           if (this.props.enablePointerPermissions) {
             this.setState({
               entryError:
-                'Role, User or field not found. Enter a valid id, name or column.'
+                'Role, User or field not found. Enter a valid id, name or column.',
             });
           } else {
             this.setState({
-              entryError: 'Role or User not found. Enter a valid name or id'
+              entryError: 'Role or User not found. Enter a valid name or id',
             });
           }
         }
@@ -175,13 +175,13 @@ export default class ProtectedFieldsDialog extends React.Component {
     const protectedFields = this.state.protectedFields.delete(key);
 
     // also remove from local state
-    const keys = this.state.keys.filter(k => k !== key);
-    const newKeys = this.state.newKeys.filter(k => k !== key);
+    const keys = this.state.keys.filter((k) => k !== key);
+    const newKeys = this.state.newKeys.filter((k) => k !== key);
 
     return this.setState({
       protectedFields,
       newKeys,
-      keys
+      keys,
     });
   }
 
@@ -192,7 +192,7 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   onChange(key, newValue) {
-    this.setState(state => {
+    this.setState((state) => {
       let protectedFields = state.protectedFields;
       protectedFields = protectedFields.set(key, newValue);
       return { protectedFields };
@@ -235,15 +235,16 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     const noAvailableFields = options.length === 0;
 
-    if(noAvailableFields){
+    if (noAvailableFields) {
       options.push(
-        <MultiSelectOption  disabled={true} dense={true}>
+        <MultiSelectOption disabled={true} dense={true}>
           {'This class has no fields to protect'}
         </MultiSelectOption>
-      )
+      );
     }
 
-    const placeholder = 'All fields allowed.' + (noAvailableFields ? '' : ' Click to protect.');
+    const placeholder =
+      'All fields allowed.' + (noAvailableFields ? '' : ' Click to protect.');
 
     return (
       <div className={(styles.second, styles.multiselect)}>
@@ -251,7 +252,7 @@ export default class ProtectedFieldsDialog extends React.Component {
           fixed={false}
           dense={true}
           chips={true}
-          onChange={s => {
+          onChange={(s) => {
             this.onChange(key, s);
           }}
           value={values}
@@ -264,7 +265,7 @@ export default class ProtectedFieldsDialog extends React.Component {
   }
 
   renderRow(key, columns, types) {
-    const pill = text => (
+    const pill = (text) => (
       <span className={styles.pillType}>
         <Pill value={text} />
       </span>
@@ -357,10 +358,7 @@ export default class ProtectedFieldsDialog extends React.Component {
     if (!this.state.transitioning) {
       trash = (
         <div className={styles.delete}>
-          <button
-            type='button'
-            onClick={this.deleteRow.bind(this, key)}
-          >
+          <button type="button" onClick={this.deleteRow.bind(this, key)}>
             <Icon name="trash-solid" width={20} height={20} />
           </button>
         </div>
@@ -394,11 +392,11 @@ export default class ProtectedFieldsDialog extends React.Component {
     const allKeys = [...keys, ...newKeys];
 
     const availablePointerFields = userPointers
-      .map(ptr => `userField:${ptr}`)
-      .filter(ptr => !allKeys.includes(ptr) && ptr.includes(input));
+      .map((ptr) => `userField:${ptr}`)
+      .filter((ptr) => !allKeys.includes(ptr) && ptr.includes(input));
 
     const possiblePrefix = ['role:']
-      .filter(o => o.startsWith(input) && o.length > input.length) // filter matching prefixes
+      .filter((o) => o.startsWith(input) && o.length > input.length) // filter matching prefixes
       .concat(...availablePointerFields); //
 
     // pointer fields that are not applied yet;
@@ -406,7 +404,7 @@ export default class ProtectedFieldsDialog extends React.Component {
 
     // do not suggest unique rows that are already added;
     const uniqueOptions = ['*', 'authenticated'].filter(
-      key =>
+      (key) =>
         !allKeys.includes(key) && (input.length == 0 || key.startsWith(input))
     );
 
@@ -421,7 +419,7 @@ export default class ProtectedFieldsDialog extends React.Component {
       {
         activeSuggestion: 0,
         newEntry: e.currentTarget.innerText,
-        showSuggestions: false
+        showSuggestions: false,
       },
       () => {
         this.props.onChange(this.state.newEntry);
@@ -461,11 +459,11 @@ export default class ProtectedFieldsDialog extends React.Component {
           <div className={styles.tableWrap}>
             <div className={styles.table} ref={this.refTable}>
               <div className={[styles.overlay, styles.second].join(' ')} />
-              {this.state.keys.map(key =>
+              {this.state.keys.map((key) =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
               )}
 
-              {this.state.newKeys.map(key =>
+              {this.state.newKeys.map((key) =>
                 this.renderRow(key, this.state.columns, this.state.entryTypes)
               )}
 
@@ -476,17 +474,17 @@ export default class ProtectedFieldsDialog extends React.Component {
                     inputStyle={{
                       width: '400px',
                       padding: '0 6px',
-                      margin: '10px 20px'
+                      margin: '10px 20px',
                     }}
                     suggestionsStyle={{
                       margin: '-6px 0px 0px 20px',
-                      width: '400px'
+                      width: '400px',
                     }}
-                    onChange={e => this.onUserInput(e)}
+                    onChange={(e) => this.onUserInput(e)}
                     onSubmit={this.checkEntry.bind(this)}
                     placeholder={placeholderText}
-                    buildSuggestions={input => this.suggestInput(input)}
-                    buildLabel={input => this.buildLabel(input)}
+                    buildSuggestions={(input) => this.suggestInput(input)}
+                    buildLabel={(input) => this.buildLabel(input)}
                     error={this.state.entryError}
                   />
                 </TrackVisibility>
@@ -498,7 +496,7 @@ export default class ProtectedFieldsDialog extends React.Component {
             </div>
           </div>
           <div className={styles.footer}>
-            <ScrollHint ref={this.refScrollIndicator}/>
+            <ScrollHint ref={this.refScrollIndicator} />
             <div className={styles.actions}>
               <Button value="Cancel" onClick={this.props.onCancel} />
               <Button
@@ -507,7 +505,9 @@ export default class ProtectedFieldsDialog extends React.Component {
                 onClick={() => this.props.onConfirm(this.outputPerms())}
               />
             </div>
-            <div className={[styles.details, baseStyles.verticalCenter].join(' ')}>
+            <div
+              className={[styles.details, baseStyles.verticalCenter].join(' ')}
+            >
               {this.props.details}
             </div>
           </div>

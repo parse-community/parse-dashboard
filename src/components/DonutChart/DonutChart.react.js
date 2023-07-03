@@ -6,23 +6,20 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/DonutChart/DonutChart.scss';
+import React from 'react';
+import styles from 'components/DonutChart/DonutChart.scss';
 
-const CHART_COLORS = [
-  '#b9e88b',
-  '#fac786',
-  '#80eeef',
-  '#dfb3eb',
-  '#fd9fb0'
-];
+const CHART_COLORS = ['#b9e88b', '#fac786', '#80eeef', '#dfb3eb', '#fd9fb0'];
 
-const MONOCHROME_COLORS = [
-  '#3b2c48',
-  '#e0e0ea'
-];
+const MONOCHROME_COLORS = ['#3b2c48', '#e0e0ea'];
 
-const DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = false, printPercentage = false }) => {
+const DonutChart = ({
+  segments = [],
+  diameter = 200,
+  label = '',
+  isMonochrome = false,
+  printPercentage = false,
+}) => {
   const centerX = diameter / 2;
   const centerY = centerX;
   const radius = centerX * 0.9;
@@ -38,15 +35,26 @@ const DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = 
 
   const paths = [];
   for (let i = 0; i < segments.length; ++i) {
-    const arc = segments[i] / sum * 2 * Math.PI;
+    const arc = (segments[i] / sum) * 2 * Math.PI;
     let angle = alpha - Math.min(arc, Math.PI);
     let endX = radius * Math.cos(angle) + centerX;
     let endY = -radius * Math.sin(angle) + centerY;
 
     let path = [
-      'M', centerY, centerY,
-      'L', lastX, lastY,
-      'A', radius, radius, 0, 0, 1, endX, endY
+      'M',
+      centerY,
+      centerY,
+      'L',
+      lastX,
+      lastY,
+      'A',
+      radius,
+      radius,
+      0,
+      0,
+      1,
+      endX,
+      endY,
     ];
     if (arc > Math.PI) {
       angle = alpha - arc;
@@ -60,8 +68,12 @@ const DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = 
       <path
         className={styles.path}
         d={path.join(' ')}
-        style={{ fill: isMonochrome ? MONOCHROME_COLORS[i % 2] : CHART_COLORS[i], transformOrigin: `${centerY}px ${centerX}px 0px` }}
-        key={`segment${i}`} />
+        style={{
+          fill: isMonochrome ? MONOCHROME_COLORS[i % 2] : CHART_COLORS[i],
+          transformOrigin: `${centerY}px ${centerX}px 0px`,
+        }}
+        key={`segment${i}`}
+      />
     );
 
     lastX = endX;
@@ -72,13 +84,31 @@ const DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = 
   return (
     <svg style={{ width: diameter, height: diameter }}>
       {paths}
-      <circle className={styles.donutCenter} cx={centerX} cy={centerY} r={centerX * 0.8} />
+      <circle
+        className={styles.donutCenter}
+        cx={centerX}
+        cy={centerY}
+        r={centerX * 0.8}
+      />
       {segments.map((segment, i) => (
-        <text className={styles.donutValue} textAnchor='middle' x={centerX} y={centerY} key={`segment${i}`}>
-          {printPercentage ? (segment / sum * 100).toFixed(2) + '%' : segment}
+        <text
+          className={styles.donutValue}
+          textAnchor="middle"
+          x={centerX}
+          y={centerY}
+          key={`segment${i}`}
+        >
+          {printPercentage ? ((segment / sum) * 100).toFixed(2) + '%' : segment}
         </text>
       ))}
-      <text className={styles.donutLabel} textAnchor='middle' x={centerX} y={centerY + 20}>{label}</text>
+      <text
+        className={styles.donutLabel}
+        textAnchor="middle"
+        x={centerX}
+        y={centerY + 20}
+      >
+        {label}
+      </text>
     </svg>
   );
 };
@@ -86,19 +116,17 @@ const DonutChart = ({ segments = [], diameter = 200, label = '', isMonochrome = 
 export default DonutChart;
 
 DonutChart.propTypes = {
-  'segments': PropTypes.arrayOf(PropTypes.number).isRequired.describe(
+  segments: PropTypes.arrayOf(PropTypes.number).isRequired.describe(
     'Values of the DonutChart.'
   ),
-  'diameter': PropTypes.number.describe(
-    'Width and height of the DonutChart.'
-  ),
-  'label': PropTypes.string.describe(
+  diameter: PropTypes.number.describe('Width and height of the DonutChart.'),
+  label: PropTypes.string.describe(
     'Additional string to be appended after each rendered value in DonutChart.'
   ),
-  'isMonochrome': PropTypes.bool.describe(
+  isMonochrome: PropTypes.bool.describe(
     'Whether the DonutChart is monochrome/bicolor (usually used for progress bar).'
   ),
-  'printPercentage': PropTypes.bool.describe(
+  printPercentage: PropTypes.bool.describe(
     'Whether the DonutChart should render percentage of each segment instead of the actual value.'
-  )
+  ),
 };

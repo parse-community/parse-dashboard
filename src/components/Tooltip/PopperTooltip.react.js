@@ -4,12 +4,8 @@ import 'react-popper-tooltip/dist/styles.css';
 
 const PopperTooltip = (props) => {
   const { children, tooltip, visible, placement } = props;
-  const {
-    getArrowProps,
-    getTooltipProps,
-    setTooltipRef,
-    setTriggerRef
-  } = usePopperTooltip({ placement });
+  const { getArrowProps, getTooltipProps, setTooltipRef, setTriggerRef } =
+    usePopperTooltip({ placement });
 
   return (
     <>
@@ -21,7 +17,7 @@ const PopperTooltip = (props) => {
         >
           <div
             {...getArrowProps({
-              className: 'tooltip-arrow'
+              className: 'tooltip-arrow',
             })}
           />
           {tooltip}
@@ -29,6 +25,6 @@ const PopperTooltip = (props) => {
       )}
     </>
   );
-}
+};
 
 export default PopperTooltip;

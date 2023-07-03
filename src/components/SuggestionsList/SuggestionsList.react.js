@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Popover  from 'components/Popover/Popover.react';
-import React    from 'react';
-import styles   from 'components/SuggestionsList/SuggestionsList.scss';
+import Popover from 'components/Popover/Popover.react';
+import React from 'react';
+import styles from 'components/SuggestionsList/SuggestionsList.scss';
 
 export default class Suggestion extends React.Component {
   constructor() {
@@ -15,7 +15,7 @@ export default class Suggestion extends React.Component {
     this.state = {
       activeSuggestion: 0,
       open: false,
-      position: null
+      position: null,
     };
 
     this.popoverRef = React.createRef();
@@ -43,7 +43,8 @@ export default class Suggestion extends React.Component {
       suggestionsItemStyle,
       activeSuggestion,
       onClick,
-      onMouseDown} = this.props;
+      onMouseDown,
+    } = this.props;
 
     return (
       <Popover
@@ -60,7 +61,13 @@ export default class Suggestion extends React.Component {
               className = styles.active;
             }
             return (
-              <li style={suggestionsItemStyle} className={className} key={suggestion} onMouseDown={onMouseDown} onClick={onClick}>
+              <li
+                style={suggestionsItemStyle}
+                className={className}
+                key={suggestion}
+                onMouseDown={onMouseDown}
+                onClick={onClick}
+              >
                 {suggestion}
               </li>
             );

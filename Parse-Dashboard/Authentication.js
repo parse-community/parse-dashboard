@@ -1,8 +1,8 @@
 'use strict';
-var bcrypt = require('bcryptjs');
-var csrf = require('csurf');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
+const csrf = require('csurf');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const OTPAuth = require('otpauth')
 
 /**
@@ -20,11 +20,11 @@ function Authentication(validUsers, useEncryptedPasswords, mountPath) {
 
 function initialize(app, options) {
   options = options || {};
-  var self = this;
+  const self = this;
   passport.use('local', new LocalStrategy(
     {passReqToCallback:true},
     function(req, username, password, cb) {
-      var match = self.authenticate({
+      const match = self.authenticate({
         name: username,
         pass: password,
         otpCode: req.body.otpCode
@@ -47,13 +47,13 @@ function initialize(app, options) {
   });
 
   passport.deserializeUser(function(username, cb) {
-    var user = self.authenticate({
+    const user = self.authenticate({
       name: username
     }, true);
     cb(null, user);
   });
 
-  var cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
+  const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
   app.use(require('connect-flash')());
   app.use(require('body-parser').urlencoded({ extended: true }));

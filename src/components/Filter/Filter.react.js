@@ -5,11 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters   from 'lib/Filters';
-import { List, Map }  from 'immutable';
-import PropTypes      from 'lib/PropTypes';
-import React          from 'react';
-import stringCompare  from 'lib/stringCompare';
+import * as Filters from 'lib/Filters';
+import { List, Map } from 'immutable';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import stringCompare from 'lib/stringCompare';
 import { CurrentApp } from 'context/currentApp';
 
 function changeField(schema, filters, index, newField) {
@@ -21,23 +21,39 @@ function changeField(schema, filters, index, newField) {
   const useExisting = allowedConstraints.includes(constraint);
   const newFilter = new Map({
     field: newField,
-    constraint: useExisting ? constraint : Filters.FieldConstraints[schema[newField].type][0],
-    compareTo: (useExisting && typeof defaultCompare === typeof compare) ? compare : defaultCompare
+    constraint: useExisting
+      ? constraint
+      : Filters.FieldConstraints[schema[newField].type][0],
+    compareTo:
+      useExisting && typeof defaultCompare === typeof compare
+        ? compare
+        : defaultCompare,
   });
   return filters.set(index, newFilter);
 }
 
-function changeConstraint(schema, filters, index, newConstraint, prevCompareTo) {
+function changeConstraint(
+  schema,
+  filters,
+  index,
+  newConstraint,
+  prevCompareTo
+) {
   const field = filters.get(index).get('field');
   let compareType = schema[field].type;
-  if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
+  if (
+    Object.prototype.hasOwnProperty.call(
+      Filters.Constraints[newConstraint],
+      'field'
+    )
+  ) {
     compareType = Filters.Constraints[newConstraint].field;
   }
   const newFilter = new Map({
     field: field,
     constraint: newConstraint,
-    compareTo: prevCompareTo ?? Filters.DefaultComparisons[compareType]
-  })
+    compareTo: prevCompareTo ?? Filters.DefaultComparisons[compareType],
+  });
   return filters.set(index, newFilter);
 }
 
@@ -50,7 +66,15 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, className }) => {
+const Filter = ({
+  schema,
+  filters,
+  renderRow,
+  onChange,
+  onSearch,
+  blacklist,
+  className,
+}) => {
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   const available = Filters.availableFilters(schema, filters);
@@ -67,26 +91,39 @@ const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, cla
         }
 
         // Get the column preference of the current class.
-        const currentColumnPreference = currentApp.columnPreference ? currentApp.columnPreference[className] : null;
+        const currentColumnPreference = currentApp.columnPreference
+          ? currentApp.columnPreference[className]
+          : null;
 
         // Check if the preference exists.
         if (currentColumnPreference) {
           const fieldsToSortToTop = currentColumnPreference
-            .filter(item => item.filterSortToTop)
-            .map(item => item.name);
+            .filter((item) => item.filterSortToTop)
+            .map((item) => item.name);
           // Sort the fields.
           fields.sort((a, b) => {
             // Only "a" should sorted to the top.
-            if (fieldsToSortToTop.includes(a) && !fieldsToSortToTop.includes(b)) {
-              return -1
+            if (
+              fieldsToSortToTop.includes(a) &&
+              !fieldsToSortToTop.includes(b)
+            ) {
+              return -1;
             }
             // Only "b" should sorted to the top.
-            if (!fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+            if (
+              !fieldsToSortToTop.includes(a) &&
+              fieldsToSortToTop.includes(b)
+            ) {
               return 1;
             }
             // Both should sorted to the top -> they should be sorted to the same order as in the "fieldsToSortToTop" array.
-            if (fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
-              return fieldsToSortToTop.indexOf(a) - fieldsToSortToTop.indexOf(b);
+            if (
+              fieldsToSortToTop.includes(a) &&
+              fieldsToSortToTop.includes(b)
+            ) {
+              return (
+                fieldsToSortToTop.indexOf(a) - fieldsToSortToTop.indexOf(b)
+              );
             }
             return stringCompare(a, b);
           });
@@ -96,9 +133,16 @@ const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, cla
           fields.sort();
         }
 
-        const constraints = Filters.FieldConstraints[schema[field].type].filter((c) => blacklist.indexOf(c) < 0);
+        const constraints = Filters.FieldConstraints[schema[field].type].filter(
+          (c) => blacklist.indexOf(c) < 0
+        );
         let compareType = schema[field].type;
-        if (Object.prototype.hasOwnProperty.call(Filters.Constraints[constraint], 'field')) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            Filters.Constraints[constraint],
+            'field'
+          )
+        ) {
           compareType = Filters.Constraints[constraint].field;
         }
         return renderRow({
@@ -113,23 +157,27 @@ const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, cla
           compareTo,
           key: field + '-' + constraint + '-' + i,
 
-          onChangeField: newField => {
+          onChangeField: (newField) => {
             onChange(changeField(schema, filters, i, newField));
           },
           onChangeConstraint: (newConstraint, prevCompareTo) => {
-            onChange(changeConstraint(schema, filters, i, newConstraint, prevCompareTo));
+            onChange(
+              changeConstraint(schema, filters, i, newConstraint, prevCompareTo)
+            );
           },
-          onChangeCompareTo: newCompare => {
-            onChange(changeCompareTo(schema, filters, i, compareType, newCompare));
+          onChangeCompareTo: (newCompare) => {
+            onChange(
+              changeCompareTo(schema, filters, i, compareType, newCompare)
+            );
           },
-          onKeyDown: ({key}) => {
+          onKeyDown: ({ key }) => {
             if (key === 'Enter') {
               onSearch();
             }
           },
           onDeleteRow: () => {
             onChange(deleteRow(filters, i));
-          }
+          },
         });
       })}
     </div>
@@ -147,5 +195,5 @@ Filter.propTypes = {
   ),
   renderRow: PropTypes.func.isRequired.describe(
     'A function for rendering a row of a filter.'
-  )
+  ),
 };

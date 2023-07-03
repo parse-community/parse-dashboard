@@ -35,12 +35,11 @@ export default class ObjectPickerDialog extends React.Component {
       // initial relation ids -> currently saved in database
       initialRelationData: [],
       selectionInput: '',
-      disableDataBrowserKeyControls: false
+      disableDataBrowserKeyControls: false,
     };
 
-    this.disableDataBrowserKeyControls = this.disableDataBrowserKeyControls.bind(
-      this
-    );
+    this.disableDataBrowserKeyControls =
+      this.disableDataBrowserKeyControls.bind(this);
     this.fetchNextPage = this.fetchNextPage.bind(this);
     this.updateFilters = this.updateFilters.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -83,7 +82,7 @@ export default class ObjectPickerDialog extends React.Component {
 
   async fetchData(source, filters = new List()) {
     const data = await this.fetchParseData(source, filters);
-    var filteredCounts = { ...this.state.filteredCounts };
+    const filteredCounts = { ...this.state.filteredCounts };
     if (filters.size > 0) {
       filteredCounts[source] = await this.fetchParseDataCount(source, filters);
     } else {
@@ -93,7 +92,7 @@ export default class ObjectPickerDialog extends React.Component {
       data: data,
       filters,
       lastMax: MAX_ROWS_FETCHED,
-      filteredCounts: filteredCounts
+      filteredCounts: filteredCounts,
     });
   }
 
@@ -175,10 +174,10 @@ export default class ObjectPickerDialog extends React.Component {
     query.limit(MAX_ROWS_FETCHED);
 
     const { useMasterKey } = this.props;
-    query.find({ useMasterKey: useMasterKey }).then(nextPage => {
+    query.find({ useMasterKey: useMasterKey }).then((nextPage) => {
       if (className === this.props.className) {
-        this.setState(state => ({
-          data: state.data.concat(nextPage)
+        this.setState((state) => ({
+          data: state.data.concat(nextPage),
         }));
       }
     });
@@ -190,10 +189,10 @@ export default class ObjectPickerDialog extends React.Component {
     const { className } = this.props;
     this.setState({
       filters: filters,
-      selection: {}
+      selection: {},
     });
     await this.fetchData(className, filters);
-    Object.keys(selection).forEach(id => this.selectRow(id, true));
+    Object.keys(selection).forEach((id) => this.selectRow(id, true));
   }
 
   async updateOrdering(ordering) {
@@ -201,10 +200,10 @@ export default class ObjectPickerDialog extends React.Component {
     const { filters, selection } = this.state;
     this.setState({
       ordering: ordering,
-      selection: {}
+      selection: {},
     });
     await this.fetchData(className, filters);
-    Object.keys(selection).forEach(id => this.selectRow(id, true));
+    Object.keys(selection).forEach((id) => this.selectRow(id, true));
     ColumnPreferences.getColumnSort(
       ordering,
       this.context.applicationId,
@@ -218,10 +217,10 @@ export default class ObjectPickerDialog extends React.Component {
     this.setState({
       data: null,
       lastMax: -1,
-      selection: {}
+      selection: {},
     });
     await this.fetchData(className, filters);
-    Object.keys(selection).forEach(id => this.selectRow(id, true));
+    Object.keys(selection).forEach((id) => this.selectRow(id, true));
   }
 
   selectRow(id, checked) {
@@ -244,7 +243,7 @@ export default class ObjectPickerDialog extends React.Component {
     const { column } = this.props;
     const isPointer = column.type === 'Pointer';
     const newSelection = {};
-    newValue.split(', ').some(id => {
+    newValue.split(', ').some((id) => {
       if (id.length === 10) {
         newSelection[id] = true;
         if (isPointer) {
@@ -255,7 +254,7 @@ export default class ObjectPickerDialog extends React.Component {
     });
     this.setState({
       selection: newSelection,
-      disableDataBrowserKeyControls: false
+      disableDataBrowserKeyControls: false,
     });
   }
 
@@ -265,7 +264,7 @@ export default class ObjectPickerDialog extends React.Component {
     const { selection, initialRelationData } = this.state;
     const currentSelection = Object.keys(selection);
     const newValue = isRelation
-      ? currentSelection.filter(id => !initialRelationData.includes({ id }))
+      ? currentSelection.filter((id) => !initialRelationData.includes({ id }))
       : currentSelection;
     const toDelete = isRelation
       ? initialRelationData.filter(({ id }) => !currentSelection.includes(id))
@@ -284,7 +283,7 @@ export default class ObjectPickerDialog extends React.Component {
       ordering,
       selection,
       selectionInput,
-      disableDataBrowserKeyControls
+      disableDataBrowserKeyControls,
     } = this.state;
 
     const columns = { objectId: { type: 'String' } };
@@ -327,13 +326,13 @@ export default class ObjectPickerDialog extends React.Component {
                     : 'ox0QZFl7eg'
                 }
                 value={selectionInput}
-                onChange={newValue =>
+                onChange={(newValue) =>
                   this.setState({
                     selectionInput: newValue,
-                    disableDataBrowserKeyControls: true
+                    disableDataBrowserKeyControls: true,
                   })
                 }
-                onBlur={newValue => this.updateSelectionFromInput(newValue)}
+                onBlur={(newValue) => this.updateSelectionFromInput(newValue)}
               />
             </div>
             <Button value="Cancel" onClick={onCancel} />
@@ -354,7 +353,7 @@ export default class ObjectPickerDialog extends React.Component {
             stylesColumnsConfiguration.objectPickerContent,
             column.type === 'Pointer'
               ? stylesDataBrowserHeaderBar.pickerPointer
-              : ''
+              : '',
           ].join(' ')}
         >
           <div className={stylesBrowser.selectionSection}>
@@ -362,7 +361,7 @@ export default class ObjectPickerDialog extends React.Component {
               <p>selected</p>
             </div>
             <div className={stylesBrowser.selectionList}>
-              {Object.keys(selection).map(id => {
+              {Object.keys(selection).map((id) => {
                 return (
                   <Button
                     key={id}
@@ -375,7 +374,7 @@ export default class ObjectPickerDialog extends React.Component {
                       padding: '0',
                       fontSize: '12px',
                       marginBottom: '9px',
-                      fontFamily: 'Source Code Pro, Courier New, monospace'
+                      fontFamily: 'Source Code Pro, Courier New, monospace',
                     }}
                     onClick={() => this.selectRow(id, false)}
                   />

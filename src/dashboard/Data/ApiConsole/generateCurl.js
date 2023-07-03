@@ -11,8 +11,11 @@
  * when exporting a request to cURL
  */
 const escapeValueForCURL = (value) => {
-  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
-}
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\$/g, '\\$');
+};
 
 export default function generateCurl(app, method, path, body, options) {
   if (path[0] === '/') {

@@ -5,15 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Charting     from 'lib/Charting.js'
-import * as DateUtils    from 'lib/DateUtils';
-import Position          from 'lib/Position';
-import prettyNumber      from 'lib/prettyNumber';
-import PropTypes         from 'lib/PropTypes';
-import React             from 'react';
-import Shape             from 'components/Chart/Shape.react';
-import { shortMonth }    from 'lib/DateUtils';
-import styles            from 'components/Chart/Chart.scss';
+import * as Charting from 'lib/Charting.js';
+import * as DateUtils from 'lib/DateUtils';
+import Position from 'lib/Position';
+import prettyNumber from 'lib/prettyNumber';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import Shape from 'components/Chart/Shape.react';
+import { shortMonth } from 'lib/DateUtils';
+import styles from 'components/Chart/Chart.scss';
 
 const MARGIN_TOP = 10;
 const MARGIN_RIGHT = 20;
@@ -26,10 +26,20 @@ function sortPoints(a, b) {
 
 function formatDate(date) {
   const str = DateUtils.getMonth(date.getMonth()) + ' ' + date.getDate();
-  if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
+  if (
+    date.getUTCHours() === 0 &&
+    date.getUTCMinutes() === 0 &&
+    date.getUTCSeconds() === 0
+  ) {
     return str;
   }
-  return str + ' ' + date.getHours() + (date.getMinutes() < 10 ? ':0' : ':') + date.getMinutes();
+  return (
+    str +
+    ' ' +
+    date.getHours() +
+    (date.getMinutes() < 10 ? ':0' : ':') +
+    date.getMinutes()
+  );
 }
 
 export default class Chart extends React.Component {
@@ -89,17 +99,37 @@ export default class Chart extends React.Component {
     for (const key in plotting) {
       const color = data[key].color;
       const index = data[key].index || 0;
-      const points = Charting.getDataPoints(chartWidth, chartHeight, timeBuckets, valueBuckets, plotting[key].data);
-      const path = <path d={'M' + points.map((p) => p.join(' ')).join(' L')} style={{ stroke: color, fill: 'none', strokeWidth: 2 }} />;
+      const points = Charting.getDataPoints(
+        chartWidth,
+        chartHeight,
+        timeBuckets,
+        valueBuckets,
+        plotting[key].data
+      );
+      const path = (
+        <path
+          d={'M' + points.map((p) => p.join(' ')).join(' L')}
+          style={{ stroke: color, fill: 'none', strokeWidth: 2 }}
+        />
+      );
       groups.push(
         <g key={key}>
           {path}
           {points.map((p, i) => (
             <g
               key={p[0]}
-              onMouseOver={this.handleMouseOver.bind(this, p[0] + MARGIN_LEFT, p[1], plotting[key].data[i][0], plotting[key].data[i][1], color, key)}
+              onMouseOver={this.handleMouseOver.bind(
+                this,
+                p[0] + MARGIN_LEFT,
+                p[1],
+                plotting[key].data[i][0],
+                plotting[key].data[i][1],
+                color,
+                key
+              )}
               onMouseOut={this.handleMouseOut.bind(this)}
-              style={{ cursor: 'pointer' }}>
+              style={{ cursor: 'pointer' }}
+            >
               <Shape x={p[0]} y={p[1]} fill={color} index={index} />
             </g>
           ))}
@@ -107,8 +137,15 @@ export default class Chart extends React.Component {
       );
     }
     const labels = valueBuckets.slice(1, valueBuckets.length - 1);
-    const labelHeights = labels.map((label) => chartHeight * (1 - label / valueBuckets[valueBuckets.length - 1]));
-    const tickPoints = timeBuckets.map((t) => chartWidth * (t - timeBuckets[0]) / (timeBuckets[timeBuckets.length - 1] - timeBuckets[0]));
+    const labelHeights = labels.map(
+      (label) =>
+        chartHeight * (1 - label / valueBuckets[valueBuckets.length - 1])
+    );
+    const tickPoints = timeBuckets.map(
+      (t) =>
+        (chartWidth * (t - timeBuckets[0])) /
+        (timeBuckets[timeBuckets.length - 1] - timeBuckets[0])
+    );
     let last = null;
     const tickLabels = timeBuckets.map((t, i) => {
       let text = '';
@@ -144,12 +181,20 @@ export default class Chart extends React.Component {
           style={{
             left: this.state.hoverPosition.x,
             top: this.state.hoverPosition.y,
-          }}>
-          <div
-            className={classes.join(' ')}
-            style={style}>
-            <div className={styles.popupTime}>{formatDate(this.state.hoverTime)}</div>
-            <div className={styles.popupValue}>{this.props.formatter ? this.props.formatter(this.state.hoverValue, this.state.hoverLabel) : this.state.hoverValue}</div>
+          }}
+        >
+          <div className={classes.join(' ')} style={style}>
+            <div className={styles.popupTime}>
+              {formatDate(this.state.hoverTime)}
+            </div>
+            <div className={styles.popupValue}>
+              {this.props.formatter
+                ? this.props.formatter(
+                  this.state.hoverValue,
+                  this.state.hoverLabel
+                )
+                : this.state.hoverValue}
+            </div>
           </div>
         </div>
       );
@@ -157,15 +202,50 @@ export default class Chart extends React.Component {
     return (
       <div className={styles.chart} style={{ width: width, height: height }}>
         <div className={styles.yAxis}>
-          {labels.map((v, i) => <div key={v} className={styles.label} style={{ top: labelHeights[i] }}>{prettyNumber(v)}</div>)}
+          {labels.map((v, i) => (
+            <div
+              key={v}
+              className={styles.label}
+              style={{ top: labelHeights[i] }}
+            >
+              {prettyNumber(v)}
+            </div>
+          ))}
         </div>
         <div className={styles.xAxis}>
-          {tickLabels.map((t, i) => <div key={t + '_' + i} className={styles.tick} style={{ left: tickPoints[i] + MARGIN_LEFT }}>{t}</div>)}
+          {tickLabels.map((t, i) => (
+            <div
+              key={t + '_' + i}
+              className={styles.tick}
+              style={{ left: tickPoints[i] + MARGIN_LEFT }}
+            >
+              {t}
+            </div>
+          ))}
         </div>
         <svg width={chartWidth + 10} height={chartHeight + 10}>
-          <g>{labelHeights.map((h) => <path key={'horiz_' + h} d={'M0 ' + h + ' H' + chartWidth} style={{ stroke: '#e1e1e1', strokeWidth: 0.5 }} />)}</g>
-          <path d={'M0 ' + chartHeight + ' H' + chartWidth} style={{ stroke: '#e1e1e1', strokeWidth: 1 }} />
-          <g>{tickPoints.map((t, i) => <path key={'tick_' + i} d={`M${t} ${chartHeight} V ${chartHeight - 10}`} style={{ stroke: '#e1e1e1', strokeWidth: 1 }} />)}</g>
+          <g>
+            {labelHeights.map((h) => (
+              <path
+                key={'horiz_' + h}
+                d={'M0 ' + h + ' H' + chartWidth}
+                style={{ stroke: '#e1e1e1', strokeWidth: 0.5 }}
+              />
+            ))}
+          </g>
+          <path
+            d={'M0 ' + chartHeight + ' H' + chartWidth}
+            style={{ stroke: '#e1e1e1', strokeWidth: 1 }}
+          />
+          <g>
+            {tickPoints.map((t, i) => (
+              <path
+                key={'tick_' + i}
+                d={`M${t} ${chartHeight} V ${chartHeight - 10}`}
+                style={{ stroke: '#e1e1e1', strokeWidth: 1 }}
+              />
+            ))}
+          </g>
           {groups}
         </svg>
         {popup}
@@ -175,19 +255,15 @@ export default class Chart extends React.Component {
 }
 
 Chart.propTypes = {
-  width: PropTypes.number.isRequired.describe(
-    'The width of the chart.'
-  ),
-  height: PropTypes.number.isRequired.describe(
-    'The height of the chart.'
-  ),
+  width: PropTypes.number.isRequired.describe('The width of the chart.'),
+  height: PropTypes.number.isRequired.describe('The height of the chart.'),
   data: PropTypes.object.isRequired.describe(
     'The data to graph. It is a map of data names to objects containing two keys: ' +
-    '"color," the color to use for the lines, and "points," an array of tuples containing time-value data.'
+      '"color," the color to use for the lines, and "points," an array of tuples containing time-value data.'
   ),
   formatter: PropTypes.func.describe(
     'An optional function for formatting the data description that appears in the popup. ' +
-    'It receives the numeric value of a point and label, and should return a string. ' +
-    'This is ideally used for providing descriptive units like "active installations."'
-  )
+      'It receives the numeric value of a point and label, and should return a string. ' +
+      'This is ideally used for providing descriptive units like "active installations."'
+  ),
 };

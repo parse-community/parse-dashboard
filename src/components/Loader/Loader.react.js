@@ -5,19 +5,25 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'components/Loader/Loader.scss';
 
 const SMALL_RADIUS = 20;
 const LARGE_RADIUS = 50;
 const DURATION = 3000;
 
-const LENGTH = 1.5 * (SMALL_RADIUS + LARGE_RADIUS) * Math.PI + 2 * (SMALL_RADIUS + LARGE_RADIUS);
+const LENGTH =
+  1.5 * (SMALL_RADIUS + LARGE_RADIUS) * Math.PI +
+  2 * (SMALL_RADIUS + LARGE_RADIUS);
 
 const POINTS = {
   A: (1.5 * SMALL_RADIUS * Math.PI) / LENGTH, // End of first loop
   B: (1.5 * SMALL_RADIUS * Math.PI + SMALL_RADIUS + LARGE_RADIUS) / LENGTH, // Beginning of second loop
-  C: (1.5 * (SMALL_RADIUS + LARGE_RADIUS) * Math.PI + SMALL_RADIUS + LARGE_RADIUS) / LENGTH, // End of second loop
+  C:
+    (1.5 * (SMALL_RADIUS + LARGE_RADIUS) * Math.PI +
+      SMALL_RADIUS +
+      LARGE_RADIUS) /
+    LENGTH, // End of second loop
 };
 
 function getRadius(t) {
@@ -29,24 +35,30 @@ function getPosition(t) {
     const multiplier = LENGTH / SMALL_RADIUS;
     return {
       x: SMALL_RADIUS + SMALL_RADIUS * Math.cos(t * multiplier + Math.PI / 2),
-      y: 2 * LARGE_RADIUS + SMALL_RADIUS - SMALL_RADIUS * Math.sin(t * multiplier + Math.PI / 2)
+      y:
+        2 * LARGE_RADIUS +
+        SMALL_RADIUS -
+        SMALL_RADIUS * Math.sin(t * multiplier + Math.PI / 2),
     };
   } else if (t < POINTS.B) {
     return {
       x: 2 * SMALL_RADIUS,
-      y: LENGTH * (POINTS.A - t) + 2 * LARGE_RADIUS + SMALL_RADIUS
+      y: LENGTH * (POINTS.A - t) + 2 * LARGE_RADIUS + SMALL_RADIUS,
     };
   } else if (t < POINTS.C) {
     const t2 = t - POINTS.B;
     const multiplier = LENGTH / LARGE_RADIUS;
     return {
-      x: 2 * SMALL_RADIUS + LARGE_RADIUS - LARGE_RADIUS * Math.cos(t2 * multiplier),
-      y: LARGE_RADIUS - LARGE_RADIUS * Math.sin(t2 * multiplier)
+      x:
+        2 * SMALL_RADIUS +
+        LARGE_RADIUS -
+        LARGE_RADIUS * Math.cos(t2 * multiplier),
+      y: LARGE_RADIUS - LARGE_RADIUS * Math.sin(t2 * multiplier),
     };
   } else {
     return {
       x: LENGTH * (POINTS.C - t) + 2 * SMALL_RADIUS + LARGE_RADIUS,
-      y: 2 * LARGE_RADIUS
+      y: 2 * LARGE_RADIUS,
     };
   }
 }

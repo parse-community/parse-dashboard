@@ -21,7 +21,10 @@ class ApiConsole extends DashboardView {
 
   renderSidebar() {
     const { pathname } = this.props.location;
-    const current = pathname.substr(pathname.lastIndexOf('/') + 1, pathname.length - 1);
+    const current = pathname.substr(
+      pathname.lastIndexOf('/') + 1,
+      pathname.length - 1
+    );
     return (
       <CategoryList
         current={current}
@@ -29,7 +32,7 @@ class ApiConsole extends DashboardView {
         categories={[
           { name: 'REST Console', id: 'rest' },
           { name: 'GraphQL Console', id: 'graphql' },
-          { name: 'JS Console', id: 'js_console' }
+          { name: 'JS Console', id: 'js_console' },
         ]}
       />
     );

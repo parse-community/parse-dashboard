@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Icon     from 'components/Icon/Icon.react';
+import Icon from 'components/Icon/Icon.react';
 import { Link } from 'react-router-dom';
-import React    from 'react';
-import styles   from 'components/FileTree/FileTree.scss';
+import React from 'react';
+import styles from 'components/FileTree/FileTree.scss';
 
 export default class FileTree extends React.Component {
   constructor(props) {
@@ -31,8 +31,16 @@ export default class FileTree extends React.Component {
     let dir = null;
     if (this.props.name) {
       dir = (
-        <div className={styles.directory} onClick={() => this.setState((state) => ({ open: !state.open }))}>
-          <Icon width={14} height={14} name={this.state.open ? 'folder-outline' : 'folder-solid'} fill='#ffffff' />
+        <div
+          className={styles.directory}
+          onClick={() => this.setState((state) => ({ open: !state.open }))}
+        >
+          <Icon
+            width={14}
+            height={14}
+            name={this.state.open ? 'folder-outline' : 'folder-solid'}
+            fill="#ffffff"
+          />
           {this.props.name}
         </div>
       );
@@ -63,18 +71,27 @@ export default class FileTree extends React.Component {
               key={'dir_' + f}
               name={f}
               files={dirs[f]}
-              prefix={this.props.name ? this.props.prefix + this.props.name + '/' : ''}
+              prefix={
+                this.props.name ? this.props.prefix + this.props.name + '/' : ''
+              }
               linkPrefix={this.props.linkPrefix}
-              current={this.props.current}/>
+              current={this.props.current}
+            />
           ))}
           {files.map((f) => {
-            const path = (this.props.name ? this.props.prefix + this.props.name + '/' : '') + f;
+            const path =
+              (this.props.name
+                ? this.props.prefix + this.props.name + '/'
+                : '') + f;
             const isCurrent = this.props.current === path;
             return (
               <Link
                 key={'f_' + f}
-                className={[styles.file, isCurrent ? styles.current : ''].join(' ')}
-                to={{ pathname: this.props.linkPrefix + path }}>
+                className={[styles.file, isCurrent ? styles.current : ''].join(
+                  ' '
+                )}
+                to={{ pathname: this.props.linkPrefix + path }}
+              >
                 {f}
               </Link>
             );

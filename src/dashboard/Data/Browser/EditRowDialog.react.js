@@ -21,10 +21,14 @@ export default class EditRowDialog extends React.Component {
     super(props);
 
     const { selectedObject } = this.props;
-    const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
-      selectedObject
-    );
-    this.state = { currentObject, openObjectPickers, expandedTextAreas, showFileEditor: null };
+    const { currentObject, openObjectPickers, expandedTextAreas } =
+      this.initializeState(selectedObject);
+    this.state = {
+      currentObject,
+      openObjectPickers,
+      expandedTextAreas,
+      showFileEditor: null,
+    };
 
     this.updateCurrentObject = this.updateCurrentObject.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -40,11 +44,12 @@ export default class EditRowDialog extends React.Component {
     const newSelectedObject = props.selectedObject;
     const previousSelectedObject = this.props.selectedObject;
     if (newSelectedObject.id !== previousSelectedObject.id) {
-      const { currentObject, openObjectPickers, expandedTextAreas } = this.initializeState(
-        newSelectedObject
-      );
+      const { currentObject, openObjectPickers, expandedTextAreas } =
+        this.initializeState(newSelectedObject);
       this.setState({ currentObject, openObjectPickers, expandedTextAreas });
-    } else if (newSelectedObject.updatedAt !== previousSelectedObject.updatedAt) {
+    } else if (
+      newSelectedObject.updatedAt !== previousSelectedObject.updatedAt
+    ) {
       this.updateCurrentObjectFromProps(newSelectedObject);
     }
   }
@@ -54,7 +59,7 @@ export default class EditRowDialog extends React.Component {
     const currentObject = { ...newObject };
     const openObjectPickers = {};
     const expandedTextAreas = {};
-    columns.forEach(column => {
+    columns.forEach((column) => {
       const { name, type } = column;
       if (['Array', 'Object'].indexOf(type) >= 0) {
         // This is needed to avoid unwanted conversions of objects to Parse.Objects.
@@ -70,7 +75,7 @@ export default class EditRowDialog extends React.Component {
       if (type === 'Polygon') {
         const stringifyValue = JSON.stringify(
           (currentObject[name] && currentObject[name].coordinates) || [
-            ['lat', 'lon']
+            ['lat', 'lon'],
           ],
           null,
           4
@@ -96,7 +101,7 @@ export default class EditRowDialog extends React.Component {
   updateCurrentObjectFromProps(newObject) {
     const { columns } = this.props;
     const { currentObject, expandedTextAreas } = this.state;
-    columns.forEach(column => {
+    columns.forEach((column) => {
       const { name, type } = column;
       if (['String', 'Number'].indexOf(type) >= 0) {
         currentObject[name] = newObject[name];
@@ -109,9 +114,7 @@ export default class EditRowDialog extends React.Component {
       }
       if (type === 'Polygon') {
         const stringifyValue = JSON.stringify(
-          (newObject[name] && newObject[name].coordinates) || [
-            ['lat', 'lon']
-          ],
+          (newObject[name] && newObject[name].coordinates) || [['lat', 'lon']],
           null,
           4
         );
@@ -137,7 +140,7 @@ export default class EditRowDialog extends React.Component {
       className,
       updateRow,
       confirmAttachSelectedRows,
-      useMasterKey
+      useMasterKey,
     } = this.props;
     if (type === 'Relation') {
       if (toDelete.length > 0) {
@@ -175,7 +178,7 @@ export default class EditRowDialog extends React.Component {
         if (type === 'Polygon') {
           newValue = {
             __type: type,
-            coordinates: newValue
+            coordinates: newValue,
           };
         }
       }
@@ -185,7 +188,7 @@ export default class EditRowDialog extends React.Component {
         newValue = pointerId
           ? Parse.Object.fromJSON({
             className: targetClass,
-            objectId: pointerId
+            objectId: pointerId,
           })
           : undefined;
         this.toggleObjectPicker(name, false);
@@ -197,7 +200,7 @@ export default class EditRowDialog extends React.Component {
   openAcl() {
     const { selectedObject, columns, handleShowAcl } = this.props;
     const { row } = selectedObject;
-    const col = columns.findIndex(c => c.name === 'ACL');
+    const col = columns.findIndex((c) => c.name === 'ACL');
     handleShowAcl(row, col);
   }
 
@@ -227,21 +230,28 @@ export default class EditRowDialog extends React.Component {
 
   openFileEditor(column) {
     this.setState({
-      showFileEditor: column
+      showFileEditor: column,
     });
   }
 
   hideFileEditor() {
     this.setState({
-      showFileEditor: null
+      showFileEditor: null,
     });
   }
 
   render() {
-    const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
+    const {
+      selectedObject,
+      className,
+      columns,
+      onClose,
+      schema,
+      useMasterKey,
+    } = this.props;
     const { currentObject, openObjectPickers, expandedTextAreas } = this.state;
 
-    const fields = columns.map(column => {
+    const fields = columns.map((column) => {
       const { name, type, targetClass } = column;
 
       const isHidden =
@@ -265,7 +275,7 @@ export default class EditRowDialog extends React.Component {
             'user',
             'createdWith',
             'installationId',
-            'restricted'
+            'restricted',
           ].indexOf(name) >= 0);
 
       const val = currentObject[name];
@@ -279,10 +289,16 @@ export default class EditRowDialog extends React.Component {
                   : false
               }
               disabled={isDisabled}
-              placeholder={name === 'password' ? '(hidden)' : val === undefined ? '(undefined)' : ''}
+              placeholder={
+                name === 'password'
+                  ? '(hidden)'
+                  : val === undefined
+                    ? '(undefined)'
+                    : ''
+              }
               value={currentObject[name]}
-              onChange={newValue => this.updateCurrentObject(newValue, name)}
-              onBlur={newValue => this.handleChange(newValue, name)}
+              onChange={(newValue) => this.updateCurrentObject(newValue, name)}
+              onBlur={(newValue) => this.handleChange(newValue, name)}
             />
           );
           break;
@@ -292,8 +308,20 @@ export default class EditRowDialog extends React.Component {
               disabled={isDisabled}
               value={currentObject[name]}
               placeholder={val === undefined ? '(undefined)' : ''}
-              onChange={newValue => this.updateCurrentObject(validateNumeric(newValue) ? newValue : currentObject[name], name)}
-              onBlur={newValue => this.handleChange(validateNumeric(parseFloat(newValue)) ? parseFloat(newValue) : undefined, name)}
+              onChange={(newValue) =>
+                this.updateCurrentObject(
+                  validateNumeric(newValue) ? newValue : currentObject[name],
+                  name
+                )
+              }
+              onBlur={(newValue) =>
+                this.handleChange(
+                  validateNumeric(parseFloat(newValue))
+                    ? parseFloat(newValue)
+                    : undefined,
+                  name
+                )
+              }
             />
           );
           break;
@@ -311,8 +339,8 @@ export default class EditRowDialog extends React.Component {
               disabled={isDisabled}
               placeholder={val === undefined && '(undefined)'}
               value={currentObject[name]}
-              onChange={newValue => this.updateCurrentObject(newValue, name)}
-              onBlur={newValue =>
+              onChange={(newValue) => this.updateCurrentObject(newValue, name)}
+              onBlur={(newValue) =>
                 this.handleChange(JSON.parse(newValue), name, type)
               }
             />
@@ -320,12 +348,16 @@ export default class EditRowDialog extends React.Component {
           break;
         case 'Boolean':
           inputComponent = isDisabled ? (
-            <TextInput disabled={true} placeholder={val === undefined && '(undefined)'} value={selectedObject[name]} />
+            <TextInput
+              disabled={true}
+              placeholder={val === undefined && '(undefined)'}
+              value={selectedObject[name]}
+            />
           ) : (
             <Toggle
               type={Toggle.Types.TRUE_FALSE}
               value={selectedObject[name]}
-              onChange={newValue => this.handleChange(newValue, name)}
+              onChange={(newValue) => this.handleChange(newValue, name)}
             />
           );
           break;
@@ -334,7 +366,7 @@ export default class EditRowDialog extends React.Component {
             <DateTimeInput
               disabled={isDisabled}
               value={selectedObject[name]}
-              onChange={newValue => this.handleChange(newValue, name)}
+              onChange={(newValue) => this.handleChange(newValue, name)}
             />
           );
           break;
@@ -345,14 +377,18 @@ export default class EditRowDialog extends React.Component {
                 disableAutoFocus={true}
                 value={selectedObject[name]}
                 style={{ position: 'inherit' }}
-                onCommit={newValue => this.handleChange(newValue, name)}
+                onCommit={(newValue) => this.handleChange(newValue, name)}
               />
             </div>
           );
           break;
         case 'File':
           const file = selectedObject[name];
-          const fileName = file ? file.url() ? getFileName(file) : file.name() : '';
+          const fileName = file
+            ? file.url()
+              ? getFileName(file)
+              : file.name()
+            : '';
           inputComponent = (
             <div className={[styles.editRowDialogFileCell]}>
               {file && <Pill value={fileName} fileDownloadLink={file.url()} />}
@@ -365,7 +401,7 @@ export default class EditRowDialog extends React.Component {
                   <FileEditor
                     value={file}
                     onCancel={this.hideFileEditor}
-                    onCommit={newValue => this.handleChange(newValue, name)}
+                    onCommit={(newValue) => this.handleChange(newValue, name)}
                   />
                 )}
               </div>
@@ -380,7 +416,7 @@ export default class EditRowDialog extends React.Component {
               column={column}
               className={targetClass}
               pointerId={pointerId}
-              onConfirm={newValue =>
+              onConfirm={(newValue) =>
                 this.handleChange(newValue, name, type, targetClass)
               }
               onCancel={() => this.toggleObjectPicker(name, false)}
@@ -391,7 +427,7 @@ export default class EditRowDialog extends React.Component {
               style={{
                 textAlign: 'center',
                 cursor: 'pointer',
-                paddingTop: pointerId ? '17px' : '35px'
+                paddingTop: pointerId ? '17px' : '35px',
               }}
             >
               {pointerId && (
@@ -432,7 +468,7 @@ export default class EditRowDialog extends React.Component {
                 style={{
                   textAlign: 'center',
                   cursor: 'pointer',
-                  paddingTop: '17px'
+                  paddingTop: '17px',
                 }}
               >
                 <Pill
@@ -471,12 +507,7 @@ export default class EditRowDialog extends React.Component {
       return (
         <Field
           key={name}
-          label={
-            <Label
-              text={name}
-              description={description}
-            />
-          }
+          label={<Label text={name} description={description} />}
           labelWidth={33}
           input={inputComponent}
         />

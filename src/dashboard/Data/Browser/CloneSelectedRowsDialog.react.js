@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Field     from 'components/Field/Field.react';
-import Label     from 'components/Label/Label.react';
-import Modal     from 'components/Modal/Modal.react';
-import React     from 'react';
+import Field from 'components/Field/Field.react';
+import Label from 'components/Label/Label.react';
+import Modal from 'components/Modal/Modal.react';
+import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 
 export default class CloneSelectedRowsDialog extends React.Component {
@@ -16,7 +16,7 @@ export default class CloneSelectedRowsDialog extends React.Component {
     super();
 
     this.state = {
-      confirmation: ''
+      confirmation: '',
     };
   }
 
@@ -24,7 +24,10 @@ export default class CloneSelectedRowsDialog extends React.Component {
     if (this.state.confirmation === this.props.className) {
       return true;
     }
-    if (!this.props.selection['*'] && Object.keys(this.props.selection).length < 10) {
+    if (
+      !this.props.selection['*'] &&
+      Object.keys(this.props.selection).length < 10
+    ) {
       return true;
     }
     return false;
@@ -38,28 +41,38 @@ export default class CloneSelectedRowsDialog extends React.Component {
         <Field
           label={
             <Label
-              text='Confirm this action'
-              description='Enter the current class name to continue.' />
+              text="Confirm this action"
+              description="Enter the current class name to continue."
+            />
           }
           input={
             <TextInput
-              placeholder='Current class name'
+              placeholder="Current class name"
               value={this.state.confirmation}
-              onChange={(confirmation) => this.setState({ confirmation })} />
-          } />
+              onChange={(confirmation) => this.setState({ confirmation })}
+            />
+          }
+        />
       );
     }
     return (
       <Modal
         type={Modal.Types.DANGER}
-        icon='warn-outline'
-        title={this.props.selection['*'] ? 'Clone all rows?' : (selectionLength === 1 ? 'Clone this row?' : `Clone ${selectionLength} rows?`)}
+        icon="warn-outline"
+        title={
+          this.props.selection['*']
+            ? 'Clone all rows?'
+            : selectionLength === 1
+              ? 'Clone this row?'
+              : `Clone ${selectionLength} rows?`
+        }
         subtitle={''}
         disabled={!this.valid()}
-        confirmText='Clone'
-        cancelText='Cancel'
+        confirmText="Clone"
+        cancelText="Cancel"
         onCancel={this.props.onCancel}
-        onConfirm={this.props.onConfirm}>
+        onConfirm={this.props.onConfirm}
+      >
         {content}
       </Modal>
     );

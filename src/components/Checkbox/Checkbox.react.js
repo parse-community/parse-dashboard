@@ -5,8 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Icon   from 'components/Icon/Icon.react';
-import React  from 'react';
+import Icon from 'components/Icon/Icon.react';
+import React from 'react';
 import styles from 'components/Checkbox/Checkbox.scss';
 
 const Checkbox = ({ label, checked, indeterminate, onChange }) => {
@@ -18,7 +18,7 @@ const Checkbox = ({ label, checked, indeterminate, onChange }) => {
   }
   let inner = null;
   if (checked) {
-    inner = <Icon width={12} height={12} name='check' fill='#169cee' />;
+    inner = <Icon width={12} height={12} name="check" fill="#169cee" />;
   } else if (indeterminate) {
     inner = <span className={styles.minus} />;
   }

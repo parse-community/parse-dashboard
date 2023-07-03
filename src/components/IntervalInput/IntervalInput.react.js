@@ -12,9 +12,13 @@ import React from 'react';
 
 const IntervalInput = ({ count, unit, onChange }) => {
   const counts = [];
-  const max = (unit === 'hour') ? 23 : 59;
+  const max = unit === 'hour' ? 23 : 59;
   for (let i = 1; i <= max; i++) {
-    counts.push(<Option key={'count' + i} value={String(i)}>{String(i)}</Option>);
+    counts.push(
+      <Option key={'count' + i} value={String(i)}>
+        {String(i)}
+      </Option>
+    );
   }
 
   const countChange = (newCount) => onChange(parseInt(newCount, 10), unit);
@@ -24,14 +28,14 @@ const IntervalInput = ({ count, unit, onChange }) => {
     } else {
       return onChange(Math.min(23, count), newUnit);
     }
-  }
+  };
 
   return (
     <div>
-      <Dropdown width='50%' value={String(count)} onChange={countChange}>
+      <Dropdown width="50%" value={String(count)} onChange={countChange}>
         {counts}
       </Dropdown>
-      <Dropdown width='50%' value={unit} onChange={unitChange}>
+      <Dropdown width="50%" value={unit} onChange={unitChange}>
         <Option value={'minute'}>{count === 1 ? 'Minute' : 'Minutes'}</Option>
         <Option value={'hour'}>{count === 1 ? 'Hour' : 'Hours'}</Option>
       </Dropdown>
@@ -44,5 +48,5 @@ export default IntervalInput;
 IntervalInput.propTypes = {
   count: PropTypes.number.isRequired,
   unit: PropTypes.oneOf(['minute', 'hour']),
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 };

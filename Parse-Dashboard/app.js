@@ -4,11 +4,11 @@ const path = require('path');
 const packageJson = require('package-json');
 const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
-var fs = require('fs');
+const fs = require('fs');
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
-var newFeaturesInLatestVersion = [];
+let newFeaturesInLatestVersion = [];
 packageJson('parse-dashboard', { version: 'latest', fullMetadata: true })
   .then(latestPackage => {
     if (latestPackage.parseDashboardFeatures instanceof Array) {
@@ -31,10 +31,10 @@ function getMount(mountPath) {
 }
 
 function checkIfIconsExistForApps(apps, iconsFolder) {
-  for (var i in apps) {
-    var currentApp = apps[i];
-    var iconName = currentApp.iconName;
-    var path = iconsFolder + '/' + iconName;
+  for (const i in apps) {
+    const currentApp = apps[i];
+    const iconName = currentApp.iconName;
+    const path = iconsFolder + '/' + iconName;
 
     fs.stat(path, function(err) {
       if (err) {
@@ -53,7 +53,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
 
 module.exports = function(config, options) {
   options = options || {};
-  var app = express();
+  const app = express();
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
 
@@ -72,7 +72,7 @@ module.exports = function(config, options) {
 
     // CSRF error handler
     app.use(function (err, req, res, next) {
-      if (err.code !== 'EBADCSRFTOKEN') return next(err)
+      if (err.code !== 'EBADCSRFTOKEN') {return next(err)}
 
       // handle CSRF token errors here
       res.status(403)
@@ -159,7 +159,7 @@ module.exports = function(config, options) {
     // running parse-dashboard from globally installed npm.
     if (config.iconsFolder) {
       try {
-        var stat = fs.statSync(config.iconsFolder);
+        const stat = fs.statSync(config.iconsFolder);
         if (stat.isDirectory()) {
           app.use('/appicons', express.static(config.iconsFolder));
           //Check also if the icons really exist

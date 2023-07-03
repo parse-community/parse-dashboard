@@ -1,5 +1,5 @@
 import React from 'react';
-import baseStyles from 'stylesheets/base.scss'
+import baseStyles from 'stylesheets/base.scss';
 
 export default class JobScheduleReminder extends React.Component {
   render() {
@@ -12,7 +12,9 @@ export default class JobScheduleReminder extends React.Component {
         </p>
         <p>
           {'Please take a look at the '}
-          <a href="http://docs.parseplatform.org/parse-server/guide/#jobs">{'docs'}</a>
+          <a href="http://docs.parseplatform.org/parse-server/guide/#jobs">
+            {'docs'}
+          </a>
           {' on how to do that.'}
         </p>
       </div>

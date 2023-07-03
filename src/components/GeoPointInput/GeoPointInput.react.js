@@ -5,29 +5,33 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'components/GeoPointInput/GeoPointInput.scss';
 
 export default class GeoPointInput extends React.Component {
   handleLatitude(e) {
     if (isNaN(e.target.value)) {
-      this.props.onChange(this.props.value || { latitude: '0.0', longitude: '0.0' });
+      this.props.onChange(
+        this.props.value || { latitude: '0.0', longitude: '0.0' }
+      );
       return;
     }
     this.props.onChange({
       latitude: e.target.value,
-      longitude: this.props.value ? this.props.value.longitude : '0.0'
+      longitude: this.props.value ? this.props.value.longitude : '0.0',
     });
   }
 
   handleLongitude(e) {
     if (isNaN(e.target.value)) {
-      this.props.onChange(this.props.value || { latitude: '0.0', longitude: '0.0' });
+      this.props.onChange(
+        this.props.value || { latitude: '0.0', longitude: '0.0' }
+      );
       return;
     }
     this.props.onChange({
       latitude: this.props.value ? this.props.value.latitude : '0.0',
-      longitude: e.target.value
+      longitude: e.target.value,
     });
   }
 
@@ -41,13 +45,15 @@ export default class GeoPointInput extends React.Component {
         </div>
         <div className={styles.inputs}>
           <input
-            type='text'
+            type="text"
             value={String(value.latitude)}
-            onChange={this.handleLatitude.bind(this)} />
+            onChange={this.handleLatitude.bind(this)}
+          />
           <input
-            type='text'
+            type="text"
             value={String(value.longitude)}
-            onChange={this.handleLongitude.bind(this)} />
+            onChange={this.handleLongitude.bind(this)}
+          />
         </div>
       </div>
     );

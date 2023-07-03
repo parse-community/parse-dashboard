@@ -21,7 +21,7 @@ export default class Playground extends Component {
       results: [],
       running: false,
       saving: false,
-      savingState: SaveButton.States.WAITING
+      savingState: SaveButton.States.WAITING,
     };
   }
 
@@ -33,16 +33,16 @@ export default class Playground extends Component {
       this.setState(({ results }) => ({
         results: [
           ...results,
-          ...args.map(arg => ({
+          ...args.map((arg) => ({
             log:
               typeof arg === 'object'
                 ? Array.isArray(arg)
                   ? arg.map(this.getParseObjectAttr)
                   : this.getParseObjectAttr(arg)
                 : { result: arg },
-            name: 'Log'
-          }))
-        ]
+            name: 'Log',
+          })),
+        ],
       }));
 
       originalConsoleLog.apply(console, args);
@@ -51,14 +51,14 @@ export default class Playground extends Component {
       this.setState(({ results }) => ({
         results: [
           ...results,
-          ...args.map(arg => ({
+          ...args.map((arg) => ({
             log:
               arg instanceof Error
                 ? { message: arg.message, name: arg.name, stack: arg.stack }
                 : { result: arg },
-            name: 'Error'
-          }))
-        ]
+            name: 'Error',
+          })),
+        ],
       }));
 
       originalConsoleError.apply(console, args);
@@ -71,9 +71,8 @@ export default class Playground extends Component {
     const [originalConsoleLog, originalConsoleError] = this.overrideConsole();
 
     try {
-      const {
-        applicationId, masterKey, serverURL, javascriptKey
-      } = this.context;
+      const { applicationId, masterKey, serverURL, javascriptKey } =
+        this.context;
       const originalCode = this.editor.value;
 
       const finalCode = `return (async function(){
@@ -110,7 +109,7 @@ export default class Playground extends Component {
       window.localStorage.setItem(this.localKey, code);
       this.setState({
         saving: false,
-        savingState: SaveButton.States.SUCCEEDED
+        savingState: SaveButton.States.SUCCEEDED,
       });
 
       setTimeout(
@@ -152,7 +151,7 @@ export default class Playground extends Component {
 myObj.set('myField', 'Hello World!')
 await myObj.save();
 console.log(myObj);`}
-            ref={editor => (this.editor = editor)}
+            ref={(editor) => (this.editor = editor)}
           />
           <div className={styles['console-ctn']}>
             <header>

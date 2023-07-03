@@ -5,8 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React            from 'react';
-import TrackVisibility  from 'components/TrackVisibility/TrackVisibility.react';
+import React from 'react';
+import TrackVisibility from 'components/TrackVisibility/TrackVisibility.react';
 
 export const component = TrackVisibility;
 
@@ -28,16 +28,15 @@ class DemoTrackVisibility extends React.Component {
 
     this.observer = new IntersectionObserver(callback, {
       root: this.ref.current,
-      threshold: thresholds
+      threshold: thresholds,
     });
 
     this.state = {
-      visibility: 0
+      visibility: 0,
     };
   }
 
   render() {
-
     return (
       <React.Fragment>
         <div>{'Yellow block is ' + this.state.visibility + '% visible'}</div>
@@ -46,7 +45,7 @@ class DemoTrackVisibility extends React.Component {
             {'Scroll down'}
           </div>
           <TrackVisibility observer={this.observer}>
-            <div style={{ height: '140px', backgroundColor: '#F7EB00' }}/>
+            <div style={{ height: '140px', backgroundColor: '#F7EB00' }} />
           </TrackVisibility>
           <div style={{ height: '420px', backgroundColor: '#EB2922' }}>
             {'Scroll up'}
@@ -58,8 +57,6 @@ class DemoTrackVisibility extends React.Component {
 }
 export const demos = [
   {
-    render: () => (
-      <DemoTrackVisibility/>
-    )
-  }
+    render: () => <DemoTrackVisibility />,
+  },
 ];

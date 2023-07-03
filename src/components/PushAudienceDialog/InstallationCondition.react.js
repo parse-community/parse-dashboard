@@ -6,16 +6,16 @@
  * the root directory of this source tree.
  */
 import { Constraints } from 'lib/Filters';
-import DateTimeEntry   from 'components/DateTimeEntry/DateTimeEntry.react';
-import Dropdown        from 'components/Dropdown/Dropdown.react';
-import Field           from 'components/Field/Field.react';
-import Label           from 'components/Label/Label.react';
-import { List }        from 'immutable';
-import Option          from 'components/Dropdown/Option.react';
-import Parse           from 'parse';
-import React           from 'react';
-import styles          from 'components/PushAudienceDialog/InstallationCondition.scss';
-import TextInput       from 'components/TextInput/TextInput.react';
+import DateTimeEntry from 'components/DateTimeEntry/DateTimeEntry.react';
+import Dropdown from 'components/Dropdown/Dropdown.react';
+import Field from 'components/Field/Field.react';
+import Label from 'components/Label/Label.react';
+import { List } from 'immutable';
+import Option from 'components/Dropdown/Option.react';
+import Parse from 'parse';
+import React from 'react';
+import styles from 'components/PushAudienceDialog/InstallationCondition.scss';
+import TextInput from 'components/TextInput/TextInput.react';
 import validateNumeric from 'lib/validateNumeric';
 
 const constraintLookup = {};
@@ -27,7 +27,7 @@ const setFocus = (input) => {
   if (input !== null) {
     input.focus();
   }
-}
+};
 
 function compareValue(info, value, onChangeCompareTo) {
   const type = info.type;
@@ -35,38 +35,70 @@ function compareValue(info, value, onChangeCompareTo) {
     case null:
       return <div className={styles.empty}>-</div>;
     case 'String':
-      return <TextInput placeholder='value' value={value} onChange={(_value) => onChangeCompareTo(_value)} ref={setFocus}/>;
+      return (
+        <TextInput
+          placeholder="value"
+          value={value}
+          onChange={(_value) => onChangeCompareTo(_value)}
+          ref={setFocus}
+        />
+      );
     case 'Pointer':
-      return <TextInput
-        placeholder='value'
-        value={value.objectId || ''}
-        onChange={(_value) => {
-          const obj = new Parse.Object(info.targetClass);
-          obj.id = _value;
-          onChangeCompareTo(Parse._encode(obj.toPointer()));
-        }}
-        ref={setFocus} />
+      return (
+        <TextInput
+          placeholder="value"
+          value={value.objectId || ''}
+          onChange={(_value) => {
+            const obj = new Parse.Object(info.targetClass);
+            obj.id = _value;
+            onChangeCompareTo(Parse._encode(obj.toPointer()));
+          }}
+          ref={setFocus}
+        />
+      );
     case 'Boolean':
-      return <Dropdown
-        value={value ? 'True' : 'False'}
-        onChange={(_value) => onChangeCompareTo(_value === 'True')} >
-        {['True', 'False'].map(value => <Option value={value} key={value}>{value}</Option>)}
-      </Dropdown>
+      return (
+        <Dropdown
+          value={value ? 'True' : 'False'}
+          onChange={(_value) => onChangeCompareTo(_value === 'True')}
+        >
+          {['True', 'False'].map((value) => (
+            <Option value={value} key={value}>
+              {value}
+            </Option>
+          ))}
+        </Dropdown>
+      );
     case 'Number':
-      return <TextInput placeholder='value' className={styles.conditionValue} value={value} onChange={(_value) => onChangeCompareTo(validateNumeric(_value) ? Number(_value) : Number(value))} ref={setFocus}/>;
+      return (
+        <TextInput
+          placeholder="value"
+          className={styles.conditionValue}
+          value={value}
+          onChange={(_value) =>
+            onChangeCompareTo(
+              validateNumeric(_value) ? Number(_value) : Number(value)
+            )
+          }
+          ref={setFocus}
+        />
+      );
     case 'Date':
-      return <DateTimeEntry
-        fixed={true}
-        className={styles.date}
-        value={Parse._decode('date', value)}
-        onChange={(_value) => onChangeCompareTo(Parse._encode(_value))}
-        ref={setFocus} />
+      return (
+        <DateTimeEntry
+          fixed={true}
+          className={styles.date}
+          value={Parse._decode('date', value)}
+          onChange={(_value) => onChangeCompareTo(Parse._encode(_value))}
+          ref={setFocus}
+        />
+      );
   }
 }
 
 export default class InstallationCondition extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = {
       open: false,
       filters: new List(),
@@ -88,10 +120,15 @@ export default class InstallationCondition extends React.Component {
             hideArrow={true}
             value={this.props.currentField}
             onChange={this.props.onChangeField}
-            placeHolder='field'
-            className={styles.conditionDropdown}>
-            {this.props.fields.map(function(object, i){
-              return <Option value={object} key={`fieldOpt${i}`}>{object}</Option>;
+            placeHolder="field"
+            className={styles.conditionDropdown}
+          >
+            {this.props.fields.map(function (object, i) {
+              return (
+                <Option value={object} key={`fieldOpt${i}`}>
+                  {object}
+                </Option>
+              );
             })}
           </Dropdown>
         </div>
@@ -101,24 +138,37 @@ export default class InstallationCondition extends React.Component {
             hideArrow={true}
             value={Constraints[this.props.currentConstraint].name}
             onChange={(c) => this.props.onChangeConstraint(constraintLookup[c])}
-            placeHolder='is'
-            className={styles.conditionDropdown}>
-            {this.props.constraints.map(function(object, i){
-              return <Option value={Constraints[object].name} key={`constraintOpt${i}`}>{Constraints[object].name}</Option>;
+            placeHolder="is"
+            className={styles.conditionDropdown}
+          >
+            {this.props.constraints.map(function (object, i) {
+              return (
+                <Option
+                  value={Constraints[object].name}
+                  key={`constraintOpt${i}`}
+                >
+                  {Constraints[object].name}
+                </Option>
+              );
             })}
           </Dropdown>
         </div>
         <div className={[styles.conditionInput, styles.valueInput].join(' ')}>
-          {compareValue(this.props.compareInfo, this.props.compareTo, this.props.onChangeCompareTo)}
+          {compareValue(
+            this.props.compareInfo,
+            this.props.compareTo,
+            this.props.onChangeCompareTo
+          )}
         </div>
       </div>
     );
 
     const labelDescription = (
       <button
-        type='button'
+        type="button"
         className={styles.description}
-        onClick={this.props.onDeleteRow}>
+        onClick={this.props.onDeleteRow}
+      >
         Remove
       </button>
     );
@@ -126,8 +176,11 @@ export default class InstallationCondition extends React.Component {
     return (
       <Field
         labelWidth={30}
-        label={<Label text='Installation Condition' description={labelDescription} />}
-        input={input} />
+        label={
+          <Label text="Installation Condition" description={labelDescription} />
+        }
+        input={input}
+      />
     );
   }
 }

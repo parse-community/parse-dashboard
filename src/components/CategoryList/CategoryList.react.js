@@ -52,11 +52,11 @@ export default class CategoryList extends React.Component {
           if (this.state.openClasses.includes(id)) {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
-              const queryFilter = query.get('filters')
+              const queryFilter = query.get('filters');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
                 if (queryFilter === filter.filter) {
-                  height += (i + 1) * 20
+                  height += (i + 1) * 20;
                   break;
                 }
               }
@@ -68,9 +68,8 @@ export default class CategoryList extends React.Component {
         }
         if (id === 'classSeparator') {
           height += 13;
-        }
-        else if (this.state.openClasses.includes(id)) {
-          height = height + (20 * (c.filters.length + 1))
+        } else if (this.state.openClasses.includes(id)) {
+          height = height + 20 * (c.filters.length + 1);
         } else {
           height += 20;
         }
@@ -105,10 +104,13 @@ export default class CategoryList extends React.Component {
           const count = c.count;
           let className = id === this.props.current ? styles.active : '';
           let selectedFilter = null;
-          if (this.state.openClasses.includes(id) && id === this.props.current) {
+          if (
+            this.state.openClasses.includes(id) &&
+            id === this.props.current
+          ) {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
-              const queryFilter = query.get('filters')
+              const queryFilter = query.get('filters');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
                 if (queryFilter === filter.filter) {
@@ -119,11 +121,19 @@ export default class CategoryList extends React.Component {
               }
             }
           }
-          const link = generatePath(this.context, (this.props.linkPrefix || '') + (c.link || id));
+          const link = generatePath(
+            this.context,
+            (this.props.linkPrefix || '') + (c.link || id)
+          );
           return (
             <div>
               <div className={styles.link}>
-                <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
+                <Link
+                  title={c.name}
+                  to={{ pathname: link }}
+                  className={className}
+                  key={id}
+                >
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
@@ -132,7 +142,9 @@ export default class CategoryList extends React.Component {
                     className={styles.expand}
                     onClick={(e) => this.toggleDropdown(e, id)}
                     style={{
-                      transform: this.state.openClasses.includes(id) ? 'scaleY(-1)' : 'scaleY(1)',
+                      transform: this.state.openClasses.includes(id)
+                        ? 'scaleY(-1)'
+                        : 'scaleY(1)',
                     }}
                   ></a>
                 )}
@@ -140,11 +152,15 @@ export default class CategoryList extends React.Component {
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
                   const { name, filter } = filterData;
-                  const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}`;
+                  const url = `${this.props.linkPrefix}${
+                    c.name
+                  }?filters=${encodeURIComponent(filter)}`;
                   return (
                     <div className={styles.childLink}>
                       <Link
-                        className={selectedFilter === index ? styles.active : ''}
+                        className={
+                          selectedFilter === index ? styles.active : ''
+                        }
                         onClick={(e) => {
                           e.preventDefault();
                           this.props.filterClicked(url);
@@ -174,7 +190,13 @@ export default class CategoryList extends React.Component {
 }
 
 CategoryList.propTypes = {
-  categories: PropTypes.arrayOf(PropTypes.object).describe('Array of categories used to populate list.'),
-  current: PropTypes.string.describe('Id of current category to be highlighted.'),
-  linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
+  categories: PropTypes.arrayOf(PropTypes.object).describe(
+    'Array of categories used to populate list.'
+  ),
+  current: PropTypes.string.describe(
+    'Id of current category to be highlighted.'
+  ),
+  linkPrefix: PropTypes.string.describe(
+    'Link prefix used to generate link path.'
+  ),
 };

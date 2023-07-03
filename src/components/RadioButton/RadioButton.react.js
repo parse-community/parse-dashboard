@@ -5,8 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React        from 'react';
-import styles       from 'components/RadioButton/RadioButton.scss';
+import React from 'react';
+import styles from 'components/RadioButton/RadioButton.scss';
 
 const RadioButton = (props) => {
   const parentClassName = props.parentClassName || '';
@@ -14,10 +14,10 @@ const RadioButton = (props) => {
   delete props.parentClassName;
   return (
     <div className={[styles.radiobutton, parentClassName].join(' ')}>
-      <input {...props} type="radio"/>
+      <input {...props} type="radio" />
       <span></span>
     </div>
   );
-}
+};
 
 export default RadioButton;

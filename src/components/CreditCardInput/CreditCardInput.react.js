@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/CreditCardInput/CreditCardInput.scss';
+import React from 'react';
+import styles from 'components/CreditCardInput/CreditCardInput.scss';
 
 const VALID_REGEX = /^[\d ]*$/;
 
@@ -22,11 +22,15 @@ class CreditCardInput extends React.Component {
   }
 
   componentDidUpdate() {
-    this.inputRef.current.setSelectionRange(this.state.cursorPosition, this.state.cursorPosition);
+    this.inputRef.current.setSelectionRange(
+      this.state.cursorPosition,
+      this.state.cursorPosition
+    );
   }
 
   render() {
-    let { value, lastFour, onChange } = this.props
+    let { value } = this.props;
+    const { lastFour, onChange } = this.props;
     let prefilled = false;
     if (value == null && lastFour) {
       prefilled = true;
@@ -35,24 +39,25 @@ class CreditCardInput extends React.Component {
     return (
       <input
         ref={this.inputRef}
-        type='text'
+        type="text"
         className={styles.input}
         value={value}
-        onFocus={ () => {
+        onFocus={() => {
           if (prefilled) {
             onChange('');
           }
         }}
-        onChange={e => {
+        onChange={(e) => {
           const newValue = e.target.value;
           if (VALID_REGEX.test(newValue)) {
             onChange(newValue.replace(/\s/g, ''));
-            this.setState({cursorPosition: e.target.selectionStart});
+            this.setState({ cursorPosition: e.target.selectionStart });
           } else {
             //If they try to type a non-digit, don't move the cursor.
-            this.setState({cursorPosition: e.target.selectionStart - 1});
+            this.setState({ cursorPosition: e.target.selectionStart - 1 });
           }
-        }} />
+        }}
+      />
     );
   }
 }
@@ -68,5 +73,5 @@ CreditCardInput.propTypes = {
   ),
   onChange: PropTypes.func.describe(
     'A function called when the input is changed.'
-  )
+  ),
 };

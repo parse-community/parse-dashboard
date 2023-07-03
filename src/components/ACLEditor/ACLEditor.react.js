@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse             from 'parse';
+import Parse from 'parse';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
-import React             from 'react';
+import React from 'react';
 
 function validateEntry(text, returnInvalid = true) {
-
   let type = 'unknown';
   let entry = text;
   let userQuery;
@@ -24,7 +23,7 @@ function validateEntry(text, returnInvalid = true) {
     type = 'user';
     // no need to query roles
     roleQuery = {
-      find: () => Promise.resolve([])
+      find: () => Promise.resolve([]),
     };
 
     const user = text.substring(5);
@@ -37,7 +36,7 @@ function validateEntry(text, returnInvalid = true) {
     type = 'role';
     // no need to query users
     userQuery = {
-      find: () => Promise.resolve([])
+      find: () => Promise.resolve([]),
     };
     const role = text.substring(5);
     entry = role;
@@ -60,15 +59,15 @@ function validateEntry(text, returnInvalid = true) {
 
   return Promise.all([
     userQuery.find({ useMasterKey: true }),
-    roleQuery.find({ useMasterKey: true })
+    roleQuery.find({ useMasterKey: true }),
   ]).then(([user, role]) => {
     if (user.length > 0) {
       return { entry: user[0], type: 'user' };
     } else if (role.length > 0) {
       return { entry: role[0], type: 'role' };
     } else {
-      if(returnInvalid) {
-        return Promise.resolve({entry, type})
+      if (returnInvalid) {
+        return Promise.resolve({ entry, type });
       }
       return Promise.reject();
     }
@@ -113,10 +112,14 @@ function toACL(perms) {
 
 const ACLEditor = ({ value, onCommit }) => (
   <PermissionsDialog
-    title='Edit Access Control List (ACL)'
+    title="Edit Access Control List (ACL)"
     advanced={false}
-    confirmText='Save ACL'
-    details={<a href='http://docs.parseplatform.org/ios/guide/#object-level-access-control'>Learn more about ACLs and app security</a>}
+    confirmText="Save ACL"
+    details={
+      <a href="http://docs.parseplatform.org/ios/guide/#object-level-access-control">
+        Learn more about ACLs and app security
+      </a>
+    }
     permissions={toPerms(value)}
     validateEntry={validateEntry}
     onCancel={() => {
@@ -124,7 +127,8 @@ const ACLEditor = ({ value, onCommit }) => (
     }}
     onConfirm={(perms) => {
       onCommit(toACL(perms));
-    }} />
+    }}
+  />
 );
 
 export default ACLEditor;

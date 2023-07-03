@@ -21,7 +21,8 @@ export default class AttachSelectedRowsDialog extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleColumnChange = this.handleColumnChange.bind(this);
-    this.handleTargetObjectIdChange = this.handleTargetObjectIdChange.bind(this);
+    this.handleTargetObjectIdChange =
+      this.handleTargetObjectIdChange.bind(this);
   }
 
   componentWillMount() {
@@ -48,13 +49,14 @@ export default class AttachSelectedRowsDialog extends React.Component {
   }
 
   handleConfirm() {
-    const {
+    const { currentClass, currentColumn, targetObjectId, objectIds } =
+      this.state;
+    return this.props.onConfirm(
       currentClass,
-      currentColumn,
       targetObjectId,
-      objectIds,
-    } = this.state;
-    return this.props.onConfirm(currentClass, targetObjectId, currentColumn, objectIds);
+      currentColumn,
+      objectIds
+    );
   }
 
   handleClassChange(className) {
@@ -73,9 +75,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
   }
 
   render() {
-    const {
-      classes,
-    } = this.props;
+    const { classes } = this.props;
     let targetRelationSelector;
     let targetEntityIdInsert;
     if (this.state.touchableColumns.length) {
@@ -92,7 +92,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
               value={this.state.currentColumn}
               onChange={this.handleColumnChange}
             >
-              {this.state.touchableColumns.map(column => (
+              {this.state.touchableColumns.map((column) => (
                 <Option key={column} value={column}>
                   {column}
                 </Option>
@@ -144,7 +144,7 @@ export default class AttachSelectedRowsDialog extends React.Component {
               value={this.state.currentClass}
               onChange={this.handleClassChange}
             >
-              {classes.map(className => (
+              {classes.map((className) => (
                 <Option key={className} value={className}>
                   {className}
                 </Option>

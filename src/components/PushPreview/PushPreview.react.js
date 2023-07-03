@@ -5,16 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React              from 'react';
-import SegmentSelect      from 'components/SegmentSelect/SegmentSelect.react';
-import styles             from 'components/PushPreview/PushPreview.scss';
-import VisiblePreview     from 'components/PushPreview/VisiblePreview.react';
-import { CurrentApp }     from 'context/currentApp';
-import {
-  getDateMethod,
-  MONTHS,
-  pad,
-}                from 'lib/DateUtils';
+import React from 'react';
+import SegmentSelect from 'components/SegmentSelect/SegmentSelect.react';
+import styles from 'components/PushPreview/PushPreview.scss';
+import VisiblePreview from 'components/PushPreview/VisiblePreview.react';
+import { CurrentApp } from 'context/currentApp';
+import { getDateMethod, MONTHS, pad } from 'lib/DateUtils';
 
 const Row = ({ label, content }) => (
   <div className={styles.row}>
@@ -27,13 +23,16 @@ const timeString = (time, isLocal) => {
   if (time && time.constructor === Date) {
     return (
       <div>
-        {MONTHS[time[getDateMethod(isLocal, 'getMonth')]()].substr(0, 3) + ' ' + time[getDateMethod(isLocal, 'getDate')]()}
+        {MONTHS[time[getDateMethod(isLocal, 'getMonth')]()].substr(0, 3) +
+          ' ' +
+          time[getDateMethod(isLocal, 'getDate')]()}
         <span> at </span>
-        {time[getDateMethod(isLocal, 'getHours')]()}:{pad(time[getDateMethod(isLocal, 'getMinutes')]())}
+        {time[getDateMethod(isLocal, 'getHours')]()}:
+        {pad(time[getDateMethod(isLocal, 'getMinutes')]())}
       </div>
     );
   }
-}
+};
 
 export default class PushPreview extends React.Component {
   static contextType = CurrentApp;
@@ -53,10 +52,11 @@ export default class PushPreview extends React.Component {
     let count = -1;
     if (pushState.audience_id === 'new_segment') {
       audienceName = 'New Segment';
-    } else if (pushState.audience_id !== 'everyone' &&
-        this.props.audiences &&
-        this.props.audiences.data &&
-        this.props.audiences.data.get('audiences')
+    } else if (
+      pushState.audience_id !== 'everyone' &&
+      this.props.audiences &&
+      this.props.audiences.data &&
+      this.props.audiences.data.get('audiences')
     ) {
       this.props.audiences.data.get('audiences').forEach((a) => {
         if (a.objectId === pushState.audience_id) {
@@ -69,37 +69,60 @@ export default class PushPreview extends React.Component {
     let messagePreview = (
       <div className={styles.section}>
         <div className={styles.title}>Message</div>
-        <Row label='Message:' content={pushState.data} />
-        {pushState.increment_badge ? <Row label='Badge:' content='Increment' /> : null}
+        <Row label="Message:" content={pushState.data} />
+        {pushState.increment_badge ? (
+          <Row label="Badge:" content="Increment" />
+        ) : null}
       </div>
     );
     if (isExperiment && pushState.exp_type === 'message') {
       messagePreview = (
         <div className={styles.section}>
           <div className={styles.title}>A/B Test</div>
-          <Row label='Name:' content={pushState.experiment_name} />
-          <Row label='Testing:' content='Message' />
-          <Row label='Message A:' content={pushState.data1} />
-          <Row label='Message B:' content={pushState.data2} />
-          {pushState.increment_badge ? <Row label='Badge:' content='Increment' /> : null}
-          <Row label='Test size:' content={pushState.exp_size_in_percent + '%'} />
+          <Row label="Name:" content={pushState.experiment_name} />
+          <Row label="Testing:" content="Message" />
+          <Row label="Message A:" content={pushState.data1} />
+          <Row label="Message B:" content={pushState.data2} />
+          {pushState.increment_badge ? (
+            <Row label="Badge:" content="Increment" />
+          ) : null}
+          <Row
+            label="Test size:"
+            content={pushState.exp_size_in_percent + '%'}
+          />
         </div>
       );
     }
     let expiration = 'Never';
     if (pushState.push_expires) {
       if (pushState.expiration_time_type === 'time') {
-        expiration = timeString(pushState.expiration_time, pushState.local_time);
+        expiration = timeString(
+          pushState.expiration_time,
+          pushState.local_time
+        );
       } else {
-        expiration = pushState.expiration_interval_num + ' ' + pushState.expiration_interval_unit;
+        expiration =
+          pushState.expiration_interval_num +
+          ' ' +
+          pushState.expiration_interval_unit;
       }
     }
     let timePreview = (
       <div className={styles.section}>
         <div className={styles.title}>Delivery</div>
-        <Row label='Time:' content={pushState.push_time_type === 'now' ? 'Immediately' : timeString(pushState.push_time_iso, pushState.local_time)} />
-        <Row label='Time Zone:' content={pushState.local_time ? 'User' : 'GMT'} />
-        <Row label='Expiration:' content={expiration} />
+        <Row
+          label="Time:"
+          content={
+            pushState.push_time_type === 'now'
+              ? 'Immediately'
+              : timeString(pushState.push_time_iso, pushState.local_time)
+          }
+        />
+        <Row
+          label="Time Zone:"
+          content={pushState.local_time ? 'User' : 'GMT'}
+        />
+        <Row label="Expiration:" content={expiration} />
       </div>
     );
     //TODO: clarify use of UTC or GMT as GMT is time zone and UTC is standard
@@ -107,23 +130,47 @@ export default class PushPreview extends React.Component {
       timePreview = (
         <div className={styles.section}>
           <div className={styles.title}>A/B Test</div>
-          <Row label='Name:' content={pushState.experiment_name} />
-          <Row label='Testing:' content='Time' />
-          <Row label='Time A:' content={timeString(pushState.push_time_1_iso, pushState.local_time)} />
-          <Row label='Time B:' content={timeString(pushState.push_time_2_iso, pushState.local_time)} />
-          <Row label='Time Zone:' content={pushState.local_time ? 'User' : 'GMT'} />
-          <Row label='Expiration:' content={expiration} />
-          <Row label='Test size:' content={pushState.exp_size_in_percent + '%'} />
+          <Row label="Name:" content={pushState.experiment_name} />
+          <Row label="Testing:" content="Time" />
+          <Row
+            label="Time A:"
+            content={timeString(
+              pushState.push_time_1_iso,
+              pushState.local_time
+            )}
+          />
+          <Row
+            label="Time B:"
+            content={timeString(
+              pushState.push_time_2_iso,
+              pushState.local_time
+            )}
+          />
+          <Row
+            label="Time Zone:"
+            content={pushState.local_time ? 'User' : 'GMT'}
+          />
+          <Row label="Expiration:" content={expiration} />
+          <Row
+            label="Test size:"
+            content={pushState.exp_size_in_percent + '%'}
+          />
         </div>
       );
     }
     let previewMessage = pushState.data;
     if (isExperiment && pushState.exp_type === 'message') {
-      previewMessage = this.state.currentTest === 'Group A' ? pushState.data1 : pushState.data2;
+      previewMessage =
+        this.state.currentTest === 'Group A'
+          ? pushState.data1
+          : pushState.data2;
     }
     let previewTime = new Date();
     if (isExperiment && pushState.exp_type === 'time') {
-      previewTime = this.state.currentTest === 'Group A' ? pushState.push_time_1_iso : pushState.push_time_2_iso;
+      previewTime =
+        this.state.currentTest === 'Group A'
+          ? pushState.push_time_1_iso
+          : pushState.push_time_2_iso;
     } else if (pushState.push_time_type !== 'now') {
       previewTime = pushState.push_time_iso;
     }
@@ -135,14 +182,21 @@ export default class PushPreview extends React.Component {
         message={previewMessage}
         time={previewTime || new Date()}
         appName={this.context.name}
-        fade={isExperiment} />
+        fade={isExperiment}
+      />
     );
     if (!isExperiment && pushState.data_type === 'json') {
       previewContent = null;
     } else if (isExperiment) {
-      if (this.state.currentTest === 'Group A' && pushState.data_type_1 === 'json') {
+      if (
+        this.state.currentTest === 'Group A' &&
+        pushState.data_type_1 === 'json'
+      ) {
         previewContent = null;
-      } else if (this.state.currentTest === 'Group B' && pushState.data_type_2 === 'json') {
+      } else if (
+        this.state.currentTest === 'Group B' &&
+        pushState.data_type_2 === 'json'
+      ) {
         previewContent = null;
       }
     }
@@ -151,27 +205,34 @@ export default class PushPreview extends React.Component {
         <div className={styles.left}>
           <div className={styles.section}>
             <div className={styles.title}>Audience</div>
-            <Row label='Sending to:' content={audienceName + (count > -1 ? ` (${count} devices)` : '')} />
+            <Row
+              label="Sending to:"
+              content={audienceName + (count > -1 ? ` (${count} devices)` : '')}
+            />
           </div>
           {messagePreview}
           {timePreview}
         </div>
         <div className={styles.right}>
           {previewContent || <div className={styles.noPreview}>No Preview</div>}
-          {previewContent ?
+          {previewContent ? (
             <div className={styles.typeSelect}>
               <SegmentSelect
                 values={['iOS', 'Android', 'OS X', 'Windows']}
                 current={this.state.currentPreview}
-                onChange={(currentPreview) => this.setState({ currentPreview })} />
-            </div> : null}
-          {isExperiment ?
+                onChange={(currentPreview) => this.setState({ currentPreview })}
+              />
+            </div>
+          ) : null}
+          {isExperiment ? (
             <div className={styles.testSelect}>
               <SegmentSelect
                 values={['Group A', 'Group B']}
                 current={this.state.currentTest}
-                onChange={(currentTest) => this.setState({ currentTest })} />
-            </div> : null}
+                onChange={(currentTest) => this.setState({ currentTest })}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
     );

@@ -6,11 +6,11 @@
  * the root directory of this source tree.
  */
 
-import Parse                  from 'parse';
-import React                  from 'react';
-import styles                 from 'dashboard/Data/Browser/Browser.scss';
-import ProtectedFieldsDialog  from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
-import { CurrentApp }         from 'context/currentApp';
+import Parse from 'parse';
+import React from 'react';
+import styles from 'dashboard/Data/Browser/Browser.scss';
+import ProtectedFieldsDialog from 'components/ProtectedFieldsDialog/ProtectedFieldsDialog.react';
+import { CurrentApp } from 'context/currentApp';
 
 const pointerPrefix = 'userField:';
 
@@ -22,7 +22,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
     if (pointers.includes(fieldName)) {
       return Promise.resolve({
         entry: pointerPrefix + fieldName,
-        type: 'pointer'
+        type: 'pointer',
       });
     }
   }
@@ -44,7 +44,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
   if (text.startsWith('user:')) {
     // no need to query roles
     roleQuery = {
-      find: () => Promise.resolve([])
+      find: () => Promise.resolve([]),
     };
 
     const user = text.substring(5);
@@ -55,7 +55,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
   } else if (text.startsWith('role:')) {
     // no need to query users
     userQuery = {
-      find: () => Promise.resolve([])
+      find: () => Promise.resolve([]),
     };
     const role = text.substring(5);
     roleQuery = new Parse.Query.or(
@@ -77,7 +77,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
 
   return Promise.all([
     userQuery.find({ useMasterKey: true }),
-    roleQuery.find({ useMasterKey: true })
+    roleQuery.find({ useMasterKey: true }),
   ]).then(([user, role]) => {
     if (user.length > 0) {
       return { entry: user[0], type: 'user' };
@@ -112,13 +112,13 @@ export default class SecureFieldsDialog extends React.Component {
   }
 
   handleClose() {
-    this.setState({ open: false },() => this.props.onEditPermissions(false));
+    this.setState({ open: false }, () => this.props.onEditPermissions(false));
   }
 
   render() {
     let dialog = null;
-    const parseServerSupportsPointerPermissions = this.context
-      .serverInfo.features.schemas.editClassLevelPermissions;
+    const parseServerSupportsPointerPermissions =
+      this.context.serverInfo.features.schemas.editClassLevelPermissions;
     if (this.props.perms && this.state.open) {
       dialog = (
         <ProtectedFieldsDialog
@@ -137,7 +137,7 @@ export default class SecureFieldsDialog extends React.Component {
               Learn more about CLPs and app security
             </a>
           }
-          validateEntry={entry =>
+          validateEntry={(entry) =>
             validateEntry(
               this.props.userPointers,
               entry,
@@ -145,12 +145,10 @@ export default class SecureFieldsDialog extends React.Component {
             )
           }
           onCancel={this.handleClose}
-          onConfirm={protectedFields => {
+          onConfirm={(protectedFields) => {
             const newPerms = this.props.perms;
             newPerms.protectedFields = protectedFields;
-            this.props
-              .onChangeCLP(newPerms)
-              .then(this.handleClose);
+            this.props.onChangeCLP(newPerms).then(this.handleClose);
           }}
         />
       );

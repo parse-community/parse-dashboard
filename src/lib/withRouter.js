@@ -1,5 +1,10 @@
 import React from 'react';
-import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  useOutletContext,
+  useLocation,
+} from 'react-router-dom';
 
 export function withRouter(Component) {
   function render(props) {
@@ -8,7 +13,15 @@ export function withRouter(Component) {
     const outletContext = useOutletContext();
     const location = useLocation();
 
-    return <Component {...props} {...outletContext} params={params} navigate={navigate} location={location} />;
+    return (
+      <Component
+        {...props}
+        {...outletContext}
+        params={params}
+        navigate={navigate}
+        location={location}
+      />
+    );
   }
 
   const name = Component.displayName || Component.name;

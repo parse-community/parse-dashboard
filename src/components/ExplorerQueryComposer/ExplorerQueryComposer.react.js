@@ -5,17 +5,17 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import baseStyles     from 'stylesheets/base.scss';
-import Button         from 'components/Button/Button.react';
+import baseStyles from 'stylesheets/base.scss';
+import Button from 'components/Button/Button.react';
 import ChromeDropdown from 'components/ChromeDropdown/ChromeDropdown.react';
-import DateTimeEntry  from 'components/DateTimeEntry/DateTimeEntry.react';
+import DateTimeEntry from 'components/DateTimeEntry/DateTimeEntry.react';
 import {
   Constraints,
-  FieldConstraints
-}                       from 'components/ExplorerQueryComposer/ExplorerFilter';
-import PropTypes      from 'lib/PropTypes';
-import React          from 'react';
-import styles         from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
+  FieldConstraints,
+} from 'components/ExplorerQueryComposer/ExplorerFilter';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import styles from 'components/ExplorerQueryComposer/ExplorerQueryComposer.scss';
 
 const TABLE_SOURCES_LABEL = ['API Event', 'Custom Event'];
 
@@ -32,7 +32,7 @@ const FIELD_LABELS = {
     'App Build Version',
     'App Display Version',
     'Timestamp (s)',
-    'Latency (s)'
+    'Latency (s)',
   ],
   'Custom Event': [
     'Event Name',
@@ -45,39 +45,41 @@ const FIELD_LABELS = {
     'OS Version',
     'App Build Version',
     'App Display Version',
-    'Timestamp (s)'
-  ]
+    'Timestamp (s)',
+  ],
 };
 
 const AGGREGATE_TYPE_LABELS = [
-  'Count', 'Count Distinct', 'Sum', 'Minimum', 'Median', '99th Percentile', 'Average'
+  'Count',
+  'Count Distinct',
+  'Sum',
+  'Minimum',
+  'Median',
+  '99th Percentile',
+  'Average',
 ];
 
-const REQUIRED_GROUPING_LABELS = [
-  'Time (day)', 'Time (hour)'
-];
+const REQUIRED_GROUPING_LABELS = ['Time (day)', 'Time (hour)'];
 
-const ORDER_LABELS = [
-  'Ascending', 'Descending'
-];
+const ORDER_LABELS = ['Ascending', 'Descending'];
 
 const FIELD_TYPE = {
-  'Request Type'        : 'String',
-  'Class'               : 'String',
-  'Event Name'          : 'String',
+  'Request Type': 'String',
+  Class: 'String',
+  'Event Name': 'String',
   /* eslint-disable no-constant-condition */
-  'Dimensions'          : false ? 'JSON' : 'String', //In progress features. Change false to true to work on this feature.
+  Dimensions: false ? 'JSON' : 'String', //In progress features. Change false to true to work on this feature.
   /* eslint-enable */
-  'Installation ID'     : 'String',
-  'Parse User ID'       : 'String',
-  'Parse SDK'           : 'String',
-  'Parse SDK Version'   : 'String',
-  'OS'                  : 'String',
-  'OS Version'          : 'String',
-  'App Build Version'   : 'String',
-  'App Display Version' : 'String',
-  'Timestamp (s)'       : 'Date',
-  'Latency (s)'         : 'Number',
+  'Installation ID': 'String',
+  'Parse User ID': 'String',
+  'Parse SDK': 'String',
+  'Parse SDK Version': 'String',
+  OS: 'String',
+  'OS Version': 'String',
+  'App Build Version': 'String',
+  'App Display Version': 'String',
+  'Timestamp (s)': 'Date',
+  'Latency (s)': 'Number',
 };
 
 const availableFilters = {};
@@ -87,13 +89,13 @@ for (const field in FIELD_TYPE) {
 
 const TIMESERIES_DEFAULT_STATE = {
   groups: [REQUIRED_GROUPING_LABELS[0]],
-  limit: undefined
+  limit: undefined,
 };
 
 const NON_TIMESERIES_DEFAULT_STATE = {
   aggregates: [],
   groups: [],
-  limit: 100
+  limit: 100,
 };
 
 const constraintLookup = {};
@@ -112,18 +114,55 @@ function validateNumeric() {
 }
 
 const fieldView = (type, value, onChangeValue) => {
-  const fieldStyle = { width: '32%', marginLeft: '1%', display: 'inline-block' };
+  const fieldStyle = {
+    width: '32%',
+    marginLeft: '1%',
+    display: 'inline-block',
+  };
   switch (type) {
     case null:
       return null;
     case 'String':
-      return <input type='text' className={styles.formInput} style={fieldStyle} value={value} onChange={(e) => onChangeValue(e.target.value)} ref={setFocus}/>;
+      return (
+        <input
+          type="text"
+          className={styles.formInput}
+          style={fieldStyle}
+          value={value}
+          onChange={(e) => onChangeValue(e.target.value)}
+          ref={setFocus}
+        />
+      );
     case 'Number':
-      return <input type='number' className={styles.formInput} style={fieldStyle} value={value} onChange={(e) => onChangeValue(validateNumeric(e.target.value) ? e.target.value : (value || ''))} />;
+      return (
+        <input
+          type="number"
+          className={styles.formInput}
+          style={fieldStyle}
+          value={value}
+          onChange={(e) =>
+            onChangeValue(
+              validateNumeric(e.target.value) ? e.target.value : value || ''
+            )
+          }
+        />
+      );
     case 'Date':
-      return <div style={fieldStyle}><DateTimeEntry fixed={true} className={styles.formInput} value={value || new Date()} onChange={onChangeValue} ref={setFocus}/></div>;
+      return (
+        <div style={fieldStyle}>
+          <DateTimeEntry
+            fixed={true}
+            className={styles.formInput}
+            value={value || new Date()}
+            onChange={onChangeValue}
+            ref={setFocus}
+          />
+        </div>
+      );
     default:
-      throw new Error('Incompatible type ' + type + ' used to render fieldView.');
+      throw new Error(
+        'Incompatible type ' + type + ' used to render fieldView.'
+      );
   }
 };
 
@@ -137,7 +176,7 @@ export default class ExplorerQueryComposer extends React.Component {
       newName: '',
       editing: false,
       isSaved: false,
-      ...initialState
+      ...initialState,
     };
   }
 
@@ -147,10 +186,12 @@ export default class ExplorerQueryComposer extends React.Component {
     if (props.isTimeSeries) {
       defaultState = {
         ...TIMESERIES_DEFAULT_STATE,
-        aggregates: [{
-          op: AGGREGATE_TYPE_LABELS[0],
-          col: FIELD_LABELS[TABLE_SOURCES_LABEL[0]][0]
-        }]
+        aggregates: [
+          {
+            op: AGGREGATE_TYPE_LABELS[0],
+            col: FIELD_LABELS[TABLE_SOURCES_LABEL[0]][0],
+          },
+        ],
       };
     } else {
       defaultState = NON_TIMESERIES_DEFAULT_STATE;
@@ -163,7 +204,7 @@ export default class ExplorerQueryComposer extends React.Component {
       groups: query.groups || defaultState.groups,
       limit: query.limit || defaultState.limit,
       filters: query.filters || [],
-      orders: query.orders || []
+      orders: query.orders || [],
     };
   }
 
@@ -172,14 +213,14 @@ export default class ExplorerQueryComposer extends React.Component {
     this.state.aggregates.forEach((value, index) => {
       options.push({
         key: 'aggregate|' + index,
-        value: [value.col, value.op].join(' ')
+        value: [value.col, value.op].join(' '),
       });
     });
 
     this.state.groups.forEach((value, index) => {
       options.push({
         key: 'group|' + index,
-        value: value
+        value: value,
       });
     });
 
@@ -194,7 +235,7 @@ export default class ExplorerQueryComposer extends React.Component {
   toggleEditing() {
     this.setState({
       editing: !this.state.editing,
-      newName: this.state.name
+      newName: this.state.name,
     });
   }
 
@@ -208,15 +249,17 @@ export default class ExplorerQueryComposer extends React.Component {
       limit: this.state.limit,
       filters: this.state.filters,
       // Only pass them if order is valid
-      orders: this.state.orders.filter((order) => order.col !== null && order.col !== undefined),
+      orders: this.state.orders.filter(
+        (order) => order.col !== null && order.col !== undefined
+      ),
       localId: query.localId,
-      objectId: query.objectId
+      objectId: query.objectId,
     });
 
     this.setState({
       editing: false,
       name: this.state.newName,
-      isSaved: !!this.state.newName
+      isSaved: !!this.state.newName,
     });
   }
 
@@ -226,37 +269,41 @@ export default class ExplorerQueryComposer extends React.Component {
 
   handleAddAggregate() {
     this.setState({
-      aggregates: this.state.aggregates.concat([{
-        op: AGGREGATE_TYPE_LABELS[0],
-        col: FIELD_LABELS[this.state.source][0]
-      }])
+      aggregates: this.state.aggregates.concat([
+        {
+          op: AGGREGATE_TYPE_LABELS[0],
+          col: FIELD_LABELS[this.state.source][0],
+        },
+      ]),
     });
   }
 
   handleAddGroup() {
     this.setState({
-      groups: this.state.groups.concat([
-        FIELD_LABELS[this.state.source][0]
-      ])
+      groups: this.state.groups.concat([FIELD_LABELS[this.state.source][0]]),
     });
   }
 
   handleAddFilter() {
     this.setState({
-      filters: this.state.filters.concat([{
-        op: '$eq',
-        col: FIELD_LABELS[this.state.source][0],
-        val: null
-      }])
+      filters: this.state.filters.concat([
+        {
+          op: '$eq',
+          col: FIELD_LABELS[this.state.source][0],
+          val: null,
+        },
+      ]),
     });
   }
 
   handleAddOrder() {
     this.setState({
-      orders: this.state.orders.concat([{
-        col: null,
-        asc: ORDER_LABELS[0]
-      }])
+      orders: this.state.orders.concat([
+        {
+          col: null,
+          asc: ORDER_LABELS[0],
+        },
+      ]),
     });
   }
 
@@ -264,7 +311,7 @@ export default class ExplorerQueryComposer extends React.Component {
     const initialState = this.getInitialStateFromProps(this.props);
     this.setState({
       ...initialState,
-      source: newSource
+      source: newSource,
     });
   }
 
@@ -279,9 +326,10 @@ export default class ExplorerQueryComposer extends React.Component {
       deleteButton = (
         <div className={styles.delWrapper}>
           <button
-            type='button'
+            type="button"
             className={styles.del}
-            onClick={this.removeAdditionalQuery.bind(this, 'aggregates', index)}>
+            onClick={this.removeAdditionalQuery.bind(this, 'aggregates', index)}
+          >
             &times;
           </button>
         </div>
@@ -299,24 +347,30 @@ export default class ExplorerQueryComposer extends React.Component {
               const aggregates = this.state.aggregates;
               aggregates[index] = {
                 op: val,
-                col: FIELD_LABELS[this.state.source][0]
+                col: FIELD_LABELS[this.state.source][0],
               };
               this.setState({ aggregates });
             }}
-            color='blue'
-            width='100%' />
+            color="blue"
+            width="100%"
+          />
         </div>
 
         <div className={styles.halfBox}>
-          <div className={styles.formLabel} style={{ width: '40px' }}>of</div>
+          <div className={styles.formLabel} style={{ width: '40px' }}>
+            of
+          </div>
           <ChromeDropdown
             value={aggregate.col}
-            options={FIELD_LABELS[this.state.source].filter(field => {
+            options={FIELD_LABELS[this.state.source].filter((field) => {
               switch (aggregate.op) {
                 case 'Sum':
                 case 'Median':
                 case 'Average':
-                  return FIELD_TYPE[field] === 'Number' || FIELD_TYPE[field] === 'Date';
+                  return (
+                    FIELD_TYPE[field] === 'Number' ||
+                    FIELD_TYPE[field] === 'Date'
+                  );
                 default:
                   return true;
               }
@@ -326,8 +380,9 @@ export default class ExplorerQueryComposer extends React.Component {
               aggregates[index].col = val;
               this.setState({ aggregates });
             }}
-            color='blue'
-            width='100%' />
+            color="blue"
+            width="100%"
+          />
 
           {deleteButton}
         </div>
@@ -342,9 +397,10 @@ export default class ExplorerQueryComposer extends React.Component {
       deleteButton = (
         <div className={styles.delWrapper}>
           <button
-            type='button'
+            type="button"
             className={styles.del}
-            onClick={this.removeAdditionalQuery.bind(this, 'groups', index)}>
+            onClick={this.removeAdditionalQuery.bind(this, 'groups', index)}
+          >
             &times;
           </button>
         </div>
@@ -356,14 +412,19 @@ export default class ExplorerQueryComposer extends React.Component {
         <div className={styles.formLabel}>Grouping</div>
         <ChromeDropdown
           value={grouping}
-          options={specialGroup ? REQUIRED_GROUPING_LABELS : FIELD_LABELS[this.state.source]}
+          options={
+            specialGroup
+              ? REQUIRED_GROUPING_LABELS
+              : FIELD_LABELS[this.state.source]
+          }
           onChange={(val) => {
             const groups = this.state.groups;
             groups[index] = val;
             this.setState({ groups });
           }}
-          color='blue'
-          width='100%' />
+          color="blue"
+          width="100%"
+        />
 
         {deleteButton}
       </div>
@@ -371,7 +432,12 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   renderFilter(filter, index = 0) {
-    const type = Object.prototype.hasOwnProperty.call(Constraints[filter.op], 'field') ? Constraints[filter.op].field : FIELD_TYPE[filter.col];
+    const type = Object.prototype.hasOwnProperty.call(
+      Constraints[filter.op],
+      'field'
+    )
+      ? Constraints[filter.op].field
+      : FIELD_TYPE[filter.col];
 
     let constraintView = null;
     if (type === 'JSON') {
@@ -384,10 +450,12 @@ export default class ExplorerQueryComposer extends React.Component {
         jsonView = (
           <div style={{ marginTop: '10px' }}>
             <ChromeDropdown
-              width='51%'
-              color='blue'
+              width="51%"
+              color="blue"
               value={Constraints[filter.json_scalar_op].name}
-              options={FieldConstraints['JSONValue'].map((c) => Constraints[c].name)}
+              options={FieldConstraints['JSONValue'].map(
+                (c) => Constraints[c].name
+              )}
               onChange={(val) => {
                 const filters = this.state.filters;
                 filters[index] = {
@@ -395,10 +463,11 @@ export default class ExplorerQueryComposer extends React.Component {
                   op: filter.op,
                   json_path: filter.json_path,
                   json_scalar_op: constraintLookup[val],
-                  val: filter.val
+                  val: filter.val,
                 };
                 this.setState({ filters });
-              }} />
+              }}
+            />
 
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
@@ -410,10 +479,11 @@ export default class ExplorerQueryComposer extends React.Component {
                   op: filter.op,
                   json_path: filter.json_path,
                   json_scalar_op: filter.json_scalar_op,
-                  val: e.target.value
+                  val: e.target.value,
                 };
                 this.setState({ filters });
-              }} />
+              }}
+            />
           </div>
         );
       }
@@ -423,19 +493,22 @@ export default class ExplorerQueryComposer extends React.Component {
         <div style={{ width: '65%', display: 'inline-block' }}>
           <div>
             <ChromeDropdown
-              width='51%'
-              color='blue'
+              width="51%"
+              color="blue"
               value={Constraints[filter.op].name}
-              options={availableFilters[filter.col].map((c) => Constraints[c].name)}
+              options={availableFilters[filter.col].map(
+                (c) => Constraints[c].name
+              )}
               onChange={(val) => {
                 const filters = this.state.filters;
                 filters[index] = {
                   col: filter.col,
                   op: constraintLookup[val],
-                  val: filter.val
+                  val: filter.val,
                 };
                 this.setState({ filters });
-              }} />
+              }}
+            />
 
             <input
               className={[styles.formInput, styles.filterInputStyle].join(' ')}
@@ -449,19 +522,20 @@ export default class ExplorerQueryComposer extends React.Component {
                     op: filter.op,
                     val: filter.val,
                     json_path: e.target.value,
-                    json_scalar_op: filter.json_scalar_op
+                    json_scalar_op: filter.json_scalar_op,
                   };
                 } else {
                   newFilter = {
                     col: filter.col,
                     op: filter.op,
-                    val: e.target.value
-                  }
+                    val: e.target.value,
+                  };
                 }
                 filters[index] = newFilter;
                 this.setState({ filters });
               }}
-              ref={setFocus} />
+              ref={setFocus}
+            />
           </div>
 
           {jsonView}
@@ -472,25 +546,28 @@ export default class ExplorerQueryComposer extends React.Component {
         <span>
           <ChromeDropdown
             width={type ? '33%' : '65%'}
-            color='blue'
+            color="blue"
             value={Constraints[filter.op].name}
-            options={availableFilters[filter.col].map((c) => Constraints[c].name)}
+            options={availableFilters[filter.col].map(
+              (c) => Constraints[c].name
+            )}
             onChange={(val) => {
               const filters = this.state.filters;
               filters[index] = {
                 col: filter.col,
                 op: constraintLookup[val],
-                val: null
+                val: null,
               };
               this.setState({ filters });
-            }} />
+            }}
+          />
 
           {fieldView(type, filter.val, (val) => {
             const filters = this.state.filters;
             filters[index] = {
               col: filter.col,
               op: filter.op,
-              val: val
+              val: val,
             };
             this.setState({ filters });
           })}
@@ -503,8 +580,8 @@ export default class ExplorerQueryComposer extends React.Component {
         <div className={styles.formLabel}>Filter</div>
         <span style={{ marginRight: '1%' }}>
           <ChromeDropdown
-            width='33%'
-            color='blue'
+            width="33%"
+            color="blue"
             value={filter.col}
             options={FIELD_LABELS[this.state.source]}
             onChange={(val) => {
@@ -512,19 +589,21 @@ export default class ExplorerQueryComposer extends React.Component {
               filters[index] = {
                 col: val,
                 op: '$eq',
-                val: null
+                val: null,
               };
               this.setState({ filters });
-            }} />
+            }}
+          />
         </span>
 
         {constraintView}
 
         <div className={styles.delWrapper}>
           <button
-            type='button'
+            type="button"
             className={styles.del}
-            onClick={this.removeAdditionalQuery.bind(this, 'filters', index)}>
+            onClick={this.removeAdditionalQuery.bind(this, 'filters', index)}
+          >
             &times;
           </button>
         </div>
@@ -538,19 +617,20 @@ export default class ExplorerQueryComposer extends React.Component {
         <div className={styles.formLabel}>Sort by</div>
         <div className={styles.halfBox}>
           <ChromeDropdown
-            placeholder='Column'
+            placeholder="Column"
             value={order.col}
             options={this.getOrderOptions()}
             onChange={(val) => {
               const orders = this.state.orders;
               orders[index] = {
                 col: val,
-                asc: ORDER_LABELS[0]
+                asc: ORDER_LABELS[0],
               };
               this.setState({ orders });
             }}
-            color='blue'
-            width='100%' />
+            color="blue"
+            width="100%"
+          />
         </div>
 
         <div className={styles.halfBox}>
@@ -562,14 +642,16 @@ export default class ExplorerQueryComposer extends React.Component {
               orders[index].asc = val;
               this.setState({ orders });
             }}
-            color='blue'
-            width='100%' />
+            color="blue"
+            width="100%"
+          />
 
           <div className={styles.delWrapper}>
             <button
-              type='button'
+              type="button"
               className={styles.del}
-              onClick={this.removeAdditionalQuery.bind(this, 'orders', index)}>
+              onClick={this.removeAdditionalQuery.bind(this, 'orders', index)}
+            >
               &times;
             </button>
           </div>
@@ -579,7 +661,8 @@ export default class ExplorerQueryComposer extends React.Component {
   }
 
   render() {
-    let { query, isNew, isTimeSeries, onDismiss } = this.props;
+    let { query } = this.props;
+    const { isNew, isTimeSeries, onDismiss } = this.props;
     query = query || {};
 
     // First and foremost, let's not waste time if the query itself is not composable.
@@ -594,11 +677,12 @@ export default class ExplorerQueryComposer extends React.Component {
           <div className={styles.footer}>
             <div className={[baseStyles.center, styles.boxContent].join(' ')}>
               <Button
-                width='100%'
-                value='Dismiss query'
-                color='white'
+                width="100%"
+                value="Dismiss query"
+                color="white"
                 primary={true}
-                onClick={onDismiss} />
+                onClick={onDismiss}
+              />
             </div>
           </div>
         </div>
@@ -611,24 +695,27 @@ export default class ExplorerQueryComposer extends React.Component {
       headerView = (
         <div className={[baseStyles.center, styles.headerView].join(' ')}>
           <input
-            type='text'
+            type="text"
             className={[styles.headerLabel, styles.textInput].join(' ')}
             value={this.state.newName}
             onChange={this.handleNameChange.bind(this)}
-            placeholder={'Give your query a name'} />
+            placeholder={'Give your query a name'}
+          />
           <div className={styles.headerButtonCell}>
             <button
-              type='button'
+              type="button"
               className={styles.headerButton}
-              onClick={this.handleSave.bind(this)}>
-              { this.state.isSaved ? 'Rename' : 'Save' }
+              onClick={this.handleSave.bind(this)}
+            >
+              {this.state.isSaved ? 'Rename' : 'Save'}
             </button>
           </div>
           <div className={styles.headerButtonCell}>
             <button
-              type='button'
+              type="button"
               className={[styles.headerButton, styles.secondaryColor].join(' ')}
-              onClick={this.toggleEditing.bind(this)}>
+              onClick={this.toggleEditing.bind(this)}
+            >
               Cancel
             </button>
           </div>
@@ -637,14 +724,19 @@ export default class ExplorerQueryComposer extends React.Component {
     } else {
       headerView = (
         <div className={[baseStyles.center, styles.headerView].join(' ')}>
-          <h3 className={styles.headerLabel}>{ this.state.name || 'Build a custom query' }</h3>
-          { isNew ? null : (
+          <h3 className={styles.headerLabel}>
+            {this.state.name || 'Build a custom query'}
+          </h3>
+          {isNew ? null : (
             <div className={styles.headerButtonCell}>
               <button
-                type='button'
-                className={[styles.headerButton, styles.secondaryColor].join(' ')}
-                onClick={this.toggleEditing.bind(this)}>
-                { this.state.isSaved ? 'Rename' : 'Save' }
+                type="button"
+                className={[styles.headerButton, styles.secondaryColor].join(
+                  ' '
+                )}
+                onClick={this.toggleEditing.bind(this)}
+              >
+                {this.state.isSaved ? 'Rename' : 'Save'}
               </button>
             </div>
           )}
@@ -676,11 +768,14 @@ export default class ExplorerQueryComposer extends React.Component {
           <div className={styles.boxContent}>
             <div className={styles.formLabel}>Limit</div>
             <input
-              type='number'
+              type="number"
               className={styles.formInput}
               style={{ width: '100%' }}
               value={this.state.limit}
-              onChange={(event) => this.setState({ limit: event.nativeEvent.target.value })} />
+              onChange={(event) =>
+                this.setState({ limit: event.nativeEvent.target.value })
+              }
+            />
           </div>
         </div>
       );
@@ -693,14 +788,18 @@ export default class ExplorerQueryComposer extends React.Component {
     }
 
     const offset = isTimeSeries ? 1 : 0;
-    const extraAggregateModels = isTimeSeries ? this.state.aggregates.slice(1) : this.state.aggregates;
+    const extraAggregateModels = isTimeSeries
+      ? this.state.aggregates.slice(1)
+      : this.state.aggregates;
     const extraAggregates = extraAggregateModels.map((aggregate, i) => (
       <div className={styles.queryComposerBox} key={`aggregate_${i + 1}`}>
         {this.renderAggregate(aggregate, i + offset)}
       </div>
     ));
 
-    const extraGroupModels = isTimeSeries ? this.state.groups.slice(1) : this.state.groups;
+    const extraGroupModels = isTimeSeries
+      ? this.state.groups.slice(1)
+      : this.state.groups;
     const extraGroups = extraGroupModels.map((group, i) => (
       <div className={styles.queryComposerBox} key={`group_${i + 1}`}>
         {this.renderGroup(group, i + offset)}
@@ -718,10 +817,11 @@ export default class ExplorerQueryComposer extends React.Component {
       sortButton = (
         <span className={styles.actionButton}>
           <Button
-            width='100%'
-            value='Order by'
-            color='white'
-            onClick={this.handleAddOrder.bind(this)} />
+            width="100%"
+            value="Order by"
+            color="white"
+            onClick={this.handleAddOrder.bind(this)}
+          />
         </span>
       );
     }
@@ -731,11 +831,12 @@ export default class ExplorerQueryComposer extends React.Component {
       footerButton = (
         <div className={styles.boxContent}>
           <Button
-            width='100%'
-            value='Add query'
-            color='white'
+            width="100%"
+            value="Add query"
+            color="white"
             primary={true}
-            onClick={this.handleSave.bind(this)} />
+            onClick={this.handleSave.bind(this)}
+          />
         </div>
       );
     } else {
@@ -743,18 +844,20 @@ export default class ExplorerQueryComposer extends React.Component {
         <div className={styles.boxContent}>
           <span className={styles.twoButton}>
             <Button
-              width='100%'
-              value='Dismiss query'
-              color='white'
-              onClick={onDismiss} />
+              width="100%"
+              value="Dismiss query"
+              color="white"
+              onClick={onDismiss}
+            />
           </span>
           <span className={styles.twoButton}>
             <Button
-              width='100%'
+              width="100%"
               value={query.preset ? 'Duplicate as new query' : 'Update query'}
-              color='white'
+              color="white"
               primary={true}
-              onClick={this.handleSave.bind(this)} />
+              onClick={this.handleSave.bind(this)}
+            />
           </span>
         </div>
       );
@@ -762,9 +865,7 @@ export default class ExplorerQueryComposer extends React.Component {
 
     return (
       <div className={styles.queryComposer}>
-        <div className={styles.header}>
-          {headerView}
-        </div>
+        <div className={styles.header}>{headerView}</div>
 
         <div className={styles.queryComposerBox}>
           <div className={styles.boxContent}>
@@ -773,8 +874,9 @@ export default class ExplorerQueryComposer extends React.Component {
               value={this.state.source}
               options={TABLE_SOURCES_LABEL}
               onChange={this.handleSourceChange.bind(this)}
-              color='blue'
-              width='100%' />
+              color="blue"
+              width="100%"
+            />
           </div>
         </div>
 
@@ -790,42 +892,41 @@ export default class ExplorerQueryComposer extends React.Component {
           <div className={styles.boxContent}>
             <span className={styles.actionButton}>
               <Button
-                width='100%'
-                value='Add aggregate'
-                color='white'
-                onClick={this.handleAddAggregate.bind(this)} />
+                width="100%"
+                value="Add aggregate"
+                color="white"
+                onClick={this.handleAddAggregate.bind(this)}
+              />
             </span>
             <span className={styles.actionButton}>
               <Button
-                width='100%'
-                value='Add grouping'
-                color='white'
-                onClick={this.handleAddGroup.bind(this)} />
+                width="100%"
+                value="Add grouping"
+                color="white"
+                onClick={this.handleAddGroup.bind(this)}
+              />
             </span>
             <span className={styles.actionButton}>
               <Button
-                width='100%'
-                value='Filter input rows'
-                color='white'
-                onClick={this.handleAddFilter.bind(this)} />
+                width="100%"
+                value="Filter input rows"
+                color="white"
+                onClick={this.handleAddFilter.bind(this)}
+              />
             </span>
 
             {sortButton}
           </div>
         </div>
 
-        <div className={styles.footer}>
-          {footerButton}
-        </div>
+        <div className={styles.footer}>{footerButton}</div>
       </div>
     );
   }
 }
 
 ExplorerQueryComposer.propTypes = {
-  query: PropTypes.object.describe(
-    'The query to be edited by this composer.'
-  ),
+  query: PropTypes.object.describe('The query to be edited by this composer.'),
   onSave: PropTypes.func.isRequired.describe(
     'Function to be called on query created/saved.'
   ),
@@ -834,10 +935,10 @@ ExplorerQueryComposer.propTypes = {
   ),
   isNew: PropTypes.bool.describe(
     'True if the composer is trying to compose a new query. ' +
-    'False if the composer is editing an existing one.'
+      'False if the composer is editing an existing one.'
   ),
   isTimeSeries: PropTypes.bool.describe(
     'If set to true, add default group (day, hour) and aggregate to the composer. ' +
-    'Otherwise, render limit inside the composer.'
-  )
-}
+      'Otherwise, render limit inside the composer.'
+  ),
+};

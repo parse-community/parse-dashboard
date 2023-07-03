@@ -5,11 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Position             from 'lib/Position';
-import PropTypes            from 'lib/PropTypes'
+import Position from 'lib/Position';
+import PropTypes from 'lib/PropTypes';
 import React, { Component } from 'react';
-import styles               from 'components/Autocomplete/Autocomplete.scss';
-import SuggestionsList      from 'components/SuggestionsList/SuggestionsList.react';
+import styles from 'components/Autocomplete/Autocomplete.scss';
+import SuggestionsList from 'components/SuggestionsList/SuggestionsList.react';
 
 export default class Autocomplete extends Component {
   constructor(props) {
@@ -47,13 +47,15 @@ export default class Autocomplete extends Component {
     };
 
     this.state = {
-      valueFromSuggestion: props.strict ? props.value ?? props.suggestions[0] : '',
+      valueFromSuggestion: props.strict
+        ? props.value ?? props.suggestions[0]
+        : '',
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
       userInput: props.strict ? props.value ?? props.suggestions[0] : '',
       label: props.label,
-      position: null
+      position: null,
     };
   }
 
@@ -97,7 +99,7 @@ export default class Autocomplete extends Component {
     const filteredSuggestions = buildSuggestions
       ? buildSuggestions(userInput)
       : suggestions.filter(
-        suggestion =>
+        (suggestion) =>
           suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
       );
     return filteredSuggestions;
@@ -120,15 +122,19 @@ export default class Autocomplete extends Component {
       showSuggestions: true,
       userInput,
       label,
-      error: undefined
+      error: undefined,
     });
 
-    if (!this.props.strict) this.props.onChange && this.props.onChange(userInput);
+    if (!this.props.strict) {
+      this.props.onChange && this.props.onChange(userInput);
+    }
   }
 
   onClick(e) {
     const userInput = e.currentTarget.innerText;
-    if (this.props.strict) this.props.onChange && this.props.onChange(userInput);
+    if (this.props.strict) {
+      this.props.onChange && this.props.onChange(userInput);
+    }
     const label = this.props.label || this.props.buildLabel(userInput);
 
     this.inputRef.current.focus();
@@ -140,7 +146,7 @@ export default class Autocomplete extends Component {
         filteredSuggestions: [],
         showSuggestions: false,
         userInput,
-        label
+        label,
       },
       () => {
         this.props.onClick && this.props.onClick(e);
@@ -157,7 +163,9 @@ export default class Autocomplete extends Component {
     if (!this._ignoreBlur && !this.state.showSuggestions) {
       this._ignoreBlur = true;
     }
-    if(this.props.strict) e.target.select();
+    if (this.props.strict) {
+      e.target.select();
+    }
     this.activate(e);
   }
 
@@ -208,7 +216,7 @@ export default class Autocomplete extends Component {
         filteredSuggestions,
         position,
         label,
-        showSuggestions: true
+        showSuggestions: true,
       },
       () => {
         this.props.onFocus && this.props.onFocus();
@@ -221,7 +229,7 @@ export default class Autocomplete extends Component {
       {
         active: false,
         showSuggestions: false,
-        activeSuggestion: 0
+        activeSuggestion: 0,
       },
       () => {
         this.props.onBlur && this.props.onBlur();
@@ -235,7 +243,7 @@ export default class Autocomplete extends Component {
         active: false,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: ''
+        userInput: '',
       },
       () => {
         this.inputRef.current.blur();
@@ -265,7 +273,7 @@ export default class Autocomplete extends Component {
         active: true,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: filteredSuggestions[activeSuggestion]
+        userInput: filteredSuggestions[activeSuggestion],
       });
     } else if (e.keyCode === 38) {
       // arrow up
@@ -275,7 +283,7 @@ export default class Autocomplete extends Component {
 
       this.setState({
         active: false,
-        activeSuggestion: activeSuggestion - 1
+        activeSuggestion: activeSuggestion - 1,
       });
     } else if (e.keyCode === 40) {
       // arrow down
@@ -285,7 +293,7 @@ export default class Autocomplete extends Component {
 
       this.setState({
         active: false,
-        activeSuggestion: activeSuggestion + 1
+        activeSuggestion: activeSuggestion + 1,
       });
     }
   }
@@ -304,7 +312,14 @@ export default class Autocomplete extends Component {
       onMouseDown,
       onFocus,
       onKeyDown,
-      props: {suggestionsStyle, suggestionsItemStyle, inputStyle, containerStyle, placeholder, error },
+      props: {
+        suggestionsStyle,
+        suggestionsItemStyle,
+        inputStyle,
+        containerStyle,
+        placeholder,
+        error,
+      },
       state: {
         activeSuggestion,
         filteredSuggestions,
@@ -312,8 +327,8 @@ export default class Autocomplete extends Component {
         userInput,
         hidden,
         active,
-        label
-      }
+        label,
+      },
     } = this;
 
     const fieldClassName = [
@@ -323,7 +338,7 @@ export default class Autocomplete extends Component {
       showSuggestions &&
         !hidden &&
         filteredSuggestions.length &&
-        styles.dropdown
+        styles.dropdown,
     ].join(' ');
 
     const inputClasses = [error && styles.error].join(' ');
@@ -347,7 +362,11 @@ export default class Autocomplete extends Component {
 
     return (
       <React.Fragment>
-        <div style={containerStyle} className={fieldClassName} ref={this.fieldRef}>
+        <div
+          style={containerStyle}
+          className={fieldClassName}
+          ref={this.fieldRef}
+        >
           <input
             id={1}
             role={'combobox'}
@@ -374,9 +393,7 @@ export default class Autocomplete extends Component {
 }
 
 Autocomplete.propTypes = {
-  inputStyle: PropTypes.object.describe(
-    'Styling for the input.'
-  ),
+  inputStyle: PropTypes.object.describe('Styling for the input.'),
   suggestionsStyle: PropTypes.object.describe(
     'Styling for the suggestions dropdown.'
   ),
@@ -386,9 +403,7 @@ Autocomplete.propTypes = {
   onSubmit: PropTypes.func.describe(
     'Callback triggered when "enter" key pressed'
   ),
-  placeholder: PropTypes.string.describe(
-    'Placeholder text'
-  ),
+  placeholder: PropTypes.string.describe('Placeholder text'),
   buildSuggestions: PropTypes.func.describe(
     'Function receiving current input as an argument and should return an array to be rendered as suggestions'
   ),
@@ -397,5 +412,5 @@ Autocomplete.propTypes = {
   ),
   error: PropTypes.string.describe(
     'Error to be rendered in place of label if defined'
-  )
-}
+  ),
+};

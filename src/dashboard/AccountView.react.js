@@ -13,14 +13,12 @@ export default class AccountView extends React.Component {
   render() {
     const sidebar = buildAccountSidebar({
       section: this.props.section,
-      subsection: this.props.subsection
+      subsection: this.props.subsection,
     });
 
     return (
       <div className={styles.dashboard}>
-        <div className={styles.content}>
-          {this.props.children}
-        </div>
+        <div className={styles.content}>{this.props.children}</div>
         {sidebar}
       </div>
     );

@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'parse-interface-guide/PIG.scss';
 
 function typeString(prop) {
@@ -23,7 +23,9 @@ const PropsRow = (p) => (
   <div className={styles.row}>
     <div>
       <span className={styles.prop_name}>{p.name}</span>
-      {p.required ? <span className={styles.prop_required}>[Required]</span> : null}
+      {p.required ? (
+        <span className={styles.prop_required}>[Required]</span>
+      ) : null}
       <span className={styles.prop_type}>{p.type}</span>
     </div>
     <p>{p.description}</p>
@@ -57,7 +59,9 @@ export default class PropsTable extends React.Component {
     return (
       <div className={styles.table}>
         <div className={styles.header}>Props</div>
-        {propInfo.map((p) => <PropsRow key={p.name} {...p} />)}
+        {propInfo.map((p) => (
+          <PropsRow key={p.name} {...p} />
+        ))}
       </div>
     );
   }

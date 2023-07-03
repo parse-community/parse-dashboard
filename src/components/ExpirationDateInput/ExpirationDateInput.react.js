@@ -13,28 +13,42 @@ import React from 'react';
 const months = [];
 for (let i = 1; i <= 12; i++) {
   const value = (i < 10 ? '0' : '') + String(i);
-  months.push(<Option key={'m' + i} value={String(i)}>{value}</Option>);
+  months.push(
+    <Option key={'m' + i} value={String(i)}>
+      {value}
+    </Option>
+  );
 }
 const years = [];
 const startYear = new Date().getFullYear();
 for (let i = 0; i < 10; i++) {
   const value = String(startYear + i);
-  years.push(<Option key={'y' + i} value={value}>{value}</Option>);
+  years.push(
+    <Option key={'y' + i} value={value}>
+      {value}
+    </Option>
+  );
 }
 
 const ExpirationDateInput = ({ month, year, onChange }) => {
   return (
     <div>
       <Dropdown
-        width='40%'
+        width="40%"
         value={String(month)}
-        onChange={(value) => onChange({ month: parseInt(value, 10), year: year })}>
+        onChange={(value) =>
+          onChange({ month: parseInt(value, 10), year: year })
+        }
+      >
         {months}
       </Dropdown>
       <Dropdown
-        width='60%'
+        width="60%"
         value={String(year)}
-        onChange={(value) => onChange({ month: month, year: parseInt(value, 10) })}>
+        onChange={(value) =>
+          onChange({ month: month, year: parseInt(value, 10) })
+        }
+      >
         {years}
       </Dropdown>
     </div>
@@ -44,13 +58,9 @@ const ExpirationDateInput = ({ month, year, onChange }) => {
 export default ExpirationDateInput;
 
 ExpirationDateInput.propTypes = {
-  month: PropTypes.number.describe(
-    'The expiration month.'
-  ),
-  year: PropTypes.number.describe(
-    'The expiration year, in four-digit form.'
-  ),
+  month: PropTypes.number.describe('The expiration month.'),
+  year: PropTypes.number.describe('The expiration year, in four-digit form.'),
   onChange: PropTypes.func.isRequired.describe(
     'A function called when the value changes. It receives an object with two parameters: the month and the year.'
-  )
+  ),
 };

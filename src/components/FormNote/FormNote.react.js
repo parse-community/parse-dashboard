@@ -12,14 +12,19 @@ import SliderWrap from 'components/SliderWrap/SliderWrap.react';
 import styles from 'components/FormNote/FormNote.scss';
 
 const FormNote = ({ show, children, color, ...other }) => (
-  <SliderWrap {...other} direction={Directions.DOWN} expanded={show} block={true}>
+  <SliderWrap
+    {...other}
+    direction={Directions.DOWN}
+    expanded={show}
+    block={true}
+  >
     <div className={[styles.note, styles[color]].join(' ')}>{children}</div>
   </SliderWrap>
 );
 
 FormNote.propTypes = {
   show: PropTypes.bool,
-  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red'])
+  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red']),
 };
 
 export default FormNote;

@@ -5,21 +5,32 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import baseStyles   from 'stylesheets/base.scss';
-import Loader       from 'components/Loader/Loader.react';
-import PropTypes    from 'lib/PropTypes';
-import React        from 'react';
-import styles       from 'components/LoaderContainer/LoaderContainer.scss';
+import baseStyles from 'stylesheets/base.scss';
+import Loader from 'components/Loader/Loader.react';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import styles from 'components/LoaderContainer/LoaderContainer.scss';
 
 //Loader wrapper component
 //Wraps child component with a layer and <Loader/> centered
-const LoaderContainer = ({ loading, hideAnimation, children, solid = true }) => (
+const LoaderContainer = ({
+  loading,
+  hideAnimation,
+  children,
+  solid = true,
+}) => (
   <div className={styles.loaderContainer}>
-    <div className={styles.children}>
-      {children}
-    </div>
-    <div className={[styles.loaderParent, loading ? styles.visible : '', solid ? styles.solid : ''].join(' ')}>
-      {(hideAnimation || !loading) ? null : <Loader className={baseStyles.center}/>}
+    <div className={styles.children}>{children}</div>
+    <div
+      className={[
+        styles.loaderParent,
+        loading ? styles.visible : '',
+        solid ? styles.solid : '',
+      ].join(' ')}
+    >
+      {hideAnimation || !loading ? null : (
+        <Loader className={baseStyles.center} />
+      )}
     </div>
   </div>
 );

@@ -5,11 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Popover   from 'components/Popover/Popover.react';
+import Popover from 'components/Popover/Popover.react';
 import PropTypes from 'lib/PropTypes';
-import Position  from 'lib/Position';
-import React     from 'react';
-import styles    from 'components/PushExperimentDropdown/PushExperimentDropdown.scss';
+import Position from 'lib/Position';
+import React from 'react';
+import styles from 'components/PushExperimentDropdown/PushExperimentDropdown.scss';
 
 export default class PushExperimentDropdown extends React.Component {
   constructor() {
@@ -29,12 +29,15 @@ export default class PushExperimentDropdown extends React.Component {
 
   select(value, e) {
     e.stopPropagation();
-    this.setState({
-      open: false,
-      selected: true,
-    }, () => {
-      this.props.onChange(value);
-    });
+    this.setState(
+      {
+        open: false,
+        selected: true,
+      },
+      () => {
+        this.props.onChange(value);
+      }
+    );
   }
 
   render() {
@@ -42,22 +45,50 @@ export default class PushExperimentDropdown extends React.Component {
     const styles = this.styles;
     const color = this.props.color;
     let content = (
-      <div className={[styles.current, styles[color]].join(' ')} onClick={() => this.setState({ open: true })}>
-        <div>{!this.state.selected && this.props.placeholder && this.props.value === undefined ? this.props.placeholder : this.props.value}</div>
+      <div
+        className={[styles.current, styles[color]].join(' ')}
+        onClick={() => this.setState({ open: true })}
+      >
+        <div>
+          {!this.state.selected &&
+          this.props.placeholder &&
+          this.props.value === undefined
+            ? this.props.placeholder
+            : this.props.value}
+        </div>
       </div>
     );
     if (this.state.open) {
       const position = Position.inWindow(this.dropdownRef.current);
       content = (
-        <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
-          <div style={widthStyle} className={[styles.menu, styles[color]].join(' ')}>
-            {this.props.options.map(({key, style}) => <div key={key} style={style} onClick={this.select.bind(this, key)}>{key}</div>)}
+        <Popover
+          fixed={true}
+          position={position}
+          onExternalClick={() => this.setState({ open: false })}
+        >
+          <div
+            style={widthStyle}
+            className={[styles.menu, styles[color]].join(' ')}
+          >
+            {this.props.options.map(({ key, style }) => (
+              <div
+                key={key}
+                style={style}
+                onClick={this.select.bind(this, key)}
+              >
+                {key}
+              </div>
+            ))}
           </div>
         </Popover>
       );
     }
     return (
-      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef}>
+      <div
+        style={widthStyle}
+        className={styles.dropdown}
+        ref={this.dropdownRef}
+      >
         {content}
       </div>
     );
@@ -65,9 +96,7 @@ export default class PushExperimentDropdown extends React.Component {
 }
 
 PushExperimentDropdown.propTypes = {
-  color: PropTypes.string.describe(
-    'Determines the color of the dropdown.'
-  ),
+  color: PropTypes.string.describe('Determines the color of the dropdown.'),
   value: PropTypes.string.isRequired.describe(
     'The current value of the dropdown.'
   ),
@@ -77,9 +106,7 @@ PushExperimentDropdown.propTypes = {
   onChange: PropTypes.func.isRequired.describe(
     'A function called when the dropdown is changed.'
   ),
-  width: PropTypes.string.describe(
-    'An optional width override.'
-  ),
+  width: PropTypes.string.describe('An optional width override.'),
   placeHolder: PropTypes.string.describe(
     'Placeholder text used in place of default selection.'
   ),

@@ -36,11 +36,11 @@ export const demos = [
 
       return (
         <LogView>
-          <LogViewEntry text={text1}/>
-          <LogViewEntry text={text2}/>
-          <LogViewEntry text={text3}/>
+          <LogViewEntry text={text1} />
+          <LogViewEntry text={text2} />
+          <LogViewEntry text={text3} />
         </LogView>
       );
-    }
-  }
+    },
+  },
 ];

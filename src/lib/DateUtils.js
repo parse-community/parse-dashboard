@@ -17,7 +17,7 @@ export const MONTHS = [
   'September',
   'October',
   'November',
-  'December'
+  'December',
 ];
 
 export const WEEKDAYS = [
@@ -27,13 +27,13 @@ export const WEEKDAYS = [
   'Wednesday',
   'Thursday',
   'Friday',
-  'Saturday'
+  'Saturday',
 ];
 
 const toString = Object.prototype.toString;
 
 export function isDate(obj) {
-  return typeof(obj) === 'object' && toString.call(obj).indexOf('Date') > -1;
+  return typeof obj === 'object' && toString.call(obj).indexOf('Date') > -1;
 }
 
 export function getWeekday(n) {
@@ -59,24 +59,20 @@ export function shortMonth(month) {
 }
 
 export function nextMonth(date) {
-  return new Date(
-    date.getFullYear(),
-    date.getMonth() + 1,
-    1
-  );
+  return new Date(date.getFullYear(), date.getMonth() + 1, 1);
 }
 
 export function prevMonth(date) {
-  return new Date(
-    date.getFullYear(),
-    date.getMonth() - 1,
-    1
-  );
+  return new Date(date.getFullYear(), date.getMonth() - 1, 1);
 }
 
 export function daysInMonth(date) {
   const next = nextMonth(date);
-  const lastDay = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
+  const lastDay = new Date(
+    next.getFullYear(),
+    next.getMonth(),
+    next.getDate() - 1
+  );
   return lastDay.getDate();
 }
 
@@ -111,13 +107,17 @@ export function monthsFrom(date, delta) {
 }
 
 export function dateStringUTC(date) {
-  let full = String(date.getUTCDate()) + ' ' +
-    shortMonth(date.getUTCMonth()) + ' ' +
-    String(date.getUTCFullYear()) + ' at ';
+  let full =
+    String(date.getUTCDate()) +
+    ' ' +
+    shortMonth(date.getUTCMonth()) +
+    ' ' +
+    String(date.getUTCFullYear()) +
+    ' at ';
   const time = {
     hours: String(date.getUTCHours()),
     minutes: String(date.getUTCMinutes()),
-    seconds: String(date.getUTCSeconds())
+    seconds: String(date.getUTCSeconds()),
   };
   for (const k in time) {
     if (time[k].length < 2) {
@@ -138,11 +138,22 @@ export function monthDayStringUTC(date) {
  * @return {String}
  */
 export function yearMonthDayFormatter(date) {
-  return date.toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'});
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 }
 
 export function yearMonthDayTimeFormatter(date, timeZone) {
-  const options = {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false};
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  };
   if (timeZone) {
     options.timeZoneName = 'short';
   }
@@ -151,7 +162,7 @@ export function yearMonthDayTimeFormatter(date, timeZone) {
 
 export function getDateMethod(local, methodName) {
   if (!local) {
-    return methodName.replace('get','getUTC');
+    return methodName.replace('get', 'getUTC');
   } else {
     return methodName;
   }

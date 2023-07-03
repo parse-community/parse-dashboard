@@ -8,37 +8,38 @@
 
 jest.disableAutomock();
 
-var express = require('express');
-var rp = require('request-promise');
-var ParseDashboard = require('../../../Parse-Dashboard/app');
+const express = require('express');
+const rp = require('request-promise');
+const ParseDashboard = require('../../../Parse-Dashboard/app');
 
-var dashboardSettings = {
-  'apps': [
+const dashboardSettings = {
+  apps: [
     {
-      'serverURL': 'http://localhost:5051/parse',
-      'appId': 'appId',
-      'masterKey': 'masterKey',
-      'appName': 'MyApp'
-    }
-  ]
+      serverURL: 'http://localhost:5051/parse',
+      appId: 'appId',
+      masterKey: 'masterKey',
+      appName: 'MyApp',
+    },
+  ],
 };
 
 describe('e2e', () => {
   it('loads the dashboard on /dashboard', (done) => {
     const app = express();
     let server;
-    var p = new Promise(resolve => {
+    const p = new Promise((resolve) => {
       app.use('/dashboard', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
-    return p.then(() => {
-      return rp('http://localhost:5051/dashboard');
-    })
-      .then(result => {
-        const bundleLocation = result.match(/<script src="([^"]*)">/)[1]
+    return p
+      .then(() => {
+        return rp('http://localhost:5051/dashboard');
+      })
+      .then((result) => {
+        const bundleLocation = result.match(/<script src="([^"]*)">/)[1];
         return rp('http://localhost:5051' + bundleLocation);
       })
-      .then(bundleText => {
+      .then((bundleText) => {
         expect(bundleText.length).toBeGreaterThan(1000000);
         server.close(done);
       });
@@ -47,18 +48,19 @@ describe('e2e', () => {
   it('loads the dashboard on /', (done) => {
     const app = express();
     let server;
-    var p = new Promise(resolve => {
+    const p = new Promise((resolve) => {
       app.use('/', ParseDashboard(dashboardSettings));
       server = app.listen(5051, resolve);
     });
-    return p.then(() => {
-      return rp('http://localhost:5051');
-    })
-      .then(result => {
-        const bundleLocation = result.match(/<script src="([^"]*)">/)[1]
+    return p
+      .then(() => {
+        return rp('http://localhost:5051');
+      })
+      .then((result) => {
+        const bundleLocation = result.match(/<script src="([^"]*)">/)[1];
         return rp('http://localhost:5051' + bundleLocation);
       })
-      .then(bundleText => {
+      .then((bundleText) => {
         expect(bundleText.length).toBeGreaterThan(1000000);
         server.close(done);
       });

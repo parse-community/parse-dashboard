@@ -16,9 +16,11 @@ export function getPreferences(appId, className) {
   }
   let entry;
   try {
-    entry = localStorage.getItem(path(appId, className)) || JSON.stringify({
-      filters: [],
-    });
+    entry =
+      localStorage.getItem(path(appId, className)) ||
+      JSON.stringify({
+        filters: [],
+      });
   } catch (e) {
     // Fails in Safari private browsing
     entry = null;
@@ -43,14 +45,14 @@ export function getAllPreferences(appId) {
   const storageKeys = Object.keys(localStorage);
   const result = {};
   for (const key of storageKeys) {
-    const split = key.split(':')
+    const split = key.split(':');
     if (split.length <= 1 || split[2] !== appId) {
       continue;
     }
     const className = split.at(-1);
     const preferences = getPreferences(appId, className);
     if (preferences) {
-      preferences.filters = preferences.filters.map(filter => {
+      preferences.filters = preferences.filters.map((filter) => {
         if (typeof filter.filter === 'string') {
           filter.filter = JSON.parse(filter.filter);
         }

@@ -5,19 +5,19 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button                    from 'components/Button/Button.react';
-import Chart                     from 'components/Chart/Chart.react';
-import { ChartColorSchemes }     from 'lib/Constants';
-import DashboardView             from 'dashboard/DashboardView.react';
-import DateRange                 from 'components/DateRange/DateRange.react';
-import { Directions }            from 'lib/Constants';
+import Button from 'components/Button/Button.react';
+import Chart from 'components/Chart/Chart.react';
+import { ChartColorSchemes } from 'lib/Constants';
+import DashboardView from 'dashboard/DashboardView.react';
+import DateRange from 'components/DateRange/DateRange.react';
+import { Directions } from 'lib/Constants';
 import ExplorerActiveChartButton from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.react';
-import LoaderContainer           from 'components/LoaderContainer/LoaderContainer.react';
-import Parse                     from 'parse';
-import React                     from 'react';
-import styles                    from 'dashboard/Analytics/Performance/Performance.scss';
-import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import baseStyles                from 'stylesheets/base.scss';
+import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
+import Parse from 'parse';
+import React from 'react';
+import styles from 'dashboard/Analytics/Performance/Performance.scss';
+import Toolbar from 'components/Toolbar/Toolbar.react';
+import baseStyles from 'stylesheets/base.scss';
 
 const PERFORMANCE_QUERIES = [
   {
@@ -25,52 +25,52 @@ const PERFORMANCE_QUERIES = [
     query: {
       endpoint: 'performance',
       performanceType: 'total_requests',
-      stride: 'day'
+      stride: 'day',
     },
     preset: true,
-    nonComposable: true
+    nonComposable: true,
   },
   {
     name: 'Request Limit',
     query: {
       endpoint: 'performance',
       performanceType: 'request_limit',
-      stride: 'day'
+      stride: 'day',
     },
     preset: true,
-    nonComposable: true
+    nonComposable: true,
   },
   {
     name: 'Dropped Requests',
     query: {
       endpoint: 'performance',
       performanceType: 'dropped_requests',
-      stride: 'day'
+      stride: 'day',
     },
     preset: true,
-    nonComposable: true
+    nonComposable: true,
   },
   {
     name: 'Served Requests',
     query: {
       endpoint: 'performance',
       performanceType: 'served_requests',
-      stride: 'day'
+      stride: 'day',
     },
     preset: true,
-    nonComposable: true
-  }
+    nonComposable: true,
+  },
 ];
 
 export default class Performance extends DashboardView {
   constructor() {
     super();
     this.section = 'Analytics';
-    this.subsection = 'Performance'
+    this.subsection = 'Performance';
 
     this.displaySize = {
       width: 800,
-      height: 400
+      height: 400,
     };
     const date = new Date();
     this.state = {
@@ -80,14 +80,14 @@ export default class Performance extends DashboardView {
           date.getMonth(),
           date.getDate() - 1
         ),
-        end: date
+        end: date,
       },
       loading: true,
       performanceData: PERFORMANCE_QUERIES.map(() => ({})),
       activeQueries: PERFORMANCE_QUERIES.map(() => true),
       // If dateRange is modified, we should set mutated to true
       // and re-style "Run query" button
-      mutated: false
+      mutated: false,
     };
     this.xhrHandles = [];
     this.displayRef = React.createRef();
@@ -97,7 +97,7 @@ export default class Performance extends DashboardView {
     const display = this.displayRef;
     this.displaySize = {
       width: display.offsetWidth,
-      height: display.offsetHeight
+      height: display.offsetHeight,
     };
   }
 
@@ -106,7 +106,7 @@ export default class Performance extends DashboardView {
   }
 
   componentWillUnmount() {
-    this.xhrHandles.forEach(xhr => xhr.abort());
+    this.xhrHandles.forEach((xhr) => xhr.abort());
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -123,22 +123,24 @@ export default class Performance extends DashboardView {
 
   handleRunQuery(app) {
     this.setState({
-      loading: true
+      loading: true,
     });
     const promises = [];
     this.xhrHandles = [];
     PERFORMANCE_QUERIES.forEach((query, index) => {
-      let { promise, xhr } = app.getAnalyticsTimeSeries({
+      const res = app.getAnalyticsTimeSeries({
         ...query.query,
         from: this.state.dateRange.start.getTime() / 1000,
-        to: this.state.dateRange.end.getTime() / 1000
+        to: this.state.dateRange.end.getTime() / 1000,
       });
 
+      let promise = res.promise;
+      const xhr = res.xhr;
       promise = promise.then((result) => {
         const performanceData = this.state.performanceData;
         performanceData[index] = result;
         this.setState({
-          performanceData: performanceData
+          performanceData: performanceData,
         });
       });
 
@@ -148,17 +150,13 @@ export default class Performance extends DashboardView {
     Promise.all(promises).then(() => {
       this.setState({
         loading: false,
-        mutated: false
+        mutated: false,
       });
     });
   }
 
   renderContent() {
-    const toolbar = (
-      <Toolbar
-        section='Analytics'
-        subsection='Performance' />
-    );
+    const toolbar = <Toolbar section="Analytics" subsection="Performance" />;
 
     const header = (
       <div className={styles.header}>
@@ -169,7 +167,8 @@ export default class Performance extends DashboardView {
               query={query}
               color={ChartColorSchemes[i]}
               queries={[]}
-              disableDropdown={true} />
+              disableDropdown={true}
+            />
           </div>
         ))}
       </div>
@@ -181,14 +180,18 @@ export default class Performance extends DashboardView {
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}
-              onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
-              align={Directions.RIGHT} />
+              onChange={(newValue) =>
+                this.setState({ dateRange: newValue, mutated: true })
+              }
+              align={Directions.RIGHT}
+            />
           </span>
           <Button
             primary={true}
             disabled={!this.state.mutated}
             onClick={this.handleRunQuery.bind(this, this.context)}
-            value='Run query' />
+            value="Run query"
+          />
         </div>
       </div>
     );
@@ -201,27 +204,31 @@ export default class Performance extends DashboardView {
 
       if (Array.isArray(data)) {
         // Handle Request Limit
-        const points = data.map((point) => (
-          [Parse._decode('date', point[0]).getTime(), point[1]]
-        ));
+        const points = data.map((point) => [
+          Parse._decode('date', point[0]).getTime(),
+          point[1],
+        ]);
 
         chartData[PERFORMANCE_QUERIES[i].name] = {
           color: ChartColorSchemes[i],
-          points: points
+          points: points,
         };
       } else {
         let points = [];
         for (const key in data.cached) {
           const cachedPoints = data.cached[key];
-          points = points.concat(cachedPoints.map((point) => (
-            [Parse._decode('date', point[0]).getTime(), point[1]]
-          )));
+          points = points.concat(
+            cachedPoints.map((point) => [
+              Parse._decode('date', point[0]).getTime(),
+              point[1],
+            ])
+          );
         }
 
         if (points.length > 0) {
           chartData[PERFORMANCE_QUERIES[i].name] = {
             color: ChartColorSchemes[i],
-            points: points
+            points: points,
           };
         }
       }
@@ -232,7 +239,8 @@ export default class Performance extends DashboardView {
         <Chart
           width={this.displaySize.width}
           height={this.displaySize.height}
-          data={chartData} />
+          data={chartData}
+        />
       );
     }
 

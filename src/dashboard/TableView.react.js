@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import DashboardView   from 'dashboard/DashboardView.react';
+import DashboardView from 'dashboard/DashboardView.react';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
-import React           from 'react';
-import styles          from 'dashboard/TableView.scss';
+import React from 'react';
+import styles from 'dashboard/TableView.scss';
 
 export default class TableView extends DashboardView {
   columnWidths(keys) {
@@ -41,9 +41,7 @@ export default class TableView extends DashboardView {
           content = (
             <div className={styles.rows}>
               <table>
-                <tbody>
-                  {data.map((row) => this.renderRow(row))}
-                </tbody>
+                <tbody>{data.map((row) => this.renderRow(row))}</tbody>
               </table>
               {footer}
             </div>

@@ -18,13 +18,13 @@ function SvgPrepPlugin(options) {
   Object.assign(
     this.options,
     {
-      output: 'sprites.svg'
+      output: 'sprites.svg',
     },
     options || {}
   );
 }
 
-SvgPrepPlugin.prototype.apply = function(compiler) {
+SvgPrepPlugin.prototype.apply = function (compiler) {
   compiler.hooks.thisCompilation.tap(SvgPrepPlugin.name, (compilation) => {
     compilation.hooks.processAssets.tapPromise(
       {
@@ -47,8 +47,9 @@ SvgPrepPlugin.prototype.apply = function(compiler) {
           .output();
 
         compilation.emitAsset(this.options.output, new RawSource(sprited));
-      });
+      }
+    );
   });
-}
+};
 
 module.exports = SvgPrepPlugin;

@@ -13,7 +13,7 @@ export const component = PushAudiencesOption;
 const mockData = {
   id: '1',
   name: 'Everyone',
-  createdAt: new Date(1444757195683)
+  createdAt: new Date(1444757195683),
 };
 
 export const demos = [
@@ -25,9 +25,9 @@ export const demos = [
           inputId={mockData.inputId}
           name={mockData.name}
           createdAt={mockData.createdAt}
-          inputName='test'
+          inputName="test"
         />
       );
-    }
-  }
+    },
+  },
 ];

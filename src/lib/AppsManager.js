@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ParseApp           from 'lib/ParseApp';
+import ParseApp from 'lib/ParseApp';
 import { post, del } from 'lib/AJAX';
 
 const appsStore = [];
@@ -16,7 +16,7 @@ const AppsManager = {
   },
 
   apps() {
-    appsStore.sort(function(app1, app2) {
+    appsStore.sort(function (app1, app2) {
       return app1.name.localeCompare(app2.name);
     });
     return appsStore;
@@ -34,7 +34,7 @@ const AppsManager = {
 
   create(name, connectionURL) {
     const payload = {
-      parse_app: { name }
+      parse_app: { name },
     };
     if (connectionURL) {
       payload.parse_app.connectionString = connectionURL;
@@ -47,29 +47,33 @@ const AppsManager = {
   },
 
   deleteApp(slug, password) {
-    return del('/apps/' + slug + '?password_confirm_delete=' + password).then(() => {
-      for (let i = 0; i < appsStore.length; i++) {
-        if (appsStore[i].slug == slug) {
-          appsStore.splice(i, 1);
-          return;
+    return del('/apps/' + slug + '?password_confirm_delete=' + password).then(
+      () => {
+        for (let i = 0; i < appsStore.length; i++) {
+          if (appsStore[i].slug == slug) {
+            appsStore.splice(i, 1);
+            return;
+          }
         }
       }
-    });
+    );
   },
 
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
-    return Promise.all(this.apps().map(app => {
-      if (app.serverInfo.error) {
-        return;
-      }
-      return Promise.all(
-        [
-          app.getClassCount('_Installation').then(count => app.installations = count),
-          app.getClassCount('_User').then(count => app.users = count)
-        ]
-      );
-    }));
+    return Promise.all(
+      this.apps().map((app) => {
+        if (app.serverInfo.error) {
+          return;
+        }
+        return Promise.all([
+          app
+            .getClassCount('_Installation')
+            .then((count) => (app.installations = count)),
+          app.getClassCount('_User').then((count) => (app.users = count)),
+        ]);
+      })
+    );
   },
 
   // Options should be a list containing a subset of
@@ -86,7 +90,8 @@ const AppsManager = {
       data: false,
     };
     options.forEach((option) => {
-      if (option !== 'data') { //Data cloning not supported yet, but api_server still requires the key to be present
+      if (option !== 'data') {
+        //Data cloning not supported yet, but api_server still requires the key to be present
         optionsForRuby[option] = true;
       }
     });
@@ -107,7 +112,7 @@ const AppsManager = {
   transferApp(slug, newOwner, password) {
     const payload = {
       new_owner_email: newOwner,
-    }
+    };
     if (password) {
       // Users who log in with oauth don't have a password,
       // and don't require one to transfer their app.
@@ -119,7 +124,7 @@ const AppsManager = {
       //TODO modify appsStore to reflect transfer
     });
     return promise;
-  }
-}
+  },
+};
 
 export default AppsManager;

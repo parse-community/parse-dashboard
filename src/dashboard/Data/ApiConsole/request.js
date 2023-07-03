@@ -24,13 +24,15 @@ export default function request(app, method, path, body, options) {
     xhr.setRequestHeader('X-Parse-Session-Token', options.sessionToken);
   }
   return new Promise((resolve) => {
-    xhr.onload = function() {
+    xhr.onload = function () {
       let response = xhr.responseText;
       try {
         response = JSON.parse(response);
-      } catch (e) {/**/}
+      } catch (e) {
+        /**/
+      }
       resolve(response);
-    }
+    };
     xhr.send(body);
   });
 }

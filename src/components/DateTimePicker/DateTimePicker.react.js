@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button                               from 'components/Button/Button.react';
-import Calendar                             from 'components/Calendar/Calendar.react';
+import Button from 'components/Button/Button.react';
+import Calendar from 'components/Calendar/Calendar.react';
 import { hoursFrom, getDateMethod } from 'lib/DateUtils';
-import PropTypes                            from 'lib/PropTypes';
-import React                                from 'react';
-import styles                               from 'components/DateTimePicker/DateTimePicker.scss';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import styles from 'components/DateTimePicker/DateTimePicker.scss';
 
 export default class DateTimePicker extends React.Component {
   constructor(props) {
@@ -18,15 +18,19 @@ export default class DateTimePicker extends React.Component {
     const timeRef = props.value || hoursFrom(new Date(), 1);
     this.state = {
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
-      minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
-    }
+      minutes:
+        (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') +
+        String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
+    };
   }
 
   componentWillReceiveProps(props) {
     const timeRef = props.value || hoursFrom(new Date(), 1);
     this.setState({
       hours: String(timeRef[getDateMethod(props.local, 'getHours')]()),
-      minutes: (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') + String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
+      minutes:
+        (timeRef[getDateMethod(props.local, 'getMinutes')]() < 10 ? '0' : '') +
+        String(timeRef[getDateMethod(props.local, 'getMinutes')]()),
     });
   }
 
@@ -68,20 +72,23 @@ export default class DateTimePicker extends React.Component {
 
   commitTime() {
     const dateRef = this.props.value || new Date();
-    const newDate = this.props.local ? new Date(
-      dateRef.getFullYear(),
-      dateRef.getMonth(),
-      dateRef.getDate(),
-      parseInt(this.state.hours, 10),
-      parseInt(this.state.minutes, 10)
-    ) :
-      new Date(Date.UTC(
-        dateRef.getUTCFullYear(),
-        dateRef.getUTCMonth(),
-        dateRef.getUTCDate(),
+    const newDate = this.props.local
+      ? new Date(
+        dateRef.getFullYear(),
+        dateRef.getMonth(),
+        dateRef.getDate(),
         parseInt(this.state.hours, 10),
         parseInt(this.state.minutes, 10)
-      ));
+      )
+      : new Date(
+        Date.UTC(
+          dateRef.getUTCFullYear(),
+          dateRef.getUTCMonth(),
+          dateRef.getUTCDate(),
+          parseInt(this.state.hours, 10),
+          parseInt(this.state.minutes, 10)
+        )
+      );
     this.props.onChange(newDate);
     if (this.props.close) {
       this.props.close();
@@ -90,32 +97,55 @@ export default class DateTimePicker extends React.Component {
 
   render() {
     return (
-      <div style={{ width: this.props.width }} className={styles.picker} onClick={(e) => e.stopPropagation()} >
-        <Calendar local={this.props.local} value={this.props.value} onChange={(newValue) => {
-          const timeRef = this.props.value || hoursFrom(new Date(), 1);
-          const newDate = this.props.local ? new Date(
-            newValue.getFullYear(),
-            newValue.getMonth(),
-            newValue.getDate(),
-            timeRef.getHours(),
-            timeRef.getMinutes()
-          ) :
-            new Date(Date.UTC(
-              newValue.getUTCFullYear(),
-              newValue.getUTCMonth(),
-              newValue.getUTCDate(),
-              timeRef.getUTCHours(),
-              timeRef.getUTCMinutes()
-            ));
-          this.props.onChange(newDate);
-        }} />
+      <div
+        style={{ width: this.props.width }}
+        className={styles.picker}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Calendar
+          local={this.props.local}
+          value={this.props.value}
+          onChange={(newValue) => {
+            const timeRef = this.props.value || hoursFrom(new Date(), 1);
+            const newDate = this.props.local
+              ? new Date(
+                newValue.getFullYear(),
+                newValue.getMonth(),
+                newValue.getDate(),
+                timeRef.getHours(),
+                timeRef.getMinutes()
+              )
+              : new Date(
+                Date.UTC(
+                  newValue.getUTCFullYear(),
+                  newValue.getUTCMonth(),
+                  newValue.getUTCDate(),
+                  timeRef.getUTCHours(),
+                  timeRef.getUTCMinutes()
+                )
+              );
+            this.props.onChange(newDate);
+          }}
+        />
         <div className={styles.time}>
-          <div style={{float: 'left'}}>
-            <input type='text' value={this.state.hours} onChange={this.changeHours.bind(this)} />
+          <div style={{ float: 'left' }}>
+            <input
+              type="text"
+              value={this.state.hours}
+              onChange={this.changeHours.bind(this)}
+            />
             <span> : </span>
-            <input type='text' value={this.state.minutes} onChange={this.changeMinutes.bind(this)} />
+            <input
+              type="text"
+              value={this.state.minutes}
+              onChange={this.changeMinutes.bind(this)}
+            />
           </div>
-          <Button value='Set time' onClick={this.commitTime.bind(this)} primary={true} />
+          <Button
+            value="Set time"
+            onClick={this.commitTime.bind(this)}
+            primary={true}
+          />
         </div>
       </div>
     );
@@ -123,12 +153,8 @@ export default class DateTimePicker extends React.Component {
 }
 
 DateTimePicker.propTypes = {
-  value: PropTypes.instanceOf(Date).describe(
-    'The current date of the picker.'
-  ),
-  width: PropTypes.number.isRequired.describe(
-    'The width of the calendar.'
-  ),
+  value: PropTypes.instanceOf(Date).describe('The current date of the picker.'),
+  width: PropTypes.number.isRequired.describe('The width of the calendar.'),
   onChange: PropTypes.func.isRequired.describe(
     'A function to call when a new date is selected.'
   ),

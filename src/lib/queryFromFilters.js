@@ -12,7 +12,10 @@ export default function queryFromFilters(className, filters) {
   let query;
   if (typeof className === 'string') {
     query = new Parse.Query(className);
-  } else if (typeof className === 'object' && className instanceof Parse.Relation) {
+  } else if (
+    typeof className === 'object' &&
+    className instanceof Parse.Relation
+  ) {
     query = className.query();
   }
   filters.forEach((filter) => {

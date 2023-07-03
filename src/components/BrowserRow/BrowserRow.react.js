@@ -7,19 +7,48 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 
 export default class BrowserRow extends Component {
   shouldComponentUpdate(nextProps) {
-    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
-      .filter(propName => propName !== 'obj');
-    if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
+    const shallowVerifyProps = [
+      ...new Set(Object.keys(this.props).concat(Object.keys(nextProps))),
+    ].filter((propName) => propName !== 'obj');
+    if (
+      shallowVerifyProps.some(
+        (propName) => this.props[propName] !== nextProps[propName]
+      )
+    ) {
       return true;
     }
     const { obj } = this.props;
     const { obj: nextObj } = nextProps;
     const isRefDifferent = obj !== nextObj;
-    return isRefDifferent ? JSON.stringify(obj) !== JSON.stringify(nextObj) : isRefDifferent;
+    return isRefDifferent
+      ? JSON.stringify(obj) !== JSON.stringify(nextObj)
+      : isRefDifferent;
   }
 
   render() {
-    const { className, columns, currentCol, isUnique, obj, onPointerClick, onPointerCmdClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, markRequiredFieldRow } = this.props;
+    const {
+      className,
+      columns,
+      currentCol,
+      isUnique,
+      obj,
+      onPointerClick,
+      onPointerCmdClick,
+      order,
+      readOnlyFields,
+      row,
+      rowWidth,
+      selection,
+      selectRow,
+      setCopyableValue,
+      setCurrent,
+      setEditing,
+      setRelation,
+      onEditSelectedRow,
+      setContextMenu,
+      onFilterChange,
+      markRequiredFieldRow,
+    } = this.props;
     const attributes = obj.attributes;
     let requiredCols = [];
     Object.entries(columns).reduce((acc, cur) => {
@@ -29,7 +58,10 @@ export default class BrowserRow extends Component {
       return acc;
     }, requiredCols);
     // for dynamically changing required field on _User class
-    if (obj.className === '_User' && (obj.get('username') !== undefined || obj.get('password') !== undefined)) {
+    if (
+      obj.className === '_User' &&
+      (obj.get('username') !== undefined || obj.get('password') !== undefined)
+    ) {
       requiredCols = ['username', 'password'];
     } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
       requiredCols = ['authData'];
@@ -38,12 +70,15 @@ export default class BrowserRow extends Component {
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
         <span className={styles.checkCell}>
           <input
-            type='checkbox'
+            type="checkbox"
             checked={selection['*'] || selection[obj.id]}
-            onChange={e => selectRow(obj.id, e.target.checked)} />
+            onChange={(e) => selectRow(obj.id, e.target.checked)}
+          />
         </span>
         {order.map(({ name, width, visible }, j) => {
-          if (!visible) return null;
+          if (!visible) {
+            return null;
+          }
           const type = columns[name].type;
           let attr = obj;
           if (!isUnique) {
@@ -51,7 +86,10 @@ export default class BrowserRow extends Component {
             if (name === 'objectId') {
               attr = obj.id;
             } else if (name === 'ACL' && className === '_User' && !attr) {
-              attr = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
+              attr = new Parse.ACL({
+                '*': { read: true },
+                [obj.id]: { read: true, write: true },
+              });
             } else if (type === 'Relation' && !attr && obj.id) {
               attr = new Parse.Relation(obj, name);
               attr.targetClassName = columns[name].targetClass;

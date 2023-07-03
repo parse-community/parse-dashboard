@@ -143,7 +143,7 @@ module.exports = (options) => {
 
   const app = express();
 
-  if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
+  if (allowInsecureHTTP || trustProxy || dev) {app.enable('trust proxy');}
 
   config.data.trustProxy = trustProxy;
   const dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
@@ -156,8 +156,8 @@ module.exports = (options) => {
     });
   } else {
     // Start the server using SSL.
-    var privateKey = fs.readFileSync(configSSLKey);
-    var certificate = fs.readFileSync(configSSLCert);
+    const privateKey = fs.readFileSync(configSSLKey);
+    const certificate = fs.readFileSync(configSSLCert);
 
     server = require('https').createServer({
       key: privateKey,

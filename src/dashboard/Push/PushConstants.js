@@ -33,6 +33,14 @@ export const DEVICE_MAP = {
   embedded: 'Embedded',
 };
 
-export const DEFAULT_DEVICES = ['ios', 'osx', 'tvos', 'android', 'winrt', 'winphone', 'embedded'];
+export const DEFAULT_DEVICES = [
+  'ios',
+  'osx',
+  'tvos',
+  'android',
+  'winrt',
+  'winphone',
+  'embedded',
+];
 
 export const NEW_SEGMENT_ID = 'new_segment';

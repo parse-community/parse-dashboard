@@ -5,15 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ChromeDropdown  from 'components/ChromeDropdown/ChromeDropdown.react';
-import Autocomplete    from 'components/Autocomplete/Autocomplete.react';
+import ChromeDropdown from 'components/ChromeDropdown/ChromeDropdown.react';
+import Autocomplete from 'components/Autocomplete/Autocomplete.react';
 import { Constraints } from 'lib/Filters';
-import DateTimeEntry   from 'components/DateTimeEntry/DateTimeEntry.react';
-import Icon            from 'components/Icon/Icon.react';
-import Parse           from 'parse';
-import PropTypes       from 'lib/PropTypes';
-import React, { useCallback }           from 'react';
-import styles          from 'components/BrowserFilter/BrowserFilter.scss';
+import DateTimeEntry from 'components/DateTimeEntry/DateTimeEntry.react';
+import Icon from 'components/Icon/Icon.react';
+import Parse from 'parse';
+import PropTypes from 'lib/PropTypes';
+import React, { useCallback } from 'react';
+import styles from 'components/BrowserFilter/BrowserFilter.scss';
 import validateNumeric from 'lib/validateNumeric';
 
 const constraintLookup = {};
@@ -21,31 +21,55 @@ for (const c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-function compareValue(info, value, onChangeCompareTo, onKeyDown, active, parentContentId, setFocus) {
+function compareValue(
+  info,
+  value,
+  onChangeCompareTo,
+  onKeyDown,
+  active,
+  parentContentId,
+  setFocus
+) {
   switch (info.type) {
     case null:
       return null;
     case 'Object':
     case 'String':
-      return <input type='text' value={value} onChange={(e) => onChangeCompareTo(e.target.value)} onKeyDown={onKeyDown} ref={setFocus}/>;
+      return (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChangeCompareTo(e.target.value)}
+          onKeyDown={onKeyDown}
+          ref={setFocus}
+        />
+      );
     case 'Pointer':
       return (
         <input
-          type='text'
+          type="text"
           value={value.objectId || ''}
           onChange={(e) => {
             const obj = new Parse.Object(info.targetClass);
             obj.id = e.target.value;
             onChangeCompareTo(obj.toPointer());
           }}
-          ref={setFocus} />
+          ref={setFocus}
+        />
       );
     case 'Boolean':
-      return <ChromeDropdown color={active ? 'blue' : 'purple'} value={value ? 'True' : 'False'} options={['True', 'False']} onChange={(val) => onChangeCompareTo(val === 'True')} />;
+      return (
+        <ChromeDropdown
+          color={active ? 'blue' : 'purple'}
+          value={value ? 'True' : 'False'}
+          options={['True', 'False']}
+          onChange={(val) => onChangeCompareTo(val === 'True')}
+        />
+      );
     case 'Number':
       return (
         <input
-          type='text'
+          type="text"
           value={value}
           onChange={(e) => {
             let val = value;
@@ -67,7 +91,8 @@ function compareValue(info, value, onChangeCompareTo, onKeyDown, active, parentC
           value={Parse._decode('date', value)}
           onChange={(value) => onChangeCompareTo(Parse._encode(value))}
           ref={setFocus}
-          parentContentId={parentContentId} />
+          parentContentId={parentContentId}
+        />
       );
   }
 }
@@ -86,18 +111,17 @@ const FilterRow = ({
   onDeleteRow,
   active,
   parentContentId,
-  editMode
+  editMode,
 }) => {
-
   const setFocus = useCallback((input) => {
     if (input !== null && editMode) {
       input.focus();
     }
-  }, [])
+  }, []);
 
   const buildSuggestions = (input) => {
     const regex = new RegExp(input.split('').join('.*?'), 'i');
-    return fields.filter(f => regex.test(f));
+    return fields.filter((f) => regex.test(f));
   };
 
   return (
@@ -142,12 +166,28 @@ const FilterRow = ({
         color={active ? 'blue' : 'purple'}
         value={Constraints[currentConstraint].name}
         options={constraints.map((c) => Constraints[c].name)}
-        onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)} />
-      {compareValue(compareInfo, compareTo, onChangeCompareTo, onKeyDown, active, parentContentId, setFocus)}
-      <button type='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></button>
+        onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)}
+      />
+      {compareValue(
+        compareInfo,
+        compareTo,
+        onChangeCompareTo,
+        onKeyDown,
+        active,
+        parentContentId,
+        setFocus
+      )}
+      <button type="button" className={styles.remove} onClick={onDeleteRow}>
+        <Icon
+          name="minus-solid"
+          width={14}
+          height={14}
+          fill="rgba(0,0,0,0.4)"
+        />
+      </button>
     </div>
   );
-}
+};
 
 export default React.memo(FilterRow);
 
@@ -157,5 +197,5 @@ FilterRow.propTypes = {
   constraints: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentConstraint: PropTypes.string.isRequired,
   compareTo: PropTypes.any,
-  compareInfo: PropTypes.object
+  compareInfo: PropTypes.object,
 };

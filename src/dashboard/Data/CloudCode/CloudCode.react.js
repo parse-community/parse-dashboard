@@ -5,13 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import CodeSnippet   from 'components/CodeSnippet/CodeSnippet.react';
+import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
 import DashboardView from 'dashboard/DashboardView.react';
-import EmptyState    from 'components/EmptyState/EmptyState.react';
-import FileTree      from 'components/FileTree/FileTree.react';
-import React         from 'react';
-import styles        from 'dashboard/Data/CloudCode/CloudCode.scss';
-import Toolbar       from 'components/Toolbar/Toolbar.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
+import FileTree from 'components/FileTree/FileTree.react';
+import React from 'react';
+import styles from 'dashboard/Data/CloudCode/CloudCode.scss';
+import Toolbar from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 
@@ -28,7 +28,7 @@ class CloudCode extends DashboardView {
 
     this.state = {
       files: undefined,
-      source: undefined
+      source: undefined,
     };
   }
 
@@ -54,7 +54,10 @@ class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          this.props.navigate(generatePath(this.context, 'cloud_code/main.js'), { replace: true });
+          this.props.navigate(
+            generatePath(this.context, 'cloud_code/main.js'),
+            { replace: true }
+          );
         } else {
           // Means we can load /cloud_code/<fileName>
           app.getSource(fileName).then(
@@ -83,7 +86,8 @@ class CloudCode extends DashboardView {
           <FileTree
             linkPrefix={generatePath(this.context, 'cloud_code/')}
             current={current}
-            files={paths} />
+            files={paths}
+          />
         </div>
       </div>
     );
@@ -99,23 +103,27 @@ class CloudCode extends DashboardView {
         <div className={styles.empty}>
           <EmptyState
             title={'You haven\u2019t deployed any code yet.'}
-            icon='folder-outline'
-            description={'When you deploy your cloud code, you\u2019ll be able to see your files here'}
-            cta='Get started with Cloud Code'
-            action={() => window.location = 'http://docs.parseplatform.org/cloudcode/guide'} />
+            icon="folder-outline"
+            description={
+              'When you deploy your cloud code, you\u2019ll be able to see your files here'
+            }
+            cta="Get started with Cloud Code"
+            action={() =>
+              (window.location =
+                'http://docs.parseplatform.org/cloudcode/guide')
+            }
+          />
         </div>
       );
     } else {
       if (fileName) {
-        toolbar = <Toolbar
-          section='Cloud Code'
-          subsection={fileName} />;
+        toolbar = <Toolbar section="Cloud Code" subsection={fileName} />;
 
         const source = this.state.files[fileName];
         if (source && source.source) {
           content = (
             <div className={styles.content}>
-              <CodeSnippet source={source.source} language='javascript' />
+              <CodeSnippet source={source.source} language="javascript" />
             </div>
           );
         }

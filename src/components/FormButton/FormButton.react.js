@@ -11,7 +11,7 @@ import styles from 'components/FormButton/FormButton.scss';
 
 const FormButton = (props) => (
   <div className={styles.input}>
-    <Button {...props} primary={true} width='80%' />
+    <Button {...props} primary={true} width="80%" />
   </div>
 );
 

@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
-import Sidebar        from 'components/Sidebar/Sidebar.react';
-import styles         from 'dashboard/Dashboard.scss';
-import Icon           from 'components/Icon/Icon.react';
-import baseStyles     from 'stylesheets/base.scss';
-import Button         from 'components/Button/Button.react';
+import React from 'react';
+import Sidebar from 'components/Sidebar/Sidebar.react';
+import styles from 'dashboard/Dashboard.scss';
+import Icon from 'components/Icon/Icon.react';
+import baseStyles from 'stylesheets/base.scss';
+import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class DashboardView extends React.Component {
@@ -198,10 +198,12 @@ export default class DashboardView extends React.Component {
     }
     */
 
-    const settingsSections = [{
-      name: 'Dashboard',
-      link: '/settings/dashboard'
-    }];
+    const settingsSections = [
+      {
+        name: 'Dashboard',
+        link: '/settings/dashboard',
+      },
+    ];
 
     // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
     /*
@@ -295,7 +297,11 @@ export default class DashboardView extends React.Component {
     );
 
     let content = <div className={styles.content}>{this.renderContent()}</div>;
-    const canRoute = [...coreSubsections, ...pushSubsections, ...settingsSections]
+    const canRoute = [
+      ...coreSubsections,
+      ...pushSubsections,
+      ...settingsSections,
+    ]
       .map(({ link }) => link.split('/')[1])
       .includes(this.state.route);
 

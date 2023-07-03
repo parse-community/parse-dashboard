@@ -5,20 +5,17 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import CodeSnippet    from 'components/CodeSnippet/CodeSnippet.react';
-import { marked }         from 'marked';
-import PropTypes      from 'lib/PropTypes';
-import React          from 'react';
+import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
+import { marked } from 'marked';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 // Refer to https://github.com/chjj/marked.
 const renderer = new marked.Renderer();
 renderer.code = (code, lang) => {
   const snippet = (
-    <CodeSnippet
-      source={code}
-      language={lang}
-      fullPage={false} />
+    <CodeSnippet source={code} language={lang} fullPage={false} />
   );
 
   return ReactDOMServer.renderToString(snippet);
@@ -42,4 +39,4 @@ Markdown.propTypes = {
   content: PropTypes.string.isRequired.describe(
     'The content that will be rendered as markdown.'
   ),
-}
+};

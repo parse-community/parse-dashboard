@@ -31,7 +31,9 @@ export default class BrowserFilter extends React.Component {
       filters: new List(),
       confirmName: false,
       name: '',
-      blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
+      blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(
+        props.blacklistedFilters
+      ),
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -46,28 +48,38 @@ export default class BrowserFilter extends React.Component {
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
-      const available = Filters.availableFilters(this.props.schema, null, this.state.blacklistedFilters);
+      const available = Filters.availableFilters(
+        this.props.schema,
+        null,
+        this.state.blacklistedFilters
+      );
       const field = Object.keys(available)[0];
-      filters = new List([new Map({ field: field, constraint: available[field][0] })]);
+      filters = new List([
+        new Map({ field: field, constraint: available[field][0] }),
+      ]);
     }
     this.setState((prevState) => ({
       open: !prevState.open,
       filters: filters,
       name: '',
       confirmName: false,
-      editMode: this.props.filters.size === 0
+      editMode: this.props.filters.size === 0,
     }));
     this.props.setCurrent(null);
   }
 
   addRow() {
-    const available = Filters.availableFilters(this.props.schema, this.state.filters, this.state.blacklistedFilters);
+    const available = Filters.availableFilters(
+      this.props.schema,
+      this.state.filters,
+      this.state.blacklistedFilters
+    );
     const field = Object.keys(available)[0];
     this.setState(({ filters }) => ({
       filters: filters.push(
         new Map({ field: field, constraint: available[field][0] })
       ),
-      editMode: true
+      editMode: true,
     }));
   }
 
@@ -85,7 +97,8 @@ export default class BrowserFilter extends React.Component {
 
       // since we are preserving previous compareTo value
       // remove compareTo for constraints which are not comparable
-      const isComparable = Filters.Constraints[filter.get('constraint')].comparable;
+      const isComparable =
+        Filters.Constraints[filter.get('constraint')].comparable;
       if (!isComparable) {
         return filter.delete('compareTo');
       }
@@ -96,7 +109,8 @@ export default class BrowserFilter extends React.Component {
 
   save() {
     const formatted = this.state.filters.map((filter) => {
-      const isComparable = Filters.Constraints[filter.get('constraint')].comparable;
+      const isComparable =
+        Filters.Constraints[filter.get('constraint')].comparable;
       if (!isComparable) {
         return filter.delete('compareTo');
       }
@@ -119,10 +133,22 @@ export default class BrowserFilter extends React.Component {
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
       }
-      const available = Filters.availableFilters(this.props.schema, this.state.filters);
+      const available = Filters.availableFilters(
+        this.props.schema,
+        this.state.filters
+      );
       popover = (
-        <Popover fixed={true} position={position} onExternalClick={this.toggle} contentId={POPOVER_CONTENT_ID}>
-          <div className={popoverStyle.join(' ')} onClick={() => this.props.setCurrent(null)} id={POPOVER_CONTENT_ID}>
+        <Popover
+          fixed={true}
+          position={position}
+          onExternalClick={this.toggle}
+          contentId={POPOVER_CONTENT_ID}
+        >
+          <div
+            className={popoverStyle.join(' ')}
+            onClick={() => this.props.setCurrent(null)}
+            id={POPOVER_CONTENT_ID}
+          >
             <div
               onClick={this.toggle}
               style={{
@@ -139,23 +165,73 @@ export default class BrowserFilter extends React.Component {
                 filters={this.state.filters}
                 onChange={(filters) => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
-                renderRow={props => (
-                  <FilterRow {...props} active={this.props.filters.size > 0} editMode={this.state.editMode} parentContentId={POPOVER_CONTENT_ID} />
+                renderRow={(props) => (
+                  <FilterRow
+                    {...props}
+                    active={this.props.filters.size > 0}
+                    editMode={this.state.editMode}
+                    parentContentId={POPOVER_CONTENT_ID}
+                  />
                 )}
               />
-              {this.state.confirmName && <Field label={<Label text="Filter view name" />} input={<TextInput placeholder="Give it a good name..." value={this.state.name} onChange={(name) => this.setState({ name })} />} />}
+              {this.state.confirmName && (
+                <Field
+                  label={<Label text="Filter view name" />}
+                  input={
+                    <TextInput
+                      placeholder="Give it a good name..."
+                      value={this.state.name}
+                      onChange={(name) => this.setState({ name })}
+                    />
+                  }
+                />
+              )}
               {this.state.confirmName && (
                 <div className={styles.footer}>
-                  <Button color="white" value="Back" width="120px" onClick={() => this.setState({ confirmName: false })} />
-                  <Button color="white" value="Confirm" primary={true} width="120px" onClick={() => this.save()} />
+                  <Button
+                    color="white"
+                    value="Back"
+                    width="120px"
+                    onClick={() => this.setState({ confirmName: false })}
+                  />
+                  <Button
+                    color="white"
+                    value="Confirm"
+                    primary={true}
+                    width="120px"
+                    onClick={() => this.save()}
+                  />
                 </div>
               )}
               {!this.state.confirmName && (
                 <div className={styles.footer}>
-                  <Button color="white" value="Save" width="120px" onClick={() => this.setState({ confirmName: true })} />
-                  <Button color="white" value="Clear" disabled={this.state.filters.size === 0} width="120px" onClick={() => this.clear()} />
-                  <Button color="white" value="Add" disabled={Object.keys(available).length === 0} width="120px" onClick={() => this.addRow()} />
-                  <Button color="white" primary={true} value="Apply" width="120px" onClick={() => this.apply()} />
+                  <Button
+                    color="white"
+                    value="Save"
+                    width="120px"
+                    onClick={() => this.setState({ confirmName: true })}
+                  />
+                  <Button
+                    color="white"
+                    value="Clear"
+                    disabled={this.state.filters.size === 0}
+                    width="120px"
+                    onClick={() => this.clear()}
+                  />
+                  <Button
+                    color="white"
+                    value="Add"
+                    disabled={Object.keys(available).length === 0}
+                    width="120px"
+                    onClick={() => this.addRow()}
+                  />
+                  <Button
+                    color="white"
+                    primary={true}
+                    value="Apply"
+                    width="120px"
+                    onClick={() => this.apply()}
+                  />
                 </div>
               )}
             </div>

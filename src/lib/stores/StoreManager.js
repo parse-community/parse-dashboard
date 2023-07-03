@@ -20,7 +20,7 @@ export function registerStore(name, store, isGlobal) {
   stores[name] = {
     store: store,
     subscribers: {},
-    isGlobal: !!isGlobal
+    isGlobal: !!isGlobal,
   };
 }
 
@@ -32,16 +32,15 @@ export function getStore(name) {
     );
   }
 
-  const stateGetter = (storeData.isGlobal ?
-    StateManager.getGlobalState :
-    StateManager.getAppState
-  );
+  const stateGetter = storeData.isGlobal
+    ? StateManager.getGlobalState
+    : StateManager.getAppState;
 
   return {
     getData: stateGetter.bind(null, name),
     isGlobal: storeData.isGlobal,
     dispatch(type, params, app) {
-      const action = {...params, type, app};
+      const action = { ...params, type, app };
       const newState = storeData.store(stateGetter(name, app), action);
       if (newState instanceof Promise) {
         return newState.then((result) => {
@@ -72,6 +71,6 @@ export function getStore(name) {
     },
     unsubscribe(id) {
       delete storeData.subscribers[id];
-    }
-  }
+    },
+  };
 }

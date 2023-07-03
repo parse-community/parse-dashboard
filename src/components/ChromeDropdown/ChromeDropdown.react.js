@@ -5,11 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Popover   from 'components/Popover/Popover.react';
+import Popover from 'components/Popover/Popover.react';
 import PropTypes from 'lib/PropTypes';
-import Position  from 'lib/Position';
-import React     from 'react';
-import styles    from 'components/ChromeDropdown/ChromeDropdown.scss';
+import Position from 'lib/Position';
+import React from 'react';
+import styles from 'components/ChromeDropdown/ChromeDropdown.scss';
 
 export default class ChromeDropdown extends React.Component {
   constructor() {
@@ -41,12 +41,15 @@ export default class ChromeDropdown extends React.Component {
 
   select(value, e) {
     e.stopPropagation();
-    this.setState({
-      open: false,
-      selected: true,
-    }, () => {
-      this.props.onChange(value);
-    });
+    this.setState(
+      {
+        open: false,
+        selected: true,
+      },
+      () => {
+        this.props.onChange(value);
+      }
+    );
   }
 
   render() {
@@ -63,7 +66,10 @@ export default class ChromeDropdown extends React.Component {
       label = this.props.placeholder;
     }
     let content = (
-      <div className={[styles.current, styles[color]].join(' ')} onClick={() => this.setState({ open: true })}>
+      <div
+        className={[styles.current, styles[color]].join(' ')}
+        onClick={() => this.setState({ open: true })}
+      >
         <div>{label}</div>
       </div>
     );
@@ -73,8 +79,15 @@ export default class ChromeDropdown extends React.Component {
       const measuredWidth = parseFloat(this.dropdownRef.current.offsetWidth);
       widthStyle = { width: measuredWidth };
       content = (
-        <Popover fixed={true} position={position} onExternalClick={() => this.setState({ open: false })}>
-          <div style={widthStyle} className={[styles.menu, styles[color], 'chromeDropdown'].join(' ')}>
+        <Popover
+          fixed={true}
+          position={position}
+          onExternalClick={() => this.setState({ open: false })}
+        >
+          <div
+            style={widthStyle}
+            className={[styles.menu, styles[color], 'chromeDropdown'].join(' ')}
+          >
             {this.props.options.map((o) => {
               let key = o;
               let value = o;
@@ -82,7 +95,11 @@ export default class ChromeDropdown extends React.Component {
                 key = o.key;
                 value = o.value;
               }
-              return <div key={key} onClick={this.select.bind(this, key)}>{value}</div>
+              return (
+                <div key={key} onClick={this.select.bind(this, key)}>
+                  {value}
+                </div>
+              );
             })}
           </div>
         </Popover>
@@ -90,7 +107,11 @@ export default class ChromeDropdown extends React.Component {
     }
 
     return (
-      <div style={widthStyle} className={styles.dropdown} ref={this.dropdownRef}>
+      <div
+        style={widthStyle}
+        className={styles.dropdown}
+        ref={this.dropdownRef}
+      >
         {content}
       </div>
     );
@@ -110,9 +131,7 @@ ChromeDropdown.propTypes = {
   onChange: PropTypes.func.isRequired.describe(
     'A function called when the dropdown is changed.'
   ),
-  width: PropTypes.string.describe(
-    'An optional width override.'
-  ),
+  width: PropTypes.string.describe('An optional width override.'),
   placeholder: PropTypes.string.describe(
     'Placeholder text used in place of default selection.'
   ),

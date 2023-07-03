@@ -43,14 +43,18 @@ export default class InlineSubmitInput extends React.Component {
           <TextInput
             placeholder={this.props.placeholder}
             value={this.state.value}
-            onChange={this.handleInputChange.bind(this)} />
+            onChange={this.handleInputChange.bind(this)}
+          />
         </div>
-        { this.state.showButton ?
-          <button type='button' className={styles.button} onClick={this.handleSubmit.bind(this)}>
+        {this.state.showButton ? (
+          <button
+            type="button"
+            className={styles.button}
+            onClick={this.handleSubmit.bind(this)}
+          >
             <span>{this.props.submitButtonText}</span>
           </button>
-          : null
-        }
+        ) : null}
       </div>
     );
   }

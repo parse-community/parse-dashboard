@@ -6,21 +6,22 @@
  * the root directory of this source tree.
  */
 import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
-import PropTypes   from 'lib/PropTypes';
-import React       from 'react';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
 
 const JsonPrinter = ({ object }) => (
   <CodeSnippet
     source={JSON.stringify(object, null, 4)}
-    language='javascript'
+    language="javascript"
     lineNumbers={false}
-    fullPage={false} />
-)
+    fullPage={false}
+  />
+);
 
 export default JsonPrinter;
 
 JsonPrinter.propTypes = {
   object: PropTypes.any.describe(
     'The JavaScript object to stringify and print.'
-  )
+  ),
 };

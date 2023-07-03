@@ -49,7 +49,7 @@ export function getAllPreferences(appId) {
   const storageKeys = Object.keys(localStorage);
   const result = {};
   for (const key of storageKeys) {
-    const split = key.split(':')
+    const split = key.split(':');
     if (split.length <= 1) {
       continue;
     }
@@ -63,7 +63,9 @@ export function getAllPreferences(appId) {
 }
 
 export function getColumnSort(sortBy, appId, className) {
-  const cachedSort = getPreferences(appId, COLUMN_SORT) || [ { name: className, value: DEFAULT_COLUMN_SORT } ];
+  const cachedSort = getPreferences(appId, COLUMN_SORT) || [
+    { name: className, value: DEFAULT_COLUMN_SORT },
+  ];
   const ordering = [].concat(cachedSort);
   let updated = false;
   let missing = true;
@@ -79,7 +81,7 @@ export function getColumnSort(sortBy, appId, className) {
       }
     }
   }
-  if(missing) {
+  if (missing) {
     ordering.push({ name: className, value: currentSort });
   }
   if ((updated && sortBy) || missing) {
@@ -89,15 +91,17 @@ export function getColumnSort(sortBy, appId, className) {
 }
 
 export function getOrder(cols, appId, className, defaultPrefs) {
-
-  let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true } ];
+  let prefs = getPreferences(appId, className) || [
+    { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true },
+  ];
 
   if (defaultPrefs) {
-
     // Check that every default pref is in the prefs array.
-    defaultPrefs.forEach(defaultPrefsItem => {
+    defaultPrefs.forEach((defaultPrefsItem) => {
       // If the default pref is not in the prefs: Add it.
-      if (!prefs.find(prefsItem => defaultPrefsItem.name === prefsItem.name)) {
+      if (
+        !prefs.find((prefsItem) => defaultPrefsItem.name === prefsItem.name)
+      ) {
         prefs.push(defaultPrefsItem);
       }
     });
@@ -105,14 +109,17 @@ export function getOrder(cols, appId, className, defaultPrefs) {
     // Iterate over the current prefs
     prefs = prefs.map((prefsItem) => {
       // Get the default prefs item.
-      const defaultPrefsItem = defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
+      const defaultPrefsItem =
+        defaultPrefs.find(
+          (defaultPrefsItem) => defaultPrefsItem.name === prefsItem.name
+        ) || {};
       // The values from the prefsItem object will overwrite those from the defaultPrefsItem object.
       return {
         // Set default width if not given.
         width: DEFAULT_WIDTH,
         ...defaultPrefsItem,
         ...prefsItem,
-      }
+      };
     });
   }
   const order = [].concat(prefs);
@@ -125,7 +132,13 @@ export function getOrder(cols, appId, className, defaultPrefs) {
   for (const name in cols) {
     requested[name] = true;
     if (!seen[name]) {
-      order.push({ name: name, width: DEFAULT_WIDTH, visible: !defaultPrefs, required: cols[name]['required'], cached: !defaultPrefs });
+      order.push({
+        name: name,
+        width: DEFAULT_WIDTH,
+        visible: !defaultPrefs,
+        required: cols[name]['required'],
+        cached: !defaultPrefs,
+      });
       seen[name] = true;
       updated = true;
     }

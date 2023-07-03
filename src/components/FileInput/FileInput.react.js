@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React      from 'react';
+import React from 'react';
 import { escape } from 'lib/StringEscaping';
-import styles     from 'components/FileInput/FileInput.scss';
+import styles from 'components/FileInput/FileInput.scss';
 
 export default class FileInput extends React.Component {
   handleChange(e) {
@@ -23,14 +23,13 @@ export default class FileInput extends React.Component {
       return <span className={styles.label}>{escape(this.props.value)}</span>;
     }
     if (this.props.value.name && !this.props.value.url) {
-      return <span className={styles.label}>{escape(this.props.value.name)}</span>;
+      return (
+        <span className={styles.label}>{escape(this.props.value.name)}</span>
+      );
     }
     if (this.props.value.name && this.props.value.url) {
       return (
-        <a
-          href={this.props.value.url}
-          target='_blank'
-          className={styles.label}>
+        <a href={this.props.value.url} target="_blank" className={styles.label}>
           {escape(this.props.value.name)}
         </a>
       );
@@ -53,7 +52,7 @@ export default class FileInput extends React.Component {
       buttonStyles.push(styles.disabled);
     }
     if (label) {
-      buttonStyles.push(styles.withLabel)
+      buttonStyles.push(styles.withLabel);
     }
 
     return (

@@ -6,9 +6,9 @@
  * the root directory of this source tree.
  */
 import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
-import Popover        from 'components/Popover/Popover.react';
-import Position       from 'lib/Position';
-import React          from 'react';
+import Popover from 'components/Popover/Popover.react';
+import Position from 'lib/Position';
+import React from 'react';
 
 export default class DateTimeEntry extends React.Component {
   constructor(props) {
@@ -17,8 +17,8 @@ export default class DateTimeEntry extends React.Component {
     this.state = {
       open: false,
       position: null,
-      value: props.value.toISOString ? props.value.toISOString() : props.value
-    }
+      value: props.value.toISOString ? props.value.toISOString() : props.value,
+    };
 
     this.rootRef = React.createRef();
     this.inputRef = React.createRef();
@@ -26,7 +26,7 @@ export default class DateTimeEntry extends React.Component {
 
   componentWillReceiveProps(props) {
     this.setState({
-      value: props.value.toISOString ? props.value.toISOString() : props.value
+      value: props.value.toISOString ? props.value.toISOString() : props.value,
     });
   }
 
@@ -49,13 +49,13 @@ export default class DateTimeEntry extends React.Component {
 
     this.setState({
       open: true,
-      position: pos
+      position: pos,
     });
   }
 
   close() {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
@@ -71,15 +71,17 @@ export default class DateTimeEntry extends React.Component {
     if (isNaN(date.getTime())) {
       this.setState({ value: this.props.value.toISOString() });
     } else if (!this.state.value.toLowerCase().endsWith('z')) {
-      const utc = new Date(Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        date.getHours(),
-        date.getMinutes(),
-        date.getSeconds(),
-        date.getMilliseconds()
-      ));
+      const utc = new Date(
+        Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          date.getHours(),
+          date.getMinutes(),
+          date.getSeconds(),
+          date.getMilliseconds()
+        )
+      );
       this.props.onChange(utc);
     } else {
       this.props.onChange(date);
@@ -94,24 +96,35 @@ export default class DateTimeEntry extends React.Component {
     let popover = null;
     if (this.state.open) {
       popover = (
-        <Popover fixed={true} position={this.state.position} onExternalClick={this.close.bind(this)}  parentContentId={this.props.parentContentId}>
+        <Popover
+          fixed={true}
+          position={this.state.position}
+          onExternalClick={this.close.bind(this)}
+          parentContentId={this.props.parentContentId}
+        >
           <DateTimePicker
             value={this.props.value}
             width={Math.max(this.rootRef.current.clientWidth, 240)}
             onChange={this.props.onChange}
-            close={() => this.setState({ open: false })} />
+            close={() => this.setState({ open: false })}
+          />
         </Popover>
       );
     }
 
     return (
-      <div className={this.props.className} onClick={this.toggle.bind(this)} ref={this.rootRef}>
+      <div
+        className={this.props.className}
+        onClick={this.toggle.bind(this)}
+        ref={this.rootRef}
+      >
         <input
-          type='text'
+          type="text"
           value={this.state.value}
           onChange={this.inputDate.bind(this)}
           onBlur={this.commitDate.bind(this)}
-          ref={this.inputRef} />
+          ref={this.inputRef}
+        />
         {popover}
       </div>
     );

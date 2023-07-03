@@ -18,7 +18,7 @@ const ReleaseInfo = ({ release }) => {
     ' \u2022 ',
     howLongAgo(release.deployedAt),
     ' \u2022 SDK Version: ',
-    release.parseVersion
+    release.parseVersion,
   ].join('');
 };
 

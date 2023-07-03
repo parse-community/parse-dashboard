@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import * as CSRFManager from 'lib/CSRFManager';
-import encodeFormData   from 'lib/encodeFormData';
+import encodeFormData from 'lib/encodeFormData';
 
 let basePath = '';
 export function setBasePath(newBasePath) {
@@ -17,11 +17,20 @@ export function setBasePath(newBasePath) {
 }
 
 // abortable flag used to pass xhr reference so user can abort accordingly
-export function request(method, url, body, abortable = false, withCredentials = true, useRequestedWith = true) {
-  if (!url.startsWith('http://')
-      && !url.startsWith('https://')
-      && basePath.length
-      && !url.startsWith(basePath + '/')) {
+export function request(
+  method,
+  url,
+  body,
+  abortable = false,
+  withCredentials = true,
+  useRequestedWith = true
+) {
+  if (
+    !url.startsWith('http://') &&
+    !url.startsWith('https://') &&
+    basePath.length &&
+    !url.startsWith(basePath + '/')
+  ) {
     url = basePath + url;
   }
   const xhr = new XMLHttpRequest();
@@ -50,16 +59,19 @@ export function request(method, url, body, abortable = false, withCredentials = 
       notice: 'Network Error',
     });
   };
-  xhr.onload = function() {
+  xhr.onload = function () {
     if (this.status === 200) {
       let json = {};
       try {
         json = JSON.parse(this.responseText);
-      } catch(ex) {
+      } catch (ex) {
         p.reject(this.responseText);
         return;
       }
-      if (Object.prototype.hasOwnProperty.call(json, 'success') && json.success === false) {
+      if (
+        Object.prototype.hasOwnProperty.call(json, 'success') &&
+        json.success === false
+      ) {
         p.reject(json);
       } else {
         p.resolve(json);
@@ -76,11 +88,12 @@ export function request(method, url, body, abortable = false, withCredentials = 
       let json = {};
       try {
         json = JSON.parse(this.responseText);
-      } catch(ex) {
-        p.reject(this.responseText)
+      } catch (ex) {
+        p.reject(this.responseText);
         return;
       }
-      const message = json.message || json.error || json.notice || 'Request Error';
+      const message =
+        json.message || json.error || json.notice || 'Request Error';
       p.reject({
         success: false,
         message: message,
@@ -119,8 +132,8 @@ export function request(method, url, body, abortable = false, withCredentials = 
   if (abortable) {
     return {
       xhr,
-      promise: p
-    }
+      promise: p,
+    };
   }
   return p;
 }

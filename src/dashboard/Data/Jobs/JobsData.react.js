@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
+import React from 'react';
 import { CurrentApp } from 'context/currentApp';
-import { Outlet }     from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 export default class JobsData extends React.Component {
   static contextType = CurrentApp;
@@ -17,7 +17,7 @@ export default class JobsData extends React.Component {
     this.state = {
       jobs: undefined,
       inUse: undefined,
-      release: undefined
+      release: undefined,
     };
   }
 
@@ -41,8 +41,9 @@ export default class JobsData extends React.Component {
             available.push(jobs[i]);
           }
         }
-        this.setState({ jobs: available, inUse: in_use })
-      }, () => this.setState({ jobs: [], inUse: [] })
+        this.setState({ jobs: available, inUse: in_use });
+      },
+      () => this.setState({ jobs: [], inUse: [] })
     );
   }
 
@@ -64,7 +65,7 @@ export default class JobsData extends React.Component {
         context={{
           availableJobs: this.state.jobs,
           jobsInUse: this.state.inUse,
-          release: this.state.release
+          release: this.state.release,
         }}
       />
     );

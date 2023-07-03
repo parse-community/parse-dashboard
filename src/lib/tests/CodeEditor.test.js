@@ -14,7 +14,7 @@ describe('CodeEditor', () => {
   it('can render examples', () => {
     jest.dontMock('../../components/CodeEditor/CodeEditor.example');
     const example = require('../../components/CodeEditor/CodeEditor.example');
-    example.demos.forEach(example => {
+    example.demos.forEach((example) => {
       example.render();
     });
   });

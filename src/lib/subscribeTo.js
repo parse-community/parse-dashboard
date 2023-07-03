@@ -10,7 +10,7 @@ import * as StoreManager from 'lib/stores/StoreManager';
 import { CurrentApp } from 'context/currentApp';
 
 export default function subscribeTo(name, prop) {
-  return function(Component) {
+  return function (Component) {
     const store = StoreManager.getStore(name);
     const displayName = Component.displayName || Component.name || 'Component';
 
@@ -27,14 +27,14 @@ export default function subscribeTo(name, prop) {
           if (data !== newData) {
             setData(newData);
           }
-        }
+        };
 
         const subscriptionId = store.subscribe(handleNewData);
 
         return () => {
           store.unsubscribe(subscriptionId);
-        }
-      }, [])
+        };
+      }, []);
 
       const dispatch = (type, params = {}) => {
         if (store.isGlobal) {
@@ -47,7 +47,7 @@ export default function subscribeTo(name, prop) {
         [prop]: {
           data,
           dispatch,
-        }
+        },
       };
 
       return <Component {...props} {...extras} />;
