@@ -14,35 +14,70 @@ export const demos = [
   {
     name: 'Context menu',
     render: () => (
-      <div style={{
-        position: 'relative',
-        height: '100px'
-      }}>
+      <div
+        style={{
+          position: 'relative',
+          height: '100px',
+        }}
+      >
         <ContextMenu
           x={0}
           y={0}
           items={[
             {
-              text: 'Category 1', items: [
-                { text: 'C1 Item 1', callback: () => { alert('C1 Item 1 clicked!') } },
-                { text: 'C1 Item 2', callback: () => { alert('C1 Item 2 clicked!') } },
+              text: 'Category 1',
+              items: [
                 {
-                  text: 'Sub Category 1', items: [
-                    { text: 'SC1 Item 1', callback: () => { alert('SC1 Item 1 clicked!') } },
-                    { text: 'SC1 Item 2', callback: () => { alert('SC1 Item 2 clicked!') } },
-                  ]
-                }
-              ]
+                  text: 'C1 Item 1',
+                  callback: () => {
+                    alert('C1 Item 1 clicked!');
+                  },
+                },
+                {
+                  text: 'C1 Item 2',
+                  callback: () => {
+                    alert('C1 Item 2 clicked!');
+                  },
+                },
+                {
+                  text: 'Sub Category 1',
+                  items: [
+                    {
+                      text: 'SC1 Item 1',
+                      callback: () => {
+                        alert('SC1 Item 1 clicked!');
+                      },
+                    },
+                    {
+                      text: 'SC1 Item 2',
+                      callback: () => {
+                        alert('SC1 Item 2 clicked!');
+                      },
+                    },
+                  ],
+                },
+              ],
             },
             {
-              text: 'Category 2', items: [
-                { text: 'C2 Item 1', callback: () => { alert('C2 Item 1 clicked!') } },
-                { text: 'C2 Item 2', callback: () => { alert('C2 Item 2 clicked!') } }
-              ]
-            }
+              text: 'Category 2',
+              items: [
+                {
+                  text: 'C2 Item 1',
+                  callback: () => {
+                    alert('C2 Item 1 clicked!');
+                  },
+                },
+                {
+                  text: 'C2 Item 2',
+                  callback: () => {
+                    alert('C2 Item 2 clicked!');
+                  },
+                },
+              ],
+            },
           ]}
         />
       </div>
-    )
-  }
+    ),
+  },
 ];

@@ -6,11 +6,17 @@
  * the root directory of this source tree.
  */
 import encodeFormData from 'lib/encodeFormData';
-import { get }        from 'lib/AJAX';
+import { get } from 'lib/AJAX';
 
-
-export default function validateAndSubmitConnectionString(connectionString, ignoredWarnings, stoppedWithWarnings, submit) {
-  return get('/validate_mongo_connection_string?' + encodeFormData('connection_string', connectionString)).then(result => {
+export default function validateAndSubmitConnectionString(
+  connectionString,
+  ignoredWarnings,
+  stoppedWithWarnings,
+  submit
+) {
+  return get(
+    '/validate_mongo_connection_string?' + encodeFormData('connection_string', connectionString)
+  ).then(result => {
     if (result.warnings && result.warnings.every(warning => ignoredWarnings.indexOf(warning))) {
       // If they have already seen the current set of warnings and want to continue anyway,
       // just let them. If there are new warnings, show those warnings.

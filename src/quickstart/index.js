@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import Quickstart from 'quickstart/Quickstart.react';
-import React      from 'react';
-import ReactDOM   from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 require('stylesheets/fonts.scss');
 

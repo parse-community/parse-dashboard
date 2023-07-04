@@ -6,9 +6,9 @@
  * the root directory of this source tree.
  */
 import DatePicker from 'components/DatePicker/DatePicker.react';
-import Field      from 'components/Field/Field.react';
-import Label      from 'components/Label/Label.react';
-import React      from 'react';
+import Field from 'components/Field/Field.react';
+import Label from 'components/Label/Label.react';
+import React from 'react';
 
 export const component = DatePicker;
 
@@ -23,9 +23,7 @@ class DatePickerDemo extends React.Component {
   }
 
   render() {
-    return (
-      <DatePicker value={this.state.value} onChange={this.handleChange.bind(this)} />
-    );
+    return <DatePicker value={this.state.value} onChange={this.handleChange.bind(this)} />;
   }
 }
 
@@ -34,9 +32,10 @@ export const demos = [
     render: () => (
       <div style={{ width: 500, margin: '0 auto' }}>
         <Field
-          label={<Label text='When should we deliver the notification?' />}
-          input={<DatePickerDemo />} />
+          label={<Label text="When should we deliver the notification?" />}
+          input={<DatePickerDemo />}
+        />
       </div>
-    )
-  }
+    ),
+  },
 ];

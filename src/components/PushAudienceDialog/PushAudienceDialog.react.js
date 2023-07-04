@@ -5,34 +5,36 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters          from 'lib/Filters';
-import * as PushUtils        from 'lib/PushUtils';
-import * as PushConstants    from 'dashboard/Push/PushConstants';
-import Button                from 'components/Button/Button.react';
-import Field                 from 'components/Field/Field.react';
-import Filter                from 'components/Filter/Filter.react';
-import FormNote              from 'components/FormNote/FormNote.react';
+import * as Filters from 'lib/Filters';
+import * as PushUtils from 'lib/PushUtils';
+import * as PushConstants from 'dashboard/Push/PushConstants';
+import Button from 'components/Button/Button.react';
+import Field from 'components/Field/Field.react';
+import Filter from 'components/Filter/Filter.react';
+import FormNote from 'components/FormNote/FormNote.react';
 import InstallationCondition from 'components/PushAudienceDialog/InstallationCondition.react';
-import Label                 from 'components/Label/Label.react';
-import Modal                 from 'components/Modal/Modal.react';
-import MultiSelect           from 'components/MultiSelect/MultiSelect.react';
-import MultiSelectOption     from 'components/MultiSelect/MultiSelectOption.react';
-import PropTypes             from 'lib/PropTypes';
-import queryFromFilters      from 'lib/queryFromFilters';
-import React                 from 'react';
-import styles                from 'components/PushAudienceDialog/PushAudienceDialog.scss';
-import TextInput             from 'components/TextInput/TextInput.react';
-import Toggle                from 'components/Toggle/Toggle.react';
-import { List, Map }         from 'immutable';
-import { CurrentApp }        from 'context/currentApp';
+import Label from 'components/Label/Label.react';
+import Modal from 'components/Modal/Modal.react';
+import MultiSelect from 'components/MultiSelect/MultiSelect.react';
+import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';
+import PropTypes from 'lib/PropTypes';
+import queryFromFilters from 'lib/queryFromFilters';
+import React from 'react';
+import styles from 'components/PushAudienceDialog/PushAudienceDialog.scss';
+import TextInput from 'components/TextInput/TextInput.react';
+import Toggle from 'components/Toggle/Toggle.react';
+import { List, Map } from 'immutable';
+import { CurrentApp } from 'context/currentApp';
 
 const PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES = true;
 const AUDIENCE_SIZE_FETCHING_ENABLED = true;
 
-let filterFormatter = (filters, schema) => {
-  return filters.map((filter) => {
+const filterFormatter = (filters, schema) => {
+  return filters.map(filter => {
     let type = schema[filter.get('field')];
-    if (Object.prototype.hasOwnProperty.call(Filters.Constraints[filter.get('constraint')], 'field')) {
+    if (
+      Object.prototype.hasOwnProperty.call(Filters.Constraints[filter.get('constraint')], 'field')
+    ) {
       type = Filters.Constraints[filter.get('constraint')].field;
     }
     // Format any stringified fields
@@ -41,7 +43,7 @@ let filterFormatter = (filters, schema) => {
     }
     return filter;
   });
-}
+};
 
 export default class PushAudienceDialog extends React.Component {
   static contextType = CurrentApp;
@@ -61,12 +63,12 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   componentWillMount() {
-    let stateSettings = {};
-    let audienceInfo = this.props.audienceInfo;
+    const stateSettings = {};
+    const audienceInfo = this.props.audienceInfo;
     //this case is only for 'New Segment' to prepopulate existing audience
     if (audienceInfo) {
       if (audienceInfo.query) {
-        let { deviceType } = audienceInfo.query;
+        const { deviceType } = audienceInfo.query;
         stateSettings.platforms = deviceType.$in || [];
       }
       if (audienceInfo.filters) {
@@ -86,22 +88,25 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   handleChange(newValue) {
-    this.setState(
-      { platforms: newValue },
-      this.fetchAudienceSize.bind(this)
-    );
+    this.setState({ platforms: newValue }, this.fetchAudienceSize.bind(this));
   }
 
   handleAddCondition() {
     if (!this.props.schema || !Object.keys(this.props.schema).length) {
-      this.setState({ errorMessage: 'You first need to create the Installation class before adding conditions to an audience.' });
+      this.setState({
+        errorMessage:
+          'You first need to create the Installation class before adding conditions to an audience.',
+      });
       return;
     }
-    let available = Filters.availableFilters(this.props.schema, this.state.filters);
-    let field = Object.keys(available)[0];
-    this.setState(({ filters }) => ({
-      filters: filters.push(new Map({ field: field, constraint: available[field][0] }))
-    }), this.fetchAudienceSize.bind(this));
+    const available = Filters.availableFilters(this.props.schema, this.state.filters);
+    const field = Object.keys(available)[0];
+    this.setState(
+      ({ filters }) => ({
+        filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+      }),
+      this.fetchAudienceSize.bind(this)
+    );
   }
 
   handleAudienceName(name) {
@@ -114,19 +119,24 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   fetchAudienceSize() {
-    if (!this.context) { //so we don't break the PIG demo
+    if (!this.context) {
+      //so we don't break the PIG demo
       return;
     }
 
     let query = {};
-    let parseQuery = queryFromFilters('_Installation', this.state.filters);
+    const parseQuery = queryFromFilters('_Installation', this.state.filters);
 
     if (parseQuery && parseQuery.toJSON()) {
       query = parseQuery.toJSON().where || {};
     }
     query.deviceType = { $in: this.state.platforms };
-    let {xhr, promise} = this.context.fetchPushSubscriberCount(PushConstants.NEW_SEGMENT_ID, query);
-    if (this.xhrHandle) { //cancel existing xhr - prevent from stacking
+    const { xhr, promise } = this.context.fetchPushSubscriberCount(
+      PushConstants.NEW_SEGMENT_ID,
+      query
+    );
+    if (this.xhrHandle) {
+      //cancel existing xhr - prevent from stacking
       this.xhrHandle.abort();
     }
     this.xhrHandle = xhr;
@@ -139,11 +149,16 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   valid() {
-    if (this.state.platforms.length === 0) {//check that at least one platform is chosen
+    if (this.state.platforms.length === 0) {
+      //check that at least one platform is chosen
       return false;
     }
 
-    if ((this.state.saveForFuture || this.props.disableNewSegment) && this.state.audienceName.length === 0) { //check that a name is written
+    if (
+      (this.state.saveForFuture || this.props.disableNewSegment) &&
+      this.state.audienceName.length === 0
+    ) {
+      //check that a name is written
       return false;
     }
     //TODO check if conditions are valid
@@ -151,67 +166,75 @@ export default class PushAudienceDialog extends React.Component {
   }
 
   render() {
-    let options = [];
-    let availableDevices = this.props.availableDevices;
+    const options = [];
+    const availableDevices = this.props.availableDevices;
     // TODO: handle empty case when 0 devices - should display link to device creation.
     // TODO: handle misconfigured device link
-    for (let index in availableDevices) {
+    for (const index in availableDevices) {
       options.push(
-        <MultiSelectOption
-          key={`device${index}`}
-          value={availableDevices[index]}>
+        <MultiSelectOption key={`device${index}`} value={availableDevices[index]}>
           {PushConstants.DEVICE_MAP[availableDevices[index]]}
         </MultiSelectOption>
       );
     }
-    let platformSelect = (
+    const platformSelect = (
       <MultiSelect
-        endDelineator='or'
+        endDelineator="or"
         fixed={true}
         value={this.state.platforms}
         onChange={this.handleChange.bind(this)}
-        placeHolder='Choose some platforms...'>
+        placeHolder="Choose some platforms..."
+      >
         {options}
       </MultiSelect>
     );
-    let nonEmptyConditions = this.state.filters.size !== 0 ? true : false;
-    let audienceSize = PushUtils.formatCountDetails(this.state.audienceSize, this.state.approximate);
-    let customFooter = (
+    const nonEmptyConditions = this.state.filters.size !== 0 ? true : false;
+    const audienceSize = PushUtils.formatCountDetails(
+      this.state.audienceSize,
+      this.state.approximate
+    );
+    const customFooter = (
       <div className={styles.footer}>
-        {AUDIENCE_SIZE_FETCHING_ENABLED ? <div
-          className={styles.audienceSize}>
-          <div className={styles.audienceSizeText}>AUDIENCE SIZE</div>
-          <div className={styles.audienceSizeDescription}>{audienceSize}</div>
-        </div> : null}
-        <Button
-          value='Cancel'
-          onClick={this.props.secondaryAction}/>
+        {AUDIENCE_SIZE_FETCHING_ENABLED ? (
+          <div className={styles.audienceSize}>
+            <div className={styles.audienceSizeText}>AUDIENCE SIZE</div>
+            <div className={styles.audienceSizeDescription}>{audienceSize}</div>
+          </div>
+        ) : null}
+        <Button value="Cancel" onClick={this.props.secondaryAction} />
         <Button
           primary={true}
           progress={this.props.progress}
           value={this.props.progress ? 'Creating audience...' : 'Use this audience'}
-          color='blue'
+          color="blue"
           disabled={!this.valid()}
-          onClick={this.props.primaryAction.bind(undefined,
-            {
-              platforms: this.state.platforms,
-              name: this.state.audienceName,
-              filters: this.state.filters,
-              formattedFilters: filterFormatter(this.state.filters, this.props.schema),
-              saveForFuture: this.state.saveForFuture,
-            })} />
+          onClick={this.props.primaryAction.bind(undefined, {
+            platforms: this.state.platforms,
+            name: this.state.audienceName,
+            filters: this.state.filters,
+            formattedFilters: filterFormatter(this.state.filters, this.props.schema),
+            saveForFuture: this.state.saveForFuture,
+          })}
+        />
       </div>
     );
 
-    let futureUseSegment = [];
+    const futureUseSegment = [];
 
     if (!this.props.disableNewSegment) {
       if (PARSE_SERVER_SUPPORTS_SAVED_AUDIENCES) {
         futureUseSegment.push(
           <Field
             key={'saveForFuture'}
-            label={<Label text='Save this audience for future use?'/>}
-            input={<Toggle value={this.state.saveForFuture} type={Toggle.Types.YES_NO} onChange={this.handleSaveForFuture.bind(this)} />} />
+            label={<Label text="Save this audience for future use?" />}
+            input={
+              <Toggle
+                value={this.state.saveForFuture}
+                type={Toggle.Types.YES_NO}
+                onChange={this.handleSaveForFuture.bind(this)}
+              />
+            }
+          />
         );
       }
 
@@ -220,8 +243,14 @@ export default class PushAudienceDialog extends React.Component {
           <Field
             key={'audienceName'}
             labelWidth={55}
-            label={<Label text='Audience name' />}
-            input={<TextInput placeholder='Choose a name...' onChange={this.handleAudienceName.bind(this)} />} />
+            label={<Label text="Audience name" />}
+            input={
+              <TextInput
+                placeholder="Choose a name..."
+                onChange={this.handleAudienceName.bind(this)}
+              />
+            }
+          />
         );
       }
     } else {
@@ -229,43 +258,59 @@ export default class PushAudienceDialog extends React.Component {
         <Field
           key={'audienceName'}
           labelWidth={55}
-          label={<Label text='Audience name' />}
-          input={<TextInput placeholder='Choose a name...' onChange={this.handleAudienceName.bind(this)} />} />
+          label={<Label text="Audience name" />}
+          input={
+            <TextInput
+              placeholder="Choose a name..."
+              onChange={this.handleAudienceName.bind(this)}
+            />
+          }
+        />
       );
     }
 
     return (
       <Modal
-        title={ this.props.editMode ? 'Edit audience' : 'Create a new audience'}
+        title={this.props.editMode ? 'Edit audience' : 'Create a new audience'}
         type={Modal.Types.INFO}
-        icon='plus-outline'
+        icon="plus-outline"
         width={900}
-        customFooter={customFooter} >
+        customFooter={customFooter}
+      >
         <Field
           labelWidth={55}
-          label={<Label text='Which platforms should be included?' />}
-          input={platformSelect} />
+          label={<Label text="Which platforms should be included?" />}
+          input={platformSelect}
+        />
         <div className={styles.filter}>
-        <Filter
-          schema={this.props.schema}
-          filters={this.state.filters}
-          onChange={(filters) =>
-            {
-              this.setState(
-                { filters },
-                this.fetchAudienceSize.bind(this)
-              );
-            }
-          }
-          renderRow={(props) => <InstallationCondition {...props} />} />
+          <Filter
+            schema={this.props.schema}
+            filters={this.state.filters}
+            onChange={filters => {
+              this.setState({ filters }, this.fetchAudienceSize.bind(this));
+            }}
+            renderRow={props => <InstallationCondition {...props} />}
+          />
         </div>
-        <div className={[styles.addConditions, nonEmptyConditions ? styles.nonEmptyConditions : ''].join(' ')}>
-          <Button value={nonEmptyConditions ? 'Add another condition' : 'Add a condition'} onClick={this.handleAddCondition.bind(this)}/>
+        <div
+          className={[
+            styles.addConditions,
+            nonEmptyConditions ? styles.nonEmptyConditions : '',
+          ].join(' ')}
+        >
+          <Button
+            value={nonEmptyConditions ? 'Add another condition' : 'Add a condition'}
+            onClick={this.handleAddCondition.bind(this)}
+          />
         </div>
         {futureUseSegment}
         <FormNote
-          show={Boolean((this.props.errorMessage && this.props.errorMessage.length > 0) || (this.state.errorMessage && this.state.errorMessage.length > 0))}
-          color='red' >
+          show={Boolean(
+            (this.props.errorMessage && this.props.errorMessage.length > 0) ||
+              (this.state.errorMessage && this.state.errorMessage.length > 0)
+          )}
+          color="red"
+        >
           {this.props.errorMessage || this.state.errorMessage}
         </FormNote>
       </Modal>
@@ -274,9 +319,7 @@ export default class PushAudienceDialog extends React.Component {
 }
 
 PushAudienceDialog.propTypes = {
-  editMode: PropTypes.bool.describe(
-    'Flag if true to be edit mode of dialog.'
-  ),
+  editMode: PropTypes.bool.describe('Flag if true to be edit mode of dialog.'),
   primaryAction: PropTypes.func.isRequired.describe(
     'Primary callback triggered when submitting modal.'
   ),
@@ -296,4 +339,3 @@ PushAudienceDialog.propTypes = {
     'List of all availableDevices devices for push notifications.'
   ),
 };
-

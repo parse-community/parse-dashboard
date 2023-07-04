@@ -33,8 +33,8 @@ describe('shortMonth', () => {
 
 describe('nextMonth', () => {
   it('returns the first day of the next month', () => {
-    let start = new Date(2001, 2, 3, 4, 5, 6);
-    let next = DateUtils.nextMonth(start);
+    const start = new Date(2001, 2, 3, 4, 5, 6);
+    const next = DateUtils.nextMonth(start);
     expect(next.getFullYear()).toBe(2001);
     expect(next.getMonth()).toBe(3);
     expect(next.getDate()).toBe(1);
@@ -46,8 +46,8 @@ describe('nextMonth', () => {
 
 describe('prevMonth', () => {
   it('returns the first day of the previous month', () => {
-    let start = new Date(2001, 2, 3, 4, 5, 6);
-    let next = DateUtils.prevMonth(start);
+    const start = new Date(2001, 2, 3, 4, 5, 6);
+    const next = DateUtils.prevMonth(start);
     expect(next.getFullYear()).toBe(2001);
     expect(next.getMonth()).toBe(1);
     expect(next.getDate()).toBe(1);

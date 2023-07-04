@@ -5,15 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import DashboardView   from 'dashboard/DashboardView.react';
+import DashboardView from 'dashboard/DashboardView.react';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
-import React           from 'react';
-import styles          from 'dashboard/TableView.scss';
+import React from 'react';
+import styles from 'dashboard/TableView.scss';
 
 export default class TableView extends DashboardView {
   columnWidths(keys) {
-    let equalWidth = 100 / keys.length + '%';
-    let widths = {};
+    const equalWidth = 100 / keys.length + '%';
+    const widths = {};
     // leave the last key undefined, so it fills the remaining space
     for (let i = 0; i < keys.length - 1; i++) {
       widths[keys[i]] = equalWidth;
@@ -26,9 +26,9 @@ export default class TableView extends DashboardView {
   }
 
   renderContent() {
-    let toolbar = this.renderToolbar();
-    let data = this.tableData();
-    let footer = this.renderFooter();
+    const toolbar = this.renderToolbar();
+    const data = this.tableData();
+    const footer = this.renderFooter();
     let content = null;
     let headers = null;
     if (data !== undefined) {
@@ -41,9 +41,7 @@ export default class TableView extends DashboardView {
           content = (
             <div className={styles.rows}>
               <table>
-                <tbody>
-                  {data.map((row) => this.renderRow(row))}
-                </tbody>
+                <tbody>{data.map(row => this.renderRow(row))}</tbody>
               </table>
               {footer}
             </div>
@@ -52,8 +50,8 @@ export default class TableView extends DashboardView {
         }
       }
     }
-    let extras = this.renderExtras ? this.renderExtras() : null;
-    let loading = this.state ? this.state.loading : false;
+    const extras = this.renderExtras ? this.renderExtras() : null;
+    const loading = this.state ? this.state.loading : false;
     return (
       <div>
         <LoaderContainer loading={loading}>

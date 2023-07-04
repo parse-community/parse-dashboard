@@ -6,10 +6,10 @@
  * the root directory of this source tree.
  */
 import { Link } from 'react-router-dom';
-import React    from 'react';
-import styles   from 'components/Sidebar/Sidebar.scss';
+import React from 'react';
+import styles from 'components/Sidebar/Sidebar.scss';
 
-let SidebarSubItem = ({ active, name, action, link, children }) => {
+const SidebarSubItem = ({ active, name, action, link, children }) => {
   if (active) {
     return (
       <div>
@@ -17,18 +17,14 @@ let SidebarSubItem = ({ active, name, action, link, children }) => {
           {name}
           {action ? action.renderButton() : null}
         </div>
-        <div>
-          {children}
-        </div>
+        <div>{children}</div>
       </div>
     );
   }
 
   return (
     <div>
-      <Link
-        className={styles.subitem}
-        to={{ pathname: link }}>
+      <Link className={styles.subitem} to={{ pathname: link }}>
         {name}
       </Link>
     </div>

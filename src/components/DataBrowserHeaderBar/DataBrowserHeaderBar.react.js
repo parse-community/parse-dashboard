@@ -5,38 +5,49 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import DataBrowserHeader   from 'components/DataBrowserHeader/DataBrowserHeader.react';
-import DragHandle          from 'components/DragHandle/DragHandle.react';
-import HTML5Backend        from 'react-dnd-html5-backend';
-import React               from 'react';
-import styles              from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
-import { DndProvider }     from 'react-dnd'
+import DataBrowserHeader from 'components/DataBrowserHeader/DataBrowserHeader.react';
+import DragHandle from 'components/DragHandle/DragHandle.react';
+import HTML5Backend from 'react-dnd-html5-backend';
+import React from 'react';
+import styles from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.scss';
+import { DndProvider } from 'react-dnd';
 
 export default class DataBrowserHeaderBar extends React.Component {
   render() {
-    let { headers, onResize, selectAll, onAddColumn, updateOrdering, readonly, preventSchemaEdits, selected, isDataLoaded } = this.props;
-    let elements = [
-      <div key='check' className={[styles.wrap, styles.check].join(' ')}>
-        {readonly
-          ? null
-          : <input
-              type='checkbox'
-              checked={selected}
-              onChange={(e) => selectAll(e.target.checked)} />
-        }
-      </div>
+    const {
+      headers,
+      onResize,
+      selectAll,
+      onAddColumn,
+      updateOrdering,
+      readonly,
+      preventSchemaEdits,
+      selected,
+      isDataLoaded,
+    } = this.props;
+    const elements = [
+      <div key="check" className={[styles.wrap, styles.check].join(' ')}>
+        {readonly ? null : (
+          <input type="checkbox" checked={selected} onChange={e => selectAll(e.target.checked)} />
+        )}
+      </div>,
     ];
 
     headers.forEach(({ width, name, type, targetClass, order, visible, preventSort }, i) => {
-      if (!visible) return;
-      let wrapStyle = { width };
+      if (!visible) {
+        return;
+      }
+      const wrapStyle = { width };
       if (i % 2) {
         wrapStyle.background = '#726F85';
       } else {
         wrapStyle.background = '#66637A';
       }
       let onClick = null;
-      if (!preventSort && (type === 'String' || type === 'Number' || type === 'Date' || type === 'Boolean')) {
+      if (
+        !preventSort &&
+        (type === 'String' || type === 'Number' || type === 'Date' || type === 'Boolean')
+      ) {
         onClick = () => updateOrdering((order === 'descending' ? '' : '-') + name);
       }
 
@@ -46,18 +57,15 @@ export default class DataBrowserHeaderBar extends React.Component {
       }
 
       elements.push(
-        <div
-          onClick={onClick}
-          key={'header' + i}
-          className={className}
-          style={ wrapStyle }>
+        <div onClick={onClick} key={'header' + i} className={className} style={wrapStyle}>
           <DataBrowserHeader
             name={name}
             type={type}
             targetClass={targetClass}
             order={order}
             index={i}
-            moveDataBrowserHeader={this.props.handleDragDrop}/>
+            moveDataBrowserHeader={this.props.handleDragDrop}
+          />
         </div>
       );
       elements.push(
@@ -66,18 +74,15 @@ export default class DataBrowserHeaderBar extends React.Component {
     });
 
     if (onAddColumn) {
-      let finalStyle = {};
+      const finalStyle = {};
       if (headers.length % 2) {
         finalStyle.background = 'rgba(224,224,234,0.10)';
       }
 
       elements.push(
         readonly || preventSchemaEdits ? null : (
-          <div key='add' className={styles.addColumn} style={finalStyle}>
-            <button
-              type='button'
-              className={styles.addColumnButton}
-              onClick={onAddColumn}>
+          <div key="add" className={styles.addColumn} style={finalStyle}>
+            <button type="button" className={styles.addColumnButton} onClick={onAddColumn}>
               Add a new column
             </button>
           </div>
@@ -86,8 +91,10 @@ export default class DataBrowserHeaderBar extends React.Component {
     }
 
     function renderSkeleton() {
-      if (isDataLoaded) return null;
-      var skeletons = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
+      if (isDataLoaded) {
+        return null;
+      }
+      const skeletons = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
       return (
         <div className={styles.skeleton}>
           {skeletons.map(function (opacity, index) {
@@ -112,6 +119,6 @@ export default class DataBrowserHeaderBar extends React.Component {
           {renderSkeleton()}
         </div>
       </DndProvider>
-    )
+    );
   }
 }
