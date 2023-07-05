@@ -6,49 +6,49 @@
  * the root directory of this source tree.
  */
 export const Constraints = {
-  '$eq': {
+  $eq: {
     name: 'equals',
   },
-  '$ne': {
+  $ne: {
     name: 'does not equal',
   },
-  '$lt': {
+  $lt: {
     name: 'less than',
     field: 'Number',
     composable: true,
   },
-  '$le': {
+  $le: {
     name: 'less than or equal',
     field: 'Number',
     composable: true,
   },
-  '$gt': {
+  $gt: {
     name: 'greater than',
     field: 'Number',
     composable: true,
   },
-  '$ge': {
+  $ge: {
     name: 'greater than or equal',
     field: 'Number',
     composable: true,
   },
-  '$contains': {
+  $contains: {
     name: 'contains string',
     field: 'String',
     composable: true,
   },
-  'json_extract_scalar': {
+  json_extract_scalar: {
     name: 'json',
     field: 'JSON',
-    composable: true
-  }
+    composable: true,
+  },
 };
 
 export const FieldConstraints = {
-  'Boolean': [ '$eq' ],
-  'Number': [ '$eq', '$ne', '$lt', '$le', '$gt', '$ge' ],
-  'String': [ '$eq', '$ne', '$contains' ],
-  'Date': [ '$eq', '$ne', '$lt', '$le', '$gt', '$ge' ],
-  'JSON': [ '$eq', '$ne', 'json_extract_scalar' ],
-  'JSONValue': [ '$eq', '$ne' ]
+  Boolean: ['$eq'],
+  Number: ['$eq', '$ne', '$lt', '$le', '$gt', '$ge'],
+  String: ['$eq', '$ne', '$contains'],
+  Date: ['$eq', '$ne', '$lt', '$le', '$gt', '$ge'],
+  JSON: ['$eq', '$ne', 'json_extract_scalar'],
+  JSONValue: ['$eq', '$ne'],
 };

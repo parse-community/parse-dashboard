@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Parse             from 'parse';
+import Parse from 'parse';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
-import React             from 'react';
+import React from 'react';
 
 function validateEntry(text, returnInvalid = true) {
-
   let type = 'unknown';
   let entry = text;
   let userQuery;
@@ -24,10 +23,10 @@ function validateEntry(text, returnInvalid = true) {
     type = 'user';
     // no need to query roles
     roleQuery = {
-      find: () => Promise.resolve([])
+      find: () => Promise.resolve([]),
     };
 
-    let user = text.substring(5);
+    const user = text.substring(5);
     entry = user;
     userQuery = new Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
@@ -37,9 +36,9 @@ function validateEntry(text, returnInvalid = true) {
     type = 'role';
     // no need to query users
     userQuery = {
-      find: () => Promise.resolve([])
+      find: () => Promise.resolve([]),
     };
-    let role = text.substring(5);
+    const role = text.substring(5);
     entry = role;
     roleQuery = new Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
@@ -60,15 +59,15 @@ function validateEntry(text, returnInvalid = true) {
 
   return Promise.all([
     userQuery.find({ useMasterKey: true }),
-    roleQuery.find({ useMasterKey: true })
+    roleQuery.find({ useMasterKey: true }),
   ]).then(([user, role]) => {
     if (user.length > 0) {
       return { entry: user[0], type: 'user' };
     } else if (role.length > 0) {
       return { entry: role[0], type: 'role' };
     } else {
-      if(returnInvalid) {
-        return Promise.resolve({entry, type})
+      if (returnInvalid) {
+        return Promise.resolve({ entry, type });
       }
       return Promise.reject();
     }
@@ -79,9 +78,9 @@ function toPerms(acl) {
   if (!acl) {
     return { read: { '*': true }, write: { '*': true } };
   }
-  let json = acl.toJSON();
-  let perms = { read: {}, write: {} };
-  for (let key in json) {
+  const json = acl.toJSON();
+  const perms = { read: {}, write: {} };
+  for (const key in json) {
     if (json[key].read) {
       perms.read[key] = true;
     }
@@ -93,13 +92,13 @@ function toPerms(acl) {
 }
 
 function toACL(perms) {
-  let acl = {};
-  for (let key in perms.read) {
+  const acl = {};
+  for (const key in perms.read) {
     if (perms.read[key]) {
       acl[key] = { read: true };
     }
   }
-  for (let key in perms.write) {
+  for (const key in perms.write) {
     if (perms.write[key]) {
       if (acl[key]) {
         acl[key].write = true;
@@ -111,20 +110,25 @@ function toACL(perms) {
   return new Parse.ACL(acl);
 }
 
-let ACLEditor = ({ value, onCommit }) => (
+const ACLEditor = ({ value, onCommit }) => (
   <PermissionsDialog
-    title='Edit Access Control List (ACL)'
+    title="Edit Access Control List (ACL)"
     advanced={false}
-    confirmText='Save ACL'
-    details={<a href='http://docs.parseplatform.org/ios/guide/#object-level-access-control'>Learn more about ACLs and app security</a>}
+    confirmText="Save ACL"
+    details={
+      <a href="http://docs.parseplatform.org/ios/guide/#object-level-access-control">
+        Learn more about ACLs and app security
+      </a>
+    }
     permissions={toPerms(value)}
     validateEntry={validateEntry}
     onCancel={() => {
       onCommit(value);
     }}
-    onConfirm={(perms) => {
+    onConfirm={perms => {
       onCommit(toACL(perms));
-    }} />
+    }}
+  />
 );
 
 export default ACLEditor;

@@ -5,17 +5,17 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button             from 'components/Button/Button.react';
+import Button from 'components/Button/Button.react';
 import PushAudienceDialog from 'components/PushAudienceDialog/PushAudienceDialog.react';
-import React              from 'react';
+import React from 'react';
 
 export const component = PushAudienceDialog;
 
 class PushAudienceDialogDemo extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = {
-      showModal: false
+      showModal: false,
     };
   }
 
@@ -23,30 +23,33 @@ class PushAudienceDialogDemo extends React.Component {
     return (
       <div>
         <Button
-          value='Create a new audiences'
+          value="Create a new audiences"
           primary={true}
           onClick={() => {
             this.setState({
-              showModal: true
+              showModal: true,
             });
-          }}>
-        </Button>
-        {this.state.showModal ? <PushAudienceDialog
-          audienceSize={999999}
-          secondaryAction={() => {
-            this.setState({
-              showModal: false
-            });
-          }}/> : null}
+          }}
+        ></Button>
+        {this.state.showModal ? (
+          <PushAudienceDialog
+            audienceSize={999999}
+            secondaryAction={() => {
+              this.setState({
+                showModal: false,
+              });
+            }}
+          />
+        ) : null}
       </div>
-    )
+    );
   }
 }
 
 export const demos = [
   {
     render() {
-      return (<PushAudienceDialogDemo />);
-    }
-  }
+      return <PushAudienceDialogDemo />;
+    },
+  },
 ];

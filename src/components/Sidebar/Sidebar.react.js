@@ -5,19 +5,19 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import AppsManager    from 'lib/AppsManager';
-import AppsMenu       from 'components/Sidebar/AppsMenu.react';
-import AppName        from 'components/Sidebar/AppName.react';
+import AppsManager from 'lib/AppsManager';
+import AppsMenu from 'components/Sidebar/AppsMenu.react';
+import AppName from 'components/Sidebar/AppName.react';
 import isInsidePopover from 'lib/isInsidePopover';
-import Pin            from 'components/Sidebar/Pin.react';
+import Pin from 'components/Sidebar/Pin.react';
 import React, { useEffect, useState, useContext } from 'react';
-import SidebarHeader  from 'components/Sidebar/SidebarHeader.react';
+import SidebarHeader from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
-import styles         from 'components/Sidebar/Sidebar.scss';
+import styles from 'components/Sidebar/Sidebar.scss';
 import { CurrentApp } from 'context/currentApp';
-import Icon     from 'components/Icon/Icon.react';
-let mountPath = window.PARSE_DASHBOARD_PATH;
+import Icon from 'components/Icon/Icon.react';
+const mountPath = window.PARSE_DASHBOARD_PATH;
 
 const Sidebar = ({
   prefix,
@@ -29,17 +29,17 @@ const Sidebar = ({
   section,
   appSelector,
   primaryBackgroundColor,
-  secondaryBackgroundColor
+  secondaryBackgroundColor,
 }) => {
   const currentApp = useContext(CurrentApp);
   const collapseWidth = 980;
-  const [ appsMenuOpen, setAppsMenuOpen ] = useState(false);
-  const [ collapsed, setCollapsed ] = useState(false);
-  const [ fixed, setFixed ] = useState(true);
+  const [appsMenuOpen, setAppsMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [fixed, setFixed] = useState(true);
   const [dashboardUser, setDashboardUser] = useState('');
   fetch(mountPath).then(response => {
-    setDashboardUser(response.headers.get('username'))
-  })
+    setDashboardUser(response.headers.get('username'));
+  });
   let currentWidth = window.innerWidth;
 
   const windowResizeHandler = () => {
@@ -56,14 +56,14 @@ const Sidebar = ({
     }
     // Update window width
     currentWidth = window.innerWidth;
-  }
+  };
 
   useEffect(() => {
     window.addEventListener('resize', windowResizeHandler);
 
     return () => {
       window.removeEventListener('resize', windowResizeHandler);
-    }
+    };
   });
 
   const sidebarClasses = [styles.sidebar];
@@ -82,7 +82,7 @@ const Sidebar = ({
     }
     return (
       <div className={styles.submenu}>
-        {subsections.map(({name, link}) => {
+        {subsections.map(({ name, link }) => {
           const active = subsection === name;
           return (
             <SidebarSubItem
@@ -91,14 +91,15 @@ const Sidebar = ({
               link={prefix + link}
               action={action || null}
               actionHandler={active ? actionHandler : null}
-              active={active}>
+              active={active}
+            >
               {active ? children : null}
             </SidebarSubItem>
           );
         })}
       </div>
     );
-  }
+  };
 
   const onPinClick = () => {
     if (fixed) {
@@ -113,34 +114,38 @@ const Sidebar = ({
 
   let sidebarContent;
   if (appsMenuOpen) {
-    const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+    const apps = []
+      .concat(AppsManager.apps())
+      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
     sidebarContent = (
       <AppsMenu
         apps={apps}
         current={currentApp}
         onPinClick={onPinClick}
-        onSelect={() => setAppsMenuOpen(false)} />
+        onSelect={() => setAppsMenuOpen(false)}
+      />
     );
   } else {
-    const topContent = collapsed
-      ? <Pin onClick={onPinClick} />
-      : appSelector && (
+    const topContent = collapsed ? (
+      <Pin onClick={onPinClick} />
+    ) : (
+      (appSelector && (
         <div className={styles.apps}>
-          <AppName name={currentApp.name} onClick={() => setAppsMenuOpen(true)} onPinClick={onPinClick} />
+          <AppName
+            name={currentApp.name}
+            onClick={() => setAppsMenuOpen(true)}
+            onPinClick={onPinClick}
+          />
         </div>
-      ) || undefined;
+      )) ||
+      undefined
+    );
 
     sidebarContent = (
       <>
         <div className={styles.content}>
           {topContent}
-          {sections.map(({
-            name,
-            icon,
-            style,
-            link,
-            subsections,
-          }) => {
+          {sections.map(({ name, icon, style, link, subsections }) => {
             const active = name === section;
             return (
               <SidebarSection
@@ -152,45 +157,43 @@ const Sidebar = ({
                 active={active}
                 primaryBackgroundColor={primaryBackgroundColor}
                 secondaryBackgroundColor={secondaryBackgroundColor}
-                >
+              >
                 {!collapsed && active ? _subMenu(subsections) : null}
               </SidebarSection>
             );
           })}
         </div>
       </>
-    )
+    );
   }
 
   return (
     <div
       className={sidebarClasses.join(' ')}
-      onMouseEnter={
-        !fixed && collapsed
-          ? () => setCollapsed(false)
-          : undefined
-      }
+      onMouseEnter={!fixed && collapsed ? () => setCollapsed(false) : undefined}
       onMouseLeave={
         !collapsed && !fixed
-          ? (e => {
+          ? e => {
             if (!isInsidePopover(e.relatedTarget)) {
               setAppsMenuOpen(false);
               setCollapsed(true);
             }
-          })
+          }
           : undefined
       }
     >
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} dashboardUser={dashboardUser} />
       {sidebarContent}
-      {dashboardUser && <div className={styles.footer}>
-        <a href={`${mountPath}logout`} className={styles.more}>
-        <Icon height={24} width={24} name='logout' />
-        Logout
-      </a>
-      </div> }
+      {dashboardUser && (
+        <div className={styles.footer}>
+          <a href={`${mountPath}logout`} className={styles.more}>
+            <Icon height={24} width={24} name="logout" />
+            Logout
+          </a>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Sidebar;

@@ -14,7 +14,7 @@ export const component = LogView;
 export const demos = [
   {
     render() {
-      let text1 = `I2015-09-30T00:25:26.950Z]Deployed v1 with triggers:
+      const text1 = `I2015-09-30T00:25:26.950Z]Deployed v1 with triggers:
   Item:
     before_save
     after_save
@@ -26,21 +26,21 @@ export const demos = [
     anotherFunction
     WillError`;
 
-    let text2 = `I2015-09-30T00:35:42.336Z]v2 before_save triggered for Item:
+      const text2 = `I2015-09-30T00:35:42.336Z]v2 before_save triggered for Item:
   Input: {"original":null,"update":{"name":"i"}}
   Result: Update changed to {"name":"i","count":12}`;
 
-    let text3 = `I2015-10-06T22:39:11.029Z]v4 Ran cloud function doSomething with:
+      const text3 = `I2015-10-06T22:39:11.029Z]v4 Ran cloud function doSomething with:
   Input: {}
   Result: {}`;
 
       return (
         <LogView>
-          <LogViewEntry text={text1}/>
-          <LogViewEntry text={text2}/>
-          <LogViewEntry text={text3}/>
+          <LogViewEntry text={text1} />
+          <LogViewEntry text={text2} />
+          <LogViewEntry text={text3} />
         </LogView>
       );
-    }
-  }
+    },
+  },
 ];

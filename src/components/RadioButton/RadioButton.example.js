@@ -14,33 +14,25 @@ export const demos = [
   {
     name: 'Unchecked State',
     render() {
-      return (
-        <RadioButton />
-     );
+      return <RadioButton />;
     },
   },
   {
     name: 'Checked State',
     render() {
-      return (
-        <RadioButton checked={true}/>
-      );
-    }
+      return <RadioButton checked={true} />;
+    },
   },
   {
     name: 'Disabled State [styles tbd]',
     render() {
-      return (
-        <RadioButton disabled={true}/>
-      );
-    }
+      return <RadioButton disabled={true} />;
+    },
   },
   {
     name: 'Disabled Checked State [styles tbd]',
     render() {
-      return (
-        <RadioButton checked={true} disabled={true}/>
-      );
-    }
-  }
+      return <RadioButton checked={true} disabled={true} />;
+    },
+  },
 ];

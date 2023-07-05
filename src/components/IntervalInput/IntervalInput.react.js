@@ -10,28 +10,32 @@ import Option from 'components/Dropdown/Option.react';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 
-let IntervalInput = ({ count, unit, onChange }) => {
-  let counts = [];
-  let max = (unit === 'hour') ? 23 : 59;
+const IntervalInput = ({ count, unit, onChange }) => {
+  const counts = [];
+  const max = unit === 'hour' ? 23 : 59;
   for (let i = 1; i <= max; i++) {
-    counts.push(<Option key={'count'+i} value={String(i)}>{String(i)}</Option>);
+    counts.push(
+      <Option key={'count' + i} value={String(i)}>
+        {String(i)}
+      </Option>
+    );
   }
 
-  let countChange = (newCount) => onChange(parseInt(newCount, 10), unit);
-  let unitChange = (newUnit) => {
+  const countChange = newCount => onChange(parseInt(newCount, 10), unit);
+  const unitChange = newUnit => {
     if (newUnit === 'minute') {
       return onChange(count, newUnit);
     } else {
       return onChange(Math.min(23, count), newUnit);
     }
-  }
+  };
 
   return (
     <div>
-      <Dropdown width='50%' value={String(count)} onChange={countChange}>
+      <Dropdown width="50%" value={String(count)} onChange={countChange}>
         {counts}
       </Dropdown>
-      <Dropdown width='50%' value={unit} onChange={unitChange}>
+      <Dropdown width="50%" value={unit} onChange={unitChange}>
         <Option value={'minute'}>{count === 1 ? 'Minute' : 'Minutes'}</Option>
         <Option value={'hour'}>{count === 1 ? 'Hour' : 'Hours'}</Option>
       </Dropdown>
@@ -44,5 +48,5 @@ export default IntervalInput;
 IntervalInput.propTypes = {
   count: PropTypes.number.isRequired,
   unit: PropTypes.oneOf(['minute', 'hour']),
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 };

@@ -5,13 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-var babel = require('@babel/core');
-var extractClassnames = require('./extractClassnames');
+const babel = require('@babel/core');
+const extractClassnames = require('./extractClassnames');
 
 module.exports = {
   process: function (src, filename) {
     if (filename.endsWith('.scss') || filename.endsWith('.css')) {
-      var matches = extractClassnames(src);
+      const matches = extractClassnames(src);
       return {
         code: 'module.exports = ' + JSON.stringify(matches),
       };

@@ -12,16 +12,23 @@
 //   joinWithFinal('your items: ', ['item1', 'item2', 'item3'], ', ', ', and ').join(''): 'your items: item1, item2, and item3'
 export default (prefix, array, joiner, finalJoiner) => {
   switch (array.length) {
-    case 0: return [];
-    case 1: return [prefix, array[0]];
-    default: return [prefix].concat(array.map((node, index) => {
-      if (index === array.length - 1) {
-        return [node];
-      } else if (index === array.length - 2) {
-        return [node, finalJoiner];
-      } else {
-        return [node, joiner];
-      }
-    }).reduce((a,b) => a.concat(b), []));
+    case 0:
+      return [];
+    case 1:
+      return [prefix, array[0]];
+    default:
+      return [prefix].concat(
+        array
+          .map((node, index) => {
+            if (index === array.length - 1) {
+              return [node];
+            } else if (index === array.length - 2) {
+              return [node, finalJoiner];
+            } else {
+              return [node, joiner];
+            }
+          })
+          .reduce((a, b) => a.concat(b), [])
+      );
   }
 };

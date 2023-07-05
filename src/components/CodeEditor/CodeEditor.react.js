@@ -56,5 +56,5 @@ export default class CodeEditor extends React.Component {
 
 CodeEditor.propTypes = {
   fontSize: PropTypes.number.describe('Font size of the editor'),
-  placeHolder: PropTypes.string.describe('Code place holder')
+  placeHolder: PropTypes.string.describe('Code place holder'),
 };

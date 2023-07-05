@@ -14,7 +14,7 @@ export default class NumberEditor extends React.Component {
     super();
 
     this.state = {
-      value: props.value || 0
+      value: props.value || 0,
     };
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
@@ -35,7 +35,7 @@ export default class NumberEditor extends React.Component {
 
   checkExternalClick(e) {
     if (e.target !== this.inputRef.current) {
-      this.commitValue()
+      this.commitValue();
     }
   }
 
@@ -58,16 +58,15 @@ export default class NumberEditor extends React.Component {
   }
 
   render() {
-    let onChange = (e) => {
-      let value = e.target.value;
-      this.setState({ value: validateNumeric(value) ? value : this.state.value });
+    const onChange = e => {
+      const value = e.target.value;
+      this.setState({
+        value: validateNumeric(value) ? value : this.state.value,
+      });
     };
     return (
       <div style={{ width: this.props.width }} className={styles.editor}>
-        <input
-          ref={this.inputRef}
-          value={this.state.value}
-          onChange={onChange} />
+        <input ref={this.inputRef} value={this.state.value} onChange={onChange} />
       </div>
     );
   }

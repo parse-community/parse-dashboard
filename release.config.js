@@ -116,7 +116,7 @@ async function readFile(filePath) {
 
 function getReleaseComment() {
   const url = repositoryUrl + '/releases/tag/${nextRelease.gitTag}';
-  let comment = '🎉 This change has been released in version [${nextRelease.version}](' + url + ')';
+  const comment = '🎉 This change has been released in version [${nextRelease.version}](' + url + ')';
   return comment;
 }
 

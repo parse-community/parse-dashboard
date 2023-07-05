@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'components/LoaderDots/LoaderDots.scss';
 
 export default class LoaderDots extends React.Component {
