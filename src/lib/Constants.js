@@ -9,7 +9,7 @@ export const Anchors = {
   TOP: 'TOP',
   RIGHT: 'RIGHT',
   BOTTOM: 'BOTTOM',
-  LEFT: 'LEFT'
+  LEFT: 'LEFT',
 };
 
 export const AsyncStatus = {
@@ -17,7 +17,7 @@ export const AsyncStatus = {
   PROGRESS: 'PROGRESS',
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
-}
+};
 
 export const ChartColorSchemes = [
   '#169cee',
@@ -31,7 +31,7 @@ export const ChartColorSchemes = [
   '#15D0ED',
   '#5858ED',
   '#15EDC8',
-  '#B515ED'
+  '#B515ED',
 ];
 
 export const Directions = {
@@ -42,7 +42,7 @@ export const Directions = {
   BOTTOM_RIGHT: 'BOTTOM_RIGHT',
   DOWN: 'DOWN',
   BOTTOM_LEFT: 'BOTTOM_LEFT',
-  LEFT: 'LEFT'
+  LEFT: 'LEFT',
 };
 
 export const SpecialClasses = [
@@ -55,14 +55,36 @@ export const SpecialClasses = [
 ];
 
 export const DefaultColumns = {
-  All: [ 'objectId', 'ACL', 'createdAt', 'updatedAt' ],
+  All: ['objectId', 'ACL', 'createdAt', 'updatedAt'],
 
-  _User: [ 'username', 'password', 'email', 'emailVerified', 'authData' ],
-  _Installation: [ 'installationId', 'deviceToken', 'channels', 'deviceType', 'pushType', 'GCMSenderId', 'timeZone', 'localeIdentifier', 'badge' ],
-  _Role: [ 'name', 'users', 'roles' ],
-  _Product: [ 'order', 'productIdentifier', 'icon', 'title', 'subtitle', 'download', 'downloadName' ],
-  _Session: [ 'restricted', 'user', 'installationId', 'sessionToken', 'expiresAt', 'createdWith' ],
-  _PushStatus: [ 'pushTime', 'query', 'pushHash', 'payload', 'status', 'sentPerType', 'failedPerType', 'numSent', 'numFailed', 'errorMessage', 'source' ],
+  _User: ['username', 'password', 'email', 'emailVerified', 'authData'],
+  _Installation: [
+    'installationId',
+    'deviceToken',
+    'channels',
+    'deviceType',
+    'pushType',
+    'GCMSenderId',
+    'timeZone',
+    'localeIdentifier',
+    'badge',
+  ],
+  _Role: ['name', 'users', 'roles'],
+  _Product: ['order', 'productIdentifier', 'icon', 'title', 'subtitle', 'download', 'downloadName'],
+  _Session: ['restricted', 'user', 'installationId', 'sessionToken', 'expiresAt', 'createdWith'],
+  _PushStatus: [
+    'pushTime',
+    'query',
+    'pushHash',
+    'payload',
+    'status',
+    'sentPerType',
+    'failedPerType',
+    'numSent',
+    'numFailed',
+    'errorMessage',
+    'source',
+  ],
 };
 
 export const DataTypes = [

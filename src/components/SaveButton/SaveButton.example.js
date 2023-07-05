@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import SaveButton from 'components/SaveButton/SaveButton.react';
 
 export const component = SaveButton;
@@ -23,9 +23,10 @@ class SaveDemo extends React.Component {
   handleClick() {
     this.setState({ saveState: SaveButton.States.SAVING });
     setTimeout(() => {
-      let next = this.state.nextState === SaveButton.States.SUCCEEDED ?
-        SaveButton.States.FAILED :
-        SaveButton.States.SUCCEEDED;
+      const next =
+        this.state.nextState === SaveButton.States.SUCCEEDED
+          ? SaveButton.States.FAILED
+          : SaveButton.States.SUCCEEDED;
       this.setState({ saveState: this.state.nextState, nextState: next });
 
       setTimeout(() => {
@@ -43,22 +44,23 @@ export const demos = [
   {
     render: () => (
       <div>
-        <div style={{padding: 10}}>
+        <div style={{ padding: 10 }}>
           <SaveButton />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{ padding: 10 }}>
           <SaveButton state={SaveButton.States.SAVING} />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{ padding: 10 }}>
           <SaveButton state={SaveButton.States.SUCCEEDED} />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{ padding: 10 }}>
           <SaveButton state={SaveButton.States.FAILED} />
         </div>
       </div>
-    )
-  }, {
+    ),
+  },
+  {
     name: 'Clickable demo',
-    render: () => <SaveDemo />
-  }
+    render: () => <SaveDemo />,
+  },
 ];

@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React                  from 'react';
+import React from 'react';
 import PushExperimentDropdown from 'components/PushExperimentDropdown/PushExperimentDropdown.react';
 
 export const component = PushExperimentDropdown;
@@ -20,11 +20,15 @@ class PushExperimentDropdownDemo extends React.Component {
     return (
       <PushExperimentDropdown
         width={155}
-        placeholder='Choose a group'
+        placeholder="Choose a group"
         value={this.state.color}
         color={this.state.color.toLowerCase()}
-        onChange={(color) => this.setState({ color })}
-        options={[{key: 'Group A (winner)', style: {color: 'green'} }, {key: 'Group B (loser)', style: {color: 'red'}}]} />
+        onChange={color => this.setState({ color })}
+        options={[
+          { key: 'Group A (winner)', style: { color: 'green' } },
+          { key: 'Group B (loser)', style: { color: 'red' } },
+        ]}
+      />
     );
   }
 }
@@ -35,6 +39,6 @@ export const demos = [
       <div>
         <PushExperimentDropdownDemo />
       </div>
-    )
+    ),
   },
 ];

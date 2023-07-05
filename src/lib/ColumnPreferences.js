@@ -9,7 +9,7 @@ const VERSION = 'v1'; // In case we ever need to invalidate these
 const DEFAULT_WIDTH = 150;
 const COLUMN_SORT = '__columnClassesSort'; // Used for storing classes sort field
 const DEFAULT_COLUMN_SORT = '-createdAt'; // Default column sorting
-let cache = {};
+const cache = {};
 
 export function updatePreferences(prefs, appId, className) {
   try {
@@ -36,7 +36,7 @@ export function getPreferences(appId, className) {
     return null;
   }
   try {
-    let prefs = JSON.parse(entry);
+    const prefs = JSON.parse(entry);
     cache[appId] = cache[appId] || {};
     cache[appId][className] = prefs;
     return prefs;
@@ -49,7 +49,7 @@ export function getAllPreferences(appId) {
   const storageKeys = Object.keys(localStorage);
   const result = {};
   for (const key of storageKeys) {
-    const split = key.split(':')
+    const split = key.split(':');
     if (split.length <= 1) {
       continue;
     }
@@ -63,8 +63,10 @@ export function getAllPreferences(appId) {
 }
 
 export function getColumnSort(sortBy, appId, className) {
-  let cachedSort = getPreferences(appId, COLUMN_SORT) || [ { name: className, value: DEFAULT_COLUMN_SORT } ];
-  let ordering = [].concat(cachedSort);
+  const cachedSort = getPreferences(appId, COLUMN_SORT) || [
+    { name: className, value: DEFAULT_COLUMN_SORT },
+  ];
+  const ordering = [].concat(cachedSort);
   let updated = false;
   let missing = true;
   let currentSort = sortBy ? sortBy : DEFAULT_COLUMN_SORT;
@@ -79,7 +81,7 @@ export function getColumnSort(sortBy, appId, className) {
       }
     }
   }
-  if(missing) {
+  if (missing) {
     ordering.push({ name: className, value: currentSort });
   }
   if ((updated && sortBy) || missing) {
@@ -89,11 +91,11 @@ export function getColumnSort(sortBy, appId, className) {
 }
 
 export function getOrder(cols, appId, className, defaultPrefs) {
-
-  let prefs = getPreferences(appId, className) || [ { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true } ];
+  let prefs = getPreferences(appId, className) || [
+    { name: 'objectId', width: DEFAULT_WIDTH, visible: true, cached: true },
+  ];
 
   if (defaultPrefs) {
-
     // Check that every default pref is in the prefs array.
     defaultPrefs.forEach(defaultPrefsItem => {
       // If the default pref is not in the prefs: Add it.
@@ -103,34 +105,41 @@ export function getOrder(cols, appId, className, defaultPrefs) {
     });
 
     // Iterate over the current prefs
-    prefs = prefs.map((prefsItem) => {
+    prefs = prefs.map(prefsItem => {
       // Get the default prefs item.
-      const defaultPrefsItem = defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
+      const defaultPrefsItem =
+        defaultPrefs.find(defaultPrefsItem => defaultPrefsItem.name === prefsItem.name) || {};
       // The values from the prefsItem object will overwrite those from the defaultPrefsItem object.
       return {
         // Set default width if not given.
         width: DEFAULT_WIDTH,
         ...defaultPrefsItem,
         ...prefsItem,
-      }
+      };
     });
   }
-  let order = [].concat(prefs);
-  let seen = {};
+  const order = [].concat(prefs);
+  const seen = {};
   for (let i = 0; i < order.length; i++) {
     seen[order[i].name] = true;
   }
-  let requested = {};
+  const requested = {};
   let updated = false;
-  for (let name in cols) {
+  for (const name in cols) {
     requested[name] = true;
     if (!seen[name]) {
-      order.push({ name: name, width: DEFAULT_WIDTH, visible: !defaultPrefs, required: cols[name]['required'], cached: !defaultPrefs });
+      order.push({
+        name: name,
+        width: DEFAULT_WIDTH,
+        visible: !defaultPrefs,
+        required: cols[name]['required'],
+        cached: !defaultPrefs,
+      });
       seen[name] = true;
       updated = true;
     }
   }
-  let filtered = [];
+  const filtered = [];
   for (let i = 0; i < order.length; i++) {
     const { name, visible, required, cached } = order[i];
 
@@ -166,26 +175,26 @@ export function getOrder(cols, appId, className, defaultPrefs) {
 }
 
 export function updateCachedColumns(appId, className) {
-  let prefs = getPreferences(appId, className);
-  let order = [].concat(prefs);
+  const prefs = getPreferences(appId, className);
+  const order = [].concat(prefs);
 
-  for (let col of order) {
-    let { visible } = col;
+  for (const col of order) {
+    const { visible } = col;
     col.cached = visible;
   }
   updatePreferences(order, appId, className);
   return order;
 }
 
-export function setPointerDefaultKey( appId, className, name ) {
+export function setPointerDefaultKey(appId, className, name) {
   localStorage.setItem(pointerKeyPath(appId, className), name);
   // remove old pointer key.
   localStorage.removeItem(className);
 }
 
-export function getPointerDefaultKey( appId, className ) {
+export function getPointerDefaultKey(appId, className) {
   let pointerKey = localStorage.getItem(pointerKeyPath(appId, className));
-  if ( !pointerKey ) {
+  if (!pointerKey) {
     // old pointer key.
     pointerKey = localStorage.getItem(className) || 'objectId';
   }
@@ -196,6 +205,6 @@ function path(appId, className) {
   return `ParseDashboard:${VERSION}:${appId}:${className}`;
 }
 
-function pointerKeyPath( appId, className ) {
+function pointerKeyPath(appId, className) {
   return `ParseDashboard:${VERSION}:${appId}:${className}::defaultPointerKey`;
 }

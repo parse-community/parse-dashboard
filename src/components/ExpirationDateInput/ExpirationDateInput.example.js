@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Field               from 'components/Field/Field.react';
+import Field from 'components/Field/Field.react';
 import ExpirationDateInput from 'components/ExpirationDateInput/ExpirationDateInput.react';
-import Label               from 'components/Label/Label.react';
-import React               from 'react';
+import Label from 'components/Label/Label.react';
+import React from 'react';
 
 export const component = ExpirationDateInput;
 
@@ -23,7 +23,8 @@ class Demo extends React.Component {
       <ExpirationDateInput
         month={this.state.month}
         year={this.state.year}
-        onChange={(change) => this.setState(change)} />
+        onChange={change => this.setState(change)}
+      />
     );
   }
 }
@@ -31,11 +32,9 @@ class Demo extends React.Component {
 export const demos = [
   {
     render: () => (
-      <div style={{width: 500, margin: '0 auto'}}>
-        <Field
-          label={<Label text='When does it expire?' />}
-          input={<Demo />} />
+      <div style={{ width: 500, margin: '0 auto' }}>
+        <Field label={<Label text="When does it expire?" />} input={<Demo />} />
       </div>
-    )
-  }
+    ),
+  },
 ];

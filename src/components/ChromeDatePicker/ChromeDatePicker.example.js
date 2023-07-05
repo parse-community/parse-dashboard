@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import ChromeDatePicker from 'components/ChromeDatePicker/ChromeDatePicker.react';
-import { Directions }   from 'lib/Constants';
-import React            from 'react';
+import { Directions } from 'lib/Constants';
+import React from 'react';
 
 export const component = ChromeDatePicker;
 
@@ -23,7 +23,11 @@ class Demo extends React.Component {
 
   render() {
     return (
-      <ChromeDatePicker value={this.state.value} onChange={this.handleChange.bind(this)} align={this.props.align} />
+      <ChromeDatePicker
+        value={this.state.value}
+        onChange={this.handleChange.bind(this)}
+        align={this.props.align}
+      />
     );
   }
 }
@@ -35,7 +39,7 @@ export const demos = [
       <div style={{ width: 500, margin: '0 auto' }}>
         <Demo />
       </div>
-    )
+    ),
   },
   {
     name: 'Right-aligned',
@@ -43,6 +47,6 @@ export const demos = [
       <div style={{ width: 500, margin: '0 auto', textAlign: 'right' }}>
         <Demo align={Directions.RIGHT} />
       </div>
-    )
-  }
+    ),
+  },
 ];

@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Popover  from 'components/Popover/Popover.react';
+import Popover from 'components/Popover/Popover.react';
 import Position from 'lib/Position';
-import React    from 'react';
-import styles   from 'dashboard/Data/Browser/Browser.scss';
+import React from 'react';
+import styles from 'dashboard/Data/Browser/Browser.scss';
 
 export default class Notification extends React.Component {
   constructor(props) {
@@ -31,9 +31,16 @@ export default class Notification extends React.Component {
     if (this.state.lastNote !== nextProps.note) {
       clearTimeout(this.timeout);
       if (this.state.hiding) {
-        this.setState({ lastNote: nextProps.note, isErrorNote: nextProps.isErrorNote, hiding: false })
+        this.setState({
+          lastNote: nextProps.note,
+          isErrorNote: nextProps.isErrorNote,
+          hiding: false,
+        });
       } else {
-        this.setState({ lastNote: nextProps.note, isErrorNote: nextProps.isErrorNote });
+        this.setState({
+          lastNote: nextProps.note,
+          isErrorNote: nextProps.isErrorNote,
+        });
       }
     }
     if (!nextProps.note) {
@@ -52,8 +59,8 @@ export default class Notification extends React.Component {
       return null;
     }
 
-    let bottomRight = new Position(window.innerWidth, window.innerHeight);
-    let classes = [];
+    const bottomRight = new Position(window.innerWidth, window.innerHeight);
+    const classes = [];
 
     if (this.state.isErrorNote) {
       classes.push(styles.notificationError);

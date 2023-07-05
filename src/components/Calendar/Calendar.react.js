@@ -12,46 +12,58 @@ import {
   daysInMonth,
   WEEKDAYS,
   getDateMethod,
-}                from 'lib/DateUtils';
+} from 'lib/DateUtils';
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/Calendar/Calendar.scss';
+import React from 'react';
+import styles from 'components/Calendar/Calendar.scss';
 
 export default class Calendar extends React.Component {
   constructor(props) {
     super();
-    let now = props.value || new Date();
+    const now = props.value || new Date();
     this.state = {
-      currentMonth: new Date(now[getDateMethod(props.local, 'getFullYear')](), now[getDateMethod(props.local, 'getMonth')](), 1)
+      currentMonth: new Date(
+        now[getDateMethod(props.local, 'getFullYear')](),
+        now[getDateMethod(props.local, 'getMonth')](),
+        1
+      ),
     };
   }
 
   componentWillReceiveProps(props) {
     if (props.value) {
       this.setState({
-        currentMonth: new Date(props.value[getDateMethod(props.local, 'getFullYear')](), props.value[getDateMethod(props.local, 'getMonth')](), 1)
+        currentMonth: new Date(
+          props.value[getDateMethod(props.local, 'getFullYear')](),
+          props.value[getDateMethod(props.local, 'getMonth')](),
+          1
+        ),
       });
     }
   }
 
   handlePrev() {
     this.setState({
-      currentMonth: prevMonth(this.state.currentMonth)
+      currentMonth: prevMonth(this.state.currentMonth),
     });
   }
 
   handleNext() {
     this.setState({
-      currentMonth: nextMonth(this.state.currentMonth)
+      currentMonth: nextMonth(this.state.currentMonth),
     });
   }
 
   renderMonth() {
     return (
       <div className={styles.month}>
-        <button type='button' onClick={this.handlePrev.bind(this)} />
-        <button type='button' onClick={this.handleNext.bind(this)} />
-        <div>{getMonth(this.state.currentMonth.getMonth()) + ' ' + this.state.currentMonth.getFullYear()}</div>
+        <button type="button" onClick={this.handlePrev.bind(this)} />
+        <button type="button" onClick={this.handleNext.bind(this)} />
+        <div>
+          {getMonth(this.state.currentMonth.getMonth()) +
+            ' ' +
+            this.state.currentMonth.getFullYear()}
+        </div>
       </div>
     );
   }
@@ -59,37 +71,45 @@ export default class Calendar extends React.Component {
   renderWeekdays() {
     return (
       <div className={styles.weekdays}>
-        {WEEKDAYS.map((w) => <span key={w}>{w.substr(0, 2)}</span>)}
+        {WEEKDAYS.map(w => (
+          <span key={w}>{w.substr(0, 2)}</span>
+        ))}
       </div>
     );
   }
 
   renderDays() {
-    let isValueMonth = (
+    const isValueMonth =
       this.props.value &&
-      this.props.value[getDateMethod(this.props.local, 'getFullYear')]() === this.state.currentMonth.getFullYear() &&
-      this.props.value[getDateMethod(this.props.local, 'getMonth')]() === this.state.currentMonth.getMonth()
-    );
-    let offset = this.state.currentMonth.getDay();
-    let days = daysInMonth(this.state.currentMonth);
-    let labels = [];
+      this.props.value[getDateMethod(this.props.local, 'getFullYear')]() ===
+        this.state.currentMonth.getFullYear() &&
+      this.props.value[getDateMethod(this.props.local, 'getMonth')]() ===
+        this.state.currentMonth.getMonth();
+    const offset = this.state.currentMonth.getDay();
+    const days = daysInMonth(this.state.currentMonth);
+    const labels = [];
     for (let i = 0; i < offset; i++) {
       labels.push(<span key={'pad' + i} />);
     }
     for (let i = 1; i <= days; i++) {
-      let isSelected = isValueMonth && (this.props.value[getDateMethod(this.props.local, 'getDate')]() === i);
-      let className = isSelected ? styles.selected : '';
-      let onChange = this.props.onChange.bind(
+      const isSelected =
+        isValueMonth && this.props.value[getDateMethod(this.props.local, 'getDate')]() === i;
+      const className = isSelected ? styles.selected : '';
+      const onChange = this.props.onChange.bind(
         null,
-        this.props.local ?
-          new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i) :
-          new Date(Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i))
+        this.props.local
+          ? new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
+          : new Date(
+            Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
+          )
       );
       labels.push(
-        <button type='button' key={'day' + i} className={className} onClick={onChange}>{i}</button>
+        <button type="button" key={'day' + i} className={className} onClick={onChange}>
+          {i}
+        </button>
       );
     }
-    let classes = [styles.days];
+    const classes = [styles.days];
     if (isValueMonth && this.props.shadeBefore) {
       classes.push(styles.shadeBefore);
     }
@@ -111,16 +131,10 @@ export default class Calendar extends React.Component {
 }
 
 Calendar.propTypes = {
-  value: PropTypes.instanceOf(Date).describe(
-    'The currently selected date'
-  ),
+  value: PropTypes.instanceOf(Date).describe('The currently selected date'),
   onChange: PropTypes.func.isRequired.describe(
     'A callback fired when a new date is selected. It receives a Date object as its only parameter.'
   ),
-  shadeBefore: PropTypes.bool.describe(
-    'Whether to shade the dates before the current selection'
-  ),
-  shadeAfter: PropTypes.bool.describe(
-    'Whether to shade the dates after the current selection'
-  ),
-}
+  shadeBefore: PropTypes.bool.describe('Whether to shade the dates before the current selection'),
+  shadeAfter: PropTypes.bool.describe('Whether to shade the dates after the current selection'),
+};

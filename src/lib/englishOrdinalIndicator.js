@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-let numberSuffix = (number) => {
+const numberSuffix = number => {
   if (number > 3 && number < 21) {
     return 'th';
   }

@@ -15,16 +15,16 @@ export default function queryFromFilters(className, filters) {
   } else if (typeof className === 'object' && className instanceof Parse.Relation) {
     query = className.query();
   }
-  filters.forEach((filter) => {
+  filters.forEach(filter => {
     addConstraint(query, filter);
   });
   return query;
 }
 
 function addQueryConstraintFromObject(query, filter, constraintType) {
-  let compareTo = JSON.parse(filter.get('compareTo'));
-  for (let key of Object.keys(compareTo)) {
-    query[constraintType](filter.get('field')+'.'+key, compareTo[key]);
+  const compareTo = JSON.parse(filter.get('compareTo'));
+  for (const key of Object.keys(compareTo)) {
+    query[constraintType](filter.get('field') + '.' + key, compareTo[key]);
   }
 }
 

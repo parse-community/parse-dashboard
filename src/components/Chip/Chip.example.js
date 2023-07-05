@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import React from 'react';
-import Chip  from 'components/Chip/Chip.react';
+import Chip from 'components/Chip/Chip.react';
 
 export const component = Chip;
 
@@ -14,10 +14,10 @@ export const demos = [
   {
     render: () => (
       <div>
-        <Chip value='fieldName' />
-        <Chip value='Role: Admin' />
-        <Chip value='User: y2kjInQFr6' />
+        <Chip value="fieldName" />
+        <Chip value="Role: Admin" />
+        <Chip value="User: y2kjInQFr6" />
       </div>
-    )
-  }
+    ),
+  },
 ];

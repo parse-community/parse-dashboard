@@ -6,20 +6,25 @@
  * the root directory of this source tree.
  */
 // import Parse             from 'parse';
-import React             from 'react';
+import React from 'react';
 import PermissionsDialog from 'components/PermissionsDialog/PermissionsDialog.react';
-import Button            from 'components/Button/Button.react';
+import Button from 'components/Button/Button.react';
 
 export const component = PermissionsDialog;
 
 function validateSimple(text) {
-
   if (text.startsWith('u')) {
-    return Promise.resolve({ entry: { id: text, get:() => 'demouser' } , type:'user'});
+    return Promise.resolve({
+      entry: { id: text, get: () => 'demouser' },
+      type: 'user',
+    });
   }
   if (text.startsWith('role:')) {
     const roleName = text.substring(5);
-    return Promise.resolve({ entry: {id:`1d0f${roleName}`, getName:()=>roleName}, type:'role' });
+    return Promise.resolve({
+      entry: { id: `1d0f${roleName}`, getName: () => roleName },
+      type: 'role',
+    });
   }
   if (text.startsWith('ptr')) {
     return Promise.resolve({ entry: text, type: 'pointer' });
@@ -28,15 +33,21 @@ function validateSimple(text) {
 }
 
 function validateAdvanced(text) {
-  if (text==='*') {
-    return Promise.resolve({ entry: '*' , type:'public'});
+  if (text === '*') {
+    return Promise.resolve({ entry: '*', type: 'public' });
   }
   if (text.startsWith('u')) {
-    return Promise.resolve({ entry: { id: text, get:() => 'demouser' } , type:'user'});
+    return Promise.resolve({
+      entry: { id: text, get: () => 'demouser' },
+      type: 'user',
+    });
   }
   if (text.startsWith('role:')) {
     const roleName = text.substring(5);
-    return Promise.resolve({ entry: {id:`1d0f${roleName}`, getName:()=>roleName}, type:'role' });
+    return Promise.resolve({
+      entry: { id: `1d0f${roleName}`, getName: () => roleName },
+      type: 'role',
+    });
   }
   if (text.startsWith('ptr')) {
     return Promise.resolve({ entry: text, type: 'pointer' });
@@ -45,24 +56,19 @@ function validateAdvanced(text) {
 }
 
 const columns = {
-  'email': { type: 'String',},
-  'password':{ type: 'String', },
-  'ptr_owner':{ type: 'Pointer', targetClass:'_User'},
-  'nickname':{ type: 'String',},
-  'ptr_followers':{ type: 'Array', },
-  'ptr_friends':{ type: 'Array', }
+  email: { type: 'String' },
+  password: { type: 'String' },
+  ptr_owner: { type: 'Pointer', targetClass: '_User' },
+  nickname: { type: 'String' },
+  ptr_followers: { type: 'Array' },
+  ptr_friends: { type: 'Array' },
 };
 
-const userPointers = [
-  'ptr_followers',
-  'ptr_owner',
-  'ptr_friends'
-]
-
+const userPointers = ['ptr_followers', 'ptr_owner', 'ptr_friends'];
 
 class DialogDemo extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = {
       showSimple: false,
       showAdvanced: false,
@@ -73,28 +79,35 @@ class DialogDemo extends React.Component {
     return (
       <div>
         <Button
-          value='Show simple dialog'
+          value="Show simple dialog"
           onClick={() => {
             this.setState({
-              showSimple: true
+              showSimple: true,
             });
-          }}/>
+          }}
+        />
         <Button
-          value='Show advanced dialog'
+          value="Show advanced dialog"
           onClick={() => {
             this.setState({
-              showAdvanced: true
+              showAdvanced: true,
             });
-          }}/>
-        {this.state.showSimple ?
+          }}
+        />
+        {this.state.showSimple ? (
           <PermissionsDialog
-            title='Edit Access Control List (ACL)'
+            title="Edit Access Control List (ACL)"
             advanced={false}
-            confirmText='Save ACL'
-            details={<a href='#'>Learn more about ACLs and app security</a>}
+            confirmText="Save ACL"
+            details={<a href="#">Learn more about ACLs and app security</a>}
             permissions={{
-              read: {'*': true, 'role:admin': true, 'role:user': true, 'us3r1d':true},
-              write: {'*': true, 'role:admin':true },
+              read: {
+                '*': true,
+                'role:admin': true,
+                'role:user': true,
+                us3r1d: true,
+              },
+              write: { '*': true, 'role:admin': true },
             }}
             validateEntry={validateSimple}
             onCancel={() => {
@@ -103,25 +116,30 @@ class DialogDemo extends React.Component {
               });
             }}
             coolumns={columns}
-            onConfirm={(perms) => {
+            onConfirm={perms => {
               console.log(perms);
-            }} /> : null}
-        {this.state.showAdvanced ?
+            }}
+          />
+        ) : null}
+        {this.state.showAdvanced ? (
           <PermissionsDialog
-            title='Edit Class Level Permissions'
+            title="Edit Class Level Permissions"
             advanced={true}
-            confirmText='Save CLP'
-            details={<a href='#'>Learn more about CLPs and app security</a>}
+            confirmText="Save CLP"
+            details={<a href="#">Learn more about CLPs and app security</a>}
             permissions={{
-              get: {'*': false, 'us3r1d': true, 'role:admin': true,},
-              find: {'*': true, 'us3r1d': true, 'role:admin': true, },
-              create: {'*': true,  },
-              update: {'*': true, pointerFields: ['user']},
-              delete: {'*': true, },
-              addField: {'*': true, 'requiresAuthentication': true},
+              get: { '*': false, us3r1d: true, 'role:admin': true },
+              find: { '*': true, us3r1d: true, 'role:admin': true },
+              create: { '*': true },
+              update: { '*': true, pointerFields: ['user'] },
+              delete: { '*': true },
+              addField: { '*': true, requiresAuthentication: true },
               readUserFields: ['ptr_owner', 'ptr_followers', 'ptr_friends'],
               writeUserFields: ['ptr_owner'],
-              protectedFields: {'*': ['password', 'email'], 'userField:ptr_owner': []}
+              protectedFields: {
+                '*': ['password', 'email'],
+                'userField:ptr_owner': [],
+              },
             }}
             columns={columns}
             validateEntry={validateAdvanced}
@@ -131,9 +149,11 @@ class DialogDemo extends React.Component {
                 showAdvanced: false,
               });
             }}
-            onConfirm={(perms) => {
+            onConfirm={perms => {
               console.log(perms);
-            }} /> : null}
+            }}
+          />
+        ) : null}
       </div>
     );
   }
@@ -142,7 +162,7 @@ class DialogDemo extends React.Component {
 export const demos = [
   {
     render() {
-      return (<DialogDemo />);
-    }
-  }
+      return <DialogDemo />;
+    },
+  },
 ];

@@ -6,20 +6,21 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/SegmentSelect/SegmentSelect.scss';
+import React from 'react';
+import styles from 'components/SegmentSelect/SegmentSelect.scss';
 
-let SegmentSelect = ({ values, current, onChange }) => (
+const SegmentSelect = ({ values, current, onChange }) => (
   <div className={styles.row}>
-    {values.map((v) => (
+    {values.map(v => (
       <a
         key={v}
         className={v === current ? styles.current : null}
         onClick={() => {
           if (current !== v) {
-            onChange(v)
+            onChange(v);
           }
-        }}>
+        }}
+      >
         {v}
       </a>
     ))}
@@ -32,10 +33,8 @@ SegmentSelect.propTypes = {
   values: PropTypes.arrayOf(PropTypes.string).isRequired.describe(
     'An array of strings that can be selected'
   ),
-  current: PropTypes.string.describe(
-    'The currently selected value.'
-  ),
+  current: PropTypes.string.describe('The currently selected value.'),
   onChange: PropTypes.func.isRequired.describe(
     'A function that is called whenever a new segment is selected. The selected value is passed as the only parameter.'
-  )
+  ),
 };

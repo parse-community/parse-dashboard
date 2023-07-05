@@ -6,9 +6,7 @@ const AppName = ({ name, onClick, onPinClick }) => (
   <div>
     <div className={styles.currentApp}>
       <div className={styles.appNameContainer} onClick={onClick}>
-        <div className={styles.currentAppName}>
-          {name}
-        </div>
+        <div className={styles.currentAppName}>{name}</div>
       </div>
       <Pin onClick={onPinClick} />
     </div>

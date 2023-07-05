@@ -11,7 +11,7 @@ describe('Markdown', () => {
   it('can render examples', () => {
     jest.dontMock('../../components/Markdown/Markdown.example');
     const example = require('../../components/Markdown/Markdown.example');
-    example.demos.forEach((example) => {
+    example.demos.forEach(example => {
       example.render();
     });
   });

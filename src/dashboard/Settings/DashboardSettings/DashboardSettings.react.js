@@ -42,7 +42,7 @@ export default class DashboardSettings extends DashboardView {
       copyData: {
         data: '',
         show: false,
-        type: ''
+        type: '',
       },
       newUser: {
         data: '',
@@ -55,14 +55,22 @@ export default class DashboardSettings extends DashboardView {
   getColumns() {
     const data = ColumnPreferences.getAllPreferences(this.context.applicationId);
     this.setState({
-      copyData: { data: JSON.stringify(data, null, 2), show: true, type: 'Column Preferences' },
+      copyData: {
+        data: JSON.stringify(data, null, 2),
+        show: true,
+        type: 'Column Preferences',
+      },
     });
   }
 
   getClasses() {
     const data = ClassPreferences.getAllPreferences(this.context.applicationId);
     this.setState({
-      copyData: { data: JSON.stringify(data, null, 2), show: true, type: 'Class Preferences' },
+      copyData: {
+        data: JSON.stringify(data, null, 2),
+        show: true,
+        type: 'Class Preferences',
+      },
     });
   }
 
@@ -131,8 +139,8 @@ export default class DashboardSettings extends DashboardView {
   }
 
   generatePassword() {
-    let chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let pwordLength = 20;
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const pwordLength = 20;
     let password = '';
 
     const array = new Uint32Array(chars.length);
@@ -161,31 +169,89 @@ export default class DashboardSettings extends DashboardView {
   renderForm() {
     const createUserInput = (
       <Fieldset legend="New User">
-        <Field label={<Label text="Username" />} input={<TextInput value={this.state.username} placeholder="Username" onChange={(username) => this.setState({ username })} />} />
+        <Field
+          label={<Label text="Username" />}
+          input={
+            <TextInput
+              value={this.state.username}
+              placeholder="Username"
+              onChange={username => this.setState({ username })}
+            />
+          }
+        />
         <Field
           label={
             <Label
               text={
                 <div className={styles.password}>
                   <span>Password</span>
-                  <a onClick={() => this.setState({ passwordHidden: !this.state.passwordHidden })}>
-                    <Icon name={this.state.passwordHidden ? 'visibility' : 'visibility_off'} width={18} height={18} fill="rgba(0,0,0,0.4)" />
+                  <a
+                    onClick={() =>
+                      this.setState({
+                        passwordHidden: !this.state.passwordHidden,
+                      })
+                    }
+                  >
+                    <Icon
+                      name={this.state.passwordHidden ? 'visibility' : 'visibility_off'}
+                      width={18}
+                      height={18}
+                      fill="rgba(0,0,0,0.4)"
+                    />
                   </a>
                 </div>
               }
               description={<a onClick={() => this.generatePassword()}>Generate strong password</a>}
             />
           }
-          input={<TextInput hidden={this.state.passwordHidden} value={this.state.password} placeholder="Password" onChange={(password) => this.setState({ password })} />}
+          input={
+            <TextInput
+              hidden={this.state.passwordHidden}
+              value={this.state.password}
+              placeholder="Password"
+              onChange={password => this.setState({ password })}
+            />
+          }
         />
-        <Field label={<Label text="Encrypt Password" />} input={<Toggle value={this.state.encrypt} type={Toggle.Types.YES_NO} onChange={(encrypt) => this.setState({ encrypt })} />} />
-        <Field label={<Label text="Enable MFA" />} input={<Toggle value={this.state.mfa} type={Toggle.Types.YES_NO} onChange={(mfa) => this.setState({ mfa })} />} />
+        <Field
+          label={<Label text="Encrypt Password" />}
+          input={
+            <Toggle
+              value={this.state.encrypt}
+              type={Toggle.Types.YES_NO}
+              onChange={encrypt => this.setState({ encrypt })}
+            />
+          }
+        />
+        <Field
+          label={<Label text="Enable MFA" />}
+          input={
+            <Toggle
+              value={this.state.mfa}
+              type={Toggle.Types.YES_NO}
+              onChange={mfa => this.setState({ mfa })}
+            />
+          }
+        />
         {this.state.mfa && (
           <Field
             label={<Label text="MFA Algorithm" />}
             input={
-              <Dropdown value={this.state.mfaAlgorithm} onChange={(mfaAlgorithm) => this.setState({ mfaAlgorithm })}>
-                {['SHA1', 'SHA224', 'SHA256', 'SHA384', 'SHA512', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'].map((column) => (
+              <Dropdown
+                value={this.state.mfaAlgorithm}
+                onChange={mfaAlgorithm => this.setState({ mfaAlgorithm })}
+              >
+                {[
+                  'SHA1',
+                  'SHA224',
+                  'SHA256',
+                  'SHA384',
+                  'SHA512',
+                  'SHA3-224',
+                  'SHA3-256',
+                  'SHA3-384',
+                  'SHA3-512',
+                ].map(column => (
                   <Option key={column} value={column}>
                     {column}
                   </Option>
@@ -194,9 +260,37 @@ export default class DashboardSettings extends DashboardView {
             }
           />
         )}
-        {this.state.mfa && <Field label={<Label text="MFA Digits" description="How many digits long should the MFA code be" />} input={<TextInput value={`${this.state.mfaDigits}`} placeholder="6" onChange={(mfaDigits) => this.setState({ mfaDigits })} />} />}
-        {this.state.mfa && <Field label={<Label text="MFA Period" description="How many long should the MFA last for" />} input={<TextInput value={`${this.state.mfaPeriod}`} placeholder="30" onChange={(mfaPeriod) => this.setState({ mfaPeriod })} />} />}
-        <Field input={<Button color="blue" value="Create" width="120px" onClick={() => this.createUser()} />} />
+        {this.state.mfa && (
+          <Field
+            label={
+              <Label text="MFA Digits" description="How many digits long should the MFA code be" />
+            }
+            input={
+              <TextInput
+                value={`${this.state.mfaDigits}`}
+                placeholder="6"
+                onChange={mfaDigits => this.setState({ mfaDigits })}
+              />
+            }
+          />
+        )}
+        {this.state.mfa && (
+          <Field
+            label={<Label text="MFA Period" description="How many long should the MFA last for" />}
+            input={
+              <TextInput
+                value={`${this.state.mfaPeriod}`}
+                placeholder="30"
+                onChange={mfaPeriod => this.setState({ mfaPeriod })}
+              />
+            }
+          />
+        )}
+        <Field
+          input={
+            <Button color="blue" value="Create" width="120px" onClick={() => this.createUser()} />
+          }
+        />
       </Fieldset>
     );
     const copyData = (
@@ -205,37 +299,88 @@ export default class DashboardSettings extends DashboardView {
           <CodeSnippet source={this.state.copyData.data} language="json" />
         </div>
         <div className={styles.footer}>
-          <Button color="blue" value="Copy" width="120px" onClick={() => this.copy(this.state.copyData.data, this.state.copyData.type)} />
-          <Button primary={true} value="Done" width="120px" onClick={() => this.setState({ copyData: { data: '', show: false } })} />
+          <Button
+            color="blue"
+            value="Copy"
+            width="120px"
+            onClick={() => this.copy(this.state.copyData.data, this.state.copyData.type)}
+          />
+          <Button
+            primary={true}
+            value="Done"
+            width="120px"
+            onClick={() => this.setState({ copyData: { data: '', show: false } })}
+          />
         </div>
       </div>
     );
     const userData = (
       <div className={styles.userData}>
         Add the following data to your Parse Dashboard configuration "users":
-        {this.state.encrypt && <div>Make sure the dashboard option useEncryptedPasswords is set to true.</div>}
+        {this.state.encrypt && (
+          <div>Make sure the dashboard option useEncryptedPasswords is set to true.</div>
+        )}
         <div className={styles.newUser}>
           <CodeSnippet source={this.state.newUser.data} language="json" />
         </div>
         {this.state.mfa && (
           <div className={styles.mfa}>
             <div>Share this MFA Data with your user:</div>
-            <a onClick={() => this.copy(this.state.newUser.mfa, 'MFA Data')}>{this.state.newUser.mfa}</a>
+            <a onClick={() => this.copy(this.state.newUser.mfa, 'MFA Data')}>
+              {this.state.newUser.mfa}
+            </a>
             <canvas id="canvas" />
           </div>
         )}
         <div className={styles.footer}>
-          <Button color="blue" value="Copy" width="120px" onClick={() => this.copy(this.state.newUser.data, 'New User')} />
-          <Button primary={true} value="Done" width="120px" onClick={() => this.setState({ username: '', password: '', passwordHidden: true, mfaAlgorithm: 'SHA1', mfaDigits: 6, mfaPeriod: 30, encrypt: true, createUserInput: false, newUser: { data: '', show: false } })} />
+          <Button
+            color="blue"
+            value="Copy"
+            width="120px"
+            onClick={() => this.copy(this.state.newUser.data, 'New User')}
+          />
+          <Button
+            primary={true}
+            value="Done"
+            width="120px"
+            onClick={() =>
+              this.setState({
+                username: '',
+                password: '',
+                passwordHidden: true,
+                mfaAlgorithm: 'SHA1',
+                mfaDigits: 6,
+                mfaPeriod: 30,
+                encrypt: true,
+                createUserInput: false,
+                newUser: { data: '', show: false },
+              })
+            }
+          />
         </div>
       </div>
     );
     return (
       <div className={styles.settings_page}>
         <Fieldset legend="Dashboard Configuration">
-          <Field label={<Label text="Export Column Preferences" />} input={<FormButton color="blue" value="Export" onClick={() => this.getColumns()} />} />
-          <Field label={<Label text="Export Class Preferences" />} input={<FormButton color="blue" value="Export" onClick={() => this.getClasses()} />} />
-          <Field label={<Label text="Create New User" />} input={<FormButton color="blue" value="Create" onClick={() => this.setState({ createUserInput: true })} />} />
+          <Field
+            label={<Label text="Export Column Preferences" />}
+            input={<FormButton color="blue" value="Export" onClick={() => this.getColumns()} />}
+          />
+          <Field
+            label={<Label text="Export Class Preferences" />}
+            input={<FormButton color="blue" value="Export" onClick={() => this.getClasses()} />}
+          />
+          <Field
+            label={<Label text="Create New User" />}
+            input={
+              <FormButton
+                color="blue"
+                value="Create"
+                onClick={() => this.setState({ createUserInput: true })}
+              />
+            }
+          />
         </Fieldset>
         {this.state.copyData.show && copyData}
         {this.state.createUserInput && createUserInput}
@@ -247,6 +392,14 @@ export default class DashboardSettings extends DashboardView {
   }
 
   renderContent() {
-    return <FlowView initialFields={{}} initialChanges={{}} footerContents={() => {}} onSubmit={() => {}} renderForm={() => this.renderForm()} />;
+    return (
+      <FlowView
+        initialFields={{}}
+        initialChanges={{}}
+        footerContents={() => {}}
+        onSubmit={() => {}}
+        renderForm={() => this.renderForm()}
+      />
+    );
   }
 }

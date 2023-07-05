@@ -9,7 +9,7 @@ export default class LoginDialog extends React.Component {
     this.state = {
       open: false,
       username: '',
-      password: ''
+      password: '',
     };
 
     this.handleOpen = this.handleOpen.bind(this);
@@ -78,9 +78,7 @@ export default class LoginDialog extends React.Component {
             label="Username"
             input={
               <input
-                onChange={e =>
-                  this.setState({ username: e.nativeEvent.target.value })
-                }
+                onChange={e => this.setState({ username: e.nativeEvent.target.value })}
                 onKeyDown={this.handleKeyDown}
                 autoFocus
               />
@@ -90,9 +88,7 @@ export default class LoginDialog extends React.Component {
             label="Password"
             input={
               <input
-                onChange={e =>
-                  this.setState({ password: e.nativeEvent.target.value })
-                }
+                onChange={e => this.setState({ password: e.nativeEvent.target.value })}
                 type="password"
                 onKeyDown={this.handleKeyDown}
               />
