@@ -5,6 +5,6 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-export default function(array, key) {
+export default function (array, key) {
   return array.map(item => item[key]);
 }

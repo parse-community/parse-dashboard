@@ -27,18 +27,18 @@ module.exports = (options) => {
     process.exit(-1);
   }
 
-  let explicitConfigFileProvided = !!options.config;
+  const explicitConfigFileProvided = !!options.config;
   let configFile = null;
   let configFromCLI = null;
-  let configServerURL = options.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
-  let configGraphQLServerURL = options.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
-  let configMasterKey = options.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
-  let configAppId = options.appId || process.env.PARSE_DASHBOARD_APP_ID;
-  let configAppName = options.appName || process.env.PARSE_DASHBOARD_APP_NAME;
-  let configUserId = options.userId || process.env.PARSE_DASHBOARD_USER_ID;
-  let configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
-  let configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
-  let configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+  const configServerURL = options.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
+  const configGraphQLServerURL = options.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
+  const configMasterKey = options.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
+  const configAppId = options.appId || process.env.PARSE_DASHBOARD_APP_ID;
+  const configAppName = options.appName || process.env.PARSE_DASHBOARD_APP_NAME;
+  const configUserId = options.userId || process.env.PARSE_DASHBOARD_USER_ID;
+  const configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
+  const configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
+  const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
 
   function handleSIGs(server) {
     const signals = {
@@ -143,10 +143,10 @@ module.exports = (options) => {
 
   const app = express();
 
-  if (allowInsecureHTTP || trustProxy || dev) app.enable('trust proxy');
+  if (allowInsecureHTTP || trustProxy || dev) {app.enable('trust proxy');}
 
   config.data.trustProxy = trustProxy;
-  let dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
+  const dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   let server;
   if(!configSSLKey || !configSSLCert){
@@ -156,8 +156,8 @@ module.exports = (options) => {
     });
   } else {
     // Start the server using SSL.
-    var privateKey = fs.readFileSync(configSSLKey);
-    var certificate = fs.readFileSync(configSSLCert);
+    const privateKey = fs.readFileSync(configSSLKey);
+    const certificate = fs.readFileSync(configSSLCert);
 
     server = require('https').createServer({
       key: privateKey,

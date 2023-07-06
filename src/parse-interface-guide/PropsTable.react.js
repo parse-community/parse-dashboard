@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'parse-interface-guide/PIG.scss';
 
 function typeString(prop) {
@@ -13,13 +13,13 @@ function typeString(prop) {
     case 'Enum':
       return 'Enum { ' + prop._values.join(', ') + ' }';
     case 'Union':
-      return prop._classes.map((c) => c._id).join(' | ');
+      return prop._classes.map(c => c._id).join(' | ');
     default:
       return prop._id;
   }
 }
 
-const PropsRow = (p) => (
+const PropsRow = p => (
   <div className={styles.row}>
     <div>
       <span className={styles.prop_name}>{p.name}</span>
@@ -32,12 +32,12 @@ const PropsRow = (p) => (
 
 export default class PropsTable extends React.Component {
   render() {
-    let component = this.props.component;
-    let requiredProps = [];
-    let optionalProps = [];
+    const component = this.props.component;
+    const requiredProps = [];
+    const optionalProps = [];
     if (component.propTypes) {
-      for (let p in component.propTypes) {
-        let info = {
+      for (const p in component.propTypes) {
+        const info = {
           name: p,
           type: typeString(component.propTypes[p]),
           required: component.propTypes[p]._required,
@@ -53,11 +53,13 @@ export default class PropsTable extends React.Component {
         }
       }
     }
-    let propInfo = requiredProps.concat(optionalProps);
+    const propInfo = requiredProps.concat(optionalProps);
     return (
       <div className={styles.table}>
         <div className={styles.header}>Props</div>
-        {propInfo.map((p) => <PropsRow key={p.name} {...p} />)}
+        {propInfo.map(p => (
+          <PropsRow key={p.name} {...p} />
+        ))}
       </div>
     );
   }

@@ -6,22 +6,22 @@
  * the root directory of this source tree.
  */
 import LoginForm from 'components/LoginForm/LoginForm.react';
-import LoginRow  from 'components/LoginRow/LoginRow.react';
-import React     from 'react';
-import styles    from './Login.scss';
-import { setBasePath }    from 'lib/AJAX';
+import LoginRow from 'components/LoginRow/LoginRow.react';
+import React from 'react';
+import styles from './Login.scss';
+import { setBasePath } from 'lib/AJAX';
 
 export default class Login extends React.Component {
   constructor(props) {
     super();
 
-    let errorDiv = document.getElementById('login_errors');
+    const errorDiv = document.getElementById('login_errors');
     let otpLength = 6;
     if (errorDiv) {
       this.errors = errorDiv.innerHTML;
       try {
-        const json = JSON.parse(this.errors)
-        this.errors = json.text
+        const json = JSON.parse(this.errors);
+        this.errors = json.text;
         otpLength = json.otpLength;
       } catch (e) {
         this.errors = this.errors ?? `Error: ${JSON.stringify(e)}`;
@@ -34,7 +34,7 @@ export default class Login extends React.Component {
       forgot: false,
       username: sessionStorage.getItem('username') || '',
       password: sessionStorage.getItem('password') || '',
-      redirect: redirect !== '/' ? redirect : undefined
+      redirect: redirect !== '/' ? redirect : undefined,
     };
     sessionStorage.clear();
     setBasePath(props.path);
@@ -62,9 +62,9 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const {path} = this.props;
-    const updateField  = (field, e) => {
-      this.setState({[field]: e.target.value});
+    const { path } = this.props;
+    const updateField = (field, e) => {
+      this.setState({ [field]: e.target.value });
       if (field === 'otp' && e.target.value.length >= this.otpLength) {
         const input = document.querySelectorAll('input');
         for (const field of input) {
@@ -74,67 +74,61 @@ export default class Login extends React.Component {
           }
         }
       }
-    }
+    };
     const formSubmit = () => {
       sessionStorage.setItem('username', this.state.username);
       sessionStorage.setItem('password', this.state.password);
-    }
+    };
 
     return (
       <LoginForm
-        header='Access your Dashboard'
-        action='Log In'
+        header="Access your Dashboard"
+        action="Log In"
         endpoint={`${path}login`}
         formSubmit={formSubmit}
-        >
+      >
         <LoginRow
-          label='Username'
+          label="Username"
           input={
             <input
-              name='username'
-              type='username'
+              name="username"
+              type="username"
               value={this.state.username}
               onChange={e => updateField('username', e)}
               ref={this.inputRefUser}
             />
-          } />
+          }
+        />
         <LoginRow
-          label='Password'
+          label="Password"
           input={
             <input
-              name='password'
-              type='password'
+              name="password"
+              type="password"
               value={this.state.password}
               onChange={e => updateField('password', e)}
               ref={this.inputRefPass}
             />
-          } />
-          {this.state.redirect && <input
-              name='redirect'
-              type='hidden'
-              value={this.state.redirect}
-            />}
-        {
-          this.errors && this.errors.includes('one-time') ?
+          }
+        />
+        {this.state.redirect && <input name="redirect" type="hidden" value={this.state.redirect} />}
+        {this.errors && this.errors.includes('one-time') ? (
           <LoginRow
-            label='OTP'
+            label="OTP"
             input={
               <input
-                name='otpCode'
-                type='text'
+                name="otpCode"
+                type="text"
                 inputMode="numeric"
-                autoComplete='one-time-code'
+                autoComplete="one-time-code"
                 pattern="[0-9]*"
                 onChange={e => updateField('otp', e)}
                 ref={this.inputRefMfa}
               />
-            } />
-          : null
-        }
-        {this.errors ?
-          <div className={styles.error}>
-            {this.errors}
-          </div> : null}
+            }
+          />
+        ) : null}
+        {this.errors ? <div className={styles.error}>{this.errors}</div> : null}
       </LoginForm>
     );
   }

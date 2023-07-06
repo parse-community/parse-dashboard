@@ -11,24 +11,24 @@ const UNESCAPE_MAP = {
   '&gt;': '>',
   '&#x2F;': '/',
   '&#x27;': '\'',
-  '&quot;': '"'
+  '&quot;': '"',
 };
 const ESCAPE_MAP = {};
-for (let k in UNESCAPE_MAP) {
+for (const k in UNESCAPE_MAP) {
   ESCAPE_MAP[UNESCAPE_MAP[k]] = k;
 }
 
-let escapeMatcher = RegExp('(?:' + (Object.keys(ESCAPE_MAP).join('|')) + ')', 'g');
-let unescapeMatcher = RegExp('(?:' + (Object.keys(UNESCAPE_MAP).join('|')) + ')', 'g');
+const escapeMatcher = RegExp('(?:' + Object.keys(ESCAPE_MAP).join('|') + ')', 'g');
+const unescapeMatcher = RegExp('(?:' + Object.keys(UNESCAPE_MAP).join('|') + ')', 'g');
 
 export function escape(str) {
-  return str.replace(escapeMatcher, function(ch) {
+  return str.replace(escapeMatcher, function (ch) {
     return ESCAPE_MAP[ch];
   });
 }
 
 export function unescape(str) {
-  return str.replace(unescapeMatcher, function(ch) {
+  return str.replace(unescapeMatcher, function (ch) {
     return UNESCAPE_MAP[ch];
   });
 }

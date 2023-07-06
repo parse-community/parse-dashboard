@@ -9,7 +9,7 @@ const rangeSize = {
   az: 26,
   AZ: 26,
   num: 10,
-  sym: 33
+  sym: 33,
 };
 
 // Returns 0 if the password does not meet length requirements
@@ -21,14 +21,14 @@ export default function passwordStrength(password) {
   }
   // We approximate entropy by determining which character sets are included in
   // the password string.
-  let seen = {
+  const seen = {
     az: false,
     AZ: false,
     num: false,
-    sym: false
+    sym: false,
   };
   for (let i = password.length; i--;) {
-    let c = password.charCodeAt(i);
+    const c = password.charCodeAt(i);
     if (c > 47 && c < 58) {
       seen.num = true;
     } else if (c > 64 && c < 91) {
@@ -38,11 +38,11 @@ export default function passwordStrength(password) {
     }
   }
   let range = 0;
-  for (let r in seen) {
+  for (const r in seen) {
     if (seen[r]) {
       range += rangeSize[r];
     }
   }
-  let entropy = Math.log(range) / Math.log(2) * password.length;
-  return (entropy > 60 ? 2 : 1);
+  const entropy = (Math.log(range) / Math.log(2)) * password.length;
+  return entropy > 60 ? 2 : 1;
 }

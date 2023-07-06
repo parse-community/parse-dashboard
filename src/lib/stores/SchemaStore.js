@@ -5,8 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import keyMirror         from 'lib/keyMirror';
-import { Map }           from 'immutable';
+import keyMirror from 'lib/keyMirror';
+import { Map } from 'immutable';
 import { registerStore } from 'lib/stores/StoreManager';
 
 export const ActionTypes = keyMirror([
@@ -29,90 +29,90 @@ function SchemaStore(state, action) {
       if (state && new Date() - state.get('lastFetch') < 60000) {
         return Promise.resolve(state);
       }
-      return action.app.apiRequest(
-        'GET',
-        'schemas',
-        {},
-        { useMasterKey: true }
-      ).then(({ results }) => {
-        let classes = {};
-        let CLPs = {};
-        if (results) {
-          results.forEach(({ className, fields, classLevelPermissions }) => {
-            classes[className] = Map(fields);
-            CLPs[className] = Map(classLevelPermissions);
+      return action.app
+        .apiRequest('GET', 'schemas', {}, { useMasterKey: true })
+        .then(({ results }) => {
+          const classes = {};
+          const CLPs = {};
+          if (results) {
+            results.forEach(({ className, fields, classLevelPermissions }) => {
+              classes[className] = Map(fields);
+              CLPs[className] = Map(classLevelPermissions);
+            });
+          }
+          return Map({
+            lastFetch: new Date(),
+            classes: Map(classes),
+            CLPs: Map(CLPs),
           });
-        }
-        return Map({
-          lastFetch: new Date(),
-          classes: Map(classes),
-          CLPs: Map(CLPs),
         });
-      });
     case ActionTypes.CREATE_CLASS:
-      return action.app.apiRequest(
-        'POST',
-        'schemas/' + action.className,
-        { className: action.className },
-        { useMasterKey: true }
-      ).then(({ fields, classLevelPermissions }) => {
-        return state
-        .setIn(['classes', action.className], Map(fields))
-        .setIn(['CLPs', action.className], Map(classLevelPermissions));
-      });
+      return action.app
+        .apiRequest(
+          'POST',
+          'schemas/' + action.className,
+          { className: action.className },
+          { useMasterKey: true }
+        )
+        .then(({ fields, classLevelPermissions }) => {
+          return state
+            .setIn(['classes', action.className], Map(fields))
+            .setIn(['CLPs', action.className], Map(classLevelPermissions));
+        });
     case ActionTypes.DROP_CLASS:
-      return action.app.apiRequest(
-        'DELETE',
-        'schemas/' + action.className,
-        {},
-        { useMasterKey: true }
-      ).then(() => {
-        return state
-        .deleteIn(['classes', action.className])
-        .deleteIn(['CLPs', action.className]);
-      });
+      return action.app
+        .apiRequest('DELETE', 'schemas/' + action.className, {}, { useMasterKey: true })
+        .then(() => {
+          return state.deleteIn(['classes', action.className]).deleteIn(['CLPs', action.className]);
+        });
     case ActionTypes.ADD_COLUMN:
-      let newField = {
+      const newField = {
         [action.name]: {
           type: action.columnType,
           required: action.required,
-          defaultValue: action.defaultValue
-        }
+          defaultValue: action.defaultValue,
+        },
       };
       if (action.columnType === 'Pointer' || action.columnType === 'Relation') {
         newField[action.name].targetClass = action.targetClass;
       }
-      return action.app.apiRequest(
-        'PUT',
-        'schemas/' + action.className,
-        { className: action.className, fields: newField },
-        { useMasterKey: true }
-      ).then(({ fields }) => {
-        return state.setIn(['classes', action.className], Map(fields));
-      });
+      return action.app
+        .apiRequest(
+          'PUT',
+          'schemas/' + action.className,
+          { className: action.className, fields: newField },
+          { useMasterKey: true }
+        )
+        .then(({ fields }) => {
+          return state.setIn(['classes', action.className], Map(fields));
+        });
     case ActionTypes.DROP_COLUMN:
-      let droppedField = {
+      const droppedField = {
         [action.name]: {
-          __op: 'Delete'
-        }
+          __op: 'Delete',
+        },
       };
-      return action.app.apiRequest(
-        'PUT',
-        'schemas/' + action.className,
-        { className: action.className, fields: droppedField },
-        { useMasterKey: true }
-      ).then(({ fields }) => {
-        return state.setIn(['classes', action.className], Map(fields));
-      });
+      return action.app
+        .apiRequest(
+          'PUT',
+          'schemas/' + action.className,
+          { className: action.className, fields: droppedField },
+          { useMasterKey: true }
+        )
+        .then(({ fields }) => {
+          return state.setIn(['classes', action.className], Map(fields));
+        });
     case ActionTypes.SET_CLP:
-      return action.app.apiRequest(
-        'PUT',
-        'schemas/' + action.className,
-        { classLevelPermissions: action.clp },
-        { useMasterKey: true }
-      ).then(({ classLevelPermissions, className }) => {
-        return state.setIn(['CLPs', className], Map(classLevelPermissions));
-      });
+      return action.app
+        .apiRequest(
+          'PUT',
+          'schemas/' + action.className,
+          { classLevelPermissions: action.clp },
+          { useMasterKey: true }
+        )
+        .then(({ classLevelPermissions, className }) => {
+          return state.setIn(['CLPs', className], Map(classLevelPermissions));
+        });
   }
 }
 

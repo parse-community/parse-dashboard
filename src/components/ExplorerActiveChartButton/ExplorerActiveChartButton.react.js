@@ -5,15 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { Directions }        from 'lib/Constants';
+import { Directions } from 'lib/Constants';
 import ExplorerQueryComposer from 'components/ExplorerQueryComposer/ExplorerQueryComposer.react';
-import Icon                  from 'components/Icon/Icon.react';
-import Popover               from 'components/Popover/Popover.react';
-import Position              from 'lib/Position';
-import PropTypes             from 'lib/PropTypes';
-import React                 from 'react';
-import styles                from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.scss';
-import baseStyles            from 'stylesheets/base.scss';
+import Icon from 'components/Icon/Icon.react';
+import Popover from 'components/Popover/Popover.react';
+import Position from 'lib/Position';
+import PropTypes from 'lib/PropTypes';
+import React from 'react';
+import styles from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.scss';
+import baseStyles from 'stylesheets/base.scss';
 
 export default class ExplorerActiveChartButton extends React.Component {
   constructor() {
@@ -23,17 +23,17 @@ export default class ExplorerActiveChartButton extends React.Component {
       position: null,
       open: false,
       active: true,
-      align: Directions.LEFT
-    }
+      align: Directions.LEFT,
+    };
 
     this.wrapRef = React.createRef();
   }
 
   handleCheckbox() {
-    let nextActiveState = !this.state.active;
+    const nextActiveState = !this.state.active;
     this.props.onToggle(nextActiveState);
     this.setState({
-      active: nextActiveState
+      active: nextActiveState,
     });
   }
 
@@ -52,7 +52,7 @@ export default class ExplorerActiveChartButton extends React.Component {
     let color = '#343445';
     if (this.state.active) {
       // TODO (hallucinogen): a11y the checkbox
-      checkMark = <Icon width={12} height={12} name='check' fill='white' />;
+      checkMark = <Icon width={12} height={12} name="check" fill="white" />;
       color = this.props.color;
     }
     let dropdown = null;
@@ -61,7 +61,7 @@ export default class ExplorerActiveChartButton extends React.Component {
         <div
           className={[styles.rightArrow, baseStyles.verticalCenter].join(' ')}
           onClick={() => {
-            let position = Position.inDocument(this.wrapRef.current);
+            const position = Position.inDocument(this.wrapRef.current);
             let align = Directions.LEFT;
             if (position.x > 700) {
               position.x += this.wrapRef.current.clientWidth;
@@ -70,9 +70,10 @@ export default class ExplorerActiveChartButton extends React.Component {
             this.setState({
               open: !this.state.open,
               position,
-              align
+              align,
             });
-          }} />
+          }}
+        />
       );
     }
 
@@ -83,8 +84,9 @@ export default class ExplorerActiveChartButton extends React.Component {
           onClick={this.handleCheckbox.bind(this)}
           style={{
             backgroundColor: this.state.active ? this.props.color : null,
-            border: `1px solid ${color}`
-          }}>
+            border: `1px solid ${color}`,
+          }}
+        >
           {checkMark}
         </div>
         <div className={styles.label}>{this.props.query.name}</div>
@@ -95,10 +97,10 @@ export default class ExplorerActiveChartButton extends React.Component {
 
   render() {
     let popover = null;
-    let content = this.renderButton();
+    const content = this.renderButton();
 
     if (this.state.open) {
-      let classes = [styles.composerContainer];
+      const classes = [styles.composerContainer];
       let calloutStyle = { marginLeft: '10px' };
       if (this.state.align === Directions.RIGHT) {
         classes.push(styles.right);
@@ -106,9 +108,7 @@ export default class ExplorerActiveChartButton extends React.Component {
       }
 
       popover = (
-        <Popover
-          fixed={false}
-          position={this.state.position}>
+        <Popover fixed={false} position={this.state.position}>
           <div className={classes.join(' ')}>
             {content}
             <div className={styles.callout} style={calloutStyle}></div>
@@ -120,7 +120,8 @@ export default class ExplorerActiveChartButton extends React.Component {
               onDismiss={() => {
                 this.setState({ open: false });
                 this.props.onDismiss();
-              }} />
+              }}
+            />
           </div>
         </Popover>
       );
@@ -136,13 +137,11 @@ export default class ExplorerActiveChartButton extends React.Component {
 }
 
 ExplorerActiveChartButton.propTypes = {
-  query: PropTypes.object.describe(
-    'Current query being rendered.'
-  ),
+  query: PropTypes.object.describe('Current query being rendered.'),
   queries: PropTypes.arrayOf(PropTypes.object).describe(
     'An array of queryGroups. Each querygroup should include the following fields: name, children. ' +
-    'children of queryGroup contains an array of queries. Each query should include the following fields: ' +
-    'name, query, (optional)preset.'
+      'children of queryGroup contains an array of queries. Each query should include the following fields: ' +
+      'name, query, (optional)preset.'
   ),
   onSave: PropTypes.func.describe(
     'Function to be called when an analytics query is sucessfully composed.'
@@ -153,14 +152,12 @@ ExplorerActiveChartButton.propTypes = {
   onDismiss: PropTypes.func.describe(
     'Function to be called when current chart is being dismissed from list of active charts.'
   ),
-  color: PropTypes.string.describe(
-    'The color of the checkbox and the chart to be rendered.'
-  ),
+  color: PropTypes.string.describe('The color of the checkbox and the chart to be rendered.'),
   disableDropdown: PropTypes.bool.describe(
     'If set to true, disable dropdown to pick/compose the query.'
   ),
   isTimeSeries: PropTypes.bool.describe(
     'If set to true, add default grouping (day, hour) and aggregate to the composer. ' +
-    'Otherwise, render limit inside the composer.'
-  )
-}
+      'Otherwise, render limit inside the composer.'
+  ),
+};

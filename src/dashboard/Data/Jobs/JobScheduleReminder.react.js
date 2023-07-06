@@ -1,5 +1,5 @@
 import React from 'react';
-import baseStyles from 'stylesheets/base.scss'
+import baseStyles from 'stylesheets/base.scss';
 
 export default class JobScheduleReminder extends React.Component {
   render() {

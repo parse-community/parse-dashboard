@@ -5,13 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React      from 'react';
+import React from 'react';
 import { escape } from 'lib/StringEscaping';
-import styles     from 'components/FileInput/FileInput.scss';
+import styles from 'components/FileInput/FileInput.scss';
 
 export default class FileInput extends React.Component {
   handleChange(e) {
-    let file = e.target.files[0];
+    const file = e.target.files[0];
     this.props.onChange(file);
   }
 
@@ -27,10 +27,7 @@ export default class FileInput extends React.Component {
     }
     if (this.props.value.name && this.props.value.url) {
       return (
-        <a
-          href={this.props.value.url}
-          target='_blank'
-          className={styles.label}>
+        <a href={this.props.value.url} target="_blank" className={styles.label}>
           {escape(this.props.value.name)}
         </a>
       );
@@ -38,7 +35,7 @@ export default class FileInput extends React.Component {
   }
 
   render() {
-    let inputProps = {
+    const inputProps = {
       type: 'file',
       value: '',
       disabled: this.props.disabled,
@@ -47,13 +44,13 @@ export default class FileInput extends React.Component {
     if (this.props.accept) {
       inputProps.accept = this.props.accept;
     }
-    let label = this.renderLabel();
-    let buttonStyles = [styles.button];
+    const label = this.renderLabel();
+    const buttonStyles = [styles.button];
     if (this.props.disabled || this.props.uploading) {
       buttonStyles.push(styles.disabled);
     }
     if (label) {
-      buttonStyles.push(styles.withLabel)
+      buttonStyles.push(styles.withLabel);
     }
 
     return (

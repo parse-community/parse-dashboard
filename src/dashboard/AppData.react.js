@@ -5,12 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
-import AppSelector    from 'dashboard/AppSelector.react';
-import AppsManager    from 'lib/AppsManager';
+import React from 'react';
+import AppSelector from 'dashboard/AppSelector.react';
+import AppsManager from 'lib/AppsManager';
 import { CurrentApp } from 'context/currentApp';
-import { Outlet, useNavigate , useParams} from 'react-router-dom';
-
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 function AppData() {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ function AppData() {
   }
 
   // Find by name to catch edge cases around escaping apostrophes in URLs
-  let current = AppsManager.findAppBySlugOrName(params.appId);
+  const current = AppsManager.findAppBySlugOrName(params.appId);
 
   if (current) {
     current.setParseKeys();

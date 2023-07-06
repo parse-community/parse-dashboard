@@ -1,5 +1,5 @@
 const VERSION = 1; // In case we ever need to invalidate these
-let cache = {};
+const cache = {};
 export function updatePreferences(prefs, appId, className) {
   try {
     localStorage.setItem(path(appId, className), JSON.stringify(prefs));
@@ -16,9 +16,11 @@ export function getPreferences(appId, className) {
   }
   let entry;
   try {
-    entry = localStorage.getItem(path(appId, className)) || JSON.stringify({
-      filters: [],
-    });
+    entry =
+      localStorage.getItem(path(appId, className)) ||
+      JSON.stringify({
+        filters: [],
+      });
   } catch (e) {
     // Fails in Safari private browsing
     entry = null;
@@ -27,7 +29,7 @@ export function getPreferences(appId, className) {
     return null;
   }
   try {
-    let prefs = JSON.parse(entry);
+    const prefs = JSON.parse(entry);
     cache[appId] = cache[appId] || {};
     cache[appId][className] = prefs;
     return prefs;
@@ -43,7 +45,7 @@ export function getAllPreferences(appId) {
   const storageKeys = Object.keys(localStorage);
   const result = {};
   for (const key of storageKeys) {
-    const split = key.split(':')
+    const split = key.split(':');
     if (split.length <= 1 || split[2] !== appId) {
       continue;
     }

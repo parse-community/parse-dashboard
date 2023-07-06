@@ -1,10 +1,5 @@
 export function extractPushTime(changes) {
-  const {
-    local_time: isLocalTime,
-    push_time_type,
-    push_time,
-    push_time_iso,
-  } = changes;
+  const { local_time: isLocalTime, push_time_type, push_time, push_time_iso } = changes;
 
   if (push_time_type === 'time') {
     if (isLocalTime) {
@@ -22,7 +17,7 @@ export function extractExpiration(changes) {
     expiration_time_type,
     expiration_interval_unit,
     expiration_interval_num,
-    expiration_time
+    expiration_time,
   } = changes;
 
   if (push_expires) {
