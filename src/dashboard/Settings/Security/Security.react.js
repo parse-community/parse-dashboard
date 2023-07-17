@@ -1,16 +1,13 @@
-import DashboardView from 'dashboard/DashboardView.react';
+import TableView from 'dashboard/TableView.react';
 import Button from 'components/Button/Button.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
-import Label from 'components/Label/Label.react';
 import React from 'react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
-import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import styles from './Security.scss';
-import Field from 'components/Field/Field.react';
-import Fieldset from 'components/Fieldset/Fieldset.react';
 import Parse from 'parse';
+import TableHeader from 'components/Table/TableHeader.react';
 
-export default class Security extends DashboardView {
+export default class Security extends TableView {
   constructor() {
     super();
     this.section = 'App Settings';
@@ -40,62 +37,78 @@ export default class Security extends DashboardView {
     );
   }
 
-  renderDiv() {
-    if (this.state.error) {
-      return <EmptyState title="Security" description={<span>{this.state.error}</span>} icon="gears" cta="Reload" action={() => this.reload()} />;
-    }
-    if (this.state.loading) {
-      return (
-        <LoaderContainer loading={this.state.loading}>
-          <div style={{ minHeight: '100vh' }} className={styles.content} />
-        </LoaderContainer>
-      );
-    }
+  renderRow(security) {
     return (
-      <div>
-        <Fieldset legend="Overall Security Status">
-          <Field labelWidth={30} label={<Label text="Status" />} input={<Label text={this.state.data.state} style={{ color: this.state.data.state === 'fail' ? 'red' : 'green' }} />} />
-          <Field labelWidth={30} label={<Label text="Version" />} input={<Label text={this.state.data.version} />} />
-        </Fieldset>
-        {this.state.data.groups &&
-          this.state.data.groups.map((check) => (
-            <Fieldset legend={check.name} key={JSON.stringify(check)}>
-              <Field labelWidth={30} label={<Label text="Status" />} input={<Label text={check.state} style={{ color: check.state === 'fail' ? 'red' : '' }} />} />
-              {check.checks.map((subCheck) => (
-                <Field
-                  key={JSON.stringify(subCheck)}
-                  label={<Label text={subCheck.title} />}
-                  labelWidth={30}
-                  input={
-                    <Label
-                      text={
-                        <div className={styles.state} style={{ color: subCheck.state === 'fail' ? 'red' : 'green' }}>
-                          {subCheck.state}
-                        </div>
-                      }
-                      description={
-                        <div className={styles.result}>
-                          <div>{subCheck.warning}</div>
-                          <Label text={subCheck.solution} />
-                        </div>
-                      }
-                    />
-                  }
-                />
-              ))}
-            </Fieldset>
-          ))}
-      </div>
+      <tr key={JSON.stringify(security)}>
+        <td className={styles.tableData} style={security.header ? {fontWeight: 'bold'} : {}}  width={'20%'}>
+          {security.check}
+        </td>
+        <td className={styles.tableData} width={'5%'}>
+        {security.i !== undefined ? '' : (security.status === 'success' ? '✅' : '❌')}
+        </td>
+        <td className={styles.tableData} width={'37.5%'}>
+        {security.issue}
+        </td>
+        <td className={styles.tableData}  width={'37.5%'}>
+        {security.solution}
+        </td>
+      </tr>
     );
   }
 
-  renderContent() {
-    return (
-      <div className={styles.content}>
-        {this.renderToolbar()}
-        {this.renderDiv()}
-      </div>
-    );
+  renderHeaders() {
+    return [
+      <TableHeader width={20} key="Check">
+        Check
+      </TableHeader>,
+      <TableHeader width={5} key="Status">
+        Status
+      </TableHeader>,
+      <TableHeader width={37.5} key="Issue">
+        Issue
+      </TableHeader>,
+      <TableHeader width={37.5} key="Solution">
+        Solution
+      </TableHeader>,
+    ];
+  }
+
+  renderEmpty() {
+    return <EmptyState title="Security" description={<span>{this.state.error}</span>} icon="gears" cta="Reload" action={() => this.reload()} />;
+  }
+
+  tableData() {
+    const data = [];
+    if (this.state.data.state) {
+      data.push({
+        check: 'Overall status',
+        status: this.state.data.state,
+        header: true
+      }),
+      data.push({i: -1})
+    }
+    for (let i = 0; i < this.state.data?.groups?.length; i++) {
+      const group = this.state.data.groups[i]
+      data.push({
+        check: group.name,
+        status: group.state,
+        issue: '',
+        solution: '',
+        header: true
+      });
+      for (const check of group.checks) {
+        data.push({
+          check: check.title,
+          status: check.state,
+          issue: check.warning,
+          solution: check.solution,
+        });
+      }
+      if (i !== this.state.data.groups.length - 1) {
+        data.push({i});
+      }
+    }
+    return data;
   }
 
   async reload() {

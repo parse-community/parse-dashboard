@@ -1,15 +1,4 @@
  @import 'stylesheets/globals.scss';
-.content {
-  padding: 120px 0px;
-}
-.state {
-  text-align: center;
-  margin: 10px;
-}
-.result {
-  text-align: center;
-  margin: 14px;
-  div {
-    margin: 10px;
-  }
+.tableData {
+  white-space: normal !important;
 }
