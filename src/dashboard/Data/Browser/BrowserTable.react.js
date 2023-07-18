@@ -312,7 +312,7 @@ export default class BrowserTable extends React.Component {
           showNote={this.props.showNote}
           onRefresh={this.props.onRefresh}
           scripts={this.context.scripts}
-        />
+          />
       }
 
       if (this.props.editing) {
