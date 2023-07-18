@@ -112,6 +112,10 @@ export default class Security extends TableView {
   }
 
   async reload() {
+    if (!this.context.enableSecurityChecks) {
+      this.setState({ error: 'Enable Dashboard option `enableSecurityChecks` to run security check.' });
+      return;
+    }
     this.setState({ loading: true });
     const result = await Parse._request('GET', 'security', {}, { useMasterKey: true }).catch((e) => {
       this.setState({ error: e?.message || e });
