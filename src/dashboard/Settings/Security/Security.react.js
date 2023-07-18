@@ -44,13 +44,13 @@ export default class Security extends TableView {
           {security.check}
         </td>
         <td className={styles.tableData} width={'5%'}>
-        {security.i !== undefined ? '' : (security.status === 'success' ? '✅' : '❌')}
+          {security.i !== undefined ? '' : (security.status === 'success' ? '✅' : '❌')}
         </td>
         <td className={styles.tableData} width={'37.5%'}>
-        {security.issue}
+          {security.issue}
         </td>
         <td className={styles.tableData}  width={'37.5%'}>
-        {security.solution}
+          {security.solution}
         </td>
       </tr>
     );
