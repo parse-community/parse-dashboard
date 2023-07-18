@@ -1,13 +1,25 @@
 {
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
-      "appId": "hello",
-      "masterKey": "world",
+      "serverURL": "http://localhost:8378/1",
+      "appId": "test",
+      "masterKey": "test",
       "appName": "",
       "iconName": "",
       "primaryBackgroundColor": "",
-      "secondaryBackgroundColor": ""
+      "secondaryBackgroundColor": "",
+      "scripts": [
+        {
+          "title": "Delete account",
+          "classes": [
+            {
+              "name": "_User",
+              "fields": [{ "name": "createdAt", "validator": "(row, field) => row.get(field) > new Date(\"2025\")" }]
+            }
+          ],
+          "cloudCodeFunction": "deleteAccount"
+        }
+      ]
     }
   ],
   "iconsFolder": "icons"

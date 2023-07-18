@@ -368,7 +368,7 @@ export default class BrowserCell extends Component {
         items: validScripts.map(script => {
           return {
             text: script.title,
-            disabled: validator?.(this.props.rowValue, field) === false,
+            disabled: validator?.(rowValue, field) === false,
             callback: () => {
               this.selectedScript = { ...script, className, objectId };
               if (script.showConfirmationDialog) {
