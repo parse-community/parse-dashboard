@@ -334,7 +334,7 @@ export default class BrowserCell extends Component {
         });
     }
 
-    const { className, objectId,field, scripts = [], rowValue } = this.props;
+    const { className, objectId, field, scripts = [], rowValue } = this.props;
     let validator = null;
     const validScripts = (scripts || []).filter(script => {
       if (script.classes?.includes(className)) {
@@ -363,24 +363,24 @@ export default class BrowserCell extends Component {
       }
     });
     if (validScripts.length) {
-      onEditSelectedRow && contextMenuOptions.push({
-        text: 'Scripts',
-        items: validScripts.map(script => {
-          return {
-            text: script.title,
-            disabled: validator?.(rowValue, field) === false,
-            callback: () => {
-              this.selectedScript = { ...script, className, objectId };
-              if (script.showConfirmationDialog) {
-                this.toggleConfirmationDialog();
-              }
-              else {
-                this.executeScript(script);
-              }
-            }
-          }
-        })
-      });
+      onEditSelectedRow &&
+        contextMenuOptions.push({
+          text: 'Scripts',
+          items: validScripts.map(script => {
+            return {
+              text: script.title,
+              disabled: validator?.(rowValue, field) === false,
+              callback: () => {
+                this.selectedScript = { ...script, className, objectId };
+                if (script.showConfirmationDialog) {
+                  this.toggleConfirmationDialog();
+                } else {
+                  this.executeScript(script);
+                }
+              },
+            };
+          }),
+        });
     }
 
     return contextMenuOptions;

@@ -280,39 +280,42 @@ export default class BrowserTable extends React.Component {
 
         // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
         // since the "obj" instance will only be updated when the update request is done.
-        const isEditingRow = this.props.current && this.props.current.row === i && !!this.props.editing;
-        rows[index] = <BrowserRow
-          appId={this.props.appId}
-          key={index}
-          isEditing={isEditingRow}
-          className={this.props.className}
-          columns={this.props.columns}
-          schema={this.props.schema}
-          simplifiedSchema={this.props.simplifiedSchema}
-          filters={this.props.filters}
-          currentCol={currentCol}
-          isUnique={this.props.isUnique}
-          obj={obj}
-          onPointerClick={this.props.onPointerClick}
-          onPointerCmdClick={this.props.onPointerCmdClick}
-          onFilterChange={this.props.onFilterChange}
-          order={this.props.order}
-          readOnlyFields={READ_ONLY}
-          row={i}
-          rowValue={this.props.data[i]}
-          rowWidth={rowWidth}
-          selection={this.props.selection}
-          selectRow={this.props.selectRow}
-          setCurrent={this.props.setCurrent}
-          setEditing={this.props.setEditing}
-          setRelation={this.props.setRelation}
-          setCopyableValue={this.props.setCopyableValue}
-          setContextMenu={this.props.setContextMenu}
-          onEditSelectedRow={this.props.onEditSelectedRow}
-          showNote={this.props.showNote}
-          onRefresh={this.props.onRefresh}
-          scripts={this.context.scripts}
-        />
+        const isEditingRow =
+          this.props.current && this.props.current.row === i && !!this.props.editing;
+        rows[index] = (
+          <BrowserRow
+            appId={this.props.appId}
+            key={index}
+            isEditing={isEditingRow}
+            className={this.props.className}
+            columns={this.props.columns}
+            schema={this.props.schema}
+            simplifiedSchema={this.props.simplifiedSchema}
+            filters={this.props.filters}
+            currentCol={currentCol}
+            isUnique={this.props.isUnique}
+            obj={obj}
+            onPointerClick={this.props.onPointerClick}
+            onPointerCmdClick={this.props.onPointerCmdClick}
+            onFilterChange={this.props.onFilterChange}
+            order={this.props.order}
+            readOnlyFields={READ_ONLY}
+            row={i}
+            rowValue={this.props.data[i]}
+            rowWidth={rowWidth}
+            selection={this.props.selection}
+            selectRow={this.props.selectRow}
+            setCurrent={this.props.setCurrent}
+            setEditing={this.props.setEditing}
+            setRelation={this.props.setRelation}
+            setCopyableValue={this.props.setCopyableValue}
+            setContextMenu={this.props.setContextMenu}
+            onEditSelectedRow={this.props.onEditSelectedRow}
+            showNote={this.props.showNote}
+            onRefresh={this.props.onRefresh}
+            scripts={this.context.scripts}
+          />
+        );
       }
 
       if (this.props.editing) {
