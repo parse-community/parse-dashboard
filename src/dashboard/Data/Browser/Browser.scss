@@ -14,13 +14,12 @@
   right: 0;
   bottom: 0;
   overflow: auto;
-  width: calc(100% - 300px);
+  display: flex;
 }
 
 body:global(.expanded) {
   .browser {
     left: $sidebarCollapsedWidth;
-    width: calc(100% - $sidebarCollapsedWidth);
   }
 }
 

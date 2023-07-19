@@ -14,8 +14,8 @@
   height: 30px;
   background: #66637a;
   white-space: nowrap;
-  display: inline-block;
-  min-width: 100%;
+  display: flex;
+  flex: 1;
   // to resolve rendering issue with retina displays
   -webkit-transform: translate3d(0,0,0);
 }
