@@ -1,3 +1,10 @@
+# [5.2.0-alpha.28](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.27...5.2.0-alpha.28) (2023-08-27)
+
+
+### Features
+
+* Add security checks page ([#2491](https://github.com/ParsePlatform/parse-dashboard/issues/2491)) ([103b9c6](https://github.com/ParsePlatform/parse-dashboard/commit/103b9c61d152487898062485b40f11ecdac3d2e7))
+
 # [5.2.0-alpha.27](https://github.com/ParsePlatform/parse-dashboard/compare/5.2.0-alpha.26...5.2.0-alpha.27) (2023-06-30)
 
 
