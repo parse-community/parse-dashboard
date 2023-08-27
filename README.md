@@ -540,6 +540,24 @@ var dashboard = new ParseDashboard({
 });
 ```
 
+## Security Checks
+
+You can view the security status of your Parse Server by enabling the dashboard option `enableSecurityChecks`, and visiting App Settings > Security.
+
+```javascript
+const dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+      "enableSecurityChecks": true
+    }
+  ],
+});
+```
+
 
 
 ### Configuring Basic Authentication

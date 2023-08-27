@@ -48,6 +48,7 @@ export default class ParseApp {
     columnPreference,
     scripts,
     classPreference,
+    enableSecurityChecks
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -75,6 +76,7 @@ export default class ParseApp {
     this.graphQLServerURL = graphQLServerURL;
     this.columnPreference = columnPreference;
     this.scripts = scripts;
+    this.enableSecurityChecks = !!enableSecurityChecks;
 
     if (!supportedPushLocales) {
       console.warn(
