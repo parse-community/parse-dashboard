@@ -11,7 +11,7 @@ import DateTimeEntry   from 'components/DateTimeEntry/DateTimeEntry.react';
 import Icon            from 'components/Icon/Icon.react';
 import Parse           from 'parse';
 import PropTypes       from 'lib/PropTypes';
-import React           from 'react';
+import React, { useCallback }           from 'react';
 import styles          from 'components/BrowserFilter/BrowserFilter.scss';
 import validateNumeric from 'lib/validateNumeric';
 
@@ -20,13 +20,7 @@ for (let c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
 
-let setFocus = (input) => {
-  if (input !== null) {
-    input.focus();
-  }
-}
-
-function compareValue(info, value, onChangeCompareTo, onKeyDown, active, parentContentId) {
+function compareValue(info, value, onChangeCompareTo, onKeyDown, active, parentContentId, setFocus) {
   switch (info.type) {
     case null:
       return null;
@@ -91,25 +85,35 @@ let FilterRow = ({
     onDeleteRow,
     active,
     parentContentId,
-  }) => (
-  <div className={styles.row}>
-    <ChromeDropdown
-      color={active ? 'blue' : 'purple'}
-      value={currentField}
-      options={fields}
-      onChange={onChangeField} />
-    <ChromeDropdown
-      width={compareInfo.type ? '175' : '325'}
-      color={active ? 'blue' : 'purple'}
-      value={Constraints[currentConstraint].name}
-      options={constraints.map((c) => Constraints[c].name)}
-      onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)} />
-    {compareValue(compareInfo, compareTo, onChangeCompareTo, onKeyDown, active, parentContentId)}
-    <button type='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></button>
-  </div>
-);
+    editMode
+  }) => {
 
-export default FilterRow;
+    let setFocus = useCallback((input) => {
+      if (input !== null && editMode) {
+        input.focus();
+      }
+    }, [])    
+
+    return (
+      <div className={styles.row}>
+        <ChromeDropdown
+          color={active ? 'blue' : 'purple'}
+          value={currentField}
+          options={fields}
+          onChange={onChangeField} />
+        <ChromeDropdown
+          width={compareInfo.type ? '175' : '325'}
+          color={active ? 'blue' : 'purple'}
+          value={Constraints[currentConstraint].name}
+          options={constraints.map((c) => Constraints[c].name)}
+          onChange={(c) => onChangeConstraint(constraintLookup[c], compareTo)} />
+        {compareValue(compareInfo, compareTo, onChangeCompareTo, onKeyDown, active, parentContentId, setFocus)}
+        <button type='button' className={styles.remove} onClick={onDeleteRow}><Icon name='minus-solid' width={14} height={14} fill='rgba(0,0,0,0.4)' /></button>
+      </div>
+    );
+}
+
+export default React.memo(FilterRow);
 
 FilterRow.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.string).isRequired,

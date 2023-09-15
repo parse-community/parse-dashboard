@@ -31,6 +31,7 @@ let BrowserToolbar = ({
   relation,
   setCurrent,
   onFilterChange,
+  onFilterSave,
   onAddColumn,
   onAddRow,
   onAddRowWithModal,
@@ -275,6 +276,7 @@ let BrowserToolbar = ({
         schema={schemaSimplifiedData}
         filters={filters}
         onChange={onFilterChange}
+        onSaveFilter={onFilterSave}
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}

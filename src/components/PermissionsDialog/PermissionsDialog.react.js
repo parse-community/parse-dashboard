@@ -20,6 +20,8 @@ import Toggle           from 'components/Toggle/Toggle.react';
 import Autocomplete     from 'components/Autocomplete/Autocomplete.react';
 import { Map, fromJS }  from 'immutable';
 import TrackVisibility  from 'components/TrackVisibility/TrackVisibility.react';
+import {CurrentApp} from '../../context/currentApp';
+import generatePath from '../../lib/generatePath';
 
 let origin = new Position(0, 0);
 
@@ -517,6 +519,8 @@ function renderPointerCheckboxes(
 
 const intersectionMargin = '10px 0px 0px 20px';
 export default class PermissionsDialog extends React.Component {
+  static contextType = CurrentApp;
+
   constructor(props) {
     super(props);
 
@@ -647,7 +651,15 @@ export default class PermissionsDialog extends React.Component {
       let key;
       let value = {};
 
-      if (type === 'user') {
+      if(typeof entry === 'string') {
+        key = type + ':' + entry;
+        value[type] = {
+          name: entry,
+          id: undefined
+        };
+      }
+
+      else if (type === 'user') {
         key = entry.id;
         value[type] = {
           name: entry.get('username'),
@@ -655,7 +667,7 @@ export default class PermissionsDialog extends React.Component {
         };
       }
 
-      if (type === 'role') {
+      else if (type === 'role') {
         key = 'role:' + entry.getName();
         value[type] = {
           name: entry.getName(),
@@ -663,7 +675,7 @@ export default class PermissionsDialog extends React.Component {
         };
       }
 
-      if (type === 'pointer') {
+      else if (type === 'pointer') {
         key = entry;
         value[type] = true;
       }
@@ -971,7 +983,21 @@ export default class PermissionsDialog extends React.Component {
     return output;
   }
 
+  urlForKey(key) {
+    let isRole = key.startsWith('role:')
+    let className = isRole ? '_Role' : '_User';
+    let field = isRole ? 'name' : 'objectId';
+    let value = isRole ? key.replace('role:', '') : key
+    let filters = JSON.stringify([{
+      field,
+      constraint: 'eq',
+      compareTo: value
+    }]);
+    return generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`);
+  }
+
   renderRow(key, columns, types) {
+
     const pill = text => (
       <span className={styles.pillType}>
         <Pill value={text} />
@@ -982,20 +1008,21 @@ export default class PermissionsDialog extends React.Component {
     const type = (types && types.get(key)) || {};
 
     let pointer = this.state.pointerPerms.has(key);
-    let label = <span>{key}</span>;
+    let label = <span><a target="_blank" href={this.urlForKey(key)} >{key}</a></span>;
 
     if (type.user) {
       label = (
         <span>
           <p>
             <span>
-              <span className={styles.selectable}>{type.user.id}</span>
+              <span className={styles.selectable}>
+                <a target="_blank" href={this.urlForKey(key)} >{type.user.id}</a>
+              </span>
               {pill('User')}
             </span>
           </p>
           <p className={styles.hint}>
-            {'username: '}
-            <span className={styles.selectable}>{type.user.name}</span>
+            username: <span className={styles.selectable} style={{color:type.user.name ? undefined : '#f00'}}>{type.user.name ?? 'user not found'}</span>
           </p>
         </span>
       );
@@ -1005,11 +1032,11 @@ export default class PermissionsDialog extends React.Component {
           <p>
             <span>
               <span className={styles.prefix}>{'role:'}</span>
-              {type.role.name}
+                <a target="_blank" href={this.urlForKey(key)} >{type.role.name}</a>
             </span>
           </p>
           <p className={styles.hint}>
-            id: <span className={styles.selectable}>{type.role.id}</span>
+            id: <span className={styles.selectable} style={{color:type.role.id ? undefined : '#f00'}}>{type.role.id ?? 'role not found'}</span>
           </p>
         </span>
       );

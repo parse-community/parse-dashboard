@@ -235,7 +235,7 @@ export default class Autocomplete extends Component {
       // Tab
       // do not type it
       e.preventDefault();
-      
+
       e.stopPropagation();
       // move focus to input
       this.inputRef.current.focus();
@@ -318,7 +318,7 @@ export default class Autocomplete extends Component {
           onClick={onClick}
         />
       );
-    } 
+    }
 
     return (
       <React.Fragment>
@@ -372,5 +372,5 @@ Autocomplete.propTypes = {
   ),
   error: PropTypes.string.describe(
     'Error to be rendered in place of label if defined'
-  ) 
-} 
+  )
+}
