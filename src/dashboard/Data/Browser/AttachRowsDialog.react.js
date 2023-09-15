@@ -23,16 +23,16 @@ export default class AttachRowsDialog extends React.Component {
   handleConfirm() {
     const objectIds = this.state.objectIds.split(',').reduce((resourceIds, targetResourceId) => {
       const objectId = targetResourceId && targetResourceId.trim();
-      if (!objectId) return;
+      if (!objectId) {
+        return;
+      }
       return [...resourceIds, objectId];
     }, []);
     return this.props.onConfirm(objectIds);
   }
 
   render() {
-    const {
-      relation
-    } = this.props;
+    const { relation } = this.props;
     return (
       <FormModal
         open

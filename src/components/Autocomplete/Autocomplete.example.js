@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React        from 'react';
+import React from 'react';
 import Autocomplete from 'components/Autocomplete/Autocomplete.react';
 
 export const component = Autocomplete;
@@ -15,7 +15,7 @@ class AutocompleteDemo extends React.Component {
     super();
 
     this.state = {
-      suggestions: ['aaa', 'abc', 'xxx', 'xyz']
+      suggestions: ['aaa', 'abc', 'xxx', 'xyz'],
     };
 
     this.onSubmit = input => console.log('onSubmit: ' + input);
@@ -23,11 +23,8 @@ class AutocompleteDemo extends React.Component {
       console.log(`input: ${input}`);
     };
     this.buildLabel = input =>
-      input.length > 0
-        ? `You've typed ${input.length} characters`
-        : 'Start typing';
-    this.buildSuggestions = input =>
-      this.state.suggestions.filter(s => s.startsWith(input));
+      input.length > 0 ? `You've typed ${input.length} characters` : 'Start typing';
+    this.buildSuggestions = input => this.state.suggestions.filter(s => s.startsWith(input));
   }
 
   render() {
@@ -36,11 +33,11 @@ class AutocompleteDemo extends React.Component {
         inputStyle={{
           width: '400px',
           padding: '0 6px',
-          margin: '10px 20px'
+          margin: '10px 20px',
         }}
         suggestionsStyle={{
           margin: '-6px 0px 0px 20px',
-          width: '400px'
+          width: '400px',
         }}
         locked={true}
         onChange={this.onUserInput}
@@ -59,6 +56,6 @@ export const demos = [
       <div>
         <AutocompleteDemo />
       </div>
-    )
-  }
+    ),
+  },
 ];

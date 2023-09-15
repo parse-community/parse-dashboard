@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import ExplorerActiveChartButton from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.react';
-import React                     from 'react';
-import { ChartColorSchemes }     from 'lib/Constants';
+import React from 'react';
+import { ChartColorSchemes } from 'lib/Constants';
 
 export const component = ExplorerActiveChartButton;
 
@@ -17,103 +17,107 @@ const QUERIES = [
     children: [
       {
         name: 'Daily Active Installations',
-        query: { },
+        query: {},
         preset: true,
-        nonComposable: true
+        nonComposable: true,
       },
       {
         name: 'Daily Active Users',
-        query: { },
+        query: {},
         preset: true,
-        nonComposable: true
+        nonComposable: true,
       },
       {
         name: 'Monthly Active Installations',
-        query: { },
+        query: {},
         preset: true,
-        nonComposable: true
+        nonComposable: true,
       },
       {
         name: 'Monthly Active Users',
-        query: { },
+        query: {},
         preset: true,
-        nonComposable: true
-      }
-    ]
-  }, {
+        nonComposable: true,
+      },
+    ],
+  },
+  {
     name: 'Core',
     children: [
       {
         name: 'Gogo Count',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'User Count',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'Installation Count',
-        query: { },
-        preset: true
-      }
-    ]
-  }, {
+        query: {},
+        preset: true,
+      },
+    ],
+  },
+  {
     name: 'Events',
     children: [
       {
         name: 'API Requests',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'Analytics Requests',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'File Requests',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'Push Notifications',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'App Opens',
-        query: { },
-        preset: true
+        query: {},
+        preset: true,
       },
       {
         name: 'Push Opens',
-        query: { },
-        preset: true
-      }
-    ]
-  }, {
+        query: {},
+        preset: true,
+      },
+    ],
+  },
+  {
     name: 'Recent Queries',
     children: [
       {
         name: 'User Count Aggregate',
-        query: { }
-      }
-    ]
-  }, {
+        query: {},
+      },
+    ],
+  },
+  {
     name: 'Saved Queries',
     children: [
       {
         name: 'Gogo Queries',
-        query: { }
+        query: {},
       },
       {
         name: 'Saved Queries',
-        query: { }
-      }
-    ]
-  }
+        query: {},
+      },
+    ],
+  },
 ];
 
 export const demos = [
@@ -124,43 +128,61 @@ export const demos = [
         <ExplorerActiveChartButton
           queries={QUERIES}
           query={{
-            name: 'User Count Aggregate'
+            name: 'User Count Aggregate',
           }}
           color={ChartColorSchemes[0]}
-          onSave={() => {/* Do nothing */}}
-          onToggle={() => {/* Do nothing */} } />
+          onSave={() => {
+            /* Do nothing */
+          }}
+          onToggle={() => {
+            /* Do nothing */
+          }}
+        />
       );
-    }
-  }, {
+    },
+  },
+  {
     name: 'With Custom Color',
     render: () => {
       return (
         <ExplorerActiveChartButton
           queries={QUERIES}
           query={{
-            name: 'User Count Aggregate'
+            name: 'User Count Aggregate',
           }}
           color={ChartColorSchemes[1]}
-          onSave={() => {/* Do nothing */}}
-          onToggle={() => {/* Do nothing */} } />
+          onSave={() => {
+            /* Do nothing */
+          }}
+          onToggle={() => {
+            /* Do nothing */
+          }}
+        />
       );
-    }
-  }, {
+    },
+  },
+  {
     name: 'Without Dropdown',
     render: () => {
       return (
         <ExplorerActiveChartButton
           queries={QUERIES}
           query={{
-            name: 'User Count Aggregate'
+            name: 'User Count Aggregate',
           }}
           color={ChartColorSchemes[1]}
-          onSave={() => {/* Do nothing */}}
-          onToggle={() => {/* Do nothing */} }
-          disableDropdown={true} />
+          onSave={() => {
+            /* Do nothing */
+          }}
+          onToggle={() => {
+            /* Do nothing */
+          }}
+          disableDropdown={true}
+        />
       );
-    }
-  }, {
+    },
+  },
+  {
     name: 'With Non-Composable Query',
     render: () => {
       return (
@@ -168,12 +190,17 @@ export const demos = [
           queries={QUERIES}
           query={{
             name: 'User Count Aggregate',
-            nonComposable: true
+            nonComposable: true,
           }}
           color={ChartColorSchemes[1]}
-          onSave={() => {/* Do nothing */}}
-          onToggle={() => {/* Do nothing */} } />
+          onSave={() => {
+            /* Do nothing */
+          }}
+          onToggle={() => {
+            /* Do nothing */
+          }}
+        />
       );
-    }
-  }
-]
+    },
+  },
+];

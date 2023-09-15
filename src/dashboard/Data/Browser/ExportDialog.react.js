@@ -5,8 +5,8 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal          from 'components/Modal/Modal.react';
-import React          from 'react';
+import Modal from 'components/Modal/Modal.react';
+import React from 'react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class ExportDialog extends React.Component {
@@ -14,12 +14,12 @@ export default class ExportDialog extends React.Component {
   constructor() {
     super();
     this.state = {
-      progress: undefined
+      progress: undefined,
     };
   }
 
   componentWillMount() {
-    this.context.getExportProgress().then((progress) => {
+    this.context.getExportProgress().then(progress => {
       this.setState({ progress });
     });
   }
@@ -30,7 +30,7 @@ export default class ExportDialog extends React.Component {
     }
     let found = false;
     if (Array.isArray(this.state.progress)) {
-      this.state.progress.forEach((obj) => {
+      this.state.progress.forEach(obj => {
         if (obj.id === this.props.className) {
           found = true;
         }
@@ -40,22 +40,27 @@ export default class ExportDialog extends React.Component {
   }
 
   render() {
-    let inProgress = this.inProgress();
+    const inProgress = this.inProgress();
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon='down-outline'
+        icon="down-outline"
         iconSize={40}
-        title='Export this class?'
+        title="Export this class?"
         subtitle={'We\'ll send you an email when your data is ready.'}
-        confirmText='Export'
-        cancelText='Cancel'
+        confirmText="Export"
+        cancelText="Cancel"
         disabled={this.state.progress === undefined || inProgress}
         buttonsInCenter={true}
         onCancel={this.props.onCancel}
-        onConfirm={this.props.onConfirm}>
-        {inProgress ?
-          <div style={{ padding: 20 }}>You are currently exporting this class. We'll send you an email when that data is available for you to download.</div> : null}
+        onConfirm={this.props.onConfirm}
+      >
+        {inProgress ? (
+          <div style={{ padding: 20 }}>
+            You are currently exporting this class. We'll send you an email when that data is
+            available for you to download.
+          </div>
+        ) : null}
       </Modal>
     );
   }

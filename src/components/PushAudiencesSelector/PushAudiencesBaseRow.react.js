@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React              from 'react';
+import React from 'react';
 import { NEW_SEGMENT_ID } from 'dashboard/Push/PushConstants';
-import { CurrentApp }     from 'context/currentApp';
+import { CurrentApp } from 'context/currentApp';
 
 export default class PushAudiencesBaseRow extends React.Component {
   static contextType = CurrentApp;
@@ -19,32 +19,36 @@ export default class PushAudiencesBaseRow extends React.Component {
       expandedView: false,
       approximate: false,
       isNewSegment: false,
-    }
+    };
   }
 
   handleDetailsToggle(query, schema, evt) {
     evt.preventDefault();
 
     this.setState({
-      expandedView : !this.state.expandedView
+      expandedView: !this.state.expandedView,
     });
   }
 
   fetchPushSubscriberCount(context) {
-    if (!context) { //so we don't break the PIG demo
+    if (!context) {
+      //so we don't break the PIG demo
       return;
     }
-    let query = this.props.id === NEW_SEGMENT_ID ? this.props.query : null;
+    const query = this.props.id === NEW_SEGMENT_ID ? this.props.query : null;
     //Added count fetch logic directly to component
-    let {xhr, promise} = context.fetchPushSubscriberCount(this.props.id, query);
+    const { xhr, promise } = context.fetchPushSubscriberCount(this.props.id, query);
     this.xhrHandle = xhr;
-    promise.then(({ approximate, count }) => {
-      this.setState({ approximate, count });
-    }, () => {});
+    promise.then(
+      ({ approximate, count }) => {
+        this.setState({ approximate, count });
+      },
+      () => {}
+    );
   }
 
   componentWillMount() {
-    this.fetchPushSubscriberCount.call(this,this.context);
+    this.fetchPushSubscriberCount.call(this, this.context);
     if (this.props.id == NEW_SEGMENT_ID) {
       this.setState({ isNewSegment: true });
     }

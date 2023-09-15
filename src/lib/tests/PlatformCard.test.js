@@ -11,7 +11,7 @@ describe('PlatformCard', () => {
   it('can render examples', () => {
     jest.dontMock('../../components/PlatformCard/PlatformCard.example');
     const example = require('../../components/PlatformCard/PlatformCard.example');
-    example.demos.forEach((example) => {
+    example.demos.forEach(example => {
       example.render();
     });
   });

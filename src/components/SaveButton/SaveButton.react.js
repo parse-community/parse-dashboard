@@ -11,7 +11,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/SaveButton/SaveButton.scss';
 
-let SaveButton = ({
+const SaveButton = ({
   state = SaveButton.States.WAITING,
   onClick,
   waitingText = 'Save changes',
@@ -39,26 +39,34 @@ let SaveButton = ({
       color = 'red';
       break;
   }
-  let className = state === SaveButton.States.FAILED ? styles.shake : null;
-  return <span className={className}><Button
-    primary={true}
-    width={'128px'}
-    progress={state === SaveButton.States.SAVING}
-    color={color}
-    onClick={state === SaveButton.States.WAITING ? onClick : null}
-    value={value}
-    disabled={state === SaveButton.States.WAITING ? disabled : false}
-    {...buttonProps}/>
-  </span>;
+  const className = state === SaveButton.States.FAILED ? styles.shake : null;
+  return (
+    <span className={className}>
+      <Button
+        primary={true}
+        width={'128px'}
+        progress={state === SaveButton.States.SAVING}
+        color={color}
+        onClick={state === SaveButton.States.WAITING ? onClick : null}
+        value={value}
+        disabled={state === SaveButton.States.WAITING ? disabled : false}
+        {...buttonProps}
+      />
+    </span>
+  );
 };
 
 SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED']);
 
-let {...forwardedButtonProps} = Button.propTypes;
+const { ...forwardedButtonProps } = Button.propTypes;
 delete forwardedButtonProps.value;
 SaveButton.propTypes = {
-  state: PropTypes.string.describe('SaveButton.States.(SAVING|SUCCEEDED|FAILED|WAITING). Defaults to WAITING.'),
-  onClick: PropTypes.func.describe('Click handler. Actived if button is clicked while enabled and in WAITING state.'),
+  state: PropTypes.string.describe(
+    'SaveButton.States.(SAVING|SUCCEEDED|FAILED|WAITING). Defaults to WAITING.'
+  ),
+  onClick: PropTypes.func.describe(
+    'Click handler. Actived if button is clicked while enabled and in WAITING state.'
+  ),
   waitingText: PropTypes.string.describe('Text for WAITING state. Defaults to "Save changes".'),
   savingText: PropTypes.string.describe('Text for SAVING state. Defaults to "Saving\u2025".'),
   failedText: PropTypes.string.describe('Text for FAILED state. Defaults to "Save failed".'),

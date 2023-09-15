@@ -7,7 +7,7 @@
  */
 import howLongAgo from 'lib/howLongAgo';
 
-let ReleaseInfo = ({ release }) => {
+const ReleaseInfo = ({ release }) => {
   if (!release) {
     return '';
   }
@@ -18,7 +18,7 @@ let ReleaseInfo = ({ release }) => {
     ' \u2022 ',
     howLongAgo(release.deployedAt),
     ' \u2022 SDK Version: ',
-    release.parseVersion
+    release.parseVersion,
   ].join('');
 };
 

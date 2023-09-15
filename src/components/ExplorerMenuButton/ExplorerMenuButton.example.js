@@ -6,119 +6,126 @@
  * the root directory of this source tree.
  */
 import ExplorerMenuButton from 'components/ExplorerMenuButton/ExplorerMenuButton.react';
-import React              from 'react';
+import React from 'react';
 
 export const component = ExplorerMenuButton;
 
 export const demos = [
   {
     render: () => {
-      let queries = [
+      const queries = [
         {
           name: 'Audience',
           children: [
             {
               name: 'Daily Active Installations',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Daily Active Users',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Monthly Active Installations',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Monthly Active Users',
-              query: { },
-              preset: true
-            }
-          ]
-        }, {
+              query: {},
+              preset: true,
+            },
+          ],
+        },
+        {
           name: 'Core',
           children: [
             {
               name: 'Gogo Count',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'User Count',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Installation Count',
-              query: { },
-              preset: true
-            }
-          ]
-        }, {
+              query: {},
+              preset: true,
+            },
+          ],
+        },
+        {
           name: 'Events',
           children: [
             {
               name: 'API Requests',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Analytics Requests',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'File Requests',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Push Notifications',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'App Opens',
-              query: { },
-              preset: true
+              query: {},
+              preset: true,
             },
             {
               name: 'Push Opens',
-              query: { },
-              preset: true
-            }
-          ]
-        }, {
+              query: {},
+              preset: true,
+            },
+          ],
+        },
+        {
           name: 'Recent Queries',
           children: [
             {
               name: 'User Count Aggregate',
-              query: { }
-            }
-          ]
-        }, {
+              query: {},
+            },
+          ],
+        },
+        {
           name: 'Saved Queries',
           children: [
             {
               name: 'Gogo Queries',
-              query: { }
+              query: {},
             },
             {
               name: 'Saved Queries',
-              query: { }
-            }
-          ]
-        }
+              query: {},
+            },
+          ],
+        },
       ];
       return (
         <ExplorerMenuButton
           queries={queries}
-          value='Add query'
-          onSave={() => {/* Do nothing */}} />
+          value="Add query"
+          onSave={() => {
+            /* Do nothing */
+          }}
+        />
       );
-    }
-  }
-]
+    },
+  },
+];

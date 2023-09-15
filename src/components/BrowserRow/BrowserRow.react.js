@@ -7,8 +7,9 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 
 export default class BrowserRow extends Component {
   shouldComponentUpdate(nextProps) {
-    const shallowVerifyProps = [...new Set(Object.keys(this.props).concat(Object.keys(nextProps)))]
-      .filter(propName => propName !== 'obj');
+    const shallowVerifyProps = [
+      ...new Set(Object.keys(this.props).concat(Object.keys(nextProps))),
+    ].filter(propName => propName !== 'obj');
     if (shallowVerifyProps.some(propName => this.props[propName] !== nextProps[propName])) {
       return true;
     }
@@ -19,8 +20,30 @@ export default class BrowserRow extends Component {
   }
 
   render() {
-    const { className, columns, currentCol, isUnique, obj, onPointerClick, onPointerCmdClick, order, readOnlyFields, row, rowWidth, selection, selectRow, setCopyableValue, setCurrent, setEditing, setRelation, onEditSelectedRow, setContextMenu, onFilterChange, markRequiredFieldRow } = this.props;
-    let attributes = obj.attributes;
+    const {
+      className,
+      columns,
+      currentCol,
+      isUnique,
+      obj,
+      onPointerClick,
+      onPointerCmdClick,
+      order,
+      readOnlyFields,
+      row,
+      rowWidth,
+      selection,
+      selectRow,
+      setCopyableValue,
+      setCurrent,
+      setEditing,
+      setRelation,
+      onEditSelectedRow,
+      setContextMenu,
+      onFilterChange,
+      markRequiredFieldRow,
+    } = this.props;
+    const attributes = obj.attributes;
     let requiredCols = [];
     Object.entries(columns).reduce((acc, cur) => {
       if (cur[1].required) {
@@ -29,7 +52,10 @@ export default class BrowserRow extends Component {
       return acc;
     }, requiredCols);
     // for dynamically changing required field on _User class
-    if (obj.className === '_User' && (obj.get('username') !== undefined || obj.get('password') !== undefined)) {
+    if (
+      obj.className === '_User' &&
+      (obj.get('username') !== undefined || obj.get('password') !== undefined)
+    ) {
       requiredCols = ['username', 'password'];
     } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
       requiredCols = ['authData'];
@@ -38,20 +64,26 @@ export default class BrowserRow extends Component {
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
         <span className={styles.checkCell}>
           <input
-            type='checkbox'
+            type="checkbox"
             checked={selection['*'] || selection[obj.id]}
-            onChange={e => selectRow(obj.id, e.target.checked)} />
+            onChange={e => selectRow(obj.id, e.target.checked)}
+          />
         </span>
         {order.map(({ name, width, visible }, j) => {
-          if (!visible) return null;
-          let type = columns[name].type;
+          if (!visible) {
+            return null;
+          }
+          const type = columns[name].type;
           let attr = obj;
           if (!isUnique) {
-              attr = attributes[name];
+            attr = attributes[name];
             if (name === 'objectId') {
               attr = obj.id;
             } else if (name === 'ACL' && className === '_User' && !attr) {
-              attr = new Parse.ACL({ '*': { read: true }, [obj.id]: { read: true, write: true }});
+              attr = new Parse.ACL({
+                '*': { read: true },
+                [obj.id]: { read: true, write: true },
+              });
             } else if (type === 'Relation' && !attr && obj.id) {
               attr = new Parse.Relation(obj, name);
               attr.targetClassName = columns[name].targetClass;
@@ -71,7 +103,7 @@ export default class BrowserRow extends Component {
               hidden = true;
             }
           }
-          let isRequired = requiredCols.includes(name);
+          const isRequired = requiredCols.includes(name);
           return (
             <BrowserCell
               appId={this.props.appId}
@@ -100,7 +132,11 @@ export default class BrowserRow extends Component {
               markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
               setContextMenu={setContextMenu}
-              onEditSelectedRow={onEditSelectedRow} />
+              onEditSelectedRow={onEditSelectedRow}
+              showNote={this.props.showNote}
+              onRefresh={this.props.onRefresh}
+              scripts={this.props.scripts}
+            />
           );
         })}
       </div>

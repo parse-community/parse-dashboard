@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
+import React from 'react';
 import { CurrentApp } from 'context/currentApp';
 import { Outlet } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export default class SettingsData extends React.Component {
     super();
 
     this.state = {
-      fields: undefined
+      fields: undefined,
     };
   }
 
@@ -35,10 +35,10 @@ export default class SettingsData extends React.Component {
   }
 
   saveChanges(changes) {
-    let promise = this.context.saveSettingsFields(changes)
-    promise.then(({successes}) => {
-      let newFields = {...this.state.fields, ...successes};
-      this.setState({fields: newFields});
+    const promise = this.context.saveSettingsFields(changes);
+    promise.then(({ successes }) => {
+      const newFields = { ...this.state.fields, ...successes };
+      this.setState({ fields: newFields });
     });
     return promise;
   }
@@ -48,7 +48,7 @@ export default class SettingsData extends React.Component {
       <Outlet
         context={{
           initialFields: this.state.fields,
-          saveChanges: this.saveChanges.bind(this)
+          saveChanges: this.saveChanges.bind(this),
         }}
       />
     );

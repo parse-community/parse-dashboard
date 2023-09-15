@@ -5,15 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Button                    from 'components/Button/Button.react';
-import DashboardView             from 'dashboard/DashboardView.react';
-import DonutChart                from 'components/DonutChart/DonutChart.react';
-import Icon                      from 'components/Icon/Icon.react';
-import LoaderContainer           from 'components/LoaderContainer/LoaderContainer.react'
-import prettyNumber              from 'lib/prettyNumber'
-import React                     from 'react';
-import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import styles                    from 'dashboard/Analytics/Overview/Overview.scss';
+import Button from 'components/Button/Button.react';
+import DashboardView from 'dashboard/DashboardView.react';
+import DonutChart from 'components/DonutChart/DonutChart.react';
+import Icon from 'components/Icon/Icon.react';
+import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
+import prettyNumber from 'lib/prettyNumber';
+import React from 'react';
+import Toolbar from 'components/Toolbar/Toolbar.react';
+import styles from 'dashboard/Analytics/Overview/Overview.scss';
 import { yearMonthDayFormatter } from 'lib/DateUtils';
 
 const AUDIENCE_META = [
@@ -21,42 +21,42 @@ const AUDIENCE_META = [
   [
     {
       label: 'Daily active users',
-      key: 'dailyActiveUsers'
+      key: 'dailyActiveUsers',
     },
     {
       label: 'Weekly active users',
-      key: 'weeklyActiveUsers'
+      key: 'weeklyActiveUsers',
     },
     {
       label: 'Monthly active users',
-      key: 'monthlyActiveUsers'
+      key: 'monthlyActiveUsers',
     },
     {
       label: 'Total users',
       key: 'totalUsers',
-      hideArrow: true
-    }
+      hideArrow: true,
+    },
   ],
   // Installations
   [
     {
       label: 'Daily active installs',
-      key: 'dailyActiveInstallations'
+      key: 'dailyActiveInstallations',
     },
     {
       label: 'Weekly active installs',
-      key: 'weeklyActiveInstallations'
+      key: 'weeklyActiveInstallations',
     },
     {
       label: 'Monthly active installs',
-      key: 'monthlyActiveInstallations'
+      key: 'monthlyActiveInstallations',
     },
     {
       label: 'Total installs',
       key: 'totalInstallations',
-      hideArrow: true
-    }
-  ]
+      hideArrow: true,
+    },
+  ],
 ];
 
 const BILLING_META = [
@@ -74,7 +74,7 @@ const BILLING_META = [
     label: 'Data transfer',
     key: 'billingDataTransfer',
     units: 'TB',
-  }
+  },
 ];
 
 export default class Overview extends DashboardView {
@@ -95,8 +95,8 @@ export default class Overview extends DashboardView {
       totalInstallations: {},
       billingFileStorage: {},
       billingDatabasetorage: {},
-      billingDataTransfer: {}
-    }
+      billingDataTransfer: {},
+    };
   }
 
   componentWillMount() {
@@ -110,15 +110,15 @@ export default class Overview extends DashboardView {
   }
 
   componentWillUnmount() {
-    AUDIENCE_META.forEach((metaGroup) => {
-      metaGroup.forEach((meta) => {
+    AUDIENCE_META.forEach(metaGroup => {
+      metaGroup.forEach(meta => {
         if (this.state[meta.key].xhr) {
           this.state[meta.key].xhr.abort();
         }
       });
     });
 
-    BILLING_META.forEach((meta) => {
+    BILLING_META.forEach(meta => {
       if (this.state[meta.key].xhr) {
         this.state[meta.key].xhr.abort();
       }
@@ -126,26 +126,26 @@ export default class Overview extends DashboardView {
   }
 
   fetchOverview(app) {
-    let overview = app.getAnalyticsOverview(new Date());
+    const overview = app.getAnalyticsOverview(new Date());
     this.setState(overview);
 
-    for (let key in overview) {
-      let item = overview[key];
+    for (const key in overview) {
+      const item = overview[key];
       item.promise.then(
-        (value) => {
+        value => {
           this.setState({
             [key]: {
               promise: item.promise,
-              value: value
-            }
+              value: value,
+            },
           });
         },
-        (error) => {
+        error => {
           this.setState({
             [key]: {
               promise: item.promise,
-              error: error
-            }
+              error: error,
+            },
           });
         }
       );
@@ -153,19 +153,15 @@ export default class Overview extends DashboardView {
   }
 
   renderContent() {
-    let toolbar = (
-      <Toolbar
-        section='Analytics'
-        subsection='Overview' />
-    );
-    let infoContainerStyle = { padding: '12px 16px' };
+    const toolbar = <Toolbar section="Analytics" subsection="Overview" />;
+    const infoContainerStyle = { padding: '12px 16px' };
 
-    let audienceViews = AUDIENCE_META.map((metaGroup) => (
-      metaGroup.map((meta) => {
-        let obj = this.state[meta.key];
+    const audienceViews = AUDIENCE_META.map(metaGroup =>
+      metaGroup.map(meta => {
+        const obj = this.state[meta.key];
         let number = 0;
         let increasing = true;
-        let loading = obj.value === undefined && obj.error === undefined;
+        const loading = obj.value === undefined && obj.error === undefined;
 
         if (obj.value !== undefined) {
           // If it's an array, means it's in [current, 1 week ago, 2 weeks ago] format.
@@ -179,12 +175,14 @@ export default class Overview extends DashboardView {
 
         let content = null;
         if (obj.error !== undefined) {
-          content = <div>Cannot fetch data</div>
+          content = <div>Cannot fetch data</div>;
         } else {
           content = (
             <div>
               <span className={styles.infoNumber}>{prettyNumber(number, 3)}</span>
-              {meta.hideArrow ? null : <span className={ increasing ? styles.upArrow : styles.downArrow } /> }
+              {meta.hideArrow ? null : (
+                <span className={increasing ? styles.upArrow : styles.downArrow} />
+              )}
             </div>
           );
         }
@@ -200,13 +198,13 @@ export default class Overview extends DashboardView {
           </div>
         );
       })
-    ));
+    );
 
-    let billingViews = BILLING_META.map((meta) => {
-      let obj = this.state[meta.key];
+    const billingViews = BILLING_META.map(meta => {
+      const obj = this.state[meta.key];
       let total = 0;
       let limit = 1;
-      let loading = obj.value === undefined && obj.error === undefined;
+      const loading = obj.value === undefined && obj.error === undefined;
 
       if (obj.value !== undefined) {
         total = obj.value.total;
@@ -214,7 +212,7 @@ export default class Overview extends DashboardView {
       }
 
       if (obj.error !== undefined) {
-        content = <div>Cannot fetch data</div>
+        content = <div>Cannot fetch data</div>;
       } else {
         content = (
           <DonutChart
@@ -222,7 +220,8 @@ export default class Overview extends DashboardView {
             label={`${prettyNumber(total)}/${limit}${meta.units}`}
             diameter={120}
             printPercentage={true}
-            isMonochrome={true} />
+            isMonochrome={true}
+          />
         );
       }
 
@@ -242,24 +241,26 @@ export default class Overview extends DashboardView {
       <div className={styles.content}>
         <div className={styles.healthInfoContainer}>
           <div className={styles.healthInfo}>
-            {this.state.error !== undefined ? <div>
-              <Icon name='cloud-sad' fill='#ff395e' width={88} height={64} />
-              <h2 style={{ color: '#ff395e' }}>
-                There is an issue with your app!
-              </h2>
+            {this.state.error !== undefined ? (
               <div>
-                {this.state.error}
+                <Icon name="cloud-sad" fill="#ff395e" width={88} height={64} />
+                <h2 style={{ color: '#ff395e' }}>There is an issue with your app!</h2>
+                <div>{this.state.error}</div>
+                <Button
+                  onClick={() => {
+                    /* TODO (hallucinogen): where should I direct everyone to? */
+                  }}
+                  primary={true}
+                  color="red"
+                  value="How do I fix it?"
+                />
               </div>
-              <Button
-                onClick={() => {/* TODO (hallucinogen): where should I direct everyone to? */}}
-                primary={true}
-                color='red'
-                value='How do I fix it?' />
-            </div> : <div>
-              <Icon name='cloud-happy' fill='#00db7c' width={88} height={64} />
-              <h2>Your app is healthy!</h2>
-            </div>
-            }
+            ) : (
+              <div>
+                <Icon name="cloud-happy" fill="#00db7c" width={88} height={64} />
+                <h2>Your app is healthy!</h2>
+              </div>
+            )}
           </div>
         </div>
 
@@ -268,9 +269,7 @@ export default class Overview extends DashboardView {
         </div>
 
         <div className={styles.overviewRow}>
-          <div className={styles.infoContainer}>
-            {audienceViews[0]}
-          </div>
+          <div className={styles.infoContainer}>{audienceViews[0]}</div>
         </div>
 
         <div className={styles.overviewHeader}>
@@ -278,9 +277,7 @@ export default class Overview extends DashboardView {
         </div>
 
         <div className={styles.overviewRow}>
-          <div className={styles.infoContainer}>
-            {audienceViews[1]}
-          </div>
+          <div className={styles.infoContainer}>{audienceViews[1]}</div>
         </div>
 
         <div className={styles.overviewHeader}>
@@ -288,9 +285,7 @@ export default class Overview extends DashboardView {
         </div>
 
         <div className={styles.overviewRow}>
-          <div className={styles.infoContainer}>
-            {billingViews}
-          </div>
+          <div className={styles.infoContainer}>{billingViews}</div>
         </div>
       </div>
     );

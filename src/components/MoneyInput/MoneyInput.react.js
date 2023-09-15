@@ -9,28 +9,26 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/MoneyInput/MoneyInput.scss';
 
-let MoneyInput = ({ enabled = true, value, onChange = () => {}}) => {
-  return <input
-    type={'text'}
-    disabled={!enabled}
-    className={styles.moneyInput}
-    value={'$' + value.toString()}
-    onChange={e => {
-      onChange(e.nativeEvent.target.value);
-    }}
-  />
-}
+const MoneyInput = ({ enabled = true, value, onChange = () => {} }) => {
+  return (
+    <input
+      type={'text'}
+      disabled={!enabled}
+      className={styles.moneyInput}
+      value={'$' + value.toString()}
+      onChange={e => {
+        onChange(e.nativeEvent.target.value);
+      }}
+    />
+  );
+};
 
 export default MoneyInput;
 
 MoneyInput.propTypes = {
-  enabled: PropTypes.bool.describe(
-    'Determines whether the input is enabled.'
-  ),
+  enabled: PropTypes.bool.describe('Determines whether the input is enabled.'),
   onChange: PropTypes.func.describe(
     'A function fired when the input is changed. It receives the new value as its only parameter.'
   ),
-  value: PropTypes.number.isRequired.describe(
-    'The current value of the controlled input.'
-  ),
+  value: PropTypes.number.isRequired.describe('The current value of the controlled input.'),
 };

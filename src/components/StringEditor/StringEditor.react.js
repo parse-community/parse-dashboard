@@ -13,7 +13,7 @@ export default class StringEditor extends React.Component {
     super();
 
     this.state = {
-      value: props.value || ''
+      value: props.value || '',
     };
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
@@ -49,14 +49,14 @@ export default class StringEditor extends React.Component {
   }
 
   render() {
-    let classes = [styles.editor];
-    let onChange = this.props.readonly ? () => {} : (e) => this.setState({ value: e.target.value });
+    const classes = [styles.editor];
+    const onChange = this.props.readonly ? () => {} : e => this.setState({ value: e.target.value });
     if (this.props.readonly) {
-      classes.push(styles.readonly)
+      classes.push(styles.readonly);
     }
 
     if (this.props.multiline) {
-      var style = { minWidth: this.props.minWidth };
+      const style = { minWidth: this.props.minWidth };
       if (this.props.resizable) {
         style.resize = 'both';
       }
@@ -66,7 +66,8 @@ export default class StringEditor extends React.Component {
             ref={this.inputRef}
             value={this.state.value}
             onChange={onChange}
-            style={style} />
+            style={style}
+          />
         </div>
       );
     }
@@ -76,7 +77,8 @@ export default class StringEditor extends React.Component {
           ref={this.inputRef}
           value={this.state.value}
           onChange={onChange}
-          disabled={this.props.readonly} />
+          disabled={this.props.readonly}
+        />
       </div>
     );
   }

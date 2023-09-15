@@ -6,16 +6,14 @@
  * the root directory of this source tree.
  */
 import PropTypes from 'lib/PropTypes';
-import React     from 'react';
-import styles    from 'components/Fieldset/Fieldset.scss';
+import React from 'react';
+import styles from 'components/Fieldset/Fieldset.scss';
 
-let Fieldset = ({ legend, description, children }) => (
+const Fieldset = ({ legend, description, children }) => (
   <div className={styles.fieldset}>
     <div className={styles.legend}>{legend}</div>
     <div className={styles.description}>{description}</div>
-    <div className={styles.fields}>
-      {children}
-    </div>
+    <div className={styles.fields}>{children}</div>
   </div>
 );
 
@@ -27,5 +25,5 @@ Fieldset.propTypes = {
   ),
   description: PropTypes.node.describe(
     'The secondary header of the Fieldset. It can be any renderable content.'
-  )
+  ),
 };

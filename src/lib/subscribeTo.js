@@ -10,7 +10,7 @@ import * as StoreManager from 'lib/stores/StoreManager';
 import { CurrentApp } from 'context/currentApp';
 
 export default function subscribeTo(name, prop) {
-  return function(Component) {
+  return function (Component) {
     const store = StoreManager.getStore(name);
     const displayName = Component.displayName || Component.name || 'Component';
 
@@ -23,31 +23,31 @@ export default function subscribeTo(name, prop) {
       }, [currentApp]);
 
       React.useEffect(() => {
-        const handleNewData = (newData) => {
+        const handleNewData = newData => {
           if (data !== newData) {
             setData(newData);
           }
-        }
+        };
 
         const subscriptionId = store.subscribe(handleNewData);
 
         return () => {
           store.unsubscribe(subscriptionId);
-        }
-      }, [])
+        };
+      }, []);
 
-      let dispatch = (type, params={}) => {
+      const dispatch = (type, params = {}) => {
         if (store.isGlobal) {
           return store.dispatch(type, params);
         }
         return store.dispatch(type, params, currentApp);
       };
 
-      let extras = {
+      const extras = {
         [prop]: {
           data,
           dispatch,
-        }
+        },
       };
 
       return <Component {...props} {...extras} />;
