@@ -45,6 +45,7 @@ const BrowserToolbar = ({
   onExport,
   onRemoveColumn,
   onDeleteRows,
+  onExecuteScriptRows,
   onDropClass,
   onChangeCLP,
   onRefresh,
@@ -161,6 +162,13 @@ const BrowserToolbar = ({
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)}
         />
+        <Separator />
+        <MenuItem
+          disabled={selectionLength === 0}
+          text={selectionLength === 1 && !selection['*'] ? 'Execute script on this row' : 'Execute script on these rows'}
+          onClick={() => onExecuteScriptRows(selection)}
+        />
+        <Separator />
         {enableColumnManipulation ? (
           <MenuItem text="Delete a column" onClick={onRemoveColumn} />
         ) : (

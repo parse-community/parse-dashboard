@@ -18,6 +18,7 @@ import EmptyState from 'components/EmptyState/EmptyState.react';
 import ExportDialog from 'dashboard/Data/Browser/ExportDialog.react';
 import AttachRowsDialog from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
+import ExecuteScriptRowsDialog from 'dashboard/Data/Browser/ExecuteScriptRowsDialog.react';
 import CloneSelectedRowsDialog from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import EditRowDialog from 'dashboard/Data/Browser/EditRowDialog.react';
 import ExportSelectedRowsDialog from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
@@ -95,6 +96,8 @@ class Browser extends DashboardView {
 
       useMasterKey: true,
       currentUser: Parse.User.current(),
+
+      processedScripts: 0,
     };
 
     this.prefetchData = this.prefetchData.bind(this);
@@ -114,6 +117,9 @@ class Browser extends DashboardView {
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
     this.confirmAttachRows = this.confirmAttachRows.bind(this);
     this.showAttachSelectedRowsDialog = this.showAttachSelectedRowsDialog.bind(this);
+    this.showExecuteScriptRowsDialog = this.showExecuteScriptRowsDialog.bind(this);
+    this.confirmExecuteScriptRows = this.confirmExecuteScriptRows.bind(this);
+    this.cancelExecuteScriptRowsDialog = this.cancelExecuteScriptRowsDialog.bind(this);
     this.confirmAttachSelectedRows = this.confirmAttachSelectedRows.bind(this);
     this.cancelAttachSelectedRows = this.cancelAttachSelectedRows.bind(this);
     this.showCloneSelectedRowsDialog = this.showCloneSelectedRowsDialog.bind(this);
@@ -1326,6 +1332,18 @@ class Browser extends DashboardView {
     });
   }
 
+  showExecuteScriptRowsDialog() {
+    this.setState({
+      showExecuteScriptRowsDialog: true,
+    });
+  }
+
+  cancelExecuteScriptRowsDialog() {
+    this.setState({
+      showExecuteScriptRowsDialog: false,
+    });
+  }
+
   async confirmAttachSelectedRows(
     className,
     targetObjectId,
@@ -1344,6 +1362,37 @@ class Browser extends DashboardView {
     this.setState({
       selection: {},
     });
+  }
+
+  async confirmExecuteScriptRows(script) {
+    try {
+      const objects = [];
+      Object.keys(this.state.selection).forEach(key =>
+        objects.push(Parse.Object.extend(this.props.params.className).createWithoutData(key))
+      );
+      for (const object of objects) {
+        const response = await Parse.Cloud.run(
+          script.cloudCodeFunction,
+          { object: object.toPointer() },
+          { useMasterKey: true }
+        );
+        this.setState(prevState => ({
+          processedScripts: prevState.processedScripts + 1,
+        }));
+        this.showNote(
+          response ||
+            `Ran script "${script.title}" on "${this.props.className}" object "${object.id}".`
+        );
+      }
+      this.refresh();
+    } catch (e) {
+      this.showNote(e.message, true);
+      console.log(`Could not run ${script.title}: ${e}`);
+    } finally{
+      this.setState(({
+        processedScripts: 0,
+      }));
+    }
   }
 
   showCloneSelectedRowsDialog() {
@@ -1790,6 +1839,7 @@ class Browser extends DashboardView {
             onRefresh={this.refresh}
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
+            onExecuteScriptRows={this.showExecuteScriptRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
@@ -1941,6 +1991,16 @@ class Browser extends DashboardView {
           selection={this.state.selection}
           onCancel={this.cancelAttachSelectedRows}
           onConfirm={this.confirmAttachSelectedRows}
+        />
+      );
+    } else if (this.state.showExecuteScriptRowsDialog) {
+      extras = (
+        <ExecuteScriptRowsDialog
+          currentClass={this.props.params.className}
+          selection={this.state.selection}
+          onCancel={this.cancelExecuteScriptRowsDialog}
+          onConfirm={this.confirmExecuteScriptRows}
+          processedScripts={this.state.processedScripts}
         />
       );
     } else if (this.state.showCloneSelectedRowsDialog) {
