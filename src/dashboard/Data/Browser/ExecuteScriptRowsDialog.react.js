@@ -41,7 +41,7 @@ export default class ExecuteScriptRowsDialog extends React.Component {
 
   handleScriptChange(scriptName) {
     this.setState({
-      currentScript: validScripts.find(script => script.name === scriptName),
+      currentScript: this.state.validScripts.find(script => script.title === scriptName),
     });
   }
 
