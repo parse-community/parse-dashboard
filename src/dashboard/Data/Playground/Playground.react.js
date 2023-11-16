@@ -21,7 +21,7 @@ export default class Playground extends Component {
       results: [],
       running: false,
       saving: false,
-      savingState: SaveButton.States.WAITING
+      savingState: SaveButton.States.WAITING,
     };
   }
 
@@ -40,9 +40,9 @@ export default class Playground extends Component {
                   ? arg.map(this.getParseObjectAttr)
                   : this.getParseObjectAttr(arg)
                 : { result: arg },
-            name: 'Log'
-          }))
-        ]
+            name: 'Log',
+          })),
+        ],
       }));
 
       originalConsoleLog.apply(console, args);
@@ -56,9 +56,9 @@ export default class Playground extends Component {
               arg instanceof Error
                 ? { message: arg.message, name: arg.name, stack: arg.stack }
                 : { result: arg },
-            name: 'Error'
-          }))
-        ]
+            name: 'Error',
+          })),
+        ],
       }));
 
       originalConsoleError.apply(console, args);
@@ -71,16 +71,12 @@ export default class Playground extends Component {
     const [originalConsoleLog, originalConsoleError] = this.overrideConsole();
 
     try {
-      const {
-        applicationId, masterKey, serverURL, javascriptKey
-      } = this.context;
+      const { applicationId, masterKey, serverURL, javascriptKey } = this.context;
       const originalCode = this.editor.value;
 
       const finalCode = `return (async function(){
         try{
-          Parse.initialize('${applicationId}', ${
-        javascriptKey ? `'${javascriptKey}'` : undefined
-      });
+          Parse.initialize('${applicationId}', ${javascriptKey ? `'${javascriptKey}'` : undefined});
           Parse.masterKey = '${masterKey}';
           Parse.serverUrl = '${serverURL}';
 
@@ -110,13 +106,10 @@ export default class Playground extends Component {
       window.localStorage.setItem(this.localKey, code);
       this.setState({
         saving: false,
-        savingState: SaveButton.States.SUCCEEDED
+        savingState: SaveButton.States.SUCCEEDED,
       });
 
-      setTimeout(
-        () => this.setState({ savingState: SaveButton.States.WAITING }),
-        3000
-      );
+      setTimeout(() => this.setState({ savingState: SaveButton.States.WAITING }), 3000);
     } catch (e) {
       console.error(e);
       this.setState({ saving: false, savingState: SaveButton.States.FAILED });

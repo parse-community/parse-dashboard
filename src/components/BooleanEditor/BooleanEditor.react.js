@@ -15,7 +15,7 @@ export default class BooleanEditor extends React.Component {
     super();
 
     this.state = {
-      value: !!props.value
+      value: !!props.value,
     };
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
@@ -51,7 +51,8 @@ export default class BooleanEditor extends React.Component {
         <Toggle
           type={Toggle.Types.TRUE_FALSE}
           value={this.state.value}
-          onChange={(value) => this.setState({ value })} />
+          onChange={value => this.setState({ value })}
+        />
       </div>
     );
   }

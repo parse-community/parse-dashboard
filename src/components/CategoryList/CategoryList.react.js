@@ -23,7 +23,7 @@ export default class CategoryList extends React.Component {
   }
 
   componentDidMount() {
-    let listWrapper = this.listWrapperRef.current;
+    const listWrapper = this.listWrapperRef.current;
     if (listWrapper) {
       this.highlight = document.createElement('div');
       this.highlight.className = styles.highlight;
@@ -46,17 +46,17 @@ export default class CategoryList extends React.Component {
     if (this.highlight) {
       let height = 0;
       for (let i = 0; i < this.props.categories.length; i++) {
-        let c = this.props.categories[i];
-        let id = c.id || c.name;
+        const c = this.props.categories[i];
+        const id = c.id || c.name;
         if (id === this.props.current) {
           if (this.state.openClasses.includes(id)) {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
-              const queryFilter = query.get('filters')
+              const queryFilter = query.get('filters');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
                 if (queryFilter === filter.filter) {
-                  height += (i + 1) * 20
+                  height += (i + 1) * 20;
                   break;
                 }
               }
@@ -66,8 +66,10 @@ export default class CategoryList extends React.Component {
           this.highlight.style.top = height + 'px';
           return;
         }
-        if (this.state.openClasses.includes(id)) {
-          height = height + (20 * (c.filters.length + 1))
+        if (id === 'classSeparator') {
+          height += 13;
+        } else if (this.state.openClasses.includes(id)) {
+          height = height + 20 * (c.filters.length + 1);
         } else {
           height += 20;
         }
@@ -94,18 +96,18 @@ export default class CategoryList extends React.Component {
     }
     return (
       <div ref={this.listWrapperRef} className={styles.class_list}>
-        {this.props.categories.map((c) => {
-          let id = c.id || c.name;
+        {this.props.categories.map(c => {
+          const id = c.id || c.name;
           if (c.type === 'separator') {
             return <hr key={id} className={styles.separator} />;
           }
-          let count = c.count;
+          const count = c.count;
           let className = id === this.props.current ? styles.active : '';
           let selectedFilter = null;
-          if (this.state.openClasses.includes(id)) {
+          if (this.state.openClasses.includes(id) && id === this.props.current) {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
-              const queryFilter = query.get('filters')
+              const queryFilter = query.get('filters');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
                 if (queryFilter === filter.filter) {
@@ -116,7 +118,7 @@ export default class CategoryList extends React.Component {
               }
             }
           }
-          let link = generatePath(this.context, (this.props.linkPrefix || '') + (c.link || id));
+          const link = generatePath(this.context, (this.props.linkPrefix || '') + (c.link || id));
           return (
             <div>
               <div className={styles.link}>
@@ -127,7 +129,7 @@ export default class CategoryList extends React.Component {
                 {(c.filters || []).length !== 0 && (
                   <a
                     className={styles.expand}
-                    onClick={(e) => this.toggleDropdown(e, id)}
+                    onClick={e => this.toggleDropdown(e, id)}
                     style={{
                       transform: this.state.openClasses.includes(id) ? 'scaleY(-1)' : 'scaleY(1)',
                     }}
@@ -137,12 +139,14 @@ export default class CategoryList extends React.Component {
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
                   const { name, filter } = filterData;
-                  const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}`;
+                  const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
+                    filter
+                  )}`;
                   return (
                     <div className={styles.childLink}>
                       <Link
                         className={selectedFilter === index ? styles.active : ''}
-                        onClick={(e) => {
+                        onClick={e => {
                           e.preventDefault();
                           this.props.filterClicked(url);
                         }}
@@ -152,7 +156,7 @@ export default class CategoryList extends React.Component {
                       </Link>
                       <a
                         className={styles.close}
-                        onClick={(e) => {
+                        onClick={e => {
                           e.preventDefault();
                           this.props.removeFilter(filterData);
                         }}
@@ -171,7 +175,9 @@ export default class CategoryList extends React.Component {
 }
 
 CategoryList.propTypes = {
-  categories: PropTypes.arrayOf(PropTypes.object).describe('Array of categories used to populate list.'),
+  categories: PropTypes.arrayOf(PropTypes.object).describe(
+    'Array of categories used to populate list.'
+  ),
   current: PropTypes.string.describe('Id of current category to be highlighted.'),
   linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
 };

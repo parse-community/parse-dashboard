@@ -18,18 +18,23 @@ export const demos = [
     render: () => (
       <Fieldset>
         <Field
-          label={<Label text='Basic example' description='Description 1' />}
-          input={<InlineSubmitInput
-            onSubmit={(v) => alert('submitting: ' + v)}
-            submitButtonText='ADD' />} />
+          label={<Label text="Basic example" description="Description 1" />}
+          input={
+            <InlineSubmitInput onSubmit={v => alert('submitting: ' + v)} submitButtonText="ADD" />
+          }
+        />
         <Field
-          label={<Label text='Custom validation' description='Description 2' />}
-          input={<InlineSubmitInput
-            validate={(v) => v.length > 5}
-            placeholder='Must be longer than 5 letters'
-            onSubmit={(v) => alert('submitting: ' + v)}
-            submitButtonText='ADD' />} />
+          label={<Label text="Custom validation" description="Description 2" />}
+          input={
+            <InlineSubmitInput
+              validate={v => v.length > 5}
+              placeholder="Must be longer than 5 letters"
+              onSubmit={v => alert('submitting: ' + v)}
+              submitButtonText="ADD"
+            />
+          }
+        />
       </Fieldset>
-    )
-  }
+    ),
+  },
 ];

@@ -5,11 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Position             from 'lib/Position';
-import PropTypes            from 'lib/PropTypes'
+import Position from 'lib/Position';
+import PropTypes from 'lib/PropTypes';
 import React, { Component } from 'react';
-import styles               from 'components/Autocomplete/Autocomplete.scss';
-import SuggestionsList      from 'components/SuggestionsList/SuggestionsList.react';
+import styles from 'components/Autocomplete/Autocomplete.scss';
+import SuggestionsList from 'components/SuggestionsList/SuggestionsList.react';
 
 export default class Autocomplete extends Component {
   constructor(props) {
@@ -23,6 +23,7 @@ export default class Autocomplete extends Component {
     this.onBlur = this.onBlur.bind(this);
 
     this.onClick = this.onClick.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onInputClick = this.onInputClick.bind(this);
@@ -46,12 +47,13 @@ export default class Autocomplete extends Component {
     };
 
     this.state = {
+      valueFromSuggestion: props.strict ? props.value ?? props.suggestions[0] : '',
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: '',
+      userInput: props.strict ? props.value ?? props.suggestions[0] : '',
       label: props.label,
-      position: null
+      position: null,
     };
   }
 
@@ -60,6 +62,7 @@ export default class Autocomplete extends Component {
     this.fieldRef.current.addEventListener('scroll', this.handleScroll);
     this.recalculatePosition();
     this._ignoreBlur = false;
+    this._suggestionClicked = false;
   }
 
   componentWillUnmount() {
@@ -70,9 +73,7 @@ export default class Autocomplete extends Component {
   getPosition() {
     const node = this.fieldRef.current;
 
-    let newPosition = this.props.fixed
-      ? Position.inWindow(node)
-      : Position.inDocument(node);
+    const newPosition = this.props.fixed ? Position.inWindow(node) : Position.inDocument(node);
 
     newPosition.y += node.offsetHeight;
 
@@ -94,9 +95,8 @@ export default class Autocomplete extends Component {
     const filteredSuggestions = buildSuggestions
       ? buildSuggestions(userInput)
       : suggestions.filter(
-          suggestion =>
-            suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-        );
+        suggestion => suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+      );
     return filteredSuggestions;
   }
 
@@ -117,14 +117,19 @@ export default class Autocomplete extends Component {
       showSuggestions: true,
       userInput,
       label,
-      error: undefined
+      error: undefined,
     });
 
-    this.props.onChange && this.props.onChange(userInput);
+    if (!this.props.strict) {
+      this.props.onChange && this.props.onChange(userInput);
+    }
   }
 
   onClick(e) {
     const userInput = e.currentTarget.innerText;
+    if (this.props.strict) {
+      this.props.onChange && this.props.onChange(userInput);
+    }
     const label = this.props.label || this.props.buildLabel(userInput);
 
     this.inputRef.current.focus();
@@ -136,7 +141,7 @@ export default class Autocomplete extends Component {
         filteredSuggestions: [],
         showSuggestions: false,
         userInput,
-        label
+        label,
       },
       () => {
         this.props.onClick && this.props.onClick(e);
@@ -144,15 +149,34 @@ export default class Autocomplete extends Component {
     );
   }
 
+  onMouseDown(e) {
+    this._suggestionClicked = true;
+    this.props.onMouseDown && this.props.onMouseDown(e);
+  }
+
   onFocus(e) {
     if (!this._ignoreBlur && !this.state.showSuggestions) {
       this._ignoreBlur = true;
     }
-
+    if (this.props.strict) {
+      e.target.select();
+    }
     this.activate(e);
   }
 
   onBlur(e) {
+    if (this.props.strict) {
+      if (!this._suggestionClicked) {
+        if (!this.props.suggestions.includes(this.state.userInput)) {
+          this.setState({ userInput: this.state.valueFromSuggestion });
+          this.props.onChange && this.props.onChange(this.state.valueFromSuggestion);
+        } else {
+          this.setState({ valueFromSuggestion: this.state.userInput });
+          this.props.onChange && this.props.onChange(this.state.userInput);
+        }
+      }
+      this._suggestionClicked = false;
+    }
     this.props.onBlur && this.props.onBlur(e);
   }
 
@@ -186,7 +210,7 @@ export default class Autocomplete extends Component {
         filteredSuggestions,
         position,
         label,
-        showSuggestions: true
+        showSuggestions: true,
       },
       () => {
         this.props.onFocus && this.props.onFocus();
@@ -199,7 +223,7 @@ export default class Autocomplete extends Component {
       {
         active: false,
         showSuggestions: false,
-        activeSuggestion: 0
+        activeSuggestion: 0,
       },
       () => {
         this.props.onBlur && this.props.onBlur();
@@ -213,7 +237,7 @@ export default class Autocomplete extends Component {
         active: false,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: ''
+        userInput: '',
       },
       () => {
         this.inputRef.current.blur();
@@ -227,8 +251,8 @@ export default class Autocomplete extends Component {
     // Enter
     const { userInput } = this.state;
 
-      if (e.keyCode === 13) {
-            if (userInput && userInput.length > 0) {
+    if (e.keyCode === 13) {
+      if (userInput && userInput.length > 0) {
         this.props.onSubmit(userInput);
       }
     } else if (e.keyCode === 9) {
@@ -243,7 +267,7 @@ export default class Autocomplete extends Component {
         active: true,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: filteredSuggestions[activeSuggestion]
+        userInput: filteredSuggestions[activeSuggestion],
       });
     } else if (e.keyCode === 38) {
       // arrow up
@@ -253,7 +277,7 @@ export default class Autocomplete extends Component {
 
       this.setState({
         active: false,
-        activeSuggestion: activeSuggestion - 1
+        activeSuggestion: activeSuggestion - 1,
       });
     } else if (e.keyCode === 40) {
       // arrow down
@@ -263,7 +287,7 @@ export default class Autocomplete extends Component {
 
       this.setState({
         active: false,
-        activeSuggestion: activeSuggestion + 1
+        activeSuggestion: activeSuggestion + 1,
       });
     }
   }
@@ -279,9 +303,17 @@ export default class Autocomplete extends Component {
       onChange,
       onClick,
       onBlur,
+      onMouseDown,
       onFocus,
       onKeyDown,
-      props: { suggestionsStyle, inputStyle, placeholder, error },
+      props: {
+        suggestionsStyle,
+        suggestionsItemStyle,
+        inputStyle,
+        containerStyle,
+        placeholder,
+        error,
+      },
       state: {
         activeSuggestion,
         filteredSuggestions,
@@ -289,18 +321,15 @@ export default class Autocomplete extends Component {
         userInput,
         hidden,
         active,
-        label
-      }
+        label,
+      },
     } = this;
 
     const fieldClassName = [
       styles.field,
       active && styles.active,
       error ? styles.error : undefined,
-      showSuggestions &&
-        !hidden &&
-        filteredSuggestions.length &&
-        styles.dropdown
+      showSuggestions && !hidden && filteredSuggestions.length && styles.dropdown,
     ].join(' ');
 
     const inputClasses = [error && styles.error].join(' ');
@@ -314,19 +343,21 @@ export default class Autocomplete extends Component {
           onExternalClick={onExternalClick}
           suggestions={filteredSuggestions}
           suggestionsStyle={suggestionsStyle}
+          suggestionsItemStyle={suggestionsItemStyle}
           activeSuggestion={activeSuggestion}
           onClick={onClick}
+          onMouseDown={onMouseDown}
         />
       );
     }
 
     return (
       <React.Fragment>
-        <div className={fieldClassName} ref={this.fieldRef}>
+        <div style={containerStyle} className={fieldClassName} ref={this.fieldRef}>
           <input
             id={1}
             role={'combobox'}
-            autoComplete='off'
+            autoComplete="new-password"
             className={inputClasses}
             placeholder={placeholder}
             ref={this.inputRef}
@@ -349,28 +380,16 @@ export default class Autocomplete extends Component {
 }
 
 Autocomplete.propTypes = {
-  inputStyle: PropTypes.object.describe(
-    'Styling for the input.'
-  ),
-  suggestionsStyle: PropTypes.object.describe(
-    'Styling for the suggestions dropdown.'
-  ),
-  onChange: PropTypes.func.describe(
-    'Callback triggered when input fiield is changed'
-  ),
-  onSubmit: PropTypes.func.describe(
-    'Callback triggered when "enter" key pressed'
-  ),
-  placeholder: PropTypes.string.describe(
-    'Placeholder text'
-  ),
+  inputStyle: PropTypes.object.describe('Styling for the input.'),
+  suggestionsStyle: PropTypes.object.describe('Styling for the suggestions dropdown.'),
+  onChange: PropTypes.func.describe('Callback triggered when input fiield is changed'),
+  onSubmit: PropTypes.func.describe('Callback triggered when "enter" key pressed'),
+  placeholder: PropTypes.string.describe('Placeholder text'),
   buildSuggestions: PropTypes.func.describe(
     'Function receiving current input as an argument and should return an array to be rendered as suggestions'
   ),
   buildLabel: PropTypes.func.describe(
     'Function receiving current input as an argument and should return a string to be rendered as label'
   ),
-  error: PropTypes.string.describe(
-    'Error to be rendered in place of label if defined'
-  )
-}
+  error: PropTypes.string.describe('Error to be rendered in place of label if defined'),
+};

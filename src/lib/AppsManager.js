@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ParseApp           from 'lib/ParseApp';
+import ParseApp from 'lib/ParseApp';
 import { post, del } from 'lib/AJAX';
 
-let appsStore = [];
+const appsStore = [];
 
 const AppsManager = {
   addApp(raw) {
@@ -16,14 +16,14 @@ const AppsManager = {
   },
 
   apps() {
-    appsStore.sort(function(app1, app2) {
+    appsStore.sort(function (app1, app2) {
       return app1.name.localeCompare(app2.name);
     });
     return appsStore;
   },
 
   findAppBySlugOrName(slugOrName) {
-    let apps = this.apps();
+    const apps = this.apps();
     for (let i = apps.length; i--;) {
       if (apps[i].slug === slugOrName || apps[i].name === slugOrName) {
         return apps[i];
@@ -33,14 +33,14 @@ const AppsManager = {
   },
 
   create(name, connectionURL) {
-    let payload = {
-      parse_app: { name }
+    const payload = {
+      parse_app: { name },
     };
     if (connectionURL) {
       payload.parse_app.connectionString = connectionURL;
     }
-    return post('/apps', payload).then((response) => {
-      let newApp = new ParseApp(response.app);
+    return post('/apps', payload).then(response => {
+      const newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;
     });
@@ -59,17 +59,17 @@ const AppsManager = {
 
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
-    return Promise.all(this.apps().map(app => {
-      if (app.serverInfo.error) {
-        return;
-      }
-      return Promise.all(
-        [
-          app.getClassCount('_Installation').then(count => app.installations = count),
-          app.getClassCount('_User').then(count => app.users = count)
-        ]
-      );
-    }));
+    return Promise.all(
+      this.apps().map(app => {
+        if (app.serverInfo.error) {
+          return;
+        }
+        return Promise.all([
+          app.getClassCount('_Installation').then(count => (app.installations = count)),
+          app.getClassCount('_User').then(count => (app.users = count)),
+        ]);
+      })
+    );
   },
 
   // Options should be a list containing a subset of
@@ -77,7 +77,7 @@ const AppsManager = {
   // indicating which parts of the app to clone.
   cloneApp(slug, name, options) {
     //Clone nothing by default
-    let optionsForRuby = {
+    const optionsForRuby = {
       cloud_code: false,
       background_jobs: false,
       config: false,
@@ -85,13 +85,14 @@ const AppsManager = {
       app_settings: false,
       data: false,
     };
-    options.forEach((option) => {
-      if (option !== 'data') { //Data cloning not supported yet, but api_server still requires the key to be present
+    options.forEach(option => {
+      if (option !== 'data') {
+        //Data cloning not supported yet, but api_server still requires the key to be present
         optionsForRuby[option] = true;
       }
     });
-    let path = '/apps/' + slug + '/clone_app';
-    let request = post(path, {
+    const path = '/apps/' + slug + '/clone_app';
+    const request = post(path, {
       app_name: name,
       options: optionsForRuby,
     });
@@ -105,21 +106,21 @@ const AppsManager = {
   },
 
   transferApp(slug, newOwner, password) {
-    let payload = {
+    const payload = {
       new_owner_email: newOwner,
-    }
+    };
     if (password) {
       // Users who log in with oauth don't have a password,
       // and don't require one to transfer their app.
       payload.password_confirm_transfer = password;
     }
 
-    let promise = post('/apps/' + slug + '/transfer', payload);
+    const promise = post('/apps/' + slug + '/transfer', payload);
     promise.then(() => {
       //TODO modify appsStore to reflect transfer
     });
     return promise;
-  }
-}
+  },
+};
 
 export default AppsManager;

@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { GeoPoint }    from 'parse';
-import React           from 'react';
-import styles          from 'components/GeoPointEditor/GeoPointEditor.scss';
+import { GeoPoint } from 'parse';
+import React from 'react';
+import styles from 'components/GeoPointEditor/GeoPointEditor.scss';
 import validateNumeric from 'lib/validateNumeric';
 
 export default class GeoPointEditor extends React.Component {
@@ -54,16 +54,19 @@ export default class GeoPointEditor extends React.Component {
 
   checkExternalClick() {
     // timeout needed because activeElement is set after onBlur event is done
-    setTimeout(function() {
-      // check if activeElement is something else from input fields,
-      // to avoid commiting new value on every switch of focus beetween latitude and longitude fields
-      if (
-        document.activeElement !== this.latitudeRef.current &&
-        document.activeElement !== this.longitudeRef.current
-      ) {
-        this.commitValue();
-      }
-    }.bind(this), 1);
+    setTimeout(
+      function () {
+        // check if activeElement is something else from input fields,
+        // to avoid commiting new value on every switch of focus beetween latitude and longitude fields
+        if (
+          document.activeElement !== this.latitudeRef.current &&
+          document.activeElement !== this.longitudeRef.current
+        ) {
+          this.commitValue();
+        }
+      }.bind(this),
+      1
+    );
   }
 
   handleKeyLatitude(e) {
@@ -88,7 +91,11 @@ export default class GeoPointEditor extends React.Component {
     if (typeof this.state.longitude === 'string') {
       longitude = parseFloat(this.state.longitude);
     }
-    if (this.props.value && latitude === this.props.value.latitude && longitude === this.props.value.longitude) {
+    if (
+      this.props.value &&
+      latitude === this.props.value.latitude &&
+      longitude === this.props.value.longitude
+    ) {
       // No change, return the original object
       this.props.onCommit(this.props.value);
     } else {
@@ -102,35 +109,39 @@ export default class GeoPointEditor extends React.Component {
   }
 
   render() {
-    let onChange = (target, e) => {
-      let value = e.target.value;
+    const onChange = (target, e) => {
+      const value = e.target.value;
 
       if (!validateNumeric(value)) {
-        var values = value.split(',');
+        const regex = /[[("' ]?(?<x>[0-9.]+)["' ]?,["' ]?(?<y>[0-9.]+)["' )\]]?/;
+        const match = regex.exec(value);
 
-        if (values.length == 2) {
-          values = values.map(val => val.trim());
+        if (!match) {
+          return null;
+        }
 
-          if (values[0].length > 0 && validateNumeric(values[0])) {
+        const values = [match.groups.x, match.groups.y];
 
-            if (values[1].length <= 0 || !validateNumeric(values[1])) {
-              this.setState({ latitude: values[0] });
-              this.longitudeRef.current.focus();
-              this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
-              return;
-            }
+        if (values[0].length > 0 && validateNumeric(values[0])) {
+          if (values[1].length <= 0 || !validateNumeric(values[1])) {
+            this.setState({ latitude: values[0] });
+            this.longitudeRef.current.focus();
+            this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
+            return;
+          }
 
-            if (validateNumeric(values[1])) {
-              this.setState({ latitude: values[0] });
-              this.setState({ longitude: values[1] });
-              this.longitudeRef.current.focus();
-              return;
-            }
+          if (validateNumeric(values[1])) {
+            this.setState({ latitude: values[0] });
+            this.setState({ longitude: values[1] });
+            this.longitudeRef.current.focus();
+            return;
           }
         }
       }
 
-      this.setState({ [target]: validateNumeric(value) ? value : this.state[target] });
+      this.setState({
+        [target]: validateNumeric(value) ? value : this.state[target],
+      });
     };
     return (
       <div style={{ width: this.props.width, ...this.props.style }} className={styles.editor}>
@@ -138,12 +149,14 @@ export default class GeoPointEditor extends React.Component {
           ref={this.latitudeRef}
           value={this.state.latitude}
           onBlur={this.checkExternalClick}
-          onChange={onChange.bind(this, 'latitude')} />
+          onChange={onChange.bind(this, 'latitude')}
+        />
         <input
           ref={this.longitudeRef}
           value={this.state.longitude}
           onBlur={this.checkExternalClick}
-          onChange={onChange.bind(this, 'longitude')} />
+          onChange={onChange.bind(this, 'longitude')}
+        />
       </div>
     );
   }

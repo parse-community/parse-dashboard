@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 import { Directions } from 'lib/Constants';
-import React          from 'react';
-import styles         from 'components/SliderWrap/SliderWrap.scss';
+import React from 'react';
+import styles from 'components/SliderWrap/SliderWrap.scss';
 
 export default class SliderWrap extends React.Component {
   constructor() {
@@ -23,22 +23,23 @@ export default class SliderWrap extends React.Component {
   }
 
   _getMetric() {
-    if (this.props.direction === Directions.LEFT ||
-        this.props.direction === Directions.RIGHT) {
+    if (this.props.direction === Directions.LEFT || this.props.direction === Directions.RIGHT) {
       return 'width';
     }
-    if (!this.props.direction ||
-        this.props.direction === Directions.UP ||
-        this.props.direction === Directions.DOWN) {
+    if (
+      !this.props.direction ||
+      this.props.direction === Directions.UP ||
+      this.props.direction === Directions.DOWN
+    ) {
       return 'height';
     }
     return 'both';
   }
 
   render() {
-    let style = {};
-    let metric = this._getMetric();
-    let node = this.metricsRef.current;
+    const style = {};
+    const metric = this._getMetric();
+    const node = this.metricsRef.current;
     if (!this.props.expanded || !node) {
       if (metric === 'width' || metric === 'both') {
         style.width = '0px';
@@ -59,7 +60,11 @@ export default class SliderWrap extends React.Component {
     }
     return (
       <div className={styles.slider} style={style}>
-        <div className={styles.metrics} style={this.props.block ? { display: 'block' } : {}} ref={this.metricsRef}>
+        <div
+          className={styles.metrics}
+          style={this.props.block ? { display: 'block' } : {}}
+          ref={this.metricsRef}
+        >
           {this.props.children}
         </div>
       </div>

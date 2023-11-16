@@ -129,7 +129,7 @@ const showInstructions = ({ app, username, passwordCopied, encrypt, config }) =>
       `\n${getOrder()}. Make sure that "useEncryptedPasswords" is set to "true" in your dashboard configuration.` +
       '\n   You chose to generate an encrypted password for this user.' +
       '\n   Any existing users with non-encrypted passwords will require newly created, encrypted passwords.'
-      );
+    );
   }
   console.log(
     '\n------------------------------------------------------------------------------\n'
@@ -198,7 +198,7 @@ module.exports = {
         }
       ]);
       const { algorithm, digits, period } = await getAlgorithm();
-      const secret  =generateSecret({ app, username, algorithm, digits, period });
+      const secret  = generateSecret({ app, username, algorithm, digits, period });
       Object.assign(config, secret.config);
       showQR(secret.config.url);
     }

@@ -5,33 +5,33 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { ActionTypes }           from 'lib/stores/AnalyticsQueryStore';
-import * as AnalyticsConstants   from 'dashboard/Analytics/AnalyticsConstants';
-import Button                    from 'components/Button/Button.react';
-import CategoryList              from 'components/CategoryList/CategoryList.react';
-import Chart                     from 'components/Chart/Chart.react';
-import { ChartColorSchemes }     from 'lib/Constants';
-import DashboardView             from 'dashboard/DashboardView.react';
-import DateRange                 from 'components/DateRange/DateRange.react';
-import { Directions }            from 'lib/Constants';
-import EmptyState                from 'components/EmptyState/EmptyState.react';
+import { ActionTypes } from 'lib/stores/AnalyticsQueryStore';
+import * as AnalyticsConstants from 'dashboard/Analytics/AnalyticsConstants';
+import Button from 'components/Button/Button.react';
+import CategoryList from 'components/CategoryList/CategoryList.react';
+import Chart from 'components/Chart/Chart.react';
+import { ChartColorSchemes } from 'lib/Constants';
+import DashboardView from 'dashboard/DashboardView.react';
+import DateRange from 'components/DateRange/DateRange.react';
+import { Directions } from 'lib/Constants';
+import EmptyState from 'components/EmptyState/EmptyState.react';
 import ExplorerActiveChartButton from 'components/ExplorerActiveChartButton/ExplorerActiveChartButton.react';
-import ExplorerMenuButton        from 'components/ExplorerMenuButton/ExplorerMenuButton.react';
-import Icon                      from 'components/Icon/Icon.react';
-import JsonPrinter               from 'components/JsonPrinter/JsonPrinter.react';
-import LoaderContainer           from 'components/LoaderContainer/LoaderContainer.react';
-import Parse                     from 'parse';
-import prettyNumber              from 'lib/prettyNumber';
-import React                     from 'react';
-import styles                    from 'dashboard/Analytics/Explorer/Explorer.scss';
-import stylesTable               from 'components/Table/Table.scss';
-import subscribeTo               from 'lib/subscribeTo';
-import Toolbar                   from 'components/Toolbar/Toolbar.react';
-import baseStyles                from 'stylesheets/base.scss';
+import ExplorerMenuButton from 'components/ExplorerMenuButton/ExplorerMenuButton.react';
+import Icon from 'components/Icon/Icon.react';
+import JsonPrinter from 'components/JsonPrinter/JsonPrinter.react';
+import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
+import Parse from 'parse';
+import prettyNumber from 'lib/prettyNumber';
+import React from 'react';
+import styles from 'dashboard/Analytics/Explorer/Explorer.scss';
+import stylesTable from 'components/Table/Table.scss';
+import subscribeTo from 'lib/subscribeTo';
+import Toolbar from 'components/Toolbar/Toolbar.react';
+import baseStyles from 'stylesheets/base.scss';
 import { withRouter } from 'lib/withRouter';
 
-let buildFriendlyName = (query) => {
-  let name = [query.source];
+const buildFriendlyName = query => {
+  const name = [query.source];
   if (query.groups && query.groups.length > 0) {
     name.push('grouped by');
     name.push(...query.groups);
@@ -49,31 +49,27 @@ class Explorer extends DashboardView {
 
     this.displaySize = {
       width: 800,
-      height: 400
+      height: 400,
     };
-    let date = new Date();
+    const date = new Date();
     this.state = {
       activeQueries: [],
       dateRange: {
-        start: new Date(
-          date.getFullYear(),
-          date.getMonth() - 1,
-          date.getDate()
-        ),
-        end: date
+        start: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
+        end: date,
       },
       loading: false,
-      mutated: false
+      mutated: false,
     };
     this.xhrHandles = [];
     this.displayRef = React.createRef();
   }
 
   componentDidMount() {
-    let display = this.displayRef.current;
+    const display = this.displayRef.current;
     this.displaySize = {
       width: display.offsetWidth,
-      height: display.offsetHeight
+      height: display.offsetHeight,
     };
   }
 
@@ -95,20 +91,20 @@ class Explorer extends DashboardView {
   }
 
   getCustomQueriesFromProps(props) {
-    let customQueries = props.customQueries.data.get('queries');
+    const customQueries = props.customQueries.data.get('queries');
     return (customQueries && customQueries.toArray()) || [];
   }
 
   handleQueryToggle(index, active) {
-    let activeQueries = this.state.activeQueries;
+    const activeQueries = this.state.activeQueries;
     activeQueries[index].enabled = active;
     this.setState({ activeQueries: activeQueries });
   }
 
   handleQuerySave(query) {
     // Push new save result
-    let activeQueries = this.state.activeQueries;
-    let existingQueryIndex = activeQueries.findIndex((activeQuery) => {
+    const activeQueries = this.state.activeQueries;
+    const existingQueryIndex = activeQueries.findIndex(activeQuery => {
       if (query.localId) {
         return query.localId === activeQuery.localId;
       }
@@ -135,30 +131,30 @@ class Explorer extends DashboardView {
     // Update the state to trigger rendering pipeline.
     this.setState({
       activeQueries,
-      mutated: true
+      mutated: true,
     });
   }
 
   handleQuerySelect(query) {
-    let activeQueries = this.state.activeQueries;
+    const activeQueries = this.state.activeQueries;
     query.enabled = true;
     activeQueries.push(query);
     this.setState({
       activeQueries,
-      mutated: true
+      mutated: true,
     });
   }
 
   handleQueryDelete(query) {
     this.props.customQueries.dispatch(ActionTypes.DELETE, {
       query: {
-        objectId: query.objectId
-      }
+        objectId: query.objectId,
+      },
     });
   }
 
   handleRunQuery() {
-    let promises = [];
+    const promises = [];
     this.xhrHandles = [];
     this.setState({ loading: true });
     this.state.activeQueries.forEach((query, i) => {
@@ -166,38 +162,39 @@ class Explorer extends DashboardView {
       let xhr = null;
       if (query.preset && query.nonComposable) {
         // A preset query, DAU, MAU, DAI
-        let payload = {
+        const payload = {
           ...query.query,
           from: this.state.dateRange.start.getTime() / 1000,
-          to: this.state.dateRange.end.getTime() / 1000
+          to: this.state.dateRange.end.getTime() / 1000,
         };
 
-        let abortableRequest = this.context.getAnalyticsTimeSeries(payload);
-        promise = abortableRequest.promise.then((result) => {
-          let activeQueries = this.state.activeQueries;
-          activeQueries[i].result = result.map((point) => (
-            [Parse._decode('date', point[0]).getTime(), point[1]]
-          ));
+        const abortableRequest = this.context.getAnalyticsTimeSeries(payload);
+        promise = abortableRequest.promise.then(result => {
+          const activeQueries = this.state.activeQueries;
+          activeQueries[i].result = result.map(point => [
+            Parse._decode('date', point[0]).getTime(),
+            point[1],
+          ]);
           this.setState({ activeQueries });
         });
         xhr = abortableRequest.xhr;
       } else {
         // Custom query
-        let payload = this.buildCustomQueryPayload(query);
+        const payload = this.buildCustomQueryPayload(query);
         promise = this.props.customQueries.dispatch(ActionTypes.FETCH, payload).then(() => {
           let activeQueries = this.state.activeQueries;
           // Update the result based on store in background.
-          let customQueries = this.getCustomQueriesFromProps(this.props);
-          activeQueries = activeQueries.map((query) => {
+          const customQueries = this.getCustomQueriesFromProps(this.props);
+          activeQueries = activeQueries.map(query => {
             let serverResult = null;
             if (query.objectId) {
               // We have predefined custom query.
-              serverResult = customQueries.find((customQuery) => {
+              serverResult = customQueries.find(customQuery => {
                 return customQuery.objectId === query.objectId;
               });
             } else if (query.localId) {
               // We're in the middle of custom query creation.
-              serverResult = customQueries.find((customQuery) => {
+              serverResult = customQueries.find(customQuery => {
                 return customQuery.localId === query.localId;
               });
             }
@@ -208,7 +205,7 @@ class Explorer extends DashboardView {
 
             return {
               ...query,
-              result: serverResult.result
+              result: serverResult.result,
             };
           });
 
@@ -220,19 +217,21 @@ class Explorer extends DashboardView {
       promises.push(promise);
       this.xhrHandles.push(xhr);
     });
-    Promise.all(promises).then(() => this.setState({
-      loading: false,
-      mutated: false
-    }));
+    Promise.all(promises).then(() =>
+      this.setState({
+        loading: false,
+        mutated: false,
+      })
+    );
   }
 
   handleDownload() {
     const csvDeclaration = 'data:text/csv;charset=utf-8,';
-    let csvRows = this.state.activeQueries.map((query) => {
+    const csvRows = this.state.activeQueries.map(query => {
       switch (this.props.params.displayType) {
         case 'chart':
-          let columns = ['time'];
-          let csvValues = [];
+          const columns = ['time'];
+          const csvValues = [];
           // Transform:
           // {
           //   foo: [[123, bar], [456, baz]]
@@ -240,8 +239,8 @@ class Explorer extends DashboardView {
           // }
           // into
           // [[time, foo, a], [123, bar, b], [456, baz, c]]
-          for (let key in query.result) {
-            let result = query.result[key];
+          for (const key in query.result) {
+            const result = query.result[key];
             columns.push(key);
             result.forEach((value, index) => {
               if (csvValues[index] === undefined) {
@@ -268,9 +267,7 @@ class Explorer extends DashboardView {
           // ]
           // into
           // [[foo, a], [bar, b], [baz, c]]
-          csvArray = csvArray.concat(query.result.map((result) => (
-            keys.map((key) => result[key])
-          )));
+          csvArray = csvArray.concat(query.result.map(result => keys.map(key => result[key])));
 
           return csvArray.join('\n');
       }
@@ -280,126 +277,137 @@ class Explorer extends DashboardView {
   }
 
   buildCustomQueryPayload(query) {
-    let queryWithoutResult = { ...query };
+    const queryWithoutResult = { ...query };
     queryWithoutResult.result = undefined;
 
-    let payload = {
+    const payload = {
       ...queryWithoutResult,
       type: this.props.params.displayType,
       from: this.state.dateRange.start.getTime(),
-      to: this.state.dateRange.end.getTime()
-    }
+      to: this.state.dateRange.end.getTime(),
+    };
 
     return {
       query: {
-        ...payload
-      }
+        ...payload,
+      },
     };
   }
 
   renderSidebar() {
-    let current = this.props.params.displayType || '';
+    const current = this.props.params.displayType || '';
     return (
-      <CategoryList current={current} linkPrefix={'analytics/explorer/'} categories={[
-        { name: 'Chart', id: 'chart' },
-        { name: 'Table', id: 'table' },
-        { name: 'JSON', id: 'json' }
-      ]} />
+      <CategoryList
+        current={current}
+        linkPrefix={'analytics/explorer/'}
+        categories={[
+          { name: 'Chart', id: 'chart' },
+          { name: 'Table', id: 'table' },
+          { name: 'JSON', id: 'json' },
+        ]}
+      />
     );
   }
 
   renderContent() {
-    let { displayType } = this.props.params;
-    let isTimeSeries = displayType === 'chart';
-    let explorerQueries = this.getCustomQueriesFromProps(this.props);
-    let savedQueries = explorerQueries.filter((query) => query.type === displayType && query.isSaved);
-    let recentQueries = explorerQueries.filter((query) => query.type === displayType && !query.isSaved);
+    const { displayType } = this.props.params;
+    const isTimeSeries = displayType === 'chart';
+    const explorerQueries = this.getCustomQueriesFromProps(this.props);
+    const savedQueries = explorerQueries.filter(
+      query => query.type === displayType && query.isSaved
+    );
+    const recentQueries = explorerQueries.filter(
+      query => query.type === displayType && !query.isSaved
+    );
 
     let queries = [];
     if (isTimeSeries) {
       // We don't allow preset queries on Table/JSON
       queries = queries.concat(AnalyticsConstants.PresetQueries);
     }
-    queries = queries.concat({
-      name: 'Saved Queries',
-      children: savedQueries,
-      emptyMessage: 'You have not saved any queries yet.'
-    }, {
-      name: 'Recent Queries',
-      children: recentQueries,
-      emptyMessage: 'You have no recent custom queries yet.'
-    });
+    queries = queries.concat(
+      {
+        name: 'Saved Queries',
+        children: savedQueries,
+        emptyMessage: 'You have not saved any queries yet.',
+      },
+      {
+        name: 'Recent Queries',
+        children: recentQueries,
+        emptyMessage: 'You have no recent custom queries yet.',
+      }
+    );
 
-    let toolbar = (
-      <Toolbar
-        section='Analytics'
-        subsection='Explorer'>
+    const toolbar = (
+      <Toolbar section="Analytics" subsection="Explorer">
         <button
-          type='button'
+          type="button"
           className={styles.toolbarAction}
-          style={{ borderRight: '1px solid #66637a' }}>
-          <Icon name='question-solid' width={14} height={14} fill='#66637a' />
+          style={{ borderRight: '1px solid #66637a' }}
+        >
+          <Icon name="question-solid" width={14} height={14} fill="#66637a" />
           FAQ
         </button>
         <button
-          type='button'
+          type="button"
           onClick={this.handleDownload.bind(this)}
-          className={styles.toolbarAction}>
-          <Icon name='download' width={14} height={14} fill='#66637a' />
+          className={styles.toolbarAction}
+        >
+          <Icon name="download" width={14} height={14} fill="#66637a" />
           Download
         </button>
       </Toolbar>
     );
 
-    let activeQueryViews = this.state.activeQueries.map((query, i) => (
+    const activeQueryViews = this.state.activeQueries.map((query, i) => (
       <div className={styles.activeQueryWrap} key={`query${i}`}>
         <ExplorerActiveChartButton
           onSave={this.handleQuerySave.bind(this)}
           onToggle={this.handleQueryToggle.bind(this, i)}
           onDismiss={() => {
-            let activeQueries = this.state.activeQueries;
+            const activeQueries = this.state.activeQueries;
             activeQueries.splice(i, 1);
             this.setState({ activeQueries, mutated: true });
           }}
           isTimeSeries={isTimeSeries}
           query={query}
           color={ChartColorSchemes[i]}
-          queries={queries} />
+          queries={queries}
+        />
       </div>
     ));
 
     activeQueryViews.push(
-      <div className={styles.menuButtonWrap} key='addbutton'>
+      <div className={styles.menuButtonWrap} key="addbutton">
         <ExplorerMenuButton
           onSave={this.handleQuerySave.bind(this)}
           onSelect={this.handleQuerySelect.bind(this)}
           onDelete={this.handleQueryDelete.bind(this)}
           isTimeSeries={isTimeSeries}
-          value='Add query'
-          queries={queries} />
+          value="Add query"
+          queries={queries}
+        />
       </div>
     );
 
-    let header = (
-      <div className={styles.header}>
-        {activeQueryViews}
-      </div>
-    );
+    const header = <div className={styles.header}>{activeQueryViews}</div>;
 
-    let footer = (
+    const footer = (
       <div className={styles.footer}>
         <div className={[styles.right, baseStyles.verticalCenter].join(' ')}>
           <span style={{ marginRight: '10px' }}>
             <DateRange
               value={this.state.dateRange}
-              onChange={(newValue) => (this.setState({ dateRange: newValue, mutated: true }))}
-              align={Directions.RIGHT} />
+              onChange={newValue => this.setState({ dateRange: newValue, mutated: true })}
+              align={Directions.RIGHT}
+            />
           </span>
           <Button
             primary={true}
             disabled={this.state.activeQueries.length === 0 || !this.state.mutated}
             onClick={this.handleRunQuery.bind(this)}
-            value='Run query' />
+            value="Run query"
+          />
         </div>
       </div>
     );
@@ -409,13 +417,14 @@ class Explorer extends DashboardView {
       currentDisplay = (
         <EmptyState
           title={'No queries to display.'}
-          icon='analytics-outline'
-          description={'Use the "Add query" button above to visualize your data.'} />
+          icon="analytics-outline"
+          description={'Use the "Add query" button above to visualize your data.'}
+        />
       );
     } else {
       switch (displayType) {
         case 'chart':
-          let chartData = {};
+          const chartData = {};
           this.state.activeQueries.forEach((query, i) => {
             if (!query.result || Object.keys(query.result).length === 0) {
               return;
@@ -427,16 +436,16 @@ class Explorer extends DashboardView {
             if (Array.isArray(query.result)) {
               chartData[query.name] = {
                 color: ChartColorSchemes[i],
-                points: query.result
-              }
+                points: query.result,
+              };
             } else {
               let index = 0;
-              for (let key in query.result) {
+              for (const key in query.result) {
                 chartData[query.name + ' ' + key] = {
                   color: ChartColorSchemes[i],
                   points: query.result[key],
-                  index: index++
-                }
+                  index: index++,
+                };
               }
             }
           });
@@ -448,7 +457,8 @@ class Explorer extends DashboardView {
                 width={this.displaySize.width}
                 height={this.displaySize.height}
                 data={chartData}
-                formatter={(value, label) => (`${label} ${prettyNumber(value, 3)}`)} />
+                formatter={(value, label) => `${label} ${prettyNumber(value, 3)}`}
+              />
             );
           }
           break;
@@ -465,16 +475,17 @@ class Explorer extends DashboardView {
               return null;
             }
 
-            let width = Math.floor(100 / query.result[0].length);
-            let headers = query.result[0].map((header) => (
+            const width = Math.floor(100 / query.result[0].length);
+            const headers = query.result[0].map(header => (
               <th
                 key={header}
                 className={[stylesTable.header, styles.td].join(' ')}
-                style={{ display: 'table-cell' }}>
+                style={{ display: 'table-cell' }}
+              >
                 {header}
               </th>
             ));
-            let rows = [];
+            const rows = [];
             for (let i = 1; i < query.result.length; ++i) {
               rows.push(
                 <tr className={stylesTable.tr} key={`row${i - 1}`}>
@@ -482,7 +493,8 @@ class Explorer extends DashboardView {
                     <td
                       key={`row${i - 1}col${j}`}
                       className={[stylesTable.td, styles.td].join(' ')}
-                      width={`${width}%`}>
+                      width={`${width}%`}
+                    >
                       {value}
                     </td>
                   ))}
@@ -495,13 +507,9 @@ class Explorer extends DashboardView {
                 <div className={stylesTable.rows}>
                   <table className={styles.table}>
                     <thead className={stylesTable.headers} style={{ position: 'initial' }}>
-                      <tr>
-                        {headers}
-                      </tr>
+                      <tr>{headers}</tr>
                     </thead>
-                    <tbody>
-                      {rows}
-                    </tbody>
+                    <tbody>{rows}</tbody>
                   </table>
                 </div>
               </div>
@@ -518,17 +526,13 @@ class Explorer extends DashboardView {
               return null;
             }
 
-            return (
-              <JsonPrinter
-                key={`chart${i}`}
-                object={query.result} />
-            );
+            return <JsonPrinter key={`chart${i}`} object={query.result} />;
           });
           break;
       }
     }
 
-    let content = (
+    const content = (
       <div className={styles.content}>
         <div ref={this.displayRef} className={styles.display}>
           {currentDisplay}

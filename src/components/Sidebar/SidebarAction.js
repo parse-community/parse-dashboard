@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'components/Sidebar/Sidebar.scss';
 
 export default class SidebarAction {
@@ -16,9 +16,7 @@ export default class SidebarAction {
 
   renderButton() {
     return (
-      <a
-        className={styles.action}
-        onClick={this.fn || function() {}}>
+      <a className={styles.action} onClick={this.fn || function () {}}>
         {this.text}
       </a>
     );

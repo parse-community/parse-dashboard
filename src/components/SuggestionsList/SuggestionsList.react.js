@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Popover  from 'components/Popover/Popover.react';
-import React    from 'react';
-import styles   from 'components/SuggestionsList/SuggestionsList.scss';
+import Popover from 'components/Popover/Popover.react';
+import React from 'react';
+import styles from 'components/SuggestionsList/SuggestionsList.scss';
 
 export default class Suggestion extends React.Component {
   constructor() {
@@ -15,7 +15,7 @@ export default class Suggestion extends React.Component {
     this.state = {
       activeSuggestion: 0,
       open: false,
-      position: null
+      position: null,
     };
 
     this.popoverRef = React.createRef();
@@ -27,7 +27,7 @@ export default class Suggestion extends React.Component {
   }
 
   setPosition(position) {
-   this.popoverRef.current && this.popoverRef.current.setPosition(position);
+    this.popoverRef.current && this.popoverRef.current.setPosition(position);
   }
 
   close() {
@@ -35,35 +35,45 @@ export default class Suggestion extends React.Component {
   }
 
   render() {
-  const { 
-    position,
-    onExternalClick,
-    suggestions,
-    suggestionsStyle,
-    activeSuggestion,
-    onClick} = this.props;
+    const {
+      position,
+      onExternalClick,
+      suggestions,
+      suggestionsStyle,
+      suggestionsItemStyle,
+      activeSuggestion,
+      onClick,
+      onMouseDown,
+    } = this.props;
 
     return (
       <Popover
-      fixed={false}
-      position={position}
-      ref={this.popoverRef}
-      onExternalClick={onExternalClick}
-    >
-      <ul style={suggestionsStyle} className={styles.suggestions}>
-        {suggestions.map((suggestion, index) => {
-          let className;
-          if (index === activeSuggestion) {
-            className = styles.active;
-          }
-          return (
-            <li className={className} key={suggestion} onClick={onClick}>
-              {suggestion}
-            </li>
-          );
-        })}
-      </ul>
-    </Popover>
+        fixed={false}
+        position={position}
+        ref={this.popoverRef}
+        onExternalClick={onExternalClick}
+        data-popover-type="inner"
+      >
+        <ul style={suggestionsStyle} className={styles.suggestions}>
+          {suggestions.map((suggestion, index) => {
+            let className;
+            if (index === activeSuggestion) {
+              className = styles.active;
+            }
+            return (
+              <li
+                style={suggestionsItemStyle}
+                className={className}
+                key={suggestion}
+                onMouseDown={onMouseDown}
+                onClick={onClick}
+              >
+                {suggestion}
+              </li>
+            );
+          })}
+        </ul>
+      </Popover>
     );
   }
 }

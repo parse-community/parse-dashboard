@@ -31,6 +31,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Parse Server](#parse-server)
     - [Node.js](#nodejs)
   - [Configuring Parse Dashboard](#configuring-parse-dashboard)
+    - [Options](#options)
     - [File](#file)
     - [Environment variables](#environment-variables)
       - [Multiple apps](#multiple-apps)
@@ -42,6 +43,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Other Configuration Options](#other-configuration-options)
     - [Prevent columns sorting](#prevent-columns-sorting)
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
+    - [Persistent Filters](#persistent-filters)
+    - [Scripts](#scripts)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -102,13 +105,25 @@ Parse Dashboard is compatible with the following Parse Server versions.
 ### Node.js
 Parse Dashboard is continuously tested with the most recent releases of Node.js to ensure compatibility. We follow the [Node.js Long Term Support plan](https://github.com/nodejs/Release) and only test against versions that are officially supported and have not reached their end-of-life date.
 
-| Version    | Latest Version | End-of-Life | Compatible   |
-|------------|----------------|-------------|--------------|
-| Node.js 14 | 14.20.1        | April 2023  | ✅ Yes        |
-| Node.js 16 | 16.17.0        | April 2024  | ✅ Yes        |
-| Node.js 18 | 18.9.0         | May 2025    | ✅ Yes        |
+| Version    | Latest Version | End-of-Life | Compatible |
+|------------|----------------|-------------|------------|
+| Node.js 14 | 14.20.1        | April 2023  | ✅ Yes      |
+| Node.js 16 | 16.17.0        | April 2024  | ✅ Yes      |
+| Node.js 18 | 18.9.0         | May 2025    | ✅ Yes      |
 
 ## Configuring Parse Dashboard
+
+### Options
+
+| Parameter                              | Type                | Optional | Default | Example              | Description                                                                                                                                 |
+|----------------------------------------|---------------------|----------|---------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `apps`                                 | Array&lt;Object&gt; | no       | -       | `[{ ... }, { ... }]` | The apps that are configured for the dashboard.                                                                                             |
+| `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]` | The scripts that can be executed for that app.                                                                                              |
+| `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`      | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                   |
+| `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`          | The classes of Parse Objects for which the scripts can be executed.                                                                         |
+| `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
+| `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
+| `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
 
 ### File
 
@@ -362,6 +377,86 @@ For example:
 
 You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under *App Settings > Export Class Preferences*.
 
+### Scripts
+
+You can specify scripts to execute Cloud Functions with the `scripts` option:
+
+```json
+"apps": [
+  {
+    "scripts": [
+      {
+        "title": "Delete Account",
+        "classes": ["_User"],
+        "cloudCodeFunction": "deleteAccount",
+        "showConfirmationDialog": true,
+        "confirmationDialogStyle": "critical"
+      }
+    ]
+  }
+]
+```
+
+Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+The field which the script was invoked on can be accessed by `selectedField`:
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (req.params.selectedField !== 'objectId') {
+    throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Deleting accounts is only available on the objectId field.');
+  }
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+⚠️ Depending on your Parse Server version you may need to set the Parse Server option `encodeParseObjectInCloudFunction` to `true` so that the selected object in the data browser is made available in the Cloud Function as an instance of `Parse.Object`. If the option is not set, is set to `false`, or you are using an older version of Parse Server, the object is made available as a plain JavaScript object and needs to be converted from a JSON object to a `Parse.Object` instance with `req.params.object = Parse.Object.fromJSON(req.params.object);`, before you can call any `Parse.Object` properties and methods on it.
+
+For older versions of Parse Server:
+
+<details>
+<summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+</details>
+
+<details>
+<summary>Parse Server &gt;=2.1.4 &lt;4.4.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (!req.master || !req.params.object) {
+    throw 'Unauthorized';
+  }
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+});
+```
+
+</details>
+
 # Running as Express Middleware
 
 Instead of starting Parse Dashboard with the CLI, you can also run it as an [express](https://github.com/expressjs/express) middleware.
@@ -442,6 +537,24 @@ var dashboard = new ParseDashboard({
     }
   ],
   "trustProxy": 1
+});
+```
+
+## Security Checks
+
+You can view the security status of your Parse Server by enabling the dashboard option `enableSecurityChecks`, and visiting App Settings > Security.
+
+```javascript
+const dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+      "enableSecurityChecks": true
+    }
+  ],
 });
 ```
 
