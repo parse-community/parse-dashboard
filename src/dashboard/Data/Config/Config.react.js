@@ -35,6 +35,7 @@ class Config extends TableView {
       modalType: 'String',
       modalValue: '',
       modalMasterKeyOnly: false,
+      loading: false,
     };
   }
 
@@ -53,7 +54,10 @@ class Config extends TableView {
   }
 
   loadData() {
-    this.props.config.dispatch(ActionTypes.FETCH);
+    this.setState({ loading: true });
+    this.props.config.dispatch(ActionTypes.FETCH).finally(() => {
+      this.setState({ loading: false });
+    });
   }
 
   renderToolbar() {
