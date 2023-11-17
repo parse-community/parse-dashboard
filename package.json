@@ -50,7 +50,7 @@
     "graphql": "16.8.1",
     "immutable": "4.1.0",
     "immutable-devtools": "0.1.5",
-    "inquirer": "8.2.4",
+    "inquirer": "9.0.2",
     "js-beautify": "1.14.6",
     "otpauth": "8.0.3",
     "package-json": "7.0.0",
