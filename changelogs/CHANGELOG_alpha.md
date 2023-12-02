@@ -1,3 +1,10 @@
+# [5.4.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.3.0...5.4.0-alpha.1) (2023-12-02)
+
+
+### Features
+
+* Add refresh indicator to Cloud Config page ([#2505](https://github.com/ParsePlatform/parse-dashboard/issues/2505)) ([a10d1f0](https://github.com/ParsePlatform/parse-dashboard/commit/a10d1f0825688d403206ce7cbacada191dbf5c3b))
+
 # [5.3.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.3.0-alpha.1...5.3.0-alpha.2) (2023-10-18)
 
 
