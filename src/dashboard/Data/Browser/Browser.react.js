@@ -1379,10 +1379,8 @@ class Browser extends DashboardView {
         this.setState(prevState => ({
           processedScripts: prevState.processedScripts + 1,
         }));
-        this.showNote(
-          response ||
-            `Ran script "${script.title}" on "${this.props.className}" object "${object.id}".`
-        );
+        const note = (typeof response === 'object' ? JSON.stringify(response) : response) || `Ran script "${script.title}" on "${object.id}".`;
+        this.showNote(note);
       }
       this.refresh();
     } catch (e) {
