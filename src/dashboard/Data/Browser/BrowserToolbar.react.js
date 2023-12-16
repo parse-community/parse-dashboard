@@ -163,12 +163,6 @@ const BrowserToolbar = ({
           onClick={() => onDeleteRows(selection)}
         />
         <Separator />
-        <MenuItem
-          disabled={selectionLength === 0}
-          text={selectionLength === 1 && !selection['*'] ? 'Execute script on this row' : 'Execute script on these rows'}
-          onClick={() => onExecuteScriptRows(selection)}
-        />
-        <Separator />
         {enableColumnManipulation ? (
           <MenuItem text="Delete a column" onClick={onRemoveColumn} />
         ) : (
@@ -386,6 +380,18 @@ const BrowserToolbar = ({
         <noscript />
       )}
       {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
+      <BrowserMenu
+        setCurrent={setCurrent}
+        title="Script"
+        icon="gear-solid"
+      >
+        <MenuItem
+          disabled={selectionLength === 0}
+          text={selectionLength === 1 && !selection['*'] ? 'Run script on selected row...' : `Run script on ${selectionLength} selected rows...`}
+          onClick={() => onExecuteScriptRows(selection)}
+        />
+      </BrowserMenu>
+      <div className={styles.toolbarSeparator} />
       {menu}
       {editCloneRows && editCloneRows.length > 0 && <div className={styles.toolbarSeparator} />}
       {editCloneRows && editCloneRows.length > 0 && (
