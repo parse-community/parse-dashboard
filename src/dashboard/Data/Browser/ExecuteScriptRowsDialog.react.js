@@ -48,15 +48,15 @@ export default class ExecuteScriptRowsDialog extends React.Component {
   render() {
     const { validScripts } = this.state;
     const { selection, processedScripts } = this.props;
-
+    const selectionLength = Object.keys(selection).length;
     return (
       <FormModal
         open
-        icon="plus"
+        icon="gears"
         iconSize={40}
-        title="Select script run"
-        submitText="Execute"
-        inProgressText={`Executed ${processedScripts} of ${Object.keys(selection).length}`}
+        title={selectionLength > 1 ? `Run script on ${selectionLength} selected rows` : 'Run script on selected row'}
+        submitText="Run"
+        inProgressText={`Executed ${processedScripts} of ${selectionLength} rows`}
         onClose={this.props.onCancel}
         onSubmit={this.handleConfirm}
       >
