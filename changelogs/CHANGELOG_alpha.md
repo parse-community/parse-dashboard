@@ -1,3 +1,10 @@
+# [5.4.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.2...5.4.0-alpha.3) (2023-12-16)
+
+
+### Bug Fixes
+
+* Dashboard crashes if Parse Server Cloud Function script returns object ([#2516](https://github.com/ParsePlatform/parse-dashboard/issues/2516)) ([5de08f8](https://github.com/ParsePlatform/parse-dashboard/commit/5de08f8f4d67f287a589c70d8b8d36f9f76897cf))
+
 # [5.4.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.1...5.4.0-alpha.2) (2023-12-16)
 
 
