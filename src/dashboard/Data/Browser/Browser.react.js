@@ -100,6 +100,8 @@ class Browser extends DashboardView {
       processedScripts: 0,
     };
 
+    this.addLocation = this.addLocation.bind(this);
+    this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.fetchRelation = this.fetchRelation.bind(this);
@@ -186,29 +188,18 @@ class Browser extends DashboardView {
   }
 
   componentDidMount() {
-    if (window.localStorage) {
-      const pathname = window.localStorage.getItem(BROWSER_LAST_LOCATION);
-      window.localStorage.removeItem(BROWSER_LAST_LOCATION);
-      if (pathname) {
-        setTimeout(
-          function () {
-            this.props.navigate(pathname);
-          }.bind(this)
-        );
-      }
-    }
+    this.addLocation(this.props.params.appId);
   }
 
   componentWillUnmount() {
-    if (window.localStorage) {
-      window.localStorage.setItem(
-        BROWSER_LAST_LOCATION,
-        this.props.location.pathname + this.props.location.search
-      );
-    }
+    this.removeLocation();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.params.appId !== this.props.params.appId) {
+      this.removeLocation();
+      this.addLocation(nextProps.params.appId);
+    }
     if (
       this.props.params.appId !== nextProps.params.appId ||
       this.props.params.className !== nextProps.params.className ||
@@ -225,6 +216,43 @@ class Browser extends DashboardView {
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
+    }
+  }
+
+  addLocation(appId) {
+    if (window.localStorage) {
+      let pathname = null;
+      const newLastLocations = [];
+
+      const lastLocations = JSON.parse(window.localStorage.getItem(BROWSER_LAST_LOCATION));
+      lastLocations?.forEach(lastLocation => {
+        if (lastLocation.appId !== appId) {
+          newLastLocations.push(lastLocation);
+        } else {
+          pathname = lastLocation.location;
+        }
+      });
+
+      window.localStorage.setItem(BROWSER_LAST_LOCATION, JSON.stringify(newLastLocations));
+      if (pathname) {
+        setTimeout(
+          function () {
+            this.props.navigate(pathname);
+          }.bind(this)
+        );
+      }
+    }
+  }
+
+  removeLocation() {
+    if (window.localStorage) {
+      const lastLocation = {
+        appId: this.props.params.appId,
+        location: `${this.props.location.pathname}${this.props.location.search}`,
+      };
+      const currentLastLocation = JSON.parse(window.localStorage.getItem(BROWSER_LAST_LOCATION));
+      const updatedLastLocation = [...(currentLastLocation || []), lastLocation];
+      window.localStorage.setItem(BROWSER_LAST_LOCATION, JSON.stringify(updatedLastLocation));
     }
   }
 
