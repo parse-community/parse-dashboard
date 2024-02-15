@@ -1,3 +1,10 @@
+# [5.4.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.3...5.4.0-alpha.4) (2024-02-15)
+
+
+### Bug Fixes
+
+* Data browser redirects to wrong class when changing app ([#2526](https://github.com/ParsePlatform/parse-dashboard/issues/2526)) ([7713f54](https://github.com/ParsePlatform/parse-dashboard/commit/7713f542ef9ef97cbf784fa267f7ea2a51c9472a))
+
 # [5.4.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.2...5.4.0-alpha.3) (2023-12-16)
 
 
