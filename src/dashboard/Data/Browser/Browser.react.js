@@ -1030,7 +1030,7 @@ class Browser extends DashboardView {
       },
     ]);
     window.open(
-      generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`),
+      generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`, true),
       '_blank'
     );
   }
