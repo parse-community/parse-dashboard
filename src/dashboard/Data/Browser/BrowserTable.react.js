@@ -168,6 +168,8 @@ export default class BrowserTable extends React.Component {
                     showNote={this.props.showNote}
                     onRefresh={this.props.onRefresh}
                     scripts={this.context.scripts}
+                    selectedCells={this.props.selectedCells}
+                    handleCellClick={this.props.handleCellClick}
                   />
                   <Button
                     value="Clone"
@@ -236,6 +238,8 @@ export default class BrowserTable extends React.Component {
               showNote={this.props.showNote}
               onRefresh={this.props.onRefresh}
               scripts={this.context.scripts}
+              selectedCells={this.props.selectedCells}
+              handleCellClick={this.props.handleCellClick}
             />
             <Button
               value="Add"
@@ -312,6 +316,8 @@ export default class BrowserTable extends React.Component {
             showNote={this.props.showNote}
             onRefresh={this.props.onRefresh}
             scripts={this.context.scripts}
+            selectedCells={this.props.selectedCells}
+            handleCellClick={this.props.handleCellClick}
           />
         );
       }

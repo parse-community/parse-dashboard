@@ -34,6 +34,10 @@ export default class DataBrowser extends React.Component {
       editing: false,
       copyableValue: undefined,
       simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
+
+      selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+      firstSelectedCell: null,
+      selectedData: [],
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -44,6 +48,7 @@ export default class DataBrowser extends React.Component {
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
+    this.handleCellClick = this.handleCellClick.bind(this);
 
     this.saveOrderTimeout = null;
   }
@@ -76,6 +81,11 @@ export default class DataBrowser extends React.Component {
       );
       this.setState({ order });
     }
+    this.setState({
+      selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+      firstSelectedCell: null,
+      selectedData: [],
+    });
   }
 
   componentDidMount() {
@@ -233,10 +243,10 @@ export default class DataBrowser extends React.Component {
               e.ctrlKey || e.metaKey
                 ? lastVisibleColumnIndex
                 : this.getNextVisibleColumnIndex(
-                  1,
-                  firstVisibleColumnIndex,
-                  lastVisibleColumnIndex
-                ),
+                    1,
+                    firstVisibleColumnIndex,
+                    lastVisibleColumnIndex
+                  ),
           },
         });
         e.preventDefault();
@@ -317,6 +327,71 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  handleCellClick(event, row, col) {
+    const { firstSelectedCell } = this.state;
+    const clickedCellKey = `${row}-${col}`;
+
+    if (event.shiftKey && firstSelectedCell) {
+      const [firstRow, firstCol] = firstSelectedCell.split('-').map(Number);
+      const [lastRow, lastCol] = clickedCellKey.split('-').map(Number);
+
+      const rowStart = Math.min(firstRow, lastRow);
+      const rowEnd = Math.max(firstRow, lastRow);
+      const colStart = Math.min(firstCol, lastCol);
+      const colEnd = Math.max(firstCol, lastCol);
+
+      let validColumns = true;
+      for (let i = colStart; i <= colEnd; i++) {
+        const name = this.state.order[i].name;
+        if (this.props.columns[name].type !== 'Number') {
+          validColumns = false;
+          break;
+        }
+      }
+
+      const newSelection = new Set();
+      const selectedData = [];
+      for (let x = rowStart; x <= rowEnd; x++) {
+        let rowData = null;
+        if (validColumns) {
+          rowData = this.props.data[x];
+        }
+        for (let y = colStart; y <= colEnd; y++) {
+          if (rowData) {
+            const value = rowData.attributes[this.state.order[y].name];
+            if (typeof value === 'number' && !isNaN(value)) {
+              selectedData.push(rowData.attributes[this.state.order[y].name]);
+            }
+          }
+          newSelection.add(`${x}-${y}`);
+        }
+      }
+
+      if (newSelection.size > 1) {
+        this.setCurrent(null);
+        this.setState({
+          selectedCells: {
+            list: newSelection,
+            rowStart,
+            rowEnd,
+            colStart,
+            colEnd,
+          },
+          selectedData,
+        });
+      } else {
+        this.setCurrent({ row, col });
+      }
+    } else {
+      this.setState({
+        selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+        selectedData: [],
+        current: { row, col },
+        firstSelectedCell: clickedCellKey,
+      });
+    }
+  }
+
   render() {
     const {
       className,
@@ -346,6 +421,8 @@ export default class DataBrowser extends React.Component {
           setContextMenu={this.setContextMenu}
           onFilterChange={this.props.onFilterChange}
           onFilterSave={this.props.onFilterSave}
+          selectedCells={this.state.selectedCells}
+          handleCellClick={this.handleCellClick}
           {...other}
         />
         <BrowserToolbar
@@ -370,6 +447,7 @@ export default class DataBrowser extends React.Component {
           editCloneRows={editCloneRows}
           onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
+          selectedData={this.state.selectedData}
           {...other}
         />
 

@@ -136,6 +136,8 @@ export default class BrowserRow extends Component {
               showNote={this.props.showNote}
               onRefresh={this.props.onRefresh}
               scripts={this.props.scripts}
+              handleCellClick={this.props.handleCellClick}
+              selectedCells={this.props.selectedCells}
             />
           );
         })}
