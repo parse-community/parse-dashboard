@@ -588,6 +588,7 @@ export default class BrowserCell extends Component {
       if (selectedCells.colEnd === col) {
         classes.push(styles.rightBorder);
       }
+      classes.push(styles.selected);
     }
 
     return (
