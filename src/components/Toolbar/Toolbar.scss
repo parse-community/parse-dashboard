@@ -92,7 +92,7 @@ body:global(.expanded) {
   bottom: 10px;
   background: $blue;
   border-radius: 3px;
-  padding: 2px 4px;
+  padding: 2px 6px;
   font-size: 14px;
   color: white;
   box-shadow: none;
@@ -103,7 +103,9 @@ body:global(.expanded) {
   display: flex;
   flex-direction: column;
   background: $blue;
-  gap: 4px;
+  border-radius: 3px;
+  margin-top: 1px;
+  gap: 2px;
   padding: 2px 0px;
   font-size: 14px;
   color: white;
@@ -111,7 +113,7 @@ body:global(.expanded) {
 
 .stats_popover_item {
   cursor: pointer;
-  padding: 0px 8px;
+  padding: 0px 6px;
 
   &:hover {
     color: $blue;
