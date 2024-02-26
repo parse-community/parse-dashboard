@@ -119,11 +119,6 @@ class AppsIndex extends React.Component {
       this.forceUpdate();
     });
     document.body.addEventListener('keydown', this.focusField);
-    if (AppsManager.apps().length === 1) {
-      const [app] = AppsManager.apps();
-      this.props.navigate(`/apps/${app.slug}/browser`);
-      return;
-    }
   }
 
   componentWillUnmount() {
