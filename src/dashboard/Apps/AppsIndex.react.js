@@ -115,10 +115,10 @@ class AppsIndex extends React.Component {
   }
 
   componentWillMount() {
+    document.body.addEventListener('keydown', this.focusField);
     AppsManager.getAllAppsIndexStats().then(() => {
       this.forceUpdate();
     });
-    document.body.addEventListener('keydown', this.focusField);
   }
 
   componentWillUnmount() {
