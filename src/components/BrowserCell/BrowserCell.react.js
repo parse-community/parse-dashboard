@@ -526,7 +526,6 @@ export default class BrowserCell extends Component {
       hidden,
       width,
       current,
-      onSelect,
       onEditChange,
       setCopyableValue,
       onPointerCmdClick,
@@ -536,6 +535,8 @@ export default class BrowserCell extends Component {
       onEditSelectedRow,
       isRequired,
       markRequiredFieldRow,
+      handleCellClick,
+      selectedCells,
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -573,6 +574,22 @@ export default class BrowserCell extends Component {
       );
     }
 
+    if (selectedCells?.list.has(`${row}-${col}`)) {
+      if (selectedCells.rowStart === row) {
+        classes.push(styles.topBorder);
+      }
+      if (selectedCells.rowEnd === row) {
+        classes.push(styles.bottomBorder);
+      }
+      if (selectedCells.colStart === col) {
+        classes.push(styles.leftBorder);
+      }
+      if (selectedCells.colEnd === col) {
+        classes.push(styles.rightBorder);
+      }
+      classes.push(styles.selected);
+    }
+
     return (
       <span
         ref={this.cellRef}
@@ -582,8 +599,8 @@ export default class BrowserCell extends Component {
           if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
           } else {
-            onSelect({ row, col });
             setCopyableValue(hidden ? undefined : this.copyableValue);
+            handleCellClick(e, row, col);
           }
         }}
         onDoubleClick={() => {

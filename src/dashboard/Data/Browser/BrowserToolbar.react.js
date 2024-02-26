@@ -72,6 +72,8 @@ const BrowserToolbar = ({
   login,
   logout,
   toggleMasterKeyUsage,
+
+  selectedData,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -238,6 +240,7 @@ const BrowserToolbar = ({
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}
+      selectedData={selectedData}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>
