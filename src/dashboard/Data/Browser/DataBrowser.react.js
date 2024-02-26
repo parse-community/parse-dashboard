@@ -214,10 +214,10 @@ export default class DataBrowser extends React.Component {
               e.ctrlKey || e.metaKey
                 ? firstVisibleColumnIndex
                 : this.getNextVisibleColumnIndex(
-                  -1,
-                  firstVisibleColumnIndex,
-                  lastVisibleColumnIndex
-                ),
+                    -1,
+                    firstVisibleColumnIndex,
+                    lastVisibleColumnIndex
+                  ),
           },
         });
         e.preventDefault();

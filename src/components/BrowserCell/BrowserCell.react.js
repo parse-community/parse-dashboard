@@ -526,7 +526,6 @@ export default class BrowserCell extends Component {
       hidden,
       width,
       current,
-      onSelect,
       onEditChange,
       setCopyableValue,
       onPointerCmdClick,
@@ -575,7 +574,7 @@ export default class BrowserCell extends Component {
       );
     }
 
-    if (selectedCells.list.has(`${row}-${col}`)) {
+    if (selectedCells?.list.has(`${row}-${col}`)) {
       if (selectedCells.rowStart === row) {
         classes.push(styles.topBorder);
       }
