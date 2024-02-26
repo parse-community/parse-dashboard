@@ -1,3 +1,10 @@
+# [5.4.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.5...5.4.0-alpha.6) (2024-02-26)
+
+
+### Bug Fixes
+
+* App metrics for user and installation counts show dash ([#2528](https://github.com/ParsePlatform/parse-dashboard/issues/2528)) ([850d7b3](https://github.com/ParsePlatform/parse-dashboard/commit/850d7b3f20160761a21f68ec398d7207b8226770))
+
 # [5.4.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.4...5.4.0-alpha.5) (2024-02-18)
 
 
