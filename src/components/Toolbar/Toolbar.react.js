@@ -133,7 +133,7 @@ const Toolbar = props => {
           </div>
         </div>
       </div>
-      {props.selectedData.length ? <Stats data={props.selectedData} /> : null}
+      {props?.selectedData?.length ? <Stats data={props.selectedData} /> : null}
       <div className={styles.actions}>{props.children}</div>
     </div>
   );
