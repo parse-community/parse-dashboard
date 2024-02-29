@@ -1,3 +1,10 @@
+# [5.4.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.7...5.4.0-alpha.8) (2024-02-29)
+
+
+### Bug Fixes
+
+* Config page fails to load ([#2531](https://github.com/ParsePlatform/parse-dashboard/issues/2531)) ([d721b7c](https://github.com/ParsePlatform/parse-dashboard/commit/d721b7c4f3b98df96a229e60529604b038857d53))
+
 # [5.4.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.6...5.4.0-alpha.7) (2024-02-26)
 
 
