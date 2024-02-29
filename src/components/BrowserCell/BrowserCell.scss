@@ -36,7 +36,71 @@
   }
 }
 
-.hasMore{
+.leftBorder {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border-left: 2px solid #555572;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.rightBorder {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border-right: 2px solid #555572;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.topBorder {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border-top: 2px solid #555572;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.bottomBorder {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    border-bottom: 2px solid #555572;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.selected {
+  background-color: #e3effd;
+}
+
+.hasMore {
   height: auto;
   max-height: 25px;
   overflow-y: scroll;
