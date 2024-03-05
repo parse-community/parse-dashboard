@@ -64,7 +64,7 @@ module.exports = function(config, options) {
 
   // wait for app to mount in order to get mountpath
   app.on('mount', function() {
-    const mountPath = getMount(app.mountpath);
+    const mountPath = getMount(options.mountPath || app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
