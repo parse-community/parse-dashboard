@@ -7,7 +7,7 @@
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=release)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Arelease)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
 
-[![Node Version](https://img.shields.io/badge/nodejs-14,_16,_18-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/nodejs-18,_20-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
@@ -31,6 +31,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Parse Server](#parse-server)
     - [Node.js](#nodejs)
   - [Configuring Parse Dashboard](#configuring-parse-dashboard)
+    - [Options](#options)
     - [File](#file)
     - [Environment variables](#environment-variables)
       - [Multiple apps](#multiple-apps)
@@ -42,6 +43,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Other Configuration Options](#other-configuration-options)
     - [Prevent columns sorting](#prevent-columns-sorting)
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
+    - [Persistent Filters](#persistent-filters)
+    - [Scripts](#scripts)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -102,13 +105,24 @@ Parse Dashboard is compatible with the following Parse Server versions.
 ### Node.js
 Parse Dashboard is continuously tested with the most recent releases of Node.js to ensure compatibility. We follow the [Node.js Long Term Support plan](https://github.com/nodejs/Release) and only test against versions that are officially supported and have not reached their end-of-life date.
 
-| Version    | Latest Version | End-of-Life | Compatible   |
-|------------|----------------|-------------|--------------|
-| Node.js 14 | 14.20.1        | April 2023  | ✅ Yes        |
-| Node.js 16 | 16.17.0        | April 2024  | ✅ Yes        |
-| Node.js 18 | 18.9.0         | May 2025    | ✅ Yes        |
+| Version    | Latest Version | End-of-Life | Compatible |
+|------------|----------------|-------------|------------|
+| Node.js 18 | 18.9.1         | May 2025    | ✅ Yes      |
+| Node.js 20 | 20.11.1         | April 2026    | ✅ Yes      |
 
 ## Configuring Parse Dashboard
+
+### Options
+
+| Parameter                              | Type                | Optional | Default | Example              | Description                                                                                                                                 |
+|----------------------------------------|---------------------|----------|---------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `apps`                                 | Array&lt;Object&gt; | no       | -       | `[{ ... }, { ... }]` | The apps that are configured for the dashboard.                                                                                             |
+| `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]` | The scripts that can be executed for that app.                                                                                              |
+| `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`      | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                   |
+| `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`          | The classes of Parse Objects for which the scripts can be executed.                                                                         |
+| `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
+| `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
+| `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
 
 ### File
 
@@ -329,12 +343,118 @@ If you have classes with a lot of columns and you filter them often with the sam
           {
             "name": "email",
             "filterSortToTop": true
-          }          
+          }
         ]
       }
     }
 ]
 ```
+
+### Persistent Filters
+
+The filters you save in the data browser of Parse Dashboard are only available for the current dashboard user in the current browser session. To make filters permanently available for all dashboard users of an app, you can define filters in the `classPreference` setting.
+
+For example:
+
+```json
+"apps": [{
+  "classPreference": {
+    "_Role": {
+      "filters": [{
+        "name": "Filter Name",
+        "filter": [
+          {
+            "field": "objectId",
+            "constraint": "exists"
+          }
+        ]
+      }]
+    }
+  }
+}]
+```
+
+You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under *App Settings > Export Class Preferences*.
+
+### Scripts
+
+You can specify scripts to execute Cloud Functions with the `scripts` option:
+
+```json
+"apps": [
+  {
+    "scripts": [
+      {
+        "title": "Delete Account",
+        "classes": ["_User"],
+        "cloudCodeFunction": "deleteAccount",
+        "showConfirmationDialog": true,
+        "confirmationDialogStyle": "critical"
+      }
+    ]
+  }
+]
+```
+
+Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+The field which the script was invoked on can be accessed by `selectedField`:
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (req.params.selectedField !== 'objectId') {
+    throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Deleting accounts is only available on the objectId field.');
+  }
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+⚠️ Depending on your Parse Server version you may need to set the Parse Server option `encodeParseObjectInCloudFunction` to `true` so that the selected object in the data browser is made available in the Cloud Function as an instance of `Parse.Object`. If the option is not set, is set to `false`, or you are using an older version of Parse Server, the object is made available as a plain JavaScript object and needs to be converted from a JSON object to a `Parse.Object` instance with `req.params.object = Parse.Object.fromJSON(req.params.object);`, before you can call any `Parse.Object` properties and methods on it.
+
+For older versions of Parse Server:
+
+<details>
+<summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+</details>
+
+<details>
+<summary>Parse Server &gt;=2.1.4 &lt;4.4.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (!req.master || !req.params.object) {
+    throw 'Unauthorized';
+  }
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+});
+```
+
+</details>
 
 # Running as Express Middleware
 
@@ -419,6 +539,24 @@ var dashboard = new ParseDashboard({
 });
 ```
 
+## Security Checks
+
+You can view the security status of your Parse Server by enabling the dashboard option `enableSecurityChecks`, and visiting App Settings > Security.
+
+```javascript
+const dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+      "enableSecurityChecks": true
+    }
+  ],
+});
+```
+
 
 
 ### Configuring Basic Authentication
@@ -452,8 +590,7 @@ With MFA enabled, a user must provide a one-time password that is typically boun
 
 The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
 
-If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, 
-run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
 
 ```json
 {

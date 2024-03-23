@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import DateRange      from 'components/DateRange/DateRange.react';
+import DateRange from 'components/DateRange/DateRange.react';
 import { Directions } from 'lib/Constants';
-import React          from 'react';
+import React from 'react';
 
 export const component = DateRange;
 
@@ -23,7 +23,11 @@ class Demo extends React.Component {
 
   render() {
     return (
-      <DateRange value={this.state.value} onChange={this.handleChange.bind(this)} align={this.props.align} />
+      <DateRange
+        value={this.state.value}
+        onChange={this.handleChange.bind(this)}
+        align={this.props.align}
+      />
     );
   }
 }
@@ -34,13 +38,13 @@ export const demos = [
       <div style={{ width: 500, margin: '0 auto' }}>
         <Demo />
       </div>
-    )
+    ),
   },
   {
     render: () => (
       <div style={{ width: 500, margin: '0 auto', textAlign: 'right' }}>
         <Demo align={Directions.RIGHT} />
       </div>
-    )
-  }
+    ),
+  },
 ];

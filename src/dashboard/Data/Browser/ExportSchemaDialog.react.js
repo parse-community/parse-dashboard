@@ -5,13 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal       from 'components/Modal/Modal.react';
-import React       from 'react';
-import Dropdown    from 'components/Dropdown/Dropdown.react';
-import Field       from 'components/Field/Field.react';
-import Label       from 'components/Label/Label.react';
-import Option      from 'components/Dropdown/Option.react';
-import Toggle      from 'components/Toggle/Toggle.react';
+import Modal from 'components/Modal/Modal.react';
+import React from 'react';
+import Dropdown from 'components/Dropdown/Dropdown.react';
+import Field from 'components/Field/Field.react';
+import Label from 'components/Label/Label.react';
+import Option from 'components/Dropdown/Option.react';
+import Toggle from 'components/Toggle/Toggle.react';
 
 export default class ExportSchemaDialog extends React.Component {
   constructor(props) {
@@ -29,36 +29,51 @@ export default class ExportSchemaDialog extends React.Component {
     this.state = {
       all: false,
       className: props.className,
-      classes
+      classes,
     };
   }
-
 
   render() {
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon='down-outline'
+        icon="down-outline"
         iconSize={40}
         title={`Export SCHEMA for ${this.state.className}`}
-        confirmText='Export'
-        cancelText='Cancel'
+        confirmText="Export"
+        cancelText="Cancel"
         onCancel={this.props.onCancel}
-        onConfirm={() => this.props.onConfirm(this.state.className, this.state.all)}>
-        {!this.state.all &&
+        onConfirm={() => this.props.onConfirm(this.state.className, this.state.all)}
+      >
+        {!this.state.all && (
           <Field
-            label={<Label text='Select class' />}
+            label={<Label text="Select class" />}
             input={
               <Dropdown
                 value={this.state.className}
-                onChange={(className) => this.setState({ className })}>
-                {this.state.classes.map(schema => <Option value={schema} key={schema}>{schema}</Option>)}
+                onChange={className => this.setState({ className })}
+              >
+                {this.state.classes.map(schema => (
+                  <Option value={schema} key={schema}>
+                    {schema}
+                  </Option>
+                ))}
               </Dropdown>
-            } />
-        }
+            }
+          />
+        )}
         <Field
-          label={<Label text='Export all classes' />}
-          input={<Toggle value={this.state.all} type={Toggle.Types.YES_NO} onChange={(all) => {this.setState({all})}} />} />
+          label={<Label text="Export all classes" />}
+          input={
+            <Toggle
+              value={this.state.all}
+              type={Toggle.Types.YES_NO}
+              onChange={all => {
+                this.setState({ all });
+              }}
+            />
+          }
+        />
       </Modal>
     );
   }

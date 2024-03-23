@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Modal          from 'components/Modal/Modal.react';
-import PushCerts      from 'components/PushCerts/PushCerts.react';
-import React          from 'react';
+import Modal from 'components/Modal/Modal.react';
+import PushCerts from 'components/PushCerts/PushCerts.react';
+import React from 'react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class AppleCerts extends React.Component {
@@ -18,13 +18,13 @@ export default class AppleCerts extends React.Component {
     this.state = {
       certs: undefined,
       deletePending: null,
-      error: null
+      error: null,
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    this.context.getAppleCerts().then((certs) => {
+    this.context.getAppleCerts().then(certs => {
       if (this.mounted) {
         this.setState({ certs });
       }
@@ -36,12 +36,15 @@ export default class AppleCerts extends React.Component {
   }
 
   handleUpload(file) {
-    this.context.uploadAppleCert(file).then((cert) => {
-      this.state.certs.unshift(cert);
-      this.setState({ uploadPending: false });
-    }, (err) => {
-      this.setState({ uploadPending: false, error: err.error });
-    });
+    this.context.uploadAppleCert(file).then(
+      cert => {
+        this.state.certs.unshift(cert);
+        this.setState({ uploadPending: false });
+      },
+      err => {
+        this.setState({ uploadPending: false, error: err.error });
+      }
+    );
     this.setState({ uploadPending: true, error: null });
   }
 
@@ -57,28 +60,34 @@ export default class AppleCerts extends React.Component {
           error={this.state.error}
           uploadPending={this.state.uploadPending}
           onUpload={this.handleUpload.bind(this)}
-          onDelete={this.handleDelete.bind(this)} />
-        {this.state.deletePending === null ? null :
+          onDelete={this.handleDelete.bind(this)}
+        />
+        {this.state.deletePending === null ? null : (
           <Modal
             type={Modal.Types.DANGER}
-            title='Delete this certificate?'
-            subtitle='Notifications will no longer be sent to the associated app.'
-            cancelText='Cancel'
-            confirmText='Delete'
+            title="Delete this certificate?"
+            subtitle="Notifications will no longer be sent to the associated app."
+            cancelText="Cancel"
+            confirmText="Delete"
             onCancel={() => this.setState({ deletePending: null })}
             onConfirm={() => {
-              let id = this.state.deletePending;
-              this.context.deleteAppleCert(id).then(() => {
-                for (let i = 0; i < this.state.certs.length; i++) {
-                  if (this.state.certs[i].id === id) {
-                    this.state.certs.splice(i, 1);
-                    return this.setState({ deletePending: null });
+              const id = this.state.deletePending;
+              this.context.deleteAppleCert(id).then(
+                () => {
+                  for (let i = 0; i < this.state.certs.length; i++) {
+                    if (this.state.certs[i].id === id) {
+                      this.state.certs.splice(i, 1);
+                      return this.setState({ deletePending: null });
+                    }
                   }
+                },
+                err => {
+                  this.setState({ deletePending: null, error: err.error });
                 }
-              }, (err) => {
-                this.setState({ deletePending: null, error: err.error });
-              })
-            }}/>}
+              );
+            }}
+          />
+        )}
       </div>
     );
   }

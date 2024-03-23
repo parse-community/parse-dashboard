@@ -5,38 +5,38 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { ActionTypes }        from 'lib/stores/JobsStore';
-import Button                 from 'components/Button/Button.react';
-import * as DateUtils         from 'lib/DateUtils';
-import CategoryList           from 'components/CategoryList/CategoryList.react';
-import EmptyState             from 'components/EmptyState/EmptyState.react';
-import Icon                   from 'components/Icon/Icon.react';
-import JobScheduleReminder    from 'dashboard/Data/Jobs/JobScheduleReminder.react';
-import Modal                  from 'components/Modal/Modal.react';
-import React                  from 'react';
-import ReleaseInfo            from 'components/ReleaseInfo/ReleaseInfo';
-import RunNowButton           from 'dashboard/Data/Jobs/RunNowButton.react';
-import SidebarAction          from 'components/Sidebar/SidebarAction';
-import StatusIndicator        from 'components/StatusIndicator/StatusIndicator.react';
-import styles                 from 'dashboard/Data/Jobs/Jobs.scss';
-import browserStyles          from 'dashboard/Data/Browser/Browser.scss';
-import subscribeTo            from 'lib/subscribeTo';
-import TableHeader            from 'components/Table/TableHeader.react';
-import TableView              from 'dashboard/TableView.react';
-import Toolbar                from 'components/Toolbar/Toolbar.react';
+import { ActionTypes } from 'lib/stores/JobsStore';
+import Button from 'components/Button/Button.react';
+import * as DateUtils from 'lib/DateUtils';
+import CategoryList from 'components/CategoryList/CategoryList.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
+import Icon from 'components/Icon/Icon.react';
+import JobScheduleReminder from 'dashboard/Data/Jobs/JobScheduleReminder.react';
+import Modal from 'components/Modal/Modal.react';
+import React from 'react';
+import ReleaseInfo from 'components/ReleaseInfo/ReleaseInfo';
+import RunNowButton from 'dashboard/Data/Jobs/RunNowButton.react';
+import SidebarAction from 'components/Sidebar/SidebarAction';
+import StatusIndicator from 'components/StatusIndicator/StatusIndicator.react';
+import styles from 'dashboard/Data/Jobs/Jobs.scss';
+import browserStyles from 'dashboard/Data/Browser/Browser.scss';
+import subscribeTo from 'lib/subscribeTo';
+import TableHeader from 'components/Table/TableHeader.react';
+import TableView from 'dashboard/TableView.react';
+import Toolbar from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 
-let subsections = {
+const subsections = {
   all: 'All Jobs',
   scheduled: 'Scheduled Jobs',
-  status: 'Job Status'
+  status: 'Job Status',
 };
 
-let statusColors = {
+const statusColors = {
   succeeded: 'green',
   failed: 'red',
-  running: 'blue'
+  running: 'blue',
 };
 
 function scheduleString(data) {
@@ -54,9 +54,17 @@ function scheduleString(data) {
   } else {
     schedule = 'On ';
   }
-  let runAt = new Date(data.startAfter);
-  schedule += runAt.getUTCMonth() + '/' + runAt.getUTCDate() + '/' + String(runAt.getUTCFullYear()).substr(2);
-  schedule += ' at ' + (runAt.getUTCHours() < 10 ? '0' : '') + runAt.getUTCHours() + ':' + (runAt.getUTCMinutes() < 10 ? '0' : '') + runAt.getUTCMinutes() + '.';
+  const runAt = new Date(data.startAfter);
+  schedule +=
+    runAt.getUTCMonth() + '/' + runAt.getUTCDate() + '/' + String(runAt.getUTCFullYear()).substr(2);
+  schedule +=
+    ' at ' +
+    (runAt.getUTCHours() < 10 ? '0' : '') +
+    runAt.getUTCHours() +
+    ':' +
+    (runAt.getUTCMinutes() < 10 ? '0' : '') +
+    runAt.getUTCMinutes() +
+    '.';
   return <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>{schedule}</div>;
 }
 
@@ -96,26 +104,30 @@ class Jobs extends TableView {
   }
 
   navigateToJob(jobId) {
-    this.props.navigate(generatePath(this.context, `jobs/edit/${jobId}`))
+    this.props.navigate(generatePath(this.context, `jobs/edit/${jobId}`));
   }
 
   loadData() {
     this.props.jobs.dispatch(ActionTypes.FETCH).finally(() => {
       this.setState({ loading: false });
     });
-    this.context.getJobStatus().then((status) => {
+    this.context.getJobStatus().then(status => {
       this.setState({ jobStatus: status });
     });
   }
 
   renderSidebar() {
-    let current = this.props.params.section || '';
+    const current = this.props.params.section || '';
     return (
-      <CategoryList current={current} linkPrefix={'jobs/'} categories={[
-        { name: 'All Jobs', id: 'all' },
-        { name: 'Scheduled Jobs', id: 'scheduled' },
-        { name: 'Job Status', id: 'status' }
-      ]} />
+      <CategoryList
+        current={current}
+        linkPrefix={'jobs/'}
+        categories={[
+          { name: 'All Jobs', id: 'all' },
+          { name: 'Scheduled Jobs', id: 'scheduled' },
+          { name: 'Job Status', id: 'status' },
+        ]}
+      />
     );
   }
 
@@ -123,7 +135,7 @@ class Jobs extends TableView {
     if (this.props.params.section === 'all') {
       return (
         <tr key={data.jobName}>
-          <td style={{width: '60%'}}>{data.jobName}</td>
+          <td style={{ width: '60%' }}>{data.jobName}</td>
           <td className={styles.buttonCell}>
             <RunNowButton job={data} width={'100px'} />
           </td>
@@ -132,28 +144,35 @@ class Jobs extends TableView {
     } else if (this.props.params.section === 'scheduled') {
       return (
         <tr key={data.objectId}>
-          <td style={{width: '20%'}}>{data.description}</td>
-          <td style={{width: '20%'}}>{data.jobName}</td>
-          <td style={{width: '20%'}}>{scheduleString(data)}</td>
+          <td style={{ width: '20%' }}>{data.description}</td>
+          <td style={{ width: '20%' }}>{data.jobName}</td>
+          <td style={{ width: '20%' }}>{scheduleString(data)}</td>
           <td className={styles.buttonCell}>
             <RunNowButton job={data} width={'100px'} />
-            <Button width={'80px'} value='Edit' onClick={() => this.navigateToJob(data.objectId)} />
-            <Button width={'80px'} color='red' value='Delete' onClick={() => this.setState({ toDelete: data.objectId })} />
+            <Button width={'80px'} value="Edit" onClick={() => this.navigateToJob(data.objectId)} />
+            <Button
+              width={'80px'}
+              color="red"
+              value="Delete"
+              onClick={() => this.setState({ toDelete: data.objectId })}
+            />
           </td>
         </tr>
       );
     } else if (this.props.params.section === 'status') {
       return (
         <tr key={data.objectId}>
-          <td style={{width: '20%'}}>{data.jobName}</td>
-          <td style={{width: '20%'}}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
-          <td style={{width: '20%'}}>{data.finishedAt ? DateUtils.dateStringUTC(new Date(data.finishedAt.iso)) : ''}</td>
-          <td style={{width: '20%'}}>
+          <td style={{ width: '20%' }}>{data.jobName}</td>
+          <td style={{ width: '20%' }}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
+          <td style={{ width: '20%' }}>
+            {data.finishedAt ? DateUtils.dateStringUTC(new Date(data.finishedAt.iso)) : ''}
+          </td>
+          <td style={{ width: '20%' }}>
             <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
               {data.message}
             </div>
           </td>
-          <td style={{width: '20%'}}>
+          <td style={{ width: '20%' }}>
             <StatusIndicator text={data.status} color={statusColors[data.status]} />
           </td>
         </tr>
@@ -164,30 +183,52 @@ class Jobs extends TableView {
   renderHeaders() {
     if (this.props.params.section === 'all') {
       return [
-        <TableHeader key='name' width={60}>Name</TableHeader>,
-        <TableHeader key='actions' width={40}>Actions</TableHeader>,
+        <TableHeader key="name" width={60}>
+          Name
+        </TableHeader>,
+        <TableHeader key="actions" width={40}>
+          Actions
+        </TableHeader>,
       ];
     } else if (this.props.params.section === 'scheduled') {
       return [
-        <TableHeader key='name' width={20}>Name</TableHeader>,
-        <TableHeader key='func' width={20}>Function</TableHeader>,
-        <TableHeader key='schedule' width={20}>Schedule (UTC)</TableHeader>,
-        <TableHeader key='actions' width={40}>Actions</TableHeader>,
+        <TableHeader key="name" width={20}>
+          Name
+        </TableHeader>,
+        <TableHeader key="func" width={20}>
+          Function
+        </TableHeader>,
+        <TableHeader key="schedule" width={20}>
+          Schedule (UTC)
+        </TableHeader>,
+        <TableHeader key="actions" width={40}>
+          Actions
+        </TableHeader>,
       ];
     } else {
       return [
-        <TableHeader key='func' width={20}>Function</TableHeader>,
-        <TableHeader key='started' width={20}>Started At (UTC)</TableHeader>,
-        <TableHeader key='finished' width={20}>Finished At (UTC)</TableHeader>,
-        <TableHeader key='message' width={20}>Message</TableHeader>,
-        <TableHeader key='status' width={20}>Status</TableHeader>,
+        <TableHeader key="func" width={20}>
+          Function
+        </TableHeader>,
+        <TableHeader key="started" width={20}>
+          Started At (UTC)
+        </TableHeader>,
+        <TableHeader key="finished" width={20}>
+          Finished At (UTC)
+        </TableHeader>,
+        <TableHeader key="message" width={20}>
+          Message
+        </TableHeader>,
+        <TableHeader key="status" width={20}>
+          Status
+        </TableHeader>,
       ];
     }
   }
 
   renderFooter() {
     if (this.props.params.section === 'scheduled') {
-      return <JobScheduleReminder />
+      return <JobScheduleReminder />;
     }
 
     return null;
@@ -197,28 +238,32 @@ class Jobs extends TableView {
     if (this.props.params.section === 'all') {
       return (
         <EmptyState
-          title='Cloud Jobs'
-          description='Define Jobs on parse-server with Parse.Cloud.job()'
-          icon='cloud-happy' />
+          title="Cloud Jobs"
+          description="Define Jobs on parse-server with Parse.Cloud.job()"
+          icon="cloud-happy"
+        />
       );
     } else if (this.props.params.section === 'scheduled') {
       return (
         <EmptyState
-          title='Cloud Jobs'
-          description=
-            {<div>
+          title="Cloud Jobs"
+          description={
+            <div>
               <p>{'On this page you can create JobSchedule objects.'}</p>
-              <br/>
+              <br />
               <JobScheduleReminder />
-            </div>}
-          icon='cloud-happy' />
+            </div>
+          }
+          icon="cloud-happy"
+        />
       );
     } else {
       return (
         <EmptyState
-          title='Job Status'
-          description='There are no active jobs to show at this time.'
-          icon='cloud-unsure' />
+          title="Job Status"
+          description="There are no active jobs to show at this time."
+          icon="cloud-unsure"
+        />
       );
     }
   }
@@ -228,15 +273,18 @@ class Jobs extends TableView {
       return (
         <Modal
           type={Modal.Types.DANGER}
-          title='Delete job schedule?'
-          subtitle='Careful, this action cannot be undone'
-          confirmText='Delete'
-          cancelText='Cancel'
+          title="Delete job schedule?"
+          subtitle="Careful, this action cannot be undone"
+          confirmText="Delete"
+          cancelText="Cancel"
           onCancel={() => this.setState({ toDelete: null })}
           onConfirm={() => {
             this.setState({ toDelete: null });
-            this.props.jobs.dispatch(ActionTypes.DELETE, { jobId: this.state.toDelete });
-          }} />
+            this.props.jobs.dispatch(ActionTypes.DELETE, {
+              jobId: this.state.toDelete,
+            });
+          }}
+        />
       );
     }
   }
@@ -255,13 +303,13 @@ class Jobs extends TableView {
         }
       }
       if (data) {
-        data = data.map((jobName) => {
+        data = data.sort().map(jobName => {
           return { jobName };
         });
       }
-    } else if (this.props.params.section === 'scheduled' ) {
+    } else if (this.props.params.section === 'scheduled') {
       if (this.props.jobs.data) {
-        let jobs = this.props.jobs.data.get('jobs');
+        const jobs = this.props.jobs.data.get('jobs');
         if (jobs) {
           data = jobs.toArray();
         }
@@ -285,15 +333,17 @@ class Jobs extends TableView {
     if (subsections[this.props.params.section]) {
       return (
         <Toolbar
-          section='Jobs'
+          section="Jobs"
           subsection={subsections[this.props.params.section]}
-          details={ReleaseInfo({ release: this.props.release })}>
+          details={ReleaseInfo({ release: this.props.release })}
+        >
           <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
-            <Icon name='refresh-solid' width={14} height={14} />
+            <Icon name="refresh-solid" width={14} height={14} />
             <span>Refresh</span>
           </a>
-          {this.props.availableJobs && this.props.availableJobs.length > 0 ?
-            <Button color='white' value='Schedule a job' onClick={this.navigateToNew.bind(this)} /> : null}
+          {this.props.availableJobs && this.props.availableJobs.length > 0 ? (
+            <Button color="white" value="Schedule a job" onClick={this.navigateToNew.bind(this)} />
+          ) : null}
         </Toolbar>
       );
     }

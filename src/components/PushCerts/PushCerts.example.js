@@ -7,7 +7,7 @@
  */
 import { daysFrom } from 'lib/DateUtils';
 import PushCerts from 'components/PushCerts/PushCerts.react';
-import React     from 'react';
+import React from 'react';
 
 export const component = PushCerts;
 
@@ -17,30 +17,49 @@ export const demos = [
       <PushCerts
         uploadPending={true}
         certs={[
-          {id:'1', bundle: 'com.parse.Anypic', type: 'iOS Production', expiration: daysFrom(new Date(), 60).toISOString()},
-          {id:'2', bundle: 'com.parse.Anypic', type: 'iOS Development', expiration: daysFrom(new Date(), 20).toISOString()},
-          {id:'3', bundle: 'com.parse.Anyphone', type: 'iOS Development', expiration: daysFrom(new Date(), -4).toISOString()},
+          {
+            id: '1',
+            bundle: 'com.parse.Anypic',
+            type: 'iOS Production',
+            expiration: daysFrom(new Date(), 60).toISOString(),
+          },
+          {
+            id: '2',
+            bundle: 'com.parse.Anypic',
+            type: 'iOS Development',
+            expiration: daysFrom(new Date(), 20).toISOString(),
+          },
+          {
+            id: '3',
+            bundle: 'com.parse.Anyphone',
+            type: 'iOS Development',
+            expiration: daysFrom(new Date(), -4).toISOString(),
+          },
         ]}
-        onUpload={()=>{}}
-        onDelete={()=>{}} />
-    )
-  }, {
-    render: () => (
-      <PushCerts
-        certs={undefined}
-        onUpload={()=>{}}
-        onDelete={()=>{}} />
-    )
-  }, {
+        onUpload={() => {}}
+        onDelete={() => {}}
+      />
+    ),
+  },
+  {
+    render: () => <PushCerts certs={undefined} onUpload={() => {}} onDelete={() => {}} />,
+  },
+  {
     render: () => (
       <PushCerts
         uploadPending={true}
         certs={[
-          {id:'1', bundle: 'com.parse.Anypic', type: 'iOS Production', expiration: daysFrom(new Date(), 60).toISOString()},
+          {
+            id: '1',
+            bundle: 'com.parse.Anypic',
+            type: 'iOS Production',
+            expiration: daysFrom(new Date(), 60).toISOString(),
+          },
         ]}
-        error='Something happened, you might want to get that checked out.'
-        onUpload={()=>{}}
-        onDelete={()=>{}} />
-    )
+        error="Something happened, you might want to get that checked out."
+        onUpload={() => {}}
+        onDelete={() => {}}
+      />
+    ),
   },
 ];

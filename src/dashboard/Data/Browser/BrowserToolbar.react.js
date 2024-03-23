@@ -5,22 +5,22 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import BrowserFilter        from 'components/BrowserFilter/BrowserFilter.react';
-import BrowserMenu          from 'components/BrowserMenu/BrowserMenu.react';
-import Icon                 from 'components/Icon/Icon.react';
-import MenuItem             from 'components/BrowserMenu/MenuItem.react';
-import prettyNumber         from 'lib/prettyNumber';
-import React, { useRef }    from 'react';
-import Separator            from 'components/BrowserMenu/Separator.react';
-import styles               from 'dashboard/Data/Browser/Browser.scss';
-import Toolbar              from 'components/Toolbar/Toolbar.react';
-import SecurityDialog       from 'dashboard/Data/Browser/SecurityDialog.react';
-import ColumnsConfiguration from 'components/ColumnsConfiguration/ColumnsConfiguration.react'
-import SecureFieldsDialog   from 'dashboard/Data/Browser/SecureFieldsDialog.react';
-import LoginDialog          from 'dashboard/Data/Browser/LoginDialog.react';
-import Toggle               from 'components/Toggle/Toggle.react';
+import BrowserFilter from 'components/BrowserFilter/BrowserFilter.react';
+import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
+import Icon from 'components/Icon/Icon.react';
+import MenuItem from 'components/BrowserMenu/MenuItem.react';
+import prettyNumber from 'lib/prettyNumber';
+import React, { useRef } from 'react';
+import Separator from 'components/BrowserMenu/Separator.react';
+import styles from 'dashboard/Data/Browser/Browser.scss';
+import Toolbar from 'components/Toolbar/Toolbar.react';
+import SecurityDialog from 'dashboard/Data/Browser/SecurityDialog.react';
+import ColumnsConfiguration from 'components/ColumnsConfiguration/ColumnsConfiguration.react';
+import SecureFieldsDialog from 'dashboard/Data/Browser/SecureFieldsDialog.react';
+import LoginDialog from 'dashboard/Data/Browser/LoginDialog.react';
+import Toggle from 'components/Toggle/Toggle.react';
 
-let BrowserToolbar = ({
+const BrowserToolbar = ({
   className,
   classNameForEditors,
   count,
@@ -31,6 +31,7 @@ let BrowserToolbar = ({
   relation,
   setCurrent,
   onFilterChange,
+  onFilterSave,
   onAddColumn,
   onAddRow,
   onAddRowWithModal,
@@ -44,6 +45,7 @@ let BrowserToolbar = ({
   onExport,
   onRemoveColumn,
   onDeleteRows,
+  onExecuteScriptRows,
   onDropClass,
   onChangeCLP,
   onRefresh,
@@ -70,22 +72,30 @@ let BrowserToolbar = ({
   login,
   logout,
   toggleMasterKeyUsage,
+
+  selectedData,
 }) => {
-  let selectionLength = Object.keys(selection).length;
-  let isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
-  let details = [];
+  const selectionLength = Object.keys(selection).length;
+  const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
+  const details = [];
   if (count !== undefined) {
-      if (count === 1) {
-        details.push('1 object');
-      } else {
-        details.push(prettyNumber(count) + ' objects');
-      }
+    if (count === 1) {
+      details.push('1 object');
+    } else {
+      details.push(prettyNumber(count) + ' objects');
+    }
   }
 
   if (!relation && !isUnique) {
     if (perms && !hidePerms) {
-      let read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
-      let write = perms.create && perms.update && perms.delete && perms.create['*'] && perms.update['*'] && perms.delete['*'];
+      const read = perms.get && perms.find && perms.get['*'] && perms.find['*'];
+      const write =
+        perms.create &&
+        perms.update &&
+        perms.delete &&
+        perms.create['*'] &&
+        perms.update['*'] &&
+        perms.delete['*'];
       if (read && write) {
         details.push('Public Read and Write enabled');
       } else if (read) {
@@ -98,15 +108,9 @@ let BrowserToolbar = ({
   let menu = null;
   if (relation) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' setCurrent={setCurrent}>
-        <MenuItem
-          text={`Create ${relation.targetClassName} and attach`}
-          onClick={onAddRow}
-        />
-        <MenuItem
-          text="Attach existing row"
-          onClick={onAttachRows}
-        />
+      <BrowserMenu title="Edit" icon="edit-solid" setCurrent={setCurrent}>
+        <MenuItem text={`Create ${relation.targetClassName} and attach`} onClick={onAddRow} />
+        <MenuItem text="Attach existing row" onClick={onAttachRows} />
         <Separator />
         <MenuItem
           disabled={selectionLength === 0}
@@ -117,13 +121,26 @@ let BrowserToolbar = ({
     );
   } else if (onAddRow) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={isUnique || isPendingEditCloneRows} setCurrent={setCurrent}>
-        <MenuItem text='Add a row' onClick={onAddRow} />
-        <MenuItem text='Add a row with modal' onClick={onAddRowWithModal} />
-        {enableColumnManipulation ? <MenuItem text='Add a column' onClick={onAddColumn} /> : <noscript />}
-        {enableClassManipulation ? <MenuItem text='Add a class' onClick={onAddClass} /> : <noscript />}
+      <BrowserMenu
+        title="Edit"
+        icon="edit-solid"
+        disabled={isUnique || isPendingEditCloneRows}
+        setCurrent={setCurrent}
+      >
+        <MenuItem text="Add a row" onClick={onAddRow} />
+        <MenuItem text="Add a row with modal" onClick={onAddRowWithModal} />
+        {enableColumnManipulation ? (
+          <MenuItem text="Add a column" onClick={onAddColumn} />
+        ) : (
+          <noscript />
+        )}
+        {enableClassManipulation ? (
+          <MenuItem text="Add a class" onClick={onAddClass} />
+        ) : (
+          <noscript />
+        )}
         <Separator />
-        <MenuItem text='Change pointer key' onClick={onShowPointerKey} />
+        <MenuItem text="Change pointer key" onClick={onShowPointerKey} />
         <MenuItem
           disabled={selectionLength !== 1}
           text={'Edit this row with modal'}
@@ -145,12 +162,26 @@ let BrowserToolbar = ({
         <MenuItem
           disabled={selectionLength === 0}
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
-          onClick={() => onDeleteRows(selection)} />
-        {enableColumnManipulation ? <MenuItem text='Delete a column' onClick={onRemoveColumn} /> : <noscript />}
-        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
-        {enableClassManipulation ? <MenuItem text='Delete this class' onClick={onDropClass} /> : <noscript />}
+          onClick={() => onDeleteRows(selection)}
+        />
+        <Separator />
+        {enableColumnManipulation ? (
+          <MenuItem text="Delete a column" onClick={onRemoveColumn} />
+        ) : (
+          <noscript />
+        )}
+        {enableDeleteAllRows ? (
+          <MenuItem text="Delete all rows" onClick={() => onDeleteRows({ '*': true })} />
+        ) : (
+          <noscript />
+        )}
+        {enableClassManipulation ? (
+          <MenuItem text="Delete this class" onClick={onDropClass} />
+        ) : (
+          <noscript />
+        )}
         {enableExportClass ? <Separator /> : <noscript />}
-        {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
+        {enableExportClass ? <MenuItem text="Export this data" onClick={onExport} /> : <noscript />}
       </BrowserMenu>
     );
   }
@@ -185,20 +216,20 @@ let BrowserToolbar = ({
 
       columns[col] = { type, targetClass };
 
-      if (col === 'objectId' || isUnique && col !== uniqueField) {
+      if (col === 'objectId' || (isUnique && col !== uniqueField)) {
         return;
       }
-      if ((type ==='Pointer' && targetClass === '_User') || type === 'Array' ) {
+      if ((type === 'Pointer' && targetClass === '_User') || type === 'Array') {
         userPointers.push(col);
       }
     });
   }
 
-  let clpDialogRef = useRef(null);
-  let protectedDialogRef = useRef(null);
-  let loginDialogRef = useRef(null);
+  const clpDialogRef = useRef(null);
+  const protectedDialogRef = useRef(null);
+  const loginDialogRef = useRef(null);
 
-  const showCLP = ()=> clpDialogRef.current.handleOpen();
+  const showCLP = () => clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
   const showLogin = () => loginDialogRef.current.handleOpen();
 
@@ -209,6 +240,7 @@ let BrowserToolbar = ({
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}
+      selectedData={selectedData}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>
@@ -226,42 +258,70 @@ let BrowserToolbar = ({
       />
       <div className={styles.toolbarSeparator} />
       {onAddRow && (
-        <LoginDialog
-          ref={loginDialogRef}
-          currentUser={currentUser}
-          login={login}
-          logout={logout}
-        />
+        <LoginDialog ref={loginDialogRef} currentUser={currentUser} login={login} logout={logout} />
       )}
       {onAddRow && (
         <BrowserMenu
-            setCurrent={setCurrent}
-            title={currentUser ? 'Browsing' : 'Browse'}
-            icon="users-solid"
-            active={!!currentUser}
-            disabled={isPendingEditCloneRows}
-          >
-            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
-            {currentUser ? <MenuItem text={<span>Use Master Key <Toggle type={Toggle.Types.HIDE_LABELS} value={useMasterKey} onChange={toggleMasterKeyUsage} switchNoMargin={true} additionalStyles={{ display: 'inline', lineHeight: 0, margin: 0, paddingLeft: 5 }} /></span>} onClick={toggleMasterKeyUsage} /> : <noscript />}
-            {currentUser ? <MenuItem text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>} onClick={logout} /> : <noscript />}
+          setCurrent={setCurrent}
+          title={currentUser ? 'Browsing' : 'Browse'}
+          icon="users-solid"
+          active={!!currentUser}
+          disabled={isPendingEditCloneRows}
+        >
+          <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+          {currentUser ? (
+            <MenuItem
+              text={
+                <span>
+                  Use Master Key{' '}
+                  <Toggle
+                    type={Toggle.Types.HIDE_LABELS}
+                    value={useMasterKey}
+                    onChange={toggleMasterKeyUsage}
+                    switchNoMargin={true}
+                    additionalStyles={{
+                      display: 'inline',
+                      lineHeight: 0,
+                      margin: 0,
+                      paddingLeft: 5,
+                    }}
+                  />
+                </span>
+              }
+              onClick={toggleMasterKeyUsage}
+            />
+          ) : (
+            <noscript />
+          )}
+          {currentUser ? (
+            <MenuItem
+              text={
+                <span>
+                  Stop browsing (<b>{currentUser.get('username')}</b>)
+                </span>
+              }
+              onClick={logout}
+            />
+          ) : (
+            <noscript />
+          )}
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {onAddRow && (
-        <BrowserMenu title='Export' icon='down-solid' disabled={isUnique || isPendingEditCloneRows} setCurrent={setCurrent}>
+        <BrowserMenu
+          title="Export"
+          icon="down-solid"
+          disabled={isUnique || isPendingEditCloneRows}
+          setCurrent={setCurrent}
+        >
           <MenuItem
             disabled={!selectionLength}
             text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'}`}
             onClick={() => onExportSelectedRows(selection)}
           />
-          <MenuItem
-            text={'Export all rows'}
-            onClick={() => onExportSelectedRows({ '*': true })}
-          />
-          <MenuItem
-            text={'Export schema'}
-            onClick={() => onExportSchema()}
-          />
+          <MenuItem text={'Export all rows'} onClick={() => onExportSelectedRows({ '*': true })} />
+          <MenuItem text={'Export schema'} onClick={() => onExportSchema()} />
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
@@ -275,6 +335,7 @@ let BrowserToolbar = ({
         schema={schemaSimplifiedData}
         filters={filters}
         onChange={onFilterChange}
+        onSaveFilter={onFilterSave}
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}
@@ -304,8 +365,8 @@ let BrowserToolbar = ({
         className={classNameForEditors}
         onChangeCLP={onChangeCLP}
         userPointers={userPointers}
-        title='ProtectedFields'
-        icon='locked-solid'
+        title="ProtectedFields"
+        icon="locked-solid"
         onEditPermissions={onEditPermissions}
       />
       {enableSecurityDialog ? (
@@ -321,22 +382,26 @@ let BrowserToolbar = ({
       ) : (
         <noscript />
       )}
-      {enableSecurityDialog ? (
-        <div className={styles.toolbarSeparator} />
-      ) : (
-        <noscript />
-      )}
+      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
+      <BrowserMenu
+        setCurrent={setCurrent}
+        title="Script"
+        icon="gear-solid"
+      >
+        <MenuItem
+          disabled={selectionLength === 0}
+          text={selectionLength === 1 && !selection['*'] ? 'Run script on selected row...' : `Run script on ${selectionLength} selected rows...`}
+          onClick={() => onExecuteScriptRows(selection)}
+        />
+      </BrowserMenu>
+      <div className={styles.toolbarSeparator} />
       {menu}
       {editCloneRows && editCloneRows.length > 0 && <div className={styles.toolbarSeparator} />}
       {editCloneRows && editCloneRows.length > 0 && (
         <BrowserMenu title="Clone" icon="clone-icon">
-          <MenuItem
-            text={'Cancel all pending rows'}
-            onClick={onCancelPendingEditRows}
-          />
+          <MenuItem text={'Cancel all pending rows'} onClick={onCancelPendingEditRows} />
         </BrowserMenu>
       )}
-
     </Toolbar>
   );
 };

@@ -5,13 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import keyMirror         from 'lib/keyMirror';
-import Parse             from 'parse';
-import { Map, List }           from 'immutable';
+import keyMirror from 'lib/keyMirror';
+import Parse from 'parse';
+import { Map, List } from 'immutable';
 import { registerStore } from 'lib/stores/StoreManager';
 
 export const ActionTypes = keyMirror(['FETCH', 'CREATE', 'EDIT', 'DELETE']);
-
 
 // Webhook state should be an Immutable Map with the following fields:
 //   - lastFetch: the last time all data was fetched from the server
@@ -21,26 +20,16 @@ function WebhookStore(state, action) {
   action.app.setParseKeys();
   switch (action.type) {
     case ActionTypes.FETCH:
-      let functionsPromise = Parse._request(
-        'GET',
-        'hooks/functions',
-        {},
-        { useMasterKey: true }
-      );
-      let triggersPromise = Parse._request(
-        'GET',
-        'hooks/triggers',
-        {},
-        { useMasterKey: true }
-      );
-      return Promise.all([functionsPromise, triggersPromise]).then((
-        [functions,
-        triggers]
-      ) => {
-        return Map({ lastFetch: new Date(), webhooks: List(functions.concat(triggers))});
+      const functionsPromise = Parse._request('GET', 'hooks/functions', {}, { useMasterKey: true });
+      const triggersPromise = Parse._request('GET', 'hooks/triggers', {}, { useMasterKey: true });
+      return Promise.all([functionsPromise, triggersPromise]).then(([functions, triggers]) => {
+        return Map({
+          lastFetch: new Date(),
+          webhooks: List(functions.concat(triggers)),
+        });
       });
     case ActionTypes.CREATE:
-      let addHookToStore = hook => state.set('webhooks', state.get('webhooks').push(hook));
+      const addHookToStore = hook => state.set('webhooks', state.get('webhooks').push(hook));
       if (action.functionName !== undefined) {
         return Parse._request(
           'POST',
@@ -72,10 +61,12 @@ function WebhookStore(state, action) {
             url: action.hookURL,
           },
           { useMasterKey: true }
-        ).then((hook) => {
-          let index = state.get('webhooks').findIndex(existingHook => existingHook.functionName === hook.functionName);
+        ).then(hook => {
+          const index = state
+            .get('webhooks')
+            .findIndex(existingHook => existingHook.functionName === hook.functionName);
           return state.setIn(['webhooks', index], hook);
-        })
+        });
       } else {
         return Parse._request(
           'PUT',
@@ -85,9 +76,13 @@ function WebhookStore(state, action) {
           },
           { useMasterKey: true }
         ).then(hook => {
-          let index = state.get('webhooks').findIndex(existingHook =>
-            existingHook.className === hook.className && existingHook.triggerName === hook.triggerName
-          );
+          const index = state
+            .get('webhooks')
+            .findIndex(
+              existingHook =>
+                existingHook.className === hook.className &&
+                existingHook.triggerName === hook.triggerName
+            );
           return state.setIn(['webhooks', index], hook);
         });
       }
@@ -99,7 +94,12 @@ function WebhookStore(state, action) {
           { __op: 'Delete' },
           { useMasterKey: true }
         ).then(() => {
-          return state.set('webhooks', state.get('webhooks').filter(existingHook => existingHook.functionName != action.functionName));
+          return state.set(
+            'webhooks',
+            state
+              .get('webhooks')
+              .filter(existingHook => existingHook.functionName != action.functionName)
+          );
         });
       } else {
         return Parse._request(
@@ -108,9 +108,18 @@ function WebhookStore(state, action) {
           { __op: 'Delete' },
           { useMasterKey: true }
         ).then(() => {
-          return state.set('webhooks', state.get('webhooks').filter(existingHook =>
-            !(existingHook.className === action.triggerClass && existingHook.triggerName == action.triggerName)
-          ));
+          return state.set(
+            'webhooks',
+            state
+              .get('webhooks')
+              .filter(
+                existingHook =>
+                  !(
+                    existingHook.className === action.triggerClass &&
+                    existingHook.triggerName == action.triggerName
+                  )
+              )
+          );
         });
       }
   }

@@ -18,14 +18,14 @@ function SvgPrepPlugin(options) {
   Object.assign(
     this.options,
     {
-      output: 'sprites.svg'
+      output: 'sprites.svg',
     },
     options || {}
   );
 }
 
-SvgPrepPlugin.prototype.apply = function(compiler) {
-  compiler.hooks.thisCompilation.tap(SvgPrepPlugin.name, (compilation) => {
+SvgPrepPlugin.prototype.apply = function (compiler) {
+  compiler.hooks.thisCompilation.tap(SvgPrepPlugin.name, compilation => {
     compilation.hooks.processAssets.tapPromise(
       {
         name: SvgPrepPlugin.name,
@@ -37,18 +37,17 @@ SvgPrepPlugin.prototype.apply = function(compiler) {
         }
 
         // TODO: Keep track of file hashes, so we can avoid recompiling when none have changed
-        let files = fs
+        const files = fs
           .readdirSync(this.options.source)
-          .filter((name) => name.endsWith('.svg'))
-          .map((name) => path.join(this.options.source, name));
+          .filter(name => name.endsWith('.svg'))
+          .map(name => path.join(this.options.source, name));
 
-        const sprited = await SvgPrep(files)
-          .filter({ removeIds: true, noFill: true })
-          .output();
+        const sprited = await SvgPrep(files).filter({ removeIds: true, noFill: true }).output();
 
         compilation.emitAsset(this.options.output, new RawSource(sprited));
-      });
+      }
+    );
   });
-}
+};
 
 module.exports = SvgPrepPlugin;

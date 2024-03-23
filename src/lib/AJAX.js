@@ -6,25 +6,34 @@
  * the root directory of this source tree.
  */
 import * as CSRFManager from 'lib/CSRFManager';
-import encodeFormData   from 'lib/encodeFormData';
+import encodeFormData from 'lib/encodeFormData';
 
 let basePath = '';
 export function setBasePath(newBasePath) {
   basePath = newBasePath || '';
   if (basePath.endsWith('/')) {
-    basePath = basePath.slice(0, basePath.length-1);
+    basePath = basePath.slice(0, basePath.length - 1);
   }
 }
 
 // abortable flag used to pass xhr reference so user can abort accordingly
-export function request(method, url, body, abortable = false, withCredentials = true, useRequestedWith = true) {
-  if (!url.startsWith('http://')
-      && !url.startsWith('https://')
-      && basePath.length
-      && !url.startsWith(basePath + '/')) {
+export function request(
+  method,
+  url,
+  body,
+  abortable = false,
+  withCredentials = true,
+  useRequestedWith = true
+) {
+  if (
+    !url.startsWith('http://') &&
+    !url.startsWith('https://') &&
+    basePath.length &&
+    !url.startsWith(basePath + '/')
+  ) {
     url = basePath + url;
   }
-  let xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
     xhr.setRequestHeader('X-CSRF-Token', CSRFManager.getToken());
@@ -35,7 +44,7 @@ export function request(method, url, body, abortable = false, withCredentials = 
   xhr.withCredentials = withCredentials;
   let resolve;
   let reject;
-  let p = new Promise((res, rej) => {
+  const p = new Promise((res, rej) => {
     resolve = res;
     reject = rej;
   });
@@ -50,12 +59,12 @@ export function request(method, url, body, abortable = false, withCredentials = 
       notice: 'Network Error',
     });
   };
-  xhr.onload = function() {
+  xhr.onload = function () {
     if (this.status === 200) {
       let json = {};
       try {
         json = JSON.parse(this.responseText);
-      } catch(ex) {
+      } catch (ex) {
         p.reject(this.responseText);
         return;
       }
@@ -76,11 +85,11 @@ export function request(method, url, body, abortable = false, withCredentials = 
       let json = {};
       try {
         json = JSON.parse(this.responseText);
-      } catch(ex) {
-        p.reject(this.responseText)
+      } catch (ex) {
+        p.reject(this.responseText);
         return;
       }
-      let message = json.message || json.error || json.notice || 'Request Error';
+      const message = json.message || json.error || json.notice || 'Request Error';
       p.reject({
         success: false,
         message: message,
@@ -102,13 +111,10 @@ export function request(method, url, body, abortable = false, withCredentials = 
     if (body instanceof FormData) {
       xhr.send(body);
     } else {
-      xhr.setRequestHeader(
-        'Content-Type',
-        'application/x-www-form-urlencoded; charset=UTF-8'
-      );
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
       // Encode it as a url parameter string
-      let formData = [];
-      for (let k in body) {
+      const formData = [];
+      for (const k in body) {
         formData.push(encodeFormData(k, body[k]));
       }
       xhr.send(formData.join('&'));
@@ -119,8 +125,8 @@ export function request(method, url, body, abortable = false, withCredentials = 
   if (abortable) {
     return {
       xhr,
-      promise: p
-    }
+      promise: p,
+    };
   }
   return p;
 }

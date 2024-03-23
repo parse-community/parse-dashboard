@@ -29,7 +29,7 @@ class ApiConsole extends DashboardView {
         categories={[
           { name: 'REST Console', id: 'rest' },
           { name: 'GraphQL Console', id: 'graphql' },
-          { name: 'JS Console', id: 'js_console' }
+          { name: 'JS Console', id: 'js_console' },
         ]}
       />
     );

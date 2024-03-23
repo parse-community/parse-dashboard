@@ -11,167 +11,167 @@ export const Constraints = {
   exists: {
     name: 'exists',
     field: null,
-    comparable: false
+    comparable: false,
   },
   dne: {
     name: 'does not exist',
     field: null,
-    comparable: false
+    comparable: false,
   },
   eq: {
     name: 'equals',
-    comparable: true
+    comparable: true,
   },
   neq: {
     name: 'does not equal',
-    comparable: true
+    comparable: true,
   },
   lt: {
     name: 'less than',
     field: 'Number',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   lte: {
     name: 'less than or equal',
     field: 'Number',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   gt: {
     name: 'greater than',
     field: 'Number',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   gte: {
     name: 'greater than or equal',
     field: 'Number',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   starts: {
     name: 'starts with',
-    comparable: true
+    comparable: true,
   },
   ends: {
     name: 'ends with',
-    comparable: true
+    comparable: true,
   },
   stringContainsString: {
     name: 'string contains string',
     field: 'String',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   before: {
     name: 'is before',
     field: 'Date',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   after: {
     name: 'is after',
     field: 'Date',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   containsString: {
     name: 'contains string',
     field: 'String',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   doesNotContainString: {
     name: 'without string',
     field: 'String',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   containsNumber: {
     name: 'contains number',
     field: 'Number',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   doesNotContainNumber: {
     name: 'without number',
     field: 'Number',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   containsAny: {
     name: 'contains',
     field: 'Array',
-    comparable: true
+    comparable: true,
   },
   doesNotContainAny: {
     name: 'does not contain',
     field: 'Array',
-    comparable: true
+    comparable: true,
   },
   keyExists: {
     name: 'key exists',
     field: 'Object',
     composable: true,
-    comparable: false
+    comparable: false,
   },
   keyDne: {
     name: 'key does not exist',
     field: 'Object',
     composable: true,
-    comparable: false
+    comparable: false,
   },
   keyEq: {
     name: 'key equals',
     field: 'Object',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   keyNeq: {
     name: 'key does not equal',
     field: 'Object',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   keyGt: {
     name: 'key greater than',
     field: 'Object',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   keyGte: {
     name: 'key greater than/equal',
     field: 'Object',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   keyLt: {
     name: 'key less than',
     field: 'Object',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   keyLte: {
     name: 'key less than/equal',
     field: 'Object',
     composable: true,
-    comparable: true
+    comparable: true,
   },
   unique: {
     name: 'unique',
     field: null,
-    comparable: false
+    comparable: false,
   },
 };
 
 export const FieldConstraints = {
-  'Pointer': [ 'exists', 'dne', 'eq', 'neq', 'unique' ],
-  'Boolean': [ 'exists', 'dne', 'eq', 'unique' ],
-  'Number': [ 'exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique' ],
-  'String': [ 'exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique' ],
-  'Date': [ 'exists', 'dne', 'before', 'after', 'unique' ],
-  'Object': [
+  Pointer: ['exists', 'dne', 'eq', 'neq', 'unique'],
+  Boolean: ['exists', 'dne', 'eq', 'unique'],
+  Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
+  String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
+  Date: ['exists', 'dne', 'before', 'after', 'unique'],
+  Object: [
     'exists',
     'dne',
     'keyExists',
@@ -184,7 +184,7 @@ export const FieldConstraints = {
     'keyLte',
     'unique',
   ],
-  'Array': [
+  Array: [
     'exists',
     'dne',
     'containsString',
@@ -193,16 +193,16 @@ export const FieldConstraints = {
     'doesNotContainNumber',
     'containsAny',
     'doesNotContainAny',
-  ]
+  ],
 };
 
 export const DefaultComparisons = {
-  'Pointer': '',
-  'Boolean': false,
-  'Number': '',
-  'String': '',
-  'Object': '',
-  'Date': Parse._encode(new Date()),
+  Pointer: '',
+  Boolean: false,
+  Number: '',
+  String: '',
+  Object: '',
+  Date: Parse._encode(new Date()),
 };
 
 // Given a class schema and an array of current filters, this returns the remaining available filters
@@ -211,26 +211,26 @@ export const DefaultComparisons = {
 //   blacklist is an optional array of constraints to ignore
 export function availableFilters(schema, currentFilters, blacklist) {
   blacklist = blacklist || [];
-  let disabled = {};
+  const disabled = {};
   if (currentFilters) {
-    currentFilters.forEach((filter) => {
+    currentFilters.forEach(filter => {
       if (!Constraints[filter.get('constraint')].composable) {
         disabled[filter.get('field')] = true;
       }
     });
   }
-  let available = {};
-  for (let col in schema) {
+  const available = {};
+  for (const col in schema) {
     if (disabled[col]) {
       continue;
     }
-    let type = schema[col].type;
+    const type = schema[col].type;
     if (!FieldConstraints[type]) {
       continue;
     }
-    available[col] = FieldConstraints[type].filter((c) => blacklist.indexOf(c) < 0);
+    available[col] = FieldConstraints[type].filter(c => blacklist.indexOf(c) < 0);
   }
   return available;
 }
 
-export const BLACKLISTED_FILTERS = [ 'containsAny', 'doesNotContainAny' ];
+export const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];

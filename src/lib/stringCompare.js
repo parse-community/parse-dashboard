@@ -6,5 +6,5 @@
  * the root directory of this source tree.
  */
 export default function stringCompare(a, b) {
-  return (a < b ? -1 : (a > b ? 1 : 0));
+  return a < b ? -1 : a > b ? 1 : 0;
 }

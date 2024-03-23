@@ -10,12 +10,14 @@ const DAY = HOUR * 24;
 
 // Determines the points marked on the x-axis of a chart
 export function timeAxisBuckets(minRaw, maxRaw) {
-  let min = new Date(minRaw);
-  let max = new Date(maxRaw);
+  const min = new Date(minRaw);
+  const max = new Date(maxRaw);
 
   if (max - min <= DAY * 2) {
-    let buckets = [];
-    let bucket = new Date(Date.UTC(min.getUTCFullYear(), min.getUTCMonth(), min.getUTCDate(), min.getUTCHours()));
+    const buckets = [];
+    let bucket = new Date(
+      Date.UTC(min.getUTCFullYear(), min.getUTCMonth(), min.getUTCDate(), min.getUTCHours())
+    );
     while (bucket < max) {
       buckets.push(bucket);
       bucket = new Date(bucket.getTime() + HOUR);
@@ -25,7 +27,7 @@ export function timeAxisBuckets(minRaw, maxRaw) {
   }
 
   if (max - min <= DAY * 60) {
-    let buckets = [];
+    const buckets = [];
     let bucket = new Date(Date.UTC(min.getUTCFullYear(), min.getUTCMonth(), min.getUTCDate()));
     while (bucket < max) {
       buckets.push(bucket);
@@ -37,7 +39,7 @@ export function timeAxisBuckets(minRaw, maxRaw) {
     return buckets;
   }
 
-  let buckets = [];
+  const buckets = [];
   let bucket = new Date(Date.UTC(min.getUTCFullYear(), min.getUTCMonth()));
   while (bucket < max) {
     buckets.push(bucket);
@@ -50,7 +52,8 @@ export function timeAxisBuckets(minRaw, maxRaw) {
 
 // Determines the points marked on the y-axis of a chart
 export function valueAxisBuckets(max) {
-  if (max === 0) { // prevent horrible crash when max is zero value
+  if (max === 0) {
+    // prevent horrible crash when max is zero value
     console.warn('max param should be a non zero value');
     return [];
   }
@@ -59,8 +62,8 @@ export function valueAxisBuckets(max) {
   if (max / Math.pow(10, magnitude) < 1.5) {
     magnitude--;
   }
-  let skip = Math.pow(10, magnitude);
-  let buckets = [];
+  const skip = Math.pow(10, magnitude);
+  const buckets = [];
   let bucket = 0;
   while (bucket <= max) {
     buckets.push(bucket);
@@ -72,9 +75,12 @@ export function valueAxisBuckets(max) {
 
 // Determines the x,y points on the chart for each data point
 export function getDataPoints(chartWidth, chartHeight, timeBuckets, valueBuckets, dataPoints) {
-  let xLength = timeBuckets[timeBuckets.length - 1] - timeBuckets[0];
-  let yLength = valueBuckets[valueBuckets.length - 1] - valueBuckets[0];
+  const xLength = timeBuckets[timeBuckets.length - 1] - timeBuckets[0];
+  const yLength = valueBuckets[valueBuckets.length - 1] - valueBuckets[0];
   return dataPoints.map(([x, y]) => {
-    return [chartWidth * (x - timeBuckets[0]) / xLength, chartHeight - (chartHeight * y / yLength)];
+    return [
+      (chartWidth * (x - timeBuckets[0])) / xLength,
+      chartHeight - (chartHeight * y) / yLength,
+    ];
   });
 }
