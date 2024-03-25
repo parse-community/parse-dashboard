@@ -103,7 +103,7 @@
     "marked": "4.0.10",
     "null-loader": "4.0.1",
     "prettier": "2.8.8",
-    "puppeteer": "18.0.5",
+    "puppeteer": "22.6.1",
     "react-test-renderer": "16.13.1",
     "request": "2.88.2",
     "request-promise": "4.2.5",
