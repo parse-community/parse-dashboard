@@ -1,3 +1,16 @@
+# [6.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.8...6.0.0-alpha.1) (2024-03-05)
+
+
+### Features
+
+* Add Node 20 support; remove Node 14, 16 support ([#2532](https://github.com/ParsePlatform/parse-dashboard/issues/2532)) ([578a339](https://github.com/ParsePlatform/parse-dashboard/commit/578a339c04990b5ecb3f80d34c690c6d34218bfa))
+* Add Node 20 support; remove Node 14, 16 support ([#2535](https://github.com/ParsePlatform/parse-dashboard/issues/2535)) ([5c90f2d](https://github.com/ParsePlatform/parse-dashboard/commit/5c90f2de1b98a2099453c8f8c0d6817330f7133d))
+
+
+### BREAKING CHANGES
+
+* Removes support for Node 14 and 16 ([5c90f2d](5c90f2d))
+
 # [5.4.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.7...5.4.0-alpha.8) (2024-02-29)
 
 
