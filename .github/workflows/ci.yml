@@ -75,9 +75,9 @@ jobs:
       matrix:
         include:
           - name: Docker linux/amd64
-            DOCKER_PLATFORM: linux/amd64
-          - name: Docker linux/arm64/v8
-            DOCKER_PLATFORM: linux/arm64/v8
+            DOCKER_PLATFORM: linux/amd64, linux/arm64/v8
+          # - name: Docker linux/arm64/v8
+          #   DOCKER_PLATFORM: linux/arm64/v8
           # Building currently fails for the platforms below
           # - name: Docker linux/arm/v6
           #   DOCKER_PLATFORM: linux/arm/v6
