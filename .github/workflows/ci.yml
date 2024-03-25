@@ -76,8 +76,8 @@ jobs:
         include:
           - name: Docker linux/amd64
             DOCKER_PLATFORM: linux/amd64
-          - name: Docker arm64/v8
-            DOCKER_PLATFORM: arm64/v8
+          - name: Docker linux/arm64/v8
+            DOCKER_PLATFORM: linux/arm64/v8
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
