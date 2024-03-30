@@ -46,10 +46,11 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
     const iconName = currentApp.iconName;
     const path = iconsFolder + '/' + iconName;
 
-    fs.stat(path, function(err) {
+    fs.stat(path, function (err) {
       if (err) {
-        if ('ENOENT' == err.code) {// file does not exist
-          console.warn('Icon with file name: ' + iconName + ' couldn\'t be found in icons folder!');
+        if ('ENOENT' == err.code) {
+          // file does not exist
+          console.warn('Icon with file name: ' + iconName + " couldn't be found in icons folder!");
         } else {
           console.warn('An error occurred while checking for icons, please check permission!');
         }
@@ -60,7 +61,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   }
 }
 
-module.exports = function(config, options) {
+module.exports = function (config, options) {
   options = options || {};
   const app = express();
 
@@ -69,7 +70,7 @@ module.exports = function(config, options) {
   app.use(express.urlencoded({ extended: true }));
 
   // Serve public files.
-  app.use(express.static(path.join(__dirname,'public')));
+  app.use(express.static(path.join(__dirname, 'public')));
 
   // Allow setting via middleware
   if (config.trustProxy && app.disabled('trust proxy')) {
@@ -77,16 +78,21 @@ module.exports = function(config, options) {
   }
 
   // wait for app to mount in order to get mountpath
-  app.on('mount', function() {
+  app.on('mount', function () {
     const mountPath = getMount(app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
-    authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret, cookieSessionMaxAge: options.cookieSessionMaxAge });
+    authInstance.initialize(app, {
+      cookieSessionSecret: options.cookieSessionSecret,
+      cookieSessionMaxAge: options.cookieSessionMaxAge,
+    });
 
     // CSRF error handler
     app.use(function (err, req, res, next) {
-      if (err.code !== 'EBADCSRFTOKEN') {return next(err)}
+      if (err.code !== 'EBADCSRFTOKEN') {
+        return next(err);
+      }
 
       // handle CSRF token errors here
       res.status(403);
@@ -100,6 +106,12 @@ module.exports = function(config, options) {
     // Serve the configuration.
     app.get('/parse-dashboard-config.json', async (req, res) => {
       const apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
+      res.send('form tampered with');
+    });
+
+    // Serve the configuration.
+    app.get('/parse-dashboard-config.json', function (req, res) {
+      const apps = config.apps.map(app => Object.assign({}, app)); // make a copy
       const response = {
         apps,
         newFeaturesInLatestVersion,
@@ -115,12 +127,18 @@ module.exports = function(config, options) {
       if (!options.dev && !requestIsLocal) {
         if (!req.secure && !options.allowInsecureHTTP) {
           //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
-          return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
+          return res.send({
+            success: false,
+            error: 'Parse Dashboard can only be remotely accessed via HTTPS',
+          });
         }
 
         if (!users) {
           //Accessing the dashboard over the internet can only be done with username and password
-          return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
+          return res.send({
+            success: false,
+            error: 'Configure a user to access Parse Dashboard remotely',
+          });
         }
       }
       const authentication = req.user;
@@ -130,7 +148,7 @@ module.exports = function(config, options) {
       const isReadOnly = authentication && authentication.isReadOnly;
       // User is full read-only, replace the masterKey by the read-only one
       if (isReadOnly) {
-        response.apps = response.apps.map((app) => {
+        response.apps = response.apps.map(app => {
           app.masterKey = app.readOnlyMasterKey;
           if (!app.masterKey) {
             throw new Error('You need to provide a readOnlyMasterKey to use read-only features.');
@@ -837,7 +855,7 @@ IMPORTANT: Choose the correct function based on what the user wants to delete:
 
 CRITICAL SECURITY RULE FOR WRITE OPERATIONS:
 - ANY write operation (create, update, delete) MUST have explicit user confirmation through conversation
-- When a user requests a write operation, explain what you will do and ask for confirmation 
+- When a user requests a write operation, explain what you will do and ask for confirmation
 - Only call the write operation functions with confirmed=true after the user has explicitly agreed
 - If a user says "Create a new class", treat this as confirmation to create objects in that class
 - You CANNOT perform write operations without the user's knowledge and consent
@@ -853,7 +871,7 @@ When working with the database:
 - Read operations (query, getSchema, count) can be performed immediately
 - Write operations require the pattern: 1) Explain what you'll do, 2) Ask for confirmation, 3) Only then execute if confirmed
 - Always use the provided database functions instead of writing code
-- Class names are case-sensitive 
+- Class names are case-sensitive
 - Use proper Parse query syntax for complex queries
 - Handle objectId fields correctly
 - Be mindful of data types (Date, Pointer, etc.)
@@ -1056,8 +1074,7 @@ You have direct access to the Parse database through function calls, so you can 
         }
       } catch {
         // Directory doesn't exist or something.
-        console.warn('Iconsfolder at path: ' + config.iconsFolder +
-          ' not found!');
+        console.warn('Iconsfolder at path: ' + config.iconsFolder + ' not found!');
       }
     }
 
@@ -1089,7 +1106,7 @@ You have direct access to the Parse database through function calls, so you can 
       if (errors && errors.length) {
         errors = `<div id="login_errors" style="display: none;">
           ${errors.join(' ')}
-        </div>`
+        </div>`;
       }
       res.send(`<!DOCTYPE html>
       <html>
@@ -1112,7 +1129,7 @@ You have direct access to the Parse database through function calls, so you can 
     });
 
     // For every other request, go to index.html. Let client-side handle the rest.
-    app.get('/*', function(req, res) {
+    app.get('/*', function (req, res, next) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         const redirect = req.url.replace('/login', '');
         if (redirect.length > 1) {
@@ -1123,7 +1140,8 @@ You have direct access to the Parse database through function calls, so you can 
       if (users && req.user && req.user.matchingUsername) {
         res.append('username', req.user.matchingUsername);
       }
-      res.send(`<!DOCTYPE html>
+      if (!req.path.startsWith('/v2')) {
+        res.send(`<!DOCTYPE html>
       <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
@@ -1140,8 +1158,11 @@ You have direct access to the Parse database through function calls, so you can 
         </body>
       </html>
       `);
+      } else {
+        next();
+      }
     });
   });
 
   return app;
-}
+};

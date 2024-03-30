@@ -3,6 +3,7 @@ node_modules/
 bundles/
 PIG/bundles/
 Parse-Dashboard/public/bundles/
+Parse-Dashboard/v2/
 Parse-Dashboard/parse-dashboard-config.json
 npm-debug.log
 .eslintcache
@@ -20,3 +21,6 @@ test_logs
 
 # AI tools
 .claude
+
+.history
+.turbo
