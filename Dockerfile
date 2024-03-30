@@ -21,8 +21,25 @@ COPY . /src
 # Install remaining dev dependencies
 RUN npm ci
 
-# Run all webpack build steps
-RUN npm run prepare && npm run build
+############################################################
+# Build stage v2
+############################################################
+FROM node:lts-alpine AS v2-build
+
+RUN apk --no-cache add git
+WORKDIR /src
+
+# Copy package.json first to benefit from layer caching
+COPY v2/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy src to have webpack config files ready for install
+COPY ./v2 ./
+
+# Run build step
+RUN npm run build
 
 ############################################################
 # Release stage
@@ -36,6 +53,7 @@ COPY --from=build /src/package*.json /src/
 
 # Copy compiled src dirs
 COPY --from=build /src/Parse-Dashboard/ /src/Parse-Dashboard/
+COPY --from=v2-build /Parse-Dashboard/v2 /src/Parse-Dashboard/v2
 
 USER node
 
