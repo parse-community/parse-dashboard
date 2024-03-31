@@ -229,7 +229,7 @@ module.exports = function (config, options) {
       if (users && req.user && req.user.matchingUsername) {
         res.append('username', req.user.matchingUsername);
       }
-      if (!req.path.startsWith(`${mountPath}v2`)) {
+      if (!req.path.startsWith('/v2')) {
         res.send(`<!DOCTYPE html>
       <html>
         <head>
@@ -247,7 +247,26 @@ module.exports = function (config, options) {
       </html>
       `);
       } else {
-        next();
+        if (options.dev) {
+          next();
+        } else {
+          res.send(`<!doctype html>
+        <html lang="en">
+          <head>
+          <base href="${mountPath}v2/"/>
+          <meta charset="UTF-8" />
+            <link rel="icon" type="image/svg+xml" href="${mountPath}v2/vite.bundle.svg" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Express serve</title>
+            <script type="module" crossorigin src="${mountPath}v2/index.bundle.js"></script>
+            <link rel="stylesheet" crossorigin href="${mountPath}v2/index.bundle.css">
+          </head>
+          <body>
+            <div id="root"></div>
+          </body>
+        </html>
+      `);
+        }
       }
     });
   });
