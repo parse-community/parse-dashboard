@@ -63,7 +63,8 @@ module.exports = function (config, options) {
   }
 
   // wait for app to mount in order to get mountpath
-  app.on('mount', function () {
+  app.on('mount', function (parent) {
+    parent.use('/v2/', express.static(path.join(__dirname, 'public/v2')));
     const mountPath = getMount(app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
