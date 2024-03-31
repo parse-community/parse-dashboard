@@ -1140,7 +1140,7 @@ You have direct access to the Parse database through function calls, so you can 
       if (users && req.user && req.user.matchingUsername) {
         res.append('username', req.user.matchingUsername);
       }
-      if (!req.path.startsWith('/v2')) {
+      if (!req.path.startsWith(`${mountPath}v2`)) {
         res.send(`<!DOCTYPE html>
       <html>
         <head>
