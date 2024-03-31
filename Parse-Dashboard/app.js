@@ -255,7 +255,7 @@ module.exports = function (config, options) {
           <head>
           <base href="${mountPath}v2/"/>
           <meta charset="UTF-8" />
-            <link rel="icon" type="image/svg+xml" href="${mountPath}v2/vite.bundle.svg" />
+            <link rel="icon" type="image/svg+xml" href="${mountPath}v2/vite.svg" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>Express serve</title>
             <script type="module" crossorigin src="${mountPath}v2/index.bundle.js"></script>
