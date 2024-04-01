@@ -261,6 +261,9 @@ module.exports = function (config, options) {
             <title>Express serve</title>
             <script type="module" crossorigin src="${mountPath}v2/index.bundle.js"></script>
             <link rel="stylesheet" crossorigin href="${mountPath}v2/index.bundle.css">
+            <script>
+              PARSE_DASHBOARD_PATH = "${mountPath}";
+          </script>
           </head>
           <body>
             <div id="root"></div>
