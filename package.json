@@ -125,7 +125,7 @@
     "dev": "node ./Parse-Dashboard/index.js --dev & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
-    "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
+    "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js && npm run build --workspace=v2",
     "test": "jest",
     "lint": "eslint --ignore-path .gitignore --cache ./",
     "lint:fix": "DEBUG=eslint:cli-engine eslint --ignore-path .gitignore --fix --cache ./",
