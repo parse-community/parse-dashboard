@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && npm run clean",
-    "clean": "rimraf ../Parse-Dashboard/v2/index.html",
+    "clean": "rimraf ../Parse-Dashboard/public/v2/index.html",
     "build:watch": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -24,7 +24,6 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "rimraf": "^5.0.5",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
