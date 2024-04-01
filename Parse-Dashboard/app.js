@@ -56,6 +56,7 @@ module.exports = function (config, options) {
   const app = express();
   // Serve public files.
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use('/v2', express.static(path.join(__dirname, 'v2')));
 
   // Allow setting via middleware
   if (config.trustProxy && app.disabled('trust proxy')) {
@@ -63,8 +64,7 @@ module.exports = function (config, options) {
   }
 
   // wait for app to mount in order to get mountpath
-  app.on('mount', function (parent) {
-    parent.use('/v2/', express.static(path.join(__dirname, 'v2')));
+  app.on('mount', function () {
     const mountPath = getMount(app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
@@ -250,23 +250,6 @@ module.exports = function (config, options) {
       } else {
         if (options.dev) {
           next();
-        } else {
-          res.send(`<!doctype html>
-        <html lang="en">
-          <head>
-          <base href="${mountPath}v2/"/>
-          <meta charset="UTF-8" />
-            <link rel="icon" type="image/svg+xml" href="${mountPath}v2/vite.svg" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Express serve</title>
-            <script type="module" crossorigin src="${mountPath}v2/index.bundle.js"></script>
-            <link rel="stylesheet" crossorigin href="${mountPath}v2/index.bundle.css">
-          </head>
-          <body>
-            <div id="root"></div>
-          </body>
-        </html>
-      `);
         }
       }
     });

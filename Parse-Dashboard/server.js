@@ -183,16 +183,13 @@ module.exports = options => {
         )}`
       );
     });
-    if (dev) {
+    if (dev && fs.existsSync(path.join(__dirname, '../v2'))) {
       ViteExpress.config({
         inlineViteConfig: {
           base: `${mountPath}/v2/`,
           root: path.join(__dirname, '../v2'),
-          build: {
-            outDir: path.join(__dirname, './v2'),
-          },
         },
-        mode: dev && fs.existsSync(path.join(__dirname, '../v2')) ? 'development' : 'production',
+        mode: 'development',
       });
       ViteExpress.bind(app, server);
     }

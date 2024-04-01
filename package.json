@@ -73,7 +73,6 @@
     "regenerator-runtime": "0.13.11",
     "semver": "7.5.2",
     "typescript": "4.8.3",
-    "vite": "^5.2.7",
     "vite-express": "^0.16.0"
   },
   "devDependencies": {
@@ -127,9 +126,9 @@
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
     "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js && npm run build --workspace=v2",
     "test": "jest",
-    "lint": "eslint --ignore-path .gitignore --cache ./",
-    "lint:fix": "DEBUG=eslint:cli-engine eslint --ignore-path .gitignore --fix --cache ./",
-    "prettier": "prettier --write '{src,webpack}/**/*.js'",
+    "lint": "eslint --cache ./",
+    "lint:fix": "DEBUG=eslint:cli-engine eslint --fix --cache ./",
+    "prettier": "prettier --write {src,webpack}/**/*.js",
     "generate": "node scripts/generate.js",
     "prepare": "webpack --config webpack/publish.config.js --progress && npm run build --workspace=v2",
     "start": "node ./Parse-Dashboard/index.js",
@@ -164,13 +163,6 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "lint-staged": {
-    "{src,webpack}/{**/*,*}.js": [
-      "prettier --write",
-      "eslint --fix --cache",
-      "git add"
-    ]
   },
   "workspaces": [
     "v2"
