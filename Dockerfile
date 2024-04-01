@@ -32,8 +32,8 @@ WORKDIR /src
 # Copy package.json first to benefit from layer caching
 COPY v2/package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Copy dependencies
+COPY --from=build /src/prod_node_modules /src/node_modules
 
 # Copy src to have webpack config files ready for install
 COPY ./v2 ./
