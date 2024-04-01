@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react-swc';
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: '../Parse-Dashboard/v2',
+    outDir: '../Parse-Dashboard/public/v2',
     emptyOutDir: true,
     rollupOptions: {
       output: {

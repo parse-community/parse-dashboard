@@ -53,7 +53,7 @@ COPY --from=build /src/package*.json /src/
 
 # Copy compiled src dirs
 COPY --from=build /src/Parse-Dashboard/ /src/Parse-Dashboard/
-COPY --from=v2-build /Parse-Dashboard/v2 /src/Parse-Dashboard/v2
+COPY --from=v2-build /Parse-Dashboard/public/v2 /src/Parse-Dashboard/public/v2
 
 USER node
 
