@@ -1,0 +1,26 @@
+.DS_Store
+node_modules/
+bundles/
+PIG/bundles/
+Parse-Dashboard/public/bundles/
+Parse-Dashboard/public/v2/
+Parse-Dashboard/v2/
+Parse-Dashboard/parse-dashboard-config.json
+npm-debug.log
+.eslintcache
+
+// vim .swp
+*.swp
+.env
+.idea/
+
+logs/
+test_logs
+
+# visual studio code
+.vscode
+
+.history
+.turbo
+
+v2

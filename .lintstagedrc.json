@@ -1,0 +1,1 @@
+{ "{src,webpack}/{**/*,*}.js": ["prettier --write", "eslint --fix --cache"] }
