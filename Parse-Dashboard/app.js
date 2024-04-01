@@ -50,7 +50,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
       if (err) {
         if ('ENOENT' == err.code) {
           // file does not exist
-          console.warn('Icon with file name: ' + iconName + " couldn't be found in icons folder!");
+          console.warn('Icon with file name: ' + iconName + ' couldn\'t be found in icons folder!');
         } else {
           console.warn('An error occurred while checking for icons, please check permission!');
         }
