@@ -25,7 +25,8 @@ import { CategoryCreate, CategoryEdit, CategoryList, CategoryShow } from './page
 import { useRef } from 'react';
 
 function App() {
-  const first = useRef(location.pathname);
+  const pathname = location.pathname;
+  const first = useRef(pathname.substring(0, pathname.indexOf('/v2') + 3));
 
   return (
     <BrowserRouter basename={first.current}>

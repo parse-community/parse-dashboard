@@ -71,7 +71,6 @@ module.exports = function (config, options) {
 
   // Serve public files.
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use('/v2', express.static(path.join(__dirname, 'v2')));
 
   // Allow setting via middleware
   if (config.trustProxy && app.disabled('trust proxy')) {
@@ -1160,9 +1159,7 @@ You have direct access to the Parse database through function calls, so you can 
       </html>
       `);
       } else {
-        if (options.dev) {
-          next();
-        }
+        next();
       }
     });
   });
