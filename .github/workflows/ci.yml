@@ -104,9 +104,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check NPM lock file version
-        uses: mansona/npm-lockfile-version@v1
+        uses: mansona/npm-lockfile-version@v2
         with:
-          version: 1
+          version: 3
   check-build:
     strategy:
       matrix:
