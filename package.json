@@ -46,7 +46,7 @@
     "core-js": "3.28.0",
     "csurf": "1.11.0",
     "express": "4.19.2",
-    "graphiql": "2.0.8",
+    "graphiql": "3.2.0",
     "graphql": "16.8.1",
     "immutable": "4.1.0",
     "immutable-devtools": "0.1.5",
