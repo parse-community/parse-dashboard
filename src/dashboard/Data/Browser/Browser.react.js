@@ -1798,16 +1798,16 @@ class Browser extends DashboardView {
 
   onMouseDownRowCheckBox(checked) {
     this.setState({
-      rowCheckboxDragging: true, 
-      draggedRowSelection: !checked
+      rowCheckboxDragging: true,
+      draggedRowSelection: !checked,
     });
   }
 
   onMouseUpRowCheckBox() {
     this.setState({
       rowCheckboxDragging: false,
-      draggedRowSelection: false
-    })
+      draggedRowSelection: false,
+    });
   }
 
   onMouseOverRowCheckBox(id) {
