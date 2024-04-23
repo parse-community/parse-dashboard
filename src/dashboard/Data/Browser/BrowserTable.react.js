@@ -170,6 +170,9 @@ export default class BrowserTable extends React.Component {
                     scripts={this.context.scripts}
                     selectedCells={this.props.selectedCells}
                     handleCellClick={this.props.handleCellClick}
+                    onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
+                    onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
+                    onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
                   />
                   <Button
                     value="Clone"
@@ -240,6 +243,9 @@ export default class BrowserTable extends React.Component {
               scripts={this.context.scripts}
               selectedCells={this.props.selectedCells}
               handleCellClick={this.props.handleCellClick}
+              onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
+              onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
+              onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
             />
             <Button
               value="Add"
@@ -318,6 +324,9 @@ export default class BrowserTable extends React.Component {
             scripts={this.context.scripts}
             selectedCells={this.props.selectedCells}
             handleCellClick={this.props.handleCellClick}
+            onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
+            onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
+            onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
           />
         );
       }
