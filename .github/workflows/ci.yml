@@ -81,7 +81,7 @@ jobs:
           #  DOCKER_PLATFORM: linux/arm64/v8
       fail-fast: false
     name: ${{ matrix.name }}
-    timeout-minutes: 25
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
