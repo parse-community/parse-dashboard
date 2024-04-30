@@ -376,6 +376,7 @@ class Browser extends DashboardView {
     this.props.schema
       .dispatch(ActionTypes.CREATE_CLASS, { className })
       .then(() => {
+        this.state.clp[className] = this.props.schema.data.get('CLPs').toJS()[className];
         this.state.counts[className] = 0;
         this.props.navigate(generatePath(this.context, 'browser/' + className));
       })
@@ -388,6 +389,7 @@ class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(
       () => {
         this.setState({ showDropClassDialog: false });
+        delete this.state.clp[className];
         delete this.state.counts[className];
         this.props.navigate(generatePath(this.context, 'browser'));
       },
