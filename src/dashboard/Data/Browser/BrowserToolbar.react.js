@@ -341,7 +341,7 @@ const BrowserToolbar = ({
         disabled={isPendingEditCloneRows}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
-      {perms && enableSecurityDialog ? (
+      {enableSecurityDialog ? (
         <SecurityDialog
           ref={clpDialogRef}
           disabled={!!relation || !!isUnique}
