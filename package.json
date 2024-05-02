@@ -132,7 +132,9 @@
     "prepare": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run --e2e --config defaultCommandTimeout=10000"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
