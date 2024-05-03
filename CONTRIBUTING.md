@@ -9,7 +9,7 @@ When working on the dashboard, use `npm run dashboard` and visit `localhost:4040
 
 When working on React components, use `npm run pig` and visit `localhost:4041` to view our component library and documentation (you can have both Dashboard and PIG running at once). The demos for each component are the primary way we test components, although there are also a small number of automated tests you can run with `npm test`. If you would like to create a new component that does not exist in the component library, use `npm run generate yourComponentName` to generate boilerplate code and quickly get started.
 
-## Running UI Tests
+## UI Tests
 
 1. Start the dashboard with `npm run dashboard`. Make sure that dashboard server is running on port `4040`.
 2. Start the UI tests in interactive mode for debugging with `npm run cypress:open`, or run the tests silently with `npm run cypress:run`.
