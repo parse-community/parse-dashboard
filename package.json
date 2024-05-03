@@ -94,6 +94,7 @@
     "css-loader": "6.7.3",
     "cypress": "^13.8.1",
     "eslint": "8.24.0",
+    "eslint-plugin-cypress": "^3.0.3",
     "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-react": "7.31.8",
     "http-server": "14.0.0",
