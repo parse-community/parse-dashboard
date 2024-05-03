@@ -21,9 +21,6 @@ COPY . /src
 # Install remaining dev dependencies
 RUN npm ci
 
-# Run all webpack build steps
-RUN npm run prepare && npm run build
-
 ############################################################
 # Release stage
 ############################################################

@@ -6,24 +6,31 @@
  * the root directory of this source tree.
  */
 // Command line tool for npm start
-'use strict'
+'use strict';
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
+const ViteExpress = require('vite-express');
 const parseDashboard = require('./app');
+const pc = require('picocolors');
 
-module.exports = (options) => {
+module.exports = options => {
   const host = options.host || process.env.HOST || '0.0.0.0';
   const port = options.port || process.env.PORT || 4040;
   const mountPath = options.mountPath || process.env.MOUNT_PATH || '/';
-  const allowInsecureHTTP = options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
-  const cookieSessionSecret = options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
+  const allowInsecureHTTP =
+    options.allowInsecureHTTP || process.env.PARSE_DASHBOARD_ALLOW_INSECURE_HTTP;
+  const cookieSessionSecret =
+    options.cookieSessionSecret || process.env.PARSE_DASHBOARD_COOKIE_SESSION_SECRET;
   const trustProxy = options.trustProxy || process.env.PARSE_DASHBOARD_TRUST_PROXY;
-  const cookieSessionMaxAge = options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE;
+  const cookieSessionMaxAge =
+    options.cookieSessionMaxAge || process.env.PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE;
   const dev = options.dev;
 
   if (trustProxy && allowInsecureHTTP) {
-    console.log('Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.');
+    console.log(
+      'Set only trustProxy *or* allowInsecureHTTP, not both.  Only one is needed to handle being behind a proxy.'
+    );
     process.exit(-1);
   }
 
@@ -31,7 +38,8 @@ module.exports = (options) => {
   let configFile = null;
   let configFromCLI = null;
   const configServerURL = options.serverURL || process.env.PARSE_DASHBOARD_SERVER_URL;
-  const configGraphQLServerURL = options.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
+  const configGraphQLServerURL =
+    options.graphQLServerURL || process.env.PARSE_DASHBOARD_GRAPHQL_SERVER_URL;
   const configMasterKey = options.masterKey || process.env.PARSE_DASHBOARD_MASTER_KEY;
   const configAppId = options.appId || process.env.PARSE_DASHBOARD_APP_ID;
   const configAppName = options.appName || process.env.PARSE_DASHBOARD_APP_NAME;
@@ -42,8 +50,8 @@ module.exports = (options) => {
 
   function handleSIGs(server) {
     const signals = {
-      'SIGINT': 2,
-      'SIGTERM': 15
+      SIGINT: 2,
+      SIGTERM: 15,
     };
     function shutdown(signal, value) {
       server.close(function () {
@@ -69,8 +77,8 @@ module.exports = (options) => {
               masterKey: configMasterKey,
               appName: configAppName,
             },
-          ]
-        }
+          ],
+        },
       };
       if (configGraphQLServerURL) {
         configFromCLI.data.apps[0].graphQLServerURL = configGraphQLServerURL;
@@ -80,7 +88,7 @@ module.exports = (options) => {
           {
             user: configUserId,
             pass: configUserPassword,
-          }
+          },
         ];
       }
     } else if (!configServerURL && !configMasterKey && !configAppName) {
@@ -88,12 +96,20 @@ module.exports = (options) => {
     }
   } else if (!options.config && process.env.PARSE_DASHBOARD_CONFIG) {
     configFromCLI = {
-      data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG)
+      data: JSON.parse(process.env.PARSE_DASHBOARD_CONFIG),
     };
   } else {
     configFile = options.config;
-    if (options.appId || options.serverURL || options.masterKey || options.appName || options.graphQLServerURL) {
-      console.log('You must provide either a config file or other CLI options (appName, appId, masterKey, serverURL, and graphQLServerURL); not both.');
+    if (
+      options.appId ||
+      options.serverURL ||
+      options.masterKey ||
+      options.appName ||
+      options.graphQLServerURL
+    ) {
+      console.log(
+        'You must provide either a config file or other CLI options (appName, appId, masterKey, serverURL, and graphQLServerURL); not both.'
+      );
       process.exit(3);
     }
   }
@@ -103,7 +119,7 @@ module.exports = (options) => {
   if (configFile) {
     try {
       config = {
-        data: JSON.parse(fs.readFileSync(configFile, 'utf8'))
+        data: JSON.parse(fs.readFileSync(configFile, 'utf8')),
       };
       configFilePath = path.dirname(configFile);
     } catch (error) {
@@ -115,7 +131,9 @@ module.exports = (options) => {
           console.log('Your config file is missing. Exiting.');
           process.exit(2);
         } else {
-          console.log('You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.');
+          console.log(
+            'You must provide either a config file or required CLI options (app ID, Master Key, and server URL); not both.'
+          );
           process.exit(3);
         }
       } else {
@@ -127,7 +145,9 @@ module.exports = (options) => {
     config = configFromCLI;
   } else {
     //Failed to load default config file.
-    console.log('You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.');
+    console.log(
+      'You must provide either a config file or an app ID, Master Key, and server URL. See parse-dashboard --help for details.'
+    );
     process.exit(4);
   }
 
@@ -143,28 +163,57 @@ module.exports = (options) => {
 
   const app = express();
 
-  if (allowInsecureHTTP || trustProxy || dev) {app.enable('trust proxy');}
+  if (allowInsecureHTTP || trustProxy || dev) {
+    app.enable('trust proxy');
+  }
 
   config.data.trustProxy = trustProxy;
   const dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   let server;
-  if(!configSSLKey || !configSSLCert){
+  if (!configSSLKey || !configSSLCert) {
     // Start the server.
     server = app.listen(port, host, function () {
-      console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
+      const timestamp = new Date().toLocaleString('en-US').split(',')[1].trim();
+      console.log(
+        `${pc.dim(timestamp)} ${pc.bold(pc.cyan('[express]'))} ${pc.yellow(
+          'The dashboard'
+        )} ${pc.green('is now available at')} ${pc.cyan(
+          `http://${server.address().address}:${server.address().port}${mountPath}`
+        )}`
+      );
     });
+    ViteExpress.config({
+      inlineViteConfig: {
+        base: `${mountPath}/v2/`,
+        root: path.join(__dirname, '../v2'),
+        build: {
+          outDir: path.join(__dirname, './v2'),
+        },
+      },
+      mode: dev && fs.existsSync(path.join(__dirname, '../v2')) ? 'development' : 'production',
+    });
+    ViteExpress.bind(app, server);
   } else {
     // Start the server using SSL.
     const privateKey = fs.readFileSync(configSSLKey);
     const certificate = fs.readFileSync(configSSLCert);
 
-    server = require('https').createServer({
-      key: privateKey,
-      cert: certificate
-    }, app).listen(port, host, function () {
-      console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
-    });
+    server = require('https')
+      .createServer(
+        {
+          key: privateKey,
+          cert: certificate,
+        },
+        app
+      )
+      .listen(port, host, function () {
+        console.log(
+          `The dashboard is now available at https://${server.address().address}:${
+            server.address().port
+          }${mountPath}`
+        );
+      });
   }
   handleSIGs(server);
 };

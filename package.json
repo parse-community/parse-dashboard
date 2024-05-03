@@ -57,6 +57,7 @@
     "parse": "3.4.2",
     "passport": "0.5.3",
     "passport-local": "1.0.0",
+    "picocolors": "^1.0.0",
     "prismjs": "1.29.0",
     "prop-types": "15.8.1",
     "qrcode": "1.5.1",
@@ -71,7 +72,8 @@
     "react-router-dom": "6.4.1",
     "regenerator-runtime": "0.13.11",
     "semver": "7.5.2",
-    "typescript": "4.8.3"
+    "typescript": "4.8.3",
+    "vite-express": "^0.16.0"
   },
   "devDependencies": {
     "@actions/core": "1.9.1",
@@ -119,16 +121,16 @@
   "scripts": {
     "ci:check": "node ./ci/ciCheck.js",
     "ci:checkNodeEngine": "node ./ci/nodeEngineCheck.js",
-    "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
+    "dev": "node ./Parse-Dashboard/index.js --dev & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
-    "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
+    "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js && npm run build --workspace=v2",
     "test": "jest",
-    "lint": "eslint --ignore-path .gitignore --cache ./",
-    "lint:fix": "DEBUG=eslint:cli-engine eslint --ignore-path .gitignore --fix --cache ./",
-    "prettier": "prettier --write '{src,webpack}/**/*.js'",
+    "lint": "eslint --cache ./",
+    "lint:fix": "DEBUG=eslint:cli-engine eslint --fix --cache ./",
+    "prettier": "prettier --write {src,webpack}/**/*.js",
     "generate": "node scripts/generate.js",
-    "prepare": "webpack --config webpack/publish.config.js --progress",
+    "prepare": "webpack --config webpack/publish.config.js --progress && npm run build --workspace=v2",
     "start": "node ./Parse-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular",
     "semantic-release": "semantic-release"
@@ -162,11 +164,7 @@
       "pre-commit": "lint-staged"
     }
   },
-  "lint-staged": {
-    "{src,webpack}/{**/*,*}.js": [
-      "prettier --write",
-      "eslint --fix --cache",
-      "git add"
-    ]
-  }
+  "workspaces": [
+    "v2"
+  ]
 }

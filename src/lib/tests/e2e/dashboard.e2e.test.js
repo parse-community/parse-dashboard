@@ -13,6 +13,7 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const ParseDashboard = require('../../../../Parse-Dashboard/app');
 const puppeteer = require('puppeteer');
+const pc = require('picocolors');
 
 const dashboardSettings = {
   apps: [
@@ -51,10 +52,14 @@ describe('dashboard e2e', () => {
   });
 });
 
-describe('Config options', () => {
-  it('should start with port option', async () => {
+describe.only('Config options', () => {
+  it.only('should start with port option', async () => {
     const result = await startParseDashboardAndGetOutput(['--port', '4041']);
-    expect(result).toContain('The dashboard is now available at http://0.0.0.0:4041/');
+    expect(result).toContain(
+      `${pc.yellow('The dashboard')} ${pc.green('is now available at')} ${pc.cyan(
+        'http://0.0.0.0:4041/'
+      )}`
+    );
   });
 
   it('should reject to start if config and other options are combined', async () => {
