@@ -261,7 +261,7 @@ class Config extends TableView {
             const history = JSON.parse(configHistory)
             localStorage.setItem('configHistory', JSON.stringify({
               ...history,
-              [name]: !history[name] ? [value] : [value, ...history[name]].slice(0, 5)
+              [name]: !history[name] ? [value] : [value, ...history[name]].slice(0, 10)
             }));
           }
         },

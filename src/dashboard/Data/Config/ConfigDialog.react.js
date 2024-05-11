@@ -272,8 +272,8 @@ export default class ConfigDialog extends React.Component {
                   <Button
                     key={i}
                     primary
-                    value={value}
-                    onClick={()=> this.setState({ value })}
+                    value={JSON.stringify(value)}
+                    onClick={()=> this.setState({ value: JSON.stringify(value) })}
                   />
                 )}
               </div>
