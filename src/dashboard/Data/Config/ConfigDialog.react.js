@@ -17,6 +17,7 @@ import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
+import Button from 'components/Button/Button.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
@@ -190,6 +191,9 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
+    const configHistory = localStorage.getItem('configHistory')
+    const history = configHistory && JSON.parse(configHistory)[this.state.name]
+
     return (
       <Modal
         type={Modal.Types.INFO}
@@ -252,6 +256,30 @@ export default class ConfigDialog extends React.Component {
                 className={styles.addColumnToggleWrapper}
               />
             ) : null
+        }
+        {
+          !newParam && history &&
+          <Field
+            label={
+              <Label
+                text="Previous values"
+                description="Previously selected values. Click on a value to apply."
+              />
+            }
+            input={
+              <div className={styles.history}>
+                {history.slice(1).map((value, i) =>
+                  <Button
+                    key={i}
+                    primary
+                    value={value}
+                    onClick={()=> this.setState({ value })}
+                  />
+                )}
+              </div>
+            }
+            className={styles.addColumnToggleWrapper}
+          />
         }
       </Modal>
     );

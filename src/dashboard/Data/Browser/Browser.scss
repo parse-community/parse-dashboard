@@ -141,6 +141,13 @@ body:global(.expanded) {
   }
 }
 
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  padding: .5rem;
+  gap: .5rem;
+}
+
 .notificationMessage, .notificationError {
   @include animation('fade-in 0.2s ease-out');
   position: absolute;

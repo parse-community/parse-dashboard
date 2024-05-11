@@ -252,6 +252,18 @@ class Config extends TableView {
       .then(
         () => {
           this.setState({ modalOpen: false });
+          const configHistory = localStorage.getItem('configHistory')
+          if(!configHistory) {
+            localStorage.setItem('configHistory', JSON.stringify({
+              [name]: [value]
+            }));
+          } else {
+            const history = JSON.parse(configHistory)
+            localStorage.setItem('configHistory', JSON.stringify({
+              ...history,
+              [name]: !history[name] ? [value] : [value, ...history[name]].slice(0, 5)
+            }));
+          }
         },
         () => {
           // Catch the error
@@ -263,6 +275,19 @@ class Config extends TableView {
     this.props.config.dispatch(ActionTypes.DELETE, { param: name }).then(() => {
       this.setState({ showDeleteParameterDialog: false });
     });
+    const configHistory = localStorage.getItem('configHistory')
+    if(configHistory) {
+      const history = JSON.parse(configHistory);
+      if(history[name]) {
+        delete history[name]
+        if(Object.keys(history).length === 0) {
+          localStorage.removeItem('configHistory');
+        }
+        else {
+          localStorage.setItem('configHistory', JSON.stringify(history));
+        }
+      }
+    }
   }
 
   createParameter() {
