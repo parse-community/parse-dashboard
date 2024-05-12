@@ -822,6 +822,7 @@ This feature will take either selected rows or all rows of an individual class a
 # Contributing
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
+Ephemeral environments to pull requests have been contributed by [Uffizzi](https://www.uffizzi.com/).
 
 -----
 
