@@ -143,7 +143,7 @@ body:global(.expanded) {
 
 .history {
   max-width: 100%;
-  max-height: 150px;
+  max-height: 200px;
   padding: .5rem;
   overflow-x: hidden;
   overflow-y: auto;
@@ -151,11 +151,33 @@ body:global(.expanded) {
   flex-direction: column;
   gap: .5rem;
 
-  span {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  button {
+    padding-left: 5px;
+    padding-right: 5px;
   }
+
+  .entry {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .entry div {
+    display: flex;
+  }
+}
+
+.historyButton {
+  margin-right: .5rem;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 

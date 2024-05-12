@@ -18,6 +18,7 @@ import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import Button from 'components/Button/Button.react';
+import Icon from 'components/Icon/Icon.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
@@ -90,6 +91,16 @@ const GET_VALUE = {
   File: value => value,
 };
 
+const dateOptions = {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+}
+
 export default class ConfigDialog extends React.Component {
   constructor(props) {
     super();
@@ -98,6 +109,7 @@ export default class ConfigDialog extends React.Component {
       type: 'String',
       name: '',
       masterKeyOnly: false,
+      selectedIndex: null,
     };
     if (props.param.length > 0) {
       this.state = {
@@ -170,6 +182,7 @@ export default class ConfigDialog extends React.Component {
   submit() {
     this.props.onConfirm({
       name: this.state.name,
+      type: this.state.type,
       value: GET_VALUE[this.state.type](this.state.value),
       masterKeyOnly: this.state.masterKeyOnly,
     });
@@ -191,8 +204,10 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
+
     const configHistory = localStorage.getItem('configHistory')
-    const history = configHistory && JSON.parse(configHistory)[this.state.name]
+    const type = configHistory && JSON.parse(configHistory)[this.state.name]?.type
+    const history = configHistory && JSON.parse(configHistory)[this.state.name]?.history
 
     return (
       <Modal
@@ -258,7 +273,7 @@ export default class ConfigDialog extends React.Component {
             ) : null
         }
         {
-          !newParam && history &&
+          !newParam && history && history.length > 1 &&
           <Field
             label={
               <Label
@@ -269,12 +284,24 @@ export default class ConfigDialog extends React.Component {
             input={
               <div className={styles.history}>
                 {history.slice(1).map((value, i) =>
-                  <Button
-                    key={i}
-                    primary
-                    value={JSON.stringify(value)}
-                    onClick={()=> this.setState({ value: JSON.stringify(value) })}
-                  />
+                  <div key={i} className={styles.entry}>
+                    <div>
+                      <button
+                        className={styles.historyButton}
+                        onClick={() => i !== this.state.selectedIndex ?
+                          this.setState({ selectedIndex: i })
+                          : this.setState({ selectedIndex: null })
+                      }>
+                        <Icon name="question-solid" width={20} height={20} fill="rgba(0,0,0,0.4)" />
+                      </button>
+                      <Button
+                        key={i}
+                        value={new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}
+                        onClick={()=> this.setState({ value: JSON.stringify(value.value) })}
+                      />
+                    </div>
+                    {i === this.state.selectedIndex && EDITORS[type](JSON.stringify(value.value))}
+                  </div>
                 )}
               </div>
             }
