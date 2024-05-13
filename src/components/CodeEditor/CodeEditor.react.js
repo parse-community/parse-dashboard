@@ -18,11 +18,13 @@ export default class CodeEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { code: '' };
+    this.state = {
+      code: this.props.defaultValue || '',
+    };
   }
 
   get value() {
-    return this.state.code || this.props.placeHolder;
+    return this.state.code;
   }
 
   set value(code) {
@@ -30,7 +32,7 @@ export default class CodeEditor extends React.Component {
   }
 
   render() {
-    const { placeHolder, fontSize = 18 } = this.props;
+    const { fontSize = 18 } = this.props;
     const { code } = this.state;
 
     return (
@@ -43,7 +45,7 @@ export default class CodeEditor extends React.Component {
         showGutter={true}
         highlightActiveLine={true}
         width="100%"
-        value={code || placeHolder}
+        value={code}
         enableBasicAutocompletion={true}
         enableLiveAutocompletion={true}
         enableSnippets={false}
@@ -56,5 +58,5 @@ export default class CodeEditor extends React.Component {
 
 CodeEditor.propTypes = {
   fontSize: PropTypes.number.describe('Font size of the editor'),
-  placeHolder: PropTypes.string.describe('Code place holder'),
+  defaultValue: PropTypes.string.describe('Default Code'),
 };
