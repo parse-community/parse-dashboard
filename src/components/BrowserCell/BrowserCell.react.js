@@ -43,8 +43,8 @@ export default class BrowserCell extends Component {
         this.props.value !== undefined || !isNewRow
           ? '(hidden)'
           : this.props.isRequired
-            ? '(required)'
-            : '(undefined)';
+          ? '(required)'
+          : '(undefined)';
       classes.push(styles.empty);
     } else if (this.props.value === undefined) {
       if (this.props.type === 'ACL') {
@@ -223,21 +223,23 @@ export default class BrowserCell extends Component {
         ?.catch(err => console.log(err));
     }
     if (this.props.current) {
-      const node = this.cellRef.current;
-      const { setRelation } = this.props;
-      const { left, right, bottom, top } = node.getBoundingClientRect();
+      if (prevProps.selectedCells === this.props.selectedCells) {
+        const node = this.cellRef.current;
+        const { setRelation } = this.props;
+        const { left, right, bottom, top } = node.getBoundingClientRect();
 
-      // Takes into consideration Sidebar width when over 980px wide.
-      // If setRelation is undefined, DataBrowser is used as ObjectPicker, so it does not have a sidebar.
-      const leftBoundary = window.innerWidth > 980 && setRelation ? 300 : 0;
+        // Takes into consideration Sidebar width when over 980px wide.
+        // If setRelation is undefined, DataBrowser is used as ObjectPicker, so it does not have a sidebar.
+        const leftBoundary = window.innerWidth > 980 && setRelation ? 300 : 0;
 
-      // BrowserToolbar + DataBrowserHeader height
-      const topBoundary = 126;
+        // BrowserToolbar + DataBrowserHeader height
+        const topBoundary = 126;
 
-      if (left < leftBoundary || right > window.innerWidth) {
-        node.scrollIntoView({ block: 'nearest', inline: 'start' });
-      } else if (top < topBoundary || bottom > window.innerHeight) {
-        node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        if (left < leftBoundary || right > window.innerWidth) {
+          node.scrollIntoView({ block: 'nearest', inline: 'start' });
+        } else if (top < topBoundary || bottom > window.innerHeight) {
+          node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
       }
 
       if (!this.props.hidden) {
@@ -400,8 +402,8 @@ export default class BrowserCell extends Component {
             copyableValue.length < 30
               ? copyableValue
               : `${copyableValue.substr(0, 20)}...${copyableValue.substr(
-                copyableValue.length - 7
-              )}`;
+                  copyableValue.length - 7
+                )}`;
           const text = `${this.props.field} ${definition.name}${
             definition.comparable ? ' ' + value : ''
           }`;
@@ -491,9 +493,9 @@ export default class BrowserCell extends Component {
           compareTo = value.__type
             ? value
             : {
-              __type: 'Date',
-              iso: value,
-            };
+                __type: 'Date',
+                iso: value,
+              };
           break;
 
         default:
