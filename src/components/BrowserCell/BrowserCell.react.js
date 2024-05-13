@@ -43,8 +43,8 @@ export default class BrowserCell extends Component {
         this.props.value !== undefined || !isNewRow
           ? '(hidden)'
           : this.props.isRequired
-          ? '(required)'
-          : '(undefined)';
+            ? '(required)'
+            : '(undefined)';
       classes.push(styles.empty);
     } else if (this.props.value === undefined) {
       if (this.props.type === 'ACL') {
@@ -402,8 +402,8 @@ export default class BrowserCell extends Component {
             copyableValue.length < 30
               ? copyableValue
               : `${copyableValue.substr(0, 20)}...${copyableValue.substr(
-                  copyableValue.length - 7
-                )}`;
+                copyableValue.length - 7
+              )}`;
           const text = `${this.props.field} ${definition.name}${
             definition.comparable ? ' ' + value : ''
           }`;
@@ -493,9 +493,9 @@ export default class BrowserCell extends Component {
           compareTo = value.__type
             ? value
             : {
-                __type: 'Date',
-                iso: value,
-              };
+              __type: 'Date',
+              iso: value,
+            };
           break;
 
         default:
