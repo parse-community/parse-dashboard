@@ -282,7 +282,7 @@ export default class ConfigDialog extends React.Component {
             }
             input={
               <Dropdown
-                value={JSON.stringify(history[1].value)}
+                value={this.state.value}
                 onChange={value => this.setState({ value })}>
                 {history.slice(1).map((value, i) =>
                   <Option key={i} value={JSON.stringify(value.value)}>
