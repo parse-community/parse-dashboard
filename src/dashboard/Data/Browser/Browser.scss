@@ -141,31 +141,31 @@ body:global(.expanded) {
   }
 }
 
-.history {
-  max-width: 100%;
-  max-height: 200px;
-  padding: .5rem;
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
+.option {
+  position: relative;
+  overflow: hidden;
+}
 
-  button {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
+.date  {
+  + div {
+    border: none !important;
+    position: absolute;
+    top: 0;
+    background-color: transparent !important;
 
-  .entry {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-    width: 100%;
-  }
+    :nth-child(1) {
+      padding: 4px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      background-color: white;
   
-  .entry div {
-    display: flex;
+      span  {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 78%;
+      }
+    }
   }
 }
 

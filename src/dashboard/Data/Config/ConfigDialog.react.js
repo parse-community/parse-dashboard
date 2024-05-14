@@ -17,8 +17,7 @@ import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
-import Button from 'components/Button/Button.react';
-import Icon from 'components/Icon/Icon.react';
+import Tooltip from 'components/Tooltip/Tooltip.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
@@ -282,28 +281,19 @@ export default class ConfigDialog extends React.Component {
               />
             }
             input={
-              <div className={styles.history}>
+              <Dropdown
+                value={JSON.stringify(history[1].value)}
+                onChange={value => this.setState({ value })}>
                 {history.slice(1).map((value, i) =>
-                  <div key={i} className={styles.entry}>
-                    <div>
-                      <button
-                        className={styles.historyButton}
-                        onClick={() => i !== this.state.selectedIndex ?
-                          this.setState({ selectedIndex: i })
-                          : this.setState({ selectedIndex: null })
-                      }>
-                        <Icon name="question-solid" width={20} height={20} fill="rgba(0,0,0,0.4)" />
-                      </button>
-                      <Button
-                        key={i}
-                        value={new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}
-                        onClick={()=> this.setState({ value: JSON.stringify(value.value) })}
-                      />
+                  <Option key={i} value={JSON.stringify(value.value)}>
+                    <div className={styles.option}>
+                      <Tooltip value={<span>{JSON.stringify(value.value)}</span>}>
+                        <span className={styles.date}>{new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}</span>
+                      </Tooltip>
                     </div>
-                    {i === this.state.selectedIndex && EDITORS[type](JSON.stringify(value.value))}
-                  </div>
+                  </Option>
                 )}
-              </div>
+              </Dropdown>
             }
             className={styles.addColumnToggleWrapper}
           />
