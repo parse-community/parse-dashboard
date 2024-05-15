@@ -89,16 +89,6 @@ const GET_VALUE = {
   File: value => value,
 };
 
-const dateOptions = {
-  weekday: 'short',
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-  hour12: true,
-}
-
 export default class ConfigDialog extends React.Component {
   constructor(props) {
     super();
@@ -200,7 +190,15 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
-
+    const dateOptions = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    };
     const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name];
 
     return (
