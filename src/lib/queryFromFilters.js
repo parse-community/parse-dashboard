@@ -28,6 +28,12 @@ function addQueryConstraintFromObject(query, filter, constraintType) {
   }
 }
 
+function isPointer(value) {
+  return (
+    typeof value === 'object' && value.hasOwnProperty('__type') && value['__type'] === 'Pointer'
+  );
+}
+
 function addConstraint(query, filter) {
   switch (filter.get('constraint')) {
     case 'exists':
@@ -55,7 +61,15 @@ function addConstraint(query, filter) {
       query.greaterThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
     case 'starts':
-      query.startsWith(filter.get('field'), filter.get('compareTo'));
+      const field = filter.get('field');
+      const compareTo = filter.get('compareTo');
+      if (isPointer(compareTo)) {
+        const porinterQuery = new Parse.Query(compareTo.className);
+        porinterQuery.startsWith('objectId', compareTo.objectId);
+        query.matchesQuery(field, porinterQuery);
+      } else {
+        query.startsWith(field, compareTo);
+      }
       break;
     case 'ends':
       query.endsWith(filter.get('field'), filter.get('compareTo'));
