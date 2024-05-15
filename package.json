@@ -92,7 +92,9 @@
     "all-node-versions": "11.0.1",
     "babel-loader": "9.1.2",
     "css-loader": "6.7.3",
+    "cypress": "13.8.1",
     "eslint": "8.24.0",
+    "eslint-plugin-cypress": "3.0.3",
     "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-react": "7.31.8",
     "http-server": "14.0.0",
@@ -131,7 +133,9 @@
     "prepare": "webpack --config webpack/publish.config.js --progress",
     "start": "node ./Parse-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run --e2e --config defaultCommandTimeout=10000"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"

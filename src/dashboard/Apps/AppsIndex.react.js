@@ -81,7 +81,7 @@ const AppCard = ({ app, icon }) => {
   );
 
   return (
-    <li onClick={canBrowse} style={{ background: app.primaryBackgroundColor }}>
+    <li data-cy="apps-index-app" onClick={canBrowse} style={{ background: app.primaryBackgroundColor }}>
       <a className={styles.icon}>
         {icon ? (
           <img src={'appicons/' + icon} width={56} height={56} />
@@ -89,7 +89,7 @@ const AppCard = ({ app, icon }) => {
           <Icon width={56} height={56} name="blank-app-outline" fill="#1E384D" />
         )}
       </a>
-      <div className={styles.details}>
+      <div data-cy="apps-index-app-details" className={styles.details}>
         <a className={styles.appname}>{app.name}</a>
         {versionMessage}
       </div>
@@ -170,6 +170,7 @@ class AppsIndex extends React.Component {
         <div className={styles.header}>
           <Icon width={18} height={18} name="search-outline" fill="#788c97" />
           <input
+            data-cy="apps-index-search-input"
             ref={this.searchRef}
             className={styles.search}
             onChange={this.updateSearch.bind(this)}
