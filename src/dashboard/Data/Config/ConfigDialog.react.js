@@ -17,7 +17,6 @@ import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
-import Tooltip from 'components/Tooltip/Tooltip.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
@@ -204,9 +203,7 @@ export default class ConfigDialog extends React.Component {
       </Dropdown>
     );
 
-    const configHistory = localStorage.getItem('configHistory')
-    const type = configHistory && JSON.parse(configHistory)[this.state.name]?.type
-    const history = configHistory && JSON.parse(configHistory)[this.state.name]?.history
+    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name];
 
     return (
       <Modal
@@ -272,7 +269,7 @@ export default class ConfigDialog extends React.Component {
             ) : null
         }
         {
-          !newParam && history && history.length > 1 &&
+          !newParam && configHistory?.length > 0 &&
           <Field
             label={
               <Label
@@ -284,13 +281,9 @@ export default class ConfigDialog extends React.Component {
               <Dropdown
                 value={this.state.value}
                 onChange={value => this.setState({ value })}>
-                {history.slice(1).map((value, i) =>
-                  <Option key={i} value={JSON.stringify(value.value)}>
-                    <div className={styles.option}>
-                      <Tooltip value={<span>{JSON.stringify(value.value)}</span>}>
-                        <span className={styles.date}>{new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}</span>
-                      </Tooltip>
-                    </div>
+                {configHistory.map((value, i) =>
+                  <Option key={i} value={typeof value.value === 'string' ? value.value : JSON.stringify(value.value)}>
+                    {new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}
                   </Option>
                 )}
               </Dropdown>

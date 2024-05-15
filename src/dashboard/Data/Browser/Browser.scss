@@ -141,46 +141,6 @@ body:global(.expanded) {
   }
 }
 
-.option {
-  position: relative;
-  overflow: hidden;
-}
-
-.date  {
-  + div {
-    border: none !important;
-    position: absolute;
-    top: 0;
-    background-color: transparent !important;
-
-    :nth-child(1) {
-      padding: 4px;
-      padding-top: 1px;
-      padding-bottom: 1px;
-      background-color: white;
-  
-      span  {
-        display: block;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: 78%;
-      }
-    }
-  }
-}
-
-.historyButton {
-  margin-right: .5rem;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-
 .notificationMessage, .notificationError {
   @include animation('fade-in 0.2s ease-out');
   position: absolute;

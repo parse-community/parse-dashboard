@@ -242,7 +242,7 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, type, value, masterKeyOnly }) {
+  saveParam({ name, value, masterKeyOnly }) {
     this.props.config
       .dispatch(ActionTypes.SET, {
         param: name,
@@ -257,24 +257,15 @@ class Config extends TableView {
 
           if(!configHistory) {
             localStorage.setItem('configHistory', JSON.stringify({
-              [name]: {
-                type,
-                history: [{time: new Date(), value}]
-              }
+              [name]: [{time: new Date(), value}]
             }));
           } else {
-            const oldConfigHistory = JSON.parse(configHistory)
+            const oldConfigHistory = JSON.parse(configHistory);
             localStorage.setItem('configHistory', JSON.stringify({
               ...oldConfigHistory,
               [name]: !oldConfigHistory[name] ?
-                {
-                  type,
-                  history: [{time: new Date(), value}]
-                }
-                : {
-                  ...oldConfigHistory[name],
-                  history: [{time: new Date(), value}, ...oldConfigHistory[name].history]
-                }
+                [{time: new Date(), value}]
+                : [{time: new Date(), value}, ...oldConfigHistory[name]]
             }));
           }
         },
@@ -292,7 +283,7 @@ class Config extends TableView {
     if(configHistory) {
       const history = JSON.parse(configHistory);
       if(history[name]) {
-        delete history[name]
+        delete history[name];
         if(Object.keys(history).length === 0) {
           localStorage.removeItem('configHistory');
         }
