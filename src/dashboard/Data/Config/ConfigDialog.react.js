@@ -107,7 +107,6 @@ export default class ConfigDialog extends React.Component {
       type: 'String',
       name: '',
       masterKeyOnly: false,
-      selectedIndex: null,
     };
     if (props.param.length > 0) {
       this.state = {
@@ -180,7 +179,6 @@ export default class ConfigDialog extends React.Component {
   submit() {
     this.props.onConfirm({
       name: this.state.name,
-      type: this.state.type,
       value: GET_VALUE[this.state.type](this.state.value),
       masterKeyOnly: this.state.masterKeyOnly,
     });
@@ -269,7 +267,7 @@ export default class ConfigDialog extends React.Component {
             ) : null
         }
         {
-          !newParam && configHistory?.length > 0 &&
+          configHistory?.length > 0 &&
           <Field
             label={
               <Label
