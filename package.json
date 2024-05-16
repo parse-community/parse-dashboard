@@ -54,7 +54,7 @@
     "js-beautify": "1.14.10",
     "otpauth": "8.0.3",
     "package-json": "7.0.0",
-    "parse": "3.4.2",
+    "parse": "5.1.0",
     "passport": "0.5.3",
     "passport-local": "1.0.0",
     "prismjs": "1.29.0",
