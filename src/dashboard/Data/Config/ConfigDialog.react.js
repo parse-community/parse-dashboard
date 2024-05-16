@@ -199,9 +199,10 @@ export default class ConfigDialog extends React.Component {
       year: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
+      second: '2-digit',
       hour12: true,
     };
-    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name];
+    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name]?.slice(1);
 
     return (
       <Modal

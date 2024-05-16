@@ -287,6 +287,15 @@ class Config extends TableView {
     this.props.config.dispatch(ActionTypes.DELETE, { param: name }).then(() => {
       this.setState({ showDeleteParameterDialog: false });
     });
+    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'));
+    if(configHistory) {
+      delete configHistory[name];
+      if(Object.keys(configHistory).length === 0) {
+        localStorage.removeItem('configHistory');
+      } else {
+        localStorage.setItem('configHistory', JSON.stringify(configHistory));
+      }
+    }
   }
 
   createParameter() {
