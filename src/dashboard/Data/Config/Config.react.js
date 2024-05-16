@@ -243,7 +243,6 @@ class Config extends TableView {
   }
 
   saveParam({ name, value, type,  masterKeyOnly }) {
-    console.log('type', type);
     this.props.config
       .dispatch(ActionTypes.SET, {
         param: name,
