@@ -279,12 +279,15 @@ export default class ConfigDialog extends React.Component {
               <Dropdown
                 value={this.state.selectedIndex}
                 onChange={value => {
+                  if(this.state.type === 'Date'){
+                    return;
+                  }
                   let val = configHistory[value].value;
                   if(typeof val === 'object'){
                     val = JSON.stringify(val);
                   }
                   this.setState({ selectedIndex: value, value : val });
-              }}>
+                }}>
                 {configHistory.map((value, i) =>
                   <Option key={i} value={i}>
                     {new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}

@@ -242,7 +242,8 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, type, value, masterKeyOnly }) {
+  saveParam({ name, value, type,  masterKeyOnly }) {
+    console.log('type', type);
     this.props.config
       .dispatch(ActionTypes.SET, {
         param: name,
@@ -255,20 +256,27 @@ class Config extends TableView {
           if(type === 'File') {
             return;
           }
+          let dateObject;
+          if(type === 'Date') {
+            dateObject = {__type: 'Date', iso: value};
+          }
           const configHistory = localStorage.getItem('configHistory');
           if(!configHistory) {
             localStorage.setItem('configHistory', JSON.stringify({
-              [name]: [{time: new Date(), value}]
+              [name]: [{
+                time: new Date(),
+                value: dateObject ? dateObject : value
+              }]
             }));
           } else {
             const oldConfigHistory = JSON.parse(configHistory);
             localStorage.setItem('configHistory', JSON.stringify({
               ...oldConfigHistory,
               [name]: !oldConfigHistory[name] ?
-                [{time: new Date(), value}]
-                : [{time: new Date(), value}, ...oldConfigHistory[name]]
+                [{time: new Date(), value: dateObject ? dateObject : value}]
+                : [{time: new Date(), value: dateObject ? dateObject : value}, ...oldConfigHistory[name]]
             }));
-          };
+          }
         },
         () => {
           // Catch the error
@@ -280,19 +288,6 @@ class Config extends TableView {
     this.props.config.dispatch(ActionTypes.DELETE, { param: name }).then(() => {
       this.setState({ showDeleteParameterDialog: false });
     });
-    const configHistory = localStorage.getItem('configHistory')
-    if(configHistory) {
-      const history = JSON.parse(configHistory);
-      if(history[name]) {
-        delete history[name];
-        if(Object.keys(history).length === 0) {
-          localStorage.removeItem('configHistory');
-        }
-        else {
-          localStorage.setItem('configHistory', JSON.stringify(history));
-        }
-      }
-    }
   }
 
   createParameter() {
