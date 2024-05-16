@@ -223,21 +223,23 @@ export default class BrowserCell extends Component {
         ?.catch(err => console.log(err));
     }
     if (this.props.current) {
-      const node = this.cellRef.current;
-      const { setRelation } = this.props;
-      const { left, right, bottom, top } = node.getBoundingClientRect();
+      if (prevProps.selectedCells === this.props.selectedCells) {
+        const node = this.cellRef.current;
+        const { setRelation } = this.props;
+        const { left, right, bottom, top } = node.getBoundingClientRect();
 
-      // Takes into consideration Sidebar width when over 980px wide.
-      // If setRelation is undefined, DataBrowser is used as ObjectPicker, so it does not have a sidebar.
-      const leftBoundary = window.innerWidth > 980 && setRelation ? 300 : 0;
+        // Takes into consideration Sidebar width when over 980px wide.
+        // If setRelation is undefined, DataBrowser is used as ObjectPicker, so it does not have a sidebar.
+        const leftBoundary = window.innerWidth > 980 && setRelation ? 300 : 0;
 
-      // BrowserToolbar + DataBrowserHeader height
-      const topBoundary = 126;
+        // BrowserToolbar + DataBrowserHeader height
+        const topBoundary = 126;
 
-      if (left < leftBoundary || right > window.innerWidth) {
-        node.scrollIntoView({ block: 'nearest', inline: 'start' });
-      } else if (top < topBoundary || bottom > window.innerHeight) {
-        node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        if (left < leftBoundary || right > window.innerWidth) {
+          node.scrollIntoView({ block: 'nearest', inline: 'start' });
+        } else if (top < topBoundary || bottom > window.innerHeight) {
+          node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
       }
 
       if (!this.props.hidden) {
@@ -526,7 +528,6 @@ export default class BrowserCell extends Component {
       hidden,
       width,
       current,
-      onSelect,
       onEditChange,
       setCopyableValue,
       onPointerCmdClick,
@@ -536,6 +537,8 @@ export default class BrowserCell extends Component {
       onEditSelectedRow,
       isRequired,
       markRequiredFieldRow,
+      handleCellClick,
+      selectedCells,
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -573,6 +576,22 @@ export default class BrowserCell extends Component {
       );
     }
 
+    if (selectedCells?.list.has(`${row}-${col}`)) {
+      if (selectedCells.rowStart === row) {
+        classes.push(styles.topBorder);
+      }
+      if (selectedCells.rowEnd === row) {
+        classes.push(styles.bottomBorder);
+      }
+      if (selectedCells.colStart === col) {
+        classes.push(styles.leftBorder);
+      }
+      if (selectedCells.colEnd === col) {
+        classes.push(styles.rightBorder);
+      }
+      classes.push(styles.selected);
+    }
+
     return (
       <span
         ref={this.cellRef}
@@ -582,8 +601,8 @@ export default class BrowserCell extends Component {
           if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
           } else {
-            onSelect({ row, col });
             setCopyableValue(hidden ? undefined : this.copyableValue);
+            handleCellClick(e, row, col);
           }
         }}
         onDoubleClick={() => {

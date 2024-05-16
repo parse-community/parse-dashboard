@@ -18,6 +18,7 @@ import EmptyState from 'components/EmptyState/EmptyState.react';
 import ExportDialog from 'dashboard/Data/Browser/ExportDialog.react';
 import AttachRowsDialog from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
+import ExecuteScriptRowsDialog from 'dashboard/Data/Browser/ExecuteScriptRowsDialog.react';
 import CloneSelectedRowsDialog from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
 import EditRowDialog from 'dashboard/Data/Browser/EditRowDialog.react';
 import ExportSelectedRowsDialog from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
@@ -95,8 +96,15 @@ class Browser extends DashboardView {
 
       useMasterKey: true,
       currentUser: Parse.User.current(),
+
+      processedScripts: 0,
+
+      rowCheckboxDragging: false,
+      draggedRowSelection: false,
     };
 
+    this.addLocation = this.addLocation.bind(this);
+    this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.fetchRelation = this.fetchRelation.bind(this);
@@ -114,6 +122,9 @@ class Browser extends DashboardView {
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
     this.confirmAttachRows = this.confirmAttachRows.bind(this);
     this.showAttachSelectedRowsDialog = this.showAttachSelectedRowsDialog.bind(this);
+    this.showExecuteScriptRowsDialog = this.showExecuteScriptRowsDialog.bind(this);
+    this.confirmExecuteScriptRows = this.confirmExecuteScriptRows.bind(this);
+    this.cancelExecuteScriptRowsDialog = this.cancelExecuteScriptRowsDialog.bind(this);
     this.confirmAttachSelectedRows = this.confirmAttachSelectedRows.bind(this);
     this.cancelAttachSelectedRows = this.cancelAttachSelectedRows.bind(this);
     this.showCloneSelectedRowsDialog = this.showCloneSelectedRowsDialog.bind(this);
@@ -155,6 +166,9 @@ class Browser extends DashboardView {
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
     this.redirectToFirstClass = this.redirectToFirstClass.bind(this);
+    this.onMouseDownRowCheckBox = this.onMouseDownRowCheckBox.bind(this);
+    this.onMouseUpRowCheckBox = this.onMouseUpRowCheckBox.bind(this);
+    this.onMouseOverRowCheckBox = this.onMouseOverRowCheckBox.bind(this);
 
     this.dataBrowserRef = React.createRef();
 
@@ -180,29 +194,20 @@ class Browser extends DashboardView {
   }
 
   componentDidMount() {
-    if (window.localStorage) {
-      const pathname = window.localStorage.getItem(BROWSER_LAST_LOCATION);
-      window.localStorage.removeItem(BROWSER_LAST_LOCATION);
-      if (pathname) {
-        setTimeout(
-          function () {
-            this.props.navigate(pathname);
-          }.bind(this)
-        );
-      }
-    }
+    this.addLocation(this.props.params.appId);
+    window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
 
   componentWillUnmount() {
-    if (window.localStorage) {
-      window.localStorage.setItem(
-        BROWSER_LAST_LOCATION,
-        this.props.location.pathname + this.props.location.search
-      );
-    }
+    this.removeLocation();
+    window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.params.appId !== this.props.params.appId) {
+      this.removeLocation();
+      this.addLocation(nextProps.params.appId);
+    }
     if (
       this.props.params.appId !== nextProps.params.appId ||
       this.props.params.className !== nextProps.params.className ||
@@ -219,6 +224,43 @@ class Browser extends DashboardView {
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
+    }
+  }
+
+  addLocation(appId) {
+    if (window.localStorage) {
+      let pathname = null;
+      const newLastLocations = [];
+
+      const lastLocations = JSON.parse(window.localStorage.getItem(BROWSER_LAST_LOCATION));
+      lastLocations?.forEach(lastLocation => {
+        if (lastLocation.appId !== appId) {
+          newLastLocations.push(lastLocation);
+        } else {
+          pathname = lastLocation.location;
+        }
+      });
+
+      window.localStorage.setItem(BROWSER_LAST_LOCATION, JSON.stringify(newLastLocations));
+      if (pathname) {
+        setTimeout(
+          function () {
+            this.props.navigate(pathname);
+          }.bind(this)
+        );
+      }
+    }
+  }
+
+  removeLocation() {
+    if (window.localStorage) {
+      const lastLocation = {
+        appId: this.props.params.appId,
+        location: `${this.props.location.pathname}${this.props.location.search}`,
+      };
+      const currentLastLocation = JSON.parse(window.localStorage.getItem(BROWSER_LAST_LOCATION));
+      const updatedLastLocation = [...(currentLastLocation || []), lastLocation];
+      window.localStorage.setItem(BROWSER_LAST_LOCATION, JSON.stringify(updatedLastLocation));
     }
   }
 
@@ -334,6 +376,7 @@ class Browser extends DashboardView {
     this.props.schema
       .dispatch(ActionTypes.CREATE_CLASS, { className })
       .then(() => {
+        this.state.clp[className] = this.props.schema.data.get('CLPs').toJS()[className];
         this.state.counts[className] = 0;
         this.props.navigate(generatePath(this.context, 'browser/' + className));
       })
@@ -346,6 +389,7 @@ class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(
       () => {
         this.setState({ showDropClassDialog: false });
+        delete this.state.clp[className];
         delete this.state.counts[className];
         this.props.navigate(generatePath(this.context, 'browser'));
       },
@@ -996,7 +1040,7 @@ class Browser extends DashboardView {
       },
     ]);
     window.open(
-      generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`),
+      generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`, true),
       '_blank'
     );
   }
@@ -1326,6 +1370,18 @@ class Browser extends DashboardView {
     });
   }
 
+  showExecuteScriptRowsDialog() {
+    this.setState({
+      showExecuteScriptRowsDialog: true,
+    });
+  }
+
+  cancelExecuteScriptRowsDialog() {
+    this.setState({
+      showExecuteScriptRowsDialog: false,
+    });
+  }
+
   async confirmAttachSelectedRows(
     className,
     targetObjectId,
@@ -1344,6 +1400,35 @@ class Browser extends DashboardView {
     this.setState({
       selection: {},
     });
+  }
+
+  async confirmExecuteScriptRows(script) {
+    try {
+      const objects = [];
+      Object.keys(this.state.selection).forEach(key =>
+        objects.push(Parse.Object.extend(this.props.params.className).createWithoutData(key))
+      );
+      for (const object of objects) {
+        const response = await Parse.Cloud.run(
+          script.cloudCodeFunction,
+          { object: object.toPointer() },
+          { useMasterKey: true }
+        );
+        this.setState(prevState => ({
+          processedScripts: prevState.processedScripts + 1,
+        }));
+        const note = (typeof response === 'object' ? JSON.stringify(response) : response) || `Ran script "${script.title}" on "${object.id}".`;
+        this.showNote(note);
+      }
+      this.refresh();
+    } catch (e) {
+      this.showNote(e.message, true);
+      console.log(`Could not run ${script.title}: ${e}`);
+    } finally{
+      this.setState(({
+        processedScripts: 0,
+      }));
+    }
   }
 
   showCloneSelectedRowsDialog() {
@@ -1713,6 +1798,26 @@ class Browser extends DashboardView {
     this.setState({ showPointerKeyDialog: false });
   }
 
+  onMouseDownRowCheckBox(checked) {
+    this.setState({
+      rowCheckboxDragging: true,
+      draggedRowSelection: !checked,
+    });
+  }
+
+  onMouseUpRowCheckBox() {
+    this.setState({
+      rowCheckboxDragging: false,
+      draggedRowSelection: false,
+    });
+  }
+
+  onMouseOverRowCheckBox(id) {
+    if (this.state.rowCheckboxDragging) {
+      this.selectRow(id, this.state.draggedRowSelection);
+    }
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1790,6 +1895,7 @@ class Browser extends DashboardView {
             onRefresh={this.refresh}
             onAttachRows={this.showAttachRowsDialog}
             onAttachSelectedRows={this.showAttachSelectedRowsDialog}
+            onExecuteScriptRows={this.showExecuteScriptRowsDialog}
             onCloneSelectedRows={this.showCloneSelectedRowsDialog}
             onEditSelectedRow={this.showEditRowDialog}
             onEditPermissions={this.onDialogToggle}
@@ -1831,6 +1937,9 @@ class Browser extends DashboardView {
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote}
+            onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
+            onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
+            onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
           />
         );
       }
@@ -1941,6 +2050,16 @@ class Browser extends DashboardView {
           selection={this.state.selection}
           onCancel={this.cancelAttachSelectedRows}
           onConfirm={this.confirmAttachSelectedRows}
+        />
+      );
+    } else if (this.state.showExecuteScriptRowsDialog) {
+      extras = (
+        <ExecuteScriptRowsDialog
+          currentClass={this.props.params.className}
+          selection={this.state.selection}
+          onCancel={this.cancelExecuteScriptRowsDialog}
+          onConfirm={this.confirmExecuteScriptRows}
+          processedScripts={this.state.processedScripts}
         />
       );
     } else if (this.state.showCloneSelectedRowsDialog) {

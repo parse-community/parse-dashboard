@@ -13,6 +13,6 @@ export const component = CodeEditor;
 export const demos = [
   {
     name: 'Simple code editor (only JS support)',
-    render: () => <CodeEditor placeHolder={'//I am editable, try change me!'} id="example1" />,
+    render: () => <CodeEditor defaultValue={'//I am editable, try change me!'} id="example1" />,
   },
 ];

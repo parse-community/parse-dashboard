@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "5.4.0",
+  "version": "6.0.0-alpha.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -45,13 +45,13 @@
     "copy-to-clipboard": "3.3.2",
     "core-js": "3.28.0",
     "csurf": "1.11.0",
-    "express": "4.18.1",
+    "express": "4.19.2",
     "graphiql": "2.0.8",
     "graphql": "16.8.1",
     "immutable": "4.1.0",
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.4",
-    "js-beautify": "1.14.6",
+    "js-beautify": "1.14.10",
     "otpauth": "8.0.3",
     "package-json": "7.0.0",
     "parse": "3.4.2",
@@ -137,7 +137,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=14.20.1"
+    "node": ">=18.0.0 <21"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
