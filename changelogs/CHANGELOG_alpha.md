@@ -1,3 +1,24 @@
+# [6.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.5...6.0.0-alpha.6) (2024-05-15)
+
+
+### Features
+
+* Add filter `starts with` in data browser for fields of type Pointer ([#2553](https://github.com/ParsePlatform/parse-dashboard/issues/2553)) ([0b94ab6](https://github.com/ParsePlatform/parse-dashboard/commit/0b94ab6ced8b338cd3539f8cad37feb4452e1bcc))
+
+# [6.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.4...6.0.0-alpha.5) (2024-05-15)
+
+
+### Bug Fixes
+
+* Deleting all code in the JS Console editor fills in the default code ([#2558](https://github.com/ParsePlatform/parse-dashboard/issues/2558)) ([4b830ba](https://github.com/ParsePlatform/parse-dashboard/commit/4b830bac8dc6549555eca50e999a3283aff100c7))
+
+# [6.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.3...6.0.0-alpha.4) (2024-05-15)
+
+
+### Bug Fixes
+
+* Dashboard scrolls when selecting row in data browser ([#2559](https://github.com/ParsePlatform/parse-dashboard/issues/2559)) ([2aa54a5](https://github.com/ParsePlatform/parse-dashboard/commit/2aa54a5bb1f356a7d4ed5abf3ea42c2e406d5b5a))
+
 # [6.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.2...6.0.0-alpha.3) (2024-04-30)
 
 
