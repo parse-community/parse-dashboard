@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "5.3.0",
+  "version": "5.4.0-beta.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -47,7 +47,7 @@
     "csurf": "1.11.0",
     "express": "4.18.1",
     "graphiql": "2.0.8",
-    "graphql": "16.6.0",
+    "graphql": "16.8.1",
     "immutable": "4.1.0",
     "immutable-devtools": "0.1.5",
     "inquirer": "8.2.4",
