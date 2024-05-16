@@ -242,7 +242,7 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, value, masterKeyOnly }) {
+  saveParam({ name, type, value, masterKeyOnly }) {
     this.props.config
       .dispatch(ActionTypes.SET, {
         param: name,
@@ -252,9 +252,10 @@ class Config extends TableView {
       .then(
         () => {
           this.setState({ modalOpen: false });
-
-          const configHistory = localStorage.getItem('configHistory')
-
+          if(type === 'File') {
+            return;
+          }
+          const configHistory = localStorage.getItem('configHistory');
           if(!configHistory) {
             localStorage.setItem('configHistory', JSON.stringify({
               [name]: [{time: new Date(), value}]
@@ -267,7 +268,7 @@ class Config extends TableView {
                 [{time: new Date(), value}]
                 : [{time: new Date(), value}, ...oldConfigHistory[name]]
             }));
-          }
+          };
         },
         () => {
           // Catch the error

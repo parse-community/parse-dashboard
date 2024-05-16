@@ -97,6 +97,7 @@ export default class ConfigDialog extends React.Component {
       type: 'String',
       name: '',
       masterKeyOnly: false,
+      selectedIndex: -1,
     };
     if (props.param.length > 0) {
       this.state = {
@@ -169,6 +170,7 @@ export default class ConfigDialog extends React.Component {
   submit() {
     this.props.onConfirm({
       name: this.state.name,
+      type: this.state.type,
       value: GET_VALUE[this.state.type](this.state.value),
       masterKeyOnly: this.state.masterKeyOnly,
     });
@@ -275,10 +277,16 @@ export default class ConfigDialog extends React.Component {
             }
             input={
               <Dropdown
-                value={this.state.value}
-                onChange={value => this.setState({ value })}>
+                value={this.state.selectedIndex}
+                onChange={value => {
+                  let val = configHistory[value].value;
+                  if(typeof val === 'object'){
+                    val = JSON.stringify(val);
+                  }
+                  this.setState({ selectedIndex: value, value : val });
+              }}>
                 {configHistory.map((value, i) =>
-                  <Option key={i} value={typeof value.value === 'string' ? value.value : JSON.stringify(value.value)}>
+                  <Option key={i} value={i}>
                     {new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}
                   </Option>
                 )}
