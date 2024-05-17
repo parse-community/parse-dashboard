@@ -20,6 +20,7 @@ import Toggle from 'components/Toggle/Toggle.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
+import { dateStringUTC } from 'lib/DateUtils';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
 
@@ -97,7 +98,7 @@ export default class ConfigDialog extends React.Component {
       type: 'String',
       name: '',
       masterKeyOnly: false,
-      selectedIndex: -1,
+      selectedIndex: null,
     };
     if (props.param.length > 0) {
       this.state = {
@@ -105,6 +106,7 @@ export default class ConfigDialog extends React.Component {
         type: props.type,
         value: props.value,
         masterKeyOnly: props.masterKeyOnly,
+        selectedIndex: 0,
       };
     }
   }
@@ -192,17 +194,17 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
-    const dateOptions = {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
+    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name];
+    const handleIndexChange = index => {
+      if(this.state.type === 'Date'){
+        return;
+      }
+      let value = configHistory[index].value;
+      if(typeof value === 'object'){
+        value = JSON.stringify(value);
+      }
+      this.setState({ selectedIndex: index, value });
     };
-    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name]?.slice(1);
 
     return (
       <Modal
@@ -272,26 +274,17 @@ export default class ConfigDialog extends React.Component {
           <Field
             label={
               <Label
-                text="Previous values"
-                description="Previously selected values. Click on a value to apply."
+                text="Change History"
+                description="Select a timestamp in the change history to preview the value in the 'Value' field before saving."
               />
             }
             input={
               <Dropdown
                 value={this.state.selectedIndex}
-                onChange={value => {
-                  if(this.state.type === 'Date'){
-                    return;
-                  }
-                  let val = configHistory[value].value;
-                  if(typeof val === 'object'){
-                    val = JSON.stringify(val);
-                  }
-                  this.setState({ selectedIndex: value, value : val });
-                }}>
+                onChange={handleIndexChange}>
                 {configHistory.map((value, i) =>
                   <Option key={i} value={i}>
-                    {new Intl.DateTimeFormat('en-GB', dateOptions).format(new Date(value.time))}
+                    {dateStringUTC(new Date(value.time))}
                   </Option>
                 )}
               </Dropdown>
