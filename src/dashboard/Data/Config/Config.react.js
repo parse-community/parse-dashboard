@@ -252,19 +252,19 @@ class Config extends TableView {
       .then(
         () => {
           this.setState({ modalOpen: false });
-          if(type === 'File') {
-            return;
-          }
-          let dateObject;
+          let transformedValue = value;
           if(type === 'Date') {
-            dateObject = {__type: 'Date', iso: value};
+            transformedValue = {__type: 'Date', iso: value};
+          }
+          if(type === 'File') {
+            transformedValue = {name: value._name, url: value._url};
           }
           const configHistory = localStorage.getItem('configHistory');
           if(!configHistory) {
             localStorage.setItem('configHistory', JSON.stringify({
               [name]: [{
                 time: new Date(),
-                value: dateObject ? dateObject : value
+                value: transformedValue
               }]
             }));
           } else {
@@ -272,8 +272,8 @@ class Config extends TableView {
             localStorage.setItem('configHistory', JSON.stringify({
               ...oldConfigHistory,
               [name]: !oldConfigHistory[name] ?
-                [{time: new Date(), value: dateObject ? dateObject : value}]
-                : [{time: new Date(), value: dateObject ? dateObject : value}, ...oldConfigHistory[name]]
+                [{time: new Date(), value: transformedValue}]
+                : [{time: new Date(), value: transformedValue}, ...oldConfigHistory[name]]
             }));
           }
         },

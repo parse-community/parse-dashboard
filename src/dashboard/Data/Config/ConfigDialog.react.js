@@ -200,6 +200,16 @@ export default class ConfigDialog extends React.Component {
         return;
       }
       let value = configHistory[index].value;
+      if(this.state.type === 'File'){
+        const fileJSON = {
+          __type: 'File',
+          name: value.name,
+          url: value.url
+        };
+        const file = Parse.File.fromJSON(fileJSON);
+        this.setState({ selectedIndex: index, value: file });
+        return;
+      }
       if(typeof value === 'object'){
         value = JSON.stringify(value);
       }
