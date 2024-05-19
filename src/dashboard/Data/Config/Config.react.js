@@ -20,9 +20,11 @@ import TableHeader from 'components/Table/TableHeader.react';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
+import { CurrentApp } from 'context/currentApp';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.section = 'Core';
@@ -252,6 +254,7 @@ class Config extends TableView {
       .then(
         () => {
           this.setState({ modalOpen: false });
+          const limit = this.context.historylimit;
           let transformedValue = value;
           if(type === 'Date') {
             transformedValue = {__type: 'Date', iso: value};
@@ -273,7 +276,7 @@ class Config extends TableView {
               ...oldConfigHistory,
               [name]: !oldConfigHistory[name] ?
                 [{time: new Date(), value: transformedValue}]
-                : [{time: new Date(), value: transformedValue}, ...oldConfigHistory[name]]
+                : [{time: new Date(), value: transformedValue}, ...oldConfigHistory[name]].slice(0, limit)
             }));
           }
         },
