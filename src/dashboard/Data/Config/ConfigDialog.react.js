@@ -21,6 +21,7 @@ import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
 import { dateStringUTC } from 'lib/DateUtils';
+import { CurrentApp } from 'context/currentApp';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
 
@@ -91,6 +92,7 @@ const GET_VALUE = {
 };
 
 export default class ConfigDialog extends React.Component {
+  static contextType = CurrentApp;
   constructor(props) {
     super();
     this.state = {
@@ -194,7 +196,7 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
-    const configHistory = localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'))[this.state.name];
+    const configHistory = localStorage.getItem(`${this.context.applicationId}_configHistory`) && JSON.parse(localStorage.getItem(`${this.context.applicationId}_configHistory`))[this.state.name];
     const handleIndexChange = index => {
       if(this.state.type === 'Date'){
         return;

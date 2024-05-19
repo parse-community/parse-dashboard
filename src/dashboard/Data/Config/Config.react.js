@@ -254,7 +254,8 @@ class Config extends TableView {
       .then(
         () => {
           this.setState({ modalOpen: false });
-          const limit = this.context.historylimit;
+          const limit = this.context.cloudConfigHistoryLimit;
+          const applicationId = this.context.applicationId;
           let transformedValue = value;
           if(type === 'Date') {
             transformedValue = {__type: 'Date', iso: value};
@@ -262,9 +263,9 @@ class Config extends TableView {
           if(type === 'File') {
             transformedValue = {name: value._name, url: value._url};
           }
-          const configHistory = localStorage.getItem('configHistory');
+          const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
           if(!configHistory) {
-            localStorage.setItem('configHistory', JSON.stringify({
+            localStorage.setItem(`${applicationId}_configHistory`, JSON.stringify({
               [name]: [{
                 time: new Date(),
                 value: transformedValue
@@ -272,7 +273,7 @@ class Config extends TableView {
             }));
           } else {
             const oldConfigHistory = JSON.parse(configHistory);
-            localStorage.setItem('configHistory', JSON.stringify({
+            localStorage.setItem(`${applicationId}_configHistory`, JSON.stringify({
               ...oldConfigHistory,
               [name]: !oldConfigHistory[name] ?
                 [{time: new Date(), value: transformedValue}]

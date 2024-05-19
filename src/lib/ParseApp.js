@@ -49,7 +49,7 @@ export default class ParseApp {
     scripts,
     classPreference,
     enableSecurityChecks,
-    historylimit
+    cloudConfigHistoryLimit
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -78,7 +78,7 @@ export default class ParseApp {
     this.columnPreference = columnPreference;
     this.scripts = scripts;
     this.enableSecurityChecks = !!enableSecurityChecks;
-    this.historylimit = historylimit;
+    this.cloudConfigHistoryLimit = cloudConfigHistoryLimit;
 
     if (!supportedPushLocales) {
       console.warn(
