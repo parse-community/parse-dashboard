@@ -49,6 +49,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
   - [Security Considerations](#security-considerations)
+  - [Security Checks](#security-checks)
     - [Configuring Basic Authentication](#configuring-basic-authentication)
     - [Multi-Factor Authentication (One-Time Password)](#multi-factor-authentication-one-time-password)
     - [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
@@ -123,6 +124,7 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
 | `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
 | `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
+| `apps.cloudConfigHistoryLimit` | Integer              | yes      | `100`  | `100`           | The number of historic values that should be saved in the Cloud Config change history. Valid values: \{ x \in \mathbb{Z} \mid 0 \leq x \leq \text{Number.MAX_SAFE_INTEGER} \}. |
 
 ### File
 
