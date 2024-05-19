@@ -49,7 +49,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
   - [Security Considerations](#security-considerations)
-  - [Security Checks](#security-checks)
+    - [Security Checks](#security-checks)
     - [Configuring Basic Authentication](#configuring-basic-authentication)
     - [Multi-Factor Authentication (One-Time Password)](#multi-factor-authentication-one-time-password)
     - [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
@@ -541,7 +541,7 @@ var dashboard = new ParseDashboard({
 });
 ```
 
-## Security Checks
+### Security Checks
 
 You can view the security status of your Parse Server by enabling the dashboard option `enableSecurityChecks`, and visiting App Settings > Security.
 
@@ -558,8 +558,6 @@ const dashboard = new ParseDashboard({
   ],
 });
 ```
-
-
 
 ### Configuring Basic Authentication
 You can configure your dashboard for Basic Authentication by adding usernames and passwords your `parse-dashboard-config.json` configuration file:
