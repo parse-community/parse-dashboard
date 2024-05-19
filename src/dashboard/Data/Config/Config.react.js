@@ -276,7 +276,7 @@ class Config extends TableView {
               ...oldConfigHistory,
               [name]: !oldConfigHistory[name] ?
                 [{time: new Date(), value: transformedValue}]
-                : [{time: new Date(), value: transformedValue}, ...oldConfigHistory[name]].slice(0, limit)
+                : [{time: new Date(), value: transformedValue}, ...oldConfigHistory[name]].slice(0, limit || 100)
             }));
           }
         },
