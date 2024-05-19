@@ -124,7 +124,7 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
 | `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
 | `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
-| `apps.cloudConfigHistoryLimit` | Integer              | yes      | `100`  | `100`           | The number of historic values that should be saved in the Cloud Config change history. Valid values: \{ x \in \mathbb{Z} \mid 0 \leq x \leq \text{Number.MAX_SAFE_INTEGER} \}. |
+| `apps.cloudConfigHistoryLimit` | Integer              | yes      | `100`  | `100`           | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`. |
 
 ### File
 
