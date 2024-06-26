@@ -128,7 +128,7 @@ export default class ObjectPickerDialog extends React.Component {
     }
     const className = this.props.className;
     const source = this.state.relation || className;
-    let query =await queryFromFilters(source, this.state.filters);
+    let query = await queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
       const equalityQuery = await queryFromFilters(source, this.state.filters);

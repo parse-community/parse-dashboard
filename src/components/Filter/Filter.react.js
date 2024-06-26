@@ -84,7 +84,6 @@ const Filter = ({
   schema,
   filters,
   Allclasses,
-  AllclassesSchema,
   renderRow,
   onChange,
   onSearch,
