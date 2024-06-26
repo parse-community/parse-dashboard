@@ -74,6 +74,8 @@ const BrowserToolbar = ({
   toggleMasterKeyUsage,
 
   selectedData,
+  Allclasses,
+  AllclassesSchema,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -225,6 +227,32 @@ const BrowserToolbar = ({
     });
   }
 
+  Allclasses.forEach(className => {
+    const classSchema = schema.data.get('classes').get(className);
+
+    if (classSchema) {
+      schemaSimplifiedData[className] = {};
+
+      classSchema.forEach(({ type, targetClass }, col) => {
+        schemaSimplifiedData[className][col] = {
+          type,
+          targetClass,
+        };
+
+        columns[col] = { type, targetClass };
+
+        if (col === 'objectId' || (isUnique && col !== uniqueField)) {
+          return;
+        }
+        if ((type === 'Pointer' && targetClass === '_User') || type === 'Array') {
+          userPointers.push(col);
+        }
+      });
+    } else {
+      console.log(`Class ${className} not found in schema.`);
+    }
+  });
+
   const clpDialogRef = useRef(null);
   const protectedDialogRef = useRef(null);
   const loginDialogRef = useRef(null);
@@ -232,7 +260,6 @@ const BrowserToolbar = ({
   const showCLP = () => clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
   const showLogin = () => loginDialogRef.current.handleOpen();
-
   return (
     <Toolbar
       relation={relation}
@@ -339,6 +366,8 @@ const BrowserToolbar = ({
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}
+        Allclasses={Allclasses}
+        AllclassesSchema={AllclassesSchema}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {enableSecurityDialog ? (
@@ -383,14 +412,14 @@ const BrowserToolbar = ({
         <noscript />
       )}
       {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
-      <BrowserMenu
-        setCurrent={setCurrent}
-        title="Script"
-        icon="gear-solid"
-      >
+      <BrowserMenu setCurrent={setCurrent} title="Script" icon="gear-solid">
         <MenuItem
           disabled={selectionLength === 0}
-          text={selectionLength === 1 && !selection['*'] ? 'Run script on selected row...' : `Run script on ${selectionLength} selected rows...`}
+          text={
+            selectionLength === 1 && !selection['*']
+              ? 'Run script on selected row...'
+              : `Run script on ${selectionLength} selected rows...`
+          }
           onClick={() => onExecuteScriptRows(selection)}
         />
       </BrowserMenu>

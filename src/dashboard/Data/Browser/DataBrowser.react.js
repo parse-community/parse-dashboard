@@ -34,6 +34,7 @@ export default class DataBrowser extends React.Component {
       editing: false,
       copyableValue: undefined,
       simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
+      AllclassesSchema: this.getAllclassesSchema(props.schema,props.classes),
 
       selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
       firstSelectedCell: null,
@@ -106,6 +107,28 @@ export default class DataBrowser extends React.Component {
       ColumnPreferences.updatePreferences(order, appId, className);
       shouldReload && this.props.onRefresh();
     }, 1000);
+  }
+
+  getAllclassesSchema(schema,Allclasses) {
+
+    const schemaSimplifiedData = {};
+    if(!Allclasses){
+      Allclasses = Object.keys(schema.data.get('classes').toObject());
+    }
+    Allclasses.forEach((className) => {
+      const classSchema = schema.data.get('classes').get(className);
+      if (classSchema) {
+        schemaSimplifiedData[className] = {};
+        classSchema.forEach(({ type, targetClass }, col) => {
+          schemaSimplifiedData[className][col] = {
+            type,
+            targetClass,
+          };
+        });
+      }
+      return schemaSimplifiedData;
+    });
+    return schemaSimplifiedData;
   }
 
   getSimplifiedSchema(schema, classNameForEditors) {
@@ -448,6 +471,8 @@ export default class DataBrowser extends React.Component {
           onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
           selectedData={this.state.selectedData}
+          Allclasses={Object.keys(this.props.schema.data.get('classes').toObject())}
+          AllclassesSchema={this.state.AllclassesSchema}
           {...other}
         />
 

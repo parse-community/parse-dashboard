@@ -101,9 +101,13 @@ class Browser extends DashboardView {
 
       rowCheckboxDragging: false,
       draggedRowSelection: false,
+
+      classes: {},
+      AllclassesSchema: {}
     };
 
     this.addLocation = this.addLocation.bind(this);
+    this.AllclassesSchema = this.getAllclassesSchema.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -223,6 +227,9 @@ class Browser extends DashboardView {
       this.prefetchData(nextProps, nextContext);
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
+      const t = nextProps.schema.data.get('classes');
+      this.classes = Object.keys(t.toObject());
+      this.AllclassesSchema = this.getAllclassesSchema(this.classes ,nextProps.schema.data.get('classes'));
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
@@ -751,6 +758,23 @@ class Browser extends DashboardView {
     }
   }
 
+  getAllclassesSchema(Allclasses , allclassesdata) {
+    const schemaSimplifiedData = {};
+    Allclasses.forEach((className) => {
+      const classSchema = allclassesdata.get(className);
+      if (classSchema) {
+        schemaSimplifiedData[className] = {};
+        classSchema.forEach(({ type, targetClass }, col) => {
+          schemaSimplifiedData[className][col] = {
+            type,
+            targetClass,
+          };
+        });
+      }
+    });
+    return schemaSimplifiedData;
+  }
+
   async refresh() {
     const relation = this.state.relation;
     const prevFilters = this.state.filters || new List();
@@ -773,9 +797,9 @@ class Browser extends DashboardView {
     }
   }
 
-  async fetchParseData(source, filters) {
+  async fetchParseData(source, filters, AllclassesSchema) {
     const { useMasterKey } = this.state;
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters, AllclassesSchema);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
 
@@ -787,7 +811,6 @@ class Browser extends DashboardView {
 
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
-
     let promise = query.find({ useMasterKey });
     let isUnique = false;
     let uniqueField = null;
@@ -816,15 +839,15 @@ class Browser extends DashboardView {
     }
   }
 
-  async fetchParseDataCount(source, filters) {
-    const query = queryFromFilters(source, filters);
+  async fetchParseDataCount(source, filters,AllclassesSchema) {
+    const query = await queryFromFilters(source, filters,AllclassesSchema);
     const { useMasterKey } = this.state;
     const count = await query.count({ useMasterKey });
     return count;
   }
 
   async fetchData(source, filters = new List()) {
-    const data = await this.fetchParseData(source, filters);
+    const data = await this.fetchParseData(source, filters,this.AllclassesSchema);
     const filteredCounts = { ...this.state.filteredCounts };
     if (filters.size > 0) {
       if (this.state.isUnique) {
@@ -860,13 +883,13 @@ class Browser extends DashboardView {
     return await this.context.getRelationCount(relation);
   }
 
-  fetchNextPage() {
+  async fetchNextPage() {
     if (!this.state.data || this.state.isUnique) {
       return null;
     }
     const className = this.props.params.className;
     const source = this.state.relation || className;
-    let query = queryFromFilters(source, this.state.filters);
+    let query = await queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
       const equalityQuery = queryFromFilters(source, this.state.filters);
@@ -1940,6 +1963,7 @@ class Browser extends DashboardView {
             onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
             onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
             onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
+            classes={this.classes}
           />
         );
       }

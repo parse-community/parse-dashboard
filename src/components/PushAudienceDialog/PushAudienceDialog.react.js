@@ -118,14 +118,14 @@ export default class PushAudienceDialog extends React.Component {
     this.setState({ saveForFuture: value });
   }
 
-  fetchAudienceSize() {
+  async fetchAudienceSize() {
     if (!this.context) {
       //so we don't break the PIG demo
       return;
     }
 
     let query = {};
-    const parseQuery = queryFromFilters('_Installation', this.state.filters);
+    const parseQuery = await queryFromFilters('_Installation', this.state.filters);
 
     if (parseQuery && parseQuery.toJSON()) {
       query = parseQuery.toJSON().where || {};

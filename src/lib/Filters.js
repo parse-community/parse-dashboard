@@ -233,4 +233,29 @@ export function availableFilters(schema, currentFilters, blacklist) {
   return available;
 }
 
+export function findRelatedClasses(referClass , Allclasses, blacklist, currentFilters) {
+  const relatedClasses = {};
+  for (const className in Allclasses) {
+    if (!checkRelation(referClass,Allclasses[className]) && referClass !== className){
+      continue;
+    }
+    const schema = Allclasses[className];
+    const available = availableFilters(schema, currentFilters, blacklist);
+    if (Object.keys(available).length > 0) {
+      relatedClasses[className] = available;
+    }
+  }
+  return relatedClasses;
+}
+
+function checkRelation(classname,schema){
+  for (const col in schema) {
+    if (schema[col].type === 'Pointer' && schema[col].targetClass === classname) {
+      return true;
+    }
+  }
+  return false;
+
+}
+
 export const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];

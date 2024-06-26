@@ -46,13 +46,18 @@ export default class BrowserFilter extends React.Component {
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
-      const available = Filters.availableFilters(
-        this.props.schema,
-        null,
-        this.state.blacklistedFilters
+      const available = Filters.findRelatedClasses(
+        this.props.className,
+        this.props.AllclassesSchema,
+        this.state.blacklistedFilters,
+        this.state.filters
       );
-      const field = Object.keys(available)[0];
-      filters = new List([new Map({ field: field, constraint: available[field][0] })]);
+      const filterClass = Object.keys(available)[0];
+      const filterField = Object.keys(available[filterClass])[0];
+      const filterConstraint = available[filterClass][filterField][0];
+      filters = new List([
+        new Map({ class: filterClass, field: filterField, constraint: filterConstraint }),
+      ]);
     }
     this.setState(prevState => ({
       open: !prevState.open,
@@ -65,14 +70,19 @@ export default class BrowserFilter extends React.Component {
   }
 
   addRow() {
-    const available = Filters.availableFilters(
-      this.props.schema,
-      this.state.filters,
-      this.state.blacklistedFilters
+    const available = Filters.findRelatedClasses(
+      this.props.className,
+      this.props.AllclassesSchema,
+      this.state.blacklistedFilters,
+      this.state.filters
     );
-    const field = Object.keys(available)[0];
+    const filterClass = Object.keys(available)[0];
+    const filterField = Object.keys(available[filterClass])[0];
+    const filterConstraint = available[filterClass][filterField][0];
     this.setState(({ filters }) => ({
-      filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+      filters: filters.push(
+        new Map({ class: filterClass, field: filterField, constraint: filterConstraint })
+      ),
       editMode: true,
     }));
   }
@@ -125,7 +135,12 @@ export default class BrowserFilter extends React.Component {
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
       }
-      const available = Filters.availableFilters(this.props.schema, this.state.filters);
+      const available = Filters.findRelatedClasses(
+        this.props.className,
+        this.props.AllclassesSchema,
+        this.state.blacklistedFilters,
+        this.state.filters
+      );
       popover = (
         <Popover
           fixed={true}
@@ -154,6 +169,11 @@ export default class BrowserFilter extends React.Component {
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
+                Allclasses={this.props.AllclassesSchema}
+                AllclassesSchema={Filters.findRelatedClasses(
+                  this.props.className,
+                  this.props.AllclassesSchema
+                )}
                 renderRow={props => (
                   <FilterRow
                     {...props}
