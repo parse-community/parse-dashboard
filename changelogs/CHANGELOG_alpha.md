@@ -1,3 +1,65 @@
+# [6.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.6...6.0.0-alpha.7) (2024-05-19)
+
+
+### Features
+
+* Add Cloud Config change history to roll back to previous values ([#2554](https://github.com/ParsePlatform/parse-dashboard/issues/2554)) ([a784129](https://github.com/ParsePlatform/parse-dashboard/commit/a784129dd5f25d6464cdd5d768e296fda4501b42))
+
+# [6.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.5...6.0.0-alpha.6) (2024-05-15)
+
+
+### Features
+
+* Add filter `starts with` in data browser for fields of type Pointer ([#2553](https://github.com/ParsePlatform/parse-dashboard/issues/2553)) ([0b94ab6](https://github.com/ParsePlatform/parse-dashboard/commit/0b94ab6ced8b338cd3539f8cad37feb4452e1bcc))
+
+# [6.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.4...6.0.0-alpha.5) (2024-05-15)
+
+
+### Bug Fixes
+
+* Deleting all code in the JS Console editor fills in the default code ([#2558](https://github.com/ParsePlatform/parse-dashboard/issues/2558)) ([4b830ba](https://github.com/ParsePlatform/parse-dashboard/commit/4b830bac8dc6549555eca50e999a3283aff100c7))
+
+# [6.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.3...6.0.0-alpha.4) (2024-05-15)
+
+
+### Bug Fixes
+
+* Dashboard scrolls when selecting row in data browser ([#2559](https://github.com/ParsePlatform/parse-dashboard/issues/2559)) ([2aa54a5](https://github.com/ParsePlatform/parse-dashboard/commit/2aa54a5bb1f356a7d4ed5abf3ea42c2e406d5b5a))
+
+# [6.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.2...6.0.0-alpha.3) (2024-04-30)
+
+
+### Features
+
+* Select rows in data browser by clicking and dragging mouse cursor over checkboxes ([#2548](https://github.com/ParsePlatform/parse-dashboard/issues/2548)) ([792ba9e](https://github.com/ParsePlatform/parse-dashboard/commit/792ba9e619224c6101ed21cd36add9fe83c3e348))
+
+# [6.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.1...6.0.0-alpha.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* Class Level Permissions dialog throws error `TypeError: ce.current is null` for newly created class ([#2549](https://github.com/ParsePlatform/parse-dashboard/issues/2549)) ([27ed692](https://github.com/ParsePlatform/parse-dashboard/commit/27ed6920d38bfe6476aaf2cebd4124dc30389959))
+
+# [6.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.8...6.0.0-alpha.1) (2024-03-05)
+
+
+### Features
+
+* Add Node 20 support; remove Node 14, 16 support ([#2532](https://github.com/ParsePlatform/parse-dashboard/issues/2532)) ([578a339](https://github.com/ParsePlatform/parse-dashboard/commit/578a339c04990b5ecb3f80d34c690c6d34218bfa))
+* Add Node 20 support; remove Node 14, 16 support ([#2535](https://github.com/ParsePlatform/parse-dashboard/issues/2535)) ([5c90f2d](https://github.com/ParsePlatform/parse-dashboard/commit/5c90f2de1b98a2099453c8f8c0d6817330f7133d))
+
+
+### BREAKING CHANGES
+
+* Removes support for Node 14 and 16 ([5c90f2d](5c90f2d))
+
+# [5.4.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.7...5.4.0-alpha.8) (2024-02-29)
+
+
+### Bug Fixes
+
+* Config page fails to load ([#2531](https://github.com/ParsePlatform/parse-dashboard/issues/2531)) ([d721b7c](https://github.com/ParsePlatform/parse-dashboard/commit/d721b7c4f3b98df96a229e60529604b038857d53))
+
 # [5.4.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.6...5.4.0-alpha.7) (2024-02-26)
 
 

@@ -10,6 +10,11 @@ import { CurrentApp } from 'context/currentApp';
 
 import styles from './Playground.scss';
 
+const DEFAULT_CODE_EDITOR_VALUE = `const myObj = new Parse.Object('MyClass');
+myObj.set('myField', 'Hello World!')
+await myObj.save();
+console.log(myObj);`;
+
 export default class Playground extends Component {
   static contextType = CurrentApp;
   constructor() {
@@ -141,10 +146,7 @@ export default class Playground extends Component {
         <Toolbar section={this.section} subsection={this.subsection} />
         <div style={{ minHeight: '25vh' }}>
           <CodeEditor
-            placeHolder={`const myObj = new Parse.Object('MyClass');
-myObj.set('myField', 'Hello World!')
-await myObj.save();
-console.log(myObj);`}
+            defaultValue={DEFAULT_CODE_EDITOR_VALUE}
             ref={editor => (this.editor = editor)}
           />
           <div className={styles['console-ctn']}>

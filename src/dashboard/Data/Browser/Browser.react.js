@@ -98,6 +98,9 @@ class Browser extends DashboardView {
       currentUser: Parse.User.current(),
 
       processedScripts: 0,
+
+      rowCheckboxDragging: false,
+      draggedRowSelection: false,
     };
 
     this.addLocation = this.addLocation.bind(this);
@@ -163,6 +166,9 @@ class Browser extends DashboardView {
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
     this.redirectToFirstClass = this.redirectToFirstClass.bind(this);
+    this.onMouseDownRowCheckBox = this.onMouseDownRowCheckBox.bind(this);
+    this.onMouseUpRowCheckBox = this.onMouseUpRowCheckBox.bind(this);
+    this.onMouseOverRowCheckBox = this.onMouseOverRowCheckBox.bind(this);
 
     this.dataBrowserRef = React.createRef();
 
@@ -189,10 +195,12 @@ class Browser extends DashboardView {
 
   componentDidMount() {
     this.addLocation(this.props.params.appId);
+    window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
 
   componentWillUnmount() {
     this.removeLocation();
+    window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -368,6 +376,7 @@ class Browser extends DashboardView {
     this.props.schema
       .dispatch(ActionTypes.CREATE_CLASS, { className })
       .then(() => {
+        this.state.clp[className] = this.props.schema.data.get('CLPs').toJS()[className];
         this.state.counts[className] = 0;
         this.props.navigate(generatePath(this.context, 'browser/' + className));
       })
@@ -380,6 +389,7 @@ class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(
       () => {
         this.setState({ showDropClassDialog: false });
+        delete this.state.clp[className];
         delete this.state.counts[className];
         this.props.navigate(generatePath(this.context, 'browser'));
       },
@@ -1788,6 +1798,26 @@ class Browser extends DashboardView {
     this.setState({ showPointerKeyDialog: false });
   }
 
+  onMouseDownRowCheckBox(checked) {
+    this.setState({
+      rowCheckboxDragging: true,
+      draggedRowSelection: !checked,
+    });
+  }
+
+  onMouseUpRowCheckBox() {
+    this.setState({
+      rowCheckboxDragging: false,
+      draggedRowSelection: false,
+    });
+  }
+
+  onMouseOverRowCheckBox(id) {
+    if (this.state.rowCheckboxDragging) {
+      this.selectRow(id, this.state.draggedRowSelection);
+    }
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1907,6 +1937,9 @@ class Browser extends DashboardView {
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote}
+            onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
+            onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
+            onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
           />
         );
       }

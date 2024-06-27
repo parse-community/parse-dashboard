@@ -43,6 +43,9 @@ export default class BrowserRow extends Component {
       setContextMenu,
       onFilterChange,
       markRequiredFieldRow,
+      onMouseDownRowCheckBox,
+      onMouseUpRowCheckBox,
+      onMouseOverRowCheckBox,
     } = this.props;
     const attributes = obj.attributes;
     let requiredCols = [];
@@ -63,11 +66,16 @@ export default class BrowserRow extends Component {
     }
     return (
       <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
-        <span className={styles.checkCell}>
+        <span
+          className={styles.checkCell}
+          onMouseUp={onMouseUpRowCheckBox}
+          onMouseOver={() => onMouseOverRowCheckBox(obj.id)}
+        >
           <input
             type="checkbox"
             checked={selection['*'] || selection[obj.id]}
             onChange={e => selectRow(obj.id, e.target.checked)}
+            onMouseDown={(e) => onMouseDownRowCheckBox(e.target.checked)}
           />
         </span>
         {order.map(({ name, width, visible }, j) => {

@@ -7,7 +7,7 @@
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=release)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Arelease)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
 
-[![Node Version](https://img.shields.io/badge/nodejs-14,_16,_18-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/nodejs-18,_20-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
@@ -49,6 +49,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
   - [Security Considerations](#security-considerations)
+    - [Security Checks](#security-checks)
     - [Configuring Basic Authentication](#configuring-basic-authentication)
     - [Multi-Factor Authentication (One-Time Password)](#multi-factor-authentication-one-time-password)
     - [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
@@ -107,9 +108,8 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 
 | Version    | Latest Version | End-of-Life | Compatible |
 |------------|----------------|-------------|------------|
-| Node.js 14 | 14.20.1        | April 2023  | ✅ Yes      |
-| Node.js 16 | 16.17.0        | April 2024  | ✅ Yes      |
-| Node.js 18 | 18.9.0         | May 2025    | ✅ Yes      |
+| Node.js 18 | 18.9.1         | May 2025    | ✅ Yes      |
+| Node.js 20 | 20.11.1         | April 2026    | ✅ Yes      |
 
 ## Configuring Parse Dashboard
 
@@ -124,6 +124,7 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
 | `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
 | `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
+| `apps.cloudConfigHistoryLimit` | Integer              | yes      | `100`  | `100`           | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`. |
 
 ### File
 
@@ -565,7 +566,7 @@ var dashboard = new ParseDashboard({
 });
 ```
 
-## Security Checks
+### Security Checks
 
 You can view the security status of your Parse Server by enabling the dashboard option `enableSecurityChecks`, and visiting App Settings > Security.
 
@@ -582,8 +583,6 @@ const dashboard = new ParseDashboard({
   ],
 });
 ```
-
-
 
 ### Configuring Basic Authentication
 You can configure your dashboard for Basic Authentication by adding usernames and passwords your `parse-dashboard-config.json` configuration file:
