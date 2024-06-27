@@ -1,3 +1,10 @@
+# [6.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.7...6.0.0-alpha.8) (2024-06-27)
+
+
+### Features
+
+* Add optional restriction of script execution to certain object fields and values ([#2488](https://github.com/ParsePlatform/parse-dashboard/issues/2488)) ([8feac9b](https://github.com/ParsePlatform/parse-dashboard/commit/8feac9b8359f27ecd7bd4342be7bcae75289ba35))
+
 # [6.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.6...6.0.0-alpha.7) (2024-05-19)
 
 
