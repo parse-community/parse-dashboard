@@ -31,6 +31,7 @@ export default class BrowserRow extends Component {
       order,
       readOnlyFields,
       row,
+      rowValue,
       rowWidth,
       selection,
       selectRow,
@@ -122,6 +123,7 @@ export default class BrowserRow extends Component {
               className={className}
               field={name}
               row={row}
+              rowValue={rowValue}
               col={j}
               type={type}
               readonly={isUnique || readOnlyFields.indexOf(name) > -1}

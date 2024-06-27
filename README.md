@@ -398,6 +398,31 @@ You can specify scripts to execute Cloud Functions with the `scripts` option:
 ]
 ```
 
+You can also specify custom fields with the `scrips` option:
+
+```json
+"apps": [
+  {
+    "scripts": [
+      {
+        "title": "Delete account",
+        "classes": [
+          {
+            "name": "_User",
+            "fields": [
+              { "name": "createdAt", "validator": "value => value > new Date(\"2025\")" }
+            ]
+          }
+        ],
+        "cloudCodeFunction": "deleteAccount"
+      }
+    ]
+  }
+]
+
+```
+
+
 Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
 
 ```js

@@ -155,6 +155,7 @@ export default class BrowserTable extends React.Component {
                     order={this.props.order}
                     readOnlyFields={READ_ONLY}
                     row={index}
+                    rowValue={this.props.data[index]}
                     rowWidth={rowWidth}
                     selection={this.props.selection}
                     selectRow={this.props.selectRow}
@@ -310,6 +311,7 @@ export default class BrowserTable extends React.Component {
             order={this.props.order}
             readOnlyFields={READ_ONLY}
             row={i}
+            rowValue={this.props.data[i]}
             rowWidth={rowWidth}
             selection={this.props.selection}
             selectRow={this.props.selectRow}
