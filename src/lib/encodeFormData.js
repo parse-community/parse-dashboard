@@ -19,14 +19,14 @@ export default function encodeFormData(key, value, prevKey) {
   if (value && typeof value.toJSON === 'function') {
     return encodeURI(field) + '=' + encodeURI(value.toJSON());
   }
-  let pieces = [];
+  const pieces = [];
   if (Array.isArray(value)) {
     for (let i = 0; i < value.length; i++) {
       pieces.push(encodeFormData('', value[i], field));
     }
     return pieces.join('&');
   }
-  for (let k in value) {
+  for (const k in value) {
     pieces.push(encodeFormData(k, value[k], field));
   }
   return pieces.join('&');

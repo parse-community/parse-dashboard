@@ -5,7 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React  from 'react';
+import React from 'react';
 import styles from 'components/Loader/Loader.scss';
 
 const SMALL_RADIUS = 20;
@@ -26,27 +26,27 @@ function getRadius(t) {
 
 function getPosition(t) {
   if (t < POINTS.A) {
-    let multiplier = LENGTH / SMALL_RADIUS;
+    const multiplier = LENGTH / SMALL_RADIUS;
     return {
       x: SMALL_RADIUS + SMALL_RADIUS * Math.cos(t * multiplier + Math.PI / 2),
-      y: 2 * LARGE_RADIUS + SMALL_RADIUS - SMALL_RADIUS * Math.sin(t * multiplier + Math.PI / 2)
+      y: 2 * LARGE_RADIUS + SMALL_RADIUS - SMALL_RADIUS * Math.sin(t * multiplier + Math.PI / 2),
     };
   } else if (t < POINTS.B) {
     return {
       x: 2 * SMALL_RADIUS,
-      y: LENGTH * (POINTS.A - t) + 2 * LARGE_RADIUS + SMALL_RADIUS
+      y: LENGTH * (POINTS.A - t) + 2 * LARGE_RADIUS + SMALL_RADIUS,
     };
   } else if (t < POINTS.C) {
-    let t2 = t - POINTS.B;
-    let multiplier = LENGTH / LARGE_RADIUS;
+    const t2 = t - POINTS.B;
+    const multiplier = LENGTH / LARGE_RADIUS;
     return {
       x: 2 * SMALL_RADIUS + LARGE_RADIUS - LARGE_RADIUS * Math.cos(t2 * multiplier),
-      y: LARGE_RADIUS - LARGE_RADIUS * Math.sin(t2 * multiplier)
+      y: LARGE_RADIUS - LARGE_RADIUS * Math.sin(t2 * multiplier),
     };
   } else {
     return {
       x: LENGTH * (POINTS.C - t) + 2 * SMALL_RADIUS + LARGE_RADIUS,
-      y: 2 * LARGE_RADIUS
+      y: 2 * LARGE_RADIUS,
     };
   }
 }
@@ -73,7 +73,7 @@ export default class Loader extends React.Component {
     if (!this.mounted) {
       return;
     }
-    let delta = new Date() - this.mountTime;
+    const delta = new Date() - this.mountTime;
     let t = (delta / DURATION) % 1;
     let pos = getPosition(t);
     let style = this.dot0Ref.current.style;

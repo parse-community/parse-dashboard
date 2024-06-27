@@ -1,8 +1,8 @@
 'use strict';
-var bcrypt = require('bcryptjs');
-var csrf = require('csurf');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
+const csrf = require('csurf');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const OTPAuth = require('otpauth')
 
 /**
@@ -20,11 +20,11 @@ function Authentication(validUsers, useEncryptedPasswords, mountPath) {
 
 function initialize(app, options) {
   options = options || {};
-  var self = this;
+  const self = this;
   passport.use('local', new LocalStrategy(
     {passReqToCallback:true},
     function(req, username, password, cb) {
-      var match = self.authenticate({
+      const match = self.authenticate({
         name: username,
         pass: password,
         otpCode: req.body.otpCode
@@ -47,13 +47,13 @@ function initialize(app, options) {
   });
 
   passport.deserializeUser(function(username, cb) {
-    var user = self.authenticate({
+    const user = self.authenticate({
       name: username
     }, true);
     cb(null, user);
   });
 
-  var cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
+  const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
   app.use(require('connect-flash')());
   app.use(require('body-parser').urlencoded({ extended: true }));
@@ -67,16 +67,16 @@ function initialize(app, options) {
 
   app.post('/login',
     csrf(),
-      (req,res,next) => {
-        let redirect = 'apps';
-        if (req.body.redirect) {
-          redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
-        }
-        return passport.authenticate('local', {
-          successRedirect: `${self.mountPath}${redirect}`,
-          failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
-          failureFlash : true
-        })(req, res, next)
+    (req,res,next) => {
+      let redirect = 'apps';
+      if (req.body.redirect) {
+        redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
+      }
+      return passport.authenticate('local', {
+        successRedirect: `${self.mountPath}${redirect}`,
+        failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
+        failureFlash : true
+      })(req, res, next)
     },
   );
 
@@ -100,13 +100,13 @@ function authenticate(userToTest, usernameOnly) {
   let otpValid = true;
 
   //they provided auth
-  let isAuthenticated = userToTest &&
+  const isAuthenticated = userToTest &&
     //there are configured users
     this.validUsers &&
     //the provided auth matches one of the users
     this.validUsers.find(user => {
       let isAuthenticated = false;
-      let usernameMatches = userToTest.name == user.user;
+      const usernameMatches = userToTest.name == user.user;
       if (usernameMatches && user.mfa && !usernameOnly) {
         if (!userToTest.otpCode) {
           otpMissingLength = user.mfaDigits || 6;
@@ -126,7 +126,7 @@ function authenticate(userToTest, usernameOnly) {
           }
         }
       }
-      let passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
+      const passwordMatches = this.useEncryptedPasswords && !usernameOnly ? bcrypt.compareSync(userToTest.pass, user.pass) : userToTest.pass == user.pass;
       if (usernameMatches && (usernameOnly || passwordMatches)) {
         isAuthenticated = true;
         matchingUsername = user.user;

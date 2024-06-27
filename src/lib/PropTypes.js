@@ -22,10 +22,10 @@ function wrapType(type, id) {
     type.isRequired._classes = type._classes;
     type.isRequired._values = type._values;
   }
-  type.describe = function(description) {
-    let wrapped = function(...args) {
+  type.describe = function (description) {
+    const wrapped = function (...args) {
       return type.apply(type, args);
-    }
+    };
     wrapped._id = type._id;
     wrapped._required = type._required;
     wrapped._description = description;
@@ -51,7 +51,7 @@ Types = {
 
   any: wrapType(PropTypes.any, 'Any'),
 
-  instanceOf: function(klass) {
+  instanceOf: function (klass) {
     let name = klass.constructor.name;
     if (klass === Date) {
       name = 'Date';
@@ -59,29 +59,29 @@ Types = {
     return wrapType(PropTypes.instanceOf(klass), name);
   },
 
-  oneOf: function(values) {
+  oneOf: function (values) {
     let type = PropTypes.oneOf(values);
     type._values = values;
     type = wrapType(type, 'Enum');
     return type;
   },
 
-  oneOfType: function(classes) {
+  oneOfType: function (classes) {
     let type = PropTypes.oneOfType(classes);
     type._classes = classes;
     type = wrapType(type, 'Union');
     return type;
   },
 
-  arrayOf: function(valueType) {
+  arrayOf: function (valueType) {
     return wrapType(PropTypes.arrayOf(valueType), `Array<${valueType._id}>`);
   },
 
-  objectOf: function(valueType) {
+  objectOf: function (valueType) {
     return wrapType(PropTypes.objectOf(valueType), `Object<String, ${valueType._id}>`);
   },
 
-  shape: function(shape) {
+  shape: function (shape) {
     return wrapType(PropTypes.shape(shape), 'Object');
   },
 };

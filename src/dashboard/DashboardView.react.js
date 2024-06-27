@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React          from 'react';
-import Sidebar        from 'components/Sidebar/Sidebar.react';
-import styles         from 'dashboard/Dashboard.scss';
-import Icon           from 'components/Icon/Icon.react';
-import baseStyles     from 'stylesheets/base.scss';
-import Button         from 'components/Button/Button.react';
+import React from 'react';
+import Sidebar from 'components/Sidebar/Sidebar.react';
+import styles from 'dashboard/Dashboard.scss';
+import Icon from 'components/Icon/Icon.react';
+import baseStyles from 'stylesheets/base.scss';
+import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class DashboardView extends React.Component {
@@ -44,7 +44,7 @@ export default class DashboardView extends React.Component {
     if (typeof this.renderSidebar === 'function') {
       sidebarChildren = this.renderSidebar();
     }
-    let appSlug = this.context ? this.context.slug : '';
+    const appSlug = this.context ? this.context.slug : '';
 
     if (!this.context.hasCheckedForMigraton) {
       this.context.getMigrations().promise.then(
@@ -53,9 +53,9 @@ export default class DashboardView extends React.Component {
       );
     }
 
-    let features = this.context.serverInfo.features;
+    const features = this.context.serverInfo.features;
 
-    let coreSubsections = [];
+    const coreSubsections = [];
     if (
       features.schemas &&
       features.schemas.addField &&
@@ -97,10 +97,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    if (
-      features.logs &&
-      Object.keys(features.logs).some((key) => features.logs[key])
-    ) {
+    if (features.logs && Object.keys(features.logs).some(key => features.logs[key])) {
       coreSubsections.push({
         name: 'Logs',
         link: '/logs',
@@ -133,7 +130,7 @@ export default class DashboardView extends React.Component {
         link: '/migration',
       });
     }
-    let pushSubsections = [];
+    const pushSubsections = [];
 
     if (features.push && features.push.immediatePush) {
       pushSubsections.push({
@@ -156,7 +153,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    let analyticsSidebarSections = [];
+    const analyticsSidebarSections = [];
 
     //These analytics pages may never make it into parse server
     /*
@@ -203,6 +200,13 @@ export default class DashboardView extends React.Component {
       link: '/settings/dashboard'
     }];
 
+    if (this.context.enableSecurityChecks) {
+      settingsSections.push({
+        name: 'Security',
+        link: '/settings/security',
+      })
+    }
+
     // Settings - nothing remotely like this in parse-server yet. Maybe it will arrive soon.
     /*
     if (features.generalSettings) {
@@ -240,7 +244,7 @@ export default class DashboardView extends React.Component {
       });
     }*/
 
-    let appSidebarSections = [];
+    const appSidebarSections = [];
 
     if (coreSubsections.length > 0) {
       appSidebarSections.push({
@@ -279,7 +283,7 @@ export default class DashboardView extends React.Component {
       });
     }
 
-    let sidebar = (
+    const sidebar = (
       <Sidebar
         sections={appSidebarSections}
         appSelector={true}
@@ -304,12 +308,7 @@ export default class DashboardView extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
+              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
             <div className={styles.loadingError}>Feature unavailable</div>
           </div>
@@ -322,22 +321,12 @@ export default class DashboardView extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon
-                width={110}
-                height={110}
-                name="cloud-surprise"
-                fill="#1e3b4d"
-              />
+              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
             <div className={styles.loadingError}>
               {this.context.serverInfo.error.replace(/-/g, '\u2011')}
             </div>
-            <Button
-              color="white"
-              value="Reload"
-              width="120px"
-              onClick={() => location.reload()}
-            />
+            <Button color="white" value="Reload" width="120px" onClick={() => location.reload()} />
           </div>
         </div>
       );

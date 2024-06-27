@@ -10,7 +10,7 @@
  * themselves
  */
 export default function keyMirror(keys) {
-  let map = {};
+  const map = {};
   for (let i = 0; i < keys.length; i++) {
     map[keys[i]] = keys[i];
   }

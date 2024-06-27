@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import hasAncestor      from 'lib/hasAncestor';
-import React            from 'react';
-import styles           from 'components/Popover/Popover.scss';
+import hasAncestor from 'lib/hasAncestor';
+import React from 'react';
+import styles from 'components/Popover/Popover.scss';
 import { createPortal } from 'react-dom';
 
 // We use this component to proxy the current tree's context
@@ -33,9 +33,7 @@ export default class Popover extends React.Component {
       document.body.appendChild(this._popoverWrapper);
     }
 
-    let wrapperStyle = this.props.fixed
-      ? styles.fixed_wrapper
-      : styles.popover_wrapper;
+    const wrapperStyle = this.props.fixed ? styles.fixed_wrapper : styles.popover_wrapper;
 
     this._popoverWrapper.className = wrapperStyle;
     this._popoverWrapper.appendChild(this._popoverLayer);
@@ -59,6 +57,10 @@ export default class Popover extends React.Component {
       this._popoverLayer.dataset.parentContentId = this.props.parentContentId;
     }
 
+    if (this.props['data-popover-type']) {
+      this._popoverLayer.setAttribute('data-popover-type', this.props['data-popover-type']);
+    }
+
     document.body.addEventListener('click', this._checkExternalClick);
   }
 
@@ -75,12 +77,14 @@ export default class Popover extends React.Component {
 
   _checkExternalClick(e) {
     const { contentId } = this.props;
-    const popoverWrapper = contentId
-      ? document.getElementById(contentId)
-      : this._popoverLayer;
+    const popoverWrapper = contentId ? document.getElementById(contentId) : this._popoverLayer;
     const isChromeDropdown = e.target.parentNode.classList.contains('chromeDropdown');
+    // Find the inner popover element so on clicking inside it
+    // we can prevent external click function
+    const innerPopover = e.target.closest('[data-popover-type="inner"]');
     if (
       !hasAncestor(e.target, popoverWrapper, contentId) &&
+      !innerPopover &&
       this.props.onExternalClick &&
       !isChromeDropdown
     ) {

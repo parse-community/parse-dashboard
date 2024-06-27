@@ -16,14 +16,14 @@ export default class Position {
   }
 
   static inDocument(node) {
-    let pos = Position.inWindow(node);
+    const pos = Position.inWindow(node);
     pos.x += window.pageXOffset;
     pos.y += window.pageYOffset;
     return pos;
   }
 
   static inWindow(node) {
-    let rect = node.getBoundingClientRect();
+    const rect = node.getBoundingClientRect();
     return new Position(rect.left, rect.top);
   }
 }

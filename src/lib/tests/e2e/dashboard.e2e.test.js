@@ -15,12 +15,14 @@ const ParseDashboard = require('../../../../Parse-Dashboard/app');
 const puppeteer = require('puppeteer');
 
 const dashboardSettings = {
-  apps: [{
-    serverURL: 'http://localhost:5051/parse',
-    appId: 'appId',
-    masterKey: 'masterKey',
-    appName: 'MyApp'
-  }]
+  apps: [
+    {
+      serverURL: 'http://localhost:5051/parse',
+      appId: 'appId',
+      masterKey: 'masterKey',
+      appName: 'MyApp',
+    },
+  ],
 };
 
 // TODO: Mount parse-server
@@ -49,7 +51,6 @@ describe('dashboard e2e', () => {
   });
 });
 
-
 describe('Config options', () => {
   it('should start with port option', async () => {
     const result = await startParseDashboardAndGetOutput(['--port', '4041']);
@@ -57,30 +58,38 @@ describe('Config options', () => {
   });
 
   it('should reject to start if config and other options are combined', async () => {
-    const args = [
-      '--appId',
-      '--serverURL',
-      '--masterKey',
-      '--appName',
-      '--graphQLServerURL'
-    ];
+    const args = ['--appId', '--serverURL', '--masterKey', '--appName', '--graphQLServerURL'];
 
     for (const arg of args) {
-      const result = await startParseDashboardAndGetOutput(['--config', 'helloworld', arg, 'helloworld']);
-      expect(result).toContain('You must provide either a config file or other CLI options (appName, appId, masterKey, serverURL, and graphQLServerURL); not both.');
+      const result = await startParseDashboardAndGetOutput([
+        '--config',
+        'helloworld',
+        arg,
+        'helloworld',
+      ]);
+      expect(result).toContain(
+        'You must provide either a config file or other CLI options (appName, appId, masterKey, serverURL, and graphQLServerURL); not both.'
+      );
     }
   });
 });
 
 function startParseDashboardAndGetOutput(args) {
   const timeoutInMs = 1000;
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const indexFilePath = path.resolve('./Parse-Dashboard/index.js');
-    const child = spawn('node', [indexFilePath, ...args], { cwd: '.', timeout: timeoutInMs });
+    const child = spawn('node', [indexFilePath, ...args], {
+      cwd: '.',
+      timeout: timeoutInMs,
+    });
 
     let output = '';
-    child.on('error', () => { resolve(output); });
-    child.on('close', () => { resolve(output); });
+    child.on('error', () => {
+      resolve(output);
+    });
+    child.on('close', () => {
+      resolve(output);
+    });
 
     if (child.stdout) {
       child.stdout.on('data', data => {

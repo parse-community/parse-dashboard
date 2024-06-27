@@ -21,39 +21,37 @@ export default class GraphQLConsole extends Component {
       content = (
         <div className={styles.empty}>
           <EmptyState
-            title='GraphQL API Console'
+            title="GraphQL API Console"
             description='Please update Parse-Server to version equal or above
             3.5.0 and define the "graphQLServerURL" on your app configuration
             in order to use the GraphQL API Console.'
-            icon='info-solid' />
+            icon="info-solid"
+          />
         </div>
       );
     } else {
       const parseHeaders = {
         'X-Parse-Application-Id': applicationId,
-        'X-Parse-Master-Key': masterKey
-      }
+        'X-Parse-Master-Key': masterKey,
+      };
       if (clientKey) {
-        parseHeaders['X-Parse-Client-Key'] = clientKey
+        parseHeaders['X-Parse-Client-Key'] = clientKey;
       }
       content = (
         <GraphiQL
           headers={JSON.stringify(parseHeaders)}
           headerEditorEnabled={true}
-          fetcher={async (graphQLParams, {headers}) => {
-            const data = await fetch(
-              graphQLServerURL,
-            {
+          fetcher={async (graphQLParams, { headers }) => {
+            const data = await fetch(graphQLServerURL, {
               method: 'POST',
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                ...headers
+                ...headers,
               },
               body: JSON.stringify(graphQLParams),
-            },
-          );
-          return data.json().catch(() => data.text());
+            });
+            return data.json().catch(() => data.text());
           }}
         />
       );
@@ -61,10 +59,8 @@ export default class GraphQLConsole extends Component {
 
     return (
       <>
-        <Toolbar section='Core' subsection='GraphQL API Console' />
-        <div className={styles.content}>
-          {content}
-        </div>
+        <Toolbar section="Core" subsection="GraphQL API Console" />
+        <div className={styles.content}>{content}</div>
       </>
     );
   }

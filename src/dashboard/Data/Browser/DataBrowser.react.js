@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import copy                   from 'copy-to-clipboard';
-import BrowserTable           from 'dashboard/Data/Browser/BrowserTable.react';
-import BrowserToolbar         from 'dashboard/Data/Browser/BrowserToolbar.react';
-import ContextMenu            from 'components/ContextMenu/ContextMenu.react';
+import copy from 'copy-to-clipboard';
+import BrowserTable from 'dashboard/Data/Browser/BrowserTable.react';
+import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
+import ContextMenu from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
-import React                  from 'react';
+import React from 'react';
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -21,8 +21,8 @@ export default class DataBrowser extends React.Component {
   constructor(props) {
     super(props);
 
-    const columnPreferences = props.app.columnPreference || {}
-    let order = ColumnPreferences.getOrder(
+    const columnPreferences = props.app.columnPreference || {};
+    const order = ColumnPreferences.getOrder(
       props.columns,
       props.app.applicationId,
       props.className,
@@ -33,7 +33,11 @@ export default class DataBrowser extends React.Component {
       current: null,
       editing: false,
       copyableValue: undefined,
-      simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className)
+      simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
+
+      selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+      firstSelectedCell: null,
+      selectedData: [],
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -44,14 +48,15 @@ export default class DataBrowser extends React.Component {
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
+    this.handleCellClick = this.handleCellClick.bind(this);
 
     this.saveOrderTimeout = null;
   }
 
   componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
-      const columnPreferences = props.app.columnPreference || {}
-      let order = ColumnPreferences.getOrder(
+      const columnPreferences = props.app.columnPreference || {};
+      const order = ColumnPreferences.getOrder(
         props.columns,
         props.app.applicationId,
         props.className,
@@ -61,12 +66,14 @@ export default class DataBrowser extends React.Component {
         order: order,
         current: null,
         editing: false,
-        simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className)
+        simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
       });
-    } else if (Object.keys(props.columns).length !== Object.keys(this.props.columns).length
-      || (props.isUnique && props.uniqueField !== this.props.uniqueField)) {
-      const columnPreferences = props.app.columnPreference || {}
-      let order = ColumnPreferences.getOrder(
+    } else if (
+      Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
+      (props.isUnique && props.uniqueField !== this.props.uniqueField)
+    ) {
+      const columnPreferences = props.app.columnPreference || {};
+      const order = ColumnPreferences.getOrder(
         props.columns,
         props.app.applicationId,
         props.className,
@@ -74,6 +81,11 @@ export default class DataBrowser extends React.Component {
       );
       this.setState({ order });
     }
+    this.setState({
+      selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+      firstSelectedCell: null,
+      selectedData: [],
+    });
   }
 
   componentDidMount() {
@@ -88,10 +100,10 @@ export default class DataBrowser extends React.Component {
     if (this.saveOrderTimeout) {
       clearTimeout(this.saveOrderTimeout);
     }
-    let appId = this.props.app.applicationId;
-    let className = this.props.className;
+    const appId = this.props.app.applicationId;
+    const className = this.props.className;
     this.saveOrderTimeout = setTimeout(() => {
-      ColumnPreferences.updatePreferences(order, appId, className)
+      ColumnPreferences.updatePreferences(order, appId, className);
       shouldReload && this.props.onRefresh();
     }, 1000);
   }
@@ -145,7 +157,7 @@ export default class DataBrowser extends React.Component {
       // if user is editing new row and want to cancel editing cell
       if (e.keyCode === 27) {
         this.setState({
-          editing: false
+          editing: false,
         });
         e.preventDefault();
       }
@@ -162,7 +174,7 @@ export default class DataBrowser extends React.Component {
       switch (e.keyCode) {
         case 27: // ESC
           this.setState({
-            editing: false
+            editing: false,
           });
           e.preventDefault();
           break;
@@ -177,7 +189,7 @@ export default class DataBrowser extends React.Component {
     const visibleColumnIndexes = [];
     this.state.order.forEach((column, index) => {
       column.visible && visibleColumnIndexes.push(index);
-    })
+    });
     const firstVisibleColumnIndex = Math.min(...visibleColumnIndexes);
     const lastVisibleColumnIndex = Math.max(...visibleColumnIndexes);
 
@@ -185,14 +197,10 @@ export default class DataBrowser extends React.Component {
       case 8:
       case 46:
         // Backspace or Delete
-        let colName = this.state.order[this.state.current.col].name;
-        let col = this.props.columns[colName];
+        const colName = this.state.order[this.state.current.col].name;
+        const col = this.props.columns[colName];
         if (col.type !== 'Relation') {
-          this.props.updateRow(
-            this.state.current.row,
-            colName,
-            undefined
-          );
+          this.props.updateRow(this.state.current.row, colName, undefined);
         }
         e.preventDefault();
         break;
@@ -202,9 +210,15 @@ export default class DataBrowser extends React.Component {
         this.setState({
           current: {
             row: this.state.current.row,
-            col: (e.ctrlKey || e.metaKey) ? firstVisibleColumnIndex :
-              this.getNextVisibleColumnIndex(-1, firstVisibleColumnIndex, lastVisibleColumnIndex)
-          }
+            col:
+              e.ctrlKey || e.metaKey
+                ? firstVisibleColumnIndex
+                : this.getNextVisibleColumnIndex(
+                  -1,
+                  firstVisibleColumnIndex,
+                  lastVisibleColumnIndex
+                ),
+          },
         });
         e.preventDefault();
         break;
@@ -213,9 +227,9 @@ export default class DataBrowser extends React.Component {
         // or with ctrl/meta (excel style - move to the first row)
         this.setState({
           current: {
-            row: (e.ctrlKey || e.metaKey) ? 0 : Math.max(this.state.current.row - 1, 0),
-            col: this.state.current.col
-          }
+            row: e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0),
+            col: this.state.current.col,
+          },
         });
         e.preventDefault();
         break;
@@ -225,9 +239,15 @@ export default class DataBrowser extends React.Component {
         this.setState({
           current: {
             row: this.state.current.row,
-            col: (e.ctrlKey || e.metaKey) ? lastVisibleColumnIndex :
-              this.getNextVisibleColumnIndex(1, firstVisibleColumnIndex, lastVisibleColumnIndex)
-          }
+            col:
+              e.ctrlKey || e.metaKey
+                ? lastVisibleColumnIndex
+                : this.getNextVisibleColumnIndex(
+                  1,
+                  firstVisibleColumnIndex,
+                  lastVisibleColumnIndex
+                ),
+          },
         });
         e.preventDefault();
         break;
@@ -236,9 +256,12 @@ export default class DataBrowser extends React.Component {
         // or with ctrl/meta (excel style - move to the last row)
         this.setState({
           current: {
-            row: (e.ctrlKey || e.metaKey) ? this.props.data.length - 1 : Math.min(this.state.current.row + 1, this.props.data.length - 1),
-            col: this.state.current.col
-          }
+            row:
+              e.ctrlKey || e.metaKey
+                ? this.props.data.length - 1
+                : Math.min(this.state.current.row + 1, this.props.data.length - 1),
+            col: this.state.current.col,
+          },
         });
         e.preventDefault();
         break;
@@ -248,20 +271,28 @@ export default class DataBrowser extends React.Component {
           if (this.props.showNote) {
             this.props.showNote('Value copied to clipboard', false);
           }
-          e.preventDefault()
+          e.preventDefault();
         }
         break;
     }
   }
 
   getNextVisibleColumnIndex(distance = 1, min = 0, max = 0) {
-    if (distance === 0) { return this.state.current.col; }
+    if (distance === 0) {
+      return this.state.current.col;
+    }
     let newIndex = this.state.current.col + distance;
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      if (this.state.order[newIndex]?.visible) { return newIndex; }
-      if (newIndex <= min) { return min; }
-      if (newIndex >= max) { return max; }
+      if (this.state.order[newIndex]?.visible) {
+        return newIndex;
+      }
+      if (newIndex <= min) {
+        return min;
+      }
+      if (newIndex >= max) {
+        return max;
+      }
       newIndex += distance;
     }
   }
@@ -296,8 +327,81 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  handleCellClick(event, row, col) {
+    const { firstSelectedCell } = this.state;
+    const clickedCellKey = `${row}-${col}`;
+
+    if (event.shiftKey && firstSelectedCell) {
+      const [firstRow, firstCol] = firstSelectedCell.split('-').map(Number);
+      const [lastRow, lastCol] = clickedCellKey.split('-').map(Number);
+
+      const rowStart = Math.min(firstRow, lastRow);
+      const rowEnd = Math.max(firstRow, lastRow);
+      const colStart = Math.min(firstCol, lastCol);
+      const colEnd = Math.max(firstCol, lastCol);
+
+      let validColumns = true;
+      for (let i = colStart; i <= colEnd; i++) {
+        const name = this.state.order[i].name;
+        if (this.props.columns[name].type !== 'Number') {
+          validColumns = false;
+          break;
+        }
+      }
+
+      const newSelection = new Set();
+      const selectedData = [];
+      for (let x = rowStart; x <= rowEnd; x++) {
+        let rowData = null;
+        if (validColumns) {
+          rowData = this.props.data[x];
+        }
+        for (let y = colStart; y <= colEnd; y++) {
+          if (rowData) {
+            const value = rowData.attributes[this.state.order[y].name];
+            if (typeof value === 'number' && !isNaN(value)) {
+              selectedData.push(rowData.attributes[this.state.order[y].name]);
+            }
+          }
+          newSelection.add(`${x}-${y}`);
+        }
+      }
+
+      if (newSelection.size > 1) {
+        this.setCurrent(null);
+        this.setState({
+          selectedCells: {
+            list: newSelection,
+            rowStart,
+            rowEnd,
+            colStart,
+            colEnd,
+          },
+          selectedData,
+        });
+      } else {
+        this.setCurrent({ row, col });
+      }
+    } else {
+      this.setState({
+        selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+        selectedData: [],
+        current: { row, col },
+        firstSelectedCell: clickedCellKey,
+      });
+    }
+  }
+
   render() {
-    let { className, count, disableSecurityDialog, onCancelPendingEditRows, editCloneRows, app, ...other } = this.props;
+    const {
+      className,
+      count,
+      disableSecurityDialog,
+      onCancelPendingEditRows,
+      editCloneRows,
+      app,
+      ...other
+    } = this.props;
     const { preventSchemaEdits, applicationId } = app;
     return (
       <div>
@@ -316,16 +420,26 @@ export default class DataBrowser extends React.Component {
           setCopyableValue={this.setCopyableValue}
           setContextMenu={this.setContextMenu}
           onFilterChange={this.props.onFilterChange}
-          {...other} />
+          onFilterSave={this.props.onFilterSave}
+          selectedCells={this.state.selectedCells}
+          handleCellClick={this.handleCellClick}
+          {...other}
+        />
         <BrowserToolbar
           count={count}
           hidePerms={className === '_Installation'}
           className={className}
           classNameForEditors={className}
           setCurrent={this.setCurrent}
-          enableDeleteAllRows={app.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits}
+          enableDeleteAllRows={
+            app.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits
+          }
           enableExportClass={app.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
-          enableSecurityDialog={app.serverInfo.features.schemas.editClassLevelPermissions && !disableSecurityDialog && !preventSchemaEdits}
+          enableSecurityDialog={
+            app.serverInfo.features.schemas.editClassLevelPermissions &&
+            !disableSecurityDialog &&
+            !preventSchemaEdits
+          }
           enableColumnManipulation={!preventSchemaEdits}
           enableClassManipulation={!preventSchemaEdits}
           handleColumnDragDrop={this.handleHeaderDragDrop}
@@ -333,13 +447,17 @@ export default class DataBrowser extends React.Component {
           editCloneRows={editCloneRows}
           onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
-          {...other} />
+          selectedData={this.state.selectedData}
+          {...other}
+        />
 
-        {this.state.contextMenuX && <ContextMenu
-          x={this.state.contextMenuX}
-          y={this.state.contextMenuY}
-          items={this.state.contextMenuItems}
-        />}
+        {this.state.contextMenuX && (
+          <ContextMenu
+            x={this.state.contextMenuX}
+            y={this.state.contextMenuY}
+            items={this.state.contextMenuItems}
+          />
+        )}
       </div>
     );
   }
