@@ -62,8 +62,12 @@ export default async function queryFromFilters(className, filters) {
   };
 
   await primaryQuery.applySchemaConstraints();
-
-  const finalQuery = Parse.Query.and(...querieslist, primaryQuery)
+  let finalQuery;
+  if (querieslist.length > 0 || filters.length > 0) {
+    finalQuery = Parse.Query.and(...querieslist, primaryQuery);
+  } else {
+    finalQuery = primaryQuery;
+  }
 
   return finalQuery;
 }
