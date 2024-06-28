@@ -74,8 +74,8 @@ const BrowserToolbar = ({
   toggleMasterKeyUsage,
 
   selectedData,
-  Allclasses,
-  AllclassesSchema,
+  allClasses,
+  allClassesSchema,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -227,7 +227,7 @@ const BrowserToolbar = ({
     });
   }
 
-  Allclasses.forEach(className => {
+  allClasses.forEach(className => {
     const classSchema = schema.data.get('classes').get(className);
 
     if (classSchema) {
@@ -366,8 +366,8 @@ const BrowserToolbar = ({
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}
-        Allclasses={Allclasses}
-        AllclassesSchema={AllclassesSchema}
+        allClasses={allClasses}
+        allClassesSchema={allClassesSchema}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {enableSecurityDialog ? (

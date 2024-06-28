@@ -103,11 +103,11 @@ class Browser extends DashboardView {
       draggedRowSelection: false,
 
       classes: {},
-      AllclassesSchema: {}
+      allClassesSchema: {}
     };
 
     this.addLocation = this.addLocation.bind(this);
-    this.AllclassesSchema = this.getAllclassesSchema.bind(this);
+    this.allClassesSchema = this.getAllClassesSchema.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -229,7 +229,7 @@ class Browser extends DashboardView {
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       const t = nextProps.schema.data.get('classes');
       this.classes = Object.keys(t.toObject());
-      this.AllclassesSchema = this.getAllclassesSchema(this.classes ,nextProps.schema.data.get('classes'));
+      this.allClassesSchema = this.getAllClassesSchema(this.classes ,nextProps.schema.data.get('classes'));
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
@@ -758,10 +758,10 @@ class Browser extends DashboardView {
     }
   }
 
-  getAllclassesSchema(Allclasses , allclassesdata) {
+  getAllClassesSchema(allClasses , allClassesData) {
     const schemaSimplifiedData = {};
-    Allclasses.forEach((className) => {
-      const classSchema = allclassesdata.get(className);
+    allClasses.forEach((className) => {
+      const classSchema = allClassesData.get(className);
       if (classSchema) {
         schemaSimplifiedData[className] = {};
         classSchema.forEach(({ type, targetClass }, col) => {
@@ -797,9 +797,9 @@ class Browser extends DashboardView {
     }
   }
 
-  async fetchParseData(source, filters, AllclassesSchema) {
+  async fetchParseData(source, filters) {
     const { useMasterKey } = this.state;
-    const query = await queryFromFilters(source, filters, AllclassesSchema);
+    const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
 
@@ -839,15 +839,15 @@ class Browser extends DashboardView {
     }
   }
 
-  async fetchParseDataCount(source, filters,AllclassesSchema) {
-    const query = await queryFromFilters(source, filters,AllclassesSchema);
+  async fetchParseDataCount(source, filters) {
+    const query = await queryFromFilters(source, filters);
     const { useMasterKey } = this.state;
     const count = await query.count({ useMasterKey });
     return count;
   }
 
   async fetchData(source, filters = new List()) {
-    const data = await this.fetchParseData(source, filters,this.AllclassesSchema);
+    const data = await this.fetchParseData(source, filters);
     const filteredCounts = { ...this.state.filteredCounts };
     if (filters.size > 0) {
       if (this.state.isUnique) {

@@ -83,7 +83,7 @@ function deleteRow(filters, index) {
 const Filter = ({
   schema,
   filters,
-  Allclasses,
+  allClasses,
   renderRow,
   onChange,
   onSearch,
@@ -92,7 +92,7 @@ const Filter = ({
 }) => {
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
-  const available = Filters.findRelatedClasses(className, Allclasses, blacklist, filters);
+  const available = Filters.findRelatedClasses(className, allClasses, blacklist, filters);
   const classes = Object.keys(available).concat([]);
   return (
     <div

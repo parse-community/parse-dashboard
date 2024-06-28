@@ -48,7 +48,7 @@ export default class BrowserFilter extends React.Component {
     if (this.props.filters.size === 0) {
       const available = Filters.findRelatedClasses(
         this.props.className,
-        this.props.AllclassesSchema,
+        this.props.allClassesSchema,
         this.state.blacklistedFilters,
         this.state.filters
       );
@@ -72,7 +72,7 @@ export default class BrowserFilter extends React.Component {
   addRow() {
     const available = Filters.findRelatedClasses(
       this.props.className,
-      this.props.AllclassesSchema,
+      this.props.allClassesSchema,
       this.state.blacklistedFilters,
       this.state.filters
     );
@@ -137,7 +137,7 @@ export default class BrowserFilter extends React.Component {
       }
       const available = Filters.findRelatedClasses(
         this.props.className,
-        this.props.AllclassesSchema,
+        this.props.allClassesSchema,
         this.state.blacklistedFilters,
         this.state.filters
       );
@@ -169,10 +169,10 @@ export default class BrowserFilter extends React.Component {
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
-                Allclasses={this.props.AllclassesSchema}
-                AllclassesSchema={Filters.findRelatedClasses(
+                allClasses={this.props.allClassesSchema}
+                allClassesSchema={Filters.findRelatedClasses(
                   this.props.className,
-                  this.props.AllclassesSchema
+                  this.props.allClassesSchema
                 )}
                 renderRow={props => (
                   <FilterRow

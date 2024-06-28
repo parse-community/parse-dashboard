@@ -31,7 +31,7 @@ export default async function queryFromFilters(className, filters) {
 
   primaryQuery.applySchemaConstraints = async function () {
     try {
-      const AllclassesSchema = await fetchAllSchemas();
+      const allClassesSchema = await fetchAllSchemas();
       await Promise.all(
         Object.keys(queries).map(async filterClassName => {
           let tempquery;
@@ -40,14 +40,14 @@ export default async function queryFromFilters(className, filters) {
           } else if (typeof className === 'object' && className instanceof Parse.Relation) {
             tempquery = className.query();
           }
-          const reversePointerField = getPointerField(AllclassesSchema, filterClassName, className);
-          const pointerField = getPointerField(AllclassesSchema, className, filterClassName);
+          const reversePointerField = getPointerField(allClassesSchema, filterClassName, className);
+          const pointerField = getPointerField(allClassesSchema, className, filterClassName);
           if (pointerField) {
             tempquery.matchesQuery(pointerField, queries[filterClassName]);
           } else if (reversePointerField) {
             await tempquery.matchesKeyInQuery(
               'objectId',
-              'userPointer.objectId',
+              `${reversePointerField}.objectId`,
               queries[filterClassName]
             )
             querieslist.push(tempquery);
@@ -77,8 +77,8 @@ async function fetchAllSchemas() {
   return schemaMap;
 }
 
-function getPointerField(AllClassSchema, fromClassName, toClassName) {
-  const schema = AllClassSchema[fromClassName];
+function getPointerField(allClassesSchema, fromClassName, toClassName) {
+  const schema = allClassesSchema[fromClassName];
   if (schema) {
     for (const field of Object.keys(schema)) {
       if (schema[field].type === 'Pointer' && schema[field].targetClass === toClassName) {

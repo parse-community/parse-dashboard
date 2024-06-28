@@ -233,13 +233,13 @@ export function availableFilters(schema, currentFilters, blacklist) {
   return available;
 }
 
-export function findRelatedClasses(referClass , Allclasses, blacklist, currentFilters) {
+export function findRelatedClasses(referClass , allClasses, blacklist, currentFilters) {
   const relatedClasses = {};
-  for (const className in Allclasses) {
-    if (!checkRelation(referClass,Allclasses[className]) && referClass !== className){
+  for (const className in allClasses) {
+    if (!checkRelation(referClass,allClasses[className]) && referClass !== className){
       continue;
     }
-    const schema = Allclasses[className];
+    const schema = allClasses[className];
     const available = availableFilters(schema, currentFilters, blacklist);
     if (Object.keys(available).length > 0) {
       relatedClasses[className] = available;
