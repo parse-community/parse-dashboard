@@ -259,3 +259,10 @@ function checkRelation(classname,schema){
 }
 
 export const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];
+
+export function getFilterDetails(available) {
+  const filterClass = Object.keys(available)[0];
+  const filterField = Object.keys(available[filterClass])[0];
+  const filterConstraint = available[filterClass][filterField][0];
+  return { filterClass, filterField, filterConstraint };
+}

@@ -52,9 +52,7 @@ export default class BrowserFilter extends React.Component {
         this.state.blacklistedFilters,
         this.state.filters
       );
-      const filterClass = Object.keys(available)[0];
-      const filterField = Object.keys(available[filterClass])[0];
-      const filterConstraint = available[filterClass][filterField][0];
+      const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
       filters = new List([
         new Map({ class: filterClass, field: filterField, constraint: filterConstraint }),
       ]);
@@ -76,9 +74,7 @@ export default class BrowserFilter extends React.Component {
       this.state.blacklistedFilters,
       this.state.filters
     );
-    const filterClass = Object.keys(available)[0];
-    const filterField = Object.keys(available[filterClass])[0];
-    const filterConstraint = available[filterClass][filterField][0];
+    const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
     this.setState(({ filters }) => ({
       filters: filters.push(
         new Map({ class: filterClass, field: filterField, constraint: filterConstraint })
