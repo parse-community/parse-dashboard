@@ -16,18 +16,13 @@ function changeClass(schema, filters, index, newClassName) {
   const current = filters.get(index);
   const field = current.get('field');
   const constraint = current.get('constraint');
-
   const newClassFields = Object.keys(schema[newClassName]);
   const isFieldValid = newClassFields.includes(field);
-
   const newField = isFieldValid ? field : newClassFields[0];
   const allowedConstraints = Filters.FieldConstraints[schema[newClassName][newField].type];
   const isConstraintValid = allowedConstraints.includes(constraint);
-
   const newConstraint = isConstraintValid ? constraint : allowedConstraints[0];
-
   const defaultCompare = Filters.DefaultComparisons[schema[newClassName][newField].type];
-
   const newFilter = new Map({
     class: newClassName,
     field: newField,
