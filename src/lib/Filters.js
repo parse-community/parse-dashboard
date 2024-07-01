@@ -235,8 +235,19 @@ export function availableFilters(schema, currentFilters, blacklist) {
 
 export function findRelatedClasses(referClass , allClasses, blacklist, currentFilters) {
   const relatedClasses = {};
+  if (allClasses[referClass]) {
+    const availableForRefer = availableFilters(allClasses[referClass], currentFilters, blacklist);
+    if (Object.keys(availableForRefer).length > 0) {
+      relatedClasses[referClass] = availableForRefer;
+    }
+  }
+
   for (const className in allClasses) {
-    if (!checkRelation(referClass,allClasses[className]) && referClass !== className){
+    if (className === referClass){
+      continue;
+    }
+
+    if (!checkRelation(referClass, allClasses[className])) {
       continue;
     }
     const schema = allClasses[className];
@@ -245,6 +256,7 @@ export function findRelatedClasses(referClass , allClasses, blacklist, currentFi
       relatedClasses[className] = available;
     }
   }
+
   return relatedClasses;
 }
 
