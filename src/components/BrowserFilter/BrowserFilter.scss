@@ -99,9 +99,10 @@
 
 .footer {
   background: rgba(0,0,0,0.2);
-  padding: 11px 0;
+  padding: 11px 16px;
   text-align: center;
-
+  display: flex;
+  justify-content: space-between;
   > button {
     margin-right: 10px;
 
@@ -156,4 +157,9 @@
 .flex{
   display: flex;
   align-items: center;
+}
+
+.btnFlex{
+  display: flex;
+  gap: 12px;
 }
