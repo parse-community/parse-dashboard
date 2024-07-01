@@ -814,6 +814,12 @@ If you are not familiar with Docker, ``--port 8080`` will be passed in as argume
 
 # Features
 *(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)*
+## Data Browser
+### Filters
+
+▶️ *Core > Browser > Filter*
+
+This feature allows to add relational filter conditions based on other classes that have a pointer to the current class.
 
 ## Browse as User
 
