@@ -60,6 +60,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Configuring Localized Push Notifications](#configuring-localized-push-notifications)
   - [Run with Docker](#run-with-docker)
 - [Features](#features)
+  - [Data Browser](#data-browser)
+    - [Filters](#filters)
   - [Browse as User](#browse-as-user)
   - [Change Pointer Key](#change-pointer-key)
     - [Limitations](#limitations)
@@ -814,12 +816,26 @@ If you are not familiar with Docker, ``--port 8080`` will be passed in as argume
 
 # Features
 *(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)*
+
 ## Data Browser
+
 ### Filters
 
 ▶️ *Core > Browser > Filter*
 
-This feature allows to add relational filter conditions based on other classes that have a pointer to the current class.
+The filter dialog allows to add relational filter conditions based on other classes that have a pointer to the current class.
+
+For example, users in the `_User` class may have:
+
+- purchases in a `Purchase` class with a `_User` pointer field
+- transactions in a `Payment` class with a `_User` pointer field
+
+A relational filter allows you filter all users who:
+
+- purchased a specific item (in `Purchase` class)
+- payed with a specific payment method (in `Payment` class)
+
+To apply such a filter, simply go to the `_User` class and add the two required filter conditions with the `Purchase` and `Payment` classes.
 
 ## Browse as User
 
