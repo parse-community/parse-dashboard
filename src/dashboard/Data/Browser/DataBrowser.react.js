@@ -68,6 +68,7 @@ export default class DataBrowser extends React.Component {
         current: null,
         editing: false,
         simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
+        allClassesSchema: this.getAllClassesSchema(props.schema,props.classes),
       });
     } else if (
       Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
