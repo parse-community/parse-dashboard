@@ -8,7 +8,7 @@
 import * as Filters from 'lib/Filters';
 import { List, Map } from 'immutable';
 import PropTypes from 'lib/PropTypes';
-import React from 'react';
+import React, { useState } from 'react';
 import stringCompare from 'lib/stringCompare';
 import { CurrentApp } from 'context/currentApp';
 
@@ -61,7 +61,7 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
     class: currentClassName,
     field: field,
     constraint: newConstraint,
-    compareTo: prevCompareTo ?? Filters.DefaultComparisons[compareType],
+    compareTo: Filters.DefaultComparisons[compareType],
   });
   return filters.set(index, newFilter);
 }
@@ -85,6 +85,12 @@ const Filter = ({
   blacklist,
   className,
 }) => {
+  const [compare, setCompare] = useState(false);
+  const hasCompareTo = filters.some(filter => filter.get('compareTo') !== undefined);
+
+  if(compare !== hasCompareTo){
+    setCompare(hasCompareTo);
+  }
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   const available = Filters.findRelatedClasses(className, allClasses, blacklist, filters);
@@ -96,6 +102,22 @@ const Filter = ({
         overflowY: 'auto',
       }}
     >
+      <div
+        style={{
+          display: 'flex',
+          gap: '10px',
+          padding: '12px 15px 0px 15px',
+          color: '#343445',
+          'font-weight': '600'
+        }}
+      >
+        <div style={{ width: '140px' }}>Class</div>
+        <div style={{ width: '140px' }}>Field</div>
+        <div style={{ width: '175px' }}>Condition</div>
+        {compare && <div>Value</div>}
+        <div></div>
+      </div>
+
       {filters.toArray().map((filter, i) => {
         const currentClassName = filter.get('class');
         const field = filter.get('field');
