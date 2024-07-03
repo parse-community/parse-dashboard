@@ -110,12 +110,9 @@ export default class DataBrowser extends React.Component {
     }, 1000);
   }
 
-  getAllClassesSchema(schema,allClasses) {
-
+  getAllClassesSchema(schema) {
+    const allClasses = Object.keys(schema.data.get('classes').toObject());
     const schemaSimplifiedData = {};
-    if(!allClasses){
-      allClasses = Object.keys(schema.data.get('classes').toObject());
-    }
     allClasses.forEach((className) => {
       const classSchema = schema.data.get('classes').get(className);
       if (classSchema) {
