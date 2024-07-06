@@ -117,13 +117,13 @@ export default class PushAudiencesData extends React.Component {
    * @param  {[type]} options.saveForFuture [description]
    * @return {[type]}                       [description]
    */
-  createAudience(modalState, { platforms, name, formattedFilters, saveForFuture, filters }) {
+  async createAudience(modalState, { platforms, name, formattedFilters, saveForFuture, filters }) {
     this.setState({
       createProgress: true,
       createErrorMessage: '',
     });
     let query = {};
-    const parseQuery = queryFromFilters('_Installation', formattedFilters);
+    const parseQuery = await queryFromFilters('_Installation', formattedFilters);
 
     if (parseQuery && parseQuery.toJSON()) {
       query = parseQuery.toJSON().where || {};

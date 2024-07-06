@@ -233,4 +233,48 @@ export function availableFilters(schema, currentFilters, blacklist) {
   return available;
 }
 
+export function findRelatedClasses(referClass , allClasses, blacklist, currentFilters) {
+  const relatedClasses = {};
+  if (allClasses[referClass]) {
+    const availableForRefer = availableFilters(allClasses[referClass], currentFilters, blacklist);
+    if (Object.keys(availableForRefer).length > 0) {
+      relatedClasses[referClass] = availableForRefer;
+    }
+  }
+
+  for (const className in allClasses) {
+    if (className === referClass){
+      continue;
+    }
+
+    if (!checkRelation(referClass, allClasses[className])) {
+      continue;
+    }
+    const schema = allClasses[className];
+    const available = availableFilters(schema, currentFilters, blacklist);
+    if (Object.keys(available).length > 0) {
+      relatedClasses[className] = available;
+    }
+  }
+
+  return relatedClasses;
+}
+
+function checkRelation(classname,schema){
+  for (const col in schema) {
+    if (schema[col].type === 'Pointer' && schema[col].targetClass === classname) {
+      return true;
+    }
+  }
+  return false;
+
+}
+
 export const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];
+
+export function getFilterDetails(available) {
+  const filterClass = Object.keys(available)[0];
+  const filterField = Object.keys(available[filterClass])[0];
+  const filterConstraint = available[filterClass][filterField][0];
+  return { filterClass, filterField, filterConstraint };
+}

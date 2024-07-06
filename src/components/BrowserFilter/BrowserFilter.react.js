@@ -46,13 +46,16 @@ export default class BrowserFilter extends React.Component {
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
-      const available = Filters.availableFilters(
-        this.props.schema,
-        null,
-        this.state.blacklistedFilters
+      const available = Filters.findRelatedClasses(
+        this.props.className,
+        this.props.allClassesSchema,
+        this.state.blacklistedFilters,
+        this.state.filters
       );
-      const field = Object.keys(available)[0];
-      filters = new List([new Map({ field: field, constraint: available[field][0] })]);
+      const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
+      filters = new List([
+        new Map({ class: filterClass, field: filterField, constraint: filterConstraint }),
+      ]);
     }
     this.setState(prevState => ({
       open: !prevState.open,
@@ -65,14 +68,17 @@ export default class BrowserFilter extends React.Component {
   }
 
   addRow() {
-    const available = Filters.availableFilters(
-      this.props.schema,
-      this.state.filters,
-      this.state.blacklistedFilters
+    const available = Filters.findRelatedClasses(
+      this.props.className,
+      this.props.allClassesSchema,
+      this.state.blacklistedFilters,
+      this.state.filters
     );
-    const field = Object.keys(available)[0];
+    const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
     this.setState(({ filters }) => ({
-      filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+      filters: filters.push(
+        new Map({ class: filterClass, field: filterField, constraint: filterConstraint })
+      ),
       editMode: true,
     }));
   }
@@ -125,7 +131,12 @@ export default class BrowserFilter extends React.Component {
       if (this.props.filters.size) {
         popoverStyle.push(styles.active);
       }
-      const available = Filters.availableFilters(this.props.schema, this.state.filters);
+      const available = Filters.findRelatedClasses(
+        this.props.className,
+        this.props.allClassesSchema,
+        this.state.blacklistedFilters,
+        this.state.filters
+      );
       popover = (
         <Popover
           fixed={true}
@@ -154,6 +165,11 @@ export default class BrowserFilter extends React.Component {
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
                 onSearch={this.apply.bind(this)}
+                allClasses={this.props.allClassesSchema}
+                allClassesSchema={Filters.findRelatedClasses(
+                  this.props.className,
+                  this.props.allClassesSchema
+                )}
                 renderRow={props => (
                   <FilterRow
                     {...props}
@@ -194,33 +210,37 @@ export default class BrowserFilter extends React.Component {
               )}
               {!this.state.confirmName && (
                 <div className={styles.footer}>
-                  <Button
-                    color="white"
-                    value="Save"
-                    width="120px"
-                    onClick={() => this.setState({ confirmName: true })}
-                  />
-                  <Button
-                    color="white"
-                    value="Clear"
-                    disabled={this.state.filters.size === 0}
-                    width="120px"
-                    onClick={() => this.clear()}
-                  />
-                  <Button
-                    color="white"
-                    value="Add"
-                    disabled={Object.keys(available).length === 0}
-                    width="120px"
-                    onClick={() => this.addRow()}
-                  />
-                  <Button
-                    color="white"
-                    primary={true}
-                    value="Apply"
-                    width="120px"
-                    onClick={() => this.apply()}
-                  />
+                  <div className={styles.btnFlex}>
+                    <Button
+                      color="white"
+                      value="Save"
+                      width="120px"
+                      onClick={() => this.setState({ confirmName: true })}
+                    />
+                    <Button
+                      color="white"
+                      value="Clear"
+                      disabled={this.state.filters.size === 0}
+                      width="120px"
+                      onClick={() => this.clear()}
+                    />
+                  </div>
+                  <div className={styles.btnFlex}>
+                    <Button
+                      color="white"
+                      value="Add"
+                      disabled={Object.keys(available).length === 0}
+                      width="120px"
+                      onClick={() => this.addRow()}
+                    />
+                    <Button
+                      color="white"
+                      primary={true}
+                      value="Apply"
+                      width="120px"
+                      onClick={() => this.apply()}
+                    />
+                  </div>
                 </div>
               )}
             </div>
