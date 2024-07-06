@@ -1,3 +1,10 @@
+# [6.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.8...6.0.0-alpha.9) (2024-07-06)
+
+
+### Features
+
+* Add relational filter conditions in data browser ([#2576](https://github.com/ParsePlatform/parse-dashboard/issues/2576)) ([aa5c68d](https://github.com/ParsePlatform/parse-dashboard/commit/aa5c68dbca458069d93351edc0bc0287fe63b7e1))
+
 # [6.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.7...6.0.0-alpha.8) (2024-06-27)
 
 
