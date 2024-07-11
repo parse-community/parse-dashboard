@@ -1,3 +1,10 @@
+# [6.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.9...6.0.0-alpha.10) (2024-07-11)
+
+
+### Bug Fixes
+
+* Crash after setting filter using context menu and opening filters panel ([#2579](https://github.com/ParsePlatform/parse-dashboard/issues/2579)) ([5a690eb](https://github.com/ParsePlatform/parse-dashboard/commit/5a690ebe91007698fe1a60334112deed5ce94be1))
+
 # [6.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.8...6.0.0-alpha.9) (2024-07-06)
 
 
