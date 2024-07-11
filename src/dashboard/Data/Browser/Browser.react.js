@@ -310,7 +310,12 @@ class Browser extends DashboardView {
     const query = new URLSearchParams(props.location.search);
     if (query.has('filters')) {
       const queryFilters = JSON.parse(query.get('filters'));
-      queryFilters.forEach(filter => (filters = filters.push(new Map(filter))));
+      queryFilters.forEach(
+        filter =>
+          (filters = filters.push(
+            new Map({ ...filter, class: filter.class || props.params.className })
+          ))
+      );
     }
     return filters;
   }
