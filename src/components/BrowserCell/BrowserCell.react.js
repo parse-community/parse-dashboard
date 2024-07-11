@@ -506,7 +506,7 @@ export default class BrowserCell extends Component {
 
   pickFilter(constraint, addToExistingFilter) {
     const definition = Filters.Constraints[constraint];
-    const { filters, type, value, field } = this.props;
+    const { filters, type, value, field, className } = this.props;
     const newFilters = addToExistingFilter ? filters : new List();
     let compareTo;
     if (definition.comparable) {
@@ -535,6 +535,7 @@ export default class BrowserCell extends Component {
           field,
           constraint,
           compareTo,
+          class: className
         })
       )
     );
