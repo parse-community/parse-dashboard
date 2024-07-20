@@ -76,6 +76,9 @@ const BrowserToolbar = ({
   selectedData,
   allClasses,
   allClassesSchema,
+
+  togglePanel,
+  isPanelVisible
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -268,6 +271,8 @@ const BrowserToolbar = ({
       subsection={subsection}
       details={details.join(' \u2022 ')}
       selectedData={selectedData}
+      togglePanel={togglePanel}
+      isPanelVisible={isPanelVisible}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>

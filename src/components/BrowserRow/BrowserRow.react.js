@@ -36,6 +36,8 @@ export default class BrowserRow extends Component {
       selection,
       selectRow,
       setCopyableValue,
+      setSelectedObjectId,
+      callCloudFunction,
       setCurrent,
       setEditing,
       setRelation,
@@ -141,6 +143,8 @@ export default class BrowserRow extends Component {
               isRequired={isRequired}
               markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
+              setSelectedObjectId={setSelectedObjectId}
+              callCloudFunction={callCloudFunction}
               setContextMenu={setContextMenu}
               onEditSelectedRow={onEditSelectedRow}
               showNote={this.props.showNote}

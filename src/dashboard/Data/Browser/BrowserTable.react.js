@@ -15,6 +15,7 @@ import encode from 'parse/lib/browser/encode';
 import React from 'react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import Button from 'components/Button/Button.react';
+import { ResizableBox } from 'react-resizable';
 import { CurrentApp } from 'context/currentApp';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
@@ -30,9 +31,12 @@ export default class BrowserTable extends React.Component {
 
     this.state = {
       offset: 0,
+      panelWidth: 300,
+      isResizing: false,
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.tableRef = React.createRef();
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -56,10 +60,43 @@ export default class BrowserTable extends React.Component {
 
   componentDidMount() {
     this.tableRef.current.addEventListener('scroll', this.handleScroll);
+    // window.addEventListener('mousedown', this.handleMouseDown);
+    // window.addEventListener('mousemove', this.handleMouseMove);
+    // window.addEventListener('mouseup', this.handleMouseUp);
   }
 
   componentWillUnmount() {
     this.tableRef.current.removeEventListener('scroll', this.handleScroll);
+    // window.removeEventListener('mousedown', this.handleMouseDown);
+    // window.removeEventListener('mousemove', this.handleMouseMove);
+    // window.removeEventListener('mouseup', this.handleMouseUp);
+  }
+
+  handleResize(event, { size }) {
+    this.setState({ panelWidth: size.width });
+  }
+
+  handleMouseDown() {
+    this.setState({ isResizing: true });
+    console.log('handleMouseDown');
+    document.body.style.cursor = 'ew-resize';
+  }
+
+  handleMouseMove(e) {
+    console.log('handleMouseMove', this.state.isResizing);
+    if (!this.state.isResizing) {
+      return;
+    }
+    this.setState({ panelWidth: e.clientX });
+  }
+
+  handleMouseUp() {
+    console.log('handleMouseUp', this.state.isResizing);
+    if (!this.state.isResizing) {
+      return;
+    }
+    this.setState({ isResizing: false });
+    document.body.style.cursor = 'default';
   }
 
   handleScroll() {
@@ -163,6 +200,8 @@ export default class BrowserTable extends React.Component {
                     setEditing={this.props.setEditing}
                     setRelation={this.props.setRelation}
                     setCopyableValue={this.props.setCopyableValue}
+                    setSelectedObjectId={this.props.setSelectedObjectId}
+                    callCloudFunction={this.props.callCloudFunction}
                     setContextMenu={this.props.setContextMenu}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
@@ -236,6 +275,8 @@ export default class BrowserTable extends React.Component {
               setEditing={this.props.setEditing}
               setRelation={this.props.setRelation}
               setCopyableValue={this.props.setCopyableValue}
+              setSelectedObjectId={this.props.setSelectedObjectId}
+              callCloudFunction={this.props.callCloudFunction}
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
@@ -308,6 +349,7 @@ export default class BrowserTable extends React.Component {
             onPointerClick={this.props.onPointerClick}
             onPointerCmdClick={this.props.onPointerCmdClick}
             onFilterChange={this.props.onFilterChange}
+            callCloudFunction={this.props.callCloudFunction}
             order={this.props.order}
             readOnlyFields={READ_ONLY}
             row={i}
@@ -319,6 +361,8 @@ export default class BrowserTable extends React.Component {
             setEditing={this.props.setEditing}
             setRelation={this.props.setRelation}
             setCopyableValue={this.props.setCopyableValue}
+            setSelectedObjectId={this.props.setSelectedObjectId}
+            callCloudFunction={this.props.callCloudFunction}
             setContextMenu={this.props.setContextMenu}
             onEditSelectedRow={this.props.onEditSelectedRow}
             showNote={this.props.showNote}
@@ -508,26 +552,51 @@ export default class BrowserTable extends React.Component {
 
     return (
       <div className={styles.browser}>
-        {table}
-        <DataBrowserHeaderBar
-          selected={
-            !!this.props.selection &&
-            !!this.props.data &&
-            Object.values(this.props.selection).filter(checked => checked).length ===
-              this.props.data.length
-          }
-          selectAll={checked =>
-            this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
-          }
-          headers={headers}
-          updateOrdering={this.props.updateOrdering}
-          readonly={!!this.props.relation || !!this.props.isUnique}
-          handleDragDrop={this.props.handleHeaderDragDrop}
-          onResize={this.props.handleResize}
-          onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.preventSchemaEdits}
-          isDataLoaded={!!this.props.data}
-        />
+        <div>
+          <DataBrowserHeaderBar
+            selected={
+              !!this.props.selection &&
+              !!this.props.data &&
+              Object.values(this.props.selection).filter(checked => checked).length ===
+                this.props.data.length
+            }
+            selectAll={checked =>
+              this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
+            }
+            headers={headers}
+            updateOrdering={this.props.updateOrdering}
+            readonly={!!this.props.relation || !!this.props.isUnique}
+            handleDragDrop={this.props.handleHeaderDragDrop}
+            onResize={this.props.handleResize}
+            onAddColumn={this.props.onAddColumn}
+            preventSchemaEdits={this.context.preventSchemaEdits}
+            isDataLoaded={!!this.props.data}
+          />
+
+          {table}
+        </div>
+        {this.props.isPanelVisible && (
+          <ResizableBox
+            width={this.state.panelWidth}
+            height={Infinity}
+            minConstraints={[200, Infinity]}
+            maxConstraints={[600, Infinity]}
+            onResize={this.handleResize}
+            resizeHandles={['w']}
+            className={styles.resizablePanel}
+            style={{
+              position: 'fixed',
+              top: '96px',
+              right: '0',
+              bottom: '16px',
+              overflow: 'auto',
+              backgroundColor: 'rgb(244, 244, 244)',
+              zIndex: 100,
+            }}
+          >
+            <div> HEADING </div>
+          </ResizableBox>
+        )}
       </div>
     );
   }

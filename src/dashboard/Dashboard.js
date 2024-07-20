@@ -52,7 +52,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
-import Security           from './Settings/Security/Security.react';
+import Security from './Settings/Security/Security.react';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -121,6 +121,7 @@ export default class Dashboard extends React.Component {
     get('/parse-dashboard-config.json')
       .then(({ apps, newFeaturesInLatestVersion = [] }) => {
         this.setState({ newFeaturesInLatestVersion });
+
         const appInfoPromises = apps.map(app => {
           if (app.serverURL.startsWith('https://api.parse.com/1')) {
             //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -179,6 +180,10 @@ export default class Dashboard extends React.Component {
           configLoadingState: AsyncStatus.FAILED,
         });
       });
+
+    get('/parse-dashboard-config.json').then(data => {
+      console.log('in get /parse-dashboard-config.json',data);
+    });
   }
 
   render() {
@@ -214,14 +219,14 @@ export default class Dashboard extends React.Component {
 
     const SettingsRoute = (
       <Route element={<SettingsData />}>
-        <Route path='dashboard' element={<DashboardSettings />} />
-        <Route path='security' element={<Security />} />
-        <Route path='general' element={<GeneralSettings />} />
-        <Route path='keys' element={<SecuritySettings />} />
-        <Route path='users' element={<UsersSettings />} />
-        <Route path='push' element={<PushSettings />} />
-        <Route path='hosting' element={<HostingSettings />} />
-        <Route index element={<Navigate replace to='dashboard' />} />
+        <Route path="dashboard" element={<DashboardSettings />} />
+        <Route path="security" element={<Security />} />
+        <Route path="general" element={<GeneralSettings />} />
+        <Route path="keys" element={<SecuritySettings />} />
+        <Route path="users" element={<UsersSettings />} />
+        <Route path="push" element={<PushSettings />} />
+        <Route path="hosting" element={<HostingSettings />} />
+        <Route index element={<Navigate replace to="dashboard" />} />
       </Route>
     );
 

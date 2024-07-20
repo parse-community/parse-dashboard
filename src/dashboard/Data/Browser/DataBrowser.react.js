@@ -33,9 +33,10 @@ export default class DataBrowser extends React.Component {
       current: null,
       editing: false,
       copyableValue: undefined,
+      selectedObjectId: undefined,
       simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
       allClassesSchema: this.getAllClassesSchema(props.schema,props.classes),
-
+      isPanelVisible: false,
       selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
       firstSelectedCell: null,
       selectedData: [],
@@ -44,13 +45,15 @@ export default class DataBrowser extends React.Component {
     this.handleKey = this.handleKey.bind(this);
     this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.togglePanelVisibility = this.togglePanelVisibility.bind(this);
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
+    this.setSelectedObjectId = this.setSelectedObjectId.bind(this);
+    this.callCloudFunction = this.callCloudFunction.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
-
     this.saveOrderTimeout = null;
   }
 
@@ -108,6 +111,10 @@ export default class DataBrowser extends React.Component {
       ColumnPreferences.updatePreferences(order, appId, className);
       shouldReload && this.props.onRefresh();
     }, 1000);
+  }
+
+  togglePanelVisibility() {
+    this.setState(prevState => ({ isPanelVisible: !prevState.isPanelVisible }));
   }
 
   getAllClassesSchema(schema) {
@@ -338,6 +345,15 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  setSelectedObjectId(selectedObjectId) {
+    if(this.state.selectedObjectId !== selectedObjectId) {
+      this.setState({ selectedObjectId });
+    }
+  }
+
+  callCloudFunction(objectId, className){
+    console.log('Calling cloud function', objectId, className);
+  }
   setContextMenu(contextMenuX, contextMenuY, contextMenuItems) {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
@@ -439,11 +455,14 @@ export default class DataBrowser extends React.Component {
           setEditing={this.setEditing}
           setCurrent={this.setCurrent}
           setCopyableValue={this.setCopyableValue}
+          setSelectedObjectId={this.setSelectedObjectId}
+          callCloudFunction={this.callCloudFunction}
           setContextMenu={this.setContextMenu}
           onFilterChange={this.props.onFilterChange}
           onFilterSave={this.props.onFilterSave}
           selectedCells={this.state.selectedCells}
           handleCellClick={this.handleCellClick}
+          isPanelVisible={this.state.isPanelVisible}
           {...other}
         />
         <BrowserToolbar
@@ -471,6 +490,8 @@ export default class DataBrowser extends React.Component {
           selectedData={this.state.selectedData}
           allClasses={Object.keys(this.props.schema.data.get('classes').toObject())}
           allClassesSchema={this.state.allClassesSchema}
+          togglePanel={this.togglePanelVisibility}
+          isPanelVisible={this.state.isPanelVisible}
           {...other}
         />
 

@@ -556,6 +556,8 @@ export default class BrowserCell extends Component {
       current,
       onEditChange,
       setCopyableValue,
+      setSelectedObjectId,
+      callCloudFunction,
       onPointerCmdClick,
       row,
       col,
@@ -628,6 +630,8 @@ export default class BrowserCell extends Component {
             onPointerCmdClick(value);
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
+            setSelectedObjectId(this.props.objectId);
+            callCloudFunction(this.props.objectId, this.props.className);
             handleCellClick(e, row, col);
           }
         }}

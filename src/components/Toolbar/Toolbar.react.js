@@ -135,6 +135,18 @@ const Toolbar = props => {
       </div>
       {props?.selectedData?.length ? <Stats data={props.selectedData} /> : null}
       <div className={styles.actions}>{props.children}</div>
+      <button
+        onClick={props.togglePanel}
+        style={{
+          position: 'absolute',
+          right: '5px',
+          bottom: '5px',
+          border: 'none',
+          padding: '4px 3px',
+        }}
+      >
+        {props.isPanelVisible ? 'Hide Panel' : 'Show Panel'}
+      </button>
     </div>
   );
 };
