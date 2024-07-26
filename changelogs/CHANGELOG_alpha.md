@@ -1,3 +1,10 @@
+# [6.0.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.10...6.0.0-alpha.11) (2024-07-26)
+
+
+### Bug Fixes
+
+* Descriptive statistics for number cells in data browser not showing ([#2581](https://github.com/ParsePlatform/parse-dashboard/issues/2581)) ([e146b6f](https://github.com/ParsePlatform/parse-dashboard/commit/e146b6f54c7dfcb50c83c70f0c55e5ab76dc3c19))
+
 # [6.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.9...6.0.0-alpha.10) (2024-07-11)
 
 
