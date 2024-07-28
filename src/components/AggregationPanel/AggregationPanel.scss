@@ -1,6 +1,6 @@
 @import 'stylesheets/globals.scss';
 
-.sdsdsdsdheading{
+.heading{
     font-size: 18px;
     margin-bottom: 15px;
     margin-top: 0;
@@ -53,4 +53,12 @@
         border: none;
         cursor: pointer;
         margin-bottom: 15px;
+}
+
+.loading{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 }

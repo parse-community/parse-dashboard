@@ -34,10 +34,12 @@ export default class BrowserTable extends React.Component {
       offset: 0,
       panelWidth: 400,
       isResizing: false,
+      maxWidth: window.innerWidth - 300,
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.tableRef = React.createRef();
     this.handleResize = this.handleResize.bind(this);
+    this.updateMaxWidth = this.updateMaxWidth.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -61,10 +63,12 @@ export default class BrowserTable extends React.Component {
 
   componentDidMount() {
     this.tableRef.current.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('resize', this.updateMaxWidth);
   }
 
   componentWillUnmount() {
     this.tableRef.current.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.updateMaxWidth);
   }
 
   handleResize(event, { size }) {
@@ -123,6 +127,12 @@ export default class BrowserTable extends React.Component {
         this.props.fetchNextPage();
       }
     });
+  }
+  updateMaxWidth = () => {
+    this.setState({ maxWidth: window.innerWidth - 300 });
+    if(this.state.panelWidth > window.innerWidth - 300){
+      this.setState({ panelWidth: window.innerWidth - 300 });
+    }
   }
 
   render() {
@@ -580,7 +590,7 @@ export default class BrowserTable extends React.Component {
             width={this.state.panelWidth}
             height={Infinity}
             minConstraints={[400, Infinity]}
-            maxConstraints={[1140, Infinity]}
+            maxConstraints={[this.state.maxWidth, Infinity]}
             onResize={this.handleResize}
             resizeHandles={['w']}
             className={styles.resizablePanel}
@@ -588,7 +598,7 @@ export default class BrowserTable extends React.Component {
               position: 'fixed',
               top: '96px',
               right: '0',
-              bottom: '16px',
+              bottom: '19px',
               overflow: 'auto',
               backgroundColor: 'rgb(244, 244, 244)',
               zIndex: 100,

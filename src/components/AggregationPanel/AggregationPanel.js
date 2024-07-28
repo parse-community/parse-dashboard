@@ -16,7 +16,7 @@ const AggregationPanel = ({ data }) => {
       {Object.keys(data).length !== 0 ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
-            <h2 className={styles.sdsdsdsdheading}>{segment.title}</h2>
+            <h2 className={styles.heading}>{segment.title}</h2>
             <div className={styles.segmentItems}>
               {segment.items.map((item, idx) => {
                 switch (item.type) {
@@ -42,7 +42,7 @@ const AggregationPanel = ({ data }) => {
           </div>
         ))
       ) : (
-        <div>'loading...'</div>
+        <div className={styles.loading}>No object selected. Select an object</div>
       )}
     </>
   );
