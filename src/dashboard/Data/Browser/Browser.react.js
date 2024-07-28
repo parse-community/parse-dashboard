@@ -42,7 +42,6 @@ import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import { setBasePath } from 'lib/AJAX';
-import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
@@ -622,6 +621,7 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
+        // eslint-disable-next-line quotes
         const msg = objectSaved.className + " with id '" + objectSaved.id + "' created";
         this.showNote(msg, false);
 
@@ -725,6 +725,7 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
+        // eslint-disable-next-line quotes
         const msg = objectSaved.className + " with id '" + objectSaved.id + "' " + 'created';
         this.showNote(msg, false);
 
@@ -1184,6 +1185,7 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
+        // eslint-disable-next-line quotes
         const msg = objectSaved.className + " with id '" + objectSaved.id + "' updated";
         this.showNote(msg, false);
 
@@ -1312,6 +1314,7 @@ class Browser extends DashboardView {
             let deletedNote;
 
             if (toDeleteObjectIds.length == 1) {
+              // eslint-disable-next-line quotes
               deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
             } else {
               deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
@@ -1339,8 +1342,8 @@ class Browser extends DashboardView {
 
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
-                errorDeletingNote =
-                  'Error deleting ' + className + " with id '" + error.errors[0].object.id + "'";
+                // eslint-disable-next-line quotes
+                errorDeletingNote = 'Error deleting ' + className + " with id '" + error.errors[0].object.id + "'";
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
                   'Error deleting ' +
@@ -1357,6 +1360,7 @@ class Browser extends DashboardView {
             } else {
               if (toDeleteObjectIds.length == 1) {
                 errorDeletingNote =
+                  // eslint-disable-next-line quotes
                   'Error deleting ' + className + " with id '" + toDeleteObjectIds[0] + "'";
               } else {
                 errorDeletingNote =
@@ -1899,10 +1903,11 @@ class Browser extends DashboardView {
   }
 
   onMouseUpRowCheckBox() {
-    this.state.rowCheckboxDragging && this.setState({
-      rowCheckboxDragging: false,
-      draggedRowSelection: false,
-    });
+    this.state.rowCheckboxDragging &&
+      this.setState({
+        rowCheckboxDragging: false,
+        draggedRowSelection: false,
+      });
   }
 
   onMouseOverRowCheckBox(id) {

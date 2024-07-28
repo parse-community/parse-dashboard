@@ -59,7 +59,7 @@ export default class BrowserTable extends React.Component {
     }
   }
 
-  componentDidMount() { 
+  componentDidMount() {
     this.tableRef.current.addEventListener('scroll', this.handleScroll);
   }
 
