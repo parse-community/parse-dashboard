@@ -1899,7 +1899,7 @@ class Browser extends DashboardView {
   }
 
   onMouseUpRowCheckBox() {
-    this.setState({
+    this.state.rowCheckboxDragging && this.setState({
       rowCheckboxDragging: false,
       draggedRowSelection: false,
     });
@@ -2026,7 +2026,6 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
-            onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote}
