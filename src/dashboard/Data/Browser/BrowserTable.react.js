@@ -17,6 +17,7 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 import Button from 'components/Button/Button.react';
 import { ResizableBox } from 'react-resizable';
 import { CurrentApp } from 'context/currentApp';
+import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
@@ -31,7 +32,7 @@ export default class BrowserTable extends React.Component {
 
     this.state = {
       offset: 0,
-      panelWidth: 300,
+      panelWidth: 400,
       isResizing: false,
     };
     this.handleScroll = this.handleScroll.bind(this);
@@ -58,18 +59,12 @@ export default class BrowserTable extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount() { 
     this.tableRef.current.addEventListener('scroll', this.handleScroll);
-    // window.addEventListener('mousedown', this.handleMouseDown);
-    // window.addEventListener('mousemove', this.handleMouseMove);
-    // window.addEventListener('mouseup', this.handleMouseUp);
   }
 
   componentWillUnmount() {
     this.tableRef.current.removeEventListener('scroll', this.handleScroll);
-    // window.removeEventListener('mousedown', this.handleMouseDown);
-    // window.removeEventListener('mousemove', this.handleMouseMove);
-    // window.removeEventListener('mouseup', this.handleMouseUp);
   }
 
   handleResize(event, { size }) {
@@ -200,8 +195,10 @@ export default class BrowserTable extends React.Component {
                     setEditing={this.props.setEditing}
                     setRelation={this.props.setRelation}
                     setCopyableValue={this.props.setCopyableValue}
+                    selectedObjectId={this.props.selectedObjectId}
                     setSelectedObjectId={this.props.setSelectedObjectId}
                     callCloudFunction={this.props.callCloudFunction}
+                    isPanelVisible={this.props.isPanelVisible}
                     setContextMenu={this.props.setContextMenu}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
@@ -275,8 +272,10 @@ export default class BrowserTable extends React.Component {
               setEditing={this.props.setEditing}
               setRelation={this.props.setRelation}
               setCopyableValue={this.props.setCopyableValue}
+              selectedObjectId={this.props.selectedObjectId}
               setSelectedObjectId={this.props.setSelectedObjectId}
               callCloudFunction={this.props.callCloudFunction}
+              isPanelVisible={this.props.isPanelVisible}
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
@@ -361,8 +360,9 @@ export default class BrowserTable extends React.Component {
             setEditing={this.props.setEditing}
             setRelation={this.props.setRelation}
             setCopyableValue={this.props.setCopyableValue}
+            selectedObjectId={this.props.selectedObjectId}
             setSelectedObjectId={this.props.setSelectedObjectId}
-            callCloudFunction={this.props.callCloudFunction}
+            isPanelVisible={this.props.isPanelVisible}
             setContextMenu={this.props.setContextMenu}
             onEditSelectedRow={this.props.onEditSelectedRow}
             showNote={this.props.showNote}
@@ -579,8 +579,8 @@ export default class BrowserTable extends React.Component {
           <ResizableBox
             width={this.state.panelWidth}
             height={Infinity}
-            minConstraints={[200, Infinity]}
-            maxConstraints={[600, Infinity]}
+            minConstraints={[400, Infinity]}
+            maxConstraints={[1140, Infinity]}
             onResize={this.handleResize}
             resizeHandles={['w']}
             className={styles.resizablePanel}
@@ -594,7 +594,7 @@ export default class BrowserTable extends React.Component {
               zIndex: 100,
             }}
           >
-            <div> HEADING </div>
+            <AggregationPanel data={this.props.AggregationPanelData}/>
           </ResizableBox>
         )}
       </div>

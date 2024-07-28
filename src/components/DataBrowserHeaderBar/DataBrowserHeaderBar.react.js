@@ -76,7 +76,9 @@ export default class DataBrowserHeaderBar extends React.Component {
     if (onAddColumn) {
       const finalStyle = {};
       if (headers.length % 2) {
-        finalStyle.background = 'rgba(224,224,234,0.10)';
+        finalStyle.background = '#726F85';
+      }else {
+        finalStyle.background = '#66637A';
       }
 
       elements.push(

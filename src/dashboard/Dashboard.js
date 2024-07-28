@@ -181,9 +181,6 @@ export default class Dashboard extends React.Component {
         });
       });
 
-    get('/parse-dashboard-config.json').then(data => {
-      console.log('in get /parse-dashboard-config.json',data);
-    });
   }
 
   render() {

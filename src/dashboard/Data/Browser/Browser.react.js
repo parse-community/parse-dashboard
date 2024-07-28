@@ -40,6 +40,9 @@ import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
+import { get } from 'lib/AJAX';
+import { setBasePath } from 'lib/AJAX';
+import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
@@ -103,7 +106,12 @@ class Browser extends DashboardView {
       draggedRowSelection: false,
 
       classes: {},
-      allClassesSchema: {}
+      allClassesSchema: {},
+
+      configData: {},
+      classwiseCloudFunctions: {},
+
+      AggregationPanelData: {},
     };
 
     this.addLocation = this.addLocation.bind(this);
@@ -173,6 +181,9 @@ class Browser extends DashboardView {
     this.onMouseDownRowCheckBox = this.onMouseDownRowCheckBox.bind(this);
     this.onMouseUpRowCheckBox = this.onMouseUpRowCheckBox.bind(this);
     this.onMouseOverRowCheckBox = this.onMouseOverRowCheckBox.bind(this);
+    this.classAndCloudFuntionMap = this.classAndCloudFuntionMap.bind(this);
+    this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
+    this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
     this.dataBrowserRef = React.createRef();
 
@@ -200,6 +211,11 @@ class Browser extends DashboardView {
   componentDidMount() {
     this.addLocation(this.props.params.appId);
     window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
+    setBasePath('/');
+    get('/parse-dashboard-config.json').then(data => {
+      this.setState({ configData: data });
+      this.classAndCloudFuntionMap(this.state.configData);
+    });
   }
 
   componentWillUnmount() {
@@ -229,11 +245,33 @@ class Browser extends DashboardView {
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       const t = nextProps.schema.data.get('classes');
       this.classes = Object.keys(t.toObject());
-      this.allClassesSchema = this.getAllClassesSchema(this.classes ,nextProps.schema.data.get('classes'));
+      this.allClassesSchema = this.getAllClassesSchema(
+        this.classes,
+        nextProps.schema.data.get('classes')
+      );
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
 
+  fetchAggregationPanelData(objectId, className) {
+    const params = {
+      objectId: objectId,
+    };
+    const cloudCodeFunction = this.state.classwiseCloudFunctions[className][0].cloudCodeFunction;
+
+    Parse.Cloud.run(cloudCodeFunction, params).then(
+      result => {
+        this.setState({ AggregationPanelData: result });
+      },
+      error => {
+        console.log('error', error);
+      }
+    );
+  }
+
+  setAggregationPanelData(data) {
+    this.setState({ AggregationPanelData: data });
+  }
   addLocation(appId) {
     if (window.localStorage) {
       let pathname = null;
@@ -257,6 +295,27 @@ class Browser extends DashboardView {
         );
       }
     }
+  }
+
+  classAndCloudFuntionMap(data) {
+    const classMap = {};
+
+    data.apps.forEach(app => {
+      app.infoPanel.forEach(panel => {
+        panel.classes.forEach(className => {
+          if (!classMap[className]) {
+            classMap[className] = [];
+          }
+          classMap[className].push({
+            title: panel.title,
+            cloudCodeFunction: panel.cloudCodeFunction,
+            classes: panel.classes,
+          });
+        });
+      });
+    });
+
+    this.setState({ classwiseCloudFunctions: classMap });
   }
 
   removeLocation() {
@@ -563,7 +622,7 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
+        const msg = objectSaved.className + " with id '" + objectSaved.id + "' created";
         this.showNote(msg, false);
 
         const state = { data: this.state.data };
@@ -666,7 +725,7 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
-        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
+        const msg = objectSaved.className + " with id '" + objectSaved.id + "' " + 'created';
         this.showNote(msg, false);
 
         const state = {
@@ -763,9 +822,9 @@ class Browser extends DashboardView {
     }
   }
 
-  getAllClassesSchema(allClasses , allClassesData) {
+  getAllClassesSchema(allClasses, allClassesData) {
     const schemaSimplifiedData = {};
-    allClasses.forEach((className) => {
+    allClasses.forEach(className => {
       const classSchema = allClassesData.get(className);
       if (classSchema) {
         schemaSimplifiedData[className] = {};
@@ -1068,7 +1127,11 @@ class Browser extends DashboardView {
       },
     ]);
     window.open(
-      generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`, true),
+      generatePath(
+        this.context,
+        `browser/${className}?filters=${encodeURIComponent(filters)}`,
+        true
+      ),
       '_blank'
     );
   }
@@ -1121,7 +1184,7 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
+        const msg = objectSaved.className + " with id '" + objectSaved.id + "' updated";
         this.showNote(msg, false);
 
         const state = {
@@ -1249,7 +1312,7 @@ class Browser extends DashboardView {
             let deletedNote;
 
             if (toDeleteObjectIds.length == 1) {
-              deletedNote = className + ' with id \'' + toDeleteObjectIds[0] + '\' deleted';
+              deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
             } else {
               deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
             }
@@ -1277,7 +1340,7 @@ class Browser extends DashboardView {
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + ' with id \'' + error.errors[0].object.id + '\'';
+                  'Error deleting ' + className + " with id '" + error.errors[0].object.id + "'";
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
                   'Error deleting ' +
@@ -1294,7 +1357,7 @@ class Browser extends DashboardView {
             } else {
               if (toDeleteObjectIds.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + ' with id \'' + toDeleteObjectIds[0] + '\'';
+                  'Error deleting ' + className + " with id '" + toDeleteObjectIds[0] + "'";
               } else {
                 errorDeletingNote =
                   'Error deleting ' + toDeleteObjectIds.length + ' ' + className + ' objects';
@@ -1445,17 +1508,19 @@ class Browser extends DashboardView {
         this.setState(prevState => ({
           processedScripts: prevState.processedScripts + 1,
         }));
-        const note = (typeof response === 'object' ? JSON.stringify(response) : response) || `Ran script "${script.title}" on "${object.id}".`;
+        const note =
+          (typeof response === 'object' ? JSON.stringify(response) : response) ||
+          `Ran script "${script.title}" on "${object.id}".`;
         this.showNote(note);
       }
       this.refresh();
     } catch (e) {
       this.showNote(e.message, true);
       console.log(`Could not run ${script.title}: ${e}`);
-    } finally{
-      this.setState(({
+    } finally {
+      this.setState({
         processedScripts: 0,
-      }));
+      });
     }
   }
 
@@ -1969,6 +2034,10 @@ class Browser extends DashboardView {
             onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
             onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
             classes={this.classes}
+            classwiseCloudFunctions={this.state.classwiseCloudFunctions}
+            callCloudFunction={this.fetchAggregationPanelData}
+            AggregationPanelData={this.state.AggregationPanelData}
+            setAggregationPanelData={this.setAggregationPanelData}
           />
         );
       }

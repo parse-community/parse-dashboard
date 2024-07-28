@@ -36,8 +36,10 @@ export default class BrowserRow extends Component {
       selection,
       selectRow,
       setCopyableValue,
+      selectedObjectId,
       setSelectedObjectId,
       callCloudFunction,
+      isPanelVisible,
       setCurrent,
       setEditing,
       setRelation,
@@ -143,7 +145,9 @@ export default class BrowserRow extends Component {
               isRequired={isRequired}
               markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
+              selectedObjectId={selectedObjectId}
               setSelectedObjectId={setSelectedObjectId}
+              isPanelVisible={isPanelVisible}
               callCloudFunction={callCloudFunction}
               setContextMenu={setContextMenu}
               onEditSelectedRow={onEditSelectedRow}

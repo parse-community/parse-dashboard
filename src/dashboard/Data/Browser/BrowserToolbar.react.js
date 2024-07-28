@@ -78,7 +78,8 @@ const BrowserToolbar = ({
   allClassesSchema,
 
   togglePanel,
-  isPanelVisible
+  isPanelVisible,
+  classwiseCloudFunctions
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -265,6 +266,7 @@ const BrowserToolbar = ({
   const showLogin = () => loginDialogRef.current.handleOpen();
   return (
     <Toolbar
+      className={className}
       relation={relation}
       filters={filters}
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
@@ -273,6 +275,7 @@ const BrowserToolbar = ({
       selectedData={selectedData}
       togglePanel={togglePanel}
       isPanelVisible={isPanelVisible}
+      classwiseCloudFunctions={classwiseCloudFunctions}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>

@@ -35,11 +35,12 @@ export default class DataBrowser extends React.Component {
       copyableValue: undefined,
       selectedObjectId: undefined,
       simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
-      allClassesSchema: this.getAllClassesSchema(props.schema,props.classes),
+      allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
       isPanelVisible: false,
       selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
       firstSelectedCell: null,
       selectedData: [],
+      prevClassName: props.className,
     };
 
     this.handleKey = this.handleKey.bind(this);
@@ -51,7 +52,6 @@ export default class DataBrowser extends React.Component {
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setSelectedObjectId = this.setSelectedObjectId.bind(this);
-    this.callCloudFunction = this.callCloudFunction.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
@@ -71,7 +71,7 @@ export default class DataBrowser extends React.Component {
         current: null,
         editing: false,
         simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
-        allClassesSchema: this.getAllClassesSchema(props.schema,props.classes),
+        allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
       });
     } else if (
       Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
@@ -91,6 +91,17 @@ export default class DataBrowser extends React.Component {
       firstSelectedCell: null,
       selectedData: [],
     });
+    if (props && props.className) {
+      if (!props.classwiseCloudFunctions[props.className]) {
+        this.setState({ isPanelVisible: false });
+        this.setState({ selectedObjectId: undefined });
+      }
+    } else {
+      this.setState({ isPanelVisible: false });
+      this.setState({ selectedObjectId: undefined });
+    }
+
+    this.checkClassNameChange(this.state.prevClassName, props.className);
   }
 
   componentDidMount() {
@@ -115,12 +126,17 @@ export default class DataBrowser extends React.Component {
 
   togglePanelVisibility() {
     this.setState(prevState => ({ isPanelVisible: !prevState.isPanelVisible }));
+
+    if (!this.state.isPanelVisible) {
+      this.setState({ selectedObjectId: undefined });
+      this.props.setAggregationPanelData({});
+    }
   }
 
   getAllClassesSchema(schema) {
     const allClasses = Object.keys(schema.data.get('classes').toObject());
     const schemaSimplifiedData = {};
-    allClasses.forEach((className) => {
+    allClasses.forEach(className => {
       const classSchema = schema.data.get('classes').get(className);
       if (classSchema) {
         schemaSimplifiedData[className] = {};
@@ -134,6 +150,17 @@ export default class DataBrowser extends React.Component {
       return schemaSimplifiedData;
     });
     return schemaSimplifiedData;
+  }
+
+  checkClassNameChange(prevClassName, className) {
+    if (prevClassName !== className) {
+      this.setState({
+        prevClassName: className,
+        isPanelVisible: false,
+        selectedObjectId: undefined,
+      });
+      this.props.setAggregationPanelData({});
+    }
   }
 
   getSimplifiedSchema(schema, classNameForEditors) {
@@ -242,10 +269,10 @@ export default class DataBrowser extends React.Component {
               e.ctrlKey || e.metaKey
                 ? firstVisibleColumnIndex
                 : this.getNextVisibleColumnIndex(
-                  -1,
-                  firstVisibleColumnIndex,
-                  lastVisibleColumnIndex
-                ),
+                    -1,
+                    firstVisibleColumnIndex,
+                    lastVisibleColumnIndex
+                  ),
           },
         });
         e.preventDefault();
@@ -271,10 +298,10 @@ export default class DataBrowser extends React.Component {
               e.ctrlKey || e.metaKey
                 ? lastVisibleColumnIndex
                 : this.getNextVisibleColumnIndex(
-                  1,
-                  firstVisibleColumnIndex,
-                  lastVisibleColumnIndex
-                ),
+                    1,
+                    firstVisibleColumnIndex,
+                    lastVisibleColumnIndex
+                  ),
           },
         });
         e.preventDefault();
@@ -346,14 +373,12 @@ export default class DataBrowser extends React.Component {
   }
 
   setSelectedObjectId(selectedObjectId) {
-    if(this.state.selectedObjectId !== selectedObjectId) {
+    if (this.state.selectedObjectId !== selectedObjectId) {
       this.setState({ selectedObjectId });
     }
   }
 
-  callCloudFunction(objectId, className){
-    console.log('Calling cloud function', objectId, className);
-  }
+
   setContextMenu(contextMenuX, contextMenuY, contextMenuItems) {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
@@ -455,8 +480,9 @@ export default class DataBrowser extends React.Component {
           setEditing={this.setEditing}
           setCurrent={this.setCurrent}
           setCopyableValue={this.setCopyableValue}
+          selectedObjectId={this.state.selectedObjectId}
           setSelectedObjectId={this.setSelectedObjectId}
-          callCloudFunction={this.callCloudFunction}
+          callCloudFunction={this.props.callCloudFunction}
           setContextMenu={this.setContextMenu}
           onFilterChange={this.props.onFilterChange}
           onFilterSave={this.props.onFilterSave}
