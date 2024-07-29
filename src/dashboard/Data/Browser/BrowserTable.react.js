@@ -600,7 +600,6 @@ export default class BrowserTable extends React.Component {
               right: '0',
               bottom: '19px',
               'box-shadow': '0 2px 5px rgba(0, 0, 0, 0.1)',
-              overflow: 'auto',
               backgroundColor: 'rgb(244, 244, 244)',
               zIndex: 100,
             }}
