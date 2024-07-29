@@ -130,10 +130,10 @@ export default class BrowserTable extends React.Component {
   }
   updateMaxWidth = () => {
     this.setState({ maxWidth: window.innerWidth - 300 });
-    if(this.state.panelWidth > window.innerWidth - 300){
+    if (this.state.panelWidth > window.innerWidth - 300) {
       this.setState({ panelWidth: window.innerWidth - 300 });
     }
-  }
+  };
 
   render() {
     let ordering = {};
@@ -599,12 +599,15 @@ export default class BrowserTable extends React.Component {
               top: '96px',
               right: '0',
               bottom: '19px',
+              'box-shadow': '0 2px 5px rgba(0, 0, 0, 0.1)',
               overflow: 'auto',
               backgroundColor: 'rgb(244, 244, 244)',
               zIndex: 100,
             }}
           >
-            <AggregationPanel data={this.props.AggregationPanelData}/>
+            <div>
+              <AggregationPanel data={this.props.AggregationPanelData} />
+            </div>
           </ResizableBox>
         )}
       </div>
