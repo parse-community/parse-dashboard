@@ -605,7 +605,7 @@ export default class BrowserTable extends React.Component {
               zIndex: 100,
             }}
           >
-            <div>
+            <div className={styles.dataContainer}>
               <AggregationPanel data={this.props.AggregationPanelData} />
             </div>
           </ResizableBox>
