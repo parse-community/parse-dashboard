@@ -57,8 +57,6 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
     compareType = Filters.Constraints[newConstraint].field;
   }
-
-  console.log(compareType, newConstraint)
   const newFilter = new Map({
     class: currentClassName,
     field: field,
@@ -191,13 +189,11 @@ const Filter = ({
             onChange(changeField(schema, currentClassName, filters, i, newField));
           },
           onChangeConstraint: (newConstraint, prevCompareTo) => {
-            console.log('onChangeConstraint', newConstraint, prevCompareTo);
             onChange(
               changeConstraint(schema, currentClassName, filters, i, newConstraint, prevCompareTo)
             );
           },
           onChangeCompareTo: newCompare => {
-            console.log('onChangeCompareTo', newCompare);
             onChange(changeCompareTo(schema, filters, i, compareType, newCompare));
           },
           onKeyDown: ({ key }) => {
