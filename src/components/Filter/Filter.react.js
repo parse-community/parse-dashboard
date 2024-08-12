@@ -51,7 +51,7 @@ function changeField(schema, currentClassName, filters, index, newField) {
   return filters.set(index, newFilter);
 }
 
-function changeConstraint(schema, currentClassName, filters, index, newConstraint) {
+function changeConstraint(schema, currentClassName, filters, index, newConstraint, prevCompareTo) {
   const field = filters.get(index).get('field');
   let compareType = schema[currentClassName][field].type;
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
@@ -61,7 +61,7 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
     class: currentClassName,
     field: field,
     constraint: newConstraint,
-    compareTo: Filters.DefaultComparisons[compareType],
+    compareTo: (compareType && prevCompareTo) ? prevCompareTo : Filters.DefaultComparisons[compareType],
   });
   return filters.set(index, newFilter);
 }

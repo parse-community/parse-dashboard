@@ -1,3 +1,10 @@
+# [6.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.11...6.0.0-alpha.12) (2024-08-07)
+
+
+### Bug Fixes
+
+* Filter string is erased when changing filter condition ([#2586](https://github.com/ParsePlatform/parse-dashboard/issues/2586)) ([6fa2c8c](https://github.com/ParsePlatform/parse-dashboard/commit/6fa2c8c79201b9ea34321277ab085fa0ba988d77))
+
 # [6.0.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.10...6.0.0-alpha.11) (2024-07-26)
 
 
