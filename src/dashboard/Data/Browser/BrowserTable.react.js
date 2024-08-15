@@ -77,12 +77,10 @@ export default class BrowserTable extends React.Component {
 
   handleMouseDown() {
     this.setState({ isResizing: true });
-    console.log('handleMouseDown');
     document.body.style.cursor = 'ew-resize';
   }
 
   handleMouseMove(e) {
-    console.log('handleMouseMove', this.state.isResizing);
     if (!this.state.isResizing) {
       return;
     }
@@ -90,7 +88,6 @@ export default class BrowserTable extends React.Component {
   }
 
   handleMouseUp() {
-    console.log('handleMouseUp', this.state.isResizing);
     if (!this.state.isResizing) {
       return;
     }

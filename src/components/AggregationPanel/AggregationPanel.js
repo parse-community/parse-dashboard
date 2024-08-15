@@ -10,7 +10,6 @@ import {
 } from './AggregationPanelComponents';
 import styles from './AggregationPanel.scss';
 const AggregationPanel = ({ data }) => {
-  console.log('data aggregation panel', data);
   return (
     <>
       {Object.keys(data).length !== 0 ? (
@@ -42,7 +41,7 @@ const AggregationPanel = ({ data }) => {
           </div>
         ))
       ) : (
-        <div className={styles.loading}>No object selected. Select an object</div>
+        <div className={styles.loading}>No object selected. Select an object to see aggregated data.</div>
       )}
     </>
   );

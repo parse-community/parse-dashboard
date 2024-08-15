@@ -621,7 +621,6 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        // eslint-disable-next-line quotes
         const msg = objectSaved.className + " with id '" + objectSaved.id + "' created";
         this.showNote(msg, false);
 
@@ -725,7 +724,6 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
-        // eslint-disable-next-line quotes
         const msg = objectSaved.className + " with id '" + objectSaved.id + "' " + 'created';
         this.showNote(msg, false);
 
@@ -1185,7 +1183,6 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        // eslint-disable-next-line quotes
         const msg = objectSaved.className + " with id '" + objectSaved.id + "' updated";
         this.showNote(msg, false);
 
@@ -1314,7 +1311,6 @@ class Browser extends DashboardView {
             let deletedNote;
 
             if (toDeleteObjectIds.length == 1) {
-              // eslint-disable-next-line quotes
               deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
             } else {
               deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
@@ -1342,7 +1338,6 @@ class Browser extends DashboardView {
 
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
-                // eslint-disable-next-line quotes
                 errorDeletingNote = 'Error deleting ' + className + " with id '" + error.errors[0].object.id + "'";
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
@@ -1360,7 +1355,6 @@ class Browser extends DashboardView {
             } else {
               if (toDeleteObjectIds.length == 1) {
                 errorDeletingNote =
-                  // eslint-disable-next-line quotes
                   'Error deleting ' + className + " with id '" + toDeleteObjectIds[0] + "'";
               } else {
                 errorDeletingNote =
