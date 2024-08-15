@@ -40,8 +40,6 @@ import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
-import { get } from 'lib/AJAX';
-import { setBasePath } from 'lib/AJAX';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
@@ -621,7 +619,7 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + " with id '" + objectSaved.id + "' created";
+        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
         this.showNote(msg, false);
 
         const state = { data: this.state.data };
@@ -724,7 +722,7 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
-        const msg = objectSaved.className + " with id '" + objectSaved.id + "' " + 'created';
+        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
         this.showNote(msg, false);
 
         const state = {
@@ -1126,11 +1124,7 @@ class Browser extends DashboardView {
       },
     ]);
     window.open(
-      generatePath(
-        this.context,
-        `browser/${className}?filters=${encodeURIComponent(filters)}`,
-        true
-      ),
+      generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`, true),
       '_blank'
     );
   }
@@ -1183,7 +1177,7 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + " with id '" + objectSaved.id + "' updated";
+        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
         this.showNote(msg, false);
 
         const state = {
@@ -1311,7 +1305,7 @@ class Browser extends DashboardView {
             let deletedNote;
 
             if (toDeleteObjectIds.length == 1) {
-              deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
+              deletedNote = className + ' with id \'' + toDeleteObjectIds[0] + '\' deleted';
             } else {
               deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
             }
@@ -1338,7 +1332,8 @@ class Browser extends DashboardView {
 
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
-                errorDeletingNote = 'Error deleting ' + className + " with id '" + error.errors[0].object.id + "'";
+                errorDeletingNote =
+                'Error deleting ' + className + ' with id \'' + error.errors[0].object.id + '\'';
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
                   'Error deleting ' +
@@ -1355,7 +1350,7 @@ class Browser extends DashboardView {
             } else {
               if (toDeleteObjectIds.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + " with id '" + toDeleteObjectIds[0] + "'";
+                  'Error deleting ' + className + ' with id \'' + toDeleteObjectIds[0] + '\'';
               } else {
                 errorDeletingNote =
                   'Error deleting ' + toDeleteObjectIds.length + ' ' + className + ' objects';
@@ -1506,19 +1501,17 @@ class Browser extends DashboardView {
         this.setState(prevState => ({
           processedScripts: prevState.processedScripts + 1,
         }));
-        const note =
-          (typeof response === 'object' ? JSON.stringify(response) : response) ||
-          `Ran script "${script.title}" on "${object.id}".`;
+        const note = (typeof response === 'object' ? JSON.stringify(response) : response) || `Ran script "${script.title}" on "${object.id}".`;
         this.showNote(note);
       }
       this.refresh();
     } catch (e) {
       this.showNote(e.message, true);
       console.log(`Could not run ${script.title}: ${e}`);
-    } finally {
-      this.setState({
+    } finally{
+      this.setState(({
         processedScripts: 0,
-      });
+      }));
     }
   }
 
