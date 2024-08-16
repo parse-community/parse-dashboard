@@ -65,11 +65,11 @@
     "react-dnd": "10.0.2",
     "react-dnd-html5-backend": "10.0.2",
     "react-dom": "16.14.0",
-    "react-draggable": "^4.4.6",
+    "react-draggable": "4.4.6",
     "react-helmet": "6.1.0",
     "react-json-view": "1.21.3",
     "react-popper-tooltip": "4.4.2",
-    "react-resizable": "^3.0.5",
+    "react-resizable": "3.0.5",
     "react-router-dom": "6.4.1",
     "regenerator-runtime": "0.13.11"
   },
