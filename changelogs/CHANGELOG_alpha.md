@@ -1,3 +1,31 @@
+# [6.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.11...6.0.0-alpha.12) (2024-08-07)
+
+
+### Bug Fixes
+
+* Filter string is erased when changing filter condition ([#2586](https://github.com/ParsePlatform/parse-dashboard/issues/2586)) ([6fa2c8c](https://github.com/ParsePlatform/parse-dashboard/commit/6fa2c8c79201b9ea34321277ab085fa0ba988d77))
+
+# [6.0.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.10...6.0.0-alpha.11) (2024-07-26)
+
+
+### Bug Fixes
+
+* Descriptive statistics for number cells in data browser not showing ([#2581](https://github.com/ParsePlatform/parse-dashboard/issues/2581)) ([e146b6f](https://github.com/ParsePlatform/parse-dashboard/commit/e146b6f54c7dfcb50c83c70f0c55e5ab76dc3c19))
+
+# [6.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.9...6.0.0-alpha.10) (2024-07-11)
+
+
+### Bug Fixes
+
+* Crash after setting filter using context menu and opening filters panel ([#2579](https://github.com/ParsePlatform/parse-dashboard/issues/2579)) ([5a690eb](https://github.com/ParsePlatform/parse-dashboard/commit/5a690ebe91007698fe1a60334112deed5ce94be1))
+
+# [6.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.8...6.0.0-alpha.9) (2024-07-06)
+
+
+### Features
+
+* Add relational filter conditions in data browser ([#2576](https://github.com/ParsePlatform/parse-dashboard/issues/2576)) ([aa5c68d](https://github.com/ParsePlatform/parse-dashboard/commit/aa5c68dbca458069d93351edc0bc0287fe63b7e1))
+
 # [6.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.7...6.0.0-alpha.8) (2024-06-27)
 
 

@@ -101,9 +101,13 @@ class Browser extends DashboardView {
 
       rowCheckboxDragging: false,
       draggedRowSelection: false,
+
+      classes: {},
+      allClassesSchema: {}
     };
 
     this.addLocation = this.addLocation.bind(this);
+    this.allClassesSchema = this.getAllClassesSchema.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -223,6 +227,9 @@ class Browser extends DashboardView {
       this.prefetchData(nextProps, nextContext);
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
+      const t = nextProps.schema.data.get('classes');
+      this.classes = Object.keys(t.toObject());
+      this.allClassesSchema = this.getAllClassesSchema(this.classes ,nextProps.schema.data.get('classes'));
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
@@ -303,7 +310,12 @@ class Browser extends DashboardView {
     const query = new URLSearchParams(props.location.search);
     if (query.has('filters')) {
       const queryFilters = JSON.parse(query.get('filters'));
-      queryFilters.forEach(filter => (filters = filters.push(new Map(filter))));
+      queryFilters.forEach(
+        filter =>
+          (filters = filters.push(
+            new Map({ ...filter, class: filter.class || props.params.className })
+          ))
+      );
     }
     return filters;
   }
@@ -751,6 +763,23 @@ class Browser extends DashboardView {
     }
   }
 
+  getAllClassesSchema(allClasses , allClassesData) {
+    const schemaSimplifiedData = {};
+    allClasses.forEach((className) => {
+      const classSchema = allClassesData.get(className);
+      if (classSchema) {
+        schemaSimplifiedData[className] = {};
+        classSchema.forEach(({ type, targetClass }, col) => {
+          schemaSimplifiedData[className][col] = {
+            type,
+            targetClass,
+          };
+        });
+      }
+    });
+    return schemaSimplifiedData;
+  }
+
   async refresh() {
     const relation = this.state.relation;
     const prevFilters = this.state.filters || new List();
@@ -775,7 +804,7 @@ class Browser extends DashboardView {
 
   async fetchParseData(source, filters) {
     const { useMasterKey } = this.state;
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
 
@@ -787,7 +816,6 @@ class Browser extends DashboardView {
 
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
-
     let promise = query.find({ useMasterKey });
     let isUnique = false;
     let uniqueField = null;
@@ -817,7 +845,7 @@ class Browser extends DashboardView {
   }
 
   async fetchParseDataCount(source, filters) {
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters);
     const { useMasterKey } = this.state;
     const count = await query.count({ useMasterKey });
     return count;
@@ -860,13 +888,13 @@ class Browser extends DashboardView {
     return await this.context.getRelationCount(relation);
   }
 
-  fetchNextPage() {
+  async fetchNextPage() {
     if (!this.state.data || this.state.isUnique) {
       return null;
     }
     const className = this.props.params.className;
     const source = this.state.relation || className;
-    let query = queryFromFilters(source, this.state.filters);
+    let query = await queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
       const equalityQuery = queryFromFilters(source, this.state.filters);
@@ -1806,7 +1834,7 @@ class Browser extends DashboardView {
   }
 
   onMouseUpRowCheckBox() {
-    this.setState({
+    this.state.rowCheckboxDragging && this.setState({
       rowCheckboxDragging: false,
       draggedRowSelection: false,
     });
@@ -1933,13 +1961,13 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
-            onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote}
             onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
             onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
             onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
+            classes={this.classes}
           />
         );
       }

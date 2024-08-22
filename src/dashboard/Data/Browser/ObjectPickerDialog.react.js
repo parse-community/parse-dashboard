@@ -97,7 +97,7 @@ export default class ObjectPickerDialog extends React.Component {
 
   async fetchParseData(source, filters) {
     const { useMasterKey } = this.props;
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
 
@@ -117,21 +117,21 @@ export default class ObjectPickerDialog extends React.Component {
 
   async fetchParseDataCount(source, filters) {
     const { useMasterKey } = this.props;
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters);
     const count = await query.count({ useMasterKey });
     return count;
   }
 
-  fetchNextPage() {
+  async fetchNextPage() {
     if (!this.state.data) {
       return null;
     }
     const className = this.props.className;
     const source = this.state.relation || className;
-    let query = queryFromFilters(source, this.state.filters);
+    let query = await queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
-      const equalityQuery = queryFromFilters(source, this.state.filters);
+      const equalityQuery = await queryFromFilters(source, this.state.filters);
       let field = this.state.ordering;
       let ascending = true;
       let comp = this.state.data[this.state.data.length - 1].get(field);

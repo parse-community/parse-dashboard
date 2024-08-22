@@ -98,12 +98,15 @@ function compareValue(
 }
 
 const FilterRow = ({
+  classes,
   fields,
   constraints,
   compareInfo,
+  currentClass,
   currentField,
   currentConstraint,
   compareTo,
+  onChangeClass,
   onChangeField,
   onChangeConstraint,
   onChangeCompareTo,
@@ -119,13 +122,52 @@ const FilterRow = ({
     }
   }, []);
 
-  const buildSuggestions = input => {
+  const buildFieldSuggestions = input => {
     const regex = new RegExp(input.split('').join('.*?'), 'i');
     return fields.filter(f => regex.test(f));
   };
+  const buildClassSuggestions = input => {
+    const regex = new RegExp(input.split('').join('.*?'), 'i');
+    return classes.filter(f => regex.test(f));
+  };
 
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${styles.flex}`}>
+      <Autocomplete
+        inputStyle={{
+          transition: '0s background-color ease-in-out',
+        }}
+        suggestionsStyle={{
+          width: '140px',
+          maxHeight: '360px',
+          overflowY: 'auto',
+          fontSize: '14px',
+          background: '#343445',
+          borderBottomLeftRadius: '5px',
+          borderBottomRightRadius: '5px',
+          color: 'white',
+          cursor: 'pointer',
+        }}
+        suggestionsItemStyle={{
+          background: '#343445',
+          color: 'white',
+          height: '30px',
+          lineHeight: '30px',
+          borderBottom: '0px',
+        }}
+        containerStyle={{
+          display: 'inline-block',
+          width: '140px',
+          verticalAlign: 'top',
+          height: '30px',
+        }}
+        strict={true}
+        value={currentClass}
+        suggestions={classes}
+        onChange={onChangeClass}
+        buildSuggestions={buildClassSuggestions}
+        buildLabel={() => ''}
+      />
       <Autocomplete
         inputStyle={{
           transition: '0s background-color ease-in-out',
@@ -158,7 +200,7 @@ const FilterRow = ({
         value={currentField}
         suggestions={fields}
         onChange={onChangeField}
-        buildSuggestions={buildSuggestions}
+        buildSuggestions={buildFieldSuggestions}
         buildLabel={() => ''}
       />
       <ChromeDropdown
