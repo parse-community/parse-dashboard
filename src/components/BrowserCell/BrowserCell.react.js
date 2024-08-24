@@ -633,8 +633,8 @@ export default class BrowserCell extends Component {
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
             if(selectedObjectId !== this.props.objectId) {
+              setSelectedObjectId(this.props.objectId);
               if(isPanelVisible) {
-                setSelectedObjectId(this.props.objectId);
                 callCloudFunction(this.props.objectId, this.props.className);
               }
             }

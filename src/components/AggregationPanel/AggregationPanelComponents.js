@@ -80,7 +80,7 @@ export const ButtonElement = ({ item }) => {
   };
 
   return (
-    <div className="button-element">
+    <div className={styles.buttonContainer}>
       <button onClick={handleClick} className={styles.button}>{item.text}</button>
     </div>
   );

@@ -15,9 +15,7 @@ import encode from 'parse/lib/browser/encode';
 import React from 'react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import Button from 'components/Button/Button.react';
-import { ResizableBox } from 'react-resizable';
 import { CurrentApp } from 'context/currentApp';
-import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
@@ -511,7 +509,10 @@ export default class BrowserTable extends React.Component {
 
       if (this.props.newObject || this.props.data.length > 0) {
         table = (
-          <div className={styles.table} ref={this.tableRef}>
+          <div
+            className={styles.table}
+            ref={this.tableRef}
+          >
             <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
             {editCloneRows}
             {newRow}
@@ -530,7 +531,10 @@ export default class BrowserTable extends React.Component {
         );
       } else {
         table = (
-          <div className={styles.table} ref={this.tableRef}>
+          <div
+            className={styles.table}
+            ref={this.tableRef}
+          >
             <div className={styles.empty}>
               {this.props.relation ? (
                 <EmptyState
@@ -556,10 +560,18 @@ export default class BrowserTable extends React.Component {
         );
       }
     }
+    const rightValue =
+      this.props.panelWidth && this.props.isPanelVisible ? `${this.props.panelWidth}px` : '0px';
 
     return (
-      <div className={styles.browser}>
-        <div>
+      <div
+        className={styles.browser}
+        style={{
+          right: rightValue,
+          'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
+        }}
+      >
+        <div >
           <DataBrowserHeaderBar
             selected={
               !!this.props.selection &&
@@ -582,30 +594,6 @@ export default class BrowserTable extends React.Component {
 
           {table}
         </div>
-        {this.props.isPanelVisible && (
-          <ResizableBox
-            width={this.state.panelWidth}
-            height={Infinity}
-            minConstraints={[400, Infinity]}
-            maxConstraints={[this.state.maxWidth, Infinity]}
-            onResize={this.handleResize}
-            resizeHandles={['w']}
-            className={styles.resizablePanel}
-            style={{
-              position: 'fixed',
-              top: '96px',
-              right: '0',
-              bottom: '19px',
-              'box-shadow': '0 2px 5px rgba(0, 0, 0, 0.1)',
-              backgroundColor: 'rgb(244, 244, 244)',
-              zIndex: 100,
-            }}
-          >
-            <div className={styles.dataContainer}>
-              <AggregationPanel data={this.props.AggregationPanelData} />
-            </div>
-          </ResizableBox>
-        )}
       </div>
     );
   }

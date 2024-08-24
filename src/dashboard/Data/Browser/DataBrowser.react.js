@@ -11,6 +11,11 @@ import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
 import ContextMenu from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import React from 'react';
+import { ResizableBox } from 'react-resizable';
+import styles from '../Browser/Browser.scss'
+
+import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
+
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -41,8 +46,15 @@ export default class DataBrowser extends React.Component {
       firstSelectedCell: null,
       selectedData: [],
       prevClassName: props.className,
+      panelWidth: 400,
+      isResizing: false,
+      maxWidth: window.innerWidth - 300,
     };
 
+    this.handleResizeDiv = this.handleResizeDiv.bind(this);
+    this.handleResizeStart = this.handleResizeStart.bind(this);
+    this.handleResizeStop = this.handleResizeStop.bind(this);
+    this.updateMaxWidth = this.updateMaxWidth.bind(this);
     this.handleKey = this.handleKey.bind(this);
     this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
     this.handleResize = this.handleResize.bind(this);
@@ -106,11 +118,35 @@ export default class DataBrowser extends React.Component {
 
   componentDidMount() {
     document.body.addEventListener('keydown', this.handleKey);
+    window.addEventListener('resize', this.updateMaxWidth);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.handleKey);
+    window.removeEventListener('resize', this.updateMaxWidth);
   }
+
+  handleResizeStart() {
+    this.setState({ isResizing: true });
+  }
+
+  handleResizeStop(event, { size }) {
+    this.setState({
+      isResizing: false,
+      panelWidth: size.width,
+    });
+  }
+
+  handleResizeDiv(event, { size }) {
+    this.setState({ panelWidth: size.width });
+  }
+
+  updateMaxWidth = () => {
+    this.setState({ maxWidth: window.innerWidth - 300 });
+    if (this.state.panelWidth > window.innerWidth - 300) {
+      this.setState({ panelWidth: window.innerWidth - 300 });
+    }
+  };
 
   updatePreferences(order, shouldReload) {
     if (this.saveOrderTimeout) {
@@ -128,8 +164,12 @@ export default class DataBrowser extends React.Component {
     this.setState(prevState => ({ isPanelVisible: !prevState.isPanelVisible }));
 
     if (!this.state.isPanelVisible) {
-      this.setState({ selectedObjectId: undefined });
       this.props.setAggregationPanelData({});
+    }
+    console.log(this.state.selectedObjectId, this.props.className ,this.state.isPanelVisible)
+
+    if(!this.state.isPanelVisible && this.state.selectedObjectId){
+      this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
     }
   }
 
@@ -176,7 +216,6 @@ export default class DataBrowser extends React.Component {
     }
     return schemaSimplifiedData;
   }
-
   handleResize(index, delta) {
     this.setState(({ order }) => {
       order[index].width = Math.max(60, order[index].width + delta);
@@ -466,30 +505,67 @@ export default class DataBrowser extends React.Component {
     const { preventSchemaEdits, applicationId } = app;
     return (
       <div>
-        <BrowserTable
-          appId={applicationId}
-          order={this.state.order}
-          current={this.state.current}
-          editing={this.state.editing}
-          simplifiedSchema={this.state.simplifiedSchema}
-          className={className}
-          editCloneRows={editCloneRows}
-          handleHeaderDragDrop={this.handleHeaderDragDrop}
-          handleResize={this.handleResize}
-          setEditing={this.setEditing}
-          setCurrent={this.setCurrent}
-          setCopyableValue={this.setCopyableValue}
-          selectedObjectId={this.state.selectedObjectId}
-          setSelectedObjectId={this.setSelectedObjectId}
-          callCloudFunction={this.props.callCloudFunction}
-          setContextMenu={this.setContextMenu}
-          onFilterChange={this.props.onFilterChange}
-          onFilterSave={this.props.onFilterSave}
-          selectedCells={this.state.selectedCells}
-          handleCellClick={this.handleCellClick}
-          isPanelVisible={this.state.isPanelVisible}
-          {...other}
-        />
+        <div>
+          <BrowserTable
+            appId={applicationId}
+            order={this.state.order}
+            current={this.state.current}
+            editing={this.state.editing}
+            simplifiedSchema={this.state.simplifiedSchema}
+            className={className}
+            editCloneRows={editCloneRows}
+            handleHeaderDragDrop={this.handleHeaderDragDrop}
+            handleResize={this.handleResize}
+            setEditing={this.setEditing}
+            setCurrent={this.setCurrent}
+            setCopyableValue={this.setCopyableValue}
+            selectedObjectId={this.state.selectedObjectId}
+            setSelectedObjectId={this.setSelectedObjectId}
+            callCloudFunction={this.props.callCloudFunction}
+            setContextMenu={this.setContextMenu}
+            onFilterChange={this.props.onFilterChange}
+            onFilterSave={this.props.onFilterSave}
+            selectedCells={this.state.selectedCells}
+            handleCellClick={this.handleCellClick}
+            isPanelVisible={this.state.isPanelVisible}
+            panelWidth={this.state.panelWidth}
+            isResizing={this.state.isResizing}
+            {...other}
+          />
+          {this.state.isPanelVisible && (
+            <ResizableBox
+              width={this.state.panelWidth}
+              height={Infinity}
+              minConstraints={[400, Infinity]}
+              maxConstraints={[this.state.maxWidth, Infinity]}
+              onResizeStart={this.handleResizeStart}  // Handle start of resizing
+              onResizeStop={this.handleResizeStop}    // Handle end of resizing
+              onResize={this.handleResizeDiv}
+              resizeHandles={['w']}
+              className={styles.resizablePanel}
+              style={
+                {
+
+                  position: 'fixed',
+                  top: '96px',
+                  right: '0',
+                  bottom: '0px',
+                  // 'box-shadow': '0 2px 5px rgba(0, 0, 0, 0.1)',
+                  // backgroundColor: 'rgb(244, 244, 244)',
+                  // zIndex: 100,
+                }
+              }
+            >
+              <div style={{
+                height: '100%',
+                overflow: 'auto'
+              }} >
+                <AggregationPanel data={this.props.AggregationPanelData} />
+              </div>
+            </ResizableBox>
+          )}
+        </div>
+
         <BrowserToolbar
           count={count}
           hidePerms={className === '_Installation'}
