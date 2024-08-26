@@ -111,6 +111,7 @@ class Browser extends DashboardView {
       classwiseCloudFunctions: {},
 
       AggregationPanelData: {},
+      isLoading: false
     };
 
     this.addLocation = this.addLocation.bind(this);
@@ -128,6 +129,7 @@ class Browser extends DashboardView {
     this.showExport = this.showExport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.setLoading = this.setLoading.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
@@ -252,7 +254,16 @@ class Browser extends DashboardView {
     }
   }
 
+  setLoading(bool){
+    this.setState({
+      isLoading:bool
+    })
+  }
+
   fetchAggregationPanelData(objectId, className) {
+    this.setState({
+      isLoading: true
+    })
     const params = {
       objectId: objectId,
     };
@@ -260,9 +271,14 @@ class Browser extends DashboardView {
 
     Parse.Cloud.run(cloudCodeFunction, params).then(
       result => {
-        this.setState({ AggregationPanelData: result });
+        this.setState({ AggregationPanelData: result ,
+          isLoading : false
+        });
       },
       error => {
+        this.setState({
+          isLoading: false
+        })
         console.log('error', error);
       }
     );
@@ -2029,6 +2045,8 @@ class Browser extends DashboardView {
             classes={this.classes}
             classwiseCloudFunctions={this.state.classwiseCloudFunctions}
             callCloudFunction={this.fetchAggregationPanelData}
+            isLoadingCloudFunction={this.state.isLoading}
+            setLoading={this.setLoading}
             AggregationPanelData={this.state.AggregationPanelData}
             setAggregationPanelData={this.setAggregationPanelData}
           />

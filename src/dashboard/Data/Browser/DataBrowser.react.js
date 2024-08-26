@@ -165,8 +165,8 @@ export default class DataBrowser extends React.Component {
 
     if (!this.state.isPanelVisible) {
       this.props.setAggregationPanelData({});
+      this.props.setLoading(false);
     }
-    console.log(this.state.selectedObjectId, this.props.className ,this.state.isPanelVisible)
 
     if(!this.state.isPanelVisible && this.state.selectedObjectId){
       this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
@@ -550,17 +550,19 @@ export default class DataBrowser extends React.Component {
                   top: '96px',
                   right: '0',
                   bottom: '0px',
-                  // 'box-shadow': '0 2px 5px rgba(0, 0, 0, 0.1)',
-                  // backgroundColor: 'rgb(244, 244, 244)',
-                  // zIndex: 100,
                 }
               }
             >
               <div style={{
                 height: '100%',
-                overflow: 'auto'
+                overflow: 'auto',
+                display: 'flex',
+                'justify-content': 'center'
               }} >
-                <AggregationPanel data={this.props.AggregationPanelData} />
+                <AggregationPanel
+                  data={this.props.AggregationPanelData}
+                  isLoadingCloudFunction={this.props.isLoadingCloudFunction}
+                />
               </div>
             </ResizableBox>
           )}

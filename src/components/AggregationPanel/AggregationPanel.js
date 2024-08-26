@@ -9,10 +9,21 @@ import {
   ButtonElement,
 } from './AggregationPanelComponents';
 import styles from './AggregationPanel.scss';
-const AggregationPanel = ({ data }) => {
+
+const BeatLoader = () => {
+  return (
+    <div className={styles.beatloader}>
+      <div className={styles.beat}></div>
+      <div className={styles.beat}></div>
+      <div className={styles.beat}></div>
+    </div>
+  );
+};
+
+const AggregationPanel = ({ data , isLoadingCloudFunction}) => {
   return (
     <>
-      {Object.keys(data).length !== 0 ? (
+      { isLoadingCloudFunction ? <BeatLoader /> : Object.keys(data).length !== 0 ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
             <h2 className={styles.heading}>{segment.title}</h2>
