@@ -569,6 +569,7 @@ export default class BrowserCell extends Component {
       markRequiredFieldRow,
       handleCellClick,
       selectedCells,
+      setShowAggregatedData
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -633,6 +634,7 @@ export default class BrowserCell extends Component {
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
             if(selectedObjectId !== this.props.objectId) {
+              setShowAggregatedData(true)
               setSelectedObjectId(this.props.objectId);
               if(isPanelVisible) {
                 callCloudFunction(this.props.objectId, this.props.className);

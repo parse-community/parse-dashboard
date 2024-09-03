@@ -1,4 +1,5 @@
 import React from 'react';
+import LoaderDots from 'components/LoaderDots/LoaderDots.react';
 import {
   TextElement,
   KeyValueElement,
@@ -10,20 +11,14 @@ import {
 } from './AggregationPanelComponents';
 import styles from './AggregationPanel.scss';
 
-const BeatLoader = () => {
-  return (
-    <div className={styles.beatloader}>
-      <div className={styles.beat}></div>
-      <div className={styles.beat}></div>
-      <div className={styles.beat}></div>
-    </div>
-  );
-};
-
-const AggregationPanel = ({ data , isLoadingCloudFunction}) => {
+const AggregationPanel = ({ data, isLoadingCloudFunction, showAggregatedData }) => {
   return (
     <>
-      { isLoadingCloudFunction ? <BeatLoader /> : Object.keys(data).length !== 0 ? (
+      {isLoadingCloudFunction && showAggregatedData ? (
+        <div className={styles.center}>
+          <LoaderDots />
+        </div>
+      ) :  showAggregatedData && Object.keys(data).length !== 0 ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
             <h2 className={styles.heading}>{segment.title}</h2>
@@ -52,7 +47,9 @@ const AggregationPanel = ({ data , isLoadingCloudFunction}) => {
           </div>
         ))
       ) : (
-        <div className={styles.loading}>No object selected. Select an object to see aggregated data.</div>
+        <div className={styles.loading}>
+          No object selected. Select an object to see aggregated data.
+        </div>
       )}
     </>
   );

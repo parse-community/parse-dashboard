@@ -126,6 +126,19 @@ export default class DataBrowser extends React.Component {
     window.removeEventListener('resize', this.updateMaxWidth);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.current === null &&
+      this.state.selectedObjectId !== undefined &&
+      prevState.selectedObjectId !== undefined
+    ) {
+      this.setState({ selectedObjectId: undefined });
+      this.props.setAggregationPanelData({});
+      this.props.setShowAggregatedData(false)
+    }
+  }
+
+
   handleResizeStart() {
     this.setState({ isResizing: true });
   }
@@ -301,6 +314,7 @@ export default class DataBrowser extends React.Component {
       case 37:
         // Left - standalone (move to the next visible column on the left)
         // or with ctrl/meta (excel style - move to the first visible column)
+
         this.setState({
           current: {
             row: this.state.current.row,
@@ -319,12 +333,20 @@ export default class DataBrowser extends React.Component {
       case 38:
         // Up - standalone (move to the previous row)
         // or with ctrl/meta (excel style - move to the first row)
+        let prevObjectID = this.state.selectedObjectId;
         this.setState({
           current: {
             row: e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0),
             col: this.state.current.col,
           },
         });
+        this.setState({
+          selectedObjectId:this.props.data[this.state.current.row].id
+        })
+        this.props.setShowAggregatedData(true)
+        if(prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible){
+          this.props.callCloudFunction(this.state.selectedObjectId,this.props.className)
+        }
         e.preventDefault();
         break;
       case 39:
@@ -348,6 +370,7 @@ export default class DataBrowser extends React.Component {
       case 40:
         // Down - standalone (move to the next row)
         // or with ctrl/meta (excel style - move to the last row)
+        prevObjectID = this.state.selectedObjectId;
         this.setState({
           current: {
             row:
@@ -357,6 +380,15 @@ export default class DataBrowser extends React.Component {
             col: this.state.current.col,
           },
         });
+
+        this.setState({
+          selectedObjectId:this.props.data[this.state.current.row].id
+        })
+        this.props.setShowAggregatedData(true)
+        if(prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible){
+          this.props.callCloudFunction(this.state.selectedObjectId,this.props.className)
+        }
+
         e.preventDefault();
         break;
       case 67: // C
@@ -530,6 +562,7 @@ export default class DataBrowser extends React.Component {
             isPanelVisible={this.state.isPanelVisible}
             panelWidth={this.state.panelWidth}
             isResizing={this.state.isResizing}
+            setShowAggregatedData={this.props.setShowAggregatedData}
             {...other}
           />
           {this.state.isPanelVisible && (
@@ -554,14 +587,13 @@ export default class DataBrowser extends React.Component {
               }
             >
               <div style={{
-                height: '100%',
+                height:'100%',
                 overflow: 'auto',
-                display: 'flex',
-                'justify-content': 'center'
               }} >
                 <AggregationPanel
                   data={this.props.AggregationPanelData}
                   isLoadingCloudFunction={this.props.isLoadingCloudFunction}
+                  showAggregatedData={this.props.showAggregatedData}
                 />
               </div>
             </ResizableBox>

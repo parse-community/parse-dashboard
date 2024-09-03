@@ -111,7 +111,8 @@ class Browser extends DashboardView {
       classwiseCloudFunctions: {},
 
       AggregationPanelData: {},
-      isLoading: false
+      isLoading: false,
+      showAggregatedData: true
     };
 
     this.addLocation = this.addLocation.bind(this);
@@ -130,6 +131,7 @@ class Browser extends DashboardView {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.setLoading = this.setLoading.bind(this);
+    this.setShowAggregatedData = this.setShowAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
@@ -257,6 +259,12 @@ class Browser extends DashboardView {
   setLoading(bool){
     this.setState({
       isLoading:bool
+    })
+  }
+
+  setShowAggregatedData(bool){
+    this.setState({
+      showAggregatedData:bool
     })
   }
 
@@ -2049,6 +2057,8 @@ class Browser extends DashboardView {
             setLoading={this.setLoading}
             AggregationPanelData={this.state.AggregationPanelData}
             setAggregationPanelData={this.setAggregationPanelData}
+            showAggregatedData={this.state.showAggregatedData}
+            setShowAggregatedData={this.setShowAggregatedData}
           />
         );
       }
