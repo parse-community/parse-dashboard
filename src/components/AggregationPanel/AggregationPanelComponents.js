@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './AggregationPanel.scss';
+
 // Text Element Component
 export const TextElement = ({ text }) => (
   <div className="text-element">
@@ -42,7 +43,9 @@ export const TableElement = ({ columns, rows }) => (
 // Image Element Component
 export const ImageElement = ({ url }) => (
   <div className="image-element">
-    <img src={url} alt="Image" className={styles.image}/>
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      <img src={url} alt="Image" className={styles.image} />
+    </a>
   </div>
 );
 
@@ -67,7 +70,7 @@ export const AudioElement = ({ url }) => (
 );
 
 // Button Element Component
-export const ButtonElement = ({ item }) => {
+export const ButtonElement = ({ item, showNote }) => {
   const handleClick = () => {
     fetch(item.action.url, {
       method: item.action.method,
@@ -75,13 +78,20 @@ export const ButtonElement = ({ item }) => {
       body: JSON.stringify(item.action.body),
     })
       .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
+      .then(data => {
+        const formattedData = JSON.stringify(data, null, 2);
+        showNote(`${formattedData}`,false)
+      })
+      .catch(error => {
+        showNote(`${error}`,true)
+      });
   };
 
   return (
     <div className={styles.buttonContainer}>
-      <button onClick={handleClick} className={styles.button}>{item.text}</button>
+      <button onClick={handleClick} className={styles.button}>
+        {item.text}
+      </button>
     </div>
   );
 };

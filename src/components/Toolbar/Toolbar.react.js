@@ -135,21 +135,24 @@ const Toolbar = props => {
       </div>
       {props?.selectedData?.length ? <Stats data={props.selectedData} /> : null}
       <div className={styles.actions}>{props.children}</div>
-      {props.classwiseCloudFunctions && props.classwiseCloudFunctions[props.className] && <button
-        onClick={props.togglePanel}
-        style={{
-          position: 'absolute',
-          right: '5px',
-          bottom: '5px',
-          border: 'none',
-          padding: '4px 3px',
-          width:' 100px',
-          background: 'rgb(114, 111, 133)',
-          color: 'white'
-        }}
-      >
-        {props.isPanelVisible ? 'Hide Panel' : 'Show Panel'}
-      </button>}
+      {props.classwiseCloudFunctions && props.classwiseCloudFunctions[props.className] && (
+        <button
+          onClick={props.togglePanel}
+          className={styles.btn}
+        >
+          {props.isPanelVisible ? (
+            <>
+              <Icon width={18} height={18} fill="#797592" name="x-outline" />
+              Hide Panel
+            </>
+          ) : (
+            <>
+              <Icon width={18} height={18} fill="#797592" name="left-outline" />
+              Show Panel
+            </>
+          )}
+        </button>
+      )}
     </div>
   );
 };

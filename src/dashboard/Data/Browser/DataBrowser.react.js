@@ -16,7 +16,6 @@ import styles from '../Browser/Browser.scss'
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
-
 /**
  * DataBrowser renders the browser toolbar and data table
  * It also manages the fetching / updating of column size prefs,
@@ -134,10 +133,10 @@ export default class DataBrowser extends React.Component {
     ) {
       this.setState({ selectedObjectId: undefined });
       this.props.setAggregationPanelData({});
-      this.props.setShowAggregatedData(false)
+      this.props.setShowAggregatedData(false);
+      this.props.setErrorAggregatedData({});
     }
   }
-
 
   handleResizeStart() {
     this.setState({ isResizing: true });
@@ -179,9 +178,11 @@ export default class DataBrowser extends React.Component {
     if (!this.state.isPanelVisible) {
       this.props.setAggregationPanelData({});
       this.props.setLoading(false);
+      this.props.setErrorAggregatedData({});
     }
 
-    if(!this.state.isPanelVisible && this.state.selectedObjectId){
+    if (!this.state.isPanelVisible && this.state.selectedObjectId) {
+      this.props.setErrorAggregatedData({});
       this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
     }
   }
@@ -213,6 +214,7 @@ export default class DataBrowser extends React.Component {
         selectedObjectId: undefined,
       });
       this.props.setAggregationPanelData({});
+      this.props.setErrorAggregatedData({});
     }
   }
 
@@ -382,11 +384,11 @@ export default class DataBrowser extends React.Component {
         });
 
         this.setState({
-          selectedObjectId:this.props.data[this.state.current.row].id
-        })
-        this.props.setShowAggregatedData(true)
-        if(prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible){
-          this.props.callCloudFunction(this.state.selectedObjectId,this.props.className)
+          selectedObjectId: this.props.data[this.state.current.row].id,
+        });
+        this.props.setShowAggregatedData(true);
+        if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
+          this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
         }
 
         e.preventDefault();
@@ -571,29 +573,32 @@ export default class DataBrowser extends React.Component {
               height={Infinity}
               minConstraints={[400, Infinity]}
               maxConstraints={[this.state.maxWidth, Infinity]}
-              onResizeStart={this.handleResizeStart}  // Handle start of resizing
-              onResizeStop={this.handleResizeStop}    // Handle end of resizing
+              onResizeStart={this.handleResizeStart} // Handle start of resizing
+              onResizeStop={this.handleResizeStop} // Handle end of resizing
               onResize={this.handleResizeDiv}
               resizeHandles={['w']}
               className={styles.resizablePanel}
-              style={
-                {
-
-                  position: 'fixed',
-                  top: '96px',
-                  right: '0',
-                  bottom: '0px',
-                }
-              }
+              style={{
+                position: 'fixed',
+                top: '96px',
+                right: '0',
+                bottom: '0px',
+              }}
             >
-              <div style={{
-                height:'100%',
-                overflow: 'auto',
-              }} >
+              <div
+                style={{
+                  height: '100%',
+                  overflow: 'auto',
+                }}
+              >
                 <AggregationPanel
                   data={this.props.AggregationPanelData}
                   isLoadingCloudFunction={this.props.isLoadingCloudFunction}
                   showAggregatedData={this.props.showAggregatedData}
+                  errorAggregatedData={this.props.errorAggregatedData}
+                  showNote={this.props.showNote}
+                  setErrorAggregatedData={this.props.setErrorAggregatedData}
+                  setSelectedObjectId={this.setSelectedObjectId}
                 />
               </div>
             </ResizableBox>

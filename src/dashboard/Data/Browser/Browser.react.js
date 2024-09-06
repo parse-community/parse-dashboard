@@ -112,7 +112,8 @@ class Browser extends DashboardView {
 
       AggregationPanelData: {},
       isLoading: false,
-      showAggregatedData: true
+      showAggregatedData: true,
+      errorAggregatedData: {},
     };
 
     this.addLocation = this.addLocation.bind(this);
@@ -132,6 +133,7 @@ class Browser extends DashboardView {
     this.logout = this.logout.bind(this);
     this.setLoading = this.setLoading.bind(this);
     this.setShowAggregatedData = this.setShowAggregatedData.bind(this);
+    this.setErrorAggregatedData = this.setErrorAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
@@ -256,22 +258,28 @@ class Browser extends DashboardView {
     }
   }
 
-  setLoading(bool){
+  setLoading(bool) {
     this.setState({
-      isLoading:bool
-    })
+      isLoading: bool,
+    });
   }
 
-  setShowAggregatedData(bool){
+  setErrorAggregatedData(data) {
     this.setState({
-      showAggregatedData:bool
-    })
+      errorAggregatedData: data,
+    });
+  }
+
+  setShowAggregatedData(bool) {
+    this.setState({
+      showAggregatedData: bool,
+    });
   }
 
   fetchAggregationPanelData(objectId, className) {
     this.setState({
-      isLoading: true
-    })
+      isLoading: true,
+    });
     const params = {
       objectId: objectId,
     };
@@ -279,15 +287,23 @@ class Browser extends DashboardView {
 
     Parse.Cloud.run(cloudCodeFunction, params).then(
       result => {
-        this.setState({ AggregationPanelData: result ,
-          isLoading : false
-        });
+        // console.log("result",result,result.panel,result.panel.segmants)
+        if (result && result.panel && result.panel && result.panel.segments) {
+          this.setState({ AggregationPanelData: result, isLoading: false });
+        } else {
+          this.setState({
+            isLoading: false,
+            errorAggregatedData: 'Inproper JSON format',
+          });
+          this.showNote(this.state.errorAggregatedData,true)
+        }
       },
       error => {
         this.setState({
-          isLoading: false
-        })
-        console.log('error', error);
+          isLoading: false,
+          errorAggregatedData: error.message,
+        });
+        this.showNote(this.state.errorAggregatedData,true)
       }
     );
   }
@@ -2059,6 +2075,8 @@ class Browser extends DashboardView {
             setAggregationPanelData={this.setAggregationPanelData}
             showAggregatedData={this.state.showAggregatedData}
             setShowAggregatedData={this.setShowAggregatedData}
+            setErrorAggregatedData={this.setErrorAggregatedData}
+            errorAggregatedData={this.state.errorAggregatedData}
           />
         );
       }

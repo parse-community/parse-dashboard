@@ -11,14 +11,21 @@ import {
 } from './AggregationPanelComponents';
 import styles from './AggregationPanel.scss';
 
-const AggregationPanel = ({ data, isLoadingCloudFunction, showAggregatedData }) => {
+const AggregationPanel = ({
+  data,
+  isLoadingCloudFunction,
+  showAggregatedData,
+  errorAggregatedData,
+  showNote,
+  setSelectedObjectId
+}) => {
   return (
     <>
       {isLoadingCloudFunction && showAggregatedData ? (
         <div className={styles.center}>
           <LoaderDots />
         </div>
-      ) :  showAggregatedData && Object.keys(data).length !== 0 ? (
+      ) : showAggregatedData && Object.keys(data).length !== 0 && Object.keys(errorAggregatedData).length === 0 ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
             <h2 className={styles.heading}>{segment.title}</h2>
@@ -38,7 +45,7 @@ const AggregationPanel = ({ data, isLoadingCloudFunction, showAggregatedData }) 
                   case 'audio':
                     return <AudioElement key={idx} url={item.url} />;
                   case 'button':
-                    return <ButtonElement key={idx} item={item} />;
+                    return <ButtonElement key={idx} item={item} showNote={showNote} />;
                   default:
                     return null;
                 }
@@ -48,7 +55,8 @@ const AggregationPanel = ({ data, isLoadingCloudFunction, showAggregatedData }) 
         ))
       ) : (
         <div className={styles.loading}>
-          No object selected. Select an object to see aggregated data.
+            No object selected. Select an object to see aggregated data.
+          {Object.keys(errorAggregatedData).length !== 0 && setSelectedObjectId(null)}
         </div>
       )}
     </>

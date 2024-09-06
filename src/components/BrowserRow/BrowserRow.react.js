@@ -157,6 +157,7 @@ export default class BrowserRow extends Component {
               handleCellClick={this.props.handleCellClick}
               selectedCells={this.props.selectedCells}
               setShowAggregatedData={this.props.setShowAggregatedData}
+              setErrorAggregatedData={this.props.setErrorAggregatedData}
             />
           );
         })}

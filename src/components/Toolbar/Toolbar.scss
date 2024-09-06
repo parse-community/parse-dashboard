@@ -125,3 +125,31 @@ body:global(.expanded) {
   color: $blue;
   background-color: white;
 }
+
+.btn {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  border: none;
+  padding: 4px 3px;
+  width: 110px;
+  background: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+
+  svg {
+
+    &:hover {
+      fill: #ffffff;
+    }
+  }
+
+  &:hover {
+    svg {
+      fill: #ffffff;
+    }
+  }
+}
