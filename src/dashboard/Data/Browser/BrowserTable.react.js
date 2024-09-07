@@ -18,6 +18,7 @@ import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
+const LIMIT_DEFAULT = 10; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
 const ROW_HEIGHT = 30;
 
@@ -30,25 +31,56 @@ export default class BrowserTable extends React.Component {
 
     this.state = {
       offset: 0,
+      limit: LIMIT_DEFAULT,
+      currentPage: 1,
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.tableRef = React.createRef();
   }
 
+  handleItemsPerPageChange = (event) => {
+    const itemsPerPage = Number(event.target.value);
+    this.setState({
+      limit: itemsPerPage,
+      currentPage: 1, // Reset to first page if items per page changes
+      offset: 0 // Reset the offset when changing items per page
+    });
+  };
+
+  handlePreviousPage = () => {
+    if (this.state.currentPage > 1) {
+      this.setState((prevState) => ({
+        currentPage: prevState.currentPage - 1,
+        offset: (prevState.currentPage - 2) * prevState.limit
+      }));
+    }
+  };
+
+  handleNextPage = () => {
+    const totalPages = Math.ceil(this.props.data?.length / this.state.limit);
+    if (this.state.currentPage < totalPages) {
+      this.setState((prevState) => ({
+        currentPage: prevState.currentPage + 1,
+        offset: prevState.currentPage * prevState.limit
+      }));
+    }
+  };
+
   componentWillReceiveProps(props) {
     if (props.className !== this.props.className) {
       this.setState({
         offset: 0,
+        limit: LIMIT_DEFAULT,
       });
       this.tableRef.current.scrollTop = 0;
     } else if (this.props.newObject !== props.newObject) {
-      this.setState({ offset: 0 });
+      this.setState({ offset: 0, limit: LIMIT_DEFAULT, currentPage: 1 });
       this.tableRef.current.scrollTop = 0;
     } else if (this.props.ordering !== props.ordering) {
-      this.setState({ offset: 0 });
+      this.setState({ offset: 0, limit: LIMIT_DEFAULT, currentPage: 1 });
       this.tableRef.current.scrollTop = 0;
     } else if (this.props.filters.size !== props.filters.size) {
-      this.setState({ offset: 0 }, () => {
+      this.setState({ offset: 0, limit: LIMIT_DEFAULT, currentPage: 1 }, () => {
         this.tableRef.current.scrollTop = 0;
       });
     }
@@ -94,7 +126,15 @@ export default class BrowserTable extends React.Component {
   }
 
   render() {
+    const { data } = this.props;
+    const { currentPage, limit, ROW_HEIGHT } = this.state;
     let ordering = {};
+
+    // Calculate the start and end indices of the data to display
+    const startIndex = (currentPage - 1) * limit;
+    const endIndex = Math.min(startIndex + limit, data?.length);
+    const totalPages = Math.ceil(data?.length / limit);
+
     if (this.props.ordering) {
       if (this.props.ordering[0] === '-') {
         ordering = {
@@ -281,8 +321,7 @@ export default class BrowserTable extends React.Component {
         );
       }
       const rows = [];
-      const end = Math.min(this.state.offset + MAX_ROWS, this.props.data.length);
-      for (let i = this.state.offset; i < end; i++) {
+      for (let i = this.state.offset; i < endIndex; i++) {
         const index = i - this.state.offset;
         const obj = this.props.data[i];
         const currentCol =
@@ -338,7 +377,7 @@ export default class BrowserTable extends React.Component {
         if (this.props.current) {
           if (this.props.current.row < 0 && this.state.offset === 0) {
             visible = true;
-          } else if (this.props.current.row >= this.state.offset && this.props.current.row < end) {
+          } else if (this.props.current.row >= this.state.offset && this.props.current.row < endIndex) {
             visible = true;
           }
         }
@@ -362,7 +401,7 @@ export default class BrowserTable extends React.Component {
           if (!obj && this.props.current.row < -1) {
             obj =
               this.props.editCloneRows[
-                this.props.current.row + this.props.editCloneRows.length + 1
+              this.props.current.row + this.props.editCloneRows.length + 1
               ];
           }
           if (!this.props.isUnique) {
@@ -475,6 +514,47 @@ export default class BrowserTable extends React.Component {
             />
             {addRow}
             {editor}
+            <div className={styles.paginationContainer}>
+              <div className={styles.paginationItemsContainer}>
+                <span className={styles.paginationTotal}>{data.length} items</span>
+                <div>
+                  <label htmlFor="items-per-page">Items per page:</label>
+                  <select
+                    id="items-per-page"
+                    className={styles.paginationSelect}
+                    value={limit}
+                    onChange={this.handleItemsPerPageChange}
+                  >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.paginationControls}>
+                <span className={styles.paginationPage}>
+                  Page {currentPage} / {totalPages}
+                </span>
+                <button
+                  className={styles.paginationBtnPrev}
+                  onClick={this.handlePreviousPage}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                <button
+                  className={styles.paginationBtnNext}
+                  onClick={this.handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
           </div>
         );
       } else {
@@ -514,7 +594,7 @@ export default class BrowserTable extends React.Component {
             !!this.props.selection &&
             !!this.props.data &&
             Object.values(this.props.selection).filter(checked => checked).length ===
-              this.props.data.length
+            this.props.data.length
           }
           selectAll={checked =>
             this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
