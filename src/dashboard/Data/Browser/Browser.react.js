@@ -287,7 +287,6 @@ class Browser extends DashboardView {
 
     Parse.Cloud.run(cloudCodeFunction, params).then(
       result => {
-        // console.log("result",result,result.panel,result.panel.segmants)
         if (result && result.panel && result.panel && result.panel.segments) {
           this.setState({ AggregationPanelData: result, isLoading: false });
         } else {
