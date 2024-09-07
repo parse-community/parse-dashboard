@@ -115,6 +115,7 @@ const FilterRow = ({
   active,
   parentContentId,
   editMode,
+  initialFocusOnTheField,
 }) => {
   const setFocus = useCallback(input => {
     if (input !== null && editMode) {
@@ -202,6 +203,7 @@ const FilterRow = ({
         onChange={onChangeField}
         buildSuggestions={buildFieldSuggestions}
         buildLabel={() => ''}
+        initialFocusOnTheField={initialFocusOnTheField}
       />
       <ChromeDropdown
         width={compareInfo.type ? '175' : '325'}

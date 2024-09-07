@@ -61,6 +61,11 @@ export default class Autocomplete extends Component {
     window.addEventListener('resize', this.handleResize);
     this.fieldRef.current.addEventListener('scroll', this.handleScroll);
     this.recalculatePosition();
+
+    if (this.props.initialFocusOnTheField) {
+      this.inputRef.current.focus();
+    }
+
     this._ignoreBlur = false;
     this._suggestionClicked = false;
   }
