@@ -1,0 +1,20 @@
+.resizablePanel{
+    position: fixed;
+    top: 96px;
+    right: 0;
+    bottom: 0px;
+    :global(.react-resizable-handle) {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 10px;
+        cursor: col-resize;
+    }
+}
+
+
+.aggregationPanelContainer{
+    height:100%;
+    overflow: auto;
+}

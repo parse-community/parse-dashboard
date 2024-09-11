@@ -543,7 +543,7 @@ export default class BrowserCell extends Component {
           field,
           constraint,
           compareTo,
-          class: className
+          class: className,
         })
       )
     );
@@ -642,11 +642,15 @@ export default class BrowserCell extends Component {
             onPointerCmdClick(value);
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
-            if(selectedObjectId !== this.props.objectId) {
+            if (selectedObjectId !== this.props.objectId) {
               setErrorAggregatedData({});
-              setShowAggregatedData(true)
+              setShowAggregatedData(true);
               setSelectedObjectId(this.props.objectId);
-              if(isPanelVisible) {
+              if (
+                this.props.objectId &&
+                isPanelVisible &&
+                ((e.shiftKey && !this.props.firstSelectedCell) || !e.shiftKey)
+              ) {
                 callCloudFunction(this.props.objectId, this.props.className);
               }
             }

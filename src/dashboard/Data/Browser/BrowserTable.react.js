@@ -217,6 +217,7 @@ export default class BrowserTable extends React.Component {
                     onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
                     setShowAggregatedData={this.props.setShowAggregatedData}
                     setErrorAggregatedData={this.props.setErrorAggregatedData}
+                    firstSelectedCell={this.props.firstSelectedCell}
                   />
                   <Button
                     value="Clone"
@@ -296,6 +297,7 @@ export default class BrowserTable extends React.Component {
               onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
+              firstSelectedCell={this.props.firstSelectedCell}
             />
             <Button
               value="Add"
@@ -384,6 +386,7 @@ export default class BrowserTable extends React.Component {
             onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
             setShowAggregatedData={this.props.setShowAggregatedData}
             setErrorAggregatedData={this.props.setErrorAggregatedData}
+            firstSelectedCell={this.props.firstSelectedCell}
           />
         );
       }

@@ -12,7 +12,7 @@ import ContextMenu from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import React from 'react';
 import { ResizableBox } from 'react-resizable';
-import styles from '../Browser/Browser.scss'
+import styles from './Databrowser.scss';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
@@ -83,6 +83,9 @@ export default class DataBrowser extends React.Component {
         editing: false,
         simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
         allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
+        selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+        firstSelectedCell: null,
+        selectedData: []
       });
     } else if (
       Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
@@ -97,11 +100,6 @@ export default class DataBrowser extends React.Component {
       );
       this.setState({ order });
     }
-    this.setState({
-      selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
-      firstSelectedCell: null,
-      selectedData: [],
-    });
     if (props && props.className) {
       if (!props.classwiseCloudFunctions[props.className]) {
         this.setState({ isPanelVisible: false });
@@ -154,9 +152,10 @@ export default class DataBrowser extends React.Component {
   }
 
   updateMaxWidth = () => {
-    this.setState({ maxWidth: window.innerWidth - 300 });
-    if (this.state.panelWidth > window.innerWidth - 300) {
-      this.setState({ panelWidth: window.innerWidth - 300 });
+    const SidePanelWidth = 300;
+    this.setState({ maxWidth: window.innerWidth - SidePanelWidth });
+    if (this.state.panelWidth > window.innerWidth - SidePanelWidth) {
+      this.setState({ panelWidth: window.innerWidth - SidePanelWidth });
     }
   };
 
@@ -503,6 +502,7 @@ export default class DataBrowser extends React.Component {
 
       if (newSelection.size > 1) {
         this.setCurrent(null);
+        this.props.setLoading(false);
         this.setState({
           selectedCells: {
             list: newSelection,
@@ -511,6 +511,7 @@ export default class DataBrowser extends React.Component {
             colStart,
             colEnd,
           },
+          selectedObjectId: undefined,
           selectedData,
         });
       } else {
@@ -565,6 +566,7 @@ export default class DataBrowser extends React.Component {
             panelWidth={this.state.panelWidth}
             isResizing={this.state.isResizing}
             setShowAggregatedData={this.props.setShowAggregatedData}
+            firstSelectedCell={this.state.firstSelectedCell}
             {...other}
           />
           {this.state.isPanelVisible && (
@@ -578,19 +580,8 @@ export default class DataBrowser extends React.Component {
               onResize={this.handleResizeDiv}
               resizeHandles={['w']}
               className={styles.resizablePanel}
-              style={{
-                position: 'fixed',
-                top: '96px',
-                right: '0',
-                bottom: '0px',
-              }}
             >
-              <div
-                style={{
-                  height: '100%',
-                  overflow: 'auto',
-                }}
-              >
+              <div className={styles.aggregationPanelContainer}>
                 <AggregationPanel
                   data={this.props.AggregationPanelData}
                   isLoadingCloudFunction={this.props.isLoadingCloudFunction}
@@ -599,6 +590,7 @@ export default class DataBrowser extends React.Component {
                   showNote={this.props.showNote}
                   setErrorAggregatedData={this.props.setErrorAggregatedData}
                   setSelectedObjectId={this.setSelectedObjectId}
+                  selectedObjectId={this.state.selectedObjectId}
                 />
               </div>
             </ResizableBox>

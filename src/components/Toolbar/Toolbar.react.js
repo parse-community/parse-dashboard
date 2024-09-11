@@ -15,7 +15,7 @@ import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom
 
 const POPOVER_CONTENT_ID = 'toolbarStatsPopover';
 
-const Stats = ({ data }) => {
+const Stats = ({ data, classwiseCloudFunctions, className }) => {
   const [selected, setSelected] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const buttonRef = React.useRef();
@@ -98,10 +98,17 @@ const Stats = ({ data }) => {
     setSelected(statsOptions[0]);
   }, []);
 
+  const rightMarginStyle = classwiseCloudFunctions && classwiseCloudFunctions[className] ? '120px' : 'initial';
+
   return (
     <>
       {selected ? (
-        <button ref={buttonRef} className={styles.stats} onClick={toggle}>
+        <button
+          ref={buttonRef}
+          className={styles.stats}
+          onClick={toggle}
+          style={{ marginRight: rightMarginStyle }}
+        >
           {`${selected.label}: ${selected.getValue(data)}`}
         </button>
       ) : null}
@@ -133,7 +140,7 @@ const Toolbar = props => {
           </div>
         </div>
       </div>
-      {props?.selectedData?.length ? <Stats data={props.selectedData} /> : null}
+      {props?.selectedData?.length ? <Stats data={props.selectedData} classwiseCloudFunctions={props.classwiseCloudFunctions} className = {props.className} /> : null}
       <div className={styles.actions}>{props.children}</div>
       {props.classwiseCloudFunctions && props.classwiseCloudFunctions[props.className] && (
         <button

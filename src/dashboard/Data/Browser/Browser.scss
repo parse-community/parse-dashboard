@@ -264,17 +264,6 @@ body:global(.expanded) {
   }
 } 
 
-.resizablePanel {
-  :global(.react-resizable-handle) {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    cursor: col-resize;
-  }
-}
-
 .dataContainer{
   height: 100%;
   overflow: auto;

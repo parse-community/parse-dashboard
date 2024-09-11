@@ -15,17 +15,19 @@ const AggregationPanel = ({
   data,
   isLoadingCloudFunction,
   showAggregatedData,
+  setErrorAggregatedData,
   errorAggregatedData,
   showNote,
-  setSelectedObjectId
+  setSelectedObjectId,
+  selectedObjectId
 }) => {
   return (
     <>
-      {isLoadingCloudFunction && showAggregatedData ? (
+      {selectedObjectId && isLoadingCloudFunction && showAggregatedData ? (
         <div className={styles.center}>
           <LoaderDots />
         </div>
-      ) : showAggregatedData && Object.keys(data).length !== 0 && Object.keys(errorAggregatedData).length === 0 ? (
+      ) : selectedObjectId && showAggregatedData && Object.keys(data).length !== 0 && Object.keys(errorAggregatedData).length === 0 ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
             <h2 className={styles.heading}>{segment.title}</h2>
@@ -56,7 +58,7 @@ const AggregationPanel = ({
       ) : (
         <div className={styles.loading}>
             No object selected. Select an object to see aggregated data.
-          {Object.keys(errorAggregatedData).length !== 0 && setSelectedObjectId(null)}
+          {Object.keys(errorAggregatedData).length !== 0 && setSelectedObjectId(null) && setErrorAggregatedData({})}
         </div>
       )}
     </>
