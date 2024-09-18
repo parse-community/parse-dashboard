@@ -131,7 +131,7 @@ export default class DataBrowser extends React.Component {
       this.state.selectedObjectId !== undefined &&
       prevState.selectedObjectId !== undefined
     ) {
-      this.setState({ 
+      this.setState({
         selectedObjectId: undefined,
         showAggregatedData: false
       });
