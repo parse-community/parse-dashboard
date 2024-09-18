@@ -48,6 +48,7 @@ export default class DataBrowser extends React.Component {
       panelWidth: 400,
       isResizing: false,
       maxWidth: window.innerWidth - 300,
+      showAggregatedData: true,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -61,6 +62,7 @@ export default class DataBrowser extends React.Component {
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
+    this.setShowAggregatedData = this.setShowAggregatedData.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setSelectedObjectId = this.setSelectedObjectId.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
@@ -129,10 +131,14 @@ export default class DataBrowser extends React.Component {
       this.state.selectedObjectId !== undefined &&
       prevState.selectedObjectId !== undefined
     ) {
-      this.setState({ selectedObjectId: undefined });
+      this.setState({ 
+        selectedObjectId: undefined,
+        showAggregatedData: false
+      });
       this.props.setAggregationPanelData({});
-      this.props.setShowAggregatedData(false);
-      this.props.setErrorAggregatedData({});
+      if(this.props.errorAggregatedData != {}){
+        this.props.setErrorAggregatedData({});
+      }
     }
   }
 
@@ -149,6 +155,12 @@ export default class DataBrowser extends React.Component {
 
   handleResizeDiv(event, { size }) {
     this.setState({ panelWidth: size.width });
+  }
+
+  setShowAggregatedData(bool) {
+    this.setState({
+      showAggregatedData: bool,
+    });
   }
 
   updateMaxWidth = () => {
@@ -177,11 +189,15 @@ export default class DataBrowser extends React.Component {
     if (!this.state.isPanelVisible) {
       this.props.setAggregationPanelData({});
       this.props.setLoading(false);
-      this.props.setErrorAggregatedData({});
+      if(this.props.errorAggregatedData != {}){
+        this.props.setErrorAggregatedData({});
+      }
     }
 
     if (!this.state.isPanelVisible && this.state.selectedObjectId) {
-      this.props.setErrorAggregatedData({});
+      if(this.props.errorAggregatedData != {}){
+        this.props.setErrorAggregatedData({});
+      }
       this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
     }
   }
@@ -213,7 +229,9 @@ export default class DataBrowser extends React.Component {
         selectedObjectId: undefined,
       });
       this.props.setAggregationPanelData({});
-      this.props.setErrorAggregatedData({});
+      if(this.props.errorAggregatedData != {}){
+        this.props.setErrorAggregatedData({});
+      }
     }
   }
 
@@ -342,9 +360,9 @@ export default class DataBrowser extends React.Component {
           },
         });
         this.setState({
-          selectedObjectId:this.props.data[this.state.current.row].id
+          selectedObjectId:this.props.data[this.state.current.row].id,
+          showAggregatedData:true
         })
-        this.props.setShowAggregatedData(true)
         if(prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible){
           this.props.callCloudFunction(this.state.selectedObjectId,this.props.className)
         }
@@ -384,8 +402,8 @@ export default class DataBrowser extends React.Component {
 
         this.setState({
           selectedObjectId: this.props.data[this.state.current.row].id,
+          showAggregatedData: true,
         });
-        this.props.setShowAggregatedData(true);
         if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
           this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
         }
@@ -565,7 +583,7 @@ export default class DataBrowser extends React.Component {
             isPanelVisible={this.state.isPanelVisible}
             panelWidth={this.state.panelWidth}
             isResizing={this.state.isResizing}
-            setShowAggregatedData={this.props.setShowAggregatedData}
+            setShowAggregatedData={this.setShowAggregatedData}
             firstSelectedCell={this.state.firstSelectedCell}
             {...other}
           />
@@ -585,7 +603,7 @@ export default class DataBrowser extends React.Component {
                 <AggregationPanel
                   data={this.props.AggregationPanelData}
                   isLoadingCloudFunction={this.props.isLoadingCloudFunction}
-                  showAggregatedData={this.props.showAggregatedData}
+                  showAggregatedData={this.state.showAggregatedData}
                   errorAggregatedData={this.props.errorAggregatedData}
                   showNote={this.props.showNote}
                   setErrorAggregatedData={this.props.setErrorAggregatedData}

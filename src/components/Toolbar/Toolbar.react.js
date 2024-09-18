@@ -140,7 +140,7 @@ const Toolbar = props => {
           </div>
         </div>
       </div>
-      {props?.selectedData?.length ? <Stats data={props.selectedData} classwiseCloudFunctions={props.classwiseCloudFunctions} className = {props.className} /> : null}
+      {props?.selectedData?.length ? <Stats data={props.selectedData} classwiseCloudFunctions={props.classwiseCloudFunctions} className={props.className} /> : null}
       <div className={styles.actions}>{props.children}</div>
       {props.classwiseCloudFunctions && props.classwiseCloudFunctions[props.className] && (
         <button

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import LoaderDots from 'components/LoaderDots/LoaderDots.react';
 import {
   TextElement,
@@ -21,13 +21,30 @@ const AggregationPanel = ({
   setSelectedObjectId,
   selectedObjectId
 }) => {
+
+  useEffect(() => {
+    if (Object.keys(errorAggregatedData).length !== 0) {
+      setSelectedObjectId(null);
+      setErrorAggregatedData({});
+    }
+  }, [errorAggregatedData, setSelectedObjectId, setErrorAggregatedData]);
+
+  const isLoading = useMemo(() =>
+    selectedObjectId && isLoadingCloudFunction && showAggregatedData,
+  [selectedObjectId, isLoadingCloudFunction, showAggregatedData]
+  );
+
+  const shouldShowAggregatedData = useMemo(() =>
+    selectedObjectId && showAggregatedData && Object.keys(data).length !== 0 && Object.keys(errorAggregatedData).length === 0, [selectedObjectId, showAggregatedData, data, errorAggregatedData]
+  );
+
   return (
     <>
-      {selectedObjectId && isLoadingCloudFunction && showAggregatedData ? (
+      {isLoading ? (
         <div className={styles.center}>
           <LoaderDots />
         </div>
-      ) : selectedObjectId && showAggregatedData && Object.keys(data).length !== 0 && Object.keys(errorAggregatedData).length === 0 ? (
+      ) : shouldShowAggregatedData ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
             <h2 className={styles.heading}>{segment.title}</h2>
@@ -58,7 +75,6 @@ const AggregationPanel = ({
       ) : (
         <div className={styles.loading}>
             No object selected. Select an object to see aggregated data.
-          {Object.keys(errorAggregatedData).length !== 0 && setSelectedObjectId(null) && setErrorAggregatedData({})}
         </div>
       )}
     </>

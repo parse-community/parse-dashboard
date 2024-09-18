@@ -518,10 +518,7 @@ export default class BrowserTable extends React.Component {
 
       if (this.props.newObject || this.props.data.length > 0) {
         table = (
-          <div
-            className={styles.table}
-            ref={this.tableRef}
-          >
+          <div className={styles.table} ref={this.tableRef}>
             <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
             {editCloneRows}
             {newRow}
@@ -540,10 +537,7 @@ export default class BrowserTable extends React.Component {
         );
       } else {
         table = (
-          <div
-            className={styles.table}
-            ref={this.tableRef}
-          >
+          <div className={styles.table} ref={this.tableRef}>
             <div className={styles.empty}>
               {this.props.relation ? (
                 <EmptyState
@@ -580,7 +574,7 @@ export default class BrowserTable extends React.Component {
           'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
         }}
       >
-        <div >
+        <div>
           <DataBrowserHeaderBar
             selected={
               !!this.props.selection &&
@@ -600,7 +594,6 @@ export default class BrowserTable extends React.Component {
             preventSchemaEdits={this.context.preventSchemaEdits}
             isDataLoaded={!!this.props.data}
           />
-
           {table}
         </div>
       </div>

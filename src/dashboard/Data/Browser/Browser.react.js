@@ -106,13 +106,10 @@ class Browser extends DashboardView {
 
       classes: {},
       allClassesSchema: {},
-
       configData: {},
       classwiseCloudFunctions: {},
-
       AggregationPanelData: {},
       isLoading: false,
-      showAggregatedData: true,
       errorAggregatedData: {},
     };
 
@@ -132,7 +129,6 @@ class Browser extends DashboardView {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.setLoading = this.setLoading.bind(this);
-    this.setShowAggregatedData = this.setShowAggregatedData.bind(this);
     this.setErrorAggregatedData = this.setErrorAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
@@ -270,12 +266,6 @@ class Browser extends DashboardView {
     });
   }
 
-  setShowAggregatedData(bool) {
-    this.setState({
-      showAggregatedData: bool,
-    });
-  }
-
   fetchAggregationPanelData(objectId, className) {
     this.setState({
       isLoading: true,
@@ -337,7 +327,6 @@ class Browser extends DashboardView {
 
   classAndCloudFuntionMap(data) {
     const classMap = {};
-
     data.apps.forEach(app => {
       app.infoPanel.forEach(panel => {
         panel.classes.forEach(className => {
@@ -2072,8 +2061,6 @@ class Browser extends DashboardView {
             setLoading={this.setLoading}
             AggregationPanelData={this.state.AggregationPanelData}
             setAggregationPanelData={this.setAggregationPanelData}
-            showAggregatedData={this.state.showAggregatedData}
-            setShowAggregatedData={this.setShowAggregatedData}
             setErrorAggregatedData={this.setErrorAggregatedData}
             errorAggregatedData={this.state.errorAggregatedData}
           />
