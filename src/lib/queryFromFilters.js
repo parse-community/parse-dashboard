@@ -8,8 +8,6 @@
 import Parse from 'parse';
 
 export default async function queryFromFilters(className, filters) {
-  // // eslint-disable-next-line no-debugger
-  // debugger;
   let primaryQuery;
   const querieslist = [];
   if (typeof className === 'string') {
