@@ -282,7 +282,7 @@ class Browser extends DashboardView {
         } else {
           this.setState({
             isLoading: false,
-            errorAggregatedData: 'Inproper JSON format',
+            errorAggregatedData: 'Improper JSON format',
           });
           this.showNote(this.state.errorAggregatedData,true)
         }

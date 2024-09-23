@@ -643,7 +643,6 @@ export default class BrowserCell extends Component {
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
             if (selectedObjectId !== this.props.objectId) {
-              setErrorAggregatedData({});
               setShowAggregatedData(true);
               setSelectedObjectId(this.props.objectId);
               if (
