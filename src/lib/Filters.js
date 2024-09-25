@@ -233,7 +233,7 @@ export function availableFilters(schema, currentFilters, blacklist) {
   return available;
 }
 
-export function findRelatedClasses(referClass , allClasses, blacklist, currentFilters) {
+export function findRelatedClasses(referClass, allClasses, blacklist, currentFilters) {
   const relatedClasses = {};
   if (allClasses[referClass]) {
     const availableForRefer = availableFilters(allClasses[referClass], currentFilters, blacklist);
@@ -243,31 +243,42 @@ export function findRelatedClasses(referClass , allClasses, blacklist, currentFi
   }
 
   for (const className in allClasses) {
-    if (className === referClass){
+    if (className === referClass) {
       continue;
     }
 
-    if (!checkRelation(referClass, allClasses[className])) {
+    if (!checkRelation(referClass, allClasses, className)) {
       continue;
     }
+
     const schema = allClasses[className];
     const available = availableFilters(schema, currentFilters, blacklist);
     if (Object.keys(available).length > 0) {
       relatedClasses[className] = available;
     }
   }
-
   return relatedClasses;
 }
 
-function checkRelation(classname,schema){
-  for (const col in schema) {
-    if (schema[col].type === 'Pointer' && schema[col].targetClass === classname) {
-      return true;
+const checkRelationHelper = (schema, col, className) =>
+  schema[col].type === 'Pointer' && schema[col].targetClass === className;
+
+function checkRelation(currentClassname, schemas, classToReferName) {
+  const currentClassSchema = schemas[currentClassname];
+  const classSchemaBeingCheckedToRefer = schemas[classToReferName];
+  let flag = false;
+
+  for (const col in currentClassSchema) {
+    if (checkRelationHelper(currentClassSchema, col, classToReferName)) {
+      flag = true;
     }
   }
-  return false;
-
+  for (const col in classSchemaBeingCheckedToRefer) {
+    if (checkRelationHelper(classSchemaBeingCheckedToRefer, col, currentClassname)) {
+      flag = true;
+    }
+  }
+  return flag;
 }
 
 export const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];
