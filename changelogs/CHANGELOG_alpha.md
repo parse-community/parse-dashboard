@@ -1,3 +1,10 @@
+# [6.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.12...6.0.0-alpha.13) (2024-09-25)
+
+
+### Bug Fixes
+
+* Internal classes `_User`, `_Role`, `_Installation` referenced with pointer don't appear in data browser filter dialog ([#2599](https://github.com/ParsePlatform/parse-dashboard/issues/2599)) ([8239cc8](https://github.com/ParsePlatform/parse-dashboard/commit/8239cc8a05865c5f0b4f5b33dfb224e87d25a319))
+
 # [6.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.11...6.0.0-alpha.12) (2024-08-07)
 
 
