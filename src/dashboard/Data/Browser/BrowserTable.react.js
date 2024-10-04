@@ -30,7 +30,7 @@ export default class BrowserTable extends React.Component {
 
     this.state = {
       offset: 0,
-      panelWidth: 400,
+      panelWidth: 300,
       isResizing: false,
       maxWidth: window.innerWidth - 300,
     };
