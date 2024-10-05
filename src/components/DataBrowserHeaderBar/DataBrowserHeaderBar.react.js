@@ -24,6 +24,8 @@ export default class DataBrowserHeaderBar extends React.Component {
       preventSchemaEdits,
       selected,
       isDataLoaded,
+      setSelectedObjectId,
+      setCurrent
     } = this.props;
     const elements = [
       <div key="check" className={[styles.wrap, styles.check].join(' ')}>
@@ -48,7 +50,11 @@ export default class DataBrowserHeaderBar extends React.Component {
         !preventSort &&
         (type === 'String' || type === 'Number' || type === 'Date' || type === 'Boolean')
       ) {
-        onClick = () => updateOrdering((order === 'descending' ? '' : '-') + name);
+        onClick = () =>{
+          updateOrdering((order === 'descending' ? '' : '-') + name);
+          setSelectedObjectId(null);
+          setCurrent(null)
+        }
       }
 
       let className = styles.wrap;

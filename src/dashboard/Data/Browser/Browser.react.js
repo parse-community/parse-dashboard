@@ -1094,6 +1094,9 @@ class Browser extends DashboardView {
       {
         ordering: ordering,
         selection: {},
+        errorAggregatedData: {},
+        isLoading: false,
+        AggregationPanelData: {},
       },
       () => this.fetchData(source, this.state.filters)
     );
