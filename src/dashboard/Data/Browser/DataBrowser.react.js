@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import ContextMenu from 'components/ContextMenu/ContextMenu.react';
 import copy from 'copy-to-clipboard';
 import BrowserTable from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
-import ContextMenu from 'components/ContextMenu/ContextMenu.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import React from 'react';
 import { ResizableBox } from 'react-resizable';
@@ -45,7 +45,7 @@ export default class DataBrowser extends React.Component {
       firstSelectedCell: null,
       selectedData: [],
       prevClassName: props.className,
-      panelWidth: 400,
+      panelWidth: 300,
       isResizing: false,
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
@@ -591,7 +591,7 @@ export default class DataBrowser extends React.Component {
             <ResizableBox
               width={this.state.panelWidth}
               height={Infinity}
-              minConstraints={[400, Infinity]}
+              minConstraints={[100, Infinity]}
               maxConstraints={[this.state.maxWidth, Infinity]}
               onResizeStart={this.handleResizeStart} // Handle start of resizing
               onResizeStop={this.handleResizeStop} // Handle end of resizing

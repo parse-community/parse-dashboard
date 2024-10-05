@@ -1,15 +1,15 @@
-import React, { useEffect, useMemo } from 'react';
 import LoaderDots from 'components/LoaderDots/LoaderDots.react';
+import React, { useEffect, useMemo } from 'react';
+import styles from './AggregationPanel.scss';
 import {
-  TextElement,
-  KeyValueElement,
-  TableElement,
-  ImageElement,
-  VideoElement,
   AudioElement,
   ButtonElement,
+  ImageElement,
+  KeyValueElement,
+  TableElement,
+  TextElement,
+  VideoElement,
 } from './AggregationPanelComponents';
-import styles from './AggregationPanel.scss';
 
 const AggregationPanel = ({
   data,
@@ -74,7 +74,7 @@ const AggregationPanel = ({
         ))
       ) : (
         <div className={styles.loading}>
-            No object selected. Select an object to see aggregated data.
+            No object selected.
         </div>
       )}
     </>

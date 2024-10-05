@@ -11,8 +11,8 @@ export const TextElement = ({ text }) => (
 // Key-Value Element Component
 export const KeyValueElement = ({ item }) => (
   <div className={styles.keyValue}>
-    <strong>{item.key}:</strong>
-    {item.url ? <a href={item.url}>{item.value}</a> : <span>{item.value}</span>}
+    {item.key}:
+    {item.url ? <a href={item.url} target="_blank">{item.value}</a> : <span>{item.value}</span>}
   </div>
 );
 

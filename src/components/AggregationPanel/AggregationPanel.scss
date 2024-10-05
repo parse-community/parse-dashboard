@@ -1,9 +1,9 @@
 @import 'stylesheets/globals.scss';
 
 .heading {
-    font-size: 18px;
+    font-size: 14px;
     margin-top: 0;
-    padding: 6px;
+    padding: 8px;
     padding-left: 10px;
     background-color: $blue;
     color: $white;
@@ -13,7 +13,7 @@
     font-size: 14px;
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 5px;
+    padding-top: 6px;
     display: flex;
     flex-direction: column;
     border-left: 1px solid #e3e3ea;
@@ -23,7 +23,7 @@
 .keyValue {
     font-size: 14px;
     display: flex;
-    gap: 36px;
+    gap: 10px;
 }
 
 .video {
@@ -49,8 +49,7 @@
 
 .segmentItems th,
 .segmentItems td {
-    font-size: 14px;
-    padding: 8px;
+    padding: 4px;
     text-align: left;
 }
 
@@ -68,7 +67,7 @@
     cursor: pointer;
     margin-bottom: 15px;
     background-color: $blue;
-    padding: 5px 10px;
+    padding: 3px 13px;
     border: none;
     color: $white;
     line-height: 28px;

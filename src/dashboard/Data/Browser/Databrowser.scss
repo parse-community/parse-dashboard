@@ -10,11 +10,16 @@
         bottom: 0;
         width: 10px;
         cursor: col-resize;
+        box-shadow: -3px 0 3px -1px rgba(203, 203, 203, 0.2);
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
     }
 }
 
-
 .aggregationPanelContainer{
-    height:100%;
+    height: 100%;
     overflow: auto;
+    background-color: #fefafb;
 }
