@@ -1,3 +1,10 @@
+# [6.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.13...6.0.0-alpha.14) (2024-10-06)
+
+
+### Features
+
+* Add data panel to display object related data fetched via Cloud Function ([#2584](https://github.com/ParsePlatform/parse-dashboard/issues/2584)) ([914cc71](https://github.com/ParsePlatform/parse-dashboard/commit/914cc71790157289c32b95cd9d4cdf3d0685989f))
+
 # [6.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.12...6.0.0-alpha.13) (2024-09-25)
 
 
