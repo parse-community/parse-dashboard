@@ -1,3 +1,10 @@
+# [6.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.15...6.0.0-alpha.16) (2024-10-07)
+
+
+### Bug Fixes
+
+* Dashboard not building for Docker platform arm64/v8 ([#2534](https://github.com/ParsePlatform/parse-dashboard/issues/2534)) ([8c4a862](https://github.com/ParsePlatform/parse-dashboard/commit/8c4a862d63b8e568738a2eeab25b6e977cd1ee11))
+
 # [6.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.14...6.0.0-alpha.15) (2024-10-07)
 
 
