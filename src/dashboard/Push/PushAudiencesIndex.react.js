@@ -200,10 +200,10 @@ class PushAudiencesIndex extends DashboardView {
     }
   }
 
-  createAudience(modalState, { platforms, name, formattedFilters }) {
+  async createAudience(modalState, { platforms, name, formattedFilters }) {
     let query = {};
 
-    const parseQuery = queryFromFilters('_Installation', formattedFilters);
+    const parseQuery = await queryFromFilters('_Installation', formattedFilters);
 
     if (parseQuery && parseQuery.toJSON()) {
       query = parseQuery.toJSON().where || {};

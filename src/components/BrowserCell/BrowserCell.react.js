@@ -280,6 +280,7 @@ export default class BrowserCell extends Component {
   //#region Cell Context Menu related methods
 
   onContextMenu(event) {
+    this.props.setErrorAggregatedData({});
     if (event.type !== 'contextmenu') {
       return;
     }
@@ -289,6 +290,13 @@ export default class BrowserCell extends Component {
 
     onSelect({ row, col });
     setCopyableValue(hidden ? undefined : this.copyableValue);
+    if (this.props.selectedObjectId !== this.props.objectId) {
+      this.props.setShowAggregatedData(true);
+      this.props.setSelectedObjectId(this.props.objectId);
+      if (this.props.isPanelVisible) {
+        this.props.callCloudFunction(this.props.objectId, this.props.className);
+      }
+    }
 
     const available = Filters.availableFilters(
       this.props.simplifiedSchema,
@@ -336,10 +344,34 @@ export default class BrowserCell extends Component {
         });
     }
 
-    const { className, objectId } = this.props;
-    const validScripts = (this.props.scripts || []).filter(script =>
-      script.classes?.includes(this.props.className)
-    );
+    const { className, objectId, field, scripts = [], rowValue } = this.props;
+    let validator = null;
+    const validScripts = (scripts || []).filter(script => {
+      if (script.classes?.includes(className)) {
+        return true;
+      }
+      for (const script of script?.classes || []) {
+        if (script?.name !== className) {
+          continue;
+        }
+        const fields = script?.fields || [];
+        if (script?.fields.includes(field) || script?.fields.includes('*')) {
+          return true;
+        }
+        for (const currentField of fields) {
+          if (Object.prototype.toString.call(currentField) === '[object Object]') {
+            if (currentField.name === field) {
+              if (typeof currentField.validator === 'string') {
+                validator = eval(currentField.validator);
+              } else {
+                validator = currentField.validator;
+              }
+              return true;
+            }
+          }
+        }
+      }
+    });
     if (validScripts.length) {
       onEditSelectedRow &&
         contextMenuOptions.push({
@@ -347,12 +379,13 @@ export default class BrowserCell extends Component {
           items: validScripts.map(script => {
             return {
               text: script.title,
+              disabled: validator?.(rowValue, field) === false,
               callback: () => {
                 this.selectedScript = { ...script, className, objectId };
                 if (script.showConfirmationDialog) {
                   this.toggleConfirmationDialog();
                 } else {
-                  this.executeSript(script);
+                  this.executeScript(script);
                 }
               },
             };
@@ -363,7 +396,7 @@ export default class BrowserCell extends Component {
     return contextMenuOptions;
   }
 
-  async executeSript(script) {
+  async executeScript(script) {
     try {
       const object = Parse.Object.extend(this.props.className).createWithoutData(
         this.props.objectId
@@ -481,7 +514,7 @@ export default class BrowserCell extends Component {
 
   pickFilter(constraint, addToExistingFilter) {
     const definition = Filters.Constraints[constraint];
-    const { filters, type, value, field } = this.props;
+    const { filters, type, value, field, className } = this.props;
     const newFilters = addToExistingFilter ? filters : new List();
     let compareTo;
     if (definition.comparable) {
@@ -510,6 +543,7 @@ export default class BrowserCell extends Component {
           field,
           constraint,
           compareTo,
+          class: className,
         })
       )
     );
@@ -530,6 +564,10 @@ export default class BrowserCell extends Component {
       current,
       onEditChange,
       setCopyableValue,
+      selectedObjectId,
+      setSelectedObjectId,
+      callCloudFunction,
+      isPanelVisible,
       onPointerCmdClick,
       row,
       col,
@@ -539,6 +577,7 @@ export default class BrowserCell extends Component {
       markRequiredFieldRow,
       handleCellClick,
       selectedCells,
+      setShowAggregatedData
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -602,6 +641,17 @@ export default class BrowserCell extends Component {
             onPointerCmdClick(value);
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
+            if (selectedObjectId !== this.props.objectId) {
+              setShowAggregatedData(true);
+              setSelectedObjectId(this.props.objectId);
+              if (
+                this.props.objectId &&
+                isPanelVisible &&
+                ((e.shiftKey && !this.props.firstSelectedCell) || !e.shiftKey)
+              ) {
+                callCloudFunction(this.props.objectId, this.props.className);
+              }
+            }
             handleCellClick(e, row, col);
           }
         }}

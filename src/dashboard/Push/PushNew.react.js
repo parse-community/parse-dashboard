@@ -800,7 +800,7 @@ class PushNew extends DashboardView {
           schema={schema}
           pushAudiencesStore={this.props.pushaudiences}
           current={fields.audience_id}
-          onChange={(audienceId, queryOrFilters, deviceCount) => {
+          onChange={async (audienceId, queryOrFilters, deviceCount) => {
             this.setState({ deviceCount, audienceId });
             setField('audience_id', audienceId);
             if (audienceId === PushConstants.NEW_SEGMENT_ID) {
@@ -809,7 +809,12 @@ class PushNew extends DashboardView {
               if (queryOrFilters instanceof Parse.Query) {
                 setField('target', queryOrFilters);
               } else {
-                setField('target', queryFromFilters('_Installation', queryOrFilters));
+                try {
+                  const query = await queryFromFilters('_Installation', queryOrFilters);
+                  setField('target', query);
+                } catch (error) {
+                  console.error('Error in pushnew queryfilters:', error);
+                }
               }
             }
           }}
