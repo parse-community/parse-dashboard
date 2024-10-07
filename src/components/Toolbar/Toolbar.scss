@@ -85,3 +85,71 @@ body:global(.expanded) {
   right: 14px;
   top: 4px;
 }
+
+.stats {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+  background: $blue;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 14px;
+  color: white;
+  box-shadow: none;
+  border: none;
+}
+
+.stats_popover_container {
+  display: flex;
+  flex-direction: column;
+  background: $blue;
+  border-radius: 3px;
+  margin-top: 1px;
+  gap: 2px;
+  padding: 2px 0px;
+  font-size: 14px;
+  color: white;
+}
+
+.stats_popover_item {
+  cursor: pointer;
+  padding: 0px 6px;
+
+  &:hover {
+    color: $blue;
+    background-color: white;
+  }
+}
+
+.active {
+  color: $blue;
+  background-color: white;
+}
+
+.btn {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  border: none;
+  padding: 6px 3px;
+  width: 110px;
+  background: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+
+  svg {
+
+    &:hover {
+      fill: #ffffff;
+    }
+  }
+
+  &:hover {
+    svg {
+      fill: #ffffff;
+    }
+  }
+}

@@ -45,6 +45,7 @@ const BrowserToolbar = ({
   onExport,
   onRemoveColumn,
   onDeleteRows,
+  onExecuteScriptRows,
   onDropClass,
   onChangeCLP,
   onRefresh,
@@ -71,6 +72,14 @@ const BrowserToolbar = ({
   login,
   logout,
   toggleMasterKeyUsage,
+
+  selectedData,
+  allClasses,
+  allClassesSchema,
+
+  togglePanel,
+  isPanelVisible,
+  classwiseCloudFunctions
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -161,6 +170,7 @@ const BrowserToolbar = ({
           text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
           onClick={() => onDeleteRows(selection)}
         />
+        <Separator />
         {enableColumnManipulation ? (
           <MenuItem text="Delete a column" onClick={onRemoveColumn} />
         ) : (
@@ -221,6 +231,32 @@ const BrowserToolbar = ({
     });
   }
 
+  allClasses.forEach(className => {
+    const classSchema = schema.data.get('classes').get(className);
+
+    if (classSchema) {
+      schemaSimplifiedData[className] = {};
+
+      classSchema.forEach(({ type, targetClass }, col) => {
+        schemaSimplifiedData[className][col] = {
+          type,
+          targetClass,
+        };
+
+        columns[col] = { type, targetClass };
+
+        if (col === 'objectId' || (isUnique && col !== uniqueField)) {
+          return;
+        }
+        if ((type === 'Pointer' && targetClass === '_User') || type === 'Array') {
+          userPointers.push(col);
+        }
+      });
+    } else {
+      console.log(`Class ${className} not found in schema.`);
+    }
+  });
+
   const clpDialogRef = useRef(null);
   const protectedDialogRef = useRef(null);
   const loginDialogRef = useRef(null);
@@ -228,14 +264,18 @@ const BrowserToolbar = ({
   const showCLP = () => clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
   const showLogin = () => loginDialogRef.current.handleOpen();
-
   return (
     <Toolbar
+      className={className}
       relation={relation}
       filters={filters}
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}
+      selectedData={selectedData}
+      togglePanel={togglePanel}
+      isPanelVisible={isPanelVisible}
+      classwiseCloudFunctions={classwiseCloudFunctions}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>
@@ -334,9 +374,11 @@ const BrowserToolbar = ({
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}
+        allClasses={allClasses}
+        allClassesSchema={allClassesSchema}
       />
       {onAddRow && <div className={styles.toolbarSeparator} />}
-      {perms && enableSecurityDialog ? (
+      {enableSecurityDialog ? (
         <SecurityDialog
           ref={clpDialogRef}
           disabled={!!relation || !!isUnique}
@@ -378,6 +420,18 @@ const BrowserToolbar = ({
         <noscript />
       )}
       {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
+      <BrowserMenu setCurrent={setCurrent} title="Script" icon="gear-solid">
+        <MenuItem
+          disabled={selectionLength === 0}
+          text={
+            selectionLength === 1 && !selection['*']
+              ? 'Run script on selected row...'
+              : `Run script on ${selectionLength} selected rows...`
+          }
+          onClick={() => onExecuteScriptRows(selection)}
+        />
+      </BrowserMenu>
+      <div className={styles.toolbarSeparator} />
       {menu}
       {editCloneRows && editCloneRows.length > 0 && <div className={styles.toolbarSeparator} />}
       {editCloneRows && editCloneRows.length > 0 && (

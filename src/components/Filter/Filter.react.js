@@ -8,35 +8,60 @@
 import * as Filters from 'lib/Filters';
 import { List, Map } from 'immutable';
 import PropTypes from 'lib/PropTypes';
-import React from 'react';
+import React, { useState } from 'react';
 import stringCompare from 'lib/stringCompare';
 import { CurrentApp } from 'context/currentApp';
 
-function changeField(schema, filters, index, newField) {
-  const allowedConstraints = Filters.FieldConstraints[schema[newField].type];
+function changeClass(schema, filters, index, newClassName) {
+  const current = filters.get(index);
+  const field = current.get('field');
+  const constraint = current.get('constraint');
+  const newClassFields = Object.keys(schema[newClassName]);
+  const isFieldValid = newClassFields.includes(field);
+  const newField = isFieldValid ? field : newClassFields[0];
+  const allowedConstraints = Filters.FieldConstraints[schema[newClassName][newField].type];
+  const isConstraintValid = allowedConstraints.includes(constraint);
+  const newConstraint = isConstraintValid ? constraint : allowedConstraints[0];
+  const defaultCompare = Filters.DefaultComparisons[schema[newClassName][newField].type];
+  const newFilter = new Map({
+    class: newClassName,
+    field: newField,
+    constraint: newConstraint,
+    compareTo: defaultCompare,
+  });
+
+  return filters.set(index, newFilter);
+}
+
+function changeField(schema, currentClassName, filters, index, newField) {
+  const allowedConstraints = Filters.FieldConstraints[schema[currentClassName][newField].type];
   const current = filters.get(index);
   const constraint = current.get('constraint');
   const compare = current.get('compareTo');
-  const defaultCompare = Filters.DefaultComparisons[schema[newField].type];
+  const defaultCompare = Filters.DefaultComparisons[schema[currentClassName][newField].type];
   const useExisting = allowedConstraints.includes(constraint);
   const newFilter = new Map({
+    class: currentClassName,
     field: newField,
-    constraint: useExisting ? constraint : Filters.FieldConstraints[schema[newField].type][0],
+    constraint: useExisting
+      ? constraint
+      : Filters.FieldConstraints[schema[currentClassName][newField].type][0],
     compareTo: useExisting && typeof defaultCompare === typeof compare ? compare : defaultCompare,
   });
   return filters.set(index, newFilter);
 }
 
-function changeConstraint(schema, filters, index, newConstraint, prevCompareTo) {
+function changeConstraint(schema, currentClassName, filters, index, newConstraint, prevCompareTo) {
   const field = filters.get(index).get('field');
-  let compareType = schema[field].type;
+  let compareType = schema[currentClassName][field].type;
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
     compareType = Filters.Constraints[newConstraint].field;
   }
   const newFilter = new Map({
+    class: currentClassName,
     field: field,
     constraint: newConstraint,
-    compareTo: prevCompareTo ?? Filters.DefaultComparisons[compareType],
+    compareTo: (compareType && prevCompareTo) ? prevCompareTo : Filters.DefaultComparisons[compareType],
   });
   return filters.set(index, newFilter);
 }
@@ -50,18 +75,58 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
-const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, className }) => {
+const Filter = ({
+  schema,
+  filters,
+  allClasses,
+  renderRow,
+  onChange,
+  onSearch,
+  blacklist,
+  className,
+}) => {
+  const [compare, setCompare] = useState(false);
+  const hasCompareTo = filters.some(filter => filter.get('compareTo') !== undefined);
+
+  if(compare !== hasCompareTo){
+    setCompare(hasCompareTo);
+  }
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
-  const available = Filters.availableFilters(schema, filters);
+  const available = Filters.findRelatedClasses(className, allClasses, blacklist, filters);
+  const classes = Object.keys(available).concat([]);
   return (
-    <div>
+    <div
+      style={{
+        flex: 1,
+        overflowY: 'auto',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          gap: '10px',
+          padding: '12px 15px 0px 15px',
+          color: '#343445',
+          'font-weight': '600'
+        }}
+      >
+        <div style={{ width: '140px' }}>Class</div>
+        <div style={{ width: '140px' }}>Field</div>
+        <div style={{ width: '175px' }}>Condition</div>
+        {compare && <div>Value</div>}
+        <div></div>
+      </div>
+
       {filters.toArray().map((filter, i) => {
+        const currentClassName = filter.get('class');
         const field = filter.get('field');
         const constraint = filter.get('constraint');
         const compareTo = filter.get('compareTo');
-
-        const fields = Object.keys(available).concat([]);
+        let fields = [];
+        if (available[currentClassName]) {
+          fields = Object.keys(available[currentClassName]).concat([]);
+        }
         if (fields.indexOf(field) < 0) {
           fields.push(field);
         }
@@ -97,31 +162,36 @@ const Filter = ({ schema, filters, renderRow, onChange, onSearch, blacklist, cla
         else {
           fields.sort();
         }
-
-        const constraints = Filters.FieldConstraints[schema[field].type].filter(
+        const constraints = Filters.FieldConstraints[schema[currentClassName][field].type].filter(
           c => blacklist.indexOf(c) < 0
         );
-        let compareType = schema[field].type;
+        let compareType = schema[currentClassName][field].type;
         if (Object.prototype.hasOwnProperty.call(Filters.Constraints[constraint], 'field')) {
           compareType = Filters.Constraints[constraint].field;
         }
         return renderRow({
+          classes,
           fields,
           constraints,
           compareInfo: {
             type: compareType,
-            targetClass: schema[field].targetClass,
+            targetClass: schema[currentClassName][field].targetClass,
           },
+          currentClass: currentClassName,
           currentField: field,
           currentConstraint: constraint,
           compareTo,
           key: field + '-' + constraint + '-' + i,
-
+          onChangeClass: newClassName => {
+            onChange(changeClass(schema, filters, i, newClassName));
+          },
           onChangeField: newField => {
-            onChange(changeField(schema, filters, i, newField));
+            onChange(changeField(schema, currentClassName, filters, i, newField));
           },
           onChangeConstraint: (newConstraint, prevCompareTo) => {
-            onChange(changeConstraint(schema, filters, i, newConstraint, prevCompareTo));
+            onChange(
+              changeConstraint(schema, currentClassName, filters, i, newConstraint, prevCompareTo)
+            );
           },
           onChangeCompareTo: newCompare => {
             onChange(changeCompareTo(schema, filters, i, compareType, newCompare));

@@ -20,6 +20,8 @@ import Toggle from 'components/Toggle/Toggle.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
+import { dateStringUTC } from 'lib/DateUtils';
+import { CurrentApp } from 'context/currentApp';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
 
@@ -90,6 +92,7 @@ const GET_VALUE = {
 };
 
 export default class ConfigDialog extends React.Component {
+  static contextType = CurrentApp;
   constructor(props) {
     super();
     this.state = {
@@ -97,6 +100,7 @@ export default class ConfigDialog extends React.Component {
       type: 'String',
       name: '',
       masterKeyOnly: false,
+      selectedIndex: null,
     };
     if (props.param.length > 0) {
       this.state = {
@@ -104,6 +108,7 @@ export default class ConfigDialog extends React.Component {
         type: props.type,
         value: props.value,
         masterKeyOnly: props.masterKeyOnly,
+        selectedIndex: 0,
       };
     }
   }
@@ -169,6 +174,7 @@ export default class ConfigDialog extends React.Component {
   submit() {
     this.props.onConfirm({
       name: this.state.name,
+      type: this.state.type,
       value: GET_VALUE[this.state.type](this.state.value),
       masterKeyOnly: this.state.masterKeyOnly,
     });
@@ -190,6 +196,28 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
+    const configHistory = localStorage.getItem(`${this.context.applicationId}_configHistory`) && JSON.parse(localStorage.getItem(`${this.context.applicationId}_configHistory`))[this.state.name];
+    const handleIndexChange = index => {
+      if(this.state.type === 'Date'){
+        return;
+      }
+      let value = configHistory[index].value;
+      if(this.state.type === 'File'){
+        const fileJSON = {
+          __type: 'File',
+          name: value.name,
+          url: value.url
+        };
+        const file = Parse.File.fromJSON(fileJSON);
+        this.setState({ selectedIndex: index, value: file });
+        return;
+      }
+      if(typeof value === 'object'){
+        value = JSON.stringify(value);
+      }
+      this.setState({ selectedIndex: index, value });
+    };
+
     return (
       <Modal
         type={Modal.Types.INFO}
@@ -252,6 +280,29 @@ export default class ConfigDialog extends React.Component {
                 className={styles.addColumnToggleWrapper}
               />
             ) : null
+        }
+        {
+          configHistory?.length > 0 &&
+          <Field
+            label={
+              <Label
+                text="Change History"
+                description="Select a timestamp in the change history to preview the value in the 'Value' field before saving."
+              />
+            }
+            input={
+              <Dropdown
+                value={this.state.selectedIndex}
+                onChange={handleIndexChange}>
+                {configHistory.map((value, i) =>
+                  <Option key={i} value={i}>
+                    {dateStringUTC(new Date(value.time))}
+                  </Option>
+                )}
+              </Dropdown>
+            }
+            className={styles.addColumnToggleWrapper}
+          />
         }
       </Modal>
     );

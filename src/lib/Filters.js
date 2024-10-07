@@ -166,7 +166,7 @@ export const Constraints = {
 };
 
 export const FieldConstraints = {
-  Pointer: ['exists', 'dne', 'eq', 'neq', 'unique'],
+  Pointer: ['exists', 'dne', 'eq', 'neq', 'starts', 'unique'],
   Boolean: ['exists', 'dne', 'eq', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
   String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
@@ -233,4 +233,59 @@ export function availableFilters(schema, currentFilters, blacklist) {
   return available;
 }
 
+export function findRelatedClasses(referClass, allClasses, blacklist, currentFilters) {
+  const relatedClasses = {};
+  if (allClasses[referClass]) {
+    const availableForRefer = availableFilters(allClasses[referClass], currentFilters, blacklist);
+    if (Object.keys(availableForRefer).length > 0) {
+      relatedClasses[referClass] = availableForRefer;
+    }
+  }
+
+  for (const className in allClasses) {
+    if (className === referClass) {
+      continue;
+    }
+
+    if (!checkRelation(referClass, allClasses, className)) {
+      continue;
+    }
+
+    const schema = allClasses[className];
+    const available = availableFilters(schema, currentFilters, blacklist);
+    if (Object.keys(available).length > 0) {
+      relatedClasses[className] = available;
+    }
+  }
+  return relatedClasses;
+}
+
+const checkRelationHelper = (schema, col, className) =>
+  schema[col].type === 'Pointer' && schema[col].targetClass === className;
+
+function checkRelation(currentClassname, schemas, classToReferName) {
+  const currentClassSchema = schemas[currentClassname];
+  const classSchemaBeingCheckedToRefer = schemas[classToReferName];
+  let flag = false;
+
+  for (const col in currentClassSchema) {
+    if (checkRelationHelper(currentClassSchema, col, classToReferName)) {
+      flag = true;
+    }
+  }
+  for (const col in classSchemaBeingCheckedToRefer) {
+    if (checkRelationHelper(classSchemaBeingCheckedToRefer, col, currentClassname)) {
+      flag = true;
+    }
+  }
+  return flag;
+}
+
 export const BLACKLISTED_FILTERS = ['containsAny', 'doesNotContainAny'];
+
+export function getFilterDetails(available) {
+  const filterClass = Object.keys(available)[0];
+  const filterField = Object.keys(available[filterClass])[0];
+  const filterConstraint = available[filterClass][filterField][0];
+  return { filterClass, filterField, filterConstraint };
+}

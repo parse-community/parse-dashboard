@@ -30,9 +30,14 @@ export default class BrowserTable extends React.Component {
 
     this.state = {
       offset: 0,
+      panelWidth: 300,
+      isResizing: false,
+      maxWidth: window.innerWidth - 300,
     };
     this.handleScroll = this.handleScroll.bind(this);
     this.tableRef = React.createRef();
+    this.handleResize = this.handleResize.bind(this);
+    this.updateMaxWidth = this.updateMaxWidth.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -56,10 +61,36 @@ export default class BrowserTable extends React.Component {
 
   componentDidMount() {
     this.tableRef.current.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('resize', this.updateMaxWidth);
   }
 
   componentWillUnmount() {
     this.tableRef.current.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.updateMaxWidth);
+  }
+
+  handleResize(event, { size }) {
+    this.setState({ panelWidth: size.width });
+  }
+
+  handleMouseDown() {
+    this.setState({ isResizing: true });
+    document.body.style.cursor = 'ew-resize';
+  }
+
+  handleMouseMove(e) {
+    if (!this.state.isResizing) {
+      return;
+    }
+    this.setState({ panelWidth: e.clientX });
+  }
+
+  handleMouseUp() {
+    if (!this.state.isResizing) {
+      return;
+    }
+    this.setState({ isResizing: false });
+    document.body.style.cursor = 'default';
   }
 
   handleScroll() {
@@ -92,6 +123,12 @@ export default class BrowserTable extends React.Component {
       }
     });
   }
+  updateMaxWidth = () => {
+    this.setState({ maxWidth: window.innerWidth - 300 });
+    if (this.state.panelWidth > window.innerWidth - 300) {
+      this.setState({ panelWidth: window.innerWidth - 300 });
+    }
+  };
 
   render() {
     let ordering = {};
@@ -155,6 +192,7 @@ export default class BrowserTable extends React.Component {
                     order={this.props.order}
                     readOnlyFields={READ_ONLY}
                     row={index}
+                    rowValue={this.props.data[index]}
                     rowWidth={rowWidth}
                     selection={this.props.selection}
                     selectRow={this.props.selectRow}
@@ -162,12 +200,24 @@ export default class BrowserTable extends React.Component {
                     setEditing={this.props.setEditing}
                     setRelation={this.props.setRelation}
                     setCopyableValue={this.props.setCopyableValue}
+                    selectedObjectId={this.props.selectedObjectId}
+                    setSelectedObjectId={this.props.setSelectedObjectId}
+                    callCloudFunction={this.props.callCloudFunction}
+                    isPanelVisible={this.props.isPanelVisible}
                     setContextMenu={this.props.setContextMenu}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
                     showNote={this.props.showNote}
                     onRefresh={this.props.onRefresh}
                     scripts={this.context.scripts}
+                    selectedCells={this.props.selectedCells}
+                    handleCellClick={this.props.handleCellClick}
+                    onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
+                    onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
+                    onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
+                    setShowAggregatedData={this.props.setShowAggregatedData}
+                    setErrorAggregatedData={this.props.setErrorAggregatedData}
+                    firstSelectedCell={this.props.firstSelectedCell}
                   />
                   <Button
                     value="Clone"
@@ -230,12 +280,24 @@ export default class BrowserTable extends React.Component {
               setEditing={this.props.setEditing}
               setRelation={this.props.setRelation}
               setCopyableValue={this.props.setCopyableValue}
+              selectedObjectId={this.props.selectedObjectId}
+              setSelectedObjectId={this.props.setSelectedObjectId}
+              callCloudFunction={this.props.callCloudFunction}
+              isPanelVisible={this.props.isPanelVisible}
               setContextMenu={this.props.setContextMenu}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
               showNote={this.props.showNote}
               onRefresh={this.props.onRefresh}
               scripts={this.context.scripts}
+              selectedCells={this.props.selectedCells}
+              handleCellClick={this.props.handleCellClick}
+              onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
+              onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
+              onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
+              setShowAggregatedData={this.props.setShowAggregatedData}
+              setErrorAggregatedData={this.props.setErrorAggregatedData}
+              firstSelectedCell={this.props.firstSelectedCell}
             />
             <Button
               value="Add"
@@ -297,9 +359,11 @@ export default class BrowserTable extends React.Component {
             onPointerClick={this.props.onPointerClick}
             onPointerCmdClick={this.props.onPointerCmdClick}
             onFilterChange={this.props.onFilterChange}
+            callCloudFunction={this.props.callCloudFunction}
             order={this.props.order}
             readOnlyFields={READ_ONLY}
             row={i}
+            rowValue={this.props.data[i]}
             rowWidth={rowWidth}
             selection={this.props.selection}
             selectRow={this.props.selectRow}
@@ -307,11 +371,22 @@ export default class BrowserTable extends React.Component {
             setEditing={this.props.setEditing}
             setRelation={this.props.setRelation}
             setCopyableValue={this.props.setCopyableValue}
+            selectedObjectId={this.props.selectedObjectId}
+            setSelectedObjectId={this.props.setSelectedObjectId}
+            isPanelVisible={this.props.isPanelVisible}
             setContextMenu={this.props.setContextMenu}
             onEditSelectedRow={this.props.onEditSelectedRow}
             showNote={this.props.showNote}
             onRefresh={this.props.onRefresh}
             scripts={this.context.scripts}
+            selectedCells={this.props.selectedCells}
+            handleCellClick={this.props.handleCellClick}
+            onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
+            onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
+            onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
+            setShowAggregatedData={this.props.setShowAggregatedData}
+            setErrorAggregatedData={this.props.setErrorAggregatedData}
+            firstSelectedCell={this.props.firstSelectedCell}
           />
         );
       }
@@ -488,29 +563,41 @@ export default class BrowserTable extends React.Component {
         );
       }
     }
+    const rightValue =
+      this.props.panelWidth && this.props.isPanelVisible ? `${this.props.panelWidth}px` : '0px';
 
     return (
-      <div className={styles.browser}>
-        {table}
-        <DataBrowserHeaderBar
-          selected={
-            !!this.props.selection &&
-            !!this.props.data &&
-            Object.values(this.props.selection).filter(checked => checked).length ===
-              this.props.data.length
-          }
-          selectAll={checked =>
-            this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
-          }
-          headers={headers}
-          updateOrdering={this.props.updateOrdering}
-          readonly={!!this.props.relation || !!this.props.isUnique}
-          handleDragDrop={this.props.handleHeaderDragDrop}
-          onResize={this.props.handleResize}
-          onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.preventSchemaEdits}
-          isDataLoaded={!!this.props.data}
-        />
+      <div
+        className={styles.browser}
+        style={{
+          right: rightValue,
+          'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
+        }}
+      >
+        <div>
+          <DataBrowserHeaderBar
+            selected={
+              !!this.props.selection &&
+              !!this.props.data &&
+              Object.values(this.props.selection).filter(checked => checked).length ===
+                this.props.data.length
+            }
+            selectAll={checked =>
+              this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
+            }
+            headers={headers}
+            updateOrdering={this.props.updateOrdering}
+            readonly={!!this.props.relation || !!this.props.isUnique}
+            handleDragDrop={this.props.handleHeaderDragDrop}
+            onResize={this.props.handleResize}
+            onAddColumn={this.props.onAddColumn}
+            preventSchemaEdits={this.context.preventSchemaEdits}
+            isDataLoaded={!!this.props.data}
+            setSelectedObjectId={this.props.setSelectedObjectId}
+            setCurrent={this.props.setCurrent}
+          />
+          {table}
+        </div>
       </div>
     );
   }

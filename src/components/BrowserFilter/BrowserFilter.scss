@@ -85,19 +85,24 @@
 
 .body {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  overflow: hidden;
   top: 30px;
   right: 0;
   border-radius: 5px 0 5px 5px;
   background: #797691;
-  width: 535px;
+  width: 685px;
   font-size: 14px;
 }
 
 .footer {
   background: rgba(0,0,0,0.2);
-  padding: 11px 0;
+  padding: 11px 16px;
   text-align: center;
-
+  display: flex;
+  justify-content: space-between;
   > button {
     margin-right: 10px;
 
@@ -147,4 +152,14 @@
 .date {
   display: inline-block;
   vertical-align: top;
+}
+
+.flex{
+  display: flex;
+  align-items: center;
+}
+
+.btnFlex{
+  display: flex;
+  gap: 12px;
 }
