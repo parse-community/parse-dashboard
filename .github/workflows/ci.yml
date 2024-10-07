@@ -88,10 +88,14 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          install: true
       - name: Build docker image
         uses: docker/build-push-action@v3
         with:
           platforms: ${{ matrix.DOCKER_PLATFORM }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   check-lock-file-version:
     name: NPM Lock File Version
     timeout-minutes: 5
