@@ -77,13 +77,13 @@ jobs:
           - name: Docker linux/amd64
             DOCKER_PLATFORM: linux/amd64
             RUNNER_TYPE: ubuntu-latest
-          - name: Docker linux/arm64/v8
-            DOCKER_PLATFORM: linux/arm64/v8
-            # Replace this with a native arm linux runner when available, presumably by EOY 2024, see:
-            # https://github.com/orgs/community/discussions/19197#discussioncomment-10550689
-            # The conditional setup of QEMU may need to be adapted to not run on native arm,
-            # which will speed up the build process for arm64/v8 since no emulation will be needed.
-            RUNNER_TYPE: ubuntu-latest
+          # - name: Docker linux/arm64/v8
+          #   DOCKER_PLATFORM: linux/arm64/v8
+          #   # Replace this with a native arm linux runner when available, presumably by EOY 2024, see:
+          #   # https://github.com/orgs/community/discussions/19197#discussioncomment-10550689
+          #   # The conditional setup of QEMU may need to be adapted to not run on native arm,
+          #   # which will speed up the build process for arm64/v8 since no emulation will be needed.
+          #   RUNNER_TYPE: ubuntu-latest
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 45
