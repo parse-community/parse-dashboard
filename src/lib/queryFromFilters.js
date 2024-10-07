@@ -7,18 +7,93 @@
  */
 import Parse from 'parse';
 
-// Given a className and a set of filters, generate a Parse.Query
-export default function queryFromFilters(className, filters) {
-  let query;
+export default async function queryFromFilters(className, filters) {
+  let primaryQuery;
+  const querieslist = [];
   if (typeof className === 'string') {
-    query = new Parse.Query(className);
+    primaryQuery = new Parse.Query(className);
   } else if (typeof className === 'object' && className instanceof Parse.Relation) {
-    query = className.query();
+    primaryQuery = className.query();
   }
-  filters.forEach(filter => {
-    addConstraint(query, filter);
+
+  const queries = {};
+  for (const filter of filters) {
+    const filterClassName = filter.get('class');
+    if (filterClassName === className || !filterClassName) {
+      addConstraint(primaryQuery, filter);
+    } else {
+      if (!queries[filterClassName]) {
+        queries[filterClassName] = new Parse.Query(filterClassName);
+      }
+      addConstraint(queries[filterClassName], filter);
+    }
+  }
+
+  primaryQuery.applySchemaConstraints = async function () {
+    try {
+      const allClassesSchema = await fetchAllSchemas();
+      await Promise.all(
+        Object.keys(queries).map(async filterClassName => {
+          let tempquery;
+          if (typeof className === 'string') {
+            tempquery = new Parse.Query(className);
+          } else if (typeof className === 'object' && className instanceof Parse.Relation) {
+            tempquery = className.query();
+          }
+          const reversePointerField = getPointerField(allClassesSchema, filterClassName, className);
+          const pointerField = getPointerField(allClassesSchema, className, filterClassName);
+          if (!pointerField && !reversePointerField) {
+            console.warn(`No relationship found between ${className} and ${filterClassName}`);
+          } else {
+            if (pointerField) {
+              tempquery.matchesQuery(pointerField, queries[filterClassName]);
+            }
+            if (!pointerField && reversePointerField) {
+              await tempquery.matchesKeyInQuery(
+                'objectId',
+                `${reversePointerField}.objectId`,
+                queries[filterClassName]
+              );
+            }
+            querieslist.push(tempquery);
+          }
+        })
+      );
+    } catch (error) {
+      console.error('Error fetching schemas:', error);
+    }
+  };
+
+  await primaryQuery.applySchemaConstraints();
+  let finalQuery;
+  if (querieslist.length > 0 || filters.length > 0) {
+    finalQuery = Parse.Query.and(...querieslist, primaryQuery);
+  } else {
+    finalQuery = primaryQuery;
+  }
+
+  return finalQuery;
+}
+
+async function fetchAllSchemas() {
+  const schemas = await Parse.Schema.all();
+  const schemaMap = {};
+  schemas.forEach(schema => {
+    schemaMap[schema.className] = schema.fields;
   });
-  return query;
+  return schemaMap;
+}
+
+function getPointerField(allClassesSchema, fromClassName, toClassName) {
+  const schema = allClassesSchema[fromClassName];
+  if (schema) {
+    for (const field of Object.keys(schema)) {
+      if (schema[field].type === 'Pointer' && schema[field].targetClass === toClassName) {
+        return field;
+      }
+    }
+  }
+  return null;
 }
 
 function addQueryConstraintFromObject(query, filter, constraintType) {
@@ -26,6 +101,12 @@ function addQueryConstraintFromObject(query, filter, constraintType) {
   for (const key of Object.keys(compareTo)) {
     query[constraintType](filter.get('field') + '.' + key, compareTo[key]);
   }
+}
+
+function isPointer(value) {
+  return (
+    typeof value === 'object' && value.hasOwnProperty('__type') && value['__type'] === 'Pointer'
+  );
 }
 
 function addConstraint(query, filter) {
@@ -55,7 +136,15 @@ function addConstraint(query, filter) {
       query.greaterThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
     case 'starts':
-      query.startsWith(filter.get('field'), filter.get('compareTo'));
+      const field = filter.get('field');
+      const compareTo = filter.get('compareTo');
+      if (isPointer(compareTo)) {
+        const pointerQuery = new Parse.Query(compareTo.className);
+        pointerQuery.startsWith('objectId', compareTo.objectId);
+        query.matchesQuery(field, pointerQuery);
+      } else {
+        query.startsWith(field, compareTo);
+      }
       break;
     case 'ends':
       query.endsWith(filter.get('field'), filter.get('compareTo'));

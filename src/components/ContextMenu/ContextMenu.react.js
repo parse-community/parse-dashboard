@@ -71,7 +71,11 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
           <li
             key={`menu-section-${level}-${index}`}
             className={styles.option}
+            style={item.disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
             onClick={() => {
+              if (item.disabled === true) {
+                return;
+              }
               item.callback && item.callback();
               hide();
             }}

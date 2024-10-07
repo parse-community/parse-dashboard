@@ -1,3 +1,101 @@
+# [6.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.14...6.0.0-alpha.15) (2024-10-07)
+
+
+### Features
+
+* Add support for Node 22 ([#2603](https://github.com/ParsePlatform/parse-dashboard/issues/2603)) ([3689106](https://github.com/ParsePlatform/parse-dashboard/commit/3689106b4089aebe73ddb8668863dc82fd267b5c))
+
+# [6.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.13...6.0.0-alpha.14) (2024-10-06)
+
+
+### Features
+
+* Add data panel to display object related data fetched via Cloud Function ([#2584](https://github.com/ParsePlatform/parse-dashboard/issues/2584)) ([914cc71](https://github.com/ParsePlatform/parse-dashboard/commit/914cc71790157289c32b95cd9d4cdf3d0685989f))
+
+# [6.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.12...6.0.0-alpha.13) (2024-09-25)
+
+
+### Bug Fixes
+
+* Internal classes `_User`, `_Role`, `_Installation` referenced with pointer don't appear in data browser filter dialog ([#2599](https://github.com/ParsePlatform/parse-dashboard/issues/2599)) ([8239cc8](https://github.com/ParsePlatform/parse-dashboard/commit/8239cc8a05865c5f0b4f5b33dfb224e87d25a319))
+
+# [6.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.11...6.0.0-alpha.12) (2024-08-07)
+
+
+### Bug Fixes
+
+* Filter string is erased when changing filter condition ([#2586](https://github.com/ParsePlatform/parse-dashboard/issues/2586)) ([6fa2c8c](https://github.com/ParsePlatform/parse-dashboard/commit/6fa2c8c79201b9ea34321277ab085fa0ba988d77))
+
+# [6.0.0-alpha.11](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.10...6.0.0-alpha.11) (2024-07-26)
+
+
+### Bug Fixes
+
+* Descriptive statistics for number cells in data browser not showing ([#2581](https://github.com/ParsePlatform/parse-dashboard/issues/2581)) ([e146b6f](https://github.com/ParsePlatform/parse-dashboard/commit/e146b6f54c7dfcb50c83c70f0c55e5ab76dc3c19))
+
+# [6.0.0-alpha.10](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.9...6.0.0-alpha.10) (2024-07-11)
+
+
+### Bug Fixes
+
+* Crash after setting filter using context menu and opening filters panel ([#2579](https://github.com/ParsePlatform/parse-dashboard/issues/2579)) ([5a690eb](https://github.com/ParsePlatform/parse-dashboard/commit/5a690ebe91007698fe1a60334112deed5ce94be1))
+
+# [6.0.0-alpha.9](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.8...6.0.0-alpha.9) (2024-07-06)
+
+
+### Features
+
+* Add relational filter conditions in data browser ([#2576](https://github.com/ParsePlatform/parse-dashboard/issues/2576)) ([aa5c68d](https://github.com/ParsePlatform/parse-dashboard/commit/aa5c68dbca458069d93351edc0bc0287fe63b7e1))
+
+# [6.0.0-alpha.8](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.7...6.0.0-alpha.8) (2024-06-27)
+
+
+### Features
+
+* Add optional restriction of script execution to certain object fields and values ([#2488](https://github.com/ParsePlatform/parse-dashboard/issues/2488)) ([8feac9b](https://github.com/ParsePlatform/parse-dashboard/commit/8feac9b8359f27ecd7bd4342be7bcae75289ba35))
+
+# [6.0.0-alpha.7](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.6...6.0.0-alpha.7) (2024-05-19)
+
+
+### Features
+
+* Add Cloud Config change history to roll back to previous values ([#2554](https://github.com/ParsePlatform/parse-dashboard/issues/2554)) ([a784129](https://github.com/ParsePlatform/parse-dashboard/commit/a784129dd5f25d6464cdd5d768e296fda4501b42))
+
+# [6.0.0-alpha.6](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.5...6.0.0-alpha.6) (2024-05-15)
+
+
+### Features
+
+* Add filter `starts with` in data browser for fields of type Pointer ([#2553](https://github.com/ParsePlatform/parse-dashboard/issues/2553)) ([0b94ab6](https://github.com/ParsePlatform/parse-dashboard/commit/0b94ab6ced8b338cd3539f8cad37feb4452e1bcc))
+
+# [6.0.0-alpha.5](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.4...6.0.0-alpha.5) (2024-05-15)
+
+
+### Bug Fixes
+
+* Deleting all code in the JS Console editor fills in the default code ([#2558](https://github.com/ParsePlatform/parse-dashboard/issues/2558)) ([4b830ba](https://github.com/ParsePlatform/parse-dashboard/commit/4b830bac8dc6549555eca50e999a3283aff100c7))
+
+# [6.0.0-alpha.4](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.3...6.0.0-alpha.4) (2024-05-15)
+
+
+### Bug Fixes
+
+* Dashboard scrolls when selecting row in data browser ([#2559](https://github.com/ParsePlatform/parse-dashboard/issues/2559)) ([2aa54a5](https://github.com/ParsePlatform/parse-dashboard/commit/2aa54a5bb1f356a7d4ed5abf3ea42c2e406d5b5a))
+
+# [6.0.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.2...6.0.0-alpha.3) (2024-04-30)
+
+
+### Features
+
+* Select rows in data browser by clicking and dragging mouse cursor over checkboxes ([#2548](https://github.com/ParsePlatform/parse-dashboard/issues/2548)) ([792ba9e](https://github.com/ParsePlatform/parse-dashboard/commit/792ba9e619224c6101ed21cd36add9fe83c3e348))
+
+# [6.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.1...6.0.0-alpha.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* Class Level Permissions dialog throws error `TypeError: ce.current is null` for newly created class ([#2549](https://github.com/ParsePlatform/parse-dashboard/issues/2549)) ([27ed692](https://github.com/ParsePlatform/parse-dashboard/commit/27ed6920d38bfe6476aaf2cebd4124dc30389959))
+
 # [6.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0-alpha.8...6.0.0-alpha.1) (2024-03-05)
 
 

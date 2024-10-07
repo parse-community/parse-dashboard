@@ -1,7 +1,7 @@
 ############################################################
 # Build stage
 ############################################################
-FROM node:lts-alpine AS build
+FROM node:20.17.0-alpine3.20 AS build
 
 RUN apk --no-cache add git
 WORKDIR /src
@@ -27,7 +27,7 @@ RUN npm run prepare && npm run build
 ############################################################
 # Release stage
 ############################################################
-FROM node:lts-alpine AS release
+FROM node:20.17.0-alpine3.20 AS release
 WORKDIR /src
 
 # Copy production node_modules

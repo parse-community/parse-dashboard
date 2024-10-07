@@ -40,6 +40,8 @@ import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
+import { get } from 'lib/AJAX';
+import { setBasePath } from 'lib/AJAX';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
@@ -98,9 +100,21 @@ class Browser extends DashboardView {
       currentUser: Parse.User.current(),
 
       processedScripts: 0,
+
+      rowCheckboxDragging: false,
+      draggedRowSelection: false,
+
+      classes: {},
+      allClassesSchema: {},
+      configData: {},
+      classwiseCloudFunctions: {},
+      AggregationPanelData: {},
+      isLoading: false,
+      errorAggregatedData: {},
     };
 
     this.addLocation = this.addLocation.bind(this);
+    this.allClassesSchema = this.getAllClassesSchema.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -114,6 +128,8 @@ class Browser extends DashboardView {
     this.showExport = this.showExport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.setLoading = this.setLoading.bind(this);
+    this.setErrorAggregatedData = this.setErrorAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
     this.cancelAttachRows = this.cancelAttachRows.bind(this);
@@ -163,6 +179,12 @@ class Browser extends DashboardView {
     this.abortEditCloneRow = this.abortEditCloneRow.bind(this);
     this.cancelPendingEditRows = this.cancelPendingEditRows.bind(this);
     this.redirectToFirstClass = this.redirectToFirstClass.bind(this);
+    this.onMouseDownRowCheckBox = this.onMouseDownRowCheckBox.bind(this);
+    this.onMouseUpRowCheckBox = this.onMouseUpRowCheckBox.bind(this);
+    this.onMouseOverRowCheckBox = this.onMouseOverRowCheckBox.bind(this);
+    this.classAndCloudFuntionMap = this.classAndCloudFuntionMap.bind(this);
+    this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
+    this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
     this.dataBrowserRef = React.createRef();
 
@@ -189,10 +211,17 @@ class Browser extends DashboardView {
 
   componentDidMount() {
     this.addLocation(this.props.params.appId);
+    window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
+    setBasePath('/');
+    get('/parse-dashboard-config.json').then(data => {
+      this.setState({ configData: data });
+      this.classAndCloudFuntionMap(this.state.configData);
+    });
   }
 
   componentWillUnmount() {
     this.removeLocation();
+    window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -215,10 +244,62 @@ class Browser extends DashboardView {
       this.prefetchData(nextProps, nextContext);
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
+      const t = nextProps.schema.data.get('classes');
+      this.classes = Object.keys(t.toObject());
+      this.allClassesSchema = this.getAllClassesSchema(
+        this.classes,
+        nextProps.schema.data.get('classes')
+      );
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
     }
   }
 
+  setLoading(bool) {
+    this.setState({
+      isLoading: bool,
+    });
+  }
+
+  setErrorAggregatedData(data) {
+    this.setState({
+      errorAggregatedData: data,
+    });
+  }
+
+  fetchAggregationPanelData(objectId, className) {
+    this.setState({
+      isLoading: true,
+    });
+    const params = {
+      objectId: objectId,
+    };
+    const cloudCodeFunction = this.state.classwiseCloudFunctions[className][0].cloudCodeFunction;
+
+    Parse.Cloud.run(cloudCodeFunction, params).then(
+      result => {
+        if (result && result.panel && result.panel && result.panel.segments) {
+          this.setState({ AggregationPanelData: result, isLoading: false });
+        } else {
+          this.setState({
+            isLoading: false,
+            errorAggregatedData: 'Improper JSON format',
+          });
+          this.showNote(this.state.errorAggregatedData,true)
+        }
+      },
+      error => {
+        this.setState({
+          isLoading: false,
+          errorAggregatedData: error.message,
+        });
+        this.showNote(this.state.errorAggregatedData,true)
+      }
+    );
+  }
+
+  setAggregationPanelData(data) {
+    this.setState({ AggregationPanelData: data });
+  }
   addLocation(appId) {
     if (window.localStorage) {
       let pathname = null;
@@ -242,6 +323,26 @@ class Browser extends DashboardView {
         );
       }
     }
+  }
+
+  classAndCloudFuntionMap(data) {
+    const classMap = {};
+    data.apps.forEach(app => {
+      app.infoPanel.forEach(panel => {
+        panel.classes.forEach(className => {
+          if (!classMap[className]) {
+            classMap[className] = [];
+          }
+          classMap[className].push({
+            title: panel.title,
+            cloudCodeFunction: panel.cloudCodeFunction,
+            classes: panel.classes,
+          });
+        });
+      });
+    });
+
+    this.setState({ classwiseCloudFunctions: classMap });
   }
 
   removeLocation() {
@@ -295,7 +396,12 @@ class Browser extends DashboardView {
     const query = new URLSearchParams(props.location.search);
     if (query.has('filters')) {
       const queryFilters = JSON.parse(query.get('filters'));
-      queryFilters.forEach(filter => (filters = filters.push(new Map(filter))));
+      queryFilters.forEach(
+        filter =>
+          (filters = filters.push(
+            new Map({ ...filter, class: filter.class || props.params.className })
+          ))
+      );
     }
     return filters;
   }
@@ -368,6 +474,7 @@ class Browser extends DashboardView {
     this.props.schema
       .dispatch(ActionTypes.CREATE_CLASS, { className })
       .then(() => {
+        this.state.clp[className] = this.props.schema.data.get('CLPs').toJS()[className];
         this.state.counts[className] = 0;
         this.props.navigate(generatePath(this.context, 'browser/' + className));
       })
@@ -380,6 +487,7 @@ class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(
       () => {
         this.setState({ showDropClassDialog: false });
+        delete this.state.clp[className];
         delete this.state.counts[className];
         this.props.navigate(generatePath(this.context, 'browser'));
       },
@@ -741,6 +849,23 @@ class Browser extends DashboardView {
     }
   }
 
+  getAllClassesSchema(allClasses, allClassesData) {
+    const schemaSimplifiedData = {};
+    allClasses.forEach(className => {
+      const classSchema = allClassesData.get(className);
+      if (classSchema) {
+        schemaSimplifiedData[className] = {};
+        classSchema.forEach(({ type, targetClass }, col) => {
+          schemaSimplifiedData[className][col] = {
+            type,
+            targetClass,
+          };
+        });
+      }
+    });
+    return schemaSimplifiedData;
+  }
+
   async refresh() {
     const relation = this.state.relation;
     const prevFilters = this.state.filters || new List();
@@ -765,7 +890,7 @@ class Browser extends DashboardView {
 
   async fetchParseData(source, filters) {
     const { useMasterKey } = this.state;
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
 
@@ -777,7 +902,6 @@ class Browser extends DashboardView {
 
     query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
-
     let promise = query.find({ useMasterKey });
     let isUnique = false;
     let uniqueField = null;
@@ -807,7 +931,7 @@ class Browser extends DashboardView {
   }
 
   async fetchParseDataCount(source, filters) {
-    const query = queryFromFilters(source, filters);
+    const query = await queryFromFilters(source, filters);
     const { useMasterKey } = this.state;
     const count = await query.count({ useMasterKey });
     return count;
@@ -850,13 +974,13 @@ class Browser extends DashboardView {
     return await this.context.getRelationCount(relation);
   }
 
-  fetchNextPage() {
+  async fetchNextPage() {
     if (!this.state.data || this.state.isUnique) {
       return null;
     }
     const className = this.props.params.className;
     const source = this.state.relation || className;
-    let query = queryFromFilters(source, this.state.filters);
+    let query = await queryFromFilters(source, this.state.filters);
     if (this.state.ordering !== '-createdAt') {
       // Construct complex pagination query
       const equalityQuery = queryFromFilters(source, this.state.filters);
@@ -970,6 +1094,9 @@ class Browser extends DashboardView {
       {
         ordering: ordering,
         selection: {},
+        errorAggregatedData: {},
+        isLoading: false,
+        AggregationPanelData: {},
       },
       () => this.fetchData(source, this.state.filters)
     );
@@ -1239,7 +1366,7 @@ class Browser extends DashboardView {
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + ' with id \'' + error.errors[0].object.id + '\'';
+                'Error deleting ' + className + ' with id \'' + error.errors[0].object.id + '\'';
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
                   'Error deleting ' +
@@ -1788,6 +1915,27 @@ class Browser extends DashboardView {
     this.setState({ showPointerKeyDialog: false });
   }
 
+  onMouseDownRowCheckBox(checked) {
+    this.setState({
+      rowCheckboxDragging: true,
+      draggedRowSelection: !checked,
+    });
+  }
+
+  onMouseUpRowCheckBox() {
+    this.state.rowCheckboxDragging &&
+      this.setState({
+        rowCheckboxDragging: false,
+        draggedRowSelection: false,
+      });
+  }
+
+  onMouseOverRowCheckBox(id) {
+    if (this.state.rowCheckboxDragging) {
+      this.selectRow(id, this.state.draggedRowSelection);
+    }
+  }
+
   renderContent() {
     let browser = null;
     let className = this.props.params.className;
@@ -1903,10 +2051,21 @@ class Browser extends DashboardView {
             setRelation={this.setRelation}
             onAddColumn={this.showAddColumn}
             onAddRow={this.addRow}
-            onAbortAddRow={this.abortAddRow}
             onAddRowWithModal={this.addRowWithModal}
             onAddClass={this.showCreateClass}
             showNote={this.showNote}
+            onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
+            onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
+            onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
+            classes={this.classes}
+            classwiseCloudFunctions={this.state.classwiseCloudFunctions}
+            callCloudFunction={this.fetchAggregationPanelData}
+            isLoadingCloudFunction={this.state.isLoading}
+            setLoading={this.setLoading}
+            AggregationPanelData={this.state.AggregationPanelData}
+            setAggregationPanelData={this.setAggregationPanelData}
+            setErrorAggregatedData={this.setErrorAggregatedData}
+            errorAggregatedData={this.state.errorAggregatedData}
           />
         );
       }
