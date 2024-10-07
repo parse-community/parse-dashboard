@@ -1,3 +1,10 @@
+# [6.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.14...6.0.0-alpha.15) (2024-10-07)
+
+
+### Features
+
+* Add support for Node 22 ([#2603](https://github.com/ParsePlatform/parse-dashboard/issues/2603)) ([3689106](https://github.com/ParsePlatform/parse-dashboard/commit/3689106b4089aebe73ddb8668863dc82fd267b5c))
+
 # [6.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.13...6.0.0-alpha.14) (2024-10-06)
 
 
