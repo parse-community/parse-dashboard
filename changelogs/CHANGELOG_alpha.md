@@ -1,3 +1,10 @@
+# [6.0.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.16...6.0.0-alpha.17) (2024-10-09)
+
+
+### Bug Fixes
+
+* Security upgrade express from 4.21.0 to 4.21.1 ([#2607](https://github.com/ParsePlatform/parse-dashboard/issues/2607)) ([54bf0af](https://github.com/ParsePlatform/parse-dashboard/commit/54bf0afa0691e448b7ec20395753468e047e1fd1))
+
 # [6.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.15...6.0.0-alpha.16) (2024-10-07)
 
 
