@@ -139,7 +139,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=18.0.0 <21"
+    "node": ">=18.0.0 <21||22"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
