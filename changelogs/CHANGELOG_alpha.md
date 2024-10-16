@@ -1,3 +1,10 @@
+# [6.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.18...6.0.0-alpha.19) (2024-10-16)
+
+
+### Bug Fixes
+
+* Security upgrade ws, parse and puppeteer ([#2618](https://github.com/ParsePlatform/parse-dashboard/issues/2618)) ([bab71dc](https://github.com/ParsePlatform/parse-dashboard/commit/bab71dc57195efa62518127de842edd5902603de))
+
 # [6.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.17...6.0.0-alpha.18) (2024-10-16)
 
 
