@@ -1,3 +1,10 @@
+# [6.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.17...6.0.0-alpha.18) (2024-10-16)
+
+
+### Bug Fixes
+
+* Node 22 support missing in package.json ([#2617](https://github.com/ParsePlatform/parse-dashboard/issues/2617)) ([8c07284](https://github.com/ParsePlatform/parse-dashboard/commit/8c07284cd571c69426c3f080c2698b0624fd4ec4))
+
 # [6.0.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.16...6.0.0-alpha.17) (2024-10-09)
 
 
