@@ -62,6 +62,15 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
 - [Features](#features)
   - [Data Browser](#data-browser)
     - [Filters](#filters)
+    - [Info Panel](#info-panel)
+      - [Segments](#segments)
+      - [Text Item](#text-item)
+      - [Key-Value Item](#key-value-item)
+      - [Table Item](#table-item)
+      - [Image Item](#image-item)
+      - [Video Item](#video-item)
+      - [Audio Item](#audio-item)
+      - [Button Item](#button-item)
   - [Browse as User](#browse-as-user)
   - [Change Pointer Key](#change-pointer-key)
     - [Limitations](#limitations)
@@ -110,8 +119,9 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 
 | Version    | Latest Version | End-of-Life | Compatible |
 |------------|----------------|-------------|------------|
-| Node.js 18 | 18.9.1         | May 2025    | ✅ Yes      |
-| Node.js 20 | 20.11.1         | April 2026    | ✅ Yes      |
+| Node.js 18 | 18.20.4        | May 2025    | ✅ Yes      |
+| Node.js 20 | 20.18.0        | April 2026  | ✅ Yes      |
+| Node.js 22 | 22.9.0         | April 2027  | ✅ Yes      |
 
 ## Configuring Parse Dashboard
 
@@ -120,13 +130,17 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | Parameter                              | Type                | Optional | Default | Example              | Description                                                                                                                                 |
 |----------------------------------------|---------------------|----------|---------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | `apps`                                 | Array&lt;Object&gt; | no       | -       | `[{ ... }, { ... }]` | The apps that are configured for the dashboard.                                                                                             |
+| `infoPanel`                            | Array&lt;Object&gt; | yes      | -       | `[{ ... }, { ... }]` | The [info panel](#info-panel) configuration.                                                                                                |
+| `infoPanel[*].title`                   | String              | no       | -       | `User Details`       | The panel title.                                                                                                                            |
+| `infoPanel[*].classes`                 | Array&lt;String&gt; | no       | -       | `["_User"]`          | The classes for which the info panel should be displayed.                                                                                   |
+| `infoPanel[*].cloudCodeFunction`       | String              | no       | -       | `getUserDetails`     | The Cloud Code Function which received the selected object in the data browser and returns the response to be displayed in the info panel.  |
 | `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]` | The scripts that can be executed for that app.                                                                                              |
 | `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`      | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                   |
 | `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`          | The classes of Parse Objects for which the scripts can be executed.                                                                         |
 | `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
 | `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
 | `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
-| `apps.cloudConfigHistoryLimit` | Integer              | yes      | `100`  | `100`           | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`. |
+| `apps.cloudConfigHistoryLimit`         | Integer             | yes      | `100`   | `100`                | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`.       |
 
 ### File
 
@@ -836,6 +850,237 @@ A relational filter allows you filter all users who:
 - payed with a specific payment method (in `Payment` class)
 
 To apply such a filter, simply go to the `_User` class and add the two required filter conditions with the `Purchase` and `Payment` classes.
+
+### Info Panel
+
+▶️ *Core > Browser > Show Panel / Hide Panel*
+
+The data browser offers an info panel that can display information related to the currently selected object in the data browser table. The info panel is made visible by clicking on the menu button *Show Panel* in the top right corner when browsing a class for which the info panel is configured in the dashboard options.
+
+The following example dashboard configuration shows an info panel for the `_User` class with the title `User Details`, by calling the Cloud Code Function `getUserDetails` and displaying the returned response.
+
+```json
+"apps": [
+  {
+    "infoPanel": [
+      {
+        "title": "User Details",
+        "classes": ["_User"],
+        "cloudCodeFunction": "getUserDetails"
+      }
+    ]
+  }
+]
+```
+
+The Cloud Code Function receives the selected object in the payload and returns a response that can include various items.
+
+#### Segments
+
+The info panel can contain multiple segments to display different groups of information.
+
+| Parameter           | Value  | Optional | Description                                                                                                                            |
+|---------------------|--------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `segments`          | Array  | No       | An ordered array of segments, where each segment represents a distinct group of items to display.                                      |
+| `segments[i].title` | String | No       | The title of the segment that will be displayed.                                                                                       |
+| `segments[i].items` | Array  | No       | An ordered array of items within the segment. Each item can be of different types, such as text, key-value pairs, tables, images, etc. |
+
+Example:
+
+```json
+{
+  "panel": {
+    "segments": [
+      {
+        "title": "Purchases",
+        "items": [
+          {
+            "type": "text",
+            "text": "This user has a high churn risk!"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The items array can include various types of content such as text, key-value pairs, tables, images, videos, audios, and buttons. Each type offers a different way to display information within the info panel, allowing for a customizable and rich user experience. Below is a detailed explanation of each type.
+
+#### Text Item
+
+A simple text field.
+
+| Parameter | Value  | Optional | Description          |
+|-----------|--------|----------|----------------------|
+| `type`    | String | No       | Must be `"text"`.    |
+| `text`    | String | No       | The text to display. |
+
+Example:
+
+```json
+{
+  "type": "text",
+  "text": "This user has a high churn risk!"
+}
+```
+
+#### Key-Value Item
+
+A text item that consists of a key and a value. The value can optionally be linked to a URL.
+
+| Parameter | Value  | Optional | Description                                                                       |
+|-----------|--------|----------|-----------------------------------------------------------------------------------|
+| `type`    | String | No       | Must be `"keyValue"`.                                                             |
+| `key`     | String | No       | The key text to display.                                                          |
+| `value`   | String | No       | The value text to display.                                                        |
+| `url`     | String | Yes      | The URL that will be opened in a new browser tab when clicking on the value text. |
+
+Examples:
+
+```json
+{
+  "type": "keyValue",
+  "key": "Lifetime purchase value",
+  "value": "$10k"
+}
+```
+
+```json
+{
+  "type": "keyValue",
+  "key": "Last purchase ID",
+  "value": "123",
+  "url": "https://example.com/purchaseDetails?purchaseId=012345"
+}
+```
+
+#### Table Item
+
+A table with columns and rows to display data in a structured format.
+
+| Parameter         | Value  | Optional | Description                                                                      |
+|-------------------|--------|----------|----------------------------------------------------------------------------------|
+| `type`            | String | No       | Must be `"table"`.                                                               |
+| `columns`         | Array  | No       | The column definitions, including names and types.                               |
+| `columns[*].name` | String | No       | The name of the column to display.                                               |
+| `columns[*].type` | String | No       | The type of the column value (e.g., `"string"`, `"number"`).                     |
+| `rows`            | Array  | No       | The rows of data, where each row is an object containing values for each column. |
+
+Example:
+
+```json
+{
+  "type": "table",
+  "columns": [
+    {
+      "name": "Name",
+      "type": "string"
+    },
+    {
+      "name": "Age",
+      "type": "number"
+    }
+  ],
+  "rows": [
+    {
+      "Name": "Alice",
+      "Age": 30
+    },
+    {
+      "Name": "Bob",
+      "Age": 40
+    }
+  ]
+}
+```
+
+#### Image Item
+
+An image to be displayed in the panel.
+
+| Parameter | Value  | Optional | Description                      |
+|-----------|--------|----------|----------------------------------|
+| `type`    | String | No       | Must be `"image"`.               |
+| `url`     | String | No       | The URL of the image to display. |
+
+Example:
+
+```json
+{
+  "type": "image",
+  "url": "https://example.com/images?purchaseId=012345"
+}
+```
+
+#### Video Item
+
+A video to be displayed in the panel.
+
+| Parameter | Value  | Optional | Description                      |
+|-----------|--------|----------|----------------------------------|
+| `type`    | String | No       | Must be `"video"`.               |
+| `url`     | String | No       | The URL of the video to display. |
+
+Example:
+
+```json
+{
+  "type": "video",
+  "url": "https://example.com/video.mp4"
+}
+```
+
+#### Audio Item
+
+An audio file to be played in the panel.
+
+| Parameter | Value  | Optional | Description                   |
+|-----------|--------|----------|-------------------------------|
+| `type`    | String | No       | Must be `"audio"`.            |
+| `url`     | String | No       | The URL of the audio to play. |
+
+Example:
+
+```json
+{
+  "type": "audio",
+  "url": "https://example.com/audio.mp3"
+}
+```
+
+#### Button Item
+
+A button that triggers an action when clicked.
+
+| Parameter        | Value  | Optional | Description                                             |
+|------------------|--------|----------|---------------------------------------------------------|
+| `type`           | String | No       | Must be `"button"`.                                     |
+| `text`           | String | No       | The text to display on the button.                      |
+| `action`         | Object | No       | The action to be performed when the button is clicked.  |
+| `action.url`     | String | No       | The URL to which the request should be sent.            |
+| `action.method`  | String | No       | The HTTP method to use for the action (e.g., `"POST"`). |
+| `action.headers` | Object | Yes      | Optional headers to include in the request.             |
+| `action.body`    | Object | Yes      | The body of the request in JSON format.                 |
+
+Example:
+
+```json
+{
+  "type": "button",
+  "text": "Click me!",
+  "action": {
+    "url": "https://api.example.com/click",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "key": "value"
+    }
+  }
+}
+```
 
 ## Browse as User
 

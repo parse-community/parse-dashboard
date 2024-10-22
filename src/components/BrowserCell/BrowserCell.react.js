@@ -280,6 +280,7 @@ export default class BrowserCell extends Component {
   //#region Cell Context Menu related methods
 
   onContextMenu(event) {
+    this.props.setErrorAggregatedData({});
     if (event.type !== 'contextmenu') {
       return;
     }
@@ -289,6 +290,13 @@ export default class BrowserCell extends Component {
 
     onSelect({ row, col });
     setCopyableValue(hidden ? undefined : this.copyableValue);
+    if (this.props.selectedObjectId !== this.props.objectId) {
+      this.props.setShowAggregatedData(true);
+      this.props.setSelectedObjectId(this.props.objectId);
+      if (this.props.isPanelVisible) {
+        this.props.callCloudFunction(this.props.objectId, this.props.className);
+      }
+    }
 
     const available = Filters.availableFilters(
       this.props.simplifiedSchema,
@@ -535,7 +543,7 @@ export default class BrowserCell extends Component {
           field,
           constraint,
           compareTo,
-          class: className
+          class: className,
         })
       )
     );
@@ -556,6 +564,10 @@ export default class BrowserCell extends Component {
       current,
       onEditChange,
       setCopyableValue,
+      selectedObjectId,
+      setSelectedObjectId,
+      callCloudFunction,
+      isPanelVisible,
       onPointerCmdClick,
       row,
       col,
@@ -565,6 +577,7 @@ export default class BrowserCell extends Component {
       markRequiredFieldRow,
       handleCellClick,
       selectedCells,
+      setShowAggregatedData
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -628,6 +641,17 @@ export default class BrowserCell extends Component {
             onPointerCmdClick(value);
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
+            if (selectedObjectId !== this.props.objectId) {
+              setShowAggregatedData(true);
+              setSelectedObjectId(this.props.objectId);
+              if (
+                this.props.objectId &&
+                isPanelVisible &&
+                ((e.shiftKey && !this.props.firstSelectedCell) || !e.shiftKey)
+              ) {
+                callCloudFunction(this.props.objectId, this.props.className);
+              }
+            }
             handleCellClick(e, row, col);
           }
         }}

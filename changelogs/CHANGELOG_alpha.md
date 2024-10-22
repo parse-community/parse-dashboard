@@ -1,3 +1,52 @@
+# [6.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.18...6.0.0-alpha.19) (2024-10-16)
+
+
+### Bug Fixes
+
+* Security upgrade ws, parse and puppeteer ([#2618](https://github.com/ParsePlatform/parse-dashboard/issues/2618)) ([bab71dc](https://github.com/ParsePlatform/parse-dashboard/commit/bab71dc57195efa62518127de842edd5902603de))
+
+# [6.0.0-alpha.18](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.17...6.0.0-alpha.18) (2024-10-16)
+
+
+### Bug Fixes
+
+* Node 22 support missing in package.json ([#2617](https://github.com/ParsePlatform/parse-dashboard/issues/2617)) ([8c07284](https://github.com/ParsePlatform/parse-dashboard/commit/8c07284cd571c69426c3f080c2698b0624fd4ec4))
+
+# [6.0.0-alpha.17](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.16...6.0.0-alpha.17) (2024-10-09)
+
+
+### Bug Fixes
+
+* Security upgrade express from 4.21.0 to 4.21.1 ([#2607](https://github.com/ParsePlatform/parse-dashboard/issues/2607)) ([54bf0af](https://github.com/ParsePlatform/parse-dashboard/commit/54bf0afa0691e448b7ec20395753468e047e1fd1))
+
+# [6.0.0-alpha.16](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.15...6.0.0-alpha.16) (2024-10-07)
+
+
+### Bug Fixes
+
+* Dashboard not building for Docker platform arm64/v8 ([#2534](https://github.com/ParsePlatform/parse-dashboard/issues/2534)) ([8c4a862](https://github.com/ParsePlatform/parse-dashboard/commit/8c4a862d63b8e568738a2eeab25b6e977cd1ee11))
+
+# [6.0.0-alpha.15](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.14...6.0.0-alpha.15) (2024-10-07)
+
+
+### Features
+
+* Add support for Node 22 ([#2603](https://github.com/ParsePlatform/parse-dashboard/issues/2603)) ([3689106](https://github.com/ParsePlatform/parse-dashboard/commit/3689106b4089aebe73ddb8668863dc82fd267b5c))
+
+# [6.0.0-alpha.14](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.13...6.0.0-alpha.14) (2024-10-06)
+
+
+### Features
+
+* Add data panel to display object related data fetched via Cloud Function ([#2584](https://github.com/ParsePlatform/parse-dashboard/issues/2584)) ([914cc71](https://github.com/ParsePlatform/parse-dashboard/commit/914cc71790157289c32b95cd9d4cdf3d0685989f))
+
+# [6.0.0-alpha.13](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.12...6.0.0-alpha.13) (2024-09-25)
+
+
+### Bug Fixes
+
+* Internal classes `_User`, `_Role`, `_Installation` referenced with pointer don't appear in data browser filter dialog ([#2599](https://github.com/ParsePlatform/parse-dashboard/issues/2599)) ([8239cc8](https://github.com/ParsePlatform/parse-dashboard/commit/8239cc8a05865c5f0b4f5b33dfb224e87d25a319))
+
 # [6.0.0-alpha.12](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.11...6.0.0-alpha.12) (2024-08-07)
 
 

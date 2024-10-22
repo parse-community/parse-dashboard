@@ -42,17 +42,20 @@ export default async function queryFromFilters(className, filters) {
           }
           const reversePointerField = getPointerField(allClassesSchema, filterClassName, className);
           const pointerField = getPointerField(allClassesSchema, className, filterClassName);
-          if (pointerField) {
-            tempquery.matchesQuery(pointerField, queries[filterClassName]);
-          } else if (reversePointerField) {
-            await tempquery.matchesKeyInQuery(
-              'objectId',
-              `${reversePointerField}.objectId`,
-              queries[filterClassName]
-            )
-            querieslist.push(tempquery);
-          } else {
+          if (!pointerField && !reversePointerField) {
             console.warn(`No relationship found between ${className} and ${filterClassName}`);
+          } else {
+            if (pointerField) {
+              tempquery.matchesQuery(pointerField, queries[filterClassName]);
+            }
+            if (!pointerField && reversePointerField) {
+              await tempquery.matchesKeyInQuery(
+                'objectId',
+                `${reversePointerField}.objectId`,
+                queries[filterClassName]
+              );
+            }
+            querieslist.push(tempquery);
           }
         })
       );

@@ -36,6 +36,10 @@ export default class BrowserRow extends Component {
       selection,
       selectRow,
       setCopyableValue,
+      selectedObjectId,
+      setSelectedObjectId,
+      callCloudFunction,
+      isPanelVisible,
       setCurrent,
       setEditing,
       setRelation,
@@ -141,6 +145,10 @@ export default class BrowserRow extends Component {
               isRequired={isRequired}
               markRequiredFieldRow={markRequiredFieldRow}
               setCopyableValue={setCopyableValue}
+              selectedObjectId={selectedObjectId}
+              setSelectedObjectId={setSelectedObjectId}
+              isPanelVisible={isPanelVisible}
+              callCloudFunction={callCloudFunction}
               setContextMenu={setContextMenu}
               onEditSelectedRow={onEditSelectedRow}
               showNote={this.props.showNote}
@@ -148,6 +156,9 @@ export default class BrowserRow extends Component {
               scripts={this.props.scripts}
               handleCellClick={this.props.handleCellClick}
               selectedCells={this.props.selectedCells}
+              setShowAggregatedData={this.props.setShowAggregatedData}
+              setErrorAggregatedData={this.props.setErrorAggregatedData}
+              firstSelectedCell={this.props.firstSelectedCell}
             />
           );
         })}
