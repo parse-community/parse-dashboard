@@ -1,3 +1,22 @@
+# [6.0.0-beta.2](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-beta.1...6.0.0-beta.2) (2024-10-07)
+
+
+### Bug Fixes
+
+* Crash after setting filter using context menu and opening filters panel ([#2579](https://github.com/ParsePlatform/parse-dashboard/issues/2579)) ([5a690eb](https://github.com/ParsePlatform/parse-dashboard/commit/5a690ebe91007698fe1a60334112deed5ce94be1))
+* Dashboard not building for Docker platform arm64/v8 ([#2534](https://github.com/ParsePlatform/parse-dashboard/issues/2534)) ([8c4a862](https://github.com/ParsePlatform/parse-dashboard/commit/8c4a862d63b8e568738a2eeab25b6e977cd1ee11))
+* Descriptive statistics for number cells in data browser not showing ([#2581](https://github.com/ParsePlatform/parse-dashboard/issues/2581)) ([e146b6f](https://github.com/ParsePlatform/parse-dashboard/commit/e146b6f54c7dfcb50c83c70f0c55e5ab76dc3c19))
+* Filter string is erased when changing filter condition ([#2586](https://github.com/ParsePlatform/parse-dashboard/issues/2586)) ([6fa2c8c](https://github.com/ParsePlatform/parse-dashboard/commit/6fa2c8c79201b9ea34321277ab085fa0ba988d77))
+* Internal classes `_User`, `_Role`, `_Installation` referenced with pointer don't appear in data browser filter dialog ([#2599](https://github.com/ParsePlatform/parse-dashboard/issues/2599)) ([8239cc8](https://github.com/ParsePlatform/parse-dashboard/commit/8239cc8a05865c5f0b4f5b33dfb224e87d25a319))
+
+### Features
+
+* Add Cloud Config change history to roll back to previous values ([#2554](https://github.com/ParsePlatform/parse-dashboard/issues/2554)) ([a784129](https://github.com/ParsePlatform/parse-dashboard/commit/a784129dd5f25d6464cdd5d768e296fda4501b42))
+* Add data panel to display object related data fetched via Cloud Function ([#2584](https://github.com/ParsePlatform/parse-dashboard/issues/2584)) ([914cc71](https://github.com/ParsePlatform/parse-dashboard/commit/914cc71790157289c32b95cd9d4cdf3d0685989f))
+* Add optional restriction of script execution to certain object fields and values ([#2488](https://github.com/ParsePlatform/parse-dashboard/issues/2488)) ([8feac9b](https://github.com/ParsePlatform/parse-dashboard/commit/8feac9b8359f27ecd7bd4342be7bcae75289ba35))
+* Add relational filter conditions in data browser ([#2576](https://github.com/ParsePlatform/parse-dashboard/issues/2576)) ([aa5c68d](https://github.com/ParsePlatform/parse-dashboard/commit/aa5c68dbca458069d93351edc0bc0287fe63b7e1))
+* Add support for Node 22 ([#2603](https://github.com/ParsePlatform/parse-dashboard/issues/2603)) ([3689106](https://github.com/ParsePlatform/parse-dashboard/commit/3689106b4089aebe73ddb8668863dc82fd267b5c))
+
 # [6.0.0-beta.1](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0...6.0.0-beta.1) (2024-05-16)
 
 
