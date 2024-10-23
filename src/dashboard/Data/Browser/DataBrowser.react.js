@@ -45,7 +45,7 @@ export default class DataBrowser extends React.Component {
       firstSelectedCell: null,
       selectedData: [],
       prevClassName: props.className,
-      panelWidth: 300,
+      panelWidth: 400,
       isResizing: false,
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
@@ -591,7 +591,7 @@ export default class DataBrowser extends React.Component {
             <ResizableBox
               width={this.state.panelWidth}
               height={Infinity}
-              minConstraints={[100, Infinity]}
+              minConstraints={[400, Infinity]}
               maxConstraints={[this.state.maxWidth, Infinity]}
               onResizeStart={this.handleResizeStart} // Handle start of resizing
               onResizeStop={this.handleResizeStop} // Handle end of resizing

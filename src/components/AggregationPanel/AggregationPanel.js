@@ -9,6 +9,7 @@ import {
   TableElement,
   TextElement,
   VideoElement,
+  PanelElement
 } from './AggregationPanelComponents';
 
 const AggregationPanel = ({
@@ -65,6 +66,8 @@ const AggregationPanel = ({
                     return <AudioElement key={idx} url={item.url} />;
                   case 'button':
                     return <ButtonElement key={idx} item={item} showNote={showNote} />;
+                  case 'panel':
+                    return <PanelElement key={idx} item={item} objectId={selectedObjectId} showNote={showNote} />;
                   default:
                     return null;
                 }

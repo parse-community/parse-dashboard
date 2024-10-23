@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import LoaderDots from 'components/LoaderDots/LoaderDots.react';
 import styles from './AggregationPanel.scss';
+import Parse from 'parse';
 
 // Text Element Component
 export const TextElement = ({ text }) => (
@@ -92,6 +94,123 @@ export const ButtonElement = ({ item, showNote }) => {
       <button onClick={handleClick} className={styles.button}>
         {item.text}
       </button>
+    </div>
+  );
+};
+
+export const PanelElement = ({ item, showNote, objectId, depth = 0 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [panelData, setPanelData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchPanelData = async () => {
+    setIsLoading(true);
+    try {
+      const params = { objectId };
+      const result = await Parse.Cloud.run(item.cloudCodeFunction, params);
+      if (result?.panel?.segments) {
+        setPanelData(result);
+        setError(null);
+      } else {
+        const errorMsg = 'Improper JSON format';
+        setError(errorMsg);
+        showNote(errorMsg, true);
+      }
+    } catch (error) {
+      const errorMsg = error.message;
+      setError(errorMsg);
+      showNote(errorMsg, true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggle = async () => {
+    if ((!isExpanded && !panelData)) {
+      fetchPanelData();
+    }
+    setIsExpanded(prev => !prev);
+  };
+
+  const handleRefresh = () => {
+    setPanelData(null);
+    fetchPanelData();
+  };
+
+  const indentStyle = {
+    marginLeft: `${depth * 20}px`
+  };
+
+  return (
+    <div className={styles.panelElement} style={indentStyle}>
+      <div className={styles.panelHeader}>
+        <button
+          onClick={handleToggle}
+          className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}
+        >
+          {isExpanded ? '▼' : '▶'}
+          {item.title}
+        </button>
+        {isExpanded && (
+          <button
+            onClick={handleRefresh}
+            className={styles.refreshButton}
+            disabled={isLoading}
+          >
+            ↻
+          </button>
+        )}
+      </div>
+
+      {isExpanded && (
+        <div className={styles.panelContent}>
+          {isLoading ? (
+            <div className={styles.loader}>
+              <LoaderDots />
+            </div>
+          ) : panelData && (
+            <div className={styles.nestedPanel}>
+              {panelData.panel.segments.map((segment, index) => (
+                <div key={index}>
+                  <h3 className={styles.heading}>{segment.title}</h3>
+                  <div className={styles.segmentItems}>
+                    {segment.items.map((nestedItem, idx) => {
+                      switch (nestedItem.type) {
+                        case 'panel':
+                          return (
+                            <PanelElement
+                              key={idx}
+                              item={nestedItem}
+                              showNote={showNote}
+                              depth={depth + 1}
+                            />
+                          );
+                        case 'text':
+                          return <TextElement key={idx} text={nestedItem.text} />;
+                        case 'keyValue':
+                          return <KeyValueElement key={idx} item={nestedItem} />;
+                        case 'table':
+                          return <TableElement key={idx} columns={nestedItem.columns} rows={nestedItem.rows} />;
+                        case 'image':
+                          return <ImageElement key={idx} url={nestedItem.url} />;
+                        case 'video':
+                          return <VideoElement key={idx} url={nestedItem.url} />;
+                        case 'audio':
+                          return <AudioElement key={idx} url={nestedItem.url} />;
+                        case 'button':
+                          return <ButtonElement key={idx} item={nestedItem} showNote={showNote} />;
+                        default:
+                          return null;
+                      }
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
