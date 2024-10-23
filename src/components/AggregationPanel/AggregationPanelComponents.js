@@ -102,7 +102,6 @@ export const PanelElement = ({ item, showNote, objectId, depth = 0 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [panelData, setPanelData] = useState(null);
-  const [error, setError] = useState(null);
 
   const fetchPanelData = async () => {
     setIsLoading(true);
@@ -111,15 +110,12 @@ export const PanelElement = ({ item, showNote, objectId, depth = 0 }) => {
       const result = await Parse.Cloud.run(item.cloudCodeFunction, params);
       if (result?.panel?.segments) {
         setPanelData(result);
-        setError(null);
       } else {
         const errorMsg = 'Improper JSON format';
-        setError(errorMsg);
         showNote(errorMsg, true);
       }
     } catch (error) {
       const errorMsg = error.message;
-      setError(errorMsg);
       showNote(errorMsg, true);
     } finally {
       setIsLoading(false);
