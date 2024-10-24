@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import LoaderDots from 'components/LoaderDots/LoaderDots.react';
+import React from 'react';
 import styles from './AggregationPanel.scss';
-import Parse from 'parse';
 
 // Text Element Component
 export const TextElement = ({ text }) => (
