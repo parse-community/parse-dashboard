@@ -99,13 +99,12 @@
     @include transform(translate(-50%, -50%));
 }
 
-.panelElement {
-
+.nestedPanel {
     margin: 8px 0;
     transition: all 0.3s ease;
 }
 
-.panelHeader {
+.nestedPanelHeader {
     display: flex;
     border-left: 1px solid #e3e3ea;
     align-items: center;
@@ -150,23 +149,8 @@
     }
 }
 
-.panelContent {
+.nestedPanelContent {
     padding: 8px 0;
-}
-
-.error {
-    color: #d32f2f;
-    padding: 8px;
-    margin: 8px 0;
-    background-color: #ffebee;
-    border-radius: 4px;
-}
-
-.subheading {
-    font-size: 14px;
-    font-weight: 600;
-    color: #666;
-    margin: 16px 0 8px;
 }
 
 .loader {
