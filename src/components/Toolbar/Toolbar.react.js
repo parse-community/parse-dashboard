@@ -15,7 +15,7 @@ import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom
 
 const POPOVER_CONTENT_ID = 'toolbarStatsPopover';
 
-const Stats = ({ data, classwiseCloudFunctions, className }) => {
+const Stats = ({ data, classwiseCloudFunctions, className, appId }) => {
   const [selected, setSelected] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const buttonRef = React.useRef();
@@ -98,7 +98,7 @@ const Stats = ({ data, classwiseCloudFunctions, className }) => {
     setSelected(statsOptions[0]);
   }, []);
 
-  const rightMarginStyle = classwiseCloudFunctions && classwiseCloudFunctions[className] ? '120px' : 'initial';
+  const rightMarginStyle = classwiseCloudFunctions && classwiseCloudFunctions[appId] && classwiseCloudFunctions[appId][className] ? '120px' : 'initial';
 
   return (
     <>
@@ -140,9 +140,9 @@ const Toolbar = props => {
           </div>
         </div>
       </div>
-      {props?.selectedData?.length ? <Stats data={props.selectedData} classwiseCloudFunctions={props.classwiseCloudFunctions} className={props.className} /> : null}
+      {props?.selectedData?.length ? <Stats data={props.selectedData} classwiseCloudFunctions={props.classwiseCloudFunctions} className={props.className} appId={props.appId} /> : null}
       <div className={styles.actions}>{props.children}</div>
-      {props.classwiseCloudFunctions && props.classwiseCloudFunctions[props.className] && (
+      {props.classwiseCloudFunctions && props.classwiseCloudFunctions[props.appId] && props.classwiseCloudFunctions[props.appId][props.className] && (
         <button
           onClick={props.togglePanel}
           className={styles.btn}
