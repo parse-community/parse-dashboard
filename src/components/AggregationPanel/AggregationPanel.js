@@ -76,6 +76,7 @@ const AggregationPanel = ({
 
   const handleRefresh = useCallback(() => {
     setNestedData(null);
+    setIsExpanded(false);
     fetchNestedData();
   }, [fetchNestedData]);
 
@@ -128,23 +129,21 @@ const AggregationPanel = ({
   if (depth > 0) {
     return (
       <div className={styles.nestedPanel} style={{ marginLeft: `${depth * 20}px` }}>
-        <div className={styles.nestedPanelHeader}>
-          <button
-            onClick={handleToggle}
-            className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}
-          >
-            <span>{isExpanded ? '▼' : '▶'}</span>
-            <span>{panelTitle}</span>
-          </button>
-          {isExpanded && (
-            <button
-              onClick={handleRefresh}
-              className={styles.refreshButton}
-              disabled={isLoadingNested}
-            >
-              <span className={styles.refreshIcon}>↻</span>
-            </button>
-          )}
+        <div className={`${styles.nestedPanelHeader} ${isExpanded ? styles.expanded : ''}`} onClick={handleToggle}>
+          <span className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}>{panelTitle}</span>
+          <div>
+            {isExpanded && (
+              <button
+                onClick={handleRefresh}
+                className={styles.refreshButton}
+                disabled={isLoadingNested}
+              >
+                <span className={styles.refreshIcon}>↻</span>
+              </button>
+
+            )}
+            <span style={{ color: '#fff' }} >{isExpanded ? '▼' : '▲'}</span>
+          </div>
         </div>
         {isExpanded && (
           <div className={styles.nestedPanelContent}>
