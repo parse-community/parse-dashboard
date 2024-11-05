@@ -266,14 +266,14 @@ class Browser extends DashboardView {
     });
   }
 
-  fetchAggregationPanelData(objectId, className, appID) {
+  fetchAggregationPanelData(objectId, className, appId) {
     this.setState({
       isLoading: true,
     });
     const params = {
       objectId: objectId,
     };
-    const cloudCodeFunction = this.state.classwiseCloudFunctions[appID][className][0].cloudCodeFunction;
+    const cloudCodeFunction = this.state.classwiseCloudFunctions[appId][className][0].cloudCodeFunction;
 
     Parse.Cloud.run(cloudCodeFunction, params).then(
       result => {
