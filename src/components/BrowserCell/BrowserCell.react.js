@@ -7,7 +7,7 @@
  */
 import * as Filters from 'lib/Filters';
 import { List, Map } from 'immutable';
-import { dateStringUTC } from 'lib/DateUtils';
+import { yearMonthDayTimeFormatter } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
 import Parse from 'parse';
 import Pill from 'components/Pill/Pill.react';
@@ -152,7 +152,11 @@ export default class BrowserCell extends Component {
       } else if (typeof value === 'string') {
         this.props.value = new Date(this.props.value);
       }
-      this.copyableValue = content = dateStringUTC(this.props.value);
+      if (this.props.useLocalTime) {
+        this.copyableValue = content = yearMonthDayTimeFormatter(this.props.value, false);
+      } else {
+        this.copyableValue = content = this.props.value.toISOString();
+      }
     } else if (this.props.type === 'Boolean') {
       this.copyableValue = content = this.props.value ? 'True' : 'False';
     } else if (this.props.type === 'Object' || this.props.type === 'Bytes') {
@@ -221,6 +225,9 @@ export default class BrowserCell extends Component {
       this.props.value?._previousSave
         ?.then(() => this.renderCellContent())
         ?.catch(err => console.log(err));
+    }
+    if (this.props.useLocalTime !== prevProps.useLocalTime && this.props.type === 'Date') {
+      this.renderCellContent();
     }
     if (this.props.current) {
       if (prevProps.selectedCells === this.props.selectedCells) {

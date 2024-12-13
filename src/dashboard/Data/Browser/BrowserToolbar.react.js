@@ -19,6 +19,7 @@ import ColumnsConfiguration from 'components/ColumnsConfiguration/ColumnsConfigu
 import SecureFieldsDialog from 'dashboard/Data/Browser/SecureFieldsDialog.react';
 import LoginDialog from 'dashboard/Data/Browser/LoginDialog.react';
 import Toggle from 'components/Toggle/Toggle.react';
+import TimeZoneToggle from 'components/TimeZoneToggle/TimeZoneToggle.react';
 
 const BrowserToolbar = ({
   className,
@@ -79,7 +80,10 @@ const BrowserToolbar = ({
 
   togglePanel,
   isPanelVisible,
-  classwiseCloudFunctions
+  classwiseCloudFunctions,
+
+  useLocalTime,
+  onToggleTimeZone
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -439,6 +443,11 @@ const BrowserToolbar = ({
           <MenuItem text={'Cancel all pending rows'} onClick={onCancelPendingEditRows} />
         </BrowserMenu>
       )}
+       <div className={styles.toolbarSeparator} />
+      <div style={{ display: 'inline-flex', alignItems: 'center', marginRight: '10px' }}>
+<span style={{ marginRight: '8px', fontSize: '12px', color: '#ffffff' }}>TimeZone</span>
+<TimeZoneToggle value={useLocalTime} onChange={onToggleTimeZone} />
+</div>
     </Toolbar>
   );
 };

@@ -1,6 +1,7 @@
 import Parse from 'parse';
 import encode from 'parse/lib/browser/encode';
 import React, { Component } from 'react';
+import { formatDateTime } from 'lib/DateUtils';
 
 import BrowserCell from 'components/BrowserCell/BrowserCell.react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
@@ -17,6 +18,18 @@ export default class BrowserRow extends Component {
     const { obj: nextObj } = nextProps;
     const isRefDifferent = obj !== nextObj;
     return isRefDifferent ? JSON.stringify(obj) !== JSON.stringify(nextObj) : isRefDifferent;
+  }
+
+  renderField(name, type, value, targetClass) {
+    if (!value) {
+      return '';
+    }
+    
+    switch(type) {
+      case 'Date':
+        return formatDateTime(value, this.props.useLocalTime);
+      // ... other cases
+    }
   }
 
   render() {
@@ -159,6 +172,7 @@ export default class BrowserRow extends Component {
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
               firstSelectedCell={this.props.firstSelectedCell}
+              useLocalTime={this.props.useLocalTime}
             />
           );
         })}

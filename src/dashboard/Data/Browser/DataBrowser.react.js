@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import { List } from 'immutable';
 import ContextMenu from 'components/ContextMenu/ContextMenu.react';
 import copy from 'copy-to-clipboard';
 import BrowserTable from 'dashboard/Data/Browser/BrowserTable.react';
@@ -32,15 +33,37 @@ export default class DataBrowser extends React.Component {
       props.className,
       columnPreferences[props.className]
     );
+
+    const simplifiedSchema = props.schema ? 
+      this.getSimplifiedSchema(props.schema, props.className) : {};
+    const allClassesSchema = (props.schema && props.classes) ? 
+      this.getAllClassesSchema(props.schema, props.classes) : {};
+
     this.state = {
       order: order,
       current: null,
       editing: false,
       copyableValue: undefined,
       selectedObjectId: undefined,
-      simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
-      allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
-      isPanelVisible: false,
+      simplifiedSchema,
+      allClassesSchema,
+      selection: {},
+      data: null,
+      lastMax: -1,
+      totalCount: 0,
+      lastError: null,
+      relation: null,
+      isUnique: false,
+      uniqueField: null,
+      filters: new List(),
+      ordering: ColumnPreferences.getColumnSort(
+        props.className,
+        props.columns,
+        props.app.applicationId,
+        order
+      ),
+      editCloneRows: [],
+      isMultiselect: false,
       selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
       firstSelectedCell: null,
       selectedData: [],
@@ -48,7 +71,11 @@ export default class DataBrowser extends React.Component {
       panelWidth: 300,
       isResizing: false,
       maxWidth: window.innerWidth - 300,
+      columnSizeControlled: false,
       showAggregatedData: true,
+      errorAggregatedData: null,
+      isPanelVisible: false,
+      useLocalTime: localStorage.getItem('parse_dashboard_useLocalTime') === 'true',
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -202,9 +229,14 @@ export default class DataBrowser extends React.Component {
     }
   }
 
-  getAllClassesSchema(schema) {
+  getAllClassesSchema(schema, classes) {
+    if (!schema || !schema.data || !schema.data.get('classes') || !classes) {
+      return {};
+    }
+    
     const allClasses = Object.keys(schema.data.get('classes').toObject());
     const schemaSimplifiedData = {};
+    
     allClasses.forEach(className => {
       const classSchema = schema.data.get('classes').get(className);
       if (classSchema) {
@@ -216,7 +248,6 @@ export default class DataBrowser extends React.Component {
           };
         });
       }
-      return schemaSimplifiedData;
     });
     return schemaSimplifiedData;
   }
@@ -545,6 +576,14 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  toggleTimeZone = () => {
+    this.setState(prevState => {
+      const newValue = !prevState.useLocalTime;
+      localStorage.setItem('parse_dashboard_useLocalTime', newValue);
+      return { useLocalTime: newValue };
+    });
+  }
+
   render() {
     const {
       className,
@@ -585,6 +624,7 @@ export default class DataBrowser extends React.Component {
             isResizing={this.state.isResizing}
             setShowAggregatedData={this.setShowAggregatedData}
             firstSelectedCell={this.state.firstSelectedCell}
+            useLocalTime={this.state.useLocalTime}
             {...other}
           />
           {this.state.isPanelVisible && (
@@ -642,6 +682,8 @@ export default class DataBrowser extends React.Component {
           allClassesSchema={this.state.allClassesSchema}
           togglePanel={this.togglePanelVisibility}
           isPanelVisible={this.state.isPanelVisible}
+          useLocalTime={this.state.useLocalTime}
+          onToggleTimeZone={this.toggleTimeZone}
           {...other}
         />
 

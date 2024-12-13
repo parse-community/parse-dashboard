@@ -141,19 +141,20 @@ export function yearMonthDayFormatter(date) {
   });
 }
 
-export function yearMonthDayTimeFormatter(date, timeZone) {
+export function yearMonthDayTimeFormatter(date, useUTC) {
   const options = {
     year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
     hour12: false,
+    timeZone: useUTC ? 'UTC' : undefined
   };
-  if (timeZone) {
-    options.timeZoneName = 'short';
-  }
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleString('en-US', options)
+    .replace(',', '')  // Remove comma between date and time
+    .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2'); // Convert to yyyy-MM-dd format
 }
 
 export function getDateMethod(local, methodName) {
@@ -170,4 +171,23 @@ export function pad(number) {
     r = '0' + r;
   }
   return r;
+}
+
+export function formatDateTime(date, useLocalTime = false) {
+  if (!date) return '';
+  
+  const d = new Date(date);
+  
+  // Determine whether to use local time or UTC time based on useLocalTime flag
+  const year = useLocalTime ? d.getFullYear() : d.getUTCFullYear();
+  const month = (useLocalTime ? d.getMonth() : d.getUTCMonth()) + 1;
+  const day = useLocalTime ? d.getDate() : d.getUTCDate();
+  const hours = useLocalTime ? d.getHours() : d.getUTCHours();
+  const minutes = useLocalTime ? d.getMinutes() : d.getUTCMinutes();
+  const seconds = useLocalTime ? d.getSeconds() : d.getUTCSeconds();
+
+  // Pad numbers with leading zeros
+  const pad = (num) => String(num).padStart(2, '0');
+
+  return `${year}-${pad(month)}-${pad(day)} ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }

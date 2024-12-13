@@ -1,0 +1,49 @@
+.container {
+  display: inline-block;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 18px;
+  border-radius: 12px;
+  margin: 6px 8px 0 8px;
+}
+
+.option {
+  position: absolute;
+  width: 30px;
+  text-align: center;
+  color: white;
+  font-size: 10px;
+  z-index: 1;
+  line-height: 18px;
+}
+
+.left .option {
+  left: 18px;
+}
+
+.right .option {
+  left: 2px;
+}
+
+.slider {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  left: 2px;
+  transition: transform 0.15s ease-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.right .slider {
+  transform: translateX(30px);
+}

@@ -65,3 +65,45 @@ describe('daysInMonth', () => {
     expect(DateUtils.daysInMonth(new Date(2015, 8))).toBe(30);
   });
 });
+
+describe('DateUtils', () => {
+  describe('formatDateTime', () => {
+    const testDate = new Date('2024-03-21T08:00:00.000Z');
+
+    it('should format date in UTC time when useLocalTime is false', () => {
+      const result = DateUtils.formatDateTime(testDate, false);
+      expect(result).toBe('2024-03-21 08:00:00');
+    });
+
+    it('should format date in local time when useLocalTime is true', () => {
+      // 假设本地时区是 UTC+8
+      const result = DateUtils.formatDateTime(testDate, true);
+      expect(result).toBe('2024-03-21 16:00:00');
+    });
+
+    it('should handle null date', () => {
+      const result = DateUtils.formatDateTime(null, false);
+      expect(result).toBe('');
+    });
+
+    it('should handle invalid date', () => {
+      const result = DateUtils.formatDateTime('invalid date', false);
+      expect(result).toBe('');
+    });
+  });
+
+  describe('yearMonthDayTimeFormatter', () => {
+    const testDate = new Date('2024-03-21T08:00:00.000Z');
+
+    it('should format date in UTC format', () => {
+      const result = DateUtils.yearMonthDayTimeFormatter(testDate, true);
+      expect(result).toBe('2024-03-21 08:00:00');
+    });
+
+    it('should format date in local format', () => {
+      const result = DateUtils.yearMonthDayTimeFormatter(testDate, false);
+      // 假设本地时区是 UTC+8
+      expect(result).toBe('2024-03-21 16:00:00');
+    });
+  });
+});

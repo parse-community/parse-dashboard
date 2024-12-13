@@ -16,6 +16,7 @@ import React from 'react';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
+import { formatDateTime } from 'lib/DateUtils';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
 const ROWS_OFFSET = 160;
@@ -218,6 +219,7 @@ export default class BrowserTable extends React.Component {
                     setShowAggregatedData={this.props.setShowAggregatedData}
                     setErrorAggregatedData={this.props.setErrorAggregatedData}
                     firstSelectedCell={this.props.firstSelectedCell}
+                    useLocalTime={this.props.useLocalTime}
                   />
                   <Button
                     value="Clone"
@@ -298,6 +300,7 @@ export default class BrowserTable extends React.Component {
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
               firstSelectedCell={this.props.firstSelectedCell}
+              useLocalTime={this.props.useLocalTime}
             />
             <Button
               value="Add"
@@ -387,6 +390,7 @@ export default class BrowserTable extends React.Component {
             setShowAggregatedData={this.props.setShowAggregatedData}
             setErrorAggregatedData={this.props.setErrorAggregatedData}
             firstSelectedCell={this.props.firstSelectedCell}
+            useLocalTime={this.props.useLocalTime}
           />
         );
       }

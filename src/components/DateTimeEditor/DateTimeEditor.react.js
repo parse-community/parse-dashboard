@@ -9,42 +9,23 @@ import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
 import hasAncestor from 'lib/hasAncestor';
 import React from 'react';
 import styles from 'components/DateTimeEditor/DateTimeEditor.scss';
+import { yearMonthDayTimeFormatter } from 'lib/DateUtils';
 
 export default class DateTimeEditor extends React.Component {
   constructor(props) {
-    super();
-
+    super(props);
     this.state = {
-      open: false,
-      position: null,
       value: props.value,
       text: props.value.toISOString(),
+      open: false
     };
-
-    this.checkExternalClick = this.checkExternalClick.bind(this);
-    this.handleKey = this.handleKey.bind(this);
-    this.inputRef = React.createRef();
     this.editorRef = React.createRef();
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({ value: props.value, text: props.value.toISOString() });
+    this.inputRef = React.createRef();
   }
 
   componentDidMount() {
-    document.body.addEventListener('click', this.checkExternalClick);
-    this.inputRef.current.addEventListener('keypress', this.handleKey);
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('click', this.checkExternalClick);
-    this.inputRef.current.removeEventListener('keypress', this.handleKey);
-  }
-
-  checkExternalClick(e) {
-    if (!hasAncestor(e.target, this.editorRef.current)) {
-      this.props.onCommit(this.state.value);
-    }
+    this.inputRef.current.focus();
+    this.inputRef.current.select();
   }
 
   handleKey(e) {
@@ -70,25 +51,21 @@ export default class DateTimeEditor extends React.Component {
     if (isNaN(date.getTime())) {
       this.setState({
         value: this.props.value,
-        text: this.props.value.toISOString(),
+        text: this.props.value.toISOString()
       });
     } else {
-      if (this.state.text.endsWith('Z')) {
-        this.setState({ value: date });
-      } else {
-        const utc = new Date(
-          Date.UTC(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            date.getHours(),
-            date.getMinutes(),
-            date.getSeconds(),
-            date.getMilliseconds()
-          )
-        );
-        this.setState({ value: utc });
-      }
+      const utc = new Date(
+        Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          date.getHours(),
+          date.getMinutes(),
+          date.getSeconds(),
+          date.getMilliseconds()
+        )
+      );
+      this.setState({ value: utc });
     }
   }
 
@@ -100,10 +77,11 @@ export default class DateTimeEditor extends React.Component {
           <DateTimePicker
             value={this.state.value}
             width={240}
-            onChange={value => this.setState({ value: value, text: value.toISOString() })}
-            close={() =>
-              this.setState({ open: false }, () => this.props.onCommit(this.state.value))
-            }
+            local={false}
+            onChange={value => this.setState({ value, text: value.toISOString() })}
+            close={() => {
+              this.setState({ open: false }, () => this.props.onCommit(this.state.value));
+            }}
           />
         </div>
       );
@@ -120,6 +98,7 @@ export default class DateTimeEditor extends React.Component {
           onClick={this.toggle.bind(this)}
           onChange={this.inputDate.bind(this)}
           onBlur={this.commitDate.bind(this)}
+          onKeyDown={this.handleKey.bind(this)}
         />
         {popover}
       </div>
