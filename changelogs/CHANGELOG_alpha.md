@@ -1,3 +1,10 @@
+# [6.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.19...6.0.0-alpha.20) (2024-11-19)
+
+
+### Bug Fixes
+
+* Security upgrade cross-spawn from 7.0.3 to 7.0.6 ([#2629](https://github.com/ParsePlatform/parse-dashboard/issues/2629)) ([47a43e0](https://github.com/ParsePlatform/parse-dashboard/commit/47a43e0ac5d55fc9e214079895f71af7c7e3c350))
+
 # [6.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.18...6.0.0-alpha.19) (2024-10-16)
 
 
