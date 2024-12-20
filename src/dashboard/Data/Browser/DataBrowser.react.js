@@ -103,7 +103,7 @@ export default class DataBrowser extends React.Component {
       this.setState({ order });
     }
     if (props && props.className) {
-      if (!props.classwiseCloudFunctions?.[props.app.applicationId]?.[props.className]) {
+      if (!props.classwiseCloudFunctions?.[`${props.app.applicationId}${props.appName}`]?.[props.className]) {
         this.setState({ isPanelVisible: false });
         this.setState({ selectedObjectId: undefined });
       }
@@ -643,6 +643,7 @@ export default class DataBrowser extends React.Component {
           togglePanel={this.togglePanelVisibility}
           isPanelVisible={this.state.isPanelVisible}
           appId={this.props.app.applicationId}
+          appName = {this.props.appName}
           {...other}
         />
 

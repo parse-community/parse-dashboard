@@ -80,7 +80,8 @@ const BrowserToolbar = ({
   togglePanel,
   isPanelVisible,
   classwiseCloudFunctions,
-  appId
+  appId,
+  appName
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -278,6 +279,7 @@ const BrowserToolbar = ({
       isPanelVisible={isPanelVisible}
       classwiseCloudFunctions={classwiseCloudFunctions}
       appId={appId}
+      appName = {appName}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>
