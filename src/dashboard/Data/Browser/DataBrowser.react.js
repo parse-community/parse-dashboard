@@ -103,7 +103,7 @@ export default class DataBrowser extends React.Component {
       this.setState({ order });
     }
     if (props && props.className) {
-      if (!props.classwiseCloudFunctions[props.className]) {
+      if (!props.classwiseCloudFunctions?.[`${props.app.applicationId}${props.appName}`]?.[props.className]) {
         this.setState({ isPanelVisible: false });
         this.setState({ selectedObjectId: undefined });
       }
@@ -198,7 +198,7 @@ export default class DataBrowser extends React.Component {
       if(this.props.errorAggregatedData != {}){
         this.props.setErrorAggregatedData({});
       }
-      this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
+      this.props.callCloudFunction(this.state.selectedObjectId, this.props.className,this.props.app.applicationId);
     }
   }
 
@@ -364,7 +364,7 @@ export default class DataBrowser extends React.Component {
           showAggregatedData:true
         })
         if(prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible){
-          this.props.callCloudFunction(this.state.selectedObjectId,this.props.className)
+          this.props.callCloudFunction(this.state.selectedObjectId,this.props.className,this.props.app.applicationId)
         }
         e.preventDefault();
         break;
@@ -405,7 +405,7 @@ export default class DataBrowser extends React.Component {
           showAggregatedData: true,
         });
         if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
-          this.props.callCloudFunction(this.state.selectedObjectId, this.props.className);
+          this.props.callCloudFunction(this.state.selectedObjectId, this.props.className,this.props.app.applicationId);
         }
 
         e.preventDefault();
@@ -642,6 +642,8 @@ export default class DataBrowser extends React.Component {
           allClassesSchema={this.state.allClassesSchema}
           togglePanel={this.togglePanelVisibility}
           isPanelVisible={this.state.isPanelVisible}
+          appId={this.props.app.applicationId}
+          appName = {this.props.appName}
           {...other}
         />
 

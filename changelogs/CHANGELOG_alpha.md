@@ -1,3 +1,10 @@
+# [6.0.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.20...6.0.0-alpha.21) (2025-01-24)
+
+
+### Bug Fixes
+
+* Info panel not showing when some apps miss infoPanel config ([#2627](https://github.com/ParsePlatform/parse-dashboard/issues/2627)) ([539e883](https://github.com/ParsePlatform/parse-dashboard/commit/539e88348721bc100a80ae00de81a921bc2c53d4))
+
 # [6.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.19...6.0.0-alpha.20) (2024-11-19)
 
 

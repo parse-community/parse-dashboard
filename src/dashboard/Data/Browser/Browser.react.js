@@ -266,15 +266,15 @@ class Browser extends DashboardView {
     });
   }
 
-  fetchAggregationPanelData(objectId, className) {
+  fetchAggregationPanelData(objectId, className, appId) {
     this.setState({
       isLoading: true,
     });
     const params = {
       objectId: objectId,
     };
-    const cloudCodeFunction = this.state.classwiseCloudFunctions[className][0].cloudCodeFunction;
-
+    const appName = this.props.params.appId;
+    const cloudCodeFunction = this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
     Parse.Cloud.run(cloudCodeFunction, params).then(
       result => {
         if (result && result.panel && result.panel && result.panel.segments) {
@@ -328,12 +328,14 @@ class Browser extends DashboardView {
   classAndCloudFuntionMap(data) {
     const classMap = {};
     data.apps.forEach(app => {
-      app.infoPanel.forEach(panel => {
+      const appName = app.appName;
+      classMap[`${app.appId}${appName}`] = {};
+      app.infoPanel && app.infoPanel.forEach(panel => {
         panel.classes.forEach(className => {
-          if (!classMap[className]) {
-            classMap[className] = [];
+          if (!classMap[`${app.appId}${appName}`][className]) {
+            classMap[`${app.appId}${appName}`][className] = [];
           }
-          classMap[className].push({
+          classMap[`${app.appId}${appName}`][className].push({
             title: panel.title,
             cloudCodeFunction: panel.cloudCodeFunction,
             classes: panel.classes,
@@ -2066,6 +2068,7 @@ class Browser extends DashboardView {
             setAggregationPanelData={this.setAggregationPanelData}
             setErrorAggregatedData={this.setErrorAggregatedData}
             errorAggregatedData={this.state.errorAggregatedData}
+            appName = {this.props.params.appId}
           />
         );
       }
