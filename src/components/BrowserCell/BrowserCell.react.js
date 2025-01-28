@@ -294,7 +294,7 @@ export default class BrowserCell extends Component {
       this.props.setShowAggregatedData(true);
       this.props.setSelectedObjectId(this.props.objectId);
       if (this.props.isPanelVisible) {
-        this.props.callCloudFunction(this.props.objectId, this.props.className);
+        this.props.callCloudFunction(this.props.objectId, this.props.className, this.props.appId);
       }
     }
 
@@ -649,7 +649,7 @@ export default class BrowserCell extends Component {
                 isPanelVisible &&
                 ((e.shiftKey && !this.props.firstSelectedCell) || !e.shiftKey)
               ) {
-                callCloudFunction(this.props.objectId, this.props.className);
+                callCloudFunction(this.props.objectId, this.props.className, this.props.appId);
               }
             }
             handleCellClick(e, row, col);
