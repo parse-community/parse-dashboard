@@ -1,3 +1,10 @@
+# [6.0.0-alpha.23](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.22...6.0.0-alpha.23) (2025-01-29)
+
+
+### Bug Fixes
+
+* Info panel Cloud Code call is unauthenticated without using master key ([#2641](https://github.com/ParsePlatform/parse-dashboard/issues/2641)) ([e879e4f](https://github.com/ParsePlatform/parse-dashboard/commit/e879e4f541dc0aa3e23afe6606ee7df9ba22b63a))
+
 # [6.0.0-alpha.22](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.21...6.0.0-alpha.22) (2025-01-29)
 
 

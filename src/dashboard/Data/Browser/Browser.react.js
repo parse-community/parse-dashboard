@@ -271,9 +271,12 @@ class Browser extends DashboardView {
     const params = {
       objectId: objectId,
     };
+    const options = {
+      useMasterKey: true,
+    }
     const appName = this.props.params.appId;
     const cloudCodeFunction = this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
-    Parse.Cloud.run(cloudCodeFunction, params).then(
+    Parse.Cloud.run(cloudCodeFunction, params, options).then(
       result => {
         if (result && result.panel && result.panel && result.panel.segments) {
           this.setState({ AggregationPanelData: result, isLoading: false });
