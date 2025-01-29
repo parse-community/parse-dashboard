@@ -1,3 +1,10 @@
+# [6.0.0-alpha.22](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.21...6.0.0-alpha.22) (2025-01-29)
+
+
+### Bug Fixes
+
+* Info panel not configurable via `new ParseDashboard()` when running as express middleware ([#2639](https://github.com/ParsePlatform/parse-dashboard/issues/2639)) ([a9b8cd4](https://github.com/ParsePlatform/parse-dashboard/commit/a9b8cd4a7228837cbb462a45e39b01494852f347))
+
 # [6.0.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.20...6.0.0-alpha.21) (2025-01-24)
 
 

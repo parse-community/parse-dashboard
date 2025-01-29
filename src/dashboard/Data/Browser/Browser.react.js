@@ -41,7 +41,6 @@ import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
-import { setBasePath } from 'lib/AJAX';
 
 // The initial and max amount of rows fetched by lazy loading
 const MAX_ROWS_FETCHED = 200;
@@ -212,7 +211,6 @@ class Browser extends DashboardView {
   componentDidMount() {
     this.addLocation(this.props.params.appId);
     window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
-    setBasePath('/');
     get('/parse-dashboard-config.json').then(data => {
       this.setState({ configData: data });
       this.classAndCloudFuntionMap(this.state.configData);
