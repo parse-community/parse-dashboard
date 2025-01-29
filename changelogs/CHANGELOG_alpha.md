@@ -1,3 +1,10 @@
+# [6.0.0-alpha.24](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.23...6.0.0-alpha.24) (2025-01-29)
+
+
+### Bug Fixes
+
+* Info panel Cloud Code call sends `objectId` instead of `Parse.Object` ([#2643](https://github.com/ParsePlatform/parse-dashboard/issues/2643)) ([a4bcabc](https://github.com/ParsePlatform/parse-dashboard/commit/a4bcabc5c5eaf07bc9eed11814c19901e1d310da))
+
 # [6.0.0-alpha.23](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.22...6.0.0-alpha.23) (2025-01-29)
 
 

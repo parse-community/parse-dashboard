@@ -269,7 +269,7 @@ class Browser extends DashboardView {
       isLoading: true,
     });
     const params = {
-      objectId: objectId,
+      object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
     };
     const options = {
       useMasterKey: true,
