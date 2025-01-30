@@ -128,7 +128,7 @@ const AggregationPanel = ({
 
   if (depth > 0) {
     return (
-      <div className={styles.nestedPanel} style={{ marginLeft: `${depth * 20}px` }}>
+      <div className={styles.nestedPanel}>
         <div className={`${styles.nestedPanelHeader} ${isExpanded ? styles.expanded : ''}`} onClick={handleToggle}>
           <span className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}>{panelTitle}</span>
           <div>
@@ -138,11 +138,11 @@ const AggregationPanel = ({
                 className={styles.refreshButton}
                 disabled={isLoadingNested}
               >
-                <span className={styles.refreshIcon}>↻</span>
+                <span>↻</span>
               </button>
 
             )}
-            <span style={{ color: '#fff' }} >{isExpanded ? '▼' : '▲'}</span>
+            <span >{isExpanded ? '▼' : '▲'}</span>
           </div>
         </div>
         {isExpanded && (
