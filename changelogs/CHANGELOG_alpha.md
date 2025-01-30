@@ -1,3 +1,38 @@
+# [6.0.0-alpha.24](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.23...6.0.0-alpha.24) (2025-01-29)
+
+
+### Bug Fixes
+
+* Info panel Cloud Code call sends `objectId` instead of `Parse.Object` ([#2643](https://github.com/ParsePlatform/parse-dashboard/issues/2643)) ([a4bcabc](https://github.com/ParsePlatform/parse-dashboard/commit/a4bcabc5c5eaf07bc9eed11814c19901e1d310da))
+
+# [6.0.0-alpha.23](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.22...6.0.0-alpha.23) (2025-01-29)
+
+
+### Bug Fixes
+
+* Info panel Cloud Code call is unauthenticated without using master key ([#2641](https://github.com/ParsePlatform/parse-dashboard/issues/2641)) ([e879e4f](https://github.com/ParsePlatform/parse-dashboard/commit/e879e4f541dc0aa3e23afe6606ee7df9ba22b63a))
+
+# [6.0.0-alpha.22](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.21...6.0.0-alpha.22) (2025-01-29)
+
+
+### Bug Fixes
+
+* Info panel not configurable via `new ParseDashboard()` when running as express middleware ([#2639](https://github.com/ParsePlatform/parse-dashboard/issues/2639)) ([a9b8cd4](https://github.com/ParsePlatform/parse-dashboard/commit/a9b8cd4a7228837cbb462a45e39b01494852f347))
+
+# [6.0.0-alpha.21](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.20...6.0.0-alpha.21) (2025-01-24)
+
+
+### Bug Fixes
+
+* Info panel not showing when some apps miss infoPanel config ([#2627](https://github.com/ParsePlatform/parse-dashboard/issues/2627)) ([539e883](https://github.com/ParsePlatform/parse-dashboard/commit/539e88348721bc100a80ae00de81a921bc2c53d4))
+
+# [6.0.0-alpha.20](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.19...6.0.0-alpha.20) (2024-11-19)
+
+
+### Bug Fixes
+
+* Security upgrade cross-spawn from 7.0.3 to 7.0.6 ([#2629](https://github.com/ParsePlatform/parse-dashboard/issues/2629)) ([47a43e0](https://github.com/ParsePlatform/parse-dashboard/commit/47a43e0ac5d55fc9e214079895f71af7c7e3c350))
+
 # [6.0.0-alpha.19](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.18...6.0.0-alpha.19) (2024-10-16)
 
 
