@@ -21,6 +21,7 @@ const AggregationPanel = ({
   showNote,
   setSelectedObjectId,
   selectedObjectId,
+  appName,
   depth = 0,
   cloudCodeFunction = null,
   panelTitle = null,
@@ -89,7 +90,7 @@ const AggregationPanel = ({
             case 'text':
               return <TextElement key={idx} text={item.text} />;
             case 'keyValue':
-              return <KeyValueElement key={idx} item={item} />;
+              return <KeyValueElement key={idx} item={item} appName={appName} />;
             case 'table':
               return <TableElement key={idx} columns={item.columns} rows={item.rows} />;
             case 'image':

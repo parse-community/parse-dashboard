@@ -609,6 +609,7 @@ export default class DataBrowser extends React.Component {
                   setErrorAggregatedData={this.props.setErrorAggregatedData}
                   setSelectedObjectId={this.setSelectedObjectId}
                   selectedObjectId={this.state.selectedObjectId}
+                  appName = {this.props.appName}
                 />
               </div>
             </ResizableBox>

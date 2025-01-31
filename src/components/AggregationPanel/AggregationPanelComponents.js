@@ -9,10 +9,10 @@ export const TextElement = ({ text }) => (
 );
 
 // Key-Value Element Component
-export const KeyValueElement = ({ item }) => (
+export const KeyValueElement = ({ item, appName }) => (
   <div className={styles.keyValue}>
     {item.key}:
-    {item.url ? <a href={item.url} target="_blank">{item.value}</a> : <span>{item.value}</span>}
+    {item.url ? <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank">{item.value}</a> : <span>{item.value}</span>}
   </div>
 );
 
