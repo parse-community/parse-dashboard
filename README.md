@@ -929,12 +929,13 @@ Example:
 
 A text item that consists of a key and a value. The value can optionally be linked to a URL.
 
-| Parameter | Value  | Optional | Description                                                                       |
-|-----------|--------|----------|-----------------------------------------------------------------------------------|
-| `type`    | String | No       | Must be `"keyValue"`.                                                             |
-| `key`     | String | No       | The key text to display.                                                          |
-| `value`   | String | No       | The value text to display.                                                        |
-| `url`     | String | Yes      | The URL that will be opened in a new browser tab when clicking on the value text. |
+| Parameter       | Value   | Default     | Optional | Description                                                                                                                                                                                             |
+|-----------------|---------|-------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`          | String  | -           | No       | Must be `"keyValue"`.                                                                                                                                                                                   |
+| `key`           | String  | -           | No       | The key text to display.                                                                                                                                                                                |
+| `value`         | String  | -           | No       | The value text to display.                                                                                                                                                                              |
+| `url`           | String  | `undefined` | Yes      | The URL that will be opened in a new browser tab when clicking on the value text. It can be set to an absolute URL or a relative URL in which case the base URL is `<PROTOCOL>://<HOST>/<MOUNT_PATH>/`. |
+| `isRelativeUrl` | Boolean | `false`     | Yes      | Set this to `true` when linking to another dashboard page, in which case the base URL for the relative URL will be `<PROTOCOL>://<HOST>/<MOUNT_PATH>/apps/<APP_NAME>/`.                                 |
 
 Examples:
 
@@ -952,6 +953,16 @@ Examples:
   "key": "Last purchase ID",
   "value": "123",
   "url": "https://example.com/purchaseDetails?purchaseId=012345"
+}
+```
+
+```json
+{
+  "type": "keyValue",
+  "key": "Last purchase ID",
+  "value": "123",
+  "url": "browser/_User",
+  "isRelativeUrl": true
 }
 ```
 
