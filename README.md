@@ -960,10 +960,26 @@ Examples:
 ```json
 {
   "type": "keyValue",
-  "key": "Last purchase ID",
+  "key": "Purchase",
   "value": "123",
-  "url": "browser/_User",
+  "url": "browser/Purchase",
   "isRelativeUrl": true
+}
+```
+
+To navigate to a specific object using a relative URL, the query parameters must be URL encoded:
+
+```js
+const objectId = 'abc123';
+const className = 'Purchase';
+const query = [{ field: 'objectId', constraint: 'eq', compareTo: objectId }];
+const url = `browser/Purchase?filters=${JSON.stringify(query)}`;
+const item = {
+  type: 'keyValue',
+  key: 'Purchase',
+  value: objectId,
+  url,
+  isRelativeUrl: true
 }
 ```
 
@@ -1109,7 +1125,7 @@ Example:
 ```json
 {
   "type": "panel",
-  "text": "Purchase History",
+  "title": "Purchase History",
   "cloudCodeFunction": "getUserPurchaseHistory"
 }
 ```
