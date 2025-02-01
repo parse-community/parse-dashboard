@@ -273,7 +273,7 @@ class Browser extends DashboardView {
     };
     const options = {
       useMasterKey: true,
-    }
+    };
     const appName = this.props.params.appId;
     const cloudCodeFunction = this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
     Parse.Cloud.run(cloudCodeFunction, params, options).then(

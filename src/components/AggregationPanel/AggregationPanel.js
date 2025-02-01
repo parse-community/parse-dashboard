@@ -1,7 +1,7 @@
 import LoaderDots from 'components/LoaderDots/LoaderDots.react';
+import Parse from 'parse';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './AggregationPanel.scss';
-import Parse from 'parse';
 import {
   AudioElement,
   ButtonElement,
@@ -21,6 +21,7 @@ const AggregationPanel = ({
   showNote,
   setSelectedObjectId,
   selectedObjectId,
+  className,
   appName,
   depth = 0,
   cloudCodeFunction = null,
@@ -52,8 +53,13 @@ const AggregationPanel = ({
   const fetchNestedData = useCallback(async () => {
     setIsLoadingNested(true);
     try {
-      const params = { objectId: selectedObjectId };
-      const result = await Parse.Cloud.run(cloudCodeFunction, params);
+      const params = {
+        object: Parse.Object.extend(className).createWithoutData(selectedObjectId).toPointer(),
+      };
+      const options = {
+        useMasterKey: true,
+      };
+      const result = await Parse.Cloud.run(cloudCodeFunction, params, options);
       if (result?.panel?.segments) {
         setNestedData(result);
       } else {
@@ -113,6 +119,7 @@ const AggregationPanel = ({
                     showNote={showNote}
                     setSelectedObjectId={setSelectedObjectId}
                     selectedObjectId={selectedObjectId}
+                    className={className}
                     depth={depth + 1}
                     cloudCodeFunction={item.cloudCodeFunction}
                     panelTitle={item.title}

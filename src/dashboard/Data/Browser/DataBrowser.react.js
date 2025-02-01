@@ -610,6 +610,7 @@ export default class DataBrowser extends React.Component {
                   setSelectedObjectId={this.setSelectedObjectId}
                   selectedObjectId={this.state.selectedObjectId}
                   appName = {this.props.appName}
+                  className = {this.props.className}
                 />
               </div>
             </ResizableBox>
