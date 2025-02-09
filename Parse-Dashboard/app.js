@@ -127,23 +127,23 @@ module.exports = function(config, options) {
               const matchingAccess = appsUserHasAccess.find(
                 (access) => access.appId === app.appId
               );
-      
+
               if (!matchingAccess) {
                 return null;
               }
-      
+
               if (matchingAccess.readOnly) {
                 app.masterKey = app.readOnlyMasterKey;
               }
-      
-              if (typeof app.masterKey === "function") {
+
+              if (typeof app.masterKey === 'function') {
                 app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
               }
-      
+
               return app;
             })
           );
-      
+
           response.apps = processedApps.filter((app) => app !== null);
         }
         // They provided correct auth
@@ -161,7 +161,7 @@ module.exports = function(config, options) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
         await Promise.all(
           response.apps.map(async (app) => {
-            if (typeof app.masterKey === "function") {
+            if (typeof app.masterKey === 'function') {
               app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
             }
           })
