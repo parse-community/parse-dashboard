@@ -13,6 +13,7 @@ const startServer = require('./server');
 const program = require('commander');
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
 program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
+program.option('--masterKeyTtl [masterKeyTtl]', 'the master key ttl of the app you would like to manage.');
 program.option('--serverURL [serverURL]', 'the server url of the app you would like to manage.');
 program.option('--graphQLServerURL [graphQLServerURL]', 'the GraphQL server url of the app you would like to manage.');
 program.option('--dev', 'Enable development mode. This will disable authentication and allow non HTTPS connections. DO NOT ENABLE IN PRODUCTION SERVERS');

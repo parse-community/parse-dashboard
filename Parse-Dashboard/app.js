@@ -5,6 +5,7 @@ const packageJson = require('package-json');
 const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 const fs = require('fs');
+const ConfigKeyCache = require('./configKeyCache.js');
 
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
@@ -80,11 +81,11 @@ module.exports = function(config, options) {
     });
 
     // Serve the configuration.
-    app.get('/parse-dashboard-config.json', function(req, res) {
+    app.get('/parse-dashboard-config.json', async (req, res) => {
       const apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
       const response = {
-        apps: apps,
-        newFeaturesInLatestVersion: newFeaturesInLatestVersion,
+        apps,
+        newFeaturesInLatestVersion,
       };
 
       //Based on advice from Doug Wilson here:
@@ -119,20 +120,31 @@ module.exports = function(config, options) {
           return app;
         });
       }
-
       if (successfulAuth) {
         if (appsUserHasAccess) {
-          // Restric access to apps defined in user dictionary
-          // If they didn't supply any app id, user will access all apps
-          response.apps = response.apps.filter(function (app) {
-            return appsUserHasAccess.find(appUserHasAccess => {
-              const isSame = app.appId === appUserHasAccess.appId;
-              if (isSame && appUserHasAccess.readOnly) {
+          const processedApps = await Promise.all(
+            response.apps.map(async (app) => {
+              const matchingAccess = appsUserHasAccess.find(
+                (access) => access.appId === app.appId
+              );
+      
+              if (!matchingAccess) {
+                return null;
+              }
+      
+              if (matchingAccess.readOnly) {
                 app.masterKey = app.readOnlyMasterKey;
               }
-              return isSame;
+      
+              if (typeof app.masterKey === "function") {
+                app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
+              }
+      
+              return app;
             })
-          });
+          );
+      
+          response.apps = processedApps.filter((app) => app !== null);
         }
         // They provided correct auth
         return res.json(response);
@@ -147,6 +159,14 @@ module.exports = function(config, options) {
       //(ie. didn't supply usernames and passwords)
       if (requestIsLocal || options.dev) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
+        await Promise.all(
+          response.apps.map(async (app) => {
+            if (typeof app.masterKey === "function") {
+              app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
+            }
+          })
+        );
+
         return res.json(response);
       }
       //We shouldn't get here. Fail closed.
