@@ -41,9 +41,9 @@ import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
+import BrowserFooter from './BrowserFooter.react';
 
 // The initial and max amount of rows fetched by lazy loading
-const MAX_ROWS_FETCHED = 200;
 const BROWSER_LAST_LOCATION = 'brower_last_location';
 
 @subscribeTo('Schema', 'schema')
@@ -75,6 +75,8 @@ class Browser extends DashboardView {
       clp: {},
       filters: new List(),
       ordering: '-createdAt',
+      skip: 0,
+      limit: 20,
       selection: {},
       exporting: false,
       exportingCount: 0,
@@ -892,7 +894,7 @@ class Browser extends DashboardView {
   }
 
   async fetchParseData(source, filters) {
-    const { useMasterKey } = this.state;
+    const { useMasterKey, skip, limit  } = this.state;
     const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
@@ -902,8 +904,9 @@ class Browser extends DashboardView {
     } else {
       query.ascending(field);
     }
+    query.skip(skip);
+    query.limit(limit);
 
-    query.limit(MAX_ROWS_FETCHED);
     this.excludeFields(query, source);
     let promise = query.find({ useMasterKey });
     let isUnique = false;
@@ -955,7 +958,7 @@ class Browser extends DashboardView {
     this.setState({
       data: data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.state.limit,
       filteredCounts: filteredCounts,
     });
   }
@@ -969,7 +972,7 @@ class Browser extends DashboardView {
       selection: {},
       data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.state.limit,
     });
   }
 
@@ -1022,7 +1025,7 @@ class Browser extends DashboardView {
       query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
       query.addDescending('createdAt');
     }
-    query.limit(MAX_ROWS_FETCHED);
+    query.limit(this.state.limit);
     this.excludeFields(query, source);
 
     const { useMasterKey } = this.state;
@@ -1033,7 +1036,7 @@ class Browser extends DashboardView {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState({ lastMax: this.state.lastMax + this.state.limit });
   }
 
   updateFilters(filters) {
@@ -1997,7 +2000,8 @@ class Browser extends DashboardView {
           }
         }
         browser = (
-          <DataBrowser
+          <>
+            <DataBrowser
             app={this.context}
             ref={this.dataBrowserRef}
             isUnique={this.state.isUnique}
@@ -2071,6 +2075,20 @@ class Browser extends DashboardView {
             errorAggregatedData={this.state.errorAggregatedData}
             appName = {this.props.params.appId}
           />
+          <BrowserFooter
+            skip={this.state.skip}
+            setSkip={(skip) => {
+              this.setState({ skip });
+              this.updateOrdering(this.state.ordering);
+            }}
+            count={this.state.counts[className]}
+            limit={this.state.limit}
+            setLimit={(limit) => {
+              this.setState({ limit })
+              this.updateOrdering(this.state.ordering);
+            }}
+            />
+          </>
         );
       }
     }
