@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import styles from './BrowserFooter.scss';
 import Button from 'components/Button/Button.react';
 
@@ -11,7 +11,7 @@ class BrowserFooter extends React.Component {
     const newLimit = parseInt(event.target.value, 10);
     this.props.setLimit(newLimit);
     this.props.setSkip(0);
-    this.setState({ pageInput: "1" });
+    this.setState({ pageInput: '1' });
   };
 
   handlePageChange = (newSkip) => {
@@ -23,9 +23,9 @@ class BrowserFooter extends React.Component {
 
   handleInputChange = (e) => {
     const value = e.target.value;
-    
+
     // Allow user to type freely but validate only on blur/Enter
-    if (value === "" || /^\d*$/.test(value)) {
+    if (value === '' || /^\d*$/.test(value)) {
       this.setState({ pageInput: value });
     }
   };
@@ -45,7 +45,7 @@ class BrowserFooter extends React.Component {
   };
 
   handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       this.validateAndApplyPage();
     }
   };
@@ -69,7 +69,7 @@ class BrowserFooter extends React.Component {
         <span>items per page</span>
         <input
           type="text"
-          style={{ marginLeft: "auto", width: "50px" }}
+          style={{ marginLeft: 'auto', width: '50px' }}
           value={this.state.pageInput}
           onChange={this.handleInputChange}
           onBlur={this.validateAndApplyPage}

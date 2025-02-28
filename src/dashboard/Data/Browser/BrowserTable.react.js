@@ -18,7 +18,6 @@ import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
 const MAX_ROWS = 200; // Number of rows to render at any time
-const ROWS_OFFSET = 160;
 const ROW_HEIGHT = 30;
 
 const READ_ONLY = ['objectId', 'createdAt', 'updatedAt'];
