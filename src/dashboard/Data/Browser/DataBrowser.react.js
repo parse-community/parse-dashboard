@@ -419,6 +419,15 @@ export default class DataBrowser extends React.Component {
           e.preventDefault();
         }
         break;
+      case 32: // Space
+        // Only handle space if not editing and there's a current row selected
+        if (!this.state.editing && this.state.current?.row >= 0) {
+          const rowId = this.props.data[this.state.current.row].id;
+          const isSelected = this.props.selection[rowId];
+          this.props.selectRow(rowId, !isSelected);
+          e.preventDefault();
+        }
+        break;
     }
   }
 
