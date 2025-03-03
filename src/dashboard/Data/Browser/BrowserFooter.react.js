@@ -1,6 +1,6 @@
+import Button from 'components/Button/Button.react';
 import React from 'react';
 import styles from './BrowserFooter.scss';
-import Button from 'components/Button/Button.react';
 
 class BrowserFooter extends React.Component {
   state = {
@@ -57,16 +57,16 @@ class BrowserFooter extends React.Component {
     return (
       <div className={styles.footer}>
         <span>
-          <strong>{count?.toLocaleString() || 0}</strong> items
+          <strong>{count?.toLocaleString() || 0}</strong> objects
         </span>
         <select value={limit} onChange={this.handleLimitChange}>
-          {[10, 20, 40, 50, 100, 200].map((size) => (
+          {[10, 20, 50, 100, 200, 500, 1000].map((size) => (
             <option key={size} value={size}>
               {size}
             </option>
           ))}
         </select>
-        <span>items per page</span>
+        <span>per page</span>
         <input
           type="text"
           style={{ marginLeft: 'auto', width: '50px' }}

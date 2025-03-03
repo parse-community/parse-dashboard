@@ -76,7 +76,7 @@ class Browser extends DashboardView {
       filters: new List(),
       ordering: '-createdAt',
       skip: 0,
-      limit: 20,
+      limit: 100,
       selection: {},
       exporting: false,
       exportingCount: 0,
