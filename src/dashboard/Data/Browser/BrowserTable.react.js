@@ -17,7 +17,6 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
-const MAX_ROWS = 200; // Number of rows to render at any time
 const ROW_HEIGHT = 30;
 
 const READ_ONLY = ['objectId', 'createdAt', 'updatedAt'];
@@ -298,7 +297,7 @@ export default class BrowserTable extends React.Component {
         );
       }
       const rows = [];
-      const end = Math.min(this.state.offset + MAX_ROWS, this.props.data.length);
+      const end = Math.min(this.state.offset + this.props.limit, this.props.data.length);
       for (let i = this.state.offset; i < end; i++) {
         const index = i - this.state.offset;
         const obj = this.props.data[i];
@@ -493,7 +492,7 @@ export default class BrowserTable extends React.Component {
               style={{
                 height: Math.max(
                   0,
-                  (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT
+                  (this.props.data.length - this.state.offset - this.props.limit) * ROW_HEIGHT
                 ),
               }}
             />
@@ -535,6 +534,7 @@ export default class BrowserTable extends React.Component {
     return (
       <div
         className={styles.browser}
+        id="browser-table"
         style={{
           right: rightValue,
           'overflow-x': this.props.isResizing ? 'hidden' : 'auto',

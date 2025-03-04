@@ -7,6 +7,17 @@ class BrowserFooter extends React.Component {
     pageInput: (Math.floor(this.props.skip / this.props.limit) + 1).toString(),
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.count && this.props.count === 0 && prevProps.count !== 0) {
+      this.props.setSkip(0);
+      this.setState({ pageInput: '1' });
+    }
+
+    if (prevProps.skip !== this.props.skip) {
+      this.setState({ pageInput: (Math.floor(this.props.skip / this.props.limit) + 1).toString() });
+    }
+  }
+
   handleLimitChange = (event) => {
     const newLimit = parseInt(event.target.value, 10);
     this.props.setLimit(newLimit);
@@ -19,15 +30,13 @@ class BrowserFooter extends React.Component {
       this.props.setSkip(newSkip);
       this.setState({ pageInput: (Math.floor(newSkip / this.props.limit) + 1).toString() });
     }
+
+    const table = document.getElementById('browser-table');
+    table.scrollTo({ top: 0 });
   };
 
   handleInputChange = (e) => {
-    const value = e.target.value;
-
-    // Allow user to type freely but validate only on blur/Enter
-    if (value === '' || /^\d*$/.test(value)) {
-      this.setState({ pageInput: value });
-    }
+    this.setState({ pageInput: e.target.value });
   };
 
   validateAndApplyPage = () => {

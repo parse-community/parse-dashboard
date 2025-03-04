@@ -376,6 +376,7 @@ export default class EditRowDialog extends React.Component {
               onConfirm={newValue => this.handleChange(newValue, name, type, targetClass)}
               onCancel={() => this.toggleObjectPicker(name, false)}
               useMasterKey={useMasterKey}
+              limit={this.props.limit}
             />
           ) : (
             <div
@@ -412,6 +413,7 @@ export default class EditRowDialog extends React.Component {
               }
               onCancel={() => this.toggleObjectPicker(name, false)}
               useMasterKey={useMasterKey}
+              limit={this.props.limit}
             />
           ) : (
             selectedObject.id && (

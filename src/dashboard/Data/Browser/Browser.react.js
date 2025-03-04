@@ -54,6 +54,7 @@ class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser';
     this.noteTimeout = null;
+    const limit = window.localStorage?.getItem('browserLimit')
 
     this.state = {
       showCreateClassDialog: false,
@@ -76,7 +77,7 @@ class Browser extends DashboardView {
       filters: new List(),
       ordering: '-createdAt',
       skip: 0,
-      limit: 100,
+      limit: limit ? parseInt(limit) : 100,
       selection: {},
       exporting: false,
       exportingCount: 0,
@@ -194,6 +195,7 @@ class Browser extends DashboardView {
         relation: null,
       });
     });
+
   }
 
   componentWillMount() {
@@ -907,6 +909,8 @@ class Browser extends DashboardView {
     query.skip(skip);
     query.limit(limit);
 
+    localStorage?.setItem('browserLimit', limit);
+
     this.excludeFields(query, source);
     let promise = query.find({ useMasterKey });
     let isUnique = false;
@@ -1052,6 +1056,10 @@ class Browser extends DashboardView {
       // filters param change is making the fetch call
       this.props.navigate(generatePath(this.context, url));
     }
+
+    this.setState({
+      skip: 0,
+    })
   }
 
   saveFilters(filters, name) {
@@ -2074,6 +2082,7 @@ class Browser extends DashboardView {
               setErrorAggregatedData={this.setErrorAggregatedData}
               errorAggregatedData={this.state.errorAggregatedData}
               appName = {this.props.params.appId}
+              limit={this.state.limit}
             />
             <BrowserFooter
               skip={this.state.skip}
@@ -2278,6 +2287,7 @@ class Browser extends DashboardView {
           confirmAttachSelectedRows={this.confirmAttachSelectedRows}
           schema={this.props.schema}
           useMasterKey={this.state.useMasterKey}
+          limit={this.state.limit}
         />
       );
     } else if (this.state.rowsToExport) {
