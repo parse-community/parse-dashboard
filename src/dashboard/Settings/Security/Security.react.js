@@ -40,16 +40,20 @@ export default class Security extends TableView {
   renderRow(security) {
     return (
       <tr key={JSON.stringify(security)}>
-        <td className={styles.tableData} style={security.header ? {fontWeight: 'bold'} : {}}  width={'20%'}>
+        <td
+          className={styles.tableData}
+          style={security.header ? { fontWeight: 'bold' } : {}}
+          width={'20%'}
+        >
           {security.check}
         </td>
         <td className={styles.tableData} width={'5%'}>
-          {security.i !== undefined ? '' : (security.status === 'success' ? '✅' : '❌')}
+          {security.i !== undefined ? '' : security.status === 'success' ? '✅' : '❌'}
         </td>
         <td className={styles.tableData} width={'37.5%'}>
           {security.issue}
         </td>
-        <td className={styles.tableData}  width={'37.5%'}>
+        <td className={styles.tableData} width={'37.5%'}>
           {security.solution}
         </td>
       </tr>
@@ -74,7 +78,15 @@ export default class Security extends TableView {
   }
 
   renderEmpty() {
-    return <EmptyState title="Security" description={<span>{this.state.error}</span>} icon="gears" cta="Reload" action={() => this.reload()} />;
+    return (
+      <EmptyState
+        title="Security"
+        description={<span>{this.state.error}</span>}
+        icon="gears"
+        cta="Reload"
+        action={() => this.reload()}
+      />
+    );
   }
 
   tableData() {
@@ -83,18 +95,18 @@ export default class Security extends TableView {
       data.push({
         check: 'Overall status',
         status: this.state.data.state,
-        header: true
+        header: true,
       }),
-      data.push({i: -1})
+      data.push({ i: -1 });
     }
     for (let i = 0; i < this.state.data?.groups?.length; i++) {
-      const group = this.state.data.groups[i]
+      const group = this.state.data.groups[i];
       data.push({
         check: group.name,
         status: group.state,
         issue: '',
         solution: '',
-        header: true
+        header: true,
       });
       for (const check of group.checks) {
         data.push({
@@ -105,7 +117,7 @@ export default class Security extends TableView {
         });
       }
       if (i !== this.state.data.groups.length - 1) {
-        data.push({i});
+        data.push({ i });
       }
     }
     return data;
@@ -113,11 +125,13 @@ export default class Security extends TableView {
 
   async reload() {
     if (!this.context.enableSecurityChecks) {
-      this.setState({ error: 'Enable Dashboard option `enableSecurityChecks` to run security check.' });
+      this.setState({
+        error: 'Enable Dashboard option `enableSecurityChecks` to run security check.',
+      });
       return;
     }
     this.setState({ loading: true });
-    const result = await Parse._request('GET', 'security', {}, { useMasterKey: true }).catch((e) => {
+    const result = await Parse._request('GET', 'security', {}, { useMasterKey: true }).catch(e => {
       this.setState({ error: e?.message || e });
     });
     this.setState({ loading: false, data: result?.report || {} });

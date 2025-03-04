@@ -12,7 +12,13 @@ export const TextElement = ({ text }) => (
 export const KeyValueElement = ({ item, appName }) => (
   <div className={styles.keyValue}>
     {item.key}:
-    {item.url ? <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank">{item.value}</a> : <span>{item.value}</span>}
+    {item.url ? (
+      <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank">
+        {item.value}
+      </a>
+    ) : (
+      <span>{item.value}</span>
+    )}
   </div>
 );
 
@@ -80,10 +86,10 @@ export const ButtonElement = ({ item, showNote }) => {
       .then(response => response.json())
       .then(data => {
         const formattedData = JSON.stringify(data, null, 2);
-        showNote(`${formattedData}`,false)
+        showNote(`${formattedData}`, false);
       })
       .catch(error => {
-        showNote(`${error}`,true)
+        showNote(`${error}`, true);
       });
   };
 

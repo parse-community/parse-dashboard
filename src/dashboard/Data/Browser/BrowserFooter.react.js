@@ -18,14 +18,14 @@ class BrowserFooter extends React.Component {
     }
   }
 
-  handleLimitChange = (event) => {
+  handleLimitChange = event => {
     const newLimit = parseInt(event.target.value, 10);
     this.props.setLimit(newLimit);
     this.props.setSkip(0);
     this.setState({ pageInput: '1' });
   };
 
-  handlePageChange = (newSkip) => {
+  handlePageChange = newSkip => {
     if (newSkip >= 0 && newSkip < this.props.count) {
       this.props.setSkip(newSkip);
       this.setState({ pageInput: (Math.floor(newSkip / this.props.limit) + 1).toString() });
@@ -35,7 +35,7 @@ class BrowserFooter extends React.Component {
     table.scrollTo({ top: 0 });
   };
 
-  handleInputChange = (e) => {
+  handleInputChange = e => {
     this.setState({ pageInput: e.target.value });
   };
 
@@ -53,7 +53,7 @@ class BrowserFooter extends React.Component {
     this.handlePageChange((newPage - 1) * limit);
   };
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     if (e.key === 'Enter') {
       this.validateAndApplyPage();
     }
@@ -69,7 +69,7 @@ class BrowserFooter extends React.Component {
           <strong>{count?.toLocaleString() || 0}</strong> objects
         </span>
         <select value={limit} onChange={this.handleLimitChange}>
-          {[10, 20, 50, 100, 200, 500, 1000].map((size) => (
+          {[10, 20, 50, 100, 200, 500, 1000].map(size => (
             <option key={size} value={size}>
               {size}
             </option>
