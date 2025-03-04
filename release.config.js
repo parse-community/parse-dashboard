@@ -92,8 +92,9 @@ async function config() {
         '@saithodev/semantic-release-backmerge',
         {
           'branches': [
-            { from: 'beta', to: 'alpha' },
-            { from: 'release', to: 'beta' },
+            // { from: 'beta', to: 'alpha' },
+            // { from: 'release', to: 'beta' },
+            { from: 'release', to: 'alpha' },
           ]
         }
       ],
