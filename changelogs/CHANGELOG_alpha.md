@@ -1,3 +1,10 @@
+# [6.0.0-alpha.30](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.29...6.0.0-alpha.30) (2025-03-03)
+
+
+### Features
+
+* Add cell selection in data browser on space bar touch down ([#2661](https://github.com/ParsePlatform/parse-dashboard/issues/2661)) ([9d623a9](https://github.com/ParsePlatform/parse-dashboard/commit/9d623a97a4e9ff9692f72191a33441a22fb6956e))
+
 # [6.0.0-alpha.29](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.28...6.0.0-alpha.29) (2025-02-14)
 
 
