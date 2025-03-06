@@ -1,3 +1,10 @@
+## [6.1.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.1.0...6.1.1-alpha.1) (2025-03-06)
+
+
+### Bug Fixes
+
+* Dashboard crashes when setting `unique` filter on pointer field in data browser ([#2660](https://github.com/ParsePlatform/parse-dashboard/issues/2660)) ([68fdbe8](https://github.com/ParsePlatform/parse-dashboard/commit/68fdbe8460d2afafbc922479bfef86e994449a20))
+
 # [6.0.0-alpha.30](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0-alpha.29...6.0.0-alpha.30) (2025-03-03)
 
 
