@@ -1,7 +1,7 @@
 ############################################################
 # Build stage
 ############################################################
-FROM node:20.18.2-alpine3.20 AS build
+FROM node:20.19.0-alpine3.20 AS build
 
 RUN apk --no-cache add git
 WORKDIR /src
@@ -27,7 +27,7 @@ RUN npm run prepare && npm run build
 ############################################################
 # Release stage
 ############################################################
-FROM node:20.18.2-alpine3.20 AS release
+FROM node:20.19.0-alpine3.20 AS release
 WORKDIR /src
 
 # Copy production node_modules
