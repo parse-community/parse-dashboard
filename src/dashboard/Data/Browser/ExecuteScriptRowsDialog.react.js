@@ -54,7 +54,11 @@ export default class ExecuteScriptRowsDialog extends React.Component {
         open
         icon="gears"
         iconSize={40}
-        title={selectionLength > 1 ? `Run script on ${selectionLength} selected rows` : 'Run script on selected row'}
+        title={
+          selectionLength > 1
+            ? `Run script on ${selectionLength} selected rows`
+            : 'Run script on selected row'
+        }
         submitText="Run"
         inProgressText={`Executed ${processedScripts} of ${selectionLength} rows`}
         onClose={this.props.onCancel}

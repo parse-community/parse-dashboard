@@ -578,7 +578,7 @@ export default class BrowserCell extends Component {
       markRequiredFieldRow,
       handleCellClick,
       selectedCells,
-      setShowAggregatedData
+      setShowAggregatedData,
     } = this.props;
 
     const classes = [...this.state.classes];

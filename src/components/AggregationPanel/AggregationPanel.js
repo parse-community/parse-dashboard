@@ -38,16 +38,20 @@ const AggregationPanel = ({
     }
   }, [errorAggregatedData, setSelectedObjectId, setErrorAggregatedData]);
 
-  const isLoading = useMemo(() =>
-    depth === 0 && selectedObjectId && isLoadingCloudFunction && showAggregatedData,
-  [depth, selectedObjectId, isLoadingCloudFunction, showAggregatedData]
+  const isLoading = useMemo(
+    () => depth === 0 && selectedObjectId && isLoadingCloudFunction && showAggregatedData,
+    [depth, selectedObjectId, isLoadingCloudFunction, showAggregatedData]
   );
 
-  const shouldShowAggregatedData = useMemo(() =>
-    depth === 0
-      ? (selectedObjectId && showAggregatedData && Object.keys(data).length !== 0 && Object.keys(errorAggregatedData).length === 0)
-      : true,
-  [depth, selectedObjectId, showAggregatedData, data, errorAggregatedData]
+  const shouldShowAggregatedData = useMemo(
+    () =>
+      depth === 0
+        ? selectedObjectId &&
+          showAggregatedData &&
+          Object.keys(data).length !== 0 &&
+          Object.keys(errorAggregatedData).length === 0
+        : true,
+    [depth, selectedObjectId, showAggregatedData, data, errorAggregatedData]
   );
 
   const fetchNestedData = useCallback(async () => {
@@ -137,8 +141,13 @@ const AggregationPanel = ({
   if (depth > 0) {
     return (
       <div className={styles.nestedPanel}>
-        <div className={`${styles.nestedPanelHeader} ${isExpanded ? styles.expanded : ''}`} onClick={handleToggle}>
-          <span className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}>{panelTitle}</span>
+        <div
+          className={`${styles.nestedPanelHeader} ${isExpanded ? styles.expanded : ''}`}
+          onClick={handleToggle}
+        >
+          <span className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}>
+            {panelTitle}
+          </span>
           <div>
             {isExpanded && (
               <button
@@ -148,9 +157,8 @@ const AggregationPanel = ({
               >
                 <span>↻</span>
               </button>
-
             )}
-            <span >{isExpanded ? '▼' : '▲'}</span>
+            <span>{isExpanded ? '▼' : '▲'}</span>
           </div>
         </div>
         {isExpanded && (
@@ -160,7 +168,8 @@ const AggregationPanel = ({
                 <LoaderDots />
               </div>
             ) : (
-              nestedData && nestedData.panel.segments.map((segment, index) =>
+              nestedData &&
+              nestedData.panel.segments.map((segment, index) =>
                 renderSegmentContent(segment, index)
               )
             )}
@@ -178,14 +187,10 @@ const AggregationPanel = ({
         </div>
       ) : shouldShowAggregatedData ? (
         <div className={styles.mainContent}>
-          {data.panel.segments.map((segment, index) =>
-            renderSegmentContent(segment, index)
-          )}
+          {data.panel.segments.map((segment, index) => renderSegmentContent(segment, index))}
         </div>
       ) : (
-        <div className={styles.center}>
-          No object selected.
-        </div>
+        <div className={styles.center}>No object selected.</div>
       )}
     </div>
   );

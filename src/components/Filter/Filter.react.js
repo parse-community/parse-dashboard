@@ -61,7 +61,8 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
     class: currentClassName,
     field: field,
     constraint: newConstraint,
-    compareTo: (compareType && prevCompareTo) ? prevCompareTo : Filters.DefaultComparisons[compareType],
+    compareTo:
+      compareType && prevCompareTo ? prevCompareTo : Filters.DefaultComparisons[compareType],
   });
   return filters.set(index, newFilter);
 }
@@ -88,7 +89,7 @@ const Filter = ({
   const [compare, setCompare] = useState(false);
   const hasCompareTo = filters.some(filter => filter.get('compareTo') !== undefined);
 
-  if(compare !== hasCompareTo){
+  if (compare !== hasCompareTo) {
     setCompare(hasCompareTo);
   }
   const currentApp = React.useContext(CurrentApp);
@@ -108,7 +109,7 @@ const Filter = ({
           gap: '10px',
           padding: '12px 15px 0px 15px',
           color: '#343445',
-          'font-weight': '600'
+          'font-weight': '600',
         }}
       >
         <div style={{ width: '140px' }}>Class</div>

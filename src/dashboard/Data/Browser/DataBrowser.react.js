@@ -87,7 +87,7 @@ export default class DataBrowser extends React.Component {
         allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
         selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
         firstSelectedCell: null,
-        selectedData: []
+        selectedData: [],
       });
     } else if (
       Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
@@ -103,7 +103,11 @@ export default class DataBrowser extends React.Component {
       this.setState({ order });
     }
     if (props && props.className) {
-      if (!props.classwiseCloudFunctions?.[`${props.app.applicationId}${props.appName}`]?.[props.className]) {
+      if (
+        !props.classwiseCloudFunctions?.[`${props.app.applicationId}${props.appName}`]?.[
+          props.className
+        ]
+      ) {
         this.setState({ isPanelVisible: false });
         this.setState({ selectedObjectId: undefined });
       }
@@ -133,10 +137,10 @@ export default class DataBrowser extends React.Component {
     ) {
       this.setState({
         selectedObjectId: undefined,
-        showAggregatedData: false
+        showAggregatedData: false,
       });
       this.props.setAggregationPanelData({});
-      if(this.props.errorAggregatedData != {}){
+      if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
     }
@@ -189,16 +193,20 @@ export default class DataBrowser extends React.Component {
     if (!this.state.isPanelVisible) {
       this.props.setAggregationPanelData({});
       this.props.setLoading(false);
-      if(this.props.errorAggregatedData != {}){
+      if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
     }
 
     if (!this.state.isPanelVisible && this.state.selectedObjectId) {
-      if(this.props.errorAggregatedData != {}){
+      if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
-      this.props.callCloudFunction(this.state.selectedObjectId, this.props.className,this.props.app.applicationId);
+      this.props.callCloudFunction(
+        this.state.selectedObjectId,
+        this.props.className,
+        this.props.app.applicationId
+      );
     }
   }
 
@@ -229,7 +237,7 @@ export default class DataBrowser extends React.Component {
         selectedObjectId: undefined,
       });
       this.props.setAggregationPanelData({});
-      if(this.props.errorAggregatedData != {}){
+      if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
     }
@@ -360,11 +368,15 @@ export default class DataBrowser extends React.Component {
           },
         });
         this.setState({
-          selectedObjectId:this.props.data[this.state.current.row].id,
-          showAggregatedData:true
-        })
-        if(prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible){
-          this.props.callCloudFunction(this.state.selectedObjectId,this.props.className,this.props.app.applicationId)
+          selectedObjectId: this.props.data[this.state.current.row].id,
+          showAggregatedData: true,
+        });
+        if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
+          this.props.callCloudFunction(
+            this.state.selectedObjectId,
+            this.props.className,
+            this.props.app.applicationId
+          );
         }
         e.preventDefault();
         break;
@@ -405,7 +417,11 @@ export default class DataBrowser extends React.Component {
           showAggregatedData: true,
         });
         if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
-          this.props.callCloudFunction(this.state.selectedObjectId, this.props.className,this.props.app.applicationId);
+          this.props.callCloudFunction(
+            this.state.selectedObjectId,
+            this.props.className,
+            this.props.app.applicationId
+          );
         }
 
         e.preventDefault();
@@ -624,8 +640,8 @@ export default class DataBrowser extends React.Component {
                   setErrorAggregatedData={this.props.setErrorAggregatedData}
                   setSelectedObjectId={this.setSelectedObjectId}
                   selectedObjectId={this.state.selectedObjectId}
-                  appName = {this.props.appName}
-                  className = {this.props.className}
+                  appName={this.props.appName}
+                  className={this.props.className}
                 />
               </div>
             </ResizableBox>
@@ -660,7 +676,7 @@ export default class DataBrowser extends React.Component {
           togglePanel={this.togglePanelVisibility}
           isPanelVisible={this.state.isPanelVisible}
           appId={this.props.app.applicationId}
-          appName = {this.props.appName}
+          appName={this.props.appName}
           {...other}
         />
 
