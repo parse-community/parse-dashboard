@@ -1,3 +1,64 @@
+# [6.1.0](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0...6.1.0) (2025-03-04)
+
+
+### Bug Fixes
+
+* Info panel Cloud Code call is unauthenticated without using master key ([#2641](https://github.com/ParsePlatform/parse-dashboard/issues/2641)) ([e879e4f](https://github.com/ParsePlatform/parse-dashboard/commit/e879e4f541dc0aa3e23afe6606ee7df9ba22b63a))
+* Info panel Cloud Code call sends `objectId` instead of `Parse.Object` ([#2643](https://github.com/ParsePlatform/parse-dashboard/issues/2643)) ([a4bcabc](https://github.com/ParsePlatform/parse-dashboard/commit/a4bcabc5c5eaf07bc9eed11814c19901e1d310da))
+* Info panel item `panel` calls Cloud Code with parameter `objectId` instead of `Parse.Object` and without `masterKey` ([#2649](https://github.com/ParsePlatform/parse-dashboard/issues/2649)) ([884ff70](https://github.com/ParsePlatform/parse-dashboard/commit/884ff70567e372ff676297b6fb7856fbb7b71cbb))
+* Info panel not configurable via `new ParseDashboard()` when running as express middleware ([#2639](https://github.com/ParsePlatform/parse-dashboard/issues/2639)) ([a9b8cd4](https://github.com/ParsePlatform/parse-dashboard/commit/a9b8cd4a7228837cbb462a45e39b01494852f347))
+* Info panel not showing when some apps miss infoPanel config ([#2627](https://github.com/ParsePlatform/parse-dashboard/issues/2627)) ([539e883](https://github.com/ParsePlatform/parse-dashboard/commit/539e88348721bc100a80ae00de81a921bc2c53d4))
+* Node 22 support missing in package.json ([#2617](https://github.com/ParsePlatform/parse-dashboard/issues/2617)) ([8c07284](https://github.com/ParsePlatform/parse-dashboard/commit/8c07284cd571c69426c3f080c2698b0624fd4ec4))
+* Security upgrade cross-spawn from 7.0.3 to 7.0.6 ([#2629](https://github.com/ParsePlatform/parse-dashboard/issues/2629)) ([47a43e0](https://github.com/ParsePlatform/parse-dashboard/commit/47a43e0ac5d55fc9e214079895f71af7c7e3c350))
+* Security upgrade express from 4.21.0 to 4.21.1 ([#2607](https://github.com/ParsePlatform/parse-dashboard/issues/2607)) ([54bf0af](https://github.com/ParsePlatform/parse-dashboard/commit/54bf0afa0691e448b7ec20395753468e047e1fd1))
+* Security upgrade node from 20.17.0-alpine3.20 to 20.18.2-alpine3.20 ([#2647](https://github.com/ParsePlatform/parse-dashboard/issues/2647)) ([44df723](https://github.com/ParsePlatform/parse-dashboard/commit/44df723b56636607f44c16f2ca24e81e0e17dfb3))
+* Security upgrade ws, parse and puppeteer ([#2618](https://github.com/ParsePlatform/parse-dashboard/issues/2618)) ([bab71dc](https://github.com/ParsePlatform/parse-dashboard/commit/bab71dc57195efa62518127de842edd5902603de))
+
+### Features
+
+* Add cell selection in data browser on space bar touch down ([#2661](https://github.com/ParsePlatform/parse-dashboard/issues/2661)) ([9d623a9](https://github.com/ParsePlatform/parse-dashboard/commit/9d623a97a4e9ff9692f72191a33441a22fb6956e))
+* Add dynamic master key by allowing to set option `masterKey` to a function ([#2655](https://github.com/ParsePlatform/parse-dashboard/issues/2655)) ([9025ed0](https://github.com/ParsePlatform/parse-dashboard/commit/9025ed07b5e7fd801a6ec56c71a12299b2d57279))
+* Add info panel `keyValue` item parameter `isRelativeUrl` to link to dashboard pages ([#2646](https://github.com/ParsePlatform/parse-dashboard/issues/2646)) ([6389fc6](https://github.com/ParsePlatform/parse-dashboard/commit/6389fc6097a76dc95e3cbcdab56c8d1f96909d97))
+* Add info panel item `panel` to load and display data on demand ([#2622](https://github.com/ParsePlatform/parse-dashboard/issues/2622)) ([8e5741d](https://github.com/ParsePlatform/parse-dashboard/commit/8e5741d73b5a8c4fcb5d4248de1bdcd7bd957ee8))
+
+# [6.0.0](https://github.com/ParsePlatform/parse-dashboard/compare/5.4.0...6.0.0) (2024-10-07)
+
+
+### Bug Fixes
+
+* App metrics for user and installation counts show dash ([#2528](https://github.com/ParsePlatform/parse-dashboard/issues/2528)) ([850d7b3](https://github.com/ParsePlatform/parse-dashboard/commit/850d7b3f20160761a21f68ec398d7207b8226770))
+* Class Level Permissions dialog throws error `TypeError: ce.current is null` for newly created class ([#2549](https://github.com/ParsePlatform/parse-dashboard/issues/2549)) ([27ed692](https://github.com/ParsePlatform/parse-dashboard/commit/27ed6920d38bfe6476aaf2cebd4124dc30389959))
+* Config page fails to load ([#2531](https://github.com/ParsePlatform/parse-dashboard/issues/2531)) ([d721b7c](https://github.com/ParsePlatform/parse-dashboard/commit/d721b7c4f3b98df96a229e60529604b038857d53))
+* Crash after setting filter using context menu and opening filters panel ([#2579](https://github.com/ParsePlatform/parse-dashboard/issues/2579)) ([5a690eb](https://github.com/ParsePlatform/parse-dashboard/commit/5a690ebe91007698fe1a60334112deed5ce94be1))
+* Dashboard crashes if Parse Server Cloud Function script returns object ([#2516](https://github.com/ParsePlatform/parse-dashboard/issues/2516)) ([5de08f8](https://github.com/ParsePlatform/parse-dashboard/commit/5de08f8f4d67f287a589c70d8b8d36f9f76897cf))
+* Dashboard not building for Docker platform arm64/v8 ([#2534](https://github.com/ParsePlatform/parse-dashboard/issues/2534)) ([8c4a862](https://github.com/ParsePlatform/parse-dashboard/commit/8c4a862d63b8e568738a2eeab25b6e977cd1ee11))
+* Dashboard scrolls when selecting row in data browser ([#2559](https://github.com/ParsePlatform/parse-dashboard/issues/2559)) ([2aa54a5](https://github.com/ParsePlatform/parse-dashboard/commit/2aa54a5bb1f356a7d4ed5abf3ea42c2e406d5b5a))
+* Data browser redirects to wrong class when changing app ([#2526](https://github.com/ParsePlatform/parse-dashboard/issues/2526)) ([7713f54](https://github.com/ParsePlatform/parse-dashboard/commit/7713f542ef9ef97cbf784fa267f7ea2a51c9472a))
+* Deleting all code in the JS Console editor fills in the default code ([#2558](https://github.com/ParsePlatform/parse-dashboard/issues/2558)) ([4b830ba](https://github.com/ParsePlatform/parse-dashboard/commit/4b830bac8dc6549555eca50e999a3283aff100c7))
+* Descriptive statistics for number cells in data browser not showing ([#2581](https://github.com/ParsePlatform/parse-dashboard/issues/2581)) ([e146b6f](https://github.com/ParsePlatform/parse-dashboard/commit/e146b6f54c7dfcb50c83c70f0c55e5ab76dc3c19))
+* Filter string is erased when changing filter condition ([#2586](https://github.com/ParsePlatform/parse-dashboard/issues/2586)) ([6fa2c8c](https://github.com/ParsePlatform/parse-dashboard/commit/6fa2c8c79201b9ea34321277ab085fa0ba988d77))
+* Internal classes `_User`, `_Role`, `_Installation` referenced with pointer don't appear in data browser filter dialog ([#2599](https://github.com/ParsePlatform/parse-dashboard/issues/2599)) ([8239cc8](https://github.com/ParsePlatform/parse-dashboard/commit/8239cc8a05865c5f0b4f5b33dfb224e87d25a319))
+* Open pointer in new tab in data browser not working when mount path is not root ([#2527](https://github.com/ParsePlatform/parse-dashboard/issues/2527)) ([2f4081f](https://github.com/ParsePlatform/parse-dashboard/commit/2f4081f217e1c5d906ed8789e09a3377ddc15121))
+
+### Features
+
+* Add Cloud Config change history to roll back to previous values ([#2554](https://github.com/ParsePlatform/parse-dashboard/issues/2554)) ([a784129](https://github.com/ParsePlatform/parse-dashboard/commit/a784129dd5f25d6464cdd5d768e296fda4501b42))
+* Add data panel to display object related data fetched via Cloud Function ([#2584](https://github.com/ParsePlatform/parse-dashboard/issues/2584)) ([914cc71](https://github.com/ParsePlatform/parse-dashboard/commit/914cc71790157289c32b95cd9d4cdf3d0685989f))
+* Add descriptive statistics for number cells in data browser ([#2529](https://github.com/ParsePlatform/parse-dashboard/issues/2529)) ([ead9ec4](https://github.com/ParsePlatform/parse-dashboard/commit/ead9ec4d39abc211540bc76616498533b31001a6))
+* Add filter `starts with` in data browser for fields of type Pointer ([#2553](https://github.com/ParsePlatform/parse-dashboard/issues/2553)) ([0b94ab6](https://github.com/ParsePlatform/parse-dashboard/commit/0b94ab6ced8b338cd3539f8cad37feb4452e1bcc))
+* Add Node 20 support; remove Node 14, 16 support ([#2532](https://github.com/ParsePlatform/parse-dashboard/issues/2532)) ([578a339](https://github.com/ParsePlatform/parse-dashboard/commit/578a339c04990b5ecb3f80d34c690c6d34218bfa))
+* Add Node 20 support; remove Node 14, 16 support ([#2535](https://github.com/ParsePlatform/parse-dashboard/issues/2535)) ([5c90f2d](https://github.com/ParsePlatform/parse-dashboard/commit/5c90f2de1b98a2099453c8f8c0d6817330f7133d))
+* Add optional restriction of script execution to certain object fields and values ([#2488](https://github.com/ParsePlatform/parse-dashboard/issues/2488)) ([8feac9b](https://github.com/ParsePlatform/parse-dashboard/commit/8feac9b8359f27ecd7bd4342be7bcae75289ba35))
+* Add relational filter conditions in data browser ([#2576](https://github.com/ParsePlatform/parse-dashboard/issues/2576)) ([aa5c68d](https://github.com/ParsePlatform/parse-dashboard/commit/aa5c68dbca458069d93351edc0bc0287fe63b7e1))
+* Add support for Node 22 ([#2603](https://github.com/ParsePlatform/parse-dashboard/issues/2603)) ([3689106](https://github.com/ParsePlatform/parse-dashboard/commit/3689106b4089aebe73ddb8668863dc82fd267b5c))
+* Execute script for selected rows ([#2508](https://github.com/ParsePlatform/parse-dashboard/issues/2508)) ([5d9901e](https://github.com/ParsePlatform/parse-dashboard/commit/5d9901e27b14517f22993ac094bdd7d8fbac401f))
+* Select rows in data browser by clicking and dragging mouse cursor over checkboxes ([#2548](https://github.com/ParsePlatform/parse-dashboard/issues/2548)) ([792ba9e](https://github.com/ParsePlatform/parse-dashboard/commit/792ba9e619224c6101ed21cd36add9fe83c3e348))
+
+
+### BREAKING CHANGES
+
+* Removes support for Node 14 and 16 ([5c90f2d](5c90f2d))
+
 # [5.4.0](https://github.com/ParsePlatform/parse-dashboard/compare/5.3.0...5.4.0) (2024-05-16)
 
 

@@ -3,7 +3,6 @@
 ---
 
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=alpha)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Aalpha)
-[![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=beta)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Abeta)
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=release)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Arelease)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
 
@@ -11,7 +10,6 @@
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
-[![npm beta version](https://img.shields.io/npm/v/parse-dashboard/beta.svg)](https://www.npmjs.com/package/parse-dashboard)
 [![npm alpha version](https://img.shields.io/npm/v/parse-dashboard/alpha.svg)](https://www.npmjs.com/package/parse-dashboard)
 
 [![Backers on Open Collective](https://opencollective.com/parse-server/backers/badge.svg)][open-collective-link]
