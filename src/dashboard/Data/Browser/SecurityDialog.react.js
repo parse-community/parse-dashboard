@@ -118,7 +118,7 @@ export default class SecurityDialog extends React.Component {
           confirmText="Save CLP"
           columns={this.props.columns}
           details={
-            <a target="_blank" href="http://docs.parseplatform.org/ios/guide/#security">
+            <a target="_blank" href="http://docs.parseplatform.org/ios/guide/#security" rel="noreferrer">
               Learn more about CLPs and app security
             </a>
           }

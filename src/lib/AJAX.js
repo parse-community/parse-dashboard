@@ -64,7 +64,7 @@ export function request(
       let json = {};
       try {
         json = JSON.parse(this.responseText);
-      } catch (ex) {
+      } catch {
         p.reject(this.responseText);
         return;
       }
@@ -85,7 +85,7 @@ export function request(
       let json = {};
       try {
         json = JSON.parse(this.responseText);
-      } catch (ex) {
+      } catch {
         p.reject(this.responseText);
         return;
       }

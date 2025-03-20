@@ -34,9 +34,8 @@ const SidebarSection = ({
     return (
       <div className={classes.join(' ')}>
         <div
-          style={style}
+          style={{background: primaryBackgroundColor, ...style}}
           className={styles.section_header}
-          style={{ background: primaryBackgroundColor }}
         >
           {iconContent}
         </div>
@@ -47,9 +46,8 @@ const SidebarSection = ({
     <div className={classes.join(' ')}>
       {active ? (
         <div
-          style={style}
+          style={{background: primaryBackgroundColor, ...style, }}
           className={styles.section_header}
-          style={{ background: primaryBackgroundColor }}
         >
           {iconContent}
           <span>{name}</span>

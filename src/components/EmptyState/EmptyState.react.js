@@ -20,7 +20,7 @@ const ctaButton = (cta, action) => {
         <a
           href={action}
           className={[stylesButton.button, stylesButton.primary].join(' ')}
-          target="_blank"
+          target="_blank" rel="noreferrer"
         >
           {cta}
         </a>

@@ -966,7 +966,7 @@ export default class PermissionsDialog extends React.Component {
     const pointer = this.state.pointerPerms.has(key);
     let label = (
       <span>
-        <a target="_blank" href={this.urlForKey(key)}>
+        <a target="_blank" href={this.urlForKey(key)} rel="noreferrer">
           {key}
         </a>
       </span>
@@ -978,7 +978,7 @@ export default class PermissionsDialog extends React.Component {
           <p>
             <span>
               <span className={styles.selectable}>
-                <a target="_blank" href={this.urlForKey(key)}>
+                <a target="_blank" href={this.urlForKey(key)} rel="noreferrer">
                   {type.user.id}
                 </a>
               </span>
@@ -1002,7 +1002,7 @@ export default class PermissionsDialog extends React.Component {
           <p>
             <span>
               <span className={styles.prefix}>{'role:'}</span>
-              <a target="_blank" href={this.urlForKey(key)}>
+              <a target="_blank" href={this.urlForKey(key)} rel="noreferrer">
                 {type.role.name}
               </a>
             </span>

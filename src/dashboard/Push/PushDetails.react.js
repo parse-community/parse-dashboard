@@ -386,7 +386,7 @@ class PushDetails extends DashboardView {
     const statistics = pushDetails.statistics;
 
     const learnMore = (
-      <a href={EXP_STATS_URL} target="_blank">
+      <a href={EXP_STATS_URL} target="_blank" rel="noreferrer">
         Learn more
       </a>
     );
@@ -398,7 +398,7 @@ class PushDetails extends DashboardView {
     ) {
       const headline = statistics.confidence_interval ? (
         <div>
-          <span styles={{ color: COLOR_MAP.green }}>Group {statistics.winner}</span>
+          <span style={{ color: COLOR_MAP.green }}>Group {statistics.winner}</span>
           is the winner!
         </div>
       ) : (
@@ -410,14 +410,14 @@ class PushDetails extends DashboardView {
         subline.push(
           <div key="subline_1">
             We are highly confident that if this experiment were repeated,{' '}
-            <span styles={{ color: this.state[`groupColor${statistics.winner}`] }}>
+            <span style={{ color: this.state[`groupColor${statistics.winner}`] }}>
               {pushDetails.exp_type} {statistics.winner}
             </span>{' '}
             would yield an open rate that&#8217;s
             <span>{statistics.confidence_interval[0]}</span>&mdash;
             <span>{statistics.confidence_interval[statistics.confidence_interval.length - 1]}</span>
             percentage points higher than sending{' '}
-            <span styles={{ color: this.state[`groupColor${statistics.winner}`] }}>
+            <span style={{ color: this.state[`groupColor${statistics.winner}`] }}>
               {getExperimentLoser(statistics.winner)}
             </span>
             .

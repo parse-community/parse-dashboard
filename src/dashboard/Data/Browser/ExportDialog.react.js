@@ -57,7 +57,7 @@ export default class ExportDialog extends React.Component {
       >
         {inProgress ? (
           <div style={{ padding: 20 }}>
-            You are currently exporting this class. We'll send you an email when that data is
+            You are currently exporting this class. We&apos;ll send you an email when that data is
             available for you to download.
           </div>
         ) : null}

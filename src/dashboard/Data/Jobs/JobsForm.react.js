@@ -272,7 +272,7 @@ export default class JobsForm extends DashboardView {
           if (fields.parameter !== '') {
             try {
               JSON.parse(fields.parameter);
-            } catch (e) {
+            } catch {
               errorMessages.push('Parameters must be valid JSON.');
             }
           }

@@ -52,6 +52,7 @@ export default class FlowView extends React.Component {
       }
       //Modify stored state in case component recieves new props,
       //as componentWillReceiveProps would otherwise clobber this change.
+      // eslint-disable-next-line react/no-direct-mutation-state
       this.state.changes[key] = value;
       this.setState({
         saveState: preserveSavingState ? this.state.saveState : SaveButton.States.WAITING,

@@ -157,7 +157,7 @@ export default class AddColumnDialog extends React.Component {
           formattedValue = await this.handleFile(defaultValue);
           break;
       }
-    } catch (e) {
+    } catch {
       isDefaultValueValid = defaultValue === '';
     }
     return this.setState({ defaultValue: formattedValue, isDefaultValueValid });

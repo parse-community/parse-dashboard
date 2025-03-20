@@ -136,7 +136,7 @@ const getPushName = pushData => {
     let payload = pushData[PushConstants.PAYLOAD_FIELD] || '';
     try {
       payload = JSON.parse(payload);
-    } catch (e) {
+    } catch {
       /**/
     }
     if (typeof payload === 'object') {

@@ -27,7 +27,7 @@ export default class FileInput extends React.Component {
     }
     if (this.props.value.name && this.props.value.url) {
       return (
-        <a href={this.props.value.url} target="_blank" className={styles.label}>
+        <a href={this.props.value.url} target="_blank" className={styles.label} rel="noreferrer">
           {escape(this.props.value.name)}
         </a>
       );
