@@ -49,7 +49,7 @@ export default class ParseApp {
     scripts,
     classPreference,
     enableSecurityChecks,
-    cloudConfigHistoryLimit
+    cloudConfigHistoryLimit,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();

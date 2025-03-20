@@ -1,3 +1,10 @@
+## [6.2.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.0...6.2.1-alpha.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* Title row disappears when scrolling down in data browser ([#2690](https://github.com/ParsePlatform/parse-dashboard/issues/2690)) ([7eebc45](https://github.com/ParsePlatform/parse-dashboard/commit/7eebc45a17844e7d72c5a7e86963ee355f63dd77))
+
 # [6.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.0-alpha.2...6.2.0-alpha.3) (2025-03-16)
 
 
