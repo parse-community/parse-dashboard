@@ -1,3 +1,15 @@
+# [7.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.1-alpha.1...7.0.0-alpha.1) (2025-03-22)
+
+
+### Features
+
+* Increase minimum required Node versions to `18.20.4`, `20.18.0`, `22.12.0` ([#2694](https://github.com/ParsePlatform/parse-dashboard/issues/2694)) ([034df6a](https://github.com/ParsePlatform/parse-dashboard/commit/034df6af3526edc33768f408c9e8faf018fa2ba9))
+
+
+### BREAKING CHANGES
+
+* Increases the minimum required Node versions to `18.20.4`, `20.18.0`, `22.12.0`. ([034df6a](034df6a))
+
 ## [6.2.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.0...6.2.1-alpha.1) (2025-03-19)
 
 

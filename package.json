@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "6.2.1-alpha.1",
+  "version": "7.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/ParsePlatform/parse-dashboard"
@@ -141,7 +141,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=18.0.0 <21 || >=22.9.0 <23"
+    "node": ">=18.20.4 <19.0.0 || >=20.18.0 <21.0.0 || >=22.12.0 <23.0.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
