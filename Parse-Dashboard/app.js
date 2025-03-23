@@ -192,41 +192,10 @@ module.exports = function(config, options) {
       }
     }
 
-    app.get('/login', csrf(), function(req, res) {
-      const redirectURL = req.url.includes('?redirect=') && req.url.split('?redirect=')[1].length > 1 && req.url.split('?redirect=')[1];
-      if (!users || (req.user && req.user.isAuthenticated)) {
-        return res.redirect(`${mountPath}${redirectURL || 'apps'}`);
-      }
-
-      let errors = req.flash('error');
-      if (errors && errors.length) {
-        errors = `<div id="login_errors" style="display: none;">
-          ${errors.join(' ')}
-        </div>`
-      }
-      res.send(`<!DOCTYPE html>
-      <html>
-        <head>
-          <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
-          <base href="${mountPath}"/>
-          <script>
-            PARSE_DASHBOARD_PATH = "${mountPath}";
-          </script>
-          <title>Parse Dashboard</title>
-        </head>
-        <body>
-          <div id="login_mount"></div>
-          ${errors}
-          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
-          <script src="${mountPath}bundles/login.bundle.js"></script>
-        </body>
-      </html>
-      `);
-    });
 
     // For every other request, go to index.html. Let client-side handle the rest.
     app.get('/*', function(req, res) {
-      if (users && (!req.user || !req.user.isAuthenticated)) {
+      if (!req.user?.isAuthenticated) {
         const redirect = req.url.replace('/login', '');
         if (redirect.length > 1) {
           return res.redirect(`${mountPath}login?redirect=${redirect}`);
