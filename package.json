@@ -1,9 +1,9 @@
 {
-  "name": "parse-dashboard",
+  "name": "@tyraorg/parse-dashboard",
   "version": "7.0.0-alpha.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ParsePlatform/parse-dashboard"
+    "url": "git+https://github.com/tyraorg/parse-dashboard.git"
   },
   "description": "The Parse Dashboard",
   "parseDashboardFeatures": [
@@ -25,8 +25,6 @@
     "parse",
     "dashboard"
   ],
-  "homepage": "https://github.com/ParsePlatform/parse-dashboard",
-  "bugs": "https://github.com/ParsePlatform/parse-dashboard/issues",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
     "Parse-Dashboard",
