@@ -2089,6 +2089,7 @@ class Browser extends DashboardView {
             setErrorAggregatedData={this.setErrorAggregatedData}
             errorAggregatedData={this.state.errorAggregatedData}
             appName={this.props.params.appId}
+            limit={this.state.limit}
           />
           <BrowserFooter
               skip={this.state.skip}
