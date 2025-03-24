@@ -13,7 +13,7 @@ export const KeyValueElement = ({ item, appName }) => (
   <div className={styles.keyValue}>
     {item.key}:
     {item.url ? (
-      <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank">
+      <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank" rel="noreferrer">
         {item.value}
       </a>
     ) : (

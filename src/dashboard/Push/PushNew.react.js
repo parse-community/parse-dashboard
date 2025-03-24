@@ -56,7 +56,7 @@ const isValidJSON = input => {
   let parsedJSON = null;
   try {
     parsedJSON = JSON.parse(input);
-  } catch (e) {
+  } catch {
     /**/
   }
 
@@ -130,7 +130,7 @@ const LocalizedMessageField = ({
           >
             {localeOptions && localeOptions.length > 0
               ? localeOptions.map(option => {
-                return <Option value={option}>{option}</Option>;
+                return <Option key={option} value={option}>{option}</Option>;
               })
               : null}
           </Dropdown>
@@ -750,7 +750,7 @@ class PushNew extends DashboardView {
               <a
                 href="https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications"
                 style={{ color: '#169CEE' }}
-                target="_blank"
+                target="_blank" rel="noreferrer"
               >
                 Please follow this guide to setup the push locales feature
               </a>

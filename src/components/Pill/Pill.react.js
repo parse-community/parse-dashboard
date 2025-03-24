@@ -34,7 +34,7 @@ const Pill = ({
       </a>
     )}
     {!followClick && fileDownloadLink && (
-      <a href={fileDownloadLink} target="_blank">
+      <a href={fileDownloadLink} target="_blank" rel="noreferrer">
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}

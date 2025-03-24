@@ -106,14 +106,14 @@ class Webhooks extends TableView {
                   Learn about{' '}
                   <a
                     target="_blank"
-                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-cloud-functions"
+                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-cloud-functions" rel="noreferrer"
                   >
                     functions
                   </a>{' '}
                   and{' '}
                   <a
                     target="_blank"
-                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-beforesave-triggers"
+                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-beforesave-triggers" rel="noreferrer"
                   >
                     triggers
                   </a>
@@ -393,7 +393,7 @@ class Webhooks extends TableView {
             Use webhooks to run Cloud Code or connect Parse to your own server.{' '}
             <a
               href="http://docs.parseplatform.org/cloudcode/guide/#cloud-code-webhooks"
-              target="_blank"
+              target="_blank" rel="noreferrer"
             >
               Learn more
             </a>

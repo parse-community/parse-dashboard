@@ -145,7 +145,7 @@ class AppsIndex extends React.Component {
             <div className={styles.cloud}>
               <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
             </div>
-            <div className={styles.alert}>You don't have any apps</div>
+            <div className={styles.alert}>You don&apos;t have any apps</div>
           </div>
         </div>
       );
@@ -153,12 +153,12 @@ class AppsIndex extends React.Component {
     let upgradePrompt = null;
     if (this.props.newFeaturesInLatestVersion.length > 0) {
       const newFeaturesNodes = this.props.newFeaturesInLatestVersion.map(feature => (
-        <strong>{feature}</strong>
+        <strong key={feature}>{feature}</strong>
       ));
       upgradePrompt = (
         <FlowFooter>
           Upgrade to the{' '}
-          <a href="https://www.npmjs.com/package/parse-dashboard" target="_blank">
+          <a href="https://www.npmjs.com/package/parse-dashboard" target="_blank" rel="noreferrer">
             latest version
           </a>{' '}
           of Parse Dashboard to get access to: {joinWithFinal('', newFeaturesNodes, ', ', ' and ')}.

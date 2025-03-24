@@ -131,7 +131,7 @@ export default class ConfigDialog extends React.Component {
             return true;
           }
           return false;
-        } catch (e) {
+        } catch {
           return false;
         }
       case 'Array':
@@ -141,7 +141,7 @@ export default class ConfigDialog extends React.Component {
             return true;
           }
           return false;
-        } catch (e) {
+        } catch {
           return false;
         }
       case 'GeoPoint':

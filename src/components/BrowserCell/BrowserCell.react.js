@@ -137,7 +137,7 @@ export default class BrowserCell extends Component {
         this.copyableValue = content = (
           <ul>
             {array.map(a => (
-              <li>{a}</li>
+              <li key={a}>{a}</li>
             ))}
           </ul>
         );

@@ -185,7 +185,7 @@ module.exports = function(config, options) {
           //Check also if the icons really exist
           checkIfIconsExistForApps(config.apps, config.iconsFolder);
         }
-      } catch (e) {
+      } catch {
         // Directory doesn't exist or something.
         console.warn('Iconsfolder at path: ' + config.iconsFolder +
           ' not found!');

@@ -124,7 +124,7 @@ class Config extends TableView {
       } else if (data.value instanceof Parse.File) {
         type = 'File';
         value = (
-          <a target="_blank" href={data.value.url()}>
+          <a target="_blank" href={data.value.url()} rel="noreferrer">
             Open in new window
           </a>
         );

@@ -28,7 +28,7 @@ export default function request(app, method, path, body, options) {
       let response = xhr.responseText;
       try {
         response = JSON.parse(response);
-      } catch (e) {
+      } catch {
         /**/
       }
       resolve(response);

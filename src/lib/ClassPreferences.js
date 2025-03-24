@@ -3,7 +3,7 @@ const cache = {};
 export function updatePreferences(prefs, appId, className) {
   try {
     localStorage.setItem(path(appId, className), JSON.stringify(prefs));
-  } catch (e) {
+  } catch {
     // Fails in Safari private browsing
   }
   cache[appId] = cache[appId] || {};
@@ -21,7 +21,7 @@ export function getPreferences(appId, className) {
       JSON.stringify({
         filters: [],
       });
-  } catch (e) {
+  } catch {
     // Fails in Safari private browsing
     entry = null;
   }
@@ -33,7 +33,7 @@ export function getPreferences(appId, className) {
     cache[appId] = cache[appId] || {};
     cache[appId][className] = prefs;
     return prefs;
-  } catch (e) {
+  } catch {
     return null;
   }
 }

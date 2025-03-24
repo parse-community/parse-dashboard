@@ -34,7 +34,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
       try {
         const obj = decode(JSON.parse(json));
         onCommit(obj);
-      } catch (e) {
+      } catch {
         onCommit(value);
       }
     };
@@ -72,7 +72,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
           coordinates,
         };
         onCommit(obj);
-      } catch (e) {
+      } catch {
         onCommit(value);
       }
     };

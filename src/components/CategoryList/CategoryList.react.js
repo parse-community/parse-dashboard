@@ -120,7 +120,7 @@ export default class CategoryList extends React.Component {
           }
           const link = generatePath(this.context, (this.props.linkPrefix || '') + (c.link || id));
           return (
-            <div>
+            <div key={id}>
               <div className={styles.link}>
                 <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
                   <span>{count}</span>
@@ -143,7 +143,7 @@ export default class CategoryList extends React.Component {
                     filter
                   )}`;
                   return (
-                    <div className={styles.childLink}>
+                    <div key={index} className={styles.childLink}>
                       <Link
                         className={selectedFilter === index ? styles.active : ''}
                         onClick={e => {
