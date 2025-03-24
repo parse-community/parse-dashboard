@@ -444,6 +444,12 @@ export default class DataBrowser extends React.Component {
           e.preventDefault();
         }
         break;
+      case 13: // Enter (enable editing)
+        if (!this.state.editing && this.state.current) {
+          this.setEditing(true);
+          e.preventDefault();
+        }
+        break;
     }
   }
 
@@ -452,7 +458,7 @@ export default class DataBrowser extends React.Component {
       return this.state.current.col;
     }
     let newIndex = this.state.current.col + distance;
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       if (this.state.order[newIndex]?.visible) {
         return newIndex;

@@ -254,7 +254,7 @@ export default class SecuritySettings extends DashboardView {
         initialChanges={{}}
         footerContents={({ changes }) => (
           <span>
-            You've <strong>{changes.client_class_creation_enabled ? '' : 'dis'}allowed</strong>{' '}
+            You&apos;ve <strong>{changes.client_class_creation_enabled ? '' : 'dis'}allowed</strong>{' '}
             class creation on clients.
           </span>
         )}

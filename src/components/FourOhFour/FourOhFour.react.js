@@ -50,7 +50,7 @@ class FourOhFour extends React.Component {
             4
             <div className={styles.emoji} style={{ backgroundPosition: offset + 'px 0px' }} />4
           </div>
-          <div className={styles.message}>Oh no, we can't find that page!</div>
+          <div className={styles.message}>Oh no, we can&apos;t find that page!</div>
 
           <div className={styles.back}>
             <button type="button" onClick={() => this.props.navigate(-1)}>

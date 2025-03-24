@@ -143,7 +143,7 @@ try {
   // If we don't error, the file exists
   console.log('Error: A component with that name already exists!');
   process.exit(1);
-} catch (e) {/**/}
+} catch {/**/}
 
 try {
   fs.mkdirSync(path.join(rootDir, name));
@@ -154,7 +154,7 @@ try {
   fs.appendFileSync(path.join(pigDir, 'ComponentsMap.js'), updateComponentMap(name));
 
   console.log(`Component ${name} created at ${path.join(rootDir, name)}.`);
-} catch (e) {
+} catch {
   console.log('Error: Failed to create files.');
   process.exit(1);
 }

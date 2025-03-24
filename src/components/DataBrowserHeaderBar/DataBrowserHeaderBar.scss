@@ -8,7 +8,8 @@
 @import 'stylesheets/globals.scss';
 
 .bar {
-  position: absolute;
+  position: sticky;
+  z-index: 10;
   top: 0;
   left: 0;
   height: 0;

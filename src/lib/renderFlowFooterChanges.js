@@ -22,7 +22,7 @@ import setDifference from 'lib/setDifference';
 // }
 // Note: key_name is snake_case because in most cases it will come directly from ruby, which
 // uses snake_case
-export default (changes, initial, fieldOptions) => {
+const RenderFlowFooterChanges = (changes, initial, fieldOptions) => {
   const booleanChanges = [];
   const stringChangesWithTo = [];
   const stringChanges = [];
@@ -140,8 +140,10 @@ export default (changes, initial, fieldOptions) => {
     );
   return (
     <span>
-      You've{' '}
+      You&apos;ve{' '}
       {joinWithFinal(null, allChangeNodes, ', ', allChangeNodes.length < 3 ? ' and ' : ', and ')}.
     </span>
   );
 };
+
+export default RenderFlowFooterChanges;

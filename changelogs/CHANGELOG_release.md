@@ -1,3 +1,16 @@
+# [6.2.0](https://github.com/ParsePlatform/parse-dashboard/compare/6.1.0...6.2.0) (2025-03-17)
+
+
+### Bug Fixes
+
+* Bump @babel/runtime from 7.20.13 to 7.26.10 ([#2677](https://github.com/ParsePlatform/parse-dashboard/issues/2677)) ([37f4ea6](https://github.com/ParsePlatform/parse-dashboard/commit/37f4ea64a39c0f54aaf2e3631fd1f7b6bc03ae96))
+* Dashboard crashes when setting `unique` filter on pointer field in data browser ([#2660](https://github.com/ParsePlatform/parse-dashboard/issues/2660)) ([68fdbe8](https://github.com/ParsePlatform/parse-dashboard/commit/68fdbe8460d2afafbc922479bfef86e994449a20))
+* Security upgrade node from 20.18.2-alpine3.20 to 20.19.0-alpine3.20 ([#2676](https://github.com/ParsePlatform/parse-dashboard/issues/2676)) ([d251334](https://github.com/ParsePlatform/parse-dashboard/commit/d251334df22fbe46e77076bb583b218be6f1889c))
+
+### Features
+
+* Use Enter key to edit cell content in data browser ([#2672](https://github.com/ParsePlatform/parse-dashboard/issues/2672)) ([ac2dc41](https://github.com/ParsePlatform/parse-dashboard/commit/ac2dc41122faedb1fb7da205ba26229a77417da8))
+
 # [6.1.0](https://github.com/ParsePlatform/parse-dashboard/compare/6.0.0...6.1.0) (2025-03-04)
 
 

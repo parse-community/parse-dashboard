@@ -382,7 +382,7 @@ const ManageAppFields = ({
               description={
                 <span>
                   Completely remove any trace <br />
-                  of this app's existence.
+                  of this app&apos;s existence.
                 </span>
               }
             />
@@ -511,7 +511,7 @@ class GeneralSettings extends DashboardView {
               text="Your database connection string."
               description={
                 <span>
-                  This database must be prepared to handle all of your app's queries and data. Read{' '}
+                  This database must be prepared to handle all of your app&apos;s queries and data. Read{' '}
                   <a href={getSiteDomain() + '/docs/server/guide#migrating'}>our migration guide</a>{' '}
                   to learn how to create a database.
                 </span>

@@ -316,7 +316,7 @@ export default class DashboardSettings extends DashboardView {
     );
     const userData = (
       <div className={styles.userData}>
-        Add the following data to your Parse Dashboard configuration "users":
+        Add the following data to your Parse Dashboard configuration &quot;users&quot;:
         {this.state.encrypt && (
           <div>Make sure the dashboard option useEncryptedPasswords is set to true.</div>
         )}

@@ -1,3 +1,43 @@
+# [7.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.1-alpha.1...7.0.0-alpha.1) (2025-03-22)
+
+
+### Features
+
+* Increase minimum required Node versions to `18.20.4`, `20.18.0`, `22.12.0` ([#2694](https://github.com/ParsePlatform/parse-dashboard/issues/2694)) ([034df6a](https://github.com/ParsePlatform/parse-dashboard/commit/034df6af3526edc33768f408c9e8faf018fa2ba9))
+
+
+### BREAKING CHANGES
+
+* Increases the minimum required Node versions to `18.20.4`, `20.18.0`, `22.12.0`. ([034df6a](034df6a))
+
+## [6.2.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.0...6.2.1-alpha.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* Title row disappears when scrolling down in data browser ([#2690](https://github.com/ParsePlatform/parse-dashboard/issues/2690)) ([7eebc45](https://github.com/ParsePlatform/parse-dashboard/commit/7eebc45a17844e7d72c5a7e86963ee355f63dd77))
+
+# [6.2.0-alpha.3](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.0-alpha.2...6.2.0-alpha.3) (2025-03-16)
+
+
+### Bug Fixes
+
+* Bump @babel/runtime from 7.20.13 to 7.26.10 ([#2677](https://github.com/ParsePlatform/parse-dashboard/issues/2677)) ([37f4ea6](https://github.com/ParsePlatform/parse-dashboard/commit/37f4ea64a39c0f54aaf2e3631fd1f7b6bc03ae96))
+
+# [6.2.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.0-alpha.1...6.2.0-alpha.2) (2025-03-16)
+
+
+### Bug Fixes
+
+* Security upgrade node from 20.18.2-alpine3.20 to 20.19.0-alpine3.20 ([#2676](https://github.com/ParsePlatform/parse-dashboard/issues/2676)) ([d251334](https://github.com/ParsePlatform/parse-dashboard/commit/d251334df22fbe46e77076bb583b218be6f1889c))
+
+# [6.2.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.1.1-alpha.1...6.2.0-alpha.1) (2025-03-09)
+
+
+### Features
+
+* Use Enter key to edit cell content in data browser ([#2672](https://github.com/ParsePlatform/parse-dashboard/issues/2672)) ([ac2dc41](https://github.com/ParsePlatform/parse-dashboard/commit/ac2dc41122faedb1fb7da205ba26229a77417da8))
+
 ## [6.1.1-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.1.0...6.1.1-alpha.1) (2025-03-06)
 
 
