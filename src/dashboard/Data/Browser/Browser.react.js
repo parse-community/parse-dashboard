@@ -2097,7 +2097,7 @@ class Browser extends DashboardView {
                 this.setState({ skip });
                 this.updateOrdering(this.state.ordering);
               }}
-              count={this.state.counts[className]}
+              count={count}
               limit={this.state.limit}
               setLimit={limit => {
                 this.setState({ limit });
