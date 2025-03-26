@@ -287,13 +287,13 @@ export default class DataBrowser extends React.Component {
       const { rowStart, rowEnd, colStart, colEnd } = this.state.selectedCells;
       if (rowStart !== -1 && rowEnd !== -1 && colStart !== -1 && colEnd !== -1) {
         let copyableValue = '';
-        
+
         for (let rowIndex = rowStart; rowIndex <= rowEnd; rowIndex++) {
           const rowData = [];
-          
+
           for (let colIndex = colStart; colIndex <= colEnd; colIndex++) {
             const field = this.state.order[colIndex].name;
-            let value = field === 'objectId'
+            const value = field === 'objectId'
               ? this.props.data[rowIndex].id
               : this.props.data[rowIndex].attributes[field];
 
@@ -303,7 +303,7 @@ export default class DataBrowser extends React.Component {
               rowData.push(value || '');
             }
           }
-          
+
           copyableValue += rowData.join('\t');
           if (rowIndex < rowEnd) {
             copyableValue += '\r\n';
