@@ -83,7 +83,7 @@
     "@babel/preset-react": "7.18.6",
     "@eslint/compat": "1.2.7",
     "@saithodev/semantic-release-backmerge": "2.1.2",
-    "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/changelog": "6.0.3",
     "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.0",
     "@semantic-release/github": "7.2.3",
