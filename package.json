@@ -74,7 +74,7 @@
     "regenerator-runtime": "0.13.11"
   },
   "devDependencies": {
-    "@actions/core": "1.9.1",
+    "@actions/core": "1.11.1",
     "@babel/core": "7.20.12",
     "@babel/eslint-parser": "7.26.10",
     "@babel/plugin-proposal-decorators": "7.20.13",
