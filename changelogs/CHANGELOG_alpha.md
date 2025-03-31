@@ -1,3 +1,10 @@
+# [7.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/7.0.0-alpha.1...7.0.0-alpha.2) (2025-03-27)
+
+
+### Features
+
+* Allow to select and copy multiple cells in data browser ([#2691](https://github.com/ParsePlatform/parse-dashboard/issues/2691)) ([eb50315](https://github.com/ParsePlatform/parse-dashboard/commit/eb503151b30a5fd35437559eaddfc7e7e5991dc7))
+
 # [7.0.0-alpha.1](https://github.com/ParsePlatform/parse-dashboard/compare/6.2.1-alpha.1...7.0.0-alpha.1) (2025-03-22)
 
 
