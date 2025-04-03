@@ -943,7 +943,12 @@ class Browser extends DashboardView {
   }
 
   async fetchData(source, filters = new List()) {
+    this.loadingFilters = JSON.stringify(filters.toJSON());
     const data = await this.fetchParseData(source, filters);
+    if (this.loadingFilters !== JSON.stringify(filters.toJSON())) {
+      return;
+    }
+
     const filteredCounts = { ...this.state.filteredCounts };
     if (filters.size > 0) {
       if (this.state.isUnique) {
