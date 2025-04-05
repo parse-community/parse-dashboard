@@ -35,7 +35,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/runtime": "7.26.10",
+    "@babel/runtime": "7.27.0",
     "@babel/runtime-corejs3": "7.26.10",
     "bcryptjs": "2.3.0",
     "body-parser": "1.20.3",
