@@ -1,3 +1,10 @@
+# [7.1.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.1...7.1.0-alpha.2) (2025-04-06)
+
+
+### Features
+
+* Allow row selection in data browser by dragging mouse outside of selection box column ([#2716](https://github.com/parse-community/parse-dashboard/issues/2716)) ([7c0f607](https://github.com/parse-community/parse-dashboard/commit/7c0f607fbb6c704a9793165a9cf14d6a1be792db))
+
 # [7.1.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.0.1-alpha.1...7.1.0-alpha.1) (2025-04-06)
 
 
