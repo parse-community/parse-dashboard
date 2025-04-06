@@ -1,3 +1,10 @@
+## [7.0.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.0.0...7.0.1-alpha.1) (2025-04-05)
+
+
+### Bug Fixes
+
+* Improperly aligned unfolding sub-items in context menu in data browser  ([#2713](https://github.com/parse-community/parse-dashboard/issues/2713)) ([189c817](https://github.com/parse-community/parse-dashboard/commit/189c8170425642fd94a9360e5c001e6687f50c29))
+
 # [7.0.0-alpha.2](https://github.com/ParsePlatform/parse-dashboard/compare/7.0.0-alpha.1...7.0.0-alpha.2) (2025-03-27)
 
 
