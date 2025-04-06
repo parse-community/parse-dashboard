@@ -68,6 +68,7 @@ class BrowserFooter extends React.Component {
         <span>
           <strong>{count?.toLocaleString() || 0}</strong> objects
         </span>
+        <span style={{ color: 'lightgray' }}>|</span>
         <select value={limit} onChange={this.handleLimitChange}>
           {[10, 20, 50, 100, 200, 500, 1000].map(size => (
             <option key={size} value={size}>
@@ -76,24 +77,29 @@ class BrowserFooter extends React.Component {
           ))}
         </select>
         <span>per page</span>
+        <span style={{ color: 'lightgray' }}>|</span>
+        <span>Objects <strong>{(skip + 1).toLocaleString()}</strong> to <strong>{Math.min(count ?? limit, skip + limit).toLocaleString()}</strong></span>
+        <span style={{ marginLeft: 'auto' }}></span>
+        <span>Page</span>
         <input
           type="text"
-          style={{ marginLeft: 'auto', width: '50px' }}
+          style={{ width: `${Math.max(this.state.pageInput.length + 1, 3)}ch` }}
           value={this.state.pageInput}
           onChange={this.handleInputChange}
           onBlur={this.validateAndApplyPage}
           onKeyDown={this.handleKeyDown}
         />
-        <span>/ {totalPages.toLocaleString()}</span>
+        <span>of {totalPages.toLocaleString()}</span>
+        <span style={{ color: 'lightgray' }}>|</span>
         <Button
-          value="Previous"
-          width="100px"
+          value="⬅︎"
+          width="80px"
           onClick={() => this.handlePageChange(skip - limit)}
           disabled={skip === 0}
         />
         <Button
-          value="Next"
-          width="100px"
+          value="⮕"
+          width="80px"
           onClick={() => this.handlePageChange(skip + limit)}
           disabled={skip + limit >= count}
         />
