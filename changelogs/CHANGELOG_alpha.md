@@ -1,3 +1,10 @@
+# [7.1.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.0.1-alpha.1...7.1.0-alpha.1) (2025-04-06)
+
+
+### Features
+
+* Add pagination to data browser ([#2659](https://github.com/parse-community/parse-dashboard/issues/2659)) ([a3c8a11](https://github.com/parse-community/parse-dashboard/commit/a3c8a119cb9f669e0e663ec6c018e2b2cf305596))
+
 ## [7.0.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.0.0...7.0.1-alpha.1) (2025-04-05)
 
 
