@@ -1053,8 +1053,26 @@ class Browser extends DashboardView {
     }
   }
 
-  saveFilters(filters, name) {
-    const _filters = JSON.stringify(filters.toJSON());
+  saveFilters(filters, name, relativeDate) {
+    const jsonFilters = filters.toJSON();
+    if (relativeDate) {
+      for (let i = 0; i < jsonFilters.length; i++) {
+        const filter = jsonFilters[i];
+        const compareTo = filter.get('compareTo');
+        if (compareTo.__type === 'Date') {
+          compareTo.__type = 'RelativeDate';
+          const now = new Date();
+          const date = new Date(compareTo.iso);
+          const diff = now.getTime() - date.getTime();
+          compareTo.value = Math.floor(diff / 1000);
+          delete compareTo.iso;
+          filter.set('compareTo', compareTo);
+          jsonFilters[i] = filter;
+        }
+      }
+    }
+
+    const _filters = JSON.stringify(jsonFilters);
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.params.className
@@ -1070,6 +1088,7 @@ class Browser extends DashboardView {
       this.context.applicationId,
       this.props.params.className
     );
+
     super.forceUpdate();
   }
 
