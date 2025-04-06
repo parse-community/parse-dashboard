@@ -180,6 +180,7 @@ export default class BrowserTable extends React.Component {
                     onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
                     onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
                     onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
+                    onMouseOverRow={this.props.onMouseOverRow}
                     setShowAggregatedData={this.props.setShowAggregatedData}
                     setErrorAggregatedData={this.props.setErrorAggregatedData}
                     firstSelectedCell={this.props.firstSelectedCell}
@@ -260,6 +261,7 @@ export default class BrowserTable extends React.Component {
               onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
               onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
               onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
+              onMouseOverRow={this.props.onMouseOverRow}
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
               firstSelectedCell={this.props.firstSelectedCell}
@@ -349,6 +351,7 @@ export default class BrowserTable extends React.Component {
             onMouseDownRowCheckBox={this.props.onMouseDownRowCheckBox}
             onMouseUpRowCheckBox={this.props.onMouseUpRowCheckBox}
             onMouseOverRowCheckBox={this.props.onMouseOverRowCheckBox}
+            onMouseOverRow={this.props.onMouseOverRow}
             setShowAggregatedData={this.props.setShowAggregatedData}
             setErrorAggregatedData={this.props.setErrorAggregatedData}
             firstSelectedCell={this.props.firstSelectedCell}

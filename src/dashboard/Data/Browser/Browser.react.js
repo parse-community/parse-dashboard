@@ -2083,6 +2083,7 @@ class Browser extends DashboardView {
               showNote={this.showNote}
               onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
               onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
+              onMouseOverRow={this.onMouseOverRowCheckBox}
               onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
               classes={this.classes}
               classwiseCloudFunctions={this.state.classwiseCloudFunctions}
