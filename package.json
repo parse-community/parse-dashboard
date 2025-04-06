@@ -104,7 +104,7 @@
     "madge": "5.0.1",
     "marked": "15.0.7",
     "null-loader": "4.0.1",
-    "prettier": "2.8.8",
+    "prettier": "3.5.3",
     "puppeteer": "24.4.0",
     "react-test-renderer": "16.13.1",
     "request": "2.88.2",
