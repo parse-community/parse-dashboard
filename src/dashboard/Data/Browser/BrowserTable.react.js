@@ -17,8 +17,6 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 import Button from 'components/Button/Button.react';
 import { CurrentApp } from 'context/currentApp';
 
-const MAX_ROWS = 200; // Number of rows to render at any time
-const ROWS_OFFSET = 160;
 const ROW_HEIGHT = 30;
 
 const READ_ONLY = ['objectId', 'createdAt', 'updatedAt'];
@@ -34,7 +32,6 @@ export default class BrowserTable extends React.Component {
       isResizing: false,
       maxWidth: window.innerWidth - 300,
     };
-    this.handleScroll = this.handleScroll.bind(this);
     this.tableRef = React.createRef();
     this.handleResize = this.handleResize.bind(this);
     this.updateMaxWidth = this.updateMaxWidth.bind(this);
@@ -60,12 +57,10 @@ export default class BrowserTable extends React.Component {
   }
 
   componentDidMount() {
-    this.tableRef.current.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.updateMaxWidth);
   }
 
   componentWillUnmount() {
-    this.tableRef.current.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.updateMaxWidth);
   }
 
@@ -93,36 +88,6 @@ export default class BrowserTable extends React.Component {
     document.body.style.cursor = 'default';
   }
 
-  handleScroll() {
-    if (!this.props.data || this.props.data.length === 0) {
-      return;
-    }
-    requestAnimationFrame(() => {
-      const currentScrollTop = this.tableRef.current.scrollTop;
-      let rowsAbove = Math.floor(currentScrollTop / ROW_HEIGHT);
-      let offset = this.state.offset;
-      const currentRow = rowsAbove - this.state.offset;
-
-      // If the scroll is near the beginning or end of the offset,
-      // we need to update the table data with the previous/next offset
-      if (currentRow < 10 || currentRow >= ROWS_OFFSET) {
-        // Rounds the number of rows above
-        rowsAbove = Math.floor(rowsAbove / 10) * 10;
-
-        offset =
-          currentRow < 10
-            ? Math.max(0, rowsAbove - ROWS_OFFSET) // Previous set of rows
-            : rowsAbove - 10; // Next set of rows
-      }
-      if (this.state.offset !== offset) {
-        this.setState({ offset });
-        this.tableRef.current.scrollTop = currentScrollTop;
-      }
-      if (this.props.maxFetched - offset <= ROWS_OFFSET * 1.4) {
-        this.props.fetchNextPage();
-      }
-    });
-  }
   updateMaxWidth = () => {
     this.setState({ maxWidth: window.innerWidth - 300 });
     if (this.state.panelWidth > window.innerWidth - 300) {
@@ -332,7 +297,7 @@ export default class BrowserTable extends React.Component {
         );
       }
       const rows = [];
-      const end = Math.min(this.state.offset + MAX_ROWS, this.props.data.length);
+      const end = Math.min(this.state.offset + this.props.limit, this.props.data.length);
       for (let i = this.state.offset; i < end; i++) {
         const index = i - this.state.offset;
         const obj = this.props.data[i];
@@ -527,7 +492,7 @@ export default class BrowserTable extends React.Component {
               style={{
                 height: Math.max(
                   0,
-                  (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT
+                  (this.props.data.length - this.state.offset - this.props.limit) * ROW_HEIGHT
                 ),
               }}
             />
@@ -569,6 +534,7 @@ export default class BrowserTable extends React.Component {
     return (
       <div
         className={styles.browser}
+        id="browser-table"
         style={{
           right: rightValue,
           'overflow-x': this.props.isResizing ? 'hidden' : 'auto',

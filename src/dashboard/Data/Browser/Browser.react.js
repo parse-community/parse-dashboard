@@ -41,9 +41,9 @@ import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
+import BrowserFooter from './BrowserFooter.react';
 
 // The initial and max amount of rows fetched by lazy loading
-const MAX_ROWS_FETCHED = 200;
 const BROWSER_LAST_LOCATION = 'brower_last_location';
 
 @subscribeTo('Schema', 'schema')
@@ -54,6 +54,7 @@ class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser';
     this.noteTimeout = null;
+    const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
       showCreateClassDialog: false,
@@ -75,6 +76,8 @@ class Browser extends DashboardView {
       clp: {},
       filters: new List(),
       ordering: '-createdAt',
+      skip: 0,
+      limit: limit ? parseInt(limit) : 100,
       selection: {},
       exporting: false,
       exportingCount: 0,
@@ -894,7 +897,7 @@ class Browser extends DashboardView {
   }
 
   async fetchParseData(source, filters) {
-    const { useMasterKey } = this.state;
+    const { useMasterKey, skip, limit } = this.state;
     const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
@@ -904,8 +907,11 @@ class Browser extends DashboardView {
     } else {
       query.ascending(field);
     }
+    query.skip(skip);
+    query.limit(limit);
 
-    query.limit(MAX_ROWS_FETCHED);
+    localStorage?.setItem('browserLimit', limit);
+
     this.excludeFields(query, source);
     let promise = query.find({ useMasterKey });
     let isUnique = false;
@@ -962,7 +968,7 @@ class Browser extends DashboardView {
     this.setState({
       data: data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.state.limit,
       filteredCounts: filteredCounts,
     });
   }
@@ -976,7 +982,7 @@ class Browser extends DashboardView {
       selection: {},
       data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.state.limit,
     });
   }
 
@@ -1029,7 +1035,7 @@ class Browser extends DashboardView {
       query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
       query.addDescending('createdAt');
     }
-    query.limit(MAX_ROWS_FETCHED);
+    query.limit(this.state.limit);
     this.excludeFields(query, source);
 
     const { useMasterKey } = this.state;
@@ -1040,7 +1046,7 @@ class Browser extends DashboardView {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState({ lastMax: this.state.lastMax + this.state.limit });
   }
 
   updateFilters(filters) {
@@ -1056,6 +1062,10 @@ class Browser extends DashboardView {
       // filters param change is making the fetch call
       this.props.navigate(generatePath(this.context, url));
     }
+
+    this.setState({
+      skip: 0,
+    });
   }
 
   saveFilters(filters, name) {
@@ -1307,7 +1317,7 @@ class Browser extends DashboardView {
           this.state.counts[className] = 0;
           this.setState({
             data: [],
-            lastMax: MAX_ROWS_FETCHED,
+            lastMax: this.state.limit,
             selection: {},
           });
         }
@@ -1367,7 +1377,7 @@ class Browser extends DashboardView {
 
               // If after deletion, the remaining elements on the table is lesser than the maximum allowed elements
               // we fetch more data to fill the table
-              if (this.state.data.length < MAX_ROWS_FETCHED) {
+              if (this.state.data.length < this.state.limit) {
                 this.prefetchData(this.props, this.context);
               } else {
                 this.forceUpdate();
@@ -2010,80 +2020,96 @@ class Browser extends DashboardView {
           }
         }
         browser = (
-          <DataBrowser
-            app={this.context}
-            ref={this.dataBrowserRef}
-            isUnique={this.state.isUnique}
-            uniqueField={this.state.uniqueField}
-            count={count}
-            perms={this.state.clp[className]}
-            schema={this.props.schema}
-            filters={this.state.filters}
-            onFilterChange={this.updateFilters}
-            onFilterSave={(...args) => this.saveFilters(...args)}
-            onRemoveColumn={this.showRemoveColumn}
-            onDeleteRows={this.showDeleteRows}
-            onDropClass={this.showDropClass}
-            onExport={this.showExport}
-            onChangeCLP={this.handleCLPChange}
-            onRefresh={this.refresh}
-            onAttachRows={this.showAttachRowsDialog}
-            onAttachSelectedRows={this.showAttachSelectedRowsDialog}
-            onExecuteScriptRows={this.showExecuteScriptRowsDialog}
-            onCloneSelectedRows={this.showCloneSelectedRowsDialog}
-            onEditSelectedRow={this.showEditRowDialog}
-            onEditPermissions={this.onDialogToggle}
-            onExportSelectedRows={this.showExportSelectedRowsDialog}
-            onExportSchema={this.showExportSchemaDialog}
-            onSaveNewRow={this.saveNewRow}
-            onShowPointerKey={this.showPointerKeyDialog}
-            onAbortAddRow={this.abortAddRow}
-            onSaveEditCloneRow={this.saveEditCloneRow}
-            onAbortEditCloneRow={this.abortEditCloneRow}
-            onCancelPendingEditRows={this.cancelPendingEditRows}
-            currentUser={this.state.currentUser}
-            useMasterKey={this.state.useMasterKey}
-            login={this.login}
-            logout={this.logout}
-            toggleMasterKeyUsage={this.toggleMasterKeyUsage}
-            markRequiredFieldRow={this.state.markRequiredFieldRow}
-            requiredColumnFields={this.state.requiredColumnFields}
-            columns={columns}
-            className={className}
-            fetchNextPage={this.fetchNextPage}
-            maxFetched={this.state.lastMax}
-            selectRow={this.selectRow}
-            selection={this.state.selection}
-            data={this.state.data}
-            ordering={this.state.ordering}
-            newObject={this.state.newObject}
-            editCloneRows={this.state.editCloneRows}
-            relation={this.state.relation}
-            disableKeyControls={this.hasExtras()}
-            updateRow={this.updateRow}
-            updateOrdering={this.updateOrdering}
-            onPointerClick={this.handlePointerClick}
-            onPointerCmdClick={this.handlePointerCmdClick}
-            setRelation={this.setRelation}
-            onAddColumn={this.showAddColumn}
-            onAddRow={this.addRow}
-            onAddRowWithModal={this.addRowWithModal}
-            onAddClass={this.showCreateClass}
-            showNote={this.showNote}
-            onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
-            onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
-            onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
-            classes={this.classes}
-            classwiseCloudFunctions={this.state.classwiseCloudFunctions}
-            callCloudFunction={this.fetchAggregationPanelData}
-            isLoadingCloudFunction={this.state.isLoading}
-            setLoading={this.setLoading}
-            AggregationPanelData={this.state.AggregationPanelData}
-            setAggregationPanelData={this.setAggregationPanelData}
-            setErrorAggregatedData={this.setErrorAggregatedData}
-            errorAggregatedData={this.state.errorAggregatedData}
-            appName={this.props.params.appId}
-          />
+          <>
+            <DataBrowser
+              app={this.context}
+              ref={this.dataBrowserRef}
+              isUnique={this.state.isUnique}
+              uniqueField={this.state.uniqueField}
+              count={count}
+              perms={this.state.clp[className]}
+              schema={this.props.schema}
+              filters={this.state.filters}
+              onFilterChange={this.updateFilters}
+              onFilterSave={(...args) => this.saveFilters(...args)}
+              onRemoveColumn={this.showRemoveColumn}
+              onDeleteRows={this.showDeleteRows}
+              onDropClass={this.showDropClass}
+              onExport={this.showExport}
+              onChangeCLP={this.handleCLPChange}
+              onRefresh={this.refresh}
+              onAttachRows={this.showAttachRowsDialog}
+              onAttachSelectedRows={this.showAttachSelectedRowsDialog}
+              onExecuteScriptRows={this.showExecuteScriptRowsDialog}
+              onCloneSelectedRows={this.showCloneSelectedRowsDialog}
+              onEditSelectedRow={this.showEditRowDialog}
+              onEditPermissions={this.onDialogToggle}
+              onExportSelectedRows={this.showExportSelectedRowsDialog}
+              onExportSchema={this.showExportSchemaDialog}
+              onSaveNewRow={this.saveNewRow}
+              onShowPointerKey={this.showPointerKeyDialog}
+              onAbortAddRow={this.abortAddRow}
+              onSaveEditCloneRow={this.saveEditCloneRow}
+              onAbortEditCloneRow={this.abortEditCloneRow}
+              onCancelPendingEditRows={this.cancelPendingEditRows}
+              currentUser={this.state.currentUser}
+              useMasterKey={this.state.useMasterKey}
+              login={this.login}
+              logout={this.logout}
+              toggleMasterKeyUsage={this.toggleMasterKeyUsage}
+              markRequiredFieldRow={this.state.markRequiredFieldRow}
+              requiredColumnFields={this.state.requiredColumnFields}
+              columns={columns}
+              className={className}
+              fetchNextPage={this.fetchNextPage}
+              maxFetched={this.state.lastMax}
+              selectRow={this.selectRow}
+              selection={this.state.selection}
+              data={this.state.data}
+              ordering={this.state.ordering}
+              newObject={this.state.newObject}
+              editCloneRows={this.state.editCloneRows}
+              relation={this.state.relation}
+              disableKeyControls={this.hasExtras()}
+              updateRow={this.updateRow}
+              updateOrdering={this.updateOrdering}
+              onPointerClick={this.handlePointerClick}
+              onPointerCmdClick={this.handlePointerCmdClick}
+              setRelation={this.setRelation}
+              onAddColumn={this.showAddColumn}
+              onAddRow={this.addRow}
+              onAddRowWithModal={this.addRowWithModal}
+              onAddClass={this.showCreateClass}
+              showNote={this.showNote}
+              onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
+              onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
+              onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
+              classes={this.classes}
+              classwiseCloudFunctions={this.state.classwiseCloudFunctions}
+              callCloudFunction={this.fetchAggregationPanelData}
+              isLoadingCloudFunction={this.state.isLoading}
+              setLoading={this.setLoading}
+              AggregationPanelData={this.state.AggregationPanelData}
+              setAggregationPanelData={this.setAggregationPanelData}
+              setErrorAggregatedData={this.setErrorAggregatedData}
+              errorAggregatedData={this.state.errorAggregatedData}
+              appName={this.props.params.appId}
+              limit={this.state.limit}
+            />
+            <BrowserFooter
+              skip={this.state.skip}
+              setSkip={skip => {
+                this.setState({ skip });
+                this.updateOrdering(this.state.ordering);
+              }}
+              count={count}
+              limit={this.state.limit}
+              setLimit={limit => {
+                this.setState({ limit });
+                this.updateOrdering(this.state.ordering);
+              }}
+            />
+          </>
         );
       }
     }
@@ -2273,6 +2299,7 @@ class Browser extends DashboardView {
           confirmAttachSelectedRows={this.confirmAttachSelectedRows}
           schema={this.props.schema}
           useMasterKey={this.state.useMasterKey}
+          limit={this.state.limit}
         />
       );
     } else if (this.state.rowsToExport) {
