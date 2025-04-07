@@ -9,20 +9,36 @@ import PropTypes from 'lib/PropTypes';
 import React, { useState, useEffect, useRef } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
-const getPositionToFitVisibleScreen = ref => {
+const getPositionToFitVisibleScreen = (ref, offset = 0) => {
   if (ref.current) {
     const elBox = ref.current.getBoundingClientRect();
-    const y = elBox.y + elBox.height < window.innerHeight ? 0 : 0 - elBox.y + 100;
+    let y = 0;
 
-    // If there's a previous element show current next to it.
-    // Try on right side first, then on left if there's no place.
+    const footerHeight = 50;
+    const lowerLimit = window.innerHeight - footerHeight;
+    const upperLimit = 0;
+
+    if (elBox.bottom > lowerLimit) {
+      y = lowerLimit - elBox.bottom;
+    } else if (elBox.top < upperLimit) {
+      y = upperLimit - elBox.top;
+    }
+
+    // Apply offset only if it doesn't push the element offscreen again
+    const projectedTop = elBox.top + y + offset;
+    const projectedBottom = projectedTop + elBox.height;
+
+    if (projectedTop >= upperLimit && projectedBottom <= lowerLimit) {
+      y += offset;
+    }
+
     const prevEl = ref.current.previousSibling;
     if (prevEl) {
       const prevElBox = prevEl.getBoundingClientRect();
       const showOnRight = prevElBox.x + prevElBox.width + elBox.width < window.innerWidth;
       return {
         x: showOnRight ? prevElBox.width : -elBox.width,
-        y,
+        y
       };
     }
 
@@ -35,14 +51,14 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
   const [position, setPosition] = useState();
 
   useEffect(() => {
-    const newPosition = getPositionToFitVisibleScreen(sectionRef);
+    const newPosition = getPositionToFitVisibleScreen(sectionRef, path[level] * 30);
     newPosition && setPosition(newPosition);
   }, [sectionRef]);
 
   const style = position
     ? {
       left: position.x,
-      top: position.y + path[level] * 30,
+      top: position.y,
       maxHeight: '80vh',
       overflowY: 'scroll',
       opacity: 1,
