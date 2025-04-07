@@ -90,7 +90,7 @@
     "@semantic-release/npm": "12.0.1",
     "@semantic-release/release-notes-generator": "14.0.3",
     "@types/jest": "29.1.1",
-    "all-node-versions": "11.0.1",
+    "all-node-versions": "13.0.1",
     "babel-loader": "9.1.2",
     "css-loader": "6.7.3",
     "eslint": "9.23.0",
