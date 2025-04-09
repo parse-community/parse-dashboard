@@ -81,7 +81,7 @@
     "@babel/plugin-transform-runtime": "7.26.10",
     "@babel/preset-env": "7.26.9",
     "@babel/preset-react": "7.26.3",
-    "@eslint/compat": "1.2.7",
+    "@eslint/compat": "1.2.8",
     "@saithodev/semantic-release-backmerge": "4.0.1",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/commit-analyzer": "13.0.1",
