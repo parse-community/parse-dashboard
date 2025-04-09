@@ -434,6 +434,7 @@ const BrowserToolbar = ({
           }
           onClick={() => onExecuteScriptRows(selection)}
         />
+        <div/>
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />
       {menu}

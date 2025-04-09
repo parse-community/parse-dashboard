@@ -71,6 +71,7 @@ export default class BrowserRow extends Component {
     }
     return (
       <div className={styles.tableRow} style={{ minWidth: rowWidth }} onMouseOver={() => onMouseOverRow(obj.id)}>
+        <span className={styles.rowNumber}>{row + 1}</span>
         <span
           className={styles.checkCell}
           onMouseUp={onMouseUpRowCheckBox}

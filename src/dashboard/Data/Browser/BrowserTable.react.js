@@ -124,7 +124,7 @@ export default class BrowserTable extends React.Component {
       const rowWidth = this.props.order.reduce(
         (rowWidth, { visible, width }) => (visible ? rowWidth + width : rowWidth),
         this.props.onAddRow ? 210 : 0
-      );
+      ) + 30;
       let editCloneRows;
       if (this.props.editCloneRows) {
         editCloneRows = (
@@ -540,7 +540,7 @@ export default class BrowserTable extends React.Component {
         id="browser-table"
         style={{
           right: rightValue,
-          'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
+          overflowX: this.props.isResizing ? 'hidden' : 'auto',
         }}
       >
         <DataBrowserHeaderBar

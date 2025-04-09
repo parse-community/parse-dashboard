@@ -110,6 +110,22 @@ body:global(.expanded) {
   text-align: center;
 }
 
+.rowNumber {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 31px;
+  vertical-align: top;
+  border-right: 1px solid #e3e3ea;
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-bottom: 1px solid #e3e3ea;
+  background: white;
+}
+
+
 .addRow {
   height: 30px;
   padding: 8px;
