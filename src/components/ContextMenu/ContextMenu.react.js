@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React, { useState, useEffect, useRef } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
-const getPositionToFitVisibleScreen = (ref, offset = 0) => {
+const getPositionToFitVisibleScreen = (ref, offset = 0, mainItemCount = 0, subItemCount = 0) => {
   if (ref.current) {
     const elBox = ref.current.getBoundingClientRect();
     let y = 0;
@@ -24,17 +24,24 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
       y = upperLimit - elBox.top;
     }
 
-    // Apply offset only if it doesn't push the element offscreen again
     const projectedTop = elBox.top + y + offset;
     const projectedBottom = projectedTop + elBox.height;
 
-    if (projectedTop >= upperLimit && projectedBottom <= lowerLimit) {
+    const shouldApplyOffset = subItemCount > mainItemCount;
+    if (shouldApplyOffset && projectedTop >= upperLimit && projectedBottom <= lowerLimit) {
       y += offset;
     }
 
     const prevEl = ref.current.previousSibling;
     if (prevEl) {
       const prevElBox = prevEl.getBoundingClientRect();
+      const prevElStyle = window.getComputedStyle(prevEl);
+      const prevElTop = parseInt(prevElStyle.top, 10);
+
+      if (!shouldApplyOffset) {
+        y = prevElTop + offset;
+      }
+
       const showOnRight = prevElBox.x + prevElBox.width + elBox.width < window.innerWidth;
       return {
         x: showOnRight ? prevElBox.width : -elBox.width,
@@ -46,23 +53,28 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
   }
 };
 
-const MenuSection = ({ level, items, path, setPath, hide }) => {
+const MenuSection = ({ level, items, path, setPath, hide, parentItemCount = 0 }) => {
   const sectionRef = useRef(null);
   const [position, setPosition] = useState();
 
   useEffect(() => {
-    const newPosition = getPositionToFitVisibleScreen(sectionRef, path[level] * 30);
+    const newPosition = getPositionToFitVisibleScreen(
+      sectionRef,
+      path[level] * 30,
+      parentItemCount,
+      items.length
+    );
     newPosition && setPosition(newPosition);
   }, [sectionRef]);
 
   const style = position
     ? {
-      left: position.x,
-      top: position.y,
-      maxHeight: '80vh',
-      overflowY: 'scroll',
-      opacity: 1,
-    }
+        left: position.x,
+        top: position.y,
+        maxHeight: '80vh',
+        overflowY: 'scroll',
+        opacity: 1,
+      }
     : {};
 
   return (
@@ -108,6 +120,8 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
 const ContextMenu = ({ x, y, items }) => {
   const [path, setPath] = useState([0]);
   const [visible, setVisible] = useState(true);
+  const menuRef = useRef(null);
+
   useEffect(() => {
     setVisible(true);
   }, [items]);
@@ -116,10 +130,6 @@ const ContextMenu = ({ x, y, items }) => {
     setVisible(false);
     setPath([0]);
   };
-
-  //#region Closing menu after clicking outside it
-
-  const menuRef = useRef(null);
 
   function handleClickOutside(event) {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -133,8 +143,6 @@ const ContextMenu = ({ x, y, items }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   });
-
-  //#endregion
 
   if (!visible) {
     return null;
@@ -158,14 +166,19 @@ const ContextMenu = ({ x, y, items }) => {
       }}
     >
       {path.map((position, level) => {
+        const itemsForLevel = getItemsFromLevel(level);
+        const parentItemCount =
+          level === 0 ? items.length : getItemsFromLevel(level - 1).length;
+
         return (
           <MenuSection
             key={`section-${position}-${level}`}
             path={path}
             setPath={setPath}
             level={level}
-            items={getItemsFromLevel(level)}
+            items={itemsForLevel}
             hide={hide}
+            parentItemCount={parentItemCount}
           />
         );
       })}
