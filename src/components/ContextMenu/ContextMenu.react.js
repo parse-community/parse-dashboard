@@ -69,12 +69,12 @@ const MenuSection = ({ level, items, path, setPath, hide, parentItemCount = 0 })
 
   const style = position
     ? {
-        left: position.x,
-        top: position.y,
-        maxHeight: '80vh',
-        overflowY: 'scroll',
-        opacity: 1,
-      }
+      left: position.x,
+      top: position.y,
+      maxHeight: '80vh',
+      overflowY: 'scroll',
+      opacity: 1,
+    }
     : {};
 
   return (
