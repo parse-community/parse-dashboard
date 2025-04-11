@@ -41,7 +41,7 @@
     "body-parser": "2.2.0",
     "commander": "9.4.0",
     "connect-flash": "0.1.1",
-    "cookie-session": "2.0.0",
+    "cookie-session": "2.1.0",
     "copy-to-clipboard": "3.3.3",
     "core-js": "3.41.0",
     "csurf": "1.11.0",
