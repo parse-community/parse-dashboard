@@ -7,7 +7,7 @@
  */
 import DataBrowserHeader from 'components/DataBrowserHeader/DataBrowserHeader.react';
 import DragHandle from 'components/DragHandle/DragHandle.react';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 
