@@ -1,3 +1,10 @@
+# [7.1.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.5...7.1.0-alpha.6) (2025-04-13)
+
+
+### Bug Fixes
+
+* Dashboard crashes when selecting app ([#2747](https://github.com/parse-community/parse-dashboard/issues/2747)) ([8b0cfea](https://github.com/parse-community/parse-dashboard/commit/8b0cfeae4759eaf41eef3d92aa52c79df2918e54))
+
 # [7.1.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.4...7.1.0-alpha.5) (2025-04-06)
 
 
