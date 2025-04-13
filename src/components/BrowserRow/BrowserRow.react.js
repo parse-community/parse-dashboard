@@ -50,6 +50,7 @@ export default class BrowserRow extends Component {
       onMouseDownRowCheckBox,
       onMouseUpRowCheckBox,
       onMouseOverRowCheckBox,
+      onMouseOverRow,
     } = this.props;
     const attributes = obj.attributes;
     let requiredCols = [];
@@ -69,7 +70,7 @@ export default class BrowserRow extends Component {
       requiredCols = ['authData'];
     }
     return (
-      <div className={styles.tableRow} style={{ minWidth: rowWidth }}>
+      <div className={styles.tableRow} style={{ minWidth: rowWidth }} onMouseOver={() => onMouseOverRow(obj.id)}>
         <span
           className={styles.checkCell}
           onMouseUp={onMouseUpRowCheckBox}

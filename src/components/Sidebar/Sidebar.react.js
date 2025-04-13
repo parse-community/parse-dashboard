@@ -187,7 +187,7 @@ const Sidebar = ({
       {dashboardUser && (
         <div className={styles.footer}>
           <a href={`${mountPath}logout`} className={styles.more}>
-            <Icon height={24} width={24} name="logout" />
+            <Icon height={16} width={16} name="logout" />
             Logout
           </a>
         </div>
