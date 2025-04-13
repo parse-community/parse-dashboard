@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import DataBrowserHeader from 'components/DataBrowserHeader/DataBrowserHeader.react';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 
