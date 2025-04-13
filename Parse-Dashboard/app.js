@@ -1,7 +1,9 @@
 'use strict';
+
+import packageJson from 'package-json';
+
 const express = require('express');
 const path = require('path');
-const packageJson = require('package-json');
 const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 const fs = require('fs');
