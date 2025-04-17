@@ -1,3 +1,10 @@
+# [7.1.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.7...7.1.0-alpha.8) (2025-04-17)
+
+
+### Bug Fixes
+
+* Data browser filters "key exists" and "key does not exist" not working ([#2760](https://github.com/parse-community/parse-dashboard/issues/2760)) ([0691b3c](https://github.com/parse-community/parse-dashboard/commit/0691b3cf30a77421e17299935880c54f9c8c9c32))
+
 # [7.1.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.6...7.1.0-alpha.7) (2025-04-17)
 
 
