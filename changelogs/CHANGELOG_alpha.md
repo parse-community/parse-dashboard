@@ -1,3 +1,10 @@
+# [7.1.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.6...7.1.0-alpha.7) (2025-04-17)
+
+
+### Bug Fixes
+
+* Dashboard crashes on login due to `passport` upgrade ([#2758](https://github.com/parse-community/parse-dashboard/issues/2758)) ([ee74321](https://github.com/parse-community/parse-dashboard/commit/ee743210f67dd9e206e6302f57a5d025099be0b4))
+
 # [7.1.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.5...7.1.0-alpha.6) (2025-04-13)
 
 
