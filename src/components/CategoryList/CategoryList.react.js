@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import styles from 'components/CategoryList/CategoryList.scss';
+import { CurrentApp } from 'context/currentApp';
+import generatePath from 'lib/generatePath';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import styles from 'components/CategoryList/CategoryList.scss';
 import { Link } from 'react-router-dom';
-import generatePath from 'lib/generatePath';
-import { CurrentApp } from 'context/currentApp';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;
@@ -137,7 +137,7 @@ export default class CategoryList extends React.Component {
                 )}
               </div>
               {this.state.openClasses.includes(id) &&
-                c.filters.map((filterData, index) => {
+                c.filters.sort((a, b) => a.name.localeCompare(b.name)).map((filterData, index) => {
                   const { name, filter } = filterData;
                   const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
                     filter
