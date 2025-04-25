@@ -107,6 +107,10 @@ const MenuSection = ({ level, items, path, setPath, hide, parentItemCount = 0 })
               item.callback && item.callback();
               hide();
             }}
+            onMouseEnter={() => {
+              const newPath = path.slice(0, level + 1);
+              setPath(newPath);
+            }}
           >
             {item.text}
             {item.subtext && <span> - {item.subtext}</span>}
