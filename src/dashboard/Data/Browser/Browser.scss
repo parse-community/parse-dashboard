@@ -123,6 +123,9 @@ body:global(.expanded) {
   z-index: 1;
   border-bottom: 1px solid #e3e3ea;
   background: white;
+  overflow: hidden;
+  direction: rtl;
+  text-overflow: ellipsis;
 }
 
 

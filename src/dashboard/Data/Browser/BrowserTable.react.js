@@ -156,7 +156,7 @@ export default class BrowserTable extends React.Component {
                     onFilterChange={this.props.onFilterChange}
                     order={this.props.order}
                     readOnlyFields={READ_ONLY}
-                    row={index}
+                    row={index + this.props.skip}
                     rowValue={this.props.data[index]}
                     rowWidth={rowWidth}
                     selection={this.props.selection}
@@ -329,7 +329,7 @@ export default class BrowserTable extends React.Component {
             callCloudFunction={this.props.callCloudFunction}
             order={this.props.order}
             readOnlyFields={READ_ONLY}
-            row={i}
+            row={i + this.props.skip}
             rowValue={this.props.data[i]}
             rowWidth={rowWidth}
             selection={this.props.selection}
