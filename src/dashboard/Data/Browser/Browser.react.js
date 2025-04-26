@@ -42,6 +42,7 @@ import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
+import LoaderDots from 'components/LoaderDots/LoaderDots.react';
 
 // The initial and max amount of rows fetched by lazy loading
 const BROWSER_LAST_LOCATION = 'brower_last_location';
@@ -898,6 +899,10 @@ class Browser extends DashboardView {
 
   async fetchParseData(source, filters) {
     const { useMasterKey, skip, limit } = this.state;
+    this.setLoading(true);
+    this.setState({
+      data: null,
+    })
     const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
@@ -927,6 +932,8 @@ class Browser extends DashboardView {
     this.setState({ isUnique, uniqueField });
 
     const data = await promise;
+
+    this.setLoading(false);
     return data;
   }
 
@@ -2089,6 +2096,7 @@ class Browser extends DashboardView {
               classwiseCloudFunctions={this.state.classwiseCloudFunctions}
               callCloudFunction={this.fetchAggregationPanelData}
               isLoadingCloudFunction={this.state.isLoading}
+              isLoading={this.state.isLoading}
               setLoading={this.setLoading}
               AggregationPanelData={this.state.AggregationPanelData}
               setAggregationPanelData={this.setAggregationPanelData}
