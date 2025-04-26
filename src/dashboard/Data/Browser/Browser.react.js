@@ -42,7 +42,6 @@ import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
-import LoaderDots from 'components/LoaderDots/LoaderDots.react';
 
 // The initial and max amount of rows fetched by lazy loading
 const BROWSER_LAST_LOCATION = 'brower_last_location';
