@@ -1166,6 +1166,11 @@ class Browser extends DashboardView {
     this.props.navigate(
       generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`)
     );
+
+    this.setState({
+      skip: 0,
+    });
+
   }
 
   handlePointerCmdClick({ className, id, field = 'objectId' }) {
