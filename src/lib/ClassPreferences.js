@@ -1,3 +1,4 @@
+const VERSION = 1; // In case we ever need to invalidate these
 export function updatePreferences(prefs, appId, className) {
   try {
     localStorage.setItem(path(appId, className), JSON.stringify(prefs));
