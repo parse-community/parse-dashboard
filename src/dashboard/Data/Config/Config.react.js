@@ -21,6 +21,7 @@ import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import { CurrentApp } from 'context/currentApp';
+import Modal from 'components/Modal/Modal.react';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -38,6 +39,7 @@ class Config extends TableView {
       modalValue: '',
       modalMasterKeyOnly: false,
       loading: false,
+      confirmModalOpen: false,
     };
   }
 
@@ -58,6 +60,7 @@ class Config extends TableView {
   loadData() {
     this.setState({ loading: true });
     this.props.config.dispatch(ActionTypes.FETCH).finally(() => {
+      this.cacheData = new Map(this.props.config.data);
       this.setState({ loading: false });
     });
   }
@@ -99,6 +102,30 @@ class Config extends TableView {
           onCancel={() => this.setState({ showDeleteParameterDialog: false })}
           onConfirm={this.deleteParam.bind(this, this.state.modalParam)}
         />
+      );
+    }
+
+    if (this.state.confirmModalOpen) {
+      extras = (
+        <Modal
+          type={Modal.Types.INFO}
+          icon="warn-outline"
+          title={'Are you sure?'}
+          confirmText="Continue"
+          cancelText="Cancel"
+          onCancel={() => this.setState({ confirmModalOpen: false })}
+          onConfirm={() => {
+            this.setState({ confirmModalOpen: false });
+            this.saveParam({
+              ...this.confirmData,
+              override: true,
+            });
+          }}
+        >
+          <div className={[browserStyles.confimConfig]}>
+            The parameter you are trying to edit has been modified by another user. Do you want to continue?
+          </div>
+        </Modal>
       );
     }
     return extras;
@@ -244,7 +271,27 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, value, type, masterKeyOnly }) {
+  async saveParam({ name, value, type, masterKeyOnly, override }) {
+    const cachedParams = this.cacheData.get('params');
+    const cachedValue = cachedParams.get(name);
+
+    await this.props.config.dispatch(ActionTypes.FETCH);
+    const fetchedParams = this.props.config.data.get('params');
+
+    if (cachedValue !== fetchedParams.get(name) && !override) {
+      this.setState({
+        confirmModalOpen: true,
+        modalOpen: false,
+      });
+      this.confirmData = {
+        name,
+        value,
+        type,
+        masterKeyOnly,
+      };
+      return;
+    }
+
     this.props.config
       .dispatch(ActionTypes.SET, {
         param: name,
