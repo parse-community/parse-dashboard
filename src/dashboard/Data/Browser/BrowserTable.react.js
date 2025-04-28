@@ -560,7 +560,7 @@ export default class BrowserTable extends React.Component {
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
           preventSchemaEdits={this.context.preventSchemaEdits}
-          isDataLoaded={!!this.props.data}
+          isDataLoaded={!this.props.isLoading}
           setSelectedObjectId={this.props.setSelectedObjectId}
           setCurrent={this.props.setCurrent}
         />
