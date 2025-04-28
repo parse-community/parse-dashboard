@@ -1,3 +1,10 @@
+# [7.1.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.10...7.1.0-alpha.11) (2025-04-28)
+
+
+### Bug Fixes
+
+* Data loading indicator not showing when using pagination ([#2768](https://github.com/parse-community/parse-dashboard/issues/2768)) ([62d7aec](https://github.com/parse-community/parse-dashboard/commit/62d7aec3c43c634f8dc632ef7a563cfdad5cd773))
+
 # [7.1.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.9...7.1.0-alpha.10) (2025-04-17)
 
 
