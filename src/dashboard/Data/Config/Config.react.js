@@ -122,7 +122,7 @@ class Config extends TableView {
             });
           }}
         >
-          <div className={[browserStyles.confimConfig]}>
+          <div className={[browserStyles.confirmConfig]}>
             The parameter you are trying to edit has been modified by another user. Do you want to continue?
           </div>
         </Modal>
