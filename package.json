@@ -95,7 +95,7 @@
     "css-loader": "6.7.3",
     "eslint": "9.24.0",
     "eslint-plugin-jest": "28.11.0",
-    "eslint-plugin-react": "7.37.4",
+    "eslint-plugin-react": "7.37.5",
     "globals": "16.0.0",
     "http-server": "14.1.1",
     "husky": "9.1.7",
