@@ -1176,7 +1176,6 @@ class Browser extends DashboardView {
     this.setState({
       skip: 0,
     });
-
   }
 
   handlePointerCmdClick({ className, id, field = 'objectId' }) {
