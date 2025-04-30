@@ -33,6 +33,7 @@ export default class BrowserRow extends Component {
       row,
       rowValue,
       rowWidth,
+      headerWidth,
       selection,
       selectRow,
       setCopyableValue,
@@ -70,8 +71,8 @@ export default class BrowserRow extends Component {
       requiredCols = ['authData'];
     }
     return (
-      <div className={styles.tableRow} style={{ minWidth: rowWidth }} onMouseOver={() => onMouseOverRow(obj.id)}>
-        <span className={styles.rowNumber}>{row + 1}</span>
+      <div className={styles.tableRow} style={{ width: rowWidth }} onMouseOver={() => onMouseOverRow(obj.id)}>
+        <span className={styles.rowNumber} style={{width: headerWidth}}>{row + 1}</span>
         <span
           className={styles.checkCell}
           onMouseUp={onMouseUpRowCheckBox}

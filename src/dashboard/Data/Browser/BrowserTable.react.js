@@ -35,6 +35,7 @@ export default class BrowserTable extends React.Component {
     this.tableRef = React.createRef();
     this.handleResize = this.handleResize.bind(this);
     this.updateMaxWidth = this.updateMaxWidth.bind(this);
+    this.headerWidth = 34;
   }
 
   componentWillReceiveProps(props) {
@@ -121,10 +122,16 @@ export default class BrowserTable extends React.Component {
     let editor = null;
     let table = <div ref={this.tableRef} />;
     if (this.props.data) {
-      const rowWidth = this.props.order.reduce(
+      let rowWidth = this.props.order.reduce(
         (rowWidth, { visible, width }) => (visible ? rowWidth + width : rowWidth),
         this.props.onAddRow ? 210 : 0
       ) + 30;
+
+      this.headerWidth = Math.max(
+        30,
+        Math.floor(Math.log10(this.props.data.length + this.props.skip)) * 10
+      ) + 4;
+
       let editCloneRows;
       if (this.props.editCloneRows) {
         editCloneRows = (
@@ -159,6 +166,7 @@ export default class BrowserTable extends React.Component {
                     row={index + this.props.skip}
                     rowValue={this.props.data[index]}
                     rowWidth={rowWidth}
+                    headerWidth={this.headerWidth}
                     selection={this.props.selection}
                     selectRow={this.props.selectRow}
                     setCurrent={this.props.setCurrent}
@@ -240,6 +248,7 @@ export default class BrowserTable extends React.Component {
               readOnlyFields={READ_ONLY}
               row={-1}
               rowWidth={rowWidth}
+              headerWidth={this.headerWidth}
               selection={this.props.selection}
               selectRow={this.props.selectRow}
               setCurrent={this.props.setCurrent}
@@ -332,6 +341,7 @@ export default class BrowserTable extends React.Component {
             row={i + this.props.skip}
             rowValue={this.props.data[i]}
             rowWidth={rowWidth}
+            headerWidth={this.headerWidth}
             selection={this.props.selection}
             selectRow={this.props.selectRow}
             setCurrent={this.props.setCurrent}
@@ -563,6 +573,7 @@ export default class BrowserTable extends React.Component {
           isDataLoaded={!this.props.isLoading}
           setSelectedObjectId={this.props.setSelectedObjectId}
           setCurrent={this.props.setCurrent}
+          headerWidth={this.headerWidth}
         />
         {table}
       </div>

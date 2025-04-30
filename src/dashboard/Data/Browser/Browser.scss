@@ -112,7 +112,6 @@ body:global(.expanded) {
 
 .rowNumber {
   display: inline-block;
-  width: 30px;
   height: 30px;
   line-height: 31px;
   vertical-align: top;
@@ -123,9 +122,6 @@ body:global(.expanded) {
   z-index: 1;
   border-bottom: 1px solid #e3e3ea;
   background: white;
-  overflow: hidden;
-  direction: rtl;
-  text-overflow: ellipsis;
 }
 
 .addRow {

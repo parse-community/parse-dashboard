@@ -26,9 +26,10 @@ export default class DataBrowserHeaderBar extends React.Component {
       isDataLoaded,
       setSelectedObjectId,
       setCurrent,
+      headerWidth
     } = this.props;
     const elements = [
-      <div key="check" className={[styles.wrap, styles.check].join(' ')}>
+      <div key="check" className={[styles.wrap, styles.check].join(' ')} style={{ paddingLeft: headerWidth, width: headerWidth + 30 }}>
         {readonly ? null : (
           <input type="checkbox" checked={selected} onChange={e => selectAll(e.target.checked)} />
         )}
