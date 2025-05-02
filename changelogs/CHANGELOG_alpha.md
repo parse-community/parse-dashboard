@@ -1,3 +1,10 @@
+# [7.1.0-alpha.12](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.11...7.1.0-alpha.12) (2025-04-29)
+
+
+### Bug Fixes
+
+* Clicking on pointer in data browser when using pagination does not reset to first page ([#2767](https://github.com/parse-community/parse-dashboard/issues/2767)) ([ab512e5](https://github.com/parse-community/parse-dashboard/commit/ab512e52d137cdb30167ece53a9ce12c38f5d155))
+
 # [7.1.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.10...7.1.0-alpha.11) (2025-04-28)
 
 
