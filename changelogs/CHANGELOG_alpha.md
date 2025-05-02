@@ -1,3 +1,17 @@
+## [7.1.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.1.0...7.1.1-alpha.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* Saving new filter in data browser overwrites filters added in other dashboard instances ([#2769](https://github.com/parse-community/parse-dashboard/issues/2769)) ([46bc154](https://github.com/parse-community/parse-dashboard/commit/46bc154cc008c2d8f8d8248e52ec06b9e64cb779))
+
+# [7.1.0-alpha.12](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.11...7.1.0-alpha.12) (2025-04-29)
+
+
+### Bug Fixes
+
+* Clicking on pointer in data browser when using pagination does not reset to first page ([#2767](https://github.com/parse-community/parse-dashboard/issues/2767)) ([ab512e5](https://github.com/parse-community/parse-dashboard/commit/ab512e52d137cdb30167ece53a9ce12c38f5d155))
+
 # [7.1.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.10...7.1.0-alpha.11) (2025-04-28)
 
 
