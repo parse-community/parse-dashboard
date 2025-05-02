@@ -122,7 +122,7 @@ export default class BrowserTable extends React.Component {
     let editor = null;
     let table = <div ref={this.tableRef} />;
     if (this.props.data) {
-      let rowWidth = this.props.order.reduce(
+      const rowWidth = this.props.order.reduce(
         (rowWidth, { visible, width }) => (visible ? rowWidth + width : rowWidth),
         this.props.onAddRow ? 210 : 0
       ) + 30;
