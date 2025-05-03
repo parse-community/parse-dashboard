@@ -1873,7 +1873,8 @@ class Browser extends DashboardView {
         this.context.applicationId,
         row.name
       );
-      row.filters = filters;
+      // Set filters sorted alphabetically
+      row.filters = filters.sort((a, b) => a.name.localeCompare(b.name));
       allCategories.push(row);
     }
 

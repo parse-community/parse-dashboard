@@ -137,7 +137,7 @@ export default class CategoryList extends React.Component {
                 )}
               </div>
               {this.state.openClasses.includes(id) &&
-                c.filters.sort((a, b) => a.name.localeCompare(b.name)).map((filterData, index) => {
+                c.filters.map((filterData, index) => {
                   const { name, filter } = filterData;
                   const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
                     filter
