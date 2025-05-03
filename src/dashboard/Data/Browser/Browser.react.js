@@ -898,7 +898,6 @@ class Browser extends DashboardView {
 
   async fetchParseData(source, filters) {
     const { useMasterKey, skip, limit } = this.state;
-    this.setLoading(true);
     this.setState({
       data: null,
     })
@@ -931,8 +930,6 @@ class Browser extends DashboardView {
     this.setState({ isUnique, uniqueField });
 
     const data = await promise;
-
-    this.setLoading(false);
     return data;
   }
 
@@ -2098,7 +2095,6 @@ class Browser extends DashboardView {
               classes={this.classes}
               classwiseCloudFunctions={this.state.classwiseCloudFunctions}
               callCloudFunction={this.fetchAggregationPanelData}
-              isLoading={this.state.isLoading}
               isLoadingCloudFunction={this.state.isLoadingInfoPanel}
               setLoadingInfoPanel={this.setLoadingInfoPanel}
               AggregationPanelData={this.state.AggregationPanelData}
