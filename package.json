@@ -39,7 +39,7 @@
     "@babel/runtime-corejs3": "7.27.0",
     "bcryptjs": "2.3.0",
     "body-parser": "2.2.0",
-    "commander": "9.4.0",
+    "commander": "13.1.0",
     "connect-flash": "0.1.1",
     "cookie-session": "2.1.0",
     "copy-to-clipboard": "3.3.3",
