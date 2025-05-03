@@ -8,7 +8,7 @@
 import * as Filters from 'lib/Filters';
 import { List, Map } from 'immutable';
 import PropTypes from 'lib/PropTypes';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import stringCompare from 'lib/stringCompare';
 import { CurrentApp } from 'context/currentApp';
 
@@ -76,6 +76,97 @@ function deleteRow(filters, index) {
   return filters.delete(index);
 }
 
+function deleteRowDraft(setFiltersArrayDraft, index) {
+  return setFiltersArrayDraft(filtersArrayDraftState =>
+    filtersArrayDraftState.filter((_, indexElement) => indexElement !== index)
+  );
+}
+
+function changeClassDraft(setFiltersArrayDraft, index, newClassName) {
+  setFiltersArrayDraft(filtersArrayDraftState =>
+    filtersArrayDraftState.map((element, indexElement) => {
+      if (indexElement === index) {
+        return new Map({
+          class: newClassName,
+          field: '',
+        });
+      } else {
+        return element;
+      }
+    })
+  );
+}
+
+function changeFieldDraft(
+  schema,
+  currentClassName,
+  filters,
+  index,
+  newField,
+  fields,
+  setFiltersArrayDraft
+) {
+  const fieldIsValid = fields.find(field => field === newField);
+
+  if (fieldIsValid) {
+    const newFilterDraft = new Map({
+      class: currentClassName,
+      field: newField,
+      constraint: Filters.FieldConstraints[schema[currentClassName][newField].type][0],
+      compareTo: Filters.DefaultComparisons[schema[currentClassName][newField].type],
+    });
+
+    deleteRowDraft(setFiltersArrayDraft, index);
+    return filters.push(newFilterDraft);
+  } else {
+    return filters;
+  }
+}
+
+function getFields(available, currentClassName, field, currentApp, className) {
+  let fields = [];
+  if (available[currentClassName]) {
+    fields = Object.keys(available[currentClassName]).concat([]);
+  }
+  if (field !== '' && fields.indexOf(field) < 0) {
+    fields.push(field);
+  }
+
+  // Get the column preference of the current class.
+  const currentColumnPreference = currentApp.columnPreference
+    ? currentApp.columnPreference[className]
+    : null;
+
+  // Check if the preference exists.
+  if (currentColumnPreference) {
+    const fieldsToSortToTop = currentColumnPreference
+      .filter(item => item.filterSortToTop)
+      .map(item => item.name);
+    // Sort the fields.
+    fields.sort((a, b) => {
+      // Only "a" should sorted to the top.
+      if (fieldsToSortToTop.includes(a) && !fieldsToSortToTop.includes(b)) {
+        return -1;
+      }
+      // Only "b" should sorted to the top.
+      if (!fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+        return 1;
+      }
+      // Both should sorted to the top -> they should be sorted to the same order as in the "fieldsToSortToTop" array.
+      if (fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
+        return fieldsToSortToTop.indexOf(a) - fieldsToSortToTop.indexOf(b);
+      }
+      return stringCompare(a, b);
+    });
+  }
+  // If there's no preference: Use the default sort function.
+  else {
+    fields.sort();
+  }
+
+  return fields;
+}
+
 const Filter = ({
   schema,
   filters,
@@ -85,8 +176,11 @@ const Filter = ({
   onSearch,
   blacklist,
   className,
+  setFiltersArrayDraft,
+  filtersArrayDraft,
 }) => {
   const [compare, setCompare] = useState(false);
+  const [filtersArrayDraftLengthMemory, setFiltersArrayDraftLengthMemory] = useState(0);
   const hasCompareTo = filters.some(filter => filter.get('compareTo') !== undefined);
 
   if (compare !== hasCompareTo) {
@@ -96,6 +190,24 @@ const Filter = ({
   blacklist = blacklist || [];
   const available = Filters.findRelatedClasses(className, allClasses, blacklist, filters);
   const classes = Object.keys(available).concat([]);
+
+  useEffect(() => {
+    if (filters.size === 0) {
+      setFiltersArrayDraft(() => [
+        new Map({
+          class: className,
+          field: '',
+        }),
+      ]);
+    } else {
+      setFiltersArrayDraft(() => []);
+    }
+  }, []);
+
+  useEffect(() => {
+    setFiltersArrayDraftLengthMemory(filtersArrayDraft.length);
+  }, [filtersArrayDraft]);
+
   return (
     <div
       style={{
@@ -124,45 +236,8 @@ const Filter = ({
         const field = filter.get('field');
         const constraint = filter.get('constraint');
         const compareTo = filter.get('compareTo');
-        let fields = [];
-        if (available[currentClassName]) {
-          fields = Object.keys(available[currentClassName]).concat([]);
-        }
-        if (fields.indexOf(field) < 0) {
-          fields.push(field);
-        }
+        const fields = getFields(available, currentClassName, field, currentApp, className);
 
-        // Get the column preference of the current class.
-        const currentColumnPreference = currentApp.columnPreference
-          ? currentApp.columnPreference[className]
-          : null;
-
-        // Check if the preference exists.
-        if (currentColumnPreference) {
-          const fieldsToSortToTop = currentColumnPreference
-            .filter(item => item.filterSortToTop)
-            .map(item => item.name);
-          // Sort the fields.
-          fields.sort((a, b) => {
-            // Only "a" should sorted to the top.
-            if (fieldsToSortToTop.includes(a) && !fieldsToSortToTop.includes(b)) {
-              return -1;
-            }
-            // Only "b" should sorted to the top.
-            if (!fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
-              return 1;
-            }
-            // Both should sorted to the top -> they should be sorted to the same order as in the "fieldsToSortToTop" array.
-            if (fieldsToSortToTop.includes(a) && fieldsToSortToTop.includes(b)) {
-              return fieldsToSortToTop.indexOf(a) - fieldsToSortToTop.indexOf(b);
-            }
-            return stringCompare(a, b);
-          });
-        }
-        // If there's no preference: Use the default sort function.
-        else {
-          fields.sort();
-        }
         const constraints = Filters.FieldConstraints[schema[currentClassName][field].type].filter(
           c => blacklist.indexOf(c) < 0
         );
@@ -204,6 +279,52 @@ const Filter = ({
           },
           onDeleteRow: () => {
             onChange(deleteRow(filters, i));
+          },
+        });
+      })}
+
+      {filtersArrayDraft.map((filter, i) => {
+        const currentClassName = filter.get('class');
+        const field = filter.get('field');
+        const fields = getFields(available, currentClassName, field, currentApp, className);
+
+        return renderRow({
+          classes,
+          fields,
+          constraints: ['exists'],
+          compareInfo: {
+            type: undefined,
+            targetClass: null,
+          },
+          currentClass: currentClassName,
+          currentField: field,
+          currentConstraint: 'exists',
+          key: i + 'draft' + filtersArrayDraft.length,
+          initialFocusOnTheField:
+            filtersArrayDraftLengthMemory === 0 ||
+            (filtersArrayDraftLengthMemory < filtersArrayDraft.length &&
+              filtersArrayDraft.length - 1 === i),
+          onChangeClass: newClassName => {
+            changeClassDraft(setFiltersArrayDraft, i, newClassName);
+          },
+          onChangeField: newField => {
+            onChange(
+              changeFieldDraft(
+                schema,
+                currentClassName,
+                filters,
+                i,
+                newField,
+                fields,
+                setFiltersArrayDraft
+              )
+            );
+          },
+          onChangeConstraint: () => {},
+          onChangeCompareTo: () => {},
+          onKeyDown: () => {},
+          onDeleteRow: () => {
+            deleteRowDraft(setFiltersArrayDraft, i);
           },
         });
       })}

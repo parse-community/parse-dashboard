@@ -32,6 +32,7 @@ export default class BrowserFilter extends React.Component {
       confirmName: false,
       name: '',
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
+      filtersArrayDraft: [],
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -44,19 +45,7 @@ export default class BrowserFilter extends React.Component {
   }
 
   toggle() {
-    let filters = this.props.filters;
-    if (this.props.filters.size === 0) {
-      const available = Filters.findRelatedClasses(
-        this.props.className,
-        this.props.allClassesSchema,
-        this.state.blacklistedFilters,
-        this.state.filters
-      );
-      const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
-      filters = new List([
-        new Map({ class: filterClass, field: filterField, constraint: filterConstraint }),
-      ]);
-    }
+    const filters = this.props.filters;
     this.setState(prevState => ({
       open: !prevState.open,
       filters: filters,
@@ -68,18 +57,14 @@ export default class BrowserFilter extends React.Component {
   }
 
   addRow() {
-    const available = Filters.findRelatedClasses(
-      this.props.className,
-      this.props.allClassesSchema,
-      this.state.blacklistedFilters,
-      this.state.filters
-    );
-    const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
-    this.setState(({ filters }) => ({
-      filters: filters.push(
-        new Map({ class: filterClass, field: filterField, constraint: filterConstraint })
-      ),
-      editMode: true,
+    this.setState(({ filtersArrayDraft }) => ({
+      filtersArrayDraft: [
+        ...filtersArrayDraft,
+        new Map({
+          class: this.props.className,
+          field: '',
+        }),
+      ],
     }));
   }
 
@@ -164,6 +149,10 @@ export default class BrowserFilter extends React.Component {
                 schema={this.props.schema}
                 filters={this.state.filters}
                 onChange={filters => this.setState({ filters: filters })}
+                setFiltersArrayDraft={callback =>
+                  this.setState({ filtersArrayDraft: callback(this.state.filtersArrayDraft) })
+                }
+                filtersArrayDraft={this.state.filtersArrayDraft}
                 onSearch={this.apply.bind(this)}
                 allClasses={this.props.allClassesSchema}
                 allClassesSchema={Filters.findRelatedClasses(
