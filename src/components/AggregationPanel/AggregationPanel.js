@@ -38,7 +38,7 @@ const AggregationPanel = ({
     }
   }, [errorAggregatedData, setSelectedObjectId, setErrorAggregatedData]);
 
-  const isLoading = useMemo(
+  const isLoadingInfoPanel = useMemo(
     () => depth === 0 && selectedObjectId && isLoadingCloudFunction && showAggregatedData,
     [depth, selectedObjectId, isLoadingCloudFunction, showAggregatedData]
   );
@@ -181,7 +181,7 @@ const AggregationPanel = ({
 
   return (
     <div className={styles.aggregationPanel}>
-      {isLoading ? (
+      {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />
         </div>

@@ -111,7 +111,7 @@ class Browser extends DashboardView {
       configData: {},
       classwiseCloudFunctions: {},
       AggregationPanelData: {},
-      isLoading: false,
+      isLoadingInfoPanel: false,
       errorAggregatedData: {},
     };
 
@@ -130,7 +130,7 @@ class Browser extends DashboardView {
     this.showExport = this.showExport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    this.setLoading = this.setLoading.bind(this);
+    this.setLoadingInfoPanel = this.setLoadingInfoPanel.bind(this);
     this.setErrorAggregatedData = this.setErrorAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
@@ -255,9 +255,9 @@ class Browser extends DashboardView {
     }
   }
 
-  setLoading(bool) {
+  setLoadingInfoPanel(bool) {
     this.setState({
-      isLoading: bool,
+      isLoadingInfoPanel: bool,
     });
   }
 
@@ -269,7 +269,7 @@ class Browser extends DashboardView {
 
   fetchAggregationPanelData(objectId, className, appId) {
     this.setState({
-      isLoading: true,
+      isLoadingInfoPanel: true,
     });
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
@@ -283,10 +283,10 @@ class Browser extends DashboardView {
     Parse.Cloud.run(cloudCodeFunction, params, options).then(
       result => {
         if (result && result.panel && result.panel && result.panel.segments) {
-          this.setState({ AggregationPanelData: result, isLoading: false });
+          this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false });
         } else {
           this.setState({
-            isLoading: false,
+            isLoadingInfoPanel: false,
             errorAggregatedData: 'Improper JSON format',
           });
           this.showNote(this.state.errorAggregatedData, true);
@@ -294,7 +294,7 @@ class Browser extends DashboardView {
       },
       error => {
         this.setState({
-          isLoading: false,
+          isLoadingInfoPanel: false,
           errorAggregatedData: error.message,
         });
         this.showNote(this.state.errorAggregatedData, true);
@@ -1121,7 +1121,7 @@ class Browser extends DashboardView {
         ordering: ordering,
         selection: {},
         errorAggregatedData: {},
-        isLoading: false,
+        isLoadingInfoPanel: false,
         AggregationPanelData: {},
       },
       () => this.fetchData(source, this.state.filters)
@@ -2098,9 +2098,9 @@ class Browser extends DashboardView {
               classes={this.classes}
               classwiseCloudFunctions={this.state.classwiseCloudFunctions}
               callCloudFunction={this.fetchAggregationPanelData}
-              isLoadingCloudFunction={this.state.isLoading}
               isLoading={this.state.isLoading}
-              setLoading={this.setLoading}
+              isLoadingCloudFunction={this.state.isLoadingInfoPanel}
+              setLoadingInfoPanel={this.setLoadingInfoPanel}
               AggregationPanelData={this.state.AggregationPanelData}
               setAggregationPanelData={this.setAggregationPanelData}
               setErrorAggregatedData={this.setErrorAggregatedData}
