@@ -118,7 +118,7 @@
     "typescript": "5.8.2",
     "webpack": "5.99.5",
     "webpack-cli": "6.0.1",
-    "yaml": "1.10.0"
+    "yaml": "2.7.1"
   },
   "scripts": {
     "ci:check": "node ./ci/ciCheck.js",
