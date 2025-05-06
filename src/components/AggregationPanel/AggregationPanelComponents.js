@@ -24,8 +24,8 @@ export const KeyValueElement = ({ item, appName, style }) => (
 
 // Table Element Component
 export const TableElement = ({ columns, rows, style }) => (
-  <div className="table-element" style={style}>
-    <table>
+  <div className="table-element">
+    <table style={style}>
       <thead>
         <tr>
           {columns.map((column, idx) => (
