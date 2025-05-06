@@ -899,7 +899,7 @@ Example:
     "segments": [
       {
         "title": "Purchases",
-        "style": { "backgroudColor": "lightgray", "font-size": "10px" },
+        "style": { "backgroundColor": "lightgray", "font-size": "10px" },
         "titleStyle": { "backgroundColor": "orange", "color": "white" },
         "items": [
           {
