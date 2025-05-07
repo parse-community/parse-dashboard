@@ -109,7 +109,7 @@
     "react-test-renderer": "16.13.1",
     "request": "2.88.2",
     "request-promise": "4.2.5",
-    "sass": "1.86.3",
+    "sass": "1.87.0",
     "sass-loader": "13.2.0",
     "semantic-release": "24.2.3",
     "semver": "7.5.2",
