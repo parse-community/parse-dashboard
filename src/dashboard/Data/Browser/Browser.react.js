@@ -1883,8 +1883,28 @@ class Browser extends DashboardView {
         current={current}
         params={this.props.location?.search}
         linkPrefix={'browser/'}
-        filterClicked={url => this.props.navigate(generatePath(this.context, url))}
-        removeFilter={filter => this.removeFilter(filter)}
+        filterClicked={url => {
+          // Reset to page 1
+          this.setState({
+            skip: 0,
+          });
+
+          this.props.navigate(generatePath(this.context, url));
+        }}
+        removeFilter={filter => {
+          // Reset to page 1
+          this.setState({
+            skip: 0,
+          });
+
+          this.removeFilter(filter)
+        }}
+        classClicked={() => {
+          // Reset to page 1
+          this.setState({
+            skip: 0,
+          });
+        }}
         categories={allCategories}
       />
     );

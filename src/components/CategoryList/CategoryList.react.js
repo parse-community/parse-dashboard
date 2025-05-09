@@ -122,7 +122,7 @@ export default class CategoryList extends React.Component {
           return (
             <div key={id}>
               <div className={styles.link}>
-                <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
+                <Link title={c.name} to={{ pathname: link }} className={className} key={id} onClick={() => this.props.classClicked()}>
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
