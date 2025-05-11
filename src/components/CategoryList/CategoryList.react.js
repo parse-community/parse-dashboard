@@ -122,7 +122,7 @@ export default class CategoryList extends React.Component {
           return (
             <div key={id}>
               <div className={styles.link}>
-                <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
+                <Link title={c.name} to={{ pathname: link }} className={className} key={id} onClick={() => this.props.classClicked()}>
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
@@ -137,7 +137,7 @@ export default class CategoryList extends React.Component {
                 )}
               </div>
               {this.state.openClasses.includes(id) &&
-                c.filters.sort((a, b) => a.name.localeCompare(b.name)).map((filterData, index) => {
+                c.filters.map((filterData, index) => {
                   const { name, filter } = filterData;
                   const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
                     filter

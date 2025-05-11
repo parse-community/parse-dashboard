@@ -26,6 +26,7 @@ const AggregationPanel = ({
   depth = 0,
   cloudCodeFunction = null,
   panelTitle = null,
+  style,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [nestedData, setNestedData] = useState(null);
@@ -38,7 +39,7 @@ const AggregationPanel = ({
     }
   }, [errorAggregatedData, setSelectedObjectId, setErrorAggregatedData]);
 
-  const isLoading = useMemo(
+  const isLoadingInfoPanel = useMemo(
     () => depth === 0 && selectedObjectId && isLoadingCloudFunction && showAggregatedData,
     [depth, selectedObjectId, isLoadingCloudFunction, showAggregatedData]
   );
@@ -92,25 +93,25 @@ const AggregationPanel = ({
   }, [fetchNestedData]);
 
   const renderSegmentContent = (segment, index) => (
-    <div key={index} className={styles.segmentContainer}>
-      <h2 className={styles.heading}>{segment.title}</h2>
+    <div key={index} className={styles.segmentContainer} style={segment.style}>
+      <h2 className={styles.heading} style={segment.titleStyle}>{segment.title}</h2>
       <div className={styles.segmentItems}>
         {segment.items.map((item, idx) => {
           switch (item.type) {
             case 'text':
-              return <TextElement key={idx} text={item.text} />;
+              return <TextElement key={idx} text={item.text} style={item.style} />;
             case 'keyValue':
-              return <KeyValueElement key={idx} item={item} appName={appName} />;
+              return <KeyValueElement key={idx} item={item} appName={appName} style={item.style} />;
             case 'table':
-              return <TableElement key={idx} columns={item.columns} rows={item.rows} />;
+              return <TableElement key={idx} columns={item.columns} rows={item.rows} style={item.style} />;
             case 'image':
-              return <ImageElement key={idx} url={item.url} />;
+              return <ImageElement key={idx} url={item.url} style={item.style} />;
             case 'video':
-              return <VideoElement key={idx} url={item.url} />;
+              return <VideoElement key={idx} url={item.url} style={item.style} />;
             case 'audio':
-              return <AudioElement key={idx} url={item.url} />;
+              return <AudioElement key={idx} url={item.url} style={item.style} />;
             case 'button':
-              return <ButtonElement key={idx} item={item} showNote={showNote} />;
+              return <ButtonElement key={idx} item={item} showNote={showNote} style={item.style} />;
             case 'panel':
               return (
                 <div key={idx} className={styles.nestedPanelContainer}>
@@ -127,6 +128,7 @@ const AggregationPanel = ({
                     depth={depth + 1}
                     cloudCodeFunction={item.cloudCodeFunction}
                     panelTitle={item.title}
+                    style={item.style}
                   />
                 </div>
               );
@@ -144,6 +146,7 @@ const AggregationPanel = ({
         <div
           className={`${styles.nestedPanelHeader} ${isExpanded ? styles.expanded : ''}`}
           onClick={handleToggle}
+          style={style}
         >
           <span className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}>
             {panelTitle}
@@ -181,7 +184,7 @@ const AggregationPanel = ({
 
   return (
     <div className={styles.aggregationPanel}>
-      {isLoading ? (
+      {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />
         </div>
