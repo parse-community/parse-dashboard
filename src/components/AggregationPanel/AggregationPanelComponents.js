@@ -10,7 +10,7 @@ export const TextElement = ({ text }) => (
 
 // Key-Value Element Component
 export const KeyValueElement = ({ item }) => (
-  <div className={styles.keyValue}>
+  <div className={styles.keyValue} style={{'--fontColor': item.fontColor || undefined, '--backgroundColor': item.backgroundColor || undefined }}>
     {item.key}:
     {item.url ? <a href={item.url} target="_blank">{item.value}</a> : <span>{item.value}</span>}
   </div>
@@ -89,7 +89,7 @@ export const ButtonElement = ({ item, showNote }) => {
 
   return (
     <div className={styles.buttonContainer}>
-      <button onClick={handleClick} className={styles.button}>
+      <button onClick={handleClick} className={styles.button} style={{'--fontColor': item.fontColor || undefined, '--backgroundColor': item.backgroundColor || undefined , '--onhoverBackgroundColor' : item.onhoverBackgroundColor || undefined}}>
         {item.text}
       </button>
     </div>

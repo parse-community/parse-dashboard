@@ -5,8 +5,8 @@
     margin-top: 0;
     padding: 8px;
     padding-left: 10px;
-    background-color: $blue;
-    color: $white;
+    background-color: var(--backgroundColor, $blue);  
+    color: var(--fontColor, $white);                
 }
 
 .segmentItems {
@@ -24,6 +24,8 @@
     font-size: 14px;
     display: flex;
     gap: 10px;
+    background-color: var(--backgroundColor, inherit); 
+    color: var(--fontColor, inherit);     
 }
 
 .video {
@@ -66,10 +68,10 @@
     text-overflow: ellipsis;
     cursor: pointer;
     margin-bottom: 15px;
-    background-color: $blue;
+    background-color:var(--backgroundColor, $blue);  
     padding: 3px 13px;
     border: none;
-    color: $white;
+    color:var(--fontColor, $white);    
     line-height: 28px;
     outline: 0;
     text-decoration: none;
@@ -78,7 +80,7 @@
     font-size: 14px;
     &:hover,
     &:focus {
-        background-color: $darkBlue;
+        background-color: var(--onhoverBackgroundColor, $blue); 
     }
 }
 

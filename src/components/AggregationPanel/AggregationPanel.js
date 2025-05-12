@@ -47,7 +47,7 @@ const AggregationPanel = ({
       ) : shouldShowAggregatedData ? (
         data.panel.segments.map((segment, index) => (
           <div key={index}>
-            <h2 className={styles.heading}>{segment.title}</h2>
+            <h2 className={styles.heading} style={{'--fontColor': segment.titleFontColor || undefined, '--backgroundColor': segment.titleBackgroundColor || undefined }}>{segment.title}</h2>
             <div className={styles.segmentItems}>
               {segment.items.map((item, idx) => {
                 switch (item.type) {
