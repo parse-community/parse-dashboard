@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs');
 const csrf = require('csurf');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const OTPAuth = require('otpauth')
+const OTPAuth = require('otpauth');
+const session = require('express-session');
 
 /**
  * Constructor for Authentication class
@@ -55,34 +56,46 @@ function initialize(app, options) {
 
   const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
+
   app.use(require('connect-flash')());
   app.use(require('body-parser').urlencoded({ extended: true }));
-  app.use(require('cookie-session')({
-    key    : 'parse_dash',
-    secret : cookieSessionSecret,
-    maxAge : cookieSessionMaxAge
+
+  app.use(session({
+    name: 'parse_dash',
+    secret: cookieSessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: cookieSessionMaxAge,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    }
   }));
+
   app.use(passport.initialize());
   app.use(passport.session());
 
   app.post('/login',
     csrf(),
-    (req,res,next) => {
+    (req, res, next) => {
       let redirect = 'apps';
       if (req.body.redirect) {
-        redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
+        redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect;
       }
       return passport.authenticate('local', {
         successRedirect: `${self.mountPath}${redirect}`,
         failureRedirect: `${self.mountPath}login${req.body.redirect ? `?redirect=${req.body.redirect}` : ''}`,
-        failureFlash : true
-      })(req, res, next)
+        failureFlash: true
+      })(req, res, next);
     },
   );
 
-  app.get('/logout', function(req, res){
-    req.logout();
-    res.redirect(`${self.mountPath}login`);
+  app.get('/logout', function(req, res, next) {
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect(`${self.mountPath}login`);
+    });
   });
 }
 
