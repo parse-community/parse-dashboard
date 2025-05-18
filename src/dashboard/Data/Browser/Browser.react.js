@@ -1070,11 +1070,11 @@ class Browser extends DashboardView {
 
   saveFilters(filters, name, relativeDate) {
     const jsonFilters = filters.toJSON();
-    if (relativeDate) {
+    if (relativeDate && jsonFilters?.length) {
       for (let i = 0; i < jsonFilters.length; i++) {
         const filter = jsonFilters[i];
         const compareTo = filter.get('compareTo');
-        if (compareTo.__type === 'Date') {
+        if (compareTo?.__type === 'Date') {
           compareTo.__type = 'RelativeDate';
           const now = new Date();
           const date = new Date(compareTo.iso);
