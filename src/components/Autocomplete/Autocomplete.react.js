@@ -260,7 +260,7 @@ export default class Autocomplete extends Component {
         active: true,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: filteredSuggestions[activeSuggestion],
+        userInput: filteredSuggestions[activeSuggestion] || userInput,
       });
     } else if (e.keyCode === 9) {
       // Tab
