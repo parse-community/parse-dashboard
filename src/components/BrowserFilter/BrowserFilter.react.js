@@ -195,7 +195,7 @@ export default class BrowserFilter extends React.Component {
                       />
                     }
                   />
-                {hasDateState &&
+                  {hasDateState &&
                   <Field
                     label={<Label text="Relative dates" />}
                     input={
@@ -204,9 +204,9 @@ export default class BrowserFilter extends React.Component {
                         onChange={checked => this.setState({ relativeDates: checked })}
                         className={styles.checkbox}
                       />
-                      }
+                    }
                   />
-                }
+                  }
                 </>
               )}
 

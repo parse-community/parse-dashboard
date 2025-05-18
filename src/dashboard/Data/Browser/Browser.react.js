@@ -1078,7 +1078,7 @@ class Browser extends DashboardView {
           compareTo.__type = 'RelativeDate';
           const now = new Date();
           const date = new Date(compareTo.iso);
-          const diff = now.getTime() - date.getTime();
+          const diff = date.getTime() - now.getTime();
           compareTo.value = Math.floor(diff / 1000);
           delete compareTo.iso;
           filter.set('compareTo', compareTo);
