@@ -27,7 +27,7 @@ const getPositionToFitVisibleScreen = (ref, offset = 0, mainItemCount = 0, subIt
     const projectedTop = elBox.top + y + offset;
     const projectedBottom = projectedTop + elBox.height;
 
-    const shouldApplyOffset = subItemCount > mainItemCount;
+    const shouldApplyOffset = mainItemCount === 0 || subItemCount > mainItemCount;
     if (shouldApplyOffset && projectedTop >= upperLimit && projectedBottom <= lowerLimit) {
       y += offset;
     }
@@ -36,7 +36,10 @@ const getPositionToFitVisibleScreen = (ref, offset = 0, mainItemCount = 0, subIt
     if (prevEl) {
       const prevElBox = prevEl.getBoundingClientRect();
       const prevElStyle = window.getComputedStyle(prevEl);
-      const prevElTop = parseInt(prevElStyle.top, 10);
+      const rawTop = prevElStyle.top;
+
+      const parsedTop = parseInt(rawTop, 10);
+      const prevElTop = Number.isFinite(parsedTop) ? parsedTop : prevElBox.top;
 
       if (!shouldApplyOffset) {
         y = prevElTop + offset;
@@ -65,7 +68,7 @@ const MenuSection = ({ level, items, path, setPath, hide, parentItemCount = 0 })
       items.length
     );
     newPosition && setPosition(newPosition);
-  }, [sectionRef]);
+  }, [sectionRef, path, level, items.length, parentItemCount]);
 
   const style = position
     ? {
