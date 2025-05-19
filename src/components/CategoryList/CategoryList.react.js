@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import styles from 'components/CategoryList/CategoryList.scss';
+import { CurrentApp } from 'context/currentApp';
+import generatePath from 'lib/generatePath';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import styles from 'components/CategoryList/CategoryList.scss';
 import { Link } from 'react-router-dom';
-import generatePath from 'lib/generatePath';
-import { CurrentApp } from 'context/currentApp';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;
@@ -122,7 +122,7 @@ export default class CategoryList extends React.Component {
           return (
             <div key={id}>
               <div className={styles.link}>
-                <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
+                <Link title={c.name} to={{ pathname: link }} className={className} key={id} onClick={() => this.props.classClicked()}>
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>

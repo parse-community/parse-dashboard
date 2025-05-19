@@ -1,3 +1,80 @@
+# [7.2.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.1...7.2.0-alpha.2) (2025-05-09)
+
+
+### Bug Fixes
+
+* Pagination does not reset to page 1 when clicking on class or filter ([#2798](https://github.com/parse-community/parse-dashboard/issues/2798)) ([29d1447](https://github.com/parse-community/parse-dashboard/commit/29d1447509db74c2ddc0c7f01a1cb7c7cd8573ff))
+
+# [7.2.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.1.1-alpha.3...7.2.0-alpha.1) (2025-05-06)
+
+
+### Features
+
+* Add custom CSS styling for info panel items ([#2788](https://github.com/parse-community/parse-dashboard/issues/2788)) ([f031e5d](https://github.com/parse-community/parse-dashboard/commit/f031e5d4fa509c9fe098d0a6c77e960f79536334))
+
+## [7.1.1-alpha.3](https://github.com/parse-community/parse-dashboard/compare/7.1.1-alpha.2...7.1.1-alpha.3) (2025-05-03)
+
+
+### Bug Fixes
+
+* Selecting a saved filter in data browser may highlight a different filter ([#2783](https://github.com/parse-community/parse-dashboard/issues/2783)) ([4c6e853](https://github.com/parse-community/parse-dashboard/commit/4c6e853f4aa660a8dab61f349f8ccf70572ab8ca))
+
+## [7.1.1-alpha.2](https://github.com/parse-community/parse-dashboard/compare/7.1.1-alpha.1...7.1.1-alpha.2) (2025-05-03)
+
+
+### Bug Fixes
+
+* Data browser table shows loading indicator when info panel is loading ([#2782](https://github.com/parse-community/parse-dashboard/issues/2782)) ([da57e5e](https://github.com/parse-community/parse-dashboard/commit/da57e5ea5ec77abc1bbd4d97ba3a5a30cd82e4a7))
+
+## [7.1.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.1.0...7.1.1-alpha.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* Saving new filter in data browser overwrites filters added in other dashboard instances ([#2769](https://github.com/parse-community/parse-dashboard/issues/2769)) ([46bc154](https://github.com/parse-community/parse-dashboard/commit/46bc154cc008c2d8f8d8248e52ec06b9e64cb779))
+
+# [7.1.0-alpha.12](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.11...7.1.0-alpha.12) (2025-04-29)
+
+
+### Bug Fixes
+
+* Clicking on pointer in data browser when using pagination does not reset to first page ([#2767](https://github.com/parse-community/parse-dashboard/issues/2767)) ([ab512e5](https://github.com/parse-community/parse-dashboard/commit/ab512e52d137cdb30167ece53a9ce12c38f5d155))
+
+# [7.1.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.10...7.1.0-alpha.11) (2025-04-28)
+
+
+### Bug Fixes
+
+* Data loading indicator not showing when using pagination ([#2768](https://github.com/parse-community/parse-dashboard/issues/2768)) ([62d7aec](https://github.com/parse-community/parse-dashboard/commit/62d7aec3c43c634f8dc632ef7a563cfdad5cd773))
+
+# [7.1.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.9...7.1.0-alpha.10) (2025-04-17)
+
+
+### Bug Fixes
+
+* Data browser filters "key exists" and "key does not exist" not working ([#2762](https://github.com/parse-community/parse-dashboard/issues/2762)) ([099eca3](https://github.com/parse-community/parse-dashboard/commit/099eca30be021c6466e4f5279ebd2e6f5cd1c1c3))
+
+# [7.1.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.8...7.1.0-alpha.9) (2025-04-17)
+
+
+### Features
+
+* Display filter list in data browser sorted alphabetically ([#2761](https://github.com/parse-community/parse-dashboard/issues/2761)) ([0209a0d](https://github.com/parse-community/parse-dashboard/commit/0209a0d78a3864ba059444ec5eb4a6d00a0430f4))
+
+# [7.1.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.7...7.1.0-alpha.8) (2025-04-17)
+
+
+### Bug Fixes
+
+* Data browser filters "key exists" and "key does not exist" not working ([#2760](https://github.com/parse-community/parse-dashboard/issues/2760)) ([0691b3c](https://github.com/parse-community/parse-dashboard/commit/0691b3cf30a77421e17299935880c54f9c8c9c32))
+
+# [7.1.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.6...7.1.0-alpha.7) (2025-04-17)
+
+
+### Bug Fixes
+
+* Dashboard crashes on login due to `passport` upgrade ([#2758](https://github.com/parse-community/parse-dashboard/issues/2758)) ([ee74321](https://github.com/parse-community/parse-dashboard/commit/ee743210f67dd9e206e6302f57a5d025099be0b4))
+
 # [7.1.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.1.0-alpha.5...7.1.0-alpha.6) (2025-04-13)
 
 
