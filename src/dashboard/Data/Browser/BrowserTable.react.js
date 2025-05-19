@@ -6,16 +6,16 @@
  * the root directory of this source tree.
  */
 import BrowserRow from 'components/BrowserRow/BrowserRow.react';
+import Button from 'components/Button/Button.react';
 import DataBrowserHeaderBar from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
-import Editor from 'dashboard/Data/Browser/Editor.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
+import { CurrentApp } from 'context/currentApp';
+import styles from 'dashboard/Data/Browser/Browser.scss';
+import Editor from 'dashboard/Data/Browser/Editor.react';
 import Parse from 'parse';
 import encode from 'parse/lib/browser/encode';
 import React from 'react';
-import styles from 'dashboard/Data/Browser/Browser.scss';
-import Button from 'components/Button/Button.react';
-import { CurrentApp } from 'context/currentApp';
 
 const ROW_HEIGHT = 30;
 
@@ -560,7 +560,7 @@ export default class BrowserTable extends React.Component {
           onResize={this.props.handleResize}
           onAddColumn={this.props.onAddColumn}
           preventSchemaEdits={this.context.preventSchemaEdits}
-          isDataLoaded={!this.props.isLoading}
+          isDataLoaded={!!this.props.data}
           setSelectedObjectId={this.props.setSelectedObjectId}
           setCurrent={this.props.setCurrent}
         />

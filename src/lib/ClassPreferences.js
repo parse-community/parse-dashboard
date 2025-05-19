@@ -1,19 +1,13 @@
 const VERSION = 1; // In case we ever need to invalidate these
-const cache = {};
 export function updatePreferences(prefs, appId, className) {
   try {
     localStorage.setItem(path(appId, className), JSON.stringify(prefs));
   } catch {
     // Fails in Safari private browsing
   }
-  cache[appId] = cache[appId] || {};
-  cache[appId][className] = prefs;
 }
 
 export function getPreferences(appId, className) {
-  if (cache[appId] && cache[appId][className]) {
-    return cache[appId][className];
-  }
   let entry;
   try {
     entry =
@@ -29,10 +23,7 @@ export function getPreferences(appId, className) {
     return null;
   }
   try {
-    const prefs = JSON.parse(entry);
-    cache[appId] = cache[appId] || {};
-    cache[appId][className] = prefs;
-    return prefs;
+    return JSON.parse(entry);
   } catch {
     return null;
   }

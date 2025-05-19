@@ -9,8 +9,9 @@
 'use strict'
 const CLIHelper = require('./CLIHelper.js');
 const startServer = require('./server');
+const { Command } = require('commander');
 
-const program = require('commander');
+const program = new Command();
 program.option('--appId [appId]', 'the app Id of the app you would like to manage.');
 program.option('--masterKey [masterKey]', 'the master key of the app you would like to manage.');
 program.option('--masterKeyTtl [masterKeyTtl]', 'the master key ttl of the app you would like to manage.');
