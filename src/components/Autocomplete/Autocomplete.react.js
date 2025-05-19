@@ -251,10 +251,17 @@ export default class Autocomplete extends Component {
     // Enter
     const { userInput } = this.state;
 
-    if (e.keyCode === 13) {
-      if (userInput && userInput.length > 0) {
+    if (e.keyCode === 13 || e.key === 'Enter') {
+      if (userInput && userInput.length > 0 && this.props.onSubmit) {
         this.props.onSubmit(userInput);
       }
+
+      this.setState({
+        active: true,
+        activeSuggestion: 0,
+        showSuggestions: false,
+        userInput: filteredSuggestions[activeSuggestion] || userInput,
+      });
     } else if (e.keyCode === 9) {
       // Tab
       // do not type it

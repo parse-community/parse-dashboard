@@ -1,3 +1,10 @@
+# [7.2.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.2...7.2.0-alpha.3) (2025-05-19)
+
+
+### Features
+
+* Keyboard Enter key can be used to select item in data browser filter dialog field dropdown ([#2771](https://github.com/parse-community/parse-dashboard/issues/2771)) ([dc14710](https://github.com/parse-community/parse-dashboard/commit/dc14710b63b0dc79ae52b322c683204941c4cb11))
+
 # [7.2.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.1...7.2.0-alpha.2) (2025-05-09)
 
 
