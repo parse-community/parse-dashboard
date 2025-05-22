@@ -21,6 +21,7 @@ import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
 import { dateStringUTC } from 'lib/DateUtils';
+import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import { CurrentApp } from 'context/currentApp';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
@@ -222,19 +223,8 @@ export default class ConfigDialog extends React.Component {
       this.setState({ selectedIndex: index, value });
     };
 
-    return (
-      <Modal
-        type={Modal.Types.INFO}
-        title={newParam ? 'New parameter' : 'Edit parameter'}
-        icon="gear-solid"
-        iconSize={30}
-        subtitle={'Dynamically configure parts of your app'}
-        disabled={!this.valid()}
-        confirmText={newParam ? 'Create' : 'Save'}
-        cancelText="Cancel"
-        onCancel={this.props.onCancel}
-        onConfirm={this.submit.bind(this)}
-      >
+    const dialogContent = (
+      <div>
         <Field
           label={<Label text="Parameter Name" description="A unique identifier for this value" />}
           input={
@@ -305,6 +295,25 @@ export default class ConfigDialog extends React.Component {
             className={styles.addColumnToggleWrapper}
           />
         )}
+      </div>
+    );
+
+    return (
+      <Modal
+        type={Modal.Types.INFO}
+        title={newParam ? 'New parameter' : 'Edit parameter'}
+        icon="gear-solid"
+        iconSize={30}
+        subtitle={'Dynamically configure parts of your app'}
+        disabled={!this.valid() || this.props.loading}
+        confirmText={newParam ? 'Create' : 'Save'}
+        cancelText="Cancel"
+        onCancel={this.props.onCancel}
+        onConfirm={this.submit.bind(this)}
+      >
+        <LoaderContainer loading={this.props.loading}>
+          {dialogContent}
+        </LoaderContainer>
       </Modal>
     );
   }

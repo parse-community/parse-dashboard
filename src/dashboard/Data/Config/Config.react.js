@@ -93,6 +93,7 @@ class Config extends TableView {
           value={this.state.modalValue}
           masterKeyOnly={this.state.modalMasterKeyOnly}
           parseServerVersion={this.context.serverInfo?.parseServerVersion}
+          loading={this.state.loading}
         />
       );
     } else if (this.state.showDeleteParameterDialog) {
@@ -272,77 +273,93 @@ class Config extends TableView {
   }
 
   async saveParam({ name, value, type, masterKeyOnly, override }) {
-    const cachedParams = this.cacheData.get('params');
-    const cachedValue = cachedParams.get(name);
+    try {
+      this.setState({ loading: true });
+      
+      const fetchedParams = this.props.config.data.get('params');
+      const currentValue = fetchedParams.get(name);
+      await this.props.config.dispatch(ActionTypes.FETCH);
+      const fetchedParamsAfter = this.props.config.data.get('params');
+      const currentValueAfter = fetchedParamsAfter.get(name);
 
-    await this.props.config.dispatch(ActionTypes.FETCH);
-    const fetchedParams = this.props.config.data.get('params');
+      if (currentValue !== currentValueAfter && !override) {
+        this.setState({
+          confirmModalOpen: true,
+          modalOpen: false,
+          loading: false,
+        });
+        this.confirmData = {
+          name,
+          value,
+          type,
+          masterKeyOnly,
+        };
+        return;
+      }
 
-    if (cachedValue !== fetchedParams.get(name) && !override) {
-      this.setState({
-        confirmModalOpen: true,
-        modalOpen: false,
-      });
-      this.confirmData = {
-        name,
-        value,
-        type,
-        masterKeyOnly,
-      };
-      return;
-    }
-
-    this.props.config
-      .dispatch(ActionTypes.SET, {
+      await this.props.config.dispatch(ActionTypes.SET, {
         param: name,
         value: value,
         masterKeyOnly: masterKeyOnly,
-      })
-      .then(
-        () => {
-          this.setState({ modalOpen: false });
-          const limit = this.context.cloudConfigHistoryLimit;
-          const applicationId = this.context.applicationId;
-          let transformedValue = value;
-          if (type === 'Date') {
-            transformedValue = { __type: 'Date', iso: value };
-          }
-          if (type === 'File') {
-            transformedValue = { name: value._name, url: value._url };
-          }
-          const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-          if (!configHistory) {
-            localStorage.setItem(
-              `${applicationId}_configHistory`,
-              JSON.stringify({
-                [name]: [
-                  {
-                    time: new Date(),
-                    value: transformedValue,
-                  },
-                ],
-              })
-            );
-          } else {
-            const oldConfigHistory = JSON.parse(configHistory);
-            localStorage.setItem(
-              `${applicationId}_configHistory`,
-              JSON.stringify({
-                ...oldConfigHistory,
-                [name]: !oldConfigHistory[name]
-                  ? [{ time: new Date(), value: transformedValue }]
-                  : [
-                    { time: new Date(), value: transformedValue },
-                    ...oldConfigHistory[name],
-                  ].slice(0, limit || 100),
-              })
-            );
-          }
-        },
-        () => {
-          // Catch the error
-        }
+      });
+
+      // Update the cached data after successful save
+      const params = this.cacheData.get('params');
+      params.set(name, value);
+      if (masterKeyOnly) {
+        const masterKeyOnlyParams = this.cacheData.get('masterKeyOnly') || new Map();
+        masterKeyOnlyParams.set(name, masterKeyOnly);
+        this.cacheData.set('masterKeyOnly', masterKeyOnlyParams);
+      }
+
+      this.setState({ modalOpen: false });
+      
+      // Update config history in localStorage
+      const limit = this.context.cloudConfigHistoryLimit;
+      const applicationId = this.context.applicationId;
+      let transformedValue = value;
+      
+      if (type === 'Date') {
+        transformedValue = { __type: 'Date', iso: value };
+      }
+      if (type === 'File') {
+        transformedValue = { name: value._name, url: value._url };
+      }
+
+      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+      const newHistoryEntry = {
+        time: new Date(),
+        value: transformedValue,
+      };
+
+      if (!configHistory) {
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            [name]: [newHistoryEntry],
+          })
+        );
+      } else {
+        const oldConfigHistory = JSON.parse(configHistory);
+        const updatedHistory = !oldConfigHistory[name]
+          ? [newHistoryEntry]
+          : [newHistoryEntry, ...oldConfigHistory[name]].slice(0, limit || 100);
+
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            ...oldConfigHistory,
+            [name]: updatedHistory,
+          })
+        );
+      }
+    } catch (error) {
+      this.context.showError?.(
+        `Failed to save parameter: ${error.message || 'Unknown error occurred'}`
       );
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   deleteParam(name) {
