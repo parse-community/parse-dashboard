@@ -275,7 +275,7 @@ class Config extends TableView {
   async saveParam({ name, value, type, masterKeyOnly, override }) {
     try {
       this.setState({ loading: true });
-      
+
       const fetchedParams = this.props.config.data.get('params');
       const currentValue = fetchedParams.get(name);
       await this.props.config.dispatch(ActionTypes.FETCH);
@@ -313,12 +313,12 @@ class Config extends TableView {
       }
 
       this.setState({ modalOpen: false });
-      
+
       // Update config history in localStorage
       const limit = this.context.cloudConfigHistoryLimit;
       const applicationId = this.context.applicationId;
       let transformedValue = value;
-      
+
       if (type === 'Date') {
         transformedValue = { __type: 'Date', iso: value };
       }
