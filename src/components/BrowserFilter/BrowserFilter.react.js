@@ -65,6 +65,7 @@ export default class BrowserFilter extends React.Component {
       name: '',
       confirmName: false,
       editMode: this.props.filters.size === 0,
+      relativeDates: false, // Reset relative dates state when opening/closing
     }));
     this.props.setCurrent(null);
   }
