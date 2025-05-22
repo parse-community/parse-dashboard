@@ -192,7 +192,7 @@ export default class DataBrowser extends React.Component {
 
     if (!this.state.isPanelVisible) {
       this.props.setAggregationPanelData({});
-      this.props.setLoading(false);
+      this.props.setLoadingInfoPanel(false);
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
@@ -587,7 +587,7 @@ export default class DataBrowser extends React.Component {
 
       if (newSelection.size > 1) {
         this.setCurrent(null);
-        this.props.setLoading(false);
+        this.props.setLoadingInfoPanel(false);
         this.setState({
           selectedCells: {
             list: newSelection,
