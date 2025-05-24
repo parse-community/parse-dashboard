@@ -16,7 +16,9 @@ const getPositionToFitVisibleScreen = (
   mainItemCount = 0,
   subItemCount = 0
 ) => {
-  if (!ref.current) return;
+  if (!ref.current) {
+    return;
+  }
 
   const elBox = ref.current.getBoundingClientRect();
   const menuHeight = elBox.height;
