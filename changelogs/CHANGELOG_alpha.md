@@ -1,3 +1,10 @@
+# [7.2.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.4...7.2.0-alpha.5) (2025-05-24)
+
+
+### Features
+
+* Add confirmation dialog before saving a Cloud Config parameter that has been modified since editing it ([#2770](https://github.com/parse-community/parse-dashboard/issues/2770)) ([adb9b5c](https://github.com/parse-community/parse-dashboard/commit/adb9b5c34c7e6cb02d63ad35fbcca8ea9544e36c))
+
 # [7.2.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.3...7.2.0-alpha.4) (2025-05-24)
 
 
