@@ -22,6 +22,7 @@ import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
+import equal from 'fast-deep-equal';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -281,8 +282,9 @@ class Config extends TableView {
       await this.props.config.dispatch(ActionTypes.FETCH);
       const fetchedParamsAfter = this.props.config.data.get('params');
       const currentValueAfter = fetchedParamsAfter.get(name);
+      const valuesAreEqual = equal(currentValue, currentValueAfter);
 
-      if (currentValue !== currentValueAfter && !override) {
+      if (!valuesAreEqual && !override) {
         this.setState({
           confirmModalOpen: true,
           modalOpen: false,
