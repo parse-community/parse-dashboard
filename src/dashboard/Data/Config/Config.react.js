@@ -127,7 +127,7 @@ class Config extends TableView {
           }}
         >
           <div className={[browserStyles.confirmConfig]}>
-            The parameter you are trying to save has been modified while you were editing it. This means your edit is not based on the current parameter value. Do you want to continue and overwrite the other changes?
+            This parameter changed while you were editing it. If you continue, the latest changes will be lost and replaced with your version. Do you want to proceed?
           </div>
         </Modal>
       );
