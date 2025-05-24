@@ -16,7 +16,9 @@ const getPositionToFitVisibleScreen = (
   mainItemCount = 0,
   subItemCount = 0
 ) => {
-  if (!ref.current) return;
+  if (!ref.current) {
+    return;
+  }
 
   const elBox = ref.current.getBoundingClientRect();
   const menuHeight = elBox.height;
@@ -73,12 +75,12 @@ const MenuSection = ({ level, items, path, setPath, hide, parentItemCount = 0 })
 
   const style = position
     ? {
-        transform: `translate(${position.x}px, ${position.y}px)`,
-        maxHeight: '80vh',
-        overflowY: 'auto',
-        opacity: 1,
-        position: 'absolute',
-      }
+      transform: `translate(${position.x}px, ${position.y}px)`,
+      maxHeight: '80vh',
+      overflowY: 'auto',
+      opacity: 1,
+      position: 'absolute',
+    }
     : {};
 
   return (
@@ -138,7 +140,9 @@ const ContextMenu = ({ x, y, items }) => {
     };
   }, []);
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   const getItemsFromLevel = level => {
     let result = items;
