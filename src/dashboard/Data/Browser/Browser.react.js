@@ -111,7 +111,7 @@ class Browser extends DashboardView {
       configData: {},
       classwiseCloudFunctions: {},
       AggregationPanelData: {},
-      isLoading: false,
+      isLoadingInfoPanel: false,
       errorAggregatedData: {},
     };
 
@@ -130,7 +130,7 @@ class Browser extends DashboardView {
     this.showExport = this.showExport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    this.setLoading = this.setLoading.bind(this);
+    this.setLoadingInfoPanel = this.setLoadingInfoPanel.bind(this);
     this.setErrorAggregatedData = this.setErrorAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
@@ -255,9 +255,9 @@ class Browser extends DashboardView {
     }
   }
 
-  setLoading(bool) {
+  setLoadingInfoPanel(bool) {
     this.setState({
-      isLoading: bool,
+      isLoadingInfoPanel: bool,
     });
   }
 
@@ -269,7 +269,7 @@ class Browser extends DashboardView {
 
   fetchAggregationPanelData(objectId, className, appId) {
     this.setState({
-      isLoading: true,
+      isLoadingInfoPanel: true,
     });
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
@@ -283,10 +283,10 @@ class Browser extends DashboardView {
     Parse.Cloud.run(cloudCodeFunction, params, options).then(
       result => {
         if (result && result.panel && result.panel && result.panel.segments) {
-          this.setState({ AggregationPanelData: result, isLoading: false });
+          this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false });
         } else {
           this.setState({
-            isLoading: false,
+            isLoadingInfoPanel: false,
             errorAggregatedData: 'Improper JSON format',
           });
           this.showNote(this.state.errorAggregatedData, true);
@@ -294,7 +294,7 @@ class Browser extends DashboardView {
       },
       error => {
         this.setState({
-          isLoading: false,
+          isLoadingInfoPanel: false,
           errorAggregatedData: error.message,
         });
         this.showNote(this.state.errorAggregatedData, true);
@@ -898,7 +898,6 @@ class Browser extends DashboardView {
 
   async fetchParseData(source, filters) {
     const { useMasterKey, skip, limit } = this.state;
-    this.setLoading(true);
     this.setState({
       data: null,
     })
@@ -931,8 +930,6 @@ class Browser extends DashboardView {
     this.setState({ isUnique, uniqueField });
 
     const data = await promise;
-
-    this.setLoading(false);
     return data;
   }
 
@@ -1121,7 +1118,7 @@ class Browser extends DashboardView {
         ordering: ordering,
         selection: {},
         errorAggregatedData: {},
-        isLoading: false,
+        isLoadingInfoPanel: false,
         AggregationPanelData: {},
       },
       () => this.fetchData(source, this.state.filters)
@@ -1876,7 +1873,8 @@ class Browser extends DashboardView {
         this.context.applicationId,
         row.name
       );
-      row.filters = filters;
+      // Set filters sorted alphabetically
+      row.filters = filters.sort((a, b) => a.name.localeCompare(b.name));
       allCategories.push(row);
     }
 
@@ -1885,8 +1883,28 @@ class Browser extends DashboardView {
         current={current}
         params={this.props.location?.search}
         linkPrefix={'browser/'}
-        filterClicked={url => this.props.navigate(generatePath(this.context, url))}
-        removeFilter={filter => this.removeFilter(filter)}
+        filterClicked={url => {
+          // Reset to page 1
+          this.setState({
+            skip: 0,
+          });
+
+          this.props.navigate(generatePath(this.context, url));
+        }}
+        removeFilter={filter => {
+          // Reset to page 1
+          this.setState({
+            skip: 0,
+          });
+
+          this.removeFilter(filter)
+        }}
+        classClicked={() => {
+          // Reset to page 1
+          this.setState({
+            skip: 0,
+          });
+        }}
         categories={allCategories}
       />
     );
@@ -2098,9 +2116,8 @@ class Browser extends DashboardView {
               classes={this.classes}
               classwiseCloudFunctions={this.state.classwiseCloudFunctions}
               callCloudFunction={this.fetchAggregationPanelData}
-              isLoadingCloudFunction={this.state.isLoading}
-              isLoading={this.state.isLoading}
-              setLoading={this.setLoading}
+              isLoadingCloudFunction={this.state.isLoadingInfoPanel}
+              setLoadingInfoPanel={this.setLoadingInfoPanel}
               AggregationPanelData={this.state.AggregationPanelData}
               setAggregationPanelData={this.setAggregationPanelData}
               setErrorAggregatedData={this.setErrorAggregatedData}

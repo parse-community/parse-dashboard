@@ -2,15 +2,15 @@ import React from 'react';
 import styles from './AggregationPanel.scss';
 
 // Text Element Component
-export const TextElement = ({ text }) => (
-  <div className="text-element">
+export const TextElement = ({ text, style}) => (
+  <div className="text-element" style={style}>
     <p>{text}</p>
   </div>
 );
 
 // Key-Value Element Component
-export const KeyValueElement = ({ item, appName }) => (
-  <div className={styles.keyValue}>
+export const KeyValueElement = ({ item, appName, style }) => (
+  <div className={styles.keyValue} style={style}>
     {item.key}:
     {item.url ? (
       <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank" rel="noreferrer">
@@ -23,9 +23,9 @@ export const KeyValueElement = ({ item, appName }) => (
 );
 
 // Table Element Component
-export const TableElement = ({ columns, rows }) => (
+export const TableElement = ({ columns, rows, style }) => (
   <div className="table-element">
-    <table>
+    <table style={style}>
       <thead>
         <tr>
           {columns.map((column, idx) => (
@@ -47,8 +47,8 @@ export const TableElement = ({ columns, rows }) => (
 );
 
 // Image Element Component
-export const ImageElement = ({ url }) => (
-  <div className="image-element">
+export const ImageElement = ({ url, style }) => (
+  <div className="image-element" style={style}>
     <a href={url} target="_blank" rel="noopener noreferrer">
       <img src={url} alt="Image" className={styles.image} />
     </a>
@@ -56,9 +56,9 @@ export const ImageElement = ({ url }) => (
 );
 
 // Video Element Component
-export const VideoElement = ({ url }) => (
+export const VideoElement = ({ url, style }) => (
   <div className="video-element">
-    <video controls className={styles.video}>
+    <video controls className={styles.video} style={style}>
       <source src={url} type="video/mp4" />
       Your browser does not support the video tag.
     </video>
@@ -66,9 +66,9 @@ export const VideoElement = ({ url }) => (
 );
 
 // Audio Element Component
-export const AudioElement = ({ url }) => (
+export const AudioElement = ({ url, style }) => (
   <div className="audio-element">
-    <audio controls className={styles.audio}>
+    <audio controls className={styles.audio} style={style}>
       <source src={url} type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
@@ -76,7 +76,7 @@ export const AudioElement = ({ url }) => (
 );
 
 // Button Element Component
-export const ButtonElement = ({ item, showNote }) => {
+export const ButtonElement = ({ item, showNote, style }) => {
   const handleClick = () => {
     fetch(item.action.url, {
       method: item.action.method,
@@ -95,7 +95,7 @@ export const ButtonElement = ({ item, showNote }) => {
 
   return (
     <div className={styles.buttonContainer}>
-      <button onClick={handleClick} className={styles.button}>
+      <button onClick={handleClick} className={styles.button} style={style}>
         {item.text}
       </button>
     </div>
