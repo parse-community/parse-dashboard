@@ -181,6 +181,16 @@ export default class ConfigDialog extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    // Update parameter value or masterKeyOnly if they have changed
+    if (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly) {
+      this.setState({
+        value: this.props.value,
+        masterKeyOnly: this.props.masterKeyOnly,
+      });
+    }
+  }
+
   render() {
     const newParam = !this.props.param;
     const typeDropdown = (

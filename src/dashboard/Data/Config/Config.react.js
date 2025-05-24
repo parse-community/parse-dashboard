@@ -58,12 +58,14 @@ class Config extends TableView {
     this.loadData();
   }
 
-  loadData() {
+  async loadData() {
     this.setState({ loading: true });
-    this.props.config.dispatch(ActionTypes.FETCH).finally(() => {
+    try {
+      await this.props.config.dispatch(ActionTypes.FETCH);
       this.cacheData = new Map(this.props.config.data);
+    } finally {
       this.setState({ loading: false });
-    });
+    }
   }
 
   renderToolbar() {
@@ -133,8 +135,8 @@ class Config extends TableView {
     return extras;
   }
 
-  renderRow(data) {
-    let value = data.value;
+  parseValueForModal(dataValue) {
+    let value = dataValue;
     let modalValue = value;
     let type = typeof value;
 
@@ -149,11 +151,11 @@ class Config extends TableView {
       } else if (value instanceof Parse.GeoPoint) {
         type = 'GeoPoint';
         value = `(${value.latitude}, ${value.longitude})`;
-        modalValue = data.value.toJSON();
-      } else if (data.value instanceof Parse.File) {
+        modalValue = dataValue.toJSON();
+      } else if (dataValue instanceof Parse.File) {
         type = 'File';
         value = (
-          <a target="_blank" href={data.value.url()} rel="noreferrer">
+          <a target="_blank" href={dataValue.url()} rel="noreferrer">
             Open in new window
           </a>
         );
@@ -168,14 +170,53 @@ class Config extends TableView {
       }
       type = type.substr(0, 1).toUpperCase() + type.substr(1);
     }
-    const openModal = () =>
+
+    return {
+      value: value,
+      modalValue: modalValue,
+      type: type,
+    };
+  }
+
+  renderRow(data) {
+    // Parse modal data
+    const { value, modalValue, type } = this.parseValueForModal(data.value);
+
+    /**
+     * Opens the modal dialog to edit the Config parameter.
+     */
+    const openModal = async () => {
+
+      // Show dialog
       this.setState({
+        loading: true,
         modalOpen: true,
         modalParam: data.param,
         modalType: type,
         modalValue: modalValue,
         modalMasterKeyOnly: data.masterKeyOnly,
       });
+
+      // Fetch config data
+      await this.loadData();
+
+      // Get latest param values
+      const fetchedParams = this.props.config.data.get('params');
+      const fetchedValue = fetchedParams.get(this.state.modalParam);
+      const fetchedMasterKeyOnly = this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
+
+      // Parse fetched data
+      const { modalValue: fetchedModalValue } = this.parseValueForModal(fetchedValue);
+
+      // Update dialog
+      this.setState({
+        modalValue: fetchedModalValue,
+        modalMasterKeyOnly: fetchedMasterKeyOnly,
+        loading: false,
+      });
+    };
+
+    // Define column styles
     const columnStyleLarge = { width: '30%', cursor: 'pointer' };
     const columnStyleSmall = { width: '15%', cursor: 'pointer' };
 
