@@ -1098,7 +1098,7 @@ class Browser extends DashboardView {
     if (!preferences.filters.includes(_filters)) {
       preferences.filters.push({
         name,
-        id: Math.random().toString(36).substring(2, 15),
+        id: crypto.randomUUID(),
         filter: _filters,
       });
     }
