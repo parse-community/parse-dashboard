@@ -1904,30 +1904,39 @@ class Browser extends DashboardView {
         params={this.props.location?.search}
         linkPrefix={'browser/'}
         filterClicked={url => {
-          // Reset to page 1
-          this.setState({
-            skip: 0,
-          });
-
+          this.resetPage();
           this.props.navigate(generatePath(this.context, url));
         }}
         removeFilter={filter => {
-          // Reset to page 1
-          this.setState({
-            skip: 0,
-          });
-
+          this.resetPage();
           this.removeFilter(filter)
         }}
         classClicked={() => {
-          // Reset to page 1
-          this.setState({
-            skip: 0,
-          });
+          this.resetPage();
         }}
         categories={allCategories}
       />
     );
+  }
+
+  /**
+   * Resets the page to the first page of results and scrolls to the top.
+   */
+  resetPage() {
+    // Unselect any currently selected cell and cancel editing action
+    this.dataBrowserRef.current.setCurrent(null);
+    this.dataBrowserRef.current.setEditing(false);
+
+    // Scroll to top
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    // Reset pagination to page 1
+    this.setState({
+      skip: 0,
+    });
   }
 
   showNote(message, isError) {
