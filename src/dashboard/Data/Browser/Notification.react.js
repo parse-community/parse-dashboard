@@ -29,7 +29,6 @@ export default class Notification extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state.lastNote !== nextProps.note) {
-      clearTimeout(this.timeout);
       if (this.state.hiding) {
         this.setState({
           lastNote: nextProps.note,
@@ -46,6 +45,7 @@ export default class Notification extends React.Component {
     if (!nextProps.note) {
       return;
     }
+    clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.setState({ hiding: true });
       this.timeout = setTimeout(() => {
