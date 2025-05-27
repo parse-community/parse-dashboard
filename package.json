@@ -113,7 +113,7 @@
     "sass": "1.89.0",
     "sass-loader": "13.2.0",
     "semantic-release": "24.2.3",
-    "semver": "7.5.2",
+    "semver": "7.7.2",
     "style-loader": "3.3.1",
     "svg-prep": "1.0.4",
     "typescript": "5.8.2",
