@@ -1622,7 +1622,7 @@ class Browser extends DashboardView {
         totalErrorCount += batchErrorCount;
 
         if (objects.length > 1) {
-          this.showNote(`Ran script "${script.title}" on ${batch.length} object${batch.length > 0 ? 's' : ''} in batch ${batchCount}/${totalBatchCount} with ${batchErrorCount} errors.`, batchErrorCount > 0);
+          this.showNote(`Ran script "${script.title}" on ${batch.length} objects in batch ${batchCount}/${totalBatchCount} with ${batchErrorCount} errors.`, batchErrorCount > 0);
         }
       }
 
