@@ -36,7 +36,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "7.27.1",
-    "@babel/runtime-corejs3": "7.27.1",
+    "@babel/runtime-corejs3": "7.27.3",
     "bcryptjs": "3.0.2",
     "body-parser": "2.2.0",
     "commander": "13.1.0",
