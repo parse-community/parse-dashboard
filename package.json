@@ -79,7 +79,7 @@
     "@babel/core": "7.27.1",
     "@babel/eslint-parser": "7.27.1",
     "@babel/plugin-proposal-decorators": "7.27.1",
-    "@babel/plugin-transform-runtime": "7.27.1",
+    "@babel/plugin-transform-runtime": "7.27.3",
     "@babel/preset-env": "7.27.2",
     "@babel/preset-react": "7.27.1",
     "@eslint/compat": "1.2.9",
