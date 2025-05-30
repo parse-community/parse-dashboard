@@ -126,25 +126,26 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 
 ### Options
 
-| Parameter                              | Type                | Optional | Default | Example              | Description                                                                                                                                 |
-|----------------------------------------|---------------------|----------|---------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `apps`                                 | Array&lt;Object&gt; | no       | -       | `[{ ... }, { ... }]` | The apps that are configured for the dashboard.                                                                                             |
-| `apps.appId`                           | String                        | yes          | -           | `"myAppId"`            | The Application ID for your Parse Server instance.                                                                                          |
-| `apps.masterKey`                       | String \| Function         | yes          | -           | `"exampleMasterKey"`, `() => "exampleMasterKey"` | The master key for full access to Parse Server. It can be provided directly as a String or as a Function returning a String.        |
-| `apps.masterKeyTtl`                    | Number                        | no           | -           | `3600`                  | Time-to-live (TTL) for the master key in seconds. This defines how long the master key is cached before the `masterKey` function is re-triggered.                |
-| `apps.serverURL`                       | String                        | yes          | -           | `"http://localhost:1337/parse"` | The URL where your Parse Server is running.                                                                                                 |
-| `apps.appName`                         | String                        | no           | -           | `"MyApp"`              | The display name of the app in the dashboard.                                                                                               |
-| `infoPanel`                            | Array&lt;Object&gt; | yes      | -       | `[{ ... }, { ... }]` | The [info panel](#info-panel) configuration.                                                                                                |
-| `infoPanel[*].title`                   | String              | no       | -       | `User Details`       | The panel title.                                                                                                                            |
-| `infoPanel[*].classes`                 | Array&lt;String&gt; | no       | -       | `["_User"]`          | The classes for which the info panel should be displayed.                                                                                   |
-| `infoPanel[*].cloudCodeFunction`       | String              | no       | -       | `getUserDetails`     | The Cloud Code Function which received the selected object in the data browser and returns the response to be displayed in the info panel.  |
-| `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]` | The scripts that can be executed for that app.                                                                                              |
-| `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`      | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                   |
-| `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`          | The classes of Parse Objects for which the scripts can be executed.                                                                         |
-| `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`       | The name of the Parse Cloud Function to execute.                                                                                            |
-| `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`               | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately. |
-| `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`           | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                            |
-| `apps.cloudConfigHistoryLimit`         | Integer             | yes      | `100`   | `100`                | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`.       |
+| Parameter                              | Type                | Optional | Default | Example                                          | Description                                                                                                                                                                                                                           |
+|----------------------------------------|---------------------|----------|---------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `apps`                                 | Array&lt;Object&gt; | no       | -       | `[{ ... }, { ... }]`                             | The apps that are configured for the dashboard.                                                                                                                                                                                       |
+| `apps.appId`                           | String              | yes      | -       | `"myAppId"`                                      | The Application ID for your Parse Server instance.                                                                                                                                                                                    |
+| `apps.masterKey`                       | String \| Function  | yes      | -       | `"exampleMasterKey"`, `() => "exampleMasterKey"` | The master key for full access to Parse Server. It can be provided directly as a String or as a Function returning a String.                                                                                                          |
+| `apps.masterKeyTtl`                    | Number              | no       | -       | `3600`                                           | Time-to-live (TTL) for the master key in seconds. This defines how long the master key is cached before the `masterKey` function is re-triggered.                                                                                     |
+| `apps.serverURL`                       | String              | yes      | -       | `"http://localhost:1337/parse"`                  | The URL where your Parse Server is running.                                                                                                                                                                                           |
+| `apps.appName`                         | String              | no       | -       | `"MyApp"`                                        | The display name of the app in the dashboard.                                                                                                                                                                                         |
+| `infoPanel`                            | Array&lt;Object&gt; | yes      | -       | `[{ ... }, { ... }]`                             | The [info panel](#info-panel) configuration.                                                                                                                                                                                          |
+| `infoPanel[*].title`                   | String              | no       | -       | `User Details`                                   | The panel title.                                                                                                                                                                                                                      |
+| `infoPanel[*].classes`                 | Array&lt;String&gt; | no       | -       | `["_User"]`                                      | The classes for which the info panel should be displayed.                                                                                                                                                                             |
+| `infoPanel[*].cloudCodeFunction`       | String              | no       | -       | `getUserDetails`                                 | The Cloud Code Function which received the selected object in the data browser and returns the response to be displayed in the info panel.                                                                                            |
+| `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]`                             | The scripts that can be executed for that app.                                                                                                                                                                                        |
+| `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`                                  | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                                                                                                             |
+| `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`                                      | The classes of Parse Objects for which the scripts can be executed.                                                                                                                                                                   |
+| `apps.scripts.cloudCodeFunction`       | String              | no       | -       | `'deleteUser'`                                   | The name of the Parse Cloud Function to execute.                                                                                                                                                                                      |
+| `apps.scripts.executionBatchSize`      | Integer             | yes      | `1`     | `10`                                             | The batch size with which a script should be executed on all selected objects. For example, with 50 objects selected, a batch size of 10 means the script will run on 10 objects in parallel, running a total of 5 batches in serial. |
+| `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`                                           | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately.                                                                                           |
+| `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`                                       | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                                                                                                                      |
+| `apps.cloudConfigHistoryLimit`         | Integer             | yes      | `100`   | `100`                                            | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`.                                                                                                 |
 
 ### File
 
@@ -883,11 +884,13 @@ The Cloud Code Function receives the selected object in the payload and returns 
 
 The info panel can contain multiple segments to display different groups of information.
 
-| Parameter           | Value  | Optional | Description                                                                                                                            |
-|---------------------|--------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
-| `segments`          | Array  | No       | An ordered array of segments, where each segment represents a distinct group of items to display.                                      |
-| `segments[i].title` | String | No       | The title of the segment that will be displayed.                                                                                       |
-| `segments[i].items` | Array  | No       | An ordered array of items within the segment. Each item can be of different types, such as text, key-value pairs, tables, images, etc. |
+| Parameter                | Value  | Optional | Description                                                                                                                            |
+|--------------------------|--------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `segments`               | Array  | No       | An ordered array of segments, where each segment represents a distinct group of items to display.                                      |
+| `segments[i].title`      | String | No       | The title of the segment that will be displayed.                                                                                       |
+| `segments[i].items`      | Array  | No       | An ordered array of items within the segment. Each item can be of different types, such as text, key-value pairs, tables, images, etc. |
+| `segments[i].style`      | Object | Yes      | The CSS style definition for the segment.                                                                                              |
+| `segments[i].titleStyle` | Object | Yes      | The CSS style definition for the segment title.                                                                                        |
 
 Example:
 
@@ -897,6 +900,8 @@ Example:
     "segments": [
       {
         "title": "Purchases",
+        "style": { "backgroundColor": "lightgray", "font-size": "10px" },
+        "titleStyle": { "backgroundColor": "orange", "color": "white" },
         "items": [
           {
             "type": "text",
@@ -915,17 +920,19 @@ The items array can include various types of content such as text, key-value pai
 
 A simple text field.
 
-| Parameter | Value  | Optional | Description          |
-|-----------|--------|----------|----------------------|
-| `type`    | String | No       | Must be `"text"`.    |
-| `text`    | String | No       | The text to display. |
+| Parameter | Value  | Optional | Description               |
+|-----------|--------|----------|---------------------------|
+| `type`    | String | No       | Must be `"text"`.         |
+| `text`    | String | No       | The text to display.      |
+| `style`   | Object | Yes      | The CSS style definition. |
 
 Example:
 
 ```json
 {
   "type": "text",
-  "text": "This user has a high churn risk!"
+  "text": "This user has a high churn risk!",
+  "style": { "backgroundColor": "red" },
 }
 ```
 
@@ -940,6 +947,7 @@ A text item that consists of a key and a value. The value can optionally be link
 | `value`         | String  | -           | No       | The value text to display.                                                                                                                                                                              |
 | `url`           | String  | `undefined` | Yes      | The URL that will be opened in a new browser tab when clicking on the value text. It can be set to an absolute URL or a relative URL in which case the base URL is `<PROTOCOL>://<HOST>/<MOUNT_PATH>/`. |
 | `isRelativeUrl` | Boolean | `false`     | Yes      | Set this to `true` when linking to another dashboard page, in which case the base URL for the relative URL will be `<PROTOCOL>://<HOST>/<MOUNT_PATH>/apps/<APP_NAME>/`.                                 |
+| `style`         | Object  | -           | Yes      | The CSS style definition.                                                                                                                                                                               |
 
 Examples:
 
@@ -947,7 +955,8 @@ Examples:
 {
   "type": "keyValue",
   "key": "Lifetime purchase value",
-  "value": "$10k"
+  "value": "$10k",
+  "style": { "backgroundColor": "green" },
 }
 ```
 
@@ -997,6 +1006,7 @@ A table with columns and rows to display data in a structured format.
 | `columns[*].name` | String | No       | The name of the column to display.                                               |
 | `columns[*].type` | String | No       | The type of the column value (e.g., `"string"`, `"number"`).                     |
 | `rows`            | Array  | No       | The rows of data, where each row is an object containing values for each column. |
+| `style`           | Object | Yes      | The CSS style definition.                                                        |
 
 Example:
 
@@ -1022,7 +1032,8 @@ Example:
       "Name": "Bob",
       "Age": 40
     }
-  ]
+  ],
+  "style": { "backgroundColor": "lightGray" }
 }
 ```
 
@@ -1034,13 +1045,15 @@ An image to be displayed in the panel.
 |-----------|--------|----------|----------------------------------|
 | `type`    | String | No       | Must be `"image"`.               |
 | `url`     | String | No       | The URL of the image to display. |
+| `style`   | Object | Yes      | The CSS style definition.        |
 
 Example:
 
 ```json
 {
   "type": "image",
-  "url": "https://example.com/images?purchaseId=012345"
+  "url": "https://example.com/images?purchaseId=012345",
+  "style": { "backgroundColor": "white" }
 }
 ```
 
@@ -1052,13 +1065,15 @@ A video to be displayed in the panel.
 |-----------|--------|----------|----------------------------------|
 | `type`    | String | No       | Must be `"video"`.               |
 | `url`     | String | No       | The URL of the video to display. |
+| `style`   | Object | Yes      | The CSS style definition.        |
 
 Example:
 
 ```json
 {
   "type": "video",
-  "url": "https://example.com/video.mp4"
+  "url": "https://example.com/video.mp4",
+  "style": { "backgroundColor": "white" }
 }
 ```
 
@@ -1070,13 +1085,15 @@ An audio file to be played in the panel.
 |-----------|--------|----------|-------------------------------|
 | `type`    | String | No       | Must be `"audio"`.            |
 | `url`     | String | No       | The URL of the audio to play. |
+| `style`   | Object | Yes      | The CSS style definition.     |
 
 Example:
 
 ```json
 {
   "type": "audio",
-  "url": "https://example.com/audio.mp3"
+  "url": "https://example.com/audio.mp3",
+  "style": { "backgroundColor": "white" }
 }
 ```
 
@@ -1093,6 +1110,7 @@ A button that triggers an action when clicked.
 | `action.method`  | String | No       | The HTTP method to use for the action (e.g., `"POST"`). |
 | `action.headers` | Object | Yes      | Optional headers to include in the request.             |
 | `action.body`    | Object | Yes      | The body of the request in JSON format.                 |
+| `style`          | Object | Yes      | The CSS style definition.                               |
 
 Example:
 
@@ -1109,7 +1127,8 @@ Example:
     "body": {
       "key": "value"
     }
-  }
+  },
+  "style": { "backgroundColor": "pink", "color": "white" }
 }
 ```
 
@@ -1122,6 +1141,7 @@ A sub-panel whose data is loaded on-demand by expanding the item.
 | `type`              | String | No       | Must be `"infoPanel"`.                                                                                                                            |
 | `title`             | String | No       | The title to display in the expandable headline.                                                                                                  |
 | `cloudCodeFunction` | String | No       | The Cloud Code Function to call which receives the selected object in the data browser and returns the response to be displayed in the sub-panel. |
+| `style`             | Object | Yes      | The CSS style definition.                                                                                                                         |
 
 Example:
 
@@ -1129,7 +1149,8 @@ Example:
 {
   "type": "panel",
   "title": "Purchase History",
-  "cloudCodeFunction": "getUserPurchaseHistory"
+  "cloudCodeFunction": "getUserPurchaseHistory",
+  "style": { "backgroundColor": "lightGray" },
 }
 ```
 

@@ -1,0 +1,18 @@
+@import 'stylesheets/globals.scss';
+
+.footer {
+  position: absolute;
+  width: calc(100% - 300px);
+  bottom: 0;
+  gap: 10px;
+  padding: 0px 15px;
+  height: 36px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  font-size: 12px;
+  font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-top: 1px solid lightgrey;
+  background-color: #f1f5f9;
+}

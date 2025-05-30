@@ -41,9 +41,9 @@ import { Helmet } from 'react-helmet';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
+import BrowserFooter from './BrowserFooter.react';
 
 // The initial and max amount of rows fetched by lazy loading
-const MAX_ROWS_FETCHED = 200;
 const BROWSER_LAST_LOCATION = 'brower_last_location';
 
 @subscribeTo('Schema', 'schema')
@@ -54,6 +54,7 @@ class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser';
     this.noteTimeout = null;
+    const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
       showCreateClassDialog: false,
@@ -75,6 +76,8 @@ class Browser extends DashboardView {
       clp: {},
       filters: new List(),
       ordering: '-createdAt',
+      skip: 0,
+      limit: limit ? parseInt(limit) : 100,
       selection: {},
       exporting: false,
       exportingCount: 0,
@@ -108,7 +111,7 @@ class Browser extends DashboardView {
       configData: {},
       classwiseCloudFunctions: {},
       AggregationPanelData: {},
-      isLoading: false,
+      isLoadingInfoPanel: false,
       errorAggregatedData: {},
     };
 
@@ -127,7 +130,7 @@ class Browser extends DashboardView {
     this.showExport = this.showExport.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    this.setLoading = this.setLoading.bind(this);
+    this.setLoadingInfoPanel = this.setLoadingInfoPanel.bind(this);
     this.setErrorAggregatedData = this.setErrorAggregatedData.bind(this);
     this.toggleMasterKeyUsage = this.toggleMasterKeyUsage.bind(this);
     this.showAttachRowsDialog = this.showAttachRowsDialog.bind(this);
@@ -252,9 +255,9 @@ class Browser extends DashboardView {
     }
   }
 
-  setLoading(bool) {
+  setLoadingInfoPanel(bool) {
     this.setState({
-      isLoading: bool,
+      isLoadingInfoPanel: bool,
     });
   }
 
@@ -266,7 +269,7 @@ class Browser extends DashboardView {
 
   fetchAggregationPanelData(objectId, className, appId) {
     this.setState({
-      isLoading: true,
+      isLoadingInfoPanel: true,
     });
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
@@ -280,10 +283,10 @@ class Browser extends DashboardView {
     Parse.Cloud.run(cloudCodeFunction, params, options).then(
       result => {
         if (result && result.panel && result.panel && result.panel.segments) {
-          this.setState({ AggregationPanelData: result, isLoading: false });
+          this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false });
         } else {
           this.setState({
-            isLoading: false,
+            isLoadingInfoPanel: false,
             errorAggregatedData: 'Improper JSON format',
           });
           this.showNote(this.state.errorAggregatedData, true);
@@ -291,7 +294,7 @@ class Browser extends DashboardView {
       },
       error => {
         this.setState({
-          isLoading: false,
+          isLoadingInfoPanel: false,
           errorAggregatedData: error.message,
         });
         this.showNote(this.state.errorAggregatedData, true);
@@ -894,7 +897,10 @@ class Browser extends DashboardView {
   }
 
   async fetchParseData(source, filters) {
-    const { useMasterKey } = this.state;
+    const { useMasterKey, skip, limit } = this.state;
+    this.setState({
+      data: null,
+    })
     const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
@@ -904,8 +910,11 @@ class Browser extends DashboardView {
     } else {
       query.ascending(field);
     }
+    query.skip(skip);
+    query.limit(limit);
 
-    query.limit(MAX_ROWS_FETCHED);
+    localStorage?.setItem('browserLimit', limit);
+
     this.excludeFields(query, source);
     let promise = query.find({ useMasterKey });
     let isUnique = false;
@@ -943,7 +952,12 @@ class Browser extends DashboardView {
   }
 
   async fetchData(source, filters = new List()) {
+    this.loadingFilters = JSON.stringify(filters.toJSON());
     const data = await this.fetchParseData(source, filters);
+    if (this.loadingFilters !== JSON.stringify(filters.toJSON())) {
+      return;
+    }
+
     const filteredCounts = { ...this.state.filteredCounts };
     if (filters.size > 0) {
       if (this.state.isUnique) {
@@ -957,7 +971,7 @@ class Browser extends DashboardView {
     this.setState({
       data: data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.state.limit,
       filteredCounts: filteredCounts,
     });
   }
@@ -971,7 +985,7 @@ class Browser extends DashboardView {
       selection: {},
       data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.state.limit,
     });
   }
 
@@ -1024,7 +1038,7 @@ class Browser extends DashboardView {
       query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
       query.addDescending('createdAt');
     }
-    query.limit(MAX_ROWS_FETCHED);
+    query.limit(this.state.limit);
     this.excludeFields(query, source);
 
     const { useMasterKey } = this.state;
@@ -1035,7 +1049,7 @@ class Browser extends DashboardView {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState({ lastMax: this.state.lastMax + this.state.limit });
   }
 
   updateFilters(filters) {
@@ -1051,10 +1065,32 @@ class Browser extends DashboardView {
       // filters param change is making the fetch call
       this.props.navigate(generatePath(this.context, url));
     }
+
+    this.setState({
+      skip: 0,
+    });
   }
 
-  saveFilters(filters, name) {
-    const _filters = JSON.stringify(filters.toJSON());
+  saveFilters(filters, name, relativeDate) {
+    const jsonFilters = filters.toJSON();
+    if (relativeDate && jsonFilters?.length) {
+      for (let i = 0; i < jsonFilters.length; i++) {
+        const filter = jsonFilters[i];
+        const compareTo = filter.get('compareTo');
+        if (compareTo?.__type === 'Date') {
+          compareTo.__type = 'RelativeDate';
+          const now = new Date();
+          const date = new Date(compareTo.iso);
+          const diff = date.getTime() - now.getTime();
+          compareTo.value = Math.floor(diff / 1000);
+          delete compareTo.iso;
+          filter.set('compareTo', compareTo);
+          jsonFilters[i] = filter;
+        }
+      }
+    }
+
+    const _filters = JSON.stringify(jsonFilters);
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.params.className
@@ -1062,6 +1098,7 @@ class Browser extends DashboardView {
     if (!preferences.filters.includes(_filters)) {
       preferences.filters.push({
         name,
+        id: crypto.randomUUID(),
         filter: _filters,
       });
     }
@@ -1070,6 +1107,7 @@ class Browser extends DashboardView {
       this.context.applicationId,
       this.props.params.className
     );
+
     super.forceUpdate();
   }
 
@@ -1100,7 +1138,7 @@ class Browser extends DashboardView {
         ordering: ordering,
         selection: {},
         errorAggregatedData: {},
-        isLoading: false,
+        isLoadingInfoPanel: false,
         AggregationPanelData: {},
       },
       () => this.fetchData(source, this.state.filters)
@@ -1151,6 +1189,10 @@ class Browser extends DashboardView {
     this.props.navigate(
       generatePath(this.context, `browser/${className}?filters=${encodeURIComponent(filters)}`)
     );
+
+    this.setState({
+      skip: 0,
+    });
   }
 
   handlePointerCmdClick({ className, id, field = 'objectId' }) {
@@ -1302,7 +1344,7 @@ class Browser extends DashboardView {
           this.state.counts[className] = 0;
           this.setState({
             data: [],
-            lastMax: MAX_ROWS_FETCHED,
+            lastMax: this.state.limit,
             selection: {},
           });
         }
@@ -1362,7 +1404,7 @@ class Browser extends DashboardView {
 
               // If after deletion, the remaining elements on the table is lesser than the maximum allowed elements
               // we fetch more data to fill the table
-              if (this.state.data.length < MAX_ROWS_FETCHED) {
+              if (this.state.data.length < this.state.limit) {
                 this.prefetchData(this.props, this.context);
               } else {
                 this.forceUpdate();
@@ -1529,24 +1571,63 @@ class Browser extends DashboardView {
   }
 
   async confirmExecuteScriptRows(script) {
+    const batchSize = script.executionBatchSize || 1;
     try {
-      const objects = [];
-      Object.keys(this.state.selection).forEach(key =>
-        objects.push(Parse.Object.extend(this.props.params.className).createWithoutData(key))
+      const objects = Object.keys(this.state.selection).map(key =>
+        Parse.Object.extend(this.props.params.className).createWithoutData(key)
       );
-      for (const object of objects) {
-        const response = await Parse.Cloud.run(
-          script.cloudCodeFunction,
-          { object: object.toPointer() },
-          { useMasterKey: true }
+
+      let totalErrorCount = 0;
+      let batchCount = 0;
+      const totalBatchCount = Math.ceil(objects.length / batchSize);
+
+      for (let i = 0; i < objects.length; i += batchSize) {
+        batchCount++;
+        const batch = objects.slice(i, i + batchSize);
+        const promises = batch.map(object =>
+          Parse.Cloud.run(
+            script.cloudCodeFunction,
+            { object: object.toPointer() },
+            { useMasterKey: true }
+          ).then(response => ({
+            objectId: object.id,
+            response,
+          })).catch(error => ({
+            objectId: object.id,
+            error,
+          }))
         );
-        this.setState(prevState => ({
-          processedScripts: prevState.processedScripts + 1,
-        }));
-        const note =
-          (typeof response === 'object' ? JSON.stringify(response) : response) ||
-          `Ran script "${script.title}" on "${object.id}".`;
-        this.showNote(note);
+
+        const results = await Promise.all(promises);
+
+        let batchErrorCount = 0;
+        results.forEach(({ objectId, response, error }) => {
+          this.setState(prevState => ({
+            processedScripts: prevState.processedScripts + 1,
+          }));
+
+          if (error) {
+            batchErrorCount += 1;
+            const errorMessage = `Error running script "${script.title}" on "${objectId}": ${error.message}`;
+            this.showNote(errorMessage, true);
+            console.error(errorMessage, error);
+          } else {
+            const note =
+              (typeof response === 'object' ? JSON.stringify(response) : response) ||
+              `Ran script "${script.title}" on "${objectId}".`;
+            this.showNote(note);
+          }
+        });
+
+        totalErrorCount += batchErrorCount;
+
+        if (objects.length > 1) {
+          this.showNote(`Ran script "${script.title}" on ${batch.length} objects in batch ${batchCount}/${totalBatchCount} with ${batchErrorCount} errors.`, batchErrorCount > 0);
+        }
+      }
+
+      if (objects.length > 1) {
+        this.showNote(`Ran script "${script.title}" on ${objects.length} objects in ${batchCount} batches with ${totalErrorCount} errors.`, totalErrorCount > 0);
       }
       this.refresh();
     } catch (e) {
@@ -1851,7 +1932,8 @@ class Browser extends DashboardView {
         this.context.applicationId,
         row.name
       );
-      row.filters = filters;
+      // Set filters sorted alphabetically
+      row.filters = filters.sort((a, b) => a.name.localeCompare(b.name));
       allCategories.push(row);
     }
 
@@ -1860,11 +1942,40 @@ class Browser extends DashboardView {
         current={current}
         params={this.props.location?.search}
         linkPrefix={'browser/'}
-        filterClicked={url => this.props.navigate(generatePath(this.context, url))}
-        removeFilter={filter => this.removeFilter(filter)}
+        filterClicked={url => {
+          this.resetPage();
+          this.props.navigate(generatePath(this.context, url));
+        }}
+        removeFilter={filter => {
+          this.resetPage();
+          this.removeFilter(filter)
+        }}
+        classClicked={() => {
+          this.resetPage();
+        }}
         categories={allCategories}
       />
     );
+  }
+
+  /**
+   * Resets the page to the first page of results and scrolls to the top.
+   */
+  resetPage() {
+    // Unselect any currently selected cell and cancel editing action
+    this.dataBrowserRef.current.setCurrent(null);
+    this.dataBrowserRef.current.setEditing(false);
+
+    // Scroll to top
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    // Reset pagination to page 1
+    this.setState({
+      skip: 0,
+    });
   }
 
   showNote(message, isError) {
@@ -2005,80 +2116,97 @@ class Browser extends DashboardView {
           }
         }
         browser = (
-          <DataBrowser
-            app={this.context}
-            ref={this.dataBrowserRef}
-            isUnique={this.state.isUnique}
-            uniqueField={this.state.uniqueField}
-            count={count}
-            perms={this.state.clp[className]}
-            schema={this.props.schema}
-            filters={this.state.filters}
-            onFilterChange={this.updateFilters}
-            onFilterSave={(...args) => this.saveFilters(...args)}
-            onRemoveColumn={this.showRemoveColumn}
-            onDeleteRows={this.showDeleteRows}
-            onDropClass={this.showDropClass}
-            onExport={this.showExport}
-            onChangeCLP={this.handleCLPChange}
-            onRefresh={this.refresh}
-            onAttachRows={this.showAttachRowsDialog}
-            onAttachSelectedRows={this.showAttachSelectedRowsDialog}
-            onExecuteScriptRows={this.showExecuteScriptRowsDialog}
-            onCloneSelectedRows={this.showCloneSelectedRowsDialog}
-            onEditSelectedRow={this.showEditRowDialog}
-            onEditPermissions={this.onDialogToggle}
-            onExportSelectedRows={this.showExportSelectedRowsDialog}
-            onExportSchema={this.showExportSchemaDialog}
-            onSaveNewRow={this.saveNewRow}
-            onShowPointerKey={this.showPointerKeyDialog}
-            onAbortAddRow={this.abortAddRow}
-            onSaveEditCloneRow={this.saveEditCloneRow}
-            onAbortEditCloneRow={this.abortEditCloneRow}
-            onCancelPendingEditRows={this.cancelPendingEditRows}
-            currentUser={this.state.currentUser}
-            useMasterKey={this.state.useMasterKey}
-            login={this.login}
-            logout={this.logout}
-            toggleMasterKeyUsage={this.toggleMasterKeyUsage}
-            markRequiredFieldRow={this.state.markRequiredFieldRow}
-            requiredColumnFields={this.state.requiredColumnFields}
-            columns={columns}
-            className={className}
-            fetchNextPage={this.fetchNextPage}
-            maxFetched={this.state.lastMax}
-            selectRow={this.selectRow}
-            selection={this.state.selection}
-            data={this.state.data}
-            ordering={this.state.ordering}
-            newObject={this.state.newObject}
-            editCloneRows={this.state.editCloneRows}
-            relation={this.state.relation}
-            disableKeyControls={this.hasExtras()}
-            updateRow={this.updateRow}
-            updateOrdering={this.updateOrdering}
-            onPointerClick={this.handlePointerClick}
-            onPointerCmdClick={this.handlePointerCmdClick}
-            setRelation={this.setRelation}
-            onAddColumn={this.showAddColumn}
-            onAddRow={this.addRow}
-            onAddRowWithModal={this.addRowWithModal}
-            onAddClass={this.showCreateClass}
-            showNote={this.showNote}
-            onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
-            onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
-            onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
-            classes={this.classes}
-            classwiseCloudFunctions={this.state.classwiseCloudFunctions}
-            callCloudFunction={this.fetchAggregationPanelData}
-            isLoadingCloudFunction={this.state.isLoading}
-            setLoading={this.setLoading}
-            AggregationPanelData={this.state.AggregationPanelData}
-            setAggregationPanelData={this.setAggregationPanelData}
-            setErrorAggregatedData={this.setErrorAggregatedData}
-            errorAggregatedData={this.state.errorAggregatedData}
-            appName={this.props.params.appId}
-          />
+          <>
+            <DataBrowser
+              app={this.context}
+              ref={this.dataBrowserRef}
+              isUnique={this.state.isUnique}
+              uniqueField={this.state.uniqueField}
+              count={count}
+              perms={this.state.clp[className]}
+              schema={this.props.schema}
+              filters={this.state.filters}
+              onFilterChange={this.updateFilters}
+              onFilterSave={(...args) => this.saveFilters(...args)}
+              onRemoveColumn={this.showRemoveColumn}
+              onDeleteRows={this.showDeleteRows}
+              onDropClass={this.showDropClass}
+              onExport={this.showExport}
+              onChangeCLP={this.handleCLPChange}
+              onRefresh={this.refresh}
+              onAttachRows={this.showAttachRowsDialog}
+              onAttachSelectedRows={this.showAttachSelectedRowsDialog}
+              onExecuteScriptRows={this.showExecuteScriptRowsDialog}
+              onCloneSelectedRows={this.showCloneSelectedRowsDialog}
+              onEditSelectedRow={this.showEditRowDialog}
+              onEditPermissions={this.onDialogToggle}
+              onExportSelectedRows={this.showExportSelectedRowsDialog}
+              onExportSchema={this.showExportSchemaDialog}
+              onSaveNewRow={this.saveNewRow}
+              onShowPointerKey={this.showPointerKeyDialog}
+              onAbortAddRow={this.abortAddRow}
+              onSaveEditCloneRow={this.saveEditCloneRow}
+              onAbortEditCloneRow={this.abortEditCloneRow}
+              onCancelPendingEditRows={this.cancelPendingEditRows}
+              currentUser={this.state.currentUser}
+              useMasterKey={this.state.useMasterKey}
+              login={this.login}
+              logout={this.logout}
+              toggleMasterKeyUsage={this.toggleMasterKeyUsage}
+              markRequiredFieldRow={this.state.markRequiredFieldRow}
+              requiredColumnFields={this.state.requiredColumnFields}
+              columns={columns}
+              className={className}
+              fetchNextPage={this.fetchNextPage}
+              maxFetched={this.state.lastMax}
+              selectRow={this.selectRow}
+              selection={this.state.selection}
+              data={this.state.data}
+              ordering={this.state.ordering}
+              newObject={this.state.newObject}
+              editCloneRows={this.state.editCloneRows}
+              relation={this.state.relation}
+              disableKeyControls={this.hasExtras()}
+              updateRow={this.updateRow}
+              updateOrdering={this.updateOrdering}
+              onPointerClick={this.handlePointerClick}
+              onPointerCmdClick={this.handlePointerCmdClick}
+              setRelation={this.setRelation}
+              onAddColumn={this.showAddColumn}
+              onAddRow={this.addRow}
+              onAddRowWithModal={this.addRowWithModal}
+              onAddClass={this.showCreateClass}
+              showNote={this.showNote}
+              onMouseDownRowCheckBox={this.onMouseDownRowCheckBox}
+              onMouseUpRowCheckBox={this.onMouseUpRowCheckBox}
+              onMouseOverRow={this.onMouseOverRowCheckBox}
+              onMouseOverRowCheckBox={this.onMouseOverRowCheckBox}
+              classes={this.classes}
+              classwiseCloudFunctions={this.state.classwiseCloudFunctions}
+              callCloudFunction={this.fetchAggregationPanelData}
+              isLoadingCloudFunction={this.state.isLoadingInfoPanel}
+              setLoadingInfoPanel={this.setLoadingInfoPanel}
+              AggregationPanelData={this.state.AggregationPanelData}
+              setAggregationPanelData={this.setAggregationPanelData}
+              setErrorAggregatedData={this.setErrorAggregatedData}
+              errorAggregatedData={this.state.errorAggregatedData}
+              appName={this.props.params.appId}
+              limit={this.state.limit}
+            />
+            <BrowserFooter
+              skip={this.state.skip}
+              setSkip={skip => {
+                this.setState({ skip });
+                this.updateOrdering(this.state.ordering);
+              }}
+              count={count}
+              limit={this.state.limit}
+              setLimit={limit => {
+                this.setState({ limit });
+                this.updateOrdering(this.state.ordering);
+              }}
+            />
+          </>
         );
       }
     }
@@ -2268,6 +2396,7 @@ class Browser extends DashboardView {
           confirmAttachSelectedRows={this.confirmAttachSelectedRows}
           schema={this.props.schema}
           useMasterKey={this.state.useMasterKey}
+          limit={this.state.limit}
         />
       );
     } else if (this.state.rowsToExport) {

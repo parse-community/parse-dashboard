@@ -1,27 +1,34 @@
 'use strict';
+
 const express = require('express');
 const path = require('path');
-const packageJson = require('package-json');
 const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 const fs = require('fs');
 const ConfigKeyCache = require('./configKeyCache.js');
-
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 
 let newFeaturesInLatestVersion = [];
-packageJson('parse-dashboard', { version: 'latest', fullMetadata: true })
-  .then(latestPackage => {
+
+/**
+ * Gets the new features in the latest version of Parse Dashboard.
+ */
+async function getNewFeaturesInLatestVersion() {
+  // Get latest version
+  const packageJson = (await import('package-json')).default;
+  const latestPackage = await packageJson('parse-dashboard', { version: 'latest', fullMetadata: true });
+
+  try {
     if (latestPackage.parseDashboardFeatures instanceof Array) {
       newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
         return currentVersionFeatures.indexOf(feature) === -1;
       });
     }
-  })
-  .catch(() => {
-    // In case of a failure make sure the final value is an empty array
+  } catch {
     newFeaturesInLatestVersion = [];
-  });
+  }
+}
+getNewFeaturesInLatestVersion()
 
 function getMount(mountPath) {
   mountPath = mountPath || '';

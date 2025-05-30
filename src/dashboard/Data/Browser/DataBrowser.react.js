@@ -192,7 +192,7 @@ export default class DataBrowser extends React.Component {
 
     if (!this.state.isPanelVisible) {
       this.props.setAggregationPanelData({});
-      this.props.setLoading(false);
+      this.props.setLoadingInfoPanel(false);
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
@@ -281,6 +281,42 @@ export default class DataBrowser extends React.Component {
   handleKey(e) {
     if (this.props.disableKeyControls) {
       return;
+    }
+    if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
+      // check if there is multiple selected cells
+      const { rowStart, rowEnd, colStart, colEnd } = this.state.selectedCells;
+      if (rowStart !== -1 && rowEnd !== -1 && colStart !== -1 && colEnd !== -1) {
+        let copyableValue = '';
+
+        for (let rowIndex = rowStart; rowIndex <= rowEnd; rowIndex++) {
+          const rowData = [];
+
+          for (let colIndex = colStart; colIndex <= colEnd; colIndex++) {
+            const field = this.state.order[colIndex].name;
+            const value = field === 'objectId'
+              ? this.props.data[rowIndex].id
+              : this.props.data[rowIndex].attributes[field];
+
+            if (typeof value === 'number' && !isNaN(value)) {
+              rowData.push(String(value));
+            } else {
+              rowData.push(value || '');
+            }
+          }
+
+          copyableValue += rowData.join('\t');
+          if (rowIndex < rowEnd) {
+            copyableValue += '\r\n';
+          }
+        }
+        this.setCopyableValue(copyableValue);
+        copy(copyableValue);
+
+        if (this.props.showNote) {
+          this.props.showNote('Value copied to clipboard', false);
+        }
+        e.preventDefault();
+      }
     }
     if (
       this.state.editing &&
@@ -551,7 +587,7 @@ export default class DataBrowser extends React.Component {
 
       if (newSelection.size > 1) {
         this.setCurrent(null);
-        this.props.setLoading(false);
+        this.props.setLoadingInfoPanel(false);
         this.setState({
           selectedCells: {
             list: newSelection,

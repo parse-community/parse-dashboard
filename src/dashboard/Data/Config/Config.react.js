@@ -21,6 +21,8 @@ import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import { CurrentApp } from 'context/currentApp';
+import Modal from 'components/Modal/Modal.react';
+import equal from 'fast-deep-equal';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -38,6 +40,7 @@ class Config extends TableView {
       modalValue: '',
       modalMasterKeyOnly: false,
       loading: false,
+      confirmModalOpen: false,
     };
   }
 
@@ -55,11 +58,14 @@ class Config extends TableView {
     this.loadData();
   }
 
-  loadData() {
+  async loadData() {
     this.setState({ loading: true });
-    this.props.config.dispatch(ActionTypes.FETCH).finally(() => {
+    try {
+      await this.props.config.dispatch(ActionTypes.FETCH);
+      this.cacheData = new Map(this.props.config.data);
+    } finally {
       this.setState({ loading: false });
-    });
+    }
   }
 
   renderToolbar() {
@@ -90,6 +96,7 @@ class Config extends TableView {
           value={this.state.modalValue}
           masterKeyOnly={this.state.modalMasterKeyOnly}
           parseServerVersion={this.context.serverInfo?.parseServerVersion}
+          loading={this.state.loading}
         />
       );
     } else if (this.state.showDeleteParameterDialog) {
@@ -101,11 +108,35 @@ class Config extends TableView {
         />
       );
     }
+
+    if (this.state.confirmModalOpen) {
+      extras = (
+        <Modal
+          type={Modal.Types.INFO}
+          icon="warn-outline"
+          title={'Are you sure?'}
+          confirmText="Continue"
+          cancelText="Cancel"
+          onCancel={() => this.setState({ confirmModalOpen: false })}
+          onConfirm={() => {
+            this.setState({ confirmModalOpen: false });
+            this.saveParam({
+              ...this.confirmData,
+              override: true,
+            });
+          }}
+        >
+          <div className={[browserStyles.confirmConfig]}>
+            This parameter changed while you were editing it. If you continue, the latest changes will be lost and replaced with your version. Do you want to proceed?
+          </div>
+        </Modal>
+      );
+    }
     return extras;
   }
 
-  renderRow(data) {
-    let value = data.value;
+  parseValueForModal(dataValue) {
+    let value = dataValue;
     let modalValue = value;
     let type = typeof value;
 
@@ -120,11 +151,11 @@ class Config extends TableView {
       } else if (value instanceof Parse.GeoPoint) {
         type = 'GeoPoint';
         value = `(${value.latitude}, ${value.longitude})`;
-        modalValue = data.value.toJSON();
-      } else if (data.value instanceof Parse.File) {
+        modalValue = dataValue.toJSON();
+      } else if (dataValue instanceof Parse.File) {
         type = 'File';
         value = (
-          <a target="_blank" href={data.value.url()} rel="noreferrer">
+          <a target="_blank" href={dataValue.url()} rel="noreferrer">
             Open in new window
           </a>
         );
@@ -139,14 +170,53 @@ class Config extends TableView {
       }
       type = type.substr(0, 1).toUpperCase() + type.substr(1);
     }
-    const openModal = () =>
+
+    return {
+      value: value,
+      modalValue: modalValue,
+      type: type,
+    };
+  }
+
+  renderRow(data) {
+    // Parse modal data
+    const { value, modalValue, type } = this.parseValueForModal(data.value);
+
+    /**
+     * Opens the modal dialog to edit the Config parameter.
+     */
+    const openModal = async () => {
+
+      // Show dialog
       this.setState({
+        loading: true,
         modalOpen: true,
         modalParam: data.param,
         modalType: type,
         modalValue: modalValue,
         modalMasterKeyOnly: data.masterKeyOnly,
       });
+
+      // Fetch config data
+      await this.loadData();
+
+      // Get latest param values
+      const fetchedParams = this.props.config.data.get('params');
+      const fetchedValue = fetchedParams.get(this.state.modalParam);
+      const fetchedMasterKeyOnly = this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
+
+      // Parse fetched data
+      const { modalValue: fetchedModalValue } = this.parseValueForModal(fetchedValue);
+
+      // Update dialog
+      this.setState({
+        modalValue: fetchedModalValue,
+        modalMasterKeyOnly: fetchedMasterKeyOnly,
+        loading: false,
+      });
+    };
+
+    // Define column styles
     const columnStyleLarge = { width: '30%', cursor: 'pointer' };
     const columnStyleSmall = { width: '15%', cursor: 'pointer' };
 
@@ -244,58 +314,95 @@ class Config extends TableView {
     return data;
   }
 
-  saveParam({ name, value, type, masterKeyOnly }) {
-    this.props.config
-      .dispatch(ActionTypes.SET, {
+  async saveParam({ name, value, type, masterKeyOnly, override }) {
+    try {
+      this.setState({ loading: true });
+
+      const fetchedParams = this.props.config.data.get('params');
+      const currentValue = fetchedParams.get(name);
+      await this.props.config.dispatch(ActionTypes.FETCH);
+      const fetchedParamsAfter = this.props.config.data.get('params');
+      const currentValueAfter = fetchedParamsAfter.get(name);
+      const valuesAreEqual = equal(currentValue, currentValueAfter);
+
+      if (!valuesAreEqual && !override) {
+        this.setState({
+          confirmModalOpen: true,
+          modalOpen: false,
+          loading: false,
+        });
+        this.confirmData = {
+          name,
+          value,
+          type,
+          masterKeyOnly,
+        };
+        return;
+      }
+
+      await this.props.config.dispatch(ActionTypes.SET, {
         param: name,
         value: value,
         masterKeyOnly: masterKeyOnly,
-      })
-      .then(
-        () => {
-          this.setState({ modalOpen: false });
-          const limit = this.context.cloudConfigHistoryLimit;
-          const applicationId = this.context.applicationId;
-          let transformedValue = value;
-          if (type === 'Date') {
-            transformedValue = { __type: 'Date', iso: value };
-          }
-          if (type === 'File') {
-            transformedValue = { name: value._name, url: value._url };
-          }
-          const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-          if (!configHistory) {
-            localStorage.setItem(
-              `${applicationId}_configHistory`,
-              JSON.stringify({
-                [name]: [
-                  {
-                    time: new Date(),
-                    value: transformedValue,
-                  },
-                ],
-              })
-            );
-          } else {
-            const oldConfigHistory = JSON.parse(configHistory);
-            localStorage.setItem(
-              `${applicationId}_configHistory`,
-              JSON.stringify({
-                ...oldConfigHistory,
-                [name]: !oldConfigHistory[name]
-                  ? [{ time: new Date(), value: transformedValue }]
-                  : [
-                    { time: new Date(), value: transformedValue },
-                    ...oldConfigHistory[name],
-                  ].slice(0, limit || 100),
-              })
-            );
-          }
-        },
-        () => {
-          // Catch the error
-        }
+      });
+
+      // Update the cached data after successful save
+      const params = this.cacheData.get('params');
+      params.set(name, value);
+      if (masterKeyOnly) {
+        const masterKeyOnlyParams = this.cacheData.get('masterKeyOnly') || new Map();
+        masterKeyOnlyParams.set(name, masterKeyOnly);
+        this.cacheData.set('masterKeyOnly', masterKeyOnlyParams);
+      }
+
+      this.setState({ modalOpen: false });
+
+      // Update config history in localStorage
+      const limit = this.context.cloudConfigHistoryLimit;
+      const applicationId = this.context.applicationId;
+      let transformedValue = value;
+
+      if (type === 'Date') {
+        transformedValue = { __type: 'Date', iso: value };
+      }
+      if (type === 'File') {
+        transformedValue = { name: value._name, url: value._url };
+      }
+
+      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+      const newHistoryEntry = {
+        time: new Date(),
+        value: transformedValue,
+      };
+
+      if (!configHistory) {
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            [name]: [newHistoryEntry],
+          })
+        );
+      } else {
+        const oldConfigHistory = JSON.parse(configHistory);
+        const updatedHistory = !oldConfigHistory[name]
+          ? [newHistoryEntry]
+          : [newHistoryEntry, ...oldConfigHistory[name]].slice(0, limit || 100);
+
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            ...oldConfigHistory,
+            [name]: updatedHistory,
+          })
+        );
+      }
+    } catch (error) {
+      this.context.showError?.(
+        `Failed to save parameter: ${error.message || 'Unknown error occurred'}`
       );
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   deleteParam(name) {

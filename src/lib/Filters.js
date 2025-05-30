@@ -112,15 +112,15 @@ export const Constraints = {
   },
   keyExists: {
     name: 'key exists',
-    field: 'Object',
+    field: 'String',
     composable: true,
-    comparable: false,
+    comparable: true,
   },
   keyDne: {
     name: 'key does not exist',
-    field: 'Object',
+    field: 'String',
     composable: true,
-    comparable: false,
+    comparable: true,
   },
   keyEq: {
     name: 'key equals',

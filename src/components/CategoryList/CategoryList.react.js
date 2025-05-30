@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import styles from 'components/CategoryList/CategoryList.scss';
+import { CurrentApp } from 'context/currentApp';
+import generatePath from 'lib/generatePath';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import styles from 'components/CategoryList/CategoryList.scss';
 import { Link } from 'react-router-dom';
-import generatePath from 'lib/generatePath';
-import { CurrentApp } from 'context/currentApp';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;
@@ -53,9 +53,10 @@ export default class CategoryList extends React.Component {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
               const queryFilter = query.get('filters');
+              const filterId = query.get('filterId');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
-                if (queryFilter === filter.filter) {
+                if (queryFilter === filter.filter || filterId && filterId === filter.id) {
                   height += (i + 1) * 20;
                   break;
                 }
@@ -108,9 +109,10 @@ export default class CategoryList extends React.Component {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
               const queryFilter = query.get('filters');
+              const queryFilterId = query.get('filterId');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
-                if (queryFilter === filter.filter) {
+                if (queryFilter === filter.filter || queryFilterId && queryFilterId === filter.id) {
                   selectedFilter = i;
                   className = '';
                   break;
@@ -122,7 +124,7 @@ export default class CategoryList extends React.Component {
           return (
             <div key={id}>
               <div className={styles.link}>
-                <Link title={c.name} to={{ pathname: link }} className={className} key={id}>
+                <Link title={c.name} to={{ pathname: link }} className={className} key={id} onClick={() => this.props.classClicked()}>
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
@@ -138,10 +140,10 @@ export default class CategoryList extends React.Component {
               </div>
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
-                  const { name, filter } = filterData;
+                  const { name, filter, id } = filterData;
                   const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
                     filter
-                  )}`;
+                  )}&filterId=${id}`;
                   return (
                     <div key={index} className={styles.childLink}>
                       <Link

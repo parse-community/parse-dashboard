@@ -16,7 +16,6 @@ import stylesFooter from 'components/Modal/Modal.scss';
 import { CurrentApp } from 'context/currentApp';
 
 // The initial and max amount of rows fetched by lazy loading
-const MAX_ROWS_FETCHED = 200;
 const SELECTION_INPUT_ID = 'selectionInput';
 
 export default class ObjectPickerDialog extends React.Component {
@@ -90,7 +89,7 @@ export default class ObjectPickerDialog extends React.Component {
     this.setState({
       data: data,
       filters,
-      lastMax: MAX_ROWS_FETCHED,
+      lastMax: this.props.limit,
       filteredCounts: filteredCounts,
     });
   }
@@ -107,7 +106,7 @@ export default class ObjectPickerDialog extends React.Component {
       query.ascending(field);
     }
 
-    query.limit(MAX_ROWS_FETCHED);
+    query.limit(this.props.limit);
 
     const promise = query.find({ useMasterKey });
 
@@ -167,7 +166,7 @@ export default class ObjectPickerDialog extends React.Component {
       query.lessThan('createdAt', this.state.data[this.state.data.length - 1].get('createdAt'));
       query.addDescending('createdAt');
     }
-    query.limit(MAX_ROWS_FETCHED);
+    query.limit(this.props.limit);
 
     const { useMasterKey } = this.props;
     query.find({ useMasterKey: useMasterKey }).then(nextPage => {
@@ -177,7 +176,7 @@ export default class ObjectPickerDialog extends React.Component {
         }));
       }
     });
-    this.setState({ lastMax: this.state.lastMax + MAX_ROWS_FETCHED });
+    this.setState({ lastMax: this.state.lastMax + this.props.limit });
   }
 
   async updateFilters(filters) {
