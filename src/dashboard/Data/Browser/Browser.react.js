@@ -54,7 +54,7 @@ class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser';
     this.noteTimeout = null;
-    this.currentQuery = null; // Track current query
+    this.currentQuery = null;
     const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
