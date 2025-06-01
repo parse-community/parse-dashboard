@@ -13,6 +13,7 @@ import Position from 'lib/Position';
 import React from 'react';
 import PropTypes from 'lib/PropTypes';
 import styles from 'components/Modal/Modal.scss';
+import { useState, useEffect, useRef } from 'react';
 
 const origin = new Position(0, 0);
 const buttonColors = {
@@ -38,12 +39,55 @@ const Modal = ({
   progress = false,
   customFooter,
   textModal = false,
-  width,
+  width: initialWidth = 500,
   continueText,
   onContinue,
   showContinue,
   buttonsInCenter = React.Children.count(children) === 0,
 }) => {
+
+  const modalRef = useRef(null);
+
+  const [currentWidth, setCurrentWidth] = useState(initialWidth);
+  const resizing = useRef(false);
+
+  const handleMouseDown = (e) => {
+  e.preventDefault();
+  resizing.current = true;
+  if (modalRef.current) {
+    modalRef.current.classList.add(styles.noTransition);
+  }
+};
+
+const handleMouseMove = (e) => {
+  if (!resizing.current || !modalRef.current) {
+    return;
+  }
+
+  const modalLeft = modalRef.current.getBoundingClientRect().left;
+  const newWidth = e.clientX - modalLeft;
+
+  const clampedWidth = Math.min(window.innerWidth, Math.max(initialWidth, newWidth));
+  setCurrentWidth(clampedWidth);
+};
+
+const handleMouseUp = () => {
+  resizing.current = false;
+  if (modalRef.current) {
+    modalRef.current.classList.remove(styles.noTransition);
+  }
+};
+
+useEffect(() => {
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseUp);
+
+  return () => {
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  };
+}, []);
+
   if (children) {
     children = React.Children.map(children, c => {
       if (c && c.type === Field && c.props.label) {
@@ -81,7 +125,7 @@ const Modal = ({
 
   return (
     <Popover fadeIn={true} fixed={true} position={origin} modal={true} color="rgba(17,13,17,0.8)">
-      <div className={[styles.modal, styles[type]].join(' ')} style={{ width }}>
+      <div ref={modalRef} className={[styles.modal, styles[type]].join(' ')} style={{ width: currentWidth }}>
         <div className={styles.header}>
           <div
             style={{
@@ -100,6 +144,7 @@ const Modal = ({
         </div>
         {wrappedChildren}
         {footer}
+        <div className={styles.resizeHandle} onMouseDown={handleMouseDown} />
       </div>
     </Popover>
   );
