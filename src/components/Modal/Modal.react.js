@@ -10,10 +10,9 @@ import Field from 'components/Field/Field.react';
 import Icon from 'components/Icon/Icon.react';
 import Popover from 'components/Popover/Popover.react';
 import Position from 'lib/Position';
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'lib/PropTypes';
 import styles from 'components/Modal/Modal.scss';
-import { useState, useEffect, useRef } from 'react';
 
 const origin = new Position(0, 0);
 const buttonColors = {
@@ -39,54 +38,56 @@ const Modal = ({
   progress = false,
   customFooter,
   textModal = false,
-  width: initialWidth = 500,
+  width,
+  initialWidth = width ?? 500,
   continueText,
   onContinue,
   showContinue,
   buttonsInCenter = React.Children.count(children) === 0,
 }) => {
-
   const modalRef = useRef(null);
-
   const [currentWidth, setCurrentWidth] = useState(initialWidth);
   const resizing = useRef(false);
 
-  const handleMouseDown = (e) => {
-  e.preventDefault();
-  resizing.current = true;
-  if (modalRef.current) {
-    modalRef.current.classList.add(styles.noTransition);
-  }
-};
-
-const handleMouseMove = (e) => {
-  if (!resizing.current || !modalRef.current) {
-    return;
-  }
-
-  const modalLeft = modalRef.current.getBoundingClientRect().left;
-  const newWidth = e.clientX - modalLeft;
-
-  const clampedWidth = Math.min(window.innerWidth, Math.max(initialWidth, newWidth));
-  setCurrentWidth(clampedWidth);
-};
-
-const handleMouseUp = () => {
-  resizing.current = false;
-  if (modalRef.current) {
-    modalRef.current.classList.remove(styles.noTransition);
-  }
-};
-
-useEffect(() => {
-  document.addEventListener('mousemove', handleMouseMove);
-  document.addEventListener('mouseup', handleMouseUp);
-
-  return () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+  const handleMouseDown = e => {
+    e.preventDefault();
+    resizing.current = true;
+    if (modalRef.current) {
+      modalRef.current.classList.add(styles.noTransition);
+    }
   };
-}, []);
+
+  const handleMouseMove = useCallback(
+    e => {
+      if (!resizing.current || !modalRef.current) {
+        return;
+      }
+
+      const modalLeft = modalRef.current.getBoundingClientRect().left;
+      const newWidth = e.clientX - modalLeft;
+
+      const clampedWidth = Math.min(window.innerWidth, Math.max(initialWidth, newWidth));
+      setCurrentWidth(clampedWidth);
+    },
+    [initialWidth]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    resizing.current = false;
+    if (modalRef.current) {
+      modalRef.current.classList.remove(styles.noTransition);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [handleMouseMove, handleMouseUp]);
 
   if (children) {
     children = React.Children.map(children, c => {
@@ -125,7 +126,11 @@ useEffect(() => {
 
   return (
     <Popover fadeIn={true} fixed={true} position={origin} modal={true} color="rgba(17,13,17,0.8)">
-      <div ref={modalRef} className={[styles.modal, styles[type]].join(' ')} style={{ width: currentWidth }}>
+      <div
+        ref={modalRef}
+        className={[styles.modal, styles[type]].join(' ')}
+        style={{ width: currentWidth }}
+      >
         <div className={styles.header}>
           <div
             style={{
@@ -178,7 +183,8 @@ Modal.propTypes = {
   progress: PropTypes.bool.describe('Passed to the confirm button.'),
   customFooter: PropTypes.node.describe('used to fill any custom footer use case.'),
   textModal: PropTypes.bool.describe('Used for modals that contain only text to pad the text.'),
-  width: PropTypes.number.describe('custom width of modal.'),
+  width: PropTypes.number.describe('custom width of modal (legacy prop, prefer initialWidth).'),
+  initialWidth: PropTypes.number.describe('custom width of modal.'),
   buttonsInCenter: PropTypes.bool.describe(
     'If true, the buttons will appear in the center of the modal, instead of to the right. By default, the buttons appear on the right unless the modal contains no children, in which case they appear in the center.'
   ),
