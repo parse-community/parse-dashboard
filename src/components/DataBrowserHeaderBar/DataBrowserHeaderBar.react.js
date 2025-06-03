@@ -29,7 +29,10 @@ export default class DataBrowserHeaderBar extends React.Component {
       headerWidth
     } = this.props;
     const elements = [
-      <div key="check" className={[styles.wrap, styles.check].join(' ')} style={{ paddingLeft: headerWidth, width: headerWidth + 30 }}>
+      <div key="rowNumber" className={styles.wrap} style={{ width: headerWidth, background: '#66637A' }}>
+        <div className={[styles.rowNumberColumn].join(' ')}>#</div>
+      </div>,
+      <div key="check" className={[styles.wrap, styles.check].join(' ')} style={{ width:  30 }}>
         {readonly ? null : (
           <input type="checkbox" checked={selected} onChange={e => selectAll(e.target.checked)} />
         )}
