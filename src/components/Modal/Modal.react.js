@@ -47,33 +47,42 @@ const Modal = ({
 }) => {
   const modalRef = useRef(null);
   const [currentWidth, setCurrentWidth] = useState(initialWidth);
-  const resizing = useRef(false);
+  const resizing = useRef({ active: false, side: null, startX: 0, startWidth: 0 });
 
-  const handleMouseDown = e => {
+  // Helper to get min width
+  const minWidth = initialWidth;
+
+  const handleMouseDown = (side) => (e) => {
     e.preventDefault();
-    resizing.current = true;
-    if (modalRef.current) {
-      modalRef.current.classList.add(styles.noTransition);
-    }
+    if (!modalRef.current) return;
+    resizing.current = {
+      active: true,
+      side,
+      startX: e.clientX,
+      startWidth: currentWidth,
+    };
+    modalRef.current.classList.add(styles.noTransition);
   };
 
   const handleMouseMove = useCallback(
-    e => {
-      if (!resizing.current || !modalRef.current) {
-        return;
+    (e) => {
+      if (!resizing.current.active || !modalRef.current) return;
+      const { side, startX, startWidth } = resizing.current;
+      if (side === 'right') {
+        let newWidth = startWidth + 2 * (e.clientX - startX);
+        newWidth = Math.max(minWidth, newWidth);
+        setCurrentWidth(newWidth);
+      } else if (side === 'left') {
+        let newWidth = startWidth - 2 * (e.clientX - startX);
+        newWidth = Math.max(minWidth, newWidth);
+        setCurrentWidth(newWidth);
       }
-
-      const modalLeft = modalRef.current.getBoundingClientRect().left;
-      const newWidth = e.clientX - modalLeft;
-
-      const clampedWidth = Math.min(window.innerWidth, Math.max(initialWidth, newWidth));
-      setCurrentWidth(clampedWidth);
     },
-    [initialWidth]
+    [minWidth]
   );
 
   const handleMouseUp = useCallback(() => {
-    resizing.current = false;
+    resizing.current = { active: false, side: null, startX: 0, startWidth: 0 };
     if (modalRef.current) {
       modalRef.current.classList.remove(styles.noTransition);
     }
@@ -82,7 +91,6 @@ const Modal = ({
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -129,8 +137,22 @@ const Modal = ({
       <div
         ref={modalRef}
         className={[styles.modal, styles[type]].join(' ')}
-        style={{ width: currentWidth }}
+        style={{
+          width: currentWidth,
+        }}
       >
+        {/* Left resize handle */}
+        <div
+          className={styles.resizeHandleLeft}
+          style={{ position: 'absolute', left: 0, top: 0, width: 8, height: '100%', cursor: 'ew-resize', zIndex: 10 }}
+          onMouseDown={handleMouseDown('left')}
+        />
+        {/* Right resize handle */}
+        <div
+          className={styles.resizeHandleRight}
+          style={{ position: 'absolute', right: 0, top: 0, width: 8, height: '100%', cursor: 'ew-resize', zIndex: 10 }}
+          onMouseDown={handleMouseDown('right')}
+        />
         <div className={styles.header}>
           <div
             style={{
@@ -149,7 +171,6 @@ const Modal = ({
         </div>
         {wrappedChildren}
         {footer}
-        <div className={styles.resizeHandle} onMouseDown={handleMouseDown} />
       </div>
     </Popover>
   );
