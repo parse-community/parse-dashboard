@@ -54,6 +54,7 @@ class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser';
     this.noteTimeout = null;
+    this.currentQuery = null;
     const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
@@ -221,6 +222,9 @@ class Browser extends DashboardView {
   }
 
   componentWillUnmount() {
+    if (this.currentQuery) {
+      this.currentQuery.cancel();
+    }
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
@@ -897,6 +901,10 @@ class Browser extends DashboardView {
   }
 
   async fetchParseData(source, filters) {
+    if (this.currentQuery) {
+      this.currentQuery.cancel();
+    }
+
     const { useMasterKey, skip, limit } = this.state;
     this.setState({
       data: null,
@@ -916,6 +924,7 @@ class Browser extends DashboardView {
     localStorage?.setItem('browserLimit', limit);
 
     this.excludeFields(query, source);
+    this.currentQuery = query;
     let promise = query.find({ useMasterKey });
     let isUnique = false;
     let uniqueField = null;
@@ -1071,8 +1080,26 @@ class Browser extends DashboardView {
     });
   }
 
-  saveFilters(filters, name) {
-    const _filters = JSON.stringify(filters.toJSON());
+  saveFilters(filters, name, relativeDate) {
+    const jsonFilters = filters.toJSON();
+    if (relativeDate && jsonFilters?.length) {
+      for (let i = 0; i < jsonFilters.length; i++) {
+        const filter = jsonFilters[i];
+        const compareTo = filter.get('compareTo');
+        if (compareTo?.__type === 'Date') {
+          compareTo.__type = 'RelativeDate';
+          const now = new Date();
+          const date = new Date(compareTo.iso);
+          const diff = date.getTime() - now.getTime();
+          compareTo.value = Math.floor(diff / 1000);
+          delete compareTo.iso;
+          filter.set('compareTo', compareTo);
+          jsonFilters[i] = filter;
+        }
+      }
+    }
+
+    const _filters = JSON.stringify(jsonFilters);
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.params.className
@@ -1080,6 +1107,7 @@ class Browser extends DashboardView {
     if (!preferences.filters.includes(_filters)) {
       preferences.filters.push({
         name,
+        id: crypto.randomUUID(),
         filter: _filters,
       });
     }
@@ -1088,6 +1116,7 @@ class Browser extends DashboardView {
       this.context.applicationId,
       this.props.params.className
     );
+
     super.forceUpdate();
   }
 
@@ -1551,24 +1580,63 @@ class Browser extends DashboardView {
   }
 
   async confirmExecuteScriptRows(script) {
+    const batchSize = script.executionBatchSize || 1;
     try {
-      const objects = [];
-      Object.keys(this.state.selection).forEach(key =>
-        objects.push(Parse.Object.extend(this.props.params.className).createWithoutData(key))
+      const objects = Object.keys(this.state.selection).map(key =>
+        Parse.Object.extend(this.props.params.className).createWithoutData(key)
       );
-      for (const object of objects) {
-        const response = await Parse.Cloud.run(
-          script.cloudCodeFunction,
-          { object: object.toPointer() },
-          { useMasterKey: true }
+
+      let totalErrorCount = 0;
+      let batchCount = 0;
+      const totalBatchCount = Math.ceil(objects.length / batchSize);
+
+      for (let i = 0; i < objects.length; i += batchSize) {
+        batchCount++;
+        const batch = objects.slice(i, i + batchSize);
+        const promises = batch.map(object =>
+          Parse.Cloud.run(
+            script.cloudCodeFunction,
+            { object: object.toPointer() },
+            { useMasterKey: true }
+          ).then(response => ({
+            objectId: object.id,
+            response,
+          })).catch(error => ({
+            objectId: object.id,
+            error,
+          }))
         );
-        this.setState(prevState => ({
-          processedScripts: prevState.processedScripts + 1,
-        }));
-        const note =
-          (typeof response === 'object' ? JSON.stringify(response) : response) ||
-          `Ran script "${script.title}" on "${object.id}".`;
-        this.showNote(note);
+
+        const results = await Promise.all(promises);
+
+        let batchErrorCount = 0;
+        results.forEach(({ objectId, response, error }) => {
+          this.setState(prevState => ({
+            processedScripts: prevState.processedScripts + 1,
+          }));
+
+          if (error) {
+            batchErrorCount += 1;
+            const errorMessage = `Error running script "${script.title}" on "${objectId}": ${error.message}`;
+            this.showNote(errorMessage, true);
+            console.error(errorMessage, error);
+          } else {
+            const note =
+              (typeof response === 'object' ? JSON.stringify(response) : response) ||
+              `Ran script "${script.title}" on "${objectId}".`;
+            this.showNote(note);
+          }
+        });
+
+        totalErrorCount += batchErrorCount;
+
+        if (objects.length > 1) {
+          this.showNote(`Ran script "${script.title}" on ${batch.length} objects in batch ${batchCount}/${totalBatchCount} with ${batchErrorCount} errors.`, batchErrorCount > 0);
+        }
+      }
+
+      if (objects.length > 1) {
+        this.showNote(`Ran script "${script.title}" on ${objects.length} objects in ${batchCount} batches with ${totalErrorCount} errors.`, totalErrorCount > 0);
       }
       this.refresh();
     } catch (e) {
@@ -1884,30 +1952,39 @@ class Browser extends DashboardView {
         params={this.props.location?.search}
         linkPrefix={'browser/'}
         filterClicked={url => {
-          // Reset to page 1
-          this.setState({
-            skip: 0,
-          });
-
+          this.resetPage();
           this.props.navigate(generatePath(this.context, url));
         }}
         removeFilter={filter => {
-          // Reset to page 1
-          this.setState({
-            skip: 0,
-          });
-
+          this.resetPage();
           this.removeFilter(filter)
         }}
         classClicked={() => {
-          // Reset to page 1
-          this.setState({
-            skip: 0,
-          });
+          this.resetPage();
         }}
         categories={allCategories}
       />
     );
+  }
+
+  /**
+   * Resets the page to the first page of results and scrolls to the top.
+   */
+  resetPage() {
+    // Unselect any currently selected cell and cancel editing action
+    this.dataBrowserRef.current.setCurrent(null);
+    this.dataBrowserRef.current.setEditing(false);
+
+    // Scroll to top
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    // Reset pagination to page 1
+    this.setState({
+      skip: 0,
+    });
   }
 
   showNote(message, isError) {

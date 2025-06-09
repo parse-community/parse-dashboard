@@ -53,9 +53,10 @@ export default class CategoryList extends React.Component {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
               const queryFilter = query.get('filters');
+              const filterId = query.get('filterId');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
-                if (queryFilter === filter.filter) {
+                if (queryFilter === filter.filter || filterId && filterId === filter.id) {
                   height += (i + 1) * 20;
                   break;
                 }
@@ -108,9 +109,10 @@ export default class CategoryList extends React.Component {
             const query = new URLSearchParams(this.props.params);
             if (query.has('filters')) {
               const queryFilter = query.get('filters');
+              const queryFilterId = query.get('filterId');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
-                if (queryFilter === filter.filter) {
+                if (queryFilter === filter.filter || queryFilterId && queryFilterId === filter.id) {
                   selectedFilter = i;
                   className = '';
                   break;
@@ -138,10 +140,10 @@ export default class CategoryList extends React.Component {
               </div>
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
-                  const { name, filter } = filterData;
+                  const { name, filter, id } = filterData;
                   const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
                     filter
-                  )}`;
+                  )}&filterId=${id}`;
                   return (
                     <div key={index} className={styles.childLink}>
                       <Link

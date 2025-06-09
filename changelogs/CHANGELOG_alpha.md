@@ -1,3 +1,52 @@
+## [7.2.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.2.0...7.2.1-alpha.1) (2025-06-02)
+
+
+### Bug Fixes
+
+* Data browser does not cancel obsolete long-loading request on sorting field change ([#2839](https://github.com/parse-community/parse-dashboard/issues/2839)) ([0f85376](https://github.com/parse-community/parse-dashboard/commit/0f85376b8ae1db7ae31626896b06fdc0bd8efd75))
+
+# [7.2.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.8...7.2.0-alpha.9) (2025-05-27)
+
+
+### Features
+
+* Add script execution on parallel batches with option `script.executionBatchSize` ([#2828](https://github.com/parse-community/parse-dashboard/issues/2828)) ([cee8b8d](https://github.com/parse-community/parse-dashboard/commit/cee8b8dd12bc44a352e43073aed65782277841dd))
+
+# [7.2.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.7...7.2.0-alpha.8) (2025-05-25)
+
+
+### Bug Fixes
+
+* Notifications fade out erratically when executing a script on large number of rows ([#2822](https://github.com/parse-community/parse-dashboard/issues/2822)) ([3891381](https://github.com/parse-community/parse-dashboard/commit/38913813f0f3252b241a322aaf50142d5564201a))
+
+# [7.2.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.6...7.2.0-alpha.7) (2025-05-25)
+
+
+### Bug Fixes
+
+* Data browser not scrolling to top when changing filter while cell selected ([#2821](https://github.com/parse-community/parse-dashboard/issues/2821)) ([c2527dc](https://github.com/parse-community/parse-dashboard/commit/c2527dc1d3e084dcab3d52955bae7760bb27da36))
+
+# [7.2.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.5...7.2.0-alpha.6) (2025-05-24)
+
+
+### Features
+
+* Add relative date filter in data browser for date constraints relative to when the query is run ([#2736](https://github.com/parse-community/parse-dashboard/issues/2736)) ([d9dfd69](https://github.com/parse-community/parse-dashboard/commit/d9dfd69b0fcef01456f1feee9b939b7504113e29))
+
+# [7.2.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.4...7.2.0-alpha.5) (2025-05-24)
+
+
+### Features
+
+* Add confirmation dialog before saving a Cloud Config parameter that has been modified since editing it ([#2770](https://github.com/parse-community/parse-dashboard/issues/2770)) ([adb9b5c](https://github.com/parse-community/parse-dashboard/commit/adb9b5c34c7e6cb02d63ad35fbcca8ea9544e36c))
+
+# [7.2.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.3...7.2.0-alpha.4) (2025-05-24)
+
+
+### Bug Fixes
+
+* Improperly aligned unfolding sub-items in context menu in data browser ([#2726](https://github.com/parse-community/parse-dashboard/issues/2726)) ([3fed292](https://github.com/parse-community/parse-dashboard/commit/3fed292b70f9400d4fb09b44d215de377d568c03))
+
 # [7.2.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.2...7.2.0-alpha.3) (2025-05-19)
 
 

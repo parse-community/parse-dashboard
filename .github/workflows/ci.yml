@@ -19,8 +19,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-      - name: Install dependencies
+      - name: Install prod dependencies
         run: npm ci --ignore-scripts
+      - name: Remove dev dependencies
+        run: ./ci/uninstallDevDeps.sh @actions/core
       - name: CI Node Engine Check
         run: npm run ci:checkNodeEngine
   check-lint:

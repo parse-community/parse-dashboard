@@ -17,6 +17,7 @@ import Label from 'components/Label/Label.react';
 import Position from 'lib/Position';
 import React from 'react';
 import styles from 'components/BrowserFilter/BrowserFilter.scss';
+import Checkbox from 'components/Checkbox/Checkbox.react';
 import { List, Map } from 'immutable';
 
 const POPOVER_CONTENT_ID = 'browserFilterPopover';
@@ -32,6 +33,7 @@ export default class BrowserFilter extends React.Component {
       confirmName: false,
       name: '',
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
+      relativeDates: false,
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -63,6 +65,7 @@ export default class BrowserFilter extends React.Component {
       name: '',
       confirmName: false,
       editMode: this.props.filters.size === 0,
+      relativeDates: false, // Reset relative dates state when opening/closing
     }));
     this.props.setCurrent(null);
   }
@@ -114,7 +117,7 @@ export default class BrowserFilter extends React.Component {
       }
       return filter;
     });
-    this.props.onSaveFilter(formatted, this.state.name);
+    this.props.onSaveFilter(formatted, this.state.name, this.state.relativeDates);
     this.toggle();
   }
 
@@ -137,6 +140,8 @@ export default class BrowserFilter extends React.Component {
         this.state.blacklistedFilters,
         this.state.filters
       );
+
+      const hasDateState = this.state.filters.some(filter => filter.get('compareTo')?.__type === 'Date');
       popover = (
         <Popover
           fixed={true}
@@ -180,17 +185,32 @@ export default class BrowserFilter extends React.Component {
                 )}
               />
               {this.state.confirmName && (
-                <Field
-                  label={<Label text="Filter view name" />}
-                  input={
-                    <TextInput
-                      placeholder="Give it a good name..."
-                      value={this.state.name}
-                      onChange={name => this.setState({ name })}
-                    />
+                <>
+                  <Field
+                    label={<Label text="Filter view name" />}
+                    input={
+                      <TextInput
+                        placeholder="Give it a good name..."
+                        value={this.state.name}
+                        onChange={name => this.setState({ name })}
+                      />
+                    }
+                  />
+                  {hasDateState &&
+                  <Field
+                    label={<Label text="Relative dates" />}
+                    input={
+                      <Checkbox
+                        checked={this.state.relativeDates}
+                        onChange={checked => this.setState({ relativeDates: checked })}
+                        className={styles.checkbox}
+                      />
+                    }
+                  />
                   }
-                />
+                </>
               )}
+
               {this.state.confirmName && (
                 <div className={styles.footer}>
                   <Button
