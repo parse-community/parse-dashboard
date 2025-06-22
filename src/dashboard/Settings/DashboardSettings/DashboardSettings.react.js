@@ -435,7 +435,7 @@ export default class DashboardSettings extends DashboardView {
           />
           {this.state.showSavePreferences && <Field
             label={<Label text="Save Class Preferences" />}
-            input={<FormButton color="blue" value="Save" onClick={() => this.getClasses()} />}
+            input={<FormButton color="blue" value="Save" onClick={() => this.saveClasses()} />}
           />}
           <Field
             label={<Label text="Create New User" />}

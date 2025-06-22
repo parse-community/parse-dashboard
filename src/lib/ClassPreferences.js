@@ -3,9 +3,9 @@ import Parse from 'parse';
 
 export const load = async (preferencesClassName) => {
   const preferences = await new Parse.Query(preferencesClassName)
-        .equalTo('user', Parse.User.current())
-        .equalTo('key', 'classPreferences')
-        .first({ useMasterKey: true });
+    .equalTo('user', Parse.User.current())
+    .equalTo('key', 'classPreferences')
+    .first({ useMasterKey: true });
 
   if (preferences) {
     const prefs = preferences.get('value');
@@ -20,19 +20,19 @@ export function setClassPreferences(classPreference, appId) {
   }
 
   for (const className in classPreference) {
-          const preferences = getPreferences(appId, className) || { filters: [] };
-          const { filters } = classPreference[className];
-          for (const filter of filters) {
-            if (Array.isArray(filter.filter)) {
-              filter.filter = JSON.stringify(filter.filter);
-            }
-            if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
-              continue;
-            }
-            preferences.filters.push(filter);
-          }
-          updatePreferences(preferences, appId, className);
-        }
+    const preferences = getPreferences(appId, className) || { filters: [] };
+    const { filters } = classPreference[className];
+    for (const filter of filters) {
+      if (Array.isArray(filter.filter)) {
+        filter.filter = JSON.stringify(filter.filter);
+      }
+      if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
+        continue;
+      }
+      preferences.filters.push(filter);
+    }
+    updatePreferences(preferences, appId, className);
+  }
 }
 export function updatePreferences(prefs, appId, className) {
   try {
