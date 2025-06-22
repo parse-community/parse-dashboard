@@ -1,4 +1,39 @@
 const VERSION = 1; // In case we ever need to invalidate these
+import Parse from 'parse';
+
+export const load = async (preferencesClassName) => {
+  const preferences = await new Parse.Query(preferencesClassName)
+        .equalTo('user', Parse.User.current())
+        .equalTo('key', 'classPreferences')
+        .first({ useMasterKey: true });
+
+  if (preferences) {
+    const prefs = preferences.get('value');
+    setClassPreferences(JSON.parse(prefs), Parse.applicationId);
+  }
+
+}
+
+export function setClassPreferences(classPreference, appId) {
+  if (!classPreference) {
+    return;
+  }
+
+  for (const className in classPreference) {
+          const preferences = getPreferences(appId, className) || { filters: [] };
+          const { filters } = classPreference[className];
+          for (const filter of filters) {
+            if (Array.isArray(filter.filter)) {
+              filter.filter = JSON.stringify(filter.filter);
+            }
+            if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
+              continue;
+            }
+            preferences.filters.push(filter);
+          }
+          updatePreferences(preferences, appId, className);
+        }
+}
 export function updatePreferences(prefs, appId, className) {
   try {
     localStorage.setItem(path(appId, className), JSON.stringify(prefs));

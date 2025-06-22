@@ -204,6 +204,11 @@ class Browser extends DashboardView {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     }
 
+    if (this.context.preferencesClassName) {
+      ColumnPreferences.load(this.context.preferencesClassName);
+      ClassPreferences.load(this.context.preferencesClassName);
+    }
+
     this.props.schema.dispatch(ActionTypes.FETCH).then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));

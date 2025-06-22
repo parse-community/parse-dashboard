@@ -10,6 +10,24 @@ const DEFAULT_WIDTH = 150;
 const COLUMN_SORT = '__columnClassesSort'; // Used for storing classes sort field
 const DEFAULT_COLUMN_SORT = '-createdAt'; // Default column sorting
 const cache = {};
+import Parse from 'parse';
+
+export const load = async (preferencesClassName) => {
+  const preferences = await new Parse.Query(preferencesClassName)
+        .equalTo('user', Parse.User.current())
+        .equalTo('key', 'columnPreferences')
+        .first({ useMasterKey: true });
+
+  if (preferences) {
+    const prefs = JSON.parse(preferences.get('value'));
+    if (prefs) {
+      for (const className in prefs) {
+        updatePreferences(prefs[className], Parse.applicationId, className);
+      }
+    }
+  }
+
+}
 
 export function updatePreferences(prefs, appId, className) {
   try {

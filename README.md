@@ -399,6 +399,19 @@ For example:
 
 You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under *App Settings > Export Class Preferences*.
 
+### Saving Configuration of the server
+
+You can save the confiugration on the server by specifying `preferencesClassName`
+```json
+"apps": [
+  {
+    "preferencesClassName": "DashboardPreferences"
+  }
+]
+```
+
+Once this is set, you can visit `AppSettings > Dashboard` to save the current Column and Class settings.
+
 ### Scripts
 
 You can specify scripts to execute Cloud Functions with the `scripts` option:

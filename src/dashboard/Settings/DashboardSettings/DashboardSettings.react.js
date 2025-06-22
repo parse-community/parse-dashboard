@@ -20,8 +20,11 @@ import * as ClassPreferences from 'lib/ClassPreferences';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
+import Parse from 'parse';
+import { CurrentApp } from 'context/currentApp';
 
 export default class DashboardSettings extends DashboardView {
+  static contextType = CurrentApp;
   constructor() {
     super();
     this.section = 'App Settings';
@@ -49,6 +52,7 @@ export default class DashboardSettings extends DashboardView {
         show: false,
         mfa: '',
       },
+      showSavePreferences: !!this.context?.preferencesClassName,
     };
   }
 
@@ -63,6 +67,35 @@ export default class DashboardSettings extends DashboardView {
     });
   }
 
+  async saveColumns() {
+    const data = ColumnPreferences.getAllPreferences(this.context.applicationId);
+    let preferences = await new Parse.Query(this.context.preferencesClassName)
+      .equalTo('applicationId', this.context.applicationId)
+      .equalTo('key', 'columnPreferences')
+      .equalTo('user', Parse.User.current())
+      .first({ useMasterKey: true });
+
+    if (!preferences) {
+      preferences = new Parse.Object(this.context.preferencesClassName);
+      preferences.set('applicationId', this.context.applicationId);
+      preferences.set('key', 'columnPreferences');
+      preferences.set('user', Parse.User.current());
+      preferences.setACL(
+        new Parse.ACL(Parse.User.current())
+      );
+    }
+
+    preferences.set('value', JSON.stringify(data));
+
+    try {
+      await preferences.save(null, { useMasterKey: true });
+      this.showNote('Column preferences saved successfully');
+    } catch (error) {
+      this.showNote(`Error saving column preferences: ${error.message}`);
+    }
+
+  }
+
   getClasses() {
     const data = ClassPreferences.getAllPreferences(this.context.applicationId);
     this.setState({
@@ -72,6 +105,31 @@ export default class DashboardSettings extends DashboardView {
         type: 'Class Preferences',
       },
     });
+  }
+
+  async saveClasses() {
+    const data = ClassPreferences.getAllPreferences(this.context.applicationId);
+    let preferences = await new Parse.Query(this.context.preferencesClassName)
+      .equalTo('applicationId', this.context.applicationId)
+      .equalTo('key', 'classPreferences')
+      .equalTo('user', Parse.User.current())
+      .first({ useMasterKey: true });
+    if (!preferences) {
+      preferences = new Parse.Object(this.context.preferencesClassName);
+      preferences.set('applicationId', this.context.applicationId);
+      preferences.set('key', 'classPreferences');
+      preferences.set('user', Parse.User.current());
+      preferences.setACL(
+        new Parse.ACL(Parse.User.current())
+      );
+    }
+    preferences.set('value', JSON.stringify(data));
+    try {
+      await preferences.save(null, { useMasterKey: true });
+      this.showNote('Class preferences saved successfully');
+    } catch (error) {
+      this.showNote(`Error saving class preferences: ${error.message}`);
+    }
   }
 
   copy(data, label) {
@@ -367,10 +425,18 @@ export default class DashboardSettings extends DashboardView {
             label={<Label text="Export Column Preferences" />}
             input={<FormButton color="blue" value="Export" onClick={() => this.getColumns()} />}
           />
+          {this.state.showSavePreferences && <Field
+            label={<Label text="Save Column Preferences" />}
+            input={<FormButton color="blue" value="Save" onClick={() => this.saveColumns()} />}
+          />}
           <Field
             label={<Label text="Export Class Preferences" />}
             input={<FormButton color="blue" value="Export" onClick={() => this.getClasses()} />}
           />
+          {this.state.showSavePreferences && <Field
+            label={<Label text="Save Class Preferences" />}
+            input={<FormButton color="blue" value="Save" onClick={() => this.getClasses()} />}
+          />}
           <Field
             label={<Label text="Create New User" />}
             input={

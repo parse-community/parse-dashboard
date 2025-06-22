@@ -8,7 +8,7 @@
 import * as AJAX from 'lib/AJAX';
 import encodeFormData from 'lib/encodeFormData';
 import Parse from 'parse';
-import { updatePreferences, getPreferences } from 'lib/ClassPreferences';
+import { setClassPreferences } from 'lib/ClassPreferences';
 
 function setEnablePushSource(setting, enable) {
   const path = `/apps/${this.slug}/update_push_notifications`;
@@ -50,6 +50,7 @@ export default class ParseApp {
     classPreference,
     enableSecurityChecks,
     cloudConfigHistoryLimit,
+    preferencesClassName
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -79,6 +80,7 @@ export default class ParseApp {
     this.scripts = scripts;
     this.enableSecurityChecks = !!enableSecurityChecks;
     this.cloudConfigHistoryLimit = cloudConfigHistoryLimit;
+    this.preferencesClassName = preferencesClassName;
 
     if (!supportedPushLocales) {
       console.warn(
@@ -109,23 +111,7 @@ export default class ParseApp {
     };
 
     this.hasCheckedForMigraton = false;
-
-    if (classPreference) {
-      for (const className in classPreference) {
-        const preferences = getPreferences(appId, className) || { filters: [] };
-        const { filters } = classPreference[className];
-        for (const filter of filters) {
-          if (Array.isArray(filter.filter)) {
-            filter.filter = JSON.stringify(filter.filter);
-          }
-          if (preferences.filters.some(row => JSON.stringify(row) === JSON.stringify(filter))) {
-            continue;
-          }
-          preferences.filters.push(filter);
-        }
-        updatePreferences(preferences, appId, className);
-      }
-    }
+    setClassPreferences(classPreference, appId);
   }
 
   setParseKeys() {

@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "baseUrl": "src",
+    "paths": {
+      "lib/*": ["lib/*"],
+      "components/*": ["components/*"],
+      "stylesheets/*": ["stylesheets/*"]
+    }
   },
   "typeAcquisition": {
       "include": [
