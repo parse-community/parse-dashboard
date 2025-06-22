@@ -14,9 +14,9 @@ import Parse from 'parse';
 
 export const load = async (preferencesClassName) => {
   const preferences = await new Parse.Query(preferencesClassName)
-        .equalTo('user', Parse.User.current())
-        .equalTo('key', 'columnPreferences')
-        .first({ useMasterKey: true });
+    .equalTo('user', Parse.User.current())
+    .equalTo('key', 'columnPreferences')
+    .first({ useMasterKey: true });
 
   if (preferences) {
     const prefs = JSON.parse(preferences.get('value'));
