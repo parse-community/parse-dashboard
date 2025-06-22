@@ -54,7 +54,9 @@ const Modal = ({
 
   const handleMouseDown = (side) => (e) => {
     e.preventDefault();
-    if (!modalRef.current) return;
+    if (!modalRef.current) {
+      return;
+    }
     resizing.current = {
       active: true,
       side,
@@ -66,7 +68,9 @@ const Modal = ({
 
   const handleMouseMove = useCallback(
     (e) => {
-      if (!resizing.current.active || !modalRef.current) return;
+      if (!resizing.current.active || !modalRef.current) {
+        return;
+      }
       const { side, startX, startWidth } = resizing.current;
       if (side === 'right') {
         let newWidth = startWidth + 2 * (e.clientX - startX);
