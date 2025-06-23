@@ -54,6 +54,7 @@ class Browser extends DashboardView {
     this.section = 'Core';
     this.subsection = 'Browser';
     this.noteTimeout = null;
+    this.currentQuery = null;
     const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
@@ -221,6 +222,9 @@ class Browser extends DashboardView {
   }
 
   componentWillUnmount() {
+    if (this.currentQuery) {
+      this.currentQuery.cancel();
+    }
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
@@ -897,6 +901,10 @@ class Browser extends DashboardView {
   }
 
   async fetchParseData(source, filters) {
+    if (this.currentQuery) {
+      this.currentQuery.cancel();
+    }
+
     const { useMasterKey, skip, limit } = this.state;
     this.setState({
       data: null,
@@ -916,6 +924,7 @@ class Browser extends DashboardView {
     localStorage?.setItem('browserLimit', limit);
 
     this.excludeFields(query, source);
+    this.currentQuery = query;
     let promise = query.find({ useMasterKey });
     let isUnique = false;
     let uniqueField = null;

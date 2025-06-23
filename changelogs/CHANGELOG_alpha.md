@@ -1,3 +1,10 @@
+## [7.2.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.2.0...7.2.1-alpha.1) (2025-06-02)
+
+
+### Bug Fixes
+
+* Data browser does not cancel obsolete long-loading request on sorting field change ([#2839](https://github.com/parse-community/parse-dashboard/issues/2839)) ([0f85376](https://github.com/parse-community/parse-dashboard/commit/0f85376b8ae1db7ae31626896b06fdc0bd8efd75))
+
 # [7.2.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/7.2.0-alpha.8...7.2.0-alpha.9) (2025-05-27)
 
 
