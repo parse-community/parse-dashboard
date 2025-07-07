@@ -9,6 +9,7 @@ import { ActionTypes } from 'lib/stores/ConfigStore';
 import Button from 'components/Button/Button.react';
 import ConfigDialog from 'dashboard/Data/Config/ConfigDialog.react';
 import DeleteParameterDialog from 'dashboard/Data/Config/DeleteParameterDialog.react';
+import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
 import { isDate } from 'lib/DateUtils';
@@ -20,9 +21,11 @@ import TableHeader from 'components/Table/TableHeader.react';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
+import configStyles from 'dashboard/Data/Config/Config.scss';
 import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
 import equal from 'fast-deep-equal';
+import Notification from 'dashboard/Data/Browser/Notification.react';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -41,7 +44,12 @@ class Config extends TableView {
       modalMasterKeyOnly: false,
       loading: false,
       confirmModalOpen: false,
+      lastError: null,
+      lastNote: null,
+      showAddEntryDialog: false,
+      addEntryParam: '',
     };
+    this.noteTimeout = null;
   }
 
   componentWillMount() {
@@ -107,6 +115,15 @@ class Config extends TableView {
           onConfirm={this.deleteParam.bind(this, this.state.modalParam)}
         />
       );
+    } else if (this.state.showAddEntryDialog) {
+      extras = (
+        <AddArrayEntryDialog
+          onCancel={this.closeAddEntryDialog.bind(this)}
+          onConfirm={value =>
+            this.addArrayEntry(this.state.addEntryParam, value)
+          }
+        />
+      );
     }
 
     if (this.state.confirmModalOpen) {
@@ -127,12 +144,24 @@ class Config extends TableView {
           }}
         >
           <div className={[browserStyles.confirmConfig]}>
-            This parameter changed while you were editing it. If you continue, the latest changes will be lost and replaced with your version. Do you want to proceed?
+            This parameter changed while you were editing it. If you continue, the latest changes
+            will be lost and replaced with your version. Do you want to proceed?
           </div>
         </Modal>
       );
     }
-    return extras;
+    let notification = null;
+    if (this.state.lastError) {
+      notification = <Notification note={this.state.lastError} isErrorNote={true} />;
+    } else if (this.state.lastNote) {
+      notification = <Notification note={this.state.lastNote} isErrorNote={false} />;
+    }
+    return (
+      <>
+        {extras}
+        {notification}
+      </>
+    );
   }
 
   parseValueForModal(dataValue) {
@@ -186,7 +215,6 @@ class Config extends TableView {
      * Opens the modal dialog to edit the Config parameter.
      */
     const openModal = async () => {
-
       // Show dialog
       this.setState({
         loading: true,
@@ -203,7 +231,8 @@ class Config extends TableView {
       // Get latest param values
       const fetchedParams = this.props.config.data.get('params');
       const fetchedValue = fetchedParams.get(this.state.modalParam);
-      const fetchedMasterKeyOnly = this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
+      const fetchedMasterKeyOnly =
+        this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
 
       // Parse fetched data
       const { modalValue: fetchedModalValue } = this.parseValueForModal(fetchedValue);
@@ -219,6 +248,8 @@ class Config extends TableView {
     // Define column styles
     const columnStyleLarge = { width: '30%', cursor: 'pointer' };
     const columnStyleSmall = { width: '15%', cursor: 'pointer' };
+    const columnStyleValue = { width: '25%', cursor: 'pointer' };
+    const columnStyleAction = { width: '10%' };
 
     const openModalValueColumn = () => {
       if (data.value instanceof Parse.File) {
@@ -241,13 +272,23 @@ class Config extends TableView {
         <td style={columnStyleSmall} onClick={openModal}>
           {type}
         </td>
-        <td style={columnStyleLarge} onClick={openModalValueColumn}>
+        <td style={columnStyleValue} onClick={openModalValueColumn}>
           {value}
+        </td>
+        <td style={columnStyleAction}>
+          {type === 'Array' && (
+            <a
+              className={configStyles.actionIcon}
+              onClick={() => this.openAddEntryDialog(data.param)}
+            >
+              <Icon width={12} height={12} name="plus-solid" />
+            </a>
+          )}
         </td>
         <td style={columnStyleSmall} onClick={openModal}>
           {data.masterKeyOnly.toString()}
         </td>
-        <td style={{ textAlign: 'center' }}>
+        <td style={{ textAlign: 'center', width: '5%' }}>
           <a onClick={openDeleteParameterDialog}>
             <Icon width={16} height={16} name="trash-solid" fill="#ff395e" />
           </a>
@@ -264,8 +305,11 @@ class Config extends TableView {
       <TableHeader key="type" width={15}>
         Type
       </TableHeader>,
-      <TableHeader key="value" width={30}>
+      <TableHeader key="value" width={25}>
         Value
+      </TableHeader>,
+      <TableHeader key="action" width={10}>
+        Action
       </TableHeader>,
       <TableHeader key="masterKeyOnly" width={15}>
         Master key only
@@ -429,6 +473,89 @@ class Config extends TableView {
       modalValue: '',
       modalMasterKeyOnly: false,
     });
+  }
+
+  showNote(message, isError) {
+    if (!message) {
+      return;
+    }
+    clearTimeout(this.noteTimeout);
+    if (isError) {
+      this.setState({ lastError: message, lastNote: null });
+    } else {
+      this.setState({ lastNote: message, lastError: null });
+    }
+    this.noteTimeout = setTimeout(() => {
+      this.setState({ lastError: null, lastNote: null });
+    }, 3500);
+  }
+
+  openAddEntryDialog(param) {
+    this.setState({ showAddEntryDialog: true, addEntryParam: param });
+  }
+
+  closeAddEntryDialog() {
+    this.setState({ showAddEntryDialog: false, addEntryParam: '' });
+  }
+
+  async addArrayEntry(param, value) {
+    try {
+      this.setState({ loading: true });
+      const masterKeyOnlyMap = this.props.config.data.get('masterKeyOnly');
+      const masterKeyOnly = masterKeyOnlyMap?.get(param) || false;
+      await Parse._request(
+        'PUT',
+        'config',
+        {
+          params: {
+            [param]: { __op: 'AddUnique', objects: [Parse._encode(value)] },
+          },
+          masterKeyOnly: { [param]: masterKeyOnly },
+        },
+        { useMasterKey: true }
+      );
+      await this.props.config.dispatch(ActionTypes.FETCH);
+
+      // Update config history
+      const limit = this.context.cloudConfigHistoryLimit;
+      const applicationId = this.context.applicationId;
+      const params = this.props.config.data.get('params');
+      const updatedValue = params.get(param);
+      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+      const newHistoryEntry = {
+        time: new Date(),
+        value: updatedValue,
+      };
+
+      if (!configHistory) {
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            [param]: [newHistoryEntry],
+          })
+        );
+      } else {
+        const oldConfigHistory = JSON.parse(configHistory);
+        const updatedHistory = !oldConfigHistory[param]
+          ? [newHistoryEntry]
+          : [newHistoryEntry, ...oldConfigHistory[param]].slice(0, limit || 100);
+
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            ...oldConfigHistory,
+            [param]: updatedHistory,
+          })
+        );
+      }
+
+      this.showNote('Entry added');
+    } catch (e) {
+      this.showNote(`Failed to add entry: ${e.message}`, true);
+    } finally {
+      this.setState({ loading: false });
+    }
+    this.closeAddEntryDialog();
   }
 }
 
