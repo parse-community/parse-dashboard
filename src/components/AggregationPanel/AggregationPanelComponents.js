@@ -1,4 +1,6 @@
 import React from 'react';
+import copy from 'copy-to-clipboard';
+import Icon from 'components/Icon/Icon.react';
 import styles from './AggregationPanel.scss';
 
 // Text Element Component
@@ -9,18 +11,30 @@ export const TextElement = ({ text, style}) => (
 );
 
 // Key-Value Element Component
-export const KeyValueElement = ({ item, appName, style }) => (
-  <div className={styles.keyValue} style={style}>
-    {item.key}:
-    {item.url ? (
-      <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank" rel="noreferrer">
-        {item.value}
-      </a>
-    ) : (
-      <span>{item.value}</span>
-    )}
-  </div>
-);
+export const KeyValueElement = ({ item, appName, style, showNote }) => {
+  const handleCopy = () => {
+    copy(String(item.value));
+    if (showNote) {
+      showNote('Value copied to clipboard', false);
+    }
+  };
+
+  return (
+    <div className={styles.keyValue} style={style}>
+      {item.key}:
+      {item.url ? (
+        <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank" rel="noreferrer">
+          {item.value}
+        </a>
+      ) : (
+        <span>{item.value}</span>
+      )}
+      <span className={styles.copyIcon} onClick={handleCopy}>
+        <Icon name="clone-icon" width={12} height={12} />
+      </span>
+    </div>
+  );
+};
 
 // Table Element Component
 export const TableElement = ({ columns, rows, style }) => (

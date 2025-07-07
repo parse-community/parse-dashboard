@@ -21,6 +21,17 @@
     font-size: 14px;
     display: flex;
     gap: 10px;
+    align-items: center;
+
+    .copyIcon {
+        display: none;
+        cursor: pointer;
+        margin-left: 4px;
+    }
+
+    &:hover .copyIcon {
+        display: inline-block;
+    }
 }
 
 .video {

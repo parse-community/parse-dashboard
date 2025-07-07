@@ -101,7 +101,15 @@ const AggregationPanel = ({
             case 'text':
               return <TextElement key={idx} text={item.text} style={item.style} />;
             case 'keyValue':
-              return <KeyValueElement key={idx} item={item} appName={appName} style={item.style} />;
+              return (
+                <KeyValueElement
+                  key={idx}
+                  item={item}
+                  appName={appName}
+                  showNote={showNote}
+                  style={item.style}
+                />
+              );
             case 'table':
               return <TableElement key={idx} columns={item.columns} rows={item.rows} style={item.style} />;
             case 'image':
