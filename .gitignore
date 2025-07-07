@@ -17,3 +17,5 @@ test_logs
 
 # visual studio code
 .vscode
+new-dashboard/node_modules/
+new-dashboard/dist/
