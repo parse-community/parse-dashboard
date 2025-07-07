@@ -9,6 +9,7 @@ import { ActionTypes } from 'lib/stores/ConfigStore';
 import Button from 'components/Button/Button.react';
 import ConfigDialog from 'dashboard/Data/Config/ConfigDialog.react';
 import DeleteParameterDialog from 'dashboard/Data/Config/DeleteParameterDialog.react';
+import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
 import { isDate } from 'lib/DateUtils';
@@ -44,6 +45,8 @@ class Config extends TableView {
       confirmModalOpen: false,
       lastError: null,
       lastNote: null,
+      showAddEntryDialog: false,
+      addEntryParam: '',
     };
     this.noteTimeout = null;
   }
@@ -109,6 +112,15 @@ class Config extends TableView {
           param={this.state.modalParam}
           onCancel={() => this.setState({ showDeleteParameterDialog: false })}
           onConfirm={this.deleteParam.bind(this, this.state.modalParam)}
+        />
+      );
+    } else if (this.state.showAddEntryDialog) {
+      extras = (
+        <AddArrayEntryDialog
+          onCancel={this.closeAddEntryDialog.bind(this)}
+          onConfirm={value =>
+            this.addArrayEntry(this.state.addEntryParam, value)
+          }
         />
       );
     }
@@ -235,7 +247,8 @@ class Config extends TableView {
     // Define column styles
     const columnStyleLarge = { width: '30%', cursor: 'pointer' };
     const columnStyleSmall = { width: '15%', cursor: 'pointer' };
-    const columnStyleAction = { width: '10%', textAlign: 'center' };
+    const columnStyleValue = { width: '25%', cursor: 'pointer' };
+    const columnStyleAction = { width: '10%' };
 
     const openModalValueColumn = () => {
       if (data.value instanceof Parse.File) {
@@ -258,12 +271,12 @@ class Config extends TableView {
         <td style={columnStyleSmall} onClick={openModal}>
           {type}
         </td>
-        <td style={columnStyleLarge} onClick={openModalValueColumn}>
+        <td style={columnStyleValue} onClick={openModalValueColumn}>
           {value}
         </td>
         <td style={columnStyleAction}>
           {type === 'Array' && (
-            <a onClick={() => this.addArrayEntry(data.param)}>
+            <a onClick={() => this.openAddEntryDialog(data.param)}>
               <Icon width={16} height={16} name="plus-solid" />
             </a>
           )}
@@ -271,7 +284,7 @@ class Config extends TableView {
         <td style={columnStyleSmall} onClick={openModal}>
           {data.masterKeyOnly.toString()}
         </td>
-        <td style={{ textAlign: 'center' }}>
+        <td style={{ textAlign: 'center', width: '5%' }}>
           <a onClick={openDeleteParameterDialog}>
             <Icon width={16} height={16} name="trash-solid" fill="#ff395e" />
           </a>
@@ -473,17 +486,15 @@ class Config extends TableView {
     }, 3500);
   }
 
-  async addArrayEntry(param) {
-    const input = window.prompt('New array entry (JSON supported)');
-    if (input === null) {
-      return;
-    }
-    let value;
-    try {
-      value = JSON.parse(input);
-    } catch (e) {
-      value = input;
-    }
+  openAddEntryDialog(param) {
+    this.setState({ showAddEntryDialog: true, addEntryParam: param });
+  }
+
+  closeAddEntryDialog() {
+    this.setState({ showAddEntryDialog: false, addEntryParam: '' });
+  }
+
+  async addArrayEntry(param, value) {
     try {
       this.setState({ loading: true });
       await Parse._request(
@@ -503,6 +514,7 @@ class Config extends TableView {
     } finally {
       this.setState({ loading: false });
     }
+    this.closeAddEntryDialog();
   }
 }
 
