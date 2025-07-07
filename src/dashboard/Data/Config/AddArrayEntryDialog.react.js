@@ -15,6 +15,13 @@ export default class AddArrayEntryDialog extends React.Component {
   constructor() {
     super();
     this.state = { value: '' };
+    this.inputRef = React.createRef();
+  }
+
+  componentDidMount() {
+    if (this.inputRef.current) {
+      this.inputRef.current.focus();
+    }
   }
 
   valid() {
@@ -43,7 +50,13 @@ export default class AddArrayEntryDialog extends React.Component {
       >
         <Field
           label={<Label text="Value" />}
-          input={<TextInput autofocus={true} value={this.state.value} onChange={value => this.setState({ value })} />}
+          input={
+            <TextInput
+              ref={this.inputRef}
+              value={this.state.value}
+              onChange={value => this.setState({ value })}
+            />
+          }
         />
       </Modal>
     );
