@@ -278,7 +278,7 @@ class Config extends TableView {
         <td style={columnStyleAction}>
           {type === 'Array' && (
             <a
-              className={configStyles.actionIcon}
+              className={configStyles.configActionIcon}
               onClick={() => this.openAddEntryDialog(data.param)}
             >
               <Icon width={18} height={18} name="plus-solid" />
