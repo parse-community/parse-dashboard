@@ -57,6 +57,7 @@ export default class AddArrayEntryDialog extends React.Component {
           }
           input={
             <TextInput
+              placeholder={'Enter value'}
               ref={this.inputRef}
               value={this.state.value}
               onChange={value => this.setState({ value })}
