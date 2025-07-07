@@ -511,6 +511,40 @@ class Config extends TableView {
         { useMasterKey: true }
       );
       await this.props.config.dispatch(ActionTypes.FETCH);
+
+      // Update config history
+      const limit = this.context.cloudConfigHistoryLimit;
+      const applicationId = this.context.applicationId;
+      const params = this.props.config.data.get('params');
+      const updatedValue = params.get(param);
+      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+      const newHistoryEntry = {
+        time: new Date(),
+        value: updatedValue,
+      };
+
+      if (!configHistory) {
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            [param]: [newHistoryEntry],
+          })
+        );
+      } else {
+        const oldConfigHistory = JSON.parse(configHistory);
+        const updatedHistory = !oldConfigHistory[param]
+          ? [newHistoryEntry]
+          : [newHistoryEntry, ...oldConfigHistory[param]].slice(0, limit || 100);
+
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            ...oldConfigHistory,
+            [param]: updatedHistory,
+          })
+        );
+      }
+
       this.showNote('Entry added');
     } catch (e) {
       this.showNote(`Failed to add entry: ${e.message}`, true);
