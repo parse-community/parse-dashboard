@@ -281,7 +281,7 @@ class Config extends TableView {
               className={configStyles.actionIcon}
               onClick={() => this.openAddEntryDialog(data.param)}
             >
-              <Icon width={16} height={16} name="plus-solid" />
+              <Icon width={18} height={18} name="plus-solid" />
             </a>
           )}
         </td>
