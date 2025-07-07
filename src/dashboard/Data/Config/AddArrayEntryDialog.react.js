@@ -42,14 +42,19 @@ export default class AddArrayEntryDialog extends React.Component {
         type={Modal.Types.INFO}
         icon="plus-solid"
         title="Add entry"
-        confirmText="Add"
+        confirmText="Add Unique"
         cancelText="Cancel"
         onCancel={this.props.onCancel}
         onConfirm={() => this.props.onConfirm(this.getValue())}
         disabled={!this.valid()}
       >
         <Field
-          label={<Label text="Value" />}
+          label={
+            <Label
+              text="Value"
+              description="The type is determined based on the entered value. Use quotation marks to enforce string type."
+            />
+          }
           input={
             <TextInput
               ref={this.inputRef}
