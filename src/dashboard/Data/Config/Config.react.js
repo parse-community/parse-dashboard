@@ -497,6 +497,8 @@ class Config extends TableView {
   async addArrayEntry(param, value) {
     try {
       this.setState({ loading: true });
+      const masterKeyOnlyMap = this.props.config.data.get('masterKeyOnly');
+      const masterKeyOnly = masterKeyOnlyMap?.get(param) || false;
       await Parse._request(
         'PUT',
         'config',
@@ -504,6 +506,7 @@ class Config extends TableView {
           params: {
             [param]: { __op: 'AddUnique', objects: [Parse._encode(value)] },
           },
+          masterKeyOnly: { [param]: masterKeyOnly },
         },
         { useMasterKey: true }
       );
