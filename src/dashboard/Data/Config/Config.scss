@@ -9,7 +9,8 @@
   height: 25px;
   cursor: pointer;
   svg {
-    fill: $darkBlue;
+    fill: currentColor;
+    color: $darkBlue;
   }
 }
 
