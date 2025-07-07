@@ -21,6 +21,7 @@ import TableHeader from 'components/Table/TableHeader.react';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
+import configStyles from 'dashboard/Data/Config/Config.scss';
 import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
 import equal from 'fast-deep-equal';
@@ -276,8 +277,11 @@ class Config extends TableView {
         </td>
         <td style={columnStyleAction}>
           {type === 'Array' && (
-            <a onClick={() => this.openAddEntryDialog(data.param)}>
-              <Icon width={16} height={16} name="plus-solid" />
+            <a
+              className={configStyles.actionIcon}
+              onClick={() => this.openAddEntryDialog(data.param)}
+            >
+              <Icon width={12} height={12} name="plus-solid" />
             </a>
           )}
         </td>

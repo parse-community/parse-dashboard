@@ -1,0 +1,16 @@
+@import 'stylesheets/globals.scss';
+
+.actionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: $lightBlue;
+
+  svg {
+    fill: $darkBlue;
+  }
+}
+
