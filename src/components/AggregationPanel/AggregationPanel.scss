@@ -27,6 +27,8 @@
         display: none;
         cursor: pointer;
         margin-left: 4px;
+        color: inherit;
+        opacity: 0.6;
     }
 
     &:hover .copyIcon {

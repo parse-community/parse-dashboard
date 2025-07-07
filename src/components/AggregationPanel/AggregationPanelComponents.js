@@ -30,7 +30,7 @@ export const KeyValueElement = ({ item, appName, style, showNote }) => {
         <span>{item.value}</span>
       )}
       <span className={styles.copyIcon} onClick={handleCopy}>
-        <Icon name="clone-icon" width={12} height={12} />
+        <Icon name="clone-icon" width={12} height={12} fill="currentColor" />
       </span>
     </div>
   );
