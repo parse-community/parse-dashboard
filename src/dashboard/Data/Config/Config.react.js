@@ -23,6 +23,7 @@ import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
 import equal from 'fast-deep-equal';
+import Notification from 'dashboard/Data/Browser/Notification.react';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -41,7 +42,10 @@ class Config extends TableView {
       modalMasterKeyOnly: false,
       loading: false,
       confirmModalOpen: false,
+      lastError: null,
+      lastNote: null,
     };
+    this.noteTimeout = null;
   }
 
   componentWillMount() {
@@ -127,12 +131,24 @@ class Config extends TableView {
           }}
         >
           <div className={[browserStyles.confirmConfig]}>
-            This parameter changed while you were editing it. If you continue, the latest changes will be lost and replaced with your version. Do you want to proceed?
+            This parameter changed while you were editing it. If you continue, the latest changes
+            will be lost and replaced with your version. Do you want to proceed?
           </div>
         </Modal>
       );
     }
-    return extras;
+    let notification = null;
+    if (this.state.lastError) {
+      notification = <Notification note={this.state.lastError} isErrorNote={true} />;
+    } else if (this.state.lastNote) {
+      notification = <Notification note={this.state.lastNote} isErrorNote={false} />;
+    }
+    return (
+      <>
+        {extras}
+        {notification}
+      </>
+    );
   }
 
   parseValueForModal(dataValue) {
@@ -186,7 +202,6 @@ class Config extends TableView {
      * Opens the modal dialog to edit the Config parameter.
      */
     const openModal = async () => {
-
       // Show dialog
       this.setState({
         loading: true,
@@ -203,7 +218,8 @@ class Config extends TableView {
       // Get latest param values
       const fetchedParams = this.props.config.data.get('params');
       const fetchedValue = fetchedParams.get(this.state.modalParam);
-      const fetchedMasterKeyOnly = this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
+      const fetchedMasterKeyOnly =
+        this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
 
       // Parse fetched data
       const { modalValue: fetchedModalValue } = this.parseValueForModal(fetchedValue);
@@ -219,6 +235,7 @@ class Config extends TableView {
     // Define column styles
     const columnStyleLarge = { width: '30%', cursor: 'pointer' };
     const columnStyleSmall = { width: '15%', cursor: 'pointer' };
+    const columnStyleAction = { width: '10%', textAlign: 'center' };
 
     const openModalValueColumn = () => {
       if (data.value instanceof Parse.File) {
@@ -244,6 +261,13 @@ class Config extends TableView {
         <td style={columnStyleLarge} onClick={openModalValueColumn}>
           {value}
         </td>
+        <td style={columnStyleAction}>
+          {type === 'Array' && (
+            <a onClick={() => this.addArrayEntry(data.param)}>
+              <Icon width={16} height={16} name="plus-solid" />
+            </a>
+          )}
+        </td>
         <td style={columnStyleSmall} onClick={openModal}>
           {data.masterKeyOnly.toString()}
         </td>
@@ -264,8 +288,11 @@ class Config extends TableView {
       <TableHeader key="type" width={15}>
         Type
       </TableHeader>,
-      <TableHeader key="value" width={30}>
+      <TableHeader key="value" width={25}>
         Value
+      </TableHeader>,
+      <TableHeader key="action" width={10}>
+        Action
       </TableHeader>,
       <TableHeader key="masterKeyOnly" width={15}>
         Master key only
@@ -429,6 +456,53 @@ class Config extends TableView {
       modalValue: '',
       modalMasterKeyOnly: false,
     });
+  }
+
+  showNote(message, isError) {
+    if (!message) {
+      return;
+    }
+    clearTimeout(this.noteTimeout);
+    if (isError) {
+      this.setState({ lastError: message, lastNote: null });
+    } else {
+      this.setState({ lastNote: message, lastError: null });
+    }
+    this.noteTimeout = setTimeout(() => {
+      this.setState({ lastError: null, lastNote: null });
+    }, 3500);
+  }
+
+  async addArrayEntry(param) {
+    const input = window.prompt('New array entry (JSON supported)');
+    if (input === null) {
+      return;
+    }
+    let value;
+    try {
+      value = JSON.parse(input);
+    } catch (e) {
+      value = input;
+    }
+    try {
+      this.setState({ loading: true });
+      await Parse._request(
+        'PUT',
+        'config',
+        {
+          params: {
+            [param]: { __op: 'AddUnique', objects: [Parse._encode(value)] },
+          },
+        },
+        { useMasterKey: true }
+      );
+      await this.props.config.dispatch(ActionTypes.FETCH);
+      this.showNote('Entry added');
+    } catch (e) {
+      this.showNote(`Failed to add entry: ${e.message}`, true);
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 }
 
