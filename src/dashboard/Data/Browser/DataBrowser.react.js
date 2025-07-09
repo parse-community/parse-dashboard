@@ -10,6 +10,8 @@ import copy from 'copy-to-clipboard';
 import BrowserTable from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
+import { dateStringUTC } from 'lib/DateUtils';
+import getFileName from 'lib/getFileName';
 import React from 'react';
 import { ResizableBox } from 'react-resizable';
 import styles from './Databrowser.scss';
@@ -17,6 +19,47 @@ import styles from './Databrowser.scss';
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
+
+function formatValueForCopy(value, type) {
+  if (value === undefined) {
+    return '';
+  }
+  if (value === null) {
+    return '(null)';
+  }
+  switch (type) {
+    case 'GeoPoint':
+      if (value && value.latitude !== undefined && value.longitude !== undefined) {
+        return `(${value.latitude}, ${value.longitude})`;
+      }
+      break;
+    case 'Date':
+      if (value && value.iso) {
+        value = new Date(value.iso);
+      } else if (typeof value === 'string') {
+        value = new Date(value);
+      }
+      if (value instanceof Date && !isNaN(value)) {
+        return dateStringUTC(value);
+      }
+      break;
+    case 'File':
+      if (value && typeof value.url === 'function') {
+        return getFileName(value);
+      }
+      break;
+    case 'Boolean':
+      return value ? 'True' : 'False';
+  }
+  if (typeof value === 'object') {
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return String(value);
+    }
+  }
+  return String(value);
+}
 
 /**
  * DataBrowser renders the browser toolbar and data table
@@ -304,6 +347,7 @@ export default class DataBrowser extends React.Component {
 
           for (let colIndex = colStart; colIndex <= colEnd; colIndex++) {
             const field = this.state.order[colIndex].name;
+            const type = field === 'objectId' ? 'String' : this.props.columns[field].type;
             const value =
               field === 'objectId'
                 ? this.props.data[rowIndex].id
@@ -312,7 +356,7 @@ export default class DataBrowser extends React.Component {
             if (typeof value === 'number' && !isNaN(value)) {
               rowData.push(String(value));
             } else {
-              rowData.push(value || '');
+              rowData.push(formatValueForCopy(value, type));
             }
           }
 
