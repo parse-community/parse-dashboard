@@ -1,3 +1,10 @@
+# [7.3.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.6...7.3.0-alpha.7) (2025-07-09)
+
+
+### Bug Fixes
+
+* Pagination footer bar hides rows in data browser ([#2879](https://github.com/parse-community/parse-dashboard/issues/2879)) ([6bc2da8](https://github.com/parse-community/parse-dashboard/commit/6bc2da848f970ae50cc5de0a9b1d16a04e2c88ae))
+
 # [7.3.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.5...7.3.0-alpha.6) (2025-07-09)
 
 
