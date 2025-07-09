@@ -48,6 +48,7 @@ class Config extends TableView {
       lastNote: null,
       showAddEntryDialog: false,
       addEntryParam: '',
+      addEntryLastType: null,
     };
     this.noteTimeout = null;
   }
@@ -122,6 +123,7 @@ class Config extends TableView {
           onConfirm={value =>
             this.addArrayEntry(this.state.addEntryParam, value)
           }
+          lastType={this.state.addEntryLastType}
         />
       );
     }
@@ -205,6 +207,16 @@ class Config extends TableView {
       modalValue: modalValue,
       type: type,
     };
+  }
+
+  getEntryType(value) {
+    if (Array.isArray(value)) {
+      return 'array';
+    }
+    if (value === null) {
+      return 'null';
+    }
+    return typeof value;
   }
 
   renderRow(data) {
@@ -491,11 +503,25 @@ class Config extends TableView {
   }
 
   openAddEntryDialog(param) {
-    this.setState({ showAddEntryDialog: true, addEntryParam: param });
+    const params = this.props.config.data.get('params');
+    const arr = params?.get(param);
+    let lastType = null;
+    if (Array.isArray(arr) && arr.length > 0) {
+      lastType = this.getEntryType(arr[arr.length - 1]);
+    }
+    this.setState({
+      showAddEntryDialog: true,
+      addEntryParam: param,
+      addEntryLastType: lastType,
+    });
   }
 
   closeAddEntryDialog() {
-    this.setState({ showAddEntryDialog: false, addEntryParam: '' });
+    this.setState({
+      showAddEntryDialog: false,
+      addEntryParam: '',
+      addEntryLastType: null,
+    });
   }
 
   async addArrayEntry(param, value) {

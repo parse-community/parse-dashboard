@@ -14,7 +14,7 @@ import TextInput from 'components/TextInput/TextInput.react';
 export default class AddArrayEntryDialog extends React.Component {
   constructor() {
     super();
-    this.state = { value: '' };
+    this.state = { value: '', showWarning: false, parsedValue: null, parsedType: '' };
     this.inputRef = React.createRef();
   }
 
@@ -36,8 +36,30 @@ export default class AddArrayEntryDialog extends React.Component {
     }
   }
 
+  getType(value) {
+    if (Array.isArray(value)) {
+      return 'array';
+    }
+    if (value === null) {
+      return 'null';
+    }
+    return typeof value;
+  }
+
+  handleConfirm() {
+    const parsed = this.getValue();
+    const entryType = this.getType(parsed);
+    const lastType = this.props.lastType;
+    if (lastType && entryType !== lastType && !this.state.showWarning) {
+      this.setState({ showWarning: true, parsedValue: parsed, parsedType: entryType });
+      return;
+    }
+    this.props.onConfirm(parsed);
+    this.setState({ showWarning: false, parsedValue: null, parsedType: '' });
+  }
+
   render() {
-    return (
+    const addEntryModal = (
       <Modal
         type={Modal.Types.INFO}
         icon="plus-solid"
@@ -45,7 +67,7 @@ export default class AddArrayEntryDialog extends React.Component {
         confirmText="Add Unique"
         cancelText="Cancel"
         onCancel={this.props.onCancel}
-        onConfirm={() => this.props.onConfirm(this.getValue())}
+        onConfirm={this.handleConfirm.bind(this)}
         disabled={!this.valid()}
       >
         <Field
@@ -65,6 +87,29 @@ export default class AddArrayEntryDialog extends React.Component {
           }
         />
       </Modal>
+    );
+
+    const warningModal = this.state.showWarning ? (
+      <Modal
+        type={Modal.Types.WARNING}
+        icon="warn-outline"
+        title="Type Mismatch"
+        confirmText="Add"
+        cancelText="Cancel"
+        onCancel={() => this.setState({ showWarning: false })}
+        onConfirm={() => this.handleConfirm()}
+      >
+        <div>
+          The type of the previous item (<strong>{this.props.lastType}</strong>) does not correspond to the type of the entry (<strong>{this.state.parsedType}</strong>). Do you want to proceed?
+        </div>
+      </Modal>
+    ) : null;
+
+    return (
+      <>
+        {addEntryModal}
+        {warningModal}
+      </>
     );
   }
 }
