@@ -56,11 +56,18 @@ export default class AddArrayEntryDialog extends React.Component {
 
     if (lastType && entryType !== lastType) {
       if (!this.state.showMismatchRow) {
-        this.setState({
-          showMismatchRow: true,
-          mismatchConfirmed: false,
-          parsedType: entryType,
-        });
+        this.setState(
+          {
+            showMismatchRow: true,
+            mismatchConfirmed: false,
+            parsedType: entryType,
+          },
+          () => {
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
+          }
+        );
         return;
       }
       if (!this.state.mismatchConfirmed) {
