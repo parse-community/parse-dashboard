@@ -10,11 +10,17 @@ import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
+import Checkbox from 'components/Checkbox/Checkbox.react';
 
 export default class AddArrayEntryDialog extends React.Component {
   constructor() {
     super();
-    this.state = { value: '', showWarning: false, parsedValue: null, parsedType: '' };
+    this.state = {
+      value: '',
+      showMismatchRow: false,
+      mismatchConfirmed: false,
+      parsedType: '',
+    };
     this.inputRef = React.createRef();
   }
 
@@ -25,7 +31,13 @@ export default class AddArrayEntryDialog extends React.Component {
   }
 
   valid() {
-    return this.state.value !== '';
+    if (this.state.value === '') {
+      return false;
+    }
+    if (this.state.showMismatchRow && !this.state.mismatchConfirmed) {
+      return false;
+    }
+    return true;
   }
 
   getValue() {
@@ -50,12 +62,28 @@ export default class AddArrayEntryDialog extends React.Component {
     const parsed = this.getValue();
     const entryType = this.getType(parsed);
     const lastType = this.props.lastType;
-    if (lastType && entryType !== lastType && !this.state.showWarning) {
-      this.setState({ showWarning: true, parsedValue: parsed, parsedType: entryType });
-      return;
+
+    if (lastType && entryType !== lastType) {
+      if (!this.state.showMismatchRow) {
+        this.setState({
+          showMismatchRow: true,
+          mismatchConfirmed: false,
+          parsedType: entryType,
+        });
+        return;
+      }
+      if (!this.state.mismatchConfirmed) {
+        return;
+      }
     }
+
     this.props.onConfirm(parsed);
-    this.setState({ showWarning: false, parsedValue: null, parsedType: '' });
+    this.setState({
+      value: '',
+      showMismatchRow: false,
+      mismatchConfirmed: false,
+      parsedType: '',
+    });
   }
 
   render() {
@@ -82,34 +110,35 @@ export default class AddArrayEntryDialog extends React.Component {
               placeholder={'Enter value'}
               ref={this.inputRef}
               value={this.state.value}
-              onChange={value => this.setState({ value })}
+              onChange={value =>
+                this.setState({
+                  value,
+                  showMismatchRow: false,
+                  mismatchConfirmed: false,
+                })
+              }
             />
           }
         />
+        {this.state.showMismatchRow && (
+          <Field
+            label={
+              <Label
+                text="Confirm type"
+                description={`Previous item is ${this.props.lastType}, new entry is ${this.state.parsedType}.`}
+              />
+            }
+            input={
+              <Checkbox
+                checked={this.state.mismatchConfirmed}
+                onChange={checked => this.setState({ mismatchConfirmed: checked })}
+              />
+            }
+          />
+        )}
       </Modal>
     );
 
-    const warningModal = this.state.showWarning ? (
-      <Modal
-        type={Modal.Types.WARNING}
-        icon="warn-outline"
-        title="Type Mismatch"
-        confirmText="Add"
-        cancelText="Cancel"
-        onCancel={() => this.setState({ showWarning: false })}
-        onConfirm={() => this.handleConfirm()}
-      >
-        <div>
-          The type of the previous item (<strong>{this.props.lastType}</strong>) does not correspond to the type of the entry (<strong>{this.state.parsedType}</strong>). Do you want to proceed?
-        </div>
-      </Modal>
-    ) : null;
-
-    return (
-      <>
-        {addEntryModal}
-        {warningModal}
-      </>
-    );
+    return addEntryModal;
   }
 }
