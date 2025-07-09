@@ -661,7 +661,7 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + " with id '" + objectSaved.id + "' created";
+        const msg = `${objectSaved.className} with id '${objectSaved.id}' created`;
         this.showNote(msg, false);
 
         const state = { data: this.state.data };
@@ -764,7 +764,7 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
-        const msg = objectSaved.className + " with id '" + objectSaved.id + "' " + 'created';
+        const msg = `${objectSaved.className} with id '${objectSaved.id}' created`;
         this.showNote(msg, false);
 
         const state = {
@@ -1270,7 +1270,7 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + " with id '" + objectSaved.id + "' updated";
+        const msg = `${objectSaved.className} with id '${objectSaved.id}' updated`;
         this.showNote(msg, false);
 
         const state = {
@@ -1398,9 +1398,9 @@ class Browser extends DashboardView {
             let deletedNote;
 
             if (toDeleteObjectIds.length == 1) {
-              deletedNote = className + " with id '" + toDeleteObjectIds[0] + "' deleted";
+              deletedNote = `${className} with id '${toDeleteObjectIds[0]}' deleted`;
             } else {
-              deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
+              deletedNote = `${toDeleteObjectIds.length} ${className} objects deleted`;
             }
 
             this.showNote(deletedNote, false);
@@ -1426,27 +1426,21 @@ class Browser extends DashboardView {
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + " with id '" + error.errors[0].object.id + "'";
+                  `Error deleting ${className} with id '${error.errors[0].object.id}'`;
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
-                  'Error deleting ' +
-                  error.errors.length +
-                  ' out of ' +
-                  toDeleteObjectIds.length +
-                  ' ' +
-                  className +
-                  ' objects';
+                  `Error deleting ${error.errors.length} out of ${toDeleteObjectIds.length} ${className} objects`;
               } else {
                 errorDeletingNote =
-                  'Error deleting all ' + error.errors.length + ' ' + className + ' objects';
+                  `Error deleting all ${error.errors.length} ${className} objects`;
               }
             } else {
               if (toDeleteObjectIds.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + " with id '" + toDeleteObjectIds[0] + "'";
+                  `Error deleting ${className} with id '${toDeleteObjectIds[0]}'`;
               } else {
                 errorDeletingNote =
-                  'Error deleting ' + toDeleteObjectIds.length + ' ' + className + ' objects';
+                  `Error deleting ${toDeleteObjectIds.length} ${className} objects`;
               }
             }
 
