@@ -15,7 +15,7 @@ import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom
 
 const POPOVER_CONTENT_ID = 'toolbarStatsPopover';
 
-const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => {
+const Stats = ({ data, classwiseCloudFunctions, className, appId, appName, toggleGraph, isGraphVisible }) => {
   const [selected, setSelected] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const buttonRef = React.useRef();
@@ -108,14 +108,21 @@ const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => 
   return (
     <>
       {selected ? (
-        <button
-          ref={buttonRef}
-          className={styles.stats}
-          onClick={toggle}
-          style={{ marginRight: rightMarginStyle }}
-        >
-          {`${selected.label}: ${selected.getValue(data)}`}
-        </button>
+        <>
+          <button
+            ref={buttonRef}
+            className={styles.stats}
+            onClick={toggle}
+            style={{ marginRight: rightMarginStyle }}
+          >
+            {`${selected.label}: ${selected.getValue(data)}`}
+          </button>
+          {data.length > 1 ? (
+            <button onClick={toggleGraph} className={styles.graph}>
+              {isGraphVisible ? 'Hide Graph' : 'Show Graph'}
+            </button>
+          ) : null}
+        </>
       ) : null}
       {open ? renderPopover() : null}
     </>
@@ -152,6 +159,8 @@ const Toolbar = props => {
           className={props.className}
           appId={props.appId}
           appName={props.appName}
+          toggleGraph={props.toggleGraph}
+          isGraphVisible={props.isGraphVisible}
         />
       ) : null}
       <div className={styles.actions}>{props.children}</div>
@@ -182,6 +191,8 @@ Toolbar.propTypes = {
   details: PropTypes.string,
   relation: PropTypes.object,
   selectedData: PropTypes.array,
+  toggleGraph: PropTypes.func,
+  isGraphVisible: PropTypes.bool,
 };
 
 export default Toolbar;

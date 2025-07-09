@@ -17,6 +17,7 @@ import { ResizableBox } from 'react-resizable';
 import styles from './Databrowser.scss';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
+import GraphPanel from 'components/GraphPanel/GraphPanel';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 
@@ -80,7 +81,7 @@ export default class DataBrowser extends React.Component {
     const storedRowNumber =
       window.localStorage?.getItem(BROWSER_SHOW_ROW_NUMBER) === 'true';
 
-    this.state = {
+      this.state = {
       order: order,
       current: null,
       editing: false,
@@ -99,6 +100,8 @@ export default class DataBrowser extends React.Component {
       showAggregatedData: true,
       frozenColumnIndex: -1,
       showRowNumber: storedRowNumber,
+      graphVisible: false,
+      graphWidth: 300,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -109,6 +112,9 @@ export default class DataBrowser extends React.Component {
     this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.togglePanelVisibility = this.togglePanelVisibility.bind(this);
+    this.handleGraphResizeStart = this.handleGraphResizeStart.bind(this);
+    this.handleGraphResizeStop = this.handleGraphResizeStop.bind(this);
+    this.handleGraphResizeDiv = this.handleGraphResizeDiv.bind(this);
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
     this.handleColumnsOrder = this.handleColumnsOrder.bind(this);
@@ -120,6 +126,7 @@ export default class DataBrowser extends React.Component {
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
     this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
+    this.toggleGraphVisibility = this.toggleGraphVisibility.bind(this);
     this.saveOrderTimeout = null;
   }
 
@@ -215,6 +222,21 @@ export default class DataBrowser extends React.Component {
     this.setState({ panelWidth: size.width });
   }
 
+  handleGraphResizeStart() {
+    this.setState({ isResizing: true });
+  }
+
+  handleGraphResizeStop(event, { size }) {
+    this.setState({
+      isResizing: false,
+      graphWidth: size.width,
+    });
+  }
+
+  handleGraphResizeDiv(event, { size }) {
+    this.setState({ graphWidth: size.width });
+  }
+
   setShowAggregatedData(bool) {
     this.setState({
       showAggregatedData: bool,
@@ -262,6 +284,10 @@ export default class DataBrowser extends React.Component {
         this.props.app.applicationId
       );
     }
+  }
+
+  toggleGraphVisibility() {
+    this.setState(prevState => ({ graphVisible: !prevState.graphVisible }));
   }
 
   getAllClassesSchema(schema) {
@@ -667,6 +693,7 @@ export default class DataBrowser extends React.Component {
           },
           selectedObjectId: undefined,
           selectedData,
+          graphVisible: true,
         });
       } else {
         this.setCurrent({ row, col });
@@ -677,6 +704,7 @@ export default class DataBrowser extends React.Component {
         selectedData: [],
         current: { row, col },
         firstSelectedCell: clickedCellKey,
+        graphVisible: false,
       });
     }
   }
@@ -758,6 +786,29 @@ export default class DataBrowser extends React.Component {
               </div>
             </ResizableBox>
           )}
+          {this.state.graphVisible && (
+            <ResizableBox
+              width={this.state.graphWidth}
+              height={Infinity}
+              minConstraints={[100, Infinity]}
+              maxConstraints={[this.state.maxWidth, Infinity]}
+              onResizeStart={this.handleGraphResizeStart}
+              onResizeStop={this.handleGraphResizeStop}
+              onResize={this.handleGraphResizeDiv}
+              resizeHandles={['w']}
+              className={styles.resizablePanel}
+            >
+              <div className={styles.aggregationPanelContainer}>
+                <GraphPanel
+                  selectedCells={this.state.selectedCells}
+                  order={this.state.order}
+                  data={this.props.data}
+                  columns={this.props.columns}
+                  width={this.state.graphWidth}
+                />
+              </div>
+            </ResizableBox>
+          )}
         </div>
 
         <BrowserToolbar
@@ -787,6 +838,8 @@ export default class DataBrowser extends React.Component {
           allClassesSchema={this.state.allClassesSchema}
           togglePanel={this.togglePanelVisibility}
           isPanelVisible={this.state.isPanelVisible}
+          toggleGraph={this.toggleGraphVisibility}
+          isGraphVisible={this.state.graphVisible}
           appId={this.props.app.applicationId}
           appName={this.props.appName}
           {...other}

@@ -99,6 +99,19 @@ body:global(.expanded) {
   border: none;
 }
 
+.graph {
+  position: absolute;
+  right: 120px;
+  bottom: 10px;
+  background: $blue;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 14px;
+  color: white;
+  box-shadow: none;
+  border: none;
+}
+
 .stats_popover_container {
   display: flex;
   flex-direction: column;
