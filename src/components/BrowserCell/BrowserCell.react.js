@@ -235,10 +235,12 @@ export default class BrowserCell extends Component {
 
         // BrowserToolbar + DataBrowserHeader height
         const topBoundary = 126;
+        // Account for BrowserFooter height when checking the bottom boundary
+        const bottomBoundary = window.innerHeight - 36;
 
         if (left < leftBoundary || right > window.innerWidth) {
           node.scrollIntoView({ block: 'nearest', inline: 'start' });
-        } else if (top < topBoundary || bottom > window.innerHeight) {
+        } else if (top < topBoundary || bottom > bottomBoundary) {
           node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }
       }
