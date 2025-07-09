@@ -16,6 +16,8 @@ import styles from './Databrowser.scss';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
+const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
+
 /**
  * DataBrowser renders the browser toolbar and data table
  * It also manages the fetching / updating of column size prefs,
@@ -32,6 +34,9 @@ export default class DataBrowser extends React.Component {
       props.className,
       columnPreferences[props.className]
     );
+    const storedRowNumber =
+      window.localStorage?.getItem(BROWSER_SHOW_ROW_NUMBER) === 'true';
+
     this.state = {
       order: order,
       current: null,
@@ -50,7 +55,7 @@ export default class DataBrowser extends React.Component {
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
       frozenColumnIndex: -1,
-      showRowNumber: false,
+      showRowNumber: storedRowNumber,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -556,6 +561,7 @@ export default class DataBrowser extends React.Component {
 
   setShowRowNumber(show) {
     this.setState({ showRowNumber: show });
+    window.localStorage?.setItem(BROWSER_SHOW_ROW_NUMBER, show);
   }
 
   handleColumnsOrder(order, shouldReload) {
