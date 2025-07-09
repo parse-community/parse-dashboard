@@ -15,11 +15,23 @@ import { DndProvider } from 'react-dnd';
 export default class DataBrowserHeaderBar extends React.Component {
   handleContextMenu = (index, event) => {
     event.preventDefault();
-    const { freezeIndex, freezeColumns, unfreezeColumns, setContextMenu } = this.props;
-    const items =
+    const {
+      freezeIndex,
+      freezeColumns,
+      unfreezeColumns,
+      setContextMenu,
+      showRowNumber,
+      setShowRowNumber,
+    } = this.props;
+    const items = [
+      {
+        text: showRowNumber ? 'Hide row number' : 'Display row number',
+        callback: () => setShowRowNumber(!showRowNumber),
+      },
       freezeIndex >= 0 && index <= freezeIndex
-        ? [{ text: 'Unfreeze column', callback: () => unfreezeColumns() }]
-        : [{ text: 'Freeze column', callback: () => freezeColumns(index) }];
+        ? { text: 'Unfreeze column', callback: () => unfreezeColumns() }
+        : { text: 'Freeze column', callback: () => freezeColumns(index) },
+    ];
     setContextMenu(event.pageX, event.pageY, items);
   };
 
@@ -39,6 +51,8 @@ export default class DataBrowserHeaderBar extends React.Component {
       stickyLefts,
       handleLefts,
       freezeIndex,
+      showRowNumber,
+      rowNumberWidth,
     } = this.props;
     const elements = [
       <div
@@ -51,6 +65,22 @@ export default class DataBrowserHeaderBar extends React.Component {
         )}
       </div>,
     ];
+
+    if (showRowNumber) {
+      elements.push(
+        <div
+          key="rowNumber"
+          className={[styles.wrap, styles.rowNumber].join(' ')}
+          style={
+            freezeIndex >= 0
+              ? { position: 'sticky', left: 30, zIndex: 11, width: rowNumberWidth }
+              : { width: rowNumberWidth }
+          }
+        >
+          #
+        </div>
+      );
+    }
 
     headers.forEach(({ width, name, type, targetClass, order, visible, preventSort }, i) => {
       if (!visible) {

@@ -121,11 +121,13 @@ export default class BrowserTable extends React.Component {
 
     const stickyLefts = [];
     const handleLefts = [];
-    if (
-      typeof this.props.freezeIndex === 'number' &&
-      this.props.freezeIndex >= 0
-    ) {
-      let left = 30;
+    const maxRowNumber =
+      this.props.skip + (this.props.data ? this.props.data.length : this.props.limit);
+    const rowNumberWidth = this.props.showRowNumber
+      ? maxRowNumber.toLocaleString().length * 8 + 16
+      : 0;
+    if (typeof this.props.freezeIndex === 'number' && this.props.freezeIndex >= 0) {
+      let left = 30 + rowNumberWidth;
       headers.forEach((h, i) => {
         stickyLefts[i] = left;
         handleLefts[i] = left + h.width;
@@ -137,10 +139,11 @@ export default class BrowserTable extends React.Component {
     let editor = null;
     let table = <div ref={this.tableRef} />;
     if (this.props.data) {
-      const rowWidth = this.props.order.reduce(
-        (rowWidth, { visible, width }) => (visible ? rowWidth + width : rowWidth),
-        this.props.onAddRow ? 210 : 0
-      );
+      const rowWidth =
+        this.props.order.reduce(
+          (rw, { visible, width }) => (visible ? rw + width : rw),
+          this.props.onAddRow ? 210 : 0
+        ) + rowNumberWidth;
       let editCloneRows;
       if (this.props.editCloneRows) {
         editCloneRows = (
@@ -175,6 +178,9 @@ export default class BrowserTable extends React.Component {
                     row={index}
                     rowValue={this.props.data[index]}
                     rowWidth={rowWidth}
+                    showRowNumber={this.props.showRowNumber}
+                    rowNumberWidth={rowNumberWidth}
+                    skip={this.props.skip}
                     selection={this.props.selection}
                     selectRow={this.props.selectRow}
                     setCurrent={this.props.setCurrent}
@@ -258,6 +264,9 @@ export default class BrowserTable extends React.Component {
               readOnlyFields={READ_ONLY}
               row={-1}
               rowWidth={rowWidth}
+              showRowNumber={this.props.showRowNumber}
+              rowNumberWidth={rowNumberWidth}
+              skip={this.props.skip}
               selection={this.props.selection}
               selectRow={this.props.selectRow}
               setCurrent={this.props.setCurrent}
@@ -352,6 +361,9 @@ export default class BrowserTable extends React.Component {
             row={i}
             rowValue={this.props.data[i]}
             rowWidth={rowWidth}
+            showRowNumber={this.props.showRowNumber}
+            rowNumberWidth={rowNumberWidth}
+            skip={this.props.skip}
             selection={this.props.selection}
             selectRow={this.props.selectRow}
             setCurrent={this.props.setCurrent}
@@ -450,7 +462,7 @@ export default class BrowserTable extends React.Component {
             //for data rows & new row when there are edit clone rows
             wrapTop += 2 * ROW_HEIGHT * this.props.editCloneRows.length;
           }
-          let wrapLeft = 30;
+          let wrapLeft = 30 + rowNumberWidth;
           for (let i = 0; i < this.props.current.col; i++) {
             const column = this.props.order[i];
             wrapLeft += column.visible ? column.width : 0;
@@ -582,6 +594,9 @@ export default class BrowserTable extends React.Component {
           freezeColumns={this.props.freezeColumns}
           unfreezeColumns={this.props.unfreezeColumns}
           updateOrdering={this.props.updateOrdering}
+          showRowNumber={this.props.showRowNumber}
+          setShowRowNumber={this.props.setShowRowNumber}
+          rowNumberWidth={rowNumberWidth}
           readonly={!!this.props.relation || !!this.props.isUnique}
           handleDragDrop={this.props.handleHeaderDragDrop}
           onResize={this.props.handleResize}

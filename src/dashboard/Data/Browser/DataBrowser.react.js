@@ -50,6 +50,7 @@ export default class DataBrowser extends React.Component {
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
       frozenColumnIndex: -1,
+      showRowNumber: false,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -69,6 +70,7 @@ export default class DataBrowser extends React.Component {
     this.setContextMenu = this.setContextMenu.bind(this);
     this.freezeColumns = this.freezeColumns.bind(this);
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
+    this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
   }
@@ -297,9 +299,10 @@ export default class DataBrowser extends React.Component {
 
           for (let colIndex = colStart; colIndex <= colEnd; colIndex++) {
             const field = this.state.order[colIndex].name;
-            const value = field === 'objectId'
-              ? this.props.data[rowIndex].id
-              : this.props.data[rowIndex].attributes[field];
+            const value =
+              field === 'objectId'
+                ? this.props.data[rowIndex].id
+                : this.props.data[rowIndex].attributes[field];
 
             if (typeof value === 'number' && !isNaN(value)) {
               rowData.push(String(value));
@@ -389,10 +392,10 @@ export default class DataBrowser extends React.Component {
               e.ctrlKey || e.metaKey
                 ? firstVisibleColumnIndex
                 : this.getNextVisibleColumnIndex(
-                  -1,
-                  firstVisibleColumnIndex,
-                  lastVisibleColumnIndex
-                ),
+                    -1,
+                    firstVisibleColumnIndex,
+                    lastVisibleColumnIndex
+                  ),
           },
         });
         e.preventDefault();
@@ -430,10 +433,10 @@ export default class DataBrowser extends React.Component {
               e.ctrlKey || e.metaKey
                 ? lastVisibleColumnIndex
                 : this.getNextVisibleColumnIndex(
-                  1,
-                  firstVisibleColumnIndex,
-                  lastVisibleColumnIndex
-                ),
+                    1,
+                    firstVisibleColumnIndex,
+                    lastVisibleColumnIndex
+                  ),
           },
         });
         e.preventDefault();
@@ -551,6 +554,10 @@ export default class DataBrowser extends React.Component {
     this.setState({ frozenColumnIndex: -1 });
   }
 
+  setShowRowNumber(show) {
+    this.setState({ showRowNumber: show });
+  }
+
   handleColumnsOrder(order, shouldReload) {
     this.setState({ order: [...order] }, () => {
       this.updatePreferences(order, shouldReload);
@@ -666,6 +673,10 @@ export default class DataBrowser extends React.Component {
             panelWidth={this.state.panelWidth}
             isResizing={this.state.isResizing}
             setShowAggregatedData={this.setShowAggregatedData}
+            showRowNumber={this.state.showRowNumber}
+            setShowRowNumber={this.setShowRowNumber}
+            skip={this.props.skip}
+            limit={this.props.limit}
             firstSelectedCell={this.state.firstSelectedCell}
             {...other}
           />

@@ -33,6 +33,9 @@ export default class BrowserRow extends Component {
       row,
       rowValue,
       rowWidth,
+      showRowNumber,
+      rowNumberWidth,
+      skip,
       selection,
       selectRow,
       setCopyableValue,
@@ -82,12 +85,12 @@ export default class BrowserRow extends Component {
           style={
             freezeIndex >= 0
               ? {
-                position: 'sticky',
-                left: 0,
-                zIndex: 1,
-                background: rowBackground,
-                borderBottom: '1px solid #e3e3ea',
-              }
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 1,
+                  background: rowBackground,
+                  borderBottom: '1px solid #e3e3ea',
+                }
               : {}
           }
         >
@@ -98,6 +101,25 @@ export default class BrowserRow extends Component {
             onMouseDown={e => onMouseDownRowCheckBox(e.target.checked)}
           />
         </span>
+        {showRowNumber && (
+          <span
+            className={styles.rowNumberCell}
+            style={
+              freezeIndex >= 0
+                ? {
+                    position: 'sticky',
+                    left: 30,
+                    zIndex: 1,
+                    background: rowBackground,
+                    borderBottom: '1px solid #e3e3ea',
+                    width: rowNumberWidth,
+                  }
+                : { width: rowNumberWidth }
+            }
+          >
+            {row >= 0 ? (skip + row + 1).toLocaleString() : ''}
+          </span>
+        )}
         {order.map(({ name, width, visible }, j) => {
           if (!visible) {
             return null;
