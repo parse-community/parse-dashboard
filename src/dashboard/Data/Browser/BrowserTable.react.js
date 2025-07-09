@@ -118,6 +118,19 @@ export default class BrowserTable extends React.Component {
       preventSort,
       required,
     }));
+
+    let stickyLefts = [];
+    let handleLefts = [];
+    if (typeof this.props.freezeIndex === 'number' && this.props.freezeIndex >= 0) {
+      let left = 30;
+      headers.forEach((h, i) => {
+        stickyLefts[i] = left;
+        handleLefts[i] = left + h.width;
+        if (h.visible) {
+          left += h.width + 8;
+        }
+      });
+    }
     let editor = null;
     let table = <div ref={this.tableRef} />;
     if (this.props.data) {
@@ -170,6 +183,8 @@ export default class BrowserTable extends React.Component {
                     callCloudFunction={this.props.callCloudFunction}
                     isPanelVisible={this.props.isPanelVisible}
                     setContextMenu={this.props.setContextMenu}
+                    stickyLefts={stickyLefts}
+                    freezeIndex={this.props.freezeIndex}
                     onEditSelectedRow={this.props.onEditSelectedRow}
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
                     showNote={this.props.showNote}
@@ -251,6 +266,8 @@ export default class BrowserTable extends React.Component {
               callCloudFunction={this.props.callCloudFunction}
               isPanelVisible={this.props.isPanelVisible}
               setContextMenu={this.props.setContextMenu}
+              stickyLefts={stickyLefts}
+              freezeIndex={this.props.freezeIndex}
               onEditSelectedRow={this.props.onEditSelectedRow}
               markRequiredFieldRow={this.props.markRequiredFieldRow}
               showNote={this.props.showNote}
@@ -342,6 +359,8 @@ export default class BrowserTable extends React.Component {
             setSelectedObjectId={this.props.setSelectedObjectId}
             isPanelVisible={this.props.isPanelVisible}
             setContextMenu={this.props.setContextMenu}
+            stickyLefts={stickyLefts}
+            freezeIndex={this.props.freezeIndex}
             onEditSelectedRow={this.props.onEditSelectedRow}
             showNote={this.props.showNote}
             onRefresh={this.props.onRefresh}
@@ -543,27 +562,33 @@ export default class BrowserTable extends React.Component {
           'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
         }}
       >
-        <DataBrowserHeaderBar
-          selected={
-            !!this.props.selection &&
-            !!this.props.data &&
-            Object.values(this.props.selection).filter(checked => checked).length ===
-              this.props.data.length
-          }
-          selectAll={checked =>
-            this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
-          }
-          headers={headers}
-          updateOrdering={this.props.updateOrdering}
-          readonly={!!this.props.relation || !!this.props.isUnique}
-          handleDragDrop={this.props.handleHeaderDragDrop}
-          onResize={this.props.handleResize}
-          onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.preventSchemaEdits}
-          isDataLoaded={!!this.props.data}
-          setSelectedObjectId={this.props.setSelectedObjectId}
-          setCurrent={this.props.setCurrent}
-        />
+      <DataBrowserHeaderBar
+        selected={
+          !!this.props.selection &&
+          !!this.props.data &&
+          Object.values(this.props.selection).filter(checked => checked).length ===
+            this.props.data.length
+        }
+        selectAll={checked =>
+          this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
+        }
+        headers={headers}
+        stickyLefts={stickyLefts}
+        handleLefts={handleLefts}
+        freezeIndex={this.props.freezeIndex}
+        freezeColumns={this.props.freezeColumns}
+        unfreezeColumns={this.props.unfreezeColumns}
+        updateOrdering={this.props.updateOrdering}
+        readonly={!!this.props.relation || !!this.props.isUnique}
+        handleDragDrop={this.props.handleHeaderDragDrop}
+        onResize={this.props.handleResize}
+        onAddColumn={this.props.onAddColumn}
+        preventSchemaEdits={this.context.preventSchemaEdits}
+        isDataLoaded={!!this.props.data}
+        setSelectedObjectId={this.props.setSelectedObjectId}
+        setCurrent={this.props.setCurrent}
+        setContextMenu={this.props.setContextMenu}
+      />
         {table}
       </div>
     );

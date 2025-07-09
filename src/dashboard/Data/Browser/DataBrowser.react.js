@@ -49,6 +49,7 @@ export default class DataBrowser extends React.Component {
       isResizing: false,
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
+      frozenColumnIndex: -1,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -66,6 +67,8 @@ export default class DataBrowser extends React.Component {
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setSelectedObjectId = this.setSelectedObjectId.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
+    this.freezeColumns = this.freezeColumns.bind(this);
+    this.unfreezeColumns = this.unfreezeColumns.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
   }
@@ -88,6 +91,7 @@ export default class DataBrowser extends React.Component {
         selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
         firstSelectedCell: null,
         selectedData: [],
+        frozenColumnIndex: -1,
       });
     } else if (
       Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
@@ -100,7 +104,7 @@ export default class DataBrowser extends React.Component {
         props.className,
         columnPreferences[props.className]
       );
-      this.setState({ order });
+      this.setState({ order, frozenColumnIndex: -1 });
     }
     if (props && props.className) {
       if (
@@ -539,6 +543,14 @@ export default class DataBrowser extends React.Component {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
+  freezeColumns(index) {
+    this.setState({ frozenColumnIndex: index });
+  }
+
+  unfreezeColumns() {
+    this.setState({ frozenColumnIndex: -1 });
+  }
+
   handleColumnsOrder(order, shouldReload) {
     this.setState({ order: [...order] }, () => {
       this.updatePreferences(order, shouldReload);
@@ -643,6 +655,9 @@ export default class DataBrowser extends React.Component {
             setSelectedObjectId={this.setSelectedObjectId}
             callCloudFunction={this.props.callCloudFunction}
             setContextMenu={this.setContextMenu}
+            freezeIndex={this.state.frozenColumnIndex}
+            freezeColumns={this.freezeColumns}
+            unfreezeColumns={this.unfreezeColumns}
             onFilterChange={this.props.onFilterChange}
             onFilterSave={this.props.onFilterSave}
             selectedCells={this.state.selectedCells}
