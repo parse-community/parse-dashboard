@@ -82,17 +82,13 @@ export default class BrowserRow extends Component {
           className={styles.checkCell}
           onMouseUp={onMouseUpRowCheckBox}
           onMouseOver={() => onMouseOverRowCheckBox(obj.id)}
-          style={
-            freezeIndex >= 0
-              ? {
-                  position: 'sticky',
-                  left: 0,
-                  zIndex: 1,
-                  background: rowBackground,
-                  borderBottom: '1px solid #e3e3ea',
-                }
-              : {}
-          }
+          style={{
+            position: 'sticky',
+            left: 0,
+            zIndex: 1,
+            background: rowBackground,
+            borderBottom: '1px solid #e3e3ea',
+          }}
         >
           <input
             type="checkbox"
@@ -104,18 +100,14 @@ export default class BrowserRow extends Component {
         {showRowNumber && (
           <span
             className={styles.rowNumberCell}
-            style={
-              freezeIndex >= 0
-                ? {
-                    position: 'sticky',
-                    left: 30,
-                    zIndex: 1,
-                    background: rowBackground,
-                    borderBottom: '1px solid #e3e3ea',
-                    width: rowNumberWidth,
-                  }
-                : { width: rowNumberWidth }
-            }
+            style={{
+              position: 'sticky',
+              left: 30,
+              zIndex: 1,
+              background: rowBackground,
+              borderBottom: '1px solid #e3e3ea',
+              width: rowNumberWidth,
+            }}
           >
             {row >= 0 ? (skip + row + 1).toLocaleString() : ''}
           </span>

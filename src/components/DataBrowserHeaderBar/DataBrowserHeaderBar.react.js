@@ -58,7 +58,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       <div
         key="check"
         className={[styles.wrap, styles.check].join(' ')}
-        style={freezeIndex >= 0 ? { position: 'sticky', left: 0, zIndex: 11 } : {}}
+        style={{ position: 'sticky', left: 0, zIndex: 11 }}
       >
         {readonly ? null : (
           <input type="checkbox" checked={selected} onChange={e => selectAll(e.target.checked)} />
@@ -71,11 +71,7 @@ export default class DataBrowserHeaderBar extends React.Component {
         <div
           key="rowNumber"
           className={[styles.wrap, styles.rowNumber].join(' ')}
-          style={
-            freezeIndex >= 0
-              ? { position: 'sticky', left: 30, zIndex: 11, width: rowNumberWidth }
-              : { width: rowNumberWidth }
-          }
+          style={{ position: 'sticky', left: 30, zIndex: 11, width: rowNumberWidth }}
         >
           #
         </div>
