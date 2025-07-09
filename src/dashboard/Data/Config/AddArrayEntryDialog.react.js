@@ -126,8 +126,12 @@ export default class AddArrayEntryDialog extends React.Component {
           <Field
             label={
               <Label
-                text="Confirm type"
-                description={`Previous item is ${this.props.lastType}, new entry is ${this.state.parsedType}.`}
+                text="⚠️ Ignore type mismatch"
+                description={
+                  <>
+                    Previous item type is <strong>{this.props.lastType}</strong>, new entry type is <strong>{this.state.parsedType}</strong>.
+                  </>
+                }
               />
             }
             input={
