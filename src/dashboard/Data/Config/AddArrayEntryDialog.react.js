@@ -30,15 +30,6 @@ export default class AddArrayEntryDialog extends React.Component {
     }
   }
 
-  valid() {
-    if (this.state.value === '') {
-      return false;
-    }
-    if (this.state.showMismatchRow && !this.state.mismatchConfirmed) {
-      return false;
-    }
-    return true;
-  }
 
   getValue() {
     try {
@@ -87,6 +78,10 @@ export default class AddArrayEntryDialog extends React.Component {
   }
 
   render() {
+    const confirmDisabled =
+      this.state.value === '' ||
+      (this.state.showMismatchRow && !this.state.mismatchConfirmed);
+
     const addEntryModal = (
       <Modal
         type={Modal.Types.INFO}
@@ -96,7 +91,7 @@ export default class AddArrayEntryDialog extends React.Component {
         cancelText="Cancel"
         onCancel={this.props.onCancel}
         onConfirm={this.handleConfirm.bind(this)}
-        disabled={!this.valid()}
+        disabled={confirmDisabled}
       >
         <Field
           label={
