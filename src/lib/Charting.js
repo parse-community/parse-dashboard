@@ -73,6 +73,14 @@ export function valueAxisBuckets(max) {
   return buckets;
 }
 
+// Determines the points on a numeric x-axis for sequential data
+export function numericAxisBuckets(min, max) {
+  if (min === max) {
+    return [min];
+  }
+  return [min, max];
+}
+
 // Determines the x,y points on the chart for each data point
 export function getDataPoints(chartWidth, chartHeight, timeBuckets, valueBuckets, dataPoints) {
   const xLength = timeBuckets[timeBuckets.length - 1] - timeBuckets[0];

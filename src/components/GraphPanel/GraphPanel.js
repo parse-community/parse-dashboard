@@ -29,8 +29,10 @@ export default function GraphPanel({ selectedCells, order, data, columns, width 
   const columnNames = order.slice(colStart, colEnd + 1).map(o => o.name);
   const columnTypes = columnNames.map(name => columns[name]?.type);
 
+  const isSingleColumn = columnNames.length === 1;
+
   const initialUseXAxis =
-    columnNames.length > 1 &&
+    !isSingleColumn &&
     (columnTypes[0] === 'Date' || columnTypes[0] === 'Number') &&
     columnTypes.slice(1).some(t => t === 'Number');
 
@@ -100,6 +102,7 @@ export default function GraphPanel({ selectedCells, order, data, columns, width 
   }
 
   const chartWidth = width - 20;
+  const xAxisType = useXAxis ? 'time' : 'index';
   return (
     <div className={styles.graphPanel}>
       <div className={styles.options}>
@@ -108,11 +111,18 @@ export default function GraphPanel({ selectedCells, order, data, columns, width 
             type="checkbox"
             checked={useXAxis}
             onChange={() => setUseXAxis(!useXAxis)}
+            disabled={isSingleColumn}
           />{' '}
           Use first column as X-axis
         </label>
       </div>
-      <Chart width={chartWidth} height={400} data={chartData} />
+      <Chart
+        width={chartWidth}
+        height={400}
+        data={chartData}
+        xAxisType={xAxisType}
+        hideXAxisLabels={isSingleColumn}
+      />
     </div>
   );
 }

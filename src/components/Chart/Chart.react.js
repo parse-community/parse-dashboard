@@ -59,7 +59,7 @@ export default class Chart extends React.Component {
   }
 
   render() {
-    const { width, height, data } = this.props;
+    const { width, height, data, xAxisType = 'time', hideXAxisLabels = false } = this.props;
     const plotting = {};
     let minX = Infinity;
     let maxX = -Infinity;
@@ -83,7 +83,12 @@ export default class Chart extends React.Component {
       }
       plotting[key] = { data: ordered, index: data[key].index };
     }
-    const timeBuckets = Charting.timeAxisBuckets(minX, maxX);
+    let timeBuckets;
+    if (xAxisType === 'index') {
+      timeBuckets = Charting.numericAxisBuckets(minX, maxX);
+    } else {
+      timeBuckets = Charting.timeAxisBuckets(minX, maxX);
+    }
     const valueBuckets = Charting.valueAxisBuckets(maxY || 10);
     const groups = [];
     for (const key in plotting) {
@@ -134,23 +139,28 @@ export default class Chart extends React.Component {
       t =>
         (chartWidth * (t - timeBuckets[0])) / (timeBuckets[timeBuckets.length - 1] - timeBuckets[0])
     );
-    let last = null;
-    const tickLabels = timeBuckets.map((t, i) => {
-      let text = '';
-      if (timeBuckets.length > 20 && i % 2 === 0) {
-        return '';
-      }
-      if (!last || t.getMonth() !== last.getMonth()) {
-        text += shortMonth(t.getMonth()) + ' ';
-      }
-      if (!last || t.getDate() !== last.getDate()) {
-        text += t.getDate();
-      } else if (last && t.getHours() !== last.getHours()) {
-        text += t.getHours() + ':00';
-      }
-      last = t;
-      return text;
-    });
+    let tickLabels;
+    if (xAxisType === 'index') {
+      tickLabels = timeBuckets.map(t => t);
+    } else {
+      let last = null;
+      tickLabels = timeBuckets.map((t, i) => {
+        let text = '';
+        if (timeBuckets.length > 20 && i % 2 === 0) {
+          return '';
+        }
+        if (!last || t.getMonth() !== last.getMonth()) {
+          text += shortMonth(t.getMonth()) + ' ';
+        }
+        if (!last || t.getDate() !== last.getDate()) {
+          text += t.getDate();
+        } else if (last && t.getHours() !== last.getHours()) {
+          text += t.getHours() + ':00';
+        }
+        last = t;
+        return text;
+      });
+    }
     let popup = null;
     if (this.state.hoverValue !== null) {
       const style = {
@@ -191,17 +201,19 @@ export default class Chart extends React.Component {
             </div>
           ))}
         </div>
-        <div className={styles.xAxis}>
-          {tickLabels.map((t, i) => (
-            <div
-              key={t + '_' + i}
-              className={styles.tick}
-              style={{ left: tickPoints[i] + MARGIN_LEFT }}
-            >
-              {t}
-            </div>
-          ))}
-        </div>
+        {!hideXAxisLabels && (
+          <div className={styles.xAxis}>
+            {tickLabels.map((t, i) => (
+              <div
+                key={t + '_' + i}
+                className={styles.tick}
+                style={{ left: tickPoints[i] + MARGIN_LEFT }}
+              >
+                {t}
+              </div>
+            ))}
+          </div>
+        )}
         <svg width={chartWidth + 10} height={chartHeight + 10}>
           <g>
             {labelHeights.map(h => (
@@ -245,4 +257,6 @@ Chart.propTypes = {
       'It receives the numeric value of a point and label, and should return a string. ' +
       'This is ideally used for providing descriptive units like "active installations."'
   ),
+  xAxisType: PropTypes.string.describe('Axis type: "time" or "index"'),
+  hideXAxisLabels: PropTypes.bool.describe('Hide labels on the x-axis'),
 };
