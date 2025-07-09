@@ -1,3 +1,10 @@
+# [7.3.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.7...7.3.0-alpha.8) (2025-07-09)
+
+
+### Bug Fixes
+
+* Invalid clipboard content for multi-cell copy in data browser ([#2882](https://github.com/parse-community/parse-dashboard/issues/2882)) ([22a2065](https://github.com/parse-community/parse-dashboard/commit/22a206501e4ca77dc0bb2a845b9cdf2bd3653b81))
+
 # [7.3.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.6...7.3.0-alpha.7) (2025-07-09)
 
 
