@@ -71,6 +71,7 @@ export default class BrowserRow extends Component {
     } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
       requiredCols = ['authData'];
     }
+    const rowBackground = row % 2 ? '#F4F5F7' : '#FFFFFF';
     const rowStyle = { minWidth: rowWidth };
     return (
       <div className={styles.tableRow} style={rowStyle} onMouseOver={() => onMouseOverRow(obj.id)}>
@@ -84,6 +85,7 @@ export default class BrowserRow extends Component {
                   position: 'sticky',
                   left: 0,
                   zIndex: 1,
+                  background: rowBackground,
                   borderBottom: '1px solid #e3e3ea',
                 }
               : {}
@@ -147,6 +149,7 @@ export default class BrowserRow extends Component {
               readonly={isUnique || readOnlyFields.indexOf(name) > -1}
               width={width}
               stickyLeft={freezeIndex >= j ? stickyLefts[j] : undefined}
+              rowBackground={rowBackground}
               current={currentCol === j}
               onSelect={setCurrent}
               onEditChange={setEditing}
