@@ -661,7 +661,7 @@ class Browser extends DashboardView {
     }
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' created';
+        const msg = `${objectSaved.className} with id '${objectSaved.id}' created`;
         this.showNote(msg, false);
 
         const state = { data: this.state.data };
@@ -764,7 +764,7 @@ class Browser extends DashboardView {
 
     obj.save(null, { useMasterKey: true }).then(
       objectSaved => {
-        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' ' + 'created';
+        const msg = `${objectSaved.className} with id '${objectSaved.id}' created`;
         this.showNote(msg, false);
 
         const state = {
@@ -908,7 +908,7 @@ class Browser extends DashboardView {
     const { useMasterKey, skip, limit } = this.state;
     this.setState({
       data: null,
-    })
+    });
     const query = await queryFromFilters(source, filters);
     const sortDir = this.state.ordering[0] === '-' ? '-' : '+';
     const field = this.state.ordering.substr(sortDir === '-' ? 1 : 0);
@@ -1270,7 +1270,7 @@ class Browser extends DashboardView {
     const { useMasterKey } = this.state;
     obj.save(null, { useMasterKey }).then(
       objectSaved => {
-        const msg = objectSaved.className + ' with id \'' + objectSaved.id + '\' updated';
+        const msg = `${objectSaved.className} with id '${objectSaved.id}' updated`;
         this.showNote(msg, false);
 
         const state = {
@@ -1398,9 +1398,9 @@ class Browser extends DashboardView {
             let deletedNote;
 
             if (toDeleteObjectIds.length == 1) {
-              deletedNote = className + ' with id \'' + toDeleteObjectIds[0] + '\' deleted';
+              deletedNote = `${className} with id '${toDeleteObjectIds[0]}' deleted`;
             } else {
-              deletedNote = toDeleteObjectIds.length + ' ' + className + ' objects deleted';
+              deletedNote = `${toDeleteObjectIds.length} ${className} objects deleted`;
             }
 
             this.showNote(deletedNote, false);
@@ -1426,27 +1426,21 @@ class Browser extends DashboardView {
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + ' with id \'' + error.errors[0].object.id + '\'';
+                  `Error deleting ${className} with id '${error.errors[0].object.id}'`;
               } else if (error.errors.length < toDeleteObjectIds.length) {
                 errorDeletingNote =
-                  'Error deleting ' +
-                  error.errors.length +
-                  ' out of ' +
-                  toDeleteObjectIds.length +
-                  ' ' +
-                  className +
-                  ' objects';
+                  `Error deleting ${error.errors.length} out of ${toDeleteObjectIds.length} ${className} objects`;
               } else {
                 errorDeletingNote =
-                  'Error deleting all ' + error.errors.length + ' ' + className + ' objects';
+                  `Error deleting all ${error.errors.length} ${className} objects`;
               }
             } else {
               if (toDeleteObjectIds.length == 1) {
                 errorDeletingNote =
-                  'Error deleting ' + className + ' with id \'' + toDeleteObjectIds[0] + '\'';
+                  `Error deleting ${className} with id '${toDeleteObjectIds[0]}'`;
               } else {
                 errorDeletingNote =
-                  'Error deleting ' + toDeleteObjectIds.length + ' ' + className + ' objects';
+                  `Error deleting ${toDeleteObjectIds.length} ${className} objects`;
               }
             }
 
@@ -1598,13 +1592,15 @@ class Browser extends DashboardView {
             script.cloudCodeFunction,
             { object: object.toPointer() },
             { useMasterKey: true }
-          ).then(response => ({
-            objectId: object.id,
-            response,
-          })).catch(error => ({
-            objectId: object.id,
-            error,
-          }))
+          )
+            .then(response => ({
+              objectId: object.id,
+              response,
+            }))
+            .catch(error => ({
+              objectId: object.id,
+              error,
+            }))
         );
 
         const results = await Promise.all(promises);
@@ -1631,12 +1627,18 @@ class Browser extends DashboardView {
         totalErrorCount += batchErrorCount;
 
         if (objects.length > 1) {
-          this.showNote(`Ran script "${script.title}" on ${batch.length} objects in batch ${batchCount}/${totalBatchCount} with ${batchErrorCount} errors.`, batchErrorCount > 0);
+          this.showNote(
+            `Ran script "${script.title}" on ${batch.length} objects in batch ${batchCount}/${totalBatchCount} with ${batchErrorCount} errors.`,
+            batchErrorCount > 0
+          );
         }
       }
 
       if (objects.length > 1) {
-        this.showNote(`Ran script "${script.title}" on ${objects.length} objects in ${batchCount} batches with ${totalErrorCount} errors.`, totalErrorCount > 0);
+        this.showNote(
+          `Ran script "${script.title}" on ${objects.length} objects in ${batchCount} batches with ${totalErrorCount} errors.`,
+          totalErrorCount > 0
+        );
       }
       this.refresh();
     } catch (e) {
@@ -1957,7 +1959,7 @@ class Browser extends DashboardView {
         }}
         removeFilter={filter => {
           this.resetPage();
-          this.removeFilter(filter)
+          this.removeFilter(filter);
         }}
         classClicked={() => {
           this.resetPage();
@@ -1978,7 +1980,7 @@ class Browser extends DashboardView {
     // Scroll to top
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
 
     // Reset pagination to page 1
@@ -2201,6 +2203,7 @@ class Browser extends DashboardView {
               errorAggregatedData={this.state.errorAggregatedData}
               appName={this.props.params.appId}
               limit={this.state.limit}
+              skip={this.state.skip}
             />
             <BrowserFooter
               skip={this.state.skip}

@@ -14,21 +14,22 @@ let newFeaturesInLatestVersion = [];
  * Gets the new features in the latest version of Parse Dashboard.
  */
 async function getNewFeaturesInLatestVersion() {
-  // Get latest version
-  const packageJson = (await import('package-json')).default;
-  const latestPackage = await packageJson('parse-dashboard', { version: 'latest', fullMetadata: true });
-
   try {
+    // Get latest version
+    const packageJson = (await import('package-json')).default;
+    const latestPackage = await packageJson('parse-dashboard', { version: 'latest', fullMetadata: true });
+
     if (latestPackage.parseDashboardFeatures instanceof Array) {
       newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
         return currentVersionFeatures.indexOf(feature) === -1;
       });
     }
   } catch {
+    // Fail silently if fetching the latest package information fails
     newFeaturesInLatestVersion = [];
   }
 }
-getNewFeaturesInLatestVersion()
+getNewFeaturesInLatestVersion().catch(() => {})
 
 function getMount(mountPath) {
   mountPath = mountPath || '';

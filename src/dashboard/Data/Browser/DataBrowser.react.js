@@ -16,6 +16,8 @@ import styles from './Databrowser.scss';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
+const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
+
 /**
  * DataBrowser renders the browser toolbar and data table
  * It also manages the fetching / updating of column size prefs,
@@ -32,6 +34,9 @@ export default class DataBrowser extends React.Component {
       props.className,
       columnPreferences[props.className]
     );
+    const storedRowNumber =
+      window.localStorage?.getItem(BROWSER_SHOW_ROW_NUMBER) === 'true';
+
     this.state = {
       order: order,
       current: null,
@@ -50,6 +55,7 @@ export default class DataBrowser extends React.Component {
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
       frozenColumnIndex: -1,
+      showRowNumber: storedRowNumber,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -69,6 +75,7 @@ export default class DataBrowser extends React.Component {
     this.setContextMenu = this.setContextMenu.bind(this);
     this.freezeColumns = this.freezeColumns.bind(this);
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
+    this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
   }
@@ -297,9 +304,10 @@ export default class DataBrowser extends React.Component {
 
           for (let colIndex = colStart; colIndex <= colEnd; colIndex++) {
             const field = this.state.order[colIndex].name;
-            const value = field === 'objectId'
-              ? this.props.data[rowIndex].id
-              : this.props.data[rowIndex].attributes[field];
+            const value =
+              field === 'objectId'
+                ? this.props.data[rowIndex].id
+                : this.props.data[rowIndex].attributes[field];
 
             if (typeof value === 'number' && !isNaN(value)) {
               rowData.push(String(value));
@@ -551,6 +559,11 @@ export default class DataBrowser extends React.Component {
     this.setState({ frozenColumnIndex: -1 });
   }
 
+  setShowRowNumber(show) {
+    this.setState({ showRowNumber: show });
+    window.localStorage?.setItem(BROWSER_SHOW_ROW_NUMBER, show);
+  }
+
   handleColumnsOrder(order, shouldReload) {
     this.setState({ order: [...order] }, () => {
       this.updatePreferences(order, shouldReload);
@@ -666,6 +679,10 @@ export default class DataBrowser extends React.Component {
             panelWidth={this.state.panelWidth}
             isResizing={this.state.isResizing}
             setShowAggregatedData={this.setShowAggregatedData}
+            showRowNumber={this.state.showRowNumber}
+            setShowRowNumber={this.setShowRowNumber}
+            skip={this.props.skip}
+            limit={this.props.limit}
             firstSelectedCell={this.state.firstSelectedCell}
             {...other}
           />

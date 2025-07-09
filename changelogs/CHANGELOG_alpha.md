@@ -1,3 +1,17 @@
+# [7.3.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.5...7.3.0-alpha.6) (2025-07-09)
+
+
+### Features
+
+* Add row number column to data browser ([#2878](https://github.com/parse-community/parse-dashboard/issues/2878)) ([c0aa407](https://github.com/parse-community/parse-dashboard/commit/c0aa4072bd3dee4dcddaa3527de97479354683e5))
+
+# [7.3.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.4...7.3.0-alpha.5) (2025-07-09)
+
+
+### Bug Fixes
+
+* Gracefully fail when trying to get new features in latest version of dashboard ([#2880](https://github.com/parse-community/parse-dashboard/issues/2880)) ([1969a0e](https://github.com/parse-community/parse-dashboard/commit/1969a0e826832179bcd8d5e5ea56e8d63ad84dd4))
+
 # [7.3.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.3...7.3.0-alpha.4) (2025-07-09)
 
 

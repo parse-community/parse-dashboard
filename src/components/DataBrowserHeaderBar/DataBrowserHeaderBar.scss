@@ -18,7 +18,7 @@
   display: inline-block;
   min-width: 100%;
   // to resolve rendering issue with retina displays
-  -webkit-transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 .wrap {
@@ -53,7 +53,19 @@
   vertical-align: top;
   text-align: center;
   width: 30px;
-  background: rgb(114, 111, 133)
+  background: rgb(114, 111, 133);
+}
+
+.rowNumber {
+  line-height: 30px;
+  height: 30px;
+  vertical-align: top;
+  text-align: center;
+  background: rgb(114, 111, 133);
+  color: #A2A6B1;
+  font-size: 12px;
+  padding: 0 4px;
+  box-sizing: border-box;
 }
 
 .handle {
@@ -90,20 +102,19 @@
   border-top: 1px solid #e3e3ea;
   border-bottom: 1px solid #e3e3ea;
   height: 30px;
-  width:100%;
+  width: 100%;
   vertical-align: middle;
   padding-left: 2px;
   margin-top: 30px;
   line-height: 31px;
   animation: skeleton-loading 1s linear infinite alternate;
 }
-  
+
 @keyframes skeleton-loading {
   0% {
-    background-color:#ffffff;
+    background-color: #ffffff;
   }
   100% {
     background-color: #e3e3ea;
-
   }
 }
