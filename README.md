@@ -1159,7 +1159,7 @@ Example:
 
 ▶️ *Core > Browser > Freeze column*
 
-This feature allows freezing columns from the left up to a selected column in the data browser. When scrolling horizontally, the frozen columns remain visible while the other columns scroll underneath.
+Right-click on a table column header to freeze columns from the left up to the clicked column in the data browser. When scrolling horizontally, the frozen columns remain visible while the other columns scroll underneath.
 
 ## Browse as User
 
