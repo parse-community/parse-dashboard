@@ -1,5 +1,8 @@
 const crypto = require('crypto');
-const inquirer = require('inquirer');
+let inquirer = require('inquirer');
+if (inquirer.default) {
+  inquirer = inquirer.default;
+}
 const OTPAuth = require('otpauth');
 const { copy } = require('./utils.js');
 const phrases = {
