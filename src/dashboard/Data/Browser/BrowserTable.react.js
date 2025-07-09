@@ -121,13 +121,16 @@ export default class BrowserTable extends React.Component {
 
     let stickyLefts = [];
     let handleLefts = [];
-    if (typeof this.props.freezeIndex === 'number' && this.props.freezeIndex >= 0) {
+    if (
+      typeof this.props.freezeIndex === 'number' &&
+      this.props.freezeIndex >= 0
+    ) {
       let left = 30;
       headers.forEach((h, i) => {
         stickyLefts[i] = left;
         handleLefts[i] = left + h.width;
         if (h.visible) {
-          left += h.width + 8;
+          left += h.width;
         }
       });
     }
