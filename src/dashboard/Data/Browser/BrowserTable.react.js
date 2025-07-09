@@ -119,8 +119,8 @@ export default class BrowserTable extends React.Component {
       required,
     }));
 
-    let stickyLefts = [];
-    let handleLefts = [];
+    const stickyLefts = [];
+    const handleLefts = [];
     if (
       typeof this.props.freezeIndex === 'number' &&
       this.props.freezeIndex >= 0
@@ -565,33 +565,33 @@ export default class BrowserTable extends React.Component {
           'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
         }}
       >
-      <DataBrowserHeaderBar
-        selected={
-          !!this.props.selection &&
-          !!this.props.data &&
-          Object.values(this.props.selection).filter(checked => checked).length ===
-            this.props.data.length
-        }
-        selectAll={checked =>
-          this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
-        }
-        headers={headers}
-        stickyLefts={stickyLefts}
-        handleLefts={handleLefts}
-        freezeIndex={this.props.freezeIndex}
-        freezeColumns={this.props.freezeColumns}
-        unfreezeColumns={this.props.unfreezeColumns}
-        updateOrdering={this.props.updateOrdering}
-        readonly={!!this.props.relation || !!this.props.isUnique}
-        handleDragDrop={this.props.handleHeaderDragDrop}
-        onResize={this.props.handleResize}
-        onAddColumn={this.props.onAddColumn}
-        preventSchemaEdits={this.context.preventSchemaEdits}
-        isDataLoaded={!!this.props.data}
-        setSelectedObjectId={this.props.setSelectedObjectId}
-        setCurrent={this.props.setCurrent}
-        setContextMenu={this.props.setContextMenu}
-      />
+        <DataBrowserHeaderBar
+          selected={
+            !!this.props.selection &&
+            !!this.props.data &&
+            Object.values(this.props.selection).filter(checked => checked).length ===
+              this.props.data.length
+          }
+          selectAll={checked =>
+            this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
+          }
+          headers={headers}
+          stickyLefts={stickyLefts}
+          handleLefts={handleLefts}
+          freezeIndex={this.props.freezeIndex}
+          freezeColumns={this.props.freezeColumns}
+          unfreezeColumns={this.props.unfreezeColumns}
+          updateOrdering={this.props.updateOrdering}
+          readonly={!!this.props.relation || !!this.props.isUnique}
+          handleDragDrop={this.props.handleHeaderDragDrop}
+          onResize={this.props.handleResize}
+          onAddColumn={this.props.onAddColumn}
+          preventSchemaEdits={this.context.preventSchemaEdits}
+          isDataLoaded={!!this.props.data}
+          setSelectedObjectId={this.props.setSelectedObjectId}
+          setCurrent={this.props.setCurrent}
+          setContextMenu={this.props.setContextMenu}
+        />
         {table}
       </div>
     );

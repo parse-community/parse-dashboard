@@ -39,9 +39,6 @@ export default class DataBrowserHeaderBar extends React.Component {
       stickyLefts,
       handleLefts,
       freezeIndex,
-      freezeColumns,
-      unfreezeColumns,
-      setContextMenu,
     } = this.props;
     const elements = [
       <div
