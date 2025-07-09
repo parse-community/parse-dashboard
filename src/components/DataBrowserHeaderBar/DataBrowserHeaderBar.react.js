@@ -111,6 +111,10 @@ export default class DataBrowserHeaderBar extends React.Component {
         handleStyle.left = handleLefts[i];
         handleStyle.zIndex = 11;
         handleStyle.background = wrapStyle.background;
+        if (i === freezeIndex) {
+          handleStyle.marginRight = 0;
+          handleStyle.width = 4;
+        }
       }
       elements.push(
         <DragHandle
