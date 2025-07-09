@@ -81,7 +81,13 @@ export default class BrowserRow extends Component {
           onMouseOver={() => onMouseOverRowCheckBox(obj.id)}
           style={
             freezeIndex >= 0
-              ? { position: 'sticky', left: 0, zIndex: 1, background: rowBackground }
+              ? {
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 1,
+                  background: rowBackground,
+                  borderBottom: '1px solid #e3e3ea',
+                }
               : {}
           }
         >
