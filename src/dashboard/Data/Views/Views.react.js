@@ -5,6 +5,7 @@ import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import Parse from 'parse';
 import React from 'react';
+import Notification from 'dashboard/Data/Browser/Notification.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import { withRouter } from 'lib/withRouter';
@@ -24,8 +25,12 @@ class Views extends TableView {
       counts: {},
       data: [],
       order: [],
+      columns: {},
       showCreate: false,
+      lastError: null,
+      lastNote: null,
     };
+    this.noteTimeout = null;
     this.action = new SidebarAction('Create a view', () =>
       this.setState({ showCreate: true })
     );
@@ -59,6 +64,12 @@ class Views extends TableView {
               this.setState(({ counts }) => ({
                 counts: { ...counts, [view.name]: res.length },
               }));
+            })
+            .catch(error => {
+              this.showNote(
+                `Request failed: ${error.message || 'Unknown error occurred'}`,
+                true
+              );
             });
         }
       });
@@ -68,12 +79,12 @@ class Views extends TableView {
 
   loadData(name) {
     if (!name) {
-      this.setState({ data: [], order: [] });
+      this.setState({ data: [], order: [], columns: {} });
       return;
     }
     const view = (this.state.views || []).find(v => v.name === name);
     if (!view) {
-      this.setState({ data: [], order: [] });
+      this.setState({ data: [], order: [], columns: {} });
       return;
     }
     new Parse.Query(view.className)
@@ -104,11 +115,18 @@ class Views extends TableView {
                 type = 'Object';
               }
             }
-            columns[key] = { type };
-          });
+          columns[key] = { type };
         });
-        const order = Object.keys(columns).map(name => ({ name, width: 150 }));
-        this.setState({ data: results, order, columns });
+      });
+      const order = Object.keys(columns).map(name => ({ name, width: 150 }));
+      this.setState({ data: results, order, columns });
+      })
+      .catch(error => {
+        this.showNote(
+          `Request failed: ${error.message || 'Unknown error occurred'}`,
+          true
+        );
+        this.setState({ data: [], order: [], columns: {} });
       });
   }
 
@@ -160,6 +178,7 @@ class Views extends TableView {
   }
 
   renderExtras() {
+    let extras = null;
     if (this.state.showCreate) {
       let classNames = [];
       if (this.props.schema?.data) {
@@ -168,7 +187,7 @@ class Views extends TableView {
           classNames = Object.keys(classes.toObject());
         }
       }
-      return (
+      extras = (
         <CreateViewDialog
           classes={classNames}
           onCancel={() => this.setState({ showCreate: false })}
@@ -187,6 +206,32 @@ class Views extends TableView {
         />
       );
     }
-    return null;
+    let notification = null;
+    if (this.state.lastError) {
+      notification = <Notification note={this.state.lastError} isErrorNote={true} />;
+    } else if (this.state.lastNote) {
+      notification = <Notification note={this.state.lastNote} isErrorNote={false} />;
+    }
+    return (
+      <>
+        {extras}
+        {notification}
+      </>
+    );
+  }
+
+  showNote(message, isError) {
+    if (!message) {
+      return;
+    }
+    clearTimeout(this.noteTimeout);
+    if (isError) {
+      this.setState({ lastError: message, lastNote: null });
+    } else {
+      this.setState({ lastNote: message, lastError: null });
+    }
+    this.noteTimeout = setTimeout(() => {
+      this.setState({ lastError: null, lastNote: null });
+    }, 3500);
   }
 }
