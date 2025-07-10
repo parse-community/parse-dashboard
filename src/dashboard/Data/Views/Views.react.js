@@ -118,7 +118,9 @@ class Views extends TableView {
           columns[key] = { type };
         });
       });
-      const order = Object.keys(columns).map(name => ({ name, width: 150 }));
+      const colNames = Object.keys(columns);
+      const width = colNames.length > 0 ? 100 / colNames.length : 0;
+      const order = colNames.map(name => ({ name, width }));
       this.setState({ data: results, order, columns });
       })
       .catch(error => {
@@ -137,16 +139,16 @@ class Views extends TableView {
   renderRow(row) {
     return (
       <tr key={JSON.stringify(row)}>
-        {this.state.order.map(({ name }) => (
-          <td key={name}>{String(row[name])}</td>
+        {this.state.order.map(({ name, width }) => (
+          <td key={name} style={{ width: width + '%' }}>{String(row[name])}</td>
         ))}
       </tr>
     );
   }
 
   renderHeaders() {
-    return this.state.order.map(({ name }) => (
-      <TableHeader key={name} width={20} >
+    return this.state.order.map(({ name, width }) => (
+      <TableHeader key={name} width={width}>
         {name}
       </TableHeader>
     ));
