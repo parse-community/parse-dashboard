@@ -26,6 +26,9 @@ class Views extends TableView {
     super();
     this.section = 'Core';
     this.subsection = 'Views';
+    this.contentRef = React.createRef();
+    this.headerRef = React.createRef();
+    this.syncHeaderPosition = this.syncHeaderPosition.bind(this);
     this.state = {
       views: [],
       counts: {},
@@ -47,6 +50,21 @@ class Views extends TableView {
     this.props.schema
       .dispatch(SchemaActionTypes.FETCH)
       .then(() => this.loadViews(this.context));
+  }
+
+  componentDidMount() {
+    this.syncHeaderPosition();
+    window.addEventListener('scroll', this.syncHeaderPosition);
+    window.addEventListener('resize', this.syncHeaderPosition);
+  }
+
+  componentDidUpdate() {
+    this.syncHeaderPosition();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.syncHeaderPosition);
+    window.removeEventListener('resize', this.syncHeaderPosition);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -174,12 +192,13 @@ class Views extends TableView {
     return (
       <div>
         <LoaderContainer loading={loading}>
-          <div className={tableStyles.content}>{content}</div>
+          <div className={tableStyles.content} ref={this.contentRef}>{content}</div>
         </LoaderContainer>
         {toolbar}
         <div
           className={tableStyles.headers}
           style={{ width: this.state.tableWidth, right: 'auto' }}
+          ref={this.headerRef}
         >
           {headers}
         </div>
@@ -330,6 +349,14 @@ class Views extends TableView {
       `browser/${className}?filters=${encodeURIComponent(filters)}`
     );
     this.props.navigate(path);
+  }
+
+  syncHeaderPosition() {
+    if (!this.headerRef.current || !this.contentRef.current) {
+      return;
+    }
+    const left = this.contentRef.current.getBoundingClientRect().left;
+    this.headerRef.current.style.left = `${left}px`;
   }
 
   showNote(message, isError) {
