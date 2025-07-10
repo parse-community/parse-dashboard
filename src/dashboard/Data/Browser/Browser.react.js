@@ -38,58 +38,35 @@ import subscribeTo from 'lib/subscribeTo';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
-import {
-  UNSAFE_NavigationContext,
-  useBeforeUnload,
-} from 'react-router-dom';
+import { useBeforeUnload } from 'react-router-dom';
+import history from 'lib/history';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
-function useBlocker(blocker, when = true) {
-  const { navigator } = React.useContext(UNSAFE_NavigationContext);
-
+function SelectedRowsNavigationPrompt({ when }) {
+  const message = 'There are selected rows. Are you sure you want to leave this page?';
   React.useEffect(() => {
     if (!when) {
-      return;
+      return undefined;
     }
-
-    const unblock = navigator.block(tx => {
-      const autoUnblockingTx = {
-        ...tx,
-        retry() {
-          unblock();
-          tx.retry();
-        }
-      };
-      blocker(autoUnblockingTx);
-    });
-
-    return unblock;
-  }, [navigator, blocker, when]);
-}
-
-function usePrompt(message, when = true) {
-  const blocker = React.useCallback(
-    tx => {
+    const unblock = history.block(tx => {
       if (window.confirm(message)) {
+        unblock();
         tx.retry();
       }
-    },
-    [message]
-  );
+    });
+    return unblock;
+  }, [when]);
 
-  useBlocker(blocker, when);
-}
-
-function SelectedRowsNavigationPrompt({ when }) {
-  usePrompt('There are selected rows. Are you sure you want to leave this page?', when);
   useBeforeUnload(
     React.useCallback(
       event => {
         if (when) {
           event.preventDefault();
+          event.returnValue = message;
+          return message;
         }
       },
       [when]

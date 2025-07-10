@@ -92,7 +92,7 @@ export default class BrowserRow extends Component {
         >
           <input
             type="checkbox"
-            checked={selection['*'] || selection[obj.id]}
+            checked={!!selection['*'] || !!selection[obj.id]}
             onChange={e => selectRow(obj.id, e.target.checked)}
             onMouseDown={e => onMouseDownRowCheckBox(e.target.checked)}
           />
