@@ -38,32 +38,35 @@ import subscribeTo from 'lib/subscribeTo';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
-import { useBeforeUnload, useLocation, useNavigate } from 'react-router-dom';
+import {
+  useBeforeUnload,
+  UNSAFE_NavigationContext,
+} from 'react-router-dom';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
-function SelectedRowsNavigationPrompt({ when }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const previousLocation = React.useRef(location);
-  const message = 'There are selected rows. Are you sure you want to leave this page?';
-
+function usePrompt(message, when) {
+  const { navigator } = React.useContext(UNSAFE_NavigationContext);
   React.useEffect(() => {
     if (!when) {
-      previousLocation.current = location;
       return;
     }
-    if (location !== previousLocation.current) {
-      if (!window.confirm(message)) {
-        navigate(-1);
-      } else {
-        previousLocation.current = location;
+    const unblock = navigator.block(tx => {
+      if (window.confirm(message)) {
+        unblock();
+        tx.retry();
       }
-    }
-  }, [location, when, navigate]);
+    });
+    return unblock;
+  }, [navigator, message, when]);
+}
 
+function SelectedRowsNavigationPrompt({ when }) {
+  const message =
+    'There are selected rows. Are you sure you want to leave this page?';
+  usePrompt(message, when);
   useBeforeUnload(
     React.useCallback(
       event => {
