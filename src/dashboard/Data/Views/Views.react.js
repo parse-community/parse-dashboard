@@ -36,7 +36,7 @@ class Views extends TableView {
       this.loadViews(nextContext);
     }
     if (this.props.params.name !== nextProps.params.name || this.context !== nextContext) {
-      this.loadData(nextProps.params.name, nextContext);
+      this.loadData(nextProps.params.name);
     }
   }
 
@@ -54,11 +54,11 @@ class Views extends TableView {
             });
         }
       });
-      this.loadData(this.props.params.name, app);
+      this.loadData(this.props.params.name);
     });
   }
 
-  loadData(name, app = this.context) {
+  loadData(name) {
     if (!name) {
       this.setState({ data: [], order: [] });
       return;
@@ -74,17 +74,27 @@ class Views extends TableView {
         const columns = {};
         results.forEach(item => {
           Object.keys(item).forEach(key => {
-            if (columns[key]) return;
+            if (columns[key]) {
+              return;
+            }
             const val = item[key];
             let type = 'String';
-            if (typeof val === 'number') type = 'Number';
-            else if (typeof val === 'boolean') type = 'Boolean';
-            else if (val && typeof val === 'object') {
-              if (val.__type === 'Date') type = 'Date';
-              else if (val.__type === 'Pointer') type = 'Pointer';
-              else if (val.__type === 'File') type = 'File';
-              else if (val.__type === 'GeoPoint') type = 'GeoPoint';
-              else type = 'Object';
+            if (typeof val === 'number') {
+              type = 'Number';
+            } else if (typeof val === 'boolean') {
+              type = 'Boolean';
+            } else if (val && typeof val === 'object') {
+              if (val.__type === 'Date') {
+                type = 'Date';
+              } else if (val.__type === 'Pointer') {
+                type = 'Pointer';
+              } else if (val.__type === 'File') {
+                type = 'File';
+              } else if (val.__type === 'GeoPoint') {
+                type = 'GeoPoint';
+              } else {
+                type = 'Object';
+              }
             }
             columns[key] = { type };
           });
@@ -114,6 +124,10 @@ class Views extends TableView {
         {name}
       </TableHeader>
     ));
+  }
+
+  renderEmpty() {
+    return <div>No data available</div>;
   }
 
   renderSidebar() {

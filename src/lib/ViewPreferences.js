@@ -17,7 +17,9 @@ export function getViews(appId) {
 export function saveViews(appId, views) {
   try {
     localStorage.setItem(path(appId), JSON.stringify(views));
-  } catch {}
+  } catch {
+    // ignore write errors
+  }
 }
 
 function path(appId) {
