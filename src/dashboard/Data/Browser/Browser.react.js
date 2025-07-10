@@ -44,9 +44,11 @@ import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
+const SELECTED_ROWS_MESSAGE =
+  'There are selected rows. Are you sure you want to leave this page?';
+
 function SelectedRowsNavigationPrompt({ when }) {
-  const message =
-    'There are selected rows. Are you sure you want to leave this page?';
+  const message = SELECTED_ROWS_MESSAGE;
 
   React.useEffect(() => {
     if (!when) {
@@ -952,6 +954,11 @@ class Browser extends DashboardView {
   }
 
   async refresh() {
+    if (Object.keys(this.state.selection).length > 0) {
+      if (!window.confirm(SELECTED_ROWS_MESSAGE)) {
+        return;
+      }
+    }
     const relation = this.state.relation;
     const prevFilters = this.state.filters || new List();
     const initialState = {
