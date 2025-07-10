@@ -38,10 +38,29 @@ import subscribeTo from 'lib/subscribeTo';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
+import { unstable_usePrompt as usePrompt, useBeforeUnload } from 'react-router-dom';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
+
+function SelectedRowsNavigationPrompt({ when }) {
+  usePrompt({
+    when,
+    message: 'There are selected rows. Are you sure you want to leave this page?'
+  });
+  useBeforeUnload(
+    React.useCallback(
+      event => {
+        if (when) {
+          event.preventDefault();
+        }
+      },
+      [when]
+    )
+  );
+  return null;
+}
 
 // The initial and max amount of rows fetched by lazy loading
 const BROWSER_LAST_LOCATION = 'brower_last_location';
@@ -2446,6 +2465,9 @@ class Browser extends DashboardView {
         <Helmet>
           <title>{pageTitle}</title>
         </Helmet>
+        <SelectedRowsNavigationPrompt
+          when={Object.keys(this.state.selection).length > 0}
+        />
         {browser}
         {notification}
         {extras}
