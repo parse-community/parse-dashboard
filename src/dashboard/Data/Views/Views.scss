@@ -1,0 +1,58 @@
+@import 'stylesheets/globals.scss';
+
+.headerWrap {
+  display: inline-block;
+  vertical-align: top;
+  background: #66637A;
+  color: white;
+  line-height: 30px;
+  padding: 0 16px;
+  border-right: 1px solid #e3e3ea;
+  position: relative;
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 30px;
+  cursor: ew-resize;
+}
+
+.tableRow {
+  @include MonospaceFont;
+  font-size: 12px;
+  white-space: nowrap;
+  height: 30px;
+  border-bottom: 1px solid #e3e3ea;
+}
+
+.tableRow:nth-child(odd) {
+  background: #f4f5f7;
+}
+
+.cell {
+  line-height: 30px;
+  padding: 10px 16px;
+  border-right: 1px solid #e3e3ea;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pointerLink {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    margin-left: 4px;
+    transform: rotate(316deg);
+  }
+}

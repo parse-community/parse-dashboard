@@ -1,20 +1,20 @@
 import CategoryList from 'components/CategoryList/CategoryList.react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
-import TableHeader from 'components/Table/TableHeader.react';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import Parse from 'parse';
 import React from 'react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
-import Pill from 'components/Pill/Pill.react';
+import Icon from 'components/Icon/Icon.react';
+import DragHandle from 'components/DragHandle/DragHandle.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
+import styles from './Views.scss';
 
-const BROWSER_LAST_LOCATION = 'brower_last_location';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -95,11 +95,10 @@ class Views extends TableView {
       .aggregate(view.query, { useMasterKey: true })
       .then(results => {
         const columns = {};
+        const computeWidth = str =>
+          Math.min(100, Math.max((String(str).length + 2) * 8, 40));
         results.forEach(item => {
           Object.keys(item).forEach(key => {
-            if (columns[key]) {
-              return;
-            }
             const val = item[key];
             let type = 'String';
             if (typeof val === 'number') {
@@ -119,13 +118,23 @@ class Views extends TableView {
                 type = 'Object';
               }
             }
-          columns[key] = { type };
+            const content =
+              type === 'Pointer'
+                ? val.objectId
+                : type === 'Object'
+                  ? JSON.stringify(val)
+                  : val;
+            const width = computeWidth(content || key);
+            if (!columns[key]) {
+              columns[key] = { type, width };
+            } else if (width > columns[key].width) {
+              columns[key].width = width;
+            }
+          });
         });
-      });
-      const colNames = Object.keys(columns);
-      const width = colNames.length > 0 ? 100 / colNames.length : 0;
-      const order = colNames.map(name => ({ name, width }));
-      this.setState({ data: results, order, columns });
+        const colNames = Object.keys(columns);
+        const order = colNames.map(name => ({ name, width: columns[name].width }));
+        this.setState({ data: results, order, columns });
       })
       .catch(error => {
         this.showNote(
@@ -142,7 +151,7 @@ class Views extends TableView {
 
   renderRow(row) {
     return (
-      <tr key={JSON.stringify(row)}>
+      <tr key={JSON.stringify(row)} className={styles.tableRow}>
         {this.state.order.map(({ name, width }) => {
           const value = row[name];
           const type = this.state.columns[name]?.type;
@@ -151,13 +160,13 @@ class Views extends TableView {
             const id = value.objectId;
             const className = value.className;
             content = (
-              <Pill
-                value={id}
-                followClick={true}
-                onClick={() =>
-                  this.handlePointerClick({ className, id })
-                }
-              />
+              <span
+                className={styles.pointerLink}
+                onClick={() => this.handlePointerClick({ className, id })}
+              >
+                {id}
+                <Icon name="right-outline" width={12} height={12} fill="#1669a1" />
+              </span>
             );
           } else if (type === 'Object') {
             content = JSON.stringify(value);
@@ -165,7 +174,7 @@ class Views extends TableView {
             content = String(value);
           }
           return (
-            <td key={name} style={{ width: width + '%' }}>
+            <td key={name} className={styles.cell} style={{ width }}>
               {content}
             </td>
           );
@@ -174,11 +183,21 @@ class Views extends TableView {
     );
   }
 
+  handleResize(index, delta) {
+    this.setState(({ order }) => {
+      const newOrder = [...order];
+      const next = Math.max(40, newOrder[index].width + delta);
+      newOrder[index] = { ...newOrder[index], width: next };
+      return { order: newOrder };
+    });
+  }
+
   renderHeaders() {
-    return this.state.order.map(({ name, width }) => (
-      <TableHeader key={name} width={width}>
+    return this.state.order.map(({ name, width }, i) => (
+      <div key={name} className={styles.headerWrap} style={{ width }}>
         {name}
-      </TableHeader>
+        <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
+      </div>
     ));
   }
 
@@ -258,24 +277,6 @@ class Views extends TableView {
       this.context,
       `browser/${className}?filters=${encodeURIComponent(filters)}`
     );
-    try {
-      const existing = JSON.parse(
-        window.localStorage.getItem(BROWSER_LAST_LOCATION)
-      ) || [];
-      const updated = existing.filter(
-        e => e.appId !== this.context.applicationId
-      );
-      updated.push({
-        appId: this.context.applicationId,
-        location: path,
-      });
-      window.localStorage.setItem(
-        BROWSER_LAST_LOCATION,
-        JSON.stringify(updated)
-      );
-    } catch {
-      // ignore write errors
-    }
     this.props.navigate(path);
   }
 
