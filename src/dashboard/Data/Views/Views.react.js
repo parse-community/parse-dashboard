@@ -98,8 +98,7 @@ class Views extends TableView {
       .aggregate(view.query, { useMasterKey: true })
       .then(results => {
         const columns = {};
-        const computeWidth = str =>
-          Math.min(100, Math.max((String(str).length + 2) * 8, 40));
+        const computeWidth = str => Math.max((String(str).length + 2) * 8, 40);
         results.forEach(item => {
           Object.keys(item).forEach(key => {
             const val = item[key];
@@ -121,17 +120,8 @@ class Views extends TableView {
                 type = 'Object';
               }
             }
-            const content =
-              type === 'Pointer'
-                ? val.objectId
-                : type === 'Object'
-                  ? JSON.stringify(val)
-                  : val;
-            const width = computeWidth(content || key);
             if (!columns[key]) {
-              columns[key] = { type, width };
-            } else if (width > columns[key].width) {
-              columns[key].width = width;
+              columns[key] = { type, width: computeWidth(key) };
             }
           });
         });
