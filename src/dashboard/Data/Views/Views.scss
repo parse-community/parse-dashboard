@@ -1,5 +1,9 @@
 @import 'stylesheets/globals.scss';
 
+.headers {
+  right: auto;
+}
+
 .headerWrap {
   display: inline-block;
   vertical-align: top;
@@ -42,6 +46,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: none;
 }
 
 .pointerLink {

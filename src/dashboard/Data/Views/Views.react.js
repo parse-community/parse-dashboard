@@ -176,7 +176,10 @@ class Views extends TableView {
           <div className={tableStyles.content}>{content}</div>
         </LoaderContainer>
         {toolbar}
-        <div className={tableStyles.headers} style={{ width: this.state.tableWidth }}>
+        <div
+          className={tableStyles.headers}
+          style={{ width: this.state.tableWidth, right: 'auto' }}
+        >
           {headers}
         </div>
         {extras}
