@@ -6,8 +6,10 @@ import Toolbar from 'components/Toolbar/Toolbar.react';
 import Parse from 'parse';
 import React from 'react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
+import Pill from 'components/Pill/Pill.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
+import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
@@ -139,9 +141,33 @@ class Views extends TableView {
   renderRow(row) {
     return (
       <tr key={JSON.stringify(row)}>
-        {this.state.order.map(({ name, width }) => (
-          <td key={name} style={{ width: width + '%' }}>{String(row[name])}</td>
-        ))}
+        {this.state.order.map(({ name, width }) => {
+          const value = row[name];
+          const type = this.state.columns[name]?.type;
+          let content = '';
+          if (type === 'Pointer' && value && value.className && value.objectId) {
+            const id = value.objectId;
+            const className = value.className;
+            content = (
+              <Pill
+                value={id}
+                followClick={true}
+                onClick={() =>
+                  this.handlePointerClick({ className, id })
+                }
+              />
+            );
+          } else if (type === 'Object') {
+            content = JSON.stringify(value);
+          } else {
+            content = String(value);
+          }
+          return (
+            <td key={name} style={{ width: width + '%' }}>
+              {content}
+            </td>
+          );
+        })}
       </tr>
     );
   }
@@ -219,6 +245,18 @@ class Views extends TableView {
         {extras}
         {notification}
       </>
+    );
+  }
+
+  handlePointerClick({ className, id, field = 'objectId' }) {
+    const filters = JSON.stringify([
+      { field, constraint: 'eq', compareTo: id },
+    ]);
+    this.props.navigate(
+      generatePath(
+        this.context,
+        `browser/${className}?filters=${encodeURIComponent(filters)}`
+      )
     );
   }
 
