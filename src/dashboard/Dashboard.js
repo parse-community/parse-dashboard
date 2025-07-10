@@ -48,13 +48,7 @@ import { AsyncStatus } from 'lib/Constants';
 import baseStyles from 'stylesheets/base.scss';
 import { get } from 'lib/AJAX';
 import { setBasePath } from 'lib/AJAX';
-import {
-  unstable_HistoryRouter as HistoryRouter,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
-import history from 'lib/history';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
@@ -312,7 +306,7 @@ export default class Dashboard extends React.Component {
     );
 
     return (
-      <HistoryRouter history={history} basename={window.PARSE_DASHBOARD_PATH || '/'}>
+      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
         <Helmet>
           <title>Parse Dashboard</title>
         </Helmet>
@@ -323,7 +317,7 @@ export default class Dashboard extends React.Component {
           <Route index element={<Navigate replace to="/apps" />} />
           <Route path="*" element={<FourOhFour />} />
         </Routes>
-      </HistoryRouter>
+      </BrowserRouter>
     );
   }
 }

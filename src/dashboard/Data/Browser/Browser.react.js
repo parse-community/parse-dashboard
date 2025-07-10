@@ -38,27 +38,31 @@ import subscribeTo from 'lib/subscribeTo';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
-import { useBeforeUnload } from 'react-router-dom';
-import history from 'lib/history';
+import { useBeforeUnload, useLocation, useNavigate } from 'react-router-dom';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
 function SelectedRowsNavigationPrompt({ when }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const previousLocation = React.useRef(location);
   const message = 'There are selected rows. Are you sure you want to leave this page?';
+
   React.useEffect(() => {
     if (!when) {
-      return undefined;
+      previousLocation.current = location;
+      return;
     }
-    const unblock = history.block(tx => {
-      if (window.confirm(message)) {
-        unblock();
-        tx.retry();
+    if (location !== previousLocation.current) {
+      if (!window.confirm(message)) {
+        navigate(-1);
+      } else {
+        previousLocation.current = location;
       }
-    });
-    return unblock;
-  }, [when]);
+    }
+  }, [location, when, navigate]);
 
   useBeforeUnload(
     React.useCallback(
