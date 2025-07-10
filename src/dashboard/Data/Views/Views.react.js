@@ -159,6 +159,7 @@ class Views extends TableView {
           content = (
             <div className={tableStyles.rows}>
               <table style={{ width: this.state.tableWidth, tableLayout: 'fixed' }}>
+                {this.renderColGroup()}
                 <tbody>{data.map(row => this.renderRow(row))}</tbody>
               </table>
               {footer}
@@ -212,7 +213,7 @@ class Views extends TableView {
             content = String(value);
           }
           return (
-            <td key={name} className={styles.cell} style={{ width }}>
+            <td key={name} className={styles.cell}>
               {content}
             </td>
           );
@@ -221,13 +222,25 @@ class Views extends TableView {
     );
   }
 
+  renderColGroup() {
+    return (
+      <colgroup>
+        {this.state.order.map(({ width }, i) => (
+          <col key={i} style={{ width }} />
+        ))}
+      </colgroup>
+    );
+  }
+
   handleResize(index, delta) {
-    this.setState(({ order, tableWidth }) => {
+    this.setState(({ order }) => {
       const newOrder = [...order];
-      const next = Math.max(40, newOrder[index].width + delta);
-      const diff = next - newOrder[index].width;
-      newOrder[index] = { ...newOrder[index], width: next };
-      return { order: newOrder, tableWidth: tableWidth + diff };
+      newOrder[index] = {
+        ...newOrder[index],
+        width: Math.max(40, newOrder[index].width + delta),
+      };
+      const tableWidth = newOrder.reduce((sum, col) => sum + col.width, 0);
+      return { order: newOrder, tableWidth };
     });
   }
 
