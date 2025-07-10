@@ -14,6 +14,8 @@ import { withRouter } from 'lib/withRouter';
 import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 
+const BROWSER_LAST_LOCATION = 'brower_last_location';
+
 export default
 @subscribeTo('Schema', 'schema')
 @withRouter
@@ -252,12 +254,29 @@ class Views extends TableView {
     const filters = JSON.stringify([
       { field, constraint: 'eq', compareTo: id },
     ]);
-    this.props.navigate(
-      generatePath(
-        this.context,
-        `browser/${className}?filters=${encodeURIComponent(filters)}`
-      )
+    const path = generatePath(
+      this.context,
+      `browser/${className}?filters=${encodeURIComponent(filters)}`
     );
+    try {
+      const existing = JSON.parse(
+        window.localStorage.getItem(BROWSER_LAST_LOCATION)
+      ) || [];
+      const updated = existing.filter(
+        e => e.appId !== this.context.applicationId
+      );
+      updated.push({
+        appId: this.context.applicationId,
+        location: path,
+      });
+      window.localStorage.setItem(
+        BROWSER_LAST_LOCATION,
+        JSON.stringify(updated)
+      );
+    } catch {
+      // ignore write errors
+    }
+    this.props.navigate(path);
   }
 
   showNote(message, isError) {
