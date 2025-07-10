@@ -38,35 +38,68 @@ import subscribeTo from 'lib/subscribeTo';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import { Helmet } from 'react-helmet';
-import {
-  useBeforeUnload,
-  UNSAFE_NavigationContext,
-} from 'react-router-dom';
+import { useBeforeUnload } from 'react-router-dom';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
-function usePrompt(message, when) {
-  const { navigator } = React.useContext(UNSAFE_NavigationContext);
+function SelectedRowsNavigationPrompt({ when }) {
+  const message =
+    'There are selected rows. Are you sure you want to leave this page?';
+
   React.useEffect(() => {
     if (!when) {
       return;
     }
-    const unblock = navigator.block(tx => {
-      if (window.confirm(message)) {
-        unblock();
-        tx.retry();
-      }
-    });
-    return unblock;
-  }, [navigator, message, when]);
-}
 
-function SelectedRowsNavigationPrompt({ when }) {
-  const message =
-    'There are selected rows. Are you sure you want to leave this page?';
-  usePrompt(message, when);
+    const handleBeforeUnload = event => {
+      event.preventDefault();
+      event.returnValue = message;
+      return message;
+    };
+
+    const handleLinkClick = event => {
+      if (event.defaultPrevented) {
+        return;
+      }
+      if (event.button !== 0) {
+        return;
+      }
+      if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+        return;
+      }
+      const anchor = event.target.closest('a[href]');
+      if (!anchor || anchor.target === '_blank') {
+        return;
+      }
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#') {
+        return;
+      }
+      if (!window.confirm(message)) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+
+    const handlePopState = () => {
+      if (!window.confirm(message)) {
+        window.history.go(1);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('click', handleLinkClick, true);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('click', handleLinkClick, true);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [when, message]);
+
   useBeforeUnload(
     React.useCallback(
       event => {
@@ -76,9 +109,10 @@ function SelectedRowsNavigationPrompt({ when }) {
           return message;
         }
       },
-      [when]
+      [when, message]
     )
   );
+
   return null;
 }
 
