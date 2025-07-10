@@ -67,7 +67,7 @@ export default class DashboardView extends React.Component {
         name: 'Browser',
         link: '/browser',
       });
-    }
+      }
 
     if (features.cloudCode && features.cloudCode.viewCode) {
       coreSubsections.push({
@@ -75,6 +75,11 @@ export default class DashboardView extends React.Component {
         link: '/cloud_code',
       });
     }
+
+    coreSubsections.push({
+      name: 'Views',
+      link: '/views',
+    });
 
     //webhooks requires removal of heroku link code, then it should work.
     if (
