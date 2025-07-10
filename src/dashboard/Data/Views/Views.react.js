@@ -8,7 +8,11 @@ import React from 'react';
 import CreateViewDialog from './CreateViewDialog.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import { withRouter } from 'lib/withRouter';
+import subscribeTo from 'lib/subscribeTo';
+import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 
+export default
+@subscribeTo('Schema', 'schema')
 @withRouter
 class Views extends TableView {
   constructor() {
@@ -28,12 +32,16 @@ class Views extends TableView {
   }
 
   componentWillMount() {
-    this.loadViews(this.context);
+    this.props.schema
+      .dispatch(SchemaActionTypes.FETCH)
+      .then(() => this.loadViews(this.context));
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.loadViews(nextContext);
+      this.props.schema
+        .dispatch(SchemaActionTypes.FETCH)
+        .then(() => this.loadViews(nextContext));
     }
     if (this.props.params.name !== nextProps.params.name || this.context !== nextContext) {
       this.loadData(nextProps.params.name);
@@ -154,8 +162,8 @@ class Views extends TableView {
   renderExtras() {
     if (this.state.showCreate) {
       let classNames = [];
-      if (this.context?.schema) {
-        const classes = this.context.schema.data.get('classes');
+      if (this.props.schema?.data) {
+        const classes = this.props.schema.data.get('classes');
         if (classes) {
           classNames = Object.keys(classes.toObject());
         }
@@ -182,5 +190,3 @@ class Views extends TableView {
     return null;
   }
 }
-
-export default Views;
