@@ -2,6 +2,7 @@ import CategoryList from 'components/CategoryList/CategoryList.react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import Parse from 'parse';
 import React from 'react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
@@ -14,6 +15,7 @@ import { withRouter } from 'lib/withRouter';
 import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 import styles from './Views.scss';
+import tableStyles from 'dashboard/TableView.scss';
 
 
 export default
@@ -30,6 +32,7 @@ class Views extends TableView {
       data: [],
       order: [],
       columns: {},
+      tableWidth: 0,
       showCreate: false,
       lastError: null,
       lastNote: null,
@@ -134,7 +137,8 @@ class Views extends TableView {
         });
         const colNames = Object.keys(columns);
         const order = colNames.map(name => ({ name, width: columns[name].width }));
-        this.setState({ data: results, order, columns });
+        const tableWidth = order.reduce((sum, col) => sum + col.width, 0);
+        this.setState({ data: results, order, columns, tableWidth });
       })
       .catch(error => {
         this.showNote(
@@ -147,6 +151,47 @@ class Views extends TableView {
 
   tableData() {
     return this.state.data;
+  }
+
+  renderContent() {
+    const toolbar = this.renderToolbar();
+    const data = this.tableData();
+    const footer = this.renderFooter();
+    let content = null;
+    let headers = null;
+    if (data !== undefined) {
+      if (!Array.isArray(data)) {
+        console.warn('tableData() needs to return an array of objects');
+      } else {
+        if (data.length === 0) {
+          content = <div className={tableStyles.empty}>{this.renderEmpty()}</div>;
+        } else {
+          content = (
+            <div className={tableStyles.rows}>
+              <table style={{ width: this.state.tableWidth, tableLayout: 'fixed' }}>
+                <tbody>{data.map(row => this.renderRow(row))}</tbody>
+              </table>
+              {footer}
+            </div>
+          );
+          headers = this.renderHeaders();
+        }
+      }
+    }
+    const extras = this.renderExtras ? this.renderExtras() : null;
+    const loading = this.state ? this.state.loading : false;
+    return (
+      <div>
+        <LoaderContainer loading={loading}>
+          <div className={tableStyles.content}>{content}</div>
+        </LoaderContainer>
+        {toolbar}
+        <div className={tableStyles.headers} style={{ width: this.state.tableWidth }}>
+          {headers}
+        </div>
+        {extras}
+      </div>
+    );
   }
 
   renderRow(row) {
@@ -184,11 +229,12 @@ class Views extends TableView {
   }
 
   handleResize(index, delta) {
-    this.setState(({ order }) => {
+    this.setState(({ order, tableWidth }) => {
       const newOrder = [...order];
       const next = Math.max(40, newOrder[index].width + delta);
+      const diff = next - newOrder[index].width;
       newOrder[index] = { ...newOrder[index], width: next };
-      return { order: newOrder };
+      return { order: newOrder, tableWidth: tableWidth + diff };
     });
   }
 
