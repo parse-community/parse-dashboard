@@ -33,7 +33,10 @@ export default class DashboardView extends React.Component {
 
   onRouteChanged() {
     const path = this.props.location?.pathname ?? window.location.pathname;
-    const route = path.split('apps')[1].split('/')[2];
+    const route = path
+      .split('apps')[1]
+      .split('/')[2]
+      .split('?')[0];
     if (route !== this.state.route) {
       this.setState({ route });
     }
