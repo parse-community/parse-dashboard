@@ -40,8 +40,8 @@
 }
 
 .cell {
-  line-height: 30px;
-  padding: 10px 16px;
+  line-height: 20px;
+  padding: 5px 16px;
   border-right: 1px solid #e3e3ea;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -49,13 +49,3 @@
   max-width: none;
 }
 
-.pointerLink {
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-
-  svg {
-    margin-left: 4px;
-    transform: rotate(316deg);
-  }
-}

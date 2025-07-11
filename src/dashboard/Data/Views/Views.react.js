@@ -6,9 +6,14 @@ import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import Parse from 'parse';
 import React from 'react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
-import Icon from 'components/Icon/Icon.react';
+import Pill from 'components/Pill/Pill.react';
 import DragHandle from 'components/DragHandle/DragHandle.react';
 import CreateViewDialog from './CreateViewDialog.react';
+import EditViewDialog from './EditViewDialog.react';
+import DeleteViewDialog from './DeleteViewDialog.react';
+import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
+import MenuItem from 'components/BrowserMenu/MenuItem.react';
+import Separator from 'components/BrowserMenu/Separator.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
@@ -34,9 +39,13 @@ class Views extends TableView {
       columns: {},
       tableWidth: 0,
       showCreate: false,
+      editView: null,
+      editIndex: null,
+      deleteIndex: null,
       lastError: null,
       lastNote: null,
     };
+    this.headersRef = React.createRef();
     this.noteTimeout = null;
     this.action = new SidebarAction('Create a view', () =>
       this.setState({ showCreate: true })
@@ -47,6 +56,10 @@ class Views extends TableView {
     this.props.schema
       .dispatch(SchemaActionTypes.FETCH)
       .then(() => this.loadViews(this.context));
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.noteTimeout);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -98,7 +111,22 @@ class Views extends TableView {
       .aggregate(view.query, { useMasterKey: true })
       .then(results => {
         const columns = {};
-        const computeWidth = str => Math.max((String(str).length + 2) * 8, 40);
+        const computeWidth = str => {
+          const text =
+            typeof str === 'object' && str !== null
+              ? JSON.stringify(str)
+              : String(str);
+          if (typeof document !== 'undefined') {
+            const canvas =
+              computeWidth._canvas ||
+              (computeWidth._canvas = document.createElement('canvas'));
+            const context = canvas.getContext('2d');
+            context.font = '12px "Source Code Pro", "Courier New", monospace';
+            const width = context.measureText(text).width + 32;
+            return Math.max(width, 40);
+          }
+          return Math.max((text.length + 2) * 12, 40);
+        };
         results.forEach(item => {
           Object.keys(item).forEach(key => {
             const val = item[key];
@@ -121,7 +149,11 @@ class Views extends TableView {
               }
             }
             if (!columns[key]) {
-              columns[key] = { type, width: computeWidth(key) };
+              columns[key] = { type, width: Math.min(computeWidth(key), 200) };
+            }
+            const width = computeWidth(val);
+            if (width > columns[key].width && columns[key].width < 200) {
+              columns[key].width = Math.min(width, 200);
             }
           });
         });
@@ -154,7 +186,11 @@ class Views extends TableView {
         console.warn('tableData() needs to return an array of objects');
       } else {
         if (data.length === 0) {
-          content = <div className={tableStyles.empty}>{this.renderEmpty()}</div>;
+          content = (
+            <div className={tableStyles.empty} style={{ top: 96 }}>
+              {this.renderEmpty()}
+            </div>
+          );
         } else {
           content = (
             <div className={tableStyles.rows}>
@@ -174,15 +210,29 @@ class Views extends TableView {
     return (
       <div>
         <LoaderContainer loading={loading}>
-          <div className={tableStyles.content}>{content}</div>
+          <div
+            className={tableStyles.content}
+            style={{ overflowX: 'auto', paddingTop: 96 }}
+          >
+            <div style={{ width: this.state.tableWidth }}>
+              <div
+                className={tableStyles.headers}
+                style={{
+                  width: this.state.tableWidth,
+                  right: 'auto',
+                  position: 'sticky',
+                  top: 0,
+                  left: 0,
+                }}
+                ref={this.headersRef}
+              >
+                {headers}
+              </div>
+              {content}
+            </div>
+          </div>
         </LoaderContainer>
         {toolbar}
-        <div
-          className={tableStyles.headers}
-          style={{ width: this.state.tableWidth, right: 'auto' }}
-        >
-          {headers}
-        </div>
         {extras}
       </div>
     );
@@ -191,21 +241,37 @@ class Views extends TableView {
   renderRow(row) {
     return (
       <tr key={JSON.stringify(row)} className={styles.tableRow}>
-        {this.state.order.map(({ name, width }) => {
+        {this.state.order.map(({ name }) => {
           const value = row[name];
-          const type = this.state.columns[name]?.type;
+          let type = 'String';
+          if (typeof value === 'number') {
+            type = 'Number';
+          } else if (typeof value === 'boolean') {
+            type = 'Boolean';
+          } else if (value && typeof value === 'object') {
+            if (value.__type === 'Date') {
+              type = 'Date';
+            } else if (value.__type === 'Pointer') {
+              type = 'Pointer';
+            } else if (value.__type === 'File') {
+              type = 'File';
+            } else if (value.__type === 'GeoPoint') {
+              type = 'GeoPoint';
+            } else {
+              type = 'Object';
+            }
+          }
           let content = '';
           if (type === 'Pointer' && value && value.className && value.objectId) {
             const id = value.objectId;
             const className = value.className;
             content = (
-              <span
-                className={styles.pointerLink}
+              <Pill
+                value={id}
                 onClick={() => this.handlePointerClick({ className, id })}
-              >
-                {id}
-                <Icon name="right-outline" width={12} height={12} fill="#1669a1" />
-              </span>
+                followClick
+                shrinkablePill
+              />
             );
           } else if (type === 'Object') {
             content = JSON.stringify(value);
@@ -244,6 +310,7 @@ class Views extends TableView {
     });
   }
 
+
   renderHeaders() {
     return this.state.order.map(({ name, width }, i) => (
       <div key={name} className={styles.headerWrap} style={{ width }}>
@@ -267,7 +334,9 @@ class Views extends TableView {
     return (
       <CategoryList
         current={current}
+        params={this.props.location?.search}
         linkPrefix={'views/'}
+        classClicked={() => {}}
         categories={categories}
       />
     );
@@ -275,7 +344,44 @@ class Views extends TableView {
 
   renderToolbar() {
     const subsection = this.props.params.name || '';
-    return <Toolbar section="Views" subsection={subsection} />;
+    let editMenu = null;
+    if (this.props.params.name) {
+      editMenu = (
+        <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
+          <MenuItem
+            text="Edit view"
+            onClick={() => {
+              const index = this.state.views.findIndex(
+                v => v.name === this.props.params.name
+              );
+              if (index >= 0) {
+                this.setState({
+                  editView: this.state.views[index],
+                  editIndex: index,
+                });
+              }
+            }}
+          />
+          <Separator />
+          <MenuItem
+            text="Delete view"
+            onClick={() => {
+              const index = this.state.views.findIndex(
+                v => v.name === this.props.params.name
+              );
+              if (index >= 0) {
+                this.setState({ deleteIndex: index });
+              }
+            }}
+          />
+        </BrowserMenu>
+      );
+    }
+    return (
+      <Toolbar section="Views" subsection={subsection}>
+        {editMenu}
+      </Toolbar>
+    );
   }
 
   renderExtras() {
@@ -300,6 +406,64 @@ class Views extends TableView {
                   this.context.applicationId,
                   this.state.views
                 );
+                this.loadViews(this.context);
+              }
+            );
+          }}
+        />
+      );
+    } else if (this.state.editView) {
+      let classNames = [];
+      if (this.props.schema?.data) {
+        const classes = this.props.schema.data.get('classes');
+        if (classes) {
+          classNames = Object.keys(classes.toObject());
+        }
+      }
+      extras = (
+        <EditViewDialog
+          classes={classNames}
+          view={this.state.editView}
+          onCancel={() => this.setState({ editView: null, editIndex: null })}
+          onConfirm={view => {
+            this.setState(
+              state => {
+                const newViews = [...state.views];
+                newViews[state.editIndex] = view;
+                return { editView: null, editIndex: null, views: newViews };
+              },
+              () => {
+                ViewPreferences.saveViews(
+                  this.context.applicationId,
+                  this.state.views
+                );
+                this.loadViews(this.context);
+              }
+            );
+          }}
+        />
+      );
+    } else if (this.state.deleteIndex !== null) {
+      const name = this.state.views[this.state.deleteIndex]?.name || '';
+      extras = (
+        <DeleteViewDialog
+          name={name}
+          onCancel={() => this.setState({ deleteIndex: null })}
+          onConfirm={() => {
+            this.setState(
+              state => {
+                const newViews = state.views.filter((_, i) => i !== state.deleteIndex);
+                return { deleteIndex: null, views: newViews };
+              },
+              () => {
+                ViewPreferences.saveViews(
+                  this.context.applicationId,
+                  this.state.views
+                );
+                if (this.props.params.name === name) {
+                  const path = generatePath(this.context, 'views');
+                  this.props.navigate(path);
+                }
                 this.loadViews(this.context);
               }
             );
