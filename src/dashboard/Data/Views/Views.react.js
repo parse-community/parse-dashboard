@@ -45,6 +45,7 @@ class Views extends TableView {
       lastError: null,
       lastNote: null,
     };
+    this.headersRef = React.createRef();
     this.noteTimeout = null;
     this.action = new SidebarAction('Create a view', () =>
       this.setState({ showCreate: true })
@@ -55,6 +56,10 @@ class Views extends TableView {
     this.props.schema
       .dispatch(SchemaActionTypes.FETCH)
       .then(() => this.loadViews(this.context));
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.noteTimeout);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -197,15 +202,29 @@ class Views extends TableView {
     return (
       <div>
         <LoaderContainer loading={loading}>
-          <div className={tableStyles.content}>{content}</div>
+          <div
+            className={tableStyles.content}
+            style={{ overflowX: 'auto' }}
+          >
+            <div style={{ width: this.state.tableWidth }}>
+              <div
+                className={tableStyles.headers}
+                style={{
+                  width: this.state.tableWidth,
+                  right: 'auto',
+                  position: 'sticky',
+                  top: 0,
+                  left: 0,
+                }}
+                ref={this.headersRef}
+              >
+                {headers}
+              </div>
+              {content}
+            </div>
+          </div>
         </LoaderContainer>
         {toolbar}
-        <div
-          className={tableStyles.headers}
-          style={{ width: this.state.tableWidth, right: 'auto' }}
-        >
-          {headers}
-        </div>
         {extras}
       </div>
     );
@@ -216,7 +235,24 @@ class Views extends TableView {
       <tr key={JSON.stringify(row)} className={styles.tableRow}>
         {this.state.order.map(({ name }) => {
           const value = row[name];
-          const type = this.state.columns[name]?.type;
+          let type = 'String';
+          if (typeof value === 'number') {
+            type = 'Number';
+          } else if (typeof value === 'boolean') {
+            type = 'Boolean';
+          } else if (value && typeof value === 'object') {
+            if (value.__type === 'Date') {
+              type = 'Date';
+            } else if (value.__type === 'Pointer') {
+              type = 'Pointer';
+            } else if (value.__type === 'File') {
+              type = 'File';
+            } else if (value.__type === 'GeoPoint') {
+              type = 'GeoPoint';
+            } else {
+              type = 'Object';
+            }
+          }
           let content = '';
           if (type === 'Pointer' && value && value.className && value.objectId) {
             const id = value.objectId;
@@ -266,6 +302,7 @@ class Views extends TableView {
       return { order: newOrder, tableWidth };
     });
   }
+
 
   renderHeaders() {
     return this.state.order.map(({ name, width }, i) => (
