@@ -275,7 +275,9 @@ class Views extends TableView {
     return (
       <CategoryList
         current={current}
+        params={this.props.location?.search}
         linkPrefix={'views/'}
+        classClicked={() => {}}
         categories={categories}
       />
     );
