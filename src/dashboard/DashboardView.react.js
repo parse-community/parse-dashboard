@@ -309,10 +309,9 @@ export default class DashboardView extends React.Component {
     );
 
     let content = <div className={styles.content}>{this.renderContent()}</div>;
-    const allowedRoutes = [...coreSubsections, ...pushSubsections, ...settingsSections]
-      .map(({ link }) => link.split('/')[1]);
-    const canRoute =
-      allowedRoutes.includes(this.state.route) || this.state.route === 'views';
+    const canRoute = [...coreSubsections, ...pushSubsections, ...settingsSections]
+      .map(({ link }) => link.split('/')[1])
+      .includes(this.state.route);
 
     if (!canRoute) {
       content = (
