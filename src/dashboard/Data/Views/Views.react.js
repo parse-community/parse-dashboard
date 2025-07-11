@@ -6,7 +6,7 @@ import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import Parse from 'parse';
 import React from 'react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
-import Icon from 'components/Icon/Icon.react';
+import Pill from 'components/Pill/Pill.react';
 import DragHandle from 'components/DragHandle/DragHandle.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import EditViewDialog from './EditViewDialog.react';
@@ -112,16 +112,20 @@ class Views extends TableView {
       .then(results => {
         const columns = {};
         const computeWidth = str => {
+          const text =
+            typeof str === 'object' && str !== null
+              ? JSON.stringify(str)
+              : String(str);
           if (typeof document !== 'undefined') {
             const canvas =
               computeWidth._canvas ||
               (computeWidth._canvas = document.createElement('canvas'));
             const context = canvas.getContext('2d');
             context.font = '12px "Source Code Pro", "Courier New", monospace';
-            const width = context.measureText(String(str)).width + 32;
+            const width = context.measureText(text).width + 32;
             return Math.max(width, 40);
           }
-          return Math.max((String(str).length + 2) * 12, 40);
+          return Math.max((text.length + 2) * 12, 40);
         };
         results.forEach(item => {
           Object.keys(item).forEach(key => {
@@ -262,13 +266,12 @@ class Views extends TableView {
             const id = value.objectId;
             const className = value.className;
             content = (
-              <span
-                className={styles.pointerLink}
+              <Pill
+                value={id}
                 onClick={() => this.handlePointerClick({ className, id })}
-              >
-                {id}
-                <Icon name="right-outline" width={12} height={12} fill="#1669a1" />
-              </span>
+                followClick
+                shrinkablePill
+              />
             );
           } else if (type === 'Object') {
             content = JSON.stringify(value);
