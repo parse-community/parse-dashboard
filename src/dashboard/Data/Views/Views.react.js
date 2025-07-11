@@ -9,6 +9,9 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import Icon from 'components/Icon/Icon.react';
 import DragHandle from 'components/DragHandle/DragHandle.react';
 import CreateViewDialog from './CreateViewDialog.react';
+import EditViewDialog from './EditViewDialog.react';
+import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
+import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
@@ -34,6 +37,8 @@ class Views extends TableView {
       columns: {},
       tableWidth: 0,
       showCreate: false,
+      editView: null,
+      editIndex: null,
       lastError: null,
       lastNote: null,
     };
@@ -191,7 +196,7 @@ class Views extends TableView {
   renderRow(row) {
     return (
       <tr key={JSON.stringify(row)} className={styles.tableRow}>
-        {this.state.order.map(({ name, width }) => {
+        {this.state.order.map(({ name }) => {
           const value = row[name];
           const type = this.state.columns[name]?.type;
           let content = '';
@@ -275,7 +280,32 @@ class Views extends TableView {
 
   renderToolbar() {
     const subsection = this.props.params.name || '';
-    return <Toolbar section="Views" subsection={subsection} />;
+    let editMenu = null;
+    if (this.props.params.name) {
+      editMenu = (
+        <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
+          <MenuItem
+            text="Edit query"
+            onClick={() => {
+              const index = this.state.views.findIndex(
+                v => v.name === this.props.params.name
+              );
+              if (index >= 0) {
+                this.setState({
+                  editView: this.state.views[index],
+                  editIndex: index,
+                });
+              }
+            }}
+          />
+        </BrowserMenu>
+      );
+    }
+    return (
+      <Toolbar section="Views" subsection={subsection}>
+        {editMenu}
+      </Toolbar>
+    );
   }
 
   renderExtras() {
@@ -295,6 +325,37 @@ class Views extends TableView {
           onConfirm={view => {
             this.setState(
               state => ({ showCreate: false, views: [...state.views, view] }),
+              () => {
+                ViewPreferences.saveViews(
+                  this.context.applicationId,
+                  this.state.views
+                );
+                this.loadViews(this.context);
+              }
+            );
+          }}
+        />
+      );
+    } else if (this.state.editView) {
+      let classNames = [];
+      if (this.props.schema?.data) {
+        const classes = this.props.schema.data.get('classes');
+        if (classes) {
+          classNames = Object.keys(classes.toObject());
+        }
+      }
+      extras = (
+        <EditViewDialog
+          classes={classNames}
+          view={this.state.editView}
+          onCancel={() => this.setState({ editView: null, editIndex: null })}
+          onConfirm={view => {
+            this.setState(
+              state => {
+                const newViews = [...state.views];
+                newViews[state.editIndex] = view;
+                return { editView: null, editIndex: null, views: newViews };
+              },
               () => {
                 ViewPreferences.saveViews(
                   this.context.applicationId,
