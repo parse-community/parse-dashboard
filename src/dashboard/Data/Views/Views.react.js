@@ -129,7 +129,11 @@ class Views extends TableView {
               }
             }
             if (!columns[key]) {
-              columns[key] = { type, width: computeWidth(key) };
+              columns[key] = { type, width: Math.min(computeWidth(key), 200) };
+            }
+            const width = computeWidth(val);
+            if (width > columns[key].width && columns[key].width < 200) {
+              columns[key].width = Math.min(width, 200);
             }
           });
         });
