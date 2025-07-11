@@ -182,7 +182,11 @@ class Views extends TableView {
         console.warn('tableData() needs to return an array of objects');
       } else {
         if (data.length === 0) {
-          content = <div className={tableStyles.empty}>{this.renderEmpty()}</div>;
+          content = (
+            <div className={tableStyles.empty} style={{ top: 96 }}>
+              {this.renderEmpty()}
+            </div>
+          );
         } else {
           content = (
             <div className={tableStyles.rows}>
@@ -204,7 +208,7 @@ class Views extends TableView {
         <LoaderContainer loading={loading}>
           <div
             className={tableStyles.content}
-            style={{ overflowX: 'auto' }}
+            style={{ overflowX: 'auto', paddingTop: 96 }}
           >
             <div style={{ width: this.state.tableWidth }}>
               <div
