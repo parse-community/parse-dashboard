@@ -10,8 +10,10 @@ import Icon from 'components/Icon/Icon.react';
 import DragHandle from 'components/DragHandle/DragHandle.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import EditViewDialog from './EditViewDialog.react';
+import DeleteViewDialog from './DeleteViewDialog.react';
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
 import MenuItem from 'components/BrowserMenu/MenuItem.react';
+import Separator from 'components/BrowserMenu/Separator.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
@@ -39,6 +41,7 @@ class Views extends TableView {
       showCreate: false,
       editView: null,
       editIndex: null,
+      deleteIndex: null,
       lastError: null,
       lastNote: null,
     };
@@ -285,7 +288,7 @@ class Views extends TableView {
       editMenu = (
         <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
           <MenuItem
-            text="Edit query"
+            text="Edit view"
             onClick={() => {
               const index = this.state.views.findIndex(
                 v => v.name === this.props.params.name
@@ -295,6 +298,18 @@ class Views extends TableView {
                   editView: this.state.views[index],
                   editIndex: index,
                 });
+              }
+            }}
+          />
+          <Separator />
+          <MenuItem
+            text="Delete view"
+            onClick={() => {
+              const index = this.state.views.findIndex(
+                v => v.name === this.props.params.name
+              );
+              if (index >= 0) {
+                this.setState({ deleteIndex: index });
               }
             }}
           />
@@ -361,6 +376,33 @@ class Views extends TableView {
                   this.context.applicationId,
                   this.state.views
                 );
+                this.loadViews(this.context);
+              }
+            );
+          }}
+        />
+      );
+    } else if (this.state.deleteIndex !== null) {
+      const name = this.state.views[this.state.deleteIndex]?.name || '';
+      extras = (
+        <DeleteViewDialog
+          name={name}
+          onCancel={() => this.setState({ deleteIndex: null })}
+          onConfirm={() => {
+            this.setState(
+              state => {
+                const newViews = state.views.filter((_, i) => i !== state.deleteIndex);
+                return { deleteIndex: null, views: newViews };
+              },
+              () => {
+                ViewPreferences.saveViews(
+                  this.context.applicationId,
+                  this.state.views
+                );
+                if (this.props.params.name === name) {
+                  const path = generatePath(this.context, 'views');
+                  this.props.navigate(path);
+                }
                 this.loadViews(this.context);
               }
             );
