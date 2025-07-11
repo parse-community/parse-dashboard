@@ -106,7 +106,18 @@ class Views extends TableView {
       .aggregate(view.query, { useMasterKey: true })
       .then(results => {
         const columns = {};
-        const computeWidth = str => Math.max((String(str).length + 2) * 8, 40);
+        const computeWidth = str => {
+          if (typeof document !== 'undefined') {
+            const canvas =
+              computeWidth._canvas ||
+              (computeWidth._canvas = document.createElement('canvas'));
+            const context = canvas.getContext('2d');
+            context.font = '12px "Source Code Pro", "Courier New", monospace';
+            const width = context.measureText(String(str)).width + 32;
+            return Math.max(width, 40);
+          }
+          return Math.max((String(str).length + 2) * 12, 40);
+        };
         results.forEach(item => {
           Object.keys(item).forEach(key => {
             const val = item[key];
