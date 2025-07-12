@@ -44,8 +44,7 @@ import { withRouter } from 'lib/withRouter';
 import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
-const SELECTED_ROWS_MESSAGE =
-  'There are selected rows. Are you sure you want to leave this page?';
+const SELECTED_ROWS_MESSAGE = 'There are selected rows. Are you sure you want to leave this page?';
 
 function SelectedRowsNavigationPrompt({ when }) {
   const message = SELECTED_ROWS_MESSAGE;
@@ -119,7 +118,7 @@ function SelectedRowsNavigationPrompt({ when }) {
 }
 
 // The initial and max amount of rows fetched by lazy loading
-const BROWSER_LAST_LOCATION = 'brower_last_location';
+const BROWSER_LAST_LOCATION = 'browser_last_location';
 
 @subscribeTo('Schema', 'schema')
 @withRouter
@@ -1512,22 +1511,17 @@ class Browser extends DashboardView {
 
             if (error.code === Parse.Error.AGGREGATE_ERROR) {
               if (error.errors.length == 1) {
-                errorDeletingNote =
-                  `Error deleting ${className} with id '${error.errors[0].object.id}'`;
+                errorDeletingNote = `Error deleting ${className} with id '${error.errors[0].object.id}'`;
               } else if (error.errors.length < toDeleteObjectIds.length) {
-                errorDeletingNote =
-                  `Error deleting ${error.errors.length} out of ${toDeleteObjectIds.length} ${className} objects`;
+                errorDeletingNote = `Error deleting ${error.errors.length} out of ${toDeleteObjectIds.length} ${className} objects`;
               } else {
-                errorDeletingNote =
-                  `Error deleting all ${error.errors.length} ${className} objects`;
+                errorDeletingNote = `Error deleting all ${error.errors.length} ${className} objects`;
               }
             } else {
               if (toDeleteObjectIds.length == 1) {
-                errorDeletingNote =
-                  `Error deleting ${className} with id '${toDeleteObjectIds[0]}'`;
+                errorDeletingNote = `Error deleting ${className} with id '${toDeleteObjectIds[0]}'`;
               } else {
-                errorDeletingNote =
-                  `Error deleting ${toDeleteObjectIds.length} ${className} objects`;
+                errorDeletingNote = `Error deleting ${toDeleteObjectIds.length} ${className} objects`;
               }
             }
 
@@ -2533,9 +2527,7 @@ class Browser extends DashboardView {
         <Helmet>
           <title>{pageTitle}</title>
         </Helmet>
-        <SelectedRowsNavigationPrompt
-          when={Object.keys(this.state.selection).length > 0}
-        />
+        <SelectedRowsNavigationPrompt when={Object.keys(this.state.selection).length > 0} />
         {browser}
         {notification}
         {extras}

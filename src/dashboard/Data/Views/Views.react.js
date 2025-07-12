@@ -22,7 +22,6 @@ import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 import styles from './Views.scss';
 import tableStyles from 'dashboard/TableView.scss';
 
-
 export default
 @subscribeTo('Schema', 'schema')
 @withRouter
@@ -47,15 +46,11 @@ class Views extends TableView {
     };
     this.headersRef = React.createRef();
     this.noteTimeout = null;
-    this.action = new SidebarAction('Create a view', () =>
-      this.setState({ showCreate: true })
-    );
+    this.action = new SidebarAction('Create a view', () => this.setState({ showCreate: true }));
   }
 
   componentWillMount() {
-    this.props.schema
-      .dispatch(SchemaActionTypes.FETCH)
-      .then(() => this.loadViews(this.context));
+    this.props.schema.dispatch(SchemaActionTypes.FETCH).then(() => this.loadViews(this.context));
   }
 
   componentWillUnmount() {
@@ -64,9 +59,7 @@ class Views extends TableView {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.props.schema
-        .dispatch(SchemaActionTypes.FETCH)
-        .then(() => this.loadViews(nextContext));
+      this.props.schema.dispatch(SchemaActionTypes.FETCH).then(() => this.loadViews(nextContext));
     }
     if (this.props.params.name !== nextProps.params.name || this.context !== nextContext) {
       this.loadData(nextProps.params.name);
@@ -86,10 +79,7 @@ class Views extends TableView {
               }));
             })
             .catch(error => {
-              this.showNote(
-                `Request failed: ${error.message || 'Unknown error occurred'}`,
-                true
-              );
+              this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
             });
         }
       });
@@ -112,14 +102,10 @@ class Views extends TableView {
       .then(results => {
         const columns = {};
         const computeWidth = str => {
-          const text =
-            typeof str === 'object' && str !== null
-              ? JSON.stringify(str)
-              : String(str);
+          const text = typeof str === 'object' && str !== null ? JSON.stringify(str) : String(str);
           if (typeof document !== 'undefined') {
             const canvas =
-              computeWidth._canvas ||
-              (computeWidth._canvas = document.createElement('canvas'));
+              computeWidth._canvas || (computeWidth._canvas = document.createElement('canvas'));
             const context = canvas.getContext('2d');
             context.font = '12px "Source Code Pro", "Courier New", monospace';
             const width = context.measureText(text).width + 32;
@@ -163,10 +149,7 @@ class Views extends TableView {
         this.setState({ data: results, order, columns, tableWidth });
       })
       .catch(error => {
-        this.showNote(
-          `Request failed: ${error.message || 'Unknown error occurred'}`,
-          true
-        );
+        this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
         this.setState({ data: [], order: [], columns: {} });
       });
   }
@@ -210,10 +193,7 @@ class Views extends TableView {
     return (
       <div>
         <LoaderContainer loading={loading}>
-          <div
-            className={tableStyles.content}
-            style={{ overflowX: 'auto', paddingTop: 96 }}
-          >
+          <div className={tableStyles.content} style={{ overflowX: 'auto', paddingTop: 96 }}>
             <div style={{ width: this.state.tableWidth }}>
               <div
                 className={tableStyles.headers}
@@ -310,7 +290,6 @@ class Views extends TableView {
     });
   }
 
-
   renderHeaders() {
     return this.state.order.map(({ name, width }, i) => (
       <div key={name} className={styles.headerWrap} style={{ width }}>
@@ -321,6 +300,34 @@ class Views extends TableView {
   }
 
   renderEmpty() {
+    if (!this.props.params.name) {
+      if (this.state.views.length > 0) {
+        return (
+          <EmptyState icon="eye" title="Views" description="Select a view to load the data." />
+        );
+      }
+      return (
+        <EmptyState
+          icon="eye"
+          title="Views"
+          description={
+            <span>
+              Use views to display aggregated data from your classes.{' '}
+              <a
+                href="https://docs.parseplatform.org/dashboard/guide/#views"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Learn more
+              </a>
+              .
+            </span>
+          }
+          cta="Create a view"
+          action={() => this.setState({ showCreate: true })}
+        />
+      );
+    }
     return <div>No data available</div>;
   }
 
@@ -351,9 +358,7 @@ class Views extends TableView {
           <MenuItem
             text="Edit view"
             onClick={() => {
-              const index = this.state.views.findIndex(
-                v => v.name === this.props.params.name
-              );
+              const index = this.state.views.findIndex(v => v.name === this.props.params.name);
               if (index >= 0) {
                 this.setState({
                   editView: this.state.views[index],
@@ -366,9 +371,7 @@ class Views extends TableView {
           <MenuItem
             text="Delete view"
             onClick={() => {
-              const index = this.state.views.findIndex(
-                v => v.name === this.props.params.name
-              );
+              const index = this.state.views.findIndex(v => v.name === this.props.params.name);
               if (index >= 0) {
                 this.setState({ deleteIndex: index });
               }
@@ -402,10 +405,7 @@ class Views extends TableView {
             this.setState(
               state => ({ showCreate: false, views: [...state.views, view] }),
               () => {
-                ViewPreferences.saveViews(
-                  this.context.applicationId,
-                  this.state.views
-                );
+                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
                 this.loadViews(this.context);
               }
             );
@@ -433,10 +433,7 @@ class Views extends TableView {
                 return { editView: null, editIndex: null, views: newViews };
               },
               () => {
-                ViewPreferences.saveViews(
-                  this.context.applicationId,
-                  this.state.views
-                );
+                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
                 this.loadViews(this.context);
               }
             );
@@ -456,10 +453,7 @@ class Views extends TableView {
                 return { deleteIndex: null, views: newViews };
               },
               () => {
-                ViewPreferences.saveViews(
-                  this.context.applicationId,
-                  this.state.views
-                );
+                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
                 if (this.props.params.name === name) {
                   const path = generatePath(this.context, 'views');
                   this.props.navigate(path);
@@ -486,9 +480,7 @@ class Views extends TableView {
   }
 
   handlePointerClick({ className, id, field = 'objectId' }) {
-    const filters = JSON.stringify([
-      { field, constraint: 'eq', compareTo: id },
-    ]);
+    const filters = JSON.stringify([{ field, constraint: 'eq', compareTo: id }]);
     const path = generatePath(
       this.context,
       `browser/${className}?filters=${encodeURIComponent(filters)}`
