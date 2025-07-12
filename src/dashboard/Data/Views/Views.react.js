@@ -2,6 +2,7 @@ import CategoryList from 'components/CategoryList/CategoryList.react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import Icon from 'components/Icon/Icon.react';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import Parse from 'parse';
 import React from 'react';
@@ -22,6 +23,7 @@ import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 import styles from './Views.scss';
 import tableStyles from 'dashboard/TableView.scss';
+import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -69,6 +71,7 @@ class Views extends TableView {
       this.props.schema.dispatch(SchemaActionTypes.FETCH).then(() => this.loadViews(nextContext));
     }
     if (this.props.params.name !== nextProps.params.name || this.context !== nextContext) {
+      window.scrollTo({ top: 0 });
       this.loadData(nextProps.params.name);
     }
   }
@@ -169,6 +172,10 @@ class Views extends TableView {
           this.setState({ data: [], order: [], columns: {} });
         }
       });
+  }
+
+  onRefresh() {
+    this.loadData(this.props.params.name);
   }
 
   tableData() {
@@ -360,7 +367,9 @@ class Views extends TableView {
         current={current}
         params={this.props.location?.search}
         linkPrefix={'views/'}
-        classClicked={() => {}}
+        classClicked={() => {
+          window.scrollTo({ top: 0 });
+        }}
         categories={categories}
       />
     );
@@ -399,6 +408,10 @@ class Views extends TableView {
     }
     return (
       <Toolbar section="Views" subsection={subsection}>
+        <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
+          <Icon name="refresh-solid" width={14} height={14} />
+          <span>Refresh</span>
+        </a>
         {editMenu}
       </Toolbar>
     );
