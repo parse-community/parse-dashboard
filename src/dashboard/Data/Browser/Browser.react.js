@@ -386,6 +386,13 @@ class Browser extends DashboardView {
   }
   addLocation(appId) {
     if (window.localStorage) {
+      const currentSearch = this.props.location?.search;
+      if (currentSearch) {
+        const params = new URLSearchParams(currentSearch);
+        if (params.has('filters')) {
+          return;
+        }
+      }
       let pathname = null;
       const newLastLocations = [];
 
