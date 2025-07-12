@@ -284,7 +284,8 @@ class Views extends TableView {
             }
           }
           let content = '';
-          if (type === 'Pointer' && value && value.className && value.objectId) {
+          const hasPill = type === 'Pointer' && value && value.className && value.objectId;
+          if (hasPill) {
             const id = value.objectId;
             const className = value.className;
             content = (
@@ -301,14 +302,24 @@ class Views extends TableView {
             content = String(value);
           }
           const isViewable = ['String', 'Number', 'Object'].includes(type);
-          const cellProps = {};
+          const classes = [styles.cell];
+          if (hasPill) {
+            classes.push(styles.pillCell);
+          }
+          let cellContent = content;
           if (isViewable) {
-            cellProps.onClick = () => this.handleValueClick(value);
-            cellProps.style = { cursor: 'pointer' };
+            cellContent = (
+              <span
+                className={styles.clickableText}
+                onClick={() => this.handleValueClick(value)}
+              >
+                {content}
+              </span>
+            );
           }
           return (
-            <td key={name} className={styles.cell} {...cellProps}>
-              {content}
+            <td key={name} className={classes.join(' ')}>
+              {cellContent}
             </td>
           );
         })}
