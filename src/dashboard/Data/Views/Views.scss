@@ -15,15 +15,21 @@
   position: relative;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.headerLabel {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .handle {
-  position: absolute;
-  top: 0;
-  right: -4px;
+  position: relative;
+  display: inline-block;
   width: 8px;
   height: 30px;
+  margin: 0 -4px;
   cursor: ew-resize;
 }
 
