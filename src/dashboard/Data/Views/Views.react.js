@@ -14,6 +14,7 @@ import DeleteViewDialog from './DeleteViewDialog.react';
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
 import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import Separator from 'components/BrowserMenu/Separator.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
@@ -30,6 +31,7 @@ class Views extends TableView {
     super();
     this.section = 'Core';
     this.subsection = 'Views';
+    this._isMounted = false;
     this.state = {
       views: [],
       counts: {},
@@ -49,11 +51,16 @@ class Views extends TableView {
     this.action = new SidebarAction('Create a view', () => this.setState({ showCreate: true }));
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
   componentWillMount() {
     this.props.schema.dispatch(SchemaActionTypes.FETCH).then(() => this.loadViews(this.context));
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     clearTimeout(this.noteTimeout);
   }
 
@@ -74,16 +81,22 @@ class Views extends TableView {
           new Parse.Query(view.className)
             .aggregate(view.query, { useMasterKey: true })
             .then(res => {
-              this.setState(({ counts }) => ({
-                counts: { ...counts, [view.name]: res.length },
-              }));
+              if (this._isMounted) {
+                this.setState(({ counts }) => ({
+                  counts: { ...counts, [view.name]: res.length },
+                }));
+              }
             })
             .catch(error => {
-              this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+              if (this._isMounted) {
+                this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+              }
             });
         }
       });
-      this.loadData(this.props.params.name);
+      if (this._isMounted) {
+        this.loadData(this.props.params.name);
+      }
     });
   }
 
@@ -146,11 +159,15 @@ class Views extends TableView {
         const colNames = Object.keys(columns);
         const order = colNames.map(name => ({ name, width: columns[name].width }));
         const tableWidth = order.reduce((sum, col) => sum + col.width, 0);
-        this.setState({ data: results, order, columns, tableWidth });
+        if (this._isMounted) {
+          this.setState({ data: results, order, columns, tableWidth });
+        }
       })
       .catch(error => {
-        this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
-        this.setState({ data: [], order: [], columns: {} });
+        if (this._isMounted) {
+          this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+          this.setState({ data: [], order: [], columns: {} });
+        }
       });
   }
 
