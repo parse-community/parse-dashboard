@@ -302,18 +302,24 @@ class Views extends TableView {
             content = String(value);
           }
           const isViewable = ['String', 'Number', 'Object'].includes(type);
-          const cellProps = {};
-          if (isViewable) {
-            cellProps.onClick = () => this.handleValueClick(value);
-            cellProps.style = { cursor: 'pointer' };
-          }
           const classes = [styles.cell];
           if (hasPill) {
             classes.push(styles.pillCell);
           }
+          let cellContent = content;
+          if (isViewable) {
+            cellContent = (
+              <span
+                className={styles.clickableText}
+                onClick={() => this.handleValueClick(value)}
+              >
+                {content}
+              </span>
+            );
+          }
           return (
-            <td key={name} className={classes.join(' ')} {...cellProps}>
-              {content}
+            <td key={name} className={classes.join(' ')}>
+              {cellContent}
             </td>
           );
         })}
