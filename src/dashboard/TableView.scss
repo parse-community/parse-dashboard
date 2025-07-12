@@ -54,8 +54,8 @@ body:global(.expanded) {
   }
 
   td {
-    line-height: 30px;
-    padding: 10px 16px;
+    line-height: normal;
+    padding: 8px 16px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
