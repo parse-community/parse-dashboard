@@ -47,6 +47,7 @@ class Views extends TableView {
       deleteIndex: null,
       lastError: null,
       lastNote: null,
+      loading: false,
     };
     this.headersRef = React.createRef();
     this.noteTimeout = null;
@@ -104,13 +105,20 @@ class Views extends TableView {
   }
 
   loadData(name) {
+    if (this._isMounted) {
+      this.setState({ loading: true });
+    }
     if (!name) {
-      this.setState({ data: [], order: [], columns: {} });
+      if (this._isMounted) {
+        this.setState({ data: [], order: [], columns: {}, loading: false });
+      }
       return;
     }
     const view = (this.state.views || []).find(v => v.name === name);
     if (!view) {
-      this.setState({ data: [], order: [], columns: {} });
+      if (this._isMounted) {
+        this.setState({ data: [], order: [], columns: {}, loading: false });
+      }
       return;
     }
     new Parse.Query(view.className)
@@ -163,13 +171,13 @@ class Views extends TableView {
         const order = colNames.map(name => ({ name, width: columns[name].width }));
         const tableWidth = order.reduce((sum, col) => sum + col.width, 0);
         if (this._isMounted) {
-          this.setState({ data: results, order, columns, tableWidth });
+          this.setState({ data: results, order, columns, tableWidth, loading: false });
         }
       })
       .catch(error => {
         if (this._isMounted) {
           this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
-          this.setState({ data: [], order: [], columns: {} });
+          this.setState({ data: [], order: [], columns: {}, loading: false });
         }
       });
   }
@@ -216,7 +224,7 @@ class Views extends TableView {
     const loading = this.state ? this.state.loading : false;
     return (
       <div>
-        <LoaderContainer loading={loading}>
+        <LoaderContainer loading={loading} solid={false}>
           <div className={tableStyles.content} style={{ overflowX: 'auto', paddingTop: 96 }}>
             <div style={{ width: this.state.tableWidth }}>
               <div
