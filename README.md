@@ -75,6 +75,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Change Pointer Key](#change-pointer-key)
     - [Limitations](#limitations)
   - [CSV Export](#csv-export)
+  - [Views](#views)
 - [Contributing](#contributing)
 
 # Getting Started
@@ -1189,6 +1190,12 @@ This feature allows you to change how a pointer is represented in the browser. B
 This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
 
 > ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
+## Views
+
+▶️ *Core > Views*
+
+Views are saved queries that display aggregated data from your classes. Create a view by providing a name, selecting a class and defining an aggregation pipeline. Optionally enable the object counter to show how many items match the view. Saved views appear in the sidebar, where you can select, edit, or delete them.
+
 
 # Contributing
 
