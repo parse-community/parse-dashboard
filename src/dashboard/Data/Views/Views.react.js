@@ -301,13 +301,19 @@ class Views extends TableView {
             content = String(value);
           }
           const isViewable = ['String', 'Number', 'Object'].includes(type);
+          const hasPill =
+            type === 'Pointer' && value && value.className && value.objectId;
           const cellProps = {};
           if (isViewable) {
             cellProps.onClick = () => this.handleValueClick(value);
             cellProps.style = { cursor: 'pointer' };
           }
+          const cellClass = [styles.cell];
+          if (hasPill) {
+            cellClass.push(styles.pillCell);
+          }
           return (
-            <td key={name} className={styles.cell} {...cellProps}>
+            <td key={name} className={cellClass.join(' ')} {...cellProps}>
               {content}
             </td>
           );

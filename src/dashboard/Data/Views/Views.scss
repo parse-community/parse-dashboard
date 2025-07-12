@@ -40,12 +40,16 @@
 }
 
 .cell {
-  line-height: 20px;
+  line-height: 18px;
   padding: 5px 16px;
   border-right: 1px solid #e3e3ea;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: none;
+}
+
+.pillCell {
+  line-height: 8px;
 }
 
