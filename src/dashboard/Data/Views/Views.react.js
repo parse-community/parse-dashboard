@@ -149,7 +149,11 @@ class Views extends TableView {
               if (val.__type === 'Date') {
                 type = 'Date';
               } else if (val.__type === 'Pointer') {
-                type = 'Pointer';
+                if (val.className && val.objectId) {
+                  type = 'Pointer';
+                } else {
+                  type = 'Object';
+                }
               } else if (val.__type === 'File') {
                 type = 'File';
               } else if (val.__type === 'GeoPoint') {
@@ -264,7 +268,11 @@ class Views extends TableView {
             if (value.__type === 'Date') {
               type = 'Date';
             } else if (value.__type === 'Pointer') {
-              type = 'Pointer';
+              if (value.className && value.objectId) {
+                type = 'Pointer';
+              } else {
+                type = 'Object';
+              }
             } else if (value.__type === 'File') {
               type = 'File';
             } else if (value.__type === 'GeoPoint') {
