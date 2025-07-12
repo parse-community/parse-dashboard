@@ -12,6 +12,7 @@ import DragHandle from 'components/DragHandle/DragHandle.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import EditViewDialog from './EditViewDialog.react';
 import DeleteViewDialog from './DeleteViewDialog.react';
+import ViewValueDialog from './ViewValueDialog.react';
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
 import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import Separator from 'components/BrowserMenu/Separator.react';
@@ -48,6 +49,7 @@ class Views extends TableView {
       lastError: null,
       lastNote: null,
       loading: false,
+      viewValue: null,
     };
     this.headersRef = React.createRef();
     this.noteTimeout = null;
@@ -149,7 +151,11 @@ class Views extends TableView {
               if (val.__type === 'Date') {
                 type = 'Date';
               } else if (val.__type === 'Pointer') {
-                type = 'Pointer';
+                if (val.className && val.objectId) {
+                  type = 'Pointer';
+                } else {
+                  type = 'Object';
+                }
               } else if (val.__type === 'File') {
                 type = 'File';
               } else if (val.__type === 'GeoPoint') {
@@ -264,7 +270,11 @@ class Views extends TableView {
             if (value.__type === 'Date') {
               type = 'Date';
             } else if (value.__type === 'Pointer') {
-              type = 'Pointer';
+              if (value.className && value.objectId) {
+                type = 'Pointer';
+              } else {
+                type = 'Object';
+              }
             } else if (value.__type === 'File') {
               type = 'File';
             } else if (value.__type === 'GeoPoint') {
@@ -290,8 +300,14 @@ class Views extends TableView {
           } else {
             content = String(value);
           }
+          const isViewable = ['String', 'Number', 'Object'].includes(type);
+          const cellProps = {};
+          if (isViewable) {
+            cellProps.onClick = () => this.handleValueClick(value);
+            cellProps.style = { cursor: 'pointer' };
+          }
           return (
-            <td key={name} className={styles.cell}>
+            <td key={name} className={styles.cell} {...cellProps}>
               {content}
             </td>
           );
@@ -435,7 +451,14 @@ class Views extends TableView {
 
   renderExtras() {
     let extras = null;
-    if (this.state.showCreate) {
+    if (this.state.viewValue !== null) {
+      extras = (
+        <ViewValueDialog
+          value={this.state.viewValue}
+          onClose={() => this.setState({ viewValue: null })}
+        />
+      );
+    } else if (this.state.showCreate) {
       let classNames = [];
       if (this.props.schema?.data) {
         const classes = this.props.schema.data.get('classes');
@@ -532,6 +555,10 @@ class Views extends TableView {
       `browser/${className}?filters=${encodeURIComponent(filters)}`
     );
     this.props.navigate(path);
+  }
+
+  handleValueClick(value) {
+    this.setState({ viewValue: value });
   }
 
   showNote(message, isError) {
