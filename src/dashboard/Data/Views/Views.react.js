@@ -386,6 +386,7 @@ class Views extends TableView {
   renderToolbar() {
     const subsection = this.props.params.name || '';
     let editMenu = null;
+    let refreshButton = null;
     if (this.props.params.name) {
       editMenu = (
         <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
@@ -413,10 +414,6 @@ class Views extends TableView {
           />
         </BrowserMenu>
       );
-    }
-
-    let refreshButton = null;
-    if (editMenu) {
       refreshButton = (
         <>
           <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
