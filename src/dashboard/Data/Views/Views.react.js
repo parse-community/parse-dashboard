@@ -414,12 +414,23 @@ class Views extends TableView {
         </BrowserMenu>
       );
     }
+
+    let refreshButton = null;
+    if (editMenu) {
+      refreshButton = (
+        <>
+          <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
+            <Icon name="refresh-solid" width={14} height={14} />
+            <span>Refresh</span>
+          </a>
+          <div className={browserStyles.toolbarSeparator} />
+        </>
+      );
+    }
+
     return (
       <Toolbar section="Views" subsection={subsection}>
-        <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
-          <Icon name="refresh-solid" width={14} height={14} />
-          <span>Refresh</span>
-        </a>
+        {refreshButton}
         {editMenu}
       </Toolbar>
     );
