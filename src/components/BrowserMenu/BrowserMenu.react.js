@@ -83,7 +83,10 @@ export default class BrowserMenu extends React.Component {
 BrowserMenu.propTypes = {
   icon: PropTypes.string.isRequired.describe('The name of the icon to place in the menu.'),
   title: PropTypes.string.isRequired.describe('The title text of the menu.'),
-  children: PropTypes.arrayOf(PropTypes.node).describe(
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).describe(
     'The contents of the menu when open. It should be a set of MenuItem and Separator components.'
   ),
 };
