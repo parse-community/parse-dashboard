@@ -2,6 +2,7 @@
 
 .headers {
   right: auto;
+  height: 24px;
 }
 
 .headerWrap {
@@ -9,7 +10,7 @@
   vertical-align: top;
   background: #66637A;
   color: white;
-  line-height: 30px;
+  line-height: 24px;
   padding: 0 16px;
   border-right: 1px solid #e3e3ea;
   position: relative;
@@ -23,7 +24,7 @@
   top: 0;
   right: -4px;
   width: 8px;
-  height: 30px;
+  height: 24px;
   cursor: ew-resize;
 }
 
@@ -31,7 +32,7 @@
   @include MonospaceFont;
   font-size: 12px;
   white-space: nowrap;
-  height: 30px;
+  height: 24px;
   border-bottom: 1px solid #e3e3ea;
 }
 
@@ -40,8 +41,8 @@
 }
 
 .cell {
-  line-height: 20px;
-  padding: 5px 16px;
+  line-height: 16px;
+  padding: 4px 16px;
   border-right: 1px solid #e3e3ea;
   overflow: hidden;
   text-overflow: ellipsis;
