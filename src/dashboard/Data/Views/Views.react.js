@@ -340,15 +340,10 @@ class Views extends TableView {
 
   renderHeaders() {
     return this.state.order.map(({ name, width }, i) => (
-      <React.Fragment key={name}>
-        <div className={styles.headerWrap} style={{ width }}>
-          <span className={styles.headerLabel}>{name}</span>
-        </div>
-        <DragHandle
-          className={styles.handle}
-          onDrag={delta => this.handleResize(i, delta)}
-        />
-      </React.Fragment>
+      <div key={name} className={styles.headerWrap} style={{ width }}>
+        {name}
+        <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
+      </div>
     ));
   }
 
