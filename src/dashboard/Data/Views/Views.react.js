@@ -284,7 +284,8 @@ class Views extends TableView {
             }
           }
           let content = '';
-          if (type === 'Pointer' && value && value.className && value.objectId) {
+          const hasPill = type === 'Pointer' && value && value.className && value.objectId;
+          if (hasPill) {
             const id = value.objectId;
             const className = value.className;
             content = (
@@ -306,8 +307,12 @@ class Views extends TableView {
             cellProps.onClick = () => this.handleValueClick(value);
             cellProps.style = { cursor: 'pointer' };
           }
+          const classes = [styles.cell];
+          if (hasPill) {
+            classes.push(styles.pillCell);
+          }
           return (
-            <td key={name} className={styles.cell} {...cellProps}>
+            <td key={name} className={classes.join(' ')} {...cellProps}>
               {content}
             </td>
           );
