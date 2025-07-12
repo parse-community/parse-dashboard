@@ -10,7 +10,8 @@
 .pill {
   @include MonospaceFont;
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   color: #0E69A1;
   height: 20px;
   line-height: 20px;
