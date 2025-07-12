@@ -320,12 +320,12 @@ class Views extends TableView {
     if (!this.props.params.name) {
       if (this.state.views.length > 0) {
         return (
-          <EmptyState icon="eye" title="Views" description="Select a view to load the data." />
+          <EmptyState icon="visibility" title="Views" description="Select a view to load the data." />
         );
       }
       return (
         <EmptyState
-          icon="eye"
+          icon="visibility"
           title="Views"
           description={
             <span>
