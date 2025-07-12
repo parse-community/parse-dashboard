@@ -574,7 +574,7 @@ export default class BrowserTable extends React.Component {
         id="browser-table"
         style={{
           right: rightValue,
-          'overflow-x': this.props.isResizing ? 'hidden' : 'auto',
+          overflowX: this.props.isResizing ? 'hidden' : 'auto',
         }}
       >
         <DataBrowserHeaderBar

@@ -2,6 +2,7 @@ import CategoryList from 'components/CategoryList/CategoryList.react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
 import TableView from 'dashboard/TableView.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import Icon from 'components/Icon/Icon.react';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import Parse from 'parse';
 import React from 'react';
@@ -14,6 +15,7 @@ import DeleteViewDialog from './DeleteViewDialog.react';
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
 import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import Separator from 'components/BrowserMenu/Separator.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
@@ -21,7 +23,7 @@ import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 import styles from './Views.scss';
 import tableStyles from 'dashboard/TableView.scss';
-
+import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 
 export default
 @subscribeTo('Schema', 'schema')
@@ -31,6 +33,7 @@ class Views extends TableView {
     super();
     this.section = 'Core';
     this.subsection = 'Views';
+    this._isMounted = false;
     this.state = {
       views: [],
       counts: {},
@@ -44,31 +47,32 @@ class Views extends TableView {
       deleteIndex: null,
       lastError: null,
       lastNote: null,
+      loading: false,
     };
     this.headersRef = React.createRef();
     this.noteTimeout = null;
-    this.action = new SidebarAction('Create a view', () =>
-      this.setState({ showCreate: true })
-    );
+    this.action = new SidebarAction('Create a view', () => this.setState({ showCreate: true }));
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
   }
 
   componentWillMount() {
-    this.props.schema
-      .dispatch(SchemaActionTypes.FETCH)
-      .then(() => this.loadViews(this.context));
+    this.props.schema.dispatch(SchemaActionTypes.FETCH).then(() => this.loadViews(this.context));
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     clearTimeout(this.noteTimeout);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      this.props.schema
-        .dispatch(SchemaActionTypes.FETCH)
-        .then(() => this.loadViews(nextContext));
+      this.props.schema.dispatch(SchemaActionTypes.FETCH).then(() => this.loadViews(nextContext));
     }
     if (this.props.params.name !== nextProps.params.name || this.context !== nextContext) {
+      window.scrollTo({ top: 0 });
       this.loadData(nextProps.params.name);
     }
   }
@@ -81,30 +85,40 @@ class Views extends TableView {
           new Parse.Query(view.className)
             .aggregate(view.query, { useMasterKey: true })
             .then(res => {
-              this.setState(({ counts }) => ({
-                counts: { ...counts, [view.name]: res.length },
-              }));
+              if (this._isMounted) {
+                this.setState(({ counts }) => ({
+                  counts: { ...counts, [view.name]: res.length },
+                }));
+              }
             })
             .catch(error => {
-              this.showNote(
-                `Request failed: ${error.message || 'Unknown error occurred'}`,
-                true
-              );
+              if (this._isMounted) {
+                this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+              }
             });
         }
       });
-      this.loadData(this.props.params.name);
+      if (this._isMounted) {
+        this.loadData(this.props.params.name);
+      }
     });
   }
 
   loadData(name) {
+    if (this._isMounted) {
+      this.setState({ loading: true });
+    }
     if (!name) {
-      this.setState({ data: [], order: [], columns: {} });
+      if (this._isMounted) {
+        this.setState({ data: [], order: [], columns: {}, loading: false });
+      }
       return;
     }
     const view = (this.state.views || []).find(v => v.name === name);
     if (!view) {
-      this.setState({ data: [], order: [], columns: {} });
+      if (this._isMounted) {
+        this.setState({ data: [], order: [], columns: {}, loading: false });
+      }
       return;
     }
     new Parse.Query(view.className)
@@ -112,14 +126,10 @@ class Views extends TableView {
       .then(results => {
         const columns = {};
         const computeWidth = str => {
-          const text =
-            typeof str === 'object' && str !== null
-              ? JSON.stringify(str)
-              : String(str);
+          const text = typeof str === 'object' && str !== null ? JSON.stringify(str) : String(str);
           if (typeof document !== 'undefined') {
             const canvas =
-              computeWidth._canvas ||
-              (computeWidth._canvas = document.createElement('canvas'));
+              computeWidth._canvas || (computeWidth._canvas = document.createElement('canvas'));
             const context = canvas.getContext('2d');
             context.font = '12px "Source Code Pro", "Courier New", monospace';
             const width = context.measureText(text).width + 32;
@@ -160,15 +170,20 @@ class Views extends TableView {
         const colNames = Object.keys(columns);
         const order = colNames.map(name => ({ name, width: columns[name].width }));
         const tableWidth = order.reduce((sum, col) => sum + col.width, 0);
-        this.setState({ data: results, order, columns, tableWidth });
+        if (this._isMounted) {
+          this.setState({ data: results, order, columns, tableWidth, loading: false });
+        }
       })
       .catch(error => {
-        this.showNote(
-          `Request failed: ${error.message || 'Unknown error occurred'}`,
-          true
-        );
-        this.setState({ data: [], order: [], columns: {} });
+        if (this._isMounted) {
+          this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+          this.setState({ data: [], order: [], columns: {}, loading: false });
+        }
       });
+  }
+
+  onRefresh() {
+    this.loadData(this.props.params.name);
   }
 
   tableData() {
@@ -209,11 +224,8 @@ class Views extends TableView {
     const loading = this.state ? this.state.loading : false;
     return (
       <div>
-        <LoaderContainer loading={loading}>
-          <div
-            className={tableStyles.content}
-            style={{ overflowX: 'auto', paddingTop: 96 }}
-          >
+        <LoaderContainer loading={loading} solid={false}>
+          <div className={tableStyles.content} style={{ overflowX: 'auto', paddingTop: 96 }}>
             <div style={{ width: this.state.tableWidth }}>
               <div
                 className={tableStyles.headers}
@@ -310,7 +322,6 @@ class Views extends TableView {
     });
   }
 
-
   renderHeaders() {
     return this.state.order.map(({ name, width }, i) => (
       <div key={name} className={styles.headerWrap} style={{ width }}>
@@ -321,6 +332,34 @@ class Views extends TableView {
   }
 
   renderEmpty() {
+    if (!this.props.params.name) {
+      if (this.state.views.length > 0) {
+        return (
+          <EmptyState icon="visibility" title="Views" description="Select a view to load the data." />
+        );
+      }
+      return (
+        <EmptyState
+          icon="visibility"
+          title="Views"
+          description={
+            <span>
+              Use views to display aggregated data from your classes.{' '}
+              <a
+                href="https://docs.parseplatform.org/dashboard/guide/#views"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Learn more
+              </a>
+              .
+            </span>
+          }
+          cta="Create a view"
+          action={() => this.setState({ showCreate: true })}
+        />
+      );
+    }
     return <div>No data available</div>;
   }
 
@@ -336,7 +375,9 @@ class Views extends TableView {
         current={current}
         params={this.props.location?.search}
         linkPrefix={'views/'}
-        classClicked={() => {}}
+        classClicked={() => {
+          window.scrollTo({ top: 0 });
+        }}
         categories={categories}
       />
     );
@@ -345,15 +386,14 @@ class Views extends TableView {
   renderToolbar() {
     const subsection = this.props.params.name || '';
     let editMenu = null;
+    let refreshButton = null;
     if (this.props.params.name) {
       editMenu = (
         <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
           <MenuItem
             text="Edit view"
             onClick={() => {
-              const index = this.state.views.findIndex(
-                v => v.name === this.props.params.name
-              );
+              const index = this.state.views.findIndex(v => v.name === this.props.params.name);
               if (index >= 0) {
                 this.setState({
                   editView: this.state.views[index],
@@ -366,9 +406,7 @@ class Views extends TableView {
           <MenuItem
             text="Delete view"
             onClick={() => {
-              const index = this.state.views.findIndex(
-                v => v.name === this.props.params.name
-              );
+              const index = this.state.views.findIndex(v => v.name === this.props.params.name);
               if (index >= 0) {
                 this.setState({ deleteIndex: index });
               }
@@ -376,9 +414,20 @@ class Views extends TableView {
           />
         </BrowserMenu>
       );
+      refreshButton = (
+        <>
+          <a className={browserStyles.toolbarButton} onClick={this.onRefresh.bind(this)}>
+            <Icon name="refresh-solid" width={14} height={14} />
+            <span>Refresh</span>
+          </a>
+          <div className={browserStyles.toolbarSeparator} />
+        </>
+      );
     }
+
     return (
       <Toolbar section="Views" subsection={subsection}>
+        {refreshButton}
         {editMenu}
       </Toolbar>
     );
@@ -402,10 +451,7 @@ class Views extends TableView {
             this.setState(
               state => ({ showCreate: false, views: [...state.views, view] }),
               () => {
-                ViewPreferences.saveViews(
-                  this.context.applicationId,
-                  this.state.views
-                );
+                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
                 this.loadViews(this.context);
               }
             );
@@ -433,10 +479,7 @@ class Views extends TableView {
                 return { editView: null, editIndex: null, views: newViews };
               },
               () => {
-                ViewPreferences.saveViews(
-                  this.context.applicationId,
-                  this.state.views
-                );
+                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
                 this.loadViews(this.context);
               }
             );
@@ -456,10 +499,7 @@ class Views extends TableView {
                 return { deleteIndex: null, views: newViews };
               },
               () => {
-                ViewPreferences.saveViews(
-                  this.context.applicationId,
-                  this.state.views
-                );
+                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
                 if (this.props.params.name === name) {
                   const path = generatePath(this.context, 'views');
                   this.props.navigate(path);
@@ -486,9 +526,7 @@ class Views extends TableView {
   }
 
   handlePointerClick({ className, id, field = 'objectId' }) {
-    const filters = JSON.stringify([
-      { field, constraint: 'eq', compareTo: id },
-    ]);
+    const filters = JSON.stringify([{ field, constraint: 'eq', compareTo: id }]);
     const path = generatePath(
       this.context,
       `browser/${className}?filters=${encodeURIComponent(filters)}`
