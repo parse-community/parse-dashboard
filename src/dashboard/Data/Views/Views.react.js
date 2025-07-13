@@ -129,8 +129,10 @@ class Views extends TableView {
         const columns = {};
         const computeWidth = str => {
           let text = str;
-          if (str && typeof str === 'object') {
-            text = str.__type === 'Date' && str.iso ? str.iso : JSON.stringify(str);
+          if (text === undefined) {
+            text = '';
+          } else if (text && typeof text === 'object') {
+            text = text.__type === 'Date' && text.iso ? text.iso : JSON.stringify(text);
           }
           text = String(text);
           if (typeof document !== 'undefined') {
@@ -304,6 +306,8 @@ class Views extends TableView {
             content = JSON.stringify(value);
           } else if (type === 'Date') {
             content = value && value.iso ? value.iso : String(value);
+          } else if (value === undefined) {
+            content = '';
           } else {
             content = String(value);
           }
