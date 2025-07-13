@@ -1721,7 +1721,10 @@ class Browser extends DashboardView {
           totalErrorCount > 0
         );
       }
-      this.refresh();
+      this.setState(
+        { selection: {}, showExecuteScriptRowsDialog: false },
+        () => this.refresh()
+      );
     } catch (e) {
       this.showNote(e.message, true);
       console.log(`Could not run ${script.title}: ${e}`);
