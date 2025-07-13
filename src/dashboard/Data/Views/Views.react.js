@@ -128,7 +128,11 @@ class Views extends TableView {
       .then(results => {
         const columns = {};
         const computeWidth = str => {
-          const text = typeof str === 'object' && str !== null ? JSON.stringify(str) : String(str);
+          let text = str;
+          if (str && typeof str === 'object') {
+            text = str.__type === 'Date' && str.iso ? str.iso : JSON.stringify(str);
+          }
+          text = String(text);
           if (typeof document !== 'undefined') {
             const canvas =
               computeWidth._canvas || (computeWidth._canvas = document.createElement('canvas'));
@@ -298,6 +302,8 @@ class Views extends TableView {
             );
           } else if (type === 'Object') {
             content = JSON.stringify(value);
+          } else if (type === 'Date') {
+            content = value && value.iso ? value.iso : String(value);
           } else {
             content = String(value);
           }
