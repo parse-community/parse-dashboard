@@ -86,6 +86,20 @@
       flex-grow: 1
     }
   }
+  .edit {
+    display: flex;
+    align-items: center;
+    margin-right: 6px;
+    cursor: pointer;
+    svg {
+      fill: #8fb9cf;
+    }
+    &:hover {
+      svg {
+        fill: white;
+      }
+    }
+  }
 }
 
 .childLink {

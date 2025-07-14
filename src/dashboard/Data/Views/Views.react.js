@@ -401,10 +401,13 @@ class Views extends TableView {
   }
 
   renderSidebar() {
-    const categories = this.state.views.map(view => ({
+    const categories = this.state.views.map((view, index) => ({
       name: view.name,
       id: view.name,
       count: this.state.counts[view.name],
+      onEdit: () => {
+        this.setState({ editView: view, editIndex: index });
+      },
     }));
     const current = this.props.params.name || '';
     return (

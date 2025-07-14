@@ -11,6 +11,7 @@ import generatePath from 'lib/generatePath';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Icon from 'components/Icon/Icon.react';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;
@@ -128,6 +129,17 @@ export default class CategoryList extends React.Component {
                   <span>{count}</span>
                   <span>{c.name}</span>
                 </Link>
+                {c.onEdit && (
+                  <a
+                    className={styles.edit}
+                    onClick={e => {
+                      e.preventDefault();
+                      c.onEdit();
+                    }}
+                  >
+                    <Icon name="edit-solid" width={14} height={14} />
+                  </a>
+                )}
                 {(c.filters || []).length !== 0 && (
                   <a
                     className={styles.expand}
