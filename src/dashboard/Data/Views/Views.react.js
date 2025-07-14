@@ -328,7 +328,18 @@ class Views extends TableView {
             );
           }
           return (
-            <td key={name} className={classes.join(' ')}>
+            <td
+              key={name}
+              className={classes.join(' ')}
+              onClick={e => {
+                if (hasPill && e.metaKey) {
+                  this.handlePointerCmdClick({
+                    className: value.className,
+                    id: value.objectId,
+                  });
+                }
+              }}
+            >
               {cellContent}
             </td>
           );
@@ -579,6 +590,18 @@ class Views extends TableView {
       `browser/${className}?filters=${encodeURIComponent(filters)}`
     );
     this.props.navigate(path);
+  }
+
+  handlePointerCmdClick({ className, id, field = 'objectId' }) {
+    const filters = JSON.stringify([{ field, constraint: 'eq', compareTo: id }]);
+    window.open(
+      generatePath(
+        this.context,
+        `browser/${className}?filters=${encodeURIComponent(filters)}`,
+        true
+      ),
+      '_blank'
+    );
   }
 
   handleValueClick(value) {
