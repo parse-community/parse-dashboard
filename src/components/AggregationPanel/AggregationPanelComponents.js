@@ -4,7 +4,7 @@ import Icon from 'components/Icon/Icon.react';
 import styles from './AggregationPanel.scss';
 
 // Text Element Component
-export const TextElement = ({ text, style}) => (
+export const TextElement = ({ text, style }) => (
   <div className="text-element" style={style}>
     <p>{text}</p>
   </div>
@@ -12,23 +12,54 @@ export const TextElement = ({ text, style}) => (
 
 // Key-Value Element Component
 export const KeyValueElement = ({ item, appName, style, showNote }) => {
+  const values = Array.isArray(item.value) ? item.value : [item.value];
+  const urls = Array.isArray(item.url)
+    ? item.url
+    : typeof item.url !== 'undefined'
+      ? [item.url]
+      : [];
+  const isRelativeUrls = Array.isArray(item.isRelativeUrl)
+    ? item.isRelativeUrl
+    : typeof item.isRelativeUrl !== 'undefined'
+      ? [item.isRelativeUrl]
+      : [];
+
   const handleCopy = () => {
-    copy(String(item.value));
+    copy(values.join(' '));
     if (showNote) {
       showNote('Value copied to clipboard', false);
     }
   };
 
+  const renderValue = (value, idx) => {
+    const url = urls[idx];
+    const isRelative = isRelativeUrls[idx];
+
+    if (url) {
+      return (
+        <a
+          key={idx}
+          href={isRelative ? `apps/${appName}/${url}` : url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {value}
+        </a>
+      );
+    }
+
+    return <span key={idx}>{value}</span>;
+  };
+
   return (
     <div className={styles.keyValue} style={style}>
       {item.key}:
-      {item.url ? (
-        <a href={item.isRelativeUrl ? `apps/${appName}/${item.url}` : item.url} target="_blank" rel="noreferrer">
-          {item.value}
-        </a>
-      ) : (
-        <span>{item.value}</span>
-      )}
+      {values.map((val, idx) => (
+        <React.Fragment key={idx}>
+          {idx > 0 && ' '}
+          {renderValue(val, idx)}
+        </React.Fragment>
+      ))}
       <span className={styles.copyIcon} onClick={handleCopy}>
         <Icon name="clone-icon" width={12} height={12} fill="currentColor" />
       </span>
