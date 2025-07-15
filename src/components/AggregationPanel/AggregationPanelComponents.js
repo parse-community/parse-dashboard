@@ -12,43 +12,27 @@ export const TextElement = ({ text, style }) => (
 
 // Key-Value Element Component
 export const KeyValueElement = ({ item, appName, style, showNote }) => {
-  const values = Array.isArray(item.value) ? item.value : [item.value];
-  const urls = Array.isArray(item.url)
-    ? item.url
-    : typeof item.url !== 'undefined'
-      ? [item.url]
-      : [];
-  const isRelativeUrls = Array.isArray(item.isRelativeUrl)
-    ? item.isRelativeUrl
-    : typeof item.isRelativeUrl !== 'undefined'
-      ? [item.isRelativeUrl]
-      : [];
+  const values = Array.isArray(item.values)
+    ? [{ value: item.value, url: item.url, isRelativeUrl: item.isRelativeUrl }, ...item.values]
+    : [{ value: item.value, url: item.url, isRelativeUrl: item.isRelativeUrl }];
 
   const handleCopy = () => {
-    copy(values.join(' '));
+    copy(String(item.value));
     if (showNote) {
       showNote('Value copied to clipboard', false);
     }
   };
 
-  const renderValue = (value, idx) => {
-    const url = urls[idx];
-    const isRelative = isRelativeUrls[idx];
-
+  const renderValue = ({ value, url, isRelativeUrl }) => {
     if (url) {
       return (
-        <a
-          key={idx}
-          href={isRelative ? `apps/${appName}/${url}` : url}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={isRelativeUrl ? `apps/${appName}/${url}` : url} target="_blank" rel="noreferrer">
           {value}
         </a>
       );
     }
 
-    return <span key={idx}>{value}</span>;
+    return <span>{value}</span>;
   };
 
   return (
@@ -57,7 +41,7 @@ export const KeyValueElement = ({ item, appName, style, showNote }) => {
       {values.map((val, idx) => (
         <React.Fragment key={idx}>
           {idx > 0 && ' '}
-          {renderValue(val, idx)}
+          {renderValue(val)}
         </React.Fragment>
       ))}
       <span className={styles.copyIcon} onClick={handleCopy}>
