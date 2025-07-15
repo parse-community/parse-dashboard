@@ -981,6 +981,7 @@ Examples:
   "isRelativeUrl": true
 }
 ```
+
 ```json
 {
   "type": "keyValue",
@@ -991,7 +992,6 @@ Examples:
   "values": [{ "value": "456" }]
 }
 ```
-
 
 To navigate to a specific object using a relative URL, the query parameters must be URL encoded:
 
