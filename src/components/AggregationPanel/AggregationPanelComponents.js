@@ -12,12 +12,31 @@ export const TextElement = ({ text, style }) => (
 
 // Key-Value Element Component
 export const KeyValueElement = ({ item, appName, style, showNote }) => {
-  const values = Array.isArray(item.values)
-    ? [{ value: item.value, url: item.url, isRelativeUrl: item.isRelativeUrl }, ...item.values]
-    : [{ value: item.value, url: item.url, isRelativeUrl: item.isRelativeUrl }];
+  let values = [];
+
+  if (Array.isArray(item.value)) {
+    values = item.value.map((val, idx) => ({
+      value: val,
+      url: Array.isArray(item.url) ? item.url[idx] : item.url,
+      isRelativeUrl: Array.isArray(item.isRelativeUrl) ? item.isRelativeUrl[idx] : item.isRelativeUrl,
+    }));
+  } else {
+    values = [
+      {
+        value: item.value,
+        url: Array.isArray(item.url) ? item.url[0] : item.url,
+        isRelativeUrl: Array.isArray(item.isRelativeUrl) ? item.isRelativeUrl[0] : item.isRelativeUrl,
+      },
+    ];
+  }
+
+  if (Array.isArray(item.values)) {
+    values = values.concat(item.values);
+  }
 
   const handleCopy = () => {
-    copy(String(item.value));
+    const copyValue = Array.isArray(item.value) ? item.value[0] : item.value;
+    copy(String(copyValue));
     if (showNote) {
       showNote('Value copied to clipboard', false);
     }
