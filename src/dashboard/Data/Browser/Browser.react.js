@@ -118,7 +118,6 @@ function SelectedRowsNavigationPrompt({ when }) {
 }
 
 // The initial and max amount of rows fetched by lazy loading
-const BROWSER_LAST_LOCATION = 'browser_last_location';
 
 @subscribeTo('Schema', 'schema')
 @withRouter
@@ -190,9 +189,7 @@ class Browser extends DashboardView {
       errorAggregatedData: {},
     };
 
-    this.addLocation = this.addLocation.bind(this);
     this.allClassesSchema = this.getAllClassesSchema.bind(this);
-    this.removeLocation = this.removeLocation.bind(this);
     this.prefetchData = this.prefetchData.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.fetchRelation = this.fetchRelation.bind(this);
@@ -287,7 +284,6 @@ class Browser extends DashboardView {
   }
 
   componentDidMount() {
-    this.addLocation(this.props.params.appId);
     window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
     get('/parse-dashboard-config.json').then(data => {
       this.setState({ configData: data });
@@ -299,14 +295,12 @@ class Browser extends DashboardView {
     if (this.currentQuery) {
       this.currentQuery.cancel();
     }
-    this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (nextProps.params.appId !== this.props.params.appId) {
-      this.removeLocation();
-      this.addLocation(nextProps.params.appId);
+      // Navigating to another app resets internal state
     }
     if (
       this.props.params.appId !== nextProps.params.appId ||
@@ -383,38 +377,6 @@ class Browser extends DashboardView {
   setAggregationPanelData(data) {
     this.setState({ AggregationPanelData: data });
   }
-  addLocation(appId) {
-    if (window.localStorage) {
-      const currentSearch = this.props.location?.search;
-      if (currentSearch) {
-        const params = new URLSearchParams(currentSearch);
-        if (params.has('filters')) {
-          return;
-        }
-      }
-      let pathname = null;
-      const newLastLocations = [];
-
-      const lastLocations = JSON.parse(window.localStorage.getItem(BROWSER_LAST_LOCATION));
-      lastLocations?.forEach(lastLocation => {
-        if (lastLocation.appId !== appId) {
-          newLastLocations.push(lastLocation);
-        } else {
-          pathname = lastLocation.location;
-        }
-      });
-
-      window.localStorage.setItem(BROWSER_LAST_LOCATION, JSON.stringify(newLastLocations));
-      if (pathname) {
-        setTimeout(
-          function () {
-            this.props.navigate(pathname);
-          }.bind(this)
-        );
-      }
-    }
-  }
-
   classAndCloudFuntionMap(data) {
     const classMap = {};
     data.apps.forEach(app => {
@@ -436,18 +398,6 @@ class Browser extends DashboardView {
     });
 
     this.setState({ classwiseCloudFunctions: classMap });
-  }
-
-  removeLocation() {
-    if (window.localStorage) {
-      const lastLocation = {
-        appId: this.props.params.appId,
-        location: `${this.props.location.pathname}${this.props.location.search}`,
-      };
-      const currentLastLocation = JSON.parse(window.localStorage.getItem(BROWSER_LAST_LOCATION));
-      const updatedLastLocation = [...(currentLastLocation || []), lastLocation];
-      window.localStorage.setItem(BROWSER_LAST_LOCATION, JSON.stringify(updatedLastLocation));
-    }
   }
 
   async prefetchData(props, context) {
