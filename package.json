@@ -112,7 +112,7 @@
     "request-promise": "4.2.5",
     "sass": "1.89.1",
     "sass-loader": "13.2.0",
-    "semantic-release": "24.2.3",
+    "semantic-release": "24.2.7",
     "semver": "7.7.2",
     "style-loader": "3.3.1",
     "svg-prep": "1.0.4",
