@@ -263,8 +263,9 @@ class Browser extends DashboardView {
     this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
-    // Reference to cancel the ongoing info panel cloud function request
-    this.currentInfoPanelQuery = null;
+    // Reference to abort the ongoing info panel cloud function request
+    this.currentInfoPanelRequest = null;
+    this.currentInfoPanelToken = null;
 
     this.dataBrowserRef = React.createRef();
 
@@ -302,8 +303,8 @@ class Browser extends DashboardView {
     if (this.currentQuery) {
       this.currentQuery.cancel();
     }
-    if (this.currentInfoPanelQuery) {
-      this.currentInfoPanelQuery.cancel();
+    if (this.currentInfoPanelRequest) {
+      this.currentInfoPanelRequest.abort();
     }
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
@@ -352,8 +353,10 @@ class Browser extends DashboardView {
   }
 
   fetchAggregationPanelData(objectId, className, appId) {
-    if (this.currentInfoPanelQuery) {
-      this.currentInfoPanelQuery.cancel();
+    if (this.currentInfoPanelRequest) {
+      this.currentInfoPanelRequest.abort();
+      this.currentInfoPanelRequest = null;
+      this.currentInfoPanelToken = null;
     }
 
     this.setState({
@@ -365,16 +368,20 @@ class Browser extends DashboardView {
     };
     const options = {
       useMasterKey: true,
+      requestTask: xhr => {
+        this.currentInfoPanelRequest = xhr;
+      },
     };
     const appName = this.props.params.appId;
     const cloudCodeFunction =
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
 
-    const query = Parse.Cloud.run(cloudCodeFunction, params, options);
-    this.currentInfoPanelQuery = query;
-    query.then(
+    const token = {};
+    this.currentInfoPanelToken = token;
+    const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
+    promise.then(
       result => {
-        if (this.currentInfoPanelQuery !== query) {
+        if (this.currentInfoPanelToken !== token) {
           return;
         }
         if (result && result.panel && result.panel && result.panel.segments) {
@@ -388,7 +395,7 @@ class Browser extends DashboardView {
         }
       },
       error => {
-        if (this.currentInfoPanelQuery !== query) {
+        if (this.currentInfoPanelToken !== token) {
           return;
         }
         this.setState({
@@ -398,8 +405,9 @@ class Browser extends DashboardView {
         this.showNote(this.state.errorAggregatedData, true);
       }
     ).finally(() => {
-      if (this.currentInfoPanelQuery === query) {
-        this.currentInfoPanelQuery = null;
+      if (this.currentInfoPanelToken === token) {
+        this.currentInfoPanelRequest = null;
+        this.currentInfoPanelToken = null;
       }
     });
   }
