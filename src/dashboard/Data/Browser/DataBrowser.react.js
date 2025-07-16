@@ -19,6 +19,7 @@ import styles from './Databrowser.scss';
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
+const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -79,6 +80,12 @@ export default class DataBrowser extends React.Component {
     );
     const storedRowNumber =
       window.localStorage?.getItem(BROWSER_SHOW_ROW_NUMBER) === 'true';
+    const storedPanelVisible =
+      window.localStorage?.getItem(AGGREGATION_PANEL_VISIBLE) === 'true';
+    const hasAggregation =
+      props.classwiseCloudFunctions?.[
+        `${props.app.applicationId}${props.appName}`
+      ]?.[props.className];
 
     this.state = {
       order: order,
@@ -88,7 +95,7 @@ export default class DataBrowser extends React.Component {
       selectedObjectId: undefined,
       simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
       allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
-      isPanelVisible: false,
+      isPanelVisible: storedPanelVisible && !!hasAggregation,
       selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
       firstSelectedCell: null,
       selectedData: [],
@@ -157,13 +164,17 @@ export default class DataBrowser extends React.Component {
       this.setState({ order, frozenColumnIndex: -1 });
     }
     if (props && props.className) {
-      if (
-        !props.classwiseCloudFunctions?.[`${props.app.applicationId}${props.appName}`]?.[
-          props.className
-        ]
-      ) {
+      const storedPanelVisible =
+        window.localStorage?.getItem(AGGREGATION_PANEL_VISIBLE) === 'true';
+      const hasAggregation =
+        props.classwiseCloudFunctions?.[
+          `${props.app.applicationId}${props.appName}`
+        ]?.[props.className];
+      if (!hasAggregation) {
         this.setState({ isPanelVisible: false });
         this.setState({ selectedObjectId: undefined });
+      } else {
+        this.setState({ isPanelVisible: storedPanelVisible });
       }
     } else {
       this.setState({ isPanelVisible: false });
@@ -242,9 +253,18 @@ export default class DataBrowser extends React.Component {
   }
 
   togglePanelVisibility() {
-    this.setState(prevState => ({ isPanelVisible: !prevState.isPanelVisible }));
+    const newVisibility = !this.state.isPanelVisible;
+    this.setState({ isPanelVisible: newVisibility });
+    try {
+      window.localStorage?.setItem(
+        AGGREGATION_PANEL_VISIBLE,
+        newVisibility
+      );
+    } catch {
+      // ignore
+    }
 
-    if (!this.state.isPanelVisible) {
+    if (!newVisibility) {
       this.props.setAggregationPanelData({});
       this.props.setLoadingInfoPanel(false);
       if (this.props.errorAggregatedData != {}) {
@@ -252,7 +272,7 @@ export default class DataBrowser extends React.Component {
       }
     }
 
-    if (!this.state.isPanelVisible && this.state.selectedObjectId) {
+    if (!newVisibility && this.state.selectedObjectId) {
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
@@ -285,9 +305,15 @@ export default class DataBrowser extends React.Component {
 
   checkClassNameChange(prevClassName, className) {
     if (prevClassName !== className) {
+      const storedPanelVisible =
+        window.localStorage?.getItem(AGGREGATION_PANEL_VISIBLE) === 'true';
+      const hasAggregation =
+        this.props.classwiseCloudFunctions?.[
+          `${this.props.app.applicationId}${this.props.appName}`
+        ]?.[className];
       this.setState({
         prevClassName: className,
-        isPanelVisible: false,
+        isPanelVisible: storedPanelVisible && !!hasAggregation,
         selectedObjectId: undefined,
       });
       this.props.setAggregationPanelData({});
