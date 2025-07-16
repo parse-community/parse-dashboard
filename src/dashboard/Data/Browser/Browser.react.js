@@ -303,7 +303,7 @@ class Browser extends DashboardView {
       this.currentQuery.cancel();
     }
     if (this.currentInfoPanelQuery) {
-      this.currentInfoPanelQuery.abort();
+      this.currentInfoPanelQuery.cancel?.();
       this.currentInfoPanelQuery = null;
     }
     this.removeLocation();
@@ -354,7 +354,7 @@ class Browser extends DashboardView {
 
   fetchAggregationPanelData(objectId, className, appId) {
     if (this.currentInfoPanelQuery) {
-      this.currentInfoPanelQuery.abort();
+      this.currentInfoPanelQuery.cancel?.();
       this.currentInfoPanelQuery = null;
     }
 
@@ -377,13 +377,11 @@ class Browser extends DashboardView {
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
 
     const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
-    this.currentInfoPanelQuery = {
-      abort: () => requestTask?.abort(),
-      promise,
-    };
+    promise.cancel = () => requestTask?.abort();
+    this.currentInfoPanelQuery = promise;
     promise.then(
       result => {
-        if (this.currentInfoPanelQuery?.promise !== promise) {
+        if (this.currentInfoPanelQuery !== promise) {
           return;
         }
         if (result && result.panel && result.panel && result.panel.segments) {
@@ -397,7 +395,7 @@ class Browser extends DashboardView {
         }
       },
       error => {
-        if (this.currentInfoPanelQuery?.promise !== promise) {
+        if (this.currentInfoPanelQuery !== promise) {
           return;
         }
         this.setState({
@@ -407,7 +405,7 @@ class Browser extends DashboardView {
         this.showNote(this.state.errorAggregatedData, true);
       }
     ).finally(() => {
-      if (this.currentInfoPanelQuery?.promise === promise) {
+      if (this.currentInfoPanelQuery === promise) {
         this.currentInfoPanelQuery = null;
       }
     });
