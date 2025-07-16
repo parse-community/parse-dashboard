@@ -1,3 +1,10 @@
+# [7.3.0-alpha.17](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.16...7.3.0-alpha.17) (2025-07-16)
+
+
+### Bug Fixes
+
+* Race condition on info panel request shows info panel data not corresponding to selected cell ([#2909](https://github.com/parse-community/parse-dashboard/issues/2909)) ([6f45bb3](https://github.com/parse-community/parse-dashboard/commit/6f45bb348def3cf297e869bc58bb5edcd5ad2d60))
+
 # [7.3.0-alpha.16](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.15...7.3.0-alpha.16) (2025-07-16)
 
 
