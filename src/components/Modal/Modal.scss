@@ -11,13 +11,13 @@
   --modal-min-width: 540px;
   position: absolute;
   top: 50%;
-  left: calc(50% - var(--modal-min-width) / 2);
+  left: 50%;
   width: auto;
   min-width: var(--modal-min-width);
   background: white;
   border-radius: 5px;
   overflow: hidden;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
 
   > *:not(:first-child):not(:last-child) {
     border-color: $borderGrey;
