@@ -263,9 +263,9 @@ class Browser extends DashboardView {
     this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
-    // Reference to abort the ongoing info panel cloud function request
+    // Reference to cancel the ongoing info panel cloud function request
     this.currentInfoPanelRequest = null;
-    this.currentInfoPanelToken = null;
+    this.currentInfoPanelQuery = null;
 
     this.dataBrowserRef = React.createRef();
 
@@ -305,6 +305,7 @@ class Browser extends DashboardView {
     }
     if (this.currentInfoPanelRequest) {
       this.currentInfoPanelRequest.abort();
+      this.currentInfoPanelQuery = null;
     }
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
@@ -356,7 +357,7 @@ class Browser extends DashboardView {
     if (this.currentInfoPanelRequest) {
       this.currentInfoPanelRequest.abort();
       this.currentInfoPanelRequest = null;
-      this.currentInfoPanelToken = null;
+      this.currentInfoPanelQuery = null;
     }
 
     this.setState({
@@ -376,12 +377,11 @@ class Browser extends DashboardView {
     const cloudCodeFunction =
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
 
-    const token = {};
-    this.currentInfoPanelToken = token;
     const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
+    this.currentInfoPanelQuery = promise;
     promise.then(
       result => {
-        if (this.currentInfoPanelToken !== token) {
+        if (this.currentInfoPanelQuery !== promise) {
           return;
         }
         if (result && result.panel && result.panel && result.panel.segments) {
@@ -395,7 +395,7 @@ class Browser extends DashboardView {
         }
       },
       error => {
-        if (this.currentInfoPanelToken !== token) {
+        if (this.currentInfoPanelQuery !== promise) {
           return;
         }
         this.setState({
@@ -405,9 +405,9 @@ class Browser extends DashboardView {
         this.showNote(this.state.errorAggregatedData, true);
       }
     ).finally(() => {
-      if (this.currentInfoPanelToken === token) {
+      if (this.currentInfoPanelQuery === promise) {
         this.currentInfoPanelRequest = null;
-        this.currentInfoPanelToken = null;
+        this.currentInfoPanelQuery = null;
       }
     });
   }
