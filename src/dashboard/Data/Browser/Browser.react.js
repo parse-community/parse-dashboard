@@ -302,8 +302,8 @@ class Browser extends DashboardView {
     if (this.currentQuery) {
       this.currentQuery.cancel();
     }
-    if (this.currentInfoPanelQuery && this.currentInfoPanelQuery.abort) {
-      this.currentInfoPanelQuery.abort();
+    if (this.currentInfoPanelQuery) {
+      Parse.Query.cancel(this.currentInfoPanelQuery);
       this.currentInfoPanelQuery = null;
     }
     this.removeLocation();
@@ -353,8 +353,8 @@ class Browser extends DashboardView {
   }
 
   fetchAggregationPanelData(objectId, className, appId) {
-    if (this.currentInfoPanelQuery && this.currentInfoPanelQuery.abort) {
-      this.currentInfoPanelQuery.abort();
+    if (this.currentInfoPanelQuery) {
+      Parse.Query.cancel(this.currentInfoPanelQuery);
       this.currentInfoPanelQuery = null;
     }
 
@@ -365,19 +365,14 @@ class Browser extends DashboardView {
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
     };
-    let xhr;
     const options = {
       useMasterKey: true,
-      requestTask: req => {
-        xhr = req;
-      },
     };
     const appName = this.props.params.appId;
     const cloudCodeFunction =
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
 
     const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
-    promise.abort = () => xhr && xhr.abort();
     this.currentInfoPanelQuery = promise;
     promise.then(
       result => {
