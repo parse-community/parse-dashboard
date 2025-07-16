@@ -264,7 +264,6 @@ class Browser extends DashboardView {
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
     // Reference to cancel the ongoing info panel cloud function request
-    this.currentInfoPanelRequest = null;
     this.currentInfoPanelQuery = null;
 
     this.dataBrowserRef = React.createRef();
@@ -303,8 +302,8 @@ class Browser extends DashboardView {
     if (this.currentQuery) {
       this.currentQuery.cancel();
     }
-    if (this.currentInfoPanelRequest) {
-      this.currentInfoPanelRequest.abort();
+    if (this.currentInfoPanelQuery && this.currentInfoPanelQuery.abort) {
+      this.currentInfoPanelQuery.abort();
       this.currentInfoPanelQuery = null;
     }
     this.removeLocation();
@@ -354,9 +353,8 @@ class Browser extends DashboardView {
   }
 
   fetchAggregationPanelData(objectId, className, appId) {
-    if (this.currentInfoPanelRequest) {
-      this.currentInfoPanelRequest.abort();
-      this.currentInfoPanelRequest = null;
+    if (this.currentInfoPanelQuery && this.currentInfoPanelQuery.abort) {
+      this.currentInfoPanelQuery.abort();
       this.currentInfoPanelQuery = null;
     }
 
@@ -367,10 +365,11 @@ class Browser extends DashboardView {
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
     };
+    let xhr;
     const options = {
       useMasterKey: true,
-      requestTask: xhr => {
-        this.currentInfoPanelRequest = xhr;
+      requestTask: req => {
+        xhr = req;
       },
     };
     const appName = this.props.params.appId;
@@ -378,6 +377,7 @@ class Browser extends DashboardView {
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
 
     const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
+    promise.abort = () => xhr && xhr.abort();
     this.currentInfoPanelQuery = promise;
     promise.then(
       result => {
@@ -406,7 +406,6 @@ class Browser extends DashboardView {
       }
     ).finally(() => {
       if (this.currentInfoPanelQuery === promise) {
-        this.currentInfoPanelRequest = null;
         this.currentInfoPanelQuery = null;
       }
     });
