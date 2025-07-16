@@ -263,6 +263,9 @@ class Browser extends DashboardView {
     this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
+    // Handle for the ongoing info panel cloud function request
+    this.currentInfoPanelQuery = null;
+
     this.dataBrowserRef = React.createRef();
 
     window.addEventListener('popstate', () => {
@@ -298,6 +301,10 @@ class Browser extends DashboardView {
   componentWillUnmount() {
     if (this.currentQuery) {
       this.currentQuery.cancel();
+    }
+    if (this.currentInfoPanelQuery) {
+      this.currentInfoPanelQuery.cancel?.();
+      this.currentInfoPanelQuery = null;
     }
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
@@ -346,20 +353,37 @@ class Browser extends DashboardView {
   }
 
   fetchAggregationPanelData(objectId, className, appId) {
+    if (this.currentInfoPanelQuery) {
+      this.currentInfoPanelQuery.cancel?.();
+      this.currentInfoPanelQuery = null;
+    }
+
     this.setState({
       isLoadingInfoPanel: true,
     });
+
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
     };
+    let requestTask;
     const options = {
       useMasterKey: true,
+      requestTask: task => {
+        requestTask = task;
+      },
     };
     const appName = this.props.params.appId;
     const cloudCodeFunction =
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
-    Parse.Cloud.run(cloudCodeFunction, params, options).then(
+
+    const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
+    promise.cancel = () => requestTask?.abort();
+    this.currentInfoPanelQuery = promise;
+    promise.then(
       result => {
+        if (this.currentInfoPanelQuery !== promise) {
+          return;
+        }
         if (result && result.panel && result.panel && result.panel.segments) {
           this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false });
         } else {
@@ -371,13 +395,20 @@ class Browser extends DashboardView {
         }
       },
       error => {
+        if (this.currentInfoPanelQuery !== promise) {
+          return;
+        }
         this.setState({
           isLoadingInfoPanel: false,
           errorAggregatedData: error.message,
         });
         this.showNote(this.state.errorAggregatedData, true);
       }
-    );
+    ).finally(() => {
+      if (this.currentInfoPanelQuery === promise) {
+        this.currentInfoPanelQuery = null;
+      }
+    });
   }
 
   setAggregationPanelData(data) {
