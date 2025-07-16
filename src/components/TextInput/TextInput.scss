@@ -16,7 +16,7 @@
   width: 100%;
   padding: 6px;
   vertical-align: top;
-  resize: vertical;
+  resize: both;
 
   &:focus {
     @include placeholder {

@@ -12,7 +12,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 540px;
+  width: auto;
+  min-width: 540px;
   background: white;
   border-radius: 5px;
   overflow: hidden;
