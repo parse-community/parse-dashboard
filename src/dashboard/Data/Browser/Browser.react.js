@@ -303,7 +303,7 @@ class Browser extends DashboardView {
       this.currentQuery.cancel();
     }
     if (this.currentInfoPanelQuery) {
-      Parse.Query.cancel(this.currentInfoPanelQuery);
+      this.currentInfoPanelQuery.cancel();
       this.currentInfoPanelQuery = null;
     }
     this.removeLocation();
@@ -354,7 +354,7 @@ class Browser extends DashboardView {
 
   fetchAggregationPanelData(objectId, className, appId) {
     if (this.currentInfoPanelQuery) {
-      Parse.Query.cancel(this.currentInfoPanelQuery);
+      this.currentInfoPanelQuery.cancel();
       this.currentInfoPanelQuery = null;
     }
 
