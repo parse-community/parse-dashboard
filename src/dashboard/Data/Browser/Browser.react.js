@@ -263,6 +263,9 @@ class Browser extends DashboardView {
     this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
 
+    // Reference to cancel the ongoing info panel cloud function request
+    this.currentInfoPanelQuery = null;
+
     this.dataBrowserRef = React.createRef();
 
     window.addEventListener('popstate', () => {
@@ -298,6 +301,9 @@ class Browser extends DashboardView {
   componentWillUnmount() {
     if (this.currentQuery) {
       this.currentQuery.cancel();
+    }
+    if (this.currentInfoPanelQuery) {
+      this.currentInfoPanelQuery.cancel();
     }
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
@@ -346,9 +352,14 @@ class Browser extends DashboardView {
   }
 
   fetchAggregationPanelData(objectId, className, appId) {
+    if (this.currentInfoPanelQuery) {
+      this.currentInfoPanelQuery.cancel();
+    }
+
     this.setState({
       isLoadingInfoPanel: true,
     });
+
     const params = {
       object: Parse.Object.extend(className).createWithoutData(objectId).toPointer(),
     };
@@ -358,8 +369,14 @@ class Browser extends DashboardView {
     const appName = this.props.params.appId;
     const cloudCodeFunction =
       this.state.classwiseCloudFunctions[`${appId}${appName}`]?.[className][0].cloudCodeFunction;
-    Parse.Cloud.run(cloudCodeFunction, params, options).then(
+
+    const query = Parse.Cloud.run(cloudCodeFunction, params, options);
+    this.currentInfoPanelQuery = query;
+    query.then(
       result => {
+        if (this.currentInfoPanelQuery !== query) {
+          return;
+        }
         if (result && result.panel && result.panel && result.panel.segments) {
           this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false });
         } else {
@@ -371,13 +388,20 @@ class Browser extends DashboardView {
         }
       },
       error => {
+        if (this.currentInfoPanelQuery !== query) {
+          return;
+        }
         this.setState({
           isLoadingInfoPanel: false,
           errorAggregatedData: error.message,
         });
         this.showNote(this.state.errorAggregatedData, true);
       }
-    );
+    ).finally(() => {
+      if (this.currentInfoPanelQuery === query) {
+        this.currentInfoPanelQuery = null;
+      }
+    });
   }
 
   setAggregationPanelData(data) {
