@@ -18,7 +18,6 @@
   background: white;
   border-radius: 5px;
   overflow: hidden;
-  transition: width 0.5s cubic-bezier(1, 0, 0, 1);
 
   > *:not(:first-child):not(:last-child) {
     border-color: $borderGrey;
