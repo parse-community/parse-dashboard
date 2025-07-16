@@ -255,14 +255,7 @@ export default class DataBrowser extends React.Component {
   togglePanelVisibility() {
     const newVisibility = !this.state.isPanelVisible;
     this.setState({ isPanelVisible: newVisibility });
-    try {
-      window.localStorage?.setItem(
-        AGGREGATION_PANEL_VISIBLE,
-        newVisibility
-      );
-    } catch {
-      // ignore
-    }
+    window.localStorage?.setItem(AGGREGATION_PANEL_VISIBLE, newVisibility);
 
     if (!newVisibility) {
       this.props.setAggregationPanelData({});
