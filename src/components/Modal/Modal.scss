@@ -8,6 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .modal {
+  @include modalAnimation();
   --modal-min-width: 540px;
   position: absolute;
   top: 50%;
@@ -17,7 +18,6 @@
   background: white;
   border-radius: 5px;
   overflow: hidden;
-  transform: translate(-50%, -50%);
 
   > *:not(:first-child):not(:last-child) {
     border-color: $borderGrey;
