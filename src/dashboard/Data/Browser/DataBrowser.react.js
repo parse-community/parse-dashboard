@@ -671,7 +671,7 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    let cache = { ...this.state.prefetchCache };
+    const cache = { ...this.state.prefetchCache };
     if (prefetchStale) {
       const now = Date.now();
       Object.keys(cache).forEach(key => {
