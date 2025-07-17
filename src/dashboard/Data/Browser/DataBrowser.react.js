@@ -13,6 +13,7 @@ import * as ColumnPreferences from 'lib/ColumnPreferences';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
 import React from 'react';
+import Parse from 'parse';
 import { ResizableBox } from 'react-resizable';
 import styles from './Databrowser.scss';
 
@@ -106,6 +107,8 @@ export default class DataBrowser extends React.Component {
       showAggregatedData: true,
       frozenColumnIndex: -1,
       showRowNumber: storedRowNumber,
+      prefetchCache: {},
+      selectionHistory: [],
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -122,6 +125,7 @@ export default class DataBrowser extends React.Component {
     this.setShowAggregatedData = this.setShowAggregatedData.bind(this);
     this.setCopyableValue = this.setCopyableValue.bind(this);
     this.setSelectedObjectId = this.setSelectedObjectId.bind(this);
+    this.handleCallCloudFunction = this.handleCallCloudFunction.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
     this.freezeColumns = this.freezeColumns.bind(this);
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
@@ -149,6 +153,8 @@ export default class DataBrowser extends React.Component {
         firstSelectedCell: null,
         selectedData: [],
         frozenColumnIndex: -1,
+        prefetchCache: {},
+        selectionHistory: [],
       });
     } else if (
       Object.keys(props.columns).length !== Object.keys(this.props.columns).length ||
@@ -606,7 +612,20 @@ export default class DataBrowser extends React.Component {
 
   setSelectedObjectId(selectedObjectId) {
     if (this.state.selectedObjectId !== selectedObjectId) {
-      this.setState({ selectedObjectId });
+      const index = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
+      this.setState(
+        prevState => {
+          const history = [...prevState.selectionHistory];
+          if (index !== undefined && index > -1) {
+            history.push(index);
+          }
+          if (history.length > 3) {
+            history.shift();
+          }
+          return { selectedObjectId, selectionHistory: history };
+        },
+        () => this.handlePrefetch()
+      );
     }
   }
 
@@ -625,6 +644,88 @@ export default class DataBrowser extends React.Component {
   setShowRowNumber(show) {
     this.setState({ showRowNumber: show });
     window.localStorage?.setItem(BROWSER_SHOW_ROW_NUMBER, show);
+  }
+
+  getPrefetchSettings() {
+    const config =
+      this.props.classwiseCloudFunctions?.[
+        `${this.props.app.applicationId}${this.props.appName}`
+      ]?.[this.props.className]?.[0];
+    return {
+      prefetchObjects: config?.prefetchObjects || 0,
+      prefetchStale: config?.prefetchStale || 0,
+    };
+  }
+
+  handlePrefetch() {
+    const { prefetchObjects } = this.getPrefetchSettings();
+    if (!prefetchObjects) {
+      return;
+    }
+    const history = this.state.selectionHistory;
+    if (history.length < 3) {
+      return;
+    }
+    const [a, b, c] = history.slice(-3);
+    if (a + 1 === b && b + 1 === c) {
+      for (
+        let i = 1;
+        i <= prefetchObjects && c + i < this.props.data.length;
+        i++
+      ) {
+        const objId = this.props.data[c + i].id;
+        if (!this.state.prefetchCache[objId]) {
+          this.prefetchObject(objId);
+        }
+      }
+    }
+  }
+
+  prefetchObject(objectId) {
+    const { className, app } = this.props;
+    const cloudCodeFunction =
+      this.props.classwiseCloudFunctions?.[
+        `${app.applicationId}${this.props.appName}`
+      ]?.[className]?.[0]?.cloudCodeFunction;
+    if (!cloudCodeFunction) {
+      return;
+    }
+    const params = {
+      object: Parse.Object.extend(className)
+        .createWithoutData(objectId)
+        .toPointer(),
+    };
+    const options = { useMasterKey: true };
+    Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
+      this.setState(prev => ({
+        prefetchCache: {
+          ...prev.prefetchCache,
+          [objectId]: { data: result, timestamp: Date.now() },
+        },
+      }));
+    });
+  }
+
+  handleCallCloudFunction(objectId, className, appId) {
+    const { prefetchCache } = this.state;
+    const { prefetchStale } = this.getPrefetchSettings();
+    const cached = prefetchCache[objectId];
+    if (
+      cached &&
+      (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)
+    ) {
+      this.props.setAggregationPanelData(cached.data);
+      this.props.setLoadingInfoPanel(false);
+    } else {
+      if (cached) {
+        this.setState(prev => {
+          const n = { ...prev.prefetchCache };
+          delete n[objectId];
+          return { prefetchCache: n };
+        });
+      }
+      this.props.callCloudFunction(objectId, className, appId);
+    }
   }
 
   handleColumnsOrder(order, shouldReload) {
@@ -729,7 +830,7 @@ export default class DataBrowser extends React.Component {
             setCopyableValue={this.setCopyableValue}
             selectedObjectId={this.state.selectedObjectId}
             setSelectedObjectId={this.setSelectedObjectId}
-            callCloudFunction={this.props.callCloudFunction}
+            callCloudFunction={this.handleCallCloudFunction}
             setContextMenu={this.setContextMenu}
             freezeIndex={this.state.frozenColumnIndex}
             freezeColumns={this.freezeColumns}

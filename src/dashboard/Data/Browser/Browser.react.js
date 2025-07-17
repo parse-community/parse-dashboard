@@ -461,6 +461,8 @@ class Browser extends DashboardView {
               title: panel.title,
               cloudCodeFunction: panel.cloudCodeFunction,
               classes: panel.classes,
+              prefetchObjects: panel.prefetchObjects || 0,
+              prefetchStale: panel.prefetchStale || 0,
             });
           });
         });

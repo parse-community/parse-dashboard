@@ -140,6 +140,8 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | `infoPanel[*].title`                   | String              | no       | -       | `User Details`                                   | The panel title.                                                                                                                                                                                                                      |
 | `infoPanel[*].classes`                 | Array&lt;String&gt; | no       | -       | `["_User"]`                                      | The classes for which the info panel should be displayed.                                                                                                                                                                             |
 | `infoPanel[*].cloudCodeFunction`       | String              | no       | -       | `getUserDetails`                                 | The Cloud Code Function which received the selected object in the data browser and returns the response to be displayed in the info panel.                                                                                            |
+| `infoPanel[*].prefetchObjects`         | Number              | yes      | `0`     | `2`                                             | Number of rows to prefetch when browsing sequential rows.
+| `infoPanel[*].prefetchStale`           | Number              | yes      | `0`     | `10`                                            | Duration in seconds after which prefetched data is discarded.
 | `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]`                             | The scripts that can be executed for that app.                                                                                                                                                                                        |
 | `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`                                  | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                                                                                                             |
 | `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`                                      | The classes of Parse Objects for which the scripts can be executed.                                                                                                                                                                   |
@@ -873,7 +875,9 @@ The following example dashboard configuration shows an info panel for the `_User
       {
         "title": "User Details",
         "classes": ["_User"],
-        "cloudCodeFunction": "getUserDetails"
+        "cloudCodeFunction": "getUserDetails",
+        "prefetchObjects": 2,
+        "prefetchStale": 10
       }
     ]
   }
