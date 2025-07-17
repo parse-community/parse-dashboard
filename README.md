@@ -883,6 +883,7 @@ The following example dashboard configuration shows an info panel for the `_User
   }
 ]
 ```
+The optional `prefetchObjects` setting controls how many subsequent rows are prefetched when browsing sequentially. Prefetched data is removed after the number of seconds defined in `prefetchStale`.
 
 The Cloud Code Function receives the selected object in the payload and returns a response that can include various items.
 
