@@ -725,6 +725,8 @@ export default class DataBrowser extends React.Component {
           [objectId]: { data: result, timestamp: Date.now() },
         },
       }));
+    }).catch(error => {
+      console.error(`Failed to prefetch object ${objectId}:`, error);
     });
   }
 
