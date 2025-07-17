@@ -56,6 +56,8 @@ export default class BrowserRow extends Component {
       onMouseOverRow,
       stickyLefts,
       freezeIndex,
+      prefetchCache,
+      prefetchStale,
     } = this.props;
     const attributes = obj.attributes;
     let requiredCols = [];
@@ -190,6 +192,8 @@ export default class BrowserRow extends Component {
               selectedCells={this.props.selectedCells}
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
+              prefetchCache={this.props.prefetchCache}
+              prefetchStale={this.props.prefetchStale}
               firstSelectedCell={this.props.firstSelectedCell}
             />
           );

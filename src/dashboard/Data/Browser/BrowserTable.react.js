@@ -207,6 +207,8 @@ export default class BrowserTable extends React.Component {
                     onMouseOverRow={this.props.onMouseOverRow}
                     setShowAggregatedData={this.props.setShowAggregatedData}
                     setErrorAggregatedData={this.props.setErrorAggregatedData}
+                    prefetchCache={this.props.prefetchCache}
+                    prefetchStale={this.props.prefetchStale}
                     firstSelectedCell={this.props.firstSelectedCell}
                   />
                   <Button
@@ -293,6 +295,8 @@ export default class BrowserTable extends React.Component {
               onMouseOverRow={this.props.onMouseOverRow}
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
+              prefetchCache={this.props.prefetchCache}
+              prefetchStale={this.props.prefetchStale}
               firstSelectedCell={this.props.firstSelectedCell}
             />
             <Button
@@ -388,6 +392,8 @@ export default class BrowserTable extends React.Component {
             onMouseOverRow={this.props.onMouseOverRow}
             setShowAggregatedData={this.props.setShowAggregatedData}
             setErrorAggregatedData={this.props.setErrorAggregatedData}
+            prefetchCache={this.props.prefetchCache}
+            prefetchStale={this.props.prefetchStale}
             firstSelectedCell={this.props.firstSelectedCell}
           />
         );

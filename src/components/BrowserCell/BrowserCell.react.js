@@ -581,6 +581,8 @@ export default class BrowserCell extends Component {
       handleCellClick,
       selectedCells,
       setShowAggregatedData,
+      prefetchCache,
+      prefetchStale,
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -656,7 +658,14 @@ export default class BrowserCell extends Component {
             if (selectedObjectId !== this.props.objectId) {
               setShowAggregatedData(true);
               setSelectedObjectId(this.props.objectId);
+              const cached = prefetchCache?.[this.props.objectId];
+              const stale =
+                cached &&
+                prefetchStale &&
+                (Date.now() - cached.timestamp) / 1000 >= prefetchStale;
+              const shouldFetch = !cached || stale;
               if (
+                shouldFetch &&
                 this.props.objectId &&
                 isPanelVisible &&
                 ((e.shiftKey && !this.props.firstSelectedCell) || !e.shiftKey)

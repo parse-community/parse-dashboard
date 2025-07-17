@@ -834,6 +834,7 @@ export default class DataBrowser extends React.Component {
       ...other
     } = this.props;
     const { preventSchemaEdits, applicationId } = app;
+    const { prefetchStale } = this.getPrefetchSettings();
     return (
       <div>
         <div>
@@ -867,6 +868,8 @@ export default class DataBrowser extends React.Component {
             setShowAggregatedData={this.setShowAggregatedData}
             showRowNumber={this.state.showRowNumber}
             setShowRowNumber={this.setShowRowNumber}
+            prefetchCache={this.state.prefetchCache}
+            prefetchStale={prefetchStale}
             skip={this.props.skip}
             limit={this.props.limit}
             firstSelectedCell={this.state.firstSelectedCell}
