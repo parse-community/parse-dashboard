@@ -1185,7 +1185,7 @@ To reduce the time for info panel data to appear, data can be prefetched.
 | `infoPanel[*].prefetchObjects` | Number | yes      | `0`     | `2`     | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance. |
 | `infoPanel[*].prefetchStale`   | Number | yes      | `0`     | `10`    | Duration in seconds after which prefetched data is discarded as stale.                                                            |
 
-Prefetching is particularly useful when navigating through lists of objects. To optimize performance and avoid unnecessary data loading, prefetching is triggered only after the user has moved through 3 consecutive rows using the keyboard down-arrow key.
+Prefetching is particularly useful when navigating through lists of objects. To optimize performance and avoid unnecessary data loading, prefetching is triggered only after the user has moved through 3 consecutive rows using the keyboard down-arrow key or by mouse click.
 
 ### Freeze Columns
 
