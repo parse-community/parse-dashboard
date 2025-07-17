@@ -756,9 +756,25 @@ export default class DataBrowser extends React.Component {
     });
   }
 
-  handleCellClick(event, row, col) {
+  handleCellClick(event, row, col, objectId) {
     const { firstSelectedCell } = this.state;
     const clickedCellKey = `${row}-${col}`;
+
+    if (this.state.selectedObjectId !== objectId) {
+      this.setShowAggregatedData(true);
+      this.setSelectedObjectId(objectId);
+      if (
+        objectId &&
+        this.state.isPanelVisible &&
+        ((event.shiftKey && !firstSelectedCell) || !event.shiftKey)
+      ) {
+        this.handleCallCloudFunction(
+          objectId,
+          this.props.className,
+          this.props.app.applicationId
+        );
+      }
+    }
 
     if (event.shiftKey && firstSelectedCell) {
       const [firstRow, firstCol] = firstSelectedCell.split('-').map(Number);

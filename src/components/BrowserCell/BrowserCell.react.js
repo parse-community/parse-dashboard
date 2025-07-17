@@ -568,8 +568,6 @@ export default class BrowserCell extends Component {
       onEditChange,
       setCopyableValue,
       selectedObjectId,
-      setSelectedObjectId,
-      callCloudFunction,
       isPanelVisible,
       onPointerCmdClick,
       row,
@@ -580,7 +578,6 @@ export default class BrowserCell extends Component {
       markRequiredFieldRow,
       handleCellClick,
       selectedCells,
-      setShowAggregatedData,
     } = this.props;
 
     const classes = [...this.state.classes];
@@ -653,18 +650,7 @@ export default class BrowserCell extends Component {
             onPointerCmdClick(value);
           } else {
             setCopyableValue(hidden ? undefined : this.copyableValue);
-            if (selectedObjectId !== this.props.objectId) {
-              setShowAggregatedData(true);
-              setSelectedObjectId(this.props.objectId);
-              if (
-                this.props.objectId &&
-                isPanelVisible &&
-                ((e.shiftKey && !this.props.firstSelectedCell) || !e.shiftKey)
-              ) {
-                callCloudFunction(this.props.objectId, this.props.className, this.props.appId);
-              }
-            }
-            handleCellClick(e, row, col);
+            handleCellClick(e, row, col, this.props.objectId);
           }
         }}
         onDoubleClick={() => {
