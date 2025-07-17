@@ -45,7 +45,7 @@ export const Constraints = {
 };
 
 export const FieldConstraints = {
-  Boolean: ['$eq'],
+  Boolean: ['$eq', '$ne'],
   Number: ['$eq', '$ne', '$lt', '$le', '$gt', '$ge'],
   String: ['$eq', '$ne', '$contains'],
   Date: ['$eq', '$ne', '$lt', '$le', '$gt', '$ge'],

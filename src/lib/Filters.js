@@ -167,7 +167,7 @@ export const Constraints = {
 
 export const FieldConstraints = {
   Pointer: ['exists', 'dne', 'eq', 'neq', 'starts', 'unique'],
-  Boolean: ['exists', 'dne', 'eq', 'unique'],
+  Boolean: ['exists', 'dne', 'eq', 'neq', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
   String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
   Date: ['exists', 'dne', 'before', 'after', 'unique'],
