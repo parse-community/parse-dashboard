@@ -567,8 +567,6 @@ export default class BrowserCell extends Component {
       current,
       onEditChange,
       setCopyableValue,
-      selectedObjectId,
-      isPanelVisible,
       onPointerCmdClick,
       row,
       col,
