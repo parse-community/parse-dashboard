@@ -61,15 +61,17 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [Data Browser](#data-browser)
     - [Filters](#filters)
     - [Info Panel](#info-panel)
-      - [Segments](#segments)
-      - [Text Item](#text-item)
-      - [Key-Value Item](#key-value-item)
-      - [Table Item](#table-item)
-      - [Image Item](#image-item)
-      - [Video Item](#video-item)
-      - [Audio Item](#audio-item)
-      - [Button Item](#button-item)
-      - [Panel Item](#panel-item)
+      - [Response](#response)
+        - [Segments](#segments)
+        - [Text Item](#text-item)
+        - [Key-Value Item](#key-value-item)
+        - [Table Item](#table-item)
+        - [Image Item](#image-item)
+        - [Video Item](#video-item)
+        - [Audio Item](#audio-item)
+        - [Button Item](#button-item)
+        - [Panel Item](#panel-item)
+      - [Prefetching](#prefetching)
     - [Freeze Columns](#freeze-columns)
   - [Browse as User](#browse-as-user)
   - [Change Pointer Key](#change-pointer-key)
@@ -140,8 +142,8 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | `infoPanel[*].title`                   | String              | no       | -       | `User Details`                                   | The panel title.                                                                                                                                                                                                                      |
 | `infoPanel[*].classes`                 | Array&lt;String&gt; | no       | -       | `["_User"]`                                      | The classes for which the info panel should be displayed.                                                                                                                                                                             |
 | `infoPanel[*].cloudCodeFunction`       | String              | no       | -       | `getUserDetails`                                 | The Cloud Code Function which received the selected object in the data browser and returns the response to be displayed in the info panel.                                                                                            |
-| `infoPanel[*].prefetchObjects`         | Number              | yes      | `0`     | `2`                                             | Number of rows to prefetch when browsing sequential rows.
-| `infoPanel[*].prefetchStale`           | Number              | yes      | `0`     | `10`                                            | Duration in seconds after which prefetched data is discarded.
+| `infoPanel[*].prefetchObjects`         | Number              | yes      | `0`     | `2`                                              | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance.                                                                                                     |
+| `infoPanel[*].prefetchStale`           | Number              | yes      | `0`     | `10`                                             | Duration in seconds after which prefetched data is discarded as stale.                                                                                                                                                                |
 | `apps.scripts`                         | Array&lt;Object&gt; | yes      | `[]`    | `[{ ... }, { ... }]`                             | The scripts that can be executed for that app.                                                                                                                                                                                        |
 | `apps.scripts.title`                   | String              | no       | -       | `'Delete User'`                                  | The title that will be displayed in the data browser context menu and the script run confirmation dialog.                                                                                                                             |
 | `apps.scripts.classes`                 | Array&lt;String&gt; | no       | -       | `['_User']`                                      | The classes of Parse Objects for which the scripts can be executed.                                                                                                                                                                   |
@@ -886,7 +888,9 @@ The following example dashboard configuration shows an info panel for the `_User
 
 The Cloud Code Function receives the selected object in the payload and returns a response that can include various items.
 
-#### Segments
+#### Response
+
+##### Segments
 
 The info panel can contain multiple segments to display different groups of information.
 
@@ -922,7 +926,7 @@ Example:
 
 The items array can include various types of content such as text, key-value pairs, tables, images, videos, audios, and buttons. Each type offers a different way to display information within the info panel, allowing for a customizable and rich user experience. Below is a detailed explanation of each type.
 
-#### Text Item
+##### Text Item
 
 A simple text field.
 
@@ -942,7 +946,7 @@ Example:
 }
 ```
 
-#### Key-Value Item
+##### Key-Value Item
 
 A text item that consists of a key and a value. The value can optionally be linked to a URL.
 
@@ -1013,7 +1017,7 @@ const item = {
 }
 ```
 
-#### Table Item
+##### Table Item
 
 A table with columns and rows to display data in a structured format.
 
@@ -1055,7 +1059,7 @@ Example:
 }
 ```
 
-#### Image Item
+##### Image Item
 
 An image to be displayed in the panel.
 
@@ -1075,7 +1079,7 @@ Example:
 }
 ```
 
-#### Video Item
+##### Video Item
 
 A video to be displayed in the panel.
 
@@ -1095,7 +1099,7 @@ Example:
 }
 ```
 
-#### Audio Item
+##### Audio Item
 
 An audio file to be played in the panel.
 
@@ -1115,7 +1119,7 @@ Example:
 }
 ```
 
-#### Button Item
+##### Button Item
 
 A button that triggers an action when clicked.
 
@@ -1150,7 +1154,7 @@ Example:
 }
 ```
 
-#### Panel Item
+##### Panel Item
 
 A sub-panel whose data is loaded on-demand by expanding the item.
 
@@ -1171,6 +1175,17 @@ Example:
   "style": { "backgroundColor": "lightGray" },
 }
 ```
+
+#### Prefetching
+
+To reduce the time for info panel data to appear, data can be prefetched.
+
+| Parameter                      | Type   | Optional | Default | Example | Description                                                                                                                       |
+|--------------------------------|--------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `infoPanel[*].prefetchObjects` | Number | yes      | `0`     | `2`     | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance. |
+| `infoPanel[*].prefetchStale`   | Number | yes      | `0`     | `10`    | Duration in seconds after which prefetched data is discarded as stale.                                                            |
+
+Prefetching is particularly useful when navigating through lists of objects. To optimize performance and avoid unnecessary data loading, prefetching is triggered only after the user has moved through 3 consecutive rows using the keyboard down-arrow key.
 
 ### Freeze Columns
 
