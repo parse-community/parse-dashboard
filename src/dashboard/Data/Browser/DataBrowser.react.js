@@ -666,10 +666,24 @@ export default class DataBrowser extends React.Component {
   }
 
   handlePrefetch() {
-    const { prefetchObjects } = this.getPrefetchSettings();
+    const { prefetchObjects, prefetchStale } = this.getPrefetchSettings();
     if (!prefetchObjects) {
       return;
     }
+
+    const cache = { ...this.state.prefetchCache };
+    if (prefetchStale) {
+      const now = Date.now();
+      Object.keys(cache).forEach(key => {
+        if ((now - cache[key].timestamp) / 1000 >= prefetchStale) {
+          delete cache[key];
+        }
+      });
+    }
+    if (Object.keys(cache).length !== Object.keys(this.state.prefetchCache).length) {
+      this.setState({ prefetchCache: cache });
+    }
+
     const history = this.state.selectionHistory;
     if (history.length < 3) {
       return;
@@ -682,7 +696,7 @@ export default class DataBrowser extends React.Component {
         i++
       ) {
         const objId = this.props.data[c + i].id;
-        if (!this.state.prefetchCache[objId]) {
+        if (!cache[objId]) {
           this.prefetchObject(objId);
         }
       }
