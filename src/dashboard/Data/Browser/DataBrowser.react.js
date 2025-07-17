@@ -12,8 +12,8 @@ import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
-import React from 'react';
 import Parse from 'parse';
+import React from 'react';
 import { ResizableBox } from 'react-resizable';
 import styles from './Databrowser.scss';
 
@@ -446,7 +446,7 @@ export default class DataBrowser extends React.Component {
 
     switch (e.keyCode) {
       case 8:
-      case 46:
+      case 46: {
         // Backspace or Delete
         const colName = this.state.order[this.state.current.col].name;
         const col = this.props.columns[colName];
@@ -455,7 +455,8 @@ export default class DataBrowser extends React.Component {
         }
         e.preventDefault();
         break;
-      case 37:
+      }
+      case 37: {
         // Left - standalone (move to the next visible column on the left)
         // or with ctrl/meta (excel style - move to the first visible column)
 
@@ -474,10 +475,11 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case 38:
+      }
+      case 38: {
         // Up - standalone (move to the previous row)
         // or with ctrl/meta (excel style - move to the first row)
-        let prevObjectID = this.state.selectedObjectId;
+        const prevObjectID = this.state.selectedObjectId;
         const newRow = e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0);
         this.setState({
           current: {
@@ -497,7 +499,8 @@ export default class DataBrowser extends React.Component {
         }
         e.preventDefault();
         break;
-      case 39:
+      }
+      case 39: {
         // Right - standalone (move to the next visible column on the right)
         // or with ctrl/meta (excel style - move to the last visible column)
         this.setState({
@@ -515,10 +518,11 @@ export default class DataBrowser extends React.Component {
         });
         e.preventDefault();
         break;
-      case 40:
+      }
+      case 40: {
         // Down - standalone (move to the next row)
         // or with ctrl/meta (excel style - move to the last row)
-        prevObjectID = this.state.selectedObjectId;
+        const prevObjectID = this.state.selectedObjectId;
         const newRow =
           e.ctrlKey || e.metaKey
             ? this.props.data.length - 1
@@ -543,7 +547,8 @@ export default class DataBrowser extends React.Component {
 
         e.preventDefault();
         break;
-      case 67: // C
+      }
+      case 67: { // C
         if ((e.ctrlKey || e.metaKey) && this.state.copyableValue !== undefined) {
           copy(this.state.copyableValue); // Copies current cell value to clipboard
           if (this.props.showNote) {
@@ -552,7 +557,8 @@ export default class DataBrowser extends React.Component {
           e.preventDefault();
         }
         break;
-      case 32: // Space
+      }
+      case 32: { // Space
         // Only handle space if not editing and there's a current row selected
         if (!this.state.editing && this.state.current?.row >= 0) {
           const rowId = this.props.data[this.state.current.row].id;
@@ -561,12 +567,14 @@ export default class DataBrowser extends React.Component {
           e.preventDefault();
         }
         break;
-      case 13: // Enter (enable editing)
+      }
+      case 13: { // Enter (enable editing)
         if (!this.state.editing && this.state.current) {
           this.setEditing(true);
           e.preventDefault();
         }
         break;
+      }
     }
   }
 
