@@ -8,6 +8,7 @@
 import Login from './Login';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import registerServiceWorker from '../registerServiceWorker';
 
 require('stylesheets/fonts.scss');
 
@@ -15,3 +16,4 @@ require('stylesheets/fonts.scss');
 
 const path = window.PARSE_DASHBOARD_PATH || '/';
 ReactDOM.render(<Login path={path} />, document.getElementById('login_mount'));
+registerServiceWorker();
