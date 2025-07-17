@@ -275,7 +275,7 @@ export default class DataBrowser extends React.Component {
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
-      this.props.callCloudFunction(
+      this.handleCallCloudFunction(
         this.state.selectedObjectId,
         this.props.className,
         this.props.app.applicationId
@@ -478,19 +478,19 @@ export default class DataBrowser extends React.Component {
         // Up - standalone (move to the previous row)
         // or with ctrl/meta (excel style - move to the first row)
         let prevObjectID = this.state.selectedObjectId;
+        const newRow = e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0);
         this.setState({
           current: {
-            row: e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0),
+            row: newRow,
             col: this.state.current.col,
           },
         });
-        this.setState({
-          selectedObjectId: this.props.data[this.state.current.row].id,
-          showAggregatedData: true,
-        });
-        if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
-          this.props.callCloudFunction(
-            this.state.selectedObjectId,
+        const newObjectId = this.props.data[newRow].id;
+        this.setSelectedObjectId(newObjectId);
+        this.setState({ showAggregatedData: true });
+        if (prevObjectID !== newObjectId && this.state.isPanelVisible) {
+          this.handleCallCloudFunction(
+            newObjectId,
             this.props.className,
             this.props.app.applicationId
           );
@@ -519,23 +519,23 @@ export default class DataBrowser extends React.Component {
         // Down - standalone (move to the next row)
         // or with ctrl/meta (excel style - move to the last row)
         prevObjectID = this.state.selectedObjectId;
+        const newRow =
+          e.ctrlKey || e.metaKey
+            ? this.props.data.length - 1
+            : Math.min(this.state.current.row + 1, this.props.data.length - 1);
         this.setState({
           current: {
-            row:
-              e.ctrlKey || e.metaKey
-                ? this.props.data.length - 1
-                : Math.min(this.state.current.row + 1, this.props.data.length - 1),
+            row: newRow,
             col: this.state.current.col,
           },
         });
 
-        this.setState({
-          selectedObjectId: this.props.data[this.state.current.row].id,
-          showAggregatedData: true,
-        });
-        if (prevObjectID !== this.state.selectedObjectId && this.state.isPanelVisible) {
-          this.props.callCloudFunction(
-            this.state.selectedObjectId,
+        const newObjectIdDown = this.props.data[newRow].id;
+        this.setSelectedObjectId(newObjectIdDown);
+        this.setState({ showAggregatedData: true });
+        if (prevObjectID !== newObjectIdDown && this.state.isPanelVisible) {
+          this.handleCallCloudFunction(
+            newObjectIdDown,
             this.props.className,
             this.props.app.applicationId
           );
