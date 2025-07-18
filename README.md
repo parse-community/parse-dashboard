@@ -513,8 +513,14 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 
 ### Browser Service Worker
 
-Parse Dashboard can cache its bundles in the browser so that opening the dashboard in another tab does not reload the resources.
-Enable this feature with `enableBrowserServiceWorker`:
+Parse Dashboard can cache its resources such as bundles in the browser, so that opening the dashboard in another tab does not reload the dashboard resources from the server but from the local browser cache. Caching only starts after login in the dashboard.
+
+| Parameter                    | Type    | Optional | Default | Example | Description                                                                                                                             |
+|------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `enableBrowserServiceWorker` | Boolean | yes      | `false` | `true`  | Enables the browser service worker to cache dashboard resources in the browser for faster dashboard loading in additional browser tabs. |
+
+
+Example configuration:
 
 ```javascript
 const dashboard = new ParseDashboard({
@@ -530,8 +536,8 @@ const dashboard = new ParseDashboard({
 });
 ```
 
-The service worker is disabled by default.
-It automatically unregisters when all dashboard tabs are closed, ensuring updates load without manual intervention.
+> [!Warning]
+> Enabling this feature will start a browser service worker that caches dashboard resources locally only once. As long as the service worker is running, it will prevent loading any dashboard updates from the server, even if the user reloads the browser tab. The service worker is automatically stopped, once the last dashboard browser tab is closed. On the opening of the first dashboard browser tab, the dashboard resources are again loaded from the server and a new service worker is started.
 
 # Running as Express Middleware
 
