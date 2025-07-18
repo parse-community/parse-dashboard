@@ -1,6 +1,6 @@
 function registerServiceWorker() {
 
-  if (!window.PARSE_DASHBOARD_ENABLE_SERVICE_WORKER) {
+  if (!window.PARSE_DASHBOARD_ENABLE_RESOURCE_CACHE) {
     return;
   }
   if (!('serviceWorker' in navigator)) {

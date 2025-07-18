@@ -515,16 +515,16 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 
 Parse Dashboard can cache its resources such as bundles in the browser, so that opening the dashboard in another tab does not reload the dashboard resources from the server but from the local browser cache. Caching only starts after login in the dashboard.
 
-| Parameter                    | Type    | Optional | Default | Example | Description                                                                                                                             |
-|------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| `enableBrowserServiceWorker` | Boolean | yes      | `false` | `true`  | Enables the browser service worker to cache dashboard resources in the browser for faster dashboard loading in additional browser tabs. |
+| Parameter             | Type    | Optional | Default | Example | Description                                                                                                                             |
+|-----------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `enableResourceCache` | Boolean | yes      | `false` | `true`  | Enables caching of dashboard resources in the browser for faster dashboard loading in additional browser tabs. |
 
 
 Example configuration:
 
 ```javascript
 const dashboard = new ParseDashboard({
-  enableBrowserServiceWorker: true,
+  enableResourceCache: true,
   apps: [
     {
       serverURL: 'http://localhost:1337/parse',
@@ -537,7 +537,10 @@ const dashboard = new ParseDashboard({
 ```
 
 > [!Warning]
-> Enabling this feature will start a browser service worker that caches dashboard resources locally only once. As long as the service worker is running, it will prevent loading any dashboard updates from the server, even if the user reloads the browser tab. The service worker is automatically stopped, once the last dashboard browser tab is closed. On the opening of the first dashboard browser tab, the dashboard resources are again loaded from the server and a new service worker is started.
+> This feature can make it more difficult to push dashboard updates to users. Enabling the resource cache will start a browser service worker that caches dashboard resources locally only once. As long as the service worker is running, it will prevent loading any dashboard updates from the server, even if the user reloads the browser tab. The service worker is automatically stopped, once the last dashboard browser tab is closed. On the opening of the first dashboard browser tab, a new service worker is started and the dashboard resources are loaded from the server.
+
+> [!Note]
+> For developers: during dashboard development, the resource cache should be disabled to ensure reloading the dashboard tab in the browser loads the new dashboard bundle with any changes you made in the source code. You can inspect the service worker in the developer tools of most browsers. For example in Google Chrome, go to *Developer Tools > Application tab > Service workers* to see whether the dashboard service worker is currently running and to debug it. Updates to the service worker source code in `src/registerServiceWorker.js` requires to restart `npm run dev` as it is not part of the dashboard bundle but the environment in which the bundle is mounted.
 
 # Running as Express Middleware
 
