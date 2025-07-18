@@ -4,6 +4,10 @@ self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.destination === 'script' || req.destination === 'style' || req.url.includes('/bundles/')) {
@@ -19,5 +23,11 @@ self.addEventListener('fetch', event => {
         );
       })
     );
+  }
+});
+
+self.addEventListener('message', event => {
+  if (event.data === 'unregister') {
+    self.registration.unregister();
   }
 });

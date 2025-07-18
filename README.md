@@ -531,6 +531,7 @@ const dashboard = new ParseDashboard({
 ```
 
 The service worker is disabled by default.
+It automatically unregisters when all dashboard tabs are closed, ensuring updates load without manual intervention.
 
 # Running as Express Middleware
 
