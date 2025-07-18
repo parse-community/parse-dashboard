@@ -11,7 +11,10 @@ export default function registerServiceWorker() {
   const countKey = `pd-sw-tabs:${mountPath}`;
 
   const increment = () => {
-    const current = parseInt(localStorage.getItem(countKey) || '0', 10);
+    let current = parseInt(localStorage.getItem(countKey) || '0', 10);
+    if (!navigator.serviceWorker.controller && current > 0) {
+      current = 0;
+    }
     localStorage.setItem(countKey, String(current + 1));
   };
 
@@ -34,6 +37,7 @@ export default function registerServiceWorker() {
 
   increment();
   window.addEventListener('beforeunload', decrement);
+  window.addEventListener('pagehide', decrement);
 
   window.addEventListener('load', () => {
     navigator.serviceWorker.register(swPath).catch(() => {});
