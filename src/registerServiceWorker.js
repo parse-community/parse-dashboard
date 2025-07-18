@@ -7,7 +7,7 @@ function registerServiceWorker() {
     return;
   }
 
-  const mountPath = window.PARSE_DASHBOARD_PATH || '/';
+  const mountPath = (window.PARSE_DASHBOARD_PATH || '/').replace(/\/?$/, '/');
   const swPath = `${mountPath}sw.js`;
   const countKey = `pd-sw-tabs:${mountPath}`;
 
