@@ -1,4 +1,5 @@
-export default function registerServiceWorker() {
+function registerServiceWorker() {
+
   if (!window.PARSE_DASHBOARD_ENABLE_SERVICE_WORKER) {
     return;
   }
@@ -10,6 +11,16 @@ export default function registerServiceWorker() {
   const swPath = `${mountPath}sw.js`;
   const countKey = `pd-sw-tabs:${mountPath}`;
 
+  /**
+   * Registers the service worker at the specified path.
+   */
+  const register = () => {
+    navigator.serviceWorker.register(swPath).catch(() => {});
+  };
+
+  /**
+   * Increments the count of open dashboard tabs in localStorage.
+   */
   const increment = () => {
     let current = parseInt(localStorage.getItem(countKey) || '0', 10);
     if (!navigator.serviceWorker.controller && current > 0) {
@@ -18,6 +29,9 @@ export default function registerServiceWorker() {
     localStorage.setItem(countKey, String(current + 1));
   };
 
+  /**
+   * Decrements the count of open dashboard tabs in localStorage.
+   */
   const decrement = () => {
     const current = parseInt(localStorage.getItem(countKey) || '0', 10);
     const next = Math.max(0, current - 1);
@@ -36,10 +50,16 @@ export default function registerServiceWorker() {
   };
 
   increment();
-  window.addEventListener('beforeunload', decrement);
-  window.addEventListener('pagehide', decrement);
 
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register(swPath).catch(() => {});
+    register();
+  });
+  window.addEventListener('beforeunload', () => {
+    decrement();
+  });
+  window.addEventListener('pagehide', () => {
+    decrement();
   });
 }
+
+export default registerServiceWorker;
