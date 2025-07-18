@@ -219,6 +219,9 @@ module.exports = function(config, options) {
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
+            PARSE_DASHBOARD_ENABLE_SERVICE_WORKER = ${
+  config.enableBrowserServiceWorker ? 'true' : 'false'
+};
           </script>
           <title>Parse Dashboard</title>
         </head>
@@ -251,6 +254,9 @@ module.exports = function(config, options) {
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
+            PARSE_DASHBOARD_ENABLE_SERVICE_WORKER = ${
+  config.enableBrowserServiceWorker ? 'true' : 'false'
+};
           </script>
           <title>Parse Dashboard</title>
         </head>
