@@ -43,7 +43,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
     - [Persistent Filters](#persistent-filters)
     - [Scripts](#scripts)
-    - [Browser Service Worker](#browser-service-worker)
+    - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -511,7 +511,7 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 
 </details>
 
-### Browser Service Worker
+### Resource Cache
 
 Parse Dashboard can cache its resources such as bundles in the browser, so that opening the dashboard in another tab does not reload the dashboard resources from the server but from the local browser cache. Caching only starts after login in the dashboard.
 
