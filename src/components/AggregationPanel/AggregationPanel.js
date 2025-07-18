@@ -1,6 +1,6 @@
 import LoaderDots from 'components/LoaderDots/LoaderDots.react';
 import Parse from 'parse';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './AggregationPanel.scss';
 import {
   AudioElement,
@@ -31,6 +31,13 @@ const AggregationPanel = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [nestedData, setNestedData] = useState(null);
   const [isLoadingNested, setIsLoadingNested] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, [data, selectedObjectId]);
 
   useEffect(() => {
     if (Object.keys(errorAggregatedData).length !== 0) {
@@ -191,7 +198,7 @@ const AggregationPanel = ({
   }
 
   return (
-    <div className={styles.aggregationPanel}>
+    <div className={styles.aggregationPanel} ref={containerRef}>
       {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />

@@ -132,7 +132,6 @@ export default class DataBrowser extends React.Component {
     this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
-    this.aggregationPanelRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -735,9 +734,6 @@ export default class DataBrowser extends React.Component {
     const { prefetchCache } = this.state;
     const { prefetchStale } = this.getPrefetchSettings();
     const cached = prefetchCache[objectId];
-    if (this.aggregationPanelRef.current) {
-      this.aggregationPanelRef.current.scrollTop = 0;
-    }
     if (
       cached &&
       (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)
@@ -906,10 +902,7 @@ export default class DataBrowser extends React.Component {
               resizeHandles={['w']}
               className={styles.resizablePanel}
             >
-              <div
-                className={styles.aggregationPanelContainer}
-                ref={this.aggregationPanelRef}
-              >
+              <div className={styles.aggregationPanelContainer}>
                 <AggregationPanel
                   data={this.props.AggregationPanelData}
                   isLoadingCloudFunction={this.props.isLoadingCloudFunction}
