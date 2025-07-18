@@ -10,6 +10,5 @@
       "secondaryBackgroundColor": ""
     }
   ],
-  "iconsFolder": "icons",
-  "enableBrowserServiceWorker": false
+  "iconsFolder": "icons"
 }
