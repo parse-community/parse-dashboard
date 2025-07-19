@@ -14,22 +14,18 @@ export const Constraints = {
   },
   $lt: {
     name: 'less than',
-    field: 'Number',
     composable: true,
   },
   $le: {
     name: 'less than or equal',
-    field: 'Number',
     composable: true,
   },
   $gt: {
     name: 'greater than',
-    field: 'Number',
     composable: true,
   },
   $ge: {
     name: 'greater than or equal',
-    field: 'Number',
     composable: true,
   },
   $contains: {

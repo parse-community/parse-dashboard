@@ -28,25 +28,21 @@ export const Constraints = {
   },
   lt: {
     name: 'less than',
-    field: 'Number',
     composable: true,
     comparable: true,
   },
   lte: {
     name: 'less than or equal',
-    field: 'Number',
     composable: true,
     comparable: true,
   },
   gt: {
     name: 'greater than',
-    field: 'Number',
     composable: true,
     comparable: true,
   },
   gte: {
     name: 'greater than or equal',
-    field: 'Number',
     composable: true,
     comparable: true,
   },
@@ -170,7 +166,7 @@ export const FieldConstraints = {
   Boolean: ['exists', 'dne', 'eq', 'neq', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
   String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
-  Date: ['exists', 'dne', 'before', 'after', 'unique'],
+  Date: ['exists', 'dne', 'before', 'after', 'lt', 'lte', 'gt', 'gte', 'unique'],
   Object: [
     'exists',
     'dne',
