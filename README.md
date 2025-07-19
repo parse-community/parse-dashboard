@@ -1307,7 +1307,7 @@ Example:
 }
 ```
 
-A query part of the URL can be easily added using the `urlQuery` key which will automatically escape the quey string.
+A query part of the URL can be easily added using the `urlQuery` key which will automatically escape the query string.
 
 Example:
 
