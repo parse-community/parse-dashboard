@@ -317,12 +317,31 @@ class Views extends TableView {
           } else if (type === 'Date') {
             content = value && value.iso ? value.iso : String(value);
           } else if (type === 'Link') {
-            const url = value.isRelativeUrl
-              ? `apps/${this.context.slug}/${value.url}`
-              : value.url;
+            // Sanitize URL
+            let url = value.url;
+            if (
+              url.match(/javascript/i) ||
+              url.match(/<script/i)
+            ) {
+              url = '#';
+            } else {
+              url = value.isRelativeUrl
+                ? `apps/${this.context.slug}/${url}${value.query ? `?${new URLSearchParams(value.urlQuery).toString()}` : ''}`
+                : url;
+            }
+            // Sanitize text
+            let text = value.text;
+            if (
+              text.match(/javascript/i) ||
+              text.match(/<script/i) ||
+              !text ||
+              text.trim() === ''
+            ) {
+              text = 'Link';
+            }
             content = (
               <a href={url} target="_blank" rel="noreferrer">
-                {value.text}
+                {text}
               </a>
             );
           } else if (value === undefined) {
