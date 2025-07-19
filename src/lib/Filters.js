@@ -76,14 +76,14 @@ export const Constraints = {
     composable: true,
     comparable: true,
   },
-  afterOrOn: {
-    name: 'is after or on',
+  onOrAfter: {
+    name: 'is on or after',
     field: 'Date',
     composable: true,
     comparable: true,
   },
-  beforeOrOn: {
-    name: 'is before or on',
+  onOrBefore: {
+    name: 'is on or before',
     field: 'Date',
     composable: true,
     comparable: true,
@@ -186,9 +186,9 @@ export const FieldConstraints = {
     'exists',
     'dne',
     'before',
-    'beforeOrOn',
+    'onOrBefore',
     'after',
-    'afterOrOn',
+    'onOrAfter',
     'unique',
   ],
   Object: [
