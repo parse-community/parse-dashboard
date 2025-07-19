@@ -43,7 +43,7 @@
     "connect-flash": "0.1.1",
     "cookie-session": "2.1.1",
     "copy-to-clipboard": "3.3.3",
-    "core-js": "3.42.0",
+    "core-js": "3.44.0",
     "csurf": "1.11.0",
     "express": "4.21.2",
     "fast-deep-equal": "3.1.3",
