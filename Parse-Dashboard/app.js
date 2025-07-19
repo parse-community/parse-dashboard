@@ -251,6 +251,7 @@ module.exports = function(config, options) {
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
+            PARSE_DASHBOARD_ENABLE_RESOURCE_CACHE = ${config.enableResourceCache ? 'true' : 'false'};
           </script>
           <title>Parse Dashboard</title>
         </head>

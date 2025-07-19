@@ -43,6 +43,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
     - [Persistent Filters](#persistent-filters)
     - [Scripts](#scripts)
+    - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
@@ -78,6 +79,9 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Limitations](#limitations)
   - [CSV Export](#csv-export)
   - [Views](#views)
+    - [View Table](#view-table)
+      - [Pointer](#pointer)
+      - [Link](#link)
 - [Contributing](#contributing)
 
 # Getting Started
@@ -449,7 +453,6 @@ You can also specify custom fields with the `scrips` option:
 
 ```
 
-
 Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
 
 ```js
@@ -509,6 +512,37 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 ```
 
 </details>
+
+### Resource Cache
+
+Parse Dashboard can cache its resources such as bundles in the browser, so that opening the dashboard in another tab does not reload the dashboard resources from the server but from the local browser cache. Caching only starts after login in the dashboard.
+
+| Parameter             | Type    | Optional | Default | Example | Description                                                                                                                             |
+|-----------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `enableResourceCache` | Boolean | yes      | `false` | `true`  | Enables caching of dashboard resources in the browser for faster dashboard loading in additional browser tabs. |
+
+
+Example configuration:
+
+```javascript
+const dashboard = new ParseDashboard({
+  enableResourceCache: true,
+  apps: [
+    {
+      serverURL: 'http://localhost:1337/parse',
+      appId: 'myAppId',
+      masterKey: 'myMasterKey',
+      appName: 'MyApp'
+    }
+  ]
+});
+```
+
+> [!Warning]
+> This feature can make it more difficult to push dashboard updates to users. Enabling the resource cache will start a browser service worker that caches dashboard resources locally only once. As long as the service worker is running, it will prevent loading any dashboard updates from the server, even if the user reloads the browser tab. The service worker is automatically stopped, once the last dashboard browser tab is closed. On the opening of the first dashboard browser tab, a new service worker is started and the dashboard resources are loaded from the server.
+
+> [!Note]
+> For developers: during dashboard development, the resource cache should be disabled to ensure reloading the dashboard tab in the browser loads the new dashboard bundle with any changes you made in the source code. You can inspect the service worker in the developer tools of most browsers. For example in Google Chrome, go to *Developer Tools > Application tab > Service workers* to see whether the dashboard service worker is currently running and to debug it.
 
 # Running as Express Middleware
 
@@ -1221,12 +1255,79 @@ This feature allows you to change how a pointer is represented in the browser. B
 This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
 
 > ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
+
 ## Views
 
 ▶️ *Core > Views*
 
 Views are saved queries that display aggregated data from your classes. Create a view by providing a name, selecting a class and defining an aggregation pipeline. Optionally enable the object counter to show how many items match the view. Saved views appear in the sidebar, where you can select, edit, or delete them.
 
+> [!Caution]
+> Values are generally rendered without sanitization in the resulting data table. If rendered values come from user input or untrusted data, make sure to remove potentially dangerous HTML or JavaScript, to prevent an attacker from injecting malicious code, to exploit vulnerabilities like Cross-Site Scripting (XSS).
+
+### View Table
+
+When designing the aggregation pipeline, consider that some values are rendered specially in the output table.
+
+#### Pointer
+
+Parse Object pointers are automatically displayed as links to the target object.
+
+Example:
+
+```json
+{ "__type": "Pointer", "className": "_User", "objectId": "xWMyZ4YEGZ" }
+```
+
+#### Link
+
+Links are rendered as hyperlinks that open in a new browser tab.
+
+Example:
+
+```json
+{
+  "__type": "Link",
+  "url": "https://example.com",
+  "text": "Link"
+}
+```
+
+Set `isRelativeUrl: true` when linking to another dashboard page, in which case the base URL for the relative URL will be `<PROTOCOL>://<HOST>/<MOUNT_PATH>/apps/<APP_NAME>/`. The key `isRelativeUrl` is optional and `false` by default.
+
+Example:
+
+```json
+{
+  "__type": "Link",
+  "url": "browser/_Installation",
+  "isRelativeUrl": true,
+  "text": "Link"
+}
+```
+
+A query part of the URL can be easily added using the `urlQuery` key which will automatically escape the query string.
+
+Example:
+
+```json
+{
+  "__type": "Link",
+  "url": "browser/_Installation",
+  "urlQuery": "filters=[{\"field\":\"objectId\",\"constraint\":\"eq\",\"compareTo\":\"xWMyZ4YEGZ\",\"class\":\"_Installation\"}]",
+  "isRelativeUrl": true,
+  "text": "Link"
+}
+```
+
+In the example above, the query string will be escaped and added to the url, resulting in the complete URL:
+
+```js
+"browser/_Installation?filters=%5B%7B%22field%22%3A%22objectId%22%2C%22constraint%22%3A%22eq%22%2C%22compareTo%22%3A%22xWMyZ4YEGZ%22%2C%22class%22%3A%22_Installation%22%7D%5D"
+```
+
+> [!Tip]
+> For guidance on how to create the URL query for a dashboard data browser filter, open the data browser and set the filter. Then copy the browser URL and unescape it. The query constraints in `?filters=[...]` will give you an idea of the constraint syntax.
 
 # Contributing
 

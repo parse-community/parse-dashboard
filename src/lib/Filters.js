@@ -76,6 +76,18 @@ export const Constraints = {
     composable: true,
     comparable: true,
   },
+  onOrAfter: {
+    name: 'is on or after',
+    field: 'Date',
+    composable: true,
+    comparable: true,
+  },
+  onOrBefore: {
+    name: 'is on or before',
+    field: 'Date',
+    composable: true,
+    comparable: true,
+  },
   containsString: {
     name: 'contains string',
     field: 'String',
@@ -170,7 +182,15 @@ export const FieldConstraints = {
   Boolean: ['exists', 'dne', 'eq', 'neq', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
   String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
-  Date: ['exists', 'dne', 'before', 'after', 'unique'],
+  Date: [
+    'exists',
+    'dne',
+    'before',
+    'onOrBefore',
+    'after',
+    'onOrAfter',
+    'unique',
+  ],
   Object: [
     'exists',
     'dne',

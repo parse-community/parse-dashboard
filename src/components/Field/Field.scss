@@ -29,13 +29,14 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  width: calc(var(--modal-min-width, 540px) * var(--modal-label-ratio, 0.5));
-  max-width: calc(var(--modal-min-width, 540px) * var(--modal-label-ratio, 0.5));
+  width: calc(var(--modal-min-width) * var(--modal-label-ratio));
+  max-width: calc(var(--modal-min-width) * var(--modal-label-ratio));
 }
 
 .right {
+  --modal-row-min-height: 80px;
   position: relative;
-  min-height: 80px;
+  min-height: var(--modal-row-min-height);
   text-align: right;
   padding: 0;
   background: #f6fafb;

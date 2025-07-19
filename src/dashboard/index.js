@@ -12,6 +12,7 @@ import installDevTools from 'immutable-devtools';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Dashboard from './Dashboard';
+import registerServiceWorker from '../registerServiceWorker';
 
 require('stylesheets/fonts.scss');
 require('graphiql/graphiql.min.css');
@@ -19,3 +20,4 @@ installDevTools(Immutable);
 
 const path = window.PARSE_DASHBOARD_PATH || '/';
 ReactDOM.render(<Dashboard path={path} />, document.getElementById('browser_mount'));
+registerServiceWorker();

@@ -127,12 +127,14 @@ function addConstraint(query, filter) {
       query.lessThan(filter.get('field'), filter.get('compareTo'));
       break;
     case 'lte':
+    case 'onOrBefore':
       query.lessThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
     case 'gt':
       query.greaterThan(filter.get('field'), filter.get('compareTo'));
       break;
     case 'gte':
+    case 'onOrAfter':
       query.greaterThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
     case 'starts':

@@ -1,3 +1,31 @@
+# [7.3.0-alpha.24](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.23...7.3.0-alpha.24) (2025-07-19)
+
+
+### Features
+
+* Add inclusive date filters "is on or after", "is on or before" in data browser ([#2929](https://github.com/parse-community/parse-dashboard/issues/2929)) ([c8d621b](https://github.com/parse-community/parse-dashboard/commit/c8d621b6e173621a01ee081b002f0673c4d90d91))
+
+# [7.3.0-alpha.23](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.22...7.3.0-alpha.23) (2025-07-19)
+
+
+### Bug Fixes
+
+* Hyperlink in Views table ignores `urlQuery` key ([#2926](https://github.com/parse-community/parse-dashboard/issues/2926)) ([c5eedf4](https://github.com/parse-community/parse-dashboard/commit/c5eedf4c0d3db6572ba47838970d259ce1e7e11f))
+
+# [7.3.0-alpha.22](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.21...7.3.0-alpha.22) (2025-07-19)
+
+
+### Features
+
+* Add hyperlink support in Views table ([#2925](https://github.com/parse-community/parse-dashboard/issues/2925)) ([06cfc11](https://github.com/parse-community/parse-dashboard/commit/06cfc11f6e62d2da99882dbf659bd7c6428f06ce))
+
+# [7.3.0-alpha.21](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.20...7.3.0-alpha.21) (2025-07-18)
+
+
+### Performance Improvements
+
+* Add config option `enableResourceCache` to cache dashboard resources locally for faster loading in additional browser tabs ([#2920](https://github.com/parse-community/parse-dashboard/issues/2920)) ([41a4963](https://github.com/parse-community/parse-dashboard/commit/41a4963ce6068e6f14a6a6008812ac3c1821e0fb))
+
 # [7.3.0-alpha.20](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.19...7.3.0-alpha.20) (2025-07-17)
 
 
