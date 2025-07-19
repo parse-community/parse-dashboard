@@ -79,6 +79,9 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Limitations](#limitations)
   - [CSV Export](#csv-export)
   - [Views](#views)
+    - [View Table](#view-table)
+      - [Pointer](#pointer)
+      - [Link](#link)
 - [Contributing](#contributing)
 
 # Getting Started
@@ -1253,12 +1256,53 @@ This feature allows you to change how a pointer is represented in the browser. B
 This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
 
 > ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
+
 ## Views
 
 ▶️ *Core > Views*
 
 Views are saved queries that display aggregated data from your classes. Create a view by providing a name, selecting a class and defining an aggregation pipeline. Optionally enable the object counter to show how many items match the view. Saved views appear in the sidebar, where you can select, edit, or delete them.
 
+### View Table
+
+When designing the aggregation pipeline, consider that some values are rendered specially in the output table.
+
+#### Pointer
+
+Parse Object pointers are automatically displayed as links to the target object.
+
+Example:
+
+```json
+{ "__type": "Pointer", "className": "_User", "objectId": "xWMyZ4YEGZ" }
+```
+
+#### Link
+
+Links are rendered as hyperlinks that open in a new browser tab.
+
+Example:
+
+```json
+{
+  "__type": "Link",
+  "url": "https://example.com",
+  "text": "Link"
+}
+```
+
+Set `isRelativeUrl: true` when linking to another dashboard page, in which case the base URL for the relative URL will be `<PROTOCOL>://<HOST>/<MOUNT_PATH>/apps/<APP_NAME>/`. The key `isRelativeUrl` is optional and `false` by default.
+
+Example:
+
+```json
+{
+  "__type": "Link",
+  "url": "browser/_Installation?filters=%5B%7B%22field%22%3A%22objectId%22%2C%22constraint%22%3A%22eq%22%2C%22compareTo%22%3A%22xWMyZ4YEGZ%22%2C%22class%22%3A%22_Installation%22%7D%5D",
+  "isRelativeUrl": true,
+  "text": "Link"
+}
+```
 
 # Contributing
 
