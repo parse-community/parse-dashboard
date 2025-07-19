@@ -326,7 +326,7 @@ class Views extends TableView {
               url = '#';
             } else {
               url = value.isRelativeUrl
-                ? `apps/${this.context.slug}/${url}${value.query ? `?${new URLSearchParams(value.urlQuery).toString()}` : ''}`
+                ? `apps/${this.context.slug}/${url}${value.urlQuery ? `?${new URLSearchParams(value.urlQuery).toString()}` : ''}`
                 : url;
             }
             // Sanitize text
