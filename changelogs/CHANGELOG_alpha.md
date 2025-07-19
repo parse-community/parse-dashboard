@@ -1,3 +1,10 @@
+# [7.3.0-alpha.24](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.23...7.3.0-alpha.24) (2025-07-19)
+
+
+### Features
+
+* Add inclusive date filters "is on or after", "is on or before" in data browser ([#2929](https://github.com/parse-community/parse-dashboard/issues/2929)) ([c8d621b](https://github.com/parse-community/parse-dashboard/commit/c8d621b6e173621a01ee081b002f0673c4d90d91))
+
 # [7.3.0-alpha.23](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.22...7.3.0-alpha.23) (2025-07-19)
 
 

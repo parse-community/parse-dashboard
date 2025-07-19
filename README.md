@@ -453,7 +453,6 @@ You can also specify custom fields with the `scrips` option:
 
 ```
 
-
 Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
 
 ```js
@@ -1326,6 +1325,9 @@ In the example above, the query string will be escaped and added to the url, res
 ```js
 "browser/_Installation?filters=%5B%7B%22field%22%3A%22objectId%22%2C%22constraint%22%3A%22eq%22%2C%22compareTo%22%3A%22xWMyZ4YEGZ%22%2C%22class%22%3A%22_Installation%22%7D%5D"
 ```
+
+> [!Tip]
+> For guidance on how to create the URL query for a dashboard data browser filter, open the data browser and set the filter. Then copy the browser URL and unescape it. The query constraints in `?filters=[...]` will give you an idea of the constraint syntax.
 
 # Contributing
 
