@@ -453,7 +453,6 @@ You can also specify custom fields with the `scrips` option:
 
 ```
 
-
 Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
 
 ```js
