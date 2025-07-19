@@ -1327,6 +1327,9 @@ In the example above, the query string will be escaped and added to the url, res
 "browser/_Installation?filters=%5B%7B%22field%22%3A%22objectId%22%2C%22constraint%22%3A%22eq%22%2C%22compareTo%22%3A%22xWMyZ4YEGZ%22%2C%22class%22%3A%22_Installation%22%7D%5D"
 ```
 
+> [!Tip]
+> For guidance on how to create the URL query for a dashboard data browser filter, open the data browser and set the filter. Then copy the browser URL and unescape it. The query constraints in `?filters=[...]` will give you an idea of the constraint syntax.
+
 # Contributing
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
