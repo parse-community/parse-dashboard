@@ -132,6 +132,7 @@ export default class DataBrowser extends React.Component {
     this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
+    this.aggregationPanelRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -214,6 +215,22 @@ export default class DataBrowser extends React.Component {
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
+    }
+
+    if (
+      (this.props.AggregationPanelData !== prevProps.AggregationPanelData ||
+        this.state.selectedObjectId !== prevState.selectedObjectId) &&
+      this.state.isPanelVisible &&
+      this.aggregationPanelRef?.current
+    ) {
+      const panel = this.aggregationPanelRef.current;
+      panel.scrollTop = 0;
+      panel.style.overflowY = 'hidden';
+      setTimeout(() => {
+        if (panel === this.aggregationPanelRef.current) {
+          panel.style.overflowY = 'auto';
+        }
+      }, 0);
     }
   }
 
@@ -491,6 +508,7 @@ export default class DataBrowser extends React.Component {
         this.setSelectedObjectId(newObjectId);
         this.setState({ showAggregatedData: true });
         if (prevObjectID !== newObjectId && this.state.isPanelVisible) {
+          this.resetAggregationScroll();
           this.handleCallCloudFunction(
             newObjectId,
             this.props.className,
@@ -538,6 +556,7 @@ export default class DataBrowser extends React.Component {
         this.setSelectedObjectId(newObjectIdDown);
         this.setState({ showAggregatedData: true });
         if (prevObjectID !== newObjectIdDown && this.state.isPanelVisible) {
+          this.resetAggregationScroll();
           this.handleCallCloudFunction(
             newObjectIdDown,
             this.props.className,
@@ -654,6 +673,19 @@ export default class DataBrowser extends React.Component {
     window.localStorage?.setItem(BROWSER_SHOW_ROW_NUMBER, show);
   }
 
+  resetAggregationScroll() {
+    const panel = this.aggregationPanelRef?.current;
+    if (panel) {
+      panel.scrollTop = 0;
+      panel.style.overflowY = 'hidden';
+      setTimeout(() => {
+        if (panel === this.aggregationPanelRef?.current) {
+          panel.style.overflowY = 'auto';
+        }
+      }, 0);
+    }
+  }
+
   getPrefetchSettings() {
     const config =
       this.props.classwiseCloudFunctions?.[
@@ -738,6 +770,7 @@ export default class DataBrowser extends React.Component {
       cached &&
       (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)
     ) {
+      this.resetAggregationScroll();
       this.props.setAggregationPanelData(cached.data);
       this.props.setLoadingInfoPanel(false);
     } else {
@@ -770,6 +803,7 @@ export default class DataBrowser extends React.Component {
         this.state.isPanelVisible &&
         ((event.shiftKey && !firstSelectedCell) || !event.shiftKey)
       ) {
+        this.resetAggregationScroll();
         this.handleCallCloudFunction(
           objectId,
           this.props.className,
@@ -902,7 +936,10 @@ export default class DataBrowser extends React.Component {
               resizeHandles={['w']}
               className={styles.resizablePanel}
             >
-              <div className={styles.aggregationPanelContainer}>
+              <div
+                className={styles.aggregationPanelContainer}
+                ref={this.aggregationPanelRef}
+              >
                 <AggregationPanel
                   data={this.props.AggregationPanelData}
                   isLoadingCloudFunction={this.props.isLoadingCloudFunction}
