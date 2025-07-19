@@ -1264,7 +1264,7 @@ This feature will take either selected rows or all rows of an individual class a
 Views are saved queries that display aggregated data from your classes. Create a view by providing a name, selecting a class and defining an aggregation pipeline. Optionally enable the object counter to show how many items match the view. Saved views appear in the sidebar, where you can select, edit, or delete them.
 
 > [!Caution]
-> Values are generally rendered without sanitization in the resulting data table. If rendered values come from user input or untrusted data, make sure to remove potentially dangerous HTML or JavaScript, to prevent an attacker from injecting malicious code, to exploit vulnerabilities like Cross-Site-Scripting (XSS).
+> Values are generally rendered without sanitization in the resulting data table. If rendered values come from user input or untrusted data, make sure to remove potentially dangerous HTML or JavaScript, to prevent an attacker from injecting malicious code, to exploit vulnerabilities like Cross-Site Scripting (XSS).
 
 ### View Table
 
