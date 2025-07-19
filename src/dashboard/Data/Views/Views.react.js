@@ -132,7 +132,13 @@ class Views extends TableView {
           if (text === undefined) {
             text = '';
           } else if (text && typeof text === 'object') {
-            text = text.__type === 'Date' && text.iso ? text.iso : JSON.stringify(text);
+            if (text.__type === 'Date' && text.iso) {
+              text = text.iso;
+            } else if (text.__type === 'Link' && text.text) {
+              text = text.text;
+            } else {
+              text = JSON.stringify(text);
+            }
           }
           text = String(text);
           if (typeof document !== 'undefined') {
@@ -166,6 +172,8 @@ class Views extends TableView {
                 type = 'File';
               } else if (val.__type === 'GeoPoint') {
                 type = 'GeoPoint';
+              } else if (val.__type === 'Link') {
+                type = 'Link';
               } else {
                 type = 'Object';
               }
@@ -285,6 +293,8 @@ class Views extends TableView {
               type = 'File';
             } else if (value.__type === 'GeoPoint') {
               type = 'GeoPoint';
+            } else if (value.__type === 'Link') {
+              type = 'Link';
             } else {
               type = 'Object';
             }
@@ -306,6 +316,15 @@ class Views extends TableView {
             content = JSON.stringify(value);
           } else if (type === 'Date') {
             content = value && value.iso ? value.iso : String(value);
+          } else if (type === 'Link') {
+            const url = value.isRelativeUrl
+              ? `apps/${this.context.slug}/${value.url}`
+              : value.url;
+            content = (
+              <a href={url} target="_blank" rel="noreferrer">
+                {value.text}
+              </a>
+            );
           } else if (value === undefined) {
             content = '';
           } else {
