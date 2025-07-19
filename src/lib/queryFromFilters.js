@@ -152,8 +152,14 @@ function addConstraint(query, filter) {
     case 'before':
       query.lessThan(filter.get('field'), filter.get('compareTo'));
       break;
+    case 'beforeOrOn':
+      query.lessThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
+      break;
     case 'after':
       query.greaterThan(filter.get('field'), filter.get('compareTo'));
+      break;
+    case 'afterOrOn':
+      query.greaterThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
     case 'containsString':
     case 'containsNumber':
