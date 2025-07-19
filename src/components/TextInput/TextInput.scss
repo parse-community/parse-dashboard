@@ -14,9 +14,11 @@
   background: $inputBackgroundColor;
   font-size: 16px;
   width: 100%;
-  min-width: calc(
-    var(--modal-min-width, 540px) * (1 - var(--modal-label-ratio, 0.5))
+  min-width: max(
+    100%,
+    calc(var(--modal-min-width, 540px) * (1 - var(--modal-label-ratio, 0.5)))
   );
+  min-height: 100%;
   padding: 6px;
   vertical-align: top;
   resize: both;
