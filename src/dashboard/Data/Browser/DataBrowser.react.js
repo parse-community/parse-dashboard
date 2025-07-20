@@ -223,14 +223,7 @@ export default class DataBrowser extends React.Component {
       this.state.isPanelVisible &&
       this.aggregationPanelRef?.current
     ) {
-      const panel = this.aggregationPanelRef.current;
-      panel.scrollTop = 0;
-      panel.style.overflowY = 'hidden';
-      setTimeout(() => {
-        if (panel === this.aggregationPanelRef.current) {
-          panel.style.overflowY = 'auto';
-        }
-      }, 0);
+      this.aggregationPanelRef.current.scrollTop = 0;
     }
   }
 
