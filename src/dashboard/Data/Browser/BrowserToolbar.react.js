@@ -426,7 +426,7 @@ const BrowserToolbar = ({
         <noscript />
       )}
       {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
-      <BrowserMenu setCurrent={setCurrent} title="Script" icon="files-solid">
+      <BrowserMenu setCurrent={setCurrent} title="Script" icon="script-solid">
         <MenuItem
           disabled={selectionLength === 0}
           text={
