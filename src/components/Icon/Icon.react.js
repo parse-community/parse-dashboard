@@ -7,12 +7,17 @@
  */
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
+import styles from 'components/Icon/Icon.scss';
 
-const Icon = ({ name, fill, width, height }) => {
+const Icon = ({ name, fill, width, height, style, className }) => {
   const props = {
-    width: width,
-    height: height,
+    width,
+    height,
+    style,
   };
+  if (className) {
+    props.className = styles[className] || className;
+  }
   if (fill) {
     props.fill = fill;
   }
@@ -30,4 +35,5 @@ Icon.propTypes = {
   width: PropTypes.number.isRequired.describe('The icon width, in pixels.'),
   height: PropTypes.number.isRequired.describe('The icon height, in pixels.'),
   fill: PropTypes.string.describe('A valid color, used as the fill property for the SVG.'),
+  style: PropTypes.object.describe('An object containing CSS styles to apply to the icon.'),
 };

@@ -82,6 +82,8 @@ const BrowserToolbar = ({
   classwiseCloudFunctions,
   appId,
   appName,
+  scrollToTop,
+  toggleScrollToTop,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -424,7 +426,7 @@ const BrowserToolbar = ({
         <noscript />
       )}
       {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
-      <BrowserMenu setCurrent={setCurrent} title="Script" icon="gear-solid">
+      <BrowserMenu setCurrent={setCurrent} title="Script" icon="files-solid">
         <MenuItem
           disabled={selectionLength === 0}
           text={
@@ -443,6 +445,26 @@ const BrowserToolbar = ({
           <MenuItem text={'Cancel all pending rows'} onClick={onCancelPendingEditRows} />
         </BrowserMenu>
       )}
+      <div className={styles.toolbarSeparator} />
+      <BrowserMenu setCurrent={setCurrent} title="Settings" icon="gear-solid">
+        <MenuItem
+          text={
+            <span>
+              {scrollToTop && (
+                <Icon
+                  name="check"
+                  width={12}
+                  height={12}
+                  fill="#ffffffff"
+                  className="menuCheck"
+                />
+              )}
+              Scroll to top
+            </span>
+          }
+          onClick={toggleScrollToTop}
+        />
+      </BrowserMenu>
     </Toolbar>
   );
 };
