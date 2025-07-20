@@ -447,7 +447,7 @@ const BrowserToolbar = ({
       )}
       <div className={styles.toolbarSeparator} />
       <BrowserMenu setCurrent={setCurrent} title="Settings" icon="gear-solid">
-        <BrowserMenu title="Info Panel" icon="info-solid">
+        <BrowserMenu title="Info Panel">
           <MenuItem
             text={
               <span>

@@ -36,7 +36,7 @@ export default class BrowserMenu extends React.Component {
         >
           <div className={styles.menu}>
             <div className={titleStyle.join(' ')} onClick={() => this.setState({ open: false })}>
-              <Icon name={this.props.icon} width={14} height={14} />
+              {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
               <span>{this.props.title}</span>
             </div>
             <div className={styles.body} style={{ minWidth: this.wrapRef.current.clientWidth }}>
@@ -68,17 +68,29 @@ export default class BrowserMenu extends React.Component {
     if (this.props.disabled) {
       classes.push(styles.disabled);
     }
-    let onClick = null;
+    const isSubmenu = !!this.props.parentClose;
+    const entryEvents = {};
     if (!this.props.disabled) {
-      onClick = () => {
-        this.setState({ open: true });
-        this.props.setCurrent(null);
-      };
+      if (isSubmenu) {
+        entryEvents.onMouseEnter = () => {
+          this.setState({ open: true });
+          this.props.setCurrent?.(null);
+        };
+      } else {
+        entryEvents.onClick = () => {
+          this.setState({ open: true });
+          this.props.setCurrent(null);
+        };
+      }
     }
     return (
-      <div className={styles.wrap} ref={this.wrapRef}>
-        <div className={classes.join(' ')} onClick={onClick}>
-          <Icon name={this.props.icon} width={14} height={14} />
+      <div
+        className={styles.wrap}
+        ref={this.wrapRef}
+        onMouseLeave={isSubmenu ? () => this.setState({ open: false }) : undefined}
+      >
+        <div className={classes.join(' ')} {...entryEvents}>
+          {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
           <span>{this.props.title}</span>
         </div>
         {menu}
@@ -88,7 +100,7 @@ export default class BrowserMenu extends React.Component {
 }
 
 BrowserMenu.propTypes = {
-  icon: PropTypes.string.isRequired.describe('The name of the icon to place in the menu.'),
+  icon: PropTypes.string.describe('The name of the icon to place in the menu.'),
   title: PropTypes.string.isRequired.describe('The title text of the menu.'),
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).describe(
     'The contents of the menu when open. It should be a set of MenuItem and Separator components.'
