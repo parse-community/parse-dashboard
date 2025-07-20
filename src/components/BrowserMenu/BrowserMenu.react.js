@@ -40,15 +40,22 @@ export default class BrowserMenu extends React.Component {
               <span>{this.props.title}</span>
             </div>
             <div className={styles.body} style={{ minWidth: this.wrapRef.current.clientWidth }}>
-              {React.Children.map(this.props.children, child =>
-                React.cloneElement(child, {
+              {React.Children.map(this.props.children, child => {
+                if (child.type === BrowserMenu) {
+                  return React.cloneElement(child, {
+                    ...child.props,
+                    parentClose: () => this.setState({ open: false }),
+                  });
+                }
+                return React.cloneElement(child, {
                   ...child.props,
                   onClick: () => {
                     this.setState({ open: false });
+                    this.props.parentClose?.();
                     child.props.onClick();
                   },
-                })
-              )}
+                });
+              })}
             </div>
           </div>
         </Popover>
@@ -83,10 +90,10 @@ export default class BrowserMenu extends React.Component {
 BrowserMenu.propTypes = {
   icon: PropTypes.string.isRequired.describe('The name of the icon to place in the menu.'),
   title: PropTypes.string.isRequired.describe('The title text of the menu.'),
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).describe(
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).describe(
     'The contents of the menu when open. It should be a set of MenuItem and Separator components.'
+  ),
+  parentClose: PropTypes.func.describe(
+    'Closes the parent menu when a nested menu item is selected.'
   ),
 };

@@ -447,23 +447,25 @@ const BrowserToolbar = ({
       )}
       <div className={styles.toolbarSeparator} />
       <BrowserMenu setCurrent={setCurrent} title="Settings" icon="gear-solid">
-        <MenuItem
-          text={
-            <span>
-              {scrollToTop && (
-                <Icon
-                  name="check"
-                  width={12}
-                  height={12}
-                  fill="#ffffffff"
-                  className="menuCheck"
-                />
-              )}
-              Scroll to top
-            </span>
-          }
-          onClick={toggleScrollToTop}
-        />
+        <BrowserMenu title="Info Panel" icon="info-solid">
+          <MenuItem
+            text={
+              <span>
+                {scrollToTop && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Scroll to top
+              </span>
+            }
+            onClick={toggleScrollToTop}
+          />
+        </BrowserMenu>
       </BrowserMenu>
     </Toolbar>
   );
