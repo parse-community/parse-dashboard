@@ -89,6 +89,25 @@
   font-size: 14px;
 }
 
+.subMenuBody {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  border-radius: 0 5px 5px 5px;
+  background: #797592;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.submenuArrow {
+  margin-left: 4px;
+  fill: #66637A;
+}
+
+.entry:hover .submenuArrow {
+  fill: white;
+}
+
 .item {
   padding: 4px 14px;
   white-space: nowrap;
