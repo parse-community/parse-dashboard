@@ -1329,6 +1329,9 @@ In the example above, the query string will be escaped and added to the url, res
 > [!Tip]
 > For guidance on how to create the URL query for a dashboard data browser filter, open the data browser and set the filter. Then copy the browser URL and unescape it. The query constraints in `?filters=[...]` will give you an idea of the constraint syntax.
 
+> [!Note]
+> For security reasons, the link `<a>` tag contains the `rel="noreferrer"` attribute, which prevents the target website to know the referring website which in this case is the Parse Dashboard URL. That attribute is widely supported across modern browsers, but if in doubt check your browser's compatibility.
+
 # Contributing
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
