@@ -16,7 +16,7 @@ export default class BrowserMenu extends React.Component {
   constructor() {
     super();
 
-    this.state = { open: false };
+    this.state = { open: false, openToLeft: false };
     this.wrapRef = React.createRef();
   }
 
@@ -26,7 +26,10 @@ export default class BrowserMenu extends React.Component {
     if (this.state.open) {
       let position = Position.inDocument(this.wrapRef.current);
       if (isSubmenu) {
-        position = position.transform(this.wrapRef.current.clientWidth, 0);
+        const offset = this.state.openToLeft
+          ? -this.wrapRef.current.clientWidth
+          : this.wrapRef.current.clientWidth;
+        position = position.transform(offset, 0);
       }
       const titleStyle = [styles.title];
       if (this.props.active) {
@@ -47,10 +50,20 @@ export default class BrowserMenu extends React.Component {
               <span>{this.props.title}</span>
             </div>
             <div
-              className={isSubmenu ? styles.subMenuBody : styles.body}
+              className={
+                isSubmenu
+                  ? this.state.openToLeft
+                    ? styles.subMenuBodyLeft
+                    : styles.subMenuBody
+                  : styles.body
+              }
               style={{
                 minWidth: this.wrapRef.current.clientWidth,
-                ...(isSubmenu ? { top: 0, right: 'auto', left: 0 } : {}),
+                ...(isSubmenu
+                  ? this.state.openToLeft
+                    ? { top: 0, right: '100%', left: 'auto' }
+                    : { top: 0, right: 'auto', left: 0 }
+                  : {}),
               }}
             >
               {React.Children.map(this.props.children, child => {
@@ -85,12 +98,15 @@ export default class BrowserMenu extends React.Component {
     if (!this.props.disabled) {
       if (isSubmenu) {
         entryEvents.onMouseEnter = () => {
-          this.setState({ open: true });
+          const rect = this.wrapRef.current.getBoundingClientRect();
+          const width = this.wrapRef.current.clientWidth;
+          const openToLeft = rect.right + width > window.innerWidth;
+          this.setState({ open: true, openToLeft });
           this.props.setCurrent?.(null);
         };
       } else {
         entryEvents.onClick = () => {
-          this.setState({ open: true });
+          this.setState({ open: true, openToLeft: false });
           this.props.setCurrent(null);
         };
       }

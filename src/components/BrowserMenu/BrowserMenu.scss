@@ -99,6 +99,16 @@
   font-size: 14px;
 }
 
+.subMenuBodyLeft {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  border-radius: 5px 0 5px 5px;
+  background: #797592;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
 .submenuArrow {
   margin-left: 4px;
   fill: #66637A;
