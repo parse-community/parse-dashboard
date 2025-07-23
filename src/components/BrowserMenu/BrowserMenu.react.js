@@ -35,10 +35,7 @@ export default class BrowserMenu extends React.Component {
           position={position}
           onExternalClick={() => this.setState({ open: false })}
         >
-          <div
-            className={styles.menu}
-            onMouseLeave={isSubmenu ? () => this.setState({ open: false }) : undefined}
-          >
+          <div className={styles.menu}>
             {!isSubmenu && (
               <div
                 className={titleStyle.join(' ')}
