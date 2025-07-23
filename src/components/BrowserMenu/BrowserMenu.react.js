@@ -61,8 +61,12 @@ export default class BrowserMenu extends React.Component {
                 ...(isSubmenu
                   ? {
                     top: 0,
-                    [this.state.openToLeft ? 'right' : 'left']:
-                        `${this.wrapRef.current.clientWidth - 3}px`,
+                    left: this.state.openToLeft
+                      ? 0
+                      : `${this.wrapRef.current.clientWidth - 3}px`,
+                    transform: this.state.openToLeft
+                      ? 'translateX(calc(-100% + 3px))'
+                      : undefined,
                   }
                   : {}),
               }}
