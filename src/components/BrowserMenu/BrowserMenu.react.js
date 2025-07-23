@@ -45,10 +45,15 @@ export default class BrowserMenu extends React.Component {
             className={styles.menu}
             onMouseLeave={isSubmenu ? () => this.setState({ open: false }) : undefined}
           >
-            <div className={titleStyle.join(' ')} onClick={() => this.setState({ open: false })}>
-              {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
-              <span>{this.props.title}</span>
-            </div>
+            {!isSubmenu && (
+              <div
+                className={titleStyle.join(' ')}
+                onClick={() => this.setState({ open: false })}
+              >
+                {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
+                <span>{this.props.title}</span>
+              </div>
+            )}
             <div
               className={
                 isSubmenu
