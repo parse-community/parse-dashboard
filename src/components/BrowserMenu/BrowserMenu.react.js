@@ -24,13 +24,7 @@ export default class BrowserMenu extends React.Component {
     let menu = null;
     const isSubmenu = !!this.props.parentClose;
     if (this.state.open) {
-      let position = Position.inDocument(this.wrapRef.current);
-      if (isSubmenu) {
-        const offset = this.state.openToLeft
-          ? -this.wrapRef.current.clientWidth
-          : this.wrapRef.current.clientWidth;
-        position = position.transform(offset, 0);
-      }
+      const position = Position.inDocument(this.wrapRef.current);
       const titleStyle = [styles.title];
       if (this.props.active) {
         titleStyle.push(styles.active);
@@ -64,11 +58,7 @@ export default class BrowserMenu extends React.Component {
               }
               style={{
                 minWidth: this.wrapRef.current.clientWidth,
-                ...(isSubmenu
-                  ? this.state.openToLeft
-                    ? { top: 0, right: '100%', left: 'auto' }
-                    : { top: 0, right: 'auto', left: 0 }
-                  : {}),
+                ...(isSubmenu ? { top: 0 } : {}),
               }}
             >
               {React.Children.map(this.props.children, child => {
