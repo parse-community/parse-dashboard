@@ -81,9 +81,9 @@ export default class BrowserMenu extends React.Component {
                 return React.cloneElement(child, {
                   ...child.props,
                   onClick: () => {
+                    child.props.onClick?.();
                     this.setState({ open: false });
                     this.props.parentClose?.();
-                    child.props.onClick();
                   },
                 });
               })}
