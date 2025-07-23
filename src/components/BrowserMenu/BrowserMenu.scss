@@ -93,7 +93,6 @@
 .subMenuBody {
   position: absolute;
   top: 0;
-  left: calc(100% - 3px);
   border-radius: 0 5px 5px 5px;
   background: #797592;
   padding: 8px 0;
@@ -105,7 +104,6 @@
 .subMenuBodyLeft {
   position: absolute;
   top: 0;
-  right: calc(100% - 3px);
   border-radius: 5px 0 5px 5px;
   background: #797592;
   padding: 8px 0;

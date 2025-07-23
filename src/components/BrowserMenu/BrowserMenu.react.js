@@ -58,7 +58,13 @@ export default class BrowserMenu extends React.Component {
               }
               style={{
                 minWidth: this.wrapRef.current.clientWidth,
-                ...(isSubmenu ? { top: 0 } : {}),
+                ...(isSubmenu
+                  ? {
+                    top: 0,
+                    [this.state.openToLeft ? 'right' : 'left']:
+                        `${this.wrapRef.current.clientWidth - 3}px`,
+                  }
+                  : {}),
               }}
             >
               {React.Children.map(this.props.children, child => {
