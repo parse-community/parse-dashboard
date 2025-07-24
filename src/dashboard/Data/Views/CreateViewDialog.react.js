@@ -1,11 +1,22 @@
+import Checkbox from 'components/Checkbox/Checkbox.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
+import Option from 'components/Dropdown/Option.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
-import Option from 'components/Dropdown/Option.react';
-import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
-import Checkbox from 'components/Checkbox/Checkbox.react';
+import React from 'react';
+
+/**
+ * The data source types available for views.
+ *
+ * @param {string} query An aggregation pipeline query data source.
+ * @param {string} cloudFunction A Cloud Function data source.
+ */
+const DataSourceTypes = {
+  query: 'query',
+  cloudFunction: 'cloudFunction'
+};
 
 function isValidJSON(value) {
   try {
@@ -22,17 +33,28 @@ export default class CreateViewDialog extends React.Component {
     this.state = {
       name: '',
       className: '',
+      dataSourceType: DataSourceTypes.query,
       query: '[]',
+      cloudFunction: '',
       showCounter: false,
     };
   }
 
   valid() {
-    return (
-      this.state.name.length > 0 &&
-      this.state.className.length > 0 &&
-      isValidJSON(this.state.query)
-    );
+    if (this.state.dataSourceType === DataSourceTypes.query) {
+      return (
+        this.state.name.length > 0 &&
+        this.state.className.length > 0 &&
+        this.state.query.trim() !== '' &&
+        this.state.query !== '[]' &&
+        isValidJSON(this.state.query)
+      );
+    } else {
+      return (
+        this.state.name.length > 0 &&
+        this.state.cloudFunction.trim() !== ''
+      );
+    }
   }
 
   render() {
@@ -43,7 +65,7 @@ export default class CreateViewDialog extends React.Component {
         icon="plus"
         iconSize={40}
         title="Create a new view?"
-        subtitle="Define a custom query to display data."
+        subtitle="Define a data source to display data."
         confirmText="Create"
         cancelText="Cancel"
         disabled={!this.valid()}
@@ -51,8 +73,9 @@ export default class CreateViewDialog extends React.Component {
         onConfirm={() =>
           onConfirm({
             name: this.state.name,
-            className: this.state.className,
-            query: JSON.parse(this.state.query),
+            className: this.state.dataSourceType === DataSourceTypes.query ? this.state.className : null,
+            query: this.state.dataSourceType === DataSourceTypes.query ? JSON.parse(this.state.query) : null,
+            cloudFunction: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.cloudFunction : null,
             showCounter: this.state.showCounter,
           })
         }
@@ -67,32 +90,56 @@ export default class CreateViewDialog extends React.Component {
           }
         />
         <Field
-          label={<Label text="Class" />}
+          label={<Label text="Data Source" />}
           input={
             <Dropdown
-              value={this.state.className}
-              onChange={className => this.setState({ className })}
+              value={this.state.dataSourceType}
+              onChange={dataSourceType => this.setState({ dataSourceType })}
             >
-              {classes.map(c => (
-                <Option key={c} value={c}>
-                  {c}
-                </Option>
-              ))}
+              <Option value={DataSourceTypes.query}>Aggregation Pipeline</Option>
+              <Option value={DataSourceTypes.cloudFunction}>Cloud Function</Option>
             </Dropdown>
           }
         />
+        {this.state.dataSourceType === DataSourceTypes.query && (
+          <Field
+            label={<Label text="Class" />}
+            input={
+              <Dropdown
+                value={this.state.className}
+                onChange={className => this.setState({ className })}
+              >
+                {classes.map(c => (
+                  <Option key={c} value={c}>
+                    {c}
+                  </Option>
+                ))}
+              </Dropdown>
+            }
+          />
+        )}
         <Field
           label={
             <Label
-              text="Query"
-              description="An aggregation pipeline that returns an array of items."
+              text={this.state.dataSourceType === DataSourceTypes.query ? 'Query' : 'Cloud Function'}
+              description={
+                this.state.dataSourceType === DataSourceTypes.query
+                  ? 'An aggregation pipeline that returns an array of items.'
+                  : 'A Parse Cloud Function that returns an array of items.'
+              }
             />
           }
           input={
             <TextInput
-              multiline={true}
-              value={this.state.query}
-              onChange={query => this.setState({ query })}
+              multiline={this.state.dataSourceType === DataSourceTypes.query}
+              value={this.state.dataSourceType === DataSourceTypes.query ? this.state.query : this.state.cloudFunction}
+              onChange={value =>
+                this.setState(
+                  this.state.dataSourceType === DataSourceTypes.query
+                    ? { query: value }
+                    : { cloudFunction: value }
+                )
+              }
             />
           }
         />

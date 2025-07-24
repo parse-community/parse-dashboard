@@ -79,6 +79,9 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Limitations](#limitations)
   - [CSV Export](#csv-export)
   - [Views](#views)
+    - [Data Sources](#data-sources)
+      - [Aggregation Pipeline](#aggregation-pipeline)
+      - [Cloud Function](#cloud-function)
     - [View Table](#view-table)
       - [Pointer](#pointer)
       - [Link](#link)
@@ -1260,10 +1263,22 @@ This feature will take either selected rows or all rows of an individual class a
 
 ▶️ *Core > Views*
 
-Views are saved queries that display aggregated data from your classes. Create a view by providing a name, selecting a class and defining an aggregation pipeline. Optionally enable the object counter to show how many items match the view. Saved views appear in the sidebar, where you can select, edit, or delete them.
+Views are saved queries that display data in a table format. Saved views appear in the sidebar, where you can select, edit, or delete them. Optionally you can enable the object counter to show in the sidebar how many items match the view.
 
 > [!Caution]
 > Values are generally rendered without sanitization in the resulting data table. If rendered values come from user input or untrusted data, make sure to remove potentially dangerous HTML or JavaScript, to prevent an attacker from injecting malicious code, to exploit vulnerabilities like Cross-Site Scripting (XSS).
+
+### Data Sources
+
+Views can pull their data from the following data sources.
+
+#### Aggregation Pipeline
+  
+Display aggregated data from your classes using a MongoDB aggregation pipeline. Create a view by selecting a class and defining an aggregation pipeline.
+
+#### Cloud Function
+  
+Display data returned by a Parse Cloud Function. Create a view specifying a Cloud Function that returns an array of objects. Cloud Functions enable custom business logic, computed fields, and complex data transformations.
 
 ### View Table
 
