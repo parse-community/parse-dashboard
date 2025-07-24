@@ -21,6 +21,7 @@ import AggregationPanel from '../../../components/AggregationPanel/AggregationPa
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
+const BROWSER_SCROLL_TO_TOP = 'browserScrollToTop';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -83,6 +84,8 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.getItem(BROWSER_SHOW_ROW_NUMBER) === 'true';
     const storedPanelVisible =
       window.localStorage?.getItem(AGGREGATION_PANEL_VISIBLE) === 'true';
+    const storedScrollToTop =
+      window.localStorage?.getItem(BROWSER_SCROLL_TO_TOP) !== 'false';
     const hasAggregation =
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
@@ -107,7 +110,7 @@ export default class DataBrowser extends React.Component {
       showAggregatedData: true,
       frozenColumnIndex: -1,
       showRowNumber: storedRowNumber,
-      scrollToTop: true,
+      scrollToTop: storedScrollToTop,
       prefetchCache: {},
       selectionHistory: [],
     };
@@ -669,7 +672,11 @@ export default class DataBrowser extends React.Component {
   }
 
   toggleScrollToTop() {
-    this.setState(prevState => ({ scrollToTop: !prevState.scrollToTop }));
+    this.setState(prevState => {
+      const newScrollToTop = !prevState.scrollToTop;
+      window.localStorage?.setItem(BROWSER_SCROLL_TO_TOP, newScrollToTop);
+      return { scrollToTop: newScrollToTop };
+    });
   }
 
   getPrefetchSettings() {
