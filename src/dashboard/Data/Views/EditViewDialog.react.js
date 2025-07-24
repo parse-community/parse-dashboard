@@ -36,6 +36,8 @@ export default class EditViewDialog extends React.Component {
       query: view.query ? JSON.stringify(view.query, null, 2) : '[]',
       cloudFunction: view.cloudFunction || '',
       showCounter: !!view.showCounter,
+      requireTextInput: !!view.requireTextInput,
+      requireFileUpload: !!view.requireFileUpload,
     };
   }
 
@@ -76,6 +78,8 @@ export default class EditViewDialog extends React.Component {
             query: this.state.dataSourceType === 'query' ? JSON.parse(this.state.query) : null,
             cloudFunction: this.state.dataSourceType === 'cloudFunction' ? this.state.cloudFunction : null,
             showCounter: this.state.showCounter,
+            requireTextInput: this.state.dataSourceType === 'cloudFunction' ? this.state.requireTextInput : false,
+            requireFileUpload: this.state.dataSourceType === 'cloudFunction' ? this.state.requireFileUpload : false,
           })
         }
       >
@@ -151,6 +155,28 @@ export default class EditViewDialog extends React.Component {
             />
           }
         />
+        {this.state.dataSourceType === 'cloudFunction' && (
+          <>
+            <Field
+              label={<Label text="Require text input" description="When checked, users will be prompted to enter text when opening this view." />}
+              input={
+                <Checkbox
+                  checked={this.state.requireTextInput}
+                  onChange={requireTextInput => this.setState({ requireTextInput })}
+                />
+              }
+            />
+            <Field
+              label={<Label text="Require file upload" description="When checked, users will be prompted to upload a file when opening this view." />}
+              input={
+                <Checkbox
+                  checked={this.state.requireFileUpload}
+                  onChange={requireFileUpload => this.setState({ requireFileUpload })}
+                />
+              }
+            />
+          </>
+        )}
       </Modal>
     );
   }

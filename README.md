@@ -1280,6 +1280,21 @@ Display aggregated data from your classes using a MongoDB aggregation pipeline. 
   
 Display data returned by a Parse Cloud Function. Create a view specifying a Cloud Function that returns an array of objects. Cloud Functions enable custom business logic, computed fields, and complex data transformations.
 
+Cloud Function views can prompt users for text input and/or file upload when opened. Enable "Require text input" or "Require file upload" checkboxes when creating the view. The user provided data will then be available in the Cloud Function as parameters.
+
+Cloud Function example:
+
+```js
+Parse.Cloud.define("myViewFunction", request => {
+  const text = request.params.text;
+  const fileData = request.params.fileData;
+  return processDataWithTextAndFile(text, fileData);
+});
+```
+
+> [!Note]
+> Text and file data are ephemeral and only available to the Cloud Function during that request. Files are base64 encoded, increasing the data during transfer by ~33%.
+
 ### View Table
 
 When designing the aggregation pipeline, consider that some values are rendered specially in the output table.

@@ -37,6 +37,8 @@ export default class CreateViewDialog extends React.Component {
       query: '[]',
       cloudFunction: '',
       showCounter: false,
+      requireTextInput: false,
+      requireFileUpload: false,
     };
   }
 
@@ -77,6 +79,8 @@ export default class CreateViewDialog extends React.Component {
             query: this.state.dataSourceType === DataSourceTypes.query ? JSON.parse(this.state.query) : null,
             cloudFunction: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.cloudFunction : null,
             showCounter: this.state.showCounter,
+            requireTextInput: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.requireTextInput : false,
+            requireFileUpload: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.requireFileUpload : false,
           })
         }
       >
@@ -152,6 +156,28 @@ export default class CreateViewDialog extends React.Component {
             />
           }
         />
+        {this.state.dataSourceType === DataSourceTypes.cloudFunction && (
+          <>
+            <Field
+              label={<Label text="Require text input" description="When checked, users will be prompted to enter text when opening this view." />}
+              input={
+                <Checkbox
+                  checked={this.state.requireTextInput}
+                  onChange={requireTextInput => this.setState({ requireTextInput })}
+                />
+              }
+            />
+            <Field
+              label={<Label text="Require file upload" description="When checked, users will be prompted to upload a file when opening this view." />}
+              input={
+                <Checkbox
+                  checked={this.state.requireFileUpload}
+                  onChange={requireFileUpload => this.setState({ requireFileUpload })}
+                />
+              }
+            />
+          </>
+        )}
       </Modal>
     );
   }

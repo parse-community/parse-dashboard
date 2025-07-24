@@ -20,6 +20,7 @@ import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
 import Parse from 'parse';
 import React from 'react';
+import CloudFunctionInputDialog from './CloudFunctionInputDialog.react';
 import CreateViewDialog from './CreateViewDialog.react';
 import DeleteViewDialog from './DeleteViewDialog.react';
 import EditViewDialog from './EditViewDialog.react';
@@ -50,6 +51,8 @@ class Views extends TableView {
       lastNote: null,
       loading: false,
       viewValue: null,
+      showCloudFunctionInput: false,
+      cloudFunctionInputConfig: null,
     };
     this.headersRef = React.createRef();
     this.noteTimeout = null;
@@ -142,9 +145,29 @@ class Views extends TableView {
       return;
     }
 
+    // Check if cloud function view requires input
+    if (view.cloudFunction && (view.requireTextInput || view.requireFileUpload)) {
+      if (this._isMounted) {
+        this.setState({
+          loading: false,
+          showCloudFunctionInput: true,
+          cloudFunctionInputConfig: {
+            view,
+            requireTextInput: view.requireTextInput,
+            requireFileUpload: view.requireFileUpload,
+          },
+        });
+      }
+      return;
+    }
+
+    this.executeCloudFunctionOrQuery(view);
+  }
+
+  executeCloudFunctionOrQuery(view, params = {}) {
     // Choose data source: Cloud Function or Aggregation Pipeline
     const dataPromise = view.cloudFunction
-      ? Parse.Cloud.run(view.cloudFunction, {}, { useMasterKey: true })
+      ? Parse.Cloud.run(view.cloudFunction, params, { useMasterKey: true })
       : new Parse.Query(view.className).aggregate(view.query || [], { useMasterKey: true });
 
     dataPromise
@@ -256,6 +279,13 @@ class Views extends TableView {
   }
 
   onRefresh() {
+    // Clear any existing cloud function input modal first
+    if (this.state.showCloudFunctionInput) {
+      this.setState({
+        showCloudFunctionInput: false,
+        cloudFunctionInputConfig: null,
+      });
+    }
     this.loadData(this.props.params.name);
   }
 
@@ -656,6 +686,27 @@ class Views extends TableView {
                 this.loadViews(this.context);
               }
             );
+          }}
+        />
+      );
+    } else if (this.state.showCloudFunctionInput && this.state.cloudFunctionInputConfig) {
+      const config = this.state.cloudFunctionInputConfig;
+      extras = (
+        <CloudFunctionInputDialog
+          requireTextInput={config.requireTextInput}
+          requireFileUpload={config.requireFileUpload}
+          onCancel={() => this.setState({
+            showCloudFunctionInput: false,
+            cloudFunctionInputConfig: null,
+            loading: false,
+          })}
+          onConfirm={(params) => {
+            this.setState({
+              showCloudFunctionInput: false,
+              cloudFunctionInputConfig: null,
+              loading: true,
+            });
+            this.executeCloudFunctionOrQuery(config.view, params);
           }}
         />
       );
