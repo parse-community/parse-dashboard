@@ -1,3 +1,10 @@
+# [7.3.0-alpha.27](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.26...7.3.0-alpha.27) (2025-07-24)
+
+
+### Features
+
+* Add Settings menu to scroll info panel to top when browsing through rows ([#2937](https://github.com/parse-community/parse-dashboard/issues/2937)) ([f339cb8](https://github.com/parse-community/parse-dashboard/commit/f339cb8d7a94ccda765c0d50ae00b57a53e03d7e))
+
 # [7.3.0-alpha.26](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.25...7.3.0-alpha.26) (2025-07-20)
 
 
