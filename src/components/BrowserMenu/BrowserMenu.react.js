@@ -16,12 +16,13 @@ export default class BrowserMenu extends React.Component {
   constructor() {
     super();
 
-    this.state = { open: false };
+    this.state = { open: false, openToLeft: false };
     this.wrapRef = React.createRef();
   }
 
   render() {
     let menu = null;
+    const isSubmenu = !!this.props.parentClose;
     if (this.state.open) {
       const position = Position.inDocument(this.wrapRef.current);
       const titleStyle = [styles.title];
@@ -35,20 +36,54 @@ export default class BrowserMenu extends React.Component {
           onExternalClick={() => this.setState({ open: false })}
         >
           <div className={styles.menu}>
-            <div className={titleStyle.join(' ')} onClick={() => this.setState({ open: false })}>
-              <Icon name={this.props.icon} width={14} height={14} />
-              <span>{this.props.title}</span>
-            </div>
-            <div className={styles.body} style={{ minWidth: this.wrapRef.current.clientWidth }}>
-              {React.Children.map(this.props.children, child =>
-                React.cloneElement(child, {
+            {!isSubmenu && (
+              <div
+                className={titleStyle.join(' ')}
+                onClick={() => this.setState({ open: false })}
+              >
+                {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
+                <span>{this.props.title}</span>
+              </div>
+            )}
+            <div
+              className={
+                isSubmenu
+                  ? this.state.openToLeft
+                    ? styles.subMenuBodyLeft
+                    : styles.subMenuBody
+                  : styles.body
+              }
+              style={{
+                minWidth: this.wrapRef.current.clientWidth,
+                ...(isSubmenu
+                  ? {
+                    top: 0,
+                    left: this.state.openToLeft
+                      ? 0
+                      : `${this.wrapRef.current.clientWidth - 3}px`,
+                    transform: this.state.openToLeft
+                      ? 'translateX(calc(-100% + 3px))'
+                      : undefined,
+                  }
+                  : {}),
+              }}
+            >
+              {React.Children.map(this.props.children, child => {
+                if (child.type === BrowserMenu) {
+                  return React.cloneElement(child, {
+                    ...child.props,
+                    parentClose: () => this.setState({ open: false }),
+                  });
+                }
+                return React.cloneElement(child, {
                   ...child.props,
                   onClick: () => {
                     child.props.onClick?.();
                     this.setState({ open: false });
+                    this.props.parentClose?.();
                   },
-                })
-              )}
+                });
+              })}
             </div>
           </div>
         </Popover>
@@ -61,18 +96,37 @@ export default class BrowserMenu extends React.Component {
     if (this.props.disabled) {
       classes.push(styles.disabled);
     }
-    let onClick = null;
+    const entryEvents = {};
     if (!this.props.disabled) {
-      onClick = () => {
-        this.setState({ open: true });
-        this.props.setCurrent(null);
-      };
+      if (isSubmenu) {
+        entryEvents.onMouseEnter = () => {
+          const rect = this.wrapRef.current.getBoundingClientRect();
+          const width = this.wrapRef.current.clientWidth;
+          const openToLeft = rect.right + width > window.innerWidth;
+          this.setState({ open: true, openToLeft });
+          this.props.setCurrent?.(null);
+        };
+      } else {
+        entryEvents.onClick = () => {
+          this.setState({ open: true, openToLeft: false });
+          this.props.setCurrent(null);
+        };
+      }
     }
     return (
       <div className={styles.wrap} ref={this.wrapRef}>
-        <div className={classes.join(' ')} onClick={onClick}>
-          <Icon name={this.props.icon} width={14} height={14} />
+        <div className={classes.join(' ')} {...entryEvents}>
+          {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
           <span>{this.props.title}</span>
+          {isSubmenu &&
+            React.Children.toArray(this.props.children).some(c => c.type === BrowserMenu) && (
+            <Icon
+              name="right-outline"
+              width={12}
+              height={12}
+              className={styles.submenuArrow}
+            />
+          )}
         </div>
         {menu}
       </div>
@@ -81,12 +135,12 @@ export default class BrowserMenu extends React.Component {
 }
 
 BrowserMenu.propTypes = {
-  icon: PropTypes.string.isRequired.describe('The name of the icon to place in the menu.'),
+  icon: PropTypes.string.describe('The name of the icon to place in the menu.'),
   title: PropTypes.string.isRequired.describe('The title text of the menu.'),
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).describe(
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).describe(
     'The contents of the menu when open. It should be a set of MenuItem and Separator components.'
+  ),
+  parentClose: PropTypes.func.describe(
+    'Closes the parent menu when a nested menu item is selected.'
   ),
 };
