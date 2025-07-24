@@ -366,6 +366,30 @@ const BrowserToolbar = ({
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
+      <BrowserMenu setCurrent={setCurrent} title="Settings" icon="gear-solid">
+        <BrowserMenu title="Info Panel" setCurrent={setCurrent}>
+          <MenuItem
+            text={
+              <span>
+                {scrollToTop && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Scroll to top
+              </span>
+            }
+            onClick={() => {
+              toggleScrollToTop();
+            }}
+          />
+        </BrowserMenu>
+      </BrowserMenu>
+      <div className={styles.toolbarSeparator} />
       <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
         <Icon name="refresh-solid" width={14} height={14} />
         <span>Refresh</span>
@@ -445,30 +469,6 @@ const BrowserToolbar = ({
           <MenuItem text={'Cancel all pending rows'} onClick={onCancelPendingEditRows} />
         </BrowserMenu>
       )}
-      <div className={styles.toolbarSeparator} />
-      <BrowserMenu setCurrent={setCurrent} title="Settings" icon="gear-solid">
-        <BrowserMenu title="Info Panel" setCurrent={setCurrent}>
-          <MenuItem
-            text={
-              <span>
-                {scrollToTop && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Scroll to top
-              </span>
-            }
-            onClick={() => {
-              toggleScrollToTop();
-            }}
-          />
-        </BrowserMenu>
-      </BrowserMenu>
     </Toolbar>
   );
 };
