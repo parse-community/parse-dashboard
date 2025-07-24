@@ -5,12 +5,12 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import Popover from 'components/Popover/Popover.react';
+import styles from 'components/BrowserMenu/BrowserMenu.scss';
 import Icon from 'components/Icon/Icon.react';
+import Popover from 'components/Popover/Popover.react';
 import Position from 'lib/Position';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
 export default class BrowserMenu extends React.Component {
   constructor() {
