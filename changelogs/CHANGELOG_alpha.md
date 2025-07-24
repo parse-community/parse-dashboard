@@ -1,3 +1,17 @@
+# [7.3.0-alpha.26](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.25...7.3.0-alpha.26) (2025-07-20)
+
+
+### Bug Fixes
+
+* Incorrect table cell width in App Settings table ([#2933](https://github.com/parse-community/parse-dashboard/issues/2933)) ([d46765b](https://github.com/parse-community/parse-dashboard/commit/d46765b16abfe3eda6d77525ae2f95a6f4be620c))
+
+# [7.3.0-alpha.25](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.24...7.3.0-alpha.25) (2025-07-19)
+
+
+### Bug Fixes
+
+* Modal text input can be resized smaller than its cell in Safari browser ([#2930](https://github.com/parse-community/parse-dashboard/issues/2930)) ([82a0cdc](https://github.com/parse-community/parse-dashboard/commit/82a0cdc397d58494c0c61a8241767d4930f742f1))
+
 # [7.3.0-alpha.24](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.23...7.3.0-alpha.24) (2025-07-19)
 
 
