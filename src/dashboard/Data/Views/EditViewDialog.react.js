@@ -20,7 +20,7 @@ export default class EditViewDialog extends React.Component {
   constructor(props) {
     super();
     const view = props.view || {};
-    
+
     // Determine data source type based on existing view properties
     let dataSourceType = 'query'; // default
     if (view.cloudFunction) {
@@ -28,7 +28,7 @@ export default class EditViewDialog extends React.Component {
     } else if (view.query && Array.isArray(view.query) && view.query.length > 0) {
       dataSourceType = 'query';
     }
-    
+
     this.state = {
       name: view.name || '',
       className: view.className || '',
