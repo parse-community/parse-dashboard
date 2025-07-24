@@ -68,21 +68,17 @@ export default class BrowserMenu extends React.Component {
                   : {}),
               }}
             >
-              {React.Children.map(this.props.children, child => {
-                if (child.type === BrowserMenu) {
+              {React.Children.map(this.props.children, (child) => {
+                if (React.isValidElement(child) && child.type === BrowserMenu) {
                   return React.cloneElement(child, {
                     ...child.props,
-                    parentClose: () => this.setState({ open: false }),
+                    parentClose: () => {
+                      this.setState({ open: false });
+                      this.props.parentClose?.();
+                    },
                   });
                 }
-                return React.cloneElement(child, {
-                  ...child.props,
-                  onClick: () => {
-                    child.props.onClick?.();
-                    this.setState({ open: false });
-                    this.props.parentClose?.();
-                  },
-                });
+                return child;
               })}
             </div>
           </div>
@@ -119,7 +115,7 @@ export default class BrowserMenu extends React.Component {
           {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
           <span>{this.props.title}</span>
           {isSubmenu &&
-            React.Children.toArray(this.props.children).some(c => c.type === BrowserMenu) && (
+            React.Children.toArray(this.props.children).some(c => React.isValidElement(c) && c.type === BrowserMenu) && (
             <Icon
               name="right-outline"
               width={12}

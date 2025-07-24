@@ -340,7 +340,7 @@ class Views extends TableView {
               text = 'Link';
             }
             content = (
-              <a href={url} target="_blank" rel="noreferrer">
+              <a href={url} target="_blank" rel="noopener noreferrer">
                 {text}
               </a>
             );

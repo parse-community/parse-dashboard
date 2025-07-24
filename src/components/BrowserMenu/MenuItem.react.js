@@ -19,8 +19,24 @@ const MenuItem = ({ text, disabled, active, greenActive, onClick }) => {
   if (greenActive) {
     classes.push(styles.greenActive);
   }
+
+  const handleClick = (e) => {
+    if (!disabled && onClick) {
+      onClick(e);
+    }
+  };
+
   return (
-    <div className={classes.join(' ')} onClick={disabled ? undefined : onClick}>
+    <div
+      className={classes.join(' ')}
+      onClick={handleClick}
+      onMouseDown={handleClick} // This is needed - onClick alone doesn't work in this context
+      style={{
+        position: 'relative',
+        zIndex: 9999,
+        cursor: 'pointer'
+      }}
+    >
       {text}
     </div>
   );
