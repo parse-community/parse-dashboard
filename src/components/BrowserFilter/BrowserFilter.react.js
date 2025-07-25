@@ -65,10 +65,23 @@ export default class BrowserFilter extends React.Component {
       if (preferences.filters) {
         const savedFilter = preferences.filters.find(filter => filter.id === filterId);
         if (savedFilter) {
+          // Check if the filter has relative dates
+          let hasRelativeDates = false;
+          try {
+            const filterData = JSON.parse(savedFilter.filter);
+            hasRelativeDates = filterData.some(filter =>
+              filter.compareTo && filter.compareTo.__type === 'RelativeDate'
+            );
+          } catch {
+            // If parsing fails, assume no relative dates
+            hasRelativeDates = false;
+          }
+          
           return {
             id: savedFilter.id,
             name: savedFilter.name,
-            isApplied: true
+            isApplied: true,
+            hasRelativeDates: hasRelativeDates
           };
         }
       }
@@ -77,7 +90,8 @@ export default class BrowserFilter extends React.Component {
     return {
       id: null,
       name: '',
-      isApplied: false
+      isApplied: false,
+      hasRelativeDates: false
     };
   }
 
@@ -87,6 +101,7 @@ export default class BrowserFilter extends React.Component {
       showMore: !prevState.showMore,
       name: currentFilter.name,
       originalFilterName: currentFilter.name,
+      relativeDates: currentFilter.hasRelativeDates,
     }));
   }
 
@@ -272,16 +287,30 @@ export default class BrowserFilter extends React.Component {
               )}
 
               {this.state.showMore && (
-                <Field
-                  label={<Label text="Filter name" />}
-                  input={
-                    <TextInput
-                      placeholder="Enter filter name..."
-                      value={this.state.name}
-                      onChange={name => this.setState({ name })}
+                <>
+                  <Field
+                    label={<Label text="Filter name" />}
+                    input={
+                      <TextInput
+                        placeholder="Enter filter name..."
+                        value={this.state.name}
+                        onChange={name => this.setState({ name })}
+                      />
+                    }
+                  />
+                  {hasDateState && (
+                    <Field
+                      label={<Label text="Relative dates" />}
+                      input={
+                        <Checkbox
+                          checked={this.state.relativeDates}
+                          onChange={checked => this.setState({ relativeDates: checked })}
+                          className={styles.checkbox}
+                        />
+                      }
                     />
-                  }
-                />
+                  )}
+                </>
               )}
 
               {this.state.confirmName && (
