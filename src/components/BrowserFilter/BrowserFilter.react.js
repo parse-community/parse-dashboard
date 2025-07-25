@@ -5,24 +5,28 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import * as Filters from 'lib/Filters';
-import Button from 'components/Button/Button.react';
-import Filter from 'components/Filter/Filter.react';
+import styles from 'components/BrowserFilter/BrowserFilter.scss';
 import FilterRow from 'components/BrowserFilter/FilterRow.react';
-import Icon from 'components/Icon/Icon.react';
-import Popover from 'components/Popover/Popover.react';
+import Button from 'components/Button/Button.react';
+import Checkbox from 'components/Checkbox/Checkbox.react';
 import Field from 'components/Field/Field.react';
-import TextInput from 'components/TextInput/TextInput.react';
+import Filter from 'components/Filter/Filter.react';
+import Icon from 'components/Icon/Icon.react';
 import Label from 'components/Label/Label.react';
+import Popover from 'components/Popover/Popover.react';
+import TextInput from 'components/TextInput/TextInput.react';
+import { CurrentApp } from 'context/currentApp';
+import { List, Map } from 'immutable';
+import * as ClassPreferences from 'lib/ClassPreferences';
+import * as Filters from 'lib/Filters';
 import Position from 'lib/Position';
 import React from 'react';
-import styles from 'components/BrowserFilter/BrowserFilter.scss';
-import Checkbox from 'components/Checkbox/Checkbox.react';
-import { List, Map } from 'immutable';
 
 const POPOVER_CONTENT_ID = 'browserFilterPopover';
 
 export default class BrowserFilter extends React.Component {
+  static contextType = CurrentApp;
+
   constructor(props) {
     super(props);
 
@@ -34,6 +38,8 @@ export default class BrowserFilter extends React.Component {
       name: '',
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
       relativeDates: false,
+      showMore: false,
+      originalFilterName: '',
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -43,6 +49,59 @@ export default class BrowserFilter extends React.Component {
     if (props.className !== this.props.className) {
       this.setState({ open: false });
     }
+  }
+
+  getCurrentFilterInfo() {
+    // Extract filterId from URL if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterId = urlParams.get('filterId');
+    
+    if (filterId) {
+      const preferences = ClassPreferences.getPreferences(
+        this.context.applicationId,
+        this.props.className
+      );
+      
+      if (preferences.filters) {
+        const savedFilter = preferences.filters.find(filter => filter.id === filterId);
+        if (savedFilter) {
+          return {
+            id: savedFilter.id,
+            name: savedFilter.name,
+            isApplied: true
+          };
+        }
+      }
+    }
+    
+    return {
+      id: null,
+      name: '',
+      isApplied: false
+    };
+  }
+
+  toggleMore() {
+    const currentFilter = this.getCurrentFilterInfo();
+    this.setState(prevState => ({
+      showMore: !prevState.showMore,
+      name: currentFilter.name,
+      originalFilterName: currentFilter.name,
+    }));
+  }
+
+  isFilterNameExists(name) {
+    const preferences = ClassPreferences.getPreferences(
+      this.context.applicationId,
+      this.props.className
+    );
+    
+    if (preferences.filters && name) {
+      return preferences.filters.some(filter =>
+        filter.name === name && filter.id !== this.getCurrentFilterInfo().id
+      );
+    }
+    return false;
   }
 
   toggle() {
@@ -66,6 +125,7 @@ export default class BrowserFilter extends React.Component {
       confirmName: false,
       editMode: this.props.filters.size === 0,
       relativeDates: false, // Reset relative dates state when opening/closing
+      showMore: false, // Reset showMore state when opening/closing
     }));
     this.props.setCurrent(null);
   }
@@ -211,6 +271,19 @@ export default class BrowserFilter extends React.Component {
                 </>
               )}
 
+              {this.state.showMore && (
+                <Field
+                  label={<Label text="Filter name" />}
+                  input={
+                    <TextInput
+                      placeholder="Enter filter name..."
+                      value={this.state.name}
+                      onChange={name => this.setState({ name })}
+                    />
+                  }
+                />
+              )}
+
               {this.state.confirmName && (
                 <div className={styles.footer}>
                   <Button
@@ -222,6 +295,7 @@ export default class BrowserFilter extends React.Component {
                   <Button
                     color="white"
                     value="Confirm"
+                    disabled={!this.state.name || this.isFilterNameExists(this.state.name)}
                     primary={true}
                     width="120px"
                     onClick={() => this.save()}
@@ -235,15 +309,42 @@ export default class BrowserFilter extends React.Component {
                       color="white"
                       value="Save"
                       width="120px"
-                      onClick={() => this.setState({ confirmName: true })}
+                      disabled={this.state.showMore && (!this.state.name || this.state.name === this.state.originalFilterName || this.isFilterNameExists(this.state.name))}
+                      primary={this.state.showMore && this.state.name && this.state.name !== this.state.originalFilterName && !this.isFilterNameExists(this.state.name)}
+                      onClick={() => {
+                        if (this.state.showMore) {
+                          // Update existing filter
+                          this.save();
+                        } else {
+                          this.setState({ confirmName: true });
+                        }
+                      }}
                     />
-                    <Button
-                      color="white"
-                      value="Clear"
-                      disabled={this.state.filters.size === 0}
-                      width="120px"
-                      onClick={() => this.clear()}
-                    />
+                    {(() => {
+                      const currentFilter = this.getCurrentFilterInfo();
+                      const isAppliedSavedFilter = currentFilter.isApplied && this.props.filters.size > 0;
+                      
+                      if (isAppliedSavedFilter) {
+                        return (
+                          <Button
+                            color="white"
+                            value="More"
+                            width="120px"
+                            onClick={() => this.toggleMore()}
+                          />
+                        );
+                      } else {
+                        return (
+                          <Button
+                            color="white"
+                            value="Clear"
+                            disabled={this.state.filters.size === 0}
+                            width="120px"
+                            onClick={() => this.clear()}
+                          />
+                        );
+                      }
+                    })()}
                   </div>
                   <div className={styles.btnFlex}>
                     <Button
