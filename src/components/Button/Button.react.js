@@ -53,6 +53,10 @@ const Button = props => {
           e.target.blur();
         }
       }}
+      onMouseLeave={e => {
+        // Remove focus when mouse leaves to prevent sticky focus states
+        e.target.blur();
+      }}
     >
       <span>{props.value}</span>
     </button>
