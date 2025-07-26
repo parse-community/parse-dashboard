@@ -52,7 +52,26 @@ export default class BrowserFilter extends React.Component {
   }
 
   isCurrentFilterSaved() {
-    // Check if current filter structure matches any saved filter
+    // First check if there's a filterId in the URL (means we're definitely viewing a saved filter)
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterId = urlParams.get('filterId');
+    
+    if (filterId) {
+      const preferences = ClassPreferences.getPreferences(
+        this.context.applicationId,
+        this.props.className
+      );
+      
+      if (preferences.filters) {
+        // If filterId exists in saved filters, it's definitely a saved filter
+        const savedFilter = preferences.filters.find(filter => filter.id === filterId);
+        if (savedFilter) {
+          return true;
+        }
+      }
+    }
+    
+    // Fallback: Check if current filter structure matches any saved filter
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.className
