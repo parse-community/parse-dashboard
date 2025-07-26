@@ -52,6 +52,29 @@ export default class BrowserFilter extends React.Component {
     }
   }
 
+  isCurrentFilterSaved() {
+    // Check if current filter structure matches any saved filter
+    const preferences = ClassPreferences.getPreferences(
+      this.context.applicationId,
+      this.props.className
+    );
+    
+    if (!preferences.filters || this.props.filters.size === 0) {
+      return false;
+    }
+    
+    const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+    
+    return preferences.filters.some(savedFilter => {
+      try {
+        const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
+        return savedFiltersString === currentFiltersString;
+      } catch {
+        return false;
+      }
+    });
+  }
+
   getCurrentFilterInfo() {
     // Extract filterId from URL if present
     const urlParams = new URLSearchParams(window.location.search);
@@ -581,12 +604,17 @@ export default class BrowserFilter extends React.Component {
                 <div className={styles.footer}>
                   {this.state.showMore && (
                     <div className={styles.btnFlex} style={{ marginBottom: '10px' }}>
-                      <Button
-                        color="white"
-                        value="More"
-                        width="120px"
+                      <span
+                        style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                         onClick={() => this.toggleMore()}
-                      />
+                      >
+                        <Icon
+                          name="up-solid"
+                          width={20}
+                          height={20}
+                          fill="white"
+                        />
+                      </span>
                       <Button
                         color="white"
                         value="Save"
@@ -595,45 +623,66 @@ export default class BrowserFilter extends React.Component {
                         primary={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name)}
                         onClick={() => this.save()}
                       />
-                      <Button
-                        color="white"
-                        value="Delete"
-                        width="120px"
-                        onClick={() => this.setState({ confirmDelete: true })}
-                      />
+                      {this.isCurrentFilterSaved() && (
+                        <Button
+                          color="white"
+                          value="Delete"
+                          width="120px"
+                          onClick={() => this.setState({ confirmDelete: true })}
+                        />
+                      )}
                     </div>
                   )}
                   <div className={styles.btnFlex}>
-                    {!this.state.showMore && (
-                      <Button
-                        color="white"
-                        value="Save"
-                        width="120px"
-                        onClick={() => this.setState({ confirmName: true })}
-                      />
-                    )}
                     {(() => {
                       const currentFilter = this.getCurrentFilterInfo();
                       const isAppliedSavedFilter = currentFilter.isApplied && this.props.filters.size > 0;
                       
                       if (isAppliedSavedFilter && !this.state.showMore) {
                         return (
-                          <Button
-                            color="white"
-                            value="More"
-                            width="120px"
-                            onClick={() => this.toggleMore()}
-                          />
+                          <>
+                            <span
+                              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                              onClick={() => this.toggleMore()}
+                            >
+                              <Icon
+                                name="down-solid"
+                                width={20}
+                                height={20}
+                                fill="white"
+                              />
+                            </span>
+                            <Button
+                              color="white"
+                              value="Clear"
+                              disabled={this.state.filters.size === 0}
+                              width="120px"
+                              onClick={() => this.clear()}
+                            />
+                          </>
                         );
                       } else if (!this.state.showMore) {
                         return (
-                          <Button
-                            color="white"
-                            value="Clear"
-                            disabled={this.state.filters.size === 0}
-                            width="120px"
-                            onClick={() => this.clear()}
-                          />
+                          <>
+                            <span
+                              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                              onClick={() => this.toggleMore()}
+                            >
+                              <Icon
+                                name="down-solid"
+                                width={20}
+                                height={20}
+                                fill="white"
+                              />
+                            </span>
+                            <Button
+                              color="white"
+                              value="Clear"
+                              disabled={this.state.filters.size === 0}
+                              width="120px"
+                              onClick={() => this.clear()}
+                            />
+                          </>
                         );
                       }
                       return null;
