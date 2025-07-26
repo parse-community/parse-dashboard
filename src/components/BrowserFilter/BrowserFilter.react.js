@@ -105,8 +105,6 @@ export default class BrowserFilter extends React.Component {
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
     const filtersParam = urlParams.get('filters');
-    
-    console.log('getCurrentFilterInfo - URL params:', { filterId, filtersParam, propsFiltersSize: this.props.filters.size });
 
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
@@ -150,15 +148,11 @@ export default class BrowserFilter extends React.Component {
       if (preferences.filters) {
         // Try to find a saved filter that matches the current filter content
         const currentFiltersString = JSON.stringify(this.props.filters.toJS());
-        console.log('Legacy filter matching - currentFiltersString:', currentFiltersString);
-        console.log('Legacy filter matching - saved filters:', preferences.filters);
         
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
             const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
-            console.log('Comparing with saved filter:', savedFilter.name, 'savedFiltersString:', savedFiltersString);
             const matches = savedFiltersString === currentFiltersString;
-            console.log('Match result:', matches);
             return matches;
           } catch {
             return false;
@@ -369,71 +363,34 @@ export default class BrowserFilter extends React.Component {
 
   deleteCurrentFilter() {
     const currentFilterInfo = this.getCurrentFilterInfo();
-    console.log('Deleting filter - currentFilterInfo:', currentFilterInfo);
-    
-    // For legacy filters without ID, we need to delete by name and content match
-    if (!currentFilterInfo.id && currentFilterInfo.isLegacy && currentFilterInfo.name) {
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        this.props.className
-      );
 
-      if (preferences.filters) {
-        // Find the filter by name and content for legacy filters
-        const currentFiltersString = JSON.stringify(this.props.filters.toJS());
-        console.log('Deleting legacy filter - current filters string:', currentFiltersString);
-        console.log('Looking for filter with name:', currentFilterInfo.name);
-        
-        const updatedFilters = preferences.filters.filter(filter => {
-          // For legacy filters (no id), match by name AND content
-          if (!filter.id && filter.name === currentFilterInfo.name) {
-            console.log('Found matching legacy filter to delete:', filter);
-            try {
-              const savedFiltersString = JSON.stringify(JSON.parse(filter.filter));
-              const shouldDelete = savedFiltersString === currentFiltersString;
-              console.log('Should delete filter?', shouldDelete);
-              return !shouldDelete; // Return false to remove this filter
-            } catch {
-              // If parsing fails, keep the filter
-              console.log('Parse error, keeping filter');
-              return true;
+    // Use parent's onDeleteFilter method which handles everything including force update
+    if (this.props.onDeleteFilter) {
+      // For legacy filters, we need to pass the entire filter object for the parent to match
+      if (currentFilterInfo.isLegacy) {
+        const preferences = ClassPreferences.getPreferences(this.context.applicationId, this.props.className);
+        if (preferences.filters) {
+          const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+          const matchingFilter = preferences.filters.find(filter => {
+            if (!filter.id && filter.name === currentFilterInfo.name) {
+              try {
+                const savedFiltersString = JSON.stringify(JSON.parse(filter.filter));
+                return savedFiltersString === currentFiltersString;
+              } catch {
+                return false;
+              }
             }
+            return false;
+          });
+          
+          if (matchingFilter) {
+            this.props.onDeleteFilter(matchingFilter);
           }
-          // Keep all other filters
-          return true;
-        });
-        
-        console.log('Original filters count:', preferences.filters.length);
-        console.log('Updated filters count:', updatedFilters.length);
-        console.log('Updated filters:', updatedFilters);
-
-        ClassPreferences.updatePreferences(
-          this.context.applicationId,
-          this.props.className,
-          { ...preferences, filters: updatedFilters }
-        );
-        
-        console.log('Preferences updated successfully');
+        }
+      } else if (currentFilterInfo.id) {
+        // For modern filters with ID, just pass the ID
+        this.props.onDeleteFilter(currentFilterInfo.id);
       }
-    } else if (currentFilterInfo.id) {
-      // Handle modern filters with ID
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        this.props.className
-      );
-
-      if (preferences.filters) {
-        const updatedFilters = preferences.filters.filter(filter => filter.id !== currentFilterInfo.id);
-        ClassPreferences.updatePreferences(
-          this.context.applicationId,
-          this.props.className,
-          { ...preferences, filters: updatedFilters }
-        );
-      }
-    } else {
-      // No filter to delete
-      this.setState({ confirmDelete: false });
-      return;
     }
 
     // Remove filterId from URL if present
@@ -450,11 +407,6 @@ export default class BrowserFilter extends React.Component {
     this.props.onChange(new ImmutableMap());
     this.setState({ confirmDelete: false });
     this.toggle();
-
-    // Call onDeleteFilter prop if provided
-    if (this.props.onDeleteFilter) {
-      this.props.onDeleteFilter(currentFilterInfo.id || currentFilterInfo.name);
-    }
   }
 
   copyCurrentFilter() {
