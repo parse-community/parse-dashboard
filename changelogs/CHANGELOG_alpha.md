@@ -1,3 +1,10 @@
+# [7.3.0-alpha.32](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.31...7.3.0-alpha.32) (2025-07-26)
+
+
+### Bug Fixes
+
+* Views not sorted alphabetically in sidebar ([#2943](https://github.com/parse-community/parse-dashboard/issues/2943)) ([4c81fe4](https://github.com/parse-community/parse-dashboard/commit/4c81fe423a9d437d0563285c9f67b13f8c7582ec))
+
 # [7.3.0-alpha.31](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.30...7.3.0-alpha.31) (2025-07-26)
 
 
