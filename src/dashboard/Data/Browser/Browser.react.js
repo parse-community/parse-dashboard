@@ -1259,7 +1259,31 @@ class Browser extends DashboardView {
 
     let newFilterId = filterId;
 
-    if (filterId) {
+    if (filterId && filterId.startsWith('legacy:')) {
+      // Handle legacy filter update by converting to modern filter
+      const legacyFilterName = filterId.substring(7); // Remove 'legacy:' prefix
+      const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
+        !filter.id && filter.name === legacyFilterName
+      );
+
+      if (existingLegacyFilterIndex !== -1) {
+        // Convert legacy filter to modern filter by adding an ID
+        newFilterId = crypto.randomUUID();
+        preferences.filters[existingLegacyFilterIndex] = {
+          name,
+          id: newFilterId,
+          filter: _filters,
+        };
+      } else {
+        // Legacy filter not found, create new one
+        newFilterId = crypto.randomUUID();
+        preferences.filters.push({
+          name,
+          id: newFilterId,
+          filter: _filters,
+        });
+      }
+    } else if (filterId) {
       // Update existing filter
       const existingFilterIndex = preferences.filters.findIndex(filter => filter.id === filterId);
       if (existingFilterIndex !== -1) {
