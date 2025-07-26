@@ -5,43 +5,43 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import { ActionTypes } from 'lib/stores/SchemaStore';
-import AddColumnDialog from 'dashboard/Data/Browser/AddColumnDialog.react';
 import CategoryList from 'components/CategoryList/CategoryList.react';
-import CreateClassDialog from 'dashboard/Data/Browser/CreateClassDialog.react';
-import DashboardView from 'dashboard/DashboardView.react';
-import DataBrowser from 'dashboard/Data/Browser/DataBrowser.react';
-import { DefaultColumns, SpecialClasses } from 'lib/Constants';
-import DeleteRowsDialog from 'dashboard/Data/Browser/DeleteRowsDialog.react';
-import DropClassDialog from 'dashboard/Data/Browser/DropClassDialog.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
-import ExportDialog from 'dashboard/Data/Browser/ExportDialog.react';
+import SidebarAction from 'components/Sidebar/SidebarAction';
+import DashboardView from 'dashboard/DashboardView.react';
+import AddColumnDialog from 'dashboard/Data/Browser/AddColumnDialog.react';
 import AttachRowsDialog from 'dashboard/Data/Browser/AttachRowsDialog.react';
 import AttachSelectedRowsDialog from 'dashboard/Data/Browser/AttachSelectedRowsDialog.react';
-import ExecuteScriptRowsDialog from 'dashboard/Data/Browser/ExecuteScriptRowsDialog.react';
+import styles from 'dashboard/Data/Browser/Browser.scss';
 import CloneSelectedRowsDialog from 'dashboard/Data/Browser/CloneSelectedRowsDialog.react';
+import CreateClassDialog from 'dashboard/Data/Browser/CreateClassDialog.react';
+import DataBrowser from 'dashboard/Data/Browser/DataBrowser.react';
+import DeleteRowsDialog from 'dashboard/Data/Browser/DeleteRowsDialog.react';
+import DropClassDialog from 'dashboard/Data/Browser/DropClassDialog.react';
 import EditRowDialog from 'dashboard/Data/Browser/EditRowDialog.react';
-import ExportSelectedRowsDialog from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
+import ExecuteScriptRowsDialog from 'dashboard/Data/Browser/ExecuteScriptRowsDialog.react';
+import ExportDialog from 'dashboard/Data/Browser/ExportDialog.react';
 import ExportSchemaDialog from 'dashboard/Data/Browser/ExportSchemaDialog.react';
-import { List, Map } from 'immutable';
+import ExportSelectedRowsDialog from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
-import Parse from 'parse';
+import PointerKeyDialog from 'dashboard/Data/Browser/PointerKeyDialog.react';
+import RemoveColumnDialog from 'dashboard/Data/Browser/RemoveColumnDialog.react';
+import { List, Map } from 'immutable';
+import { get } from 'lib/AJAX';
+import * as ClassPreferences from 'lib/ClassPreferences';
+import * as ColumnPreferences from 'lib/ColumnPreferences';
+import { DefaultColumns, SpecialClasses } from 'lib/Constants';
+import generatePath from 'lib/generatePath';
 import prettyNumber from 'lib/prettyNumber';
 import queryFromFilters from 'lib/queryFromFilters';
-import React from 'react';
-import RemoveColumnDialog from 'dashboard/Data/Browser/RemoveColumnDialog.react';
-import PointerKeyDialog from 'dashboard/Data/Browser/PointerKeyDialog.react';
-import SidebarAction from 'components/Sidebar/SidebarAction';
+import { ActionTypes } from 'lib/stores/SchemaStore';
 import stringCompare from 'lib/stringCompare';
-import styles from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo from 'lib/subscribeTo';
-import * as ColumnPreferences from 'lib/ColumnPreferences';
-import * as ClassPreferences from 'lib/ClassPreferences';
+import { withRouter } from 'lib/withRouter';
+import Parse from 'parse';
+import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useBeforeUnload } from 'react-router-dom';
-import generatePath from 'lib/generatePath';
-import { withRouter } from 'lib/withRouter';
-import { get } from 'lib/AJAX';
 import BrowserFooter from './BrowserFooter.react';
 
 const SELECTED_ROWS_MESSAGE = 'There are selected rows. Are you sure you want to leave this page?';
@@ -1199,7 +1199,7 @@ class Browser extends DashboardView {
     });
   }
 
-  saveFilters(filters, name, relativeDate) {
+  saveFilters(filters, name, relativeDate, filterId = null) {
     const jsonFilters = filters.toJSON();
     if (relativeDate && jsonFilters?.length) {
       for (let i = 0; i < jsonFilters.length; i++) {
@@ -1223,13 +1223,35 @@ class Browser extends DashboardView {
       this.context.applicationId,
       this.props.params.className
     );
-    if (!preferences.filters.includes(_filters)) {
-      preferences.filters.push({
-        name,
-        id: crypto.randomUUID(),
-        filter: _filters,
-      });
+    
+    if (filterId) {
+      // Update existing filter
+      const existingFilterIndex = preferences.filters.findIndex(filter => filter.id === filterId);
+      if (existingFilterIndex !== -1) {
+        preferences.filters[existingFilterIndex] = {
+          name,
+          id: filterId,
+          filter: _filters,
+        };
+      } else {
+        // Fallback: if filter not found, create new one
+        preferences.filters.push({
+          name,
+          id: crypto.randomUUID(),
+          filter: _filters,
+        });
+      }
+    } else {
+      // Create new filter only if it doesn't already exist
+      if (!preferences.filters.find(filter => filter.filter === _filters)) {
+        preferences.filters.push({
+          name,
+          id: crypto.randomUUID(),
+          filter: _filters,
+        });
+      }
     }
+    
     ClassPreferences.updatePreferences(
       preferences,
       this.context.applicationId,
