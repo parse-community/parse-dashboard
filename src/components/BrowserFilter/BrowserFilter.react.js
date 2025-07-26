@@ -40,6 +40,7 @@ export default class BrowserFilter extends React.Component {
       showMore: false,
       originalFilterName: '',
       confirmDelete: false,
+      originalFilters: new List(), // Track original filters when entering edit mode
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -143,8 +144,13 @@ export default class BrowserFilter extends React.Component {
 
     this.setState(prevState => {
       let filtersToUse;
+      let originalFiltersToStore = prevState.originalFilters;
+      
       if (!prevState.showMore) {
         // Entering edit mode
+        // Store the original applied filters for comparison
+        originalFiltersToStore = this.props.filters;
+        
         // If we already have filters in state (e.g., user added fields), use those but convert only Parse dates
         // Otherwise, convert the props filters for display (preserving RelativeDate objects)
         if (prevState.filters.size > 0) {
@@ -163,6 +169,7 @@ export default class BrowserFilter extends React.Component {
         originalFilterName: currentFilter.name,
         relativeDates: currentFilter.hasRelativeDates,
         filters: filtersToUse,
+        originalFilters: originalFiltersToStore,
       };
     });
   }
@@ -181,25 +188,49 @@ export default class BrowserFilter extends React.Component {
     return false;
   }
 
+  // Helper method to normalize filters for comparison
+  // Converts all date formats to a consistent format for comparison
+  normalizeFiltersForComparison(filters) {
+    return filters.map(filter => {
+      const compareTo = filter.get('compareTo');
+      if (!compareTo) {
+        return filter;
+      }
+
+      // Convert all date types to ISO string for consistent comparison
+      if (compareTo instanceof Date) {
+        return filter.set('compareTo', compareTo.toISOString());
+      } else if (compareTo.__type === 'Date') {
+        return filter.set('compareTo', compareTo.iso);
+      } else if (compareTo.__type === 'RelativeDate') {
+        // Convert RelativeDate to ISO string
+        const now = new Date();
+        const date = new Date(now.getTime() + compareTo.value * 1000);
+        return filter.set('compareTo', date.toISOString());
+      }
+      return filter;
+    });
+  }
+
   hasFilterContentChanged() {
     // If we're not in showMore mode (editing a saved filter), return false
     if (!this.state.showMore) {
       return false;
     }
 
-    // Compare current state filters with the originally applied filters
-    const currentFilters = this.state.filters;
-    const appliedFilters = this.props.filters;
+    // Compare current state filters with the original filters stored when entering edit mode
+    const currentFilters = this.normalizeFiltersForComparison(this.state.filters);
+    const originalFilters = this.normalizeFiltersForComparison(this.state.originalFilters);
 
     // If the sizes are different, content has changed
-    if (currentFilters.size !== appliedFilters.size) {
+    if (currentFilters.size !== originalFilters.size) {
       return true;
     }
 
     // Compare each filter
     for (let i = 0; i < currentFilters.size; i++) {
       const currentFilter = currentFilters.get(i);
-      const appliedFilter = appliedFilters.get(i);
+      const originalFilter = originalFilters.get(i);
 
       // Compare each property of the filter
       const currentClass = currentFilter.get('class');
@@ -207,49 +238,16 @@ export default class BrowserFilter extends React.Component {
       const currentConstraint = currentFilter.get('constraint');
       const currentCompareTo = currentFilter.get('compareTo');
 
-      const appliedClass = appliedFilter.get('class');
-      const appliedField = appliedFilter.get('field');
-      const appliedConstraint = appliedFilter.get('constraint');
-      const appliedCompareTo = appliedFilter.get('compareTo');
+      const originalClass = originalFilter.get('class');
+      const originalField = originalFilter.get('field');
+      const originalConstraint = originalFilter.get('constraint');
+      const originalCompareTo = originalFilter.get('compareTo');
 
-      // Check basic properties
-      if (currentClass !== appliedClass ||
-          currentField !== appliedField ||
-          currentConstraint !== appliedConstraint) {
-        return true;
-      }
-
-      // Special handling for date comparisons
-      if (currentCompareTo && currentCompareTo.__type === 'Date' && appliedCompareTo && appliedCompareTo.__type === 'RelativeDate') {
-        // Convert RelativeDate to Date for comparison
-        const now = new Date();
-        const appliedDate = new Date(now.getTime() + appliedCompareTo.value * 1000);
-        const currentDate = new Date(currentCompareTo.iso);
-        if (Math.abs(currentDate.getTime() - appliedDate.getTime()) > 1000) { // Allow 1 second tolerance
-          return true;
-        }
-      } else if (currentCompareTo instanceof Date && appliedCompareTo && appliedCompareTo.__type === 'RelativeDate') {
-        // Convert RelativeDate to Date for comparison
-        const now = new Date();
-        const appliedDate = new Date(now.getTime() + appliedCompareTo.value * 1000);
-        if (Math.abs(currentCompareTo.getTime() - appliedDate.getTime()) > 1000) { // Allow 1 second tolerance
-          return true;
-        }
-      } else if (!currentCompareTo && !appliedCompareTo) {
-        // Both are null/undefined, continue
-        continue;
-      } else if (currentCompareTo instanceof Date && appliedCompareTo instanceof Date) {
-        // Both are Date objects
-        if (currentCompareTo.getTime() !== appliedCompareTo.getTime()) {
-          return true;
-        }
-      } else if (currentCompareTo && currentCompareTo.__type === 'Date' && appliedCompareTo && appliedCompareTo.__type === 'Date') {
-        // Both are Parse Date objects
-        if (currentCompareTo.iso !== appliedCompareTo.iso) {
-          return true;
-        }
-      } else if (currentCompareTo !== appliedCompareTo) {
-        // Other types or one is Date and other is not
+      // Check all properties for equality
+      if (currentClass !== originalClass ||
+          currentField !== originalField ||
+          currentConstraint !== originalConstraint ||
+          currentCompareTo !== originalCompareTo) {
         return true;
       }
     }
@@ -600,7 +598,7 @@ export default class BrowserFilter extends React.Component {
                         />
                       </span>
                       <Button
-                        color="white"
+                        color={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? 'green' : 'white'}
                         value="Save"
                         width="120px"
                         disabled={!this.state.name || (this.state.name === this.state.originalFilterName && !this.hasFilterContentChanged()) || this.isFilterNameExists(this.state.name)}

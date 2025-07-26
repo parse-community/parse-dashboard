@@ -5,10 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import baseStyles from 'stylesheets/base.scss';
-import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import styles from 'components/Button/Button.scss';
+import PropTypes from 'lib/PropTypes';
+import baseStyles from 'stylesheets/base.scss';
 
 const noop = () => {};
 
