@@ -1282,7 +1282,7 @@ class Browser extends DashboardView {
       const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
         !filter.id && filter.name === name && filter.filter === _filters
       );
-      
+
       if (existingLegacyFilterIndex !== -1) {
         // Convert legacy filter to modern filter by adding an ID
         newFilterId = crypto.randomUUID();

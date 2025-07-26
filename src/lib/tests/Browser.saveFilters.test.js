@@ -94,7 +94,7 @@ class MockBrowser {
       const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
         !filter.id && filter.name === name && filter.filter === _filters
       );
-      
+
       if (existingLegacyFilterIndex !== -1) {
         // Convert legacy filter to modern filter by adding an ID
         newFilterId = crypto.randomUUID();
@@ -152,7 +152,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
   it('converts legacy filter to modern filter when updating', () => {
     const filterData = [{ field: 'name', constraint: 'eq', compareTo: 'test' }];
     const filters = new MockList(filterData);
-    
+
     // First, manually create a legacy filter (without ID) in preferences
     const preferences = {
       filters: [
@@ -187,7 +187,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
   it('creates new filter when legacy filter with same name has different content', () => {
     const originalFilterData = [{ field: 'name', constraint: 'eq', compareTo: 'original' }];
     const newFilterData = [{ field: 'name', constraint: 'eq', compareTo: 'updated' }];
-    
+
     // Create a legacy filter with different content
     const preferences = {
       filters: [
@@ -213,13 +213,13 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
 
     const updatedPreferences = ClassPreferences.getPreferences('testApp', 'TestClass');
     expect(updatedPreferences.filters).toHaveLength(2);
-    
+
     // Original legacy filter should remain unchanged
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'My Filter',
       filter: JSON.stringify(originalFilterData)
     });
-    
+
     // New modern filter should be created
     expect(updatedPreferences.filters[1]).toEqual({
       name: 'My Filter',
@@ -230,7 +230,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
 
   it('does not affect modern filters when updating', () => {
     const filterData = [{ field: 'name', constraint: 'eq', compareTo: 'test' }];
-    
+
     // Create a modern filter (with ID)
     const preferences = {
       filters: [
@@ -265,7 +265,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
 
   it('creates new filter when no existing filter matches', () => {
     const filterData = [{ field: 'name', constraint: 'eq', compareTo: 'test' }];
-    
+
     // Start with empty preferences
     const preferences = { filters: [] };
     ClassPreferences.updatePreferences(
