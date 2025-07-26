@@ -168,9 +168,11 @@ export default class CategoryList extends React.Component {
               {this.state.openClasses.includes(id) &&
                 c.filters.map((filterData, index) => {
                   const { name, filter, id } = filterData;
-                  const url = `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(
-                    filter
-                  )}&filterId=${id}`;
+                  // Only include filterId in URL if the filter has an ID (modern filters)
+                  // Legacy filters without ID should work with just the filter content
+                  const url = id
+                    ? `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}&filterId=${id}`
+                    : `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}`;
                   return (
                     <div key={index} className={styles.childLink}>
                       <Link
