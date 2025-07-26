@@ -34,7 +34,6 @@ export default class BrowserFilter extends React.Component {
       open: false,
       editMode: true,
       filters: new List(),
-      confirmName: false,
       name: '',
       blacklistedFilters: Filters.BLACKLISTED_FILTERS.concat(props.blacklistedFilters),
       relativeDates: false,
@@ -299,7 +298,6 @@ export default class BrowserFilter extends React.Component {
       open: !prevState.open,
       filters: filters,
       name: '',
-      confirmName: false,
       editMode: this.props.filters.size === 0,
       relativeDates: false, // Reset relative dates state when opening/closing
       showMore: false, // Reset showMore state when opening/closing
@@ -474,33 +472,6 @@ export default class BrowserFilter extends React.Component {
                   />
                 )}
               />
-              {this.state.confirmName && (
-                <>
-                  <Field
-                    label={<Label text="Filter view name" />}
-                    input={
-                      <TextInput
-                        placeholder="Give it a good name..."
-                        value={this.state.name}
-                        onChange={name => this.setState({ name })}
-                      />
-                    }
-                  />
-                  {hasDateState &&
-                  <Field
-                    label={<Label text="Relative dates" />}
-                    input={
-                      <Checkbox
-                        checked={this.state.relativeDates}
-                        onChange={checked => this.setState({ relativeDates: checked })}
-                        className={styles.checkbox}
-                      />
-                    }
-                  />
-                  }
-                </>
-              )}
-
               {this.state.showMore && (
                 <>
                   <Field
@@ -528,24 +499,6 @@ export default class BrowserFilter extends React.Component {
                 </>
               )}
 
-              {this.state.confirmName && (
-                <div className={styles.footer}>
-                  <Button
-                    color="white"
-                    value="Back"
-                    width="120px"
-                    onClick={() => this.setState({ confirmName: false })}
-                  />
-                  <Button
-                    color="white"
-                    value="Confirm"
-                    disabled={!this.state.name || this.isFilterNameExists(this.state.name)}
-                    primary={true}
-                    width="120px"
-                    onClick={() => this.save()}
-                  />
-                </div>
-              )}
               {this.state.confirmDelete && (
                 <div className={styles.footer}>
                   <Button
@@ -600,7 +553,7 @@ export default class BrowserFilter extends React.Component {
                   />
                 </div>
               )}
-              {!this.state.confirmName && !this.state.confirmDelete && (
+              {!this.state.confirmDelete && (
                 <div className={styles.footer}>
                   {this.state.showMore && (
                     <div className={styles.btnFlex}>
