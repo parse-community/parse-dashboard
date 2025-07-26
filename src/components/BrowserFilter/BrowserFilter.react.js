@@ -69,9 +69,12 @@ export default class BrowserFilter extends React.Component {
           return true;
         }
       }
+      // If filterId is in URL but not found in saved filters, it's not saved
+      return false;
     }
 
-    // Fallback: Check if current filter structure matches any saved filter
+    // Fallback only when no filterId in URL: Check if current filter structure matches any saved filter
+    // This is for legacy compatibility
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.className
@@ -91,9 +94,7 @@ export default class BrowserFilter extends React.Component {
         return false;
       }
     });
-  }
-
-  getCurrentFilterInfo() {
+  }  getCurrentFilterInfo() {
     // Extract filterId from URL if present
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');

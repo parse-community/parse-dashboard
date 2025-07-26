@@ -6,12 +6,12 @@
  * the root directory of this source tree.
  */
 import styles from 'components/CategoryList/CategoryList.scss';
+import Icon from 'components/Icon/Icon.react';
 import { CurrentApp } from 'context/currentApp';
 import generatePath from 'lib/generatePath';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Icon from 'components/Icon/Icon.react';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;
@@ -57,7 +57,14 @@ export default class CategoryList extends React.Component {
               const filterId = query.get('filterId');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
-                if (queryFilter === filter.filter || filterId && filterId === filter.id) {
+                // Prioritize filterId matching, only fall back to content comparison if no filterId
+                if (filterId) {
+                  if (filterId === filter.id) {
+                    height += (i + 1) * 20;
+                    break;
+                  }
+                } else if (queryFilter === filter.filter) {
+                  // Legacy fallback: match by filter content when no filterId is present
                   height += (i + 1) * 20;
                   break;
                 }
@@ -113,7 +120,15 @@ export default class CategoryList extends React.Component {
               const queryFilterId = query.get('filterId');
               for (let i = 0; i < c.filters?.length; i++) {
                 const filter = c.filters[i];
-                if (queryFilter === filter.filter || queryFilterId && queryFilterId === filter.id) {
+                // Prioritize filterId matching, only fall back to content comparison if no filterId
+                if (queryFilterId) {
+                  if (queryFilterId === filter.id) {
+                    selectedFilter = i;
+                    className = '';
+                    break;
+                  }
+                } else if (queryFilter === filter.filter) {
+                  // Legacy fallback: match by filter content when no filterId is present
                   selectedFilter = i;
                   className = '';
                   break;
