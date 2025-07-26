@@ -15,6 +15,7 @@ import TableView from 'dashboard/TableView.react';
 import tableStyles from 'dashboard/TableView.scss';
 import * as ViewPreferences from 'lib/ViewPreferences';
 import generatePath from 'lib/generatePath';
+import stringCompare from 'lib/stringCompare';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
 import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
@@ -541,6 +542,8 @@ class Views extends TableView {
         this.setState({ editView: view, editIndex: index });
       },
     }));
+    // Sort views alphabetically like in the Browser component
+    categories.sort((a, b) => stringCompare(a.name, b.name));
     const current = this.props.params.name || '';
     return (
       <CategoryList
