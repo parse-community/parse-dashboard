@@ -49,14 +49,6 @@ export default class BrowserFilter extends React.Component {
     if (props.className !== this.props.className) {
       this.setState({ open: false });
     }
-    
-    // If we're in showMore mode and the filters have changed (e.g., after saving),
-    // update the state filters to ensure proper date conversion
-    if (this.state.showMore && props.filters !== this.props.filters) {
-      this.setState({
-        filters: this.convertRelativeDatesForDisplay(props.filters)
-      });
-    }
   }
 
   getCurrentFilterInfo() {
@@ -106,16 +98,30 @@ export default class BrowserFilter extends React.Component {
   toggleMore() {
     const currentFilter = this.getCurrentFilterInfo();
     
-    // Convert RelativeDate objects to Date objects for proper display when entering edit mode
-    const filtersForDisplay = this.convertRelativeDatesForDisplay(this.props.filters);
-    
-    this.setState(prevState => ({
-      showMore: !prevState.showMore,
-      name: currentFilter.name,
-      originalFilterName: currentFilter.name,
-      relativeDates: currentFilter.hasRelativeDates,
-      filters: prevState.showMore ? prevState.filters : filtersForDisplay, // Only update filters when entering edit mode
-    }));
+    this.setState(prevState => {
+      let filtersToUse;
+      if (!prevState.showMore) {
+        // Entering edit mode
+        // If we already have filters in state (e.g., user added fields), use those but convert only Parse dates
+        // Otherwise, convert the props filters for display (preserving RelativeDate objects)
+        if (prevState.filters.size > 0) {
+          filtersToUse = this.convertDatesForDisplay(prevState.filters);
+        } else {
+          filtersToUse = this.convertDatesForDisplay(this.props.filters);
+        }
+      } else {
+        // Exiting edit mode - preserve current state filters
+        filtersToUse = prevState.filters;
+      }
+      
+      return {
+        showMore: !prevState.showMore,
+        name: prevState.showMore ? prevState.name : currentFilter.name,
+        originalFilterName: currentFilter.name,
+        relativeDates: currentFilter.hasRelativeDates,
+        filters: filtersToUse,
+      };
+    });
   }
 
   isFilterNameExists(name) {
@@ -208,7 +214,30 @@ export default class BrowserFilter extends React.Component {
     return false;
   }
 
-  // Helper method to convert RelativeDate objects to Date objects for proper display
+  // Helper method to convert Parse Date objects, date strings, and RelativeDate objects to JavaScript Date objects
+  // This ensures all UI components receive proper JavaScript Date objects
+  convertDatesForDisplay(filters) {
+    const result = filters.map(filter => {
+      const compareTo = filter.get('compareTo');
+      if (compareTo && compareTo.__type === 'RelativeDate') {
+        // Convert RelativeDate to JavaScript Date for UI display
+        const now = new Date();
+        const date = new Date(now.getTime() + compareTo.value * 1000);
+        return filter.set('compareTo', date);
+      } else if (compareTo && compareTo.__type === 'Date') {
+        // Convert Parse Date to JavaScript Date
+        const date = new Date(compareTo.iso);
+        return filter.set('compareTo', date);
+      } else if (typeof compareTo === 'string' && !isNaN(Date.parse(compareTo))) {
+        // Convert date string to JavaScript Date
+        const date = new Date(compareTo);
+        return filter.set('compareTo', date);
+      }
+      // Leave JavaScript Date objects and other types unchanged
+      return filter;
+    });
+    return result;
+  }  // Helper method to convert RelativeDate objects to Parse Date format for saving
   convertRelativeDatesForDisplay(filters) {
     return filters.map(filter => {
       const compareTo = filter.get('compareTo');
@@ -239,8 +268,8 @@ export default class BrowserFilter extends React.Component {
         new Map({ class: filterClass, field: filterField, constraint: filterConstraint }),
       ]);
     } else {
-      // Convert RelativeDate objects to Date objects for proper display
-      filters = this.convertRelativeDatesForDisplay(filters);
+      // Convert only Parse Date objects to JavaScript Date objects, preserve RelativeDate objects
+      filters = this.convertDatesForDisplay(filters);
     }
     this.setState(prevState => ({
       open: !prevState.open,
@@ -294,13 +323,44 @@ export default class BrowserFilter extends React.Component {
   }
 
   save() {
-    const formatted = this.state.filters.map(filter => {
+    // Store the original UI-friendly filters before any conversion
+    const originalUIFilters = this.state.filters;
+    
+    let formatted = this.state.filters.map(filter => {
       const isComparable = Filters.Constraints[filter.get('constraint')].comparable;
       if (!isComparable) {
         return filter.delete('compareTo');
       }
       return filter;
     });
+
+    // If relativeDates checkbox is checked, convert for saving but don't update component state
+    if (this.state.relativeDates) {
+      formatted = formatted.map(filter => {
+        const compareTo = filter.get('compareTo');
+        if (compareTo instanceof Date) {
+          // Convert JavaScript Date back to RelativeDate format
+          const now = new Date();
+          const timeDiff = compareTo.getTime() - now.getTime();
+          const relativeDate = {
+            __type: 'RelativeDate',
+            value: Math.round(timeDiff / 1000) // Convert milliseconds to seconds
+          };
+          return filter.set('compareTo', relativeDate);
+        } else if (compareTo && compareTo.__type === 'Date') {
+          // Convert Parse Date to RelativeDate format
+          const parseDateObj = new Date(compareTo.iso);
+          const now = new Date();
+          const timeDiff = parseDateObj.getTime() - now.getTime();
+          const relativeDate = {
+            __type: 'RelativeDate',
+            value: Math.round(timeDiff / 1000) // Convert milliseconds to seconds
+          };
+          return filter.set('compareTo', relativeDate);
+        }
+        return filter;
+      });
+    }
     
     // If we're in showMore mode, we're editing an existing filter
     const currentFilterInfo = this.getCurrentFilterInfo();
@@ -312,12 +372,13 @@ export default class BrowserFilter extends React.Component {
     if (!this.state.showMore) {
       this.toggle();
     } else {
-      // In edit mode, update the original filter name to reflect the saved state
-      // Also refresh the filters to ensure they're properly converted after save
+      // In edit mode, update the original filter name but keep the original UI-friendly filters
+      // Convert any Parse Date objects in the UI filters to JavaScript Date objects for proper display
+      const uiFilters = this.convertDatesForDisplay(originalUIFilters);
+      
       this.setState({
         originalFilterName: this.state.name,
-        // Force re-conversion of filters after save to handle any date format changes
-        filters: this.convertRelativeDatesForDisplay(this.props.filters)
+        filters: uiFilters, // Ensure UI stays with JavaScript Date objects
       });
     }
   }
@@ -344,8 +405,9 @@ export default class BrowserFilter extends React.Component {
 
       const hasDateState = this.state.filters.some(filter => {
         const compareTo = filter.get('compareTo');
-        return compareTo && (compareTo.__type === 'Date' || compareTo instanceof Date);
+        return compareTo && (compareTo instanceof Date || compareTo.__type === 'Date' || compareTo.__type === 'RelativeDate');
       });
+      
       popover = (
         <Popover
           fixed={true}
