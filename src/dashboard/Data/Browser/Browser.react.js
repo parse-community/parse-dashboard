@@ -1262,32 +1262,6 @@ class Browser extends DashboardView {
     super.forceUpdate();
   }
 
-  removeFilter(filter) {
-    // Use the new deleteFilter method for consistency
-    if (filter && filter.id) {
-      this.deleteFilter(filter.id);
-    } else {
-      // Fallback to old method if no ID is available
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        this.props.params.className
-      );
-      let i = preferences.filters.length;
-      while (i--) {
-        const item = preferences.filters[i];
-        if (JSON.stringify(item) === JSON.stringify(filter)) {
-          preferences.filters.splice(i, 1);
-        }
-      }
-      ClassPreferences.updatePreferences(
-        preferences,
-        this.context.applicationId,
-        this.props.params.className
-      );
-      super.forceUpdate();
-    }
-  }
-
   deleteFilter(filterId) {
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
@@ -1295,7 +1269,24 @@ class Browser extends DashboardView {
     );
     
     if (preferences.filters) {
-      const updatedFilters = preferences.filters.filter(filter => filter.id !== filterId);
+      // Try to find by ID first (modern approach)
+      let updatedFilters = preferences.filters.filter(filter => filter.id !== filterId);
+      
+      // If no filter was removed (ID not found), use fallback method
+      if (updatedFilters.length === preferences.filters.length && filterId) {
+        // Fallback: try to find by comparing the entire filter object if filterId is actually a filter object
+        if (typeof filterId === 'object') {
+          let i = preferences.filters.length;
+          updatedFilters = [...preferences.filters];
+          while (i--) {
+            const item = updatedFilters[i];
+            if (JSON.stringify(item) === JSON.stringify(filterId)) {
+              updatedFilters.splice(i, 1);
+            }
+          }
+        }
+      }
+      
       ClassPreferences.updatePreferences(
         { ...preferences, filters: updatedFilters },
         this.context.applicationId,
@@ -2120,10 +2111,6 @@ class Browser extends DashboardView {
         filterClicked={url => {
           this.resetPage();
           this.props.navigate(generatePath(this.context, url));
-        }}
-        removeFilter={filter => {
-          this.resetPage();
-          this.removeFilter(filter);
         }}
         classClicked={() => {
           this.resetPage();

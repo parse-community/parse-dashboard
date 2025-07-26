@@ -168,15 +168,6 @@ export default class CategoryList extends React.Component {
                       >
                         <span>{name}</span>
                       </Link>
-                      <a
-                        className={styles.close}
-                        onClick={e => {
-                          e.preventDefault();
-                          this.props.removeFilter(filterData);
-                        }}
-                      >
-                        ×
-                      </a>
                     </div>
                   );
                 })}
