@@ -1,3 +1,10 @@
+# [7.3.0-alpha.31](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.30...7.3.0-alpha.31) (2025-07-26)
+
+
+### Features
+
+* Allow editing saved filters in data browser ([#2942](https://github.com/parse-community/parse-dashboard/issues/2942)) ([daaccaa](https://github.com/parse-community/parse-dashboard/commit/daaccaac75a0dad2082fb32abf1eb5f0cec17af7))
+
 # [7.3.0-alpha.30](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.29...7.3.0-alpha.30) (2025-07-24)
 
 
