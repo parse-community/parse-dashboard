@@ -145,12 +145,12 @@ export default class BrowserFilter extends React.Component {
     this.setState(prevState => {
       let filtersToUse;
       let originalFiltersToStore = prevState.originalFilters;
-      
+
       if (!prevState.showMore) {
         // Entering edit mode
         // Store the original applied filters for comparison
         originalFiltersToStore = this.props.filters;
-        
+
         // If we already have filters in state (e.g., user added fields), use those but convert only Parse dates
         // Otherwise, convert the props filters for display (preserving RelativeDate objects)
         if (prevState.filters.size > 0) {
