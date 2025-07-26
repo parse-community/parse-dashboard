@@ -1267,7 +1267,7 @@ class Browser extends DashboardView {
     return newFilterId;
   }
 
-  deleteFilter(filterId) {
+  deleteFilter(filterIdOrObject) {
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.params.className
@@ -1275,17 +1275,17 @@ class Browser extends DashboardView {
 
     if (preferences.filters) {
       // Try to find by ID first (modern approach)
-      let updatedFilters = preferences.filters.filter(filter => filter.id !== filterId);
+      let updatedFilters = preferences.filters.filter(filter => filter.id !== filterIdOrObject);
 
       // If no filter was removed (ID not found), use fallback method
-      if (updatedFilters.length === preferences.filters.length && filterId) {
-        // Fallback: try to find by comparing the entire filter object if filterId is actually a filter object
-        if (typeof filterId === 'object') {
+      if (updatedFilters.length === preferences.filters.length && filterIdOrObject) {
+        // Fallback: try to find by comparing the entire filter object if filterIdOrObject is actually a filter object
+        if (typeof filterIdOrObject === 'object') {
           let i = preferences.filters.length;
           updatedFilters = [...preferences.filters];
           while (i--) {
             const item = updatedFilters[i];
-            if (JSON.stringify(item) === JSON.stringify(filterId)) {
+            if (JSON.stringify(item) === JSON.stringify(filterIdOrObject)) {
               updatedFilters.splice(i, 1);
             }
           }

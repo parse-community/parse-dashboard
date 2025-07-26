@@ -16,7 +16,7 @@ import Label from 'components/Label/Label.react';
 import Popover from 'components/Popover/Popover.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import { CurrentApp } from 'context/currentApp';
-import { List, Map } from 'immutable';
+import { List, Map as ImmutableMap } from 'immutable';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import * as Filters from 'lib/Filters';
 import Position from 'lib/Position';
@@ -116,8 +116,9 @@ export default class BrowserFilter extends React.Component {
             hasRelativeDates = filterData.some(filter =>
               filter.compareTo && filter.compareTo.__type === 'RelativeDate'
             );
-          } catch {
-            // If parsing fails, assume no relative dates
+          } catch (error) {
+            // Log parsing errors for debugging
+            console.warn('Failed to parse saved filter:', error);
             hasRelativeDates = false;
           }
 
@@ -279,7 +280,7 @@ export default class BrowserFilter extends React.Component {
     });
     return result;
   }  // Helper method to convert RelativeDate objects to Parse Date format for saving
-  convertRelativeDatesForDisplay(filters) {
+  convertRelativeDatesToParseFormat(filters) {
     return filters.map(filter => {
       const compareTo = filter.get('compareTo');
       if (compareTo && compareTo.__type === 'RelativeDate') {
@@ -295,6 +296,45 @@ export default class BrowserFilter extends React.Component {
     });
   }
 
+  deleteCurrentFilter() {
+    const currentFilterInfo = this.getCurrentFilterInfo();
+    if (!currentFilterInfo.id) {
+      this.setState({ confirmDelete: false });
+      return;
+    }
+
+    // Delete the filter from ClassPreferences
+    const preferences = ClassPreferences.getPreferences(
+      this.context.applicationId,
+      this.props.className
+    );
+
+    if (preferences.filters) {
+      const updatedFilters = preferences.filters.filter(filter => filter.id !== currentFilterInfo.id);
+      ClassPreferences.updatePreferences(
+        this.context.applicationId,
+        this.props.className,
+        { ...preferences, filters: updatedFilters }
+      );
+    }
+
+    // Remove filterId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('filterId');
+    const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+    window.history.replaceState({}, '', newUrl);
+
+    // Clear current filters and close dialog
+    this.props.onChange(new ImmutableMap());
+    this.setState({ confirmDelete: false });
+    this.toggle();
+
+    // Call onDeleteFilter prop if provided
+    if (this.props.onDeleteFilter) {
+      this.props.onDeleteFilter(currentFilterInfo.id);
+    }
+  }
+
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
@@ -306,7 +346,7 @@ export default class BrowserFilter extends React.Component {
       );
       const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
       filters = new List([
-        new Map({ class: filterClass, field: filterField, constraint: filterConstraint }),
+        new ImmutableMap({ class: filterClass, field: filterField, constraint: filterConstraint }),
       ]);
     } else {
       // Convert only Parse Date objects to JavaScript Date objects, preserve RelativeDate objects
@@ -333,14 +373,14 @@ export default class BrowserFilter extends React.Component {
     const { filterClass, filterField, filterConstraint } = Filters.getFilterDetails(available);
     this.setState(({ filters }) => ({
       filters: filters.push(
-        new Map({ class: filterClass, field: filterField, constraint: filterConstraint })
+        new ImmutableMap({ class: filterClass, field: filterField, constraint: filterConstraint })
       ),
       editMode: true,
     }));
   }
 
   clear() {
-    this.props.onChange(new Map());
+    this.props.onChange(new ImmutableMap());
   }
 
   apply() {
@@ -542,42 +582,7 @@ export default class BrowserFilter extends React.Component {
                     primary={true}
                     width="120px"
                     onClick={() => {
-                      const currentFilterInfo = this.getCurrentFilterInfo();
-                      if (currentFilterInfo.id) {
-                        // Delete the filter from ClassPreferences
-                        const preferences = ClassPreferences.getPreferences(
-                          this.context.applicationId,
-                          this.props.className
-                        );
-
-                        if (preferences.filters) {
-                          const updatedFilters = preferences.filters.filter(filter => filter.id !== currentFilterInfo.id);
-                          ClassPreferences.updatePreferences(
-                            this.context.applicationId,
-                            this.props.className,
-                            { ...preferences, filters: updatedFilters }
-                          );
-                        }
-
-                        // Remove filterId from URL
-                        const urlParams = new URLSearchParams(window.location.search);
-                        urlParams.delete('filterId');
-                        const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
-                        window.history.replaceState({}, '', newUrl);
-
-                        // Clear current filters and close dialog
-                        this.props.onChange(new Map());
-                        this.setState({ confirmDelete: false });
-                        this.toggle();
-
-                        // Call onDeleteFilter prop if provided
-                        if (this.props.onDeleteFilter) {
-                          this.props.onDeleteFilter(currentFilterInfo.id);
-                        }
-                      } else {
-                        // Close the confirmation dialog if no filter ID
-                        this.setState({ confirmDelete: false });
-                      }
+                      this.deleteCurrentFilter();
                     }}
                   />
                 </div>
@@ -616,59 +621,28 @@ export default class BrowserFilter extends React.Component {
                     </div>
                   )}
                   <div className={styles.btnFlex}>
-                    {(() => {
-                      const currentFilter = this.getCurrentFilterInfo();
-                      const isAppliedSavedFilter = currentFilter.isApplied && this.props.filters.size > 0;
-
-                      if (isAppliedSavedFilter && !this.state.showMore) {
-                        return (
-                          <>
-                            <span
-                              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-                              onClick={() => this.toggleMore()}
-                            >
-                              <Icon
-                                name="down-solid"
-                                width={20}
-                                height={20}
-                                fill="white"
-                              />
-                            </span>
-                            <Button
-                              color="white"
-                              value="Clear"
-                              disabled={this.state.filters.size === 0}
-                              width="120px"
-                              onClick={() => this.clear()}
-                            />
-                          </>
-                        );
-                      } else if (!this.state.showMore) {
-                        return (
-                          <>
-                            <span
-                              style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-                              onClick={() => this.toggleMore()}
-                            >
-                              <Icon
-                                name="down-solid"
-                                width={20}
-                                height={20}
-                                fill="white"
-                              />
-                            </span>
-                            <Button
-                              color="white"
-                              value="Clear"
-                              disabled={this.state.filters.size === 0}
-                              width="120px"
-                              onClick={() => this.clear()}
-                            />
-                          </>
-                        );
-                      }
-                      return null;
-                    })()}
+                    {!this.state.showMore && (
+                      <>
+                        <span
+                          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                          onClick={() => this.toggleMore()}
+                        >
+                          <Icon
+                            name="down-solid"
+                            width={20}
+                            height={20}
+                            fill="white"
+                          />
+                        </span>
+                        <Button
+                          color="white"
+                          value="Clear"
+                          disabled={this.state.filters.size === 0}
+                          width="120px"
+                          onClick={() => this.clear()}
+                        />
+                      </>
+                    )}
                   </div>
                   <div className={styles.btnFlex}>
                     <Button
