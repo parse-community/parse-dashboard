@@ -104,6 +104,9 @@ export default class BrowserFilter extends React.Component {
     // Extract filterId from URL if present
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
+    const filtersParam = urlParams.get('filters');
+    
+    console.log('getCurrentFilterInfo - URL params:', { filterId, filtersParam, propsFiltersSize: this.props.filters.size });
 
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
@@ -138,7 +141,6 @@ export default class BrowserFilter extends React.Component {
     }
 
     // Check for legacy filters (filters parameter without filterId)
-    const filtersParam = urlParams.get('filters');
     if (filtersParam && this.props.filters.size > 0) {
       const preferences = ClassPreferences.getPreferences(
         this.context.applicationId,
@@ -148,11 +150,16 @@ export default class BrowserFilter extends React.Component {
       if (preferences.filters) {
         // Try to find a saved filter that matches the current filter content
         const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+        console.log('Legacy filter matching - currentFiltersString:', currentFiltersString);
+        console.log('Legacy filter matching - saved filters:', preferences.filters);
         
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
             const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
-            return savedFiltersString === currentFiltersString;
+            console.log('Comparing with saved filter:', savedFilter.name, 'savedFiltersString:', savedFiltersString);
+            const matches = savedFiltersString === currentFiltersString;
+            console.log('Match result:', matches);
+            return matches;
           } catch {
             return false;
           }
@@ -362,6 +369,7 @@ export default class BrowserFilter extends React.Component {
 
   deleteCurrentFilter() {
     const currentFilterInfo = this.getCurrentFilterInfo();
+    console.log('Deleting filter - currentFilterInfo:', currentFilterInfo);
     
     // For legacy filters without ID, we need to delete by name and content match
     if (!currentFilterInfo.id && currentFilterInfo.isLegacy && currentFilterInfo.name) {
