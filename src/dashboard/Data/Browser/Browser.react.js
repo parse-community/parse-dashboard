@@ -1201,9 +1201,28 @@ class Browser extends DashboardView {
     } else {
       const source = this.props.params.className;
       const _filters = JSON.stringify(filters.toJSON());
-      const url = `browser/${source}${
-        filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`
-      }`;
+      
+      // Preserve filterId from current URL if it exists
+      const currentUrlParams = new URLSearchParams(window.location.search);
+      const currentFilterId = currentUrlParams.get('filterId');
+      
+      let url = `browser/${source}`;
+      if (filters.size === 0) {
+        // If no filters, don't include any query parameters
+        url = `browser/${source}`;
+      } else {
+        // Build query parameters
+        const queryParams = new URLSearchParams();
+        queryParams.set('filters', _filters);
+        
+        // Preserve filterId if it exists in current URL
+        if (currentFilterId) {
+          queryParams.set('filterId', currentFilterId);
+        }
+        
+        url = `browser/${source}?${queryParams.toString()}`;
+      }
+      
       // filters param change is making the fetch call
       this.props.navigate(generatePath(this.context, url));
     }
@@ -1349,13 +1368,23 @@ class Browser extends DashboardView {
         data: null,
       },
       () => {
-        let filterQueryString;
+        // Preserve filterId from current URL if it exists
+        const currentUrlParams = new URLSearchParams(window.location.search);
+        const currentFilterId = currentUrlParams.get('filterId');
+        
+        let url = this.getRelationURL();
         if (filters && filters.size) {
-          filterQueryString = encodeURIComponent(JSON.stringify(filters.toJSON()));
+          const queryParams = new URLSearchParams();
+          queryParams.set('filters', JSON.stringify(filters.toJSON()));
+          
+          // Preserve filterId if it exists in current URL
+          if (currentFilterId) {
+            queryParams.set('filterId', currentFilterId);
+          }
+          
+          url = `${url}?${queryParams.toString()}`;
         }
-        const url = `${this.getRelationURL()}${
-          filterQueryString ? `?filters=${filterQueryString}` : ''
-        }`;
+        
         this.props.navigate(url);
       }
     );
