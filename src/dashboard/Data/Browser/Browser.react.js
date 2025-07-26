@@ -227,6 +227,7 @@ class Browser extends DashboardView {
     this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.deleteFilter = this.deleteFilter.bind(this);
     this.selectRow = this.selectRow.bind(this);
     this.updateRow = this.updateRow.bind(this);
     this.updateOrdering = this.updateOrdering.bind(this);
@@ -1281,6 +1282,24 @@ class Browser extends DashboardView {
     super.forceUpdate();
   }
 
+  deleteFilter(filterId) {
+    const preferences = ClassPreferences.getPreferences(
+      this.context.applicationId,
+      this.props.params.className
+    );
+    
+    if (preferences.filters) {
+      const updatedFilters = preferences.filters.filter(filter => filter.id !== filterId);
+      ClassPreferences.updatePreferences(
+        { ...preferences, filters: updatedFilters },
+        this.context.applicationId,
+        this.props.params.className
+      );
+    }
+    
+    super.forceUpdate();
+  }
+
   updateOrdering(ordering) {
     const source = this.state.relation || this.props.params.className;
     this.setState(
@@ -2278,6 +2297,7 @@ class Browser extends DashboardView {
               filters={this.state.filters}
               onFilterChange={this.updateFilters}
               onFilterSave={(...args) => this.saveFilters(...args)}
+              onDeleteFilter={this.deleteFilter}
               onRemoveColumn={this.showRemoveColumn}
               onDeleteRows={this.showDeleteRows}
               onDropClass={this.showDropClass}

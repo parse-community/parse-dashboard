@@ -32,6 +32,7 @@ const BrowserToolbar = ({
   setCurrent,
   onFilterChange,
   onFilterSave,
+  onDeleteFilter,
   onAddColumn,
   onAddRow,
   onAddRowWithModal,
@@ -401,6 +402,7 @@ const BrowserToolbar = ({
         filters={filters}
         onChange={onFilterChange}
         onSaveFilter={onFilterSave}
+        onDeleteFilter={onDeleteFilter}
         className={classNameForEditors}
         blacklistedFilters={onAddRow ? [] : ['unique']}
         disabled={isPendingEditCloneRows}

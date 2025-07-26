@@ -40,6 +40,7 @@ export default class BrowserFilter extends React.Component {
       relativeDates: false,
       showMore: false,
       originalFilterName: '',
+      confirmDelete: false,
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -522,29 +523,100 @@ export default class BrowserFilter extends React.Component {
                   />
                 </div>
               )}
-              {!this.state.confirmName && (
+              {this.state.confirmDelete && (
                 <div className={styles.footer}>
-                  <div className={styles.btnFlex}>
-                    <Button
-                      color="white"
-                      value="Save"
-                      width="120px"
-                      disabled={this.state.showMore && (!this.state.name || (this.state.name === this.state.originalFilterName && !this.hasFilterContentChanged()) || this.isFilterNameExists(this.state.name))}
-                      primary={this.state.showMore && this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name)}
-                      onClick={() => {
-                        if (this.state.showMore) {
-                          // Update existing filter
-                          this.save();
-                        } else {
-                          this.setState({ confirmName: true });
+                  <Button
+                    color="white"
+                    value="Cancel"
+                    width="120px"
+                    onClick={() => this.setState({ confirmDelete: false })}
+                  />
+                  <Button
+                    color="red"
+                    value="Delete"
+                    primary={true}
+                    width="120px"
+                    onClick={() => {
+                      const currentFilterInfo = this.getCurrentFilterInfo();
+                      if (currentFilterInfo.id) {
+                        // Delete the filter from ClassPreferences
+                        const preferences = ClassPreferences.getPreferences(
+                          this.context.applicationId,
+                          this.props.className
+                        );
+                        
+                        if (preferences.filters) {
+                          const updatedFilters = preferences.filters.filter(filter => filter.id !== currentFilterInfo.id);
+                          ClassPreferences.updatePreferences(
+                            this.context.applicationId,
+                            this.props.className,
+                            { ...preferences, filters: updatedFilters }
+                          );
                         }
-                      }}
-                    />
+                        
+                        // Remove filterId from URL
+                        const urlParams = new URLSearchParams(window.location.search);
+                        urlParams.delete('filterId');
+                        const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+                        window.history.replaceState({}, '', newUrl);
+                        
+                        // Clear current filters and close dialog
+                        this.props.onChange(new Map());
+                        this.setState({ confirmDelete: false });
+                        this.toggle();
+                        
+                        // Call onDeleteFilter prop if provided
+                        if (this.props.onDeleteFilter) {
+                          this.props.onDeleteFilter(currentFilterInfo.id);
+                        }
+                      } else {
+                        // Close the confirmation dialog if no filter ID
+                        this.setState({ confirmDelete: false });
+                      }
+                    }}
+                  />
+                </div>
+              )}
+              {!this.state.confirmName && !this.state.confirmDelete && (
+                <div className={styles.footer}>
+                  {this.state.showMore && (
+                    <div className={styles.btnFlex} style={{ marginBottom: '10px' }}>
+                      <Button
+                        color="white"
+                        value="More"
+                        width="120px"
+                        onClick={() => this.toggleMore()}
+                      />
+                      <Button
+                        color="white"
+                        value="Save"
+                        width="120px"
+                        disabled={!this.state.name || (this.state.name === this.state.originalFilterName && !this.hasFilterContentChanged()) || this.isFilterNameExists(this.state.name)}
+                        primary={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name)}
+                        onClick={() => this.save()}
+                      />
+                      <Button
+                        color="white"
+                        value="Delete"
+                        width="120px"
+                        onClick={() => this.setState({ confirmDelete: true })}
+                      />
+                    </div>
+                  )}
+                  <div className={styles.btnFlex}>
+                    {!this.state.showMore && (
+                      <Button
+                        color="white"
+                        value="Save"
+                        width="120px"
+                        onClick={() => this.setState({ confirmName: true })}
+                      />
+                    )}
                     {(() => {
                       const currentFilter = this.getCurrentFilterInfo();
                       const isAppliedSavedFilter = currentFilter.isApplied && this.props.filters.size > 0;
                       
-                      if (isAppliedSavedFilter) {
+                      if (isAppliedSavedFilter && !this.state.showMore) {
                         return (
                           <Button
                             color="white"
@@ -553,7 +625,7 @@ export default class BrowserFilter extends React.Component {
                             onClick={() => this.toggleMore()}
                           />
                         );
-                      } else {
+                      } else if (!this.state.showMore) {
                         return (
                           <Button
                             color="white"
@@ -564,6 +636,7 @@ export default class BrowserFilter extends React.Component {
                           />
                         );
                       }
+                      return null;
                     })()}
                   </div>
                   <div className={styles.btnFlex}>
