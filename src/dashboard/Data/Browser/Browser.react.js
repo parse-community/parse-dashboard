@@ -1224,7 +1224,9 @@ class Browser extends DashboardView {
       this.context.applicationId,
       this.props.params.className
     );
-    
+
+    let newFilterId = filterId;
+
     if (filterId) {
       // Update existing filter
       const existingFilterIndex = preferences.filters.findIndex(filter => filter.id === filterId);
@@ -1236,23 +1238,23 @@ class Browser extends DashboardView {
         };
       } else {
         // Fallback: if filter not found, create new one
+        newFilterId = crypto.randomUUID();
         preferences.filters.push({
           name,
-          id: crypto.randomUUID(),
+          id: newFilterId,
           filter: _filters,
         });
       }
     } else {
-      // Create new filter only if it doesn't already exist
-      if (!preferences.filters.find(filter => filter.filter === _filters)) {
-        preferences.filters.push({
-          name,
-          id: crypto.randomUUID(),
-          filter: _filters,
-        });
-      }
+      // Create new filter
+      newFilterId = crypto.randomUUID();
+      preferences.filters.push({
+        name,
+        id: newFilterId,
+        filter: _filters,
+      });
     }
-    
+
     ClassPreferences.updatePreferences(
       preferences,
       this.context.applicationId,
@@ -1260,6 +1262,9 @@ class Browser extends DashboardView {
     );
 
     super.forceUpdate();
+
+    // Return the filter ID for new filters so the caller can apply them
+    return newFilterId;
   }
 
   deleteFilter(filterId) {
@@ -1267,11 +1272,11 @@ class Browser extends DashboardView {
       this.context.applicationId,
       this.props.params.className
     );
-    
+
     if (preferences.filters) {
       // Try to find by ID first (modern approach)
       let updatedFilters = preferences.filters.filter(filter => filter.id !== filterId);
-      
+
       // If no filter was removed (ID not found), use fallback method
       if (updatedFilters.length === preferences.filters.length && filterId) {
         // Fallback: try to find by comparing the entire filter object if filterId is actually a filter object
@@ -1286,14 +1291,14 @@ class Browser extends DashboardView {
           }
         }
       }
-      
+
       ClassPreferences.updatePreferences(
         { ...preferences, filters: updatedFilters },
         this.context.applicationId,
         this.props.params.className
       );
     }
-    
+
     super.forceUpdate();
   }
 

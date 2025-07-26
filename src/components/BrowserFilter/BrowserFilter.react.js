@@ -55,13 +55,13 @@ export default class BrowserFilter extends React.Component {
     // First check if there's a filterId in the URL (means we're definitely viewing a saved filter)
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
-    
+
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
         this.context.applicationId,
         this.props.className
       );
-      
+
       if (preferences.filters) {
         // If filterId exists in saved filters, it's definitely a saved filter
         const savedFilter = preferences.filters.find(filter => filter.id === filterId);
@@ -70,19 +70,19 @@ export default class BrowserFilter extends React.Component {
         }
       }
     }
-    
+
     // Fallback: Check if current filter structure matches any saved filter
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.className
     );
-    
+
     if (!preferences.filters || this.props.filters.size === 0) {
       return false;
     }
-    
+
     const currentFiltersString = JSON.stringify(this.props.filters.toJS());
-    
+
     return preferences.filters.some(savedFilter => {
       try {
         const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
@@ -97,13 +97,13 @@ export default class BrowserFilter extends React.Component {
     // Extract filterId from URL if present
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
-    
+
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
         this.context.applicationId,
         this.props.className
       );
-      
+
       if (preferences.filters) {
         const savedFilter = preferences.filters.find(filter => filter.id === filterId);
         if (savedFilter) {
@@ -118,7 +118,7 @@ export default class BrowserFilter extends React.Component {
             // If parsing fails, assume no relative dates
             hasRelativeDates = false;
           }
-          
+
           return {
             id: savedFilter.id,
             name: savedFilter.name,
@@ -128,7 +128,7 @@ export default class BrowserFilter extends React.Component {
         }
       }
     }
-    
+
     return {
       id: null,
       name: '',
@@ -139,7 +139,7 @@ export default class BrowserFilter extends React.Component {
 
   toggleMore() {
     const currentFilter = this.getCurrentFilterInfo();
-    
+
     this.setState(prevState => {
       let filtersToUse;
       if (!prevState.showMore) {
@@ -155,7 +155,7 @@ export default class BrowserFilter extends React.Component {
         // Exiting edit mode - preserve current state filters
         filtersToUse = prevState.filters;
       }
-      
+
       return {
         showMore: !prevState.showMore,
         name: prevState.showMore ? prevState.name : currentFilter.name,
@@ -171,7 +171,7 @@ export default class BrowserFilter extends React.Component {
       this.context.applicationId,
       this.props.className
     );
-    
+
     if (preferences.filters && name) {
       return preferences.filters.some(filter =>
         filter.name === name && filter.id !== this.getCurrentFilterInfo().id
@@ -366,7 +366,7 @@ export default class BrowserFilter extends React.Component {
   save() {
     // Store the original UI-friendly filters before any conversion
     const originalUIFilters = this.state.filters;
-    
+
     let formatted = this.state.filters.map(filter => {
       const isComparable = Filters.Constraints[filter.get('constraint')].comparable;
       if (!isComparable) {
@@ -402,21 +402,32 @@ export default class BrowserFilter extends React.Component {
         return filter;
       });
     }
-    
+
     // If we're in showMore mode, we're editing an existing filter
     const currentFilterInfo = this.getCurrentFilterInfo();
     const filterId = this.state.showMore ? currentFilterInfo.id : null;
-    
-    this.props.onSaveFilter(formatted, this.state.name, this.state.relativeDates, filterId);
-    
+
+    const savedFilterId = this.props.onSaveFilter(formatted, this.state.name, this.state.relativeDates, filterId);
+
     // Only close the dialog if we're not in edit mode (showMore)
     if (!this.state.showMore) {
+      // For new filters, apply the saved filter and update URL
+      this.props.onChange(formatted);
+
+      // Update URL with the new filter ID if we got one back
+      if (savedFilterId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('filterId', savedFilterId);
+        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, '', newUrl);
+      }
+
       this.toggle();
     } else {
       // In edit mode, update the original filter name but keep the original UI-friendly filters
       // Convert any Parse Date objects in the UI filters to JavaScript Date objects for proper display
       const uiFilters = this.convertDatesForDisplay(originalUIFilters);
-      
+
       this.setState({
         originalFilterName: this.state.name,
         filters: uiFilters, // Ensure UI stays with JavaScript Date objects
@@ -448,7 +459,7 @@ export default class BrowserFilter extends React.Component {
         const compareTo = filter.get('compareTo');
         return compareTo && (compareTo instanceof Date || compareTo.__type === 'Date' || compareTo.__type === 'RelativeDate');
       });
-      
+
       popover = (
         <Popover
           fixed={true}
@@ -539,7 +550,7 @@ export default class BrowserFilter extends React.Component {
                           this.context.applicationId,
                           this.props.className
                         );
-                        
+
                         if (preferences.filters) {
                           const updatedFilters = preferences.filters.filter(filter => filter.id !== currentFilterInfo.id);
                           ClassPreferences.updatePreferences(
@@ -548,18 +559,18 @@ export default class BrowserFilter extends React.Component {
                             { ...preferences, filters: updatedFilters }
                           );
                         }
-                        
+
                         // Remove filterId from URL
                         const urlParams = new URLSearchParams(window.location.search);
                         urlParams.delete('filterId');
                         const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
                         window.history.replaceState({}, '', newUrl);
-                        
+
                         // Clear current filters and close dialog
                         this.props.onChange(new Map());
                         this.setState({ confirmDelete: false });
                         this.toggle();
-                        
+
                         // Call onDeleteFilter prop if provided
                         if (this.props.onDeleteFilter) {
                           this.props.onDeleteFilter(currentFilterInfo.id);
@@ -609,7 +620,7 @@ export default class BrowserFilter extends React.Component {
                     {(() => {
                       const currentFilter = this.getCurrentFilterInfo();
                       const isAppliedSavedFilter = currentFilter.isApplied && this.props.filters.size > 0;
-                      
+
                       if (isAppliedSavedFilter && !this.state.showMore) {
                         return (
                           <>
