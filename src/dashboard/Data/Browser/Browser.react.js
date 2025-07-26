@@ -1278,13 +1278,28 @@ class Browser extends DashboardView {
         });
       }
     } else {
-      // Create new filter
-      newFilterId = crypto.randomUUID();
-      preferences.filters.push({
-        name,
-        id: newFilterId,
-        filter: _filters,
-      });
+      // Check if this is updating a legacy filter (no filterId but filter content matches existing filter without ID)
+      const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
+        !filter.id && filter.name === name && filter.filter === _filters
+      );
+      
+      if (existingLegacyFilterIndex !== -1) {
+        // Convert legacy filter to modern filter by adding an ID
+        newFilterId = crypto.randomUUID();
+        preferences.filters[existingLegacyFilterIndex] = {
+          name,
+          id: newFilterId,
+          filter: _filters,
+        };
+      } else {
+        // Create new filter
+        newFilterId = crypto.randomUUID();
+        preferences.filters.push({
+          name,
+          id: newFilterId,
+          filter: _filters,
+        });
+      }
     }
 
     ClassPreferences.updatePreferences(
