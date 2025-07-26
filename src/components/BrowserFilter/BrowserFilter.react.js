@@ -381,26 +381,39 @@ export default class BrowserFilter extends React.Component {
       if (preferences.filters) {
         // Find the filter by name and content for legacy filters
         const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+        console.log('Deleting legacy filter - current filters string:', currentFiltersString);
+        console.log('Looking for filter with name:', currentFilterInfo.name);
+        
         const updatedFilters = preferences.filters.filter(filter => {
           // For legacy filters (no id), match by name AND content
           if (!filter.id && filter.name === currentFilterInfo.name) {
+            console.log('Found matching legacy filter to delete:', filter);
             try {
               const savedFiltersString = JSON.stringify(JSON.parse(filter.filter));
-              return savedFiltersString !== currentFiltersString;
+              const shouldDelete = savedFiltersString === currentFiltersString;
+              console.log('Should delete filter?', shouldDelete);
+              return !shouldDelete; // Return false to remove this filter
             } catch {
               // If parsing fails, keep the filter
+              console.log('Parse error, keeping filter');
               return true;
             }
           }
           // Keep all other filters
           return true;
         });
+        
+        console.log('Original filters count:', preferences.filters.length);
+        console.log('Updated filters count:', updatedFilters.length);
+        console.log('Updated filters:', updatedFilters);
 
         ClassPreferences.updatePreferences(
           this.context.applicationId,
           this.props.className,
           { ...preferences, filters: updatedFilters }
         );
+        
+        console.log('Preferences updated successfully');
       }
     } else if (currentFilterInfo.id) {
       // Handle modern filters with ID
