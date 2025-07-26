@@ -603,7 +603,7 @@ export default class BrowserFilter extends React.Component {
               {!this.state.confirmName && !this.state.confirmDelete && (
                 <div className={styles.footer}>
                   {this.state.showMore && (
-                    <div className={styles.btnFlex} style={{ marginBottom: '10px' }}>
+                    <div className={styles.btnFlex}>
                       <span
                         style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                         onClick={() => this.toggleMore()}
