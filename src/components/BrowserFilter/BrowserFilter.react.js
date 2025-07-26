@@ -335,6 +335,20 @@ export default class BrowserFilter extends React.Component {
     }
   }
 
+  copyCurrentFilter() {
+    // Remove filterId from URL so when saving it will create a new filter instead of updating
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('filterId');
+    const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+    window.history.replaceState({}, '', newUrl);
+
+    // Clear the filter name so user can enter a new name
+    this.setState({
+      name: '',
+      originalFilterName: ''
+    });
+  }
+
   toggle() {
     let filters = this.props.filters;
     if (this.props.filters.size === 0) {
@@ -592,7 +606,7 @@ export default class BrowserFilter extends React.Component {
                   {this.state.showMore && (
                     <div className={styles.btnFlex}>
                       <span
-                        style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                        className={styles.iconButton}
                         onClick={() => this.toggleMore()}
                       >
                         <Icon
@@ -602,21 +616,55 @@ export default class BrowserFilter extends React.Component {
                           fill="white"
                         />
                       </span>
-                      <Button
-                        color={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? 'green' : 'white'}
-                        value="Save"
-                        width="120px"
-                        disabled={!this.state.name || (this.state.name === this.state.originalFilterName && !this.hasFilterContentChanged()) || this.isFilterNameExists(this.state.name)}
-                        primary={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name)}
-                        onClick={() => this.save()}
+                      <div
+                        style={{
+                          width: '1px',
+                          height: '20px',
+                          backgroundColor: '#ffffff',
+                          opacity: 0.3,
+                          alignSelf: 'center'
+                        }}
                       />
-                      {this.isCurrentFilterSaved() && (
-                        <Button
-                          color="white"
-                          value="Delete"
-                          width="120px"
-                          onClick={() => this.setState({ confirmDelete: true })}
+                      <span
+                        className={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? styles.iconButton : styles.iconButtonDisabled}
+                        onClick={() => {
+                          if (this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name)) {
+                            this.save();
+                          }
+                        }}
+                      >
+                        <Icon
+                          name="check"
+                          width={20}
+                          height={20}
+                          fill={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? '#00db7c' : 'white'}
                         />
+                      </span>
+                      {this.isCurrentFilterSaved() && (
+                        <>
+                          <span
+                            className={styles.iconButton}
+                            onClick={() => this.copyCurrentFilter()}
+                          >
+                            <Icon
+                              name="clone-icon"
+                              width={20}
+                              height={20}
+                              fill="white"
+                            />
+                          </span>
+                          <span
+                            className={styles.iconButton}
+                            onClick={() => this.setState({ confirmDelete: true })}
+                          >
+                            <Icon
+                              name="trash-solid"
+                              width={20}
+                              height={20}
+                              fill="white"
+                            />
+                          </span>
+                        </>
                       )}
                     </div>
                   )}
@@ -624,7 +672,7 @@ export default class BrowserFilter extends React.Component {
                     {!this.state.showMore && (
                       <>
                         <span
-                          style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                          className={styles.iconButton}
                           onClick={() => this.toggleMore()}
                         >
                           <Icon

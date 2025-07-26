@@ -163,3 +163,28 @@
   display: flex;
   gap: 12px;
 }
+
+.iconButton {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.iconButtonDisabled {
+  cursor: not-allowed;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+  
+  &:hover {
+    opacity: 0.3;
+  }
+}
