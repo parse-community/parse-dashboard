@@ -524,10 +524,23 @@ class Browser extends DashboardView {
     if (query.has('filters')) {
       const queryFilters = JSON.parse(query.get('filters'));
       queryFilters.forEach(
-        filter =>
-          (filters = filters.push(
-            new Map({ ...filter, class: filter.class || props.params.className })
-          ))
+        filter => {
+          // Convert date strings to Parse Date objects for proper Parse query functionality
+          const processedFilter = { ...filter, class: filter.class || props.params.className };
+
+          // Check if compareTo is a date string and convert it to a Parse Date object
+          if (processedFilter.compareTo &&
+              typeof processedFilter.compareTo === 'string' &&
+              !isNaN(Date.parse(processedFilter.compareTo))) {
+            // Convert string date to Parse Date format for proper query functionality
+            processedFilter.compareTo = {
+              __type: 'Date',
+              iso: new Date(processedFilter.compareTo).toISOString()
+            };
+          }
+
+          filters = filters.push(Map(processedFilter));
+        }
       );
     }
     return filters;
