@@ -1263,23 +1263,29 @@ class Browser extends DashboardView {
   }
 
   removeFilter(filter) {
-    const preferences = ClassPreferences.getPreferences(
-      this.context.applicationId,
-      this.props.params.className
-    );
-    let i = preferences.filters.length;
-    while (i--) {
-      const item = preferences.filters[i];
-      if (JSON.stringify(item) === JSON.stringify(filter)) {
-        preferences.filters.splice(i, 1);
+    // Use the new deleteFilter method for consistency
+    if (filter && filter.id) {
+      this.deleteFilter(filter.id);
+    } else {
+      // Fallback to old method if no ID is available
+      const preferences = ClassPreferences.getPreferences(
+        this.context.applicationId,
+        this.props.params.className
+      );
+      let i = preferences.filters.length;
+      while (i--) {
+        const item = preferences.filters[i];
+        if (JSON.stringify(item) === JSON.stringify(filter)) {
+          preferences.filters.splice(i, 1);
+        }
       }
+      ClassPreferences.updatePreferences(
+        preferences,
+        this.context.applicationId,
+        this.props.params.className
+      );
+      super.forceUpdate();
     }
-    ClassPreferences.updatePreferences(
-      preferences,
-      this.context.applicationId,
-      this.props.params.className
-    );
-    super.forceUpdate();
   }
 
   deleteFilter(filterId) {
