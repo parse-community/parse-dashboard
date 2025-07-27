@@ -47,70 +47,50 @@ export default class BrowserFilter extends React.Component {
     this.wrapRef = React.createRef();
   }
 
-  componentWillReceiveProps(props) {
-    if (props.className !== this.props.className) {
-      this.setState({ open: false });
-    }
+  getClassNameFromURL() {
+    const pathParts = window.location.pathname.split('/');
+    const browserIndex = pathParts.indexOf('browser');
+    return browserIndex >= 0 && pathParts[browserIndex + 1]
+      ? pathParts[browserIndex + 1]
+      : this.props.className;
+  }
 
-    // Auto-open filter dialog if editFilter=true is in URL
+  initializeEditFilterMode() {
     const urlParams = new URLSearchParams(window.location.search);
     const isEditFilterMode = urlParams.get('editFilter') === 'true';
 
     if (isEditFilterMode && !this.state.open) {
-      // Get current filter info including name and relative dates setting
       const currentFilter = this.getCurrentFilterInfo();
-
-      // Load filter data from URL if props.filters is empty
-      let filtersToDisplay = props.filters;
-      if (props.filters.size === 0) {
-        filtersToDisplay = this.loadFiltersFromURL();
-      }
-
-      // Convert filters for display and open the dialog
-      const filters = this.convertDatesForDisplay(filtersToDisplay);
-      this.setState({
-        open: true,
-        showMore: true, // Open in edit mode
-        filters: filters,
-        editMode: true,
-        name: currentFilter.name || '',
-        originalFilterName: currentFilter.name || '',
-        relativeDates: currentFilter.hasRelativeDates || false,
-        originalRelativeDates: currentFilter.hasRelativeDates || false,
-        originalFilters: filtersToDisplay, // Store original filters for comparison
-      });
-    }
-  }
-
-  componentDidMount() {
-    // Check if we should auto-open for edit mode on initial load
-    const urlParams = new URLSearchParams(window.location.search);
-    const isEditFilterMode = urlParams.get('editFilter') === 'true';
-
-    if (isEditFilterMode) {
-      // Get current filter info including name and relative dates setting
-      const currentFilter = this.getCurrentFilterInfo();
-
-      // Load filter data from URL if props.filters is empty
       let filtersToDisplay = this.props.filters;
       if (this.props.filters.size === 0) {
         filtersToDisplay = this.loadFiltersFromURL();
       }
 
-      // Convert filters for display and open the dialog
       const filters = this.convertDatesForDisplay(filtersToDisplay);
       this.setState({
         open: true,
-        showMore: true, // Open in edit mode
+        showMore: true,
         filters: filters,
         editMode: true,
         name: currentFilter.name || '',
         originalFilterName: currentFilter.name || '',
         relativeDates: currentFilter.hasRelativeDates || false,
         originalRelativeDates: currentFilter.hasRelativeDates || false,
-        originalFilters: filtersToDisplay, // Store original filters for comparison
+        originalFilters: filtersToDisplay,
       });
     }
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.className !== this.props.className) {
+      this.setState({ open: false });
+    }
+
+    this.initializeEditFilterMode();
+  }
+
+  componentDidMount() {
+    this.initializeEditFilterMode();
   }
 
   isCurrentFilterSaved() {
@@ -118,10 +98,7 @@ export default class BrowserFilter extends React.Component {
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
 
-    // Extract className from URL path to handle cross-class navigation
-    const pathParts = window.location.pathname.split('/');
-    const browserIndex = pathParts.indexOf('browser');
-    const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
+    const urlClassName = this.getClassNameFromURL();
 
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
@@ -198,10 +175,7 @@ export default class BrowserFilter extends React.Component {
     const filterId = urlParams.get('filterId');
     const filtersParam = urlParams.get('filters');
 
-    // Extract className from URL path to handle cross-class navigation
-    const pathParts = window.location.pathname.split('/');
-    const browserIndex = pathParts.indexOf('browser');
-    const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
+    const urlClassName = this.getClassNameFromURL();
 
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
@@ -324,10 +298,7 @@ export default class BrowserFilter extends React.Component {
     const filtersParam = urlParams.get('filters');
     const filterId = urlParams.get('filterId');
 
-    // Extract className from URL path to handle cross-class navigation
-    const pathParts = window.location.pathname.split('/');
-    const browserIndex = pathParts.indexOf('browser');
-    const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
+    const urlClassName = this.getClassNameFromURL();
 
     // If we have a filterId, load from saved filters
     if (filterId) {
@@ -405,10 +376,7 @@ export default class BrowserFilter extends React.Component {
   }
 
   isFilterNameExists(name) {
-    // Extract className from URL path to handle cross-class navigation
-    const pathParts = window.location.pathname.split('/');
-    const browserIndex = pathParts.indexOf('browser');
-    const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
+    const urlClassName = this.getClassNameFromURL();
 
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
