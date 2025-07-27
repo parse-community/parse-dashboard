@@ -85,7 +85,7 @@ export default class BrowserFilter extends React.Component {
       if (preferences.filters) {
         // Try to find a saved filter that matches the current filter content
         const currentFiltersString = JSON.stringify(this.props.filters.toJS());
-        
+
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
             const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
@@ -148,7 +148,7 @@ export default class BrowserFilter extends React.Component {
       if (preferences.filters) {
         // Try to find a saved filter that matches the current filter content
         const currentFiltersString = JSON.stringify(this.props.filters.toJS());
-        
+
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
             const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
@@ -382,7 +382,7 @@ export default class BrowserFilter extends React.Component {
             }
             return false;
           });
-          
+
           if (matchingFilter) {
             this.props.onDeleteFilter(matchingFilter);
           }
@@ -533,7 +533,7 @@ export default class BrowserFilter extends React.Component {
     // If we're in showMore mode, we're editing an existing filter
     const currentFilterInfo = this.getCurrentFilterInfo();
     let filterId = this.state.showMore ? currentFilterInfo.id : null;
-    
+
     // For legacy filters (no ID), pass a special identifier so the save handler can convert them
     if (this.state.showMore && currentFilterInfo.isLegacy && !filterId) {
       // Pass the filter name as a special legacy identifier
