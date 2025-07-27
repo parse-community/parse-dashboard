@@ -1,3 +1,10 @@
+# [7.3.0-alpha.36](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.35...7.3.0-alpha.36) (2025-07-27)
+
+
+### Bug Fixes
+
+* Changing "Relative dates" option of saved filter does not enable save button ([#2947](https://github.com/parse-community/parse-dashboard/issues/2947)) ([4f4977d](https://github.com/parse-community/parse-dashboard/commit/4f4977dbb16fbf755584355d90b85d9efc9169fd))
+
 # [7.3.0-alpha.35](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.34...7.3.0-alpha.35) (2025-07-27)
 
 
