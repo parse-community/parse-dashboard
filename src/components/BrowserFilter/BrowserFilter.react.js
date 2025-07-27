@@ -117,11 +117,16 @@ export default class BrowserFilter extends React.Component {
     // First check if there's a filterId in the URL (means we're definitely viewing a saved filter)
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
+    
+    // Extract className from URL path to handle cross-class navigation
+    const pathParts = window.location.pathname.split('/');
+    const browserIndex = pathParts.indexOf('browser');
+    const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
 
     if (filterId) {
       const preferences = ClassPreferences.getPreferences(
         this.context.applicationId,
-        this.props.className
+        urlClassName
       );
 
       if (preferences.filters) {
@@ -137,22 +142,30 @@ export default class BrowserFilter extends React.Component {
 
     // Check for legacy filters (filters parameter without filterId)
     const filtersParam = urlParams.get('filters');
-    if (filtersParam && this.props.filters.size > 0) {
+    if (filtersParam) {
       const preferences = ClassPreferences.getPreferences(
         this.context.applicationId,
-        this.props.className
+        urlClassName
       );
 
       if (preferences.filters) {
-        // Normalize current filters for comparison (remove class property if it matches current className)
-        const currentFilters = this.props.filters.toJS().map(filter => {
+        // Parse the URL filters parameter to get the actual filter data
+        let urlFilters;
+        try {
+          urlFilters = JSON.parse(filtersParam);
+        } catch {
+          return false;
+        }
+
+        // Normalize URL filters for comparison (remove class property if it matches current className)
+        const normalizedUrlFilters = urlFilters.map(filter => {
           const normalizedFilter = { ...filter };
-          if (normalizedFilter.class === this.props.className) {
+          if (normalizedFilter.class === urlClassName) {
             delete normalizedFilter.class;
           }
           return normalizedFilter;
         });
-        const currentFiltersString = JSON.stringify(currentFilters);
+        const urlFiltersString = JSON.stringify(normalizedUrlFilters);
 
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
@@ -160,13 +173,13 @@ export default class BrowserFilter extends React.Component {
             // Normalize saved filters for comparison (remove class property if it matches current className)
             const normalizedSavedFilters = savedFilters.map(filter => {
               const normalizedFilter = { ...filter };
-              if (normalizedFilter.class === this.props.className) {
+              if (normalizedFilter.class === urlClassName) {
                 delete normalizedFilter.class;
               }
               return normalizedFilter;
             });
             const savedFiltersString = JSON.stringify(normalizedSavedFilters);
-            return savedFiltersString === currentFiltersString;
+            return savedFiltersString === urlFiltersString;
           } catch {
             return false;
           }
@@ -223,22 +236,37 @@ export default class BrowserFilter extends React.Component {
     }
 
     // Check for legacy filters (filters parameter without filterId)
-    if (filtersParam && this.props.filters.size > 0) {
+    if (filtersParam) {
       const preferences = ClassPreferences.getPreferences(
         this.context.applicationId,
         urlClassName
       );
 
       if (preferences.filters) {
-        // Normalize current filters for comparison (remove class property if it matches current className)
-        const currentFilters = this.props.filters.toJS().map(filter => {
+        // Parse the URL filters parameter to get the actual filter data
+        let urlFilters;
+        try {
+          urlFilters = JSON.parse(filtersParam);
+        } catch (error) {
+          console.warn('Failed to parse URL filters:', error);
+          return {
+            id: null,
+            name: '',
+            isApplied: false,
+            hasRelativeDates: false,
+            isLegacy: false
+          };
+        }
+
+        // Normalize URL filters for comparison (remove class property if it matches current className)
+        const normalizedUrlFilters = urlFilters.map(filter => {
           const normalizedFilter = { ...filter };
           if (normalizedFilter.class === urlClassName) {
             delete normalizedFilter.class;
           }
           return normalizedFilter;
         });
-        const currentFiltersString = JSON.stringify(currentFilters);
+        const urlFiltersString = JSON.stringify(normalizedUrlFilters);
 
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
@@ -252,7 +280,7 @@ export default class BrowserFilter extends React.Component {
               return normalizedFilter;
             });
             const savedFiltersString = JSON.stringify(normalizedSavedFilters);
-            return savedFiltersString === currentFiltersString;
+            return savedFiltersString === urlFiltersString;
           } catch {
             return false;
           }
@@ -377,9 +405,14 @@ export default class BrowserFilter extends React.Component {
   }
 
   isFilterNameExists(name) {
+    // Extract className from URL path to handle cross-class navigation
+    const pathParts = window.location.pathname.split('/');
+    const browserIndex = pathParts.indexOf('browser');
+    const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
+    
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
-      this.props.className
+      urlClassName
     );
 
     if (preferences.filters && name) {
