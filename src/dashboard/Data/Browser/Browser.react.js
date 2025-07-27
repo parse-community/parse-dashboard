@@ -228,6 +228,7 @@ class Browser extends DashboardView {
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
     this.deleteFilter = this.deleteFilter.bind(this);
+    this.editFilter = this.editFilter.bind(this);
     this.selectRow = this.selectRow.bind(this);
     this.updateRow = this.updateRow.bind(this);
     this.updateOrdering = this.updateOrdering.bind(this);
@@ -488,6 +489,11 @@ class Browser extends DashboardView {
     const filters = this.extractFiltersFromQuery(props);
     const { className, entityId, relationName } = props.params;
     const isRelationRoute = entityId && relationName;
+    
+    // Check if we're in edit filter mode (don't load data)
+    const query = new URLSearchParams(props.location.search);
+    const isEditFilterMode = query.get('editFilter') === 'true';
+    
     let relation = this.state.relation;
     if (isRelationRoute && !relation) {
       const parentObjectQuery = new Parse.Query(className);
@@ -497,7 +503,7 @@ class Browser extends DashboardView {
     }
     this.setState(
       {
-        data: null,
+        data: isEditFilterMode ? [] : null, // Set empty array in edit mode to avoid loading
         newObject: null,
         lastMax: -1,
         ordering: ColumnPreferences.getColumnSort(false, context.applicationId, className),
@@ -505,10 +511,13 @@ class Browser extends DashboardView {
         relation: isRelationRoute ? relation : null,
       },
       () => {
-        if (isRelationRoute) {
-          this.fetchRelation(relation, filters);
-        } else if (className) {
-          this.fetchData(className, filters);
+        // Only fetch data if not in edit filter mode
+        if (!isEditFilterMode) {
+          if (isRelationRoute) {
+            this.fetchRelation(relation, filters);
+          } else if (className) {
+            this.fetchData(className, filters);
+          }
         }
       }
     );
@@ -1373,6 +1382,26 @@ class Browser extends DashboardView {
     super.forceUpdate();
   }
 
+  editFilter(className, filterData) {
+    // Navigate to the class with the filter loaded for editing
+    const { id, filter } = filterData;
+    
+    // Build URL with filter parameters for editing
+    const urlParams = new URLSearchParams();
+    urlParams.set('filters', filter);
+    if (id) {
+      urlParams.set('filterId', id);
+    }
+    
+    // Add edit mode parameter to indicate we want to edit without loading data
+    urlParams.set('editFilter', 'true');
+    
+    const url = `browser/${className}?${urlParams.toString()}`;
+    
+    // Navigate to the URL which will trigger the filter dialog to open in edit mode
+    this.props.navigate(generatePath(this.context, url));
+  }
+
   updateOrdering(ordering) {
     const source = this.state.relation || this.props.params.className;
     this.setState(
@@ -2201,6 +2230,7 @@ class Browser extends DashboardView {
         classClicked={() => {
           this.resetPage();
         }}
+        onEditFilter={this.editFilter}
         categories={allCategories}
       />
     );

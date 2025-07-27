@@ -51,6 +51,54 @@ export default class BrowserFilter extends React.Component {
     if (props.className !== this.props.className) {
       this.setState({ open: false });
     }
+    
+    // Auto-open filter dialog if editFilter=true is in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEditFilterMode = urlParams.get('editFilter') === 'true';
+    
+    if (isEditFilterMode && !this.state.open) {
+      // Get current filter info including name and relative dates setting
+      const currentFilter = this.getCurrentFilterInfo();
+      
+      // Convert filters for display and open the dialog
+      const filters = this.convertDatesForDisplay(props.filters);
+      this.setState({
+        open: true,
+        showMore: true, // Open in edit mode
+        filters: filters,
+        editMode: true,
+        name: currentFilter.name || '',
+        originalFilterName: currentFilter.name || '',
+        relativeDates: currentFilter.hasRelativeDates || false,
+        originalRelativeDates: currentFilter.hasRelativeDates || false,
+        originalFilters: props.filters, // Store original filters for comparison
+      });
+    }
+  }
+
+  componentDidMount() {
+    // Check if we should auto-open for edit mode on initial load
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEditFilterMode = urlParams.get('editFilter') === 'true';
+    
+    if (isEditFilterMode) {
+      // Get current filter info including name and relative dates setting
+      const currentFilter = this.getCurrentFilterInfo();
+      
+      // Convert filters for display and open the dialog
+      const filters = this.convertDatesForDisplay(this.props.filters);
+      this.setState({
+        open: true,
+        showMore: true, // Open in edit mode
+        filters: filters,
+        editMode: true,
+        name: currentFilter.name || '',
+        originalFilterName: currentFilter.name || '',
+        relativeDates: currentFilter.hasRelativeDates || false,
+        originalRelativeDates: currentFilter.hasRelativeDates || false,
+        originalFilters: this.props.filters, // Store original filters for comparison
+      });
+    }
   }
 
   isCurrentFilterSaved() {
@@ -496,6 +544,17 @@ export default class BrowserFilter extends React.Component {
       // Convert only Parse Date objects to JavaScript Date objects, preserve RelativeDate objects
       filters = this.convertDatesForDisplay(filters);
     }
+    
+    // If closing the dialog and we're in edit filter mode, remove the editFilter parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEditFilterMode = urlParams.get('editFilter') === 'true';
+    
+    if (this.state.open && isEditFilterMode) {
+      urlParams.delete('editFilter');
+      const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+      window.history.replaceState({}, '', newUrl);
+    }
+    
     this.setState(prevState => ({
       open: !prevState.open,
       filters: filters,

@@ -117,4 +117,18 @@
       margin-right: 0px !important;
     }
   }
+  .editFilter {
+    display: flex;
+    align-items: center;
+    margin-right: 6px;
+    cursor: pointer;
+    svg {
+      fill: #8fb9cf;
+    }
+    &:hover {
+      svg {
+        fill: white;
+      }
+    }
+  }
 }

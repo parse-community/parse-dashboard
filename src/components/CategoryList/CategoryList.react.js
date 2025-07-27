@@ -185,6 +185,17 @@ export default class CategoryList extends React.Component {
                       >
                         <span>{name}</span>
                       </Link>
+                      {this.props.onEditFilter && (
+                        <a
+                          className={styles.editFilter}
+                          onClick={e => {
+                            e.preventDefault();
+                            this.props.onEditFilter(c.name, filterData);
+                          }}
+                        >
+                          <Icon name="edit-solid" width={14} height={14} />
+                        </a>
+                      )}
                     </div>
                   );
                 })}
@@ -202,4 +213,5 @@ CategoryList.propTypes = {
   ),
   current: PropTypes.string.describe('Id of current category to be highlighted.'),
   linkPrefix: PropTypes.string.describe('Link prefix used to generate link path.'),
+  onEditFilter: PropTypes.func.describe('Callback function for editing a filter.'),
 };
