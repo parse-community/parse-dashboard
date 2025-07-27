@@ -27,6 +27,23 @@
     &:hover{
       color: white;
     }
+
+    span {
+      display: block;
+
+      &:first-of-type {
+        @include DosisFont;
+        float: right;
+        width: 50px;
+        text-align: right;
+      }
+      &:last-of-type {
+        margin-right: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   }
 }
 
@@ -53,27 +70,22 @@
   display: flex !important;
   align-items: center;
   cursor: pointer;
-  margin-left: 8px;
+  width: 0px;
+  margin-right: 20px;
   padding-left: 0px !important;
   &:after {
     @include arrow('down', 10px, 7px, #8fb9cf);
     content: '';
+    margin-left: 10px;
   }
 }
 .link {
   display: flex;
-  align-items: center;
-  
   a {
     &:first-of-type {
-      flex-grow: 1;
-      margin-right: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      flex-grow: 1
     }
   }
-  
   .count {
     @include DosisFont;
     color: #8fb9cf;
@@ -83,11 +95,10 @@
     min-width: 20px;
     text-align: right;
   }
-  
   .edit {
     display: flex;
     align-items: center;
-    margin-right: 8px;
+    margin-right: 6px;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -112,13 +123,14 @@
     &:first-of-type {
       flex-grow: 1;
       display: flex;
+      margin-right: 6px;
     }
     span {
       text-align: left !important;
       margin-left: 14px;
-      display: flex;
-      flex-grow: 1;
       margin-right: 0px !important;
+      font-family: Dosis, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      flex-grow: 1;
     }
   }
   .editFilter {
