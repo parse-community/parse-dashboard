@@ -60,8 +60,14 @@ export default class BrowserFilter extends React.Component {
       // Get current filter info including name and relative dates setting
       const currentFilter = this.getCurrentFilterInfo();
       
+      // Load filter data from URL if props.filters is empty
+      let filtersToDisplay = props.filters;
+      if (props.filters.size === 0) {
+        filtersToDisplay = this.loadFiltersFromURL();
+      }
+      
       // Convert filters for display and open the dialog
-      const filters = this.convertDatesForDisplay(props.filters);
+      const filters = this.convertDatesForDisplay(filtersToDisplay);
       this.setState({
         open: true,
         showMore: true, // Open in edit mode
@@ -71,7 +77,7 @@ export default class BrowserFilter extends React.Component {
         originalFilterName: currentFilter.name || '',
         relativeDates: currentFilter.hasRelativeDates || false,
         originalRelativeDates: currentFilter.hasRelativeDates || false,
-        originalFilters: props.filters, // Store original filters for comparison
+        originalFilters: filtersToDisplay, // Store original filters for comparison
       });
     }
   }
@@ -85,8 +91,14 @@ export default class BrowserFilter extends React.Component {
       // Get current filter info including name and relative dates setting
       const currentFilter = this.getCurrentFilterInfo();
       
+      // Load filter data from URL if props.filters is empty
+      let filtersToDisplay = this.props.filters;
+      if (this.props.filters.size === 0) {
+        filtersToDisplay = this.loadFiltersFromURL();
+      }
+      
       // Convert filters for display and open the dialog
-      const filters = this.convertDatesForDisplay(this.props.filters);
+      const filters = this.convertDatesForDisplay(filtersToDisplay);
       this.setState({
         open: true,
         showMore: true, // Open in edit mode
@@ -96,7 +108,7 @@ export default class BrowserFilter extends React.Component {
         originalFilterName: currentFilter.name || '',
         relativeDates: currentFilter.hasRelativeDates || false,
         originalRelativeDates: currentFilter.hasRelativeDates || false,
-        originalFilters: this.props.filters, // Store original filters for comparison
+        originalFilters: filtersToDisplay, // Store original filters for comparison
       });
     }
   }
@@ -270,6 +282,50 @@ export default class BrowserFilter extends React.Component {
       hasRelativeDates: false,
       isLegacy: false
     };
+  }
+
+  loadFiltersFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const filtersParam = urlParams.get('filters');
+    const filterId = urlParams.get('filterId');
+    
+    // If we have a filterId, load from saved filters
+    if (filterId) {
+      const preferences = ClassPreferences.getPreferences(
+        this.context.applicationId,
+        this.props.className
+      );
+      
+      if (preferences.filters) {
+        const savedFilter = preferences.filters.find(filter => filter.id === filterId);
+        if (savedFilter) {
+          try {
+            const filterData = JSON.parse(savedFilter.filter);
+            return new List(filterData.map(filter => {
+              const processedFilter = { ...filter, class: filter.class || this.props.className };
+              return new ImmutableMap(processedFilter);
+            }));
+          } catch (error) {
+            console.warn('Failed to parse saved filter:', error);
+          }
+        }
+      }
+    }
+    
+    // If we have filters in URL but no filterId, parse them directly
+    if (filtersParam) {
+      try {
+        const queryFilters = JSON.parse(filtersParam);
+        return new List(queryFilters.map(filter => {
+          const processedFilter = { ...filter, class: filter.class || this.props.className };
+          return new ImmutableMap(processedFilter);
+        }));
+      } catch (error) {
+        console.warn('Failed to parse URL filters:', error);
+      }
+    }
+    
+    return new List();
   }
 
   toggleMore() {
