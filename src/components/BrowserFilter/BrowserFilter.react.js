@@ -417,7 +417,7 @@ export default class BrowserFilter extends React.Component {
             return normalizedFilter;
           });
           const currentFiltersString = JSON.stringify(currentFilters);
-          
+
           const matchingFilter = preferences.filters.find(filter => {
             if (!filter.id && filter.name === currentFilterInfo.name) {
               try {
