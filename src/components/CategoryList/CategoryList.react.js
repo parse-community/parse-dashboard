@@ -140,9 +140,13 @@ export default class CategoryList extends React.Component {
           return (
             <div key={id}>
               <div className={styles.link}>
-                <Link title={c.name} to={{ pathname: link }} className={className} key={id} onClick={() => this.props.classClicked()}>
-                  <span>{count}</span>
-                  <span>{c.name}</span>
+                <Link
+                  title={c.name}
+                  to={{ pathname: link }}
+                  className={className}
+                  onClick={() => this.props.classClicked()}
+                >
+                  {c.name}
                 </Link>
                 {c.onEdit && (
                   <a
@@ -155,6 +159,7 @@ export default class CategoryList extends React.Component {
                     <Icon name="edit-solid" width={14} height={14} />
                   </a>
                 )}
+                <span className={styles.count}>{count}</span>
                 {(c.filters || []).length !== 0 && (
                   <a
                     className={styles.expand}
