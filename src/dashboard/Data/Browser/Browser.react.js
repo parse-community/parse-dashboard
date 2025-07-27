@@ -982,17 +982,27 @@ class Browser extends DashboardView {
   }
 
   async handleFetchedSchema() {
-    const counts = this.state.counts;
     if (this.state.computingClassCounts === false) {
       this.setState({ computingClassCounts: true });
+
+      const promises = [];
       for (const parseClass of this.props.schema.data.get('classes')) {
         const [className] = parseClass;
-        counts[className] = await this.context.getClassCount(className);
+        const promise = this.context.getClassCount(className).then(count => {
+          this.setState(prevState => ({
+            counts: {
+              ...prevState.counts,
+              [className]: count
+            }
+          }));
+        });
+        promises.push(promise);
       }
+
+      await Promise.all(promises);
 
       this.setState({
         clp: this.props.schema.data.get('CLPs').toJS(),
-        counts,
         computingClassCounts: false,
       });
     }
@@ -2192,7 +2202,8 @@ class Browser extends DashboardView {
     classes.forEach((value, key) => {
       let count = this.state.counts[key];
       if (count === undefined) {
-        count = '';
+        // Show loading indicator while counts are being computed, empty string if computation is done
+        count = this.state.computingClassCounts ? '...' : '';
       } else if (count >= 1000) {
         count = prettyNumber(count);
       }

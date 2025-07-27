@@ -1,3 +1,17 @@
+# [7.3.0-alpha.39](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.38...7.3.0-alpha.39) (2025-07-27)
+
+
+### Bug Fixes
+
+* Class object counters in sidebar not updating ([#2950](https://github.com/parse-community/parse-dashboard/issues/2950)) ([0f1920b](https://github.com/parse-community/parse-dashboard/commit/0f1920b448787e57482c821b881c732f57fec614))
+
+# [7.3.0-alpha.38](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.37...7.3.0-alpha.38) (2025-07-27)
+
+
+### Features
+
+* Allow editing filter without loading data in data browser ([#2949](https://github.com/parse-community/parse-dashboard/issues/2949)) ([9623580](https://github.com/parse-community/parse-dashboard/commit/962358020c513d38a1bc175545f73aebc92d403a))
+
 # [7.3.0-alpha.37](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.36...7.3.0-alpha.37) (2025-07-27)
 
 
