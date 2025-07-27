@@ -76,7 +76,7 @@
   &:after {
     @include arrow('down', 10px, 7px, #8fb9cf);
     content: '';
-    margin-left: 10px;
+    margin-left: 6px;
   }
 }
 .link {
@@ -91,14 +91,14 @@
     color: #8fb9cf;
     font-size: 12px;
     margin-left: auto;
-    margin-right: 8px;
+    margin-right: 4px;
     min-width: 20px;
     text-align: right;
   }
   .edit {
     display: flex;
-    align-items: center;
-    margin-right: 6px;
+    align-items: flex-start;
+    padding-top: 2px;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -135,8 +135,8 @@
   }
   .editFilter {
     display: flex;
-    align-items: center;
-    margin-right: 6px;
+    align-items: flex-start;
+    padding-top: 2px;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s ease;
