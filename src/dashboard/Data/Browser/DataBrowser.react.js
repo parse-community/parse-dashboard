@@ -379,6 +379,21 @@ export default class DataBrowser extends React.Component {
       return;
     }
     if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
+      // Check for text selection FIRST
+      const selection = window.getSelection();
+      const selectedText = selection ? selection.toString() : '';
+
+      // If there's text selected, check if we're in the aggregation panel
+      if (selectedText.length > 0) {
+        const target = e.target;
+        const isWithinPanel = this.aggregationPanelRef?.current && this.aggregationPanelRef.current.contains(target);
+
+        if (isWithinPanel) {
+          // Let the browser handle the copy operation for selected text
+          return;
+        }
+      }
+
       // check if there is multiple selected cells
       const { rowStart, rowEnd, colStart, colEnd } = this.state.selectedCells;
       if (rowStart !== -1 && rowEnd !== -1 && colStart !== -1 && colEnd !== -1) {

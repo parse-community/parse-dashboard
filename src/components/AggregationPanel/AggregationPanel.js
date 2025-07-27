@@ -190,8 +190,23 @@ const AggregationPanel = ({
     );
   }
 
+  const handleKeyDown = (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+      const selection = window.getSelection();
+      if (selection && selection.toString().length > 0) {
+        // Stop the event from propagating to parent handlers
+        e.stopPropagation();
+        // Let the default copy behavior happen by not calling preventDefault
+        return;
+      }
+    }
+  };
+
   return (
-    <div className={styles.aggregationPanel}>
+    <div
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
       {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />
