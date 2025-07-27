@@ -984,7 +984,7 @@ class Browser extends DashboardView {
   async handleFetchedSchema() {
     if (this.state.computingClassCounts === false) {
       this.setState({ computingClassCounts: true });
-      
+
       const promises = [];
       for (const parseClass of this.props.schema.data.get('classes')) {
         const [className] = parseClass;
@@ -998,7 +998,7 @@ class Browser extends DashboardView {
         });
         promises.push(promise);
       }
-      
+
       await Promise.all(promises);
 
       this.setState({
