@@ -41,6 +41,7 @@ export default class BrowserFilter extends React.Component {
       originalFilterName: '',
       confirmDelete: false,
       originalFilters: new List(), // Track original filters when entering edit mode
+      originalRelativeDates: false, // Track original relative dates setting when entering edit mode
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
@@ -223,6 +224,7 @@ export default class BrowserFilter extends React.Component {
         relativeDates: currentFilter.hasRelativeDates,
         filters: filtersToUse,
         originalFilters: originalFiltersToStore,
+        originalRelativeDates: currentFilter.hasRelativeDates, // Track original relative dates setting
       };
     });
   }
@@ -282,6 +284,11 @@ export default class BrowserFilter extends React.Component {
     // If we're not in showMore mode (editing a saved filter), return false
     if (!this.state.showMore) {
       return false;
+    }
+
+    // Check if relative dates setting has changed
+    if (this.state.relativeDates !== this.state.originalRelativeDates) {
+      return true;
     }
 
     // Compare current state filters with the original filters stored when entering edit mode
@@ -447,6 +454,7 @@ export default class BrowserFilter extends React.Component {
       editMode: this.props.filters.size === 0,
       relativeDates: false, // Reset relative dates state when opening/closing
       showMore: false, // Reset showMore state when opening/closing
+      originalRelativeDates: false, // Reset original relative dates state when opening/closing
     }));
     this.props.setCurrent(null);
   }
@@ -564,6 +572,8 @@ export default class BrowserFilter extends React.Component {
       this.setState({
         originalFilterName: this.state.name,
         filters: uiFilters, // Ensure UI stays with JavaScript Date objects
+        originalFilters: uiFilters, // Update original filters to reflect the saved state
+        originalRelativeDates: this.state.relativeDates, // Update original relative dates to reflect the saved state
       });
     }
   }
