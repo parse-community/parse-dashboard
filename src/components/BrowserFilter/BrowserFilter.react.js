@@ -84,12 +84,28 @@ export default class BrowserFilter extends React.Component {
       );
 
       if (preferences.filters) {
-        // Try to find a saved filter that matches the current filter content
-        const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+        // Normalize current filters for comparison (remove class property if it matches current className)
+        const currentFilters = this.props.filters.toJS().map(filter => {
+          const normalizedFilter = { ...filter };
+          if (normalizedFilter.class === this.props.className) {
+            delete normalizedFilter.class;
+          }
+          return normalizedFilter;
+        });
+        const currentFiltersString = JSON.stringify(currentFilters);
 
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
-            const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
+            const savedFilters = JSON.parse(savedFilter.filter);
+            // Normalize saved filters for comparison (remove class property if it matches current className)
+            const normalizedSavedFilters = savedFilters.map(filter => {
+              const normalizedFilter = { ...filter };
+              if (normalizedFilter.class === this.props.className) {
+                delete normalizedFilter.class;
+              }
+              return normalizedFilter;
+            });
+            const savedFiltersString = JSON.stringify(normalizedSavedFilters);
             return savedFiltersString === currentFiltersString;
           } catch {
             return false;
@@ -147,14 +163,29 @@ export default class BrowserFilter extends React.Component {
       );
 
       if (preferences.filters) {
-        // Try to find a saved filter that matches the current filter content
-        const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+        // Normalize current filters for comparison (remove class property if it matches current className)
+        const currentFilters = this.props.filters.toJS().map(filter => {
+          const normalizedFilter = { ...filter };
+          if (normalizedFilter.class === this.props.className) {
+            delete normalizedFilter.class;
+          }
+          return normalizedFilter;
+        });
+        const currentFiltersString = JSON.stringify(currentFilters);
 
         const matchingFilter = preferences.filters.find(savedFilter => {
           try {
-            const savedFiltersString = JSON.stringify(JSON.parse(savedFilter.filter));
-            const matches = savedFiltersString === currentFiltersString;
-            return matches;
+            const savedFilters = JSON.parse(savedFilter.filter);
+            // Normalize saved filters for comparison (remove class property if it matches current className)
+            const normalizedSavedFilters = savedFilters.map(filter => {
+              const normalizedFilter = { ...filter };
+              if (normalizedFilter.class === this.props.className) {
+                delete normalizedFilter.class;
+              }
+              return normalizedFilter;
+            });
+            const savedFiltersString = JSON.stringify(normalizedSavedFilters);
+            return savedFiltersString === currentFiltersString;
           } catch {
             return false;
           }
@@ -377,11 +408,29 @@ export default class BrowserFilter extends React.Component {
       if (currentFilterInfo.isLegacy) {
         const preferences = ClassPreferences.getPreferences(this.context.applicationId, this.props.className);
         if (preferences.filters) {
-          const currentFiltersString = JSON.stringify(this.props.filters.toJS());
+          // Normalize current filters for comparison
+          const currentFilters = this.props.filters.toJS().map(filter => {
+            const normalizedFilter = { ...filter };
+            if (normalizedFilter.class === this.props.className) {
+              delete normalizedFilter.class;
+            }
+            return normalizedFilter;
+          });
+          const currentFiltersString = JSON.stringify(currentFilters);
+          
           const matchingFilter = preferences.filters.find(filter => {
             if (!filter.id && filter.name === currentFilterInfo.name) {
               try {
-                const savedFiltersString = JSON.stringify(JSON.parse(filter.filter));
+                const savedFilters = JSON.parse(filter.filter);
+                // Normalize saved filters for comparison
+                const normalizedSavedFilters = savedFilters.map(savedFilter => {
+                  const normalizedFilter = { ...savedFilter };
+                  if (normalizedFilter.class === this.props.className) {
+                    delete normalizedFilter.class;
+                  }
+                  return normalizedFilter;
+                });
+                const savedFiltersString = JSON.stringify(normalizedSavedFilters);
                 return savedFiltersString === currentFiltersString;
               } catch {
                 return false;
