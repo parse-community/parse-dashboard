@@ -489,11 +489,11 @@ class Browser extends DashboardView {
     const filters = this.extractFiltersFromQuery(props);
     const { className, entityId, relationName } = props.params;
     const isRelationRoute = entityId && relationName;
-    
+
     // Check if we're in edit filter mode (don't load data)
     const query = new URLSearchParams(props.location.search);
     const isEditFilterMode = query.get('editFilter') === 'true';
-    
+
     let relation = this.state.relation;
     if (isRelationRoute && !relation) {
       const parentObjectQuery = new Parse.Query(className);
@@ -1385,19 +1385,19 @@ class Browser extends DashboardView {
   editFilter(className, filterData) {
     // Navigate to the class with the filter loaded for editing
     const { id, filter } = filterData;
-    
+
     // Build URL with filter parameters for editing
     const urlParams = new URLSearchParams();
     urlParams.set('filters', filter);
     if (id) {
       urlParams.set('filterId', id);
     }
-    
+
     // Add edit mode parameter to indicate we want to edit without loading data
     urlParams.set('editFilter', 'true');
-    
+
     const url = `browser/${className}?${urlParams.toString()}`;
-    
+
     // Navigate to the URL which will trigger the filter dialog to open in edit mode
     this.props.navigate(generatePath(this.context, url));
   }

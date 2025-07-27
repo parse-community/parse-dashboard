@@ -118,6 +118,12 @@ const FilterRow = ({
 }) => {
   const setFocus = useCallback(input => {
     if (input !== null && editMode) {
+      // For DateTimeEntry components, don't auto-focus as it opens the calendar
+      // Check if the input has a focus method that opens a popover/calendar
+      if (input.focus && input.open) {
+        // This is likely a DateTimeEntry component, skip auto-focus
+        return;
+      }
       input.focus();
     }
   }, []);
