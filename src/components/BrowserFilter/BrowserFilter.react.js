@@ -117,7 +117,7 @@ export default class BrowserFilter extends React.Component {
     // First check if there's a filterId in the URL (means we're definitely viewing a saved filter)
     const urlParams = new URLSearchParams(window.location.search);
     const filterId = urlParams.get('filterId');
-    
+
     // Extract className from URL path to handle cross-class navigation
     const pathParts = window.location.pathname.split('/');
     const browserIndex = pathParts.indexOf('browser');
@@ -409,7 +409,7 @@ export default class BrowserFilter extends React.Component {
     const pathParts = window.location.pathname.split('/');
     const browserIndex = pathParts.indexOf('browser');
     const urlClassName = browserIndex >= 0 && pathParts[browserIndex + 1] ? pathParts[browserIndex + 1] : this.props.className;
-    
+
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       urlClassName
