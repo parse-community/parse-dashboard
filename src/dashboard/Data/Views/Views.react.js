@@ -442,11 +442,11 @@ class Views extends TableView {
             ) {
               url = '#';
             }
-            
+
             // Parse dimensions, ensuring they are positive numbers
             const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
             const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
-            
+
             // Create style object for scale-to-fit behavior
             const imgStyle = {
               maxWidth: width ? `${width}px` : '100%',
@@ -454,7 +454,7 @@ class Views extends TableView {
               objectFit: 'contain', // This ensures scale-to-fit behavior maintaining aspect ratio
               display: 'block'
             };
-            
+
             content = (
               <img
                 src={url}
