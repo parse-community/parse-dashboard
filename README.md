@@ -85,6 +85,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [View Table](#view-table)
       - [Pointer](#pointer)
       - [Link](#link)
+      - [Image](#image)
 - [Contributing](#contributing)
 
 # Getting Started
@@ -1361,6 +1362,25 @@ In the example above, the query string will be escaped and added to the url, res
 
 > [!Note]
 > For security reasons, the link `<a>` tag contains the `rel="noreferrer"` attribute, which prevents the target website to know the referring website which in this case is the Parse Dashboard URL. That attribute is widely supported across modern browsers, but if in doubt check your browser's compatibility.
+
+#### Image
+
+Images are rendered directly in the output table with an `<img>` tag. The content mode is always "scale to fit", meaning that if the image file is 100x50px and the specified dimensions are 50x50px, it would display as 50x25px, since it's scaled maintaining aspect ratio.
+
+Example:
+
+```json
+{
+  "__type": "Image",
+  "url": "https://example.com/image.png",
+  "width": "50",
+  "height": "50",
+  "alt": "Image"
+}
+```
+
+> [!Warning]
+> The URL will be directly invoked by the browser when trying to display the image. For security reasons, make sure you either control the full URL, including the image file name, or sanitize the URL before returning it to the dashboard. URLs containing `javascript:` or `<script` will be blocked automatically and replaced with a placeholder.
 
 # Contributing
 

@@ -251,6 +251,8 @@ class Views extends TableView {
                 type = 'GeoPoint';
               } else if (val.__type === 'Link') {
                 type = 'Link';
+              } else if (val.__type === 'Image') {
+                type = 'Image';
               } else {
                 type = 'Object';
               }
@@ -379,6 +381,8 @@ class Views extends TableView {
               type = 'GeoPoint';
             } else if (value.__type === 'Link') {
               type = 'Link';
+            } else if (value.__type === 'Image') {
+              type = 'Image';
             } else {
               type = 'Object';
             }
@@ -427,6 +431,41 @@ class Views extends TableView {
               <a href={url} target="_blank" rel="noopener noreferrer">
                 {text}
               </a>
+            );
+          } else if (type === 'Image') {
+            // Sanitize URL
+            let url = value.url;
+            if (
+              !url ||
+              url.match(/javascript/i) ||
+              url.match(/<script/i)
+            ) {
+              url = '#';
+            }
+            
+            // Parse dimensions, ensuring they are positive numbers
+            const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+            const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+            
+            // Create style object for scale-to-fit behavior
+            const imgStyle = {
+              maxWidth: width ? `${width}px` : '100%',
+              maxHeight: height ? `${height}px` : '100%',
+              objectFit: 'contain', // This ensures scale-to-fit behavior maintaining aspect ratio
+              display: 'block'
+            };
+            
+            content = (
+              <img
+                src={url}
+                alt={value.alt || 'Image'}
+                style={imgStyle}
+                onError={(e) => {
+                  if (e.target && e.target.style) {
+                    e.target.style.display = 'none';
+                  }
+                }}
+              />
             );
           } else if (value === undefined) {
             content = '';
