@@ -85,6 +85,14 @@ class Agent extends DashboardView {
     this.setState({ inputValue: event.target.value });
   }
 
+  handleExampleClick = (exampleText) => {
+    this.setState({ inputValue: exampleText }, () => {
+      // Auto-submit the example query
+      const event = { preventDefault: () => {} };
+      this.handleSubmit(event);
+    });
+  }
+
   handleSubmit = async (event) => {
     event.preventDefault();
     const { inputValue, selectedModel } = this.state;
@@ -331,11 +339,42 @@ class Agent extends DashboardView {
                 }
               />
             ) : (
-              <EmptyState
-                icon="collaborate-outline"
-                title="AI Agent"
-                description="Start a conversation with the AI agent to get help with your database queries and operations."
-              />
+              <div className={styles.emptyStateContainer}>
+                <EmptyState
+                  icon="collaborate-outline"
+                  title="AI Agent"
+                  description="Start a conversation with the AI agent to get help with your database queries and operations. The agent can query your Parse classes, create and update objects, analyze your schema, and provide Parse Server guidance."
+                />
+                <div className={styles.exampleQueries}>
+                  <h4>Try asking:</h4>
+                  <div className={styles.queryExamples}>
+                    <button
+                      className={styles.exampleButton}
+                      onClick={() => this.handleExampleClick('Show me all the classes in my database')}
+                    >
+                      &ldquo;Show me all the classes in my database&rdquo;
+                    </button>
+                    <button
+                      className={styles.exampleButton}
+                      onClick={() => this.handleExampleClick('How many users do I have?')}
+                    >
+                      &ldquo;How many users do I have?&rdquo;
+                    </button>
+                    <button
+                      className={styles.exampleButton}
+                      onClick={() => this.handleExampleClick('Create a new user with username testuser')}
+                    >
+                      &ldquo;Create a new user with username testuser&rdquo;
+                    </button>
+                    <button
+                      className={styles.exampleButton}
+                      onClick={() => this.handleExampleClick('Find all objects created in the last 24 hours')}
+                    >
+                      &ldquo;Find all objects created in the last 24 hours&rdquo;
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}

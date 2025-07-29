@@ -191,3 +191,50 @@ body:global(.expanded) {
   background-color: #6c757d;
   cursor: not-allowed;
 }
+
+.emptyStateContainer {
+  text-align: center;
+  max-width: 600px;
+}
+
+.exampleQueries {
+  margin-top: 24px;
+  
+  h4 {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+}
+
+.queryExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.exampleButton {
+  background: white;
+  border: 1px solid #007bff;
+  color: #007bff;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 280px;
+  text-align: center;
+  
+  &:hover {
+    background-color: #007bff;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
