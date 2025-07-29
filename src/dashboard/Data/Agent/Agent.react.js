@@ -42,6 +42,22 @@ class Agent extends DashboardView {
   }
 
   componentDidMount() {
+    // Fix the routing issue by ensuring this.state.route is set to 'agent'
+    if (this.state.route !== 'agent') {
+      this.setState({ route: 'agent' });
+    }
+    
+    this.setDefaultModel();
+  }
+
+  componentDidUpdate(prevProps) {
+    // If agentConfig just became available, set default model
+    if (!prevProps.agentConfig && this.props.agentConfig) {
+      this.setDefaultModel();
+    }
+  }
+
+  setDefaultModel() {
     // Set default selected model if none is selected and models are available
     const { agentConfig } = this.props;
     const { selectedModel } = this.state;
@@ -161,11 +177,6 @@ class Agent extends DashboardView {
     const { agentConfig } = this.props;
     const { selectedModel } = this.state;
     const models = agentConfig?.models || [];
-
-    // Debug logging
-    console.log('Agent props:', this.props);
-    console.log('agentConfig:', agentConfig);
-    console.log('models:', models);
 
     return (
       <Toolbar section="Core" subsection="Agent">
