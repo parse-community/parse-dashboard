@@ -361,9 +361,9 @@ class Agent extends DashboardView {
                     <div className={styles.queryExamples}>
                       <button
                         className={styles.exampleButton}
-                        onClick={() => this.handleExampleClick('Show me all the classes in my database')}
+                        onClick={() => this.handleExampleClick('Which classes do I have in my database?')}
                       >
-                        &ldquo;Show me all the classes in my database&rdquo;
+                        &ldquo;Which classes do I have in my database?&rdquo;
                       </button>
                       <button
                         className={styles.exampleButton}
