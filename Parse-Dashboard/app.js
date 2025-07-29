@@ -512,12 +512,12 @@ module.exports = function(config, options) {
     async function executeDatabaseFunction(functionName, args, appContext, operationLog = [], permissions = {}) {
       // Check permissions before executing write operations
       const writeOperations = ['deleteObject', 'deleteClass', 'updateObject', 'createObject', 'createClass'];
-      
+
       if (writeOperations.includes(functionName)) {
         // Handle both boolean and string values for permissions
         const permissionValue = permissions && permissions[functionName];
         const hasPermission = permissionValue === true || permissionValue === 'true';
-        
+
         if (!hasPermission) {
           throw new Error(`Permission denied: The "${functionName}" operation is currently disabled in the permissions settings. Please enable this permission in the Parse Dashboard Permissions menu if you want to allow this operation.`);
         }
@@ -766,14 +766,14 @@ module.exports = function(config, options) {
 
             // Delete the class and all its data
             const schema = new Parse.Schema(className);
-            
+
             try {
               // First purge all objects from the class
               await schema.purge({ useMasterKey: true });
-              
+
               // Then delete the class schema itself
               await schema.delete({ useMasterKey: true });
-              
+
               const resultData = { success: true, className, message: `Class "${className}" and all its data have been permanently deleted.` };
               return resultData;
             } catch (deleteError) {

@@ -78,10 +78,10 @@ class Agent extends DashboardView {
         ...prevState.permissions,
         [operation]: enabled
       };
-      
+
       // Save to localStorage immediately
       localStorage.setItem('agentPermissions', JSON.stringify(newPermissions));
-      
+
       return {
         permissions: newPermissions,
         permissionsKey: prevState.permissionsKey + 1
