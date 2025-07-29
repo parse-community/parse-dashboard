@@ -7,6 +7,7 @@ const Authentication = require('./Authentication.js');
 const fs = require('fs');
 const ConfigKeyCache = require('./configKeyCache.js');
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
+const Parse = require('parse/node');
 
 let newFeaturesInLatestVersion = [];
 
@@ -523,9 +524,7 @@ module.exports = function(config, options) {
         }
       }
 
-      const Parse = require('parse/node');
-
-      // Initialize Parse for this app context
+      // Configure Parse for this app context
       Parse.initialize(appContext.appId, undefined, appContext.masterKey);
       Parse.serverURL = appContext.serverURL;
       Parse.masterKey = appContext.masterKey;
