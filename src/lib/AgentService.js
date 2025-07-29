@@ -15,12 +15,11 @@ export default class AgentService {
    * Send a message to the configured AI model and get a response
    * @param {string} message - The user's message
    * @param {Object} modelConfig - The model configuration object
-   * @param {string|null} instructions - Optional system instructions for the AI (currently ignored, handled server-side)
    * @param {string} appSlug - The app slug to scope the request to
    * @param {string|null} conversationId - Optional conversation ID to maintain context
    * @returns {Promise<{response: string, conversationId: string}>} The AI's response and conversation ID
    */
-  static async sendMessage(message, modelConfig, instructions = null, appSlug, conversationId = null) {
+  static async sendMessage(message, modelConfig, appSlug, conversationId = null) {
     if (!modelConfig) {
       throw new Error('Model configuration is required');
     }
@@ -40,16 +39,42 @@ export default class AgentService {
         message: message,
         modelName: name
       };
-      
+
       // Include conversation ID if provided
       if (conversationId) {
         requestBody.conversationId = conversationId;
       }
-      
+
       const response = await post(`/apps/${appSlug}/agent`, requestBody);
 
+      // Log the request and response for debugging
+      console.log('Agent API Request:', {
+        message,
+        modelName: name,
+        appSlug,
+        conversationId,
+        timestamp: new Date().toISOString()
+      });
+
       if (response.error) {
+        console.error('Agent API Error Response:', response.error);
         throw new Error(response.error);
+      }
+
+      console.log('Agent API Success Response:', {
+        responseLength: response.response?.length || 0,
+        conversationId: response.conversationId,
+        debug: response.debug,
+        timestamp: new Date().toISOString()
+      });
+
+      // Log Parse Server operations if available
+      if (response.debug?.operations?.length > 0) {
+        console.group('Parse Server Operations:');
+        response.debug.operations.forEach((op, index) => {
+          console.log(`${index + 1}. ${op.operation}:`, op);
+        });
+        console.groupEnd();
       }
 
       return {
@@ -61,16 +86,16 @@ export default class AgentService {
       if (error.message && error.message.includes('Permission Denied')) {
         throw new Error('Permission denied. Please refresh the page and try again.');
       }
-      
+
       if (error.message && error.message.includes('CSRF')) {
         throw new Error('Security token expired. Please refresh the page and try again.');
       }
-      
+
       // Handle network errors and other fetch-related errors
       if (error.message && error.message.includes('fetch')) {
         throw new Error('Network error: Unable to connect to agent service. Please check your internet connection.');
       }
-      
+
       // Re-throw the original error if it's not a recognized type
       throw error;
     }

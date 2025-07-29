@@ -63,11 +63,11 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
 module.exports = function(config, options) {
   options = options || {};
   const app = express();
-  
+
   // Parse JSON and URL-encoded request bodies
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  
+
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
 
@@ -199,7 +199,7 @@ module.exports = function(config, options) {
       try {
         const { message, modelName, conversationId } = req.body;
         const { appId } = req.params;
-        
+
         if (!message || typeof message !== 'string' || message.trim() === '') {
           return res.status(400).json({ error: 'Message is required' });
         }
@@ -252,8 +252,11 @@ module.exports = function(config, options) {
 
         const conversationHistory = conversations.get(conversationKey);
 
+        // Array to track database operations for this request
+        const operationLog = [];
+
         // Make request to OpenAI API with app context and conversation history
-        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory);
+        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory, operationLog);
 
         // Update conversation history with user message and AI response
         conversationHistory.push(
@@ -271,7 +274,13 @@ module.exports = function(config, options) {
 
         res.json({
           response,
-          conversationId: finalConversationId
+          conversationId: finalConversationId,
+          debug: {
+            timestamp: new Date().toISOString(),
+            appId: app.appId,
+            modelUsed: model,
+            operations: operationLog
+          }
         });
 
       } catch (error) {
@@ -286,45 +295,45 @@ module.exports = function(config, options) {
      */
     const databaseTools = [
       {
-        type: "function",
+        type: 'function',
         function: {
-          name: "queryClass",
-          description: "Query a Parse class/table to retrieve objects. Use this to fetch data from the database.",
+          name: 'queryClass',
+          description: 'Query a Parse class/table to retrieve objects. Use this to fetch data from the database.',
           parameters: {
-            type: "object",
+            type: 'object',
             properties: {
               className: {
-                type: "string",
-                description: "The name of the Parse class to query"
+                type: 'string',
+                description: 'The name of the Parse class to query'
               },
               where: {
-                type: "object",
-                description: "Query constraints as a JSON object (e.g., {\"name\": \"John\", \"age\": {\"$gte\": 18}})"
+                type: 'object',
+                description: 'Query constraints as a JSON object (e.g., {"name": "John", "age": {"$gte": 18}})'
               },
               limit: {
-                type: "number",
-                description: "Maximum number of results to return (default 100, max 1000)"
+                type: 'number',
+                description: 'Maximum number of results to return (default 100, max 1000)'
               },
               skip: {
-                type: "number", 
-                description: "Number of results to skip for pagination"
+                type: 'number',
+                description: 'Number of results to skip for pagination'
               },
               order: {
-                type: "string",
-                description: "Field to order by (prefix with '-' for descending, e.g., '-createdAt')"
+                type: 'string',
+                description: 'Field to order by (prefix with \'-\' for descending, e.g., \'-createdAt\')'
               },
               include: {
-                type: "array",
-                items: { type: "string" },
-                description: "Array of pointer fields to include/populate"
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Array of pointer fields to include/populate'
               },
               select: {
-                type: "array",
-                items: { type: "string" },
-                description: "Array of fields to select (if not provided, all fields are returned)"
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Array of fields to select (if not provided, all fields are returned)'
               }
             },
-            required: ["className"]
+            required: ['className']
           }
         }
       },
@@ -332,7 +341,7 @@ module.exports = function(config, options) {
         type: 'function',
         function: {
           name: 'createObject',
-          description: 'Create a new object in a Parse class/table. IMPORTANT: This is a write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
+          description: 'Create a new object in a Parse class/table. IMPORTANT: This is a write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function. You MUST provide the objectData parameter with the actual field values to be saved in the object.',
           parameters: {
             type: 'object',
             properties: {
@@ -340,9 +349,10 @@ module.exports = function(config, options) {
                 type: 'string',
                 description: 'The name of the Parse class to create an object in'
               },
-              data: {
+              objectData: {
                 type: 'object',
-                description: 'The data for the new object as a JSON object'
+                description: 'REQUIRED: The object fields and values for the new object as a JSON object. Example: {\'model\': \'Honda Civic\', \'year\': 2023, \'brand\': \'Honda\'}. This parameter is mandatory and cannot be empty.',
+                additionalProperties: true
               },
               confirmed: {
                 type: 'boolean',
@@ -350,7 +360,7 @@ module.exports = function(config, options) {
                 default: false
               }
             },
-            required: ['className', 'data', 'confirmed']
+            required: ['className', 'objectData', 'confirmed']
           }
         }
       },
@@ -370,7 +380,7 @@ module.exports = function(config, options) {
                 type: 'string',
                 description: 'The objectId of the object to update'
               },
-              data: {
+              objectData: {
                 type: 'object',
                 description: 'The fields to update as a JSON object'
               },
@@ -380,7 +390,7 @@ module.exports = function(config, options) {
                 default: false
               }
             },
-            required: ['className', 'objectId', 'data', 'confirmed']
+            required: ['className', 'objectId', 'objectData', 'confirmed']
           }
         }
       },
@@ -411,65 +421,65 @@ module.exports = function(config, options) {
         }
       },
       {
-        type: "function",
+        type: 'function',
         function: {
-          name: "getSchema",
-          description: "Get the schema information for Parse classes. Use this to understand the structure of classes/tables.",
+          name: 'getSchema',
+          description: 'Get the schema information for Parse classes. Use this to understand the structure of classes/tables.',
           parameters: {
-            type: "object",
+            type: 'object',
             properties: {
               className: {
-                type: "string",
-                description: "The name of the Parse class to get schema for (optional - if not provided, returns all schemas)"
+                type: 'string',
+                description: 'The name of the Parse class to get schema for (optional - if not provided, returns all schemas)'
               }
             }
           }
         }
       },
       {
-        type: "function", 
+        type: 'function',
         function: {
-          name: "countObjects",
-          description: "Count objects in a Parse class/table that match given constraints.",
+          name: 'countObjects',
+          description: 'Count objects in a Parse class/table that match given constraints.',
           parameters: {
-            type: "object",
+            type: 'object',
             properties: {
               className: {
-                type: "string",
-                description: "The name of the Parse class to count objects in"
+                type: 'string',
+                description: 'The name of the Parse class to count objects in'
               },
               where: {
-                type: "object",
-                description: "Query constraints as a JSON object (optional)"
+                type: 'object',
+                description: 'Query constraints as a JSON object (optional)'
               }
             },
-            required: ["className"]
+            required: ['className']
           }
         }
       },
       {
-        type: "function",
+        type: 'function',
         function: {
-          name: "createClass",
-          description: "Create a new Parse class/table with specified fields. This creates the class structure without any objects.",
+          name: 'createClass',
+          description: 'Create a new Parse class/table with specified fields. This creates the class structure without any objects.',
           parameters: {
-            type: "object",
+            type: 'object',
             properties: {
               className: {
-                type: "string",
-                description: "The name of the Parse class to create"
+                type: 'string',
+                description: 'The name of the Parse class to create'
               },
               fields: {
-                type: "object",
-                description: "Fields to define for the class as a JSON object where keys are field names and values are field types (e.g., {\"name\": \"String\", \"age\": \"Number\", \"email\": \"String\"})"
+                type: 'object',
+                description: 'Fields to define for the class as a JSON object where keys are field names and values are field types (e.g., {"name": "String", "age": "Number", "email": "String"})'
               },
               confirmed: {
-                type: "boolean",
-                description: "Must be true to indicate user has explicitly confirmed this operation",
+                type: 'boolean',
+                description: 'Must be true to indicate user has explicitly confirmed this operation',
                 default: false
               }
             },
-            required: ["className", "confirmed"]
+            required: ['className', 'confirmed']
           }
         }
       }
@@ -478,9 +488,9 @@ module.exports = function(config, options) {
     /**
      * Execute database function calls
      */
-    async function executeDatabaseFunction(functionName, args, appContext) {
+    async function executeDatabaseFunction(functionName, args, appContext, operationLog = []) {
       const Parse = require('parse/node');
-      
+
       // Debug logging for all Parse Server requests
       console.log('Parse Server Request:', {
         operation: functionName,
@@ -489,7 +499,7 @@ module.exports = function(config, options) {
         serverURL: appContext.serverURL,
         timestamp: new Date().toISOString()
       });
-      
+
       // Initialize Parse for this app context
       Parse.initialize(appContext.appId, undefined, appContext.masterKey);
       Parse.serverURL = appContext.serverURL;
@@ -500,7 +510,7 @@ module.exports = function(config, options) {
           case 'queryClass': {
             const { className, where = {}, limit = 100, skip = 0, order, include = [], select = [] } = args;
             const query = new Parse.Query(className);
-            
+
             // Apply constraints
             Object.keys(where).forEach(key => {
               const value = where[key];
@@ -515,9 +525,9 @@ module.exports = function(config, options) {
                     case '$ne': query.notEqualTo(key, value[op]); break;
                     case '$in': query.containedIn(key, value[op]); break;
                     case '$nin': query.notContainedIn(key, value[op]); break;
-                    case '$exists': 
-                      if (value[op]) query.exists(key);
-                      else query.doesNotExist(key);
+                    case '$exists':
+                      if (value[op]) {query.exists(key);}
+                      else {query.doesNotExist(key);}
                       break;
                     case '$regex': query.matches(key, new RegExp(value[op], value.$options || '')); break;
                   }
@@ -526,9 +536,9 @@ module.exports = function(config, options) {
                 query.equalTo(key, value);
               }
             });
-            
-            if (limit) query.limit(Math.min(limit, 1000));
-            if (skip) query.skip(skip);
+
+            if (limit) {query.limit(Math.min(limit, 1000));}
+            if (skip) {query.skip(skip);}
             if (order) {
               if (order.startsWith('-')) {
                 query.descending(order.substring(1));
@@ -536,37 +546,75 @@ module.exports = function(config, options) {
                 query.ascending(order);
               }
             }
-            if (include.length > 0) query.include(include);
-            if (select.length > 0) query.select(select);
+            if (include.length > 0) {query.include(include);}
+            if (select.length > 0) {query.select(select);}
 
             const results = await query.find({ useMasterKey: true });
             const resultData = results.map(obj => obj.toJSON());
-            console.log('Parse Server Response:', {
+            const operationSummary = {
               operation: 'queryClass',
               className,
               resultCount: results.length,
               timestamp: new Date().toISOString()
+            };
+
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'Query.find()',
+              className,
+              constraints: where,
+              limit,
+              skip,
+              order,
+              include,
+              select,
+              resultCount: results.length,
+              useMasterKey: true
             });
+
+            console.log('Parse Server Response:', operationSummary);
+            operationLog.push(operationSummary);
             return resultData;
           }
 
           case 'createObject': {
-            const { className, data, confirmed } = args;
-            
+            const { className, objectData, confirmed } = args;
+
+            // Validate required parameters
+            if (!objectData || typeof objectData !== 'object' || Object.keys(objectData).length === 0) {
+              throw new Error('Missing or empty \'objectData\' parameter. To create an object, you must provide the objectData fields and values as a JSON object. For example: {\'model\': \'Honda Civic\', \'year\': 2023, \'brand\': \'Honda\'}');
+            }
+
             // Require explicit confirmation for write operations
             if (!confirmed) {
               throw new Error(`Creating objects requires user confirmation. The AI should ask for permission before creating objects in the ${className} class.`);
             }
-            
+
             const ParseObject = Parse.Object.extend(className);
             const object = new ParseObject();
-            
-            Object.keys(data).forEach(key => {
-              object.set(key, data[key]);
+
+            Object.keys(objectData).forEach(key => {
+              object.set(key, objectData[key]);
             });
-            
+
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'ParseObject.save()',
+              className,
+              data: objectData,
+              useMasterKey: true
+            });
+
             const result = await object.save(null, { useMasterKey: true });
             const resultData = result.toJSON();
+
+            console.log('Parse SDK Result:', {
+              method: 'ParseObject.save()',
+              className,
+              objectId: resultData.objectId,
+              createdAt: resultData.createdAt
+            });
+
             console.log('Parse Server Response:', {
               operation: 'createObject',
               className,
@@ -577,22 +625,54 @@ module.exports = function(config, options) {
           }
 
           case 'updateObject': {
-            const { className, objectId, data, confirmed } = args;
-            
+            const { className, objectId, objectData, confirmed } = args;
+
             // Require explicit confirmation for write operations
             if (!confirmed) {
               throw new Error(`Updating objects requires user confirmation. The AI should ask for permission before updating object ${objectId} in the ${className} class.`);
             }
-            
+
+            // Log Parse SDK operation details for getting the object
+            console.log('Parse SDK Operation:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              useMasterKey: true
+            });
+
             const query = new Parse.Query(className);
             const object = await query.get(objectId, { useMasterKey: true });
-            
-            Object.keys(data).forEach(key => {
-              object.set(key, data[key]);
+
+            console.log('Parse SDK Result:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              found: true
             });
-            
+
+            Object.keys(objectData).forEach(key => {
+              object.set(key, objectData[key]);
+            });
+
+            // Log Parse SDK operation details for saving the updated object
+            console.log('Parse SDK Operation:', {
+              method: 'ParseObject.save() [update]',
+              className,
+              objectId,
+              updateData: objectData,
+              useMasterKey: true
+            });
+
             const result = await object.save(null, { useMasterKey: true });
             const resultData = result.toJSON();
+
+            console.log('Parse SDK Result:', {
+              method: 'ParseObject.save() [update]',
+              className,
+              objectId,
+              updatedAt: resultData.updatedAt
+            });
+
             console.log('Parse Server Response:', {
               operation: 'updateObject',
               className,
@@ -604,15 +684,47 @@ module.exports = function(config, options) {
 
           case 'deleteObject': {
             const { className, objectId, confirmed } = args;
-            
+
             // Require explicit confirmation for destructive operations
             if (!confirmed) {
               throw new Error(`Deleting objects requires user confirmation. The AI should ask for permission before permanently deleting object ${objectId} from the ${className} class.`);
             }
-            
+
+            // Log Parse SDK operation details for getting the object
+            console.log('Parse SDK Operation:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              useMasterKey: true
+            });
+
             const query = new Parse.Query(className);
             const object = await query.get(objectId, { useMasterKey: true });
+
+            console.log('Parse SDK Result:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              found: true
+            });
+
+            // Log Parse SDK operation details for deleting the object
+            console.log('Parse SDK Operation:', {
+              method: 'ParseObject.destroy()',
+              className,
+              objectId,
+              useMasterKey: true
+            });
+
             await object.destroy({ useMasterKey: true });
+
+            console.log('Parse SDK Result:', {
+              method: 'ParseObject.destroy()',
+              className,
+              objectId,
+              deleted: true
+            });
+
             const result = { success: true, objectId };
             console.log('Parse Server Response:', {
               operation: 'deleteObject',
@@ -627,14 +739,39 @@ module.exports = function(config, options) {
             const { className } = args;
             let result;
             if (className) {
+              // Log Parse SDK operation details for getting a specific schema
+              console.log('Parse SDK Operation:', {
+                method: 'Parse.Schema.get()',
+                className
+              });
+
               result = await new Parse.Schema(className).get();
+
+              console.log('Parse SDK Result:', {
+                method: 'Parse.Schema.get()',
+                className,
+                fields: Object.keys(result.fields || {}).length
+              });
+
               console.log('Parse Server Response:', {
                 operation: 'getSchema',
                 className,
                 timestamp: new Date().toISOString()
               });
             } else {
+              // Log Parse SDK operation details for getting all schemas
+              console.log('Parse SDK Operation:', {
+                method: 'Parse.Schema.all()'
+              });
+
               result = await Parse.Schema.all();
+
+              console.log('Parse SDK Result:', {
+                method: 'Parse.Schema.all()',
+                schemaCount: result.length,
+                classNames: result.map(schema => schema.className)
+              });
+
               console.log('Parse Server Response:', {
                 operation: 'getSchema',
                 action: 'getAllSchemas',
@@ -648,7 +785,7 @@ module.exports = function(config, options) {
           case 'countObjects': {
             const { className, where = {} } = args;
             const query = new Parse.Query(className);
-            
+
             Object.keys(where).forEach(key => {
               const value = where[key];
               if (typeof value === 'object' && value !== null) {
@@ -661,9 +798,9 @@ module.exports = function(config, options) {
                     case '$ne': query.notEqualTo(key, value[op]); break;
                     case '$in': query.containedIn(key, value[op]); break;
                     case '$nin': query.notContainedIn(key, value[op]); break;
-                    case '$exists': 
-                      if (value[op]) query.exists(key);
-                      else query.doesNotExist(key);
+                    case '$exists':
+                      if (value[op]) {query.exists(key);}
+                      else {query.doesNotExist(key);}
                       break;
                   }
                 });
@@ -671,8 +808,23 @@ module.exports = function(config, options) {
                 query.equalTo(key, value);
               }
             });
-            
+
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'Query.count()',
+              className,
+              constraints: where,
+              useMasterKey: true
+            });
+
             const count = await query.count({ useMasterKey: true });
+
+            console.log('Parse SDK Result:', {
+              method: 'Query.count()',
+              className,
+              count
+            });
+
             const result = { count };
             console.log('Parse Server Response:', {
               operation: 'countObjects',
@@ -685,14 +837,22 @@ module.exports = function(config, options) {
 
           case 'createClass': {
             const { className, fields = {}, confirmed } = args;
-            
+
             // Require explicit confirmation for class creation
             if (!confirmed) {
               throw new Error(`Creating classes requires user confirmation. The AI should ask for permission before creating the ${className} class.`);
             }
-            
+
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'new Parse.Schema().save()',
+              className,
+              fields,
+              useMasterKey: true
+            });
+
             const schema = new Parse.Schema(className);
-            
+
             // Add fields to the schema
             Object.keys(fields).forEach(fieldName => {
               const fieldType = fields[fieldName];
@@ -727,8 +887,15 @@ module.exports = function(config, options) {
                   break;
               }
             });
-            
+
             const result = await schema.save();
+
+            console.log('Parse SDK Result:', {
+              method: 'new Parse.Schema().save()',
+              className,
+              savedSchema: result.toJSON()
+            });
+
             const resultData = { success: true, className, schema: result };
             console.log('Parse Server Response:', {
               operation: 'createClass',
@@ -758,15 +925,15 @@ module.exports = function(config, options) {
     /**
      * Make a request to OpenAI API
      */
-    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = []) {
+    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = []) {
       const fetch = (await import('node-fetch')).default;
-      
+
       const url = 'https://api.openai.com/v1/chat/completions';
-      
+
       const appInfo = appContext ?
         `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.` :
         '';
-      
+
       // Build messages array starting with system message
       const messages = [
         {
@@ -787,6 +954,13 @@ You have access to database function tools that allow you to:
 - Delete objects (REQUIRES USER CONFIRMATION)
 - Get schema information for classes (read-only, no confirmation needed)
 - Count objects that match certain criteria (read-only, no confirmation needed)
+
+CRITICAL RULE FOR createObject FUNCTION:
+- The createObject function REQUIRES THREE parameters: className, objectData, and confirmed
+- The 'objectData' parameter MUST contain the actual field values as a JSON object
+- NEVER call createObject with only className and confirmed - this will fail
+- Example: createObject({className: 'TestCars', objectData: {model: 'Honda Civic', year: 2023, brand: 'Honda'}, confirmed: true})
+- The objectData object should contain all the fields and their values that you want to save
 
 CRITICAL SECURITY RULE FOR WRITE OPERATIONS:
 - ANY write operation (create, update, delete) MUST have explicit user confirmation through conversation
@@ -812,6 +986,8 @@ When working with the database:
 - Be mindful of data types (Date, Pointer, etc.)
 - Always consider security and use appropriate query constraints
 - Provide clear explanations of what database operations you're performing
+- IMPORTANT: When creating objects, you MUST provide the 'objectData' parameter with actual field values. Never call createObject with only className and confirmed - always include the objectData object with the fields and values to be saved.
+- IMPORTANT: When updating objects, you MUST provide the 'objectData' parameter with the fields you want to update. Include the objectData object with field names and new values.
 - If any database function returns an error, you MUST include the full error message in your response to the user. Never hide error details or give vague responses like "there was an issue" - always show the specific error message.
 
 When responding:
@@ -825,17 +1001,17 @@ When responding:
 You have direct access to the Parse database through function calls, so you can query actual data and provide real-time information.${appInfo}`
         }
       ];
-      
+
       // Add conversation history if it exists
       if (conversationHistory && conversationHistory.length > 0) {
         // Filter out any messages with null or undefined content to prevent API errors
-        const validHistory = conversationHistory.filter(msg => 
-          msg && typeof msg === 'object' && msg.role && 
+        const validHistory = conversationHistory.filter(msg =>
+          msg && typeof msg === 'object' && msg.role &&
           (msg.content !== null && msg.content !== undefined && msg.content !== '')
         );
         messages.push(...validHistory);
       }
-      
+
       // Add the current user message
       messages.push({
         role: 'user',
@@ -871,16 +1047,16 @@ You have direct access to the Parse database through function calls, so you can 
         } else if (response.status >= 500) {
           throw new Error('OpenAI service is temporarily unavailable. Please try again later.');
         }
-        
+
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = (errorData && typeof errorData === 'object' && 'error' in errorData && errorData.error && typeof errorData.error === 'object' && 'message' in errorData.error) 
-          ? errorData.error.message 
+        const errorMessage = (errorData && typeof errorData === 'object' && 'error' in errorData && errorData.error && typeof errorData.error === 'object' && 'message' in errorData.error)
+          ? errorData.error.message
           : `HTTP ${response.status}: ${response.statusText}`;
         throw new Error(`OpenAI API error: ${errorMessage}`);
       }
 
       const data = await response.json();
-      
+
       if (!data || typeof data !== 'object' || !('choices' in data) || !Array.isArray(data.choices) || data.choices.length === 0) {
         throw new Error('No response received from OpenAI API');
       }
@@ -898,10 +1074,47 @@ You have direct access to the Parse database through function calls, so you can 
             try {
               const functionName = toolCall.function.name;
               const functionArgs = JSON.parse(toolCall.function.arguments);
-              
+
+              // Detailed logging to debug function call parameters
+              console.log('=== FUNCTION CALL DEBUG ===');
+              console.log('Function Name:', functionName);
+              console.log('Raw Arguments String:', toolCall.function.arguments);
+              console.log('Parsed Arguments:', functionArgs);
+              console.log('Arguments Keys:', Object.keys(functionArgs));
+              if (functionName === 'createObject') {
+                console.log('createObject Analysis:');
+                console.log('- className:', functionArgs.className);
+                console.log('- objectData:', functionArgs.objectData);
+                console.log('- objectData type:', typeof functionArgs.objectData);
+                console.log('- objectData keys:', functionArgs.objectData ? Object.keys(functionArgs.objectData) : 'OBJECTDATA IS MISSING');
+                console.log('- confirmed:', functionArgs.confirmed);
+              }
+              console.log('=== END DEBUG ===');
+
+              console.log('Executing database function:', {
+                functionName,
+                args: functionArgs,
+                appId: appContext.appId,
+                serverURL: appContext.serverURL,
+                timestamp: new Date().toISOString()
+              });
+
+              // Special validation for createObject function calls
+              if (functionName === 'createObject' && (!functionArgs.objectData || typeof functionArgs.objectData !== 'object' || Object.keys(functionArgs.objectData).length === 0)) {
+                const missingDataError = {
+                  error: 'CRITICAL ERROR: createObject function call is missing the required objectData parameter. You must provide the objectData parameter with actual field values. Example: {"className": "TestCars", "objectData": {"model": "Honda Civic", "year": 2023, "brand": "Honda"}, "confirmed": true}. Please retry the function call with the objectData parameter containing the object fields and values you want to create.'
+                };
+                toolResponses.push({
+                  tool_call_id: toolCall.id,
+                  role: 'tool',
+                  content: JSON.stringify(missingDataError)
+                });
+                continue; // Skip to next tool call
+              }
+
               // Execute the database function
-              const result = await executeDatabaseFunction(functionName, functionArgs, appContext);
-              
+              const result = await executeDatabaseFunction(functionName, functionArgs, appContext, operationLog);
+
               toolResponses.push({
                 tool_call_id: toolCall.id,
                 role: 'tool',
@@ -954,7 +1167,7 @@ You have direct access to the Parse database through function calls, so you can 
         }
 
         const followUpData = await followUpResponse.json();
-        
+
         if (!followUpData || typeof followUpData !== 'object' || !('choices' in followUpData) || !Array.isArray(followUpData.choices) || followUpData.choices.length === 0) {
           throw new Error('No follow-up response received from OpenAI API');
         }

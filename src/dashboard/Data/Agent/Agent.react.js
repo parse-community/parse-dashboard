@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
-import Button from 'components/Button/Button.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
@@ -25,7 +24,7 @@ class Agent extends DashboardView {
     super(props);
     this.section = 'Core';
     this.subsection = 'Agent';
-    
+
     this.state = {
       messages: [],
       inputValue: '',
@@ -33,7 +32,7 @@ class Agent extends DashboardView {
       selectedModel: this.getStoredSelectedModel(),
       conversationId: null, // Add conversation tracking
     };
-    
+
     this.browserMenuRef = React.createRef();
     this.chatInputRef = React.createRef();
     this.chatWindowRef = React.createRef();
@@ -50,7 +49,7 @@ class Agent extends DashboardView {
     if (this.state.route !== 'agent') {
       this.setState({ route: 'agent' });
     }
-    
+
     this.setDefaultModel();
   }
 
@@ -59,7 +58,7 @@ class Agent extends DashboardView {
     if (!prevProps.agentConfig && this.props.agentConfig) {
       this.setDefaultModel();
     }
-    
+
     // Auto-scroll to bottom when new messages are added or loading state changes
     if (prevState.messages.length !== this.state.messages.length ||
         prevState.isLoading !== this.state.isLoading) {
@@ -75,7 +74,7 @@ class Agent extends DashboardView {
     const { agentConfig } = this.props;
     const { selectedModel } = this.state;
     const models = agentConfig?.models || [];
-    
+
     if (!selectedModel && models.length > 0) {
       this.setSelectedModel(models[0].name);
     }
@@ -90,7 +89,7 @@ class Agent extends DashboardView {
     if (this.chatWindowRef.current) {
       const element = this.chatWindowRef.current;
       element.scrollTop = element.scrollHeight;
-      
+
       // Force smooth scrolling behavior
       element.scrollTo({
         top: element.scrollHeight,
@@ -126,7 +125,7 @@ class Agent extends DashboardView {
     event.preventDefault();
     const { inputValue, selectedModel } = this.state;
     const { agentConfig } = this.props;
-    
+
     if (inputValue.trim() === '') {
       return;
     }
@@ -134,7 +133,7 @@ class Agent extends DashboardView {
     // Find the selected model configuration
     const models = agentConfig?.models || [];
     const modelConfig = models.find(model => model.name === selectedModel) || models[0];
-    
+
     if (!modelConfig) {
       const errorMessage = {
         id: Date.now() + 1,
@@ -143,14 +142,14 @@ class Agent extends DashboardView {
         timestamp: new Date(),
         isError: true,
       };
-      
+
       this.setState(prevState => ({
         messages: [...prevState.messages, errorMessage],
         isLoading: false,
       }));
       return;
     }
-    
+
     // Add user message
     const userMessage = {
       id: Date.now(),
@@ -158,23 +157,23 @@ class Agent extends DashboardView {
       content: inputValue.trim(),
       timestamp: new Date(),
     };
-    
+
     this.setState(prevState => ({
       messages: [...prevState.messages, userMessage],
       inputValue: '',
       isLoading: true,
     }));
-    
+
     try {
       // Validate model configuration
       AgentService.validateModelConfig(modelConfig);
-      
+
       // Get app slug from context
       const appSlug = this.context ? this.context.slug : null;
       if (!appSlug) {
         throw new Error('App context not available');
       }
-      
+
       // Get response from AI service with conversation context
       const instructions = AgentService.getDefaultInstructions();
       const result = await AgentService.sendMessage(
@@ -184,32 +183,32 @@ class Agent extends DashboardView {
         appSlug,
         this.state.conversationId
       );
-      
+
       const aiMessage = {
         id: Date.now() + 1,
         type: 'agent',
         content: result.response,
         timestamp: new Date(),
       };
-      
+
       this.setState(prevState => ({
         messages: [...prevState.messages, aiMessage],
         isLoading: false,
         conversationId: result.conversationId, // Update conversation ID
       }));
-      
+
     } catch (error) {
       console.error('Agent API error:', error);
-      
+
       let errorContent = `Error: ${error.message}`;
-      
+
       // Handle specific error types
       if (error.message && error.message.includes('Permission Denied')) {
         errorContent = 'Error: Permission denied. Please refresh the page and try again.';
       } else if (error.message && error.message.includes('CSRF')) {
         errorContent = 'Error: Security token expired. Please refresh the page and try again.';
       }
-      
+
       const errorMessage = {
         id: Date.now() + 1,
         type: 'agent',
@@ -217,13 +216,13 @@ class Agent extends DashboardView {
         timestamp: new Date(),
         isError: true,
       };
-      
+
       this.setState(prevState => ({
         messages: [...prevState.messages, errorMessage],
         isLoading: false,
       }));
     }
-    
+
     // Focus the input field after the response
     setTimeout(() => {
       if (this.chatInputRef.current) {
@@ -286,11 +285,11 @@ class Agent extends DashboardView {
 
   renderMessages() {
     const { messages, isLoading } = this.state;
-    
+
     if (messages.length === 0) {
       return null; // Empty state is now handled as overlay
     }
-    
+
     return (
       <div className={styles.messagesContainer}>
         {messages.map((message) => (
@@ -323,7 +322,7 @@ class Agent extends DashboardView {
 
   renderChatInput() {
     const { inputValue, isLoading } = this.state;
-    
+
     return (
       <form className={styles.chatForm} onSubmit={this.handleSubmit}>
         <div className={styles.inputContainer}>
@@ -353,11 +352,11 @@ class Agent extends DashboardView {
     const { messages } = this.state;
     const { agentConfig } = this.props;
     const models = agentConfig?.models || [];
-    
+
     // Check if agent configuration is missing or no models are configured
     const hasNoAgentConfig = !agentConfig;
     const hasNoModels = models.length === 0;
-    
+
     return (
       <div className={styles.agentContainer}>
         {this.renderToolbar()}

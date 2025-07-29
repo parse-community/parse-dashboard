@@ -45,7 +45,7 @@ const EmptyState = ({
   useFlexLayout = false,
 }) => {
   const containerClass = useFlexLayout ? styles.flexContainer : baseStyles.center;
-  
+
   return (
     <div className={containerClass}>
       <div className={styles.content}>
