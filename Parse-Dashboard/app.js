@@ -94,6 +94,7 @@ module.exports = function(config, options) {
       const response = {
         apps,
         newFeaturesInLatestVersion,
+        agent: config.agent,
       };
 
       //Based on advice from Doug Wilson here:

@@ -8,6 +8,7 @@
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
+import Icon from 'components/Icon/Icon.react';
 import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import React from 'react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
@@ -17,8 +18,8 @@ import { withRouter } from 'lib/withRouter';
 
 @withRouter
 class Agent extends DashboardView {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.section = 'Core';
     this.subsection = 'Agent';
     
@@ -26,11 +27,22 @@ class Agent extends DashboardView {
       messages: [],
       inputValue: '',
       isLoading: false,
+      selectedModel: this.getStoredSelectedModel(),
     };
     
     this.browserMenuRef = React.createRef();
     this.chatInputRef = React.createRef();
     this.action = new SidebarAction('Clear Chat', () => this.clearChat());
+  }
+
+  getStoredSelectedModel() {
+    const stored = localStorage.getItem('selectedAgentModel');
+    return stored || null;
+  }
+
+  setSelectedModel(modelName) {
+    this.setState({ selectedModel: modelName });
+    localStorage.setItem('selectedAgentModel', modelName);
   }
 
   clearChat() {
@@ -89,8 +101,45 @@ class Agent extends DashboardView {
   }
 
   renderToolbar() {
+    const { agentConfig } = this.props;
+    const { selectedModel } = this.state;
+    const models = agentConfig?.models || [];
+
+    // Debug logging
+    console.log('Agent props:', this.props);
+    console.log('agentConfig:', agentConfig);
+    console.log('models:', models);
+
     return (
       <Toolbar section="Core" subsection="Agent">
+        {models.length > 0 && (
+          <BrowserMenu
+            title="Model"
+            icon="gear-solid"
+            setCurrent={() => {}}
+          >
+            {models.map((model, index) => (
+              <MenuItem
+                key={index}
+                text={
+                  <span>
+                    {selectedModel === model.name && (
+                      <Icon
+                        name="check"
+                        width={12}
+                        height={12}
+                        fill="#ffffffff"
+                        className="menuCheck"
+                      />
+                    )}
+                    {model.name}
+                  </span>
+                }
+                onClick={() => this.setSelectedModel(model.name)}
+              />
+            ))}
+          </BrowserMenu>
+        )}
         <BrowserMenu
           ref={this.browserMenuRef}
           title="Chat"
