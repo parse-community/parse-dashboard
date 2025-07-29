@@ -29,6 +29,7 @@ class Agent extends DashboardView {
     };
     
     this.browserMenuRef = React.createRef();
+    this.chatInputRef = React.createRef();
     this.action = new SidebarAction('Clear Chat', () => this.clearChat());
   }
 
@@ -79,6 +80,11 @@ class Agent extends DashboardView {
         messages: [...prevState.messages, aiMessage],
         isLoading: false,
       }));
+      
+      // Focus the input field after the AI response
+      if (this.chatInputRef.current) {
+        this.chatInputRef.current.focus();
+      }
     }, 1000);
   }
 
@@ -141,12 +147,14 @@ class Agent extends DashboardView {
       <form className={styles.chatForm} onSubmit={this.handleSubmit}>
         <div className={styles.inputContainer}>
           <input
+            ref={this.chatInputRef}
             type="text"
             className={styles.chatInput}
             placeholder="Type your message here..."
             value={inputValue}
             onChange={this.handleInputChange}
             disabled={isLoading}
+            autoFocus
           />
           <button
             type="submit"
