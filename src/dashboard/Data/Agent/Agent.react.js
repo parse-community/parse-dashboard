@@ -219,6 +219,12 @@ class Agent extends DashboardView {
 
   renderContent() {
     const { messages } = this.state;
+    const { agentConfig } = this.props;
+    const models = agentConfig?.models || [];
+    
+    // Check if agent configuration is missing or no models are configured
+    const hasNoAgentConfig = !agentConfig;
+    const hasNoModels = models.length === 0;
     
     return (
       <div className={styles.agentContainer}>
@@ -227,16 +233,27 @@ class Agent extends DashboardView {
           <div className={styles.chatWindow}>
             {this.renderMessages()}
           </div>
-          {this.renderChatInput()}
+          {!hasNoAgentConfig && !hasNoModels && this.renderChatInput()}
         </div>
         {messages.length === 0 && (
           <div className={styles.emptyStateOverlay}>
-            <EmptyState
-              icon="collaborate-outline"
-              title="AI Agent"
-              description="Start a conversation with the AI agent to get help with your database queries and operations."
-              cta="Type a message below to get started"
-            />
+            {hasNoAgentConfig || hasNoModels ? (
+              <EmptyState
+                icon="collaborate-outline"
+                title="AI Agent"
+                description={
+                  hasNoAgentConfig
+                    ? 'No AI agent configuration found. Please add an \'agent\' section to your dashboard configuration file.'
+                    : 'No AI models configured. Please add models to the \'agent.models\' array in your dashboard configuration file.'
+                }
+              />
+            ) : (
+              <EmptyState
+                icon="collaborate-outline"
+                title="AI Agent"
+                description="Start a conversation with the AI agent to get help with your database queries and operations."
+              />
+            )}
           </div>
         )}
       </div>
