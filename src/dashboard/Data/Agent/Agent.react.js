@@ -22,7 +22,7 @@ import { CurrentApp } from 'context/currentApp';
 @withRouter
 class Agent extends DashboardView {
   static contextType = CurrentApp;
-  
+
   constructor(props) {
     super(props);
     this.section = 'Core';
@@ -50,24 +50,24 @@ class Agent extends DashboardView {
   getStoredChatState() {
     try {
       const appSlug = this.context ? this.context.slug : null;
-      if (!appSlug) return null;
-      
+      if (!appSlug) {return null;}
+
       const stored = localStorage.getItem(`agentChat_${appSlug}`);
-      if (!stored) return null;
-      
+      if (!stored) {return null;}
+
       const parsedState = JSON.parse(stored);
-      
+
       // Validate the structure
-      if (!parsedState || typeof parsedState !== 'object') return null;
-      if (!Array.isArray(parsedState.messages)) return null;
-      
+      if (!parsedState || typeof parsedState !== 'object') {return null;}
+      if (!Array.isArray(parsedState.messages)) {return null;}
+
       // Check if the data is too old (optional: 24 hours expiry)
       const ONE_DAY = 24 * 60 * 60 * 1000;
       if (parsedState.timestamp && (Date.now() - parsedState.timestamp > ONE_DAY)) {
         localStorage.removeItem(`agentChat_${appSlug}`);
         return null;
       }
-      
+
       return parsedState;
     } catch (error) {
       console.warn('Failed to parse stored chat state:', error);
@@ -78,7 +78,7 @@ class Agent extends DashboardView {
   saveChatState() {
     try {
       const appSlug = this.context ? this.context.slug : null;
-      if (!appSlug) return;
+      if (!appSlug) {return;}
 
       const chatState = {
         messages: this.state.messages,
@@ -98,7 +98,7 @@ class Agent extends DashboardView {
     }
 
     this.setDefaultModel();
-    
+
     // Load saved chat state after component mounts when context is available
     this.loadSavedChatState();
   }
@@ -111,7 +111,7 @@ class Agent extends DashboardView {
         ...message,
         timestamp: new Date(message.timestamp)
       }));
-      
+
       this.setState({
         messages: messagesWithDateTimestamps,
         conversationId: savedChatState.conversationId || null,
@@ -180,7 +180,7 @@ class Agent extends DashboardView {
       messages: [],
       conversationId: null, // Reset conversation to start fresh
     });
-    
+
     // Clear saved chat state from localStorage
     try {
       const appSlug = this.context ? this.context.slug : null;
@@ -190,7 +190,7 @@ class Agent extends DashboardView {
     } catch (error) {
       console.warn('Failed to clear saved chat state:', error);
     }
-    
+
     // Close the menu by simulating an external click
     if (this.browserMenuRef.current) {
       this.browserMenuRef.current.setState({ open: false });
@@ -240,7 +240,7 @@ class Agent extends DashboardView {
 
     // Add warning message if this is the first message in the conversation
     const isFirstMessage = messages.length === 0;
-    let messagesToAdd = [];
+    const messagesToAdd = [];
 
     if (isFirstMessage) {
       const warningMessage = {
@@ -411,8 +411,8 @@ class Agent extends DashboardView {
                   {message.type === 'agent' ? this.formatMessageContent(message.content) : message.content}
                 </div>
                 <div className={styles.messageTime}>
-                  {message.timestamp instanceof Date ? 
-                    message.timestamp.toLocaleTimeString() : 
+                  {message.timestamp instanceof Date ?
+                    message.timestamp.toLocaleTimeString() :
                     new Date(message.timestamp).toLocaleTimeString()
                   }
                 </div>
