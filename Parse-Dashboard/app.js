@@ -491,6 +491,15 @@ module.exports = function(config, options) {
     async function executeDatabaseFunction(functionName, args, appContext, operationLog = []) {
       const Parse = require('parse/node');
 
+      // Debug logging for all Parse Server requests
+      console.log('Parse Server Request:', {
+        operation: functionName,
+        args: args,
+        appId: appContext.appId,
+        serverURL: appContext.serverURL,
+        timestamp: new Date().toISOString()
+      });
+
       // Initialize Parse for this app context
       Parse.initialize(appContext.appId, undefined, appContext.masterKey);
       Parse.serverURL = appContext.serverURL;
@@ -549,6 +558,21 @@ module.exports = function(config, options) {
               timestamp: new Date().toISOString()
             };
 
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'Query.find()',
+              className,
+              constraints: where,
+              limit,
+              skip,
+              order,
+              include,
+              select,
+              resultCount: results.length,
+              useMasterKey: true
+            });
+
+            console.log('Parse Server Response:', operationSummary);
             operationLog.push(operationSummary);
             return resultData;
           }
@@ -573,9 +597,30 @@ module.exports = function(config, options) {
               object.set(key, objectData[key]);
             });
 
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'ParseObject.save()',
+              className,
+              data: objectData,
+              useMasterKey: true
+            });
+
             const result = await object.save(null, { useMasterKey: true });
             const resultData = result.toJSON();
 
+            console.log('Parse SDK Result:', {
+              method: 'ParseObject.save()',
+              className,
+              objectId: resultData.objectId,
+              createdAt: resultData.createdAt
+            });
+
+            console.log('Parse Server Response:', {
+              operation: 'createObject',
+              className,
+              objectId: resultData.objectId,
+              timestamp: new Date().toISOString()
+            });
             return resultData;
           }
 
@@ -587,16 +632,53 @@ module.exports = function(config, options) {
               throw new Error(`Updating objects requires user confirmation. The AI should ask for permission before updating object ${objectId} in the ${className} class.`);
             }
 
+            // Log Parse SDK operation details for getting the object
+            console.log('Parse SDK Operation:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              useMasterKey: true
+            });
+
             const query = new Parse.Query(className);
             const object = await query.get(objectId, { useMasterKey: true });
+
+            console.log('Parse SDK Result:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              found: true
+            });
 
             Object.keys(objectData).forEach(key => {
               object.set(key, objectData[key]);
             });
 
+            // Log Parse SDK operation details for saving the updated object
+            console.log('Parse SDK Operation:', {
+              method: 'ParseObject.save() [update]',
+              className,
+              objectId,
+              updateData: objectData,
+              useMasterKey: true
+            });
+
             const result = await object.save(null, { useMasterKey: true });
             const resultData = result.toJSON();
 
+            console.log('Parse SDK Result:', {
+              method: 'ParseObject.save() [update]',
+              className,
+              objectId,
+              updatedAt: resultData.updatedAt
+            });
+
+            console.log('Parse Server Response:', {
+              operation: 'updateObject',
+              className,
+              objectId,
+              timestamp: new Date().toISOString()
+            });
             return resultData;
           }
 
@@ -608,12 +690,48 @@ module.exports = function(config, options) {
               throw new Error(`Deleting objects requires user confirmation. The AI should ask for permission before permanently deleting object ${objectId} from the ${className} class.`);
             }
 
+            // Log Parse SDK operation details for getting the object
+            console.log('Parse SDK Operation:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              useMasterKey: true
+            });
+
             const query = new Parse.Query(className);
             const object = await query.get(objectId, { useMasterKey: true });
 
+            console.log('Parse SDK Result:', {
+              method: 'Query.get()',
+              className,
+              objectId,
+              found: true
+            });
+
+            // Log Parse SDK operation details for deleting the object
+            console.log('Parse SDK Operation:', {
+              method: 'ParseObject.destroy()',
+              className,
+              objectId,
+              useMasterKey: true
+            });
+
             await object.destroy({ useMasterKey: true });
 
+            console.log('Parse SDK Result:', {
+              method: 'ParseObject.destroy()',
+              className,
+              objectId,
+              deleted: true
+            });
+
             const result = { success: true, objectId };
+            console.log('Parse Server Response:', {
+              operation: 'deleteObject',
+              className,
+              objectId,
+              timestamp: new Date().toISOString()
+            });
             return result;
           }
 
@@ -621,9 +739,45 @@ module.exports = function(config, options) {
             const { className } = args;
             let result;
             if (className) {
+              // Log Parse SDK operation details for getting a specific schema
+              console.log('Parse SDK Operation:', {
+                method: 'Parse.Schema.get()',
+                className
+              });
+
               result = await new Parse.Schema(className).get();
+
+              console.log('Parse SDK Result:', {
+                method: 'Parse.Schema.get()',
+                className,
+                fields: Object.keys(result.fields || {}).length
+              });
+
+              console.log('Parse Server Response:', {
+                operation: 'getSchema',
+                className,
+                timestamp: new Date().toISOString()
+              });
             } else {
+              // Log Parse SDK operation details for getting all schemas
+              console.log('Parse SDK Operation:', {
+                method: 'Parse.Schema.all()'
+              });
+
               result = await Parse.Schema.all();
+
+              console.log('Parse SDK Result:', {
+                method: 'Parse.Schema.all()',
+                schemaCount: result.length,
+                classNames: result.map(schema => schema.className)
+              });
+
+              console.log('Parse Server Response:', {
+                operation: 'getSchema',
+                action: 'getAllSchemas',
+                schemaCount: result.length,
+                timestamp: new Date().toISOString()
+              });
             }
             return result;
           }
@@ -655,9 +809,29 @@ module.exports = function(config, options) {
               }
             });
 
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'Query.count()',
+              className,
+              constraints: where,
+              useMasterKey: true
+            });
+
             const count = await query.count({ useMasterKey: true });
 
+            console.log('Parse SDK Result:', {
+              method: 'Query.count()',
+              className,
+              count
+            });
+
             const result = { count };
+            console.log('Parse Server Response:', {
+              operation: 'countObjects',
+              className,
+              count,
+              timestamp: new Date().toISOString()
+            });
             return result;
           }
 
@@ -668,6 +842,14 @@ module.exports = function(config, options) {
             if (!confirmed) {
               throw new Error(`Creating classes requires user confirmation. The AI should ask for permission before creating the ${className} class.`);
             }
+
+            // Log Parse SDK operation details
+            console.log('Parse SDK Operation:', {
+              method: 'new Parse.Schema().save()',
+              className,
+              fields,
+              useMasterKey: true
+            });
 
             const schema = new Parse.Schema(className);
 
@@ -708,7 +890,19 @@ module.exports = function(config, options) {
 
             const result = await schema.save();
 
+            console.log('Parse SDK Result:', {
+              method: 'new Parse.Schema().save()',
+              className,
+              savedSchema: result.toJSON()
+            });
+
             const resultData = { success: true, className, schema: result };
+            console.log('Parse Server Response:', {
+              operation: 'createClass',
+              className,
+              fieldsCount: Object.keys(fields).length,
+              timestamp: new Date().toISOString()
+            });
             return resultData;
           }
 
@@ -881,6 +1075,22 @@ You have direct access to the Parse database through function calls, so you can 
               const functionName = toolCall.function.name;
               const functionArgs = JSON.parse(toolCall.function.arguments);
 
+              // Detailed logging to debug function call parameters
+              console.log('=== FUNCTION CALL DEBUG ===');
+              console.log('Function Name:', functionName);
+              console.log('Raw Arguments String:', toolCall.function.arguments);
+              console.log('Parsed Arguments:', functionArgs);
+              console.log('Arguments Keys:', Object.keys(functionArgs));
+              if (functionName === 'createObject') {
+                console.log('createObject Analysis:');
+                console.log('- className:', functionArgs.className);
+                console.log('- objectData:', functionArgs.objectData);
+                console.log('- objectData type:', typeof functionArgs.objectData);
+                console.log('- objectData keys:', functionArgs.objectData ? Object.keys(functionArgs.objectData) : 'OBJECTDATA IS MISSING');
+                console.log('- confirmed:', functionArgs.confirmed);
+              }
+              console.log('=== END DEBUG ===');
+
               console.log('Executing database function:', {
                 functionName,
                 args: functionArgs,
@@ -888,6 +1098,19 @@ You have direct access to the Parse database through function calls, so you can 
                 serverURL: appContext.serverURL,
                 timestamp: new Date().toISOString()
               });
+
+              // Special validation for createObject function calls
+              if (functionName === 'createObject' && (!functionArgs.objectData || typeof functionArgs.objectData !== 'object' || Object.keys(functionArgs.objectData).length === 0)) {
+                const missingDataError = {
+                  error: 'CRITICAL ERROR: createObject function call is missing the required objectData parameter. You must provide the objectData parameter with actual field values. Example: {"className": "TestCars", "objectData": {"model": "Honda Civic", "year": 2023, "brand": "Honda"}, "confirmed": true}. Please retry the function call with the objectData parameter containing the object fields and values you want to create.'
+                };
+                toolResponses.push({
+                  tool_call_id: toolCall.id,
+                  role: 'tool',
+                  content: JSON.stringify(missingDataError)
+                });
+                continue; // Skip to next tool call
+              }
 
               // Execute the database function
               const result = await executeDatabaseFunction(functionName, functionArgs, appContext, operationLog);
@@ -898,6 +1121,12 @@ You have direct access to the Parse database through function calls, so you can 
                 content: result ? JSON.stringify(result) : JSON.stringify({ success: true })
               });
             } catch (error) {
+              console.error('Parse operation error:', {
+                functionName: toolCall.function.name,
+                args: toolCall.function.arguments,
+                error: error.message,
+                stack: error.stack
+              });
               toolResponses.push({
                 tool_call_id: toolCall.id,
                 role: 'tool',
