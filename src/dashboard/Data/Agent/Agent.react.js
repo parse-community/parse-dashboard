@@ -151,10 +151,19 @@ class Agent extends DashboardView {
     } catch (error) {
       console.error('Agent API error:', error);
       
+      let errorContent = `Error: ${error.message}`;
+      
+      // Handle specific error types
+      if (error.message && error.message.includes('Permission Denied')) {
+        errorContent = 'Error: Permission denied. Please refresh the page and try again.';
+      } else if (error.message && error.message.includes('CSRF')) {
+        errorContent = 'Error: Security token expired. Please refresh the page and try again.';
+      }
+      
       const errorMessage = {
         id: Date.now() + 1,
         type: 'agent',
-        content: `Error: ${error.message}`,
+        content: errorContent,
         timestamp: new Date(),
         isError: true,
       };

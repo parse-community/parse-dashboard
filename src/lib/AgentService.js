@@ -41,10 +41,21 @@ export default class AgentService {
 
       return response.response;
     } catch (error) {
+      // Handle specific error types
+      if (error.message && error.message.includes('Permission Denied')) {
+        throw new Error('Permission denied. Please refresh the page and try again.');
+      }
+      
+      if (error.message && error.message.includes('CSRF')) {
+        throw new Error('Security token expired. Please refresh the page and try again.');
+      }
+      
       // Handle network errors and other fetch-related errors
       if (error.message && error.message.includes('fetch')) {
         throw new Error('Network error: Unable to connect to agent service. Please check your internet connection.');
       }
+      
+      // Re-throw the original error if it's not a recognized type
       throw error;
     }
   }

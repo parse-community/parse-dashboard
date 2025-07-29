@@ -84,8 +84,13 @@ module.exports = function(config, options) {
       if (err.code !== 'EBADCSRFTOKEN') {return next(err)}
 
       // handle CSRF token errors here
-      res.status(403)
-      res.send('form tampered with')
+      console.error('CSRF token validation failed for request:', req.url, req.method);
+      res.status(403);
+      if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        res.json({ error: 'CSRF token validation failed. Please refresh the page and try again.' });
+      } else {
+        res.send('CSRF token validation failed. Please refresh the page and try again.');
+      }
     });
 
     // Serve the configuration.
