@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/globals.scss';
 
 .agentContainer {
   display: flex;
@@ -42,6 +43,12 @@
 
 .emptyStateOverlay > * {
   pointer-events: auto; /* Re-enable pointer events for the actual content */
+}
+
+body:global(.expanded) {
+  .emptyStateOverlay {
+    left: $sidebarCollapsedWidth;
+  }
 }
 
 .messagesContainer {
