@@ -132,9 +132,15 @@ class Agent extends DashboardView {
       // Validate model configuration
       AgentService.validateModelConfig(modelConfig);
       
+      // Get app slug from context
+      const appSlug = this.context ? this.context.slug : null;
+      if (!appSlug) {
+        throw new Error('App context not available');
+      }
+      
       // Get response from AI service
       const instructions = AgentService.getDefaultInstructions();
-      const response = await AgentService.sendMessage(inputValue.trim(), modelConfig, instructions);
+      const response = await AgentService.sendMessage(inputValue.trim(), modelConfig, instructions, appSlug);
       
       const aiMessage = {
         id: Date.now() + 1,

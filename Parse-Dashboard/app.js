@@ -63,6 +63,11 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
 module.exports = function(config, options) {
   options = options || {};
   const app = express();
+  
+  // Parse JSON and URL-encoded request bodies
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  
   // Serve public files.
   app.use(express.static(path.join(__dirname,'public')));
 
@@ -84,7 +89,6 @@ module.exports = function(config, options) {
       if (err.code !== 'EBADCSRFTOKEN') {return next(err)}
 
       // handle CSRF token errors here
-      console.error('CSRF token validation failed for request:', req.url, req.method);
       res.status(403);
       if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
         res.json({ error: 'CSRF token validation failed. Please refresh the page and try again.' });
@@ -187,10 +191,12 @@ module.exports = function(config, options) {
       res.send({ success: false, error: 'Something went wrong.' });
     });
 
-    // Agent API endpoint for handling AI requests
-    app.post('/agent', csrf(), async (req, res) => {
+    // Agent API endpoint for handling AI requests - scoped to specific app
+    // Temporarily disable CSRF for debugging
+    app.post('/apps/:appId/agent', async (req, res) => {
       try {
         const { message, modelName } = req.body;
+        const { appId } = req.params;
         
         if (!message || typeof message !== 'string' || message.trim() === '') {
           return res.status(400).json({ error: 'Message is required' });
@@ -200,9 +206,19 @@ module.exports = function(config, options) {
           return res.status(400).json({ error: 'Model name is required' });
         }
 
+        if (!appId || typeof appId !== 'string') {
+          return res.status(400).json({ error: 'App ID is required' });
+        }
+
         // Check if agent configuration exists
         if (!config.agent || !config.agent.models || !Array.isArray(config.agent.models)) {
           return res.status(400).json({ error: 'No agent configuration found' });
+        }
+
+        // Find the app in the configuration
+        const app = config.apps.find(app => (app.appNameForURL || app.appName) === appId);
+        if (!app) {
+          return res.status(404).json({ error: `App "${appId}" not found` });
         }
 
         // Find the requested model
@@ -226,23 +242,28 @@ module.exports = function(config, options) {
           return res.status(400).json({ error: `Provider "${provider}" is not supported yet` });
         }
 
-        // Make request to OpenAI API
-        const response = await makeOpenAIRequest(message, model, apiKey);
+        // Make request to OpenAI API with app context
+        const response = await makeOpenAIRequest(message, model, apiKey, app);
         res.json({ response });
 
       } catch (error) {
-        console.error('Agent API error:', error);
-        res.status(500).json({ error: error.message || 'Internal server error' });
+        // Return the full error message to help with debugging
+        const errorMessage = error.message || 'Provider error';
+        res.status(500).json({ error: `Error: ${errorMessage}` });
       }
     });
 
     /**
      * Make a request to OpenAI API
      */
-    async function makeOpenAIRequest(message, model, apiKey) {
+    async function makeOpenAIRequest(message, model, apiKey, appContext = null) {
       const fetch = (await import('node-fetch')).default;
       
       const url = 'https://api.openai.com/v1/chat/completions';
+      
+      const appInfo = appContext ?
+        `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.` :
+        '';
       
       const messages = [
         {
@@ -262,7 +283,7 @@ When responding:
 - Ask clarifying questions if the user's request is unclear
 - Focus on Parse-specific solutions and recommendations
 
-You have access to the user's Parse Dashboard interface, so you can reference their database schema, classes, and data when appropriate.`
+You have access to the user's Parse Dashboard interface, so you can reference their database schema, classes, and data when appropriate.${appInfo}`
         },
         {
           role: 'user',

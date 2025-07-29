@@ -16,9 +16,10 @@ export default class AgentService {
    * @param {string} message - The user's message
    * @param {Object} modelConfig - The model configuration object
    * @param {string|null} instructions - Optional system instructions for the AI (currently ignored, handled server-side)
+   * @param {string} appSlug - The app slug to scope the request to
    * @returns {Promise<string>} The AI's response
    */
-  static async sendMessage(message, modelConfig, instructions = null) {
+  static async sendMessage(message, modelConfig, instructions = null, appSlug) {
     if (!modelConfig) {
       throw new Error('Model configuration is required');
     }
@@ -29,8 +30,12 @@ export default class AgentService {
       throw new Error('Model name is required in model configuration');
     }
 
+    if (!appSlug) {
+      throw new Error('App slug is required to send message to agent');
+    }
+
     try {
-      const response = await post('/agent', {
+      const response = await post(`/apps/${appSlug}/agent`, {
         message: message,
         modelName: name
       });

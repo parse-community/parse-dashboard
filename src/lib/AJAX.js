@@ -98,12 +98,26 @@ export function request(
         notice: message,
       });
     } else if (this.status >= 500) {
+      let json = {};
+      try {
+        json = JSON.parse(this.responseText);
+      } catch {
+        p.reject({
+          success: false,
+          message: 'Server Error',
+          error: 'Server Error',
+          errors: ['Server Error'],
+          notice: 'Server Error',
+        });
+        return;
+      }
+      const message = json.message || json.error || json.notice || 'Server Error';
       p.reject({
         success: false,
-        message: 'Server Error',
-        error: 'Server Error',
-        errors: ['Server Error'],
-        notice: 'Server Error',
+        message: message,
+        error: message,
+        errors: json.errors || [message],
+        notice: message,
       });
     }
   };
