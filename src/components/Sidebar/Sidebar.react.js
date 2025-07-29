@@ -82,7 +82,7 @@ const Sidebar = ({
     }
     return (
       <div className={styles.submenu}>
-        {subsections.map(({ name, link }) => {
+        {subsections.map(({ name, link, icon }) => {
           const active = subsection === name;
           return (
             <SidebarSubItem
@@ -92,6 +92,7 @@ const Sidebar = ({
               action={action || null}
               actionHandler={active ? actionHandler : null}
               active={active}
+              icon={icon}
             >
               {active ? children : null}
             </SidebarSubItem>

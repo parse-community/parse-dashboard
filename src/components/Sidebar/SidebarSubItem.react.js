@@ -8,13 +8,15 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import styles from 'components/Sidebar/Sidebar.scss';
+import Icon from 'components/Icon/Icon.react';
 
-const SidebarSubItem = ({ active, name, action, link, children }) => {
+const SidebarSubItem = ({ active, name, action, link, children, icon }) => {
   if (active) {
     return (
       <div>
         <div className={styles.subitem}>
           {name}
+          {icon && <Icon name={icon} width={16} height={16} fill="white" style={{ marginLeft: '4px', marginTop: '2px' }} />}
           {action ? action.renderButton() : null}
         </div>
         <div>{children}</div>
@@ -26,6 +28,7 @@ const SidebarSubItem = ({ active, name, action, link, children }) => {
     <div>
       <Link className={styles.subitem} to={{ pathname: link }}>
         {name}
+        {icon && <Icon name={icon} width={16} height={16} fill="#8fb9cf" style={{ marginLeft: '4px', marginTop: '2px' }} />}
       </Link>
     </div>
   );
