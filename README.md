@@ -81,6 +81,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
   - [AI Agent](#ai-agent)
     - [Configuration](#configuration)
     - [Providers](#providers)
+      - [OpenAI](#openai)
   - [Views](#views)
     - [Data Sources](#data-sources)
       - [Aggregation Pipeline](#aggregation-pipeline)
@@ -1308,6 +1309,38 @@ The agent will use the configured models to process natural language commands an
 
 > [!Note]
 > Currently, only OpenAI models are supported. Support for additional providers may be added in future releases.
+
+#### OpenAI
+
+To get an OpenAI API key for use with the AI agent:
+
+1. **Create an OpenAI account**: Visit [platform.openai.com](https://platform.openai.com) and sign up for an account if you don't already have one.
+
+2. **Access the API section**: Once logged in, navigate to the API section of your OpenAI dashboard.
+
+3. **Create a new project**: 
+   - Go to the "Projects" section
+   - Click "Create project"
+   - Name your project "Parse-Dashboard" (or any descriptive name)
+   - Complete the project setup
+
+4. **Configure model access**:
+   - In your project, navigate to "Limits > Model Usage"
+   - Select the AI models you want to use (e.g., `gpt-4`, `gpt-3.5-turbo`)
+   - These model names will be used as the `agent.models[*].model` parameter in your dashboard configuration
+
+5. **Generate an API key**: 
+   - Go to the "API Keys" page in your project settings
+   - Click "Create new secret key"
+   - Give your key a descriptive name (e.g., "Parse Dashboard Agent")
+   - Copy the generated API key immediately (you won't be able to see it again)
+
+6. **Set up billing**: Make sure you have a valid payment method added to your OpenAI account, as API usage incurs charges.
+
+7. **Configure the dashboard**: Add the API key to your Parse Dashboard configuration as shown in the example above.
+
+> [!Important]
+> Keep your API key secure and never commit it to version control. Consider using environment variables or secure configuration management for production deployments.
 
 ## Views
 
