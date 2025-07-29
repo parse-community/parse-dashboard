@@ -643,9 +643,9 @@ module.exports = function(config, options) {
             const { className } = args;
             let result;
             if (className) {
-              result = await new Parse.Schema(className).get();
+              result = await new Parse.Schema(className).get({ useMasterKey: true });
             } else {
-              result = await Parse.Schema.all();
+              result = await Parse.Schema.all({ useMasterKey: true });
             }
             return result;
           }
@@ -728,7 +728,7 @@ module.exports = function(config, options) {
               }
             });
 
-            const result = await schema.save();
+            const result = await schema.save({ useMasterKey: true });
 
             const resultData = { success: true, className, schema: result };
             return resultData;
@@ -744,7 +744,7 @@ module.exports = function(config, options) {
 
             // Check if the class exists first
             try {
-              await new Parse.Schema(className).get();
+              await new Parse.Schema(className).get({ useMasterKey: true });
             } catch (error) {
               if (error.code === 103) {
                 throw new Error(`Class "${className}" does not exist.`);
@@ -754,10 +754,19 @@ module.exports = function(config, options) {
 
             // Delete the class and all its data
             const schema = new Parse.Schema(className);
-            await schema.purge();
-
-            const resultData = { success: true, className, message: `Class "${className}" and all its data have been permanently deleted.` };
-            return resultData;
+            
+            try {
+              // First purge all objects from the class
+              await schema.purge({ useMasterKey: true });
+              
+              // Then delete the class schema itself
+              await schema.delete({ useMasterKey: true });
+              
+              const resultData = { success: true, className, message: `Class "${className}" and all its data have been permanently deleted.` };
+              return resultData;
+            } catch (deleteError) {
+              throw new Error(`Failed to delete class "${className}": ${deleteError.message}`);
+            }
           }
 
           default:
