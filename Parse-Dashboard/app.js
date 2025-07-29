@@ -258,7 +258,7 @@ module.exports = function(config, options) {
         // Update conversation history with user message and AI response
         conversationHistory.push(
           { role: 'user', content: message },
-          { role: 'assistant', content: response }
+          { role: 'assistant', content: response || 'Operation completed successfully.' }
         );
 
         // Keep conversation history to a reasonable size (last 20 messages)
@@ -446,6 +446,32 @@ module.exports = function(config, options) {
             required: ["className"]
           }
         }
+      },
+      {
+        type: "function",
+        function: {
+          name: "createClass",
+          description: "Create a new Parse class/table with specified fields. This creates the class structure without any objects.",
+          parameters: {
+            type: "object",
+            properties: {
+              className: {
+                type: "string",
+                description: "The name of the Parse class to create"
+              },
+              fields: {
+                type: "object",
+                description: "Fields to define for the class as a JSON object where keys are field names and values are field types (e.g., {\"name\": \"String\", \"age\": \"Number\", \"email\": \"String\"})"
+              },
+              confirmed: {
+                type: "boolean",
+                description: "Must be true to indicate user has explicitly confirmed this operation",
+                default: false
+              }
+            },
+            required: ["className", "confirmed"]
+          }
+        }
       }
     ];
 
@@ -454,6 +480,15 @@ module.exports = function(config, options) {
      */
     async function executeDatabaseFunction(functionName, args, appContext) {
       const Parse = require('parse/node');
+      
+      // Debug logging for all Parse Server requests
+      console.log('Parse Server Request:', {
+        operation: functionName,
+        args: args,
+        appId: appContext.appId,
+        serverURL: appContext.serverURL,
+        timestamp: new Date().toISOString()
+      });
       
       // Initialize Parse for this app context
       Parse.initialize(appContext.appId, undefined, appContext.masterKey);
@@ -505,7 +540,14 @@ module.exports = function(config, options) {
             if (select.length > 0) query.select(select);
 
             const results = await query.find({ useMasterKey: true });
-            return results.map(obj => obj.toJSON());
+            const resultData = results.map(obj => obj.toJSON());
+            console.log('Parse Server Response:', {
+              operation: 'queryClass',
+              className,
+              resultCount: results.length,
+              timestamp: new Date().toISOString()
+            });
+            return resultData;
           }
 
           case 'createObject': {
@@ -524,7 +566,14 @@ module.exports = function(config, options) {
             });
             
             const result = await object.save(null, { useMasterKey: true });
-            return result.toJSON();
+            const resultData = result.toJSON();
+            console.log('Parse Server Response:', {
+              operation: 'createObject',
+              className,
+              objectId: resultData.objectId,
+              timestamp: new Date().toISOString()
+            });
+            return resultData;
           }
 
           case 'updateObject': {
@@ -543,7 +592,14 @@ module.exports = function(config, options) {
             });
             
             const result = await object.save(null, { useMasterKey: true });
-            return result.toJSON();
+            const resultData = result.toJSON();
+            console.log('Parse Server Response:', {
+              operation: 'updateObject',
+              className,
+              objectId,
+              timestamp: new Date().toISOString()
+            });
+            return resultData;
           }
 
           case 'deleteObject': {
@@ -557,18 +613,36 @@ module.exports = function(config, options) {
             const query = new Parse.Query(className);
             const object = await query.get(objectId, { useMasterKey: true });
             await object.destroy({ useMasterKey: true });
-            return { success: true, objectId };
+            const result = { success: true, objectId };
+            console.log('Parse Server Response:', {
+              operation: 'deleteObject',
+              className,
+              objectId,
+              timestamp: new Date().toISOString()
+            });
+            return result;
           }
 
           case 'getSchema': {
             const { className } = args;
+            let result;
             if (className) {
-              const schema = await new Parse.Schema(className).get();
-              return schema;
+              result = await new Parse.Schema(className).get();
+              console.log('Parse Server Response:', {
+                operation: 'getSchema',
+                className,
+                timestamp: new Date().toISOString()
+              });
             } else {
-              const schemas = await Parse.Schema.all();
-              return schemas;
+              result = await Parse.Schema.all();
+              console.log('Parse Server Response:', {
+                operation: 'getSchema',
+                action: 'getAllSchemas',
+                schemaCount: result.length,
+                timestamp: new Date().toISOString()
+              });
             }
+            return result;
           }
 
           case 'countObjects': {
@@ -599,13 +673,84 @@ module.exports = function(config, options) {
             });
             
             const count = await query.count({ useMasterKey: true });
-            return { count };
+            const result = { count };
+            console.log('Parse Server Response:', {
+              operation: 'countObjects',
+              className,
+              count,
+              timestamp: new Date().toISOString()
+            });
+            return result;
+          }
+
+          case 'createClass': {
+            const { className, fields = {}, confirmed } = args;
+            
+            // Require explicit confirmation for class creation
+            if (!confirmed) {
+              throw new Error(`Creating classes requires user confirmation. The AI should ask for permission before creating the ${className} class.`);
+            }
+            
+            const schema = new Parse.Schema(className);
+            
+            // Add fields to the schema
+            Object.keys(fields).forEach(fieldName => {
+              const fieldType = fields[fieldName];
+              switch (fieldType.toLowerCase()) {
+                case 'string':
+                  schema.addString(fieldName);
+                  break;
+                case 'number':
+                  schema.addNumber(fieldName);
+                  break;
+                case 'boolean':
+                  schema.addBoolean(fieldName);
+                  break;
+                case 'date':
+                  schema.addDate(fieldName);
+                  break;
+                case 'array':
+                  schema.addArray(fieldName);
+                  break;
+                case 'object':
+                  schema.addObject(fieldName);
+                  break;
+                case 'geopoint':
+                  schema.addGeoPoint(fieldName);
+                  break;
+                case 'file':
+                  schema.addFile(fieldName);
+                  break;
+                default:
+                  // For pointer fields or unknown types, try to add as string
+                  schema.addString(fieldName);
+                  break;
+              }
+            });
+            
+            const result = await schema.save();
+            const resultData = { success: true, className, schema: result };
+            console.log('Parse Server Response:', {
+              operation: 'createClass',
+              className,
+              fieldsCount: Object.keys(fields).length,
+              timestamp: new Date().toISOString()
+            });
+            return resultData;
           }
 
           default:
             throw new Error(`Unknown function: ${functionName}`);
         }
       } catch (error) {
+        console.error('Database operation error:', {
+          functionName,
+          args,
+          appId: appContext.appId,
+          serverURL: appContext.serverURL,
+          error: error.message,
+          stack: error.stack
+        });
         throw new Error(`Database operation failed: ${error.message}`);
       }
     }
@@ -667,6 +812,7 @@ When working with the database:
 - Be mindful of data types (Date, Pointer, etc.)
 - Always consider security and use appropriate query constraints
 - Provide clear explanations of what database operations you're performing
+- If any database function returns an error, you MUST include the full error message in your response to the user. Never hide error details or give vague responses like "there was an issue" - always show the specific error message.
 
 When responding:
 - Be concise and helpful
@@ -682,7 +828,12 @@ You have direct access to the Parse database through function calls, so you can 
       
       // Add conversation history if it exists
       if (conversationHistory && conversationHistory.length > 0) {
-        messages.push(...conversationHistory);
+        // Filter out any messages with null or undefined content to prevent API errors
+        const validHistory = conversationHistory.filter(msg => 
+          msg && typeof msg === 'object' && msg.role && 
+          (msg.content !== null && msg.content !== undefined && msg.content !== '')
+        );
+        messages.push(...validHistory);
       }
       
       // Add the current user message
@@ -754,13 +905,19 @@ You have direct access to the Parse database through function calls, so you can 
               toolResponses.push({
                 tool_call_id: toolCall.id,
                 role: 'tool',
-                content: JSON.stringify(result)
+                content: result ? JSON.stringify(result) : JSON.stringify({ success: true })
               });
             } catch (error) {
+              console.error('Parse operation error:', {
+                functionName: toolCall.function.name,
+                args: toolCall.function.arguments,
+                error: error.message,
+                stack: error.stack
+              });
               toolResponses.push({
                 tool_call_id: toolCall.id,
                 role: 'tool',
-                content: JSON.stringify({ error: error.message })
+                content: JSON.stringify({ error: error.message || 'Unknown error occurred' })
               });
             }
           }
@@ -802,10 +959,18 @@ You have direct access to the Parse database through function calls, so you can 
           throw new Error('No follow-up response received from OpenAI API');
         }
 
-        return followUpData.choices[0].message.content;
+        const followUpContent = followUpData.choices[0].message.content;
+        if (!followUpContent) {
+          console.warn('OpenAI returned null content in follow-up response, using fallback message');
+        }
+        return followUpContent || 'Operation completed successfully.';
       }
 
-      return responseMessage.content;
+      const content = responseMessage.content;
+      if (!content) {
+        console.warn('OpenAI returned null content in initial response, using fallback message');
+      }
+      return content || 'Operation completed successfully.';
     }
 
     // Serve the app icons. Uses the optional `iconsFolder` parameter as
