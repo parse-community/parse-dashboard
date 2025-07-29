@@ -25,6 +25,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  padding-top: 116px; /* Add top padding to account for the 96px fixed toolbar + some extra spacing */
   background-color: #f8f9fa;
 }
 
