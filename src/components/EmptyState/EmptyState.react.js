@@ -41,18 +41,27 @@ const EmptyState = ({
   action = () => {},
   secondaryCta = '',
   secondaryAction = () => {},
-}) => (
-  <div className={baseStyles.center}>
-    <div className={styles.icon}>
-      <Icon width={80} height={80} fill="#343445" name={icon} />
+  customContent = null,
+  useFlexLayout = false,
+}) => {
+  const containerClass = useFlexLayout ? styles.flexContainer : baseStyles.center;
+  
+  return (
+    <div className={containerClass}>
+      <div className={styles.content}>
+        <div className={styles.icon}>
+          <Icon width={80} height={80} fill="#343445" name={icon} />
+        </div>
+        <div className={styles.title}>{title}</div>
+        <div className={styles.description}>{description}</div>
+        {ctaButton(cta, action)}
+        {secondaryCta && ' '}
+        {ctaButton(secondaryCta, secondaryAction)}
+      </div>
+      {customContent && <div className={styles.customContent}>{customContent}</div>}
     </div>
-    <div className={styles.title}>{title}</div>
-    <div className={styles.description}>{description}</div>
-    {ctaButton(cta, action)}
-    {secondaryCta && ' '}
-    {ctaButton(secondaryCta, secondaryAction)}
-  </div>
-);
+  );
+};
 
 EmptyState.propTypes = {
   icon: PropTypes.string.describe('The name of the large icon that appears in the empty state.'),
@@ -72,6 +81,8 @@ EmptyState.propTypes = {
   secondaryAction: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).describe(
     'An href link or a click handler that is forwarded to the secondary CTA button.'
   ),
+  customContent: PropTypes.node.describe('Custom content to render below the empty state.'),
+  useFlexLayout: PropTypes.bool.describe('Whether to use flex layout instead of absolute positioning.'),
 };
 
 export default EmptyState;

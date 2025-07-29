@@ -7,6 +7,27 @@
  */
 @import 'stylesheets/globals.scss';
 
+.flexContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 32px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 600px;
+}
+
+.customContent {
+  width: 100%;
+  max-width: 600px;
+}
+
 .title {
   font-size: 46px;
   font-weight: 100;

@@ -32,14 +32,17 @@
 .emptyStateOverlay {
   position: fixed;
   left: 300px;
-  top: 0;
+  top: 116px; /* Account for toolbar height */
   bottom: 0;
   right: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 40px; /* Reduced padding */
   pointer-events: none; /* Allow clicks to pass through to the input below */
   z-index: 10;
+  overflow-y: auto; /* Allow scrolling if content is too tall */
 }
 
 .emptyStateOverlay > * {
@@ -195,10 +198,16 @@ body:global(.expanded) {
 .emptyStateContainer {
   text-align: center;
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px; /* Increased gap for better spacing */
+  width: 100%;
 }
 
 .exampleQueries {
-  margin-top: 24px;
+  margin-top: 0; /* Remove margin since we're using gap in parent */
+  width: 100%;
   
   h4 {
     color: #6c757d;
