@@ -175,11 +175,9 @@ class Agent extends DashboardView {
       }
 
       // Get response from AI service with conversation context
-      const instructions = AgentService.getDefaultInstructions();
       const result = await AgentService.sendMessage(
         inputValue.trim(),
         modelConfig,
-        instructions,
         appSlug,
         this.state.conversationId
       );
