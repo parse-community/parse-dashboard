@@ -102,7 +102,7 @@
     "http-server": "14.1.1",
     "husky": "9.1.7",
     "jest": "30.0.4",
-    "jest-environment-jsdom": "30.0.4",
+    "jest-environment-jsdom": "30.0.5",
     "madge": "8.0.0",
     "marked": "15.0.12",
     "null-loader": "4.0.1",
