@@ -192,7 +192,6 @@ module.exports = function(config, options) {
     });
 
     // Agent API endpoint for handling AI requests - scoped to specific app
-    // Temporarily disable CSRF for debugging
     app.post('/apps/:appId/agent', async (req, res) => {
       try {
         const { message, modelName } = req.body;
