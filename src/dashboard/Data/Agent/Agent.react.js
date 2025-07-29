@@ -13,6 +13,7 @@ import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import React from 'react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import AgentService from 'lib/AgentService';
 import styles from './Agent.scss';
 import { withRouter } from 'lib/withRouter';
 
@@ -37,7 +38,18 @@ class Agent extends DashboardView {
 
   getStoredSelectedModel() {
     const stored = localStorage.getItem('selectedAgentModel');
-    return stored || null;
+    return stored;
+  }
+
+  componentDidMount() {
+    // Set default selected model if none is selected and models are available
+    const { agentConfig } = this.props;
+    const { selectedModel } = this.state;
+    const models = agentConfig?.models || [];
+    
+    if (!selectedModel && models.length > 0) {
+      this.setSelectedModel(models[0].name);
+    }
   }
 
   setSelectedModel(modelName) {
@@ -57,11 +69,32 @@ class Agent extends DashboardView {
     this.setState({ inputValue: event.target.value });
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    const { inputValue } = this.state;
+    const { inputValue, selectedModel } = this.state;
+    const { agentConfig } = this.props;
     
     if (inputValue.trim() === '') {
+      return;
+    }
+
+    // Find the selected model configuration
+    const models = agentConfig?.models || [];
+    const modelConfig = models.find(model => model.name === selectedModel) || models[0];
+    
+    if (!modelConfig) {
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: 'agent',
+        content: 'No AI model is configured. Please check your dashboard configuration.',
+        timestamp: new Date(),
+        isError: true,
+      };
+      
+      this.setState(prevState => ({
+        messages: [...prevState.messages, errorMessage],
+        isLoading: false,
+      }));
       return;
     }
     
@@ -79,12 +112,18 @@ class Agent extends DashboardView {
       isLoading: true,
     }));
     
-    // Simulate AI response (replace with actual AI integration later)
-    setTimeout(() => {
+    try {
+      // Validate model configuration
+      AgentService.validateModelConfig(modelConfig);
+      
+      // Get response from AI service
+      const instructions = AgentService.getDefaultInstructions();
+      const response = await AgentService.sendMessage(inputValue.trim(), modelConfig, instructions);
+      
       const aiMessage = {
         id: Date.now() + 1,
         type: 'agent',
-        content: `I received your message: "${inputValue.trim()}". This is a placeholder response. AI integration will be implemented here.`,
+        content: response,
         timestamp: new Date(),
       };
       
@@ -93,11 +132,29 @@ class Agent extends DashboardView {
         isLoading: false,
       }));
       
-      // Focus the input field after the AI response
+    } catch (error) {
+      console.error('Agent API error:', error);
+      
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: 'agent',
+        content: `Error: ${error.message}`,
+        timestamp: new Date(),
+        isError: true,
+      };
+      
+      this.setState(prevState => ({
+        messages: [...prevState.messages, errorMessage],
+        isLoading: false,
+      }));
+    }
+    
+    // Focus the input field after the response
+    setTimeout(() => {
       if (this.chatInputRef.current) {
         this.chatInputRef.current.focus();
       }
-    }, 1000);
+    }, 100);
   }
 
   renderToolbar() {
@@ -164,7 +221,7 @@ class Agent extends DashboardView {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`${styles.message} ${styles[message.type]}`}
+            className={`${styles.message} ${styles[message.type]} ${message.isError ? styles.error : ''}`}
           >
             <div className={styles.messageContent}>
               {message.content}

@@ -53,6 +53,7 @@
     "immutable-devtools": "0.1.5",
     "inquirer": "12.6.3",
     "js-beautify": "1.15.4",
+    "node-fetch": "3.3.2",
     "otpauth": "8.0.3",
     "package-json": "7.0.0",
     "parse": "3.5.1",

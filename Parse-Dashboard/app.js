@@ -182,6 +182,131 @@ module.exports = function(config, options) {
       res.send({ success: false, error: 'Something went wrong.' });
     });
 
+    // Agent API endpoint for handling AI requests
+    app.post('/agent', csrf(), async (req, res) => {
+      try {
+        const { message, modelName } = req.body;
+        
+        if (!message || typeof message !== 'string' || message.trim() === '') {
+          return res.status(400).json({ error: 'Message is required' });
+        }
+
+        if (!modelName || typeof modelName !== 'string') {
+          return res.status(400).json({ error: 'Model name is required' });
+        }
+
+        // Check if agent configuration exists
+        if (!config.agent || !config.agent.models || !Array.isArray(config.agent.models)) {
+          return res.status(400).json({ error: 'No agent configuration found' });
+        }
+
+        // Find the requested model
+        const modelConfig = config.agent.models.find(model => model.name === modelName);
+        if (!modelConfig) {
+          return res.status(400).json({ error: `Model "${modelName}" not found in configuration` });
+        }
+
+        // Validate model configuration
+        const { provider, model, apiKey } = modelConfig;
+        if (!provider || !model || !apiKey) {
+          return res.status(400).json({ error: 'Model configuration is incomplete' });
+        }
+
+        if (apiKey === 'xxxxx' || apiKey.includes('xxx')) {
+          return res.status(400).json({ error: 'Please replace the placeholder API key with your actual API key' });
+        }
+
+        // Only support OpenAI for now
+        if (provider.toLowerCase() !== 'openai') {
+          return res.status(400).json({ error: `Provider "${provider}" is not supported yet` });
+        }
+
+        // Make request to OpenAI API
+        const response = await makeOpenAIRequest(message, model, apiKey);
+        res.json({ response });
+
+      } catch (error) {
+        console.error('Agent API error:', error);
+        res.status(500).json({ error: error.message || 'Internal server error' });
+      }
+    });
+
+    /**
+     * Make a request to OpenAI API
+     */
+    async function makeOpenAIRequest(message, model, apiKey) {
+      const fetch = (await import('node-fetch')).default;
+      
+      const url = 'https://api.openai.com/v1/chat/completions';
+      
+      const messages = [
+        {
+          role: 'system',
+          content: `You are an AI assistant integrated into Parse Dashboard, a data management interface for Parse Server applications.
+
+Your role is to help users with:
+- Database queries and data operations
+- Understanding Parse Server concepts
+- Troubleshooting common issues
+- Best practices for data modeling
+- Cloud Code and server configuration
+
+When responding:
+- Be concise and helpful
+- Provide practical examples when relevant
+- Ask clarifying questions if the user's request is unclear
+- Focus on Parse-specific solutions and recommendations
+
+You have access to the user's Parse Dashboard interface, so you can reference their database schema, classes, and data when appropriate.`
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ];
+
+      const requestBody = {
+        model: model,
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 1000,
+        stream: false
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Invalid API key. Please check your OpenAI API key configuration.');
+        } else if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please try again in a moment.');
+        } else if (response.status === 403) {
+          throw new Error('Access forbidden. Please check your API key permissions.');
+        } else if (response.status >= 500) {
+          throw new Error('OpenAI service is temporarily unavailable. Please try again later.');
+        }
+        
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`;
+        throw new Error(`OpenAI API error: ${errorMessage}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.choices || data.choices.length === 0) {
+        throw new Error('No response received from OpenAI API');
+      }
+
+      return data.choices[0].message.content;
+    }
+
     // Serve the app icons. Uses the optional `iconsFolder` parameter as
     // directory name, that was setup in the config file.
     // We are explicitly not using `__dirpath` here because one may be
