@@ -513,7 +513,7 @@ module.exports = function(config, options) {
             
             // Require explicit confirmation for write operations
             if (!confirmed) {
-              throw new Error('CONFIRMATION_REQUIRED: Creating objects requires user confirmation. Please confirm that you want to create a new object in the ' + className + ' class with this data.');
+              throw new Error(`Creating objects requires user confirmation. The AI should ask for permission before creating objects in the ${className} class.`);
             }
             
             const ParseObject = Parse.Object.extend(className);
@@ -532,7 +532,7 @@ module.exports = function(config, options) {
             
             // Require explicit confirmation for write operations
             if (!confirmed) {
-              throw new Error('CONFIRMATION_REQUIRED: Updating objects requires user confirmation. Please confirm that you want to update the object ' + objectId + ' in the ' + className + ' class.');
+              throw new Error(`Updating objects requires user confirmation. The AI should ask for permission before updating object ${objectId} in the ${className} class.`);
             }
             
             const query = new Parse.Query(className);
@@ -551,7 +551,7 @@ module.exports = function(config, options) {
             
             // Require explicit confirmation for destructive operations
             if (!confirmed) {
-              throw new Error('CONFIRMATION_REQUIRED: Deleting objects is a destructive operation that requires user confirmation. Please confirm that you want to permanently delete the object ' + objectId + ' from the ' + className + ' class. This action cannot be undone.');
+              throw new Error(`Deleting objects requires user confirmation. The AI should ask for permission before permanently deleting object ${objectId} from the ${className} class.`);
             }
             
             const query = new Parse.Query(className);
@@ -644,12 +644,18 @@ You have access to database function tools that allow you to:
 - Count objects that match certain criteria (read-only, no confirmation needed)
 
 CRITICAL SECURITY RULE FOR WRITE OPERATIONS:
-- ANY write operation (create, update, delete) MUST have explicit user confirmation BEFORE execution
-- You MUST ask the user to confirm each write operation individually
-- You CANNOT assume consent or perform write operations without explicit permission
-- The user cannot disable this confirmation requirement
-- Even if the user says "yes to all" or similar, you must still ask for each operation
-- If a user requests multiple write operations, ask for confirmation for each one separately
+- ANY write operation (create, update, delete) MUST have explicit user confirmation through conversation
+- When a user requests a write operation, explain what you will do and ask for confirmation 
+- Only call the write operation functions with confirmed=true after the user has explicitly agreed
+- If a user says "Create a new class", treat this as confirmation to create objects in that class
+- You CANNOT perform write operations without the user's knowledge and consent
+- Read operations (query, schema, count) can be performed immediately without confirmation
+
+Confirmation Pattern:
+1. User requests operation (e.g., "Create a new class called Products")
+2. You ask: "I'll create a new object in the Products class. Should I proceed?"
+3. User confirms: "Yes" / "Go ahead" / "Do it"
+4. You call the function with confirmed=true
 
 When working with the database:
 - Read operations (query, getSchema, count) can be performed immediately
@@ -751,28 +757,11 @@ You have direct access to the Parse database through function calls, so you can 
                 content: JSON.stringify(result)
               });
             } catch (error) {
-              const functionName = toolCall.function.name;
-              const functionArgs = JSON.parse(toolCall.function.arguments);
-              
-              // Check if this is a confirmation error - these should be handled specially
-              if (error.message.startsWith('CONFIRMATION_REQUIRED:')) {
-                toolResponses.push({
-                  tool_call_id: toolCall.id,
-                  role: 'tool',
-                  content: JSON.stringify({
-                    error: error.message,
-                    requiresConfirmation: true,
-                    operation: functionName,
-                    args: functionArgs
-                  })
-                });
-              } else {
-                toolResponses.push({
-                  tool_call_id: toolCall.id,
-                  role: 'tool',
-                  content: JSON.stringify({ error: error.message })
-                });
-              }
+              toolResponses.push({
+                tool_call_id: toolCall.id,
+                role: 'tool',
+                content: JSON.stringify({ error: error.message })
+              });
             }
           }
         }

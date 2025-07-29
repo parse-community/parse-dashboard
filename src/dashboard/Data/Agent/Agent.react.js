@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
+import Button from 'components/Button/Button.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
@@ -78,7 +79,7 @@ class Agent extends DashboardView {
   clearChat() {
     this.setState({
       messages: [],
-      conversationId: null // Reset conversation to start fresh
+      conversationId: null, // Reset conversation to start fresh
     });
     // Close the menu by simulating an external click
     if (this.browserMenuRef.current) {
@@ -367,9 +368,9 @@ class Agent extends DashboardView {
                     <div className={styles.queryExamples}>
                       <button
                         className={styles.exampleButton}
-                        onClick={() => this.handleExampleClick('Which classes do I have in my database?')}
+                        onClick={() => this.handleExampleClick('What classes do I have in my database?')}
                       >
-                        &ldquo;Which classes do I have in my database?&rdquo;
+                        &ldquo;What classes do I have in my database?&rdquo;
                       </button>
                       <button
                         className={styles.exampleButton}
