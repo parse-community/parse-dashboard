@@ -341,3 +341,33 @@ body:global(.expanded) {
     transform: translateY(0);
   }
 }
+
+.warningMessage {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  position: relative;
+  max-width: 100%;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  
+  .warningIcon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  
+  .warningContent {
+    flex: 1;
+  }
+  
+  strong {
+    font-weight: 600;
+  }
+}

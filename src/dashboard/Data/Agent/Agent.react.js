@@ -211,7 +211,7 @@ class Agent extends DashboardView {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    const { inputValue, selectedModel } = this.state;
+    const { inputValue, selectedModel, messages } = this.state;
     const { agentConfig } = this.props;
 
     if (inputValue.trim() === '') {
@@ -238,6 +238,20 @@ class Agent extends DashboardView {
       return;
     }
 
+    // Add warning message if this is the first message in the conversation
+    const isFirstMessage = messages.length === 0;
+    let messagesToAdd = [];
+
+    if (isFirstMessage) {
+      const warningMessage = {
+        id: Date.now() - 1,
+        type: 'warning',
+        content: 'The AI agent has full access to your database using the master key. It can read, modify, and delete any data. This feature is highly recommended for development environments only. Always back up important data before using the AI agent.',
+        timestamp: new Date(),
+      };
+      messagesToAdd.push(warningMessage);
+    }
+
     // Add user message
     const userMessage = {
       id: Date.now(),
@@ -245,9 +259,10 @@ class Agent extends DashboardView {
       content: inputValue.trim(),
       timestamp: new Date(),
     };
+    messagesToAdd.push(userMessage);
 
     this.setState(prevState => ({
-      messages: [...prevState.messages, userMessage],
+      messages: [...prevState.messages, ...messagesToAdd],
       inputValue: '',
       isLoading: true,
     }));
@@ -381,17 +396,28 @@ class Agent extends DashboardView {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`${styles.message} ${styles[message.type]} ${message.isError ? styles.error : ''}`}
+            className={`${styles.message} ${styles[message.type]} ${message.isError ? styles.error : ''} ${message.type === 'warning' ? styles.warningMessage : ''}`}
           >
-            <div className={styles.messageContent}>
-              {message.type === 'agent' ? this.formatMessageContent(message.content) : message.content}
-            </div>
-            <div className={styles.messageTime}>
-              {message.timestamp instanceof Date ? 
-                message.timestamp.toLocaleTimeString() : 
-                new Date(message.timestamp).toLocaleTimeString()
-              }
-            </div>
+            {message.type === 'warning' ? (
+              <>
+                <Icon name="warn-outline" width={16} height={16} fill="#856404" className={styles.warningIcon} />
+                <div className={styles.warningContent}>
+                  {message.content}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.messageContent}>
+                  {message.type === 'agent' ? this.formatMessageContent(message.content) : message.content}
+                </div>
+                <div className={styles.messageTime}>
+                  {message.timestamp instanceof Date ? 
+                    message.timestamp.toLocaleTimeString() : 
+                    new Date(message.timestamp).toLocaleTimeString()
+                  }
+                </div>
+              </>
+            )}
           </div>
         ))}
         {isLoading && (
