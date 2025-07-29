@@ -509,7 +509,20 @@ module.exports = function(config, options) {
     /**
      * Execute database function calls
      */
-    async function executeDatabaseFunction(functionName, args, appContext, operationLog = []) {
+    async function executeDatabaseFunction(functionName, args, appContext, operationLog = [], permissions = {}) {
+      // Check permissions before executing write operations
+      const writeOperations = ['deleteObject', 'deleteClass', 'updateObject', 'createObject', 'createClass'];
+      
+      if (writeOperations.includes(functionName)) {
+        // Handle both boolean and string values for permissions
+        const permissionValue = permissions && permissions[functionName];
+        const hasPermission = permissionValue === true || permissionValue === 'true';
+        
+        if (!hasPermission) {
+          throw new Error(`Permission denied: The "${functionName}" operation is currently disabled in the permissions settings. Please enable this permission in the Parse Dashboard Permissions menu if you want to allow this operation.`);
+        }
+      }
+
       const Parse = require('parse/node');
 
       // Initialize Parse for this app context
@@ -785,35 +798,6 @@ module.exports = function(config, options) {
     }
 
     /**
-     * Filter database tools based on permissions
-     */
-    function getFilteredDatabaseTools(permissions = {}) {
-      const disallowedOperations = [];
-      
-      // Check which operations are not allowed
-      if (!permissions.deleteObject) {
-        disallowedOperations.push('deleteObject');
-      }
-      if (!permissions.deleteClass) {
-        disallowedOperations.push('deleteClass');
-      }
-      if (!permissions.updateObject) {
-        disallowedOperations.push('updateObject');
-      }
-      if (!permissions.createObject) {
-        disallowedOperations.push('createObject');
-      }
-      if (!permissions.createClass) {
-        disallowedOperations.push('createClass');
-      }
-
-      // Filter out disallowed operations
-      return databaseTools.filter(tool =>
-        !disallowedOperations.includes(tool.function.name)
-      );
-    }
-
-    /**
      * Make a request to OpenAI API
      */
     async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
@@ -926,14 +910,12 @@ You have direct access to the Parse database through function calls, so you can 
         content: userMessage
       });
 
-      const filteredTools = getFilteredDatabaseTools(permissions);
-
       const requestBody = {
         model: model,
         messages: messages,
         temperature: 0.7,
         max_tokens: 2000,
-        tools: filteredTools,
+        tools: databaseTools,
         tool_choice: 'auto',
         stream: false
       };
@@ -994,7 +976,7 @@ You have direct access to the Parse database through function calls, so you can 
               });
 
               // Execute the database function
-              const result = await executeDatabaseFunction(functionName, functionArgs, appContext, operationLog);
+              const result = await executeDatabaseFunction(functionName, functionArgs, appContext, operationLog, permissions);
 
               toolResponses.push({
                 tool_call_id: toolCall.id,
@@ -1023,7 +1005,7 @@ You have direct access to the Parse database through function calls, so you can 
           messages: followUpMessages,
           temperature: 0.7,
           max_tokens: 2000,
-          tools: filteredTools,
+          tools: databaseTools,
           tool_choice: 'auto',
           stream: false
         };

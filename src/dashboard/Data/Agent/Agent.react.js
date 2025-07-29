@@ -442,9 +442,7 @@ class Agent extends DashboardView {
                   {operation.label}
                 </span>
               }
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+              onClick={() => {
                 this.setPermission(operation.key, !permissions[operation.key]);
               }}
             />
