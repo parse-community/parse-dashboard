@@ -48,17 +48,7 @@ export default class AgentService {
       const response = await post(`/apps/${appSlug}/agent`, requestBody);
 
       if (response.error) {
-        console.error('Agent API Error Response:', response.error);
         throw new Error(response.error);
-      }
-
-      // Log Parse Server operations if available
-      if (response.debug?.operations?.length > 0) {
-        console.group('Parse Server Operations:');
-        response.debug.operations.forEach((op, index) => {
-          console.log(`${index + 1}. ${op.operation}:`, op);
-        });
-        console.groupEnd();
       }
 
       return {
