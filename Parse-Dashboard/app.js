@@ -196,7 +196,7 @@ module.exports = function(config, options) {
     // Agent API endpoint for handling AI requests - scoped to specific app
     app.post('/apps/:appId/agent', async (req, res) => {
       try {
-        const { message, modelName, conversationId } = req.body;
+        const { message, modelName, conversationId, permissions } = req.body;
         const { appId } = req.params;
 
         if (!message || typeof message !== 'string' || message.trim() === '') {
@@ -255,7 +255,7 @@ module.exports = function(config, options) {
         const operationLog = [];
 
         // Make request to OpenAI API with app context and conversation history
-        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory, operationLog);
+        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory, operationLog, permissions);
 
         // Update conversation history with user message and AI response
         conversationHistory.push(
@@ -785,9 +785,38 @@ module.exports = function(config, options) {
     }
 
     /**
+     * Filter database tools based on permissions
+     */
+    function getFilteredDatabaseTools(permissions = {}) {
+      const disallowedOperations = [];
+      
+      // Check which operations are not allowed
+      if (!permissions.deleteObject) {
+        disallowedOperations.push('deleteObject');
+      }
+      if (!permissions.deleteClass) {
+        disallowedOperations.push('deleteClass');
+      }
+      if (!permissions.updateObject) {
+        disallowedOperations.push('updateObject');
+      }
+      if (!permissions.createObject) {
+        disallowedOperations.push('createObject');
+      }
+      if (!permissions.createClass) {
+        disallowedOperations.push('createClass');
+      }
+
+      // Filter out disallowed operations
+      return databaseTools.filter(tool =>
+        !disallowedOperations.includes(tool.function.name)
+      );
+    }
+
+    /**
      * Make a request to OpenAI API
      */
-    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = []) {
+    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
       const fetch = (await import('node-fetch')).default;
 
       const url = 'https://api.openai.com/v1/chat/completions';
@@ -897,12 +926,14 @@ You have direct access to the Parse database through function calls, so you can 
         content: userMessage
       });
 
+      const filteredTools = getFilteredDatabaseTools(permissions);
+
       const requestBody = {
         model: model,
         messages: messages,
         temperature: 0.7,
         max_tokens: 2000,
-        tools: databaseTools,
+        tools: filteredTools,
         tool_choice: 'auto',
         stream: false
       };
@@ -992,7 +1023,7 @@ You have direct access to the Parse database through function calls, so you can 
           messages: followUpMessages,
           temperature: 0.7,
           max_tokens: 2000,
-          tools: databaseTools,
+          tools: filteredTools,
           tool_choice: 'auto',
           stream: false
         };

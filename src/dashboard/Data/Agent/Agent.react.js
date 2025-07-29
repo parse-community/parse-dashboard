@@ -34,6 +34,9 @@ class Agent extends DashboardView {
       isLoading: false,
       selectedModel: this.getStoredSelectedModel(),
       conversationId: null,
+      permissions: this.getStoredPermissions(),
+      // Force re-render key
+      permissionsKey: 0,
     };
 
     this.browserMenuRef = React.createRef();
@@ -45,6 +48,45 @@ class Agent extends DashboardView {
   getStoredSelectedModel() {
     const stored = localStorage.getItem('selectedAgentModel');
     return stored;
+  }
+
+  getStoredPermissions() {
+    try {
+      const stored = localStorage.getItem('agentPermissions');
+      return stored ? JSON.parse(stored) : {
+        deleteObject: false,
+        deleteClass: false,
+        updateObject: false,
+        createObject: false,
+        createClass: false,
+      };
+    } catch (error) {
+      console.warn('Failed to parse stored permissions, using defaults:', error);
+      return {
+        deleteObject: false,
+        deleteClass: false,
+        updateObject: false,
+        createObject: false,
+        createClass: false,
+      };
+    }
+  }
+
+  setPermission = (operation, enabled) => {
+    this.setState(prevState => {
+      const newPermissions = {
+        ...prevState.permissions,
+        [operation]: enabled
+      };
+      
+      // Save to localStorage immediately
+      localStorage.setItem('agentPermissions', JSON.stringify(newPermissions));
+      
+      return {
+        permissions: newPermissions,
+        permissionsKey: prevState.permissionsKey + 1
+      };
+    });
   }
 
   getStoredChatState() {
@@ -246,7 +288,7 @@ class Agent extends DashboardView {
       const warningMessage = {
         id: Date.now() - 1,
         type: 'warning',
-        content: 'The AI agent has full access to your database using the master key. It can read, modify, and delete any data. This feature is highly recommended for development environments only. Always back up important data before using the AI agent.',
+        content: 'The AI agent has full access to your database using the master key. It can read, modify, and delete any data. This feature is highly recommended for development environments only. Always back up important data before using the AI agent. Use the permissions menu to restrict operations.',
         timestamp: new Date(),
       };
       messagesToAdd.push(warningMessage);
@@ -282,7 +324,8 @@ class Agent extends DashboardView {
         inputValue.trim(),
         modelConfig,
         appSlug,
-        this.state.conversationId
+        this.state.conversationId,
+        this.state.permissions
       );
 
       const aiMessage = {
@@ -334,8 +377,16 @@ class Agent extends DashboardView {
 
   renderToolbar() {
     const { agentConfig } = this.props;
-    const { selectedModel } = this.state;
+    const { selectedModel, permissions, permissionsKey } = this.state;
     const models = agentConfig?.models || [];
+
+    const permissionOperations = [
+      { key: 'deleteObject', label: 'Delete Objects' },
+      { key: 'deleteClass', label: 'Delete Classes' },
+      { key: 'updateObject', label: 'Update Objects' },
+      { key: 'createObject', label: 'Create Objects' },
+      { key: 'createClass', label: 'Create Classes' },
+    ];
 
     return (
       <Toolbar section="Core" subsection="Agent">
@@ -367,6 +418,38 @@ class Agent extends DashboardView {
             ))}
           </BrowserMenu>
         )}
+        <BrowserMenu
+          key={`permissions-${permissionsKey}`}
+          title="Permissions"
+          icon="locked-solid"
+          setCurrent={() => {}}
+        >
+          {permissionOperations.map((operation) => (
+            <MenuItem
+              key={operation.key}
+              active={permissions[operation.key]}
+              text={
+                <span>
+                  {permissions[operation.key] && (
+                    <Icon
+                      name="check"
+                      width={12}
+                      height={12}
+                      fill="#ffffffff"
+                      className="menuCheck"
+                    />
+                  )}
+                  {operation.label}
+                </span>
+              }
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setPermission(operation.key, !permissions[operation.key]);
+              }}
+            />
+          ))}
+        </BrowserMenu>
         <BrowserMenu
           ref={this.browserMenuRef}
           title="Chat"

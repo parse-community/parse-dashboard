@@ -17,9 +17,10 @@ export default class AgentService {
    * @param {Object} modelConfig - The model configuration object
    * @param {string} appSlug - The app slug to scope the request to
    * @param {string|null} conversationId - Optional conversation ID to maintain context
+   * @param {Object} permissions - Permission settings for operations
    * @returns {Promise<{response: string, conversationId: string}>} The AI's response and conversation ID
    */
-  static async sendMessage(message, modelConfig, appSlug, conversationId = null) {
+  static async sendMessage(message, modelConfig, appSlug, conversationId = null, permissions = {}) {
     if (!modelConfig) {
       throw new Error('Model configuration is required');
     }
@@ -43,6 +44,11 @@ export default class AgentService {
       // Include conversation ID if provided
       if (conversationId) {
         requestBody.conversationId = conversationId;
+      }
+
+      // Include permissions if provided
+      if (permissions) {
+        requestBody.permissions = permissions;
       }
 
       const response = await post(`/apps/${appSlug}/agent`, requestBody);
