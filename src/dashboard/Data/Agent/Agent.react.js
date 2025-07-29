@@ -9,6 +9,7 @@ import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
+import Markdown from 'components/Markdown/Markdown.react';
 import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import React from 'react';
 import SidebarAction from 'components/Sidebar/SidebarAction';
@@ -254,6 +255,11 @@ class Agent extends DashboardView {
     );
   }
 
+  formatMessageContent(content) {
+    // Use the existing Markdown component to render the content
+    return <Markdown content={content} />;
+  }
+
   renderMessages() {
     const { messages, isLoading } = this.state;
     
@@ -269,7 +275,7 @@ class Agent extends DashboardView {
             className={`${styles.message} ${styles[message.type]} ${message.isError ? styles.error : ''}`}
           >
             <div className={styles.messageContent}>
-              {message.content}
+              {message.type === 'agent' ? this.formatMessageContent(message.content) : message.content}
             </div>
             <div className={styles.messageTime}>
               {message.timestamp.toLocaleTimeString()}
