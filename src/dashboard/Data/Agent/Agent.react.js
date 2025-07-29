@@ -28,11 +28,16 @@ class Agent extends DashboardView {
       isLoading: false,
     };
     
+    this.browserMenuRef = React.createRef();
     this.action = new SidebarAction('Clear Chat', () => this.clearChat());
   }
 
   clearChat() {
     this.setState({ messages: [] });
+    // Close the menu by simulating an external click
+    if (this.browserMenuRef.current) {
+      this.browserMenuRef.current.setState({ open: false });
+    }
   }
 
   handleInputChange = (event) => {
@@ -80,7 +85,12 @@ class Agent extends DashboardView {
   renderToolbar() {
     return (
       <Toolbar section="Core" subsection="Agent">
-        <BrowserMenu title="Chat" icon="collaborate-solid">
+        <BrowserMenu
+          ref={this.browserMenuRef}
+          title="Chat"
+          icon="collaborate-solid"
+          setCurrent={() => {}}
+        >
           <MenuItem text="Clear" onClick={() => this.clearChat()} />
         </BrowserMenu>
       </Toolbar>
