@@ -398,7 +398,7 @@ module.exports = function(config, options) {
         type: 'function',
         function: {
           name: 'deleteObject',
-          description: 'Delete an object from a Parse class/table. IMPORTANT: This is a destructive write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
+          description: 'Delete a SINGLE OBJECT/ROW from a Parse class/table using its objectId. Use this when you want to delete one specific record/object, not the entire class. IMPORTANT: This is a destructive write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
           parameters: {
             type: 'object',
             properties: {
@@ -408,7 +408,7 @@ module.exports = function(config, options) {
               },
               objectId: {
                 type: 'string',
-                description: 'The objectId of the object to delete'
+                description: 'The objectId of the specific object/record to delete'
               },
               confirmed: {
                 type: 'boolean',
@@ -476,6 +476,28 @@ module.exports = function(config, options) {
               confirmed: {
                 type: 'boolean',
                 description: 'Must be true to indicate user has explicitly confirmed this operation',
+                default: false
+              }
+            },
+            required: ['className', 'confirmed']
+          }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'deleteClass',
+          description: 'Delete an ENTIRE Parse class/table (the class itself) and ALL its data. Use this when the user wants to delete/remove the entire class/table, not individual objects. This completely removes the class schema and all objects within it. IMPORTANT: This is a highly destructive operation that permanently removes the entire class structure and all objects within it. Requires explicit user confirmation before execution.',
+          parameters: {
+            type: 'object',
+            properties: {
+              className: {
+                type: 'string',
+                description: 'The name of the Parse class/table to completely delete/remove'
+              },
+              confirmed: {
+                type: 'boolean',
+                description: 'Must be true to indicate user has explicitly confirmed this highly destructive operation',
                 default: false
               }
             },
@@ -712,6 +734,32 @@ module.exports = function(config, options) {
             return resultData;
           }
 
+          case 'deleteClass': {
+            const { className, confirmed } = args;
+
+            // Require explicit confirmation for class deletion - this is highly destructive
+            if (!confirmed) {
+              throw new Error(`Deleting classes requires user confirmation. The AI should ask for permission before permanently deleting the ${className} class and ALL its data.`);
+            }
+
+            // Check if the class exists first
+            try {
+              await new Parse.Schema(className).get();
+            } catch (error) {
+              if (error.code === 103) {
+                throw new Error(`Class "${className}" does not exist.`);
+              }
+              throw error;
+            }
+
+            // Delete the class and all its data
+            const schema = new Parse.Schema(className);
+            await schema.purge();
+
+            const resultData = { success: true, className, message: `Class "${className}" and all its data have been permanently deleted.` };
+            return resultData;
+          }
+
           default:
             throw new Error(`Unknown function: ${functionName}`);
         }
@@ -757,9 +805,15 @@ You have access to database function tools that allow you to:
 - Query classes/tables to retrieve objects (read-only, no confirmation needed)
 - Create new objects in classes (REQUIRES USER CONFIRMATION)
 - Update existing objects (REQUIRES USER CONFIRMATION)
-- Delete objects (REQUIRES USER CONFIRMATION)
+- Delete INDIVIDUAL objects by objectId (REQUIRES USER CONFIRMATION)
+- Delete ENTIRE classes/tables and all their data (REQUIRES USER CONFIRMATION)
 - Get schema information for classes (read-only, no confirmation needed)
 - Count objects that match certain criteria (read-only, no confirmation needed)
+- Create new empty classes/tables (REQUIRES USER CONFIRMATION)
+
+IMPORTANT: Choose the correct function based on what the user wants to delete:
+- Use 'deleteObject' when deleting a specific object/record by its objectId
+- Use 'deleteClass' when deleting an entire class/table (the class itself and all its data)
 
 CRITICAL SECURITY RULE FOR WRITE OPERATIONS:
 - ANY write operation (create, update, delete) MUST have explicit user confirmation through conversation
