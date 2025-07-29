@@ -36,6 +36,7 @@ class Agent extends DashboardView {
     
     this.browserMenuRef = React.createRef();
     this.chatInputRef = React.createRef();
+    this.chatWindowRef = React.createRef();
     this.action = new SidebarAction('Clear Chat', () => this.clearChat());
   }
 
@@ -53,10 +54,19 @@ class Agent extends DashboardView {
     this.setDefaultModel();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // If agentConfig just became available, set default model
     if (!prevProps.agentConfig && this.props.agentConfig) {
       this.setDefaultModel();
+    }
+    
+    // Auto-scroll to bottom when new messages are added or loading state changes
+    if (prevState.messages.length !== this.state.messages.length ||
+        prevState.isLoading !== this.state.isLoading) {
+      // Use requestAnimationFrame and setTimeout to ensure DOM has updated
+      requestAnimationFrame(() => {
+        setTimeout(() => this.scrollToBottom(), 50);
+      });
     }
   }
 
@@ -74,6 +84,19 @@ class Agent extends DashboardView {
   setSelectedModel(modelName) {
     this.setState({ selectedModel: modelName });
     localStorage.setItem('selectedAgentModel', modelName);
+  }
+
+  scrollToBottom() {
+    if (this.chatWindowRef.current) {
+      const element = this.chatWindowRef.current;
+      element.scrollTop = element.scrollHeight;
+      
+      // Force smooth scrolling behavior
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }
 
   clearChat() {
@@ -339,7 +362,7 @@ class Agent extends DashboardView {
       <div className={styles.agentContainer}>
         {this.renderToolbar()}
         <div className={styles.chatContainer}>
-          <div className={styles.chatWindow}>
+          <div ref={this.chatWindowRef} className={styles.chatWindow}>
             {this.renderMessages()}
           </div>
           {!hasNoAgentConfig && !hasNoModels && this.renderChatInput()}

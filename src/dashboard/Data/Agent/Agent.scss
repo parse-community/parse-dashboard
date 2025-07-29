@@ -18,6 +18,7 @@
   flex-direction: column;
   flex: 1;
   height: calc(100vh - 60px); /* Account for toolbar */
+  max-height: calc(100vh - 60px); /* Prevent expansion */
   overflow: hidden;
 }
 
@@ -28,6 +29,10 @@
   padding-top: 116px; /* Add top padding to account for the 96px fixed toolbar + some extra spacing */
   padding-bottom: 80px; /* Add bottom padding to account for the fixed chat form */
   background-color: #f8f9fa;
+  scroll-behavior: smooth;
+  height: calc(100vh - 60px); /* Explicit height constraint */
+  max-height: calc(100vh - 60px); /* Prevent expansion beyond viewport */
+  min-height: 0; /* Allow flex item to shrink below content size */
 }
 
 .emptyStateOverlay {
@@ -64,6 +69,7 @@ body:global(.expanded) {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: 0; /* Allow container to be smaller than content */
 }
 
 .message {
