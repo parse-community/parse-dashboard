@@ -191,10 +191,13 @@ module.exports = function(config, options) {
       res.send({ success: false, error: 'Something went wrong.' });
     });
 
+    // In-memory conversation storage (consider using Redis in future)
+    const conversations = new Map();
+
     // Agent API endpoint for handling AI requests - scoped to specific app
     app.post('/apps/:appId/agent', async (req, res) => {
       try {
-        const { message, modelName } = req.body;
+        const { message, modelName, conversationId } = req.body;
         const { appId } = req.params;
         
         if (!message || typeof message !== 'string' || message.trim() === '') {
@@ -241,9 +244,35 @@ module.exports = function(config, options) {
           return res.status(400).json({ error: `Provider "${provider}" is not supported yet` });
         }
 
-        // Make request to OpenAI API with app context
-        const response = await makeOpenAIRequest(message, model, apiKey, app);
-        res.json({ response });
+        // Get or create conversation history
+        const conversationKey = `${appId}_${conversationId || 'default'}`;
+        if (!conversations.has(conversationKey)) {
+          conversations.set(conversationKey, []);
+        }
+
+        const conversationHistory = conversations.get(conversationKey);
+
+        // Make request to OpenAI API with app context and conversation history
+        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory);
+
+        // Update conversation history with user message and AI response
+        conversationHistory.push(
+          { role: 'user', content: message },
+          { role: 'assistant', content: response }
+        );
+
+        // Keep conversation history to a reasonable size (last 20 messages)
+        if (conversationHistory.length > 20) {
+          conversationHistory.splice(0, conversationHistory.length - 20);
+        }
+
+        // Generate or use provided conversation ID
+        const finalConversationId = conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        res.json({
+          response,
+          conversationId: finalConversationId
+        });
 
       } catch (error) {
         // Return the full error message to help with debugging
@@ -584,7 +613,7 @@ module.exports = function(config, options) {
     /**
      * Make a request to OpenAI API
      */
-    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null) {
+    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = []) {
       const fetch = (await import('node-fetch')).default;
       
       const url = 'https://api.openai.com/v1/chat/completions';
@@ -593,6 +622,7 @@ module.exports = function(config, options) {
         `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.` :
         '';
       
+      // Build messages array starting with system message
       const messages = [
         {
           role: 'system',
@@ -641,12 +671,19 @@ When responding:
 - For write operations, always explain the impact and ask for explicit confirmation
 
 You have direct access to the Parse database through function calls, so you can query actual data and provide real-time information.${appInfo}`
-        },
-        {
-          role: 'user',
-          content: userMessage
         }
       ];
+      
+      // Add conversation history if it exists
+      if (conversationHistory && conversationHistory.length > 0) {
+        messages.push(...conversationHistory);
+      }
+      
+      // Add the current user message
+      messages.push({
+        role: 'user',
+        content: userMessage
+      });
 
       const requestBody = {
         model: model,

@@ -29,6 +29,7 @@ class Agent extends DashboardView {
       inputValue: '',
       isLoading: false,
       selectedModel: this.getStoredSelectedModel(),
+      conversationId: null, // Add conversation tracking
     };
     
     this.browserMenuRef = React.createRef();
@@ -74,7 +75,10 @@ class Agent extends DashboardView {
   }
 
   clearChat() {
-    this.setState({ messages: [] });
+    this.setState({
+      messages: [],
+      conversationId: null // Reset conversation to start fresh
+    });
     // Close the menu by simulating an external click
     if (this.browserMenuRef.current) {
       this.browserMenuRef.current.setState({ open: false });
@@ -146,20 +150,27 @@ class Agent extends DashboardView {
         throw new Error('App context not available');
       }
       
-      // Get response from AI service
+      // Get response from AI service with conversation context
       const instructions = AgentService.getDefaultInstructions();
-      const response = await AgentService.sendMessage(inputValue.trim(), modelConfig, instructions, appSlug);
+      const result = await AgentService.sendMessage(
+        inputValue.trim(),
+        modelConfig,
+        instructions,
+        appSlug,
+        this.state.conversationId
+      );
       
       const aiMessage = {
         id: Date.now() + 1,
         type: 'agent',
-        content: response,
+        content: result.response,
         timestamp: new Date(),
       };
       
       this.setState(prevState => ({
         messages: [...prevState.messages, aiMessage],
         isLoading: false,
+        conversationId: result.conversationId, // Update conversation ID
       }));
       
     } catch (error) {

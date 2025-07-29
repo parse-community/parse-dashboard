@@ -17,9 +17,10 @@ export default class AgentService {
    * @param {Object} modelConfig - The model configuration object
    * @param {string|null} instructions - Optional system instructions for the AI (currently ignored, handled server-side)
    * @param {string} appSlug - The app slug to scope the request to
-   * @returns {Promise<string>} The AI's response
+   * @param {string|null} conversationId - Optional conversation ID to maintain context
+   * @returns {Promise<{response: string, conversationId: string}>} The AI's response and conversation ID
    */
-  static async sendMessage(message, modelConfig, instructions = null, appSlug) {
+  static async sendMessage(message, modelConfig, instructions = null, appSlug, conversationId = null) {
     if (!modelConfig) {
       throw new Error('Model configuration is required');
     }
@@ -35,16 +36,26 @@ export default class AgentService {
     }
 
     try {
-      const response = await post(`/apps/${appSlug}/agent`, {
+      const requestBody = {
         message: message,
         modelName: name
-      });
+      };
+      
+      // Include conversation ID if provided
+      if (conversationId) {
+        requestBody.conversationId = conversationId;
+      }
+      
+      const response = await post(`/apps/${appSlug}/agent`, requestBody);
 
       if (response.error) {
         throw new Error(response.error);
       }
 
-      return response.response;
+      return {
+        response: response.response,
+        conversationId: response.conversationId
+      };
     } catch (error) {
       // Handle specific error types
       if (error.message && error.message.includes('Permission Denied')) {
