@@ -103,10 +103,6 @@ export default class AgentService {
       throw new Error('API key is required in model configuration');
     }
 
-    if (apiKey === 'xxxxx' || apiKey.includes('xxx')) {
-      throw new Error('Please replace the placeholder API key with your actual API key');
-    }
-
     return true;
   }
 
