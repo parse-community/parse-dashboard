@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: calc(100vh - 60px); /* Account for toolbar */
+  height: calc(100vh - 60px); /* Account for toolbar */
   overflow: hidden;
 }
 
@@ -26,6 +26,7 @@
   overflow-y: auto;
   padding: 20px;
   padding-top: 116px; /* Add top padding to account for the 96px fixed toolbar + some extra spacing */
+  padding-bottom: 80px; /* Add bottom padding to account for the fixed chat form */
   background-color: #f8f9fa;
 }
 
@@ -51,6 +52,10 @@
 
 body:global(.expanded) {
   .emptyStateOverlay {
+    left: $sidebarCollapsedWidth;
+  }
+  
+  .chatForm {
     left: $sidebarCollapsedWidth;
   }
 }
@@ -222,6 +227,11 @@ body:global(.expanded) {
   background-color: white;
   border-top: 1px solid #e1e5e9;
   padding: 16px 20px;
+  position: fixed;
+  bottom: 0;
+  left: 300px;
+  right: 0;
+  z-index: 20;
 }
 
 .inputContainer {
