@@ -50,8 +50,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
         if ('ENOENT' == err.code) {// file does not exist
           console.warn('Icon with file name: ' + iconName + ' couldn\'t be found in icons folder!');
         } else {
-          console.log(
-            'An error occurd while checking for icons, please check permission!');
+          console.warn('An error occurred while checking for icons, please check permission!');
         }
       } else {
         //every thing was ok so for example you can read it and send it to client
@@ -1021,14 +1020,14 @@ You have direct access to the Parse database through function calls, so you can 
         if (!followUpContent) {
           console.warn('OpenAI returned null content in follow-up response, using fallback message');
         }
-        return followUpContent || 'Operation completed successfully.';
+        return followUpContent || 'Done.';
       }
 
       const content = responseMessage.content;
       if (!content) {
         console.warn('OpenAI returned null content in initial response, using fallback message');
       }
-      return content || 'Operation completed successfully.';
+      return content || 'Done.';
     }
 
     // Serve the app icons. Uses the optional `iconsFolder` parameter as
