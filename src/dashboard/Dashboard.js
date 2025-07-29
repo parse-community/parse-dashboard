@@ -7,6 +7,7 @@
  */
 import AccountOverview from './Account/AccountOverview.react';
 import AccountView from './AccountView.react';
+import Agent from './Data/Agent/Agent.react';
 import AnalyticsOverview from './Analytics/Overview/Overview.react';
 import ApiConsole from './Data/ApiConsole/ApiConsole.react';
 import AppData from './AppData.react';
@@ -273,6 +274,7 @@ export default class Dashboard extends React.Component {
         <Route path="cloud_code/*" element={<CloudCode />} />
         <Route path="views/:name" element={<Views />} />
         <Route path="views" element={<Views />} />
+        <Route path="agent" element={<Agent />} />
         <Route path="webhooks" element={<Webhooks />} />
 
         <Route path="jobs">{JobsRoute}</Route>
