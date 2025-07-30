@@ -214,10 +214,6 @@ PARSE_DASHBOARD_SSL_CERT: "sslCert"
 PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
 PARSE_DASHBOARD_COOKIE_SESSION_SECRET: undefined // set the cookie session secret, defaults to a random string. Use this option if you want sessions to work across multiple servers, or across restarts
 PARSE_DASHBOARD_AGENT_CONFIG: undefined // JSON string containing the full agent configuration with models array
-PARSE_DASHBOARD_AGENT_MODEL_NAME: undefined // Display name for the AI model (e.g. "ChatGPT 4.1")
-PARSE_DASHBOARD_AGENT_MODEL_PROVIDER: undefined // AI provider identifier (e.g. "openai")
-PARSE_DASHBOARD_AGENT_MODEL: undefined // Specific model name from the provider (e.g. "gpt-4.1")
-PARSE_DASHBOARD_AGENT_API_KEY: undefined // API key for authenticating with the AI provider
 
 ```
 
@@ -1314,27 +1310,13 @@ The agent will use the configured models to process natural language commands an
 
 You can also configure the AI agent using environment variables, which is useful for containerized deployments or when you want to avoid storing API keys in configuration files.
 
-#### Option 1: Full JSON Configuration
-
-For complex setups with multiple models, you can provide the entire agent configuration as a JSON string:
+Set the `PARSE_DASHBOARD_AGENT_CONFIG` environment variable with a JSON string containing the full agent configuration:
 
 ```
 PARSE_DASHBOARD_AGENT_CONFIG='{"models":[{"name":"ChatGPT 4.1","provider":"openai","model":"gpt-4.1","apiKey":"YOUR_API_KEY"}]}'
 ```
 
-#### Option 2: Individual Environment Variables
-
-For simpler setups with a single model, you can use individual environment variables:
-
-```
-PARSE_DASHBOARD_AGENT_MODEL_NAME="ChatGPT 4.1"
-PARSE_DASHBOARD_AGENT_MODEL_PROVIDER="openai"
-PARSE_DASHBOARD_AGENT_MODEL="gpt-4.1"
-PARSE_DASHBOARD_AGENT_API_KEY="YOUR_API_KEY"
-```
-
-> [!Note]
-> If both `PARSE_DASHBOARD_AGENT_CONFIG` and individual variables are provided, `PARSE_DASHBOARD_AGENT_CONFIG` takes precedence.
+This supports the same multi-model configuration structure as the JSON config file, allowing you to define multiple AI models in the array.
 
 ### Providers
 
