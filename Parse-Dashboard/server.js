@@ -39,6 +39,11 @@ module.exports = (options) => {
   const configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
   const configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+  const configAgentConfig = options.agentConfig || process.env.PARSE_DASHBOARD_AGENT_CONFIG;
+  const configAgentModelName = options.agentModelName || process.env.PARSE_DASHBOARD_AGENT_MODEL_NAME;
+  const configAgentModelProvider = options.agentModelProvider || process.env.PARSE_DASHBOARD_AGENT_MODEL_PROVIDER;
+  const configAgentModel = options.agentModel || process.env.PARSE_DASHBOARD_AGENT_MODEL;
+  const configAgentApiKey = options.agentApiKey || process.env.PARSE_DASHBOARD_AGENT_API_KEY;
 
   function handleSIGs(server) {
     const signals = {
@@ -82,6 +87,24 @@ module.exports = (options) => {
             pass: configUserPassword,
           }
         ];
+      }
+      // Add agent configuration from environment variables
+      if (configAgentConfig) {
+        try {
+          configFromCLI.data.agent = JSON.parse(configAgentConfig);
+        } catch (error) {
+          console.error('Failed to parse PARSE_DASHBOARD_AGENT_CONFIG:', error.message);
+          process.exit(1);
+        }
+      } else if (configAgentModelName && configAgentModelProvider && configAgentModel && configAgentApiKey) {
+        configFromCLI.data.agent = {
+          models: [{
+            name: configAgentModelName,
+            provider: configAgentModelProvider,
+            model: configAgentModel,
+            apiKey: configAgentApiKey
+          }]
+        };
       }
     } else if (!configServerURL && !configMasterKey && !configAppName) {
       configFile = path.join(__dirname, 'parse-dashboard-config.json');
