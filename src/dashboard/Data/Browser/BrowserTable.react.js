@@ -581,7 +581,18 @@ export default class BrowserTable extends React.Component {
           selected={
             !!this.props.selection &&
             !!this.props.data &&
-            Object.values(this.props.selection).filter(checked => checked).length ===
+            this.props.data.length > 0 &&
+            (!!this.props.selection['*'] ||
+              Object.values(this.props.selection).filter(checked => checked).length ===
+                this.props.data.length)
+          }
+          indeterminate={
+            !!this.props.selection &&
+            !!this.props.data &&
+            this.props.data.length > 0 &&
+            !this.props.selection['*'] &&
+            Object.values(this.props.selection).filter(checked => checked).length > 0 &&
+            Object.values(this.props.selection).filter(checked => checked).length !==
               this.props.data.length
           }
           selectAll={checked =>
