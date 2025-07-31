@@ -472,12 +472,12 @@ export default class DashboardSettings extends DashboardView {
           />
         </Fieldset>
         {this.viewPreferencesManager && this.viewPreferencesManager.serverStorage.isServerConfigEnabled() && (
-          <Fieldset legend="Dashboard Config">
+          <Fieldset legend="Settings Storage">
             <Field
               label={
                 <Label
                   text="Storage Location"
-                  description="Choose where to store your dashboard settings (views, etc.). Server storage allows sharing settings across devices and users."
+                  description="Choose where your dashboard settings are stored and loaded from. Server storage allows sharing settings across devices and users, while Browser storage is local to this device."
                 />
               }
               input={
@@ -496,8 +496,8 @@ export default class DashboardSettings extends DashboardView {
             <Field
               label={
                 <Label
-                  text="Migrate to Server"
-                  description="Stores the current local config on the server. This will make dashboard use the server stored config and ignore the local config. Once you verify all works as expected you can delete the config from the browser. Note that this currently only affects the following config items: Views."
+                  text="Migrate Settings to Server"
+                  description="Migrates your current browser-stored dashboard settings to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration."
                 />
               }
               input={
@@ -512,8 +512,8 @@ export default class DashboardSettings extends DashboardView {
             <Field
               label={
                 <Label
-                  text="Delete from Browser"
-                  description="This deletes the local config from the browser storage. Use this after migrating the config to the server. ⚠️ Warning, this action is irreversible!"
+                  text="Delete Settings from Browser"
+                  description="Removes your dashboard settings from the browser's local storage. This action is irreversible. Make sure to migrate your settings to server and test them first."
                 />
               }
               input={
