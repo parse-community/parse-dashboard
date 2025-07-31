@@ -42,7 +42,6 @@ export default class DashboardSettings extends DashboardView {
       passwordInput: '',
       passwordHidden: true,
       migrationLoading: false,
-      hasServerViews: false,
       storagePreference: 'local', // Will be updated in componentDidMount
       copyData: {
         data: '',
@@ -64,7 +63,6 @@ export default class DashboardSettings extends DashboardView {
   initializeViewPreferencesManager() {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
-      this.checkServerViews();
       this.loadStoragePreference();
     }
   }
@@ -86,17 +84,6 @@ export default class DashboardSettings extends DashboardView {
     }
   }
 
-  async checkServerViews() {
-    if (this.viewPreferencesManager) {
-      try {
-        const hasServerViews = await this.viewPreferencesManager.hasServerViews(this.context.applicationId);
-        this.setState({ hasServerViews });
-      } catch (error) {
-        console.error('Failed to check server views:', error);
-      }
-    }
-  }
-
   async migrateToServer() {
     if (!this.viewPreferencesManager) {
       this.showNote('ViewPreferencesManager not initialized');
@@ -115,7 +102,6 @@ export default class DashboardSettings extends DashboardView {
       if (result.success) {
         if (result.viewCount > 0) {
           this.showNote(`Successfully migrated ${result.viewCount} view(s) to server storage.`);
-          this.setState({ hasServerViews: true });
         } else {
           this.showNote('No views found to migrate.');
         }
@@ -524,17 +510,6 @@ export default class DashboardSettings extends DashboardView {
                 />
               }
             />
-            {this.state.hasServerViews && (
-              <Field
-                label={
-                  <Label
-                    text="Server Configuration Status"
-                    description="Views are currently being loaded from server storage."
-                  />
-                }
-                input={<div style={{color: 'green', fontWeight: 'bold'}}>✓ Using Server Storage</div>}
-              />
-            )}
           </Fieldset>
         )}
         {this.state.copyData.show && copyData}

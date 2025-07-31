@@ -107,25 +107,6 @@ export default class ViewPreferencesManager {
   }
 
   /**
-   * Checks if there are views stored on the server
-   * @param {string} appId - The application ID
-   * @returns {Promise<boolean>}
-   */
-  async hasServerViews(appId) {
-    if (!this.serverStorage.isServerConfigEnabled()) {
-      return false;
-    }
-
-    try {
-      const serverViews = await this._getViewsFromServer(appId);
-      return serverViews && serverViews.length > 0;
-    } catch (error) {
-      console.error('Failed to check server views:', error);
-      return false;
-    }
-  }
-
-  /**
    * Sets the storage preference for the app
    * @param {string} appId - The application ID
    * @param {string} preference - The storage preference ('local' or 'server')
