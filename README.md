@@ -1295,14 +1295,14 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
 }
 ```
 
-| Parameter                   | Type   | Required | Description                                                              |
-|-----------------------------|--------|----------|--------------------------------------------------------------------------|
-| `agent`                     | Object | Yes      | The AI agent configuration object.                                       |
-| `agent.models`              | Array  | Yes      | Array of AI model configurations available to the agent.                 |
-| `agent.models[*].name`      | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                   |
-| `agent.models[*].provider`  | String | Yes      | The AI provider identifier (e.g., "openai").                            |
-| `agent.models[*].model`     | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).            |
-| `agent.models[*].apiKey`    | String | Yes      | The API key for authenticating with the AI provider.                    |
+| Parameter                   | Type   | Required | Description                                                  |
+|-----------------------------|--------|----------|--------------------------------------------------------------|
+| `agent`                     | Object | Yes      | The AI agent configuration object.                           |
+| `agent.models`              | Array  | Yes      | Array of AI model configurations available to the agent.     |
+| `agent.models[*].name`      | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).        |
+| `agent.models[*].provider`  | String | Yes      | The AI provider identifier (e.g., "openai").                 |
+| `agent.models[*].model`     | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`). |
+| `agent.models[*].apiKey`    | String | Yes      | The API key for authenticating with the AI provider.         |
 
 > [!Note]
 > The agent configuration can also be set via the `PARSE_DASHBOARD_AGENT_CONFIG` environment variable. Provide the complete agent configuration as a JSON string:
