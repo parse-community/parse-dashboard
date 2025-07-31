@@ -17,6 +17,7 @@ import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
+import { getClassPreferencesManager } from 'lib/ClassPreferences';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
@@ -28,6 +29,7 @@ export default class DashboardSettings extends DashboardView {
     this.section = 'App Settings';
     this.subsection = 'Dashboard Configuration';
     this.viewPreferencesManager = null;
+    this.classPreferencesManager = null;
 
     this.state = {
       createUserInput: false,
@@ -63,6 +65,7 @@ export default class DashboardSettings extends DashboardView {
   initializeViewPreferencesManager() {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
+      this.classPreferencesManager = getClassPreferencesManager(this.context);
       this.loadStoragePreference();
     }
   }
@@ -75,8 +78,9 @@ export default class DashboardSettings extends DashboardView {
   }
 
   handleStoragePreferenceChange(preference) {
-    if (this.viewPreferencesManager) {
+    if (this.viewPreferencesManager && this.classPreferencesManager) {
       this.viewPreferencesManager.setStoragePreference(this.context.applicationId, preference);
+      this.classPreferencesManager.setStoragePreference(this.context.applicationId, preference);
       this.setState({ storagePreference: preference });
       
       // Show a notification about the change
@@ -98,32 +102,48 @@ export default class DashboardSettings extends DashboardView {
     this.setState({ migrationLoading: true });
 
     try {
-      const result = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
-      if (result.success) {
-        if (result.viewCount > 0) {
-          this.showNote(`Successfully migrated ${result.viewCount} view(s) to server storage.`);
+      // Migrate both views and filters
+      const viewResult = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
+      const filterResult = await this.classPreferencesManager.migrateToServer(this.context.applicationId);
+      
+      if (viewResult.success && filterResult.success) {
+        const totalViews = viewResult.viewCount;
+        const totalFilters = filterResult.filterCount;
+        const totalClasses = filterResult.classCount;
+        
+        if (totalViews > 0 || totalFilters > 0) {
+          let message = 'Successfully migrated to server storage: ';
+          const parts = [];
+          if (totalViews > 0) parts.push(`${totalViews} view(s)`);
+          if (totalFilters > 0) parts.push(`${totalFilters} filter(s) across ${totalClasses} class(es)`);
+          message += parts.join(', ') + '.';
+          this.showNote(message);
         } else {
-          this.showNote('No views found to migrate.');
+          this.showNote('No views or filters found to migrate.');
         }
       }
     } catch (error) {
-      this.showNote(`Failed to migrate views: ${error.message}`);
+      this.showNote(`Failed to migrate settings: ${error.message}`);
     } finally {
       this.setState({ migrationLoading: false });
     }
   }
 
   async deleteFromBrowser() {
-    if (!this.viewPreferencesManager) {
-      this.showNote('ViewPreferencesManager not initialized');
+    if (!this.viewPreferencesManager || !this.classPreferencesManager) {
+      this.showNote('Preferences managers not initialized');
       return;
     }
 
-    const success = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
-    if (success) {
-      this.showNote('Successfully deleted views from browser storage.');
+    const viewSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    const filterSuccess = this.classPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    
+    if (viewSuccess && filterSuccess) {
+      this.showNote('Successfully deleted all dashboard settings from browser storage.');
+    } else if (viewSuccess || filterSuccess) {
+      this.showNote('Partially deleted dashboard settings from browser storage.');
     } else {
-      this.showNote('Failed to delete views from browser storage.');
+      this.showNote('Failed to delete dashboard settings from browser storage.');
     }
   }
 
@@ -463,7 +483,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Storage Location"
-                  description="Choose where your dashboard settings are stored and loaded from. Server storage allows sharing settings across devices and users, while Browser storage is local to this device."
+                  description="Choose where your dashboard settings (views and filters) are stored and loaded from. Server storage allows sharing settings across devices and users, while Browser storage is local to this device."
                 />
               }
               input={
@@ -483,7 +503,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Migrate Settings to Server"
-                  description="Migrates your current browser-stored dashboard settings to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration."
+                  description="Migrates your current browser-stored dashboard settings (views and filters) to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration."
                 />
               }
               input={
@@ -499,7 +519,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Delete Settings from Browser"
-                  description="Removes your dashboard settings from the browser's local storage. This action is irreversible. Make sure to migrate your settings to server and test them first."
+                  description="Removes your dashboard settings (views and filters) from the browser's local storage. This action is irreversible. Make sure to migrate your settings to server and test them first."
                 />
               }
               input={

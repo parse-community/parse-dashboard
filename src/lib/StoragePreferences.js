@@ -30,7 +30,8 @@ export function getStoragePreference(appId) {
     const preferences = localStorage.getItem(STORAGE_PREFERENCE_KEY);
     if (preferences) {
       const parsed = JSON.parse(preferences);
-      return parsed[appId] || STORAGE_TYPES.LOCAL; // Default to local storage
+      const preference = parsed[appId] || STORAGE_TYPES.LOCAL;
+      return preference; // Default to local storage
     }
   } catch (error) {
     console.warn('Failed to get storage preference:', error);

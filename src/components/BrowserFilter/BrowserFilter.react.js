@@ -18,6 +18,7 @@ import TextInput from 'components/TextInput/TextInput.react';
 import { CurrentApp } from 'context/currentApp';
 import { List, Map as ImmutableMap } from 'immutable';
 import * as ClassPreferences from 'lib/ClassPreferences';
+import { getClassPreferencesManager } from 'lib/ClassPreferences';
 import * as Filters from 'lib/Filters';
 import Position from 'lib/Position';
 import React from 'react';
@@ -45,6 +46,7 @@ export default class BrowserFilter extends React.Component {
     };
     this.toggle = this.toggle.bind(this);
     this.wrapRef = React.createRef();
+    this.classPreferencesManager = null;
   }
 
   getClassNameFromURL() {
@@ -90,6 +92,10 @@ export default class BrowserFilter extends React.Component {
   }
 
   componentDidMount() {
+    // Initialize class preferences manager if context is available
+    if (this.context) {
+      this.classPreferencesManager = getClassPreferencesManager(this.context);
+    }
     this.initializeEditFilterMode();
   }
 
