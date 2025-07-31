@@ -43,6 +43,7 @@ export default class DashboardSettings extends DashboardView {
       passwordHidden: true,
       migrationLoading: false,
       hasServerViews: false,
+      storagePreference: 'local', // Will be updated in componentDidMount
       copyData: {
         data: '',
         show: false,
@@ -64,6 +65,24 @@ export default class DashboardSettings extends DashboardView {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
       this.checkServerViews();
+      this.loadStoragePreference();
+    }
+  }
+
+  loadStoragePreference() {
+    if (this.viewPreferencesManager) {
+      const preference = this.viewPreferencesManager.getStoragePreference(this.context.applicationId);
+      this.setState({ storagePreference: preference });
+    }
+  }
+
+  handleStoragePreferenceChange(preference) {
+    if (this.viewPreferencesManager) {
+      this.viewPreferencesManager.setStoragePreference(this.context.applicationId, preference);
+      this.setState({ storagePreference: preference });
+      
+      // Show a notification about the change
+      this.showNote(`Storage preference changed to ${preference === 'server' ? 'server' : 'browser'}`);
     }
   }
 
@@ -454,6 +473,26 @@ export default class DashboardSettings extends DashboardView {
         </Fieldset>
         {this.viewPreferencesManager && this.viewPreferencesManager.serverStorage.isServerConfigEnabled() && (
           <Fieldset legend="Dashboard Config">
+            <Field
+              label={
+                <Label
+                  text="Storage Location"
+                  description="Choose where to store your dashboard settings (views, etc.). Server storage allows sharing settings across devices and users."
+                />
+              }
+              input={
+                <Toggle
+                  value={this.state.storagePreference}
+                  type={Toggle.Types.CUSTOM}
+                  optionLeft="local"
+                  optionRight="server"
+                  labelLeft="Browser"
+                  labelRight="Server"
+                  colored={true}
+                  onChange={(preference) => this.handleStoragePreferenceChange(preference)}
+                />
+              }
+            />
             <Field
               label={
                 <Label

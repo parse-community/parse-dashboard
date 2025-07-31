@@ -7,6 +7,7 @@
  */
 
 import ServerConfigStorage from './ServerConfigStorage';
+import { prefersServerStorage, setStoragePreference } from './StoragePreferences';
 
 const VERSION = 1;
 
@@ -20,39 +21,49 @@ export default class ViewPreferencesManager {
   }
 
   /**
-   * Gets views from either server or local storage based on configuration
+   * Gets views from either server or local storage based on configuration and user preference
    * @param {string} appId - The application ID
    * @returns {Promise<Array>} Array of views
    */
   async getViews(appId) {
-    if (this.serverStorage.isServerConfigEnabled()) {
-      // Check if there are any views stored on the server
-      const serverViews = await this._getViewsFromServer(appId);
-      if (serverViews && serverViews.length > 0) {
-        return serverViews;
+    // Check if server storage is enabled and user prefers it
+    if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
+      try {
+        const serverViews = await this._getViewsFromServer(appId);
+        if (serverViews && serverViews.length > 0) {
+          return serverViews;
+        }
+        // If no server views found but user prefers server storage, still return empty array
+        // This prevents fallback to local when user explicitly chose server storage
+        return [];
+      } catch (error) {
+        console.error('Failed to get views from server:', error);
+        // On error, fallback to local storage
       }
     }
     
-    // Fallback to local storage
+    // Use local storage (either by preference or as fallback)
     return this._getViewsFromLocal(appId);
   }
 
   /**
-   * Saves views to either server or local storage based on configuration
+   * Saves views to either server or local storage based on configuration and user preference
    * @param {string} appId - The application ID
    * @param {Array} views - Array of views to save
    * @returns {Promise}
    */
   async saveViews(appId, views) {
-    if (this.serverStorage.isServerConfigEnabled()) {
-      // Check if we should use server storage (if any views exist on server)
-      const existingServerViews = await this._getViewsFromServer(appId);
-      if (existingServerViews && existingServerViews.length > 0) {
-        return this._saveViewsToServer(appId, views);
+    // Check if server storage is enabled and user prefers it
+    if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
+      try {
+        return await this._saveViewsToServer(appId, views);
+      } catch (error) {
+        console.error('Failed to save views to server:', error);
+        // On error, fallback to local storage
       }
     }
     
-    // Use local storage
+    // Use local storage (either by preference or as fallback)
     return this._saveViewsToLocal(appId, views);
   }
 
@@ -112,6 +123,24 @@ export default class ViewPreferencesManager {
       console.error('Failed to check server views:', error);
       return false;
     }
+  }
+
+  /**
+   * Sets the storage preference for the app
+   * @param {string} appId - The application ID
+   * @param {string} preference - The storage preference ('local' or 'server')
+   */
+  setStoragePreference(appId, preference) {
+    setStoragePreference(appId, preference);
+  }
+
+  /**
+   * Gets the current storage preference for the app
+   * @param {string} appId - The application ID
+   * @returns {string} The storage preference ('local' or 'server')
+   */
+  getStoragePreference(appId) {
+    return prefersServerStorage(appId) ? 'server' : 'local';
   }
 
   /**
