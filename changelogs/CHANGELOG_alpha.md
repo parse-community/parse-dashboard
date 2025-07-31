@@ -1,3 +1,10 @@
+# [7.3.0-alpha.43](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.42...7.3.0-alpha.43) (2025-07-31)
+
+
+### Bug Fixes
+
+* Header checkbox in data browser does not indicate when a few rows are selected ([#2957](https://github.com/parse-community/parse-dashboard/issues/2957)) ([e4ab666](https://github.com/parse-community/parse-dashboard/commit/e4ab66643085ab98d484aa0c484d0f66da7ed6d4))
+
 # [7.3.0-alpha.42](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.41...7.3.0-alpha.42) (2025-07-29)
 
 

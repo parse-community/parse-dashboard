@@ -45,6 +45,7 @@ export default class DataBrowserHeaderBar extends React.Component {
       readonly,
       preventSchemaEdits,
       selected,
+      indeterminate,
       isDataLoaded,
       setSelectedObjectId,
       setCurrent,
@@ -61,7 +62,16 @@ export default class DataBrowserHeaderBar extends React.Component {
         style={{ position: 'sticky', left: 0, zIndex: 11 }}
       >
         {readonly ? null : (
-          <input type="checkbox" checked={selected} onChange={e => selectAll(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={selected}
+            ref={input => {
+              if (input) {
+                input.indeterminate = indeterminate;
+              }
+            }}
+            onChange={e => selectAll(e.target.checked)}
+          />
         )}
       </div>,
     ];
