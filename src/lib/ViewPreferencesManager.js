@@ -182,6 +182,13 @@ export default class ViewPreferencesManager {
           const viewConfig = { ...view };
           delete viewConfig.id; // Don't store ID in the config itself
           
+          // Remove null and undefined values to keep the storage clean
+          Object.keys(viewConfig).forEach(key => {
+            if (viewConfig[key] === null || viewConfig[key] === undefined) {
+              delete viewConfig[key];
+            }
+          });
+          
           // Stringify the query if it exists and is an array/object
           if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
             viewConfig.query = JSON.stringify(viewConfig.query);

@@ -26,13 +26,27 @@ export default class ServerConfigStorage {
    * @returns {Promise}
    */
   async setConfig(key, value, appId, userId = null) {
-    const configObject = new Parse.Object(this.className);
+    // First, try to find existing config object to update instead of creating duplicates
+    const query = new Parse.Query(this.className);
+    query.equalTo('appId', appId);
+    query.equalTo('key', key);
     
-    // Set the fields according to the schema
-    configObject.set('appId', appId);
-    configObject.set('key', key);
     if (userId) {
-      configObject.set('user', new Parse.User({ objectId: userId }));
+      query.equalTo('user', new Parse.User({ objectId: userId }));
+    } else {
+      query.doesNotExist('user');
+    }
+
+    let configObject = await query.first({ useMasterKey: true });
+    
+    // If no existing object found, create a new one
+    if (!configObject) {
+      configObject = new Parse.Object(this.className);
+      configObject.set('appId', appId);
+      configObject.set('key', key);
+      if (userId) {
+        configObject.set('user', new Parse.User({ objectId: userId }));
+      }
     }
 
     // Set the value in the appropriate typed field based on value type
