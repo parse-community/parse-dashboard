@@ -1295,28 +1295,22 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
 }
 ```
 
-| Parameter                   | Type   | Required | Description                                                                    |
-|-----------------------------|--------|----------|--------------------------------------------------------------------------------|
-| `agent`                     | Object | Yes      | The AI agent configuration object.                                             |
-| `agent.models`              | Array  | Yes      | Array of AI model configurations available to the agent.                      |
-| `agent.models[*].name`      | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                   |
-| `agent.models[*].provider`  | String | Yes      | The AI provider identifier (e.g., "openai").                     |
-| `agent.models[*].model`     | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).   |
-| `agent.models[*].apiKey`    | String | Yes      | The API key for authenticating with the AI provider.                     |
+| Parameter                   | Type   | Required | Description                                                                    | Environment Variable |
+|-----------------------------|--------|----------|--------------------------------------------------------------------------------|-----------------------|
+| `agent`                     | Object | Yes      | The AI agent configuration object.                                             | `PARSE_DASHBOARD_AGENT_CONFIG` |
+| `agent.models`              | Array  | Yes      | Array of AI model configurations available to the agent.                      | - |
+| `agent.models[*].name`      | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                   | - |
+| `agent.models[*].provider`  | String | Yes      | The AI provider identifier (e.g., "openai").                     | - |
+| `agent.models[*].model`     | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).   | - |
+| `agent.models[*].apiKey`    | String | Yes      | The API key for authenticating with the AI provider.                     | - |
+
+> [!Note]
+> When using the `PARSE_DASHBOARD_AGENT_CONFIG` environment variable, provide the complete agent configuration as a JSON string. For example:
+> ```bash
+> PARSE_DASHBOARD_AGENT_CONFIG='{"models":[{"name":"ChatGPT 4.1","provider":"openai","model":"gpt-4.1","apiKey":"YOUR_API_KEY"}]}'
+> ```
 
 The agent will use the configured models to process natural language commands and perform database operations using the master key from your app configuration.
-
-### Environment Variables
-
-You can also configure the AI agent using environment variables, which is useful for containerized deployments or when you want to avoid storing API keys in configuration files.
-
-Set the `PARSE_DASHBOARD_AGENT_CONFIG` environment variable with a JSON string containing the full agent configuration:
-
-```
-PARSE_DASHBOARD_AGENT_CONFIG='{"models":[{"name":"ChatGPT 4.1","provider":"openai","model":"gpt-4.1","apiKey":"YOUR_API_KEY"}]}'
-```
-
-This supports the same multi-model configuration structure as the JSON config file, allowing you to define multiple AI models in the array.
 
 ### Providers
 

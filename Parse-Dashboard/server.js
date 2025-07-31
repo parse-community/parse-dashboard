@@ -39,7 +39,7 @@ module.exports = (options) => {
   const configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
   const configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
-  const configAgentConfig = options.agentConfig || process.env.PARSE_DASHBOARD_AGENT_CONFIG;
+  const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT_CONFIG;
 
   function handleSIGs(server) {
     const signals = {
@@ -85,12 +85,18 @@ module.exports = (options) => {
         ];
       }
       // Add agent configuration from environment variables
-      if (configAgentConfig) {
-        try {
-          configFromCLI.data.agent = JSON.parse(configAgentConfig);
-        } catch (error) {
-          console.error('Failed to parse PARSE_DASHBOARD_AGENT_CONFIG:', error.message);
-          process.exit(1);
+      if (configAgent) {
+        // If it's already an object (from JS config), use it directly
+        if (typeof configAgent === 'object') {
+          configFromCLI.data.agent = configAgent;
+        } else {
+          // Otherwise, try to parse it as JSON
+          try {
+            configFromCLI.data.agent = JSON.parse(configAgent);
+          } catch (error) {
+            console.error('Failed to parse PARSE_DASHBOARD_AGENT_CONFIG:', error.message);
+            process.exit(1);
+          }
         }
       }
     } else if (!configServerURL && !configMasterKey && !configAppName) {
