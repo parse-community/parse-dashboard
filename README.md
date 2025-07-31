@@ -213,7 +213,7 @@ PARSE_DASHBOARD_SSL_KEY: "sslKey"
 PARSE_DASHBOARD_SSL_CERT: "sslCert"
 PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
 PARSE_DASHBOARD_COOKIE_SESSION_SECRET: undefined // set the cookie session secret, defaults to a random string. Use this option if you want sessions to work across multiple servers, or across restarts
-PARSE_DASHBOARD_AGENT_CONFIG: undefined // JSON string containing the full agent configuration with models array
+PARSE_DASHBOARD_AGENT: undefined // JSON string containing the full agent configuration with models array
 
 ```
 

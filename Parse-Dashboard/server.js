@@ -39,7 +39,7 @@ module.exports = (options) => {
   const configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
   const configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
-  const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT_CONFIG;
+  const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT;
 
   function handleSIGs(server) {
     const signals = {
@@ -94,7 +94,7 @@ module.exports = (options) => {
           try {
             configFromCLI.data.agent = JSON.parse(configAgent);
           } catch (error) {
-            console.error('Failed to parse PARSE_DASHBOARD_AGENT_CONFIG:', error.message);
+            console.error('Failed to parse PARSE_DASHBOARD_AGENT:', error.message);
             process.exit(1);
           }
         }
