@@ -17,6 +17,7 @@ import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
+import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
@@ -26,6 +27,7 @@ export default class DashboardSettings extends DashboardView {
     super();
     this.section = 'App Settings';
     this.subsection = 'Dashboard Configuration';
+    this.viewPreferencesManager = null;
 
     this.state = {
       createUserInput: false,
@@ -39,6 +41,8 @@ export default class DashboardSettings extends DashboardView {
       message: null,
       passwordInput: '',
       passwordHidden: true,
+      migrationLoading: false,
+      hasServerViews: false,
       copyData: {
         data: '',
         show: false,
@@ -50,6 +54,72 @@ export default class DashboardSettings extends DashboardView {
         mfa: '',
       },
     };
+  }
+
+  componentDidMount() {
+    this.initializeViewPreferencesManager();
+  }
+
+  initializeViewPreferencesManager() {
+    if (this.context) {
+      this.viewPreferencesManager = new ViewPreferencesManager(this.context);
+      this.checkServerViews();
+    }
+  }
+
+  async checkServerViews() {
+    if (this.viewPreferencesManager) {
+      try {
+        const hasServerViews = await this.viewPreferencesManager.hasServerViews(this.context.applicationId);
+        this.setState({ hasServerViews });
+      } catch (error) {
+        console.error('Failed to check server views:', error);
+      }
+    }
+  }
+
+  async migrateToServer() {
+    if (!this.viewPreferencesManager) {
+      this.showNote('ViewPreferencesManager not initialized');
+      return;
+    }
+
+    if (!this.viewPreferencesManager.serverStorage.isServerConfigEnabled()) {
+      this.showNote('Server configuration is not enabled for this app. Please add a "config" section to your app configuration.');
+      return;
+    }
+
+    this.setState({ migrationLoading: true });
+
+    try {
+      const result = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
+      if (result.success) {
+        if (result.viewCount > 0) {
+          this.showNote(`Successfully migrated ${result.viewCount} view(s) to server storage.`);
+          this.setState({ hasServerViews: true });
+        } else {
+          this.showNote('No views found to migrate.');
+        }
+      }
+    } catch (error) {
+      this.showNote(`Failed to migrate views: ${error.message}`);
+    } finally {
+      this.setState({ migrationLoading: false });
+    }
+  }
+
+  async deleteFromBrowser() {
+    if (!this.viewPreferencesManager) {
+      this.showNote('ViewPreferencesManager not initialized');
+      return;
+    }
+
+    const success = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    if (success) {
+      this.showNote('Successfully deleted views from browser storage.');
+    } else {
+      this.showNote('Failed to delete views from browser storage.');
+    }
   }
 
   getColumns() {
@@ -382,6 +452,52 @@ export default class DashboardSettings extends DashboardView {
             }
           />
         </Fieldset>
+        {this.viewPreferencesManager && this.viewPreferencesManager.serverStorage.isServerConfigEnabled() && (
+          <Fieldset legend="Dashboard Config">
+            <Field
+              label={
+                <Label
+                  text="Migrate to Server"
+                  description="Stores the current local config on the server. This will make dashboard use the server stored config and ignore the local config. Once you verify all works as expected you can delete the config from the browser. Note that this currently only affects the following config items: Views."
+                />
+              }
+              input={
+                <FormButton
+                  color="blue"
+                  value={this.state.migrationLoading ? 'Migrating...' : 'Migrate to Server'}
+                  disabled={this.state.migrationLoading}
+                  onClick={() => this.migrateToServer()}
+                />
+              }
+            />
+            <Field
+              label={
+                <Label
+                  text="Delete from Browser"
+                  description="This deletes the local config from the browser storage. Use this after migrating the config to the server. ⚠️ Warning, this action is irreversible!"
+                />
+              }
+              input={
+                <FormButton
+                  color="red"
+                  value="Delete from Browser"
+                  onClick={() => this.deleteFromBrowser()}
+                />
+              }
+            />
+            {this.state.hasServerViews && (
+              <Field
+                label={
+                  <Label
+                    text="Server Configuration Status"
+                    description="Views are currently being loaded from server storage."
+                  />
+                }
+                input={<div style={{color: 'green', fontWeight: 'bold'}}>✓ Using Server Storage</div>}
+              />
+            )}
+          </Fieldset>
+        )}
         {this.state.copyData.show && copyData}
         {this.state.createUserInput && createUserInput}
         {this.state.newUser.show && userData}

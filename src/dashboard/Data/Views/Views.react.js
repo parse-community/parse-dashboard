@@ -14,6 +14,7 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import TableView from 'dashboard/TableView.react';
 import tableStyles from 'dashboard/TableView.scss';
 import * as ViewPreferences from 'lib/ViewPreferences';
+import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import generatePath from 'lib/generatePath';
 import stringCompare from 'lib/stringCompare';
 import { ActionTypes as SchemaActionTypes } from 'lib/stores/SchemaStore';
@@ -37,6 +38,7 @@ class Views extends TableView {
     this.section = 'Core';
     this.subsection = 'Views';
     this._isMounted = false;
+    this.viewPreferencesManager = null; // Will be initialized when context is available
     this.state = {
       views: [],
       counts: {},
@@ -83,49 +85,65 @@ class Views extends TableView {
     }
   }
 
-  loadViews(app) {
-    const views = ViewPreferences.getViews(app.applicationId);
-    this.setState({ views, counts: {} }, () => {
-      views.forEach(view => {
-        if (view.showCounter) {
-          if (view.cloudFunction) {
-            // For Cloud Function views, call the function to get count
-            Parse.Cloud.run(view.cloudFunction, {}, { useMasterKey: true })
-              .then(res => {
-                if (this._isMounted) {
-                  this.setState(({ counts }) => ({
-                    counts: { ...counts, [view.name]: Array.isArray(res) ? res.length : 0 },
-                  }));
-                }
-              })
-              .catch(error => {
-                if (this._isMounted) {
-                  this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
-                }
-              });
-          } else if (view.query && Array.isArray(view.query)) {
-            // For aggregation pipeline views, use existing logic
-            new Parse.Query(view.className)
-              .aggregate(view.query, { useMasterKey: true })
-              .then(res => {
-                if (this._isMounted) {
-                  this.setState(({ counts }) => ({
-                    counts: { ...counts, [view.name]: res.length },
-                  }));
-                }
-              })
-              .catch(error => {
-                if (this._isMounted) {
-                  this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
-                }
-              });
+  async loadViews(app) {
+    // Initialize ViewPreferencesManager if not already done or if app changed
+    if (!this.viewPreferencesManager || this.viewPreferencesManager.app !== app) {
+      this.viewPreferencesManager = new ViewPreferencesManager(app);
+    }
+
+    try {
+      const views = await this.viewPreferencesManager.getViews(app.applicationId);
+      this.setState({ views, counts: {} }, () => {
+        views.forEach(view => {
+          if (view.showCounter) {
+            if (view.cloudFunction) {
+              // For Cloud Function views, call the function to get count
+              Parse.Cloud.run(view.cloudFunction, {}, { useMasterKey: true })
+                .then(res => {
+                  if (this._isMounted) {
+                    this.setState(({ counts }) => ({
+                      counts: { ...counts, [view.name]: Array.isArray(res) ? res.length : 0 },
+                    }));
+                  }
+                })
+                .catch(error => {
+                  if (this._isMounted) {
+                    this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+                  }
+                });
+            } else if (view.query && Array.isArray(view.query)) {
+              // For aggregation pipeline views, use existing logic
+              new Parse.Query(view.className)
+                .aggregate(view.query, { useMasterKey: true })
+                .then(res => {
+                  if (this._isMounted) {
+                    this.setState(({ counts }) => ({
+                      counts: { ...counts, [view.name]: res.length },
+                    }));
+                  }
+                })
+                .catch(error => {
+                  if (this._isMounted) {
+                    this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+                  }
+                });
+            }
           }
+        });
+        if (this._isMounted) {
+          this.loadData(this.props.params.name);
         }
       });
-      if (this._isMounted) {
-        this.loadData(this.props.params.name);
-      }
-    });
+    } catch (error) {
+      console.error('Failed to load views from server, falling back to local storage:', error);
+      // Fallback to local storage
+      const views = ViewPreferences.getViews(app.applicationId);
+      this.setState({ views, counts: {} }, () => {
+        if (this._isMounted) {
+          this.loadData(this.props.params.name);
+        }
+      });
+    }
   }
 
   loadData(name) {
@@ -671,8 +689,14 @@ class Views extends TableView {
           onConfirm={view => {
             this.setState(
               state => ({ showCreate: false, views: [...state.views, view] }),
-              () => {
-                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
+              async () => {
+                if (this.viewPreferencesManager) {
+                  try {
+                    await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
+                  } catch (error) {
+                    console.error('Failed to save views:', error);
+                  }
+                }
                 this.loadViews(this.context);
               }
             );
@@ -699,8 +723,14 @@ class Views extends TableView {
                 newViews[state.editIndex] = view;
                 return { editView: null, editIndex: null, views: newViews };
               },
-              () => {
-                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
+              async () => {
+                if (this.viewPreferencesManager) {
+                  try {
+                    await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
+                  } catch (error) {
+                    console.error('Failed to save views:', error);
+                  }
+                }
                 this.loadViews(this.context);
               }
             );
@@ -719,8 +749,14 @@ class Views extends TableView {
                 const newViews = state.views.filter((_, i) => i !== state.deleteIndex);
                 return { deleteIndex: null, views: newViews };
               },
-              () => {
-                ViewPreferences.saveViews(this.context.applicationId, this.state.views);
+              async () => {
+                if (this.viewPreferencesManager) {
+                  try {
+                    await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
+                  } catch (error) {
+                    console.error('Failed to save views:', error);
+                  }
+                }
                 if (this.props.params.name === name) {
                   const path = generatePath(this.context, 'views');
                   this.props.navigate(path);

@@ -1,0 +1,282 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+
+import ServerConfigStorage from './ServerConfigStorage';
+
+const VERSION = 1;
+
+/**
+ * Enhanced ViewPreferences with server-side storage support
+ */
+export default class ViewPreferencesManager {
+  constructor(app) {
+    this.app = app;
+    this.serverStorage = new ServerConfigStorage(app);
+  }
+
+  /**
+   * Gets views from either server or local storage based on configuration
+   * @param {string} appId - The application ID
+   * @returns {Promise<Array>} Array of views
+   */
+  async getViews(appId) {
+    if (this.serverStorage.isServerConfigEnabled()) {
+      // Check if there are any views stored on the server
+      const serverViews = await this._getViewsFromServer(appId);
+      if (serverViews && serverViews.length > 0) {
+        return serverViews;
+      }
+    }
+    
+    // Fallback to local storage
+    return this._getViewsFromLocal(appId);
+  }
+
+  /**
+   * Saves views to either server or local storage based on configuration
+   * @param {string} appId - The application ID
+   * @param {Array} views - Array of views to save
+   * @returns {Promise}
+   */
+  async saveViews(appId, views) {
+    if (this.serverStorage.isServerConfigEnabled()) {
+      // Check if we should use server storage (if any views exist on server)
+      const existingServerViews = await this._getViewsFromServer(appId);
+      if (existingServerViews && existingServerViews.length > 0) {
+        return this._saveViewsToServer(appId, views);
+      }
+    }
+    
+    // Use local storage
+    return this._saveViewsToLocal(appId, views);
+  }
+
+  /**
+   * Migrates views from local storage to server storage
+   * @param {string} appId - The application ID
+   * @returns {Promise<{success: boolean, viewCount: number}>}
+   */
+  async migrateToServer(appId) {
+    if (!this.serverStorage.isServerConfigEnabled()) {
+      throw new Error('Server configuration is not enabled for this app');
+    }
+
+    const localViews = this._getViewsFromLocal(appId);
+    if (!localViews || localViews.length === 0) {
+      return { success: true, viewCount: 0 };
+    }
+
+    try {
+      await this._saveViewsToServer(appId, localViews);
+      return { success: true, viewCount: localViews.length };
+    } catch (error) {
+      console.error('Failed to migrate views to server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes views from local storage
+   * @param {string} appId - The application ID
+   * @returns {boolean} True if deletion was successful
+   */
+  deleteFromBrowser(appId) {
+    try {
+      localStorage.removeItem(this._getLocalPath(appId));
+      return true;
+    } catch (error) {
+      console.error('Failed to delete views from browser:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Checks if there are views stored on the server
+   * @param {string} appId - The application ID
+   * @returns {Promise<boolean>}
+   */
+  async hasServerViews(appId) {
+    if (!this.serverStorage.isServerConfigEnabled()) {
+      return false;
+    }
+
+    try {
+      const serverViews = await this._getViewsFromServer(appId);
+      return serverViews && serverViews.length > 0;
+    } catch (error) {
+      console.error('Failed to check server views:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Gets views from server storage
+   * @private
+   */
+  async _getViewsFromServer(appId) {
+    try {
+      const viewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.id.', appId);
+      const views = [];
+      
+      Object.entries(viewConfigs).forEach(([key, config]) => {
+        if (config && typeof config === 'object') {
+          // Extract view ID from key (views.view.id.{VIEW_ID})
+          const viewId = key.replace('views.view.id.', '');
+          
+          // Parse the query if it's a string (it was stringified for storage)
+          const viewConfig = { ...config };
+          if (viewConfig.query && typeof viewConfig.query === 'string') {
+            try {
+              viewConfig.query = JSON.parse(viewConfig.query);
+            } catch (e) {
+              console.warn('Failed to parse view query from server storage:', e);
+              // Keep as string if parsing fails
+            }
+          }
+          
+          views.push({
+            id: viewId,
+            ...viewConfig
+          });
+        }
+      });
+      
+      return views;
+    } catch (error) {
+      console.error('Failed to get views from server:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Saves views to server storage
+   * @private
+   */
+  async _saveViewsToServer(appId, views) {
+    try {
+      // First, get existing views from server to know which ones to delete
+      const existingViewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.id.', appId);
+      const existingViewIds = Object.keys(existingViewConfigs).map(key =>
+        key.replace('views.view.id.', '')
+      );
+
+      // Delete views that are no longer in the new views array
+      const newViewIds = views.map(view => view.id || this._generateViewId(view));
+      const viewsToDelete = existingViewIds.filter(id => !newViewIds.includes(id));
+      
+      await Promise.all(
+        viewsToDelete.map(id =>
+          this.serverStorage.deleteConfig(`views.view.id.${id}`, appId)
+        )
+      );
+
+      // Save or update current views
+      await Promise.all(
+        views.map(view => {
+          const viewId = view.id || this._generateViewId(view);
+          const viewConfig = { ...view };
+          delete viewConfig.id; // Don't store ID in the config itself
+          
+          // Stringify the query if it exists and is an array/object
+          if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
+            viewConfig.query = JSON.stringify(viewConfig.query);
+          }
+          
+          return this.serverStorage.setConfig(
+            `views.view.id.${viewId}`,
+            viewConfig,
+            appId
+          );
+        })
+      );
+    } catch (error) {
+      console.error('Failed to save views to server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets views from local storage (original implementation)
+   * @private
+   */
+  _getViewsFromLocal(appId) {
+    let entry;
+    try {
+      entry = localStorage.getItem(this._getLocalPath(appId)) || '[]';
+    } catch {
+      entry = '[]';
+    }
+    try {
+      return JSON.parse(entry);
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Saves views to local storage (original implementation)
+   * @private
+   */
+  _saveViewsToLocal(appId, views) {
+    try {
+      localStorage.setItem(this._getLocalPath(appId), JSON.stringify(views));
+    } catch {
+      // ignore write errors
+    }
+  }
+
+  /**
+   * Gets the local storage path for views
+   * @private
+   */
+  _getLocalPath(appId) {
+    return `ParseDashboard:${VERSION}:${appId}:Views`;
+  }
+
+  /**
+   * Generates a unique ID for a view
+   * @private
+   */
+  _generateViewId(view) {
+    if (view.id) {
+      return view.id;
+    }
+    // Generate a unique ID based on view name and timestamp
+    const timestamp = Date.now().toString(36);
+    const nameHash = view.name ? view.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : 'view';
+    return `${nameHash}_${timestamp}`;
+  }
+}
+
+// Legacy API compatibility - these functions will work with local storage only
+// for backward compatibility
+export function getViews(appId) {
+  let entry;
+  try {
+    entry = localStorage.getItem(path(appId)) || '[]';
+  } catch {
+    entry = '[]';
+  }
+  try {
+    return JSON.parse(entry);
+  } catch {
+    return [];
+  }
+}
+
+export function saveViews(appId, views) {
+  try {
+    localStorage.setItem(path(appId), JSON.stringify(views));
+  } catch {
+    // ignore write errors
+  }
+}
+
+function path(appId) {
+  return `ParseDashboard:${VERSION}:${appId}:Views`;
+}
