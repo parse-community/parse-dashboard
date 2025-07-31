@@ -176,8 +176,8 @@ export default class CategoryList extends React.Component {
                   // Only include filterId in URL if the filter has an ID (modern filters)
                   // Legacy filters without ID should work with just the filter content
                   const url = id
-                    ? `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}&filterId=${id}`
-                    : `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(filter)}`;
+                    ? `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(JSON.stringify(filter))}&filterId=${id}`
+                    : `${this.props.linkPrefix}${c.name}?filters=${encodeURIComponent(JSON.stringify(filter))}`;
                   return (
                     <div key={index} className={styles.childLink}>
                       <Link
