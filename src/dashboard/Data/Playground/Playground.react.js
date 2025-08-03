@@ -220,9 +220,10 @@ export default function Playground() {
         // Safely format arguments with error handling to prevent infinite loops
         const formattedArgs = args.map((arg, index) => {
           try {
-            return formatLogValue(arg);
+            const result = formatLogValue(arg);
+            return result;
           } catch (error) {
-            originalConsoleWarn(`Error formatting argument ${index}:`, error);
+            console.warn('Error formatting argument ' + index + ':', error);
             return { __type: 'FormattingError', value: String(arg), error: error.message };
           }
         });
@@ -237,10 +238,18 @@ export default function Playground() {
           }
         ]);
       } catch (error) {
-        originalConsoleError('Error in addResult:', error);
+        console.error('Error in addResult:', error);
       } finally {
         isProcessing = false;
       }
+    };
+
+    // Helper function to check if error is from ReactJson and should be ignored
+    const isReactJsonError = (args) => {
+      return args.length > 0 &&
+             typeof args[0] === 'string' &&
+             (args[0].includes('react-json-view error') ||
+              args[0].includes('src property must be a valid json object'));
     };
 
     console.log = (...args) => {
@@ -249,11 +258,23 @@ export default function Playground() {
     };
 
     console.error = (...args) => {
+      // Skip ReactJson errors to prevent infinite loop
+      if (isReactJsonError(args)) {
+        originalConsoleError.apply(console, args);
+        return;
+      }
+      
       addResult(LOG_TYPES.ERROR, args);
       originalConsoleError.apply(console, args);
     };
 
     console.warn = (...args) => {
+      // Skip ReactJson warnings to prevent infinite loop
+      if (isReactJsonError(args)) {
+        originalConsoleWarn.apply(console, args);
+        return;
+      }
+      
       addResult(LOG_TYPES.WARN, args);
       originalConsoleWarn.apply(console, args);
     };
@@ -447,30 +468,33 @@ export default function Playground() {
         </div>
         {args.map((arg, index) => {
           try {
-            // Extra validation for ReactJson - reject complex objects that might cause issues
-            if (arg && typeof arg === 'object') {
-              // Check if it's a simple object that ReactJson can handle
-              try {
-                JSON.stringify(arg);
-              } catch {
-                // If it can't be stringified, render as text
-                return (
-                  <div key={`${id}-${index}`} style={{ marginLeft: '20px', marginBottom: '8px', fontFamily: 'monospace' }}>
-                    {String(arg)}
-                  </div>
-                );
+            // Validate that the argument is suitable for ReactJson
+            const isValidForReactJson = (value) => {
+              // Only use ReactJson for objects and arrays, not primitives
+              if (value === null || value === undefined) {
+                return false; // Render as text
               }
-            }
+              if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                return false; // Render as text
+              }
+              
+              if (typeof value === 'object') {
+                try {
+                  // Test if it can be JSON serialized without errors
+                  JSON.stringify(value);
+                  // Additional check for reasonable size
+                  const keys = Object.keys(value);
+                  return keys.length < 100 && keys.length > 0; // Must have at least 1 property
+                } catch {
+                  return false;
+                }
+              }
+              
+              return false;
+            };
 
-            // Only pass simple types to ReactJson
-            const isSimpleType = arg === null ||
-                                arg === undefined ||
-                                typeof arg === 'string' ||
-                                typeof arg === 'number' ||
-                                typeof arg === 'boolean' ||
-                                (typeof arg === 'object' && arg !== null && !Array.isArray(arg) && Object.keys(arg).length < 50);
-
-            if (!isSimpleType) {
+            // If the argument is not suitable for ReactJson, render as text
+            if (!isValidForReactJson(arg)) {
               return (
                 <div key={`${id}-${index}`} style={{ marginLeft: '20px', marginBottom: '8px', fontFamily: 'monospace' }}>
                   {String(arg)}
@@ -478,6 +502,7 @@ export default function Playground() {
               );
             }
 
+            // Use ReactJson for valid objects/arrays
             return (
               <ReactJson
                 key={`${id}-${index}`}
