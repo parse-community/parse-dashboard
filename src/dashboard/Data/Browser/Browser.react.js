@@ -314,7 +314,7 @@ class Browser extends DashboardView {
   }
 
   /**
-   * Load filters for all classes in parallel for better performance
+   * Load filters for all classes
    */
   async loadAllClassFilters() {
     if (!this.classPreferencesManager) {
@@ -329,27 +329,19 @@ class Browser extends DashboardView {
     // Set loading state
     this.setState({ loadingClassFilters: true });
 
+    const classFilters = {};
     const classNames = Object.keys(classes.toObject());
 
-    // Load filters for all classes in parallel
-    const filterPromises = classNames.map(async (className) => {
+    // Load filters for each class
+    for (const className of classNames) {
       try {
         const filters = await this.classPreferencesManager.getFilters(className);
-        return { className, filters: filters || [] };
+        classFilters[className] = filters || [];
       } catch (error) {
         console.warn(`Failed to load filters for class ${className}:`, error);
-        return { className, filters: [] };
+        classFilters[className] = [];
       }
-    });
-
-    // Wait for all filter loading to complete
-    const results = await Promise.all(filterPromises);
-
-    // Convert results array to object
-    const classFilters = {};
-    results.forEach(({ className, filters }) => {
-      classFilters[className] = filters;
-    });
+    }
 
     this.setState({ 
       classFilters,

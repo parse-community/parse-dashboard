@@ -28,13 +28,13 @@ export default class FilterPreferencesManager {
    */
   async getClassPreferences(applicationId, className) {
     // Check if server storage is enabled and user prefers server storage
-    const isServerStorageEnabled = this.serverStorage.isServerConfigEnabled();
-    const prefersServer = prefersServerStorage(applicationId);
+    const isServerStorageEnabled = this.serverConfigStorage.isServerStorageEnabled();
+    const prefersServerStorage = this.storagePreferences.prefersServerStorage('filters');
     
-    if (isServerStorageEnabled && prefersServer) {
-      return await this._getClassPreferencesFromServer(applicationId, className);
+    if (isServerStorageEnabled && prefersServerStorage) {
+      return await this.getServerClassPreferences(applicationId, className);
     } else {
-      return this._getClassPreferencesFromLocal(applicationId, className);
+      return this.getLocalClassPreferences(applicationId, className);
     }
   }
 
