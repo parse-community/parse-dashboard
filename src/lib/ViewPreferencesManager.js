@@ -130,13 +130,13 @@ export default class ViewPreferencesManager {
    */
   async _getViewsFromServer(appId) {
     try {
-      const viewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.id.', appId);
+      const viewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.', appId);
       const views = [];
       
       Object.entries(viewConfigs).forEach(([key, config]) => {
         if (config && typeof config === 'object') {
-          // Extract view ID from key (views.view.id.{VIEW_ID})
-          const viewId = key.replace('views.view.id.', '');
+          // Extract view ID from key (views.view.{VIEW_ID})
+          const viewId = key.replace('views.view.', '');
           
           // Parse the query if it's a string (it was stringified for storage)
           const viewConfig = { ...config };
@@ -170,9 +170,9 @@ export default class ViewPreferencesManager {
   async _saveViewsToServer(appId, views) {
     try {
       // First, get existing views from server to know which ones to delete
-      const existingViewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.id.', appId);
+      const existingViewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.', appId);
       const existingViewIds = Object.keys(existingViewConfigs).map(key =>
-        key.replace('views.view.id.', '')
+        key.replace('views.view.', '')
       );
 
       // Delete views that are no longer in the new views array
@@ -181,7 +181,7 @@ export default class ViewPreferencesManager {
       
       await Promise.all(
         viewsToDelete.map(id =>
-          this.serverStorage.deleteConfig(`views.view.id.${id}`, appId)
+          this.serverStorage.deleteConfig(`views.view.${id}`, appId)
         )
       );
 
@@ -205,7 +205,7 @@ export default class ViewPreferencesManager {
           }
           
           return this.serverStorage.setConfig(
-            `views.view.id.${viewId}`,
+            `views.view.${viewId}`,
             viewConfig,
             appId
           );
