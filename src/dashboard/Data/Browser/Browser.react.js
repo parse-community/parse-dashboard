@@ -612,15 +612,13 @@ class Browser extends DashboardView {
     let filters = new List();
     //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
     if (!props || !props.location || !props.location.search) {
+      // No URL parameters, return empty filters (clean state)
       return filters;
     }
     const query = new URLSearchParams(props.location.search);
-    
     if (query.has('filters')) {
-      const filtersParam = query.get('filters');
-      if (filtersParam) {
-        const queryFilters = JSON.parse(filtersParam);
-        queryFilters.forEach(
+      const queryFilters = JSON.parse(query.get('filters'));
+      queryFilters.forEach(
         filter => {
           // Convert date strings to Parse Date objects for proper Parse query functionality
           const processedFilter = { ...filter, class: filter.class || props.params.className };
@@ -637,8 +635,8 @@ class Browser extends DashboardView {
           }
 
           filters = filters.push(Map(processedFilter));
-        });
-      }
+        }
+      );
     }
     return filters;
   }
@@ -2397,7 +2395,7 @@ class Browser extends DashboardView {
         linkPrefix={'browser/'}
         filterClicked={url => {
           this.resetPage();
-          this.props.navigate(generatePath(this.context, url), { replace: true });
+          this.props.navigate(generatePath(this.context, url));
         }}
         classClicked={() => {
           this.resetPage();
