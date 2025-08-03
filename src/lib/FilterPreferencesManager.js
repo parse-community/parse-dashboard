@@ -27,24 +27,15 @@ export default class FilterPreferencesManager {
    * @returns {Promise<Object>} Class preferences object with filters
    */
   async getClassPreferences(applicationId, className) {
-    // Check if server storage is enabled and user prefers it
-    if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(applicationId)) {
-      try {
-        const serverPreferences = await this._getClassPreferencesFromServer(applicationId, className);
-        if (serverPreferences && serverPreferences.filters) {
-          return serverPreferences;
-        }
-        // If no server preferences found but user prefers server storage, still return empty filters
-        // This prevents fallback to local when user explicitly chose server storage
-        return { filters: [] };
-      } catch (error) {
-        console.error('Failed to get class preferences from server:', error);
-        // On error, fallback to local storage
-      }
-    }
+    // Check if server storage is enabled and user prefers server storage
+    const isServerStorageEnabled = this.serverStorage.isServerConfigEnabled();
+    const prefersServer = prefersServerStorage(applicationId);
     
-    // Use local storage (either by preference or as fallback)
-    return this._getClassPreferencesFromLocal(applicationId, className);
+    if (isServerStorageEnabled && prefersServer) {
+      return await this._getClassPreferencesFromServer(applicationId, className);
+    } else {
+      return this._getClassPreferencesFromLocal(applicationId, className);
+    }
   }
 
   /**
