@@ -15,6 +15,11 @@ export default class ServerConfigStorage {
   constructor(app) {
     this.app = app;
     this.className = app.config?.className || 'DashboardConfig';
+
+    // Validate className is a non-empty string
+    if (typeof this.className !== 'string' || !this.className.trim()) {
+      throw new Error('Invalid className for ServerConfigStorage');
+    }
   }
 
   /**
@@ -30,7 +35,7 @@ export default class ServerConfigStorage {
     const query = new Parse.Query(this.className);
     query.equalTo('appId', appId);
     query.equalTo('key', key);
-    
+
     if (userId) {
       query.equalTo('user', new Parse.User({ objectId: userId }));
     } else {
@@ -38,7 +43,7 @@ export default class ServerConfigStorage {
     }
 
     let configObject = await query.first({ useMasterKey: true });
-    
+
     // If no existing object found, create a new one
     if (!configObject) {
       configObject = new Parse.Object(this.className);
@@ -69,7 +74,7 @@ export default class ServerConfigStorage {
     const query = new Parse.Query(this.className);
     query.equalTo('appId', appId);
     query.equalTo('key', key);
-    
+
     if (userId) {
       query.equalTo('user', new Parse.User({ objectId: userId }));
     } else {
@@ -95,7 +100,7 @@ export default class ServerConfigStorage {
     const query = new Parse.Query(this.className);
     query.equalTo('appId', appId);
     query.startsWith('key', keyPrefix);
-    
+
     if (userId) {
       query.equalTo('user', new Parse.User({ objectId: userId }));
     } else {
@@ -104,7 +109,7 @@ export default class ServerConfigStorage {
 
     const results = await query.find({ useMasterKey: true });
     const configs = {};
-    
+
     results.forEach(result => {
       const key = result.get('key');
       const value = this._extractValue(result);
@@ -125,7 +130,7 @@ export default class ServerConfigStorage {
     const query = new Parse.Query(this.className);
     query.equalTo('appId', appId);
     query.equalTo('key', key);
-    
+
     if (userId) {
       query.equalTo('user', new Parse.User({ objectId: userId }));
     } else {
@@ -143,7 +148,7 @@ export default class ServerConfigStorage {
    * @returns {boolean}
    */
   isServerConfigEnabled() {
-    return !!(this.app.config && this.app.config.className);
+    return !!(this.app && this.app.config && this.app.config.className);
   }
 
   /**

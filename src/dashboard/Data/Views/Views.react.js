@@ -695,6 +695,7 @@ class Views extends TableView {
                     await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
                   } catch (error) {
                     console.error('Failed to save views:', error);
+                    this.showNote('Failed to save view changes', true);
                   }
                 }
                 this.loadViews(this.context);
@@ -729,6 +730,7 @@ class Views extends TableView {
                     await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
                   } catch (error) {
                     console.error('Failed to save views:', error);
+                    this.showNote('Failed to save view changes', true);
                   }
                 }
                 this.loadViews(this.context);
@@ -755,6 +757,7 @@ class Views extends TableView {
                     await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
                   } catch (error) {
                     console.error('Failed to save views:', error);
+                    this.showNote('Failed to save view changes', true);
                   }
                 }
                 if (this.props.params.name === name) {

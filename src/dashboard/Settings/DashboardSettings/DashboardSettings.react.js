@@ -78,7 +78,7 @@ export default class DashboardSettings extends DashboardView {
     if (this.viewPreferencesManager) {
       this.viewPreferencesManager.setStoragePreference(this.context.applicationId, preference);
       this.setState({ storagePreference: preference });
-      
+
       // Show a notification about the change
       this.showNote(`Storage preference changed to ${preference === 'server' ? 'server' : 'browser'}`);
     }
@@ -90,7 +90,7 @@ export default class DashboardSettings extends DashboardView {
       return;
     }
 
-    if (!this.viewPreferencesManager.serverStorage.isServerConfigEnabled()) {
+    if (!this.viewPreferencesManager.isServerConfigEnabled()) {
       this.showNote('Server configuration is not enabled for this app. Please add a "config" section to your app configuration.');
       return;
     }
@@ -114,6 +114,10 @@ export default class DashboardSettings extends DashboardView {
   }
 
   async deleteFromBrowser() {
+    if (!window.confirm('Are you sure you want to delete all dashboard settings from browser storage? This action cannot be undone.')) {
+      return;
+    }
+
     if (!this.viewPreferencesManager) {
       this.showNote('ViewPreferencesManager not initialized');
       return;
@@ -457,7 +461,7 @@ export default class DashboardSettings extends DashboardView {
             }
           />
         </Fieldset>
-        {this.viewPreferencesManager && this.viewPreferencesManager.serverStorage.isServerConfigEnabled() && (
+        {this.viewPreferencesManager && this.viewPreferencesManager.isServerConfigEnabled() && (
           <Fieldset legend="Settings Storage">
             <Field
               label={

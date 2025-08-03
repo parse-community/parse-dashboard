@@ -38,7 +38,7 @@ export default class ViewPreferencesManager {
         return [];
       }
     }
-    
+
     // Use local storage when server storage is not preferred
     return this._getViewsFromLocal(appId);
   }
@@ -59,7 +59,7 @@ export default class ViewPreferencesManager {
         // On error, fallback to local storage
       }
     }
-    
+
     // Use local storage (either by preference or as fallback)
     return this._saveViewsToLocal(appId, views);
   }
@@ -122,6 +122,14 @@ export default class ViewPreferencesManager {
   }
 
   /**
+   * Checks if server configuration is enabled for this app
+   * @returns {boolean} True if server config is enabled
+   */
+  isServerConfigEnabled() {
+    return this.serverStorage.isServerConfigEnabled();
+  }
+
+  /**
    * Gets views from server storage
    * @private
    */
@@ -129,12 +137,12 @@ export default class ViewPreferencesManager {
     try {
       const viewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.', appId);
       const views = [];
-      
+
       Object.entries(viewConfigs).forEach(([key, config]) => {
         if (config && typeof config === 'object') {
           // Extract view ID from key (views.view.{VIEW_ID})
           const viewId = key.replace('views.view.', '');
-          
+
           // Parse the query if it's a string (it was stringified for storage)
           const viewConfig = { ...config };
           if (viewConfig.query && typeof viewConfig.query === 'string') {
@@ -142,17 +150,19 @@ export default class ViewPreferencesManager {
               viewConfig.query = JSON.parse(viewConfig.query);
             } catch (e) {
               console.warn('Failed to parse view query from server storage:', e);
-              // Keep as string if parsing fails
+              console.error(`Skipping view ${viewId} due to corrupted query`);
+              // Skip views with corrupted queries instead of keeping them as strings
+              return;
             }
           }
-          
+
           views.push({
             id: viewId,
             ...viewConfig
           });
         }
       });
-      
+
       return views;
     } catch (error) {
       console.error('Failed to get views from server:', error);
@@ -175,7 +185,7 @@ export default class ViewPreferencesManager {
       // Delete views that are no longer in the new views array
       const newViewIds = views.map(view => view.id || this._generateViewId(view));
       const viewsToDelete = existingViewIds.filter(id => !newViewIds.includes(id));
-      
+
       await Promise.all(
         viewsToDelete.map(id =>
           this.serverStorage.deleteConfig(`views.view.${id}`, appId)
@@ -188,19 +198,19 @@ export default class ViewPreferencesManager {
           const viewId = view.id || this._generateViewId(view);
           const viewConfig = { ...view };
           delete viewConfig.id; // Don't store ID in the config itself
-          
+
           // Remove null and undefined values to keep the storage clean
           Object.keys(viewConfig).forEach(key => {
             if (viewConfig[key] === null || viewConfig[key] === undefined) {
               delete viewConfig[key];
             }
           });
-          
+
           // Stringify the query if it exists and is an array/object
           if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
             viewConfig.query = JSON.stringify(viewConfig.query);
           }
-          
+
           return this.serverStorage.setConfig(
             `views.view.${viewId}`,
             viewConfig,
@@ -260,10 +270,11 @@ export default class ViewPreferencesManager {
     if (view.id) {
       return view.id;
     }
-    // Generate a unique ID based on view name and timestamp
+    // Generate a unique ID based on view name, timestamp, and random component
     const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substr(2, 5);
     const nameHash = view.name ? view.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : 'view';
-    return `${nameHash}_${timestamp}`;
+    return `${nameHash}_${timestamp}_${random}`;
   }
 }
 

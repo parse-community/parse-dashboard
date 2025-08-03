@@ -44,13 +44,19 @@ export function getStoragePreference(appId) {
  * @param {string} preference - The storage preference ('local' or 'server')
  */
 export function setStoragePreference(appId, preference) {
+  // Validate preference value
+  if (!Object.values(STORAGE_TYPES).includes(preference)) {
+    console.warn('Invalid storage preference:', preference);
+    return;
+  }
+
   try {
     let preferences = {};
     const existing = localStorage.getItem(STORAGE_PREFERENCE_KEY);
     if (existing) {
       preferences = JSON.parse(existing);
     }
-    
+
     preferences[appId] = preference;
     localStorage.setItem(STORAGE_PREFERENCE_KEY, JSON.stringify(preferences));
   } catch (error) {
