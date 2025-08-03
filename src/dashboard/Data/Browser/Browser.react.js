@@ -29,7 +29,6 @@ import RemoveColumnDialog from 'dashboard/Data/Browser/RemoveColumnDialog.react'
 import { List, Map } from 'immutable';
 import { get } from 'lib/AJAX';
 import * as ClassPreferences from 'lib/ClassPreferences';
-import { getClassPreferencesManager } from 'lib/ClassPreferences';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import { DefaultColumns, SpecialClasses } from 'lib/Constants';
 import generatePath from 'lib/generatePath';
@@ -130,7 +129,6 @@ class Browser extends DashboardView {
     this.subsection = 'Browser';
     this.noteTimeout = null;
     this.currentQuery = null;
-    this.classPreferencesManager = null;
     const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
@@ -152,8 +150,6 @@ class Browser extends DashboardView {
       filteredCounts: {},
       clp: {},
       filters: new List(),
-      classFilters: {}, // Store filters for each class from server/local storage
-      loadingClassFilters: false, // Track loading state for class filters
       ordering: '-createdAt',
       skip: 0,
       limit: limit ? parseInt(limit) : 100,
@@ -287,14 +283,7 @@ class Browser extends DashboardView {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     }
 
-    // Initialize class preferences manager
-    this.classPreferencesManager = getClassPreferencesManager(currentApp);
-
-    this.props.schema.dispatch(ActionTypes.FETCH).then(() => {
-      this.handleFetchedSchema();
-      // Load class filters after schema is available and wait for completion
-      this.loadAllClassFilters();
-    });
+    this.props.schema.dispatch(ActionTypes.FETCH).then(() => this.handleFetchedSchema());
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -309,71 +298,6 @@ class Browser extends DashboardView {
       this.setState({ configData: data });
       this.classAndCloudFuntionMap(this.state.configData);
     });
-    // Load class filters after manager is initialized
-    this.loadAllClassFilters();
-  }
-
-  /**
-   * Load filters for all classes
-   */
-  async loadAllClassFilters() {
-    if (!this.classPreferencesManager) {
-      return;
-    }
-
-    const classes = this.props.schema.data.get('classes');
-    if (!classes) {
-      return;
-    }
-
-    // Set loading state
-    this.setState({ loadingClassFilters: true });
-
-    const classFilters = {};
-    const classNames = Object.keys(classes.toObject());
-
-    // Load filters for each class
-    for (const className of classNames) {
-      try {
-        const filters = await this.classPreferencesManager.getFilters(className);
-        classFilters[className] = filters || [];
-      } catch (error) {
-        console.warn(`Failed to load filters for class ${className}:`, error);
-        classFilters[className] = [];
-      }
-    }
-
-    this.setState({ 
-      classFilters,
-      loadingClassFilters: false 
-    });
-  }
-
-  /**
-   * Load saved filters for a specific class
-   */
-  async loadSavedFilters(className) {
-    if (!className || !this.classPreferencesManager) {
-      return new List();
-    }
-
-    try {
-      const savedFilters = await this.classPreferencesManager.getFilters(className);
-      let filters = new List();
-      
-      if (savedFilters && savedFilters.length > 0) {
-        savedFilters.forEach(filter => {
-          // Convert saved filter to the expected format
-          const processedFilter = { ...filter, class: filter.class || className };
-          filters = filters.push(Map(processedFilter));
-        });
-      }
-      
-      return filters;
-    } catch (error) {
-      console.warn(`Failed to load saved filters for class ${className}:`, error);
-      return new List();
-    }
   }
 
   componentWillUnmount() {
@@ -582,7 +506,6 @@ class Browser extends DashboardView {
         data: isEditFilterMode ? [] : null, // Set empty array in edit mode to avoid loading
         newObject: null,
         lastMax: -1,
-        filters,
         ordering: ColumnPreferences.getColumnSort(false, context.applicationId, className),
         selection: {},
         relation: isRelationRoute ? relation : null,
@@ -604,7 +527,6 @@ class Browser extends DashboardView {
     let filters = new List();
     //TODO: url limit issues ( we may want to check for url limit), unlikely but possible to run into
     if (!props || !props.location || !props.location.search) {
-      // No URL parameters, return empty filters (clean state)
       return filters;
     }
     const query = new URLSearchParams(props.location.search);
@@ -1349,30 +1271,10 @@ class Browser extends DashboardView {
     }
 
     const _filters = JSON.stringify(jsonFilters);
-    
-    // Try to use enhanced manager first, fallback to legacy for compatibility
-    let preferences;
-    if (this.classPreferencesManager) {
-      try {
-        // For now, use synchronous method to avoid breaking existing behavior
-        // TODO: Convert this to async when the component architecture supports it
-        preferences = ClassPreferences.getPreferences(
-          this.context.applicationId,
-          this.props.params.className
-        );
-      } catch (error) {
-        console.warn('Failed to get preferences with enhanced manager, falling back to legacy:', error);
-        preferences = ClassPreferences.getPreferences(
-          this.context.applicationId,
-          this.props.params.className
-        );
-      }
-    } else {
-      preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        this.props.params.className
-      );
-    }
+    const preferences = ClassPreferences.getPreferences(
+      this.context.applicationId,
+      this.props.params.className
+    );
 
     let newFilterId = filterId;
 
@@ -1443,31 +1345,11 @@ class Browser extends DashboardView {
       }
     }
 
-    // Save preferences using enhanced manager if available
-    if (this.classPreferencesManager) {
-      try {
-        // For now, use synchronous method to avoid breaking existing behavior
-        // TODO: Convert this to async when the component architecture supports it
-        ClassPreferences.updatePreferences(
-          preferences,
-          this.context.applicationId,
-          this.props.params.className
-        );
-      } catch (error) {
-        console.warn('Failed to save preferences with enhanced manager, falling back to legacy:', error);
-        ClassPreferences.updatePreferences(
-          preferences,
-          this.context.applicationId,
-          this.props.params.className
-        );
-      }
-    } else {
-      ClassPreferences.updatePreferences(
-        preferences,
-        this.context.applicationId,
-        this.props.params.className
-      );
-    }
+    ClassPreferences.updatePreferences(
+      preferences,
+      this.context.applicationId,
+      this.props.params.className
+    );
 
     super.forceUpdate();
 
@@ -1476,27 +1358,10 @@ class Browser extends DashboardView {
   }
 
   deleteFilter(filterIdOrObject) {
-    // Try to use enhanced manager first, fallback to legacy for compatibility
-    let preferences;
-    if (this.classPreferencesManager) {
-      try {
-        preferences = ClassPreferences.getPreferences(
-          this.context.applicationId,
-          this.props.params.className
-        );
-      } catch (error) {
-        console.warn('Failed to get preferences with enhanced manager, falling back to legacy:', error);
-        preferences = ClassPreferences.getPreferences(
-          this.context.applicationId,
-          this.props.params.className
-        );
-      }
-    } else {
-      preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        this.props.params.className
-      );
-    }
+    const preferences = ClassPreferences.getPreferences(
+      this.context.applicationId,
+      this.props.params.className
+    );
 
     if (preferences.filters) {
       // Try to find by ID first (modern approach)
@@ -1517,29 +1382,11 @@ class Browser extends DashboardView {
         }
       }
 
-      // Save preferences using enhanced manager if available
-      if (this.classPreferencesManager) {
-        try {
-          ClassPreferences.updatePreferences(
-            { ...preferences, filters: updatedFilters },
-            this.context.applicationId,
-            this.props.params.className
-          );
-        } catch (error) {
-          console.warn('Failed to save preferences with enhanced manager, falling back to legacy:', error);
-          ClassPreferences.updatePreferences(
-            { ...preferences, filters: updatedFilters },
-            this.context.applicationId,
-            this.props.params.className
-          );
-        }
-      } else {
-        ClassPreferences.updatePreferences(
-          { ...preferences, filters: updatedFilters },
-          this.context.applicationId,
-          this.props.params.className
-        );
-      }
+      ClassPreferences.updatePreferences(
+        { ...preferences, filters: updatedFilters },
+        this.context.applicationId,
+        this.props.params.className
+      );
     }
 
     super.forceUpdate();
@@ -2373,8 +2220,10 @@ class Browser extends DashboardView {
     }
     const allCategories = [];
     for (const row of [...special, ...categories]) {
-      // Use filters from state (loaded with enhanced manager) or fallback to empty array
-      const filters = this.state.loadingClassFilters ? [] : (this.state.classFilters[row.name] || []);
+      const { filters = [] } = ClassPreferences.getPreferences(
+        this.context.applicationId,
+        row.name
+      );
       // Set filters sorted alphabetically
       row.filters = filters.sort((a, b) => a.name.localeCompare(b.name));
       allCategories.push(row);
