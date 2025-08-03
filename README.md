@@ -213,6 +213,7 @@ PARSE_DASHBOARD_SSL_KEY: "sslKey"
 PARSE_DASHBOARD_SSL_CERT: "sslCert"
 PARSE_DASHBOARD_CONFIG: undefined // Only for reference, it must not exist
 PARSE_DASHBOARD_COOKIE_SESSION_SECRET: undefined // set the cookie session secret, defaults to a random string. Use this option if you want sessions to work across multiple servers, or across restarts
+PARSE_DASHBOARD_AGENT: undefined // JSON string containing the full agent configuration with models array
 
 ```
 
@@ -525,8 +526,8 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 
 Parse Dashboard can cache its resources such as bundles in the browser, so that opening the dashboard in another tab does not reload the dashboard resources from the server but from the local browser cache. Caching only starts after login in the dashboard.
 
-| Parameter             | Type    | Optional | Default | Example | Description                                                                                                                             |
-|-----------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| Parameter             | Type    | Optional | Default | Example | Description                                                                                                    |
+|-----------------------|---------|----------|---------|---------|----------------------------------------------------------------------------------------------------------------|
 | `enableResourceCache` | Boolean | yes      | `false` | `true`  | Enables caching of dashboard resources in the browser for faster dashboard loading in additional browser tabs. |
 
 
@@ -1294,14 +1295,14 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
 }
 ```
 
-| Parameter                   | Type   | Required | Description                                                                    |
-|-----------------------------|--------|----------|--------------------------------------------------------------------------------|
-| `agent`                     | Object | Yes      | The AI agent configuration object.                                             |
-| `agent.models`              | Array  | Yes      | Array of AI model configurations available to the agent.                      |
-| `agent.models[*].name`      | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                   |
-| `agent.models[*].provider`  | String | Yes      | The AI provider identifier (e.g., "openai").                     |
-| `agent.models[*].model`     | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).   |
-| `agent.models[*].apiKey`    | String | Yes      | The API key for authenticating with the AI provider.                     |
+| Parameter                  | Type   | Required | Description                                                                                                                         |
+|----------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `agent`                    | Object | Yes      | The AI agent configuration object.  When using the environment variable, provide the complete agent configuration as a JSON string. |
+| `agent.models`             | Array  | Yes      | Array of AI model configurations available to the agent.                                                                            |
+| `agent.models[*].name`     | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                                                                               |
+| `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai").                                                                                        |
+| `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).                                                                        |
+| `agent.models[*].apiKey`   | String | Yes      | The API key for authenticating with the AI provider.                                                                                |
 
 The agent will use the configured models to process natural language commands and perform database operations using the master key from your app configuration.
 

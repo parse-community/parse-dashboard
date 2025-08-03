@@ -39,6 +39,7 @@ module.exports = (options) => {
   const configUserPassword = options.userPassword || process.env.PARSE_DASHBOARD_USER_PASSWORD;
   const configSSLKey = options.sslKey || process.env.PARSE_DASHBOARD_SSL_KEY;
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
+  const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT;
 
   function handleSIGs(server) {
     const signals = {
@@ -82,6 +83,21 @@ module.exports = (options) => {
             pass: configUserPassword,
           }
         ];
+      }
+      // Add agent configuration from environment variables
+      if (configAgent) {
+        // If it's already an object (from JS config), use it directly
+        if (typeof configAgent === 'object') {
+          configFromCLI.data.agent = configAgent;
+        } else {
+          // Otherwise, try to parse it as JSON
+          try {
+            configFromCLI.data.agent = JSON.parse(configAgent);
+          } catch (error) {
+            console.error('Failed to parse PARSE_DASHBOARD_AGENT:', error.message);
+            process.exit(1);
+          }
+        }
       }
     } else if (!configServerURL && !configMasterKey && !configAppName) {
       configFile = path.join(__dirname, 'parse-dashboard-config.json');

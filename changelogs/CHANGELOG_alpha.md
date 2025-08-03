@@ -1,3 +1,10 @@
+# [7.3.0-alpha.44](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.43...7.3.0-alpha.44) (2025-07-31)
+
+
+### Features
+
+* Add environment variable support for AI agent configuration ([#2956](https://github.com/parse-community/parse-dashboard/issues/2956)) ([2ac9e7e](https://github.com/parse-community/parse-dashboard/commit/2ac9e7e13cec0edb085d582ef1c67bd7e8468ac5))
+
 # [7.3.0-alpha.43](https://github.com/parse-community/parse-dashboard/compare/7.3.0-alpha.42...7.3.0-alpha.43) (2025-07-31)
 
 

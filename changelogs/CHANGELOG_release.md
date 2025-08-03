@@ -1,3 +1,59 @@
+# [7.3.0](https://github.com/parse-community/parse-dashboard/compare/7.2.1...7.3.0) (2025-08-01)
+
+
+### Bug Fixes
+
+* Changing "Relative dates" option of saved filter does not enable save button ([#2947](https://github.com/parse-community/parse-dashboard/issues/2947)) ([4f4977d](https://github.com/parse-community/parse-dashboard/commit/4f4977dbb16fbf755584355d90b85d9efc9169fd))
+* Class object counters in sidebar not updating ([#2950](https://github.com/parse-community/parse-dashboard/issues/2950)) ([0f1920b](https://github.com/parse-community/parse-dashboard/commit/0f1920b448787e57482c821b881c732f57fec614))
+* Clicking linked pointer with Cmd key in view table doesn't open page in new browser tab ([#2902](https://github.com/parse-community/parse-dashboard/issues/2902)) ([101b194](https://github.com/parse-community/parse-dashboard/commit/101b1943b01367402b2bbab61cabf2c267540c3e))
+* Fails to generate MFA code with CLI command `parse-dashboard --createMFA` ([#2883](https://github.com/parse-community/parse-dashboard/issues/2883)) ([544df1f](https://github.com/parse-community/parse-dashboard/commit/544df1ff606d45693596bc20179d129d6a9c91f1))
+* Gracefully fail when trying to get new features in latest version of dashboard ([#2880](https://github.com/parse-community/parse-dashboard/issues/2880)) ([1969a0e](https://github.com/parse-community/parse-dashboard/commit/1969a0e826832179bcd8d5e5ea56e8d63ad84dd4))
+* Header checkbox in data browser does not indicate when a few rows are selected ([#2957](https://github.com/parse-community/parse-dashboard/issues/2957)) ([e4ab666](https://github.com/parse-community/parse-dashboard/commit/e4ab66643085ab98d484aa0c484d0f66da7ed6d4))
+* Hyperlink in Views table ignores `urlQuery` key ([#2926](https://github.com/parse-community/parse-dashboard/issues/2926)) ([c5eedf4](https://github.com/parse-community/parse-dashboard/commit/c5eedf4c0d3db6572ba47838970d259ce1e7e11f))
+* Incorrect table cell width in App Settings table ([#2933](https://github.com/parse-community/parse-dashboard/issues/2933)) ([d46765b](https://github.com/parse-community/parse-dashboard/commit/d46765b16abfe3eda6d77525ae2f95a6f4be620c))
+* Info panel scroll-to-top setting not persistent across dashboard sessions ([#2938](https://github.com/parse-community/parse-dashboard/issues/2938)) ([2b78087](https://github.com/parse-community/parse-dashboard/commit/2b7808766516a6833236c5a0721084f3ffe026b0))
+* Invalid clipboard content for multi-cell copy in data browser ([#2882](https://github.com/parse-community/parse-dashboard/issues/2882)) ([22a2065](https://github.com/parse-community/parse-dashboard/commit/22a206501e4ca77dc0bb2a845b9cdf2bd3653b81))
+* Legacy filters without `filterId` cannot be deleted in data browser ([#2946](https://github.com/parse-community/parse-dashboard/issues/2946)) ([65df9d6](https://github.com/parse-community/parse-dashboard/commit/65df9d60c080d100fac45c7a81cae83104f150ea))
+* Legacy filters without `filterId` do not appear in sidebar ([#2945](https://github.com/parse-community/parse-dashboard/issues/2945)) ([fde3769](https://github.com/parse-community/parse-dashboard/commit/fde376923dc5a7ada689b5a35c54065c90870070))
+* Modal text input can be resized smaller than its cell in Safari browser ([#2930](https://github.com/parse-community/parse-dashboard/issues/2930)) ([82a0cdc](https://github.com/parse-community/parse-dashboard/commit/82a0cdc397d58494c0c61a8241767d4930f742f1))
+* Move settings button on data browser toolbar for better UI ([#2940](https://github.com/parse-community/parse-dashboard/issues/2940)) ([c473ce6](https://github.com/parse-community/parse-dashboard/commit/c473ce6153f12c1eebcb7467d185b9f7482d42a8))
+* Pagination footer bar hides rows in data browser ([#2879](https://github.com/parse-community/parse-dashboard/issues/2879)) ([6bc2da8](https://github.com/parse-community/parse-dashboard/commit/6bc2da848f970ae50cc5de0a9b1d16a04e2c88ae))
+* Race condition on info panel request shows info panel data not corresponding to selected cell ([#2909](https://github.com/parse-community/parse-dashboard/issues/2909)) ([6f45bb3](https://github.com/parse-community/parse-dashboard/commit/6f45bb348def3cf297e869bc58bb5edcd5ad2d60))
+* Saved legacy filter in data browser cannot be deleted or cloned ([#2944](https://github.com/parse-community/parse-dashboard/issues/2944)) ([15da90d](https://github.com/parse-community/parse-dashboard/commit/15da90d05bf8cde6cc383a3f9bd060d48214ccc6))
+* Saved legacy filter with classname in query cannot be deleted ([#2948](https://github.com/parse-community/parse-dashboard/issues/2948)) ([05ee5b3](https://github.com/parse-community/parse-dashboard/commit/05ee5b39e91737343ae4395cb63736802bd5c6cb))
+* Selected text in info panel cannot be copied using Ctrl+C ([#2951](https://github.com/parse-community/parse-dashboard/issues/2951)) ([0164c19](https://github.com/parse-community/parse-dashboard/commit/0164c1939cbb4ada991dc488ef2cd156913353d0))
+* Views not sorted alphabetically in sidebar ([#2943](https://github.com/parse-community/parse-dashboard/issues/2943)) ([4c81fe4](https://github.com/parse-community/parse-dashboard/commit/4c81fe423a9d437d0563285c9f67b13f8c7582ec))
+* Warning dialog is shown after executing script on selected rows ([#2899](https://github.com/parse-community/parse-dashboard/issues/2899)) ([027f1ed](https://github.com/parse-community/parse-dashboard/commit/027f1edacaa74b67e9e28bbb039465b075fcf6b4))
+
+### Features
+
+* Add additional values in info panel key-value element ([#2904](https://github.com/parse-community/parse-dashboard/issues/2904)) ([a8f110e](https://github.com/parse-community/parse-dashboard/commit/a8f110e1349e8b51927be0386f8dd1a4a031fd6b))
+* Add AI agent for natural language interaction with Parse Server ([#2954](https://github.com/parse-community/parse-dashboard/issues/2954)) ([32bd6e8](https://github.com/parse-community/parse-dashboard/commit/32bd6e855c67e3d4aa2fa4d8e8c3e076969486d0))
+* Add clipboard icon to copy value of key-value element in info panel ([#2871](https://github.com/parse-community/parse-dashboard/issues/2871)) ([7862c42](https://github.com/parse-community/parse-dashboard/commit/7862c42e58bb8296635f3df1036eb5348f8897fa))
+* Add Cloud Function as data source for views with optional text or file upload ([#2939](https://github.com/parse-community/parse-dashboard/issues/2939)) ([f5831c7](https://github.com/parse-community/parse-dashboard/commit/f5831c71b16c135b6bc51dd2ff37991d2b2b57f9))
+* Add column freezing in data browser ([#2877](https://github.com/parse-community/parse-dashboard/issues/2877)) ([29f4a88](https://github.com/parse-community/parse-dashboard/commit/29f4a88dc8dc4c9e1673cfbbbbd39db37231f983))
+* Add custom data views with aggregation query ([#2888](https://github.com/parse-community/parse-dashboard/issues/2888)) ([b1679db](https://github.com/parse-community/parse-dashboard/commit/b1679db1210a52c8c5299eb4b66e33f96963311e))
+* Add environment variable support for AI agent configuration ([#2956](https://github.com/parse-community/parse-dashboard/issues/2956)) ([2ac9e7e](https://github.com/parse-community/parse-dashboard/commit/2ac9e7e13cec0edb085d582ef1c67bd7e8468ac5))
+* Add hyperlink support in Views table ([#2925](https://github.com/parse-community/parse-dashboard/issues/2925)) ([06cfc11](https://github.com/parse-community/parse-dashboard/commit/06cfc11f6e62d2da99882dbf659bd7c6428f06ce))
+* Add inclusive date filters "is on or after", "is on or before" in data browser ([#2929](https://github.com/parse-community/parse-dashboard/issues/2929)) ([c8d621b](https://github.com/parse-community/parse-dashboard/commit/c8d621b6e173621a01ee081b002f0673c4d90d91))
+* Add quick-add button to array parameter in Cloud Config ([#2866](https://github.com/parse-community/parse-dashboard/issues/2866)) ([e98ccb2](https://github.com/parse-community/parse-dashboard/commit/e98ccb236459d891b60383fa3e040b212ac07044))
+* Add row number column to data browser ([#2878](https://github.com/parse-community/parse-dashboard/issues/2878)) ([c0aa407](https://github.com/parse-community/parse-dashboard/commit/c0aa4072bd3dee4dcddaa3527de97479354683e5))
+* Add Settings menu to scroll info panel to top when browsing through rows ([#2937](https://github.com/parse-community/parse-dashboard/issues/2937)) ([f339cb8](https://github.com/parse-community/parse-dashboard/commit/f339cb8d7a94ccda765c0d50ae00b57a53e03d7e))
+* Add support for "not equal to" filter for Boolean values in data browser and analytics explorer ([#2914](https://github.com/parse-community/parse-dashboard/issues/2914)) ([d55b89c](https://github.com/parse-community/parse-dashboard/commit/d55b89c34caee7490eaf78787d28bc8cdbeedbe8))
+* Add support for `Image` type in View table to display images ([#2952](https://github.com/parse-community/parse-dashboard/issues/2952)) ([6a6b1f0](https://github.com/parse-community/parse-dashboard/commit/6a6b1f02d546a3271493d4088bf356543b2c0394))
+* Add type mismatch warning when quick-adding entry to Cloud Config array parameter ([#2875](https://github.com/parse-community/parse-dashboard/issues/2875)) ([bb1837f](https://github.com/parse-community/parse-dashboard/commit/bb1837fd7af64e75364b53210dd710bc70d0e764))
+* Add view edit icon to views list in sidebar ([#2901](https://github.com/parse-community/parse-dashboard/issues/2901)) ([96e33b9](https://github.com/parse-community/parse-dashboard/commit/96e33b9f59fb590b0a4041d0b87cf8820c5551ff))
+* Allow editing filter without loading data in data browser ([#2949](https://github.com/parse-community/parse-dashboard/issues/2949)) ([9623580](https://github.com/parse-community/parse-dashboard/commit/962358020c513d38a1bc175545f73aebc92d403a))
+* Allow editing saved filters in data browser ([#2942](https://github.com/parse-community/parse-dashboard/issues/2942)) ([daaccaa](https://github.com/parse-community/parse-dashboard/commit/daaccaac75a0dad2082fb32abf1eb5f0cec17af7))
+* Allow freeform text view resizing in modal dialogs ([#2910](https://github.com/parse-community/parse-dashboard/issues/2910)) ([1399162](https://github.com/parse-community/parse-dashboard/commit/139916211113dec14a835fea50838e495dc15077))
+* Persist info panel visibility when navigating across classes in data browser ([#2908](https://github.com/parse-community/parse-dashboard/issues/2908)) ([1a3610a](https://github.com/parse-community/parse-dashboard/commit/1a3610a4632be78353db4f511781ca7757a12361))
+* Prefetch info panel data with config options `prefetchObjects` and `prefetchStale` ([#2915](https://github.com/parse-community/parse-dashboard/issues/2915)) ([54a8156](https://github.com/parse-community/parse-dashboard/commit/54a8156994a4c720b9f09d9f97ac4342d8039a77))
+* Warn when leaving data browser page with selected rows ([#2887](https://github.com/parse-community/parse-dashboard/issues/2887)) ([206ead1](https://github.com/parse-community/parse-dashboard/commit/206ead15fec0a505a3efcf9c50b78fa4d0561234))
+
+### Performance Improvements
+
+* Add config option `enableResourceCache` to cache dashboard resources locally for faster loading in additional browser tabs ([#2920](https://github.com/parse-community/parse-dashboard/issues/2920)) ([41a4963](https://github.com/parse-community/parse-dashboard/commit/41a4963ce6068e6f14a6a6008812ac3c1821e0fb))
+
 ## [7.2.1](https://github.com/parse-community/parse-dashboard/compare/7.2.0...7.2.1) (2025-07-01)
 
 
