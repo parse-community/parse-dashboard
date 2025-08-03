@@ -2,13 +2,45 @@
   padding-top: 96px;
   background-color: #002b36;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-section {
+  position: relative;
+  border-bottom: 2px solid #169cee;
+}
+
+.editor-help {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  background: rgba(0, 43, 54, 0.9);
+  color: #93a1a1;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  border: 1px solid #073642;
+  
+  kbd {
+    background: #073642;
+    color: #839496;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    border: 1px solid #586e75;
+    margin: 0 2px;
+  }
 }
 
 .console-ctn {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: stretch;
   flex-direction: column;
+  flex: 1;
+  min-height: 300px;
 
   & h3 {
     height: 28px;
@@ -16,32 +48,153 @@
     font-size: 16px;
     font-weight: 700;
     color: white;
+    margin: 0;
   }
 
   & > header {
-    flex: 1;
-    padding: 0 0 0 10px;
+    flex: none;
+    padding: 12px 16px;
     background-color: #169cee;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    box-sizing: border-box;
   }
 
   & > section {
+    flex: 1;
     width: 100%;
+    overflow-y: auto;
+    background-color: #002b36;
   }
+}
+
+.console-output {
+  padding: 12px;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #002b36;
+}
+
+.console-empty {
+  text-align: center;
+  color: #586e75;
+  padding: 40px 20px;
+  font-style: italic;
+  
+  small {
+    color: #657b83;
+    font-size: 12px;
+  }
+}
+
+.console-entry {
+  margin-bottom: 12px;
+  border-left: 3px solid #586e75;
+  padding: 8px 12px;
+  background-color: #073642;
+  border-radius: 0 4px 4px 0;
+  
+  &.console-error {
+    border-left-color: #dc322f;
+    background-color: rgba(220, 50, 47, 0.1);
+  }
+  
+  &.console-warn {
+    border-left-color: #b58900;
+    background-color: rgba(181, 137, 0, 0.1);
+  }
+  
+  &.console-info {
+    border-left-color: #268bd2;
+    background-color: rgba(38, 139, 210, 0.1);
+  }
+  
+  &.console-debug {
+    border-left-color: #6c71c4;
+    background-color: rgba(108, 113, 196, 0.1);
+  }
+  
+  &.console-log {
+    border-left-color: #859900;
+    background-color: rgba(133, 153, 0, 0.1);
+  }
+}
+
+.console-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-family: monospace;
+  color: #93a1a1;
+}
+
+.console-icon {
+  font-size: 14px;
+}
+
+.console-type {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #839496;
+}
+
+.console-timestamp {
+  color: #657b83;
+  margin-left: auto;
+  font-size: 11px;
 }
 
 .buttons-ctn {
   display: flex;
   justify-content: flex-end;
-  padding: 15px;
   align-items: center;
 
   & > div {
     display: flex;
     justify-content: flex-end;
-    width: 25%;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Custom scrollbar for console output */
+.console-output::-webkit-scrollbar {
+  width: 8px;
+}
+
+.console-output::-webkit-scrollbar-track {
+  background: #073642;
+}
+
+.console-output::-webkit-scrollbar-thumb {
+  background: #586e75;
+  border-radius: 4px;
+}
+
+.console-output::-webkit-scrollbar-thumb:hover {
+  background: #657b83;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .editor-help {
+    display: none;
+  }
+  
+  .buttons-ctn {
+    & > div {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+  
+  .console-header {
+    font-size: 11px;
+    gap: 6px;
   }
 }

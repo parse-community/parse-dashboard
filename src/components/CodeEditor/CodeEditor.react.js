@@ -14,6 +14,19 @@ import 'ace-builds/src-noconflict/theme-solarized_dark';
 import 'ace-builds/src-noconflict/snippets/javascript';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
+// Disable web workers to prevent MIME type errors
+import ace from 'ace-builds/src-noconflict/ace';
+
+// Configure ACE to disable workers globally
+ace.config.set('useWorker', false);
+ace.config.set('loadWorkerFromBlob', false);
+ace.config.set('workerPath', false);
+
+// Also set the base path to prevent worker loading attempts
+ace.config.set('basePath', '/bundles');
+ace.config.set('modePath', '/bundles');
+ace.config.set('themePath', '/bundles');
+
 export default class CodeEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -51,6 +64,21 @@ export default class CodeEditor extends React.Component {
         enableSnippets={false}
         showLineNumbers={true}
         tabSize={2}
+        setOptions={{
+          useWorker: false, // Disable web workers to prevent MIME type errors
+          wrap: true,
+          foldStyle: 'markbegin',
+          enableMultiselect: true,
+          // Additional worker-related options
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          enableSnippets: false,
+        }}
+        editorProps={{
+          $blockScrolling: Infinity, // Disable annoying warning
+          $useWorker: false, // Additional worker disable
+        }}
+        commands={[]} // Disable any commands that might trigger worker loading
       />
     );
   }
