@@ -487,7 +487,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Migrate Settings to Server"
-                  description="Migrates your current browser-stored dashboard settings to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration."
+                  description="Migrates your current browser-stored dashboard settings to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration. ⚠️ This overwrites existing server settings."
                 />
               }
               input={
