@@ -30,19 +30,16 @@ export default class ViewPreferencesManager {
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
         const serverViews = await this._getViewsFromServer(appId);
-        if (serverViews && serverViews.length > 0) {
-          return serverViews;
-        }
-        // If no server views found but user prefers server storage, still return empty array
-        // This prevents fallback to local when user explicitly chose server storage
-        return [];
+        // Always return server views (even if empty) when server storage is preferred
+        return serverViews || [];
       } catch (error) {
         console.error('Failed to get views from server:', error);
-        // On error, fallback to local storage
+        // When server storage is preferred, return empty array instead of falling back to local
+        return [];
       }
     }
     
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._getViewsFromLocal(appId);
   }
 
