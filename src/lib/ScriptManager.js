@@ -45,12 +45,20 @@ export default class ScriptManager {
     // Always check for legacy single-script format and add it as a new unsaved tab
     const legacyScript = this._getScriptFromLegacySingleFormat();
     if (legacyScript && legacyScript.length > 0) {
-      // If we have existing scripts, add the legacy script to them
-      if (localScripts && localScripts.length > 0) {
-        localScripts = [...localScripts, ...legacyScript];
-      } else {
-        // If no existing scripts, use the legacy script
-        localScripts = legacyScript;
+      // Check if a script with the same code already exists to prevent duplicates
+      const legacyScriptData = legacyScript[0];
+      const existingScript = (localScripts || []).find(script =>
+        script.code === legacyScriptData.code && script.name === 'Legacy Script'
+      );
+      
+      if (!existingScript) {
+        // If we have existing scripts, add the legacy script to them
+        if (localScripts && localScripts.length > 0) {
+          localScripts = [...localScripts, ...legacyScript];
+        } else {
+          // If no existing scripts, use the legacy script
+          localScripts = legacyScript;
+        }
       }
     }
 
