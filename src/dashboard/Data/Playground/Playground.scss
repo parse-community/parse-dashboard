@@ -38,9 +38,8 @@
   display: flex;
   background: #073642;
   border-bottom: 1px solid #169cee;
-  padding: 0 8px;
+  padding: 0 4px;
   align-items: flex-end;
-  min-height: 32px;
   flex-shrink: 0;
   overflow-x: auto;
   overflow-y: hidden;
@@ -74,8 +73,8 @@
 .tab {
   display: flex;
   align-items: center;
-  padding: 4px 12px;
-  margin-right: 2px;
+  padding: 4px 4px 4px 12px;
+  margin-right: 4px;
   margin-bottom: -1px;
   background: #002b36;
   border: 1px solid #586e75;
@@ -107,7 +106,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 4px;
+  margin-right: 12px;
   cursor: pointer;
   
   &:hover {
