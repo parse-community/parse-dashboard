@@ -192,7 +192,7 @@ export default function Playground() {
   const [, setCurrentMenu] = useState(null); // Track which menu is currently open
   const [, setForceUpdate] = useState({}); // Force re-render for unsaved changes detection
   const renamingInputRef = useRef(null);
-  
+
   // Drag and drop state
   const [draggedTabId, setDraggedTabId] = useState(null);
   const [dragOverTabId, setDragOverTabId] = useState(null);
@@ -486,7 +486,7 @@ export default function Playground() {
 
   const handleDrop = useCallback(async (e, targetTabId) => {
     e.preventDefault();
-    
+
     if (!draggedTabId || draggedTabId === targetTabId) {
       setDraggedTabId(null);
       setDragOverTabId(null);
