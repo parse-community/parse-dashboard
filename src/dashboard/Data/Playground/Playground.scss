@@ -17,7 +17,6 @@
 .editor-section {
   position: relative;
   border-bottom: 1px solid #169cee;
-  min-height: 200px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -76,7 +75,7 @@
   padding: 4px 4px 4px 12px;
   margin-right: 4px;
   margin-bottom: -1px;
-  background: #002b36;
+  background: #2C2C35;
   border: 1px solid #586e75;
   border-bottom: none;
   border-radius: 4px 4px 0 0;
@@ -231,7 +230,6 @@
 .console-ctn {
   display: flex;
   flex-direction: column;
-  min-height: 200px;
   overflow: hidden;
 
   & h3 {
@@ -261,14 +259,14 @@
     flex: 1;
     width: 100%;
     overflow-y: auto;
-    background-color: #002b36;
+    background-color: #110D11;
   }
 }
 
 .console-output {
   padding: 2px 4px;
   overflow-y: auto;
-  background-color: #002b36;
+  background-color: #110D11;
   height: 100%;
   font-size: 12px;
   line-height: 1.2;

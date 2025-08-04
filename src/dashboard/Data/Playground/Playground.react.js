@@ -256,7 +256,7 @@ export default function Playground() {
       if (savedHeight) {
         try {
           const height = parseFloat(savedHeight);
-          if (height >= 20 && height <= 80) {
+          if (height >= 0 && height <= 100) {
             setEditorHeight(height);
           }
         } catch (e) {
@@ -525,9 +525,9 @@ export default function Playground() {
       const containerHeight = rect.height;
       const relativeY = e.clientY - rect.top;
       
-      // Calculate percentage (20% to 80% range)
+      // Calculate percentage (0% to 100% range)
       let percentage = (relativeY / containerHeight) * 100;
-      percentage = Math.max(20, Math.min(80, percentage));
+      percentage = Math.max(0, Math.min(100, percentage));
       
       setEditorHeight(percentage);
     };
@@ -1168,6 +1168,7 @@ export default function Playground() {
             defaultValue={activeTab?.code || DEFAULT_CODE_EDITOR_VALUE}
             ref={editorRef}
             fontSize={14}
+            theme="monokai"
           />
           <div className={styles['editor-help']}>
             <span>💡 Shortcuts: </span>

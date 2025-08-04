@@ -10,7 +10,7 @@ import Editor from 'react-ace';
 import PropTypes from '../../lib/PropTypes';
 
 import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/theme-solarized_dark';
+import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/snippets/javascript';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
@@ -45,13 +45,13 @@ export default class CodeEditor extends React.Component {
   }
 
   render() {
-    const { fontSize = 18 } = this.props;
+    const { fontSize = 18, theme = 'monokai' } = this.props;
     const { code } = this.state;
 
     return (
       <Editor
         mode="javascript"
-        theme="solarized_dark"
+        theme={theme}
         onChange={value => this.setState({ code: value })}
         fontSize={fontSize}
         showPrintMargin={true}
@@ -62,7 +62,6 @@ export default class CodeEditor extends React.Component {
         enableBasicAutocompletion={true}
         enableLiveAutocompletion={true}
         enableSnippets={false}
-        showLineNumbers={true}
         tabSize={2}
         setOptions={{
           useWorker: false, // Disable web workers to prevent MIME type errors
@@ -87,4 +86,5 @@ export default class CodeEditor extends React.Component {
 CodeEditor.propTypes = {
   fontSize: PropTypes.number.describe('Font size of the editor'),
   defaultValue: PropTypes.string.describe('Default Code'),
+  theme: PropTypes.string.describe('Theme for the editor'),
 };
