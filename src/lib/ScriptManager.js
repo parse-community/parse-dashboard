@@ -334,6 +334,7 @@ export default class ScriptManager {
   _getScriptFromLegacySingleFormat() {
     try {
       const legacyCode = localStorage.getItem('parse-dashboard-playground-code');
+      console.log('Legacy code found:', legacyCode ? `"${legacyCode.substring(0, 100)}${legacyCode.length > 100 ? '...' : ''}"` : 'null');
       
       if (legacyCode && legacyCode.trim()) {
         // Create a script with the legacy code, marked as unsaved
