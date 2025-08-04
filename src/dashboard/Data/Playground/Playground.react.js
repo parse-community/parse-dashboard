@@ -287,17 +287,17 @@ export default function Playground() {
     const newTab = {
       id: nextTabId,
       name: `Tab ${nextTabId}`,
-      code: DEFAULT_CODE_EDITOR_VALUE
+      code: '' // Start with empty code instead of default value
     };
     const updatedTabs = [...tabs, newTab];
     setTabs(updatedTabs);
     setActiveTabId(nextTabId);
     setNextTabId(nextTabId + 1);
     
-    // Update saved tabs
-    updateSavedTabs(updatedTabs);
+    // Don't save empty tabs to saved tabs initially
+    // They will be saved only when they get some content
     
-    // Save to localStorage
+    // Save to localStorage (for current session tabs only)
     if (window.localStorage) {
       try {
         window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
@@ -306,7 +306,7 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, nextTabId, tabsKey, activeTabKey, updateSavedTabs]);
+  }, [tabs, nextTabId, tabsKey, activeTabKey]);
 
   const closeTab = useCallback((tabId) => {
     if (tabs.length <= 1) {
@@ -317,16 +317,26 @@ export default function Playground() {
     const tabToClose = tabs.find(tab => tab.id === tabId);
     const tabName = tabToClose ? tabToClose.name : 'this tab';
     
-    // Check if there are unsaved changes
+    // Get current content (either from editor if it's the active tab, or from tab's stored code)
+    let currentContent = '';
+    if (tabId === activeTabId && editorRef.current) {
+      currentContent = editorRef.current.value;
+    } else if (tabToClose) {
+      currentContent = tabToClose.code;
+    }
+    
+    // Check if the tab is empty (no content at all)
+    const isEmpty = !currentContent.trim();
+    
+    // Check if there are unsaved changes (only for non-empty tabs)
     let hasUnsavedChanges = false;
-    if (tabId === activeTabId && editorRef.current && tabToClose) {
-      const currentContent = editorRef.current.value;
+    if (!isEmpty && tabId === activeTabId && editorRef.current && tabToClose) {
       const savedContent = tabToClose.code;
       hasUnsavedChanges = currentContent !== savedContent;
     }
     
-    // Show confirmation dialog only if there are unsaved changes
-    if (hasUnsavedChanges) {
+    // Show confirmation dialog only if there are unsaved changes and the tab is not empty
+    if (!isEmpty && hasUnsavedChanges) {
       const confirmed = window.confirm(
         `Are you sure you want to close "${tabName}"?\n\nAny unsaved changes will be lost.`
       );
@@ -345,8 +355,22 @@ export default function Playground() {
       setActiveTabId(newActiveTab.id);
     }
     
-    // Update saved tabs (the closed tab will remain in saved tabs)
-    updateSavedTabs(updatedTabs);
+    // Saved tabs should persist even when the tab is closed
+    // Only remove from saved tabs if the tab was empty and never saved
+    if (isEmpty) {
+      const updatedSavedTabs = savedTabs.filter(saved => saved.id !== tabId);
+      setSavedTabs(updatedSavedTabs);
+      
+      // Save updated saved tabs to localStorage
+      if (window.localStorage) {
+        try {
+          window.localStorage.setItem(savedTabsKey, JSON.stringify(updatedSavedTabs));
+        } catch (e) {
+          console.warn('Failed to save updated saved tabs:', e);
+        }
+      }
+    }
+    // For non-empty tabs that were previously saved, keep them in saved tabs
     
     // Save to localStorage
     if (window.localStorage) {
@@ -359,22 +383,20 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, activeTabId, tabsKey, activeTabKey, updateSavedTabs]);
+  }, [tabs, activeTabId, tabsKey, activeTabKey, savedTabs, savedTabsKey]);
 
   const switchTab = useCallback((tabId) => {
-    // Save current tab's code before switching
+    // Update current tab's code in memory before switching (but don't save)
     if (editorRef.current && activeTab) {
+      const currentCode = editorRef.current.value;
       const updatedTabs = tabs.map(tab =>
         tab.id === activeTabId
-          ? { ...tab, code: editorRef.current.value }
+          ? { ...tab, code: currentCode }
           : tab
       );
       setTabs(updatedTabs);
       
-      // Update saved tabs
-      updateSavedTabs(updatedTabs);
-      
-      // Save to localStorage
+      // Save current session tabs to localStorage (for browser refresh persistence)
       if (window.localStorage) {
         try {
           window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
@@ -394,7 +416,7 @@ export default function Playground() {
         console.warn('Failed to save active tab:', e);
       }
     }
-  }, [tabs, activeTabId, activeTab, tabsKey, activeTabKey, updateSavedTabs]);
+  }, [tabs, activeTabId, activeTab, tabsKey, activeTabKey]);
 
   const renameTab = useCallback((tabId, newName) => {
     if (!newName.trim()) {
@@ -406,10 +428,7 @@ export default function Playground() {
     );
     setTabs(updatedTabs);
     
-    // Update saved tabs
-    updateSavedTabs(updatedTabs);
-    
-    // Save to localStorage
+    // Save current session tabs to localStorage (for browser refresh persistence)
     if (window.localStorage) {
       try {
         window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
@@ -417,7 +436,7 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, tabsKey, updateSavedTabs]);
+  }, [tabs, tabsKey]);
 
   const startRenaming = useCallback((tabId, currentName) => {
     setRenamingTabId(tabId);
@@ -436,33 +455,39 @@ export default function Playground() {
     cancelRenaming();
   }, [renamingTabId, renamingValue, renameTab, cancelRenaming]);
 
-  // Saved tabs management functions
-  const updateSavedTabs = useCallback((currentTabs) => {
-    // Update saved tabs to include all current tabs
-    const updatedSavedTabs = [...savedTabs];
+  const deleteTabFromSaved = useCallback((tabId) => {
+    // Find the tab to get its name for confirmation
+    const tabToDelete = tabs.find(tab => tab.id === tabId) || savedTabs.find(tab => tab.id === tabId);
+    const tabName = tabToDelete ? tabToDelete.name : 'this tab';
     
-    currentTabs.forEach(tab => {
-      const existingIndex = updatedSavedTabs.findIndex(saved => saved.id === tab.id);
-      if (existingIndex >= 0) {
-        // Update existing saved tab
-        updatedSavedTabs[existingIndex] = { ...tab, lastModified: Date.now() };
-      } else {
-        // Add new tab to saved tabs
-        updatedSavedTabs.push({ ...tab, lastModified: Date.now() });
-      }
-    });
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to permanently delete "${tabName}" from saved tabs?\n\nThis action cannot be undone.`
+    );
     
+    if (!confirmed) {
+      return; // User cancelled
+    }
+    
+    // Remove from saved tabs
+    const updatedSavedTabs = savedTabs.filter(saved => saved.id !== tabId);
     setSavedTabs(updatedSavedTabs);
     
-    // Save to localStorage
+    // Save updated saved tabs to localStorage
     if (window.localStorage) {
       try {
         window.localStorage.setItem(savedTabsKey, JSON.stringify(updatedSavedTabs));
       } catch (e) {
-        console.warn('Failed to save tabs to saved tabs:', e);
+        console.warn('Failed to save updated saved tabs:', e);
       }
     }
-  }, [savedTabs, savedTabsKey]);
+    
+    // If the tab is currently open, close it as well
+    const isCurrentlyOpen = tabs.find(tab => tab.id === tabId);
+    if (isCurrentlyOpen) {
+      closeTab(tabId);
+    }
+  }, [tabs, savedTabs, savedTabsKey, closeTab]);
 
   const reopenTab = useCallback((savedTab) => {
     // Check if tab is already open
@@ -489,10 +514,7 @@ export default function Playground() {
       setNextTabId(savedTab.id + 1);
     }
     
-    // Update saved tabs
-    updateSavedTabs(updatedTabs);
-    
-    // Save to localStorage
+    // Save current session tabs to localStorage (for browser refresh persistence)
     if (window.localStorage) {
       try {
         window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
@@ -501,7 +523,7 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, nextTabId, switchTab, tabsKey, activeTabKey, updateSavedTabs]);
+  }, [tabs, nextTabId, switchTab, tabsKey, activeTabKey]);
 
   // Focus input when starting to rename
   useEffect(() => {
@@ -713,7 +735,7 @@ export default function Playground() {
       return;
     }
 
-    // Save current tab's code before running
+    // Update current tab's code in memory before running (but don't auto-save)
     if (activeTab) {
       const updatedTabs = tabs.map(tab =>
         tab.id === activeTabId
@@ -722,10 +744,7 @@ export default function Playground() {
       );
       setTabs(updatedTabs);
       
-      // Update saved tabs
-      updateSavedTabs(updatedTabs);
-      
-      // Save to localStorage
+      // Save current session tabs to localStorage (for browser refresh persistence)
       if (window.localStorage) {
         try {
           window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
@@ -774,9 +793,9 @@ export default function Playground() {
       restoreConsole();
       setRunning(false);
     }
-  }, [context, createConsoleOverride, running, history, historyKey, tabs, activeTabId, activeTab, tabsKey, updateSavedTabs]);
+  }, [context, createConsoleOverride, running, history, historyKey, tabs, activeTabId, activeTab, tabsKey]);
 
-  // Save code function with debouncing
+  // Save code function - this is the ONLY way tabs get saved to saved tabs
   const saveCode = useCallback(() => {
     if (!editorRef.current || saving) {
       return;
@@ -794,10 +813,33 @@ export default function Playground() {
       );
       setTabs(updatedTabs);
 
-      // Update saved tabs
-      updateSavedTabs(updatedTabs);
+      // Save only the current active tab to saved tabs
+      const currentTab = updatedTabs.find(tab => tab.id === activeTabId);
+      if (currentTab) {
+        const updatedSavedTabs = [...savedTabs];
+        const existingIndex = updatedSavedTabs.findIndex(saved => saved.id === currentTab.id);
+        
+        if (existingIndex >= 0) {
+          // Update existing saved tab
+          updatedSavedTabs[existingIndex] = { ...currentTab, lastModified: Date.now() };
+        } else {
+          // Add new tab to saved tabs
+          updatedSavedTabs.push({ ...currentTab, lastModified: Date.now() });
+        }
+        
+        setSavedTabs(updatedSavedTabs);
+        
+        // Save to localStorage
+        if (window.localStorage) {
+          try {
+            window.localStorage.setItem(savedTabsKey, JSON.stringify(updatedSavedTabs));
+          } catch (e) {
+            console.warn('Failed to save tabs to saved tabs:', e);
+          }
+        }
+      }
 
-      // Save tabs to localStorage
+      // Save current session tabs to localStorage (for browser refresh persistence)
       if (window.localStorage) {
         window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
         // Also save to legacy key for backward compatibility
@@ -810,7 +852,7 @@ export default function Playground() {
       console.error('Save error:', e);
       setSaving(false);
     }
-  }, [saving, tabs, activeTabId, tabsKey, localKey, updateSavedTabs]);
+  }, [saving, tabs, activeTabId, tabsKey, localKey, savedTabs, savedTabsKey]);
 
   // Clear console
   const clearConsole = useCallback(() => {
@@ -1009,6 +1051,12 @@ export default function Playground() {
             disabled={saving}
           />
         )}
+        {window.localStorage && savedTabs.find(saved => saved.id === activeTabId) && (
+          <MenuItem
+            text="Delete Tab"
+            onClick={() => executeAndCloseMenu(() => deleteTabFromSaved(activeTabId))}
+          />
+        )}
         <Separator />
         <MenuItem
           text="Clear Console"
@@ -1029,7 +1077,6 @@ export default function Playground() {
             .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
             .map(savedTab => {
               const isOpen = tabs.find(openTab => openTab.id === savedTab.id);
-              const isActive = savedTab.id === activeTabId;
               
               return (
                 <MenuItem
