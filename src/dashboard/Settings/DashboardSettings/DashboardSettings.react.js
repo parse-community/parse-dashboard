@@ -18,6 +18,7 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
+import ScriptManager from 'lib/ScriptManager';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
@@ -28,6 +29,7 @@ export default class DashboardSettings extends DashboardView {
     this.section = 'App Settings';
     this.subsection = 'Dashboard Configuration';
     this.viewPreferencesManager = null;
+    this.scriptManager = null;
 
     this.state = {
       createUserInput: false,
@@ -57,12 +59,13 @@ export default class DashboardSettings extends DashboardView {
   }
 
   componentDidMount() {
-    this.initializeViewPreferencesManager();
+    this.initializeManagers();
   }
 
-  initializeViewPreferencesManager() {
+  initializeManagers() {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
+      this.scriptManager = new ScriptManager(this.context);
       this.loadStoragePreference();
     }
   }
@@ -123,11 +126,18 @@ export default class DashboardSettings extends DashboardView {
       return;
     }
 
-    const success = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
-    if (success) {
-      this.showNote('Successfully deleted views from browser storage.');
+    if (!this.scriptManager) {
+      this.showNote('ScriptManager not initialized');
+      return;
+    }
+
+    const viewsSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    const scriptsSuccess = this.scriptManager.deleteFromBrowser(this.context.applicationId);
+
+    if (viewsSuccess && scriptsSuccess) {
+      this.showNote('Successfully deleted dashboard settings from browser storage.');
     } else {
-      this.showNote('Failed to delete views from browser storage.');
+      this.showNote('Failed to delete all dashboard settings from browser storage.');
     }
   }
 
@@ -461,13 +471,16 @@ export default class DashboardSettings extends DashboardView {
             }
           />
         </Fieldset>
-        {this.viewPreferencesManager && this.viewPreferencesManager.isServerConfigEnabled() && (
+        {this.viewPreferencesManager && this.scriptManager && this.viewPreferencesManager.isServerConfigEnabled() && (
           <Fieldset legend="Settings Storage">
+            <div style={{ marginBottom: '20px', color: '#666', fontSize: '14px', textAlign: 'center' }}>
+              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Views and JS Console scripts.
+            </div>
             <Field
               label={
                 <Label
                   text="Storage Location"
-                  description="Choose where your dashboard settings are stored and loaded from. Server storage allows sharing settings across devices and users, while Browser storage is local to this device."
+                  description="Choose where your dashboard settings are stored and loaded from."
                 />
               }
               input={
@@ -487,7 +500,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Migrate Settings to Server"
-                  description="Migrates your current browser-stored dashboard settings to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration. ⚠️ This overwrites existing server settings."
+                  description="Migrates browser-stored settings to the server. ⚠️ This overwrites existing dashboard settings on the server."
                 />
               }
               input={
@@ -503,7 +516,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Delete Settings from Browser"
-                  description="Removes your dashboard settings from the browser's local storage. This action is irreversible. Make sure to migrate your settings to server and test them first."
+                  description="Removes settings from browser storage. ⚠️ Migrate your settings to the server and test them first."
                 />
               }
               input={
