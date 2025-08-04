@@ -176,19 +176,56 @@ export default function Playground() {
   const [isResizing, setIsResizing] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom of console
   const containerRef = useRef(null);
+  
+  // Tab management state
+  const [tabs, setTabs] = useState([
+    { id: 1, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE }
+  ]);
+  const [activeTabId, setActiveTabId] = useState(1);
+  const [nextTabId, setNextTabId] = useState(2);
+  const [renamingTabId, setRenamingTabId] = useState(null);
+  const [renamingValue, setRenamingValue] = useState('');
+  const renamingInputRef = useRef(null);
 
   const section = 'Core';
   const subsection = 'JS Console';
   const localKey = 'parse-dashboard-playground-code';
+  const tabsKey = 'parse-dashboard-playground-tabs';
+  const activeTabKey = 'parse-dashboard-playground-active-tab';
   const historyKey = 'parse-dashboard-playground-history';
   const heightKey = 'parse-dashboard-playground-height';
 
-  // Load saved code and history on mount
+  // Load saved code, tabs, and history on mount
   useEffect(() => {
     if (window.localStorage) {
+      // Load tabs
+      const savedTabs = window.localStorage.getItem(tabsKey);
+      const savedActiveTabId = window.localStorage.getItem(activeTabKey);
+      
+      if (savedTabs) {
+        try {
+          const parsedTabs = JSON.parse(savedTabs);
+          if (parsedTabs.length > 0) {
+            setTabs(parsedTabs);
+            const maxId = Math.max(...parsedTabs.map(tab => tab.id));
+            setNextTabId(maxId + 1);
+            
+            if (savedActiveTabId) {
+              const activeId = parseInt(savedActiveTabId);
+              if (parsedTabs.find(tab => tab.id === activeId)) {
+                setActiveTabId(activeId);
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to load tabs:', e);
+        }
+      }
+
+      // Load legacy single code if no tabs exist
       const initialCode = window.localStorage.getItem(localKey);
-      if (initialCode && editorRef.current) {
-        editorRef.current.value = initialCode;
+      if (initialCode && !savedTabs) {
+        setTabs([{ id: 1, name: 'Tab 1', code: initialCode }]);
       }
 
       const savedHistory = window.localStorage.getItem(historyKey);
@@ -212,7 +249,144 @@ export default function Playground() {
         }
       }
     }
-  }, [localKey, historyKey, heightKey]);
+  }, [localKey, tabsKey, activeTabKey, historyKey, heightKey]);
+
+  // Get current active tab
+  const activeTab = tabs.find(tab => tab.id === activeTabId) || tabs[0];
+
+  // Update editor when active tab changes
+  useEffect(() => {
+    if (editorRef.current && activeTab) {
+      editorRef.current.value = activeTab.code;
+    }
+  }, [activeTabId, activeTab]);
+
+  // Tab management functions
+  const createNewTab = useCallback(() => {
+    const newTab = {
+      id: nextTabId,
+      name: `Tab ${nextTabId}`,
+      code: DEFAULT_CODE_EDITOR_VALUE
+    };
+    const updatedTabs = [...tabs, newTab];
+    setTabs(updatedTabs);
+    setActiveTabId(nextTabId);
+    setNextTabId(nextTabId + 1);
+    
+    // Save to localStorage
+    if (window.localStorage) {
+      try {
+        window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+        window.localStorage.setItem(activeTabKey, nextTabId.toString());
+      } catch (e) {
+        console.warn('Failed to save tabs:', e);
+      }
+    }
+  }, [tabs, nextTabId, tabsKey, activeTabKey]);
+
+  const closeTab = useCallback((tabId) => {
+    if (tabs.length <= 1) {
+      return; // Don't close the last tab
+    }
+    
+    const updatedTabs = tabs.filter(tab => tab.id !== tabId);
+    setTabs(updatedTabs);
+    
+    // If closing active tab, switch to another tab
+    if (tabId === activeTabId) {
+      const newActiveTab = updatedTabs[0];
+      setActiveTabId(newActiveTab.id);
+    }
+    
+    // Save to localStorage
+    if (window.localStorage) {
+      try {
+        window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+        if (tabId === activeTabId) {
+          window.localStorage.setItem(activeTabKey, updatedTabs[0].id.toString());
+        }
+      } catch (e) {
+        console.warn('Failed to save tabs:', e);
+      }
+    }
+  }, [tabs, activeTabId, tabsKey, activeTabKey]);
+
+  const switchTab = useCallback((tabId) => {
+    // Save current tab's code before switching
+    if (editorRef.current && activeTab) {
+      const updatedTabs = tabs.map(tab =>
+        tab.id === activeTabId
+          ? { ...tab, code: editorRef.current.value }
+          : tab
+      );
+      setTabs(updatedTabs);
+      
+      // Save to localStorage
+      if (window.localStorage) {
+        try {
+          window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+        } catch (e) {
+          console.warn('Failed to save tabs:', e);
+        }
+      }
+    }
+    
+    setActiveTabId(tabId);
+    
+    // Save active tab to localStorage
+    if (window.localStorage) {
+      try {
+        window.localStorage.setItem(activeTabKey, tabId.toString());
+      } catch (e) {
+        console.warn('Failed to save active tab:', e);
+      }
+    }
+  }, [tabs, activeTabId, activeTab, tabsKey, activeTabKey]);
+
+  const renameTab = useCallback((tabId, newName) => {
+    if (!newName.trim()) {
+      return;
+    }
+    
+    const updatedTabs = tabs.map(tab =>
+      tab.id === tabId ? { ...tab, name: newName.trim() } : tab
+    );
+    setTabs(updatedTabs);
+    
+    // Save to localStorage
+    if (window.localStorage) {
+      try {
+        window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+      } catch (e) {
+        console.warn('Failed to save tabs:', e);
+      }
+    }
+  }, [tabs, tabsKey]);
+
+  const startRenaming = useCallback((tabId, currentName) => {
+    setRenamingTabId(tabId);
+    setRenamingValue(currentName);
+  }, []);
+
+  const cancelRenaming = useCallback(() => {
+    setRenamingTabId(null);
+    setRenamingValue('');
+  }, []);
+
+  const confirmRenaming = useCallback(() => {
+    if (renamingTabId && renamingValue.trim()) {
+      renameTab(renamingTabId, renamingValue);
+    }
+    cancelRenaming();
+  }, [renamingTabId, renamingValue, renameTab, cancelRenaming]);
+
+  // Focus input when starting to rename
+  useEffect(() => {
+    if (renamingTabId && renamingInputRef.current) {
+      renamingInputRef.current.focus();
+      renamingInputRef.current.select();
+    }
+  }, [renamingTabId]);
 
   // Handle mouse down on resize handle
   const handleResizeStart = useCallback((e) => {
@@ -416,6 +590,25 @@ export default function Playground() {
       return;
     }
 
+    // Save current tab's code before running
+    if (activeTab) {
+      const updatedTabs = tabs.map(tab =>
+        tab.id === activeTabId
+          ? { ...tab, code: code }
+          : tab
+      );
+      setTabs(updatedTabs);
+      
+      // Save to localStorage
+      if (window.localStorage) {
+        try {
+          window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+        } catch (e) {
+          console.warn('Failed to save tabs:', e);
+        }
+      }
+    }
+
     const restoreConsole = createConsoleOverride();
     setRunning(true);
     setResults([]);
@@ -455,7 +648,7 @@ export default function Playground() {
       restoreConsole();
       setRunning(false);
     }
-  }, [context, createConsoleOverride, running, history, historyKey]);
+  }, [context, createConsoleOverride, running, history, historyKey, tabs, activeTabId, activeTab, tabsKey]);
 
   // Save code function with debouncing
   const saveCode = useCallback(() => {
@@ -467,7 +660,20 @@ export default function Playground() {
       setSaving(true);
       const code = editorRef.current.value;
 
-      window.localStorage.setItem(localKey, code);
+      // Update current tab's code
+      const updatedTabs = tabs.map(tab =>
+        tab.id === activeTabId
+          ? { ...tab, code: code }
+          : tab
+      );
+      setTabs(updatedTabs);
+
+      // Save tabs to localStorage
+      if (window.localStorage) {
+        window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+        // Also save to legacy key for backward compatibility
+        window.localStorage.setItem(localKey, code);
+      }
       
       // Show brief feedback that save was successful
       setTimeout(() => setSaving(false), 1000);
@@ -475,7 +681,7 @@ export default function Playground() {
       console.error('Save error:', e);
       setSaving(false);
     }
-  }, [localKey, saving]);
+  }, [saving, tabs, activeTabId, tabsKey, localKey]);
 
   // Clear console
   const clearConsole = useCallback(() => {
@@ -666,12 +872,92 @@ export default function Playground() {
       </BrowserMenu>
     );
 
+    const tabMenu = (
+      <BrowserMenu title="Tabs" icon="window-solid" setCurrent={() => {}}>
+        <MenuItem
+          text="New Tab"
+          onClick={createNewTab}
+        />
+        <MenuItem
+          text="Rename Tab"
+          onClick={() => startRenaming(activeTabId, activeTab?.name || '')}
+        />
+        {tabs.length > 1 && (
+          <MenuItem
+            text="Close Tab"
+            onClick={() => closeTab(activeTabId)}
+          />
+        )}
+      </BrowserMenu>
+    );
+
     return (
       <Toolbar section={section} subsection={subsection}>
         {runButton}
         <div className={browserStyles.toolbarSeparator} />
         {editMenu}
+        <div className={browserStyles.toolbarSeparator} />
+        {tabMenu}
       </Toolbar>
+    );
+  };
+
+  const renderTabs = () => {
+    return (
+      <div className={styles['tab-bar']}>
+        <div className={styles['tab-container']}>
+          {tabs.map(tab => (
+            <div
+              key={tab.id}
+              className={`${styles['tab']} ${tab.id === activeTabId ? styles['tab-active'] : ''}`}
+              onClick={() => switchTab(tab.id)}
+            >
+              {renamingTabId === tab.id ? (
+                <input
+                  ref={renamingInputRef}
+                  type="text"
+                  value={renamingValue}
+                  onChange={(e) => setRenamingValue(e.target.value)}
+                  onBlur={confirmRenaming}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      confirmRenaming();
+                    } else if (e.key === 'Escape') {
+                      cancelRenaming();
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className={styles['tab-rename-input']}
+                />
+              ) : (
+                <span
+                  className={styles['tab-name']}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    startRenaming(tab.id, tab.name);
+                  }}
+                >
+                  {tab.name}
+                </span>
+              )}
+              {tabs.length > 1 && (
+                <button
+                  className={styles['tab-close']}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeTab(tab.id);
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+          <button className={styles['tab-new']} onClick={createNewTab}>
+            +
+          </button>
+        </div>
+      </div>
     );
   };
 
@@ -683,8 +969,9 @@ export default function Playground() {
           className={styles['editor-section']}
           style={{ height: `${editorHeight}%` }}
         >
+          {renderTabs()}
           <CodeEditor
-            defaultValue={DEFAULT_CODE_EDITOR_VALUE}
+            defaultValue={activeTab?.code || DEFAULT_CODE_EDITOR_VALUE}
             ref={editorRef}
             fontSize={14}
           />

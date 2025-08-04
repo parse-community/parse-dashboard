@@ -19,6 +19,8 @@
   border-bottom: 1px solid #169cee;
   min-height: 200px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   
   /* Ensure the code editor fills the container */
   .ace_editor {
@@ -26,8 +28,151 @@
   }
   
   /* Ensure the react-ace wrapper also fills the container */
-  & > div {
+  & > div:not(.tab-bar) {
     height: 100% !important;
+    flex: 1;
+  }
+}
+
+.tab-bar {
+  display: flex;
+  background: #073642;
+  border-bottom: 1px solid #169cee;
+  padding: 0 8px;
+  align-items: center;
+  min-height: 32px;
+  flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  
+  /* Custom scrollbar for tab bar */
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #073642;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #586e75;
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #657b83;
+  }
+}
+
+.tab-container {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: min-content;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  margin-right: 2px;
+  background: #002b36;
+  border: 1px solid #586e75;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  color: #93a1a1;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  max-width: 200px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  
+  &:hover {
+    background: #073642;
+    color: #fdf6e3;
+  }
+  
+  &.tab-active {
+    background: #169cee;
+    color: #fdf6e3;
+    border-color: #169cee;
+  }
+}
+
+.tab-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 4px;
+  cursor: pointer;
+  
+  &:hover {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+}
+
+.tab-rename-input {
+  flex: 1;
+  background: #fdf6e3;
+  border: 1px solid #169cee;
+  color: #002b36;
+  padding: 2px 4px;
+  margin: 0;
+  font-size: 12px;
+  font-family: inherit;
+  border-radius: 2px;
+  outline: none;
+  margin-right: 4px;
+  
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(22, 156, 238, 0.3);
+  }
+}
+
+.tab-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 1;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.tab-new {
+  background: none;
+  border: 1px solid #586e75;
+  color: #93a1a1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  &:hover {
+    background: #073642;
+    color: #fdf6e3;
+    border-color: #169cee;
   }
 }
 
