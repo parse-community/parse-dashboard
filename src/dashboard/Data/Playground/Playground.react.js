@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, useCallback, useMemo } from 'react';
 import ReactJson from 'react-json-view';
 import Parse from 'parse';
+import { useBeforeUnload } from 'react-router-dom';
 
 import CodeEditor from 'components/CodeEditor/CodeEditor.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
@@ -597,6 +598,150 @@ export default function Playground() {
       }
     }
   }, [tabs, switchTab, context?.applicationId]);
+
+  // Navigation confirmation for unsaved changes
+  useBeforeUnload(
+    useCallback(
+      (event) => {
+        // Check for unsaved changes across all tabs
+        let hasChanges = false;
+        
+        for (const tab of tabs) {
+          // Check if tab is marked as unsaved (like legacy scripts)
+          if (tab.saved === false) {
+            hasChanges = true;
+            break;
+          }
+
+          // Get current content for the tab
+          let currentContent = '';
+          if (tab.id === activeTabId && editorRef.current) {
+            // For active tab, get content from editor
+            currentContent = editorRef.current.value;
+          } else {
+            // For inactive tabs, use stored code
+            currentContent = tab.code;
+          }
+
+          // Find the saved version of this tab
+          const savedTab = savedTabs.find(saved => saved.id === tab.id);
+
+          if (!savedTab) {
+            // If tab was never saved, it has unsaved changes if it has any content
+            if (currentContent.trim() !== '') {
+              hasChanges = true;
+              break;
+            }
+          } else {
+            // Compare current content with saved content
+            if (currentContent !== savedTab.code) {
+              hasChanges = true;
+              break;
+            }
+          }
+        }
+
+        if (hasChanges) {
+          const message = 'You have unsaved changes in your playground tabs. Are you sure you want to leave?';
+          event.preventDefault();
+          event.returnValue = message;
+          return message;
+        }
+      },
+      [tabs, activeTabId, savedTabs]
+    )
+  );
+
+  // Handle navigation confirmation for internal route changes
+  useEffect(() => {
+    const checkForUnsavedChanges = () => {
+      // Check for unsaved changes across all tabs
+      for (const tab of tabs) {
+        // Check if tab is marked as unsaved (like legacy scripts)
+        if (tab.saved === false) {
+          return true;
+        }
+
+        // Get current content for the tab
+        let currentContent = '';
+        if (tab.id === activeTabId && editorRef.current) {
+          // For active tab, get content from editor
+          currentContent = editorRef.current.value;
+        } else {
+          // For inactive tabs, use stored code
+          currentContent = tab.code;
+        }
+
+        // Find the saved version of this tab
+        const savedTab = savedTabs.find(saved => saved.id === tab.id);
+
+        if (!savedTab) {
+          // If tab was never saved, it has unsaved changes if it has any content
+          if (currentContent.trim() !== '') {
+            return true;
+          }
+        } else {
+          // Compare current content with saved content
+          if (currentContent !== savedTab.code) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    const handleLinkClick = (event) => {
+      if (event.defaultPrevented) {
+        return;
+      }
+      if (event.button !== 0) {
+        return;
+      }
+      if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+        return;
+      }
+      
+      const anchor = event.target.closest('a[href]');
+      if (!anchor || anchor.target === '_blank') {
+        return;
+      }
+      
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#') {
+        return;
+      }
+      
+      // Check if it's an internal navigation (starts with / or #)
+      if (href.startsWith('/') || href.startsWith('#')) {
+        if (checkForUnsavedChanges()) {
+          const message = 'You have unsaved changes in your playground tabs. Are you sure you want to leave?';
+          if (!window.confirm(message)) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+      }
+    };
+
+    const handlePopState = () => {
+      if (checkForUnsavedChanges()) {
+        const message = 'You have unsaved changes in your playground tabs. Are you sure you want to leave?';
+        if (!window.confirm(message)) {
+          window.history.go(1);
+        }
+      }
+    };
+
+    // Add event listeners
+    document.addEventListener('click', handleLinkClick, true);
+    window.addEventListener('popstate', handlePopState);
+
+    // Cleanup event listeners
+    return () => {
+      document.removeEventListener('click', handleLinkClick, true);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [tabs, activeTabId, savedTabs]);
 
   // Focus input when starting to rename
   useEffect(() => {

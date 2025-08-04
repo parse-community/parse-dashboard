@@ -82,10 +82,9 @@ export default class ScriptManager {
    */
   async getOpenScripts(appId) {
     const allScripts = await this.getScripts(appId);
-    const openScripts = allScripts
+    return allScripts
       .filter(script => script.order !== undefined && script.order !== null)
       .sort((a, b) => a.order - b.order);
-    return openScripts;
   }
 
   /**
