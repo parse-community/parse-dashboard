@@ -42,12 +42,7 @@ export default class ScriptManager {
     // Use local storage when server storage is not preferred
     let localScripts = this._getScriptsFromLocal(appId);
     
-    // If no scripts found in new format, try the legacy Playground format
-    if (!localScripts || localScripts.length === 0) {
-      localScripts = this._getScriptsFromPlaygroundFormat();
-    }
-    
-    // If still no scripts, try the legacy single-script format
+    // If no scripts found in new format, try the legacy single-script format
     if (!localScripts || localScripts.length === 0) {
       localScripts = this._getScriptFromLegacySingleFormat();
     }
@@ -173,15 +168,10 @@ export default class ScriptManager {
       throw new Error('Server configuration is not enabled for this app');
     }
 
-    // Try to get scripts from both the new format and the legacy Playground format
+    // Try to get scripts from both the new format and the legacy single-script format
     let localScripts = this._getScriptsFromLocal(appId);
     
-    // If no scripts found in new format, try the legacy Playground format
-    if (!localScripts || localScripts.length === 0) {
-      localScripts = this._getScriptsFromPlaygroundFormat();
-    }
-    
-    // If still no scripts, try the legacy single-script format
+    // If no scripts found in new format, try the legacy single-script format
     if (!localScripts || localScripts.length === 0) {
       localScripts = this._getScriptFromLegacySingleFormat();
     }
@@ -208,8 +198,6 @@ export default class ScriptManager {
     try {
       // Remove from new format
       localStorage.removeItem(this._getLocalPath(appId));
-      // Remove from legacy Playground format
-      localStorage.removeItem('parse-dashboard-playground-saved-tabs');
       return true;
     } catch (error) {
       console.error('Failed to delete scripts from browser:', error);
@@ -327,24 +315,6 @@ export default class ScriptManager {
     let entry;
     try {
       entry = localStorage.getItem(this._getLocalPath(appId)) || '[]';
-    } catch {
-      entry = '[]';
-    }
-    try {
-      return JSON.parse(entry);
-    } catch {
-      return [];
-    }
-  }
-
-  /**
-   * Gets scripts from the legacy Playground storage format
-   * @private
-   */
-  _getScriptsFromPlaygroundFormat() {
-    let entry;
-    try {
-      entry = localStorage.getItem('parse-dashboard-playground-saved-tabs') || '[]';
     } catch {
       entry = '[]';
     }
