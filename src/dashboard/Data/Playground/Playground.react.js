@@ -9,6 +9,7 @@ import MenuItem from 'components/BrowserMenu/MenuItem.react';
 import Icon from 'components/Icon/Icon.react';
 import { CurrentApp } from 'context/currentApp';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
+import Separator from 'components/BrowserMenu/Separator.react';
 
 import styles from './Playground.scss';
 
@@ -185,12 +186,14 @@ export default function Playground() {
   const [nextTabId, setNextTabId] = useState(2);
   const [renamingTabId, setRenamingTabId] = useState(null);
   const [renamingValue, setRenamingValue] = useState('');
+  const [savedTabs, setSavedTabs] = useState([]); // All saved tabs including closed ones
   const renamingInputRef = useRef(null);
 
   const section = 'Core';
   const subsection = 'JS Console';
   const localKey = 'parse-dashboard-playground-code';
   const tabsKey = 'parse-dashboard-playground-tabs';
+  const savedTabsKey = 'parse-dashboard-playground-saved-tabs';
   const activeTabKey = 'parse-dashboard-playground-active-tab';
   const historyKey = 'parse-dashboard-playground-history';
   const heightKey = 'parse-dashboard-playground-height';
@@ -222,6 +225,17 @@ export default function Playground() {
         }
       }
 
+      // Load all saved tabs (including closed ones)
+      const allSavedTabs = window.localStorage.getItem(savedTabsKey);
+      if (allSavedTabs) {
+        try {
+          const parsedSavedTabs = JSON.parse(allSavedTabs);
+          setSavedTabs(parsedSavedTabs);
+        } catch (e) {
+          console.warn('Failed to load saved tabs:', e);
+        }
+      }
+
       // Load legacy single code if no tabs exist
       const initialCode = window.localStorage.getItem(localKey);
       if (initialCode && !savedTabs) {
@@ -249,7 +263,7 @@ export default function Playground() {
         }
       }
     }
-  }, [localKey, tabsKey, activeTabKey, historyKey, heightKey]);
+  }, [localKey, tabsKey, savedTabsKey, activeTabKey, historyKey, heightKey]);
 
   // Get current active tab
   const activeTab = tabs.find(tab => tab.id === activeTabId) || tabs[0];
@@ -273,6 +287,9 @@ export default function Playground() {
     setActiveTabId(nextTabId);
     setNextTabId(nextTabId + 1);
     
+    // Update saved tabs
+    updateSavedTabs(updatedTabs);
+    
     // Save to localStorage
     if (window.localStorage) {
       try {
@@ -282,7 +299,7 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, nextTabId, tabsKey, activeTabKey]);
+  }, [tabs, nextTabId, tabsKey, activeTabKey, updateSavedTabs]);
 
   const closeTab = useCallback((tabId) => {
     if (tabs.length <= 1) {
@@ -311,6 +328,9 @@ export default function Playground() {
       setActiveTabId(newActiveTab.id);
     }
     
+    // Update saved tabs (the closed tab will remain in saved tabs)
+    updateSavedTabs(updatedTabs);
+    
     // Save to localStorage
     if (window.localStorage) {
       try {
@@ -322,7 +342,7 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, activeTabId, tabsKey, activeTabKey]);
+  }, [tabs, activeTabId, tabsKey, activeTabKey, updateSavedTabs]);
 
   const switchTab = useCallback((tabId) => {
     // Save current tab's code before switching
@@ -333,6 +353,9 @@ export default function Playground() {
           : tab
       );
       setTabs(updatedTabs);
+      
+      // Update saved tabs
+      updateSavedTabs(updatedTabs);
       
       // Save to localStorage
       if (window.localStorage) {
@@ -354,7 +377,7 @@ export default function Playground() {
         console.warn('Failed to save active tab:', e);
       }
     }
-  }, [tabs, activeTabId, activeTab, tabsKey, activeTabKey]);
+  }, [tabs, activeTabId, activeTab, tabsKey, activeTabKey, updateSavedTabs]);
 
   const renameTab = useCallback((tabId, newName) => {
     if (!newName.trim()) {
@@ -366,6 +389,9 @@ export default function Playground() {
     );
     setTabs(updatedTabs);
     
+    // Update saved tabs
+    updateSavedTabs(updatedTabs);
+    
     // Save to localStorage
     if (window.localStorage) {
       try {
@@ -374,7 +400,7 @@ export default function Playground() {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, tabsKey]);
+  }, [tabs, tabsKey, updateSavedTabs]);
 
   const startRenaming = useCallback((tabId, currentName) => {
     setRenamingTabId(tabId);
@@ -392,6 +418,73 @@ export default function Playground() {
     }
     cancelRenaming();
   }, [renamingTabId, renamingValue, renameTab, cancelRenaming]);
+
+  // Saved tabs management functions
+  const updateSavedTabs = useCallback((currentTabs) => {
+    // Update saved tabs to include all current tabs
+    const updatedSavedTabs = [...savedTabs];
+    
+    currentTabs.forEach(tab => {
+      const existingIndex = updatedSavedTabs.findIndex(saved => saved.id === tab.id);
+      if (existingIndex >= 0) {
+        // Update existing saved tab
+        updatedSavedTabs[existingIndex] = { ...tab, lastModified: Date.now() };
+      } else {
+        // Add new tab to saved tabs
+        updatedSavedTabs.push({ ...tab, lastModified: Date.now() });
+      }
+    });
+    
+    setSavedTabs(updatedSavedTabs);
+    
+    // Save to localStorage
+    if (window.localStorage) {
+      try {
+        window.localStorage.setItem(savedTabsKey, JSON.stringify(updatedSavedTabs));
+      } catch (e) {
+        console.warn('Failed to save tabs to saved tabs:', e);
+      }
+    }
+  }, [savedTabs, savedTabsKey]);
+
+  const reopenTab = useCallback((savedTab) => {
+    // Check if tab is already open
+    const isAlreadyOpen = tabs.find(tab => tab.id === savedTab.id);
+    if (isAlreadyOpen) {
+      // Just switch to the tab if it's already open
+      switchTab(savedTab.id);
+      return;
+    }
+    
+    // Create a new tab based on the saved tab
+    const reopenedTab = {
+      id: savedTab.id,
+      name: savedTab.name,
+      code: savedTab.code
+    };
+    
+    const updatedTabs = [...tabs, reopenedTab];
+    setTabs(updatedTabs);
+    setActiveTabId(savedTab.id);
+    
+    // Update nextTabId if necessary
+    if (savedTab.id >= nextTabId) {
+      setNextTabId(savedTab.id + 1);
+    }
+    
+    // Update saved tabs
+    updateSavedTabs(updatedTabs);
+    
+    // Save to localStorage
+    if (window.localStorage) {
+      try {
+        window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
+        window.localStorage.setItem(activeTabKey, savedTab.id.toString());
+      } catch (e) {
+        console.warn('Failed to save tabs:', e);
+      }
+    }
+  }, [tabs, nextTabId, switchTab, tabsKey, activeTabKey, updateSavedTabs]);
 
   // Focus input when starting to rename
   useEffect(() => {
@@ -612,6 +705,9 @@ export default function Playground() {
       );
       setTabs(updatedTabs);
       
+      // Update saved tabs
+      updateSavedTabs(updatedTabs);
+      
       // Save to localStorage
       if (window.localStorage) {
         try {
@@ -661,7 +757,7 @@ export default function Playground() {
       restoreConsole();
       setRunning(false);
     }
-  }, [context, createConsoleOverride, running, history, historyKey, tabs, activeTabId, activeTab, tabsKey]);
+  }, [context, createConsoleOverride, running, history, historyKey, tabs, activeTabId, activeTab, tabsKey, updateSavedTabs]);
 
   // Save code function with debouncing
   const saveCode = useCallback(() => {
@@ -681,6 +777,9 @@ export default function Playground() {
       );
       setTabs(updatedTabs);
 
+      // Update saved tabs
+      updateSavedTabs(updatedTabs);
+
       // Save tabs to localStorage
       if (window.localStorage) {
         window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
@@ -694,7 +793,7 @@ export default function Playground() {
       console.error('Save error:', e);
       setSaving(false);
     }
-  }, [saving, tabs, activeTabId, tabsKey, localKey]);
+  }, [saving, tabs, activeTabId, tabsKey, localKey, updateSavedTabs]);
 
   // Clear console
   const clearConsole = useCallback(() => {
@@ -872,22 +971,6 @@ export default function Playground() {
     const editMenu = (
       <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
         <MenuItem
-          text="Clear Console"
-          onClick={clearConsole}
-        />
-        {window.localStorage && (
-          <MenuItem
-            text="Save Code"
-            onClick={saveCode}
-            disabled={saving}
-          />
-        )}
-      </BrowserMenu>
-    );
-
-    const tabMenu = (
-      <BrowserMenu title="Tab" icon="folder-solid" setCurrent={() => {}}>
-        <MenuItem
           text="New Tab"
           onClick={createNewTab}
           disableMouseDown={true}
@@ -902,6 +985,63 @@ export default function Playground() {
             onClick={() => closeTab(activeTabId)}
           />
         )}
+        {window.localStorage && (
+          <MenuItem
+            text="Save Tab"
+            onClick={saveCode}
+            disabled={saving}
+          />
+        )}
+        <Separator />
+        <MenuItem
+          text="Clear Console"
+          onClick={clearConsole}
+        />
+      </BrowserMenu>
+    );
+
+    const tabsMenu = (
+      <BrowserMenu title="Tabs" icon="folder-solid" setCurrent={() => {}}>
+        {savedTabs.length === 0 ? (
+          <MenuItem
+            text="No saved tabs"
+            disabled={true}
+          />
+        ) : (
+          savedTabs
+            .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+            .map(savedTab => {
+              const isOpen = tabs.find(openTab => openTab.id === savedTab.id);
+              const isActive = savedTab.id === activeTabId;
+              
+              return (
+                <MenuItem
+                  key={savedTab.id}
+                  text={
+                    <span>
+                      {isOpen && (
+                        <Icon
+                          name="check"
+                          width={12}
+                          height={12}
+                          fill="#ffffffff"
+                          className="menuCheck"
+                        />
+                      )}
+                      {savedTab.name}{isActive ? ' (active)' : ''}
+                    </span>
+                  }
+                  onClick={() => {
+                    if (isOpen) {
+                      switchTab(savedTab.id);
+                    } else {
+                      reopenTab(savedTab);
+                    }
+                  }}
+                />
+              );
+            })
+        )}
       </BrowserMenu>
     );
 
@@ -912,6 +1052,8 @@ export default function Playground() {
         {editMenu}
         <div className={browserStyles.toolbarSeparator} />
         {tabMenu}
+        <div className={browserStyles.toolbarSeparator} />
+        {tabsMenu}
       </Toolbar>
     );
   };
