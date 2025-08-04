@@ -3,10 +3,12 @@ import ReactJson from 'react-json-view';
 import Parse from 'parse';
 
 import CodeEditor from 'components/CodeEditor/CodeEditor.react';
-import Button from 'components/Button/Button.react';
-import SaveButton from 'components/SaveButton/SaveButton.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
+import MenuItem from 'components/BrowserMenu/MenuItem.react';
+import Icon from 'components/Icon/Icon.react';
 import { CurrentApp } from 'context/currentApp';
+import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 
 import styles from './Playground.scss';
 
@@ -167,7 +169,6 @@ export default function Playground() {
   const [results, setResults] = useState([]);
   const [running, setRunning] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [savingState, setSavingState] = useState(SaveButton.States.WAITING);
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [editorHeight, setEditorHeight] = useState(50); // Percentage of the container height
@@ -414,17 +415,14 @@ export default function Playground() {
 
     try {
       setSaving(true);
-      setSavingState(SaveButton.States.SAVING);
       const code = editorRef.current.value;
 
       window.localStorage.setItem(localKey, code);
-      setSavingState(SaveButton.States.SUCCEEDED);
-
-      setTimeout(() => setSavingState(SaveButton.States.WAITING), 3000);
+      
+      // Show brief feedback that save was successful
+      setTimeout(() => setSaving(false), 1000);
     } catch (e) {
       console.error('Save error:', e);
-      setSavingState(SaveButton.States.FAILED);
-    } finally {
       setSaving(false);
     }
   }, [localKey, saving]);
@@ -589,9 +587,49 @@ export default function Playground() {
 
   const ConsoleResult = useMemo(() => ConsoleResultComponent, []);
 
+  const renderToolbar = () => {
+    const runButton = (
+      <a
+        className={`${browserStyles.toolbarButton} ${running ? browserStyles.disabled : ''}`}
+        onClick={running ? undefined : runCode}
+        style={{
+          cursor: running ? 'not-allowed' : 'pointer',
+          opacity: running ? 0.6 : 1
+        }}
+      >
+        <Icon name="script-solid" width={14} height={14} />
+        <span>{running ? 'Running...' : 'Run'}</span>
+      </a>
+    );
+
+    const editMenu = (
+      <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
+        <MenuItem
+          text="Clear Console"
+          onClick={clearConsole}
+        />
+        {window.localStorage && (
+          <MenuItem
+            text="Save Code"
+            onClick={saveCode}
+            disabled={saving}
+          />
+        )}
+      </BrowserMenu>
+    );
+
+    return (
+      <Toolbar section={section} subsection={subsection}>
+        {runButton}
+        <div className={browserStyles.toolbarSeparator} />
+        {editMenu}
+      </Toolbar>
+    );
+  };
+
   return (
     <div className={styles['playground-ctn']}>
-      <Toolbar section={section} subsection={subsection} />
+      {renderToolbar()}
       <div className={`${styles['playground-content']} ${isResizing ? 'resizing' : ''}`} ref={containerRef}>
         <div
           className={styles['editor-section']}
@@ -621,36 +659,6 @@ export default function Playground() {
         >
           <header>
             <h3>Console</h3>
-            <div className={styles['buttons-ctn']}>
-              <div>
-                <div style={{ marginRight: '15px' }}>
-                  <Button
-                    value={'Clear'}
-                    primary={false}
-                    onClick={clearConsole}
-                    color="white"
-                    style={{ marginRight: '10px' }}
-                  />
-                  {window.localStorage && (
-                    <SaveButton
-                      state={savingState}
-                      primary={false}
-                      color="white"
-                      onClick={saveCode}
-                      progress={saving}
-                    />
-                  )}
-                </div>
-                <Button
-                  value={running ? 'Running...' : 'Run'}
-                  primary={false}
-                  onClick={runCode}
-                  progress={running}
-                  color="white"
-                  disabled={running}
-                />
-              </div>
-            </div>
           </header>
           <section className={styles['console-output']}>
             {results.length === 0 ? (

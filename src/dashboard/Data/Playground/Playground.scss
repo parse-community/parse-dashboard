@@ -211,19 +211,6 @@
   font-size: 11px;
 }
 
-.buttons-ctn {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-
-  & > div {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-  }
-}
-
 /* Custom scrollbar for console output */
 .console-output::-webkit-scrollbar {
   width: 8px;
@@ -246,13 +233,6 @@
 @media (max-width: 768px) {
   .editor-help {
     display: none;
-  }
-  
-  .buttons-ctn {
-    & > div {
-      flex-direction: column;
-      gap: 4px;
-    }
   }
   
   .console-header {
