@@ -605,7 +605,7 @@ export default function Playground() {
       (event) => {
         // Check for unsaved changes across all tabs
         let hasChanges = false;
-        
+
         for (const tab of tabs) {
           // Check if tab is marked as unsaved (like legacy scripts)
           if (tab.saved === false) {
@@ -700,17 +700,17 @@ export default function Playground() {
       if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
         return;
       }
-      
+
       const anchor = event.target.closest('a[href]');
       if (!anchor || anchor.target === '_blank') {
         return;
       }
-      
+
       const href = anchor.getAttribute('href');
       if (!href || href === '#') {
         return;
       }
-      
+
       // Check if it's an internal navigation (starts with / or #)
       if (href.startsWith('/') || href.startsWith('#')) {
         if (checkForUnsavedChanges()) {
