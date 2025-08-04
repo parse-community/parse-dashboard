@@ -166,6 +166,7 @@ const formatLogValue = (value, seen = new WeakSet(), depth = 0) => {
 export default function Playground() {
   const context = useContext(CurrentApp);
   const editorRef = useRef(null);
+  const consoleOutputRef = useRef(null);
   const [results, setResults] = useState([]);
   const [running, setRunning] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -173,6 +174,7 @@ export default function Playground() {
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [editorHeight, setEditorHeight] = useState(50); // Percentage of the container height
   const [isResizing, setIsResizing] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom of console
   const containerRef = useRef(null);
 
   const section = 'Core';
@@ -251,6 +253,29 @@ export default function Playground() {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   }, [editorHeight, heightKey]);
+
+  // Check if console is scrolled to bottom
+  const checkIfAtBottom = useCallback(() => {
+    if (!consoleOutputRef.current) {
+      return true;
+    }
+    
+    const { scrollTop, scrollHeight, clientHeight } = consoleOutputRef.current;
+    const threshold = 5; // 5px threshold for "at bottom"
+    return scrollHeight - scrollTop - clientHeight <= threshold;
+  }, []);
+
+  // Handle console scroll
+  const handleConsoleScroll = useCallback(() => {
+    setIsAtBottom(checkIfAtBottom());
+  }, [checkIfAtBottom]);
+
+  // Auto-scroll to bottom when new results are added
+  useEffect(() => {
+    if (isAtBottom && consoleOutputRef.current) {
+      consoleOutputRef.current.scrollTop = consoleOutputRef.current.scrollHeight;
+    }
+  }, [results, isAtBottom]);
 
   // Create console override function
   const createConsoleOverride = useCallback(() => {
@@ -642,7 +667,11 @@ export default function Playground() {
           className={styles['console-ctn']}
           style={{ height: `${100 - editorHeight}%` }}
         >
-          <section className={styles['console-output']}>
+          <section
+            className={styles['console-output']}
+            ref={consoleOutputRef}
+            onScroll={handleConsoleScroll}
+          >
             {results.length === 0 ? (
               <div className={styles['console-empty']}>
                 <span>Console output will appear here...</span>
