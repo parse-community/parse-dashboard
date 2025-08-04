@@ -16,45 +16,25 @@
 
 .editor-section {
   position: relative;
-  border-bottom: 2px solid #169cee;
+  border-bottom: 1px solid #169cee;
   flex: 1;
   min-height: 200px;
   overflow: hidden;
 }
 
 .resize-handle {
-  height: 8px;
-  background: linear-gradient(
-    to bottom,
-    #073642 0%,
-    #169cee 25%,
-    #169cee 75%,
-    #073642 100%
-  );
+  height: 4px;
+  background: #169cee;
   cursor: ns-resize;
-  border-top: 1px solid #586e75;
-  border-bottom: 1px solid #586e75;
   position: relative;
   user-select: none;
   
   &:hover {
-    background: linear-gradient(
-      to bottom,
-      #073642 0%,
-      #2aa198 25%,
-      #2aa198 75%,
-      #073642 100%
-    );
+    background: #2aa198;
   }
   
   &:active {
-    background: linear-gradient(
-      to bottom,
-      #073642 0%,
-      #cb4b16 25%,
-      #cb4b16 75%,
-      #073642 100%
-    );
+    background: #cb4b16;
   }
   
   &::before {
@@ -65,15 +45,13 @@
     transform: translate(-50%, -50%);
     width: 40px;
     height: 2px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 1px;
-    box-shadow: 
-      0 -2px 0 rgba(255, 255, 255, 0.2),
-      0 2px 0 rgba(255, 255, 255, 0.2);
   }
 }
 
 .editor-help {
+  display: none;
   position: absolute;
   bottom: 8px;
   right: 12px;
@@ -266,5 +244,5 @@
 /* Enhanced resize handle hover state */
 .resize-handle:hover::before {
   width: 60px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 1);
 }
