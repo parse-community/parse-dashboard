@@ -310,10 +310,6 @@ export default function Playground() {
   }, [tabs, nextTabId, tabsKey, activeTabKey]);
 
   const closeTab = useCallback((tabId) => {
-    if (tabs.length <= 1) {
-      return; // Don't close the last tab
-    }
-    
     // Find the tab to get its name and check for unsaved changes
     const tabToClose = tabs.find(tab => tab.id === tabId);
     const tabName = tabToClose ? tabToClose.name : 'this tab';
@@ -348,12 +344,25 @@ export default function Playground() {
     }
     
     const updatedTabs = tabs.filter(tab => tab.id !== tabId);
-    setTabs(updatedTabs);
     
-    // If closing active tab, switch to another tab
-    if (tabId === activeTabId) {
-      const newActiveTab = updatedTabs[0];
-      setActiveTabId(newActiveTab.id);
+    // If this was the last tab, create a new empty tab
+    if (updatedTabs.length === 0) {
+      const newTab = {
+        id: nextTabId,
+        name: `Tab ${nextTabId}`,
+        code: ''
+      };
+      setTabs([newTab]);
+      setActiveTabId(nextTabId);
+      setNextTabId(nextTabId + 1);
+    } else {
+      setTabs(updatedTabs);
+      
+      // If closing active tab, switch to another tab
+      if (tabId === activeTabId) {
+        const newActiveTab = updatedTabs[0];
+        setActiveTabId(newActiveTab.id);
+      }
     }
     
     // Saved tabs should persist even when the tab is closed
@@ -376,15 +385,16 @@ export default function Playground() {
     // Save to localStorage
     if (window.localStorage) {
       try {
-        window.localStorage.setItem(tabsKey, JSON.stringify(updatedTabs));
-        if (tabId === activeTabId) {
-          window.localStorage.setItem(activeTabKey, updatedTabs[0].id.toString());
-        }
+        const finalTabs = updatedTabs.length === 0 ? [{ id: nextTabId, name: `Tab ${nextTabId}`, code: '' }] : updatedTabs;
+        const finalActiveTabId = updatedTabs.length === 0 ? nextTabId : (tabId === activeTabId ? updatedTabs[0].id : activeTabId);
+        
+        window.localStorage.setItem(tabsKey, JSON.stringify(finalTabs));
+        window.localStorage.setItem(activeTabKey, finalActiveTabId.toString());
       } catch (e) {
         console.warn('Failed to save tabs:', e);
       }
     }
-  }, [tabs, activeTabId, tabsKey, activeTabKey, savedTabs, savedTabsKey]);
+  }, [tabs, activeTabId, tabsKey, activeTabKey, savedTabs, savedTabsKey, nextTabId]);
 
   const switchTab = useCallback((tabId) => {
     // Update current tab's code in memory before switching (but don't save)
@@ -1039,12 +1049,10 @@ export default function Playground() {
           text="Rename Tab"
           onClick={() => executeAndCloseMenu(() => startRenaming(activeTabId, activeTab?.name || ''))}
         />
-        {tabs.length > 1 && (
-          <MenuItem
-            text="Close Tab"
-            onClick={() => executeAndCloseMenu(() => closeTab(activeTabId))}
-          />
-        )}
+        <MenuItem
+          text="Close Tab"
+          onClick={() => executeAndCloseMenu(() => closeTab(activeTabId))}
+        />
         {window.localStorage && (
           <MenuItem
             text="Save Tab"
@@ -1205,17 +1213,15 @@ export default function Playground() {
                   {tab.name}
                 </span>
               )}
-              {tabs.length > 1 && (
-                <button
-                  className={styles['tab-close']}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    closeTab(tab.id);
-                  }}
-                >
-                  ×
-                </button>
-              )}
+              <button
+                className={styles['tab-close']}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeTab(tab.id);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <button
