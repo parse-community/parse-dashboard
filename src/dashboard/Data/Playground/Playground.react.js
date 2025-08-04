@@ -1076,7 +1076,7 @@ export default function Playground() {
 
   const renderTabs = () => {
     return (
-      <div className={styles['tab-bar']}>
+      <div className={styles['tab-bar']} style={{ backgroundColor: '#353446' }}>
         <div className={styles['tab-container']}>
           {tabs.map(tab => (
             <div
@@ -1125,8 +1125,30 @@ export default function Playground() {
               )}
             </div>
           ))}
-          <button className={styles['tab-new']} onClick={createNewTab}>
-            +
+          <button
+            className={styles['tab-new']}
+            onClick={createNewTab}
+            style={{
+              border: 'none',
+              background: 'none',
+              padding: '4px',
+              cursor: 'pointer',
+              transition: 'opacity 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              const icon = e.currentTarget.querySelector('svg');
+              if (icon) {
+                icon.style.fill = '#ffffff';
+              }
+            }}
+            onMouseLeave={(e) => {
+              const icon = e.currentTarget.querySelector('svg');
+              if (icon) {
+                icon.style.fill = '#a0a0a0';
+              }
+            }}
+          >
+            <Icon name="plus-solid" width={14} height={14} fill="#66637a" />
           </button>
         </div>
       </div>
