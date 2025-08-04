@@ -47,7 +47,103 @@ export default class ScriptManager {
       localScripts = this._getScriptsFromPlaygroundFormat();
     }
     
+    // If still no scripts, try the legacy single-script format
+    if (!localScripts || localScripts.length === 0) {
+      localScripts = this._getScriptFromLegacySingleFormat();
+    }
+    
     return localScripts;
+  }
+
+  /**
+   * Gets only the scripts that should be open (have an order property)
+   * @param {string} appId - The application ID
+   * @returns {Promise<Array>} Array of scripts that should be open, sorted by order
+   */
+  async getOpenScripts(appId) {
+    const allScripts = await this.getScripts(appId);
+    return allScripts
+      .filter(script => script.order !== undefined && script.order !== null)
+      .sort((a, b) => a.order - b.order);
+  }
+
+  /**
+   * Gets all saved scripts (including closed ones)
+   * @param {string} appId - The application ID
+   * @returns {Promise<Array>} Array of all saved scripts
+   */
+  async getAllSavedScripts(appId) {
+    const allScripts = await this.getScripts(appId);
+    return allScripts.filter(script => script.saved !== false);
+  }
+
+  /**
+   * Opens a script by setting its order property
+   * @param {string} appId - The application ID
+   * @param {number} scriptId - The script ID to open
+   * @param {number} order - The order position for the tab
+   * @returns {Promise}
+   */
+  async openScript(appId, scriptId, order) {
+    const allScripts = await this.getScripts(appId);
+    const updatedScripts = allScripts.map(script =>
+      script.id === scriptId
+        ? { ...script, order }
+        : script
+    );
+    await this.saveScripts(appId, updatedScripts);
+  }
+
+  /**
+   * Closes a script by removing its order property
+   * @param {string} appId - The application ID
+   * @param {number} scriptId - The script ID to close
+   * @returns {Promise}
+   */
+  async closeScript(appId, scriptId) {
+    const allScripts = await this.getScripts(appId);
+    const updatedScripts = allScripts.map(script =>
+      script.id === scriptId
+        ? { ...script, order: undefined }
+        : script
+    );
+    await this.saveScripts(appId, updatedScripts);
+  }
+
+  /**
+   * Updates the order of open scripts
+   * @param {string} appId - The application ID
+   * @param {Array} openScripts - Array of scripts with their new order
+   * @returns {Promise}
+   */
+  async updateScriptOrder(appId, openScripts) {
+    const allScripts = await this.getScripts(appId);
+    const openScriptIds = openScripts.map(script => script.id);
+    
+    const updatedScripts = allScripts.map(script => {
+      const openScript = openScripts.find(os => os.id === script.id);
+      if (openScript) {
+        return { ...script, ...openScript };
+      } else if (openScriptIds.includes(script.id)) {
+        // Script was previously open but not in the new list, close it
+        return { ...script, order: undefined };
+      }
+      return script;
+    });
+    
+    await this.saveScripts(appId, updatedScripts);
+  }
+
+  /**
+   * Completely deletes a script from storage
+   * @param {string} appId - The application ID
+   * @param {number} scriptId - The script ID to delete
+   * @returns {Promise}
+   */
+  async deleteScript(appId, scriptId) {
+    const allScripts = await this.getScripts(appId);
+    const updatedScripts = allScripts.filter(script => script.id !== scriptId);
+    await this.saveScripts(appId, updatedScripts);
   }
 
   /**
@@ -83,6 +179,11 @@ export default class ScriptManager {
     // If no scripts found in new format, try the legacy Playground format
     if (!localScripts || localScripts.length === 0) {
       localScripts = this._getScriptsFromPlaygroundFormat();
+    }
+    
+    // If still no scripts, try the legacy single-script format
+    if (!localScripts || localScripts.length === 0) {
+      localScripts = this._getScriptFromLegacySingleFormat();
     }
     
     if (!localScripts || localScripts.length === 0) {
@@ -252,6 +353,34 @@ export default class ScriptManager {
     } catch {
       return [];
     }
+  }
+
+  /**
+   * Gets script from the legacy single-script format
+   * @private
+   */
+  _getScriptFromLegacySingleFormat() {
+    try {
+      const legacyCode = localStorage.getItem('parse-dashboard-playground-code');
+      if (legacyCode && legacyCode.trim()) {
+        // Create a script with the legacy code, marked as unsaved
+        const script = {
+          id: this._generateScriptId({ name: 'Legacy Script', code: legacyCode }),
+          name: 'Legacy Script',
+          code: legacyCode,
+          saved: false, // Mark as unsaved so user can choose to save it
+          lastModified: Date.now()
+        };
+        
+        // Clean up the old storage key immediately after reading
+        localStorage.removeItem('parse-dashboard-playground-code');
+        
+        return [script];
+      }
+    } catch {
+      // Ignore errors
+    }
+    return [];
   }
 
   /**
