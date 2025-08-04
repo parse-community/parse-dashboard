@@ -299,6 +299,30 @@ export default function Playground() {
       try {
         const timestamp = new Date().toLocaleTimeString();
 
+        // Capture stack trace to find the calling location
+        const stack = new Error().stack;
+        let sourceLocation = null;
+        
+        if (stack) {
+          const stackLines = stack.split('\n');
+          // Look for the first line that contains 'eval' or 'Function' (user code)
+          for (let i = 1; i < stackLines.length; i++) {
+            const line = stackLines[i];
+            if (line.includes('eval') || line.includes('Function')) {
+              // Try to extract line number from eval context
+              const evalMatch = line.match(/eval.*:(\d+):(\d+)/);
+              if (evalMatch) {
+                sourceLocation = {
+                  file: 'User Code',
+                  line: parseInt(evalMatch[1]) - 8, // Adjust for wrapper function lines
+                  column: parseInt(evalMatch[2])
+                };
+                break;
+              }
+            }
+          }
+        }
+
         // Safely format arguments with error handling to prevent infinite loops
         const formattedArgs = args.map((arg, index) => {
           try {
@@ -316,6 +340,7 @@ export default function Playground() {
             type,
             timestamp,
             args: formattedArgs,
+            sourceLocation,
             id: Date.now() + Math.random() // Simple unique ID
           }
         ]);
@@ -516,7 +541,7 @@ export default function Playground() {
 
   // Memoized console result renderer
   const ConsoleResultComponent = ({ result }) => {
-    const { type, args, id } = result;
+    const { type, args, sourceLocation, id } = result;
 
     const getTypeClass = (type) => {
       switch (type) {
@@ -530,67 +555,80 @@ export default function Playground() {
 
     return (
       <div key={id} className={`${styles['console-entry']} ${getTypeClass(type)}`}>
-        {args.map((arg, index) => {
-          try {
-            // Validate that the argument is suitable for ReactJson
-            const isValidForReactJson = (value) => {
-              // Only use ReactJson for objects and arrays, not primitives
-              if (value === null || value === undefined) {
-                return false; // Render as text
-              }
-              if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-                return false; // Render as text
-              }
-              
-              if (typeof value === 'object') {
-                try {
-                  // Test if it can be JSON serialized without errors
-                  JSON.stringify(value);
-                  // Additional check for reasonable size
-                  const keys = Object.keys(value);
-                  return keys.length < 100 && keys.length > 0; // Must have at least 1 property
-                } catch {
+        <div className={styles['console-content']}>
+          <div className={styles['console-output-content']}>
+            {args.map((arg, index) => {
+              try {
+                // Validate that the argument is suitable for ReactJson
+                const isValidForReactJson = (value) => {
+                  // Only use ReactJson for objects and arrays, not primitives
+                  if (value === null || value === undefined) {
+                    return false; // Render as text
+                  }
+                  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                    return false; // Render as text
+                  }
+                  
+                  if (typeof value === 'object') {
+                    try {
+                      // Test if it can be JSON serialized without errors
+                      JSON.stringify(value);
+                      // Additional check for reasonable size
+                      const keys = Object.keys(value);
+                      return keys.length < 100 && keys.length > 0; // Must have at least 1 property
+                    } catch {
+                      return false;
+                    }
+                  }
+                  
                   return false;
+                };
+
+                // If the argument is not suitable for ReactJson, render as text
+                if (!isValidForReactJson(arg)) {
+                  return (
+                    <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.2' }}>
+                      {String(arg)}
+                    </div>
+                  );
                 }
+
+                // Use ReactJson for valid objects/arrays
+                return (
+                  <ReactJson
+                    key={`${id}-${index}`}
+                    src={arg}
+                    collapsed={2}
+                    theme="solarized"
+                    name={false}
+                    displayObjectSize={false}
+                    displayDataTypes={false}
+                    enableClipboard={true}
+                    style={{ marginLeft: '2px', marginBottom: '1px', fontSize: '12px' }}
+                    onError={() => {
+                      return false; // Don't show the error in the UI
+                    }}
+                  />
+                );
+              } catch {
+                return (
+                  <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', color: '#ff6b6b', fontSize: '12px', lineHeight: '1.2' }}>
+                    [Error rendering value: {String(arg)}]
+                  </div>
+                );
               }
-              
-              return false;
-            };
-
-            // If the argument is not suitable for ReactJson, render as text
-            if (!isValidForReactJson(arg)) {
-              return (
-                <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.2' }}>
-                  {String(arg)}
-                </div>
-              );
-            }
-
-            // Use ReactJson for valid objects/arrays
-            return (
-              <ReactJson
-                key={`${id}-${index}`}
-                src={arg}
-                collapsed={2}
-                theme="solarized"
-                name={false}
-                displayObjectSize={false}
-                displayDataTypes={false}
-                enableClipboard={true}
-                style={{ marginLeft: '2px', marginBottom: '1px', fontSize: '12px' }}
-                onError={() => {
-                  return false; // Don't show the error in the UI
-                }}
-              />
-            );
-          } catch {
-            return (
-              <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', color: '#ff6b6b', fontSize: '12px', lineHeight: '1.2' }}>
-                [Error rendering value: {String(arg)}]
-              </div>
-            );
-          }
-        })}
+            })}
+          </div>
+          <div className={styles['console-source']}>
+            {sourceLocation ? (
+              <span title={`${sourceLocation.file}:${sourceLocation.line}:${sourceLocation.column}`}>
+                {sourceLocation.file}:{sourceLocation.line}
+              </span>
+            ) : (
+              <span className={styles['console-source-unknown']}>—</span>
+            )}
+          </div>
+        </div>
       </div>
     );
   };
