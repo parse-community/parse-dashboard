@@ -56,6 +56,9 @@ export default class ScriptManager {
         // Use order 0 to make it the first tab
         legacyScriptData.order = 0;
         
+        // Mark as saved to prevent unnecessary unsaved change warnings
+        legacyScriptData.saved = true;
+        
         // If we have existing scripts, add the legacy script to them
         if (localScripts && localScripts.length > 0) {
           // Increment order of existing scripts to make room for legacy script at position 0
@@ -69,6 +72,9 @@ export default class ScriptManager {
           // If no existing scripts, use the legacy script
           localScripts = legacyScript;
         }
+        
+        // Auto-save the legacy script to storage
+        this._saveScriptsToLocal(appId, localScripts);
       }
     }
 
@@ -362,12 +368,12 @@ export default class ScriptManager {
       const legacyCode = localStorage.getItem('parse-dashboard-playground-code');
 
       if (legacyCode && legacyCode.trim()) {
-        // Create a script with the legacy code, marked as unsaved
+        // Create a script with the legacy code, marked as saved since we're auto-importing it
         const script = {
           id: this._generateScriptId(),
           name: 'Legacy Script',
           code: legacyCode,
-          saved: false, // Mark as unsaved so user can choose to save it
+          saved: true, // Mark as saved since this is a one-time migration
           lastModified: Date.now()
         };
 
