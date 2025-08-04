@@ -187,6 +187,7 @@ export default function Playground() {
   const [renamingTabId, setRenamingTabId] = useState(null);
   const [renamingValue, setRenamingValue] = useState('');
   const [savedTabs, setSavedTabs] = useState([]); // All saved tabs including closed ones
+  const [, setCurrentMenu] = useState(null); // Track which menu is currently open
   const renamingInputRef = useRef(null);
 
   const section = 'Core';
@@ -275,6 +276,12 @@ export default function Playground() {
     }
   }, [activeTabId, activeTab]);
 
+  // Helper function to close menu after action
+  const executeAndCloseMenu = useCallback((action) => {
+    action();
+    setCurrentMenu(null);
+  }, []);
+
   // Tab management functions
   const createNewTab = useCallback(() => {
     const newTab = {
@@ -306,17 +313,27 @@ export default function Playground() {
       return; // Don't close the last tab
     }
     
-    // Find the tab to get its name for the confirmation dialog
+    // Find the tab to get its name and check for unsaved changes
     const tabToClose = tabs.find(tab => tab.id === tabId);
     const tabName = tabToClose ? tabToClose.name : 'this tab';
     
-    // Show confirmation dialog
-    const confirmed = window.confirm(
-      `Are you sure you want to close "${tabName}"?\n\nAny unsaved changes will be lost.`
-    );
+    // Check if there are unsaved changes
+    let hasUnsavedChanges = false;
+    if (tabId === activeTabId && editorRef.current && tabToClose) {
+      const currentContent = editorRef.current.value;
+      const savedContent = tabToClose.code;
+      hasUnsavedChanges = currentContent !== savedContent;
+    }
     
-    if (!confirmed) {
-      return; // User cancelled, don't close the tab
+    // Show confirmation dialog only if there are unsaved changes
+    if (hasUnsavedChanges) {
+      const confirmed = window.confirm(
+        `Are you sure you want to close "${tabName}"?\n\nAny unsaved changes will be lost.`
+      );
+      
+      if (!confirmed) {
+        return; // User cancelled, don't close the tab
+      }
     }
     
     const updatedTabs = tabs.filter(tab => tab.id !== tabId);
@@ -969,33 +986,33 @@ export default function Playground() {
     );
 
     const editMenu = (
-      <BrowserMenu title="Edit" icon="edit-solid" setCurrent={() => {}}>
+      <BrowserMenu title="Edit" icon="edit-solid" setCurrent={setCurrentMenu}>
         <MenuItem
           text="New Tab"
-          onClick={createNewTab}
+          onClick={() => executeAndCloseMenu(createNewTab)}
           disableMouseDown={true}
         />
         <MenuItem
           text="Rename Tab"
-          onClick={() => startRenaming(activeTabId, activeTab?.name || '')}
+          onClick={() => executeAndCloseMenu(() => startRenaming(activeTabId, activeTab?.name || ''))}
         />
         {tabs.length > 1 && (
           <MenuItem
             text="Close Tab"
-            onClick={() => closeTab(activeTabId)}
+            onClick={() => executeAndCloseMenu(() => closeTab(activeTabId))}
           />
         )}
         {window.localStorage && (
           <MenuItem
             text="Save Tab"
-            onClick={saveCode}
+            onClick={() => executeAndCloseMenu(saveCode)}
             disabled={saving}
           />
         )}
         <Separator />
         <MenuItem
           text="Clear Console"
-          onClick={clearConsole}
+          onClick={() => executeAndCloseMenu(clearConsole)}
         />
       </BrowserMenu>
     );
@@ -1028,16 +1045,17 @@ export default function Playground() {
                           className="menuCheck"
                         />
                       )}
-                      {savedTab.name}{isActive ? ' (active)' : ''}
+                      {savedTab.name}
                     </span>
                   }
                   onClick={() => {
                     if (isOpen) {
-                      switchTab(savedTab.id);
+                      closeTab(savedTab.id);
                     } else {
                       reopenTab(savedTab);
                     }
                   }}
+                  disableMouseDown={true}
                 />
               );
             })
@@ -1050,8 +1068,6 @@ export default function Playground() {
         {runButton}
         <div className={browserStyles.toolbarSeparator} />
         {editMenu}
-        <div className={browserStyles.toolbarSeparator} />
-        {tabMenu}
         <div className={browserStyles.toolbarSeparator} />
         {tabsMenu}
       </Toolbar>
