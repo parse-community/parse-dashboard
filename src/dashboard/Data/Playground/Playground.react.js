@@ -560,7 +560,7 @@ export default function Playground() {
             // If the argument is not suitable for ReactJson, render as text
             if (!isValidForReactJson(arg)) {
               return (
-                <div key={`${id}-${index}`} style={{ marginLeft: '12px', marginBottom: '4px', fontFamily: 'monospace' }}>
+                <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.2' }}>
                   {String(arg)}
                 </div>
               );
@@ -577,7 +577,7 @@ export default function Playground() {
                 displayObjectSize={false}
                 displayDataTypes={false}
                 enableClipboard={true}
-                style={{ marginLeft: '12px', marginBottom: '4px' }}
+                style={{ marginLeft: '2px', marginBottom: '1px', fontSize: '12px' }}
                 onError={() => {
                   return false; // Don't show the error in the UI
                 }}
@@ -585,7 +585,7 @@ export default function Playground() {
             );
           } catch {
             return (
-              <div key={`${id}-${index}`} style={{ marginLeft: '12px', marginBottom: '4px', fontFamily: 'monospace', color: '#ff6b6b' }}>
+              <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', color: '#ff6b6b', fontSize: '12px', lineHeight: '1.2' }}>
                 [Error rendering value: {String(arg)}]
               </div>
             );
