@@ -18,7 +18,6 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
-import ScriptManager from 'lib/ScriptManager';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
@@ -64,7 +63,6 @@ export default class DashboardSettings extends DashboardView {
   initializeViewPreferencesManager() {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
-      this.scriptManager = new ScriptManager(this.context);
       this.loadStoragePreference();
     }
   }
@@ -100,31 +98,16 @@ export default class DashboardSettings extends DashboardView {
     this.setState({ migrationLoading: true });
 
     try {
-      // Migrate views
-      const viewResult = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
-      
-      // Migrate scripts
-      let scriptResult = { success: false, scriptCount: 0 };
-      if (this.scriptManager) {
-        scriptResult = await this.scriptManager.migrateToServer(this.context.applicationId);
-      }
-
-      const totalMigrated = (viewResult.viewCount || 0) + (scriptResult.scriptCount || 0);
-      
-      if (viewResult.success || scriptResult.success) {
-        if (totalMigrated > 0) {
-          let message = 'Successfully migrated to server storage: ';
-          const parts = [];
-          if (viewResult.viewCount > 0) parts.push(`${viewResult.viewCount} view(s)`);
-          if (scriptResult.scriptCount > 0) parts.push(`${scriptResult.scriptCount} script(s)`);
-          message += parts.join(', ') + '.';
-          this.showNote(message);
+      const result = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
+      if (result.success) {
+        if (result.viewCount > 0) {
+          this.showNote(`Successfully migrated ${result.viewCount} view(s) to server storage.`);
         } else {
-          this.showNote('No data found to migrate.');
+          this.showNote('No views found to migrate.');
         }
       }
     } catch (error) {
-      this.showNote(`Failed to migrate data: ${error.message}`);
+      this.showNote(`Failed to migrate views: ${error.message}`);
     } finally {
       this.setState({ migrationLoading: false });
     }
@@ -140,21 +123,11 @@ export default class DashboardSettings extends DashboardView {
       return;
     }
 
-    const viewSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
-    
-    let scriptSuccess = true;
-    if (this.scriptManager) {
-      scriptSuccess = this.scriptManager.deleteFromBrowser(this.context.applicationId);
-    }
-    
-    if (viewSuccess && scriptSuccess) {
-      this.showNote('Successfully deleted all dashboard settings from browser storage.');
-    } else if (viewSuccess) {
-      this.showNote('Successfully deleted views from browser storage. Failed to delete scripts.');
-    } else if (scriptSuccess) {
-      this.showNote('Successfully deleted scripts from browser storage. Failed to delete views.');
+    const success = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    if (success) {
+      this.showNote('Successfully deleted views from browser storage.');
     } else {
-      this.showNote('Failed to delete dashboard settings from browser storage.');
+      this.showNote('Failed to delete views from browser storage.');
     }
   }
 
