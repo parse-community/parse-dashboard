@@ -179,7 +179,7 @@ export default function Playground() {
   const [isResizing, setIsResizing] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true); // Track if user is at bottom of console
   const containerRef = useRef(null);
-  
+
   // Tab management state
   const [tabs, setTabs] = useState([
     { id: 1, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE }
@@ -215,22 +215,36 @@ export default function Playground() {
       try {
         // Load open scripts (those with order property)
         const openScripts = await scriptManagerRef.current.getOpenScripts(context.applicationId);
+        // Load all scripts to check for unsaved ones (like legacy scripts)
+        const allScripts = await scriptManagerRef.current.getScripts(context.applicationId);
         // Load all saved scripts for the tabs menu
         const allSavedScripts = await scriptManagerRef.current.getAllSavedScripts(context.applicationId);
-        
-        if (openScripts && openScripts.length > 0) {
-          setTabs(openScripts);
-          const maxId = Math.max(...openScripts.map(tab => tab.id));
+
+        // Find unsaved scripts (like legacy scripts) that should also be opened
+        const unsavedScripts = allScripts.filter(script =>
+          script.saved === false && !openScripts.find(openScript => openScript.id === script.id)
+        );
+
+        // Combine open scripts with unsaved scripts, giving unsaved scripts an order
+        const tabsToOpen = [...openScripts];
+        if (unsavedScripts.length > 0) {
+          const maxOrder = openScripts.length > 0 ? Math.max(...openScripts.map(s => s.order)) : -1;
+          unsavedScripts.forEach((script, index) => {
+            tabsToOpen.push({ ...script, order: maxOrder + 1 + index });
+          });
+        }
+
+        if (tabsToOpen.length > 0) {
+          setTabs(tabsToOpen);
+          const maxId = Math.max(...allScripts.map(tab => tab.id));
           setNextTabId(maxId + 1);
-          
+
           // Set active tab to the first one
-          setActiveTabId(openScripts[0].id);
-          
+          setActiveTabId(tabsToOpen[0].id);
+
           setSavedTabs(allSavedScripts);
         } else {
-          // If no open scripts, try to get any scripts and open the first one
-          const allScripts = await scriptManagerRef.current.getScripts(context.applicationId);
-          
+          // If no scripts at all, try to get any scripts and open the first one
           if (allScripts && allScripts.length > 0) {
             // Open the first script
             const firstScript = { ...allScripts[0], order: 0 };
@@ -238,10 +252,10 @@ export default function Playground() {
             setActiveTabId(firstScript.id);
             const maxId = Math.max(...allScripts.map(tab => tab.id));
             setNextTabId(maxId + 1);
-            
+
             // Save it as open
             await scriptManagerRef.current.openScript(context.applicationId, firstScript.id, 0);
-            
+
             setSavedTabs(allScripts.filter(script => script.saved !== false));
           } else {
             // Fallback to default tab if no scripts exist
@@ -321,11 +335,11 @@ export default function Playground() {
     if (tabs.length <= 1) {
       return; // Don't close the last tab
     }
-    
+
     // Find the tab to get its name and check for unsaved changes
     const tabToClose = tabs.find(tab => tab.id === tabId);
     const tabName = tabToClose ? tabToClose.name : 'this tab';
-    
+
     // Get current content (either from editor if it's the active tab, or from tab's stored code)
     let currentContent = '';
     if (tabId === activeTabId && editorRef.current) {
@@ -333,44 +347,44 @@ export default function Playground() {
     } else if (tabToClose) {
       currentContent = tabToClose.code;
     }
-    
+
     // Check if the tab is empty (no content at all)
     const isEmpty = !currentContent.trim();
-    
+
     // Check if there are unsaved changes (only for non-empty tabs)
     let hasUnsavedChanges = false;
     if (!isEmpty && tabId === activeTabId && editorRef.current && tabToClose) {
       const savedContent = tabToClose.code;
       hasUnsavedChanges = currentContent !== savedContent;
     }
-    
+
     // Show confirmation dialog only if there are unsaved changes and the tab is not empty
     if (!isEmpty && hasUnsavedChanges) {
       const confirmed = window.confirm(
         `Are you sure you want to close "${tabName}"?\n\nAny unsaved changes will be lost.`
       );
-      
+
       if (!confirmed) {
         return; // User cancelled, don't close the tab
       }
     }
-    
+
     const updatedTabs = tabs.filter(tab => tab.id !== tabId);
     setTabs(updatedTabs);
-    
+
     // If closing active tab, switch to another tab
     if (tabId === activeTabId) {
       const newActiveTab = updatedTabs[0];
       setActiveTabId(newActiveTab.id);
     }
-    
+
     // Update tab orders for remaining tabs
     const reorderedTabs = updatedTabs.map((tab, index) => ({
       ...tab,
       order: index
     }));
     setTabs(reorderedTabs);
-    
+
     // Save the current content to the script before closing (if not empty)
     if (!isEmpty && scriptManagerRef.current && context?.applicationId) {
       try {
@@ -382,10 +396,10 @@ export default function Playground() {
             : script
         );
         await scriptManagerRef.current.saveScripts(context.applicationId, updatedScripts);
-        
+
         // Then close the script (remove order property)
         await scriptManagerRef.current.closeScript(context.applicationId, tabId);
-        
+
         // Update the order of remaining open tabs
         await scriptManagerRef.current.updateScriptOrder(context.applicationId, reorderedTabs);
       } catch (error) {
@@ -396,7 +410,7 @@ export default function Playground() {
       try {
         await scriptManagerRef.current.closeScript(context.applicationId, tabId);
         await scriptManagerRef.current.updateScriptOrder(context.applicationId, reorderedTabs);
-        
+
         // Remove from saved tabs if it was empty
         const updatedSavedTabs = savedTabs.filter(saved => saved.id !== tabId);
         setSavedTabs(updatedSavedTabs);
@@ -417,7 +431,7 @@ export default function Playground() {
       );
       setTabs(updatedTabs);
     }
-    
+
     setActiveTabId(tabId);
   }, [tabs, activeTabId, activeTab]);
 
@@ -425,7 +439,7 @@ export default function Playground() {
     if (!newName.trim()) {
       return;
     }
-    
+
     const updatedTabs = tabs.map(tab =>
       tab.id === tabId ? { ...tab, name: newName.trim() } : tab
     );
@@ -453,32 +467,32 @@ export default function Playground() {
     // Find the tab to get its name for confirmation
     const tabToDelete = tabs.find(tab => tab.id === tabId) || savedTabs.find(tab => tab.id === tabId);
     const tabName = tabToDelete ? tabToDelete.name : 'this tab';
-    
+
     // Show confirmation dialog
     const confirmed = window.confirm(
       `Are you sure you want to permanently delete "${tabName}" from saved tabs?\n\nThis action cannot be undone.`
     );
-    
+
     if (!confirmed) {
       return; // User cancelled
     }
-    
+
     // If the tab is currently open, close it first
     const isCurrentlyOpen = tabs.find(tab => tab.id === tabId);
     if (isCurrentlyOpen) {
       const updatedTabs = tabs.filter(tab => tab.id !== tabId);
       setTabs(updatedTabs);
-      
+
       // If closing active tab, switch to another tab
       if (tabId === activeTabId && updatedTabs.length > 0) {
         setActiveTabId(updatedTabs[0].id);
       }
     }
-    
+
     // Remove from saved tabs state
     const updatedSavedTabs = savedTabs.filter(saved => saved.id !== tabId);
     setSavedTabs(updatedSavedTabs);
-    
+
     // Completely delete the script from storage using ScriptManager
     if (scriptManagerRef.current && context?.applicationId) {
       try {
@@ -497,7 +511,7 @@ export default function Playground() {
       switchTab(savedTab.id);
       return;
     }
-    
+
     // Create a new tab based on the saved tab
     const reopenedTab = {
       id: savedTab.id,
@@ -506,16 +520,16 @@ export default function Playground() {
       saved: true, // Mark as saved since it's from saved tabs
       order: tabs.length // Add as last tab
     };
-    
+
     const updatedTabs = [...tabs, reopenedTab];
     setTabs(updatedTabs);
     setActiveTabId(savedTab.id);
-    
+
     // Update nextTabId if necessary
     if (savedTab.id >= nextTabId) {
       setNextTabId(savedTab.id + 1);
     }
-    
+
     // Save the open state through ScriptManager
     if (scriptManagerRef.current && context?.applicationId) {
       try {
@@ -547,11 +561,11 @@ export default function Playground() {
       const rect = containerRef.current.getBoundingClientRect();
       const containerHeight = rect.height;
       const relativeY = e.clientY - rect.top;
-      
+
       // Calculate percentage (0% to 100% range)
       let percentage = (relativeY / containerHeight) * 100;
       percentage = Math.max(0, Math.min(100, percentage));
-      
+
       setEditorHeight(percentage);
     };
 
@@ -559,7 +573,7 @@ export default function Playground() {
       setIsResizing(false);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
-      
+
       // Save the height to localStorage
       if (window.localStorage) {
         try {
@@ -579,7 +593,7 @@ export default function Playground() {
     if (!consoleOutputRef.current) {
       return true;
     }
-    
+
     const { scrollTop, scrollHeight, clientHeight } = consoleOutputRef.current;
     const threshold = 5; // 5px threshold for "at bottom"
     return scrollHeight - scrollTop - clientHeight <= threshold;
@@ -622,7 +636,7 @@ export default function Playground() {
         // Capture stack trace to find the calling location
         const stack = new Error().stack;
         let sourceLocation = null;
-        
+
         if (stack) {
           const stackLines = stack.split('\n');
           // Look for the first line that contains 'eval' or 'Function' (user code)
@@ -690,7 +704,7 @@ export default function Playground() {
         originalConsoleError.apply(console, args);
         return;
       }
-      
+
       addResult(LOG_TYPES.ERROR, args);
       originalConsoleError.apply(console, args);
     };
@@ -701,7 +715,7 @@ export default function Playground() {
         originalConsoleWarn.apply(console, args);
         return;
       }
-      
+
       addResult(LOG_TYPES.WARN, args);
       originalConsoleWarn.apply(console, args);
     };
@@ -813,7 +827,7 @@ export default function Playground() {
       if (currentTab) {
         const updatedSavedTabs = [...savedTabs];
         const existingIndex = updatedSavedTabs.findIndex(saved => saved.id === currentTab.id);
-        
+
         if (existingIndex >= 0) {
           // Update existing saved tab
           updatedSavedTabs[existingIndex] = { ...currentTab };
@@ -821,10 +835,10 @@ export default function Playground() {
           // Add new tab to saved tabs
           updatedSavedTabs.push({ ...currentTab });
         }
-        
+
         setSavedTabs(updatedSavedTabs);
       }
-      
+
       // Show brief feedback that save was successful
       setTimeout(() => setSaving(false), 1000);
     } catch (e) {
@@ -924,7 +938,7 @@ export default function Playground() {
                   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
                     return false; // Render as text
                   }
-                  
+
                   if (typeof value === 'object') {
                     try {
                       // Test if it can be JSON serialized without errors
@@ -936,7 +950,7 @@ export default function Playground() {
                       return false;
                     }
                   }
-                  
+
                   return false;
                 };
 
@@ -1057,7 +1071,7 @@ export default function Playground() {
             .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
             .map(savedTab => {
               const isOpen = tabs.find(openTab => openTab.id === savedTab.id);
-              
+
               return (
                 <MenuItem
                   key={savedTab.id}
@@ -1112,15 +1126,15 @@ export default function Playground() {
       // For inactive tabs, use stored code
       currentContent = tab.code;
     }
-    
+
     // Find the saved version of this tab
     const savedTab = savedTabs.find(saved => saved.id === tab.id);
-    
+
     if (!savedTab) {
       // If tab was never saved, it has unsaved changes if it has any content
       return currentContent.trim() !== '';
     }
-    
+
     // Compare current content with saved content
     return currentContent !== savedTab.code;
   }, [activeTabId, savedTabs]);

@@ -41,7 +41,7 @@ export default class ScriptManager {
 
     // Use local storage when server storage is not preferred
     let localScripts = this._getScriptsFromLocal(appId);
-    
+
     // Always check for legacy single-script format and add it as a new unsaved tab
     const legacyScript = this._getScriptFromLegacySingleFormat();
     if (legacyScript && legacyScript.length > 0) {
@@ -53,7 +53,7 @@ export default class ScriptManager {
         localScripts = legacyScript;
       }
     }
-    
+
     return localScripts || [];
   }
 
@@ -121,7 +121,7 @@ export default class ScriptManager {
   async updateScriptOrder(appId, openScripts) {
     const allScripts = await this.getScripts(appId);
     const openScriptIds = openScripts.map(script => script.id);
-    
+
     const updatedScripts = allScripts.map(script => {
       const openScript = openScripts.find(os => os.id === script.id);
       if (openScript) {
@@ -132,7 +132,7 @@ export default class ScriptManager {
       }
       return script;
     });
-    
+
     await this.saveScripts(appId, updatedScripts);
   }
 
@@ -177,7 +177,7 @@ export default class ScriptManager {
 
     // Get scripts from local storage only (legacy scripts are handled by getScripts as unsaved tabs)
     const localScripts = this._getScriptsFromLocal(appId);
-    
+
     if (!localScripts || localScripts.length === 0) {
       return { success: true, scriptCount: 0 };
     }
@@ -334,8 +334,7 @@ export default class ScriptManager {
   _getScriptFromLegacySingleFormat() {
     try {
       const legacyCode = localStorage.getItem('parse-dashboard-playground-code');
-      console.log('Legacy code found:', legacyCode ? `"${legacyCode.substring(0, 100)}${legacyCode.length > 100 ? '...' : ''}"` : 'null');
-      
+
       if (legacyCode && legacyCode.trim()) {
         // Create a script with the legacy code, marked as unsaved
         const script = {
@@ -345,10 +344,10 @@ export default class ScriptManager {
           saved: false, // Mark as unsaved so user can choose to save it
           lastModified: Date.now()
         };
-        
+
         // Clean up the old storage key immediately after reading
         localStorage.removeItem('parse-dashboard-playground-code');
-        
+
         return [script];
       }
     } catch {
