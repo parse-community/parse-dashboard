@@ -52,8 +52,18 @@ export default class ScriptManager {
       );
       
       if (!existingScript) {
+        // Assign order property to automatically open the legacy script as a tab
+        // Use order 0 to make it the first tab
+        legacyScriptData.order = 0;
+        
         // If we have existing scripts, add the legacy script to them
         if (localScripts && localScripts.length > 0) {
+          // Increment order of existing scripts to make room for legacy script at position 0
+          localScripts.forEach(script => {
+            if (script.order !== undefined && script.order !== null) {
+              script.order += 1;
+            }
+          });
           localScripts = [...localScripts, ...legacyScript];
         } else {
           // If no existing scripts, use the legacy script
@@ -72,9 +82,10 @@ export default class ScriptManager {
    */
   async getOpenScripts(appId) {
     const allScripts = await this.getScripts(appId);
-    return allScripts
+    const openScripts = allScripts
       .filter(script => script.order !== undefined && script.order !== null)
       .sort((a, b) => a.order - b.order);
+    return openScripts;
   }
 
   /**
