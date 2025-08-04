@@ -146,7 +146,6 @@
 .console-entry {
   margin-bottom: 6px;
   padding: 8px 12px;
-  background-color: #073642;
   border-radius: 4px;
   
   &.console-error {
@@ -161,17 +160,14 @@
   
   &.console-info {
     color: #268bd2;
-    background-color: rgba(38, 139, 210, 0.05);
   }
   
   &.console-debug {
     color: #6c71c4;
-    background-color: rgba(108, 113, 196, 0.05);
   }
   
   &.console-log {
     color: #93a1a1;
-    background-color: #073642;
   }
 }
 
