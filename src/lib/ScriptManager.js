@@ -42,12 +42,19 @@ export default class ScriptManager {
     // Use local storage when server storage is not preferred
     let localScripts = this._getScriptsFromLocal(appId);
     
-    // If no scripts found in new format, try the legacy single-script format
-    if (!localScripts || localScripts.length === 0) {
-      localScripts = this._getScriptFromLegacySingleFormat();
+    // Always check for legacy single-script format and add it as a new unsaved tab
+    const legacyScript = this._getScriptFromLegacySingleFormat();
+    if (legacyScript && legacyScript.length > 0) {
+      // If we have existing scripts, add the legacy script to them
+      if (localScripts && localScripts.length > 0) {
+        localScripts = [...localScripts, ...legacyScript];
+      } else {
+        // If no existing scripts, use the legacy script
+        localScripts = legacyScript;
+      }
     }
     
-    return localScripts;
+    return localScripts || [];
   }
 
   /**
@@ -168,13 +175,8 @@ export default class ScriptManager {
       throw new Error('Server configuration is not enabled for this app');
     }
 
-    // Try to get scripts from both the new format and the legacy single-script format
-    let localScripts = this._getScriptsFromLocal(appId);
-    
-    // If no scripts found in new format, try the legacy single-script format
-    if (!localScripts || localScripts.length === 0) {
-      localScripts = this._getScriptFromLegacySingleFormat();
-    }
+    // Get scripts from local storage only (legacy scripts are handled by getScripts as unsaved tabs)
+    const localScripts = this._getScriptsFromLocal(appId);
     
     if (!localScripts || localScripts.length === 0) {
       return { success: true, scriptCount: 0 };
@@ -332,6 +334,7 @@ export default class ScriptManager {
   _getScriptFromLegacySingleFormat() {
     try {
       const legacyCode = localStorage.getItem('parse-dashboard-playground-code');
+      
       if (legacyCode && legacyCode.trim()) {
         // Create a script with the legacy code, marked as unsaved
         const script = {
