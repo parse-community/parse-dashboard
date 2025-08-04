@@ -18,6 +18,7 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
+import ScriptManager from 'lib/ScriptManager';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
@@ -28,6 +29,7 @@ export default class DashboardSettings extends DashboardView {
     this.section = 'App Settings';
     this.subsection = 'Dashboard Configuration';
     this.viewPreferencesManager = null;
+    this.scriptManager = null;
 
     this.state = {
       createUserInput: false,
@@ -63,6 +65,7 @@ export default class DashboardSettings extends DashboardView {
   initializeViewPreferencesManager() {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
+      this.scriptManager = new ScriptManager(this.context);
       this.loadStoragePreference();
     }
   }
@@ -85,8 +88,8 @@ export default class DashboardSettings extends DashboardView {
   }
 
   async migrateToServer() {
-    if (!this.viewPreferencesManager) {
-      this.showNote('ViewPreferencesManager not initialized');
+    if (!this.viewPreferencesManager || !this.scriptManager) {
+      this.showNote('Managers not initialized');
       return;
     }
 
@@ -98,16 +101,28 @@ export default class DashboardSettings extends DashboardView {
     this.setState({ migrationLoading: true });
 
     try {
-      const result = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
-      if (result.success) {
-        if (result.viewCount > 0) {
-          this.showNote(`Successfully migrated ${result.viewCount} view(s) to server storage.`);
-        } else {
-          this.showNote('No views found to migrate.');
+      // Migrate views
+      const viewResult = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
+      
+      // Migrate scripts
+      const scriptResult = await this.scriptManager.migrateToServer(this.context.applicationId);
+      
+      const totalMigrated = viewResult.viewCount + scriptResult.scriptCount;
+      
+      if (totalMigrated > 0) {
+        const messages = [];
+        if (viewResult.viewCount > 0) {
+          messages.push(`${viewResult.viewCount} view(s)`);
         }
+        if (scriptResult.scriptCount > 0) {
+          messages.push(`${scriptResult.scriptCount} script(s)`);
+        }
+        this.showNote(`Successfully migrated ${messages.join(' and ')} to server storage.`);
+      } else {
+        this.showNote('No views or scripts found to migrate.');
       }
     } catch (error) {
-      this.showNote(`Failed to migrate views: ${error.message}`);
+      this.showNote(`Failed to migrate settings: ${error.message}`);
     } finally {
       this.setState({ migrationLoading: false });
     }
@@ -118,16 +133,25 @@ export default class DashboardSettings extends DashboardView {
       return;
     }
 
-    if (!this.viewPreferencesManager) {
-      this.showNote('ViewPreferencesManager not initialized');
+    if (!this.viewPreferencesManager || !this.scriptManager) {
+      this.showNote('Managers not initialized');
       return;
     }
 
-    const success = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
-    if (success) {
-      this.showNote('Successfully deleted views from browser storage.');
+    const viewSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    const scriptSuccess = this.scriptManager.deleteFromBrowser(this.context.applicationId);
+    
+    if (viewSuccess && scriptSuccess) {
+      this.showNote('Successfully deleted all dashboard settings from browser storage.');
     } else {
-      this.showNote('Failed to delete views from browser storage.');
+      const failedItems = [];
+      if (!viewSuccess) {
+        failedItems.push('views');
+      }
+      if (!scriptSuccess) {
+        failedItems.push('scripts');
+      }
+      this.showNote(`Failed to delete ${failedItems.join(' and ')} from browser storage.`);
     }
   }
 
@@ -467,7 +491,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Storage Location"
-                  description="Choose where your dashboard settings are stored and loaded from. Server storage allows sharing settings across devices and users, while Browser storage is local to this device."
+                  description="Choose where your dashboard settings (views and playground scripts) are stored and loaded from. Server storage allows sharing settings across devices and users, while Browser storage is local to this device."
                 />
               }
               input={
@@ -487,7 +511,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Migrate Settings to Server"
-                  description="Migrates your current browser-stored dashboard settings to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration. ⚠️ This overwrites existing server settings."
+                  description="Migrates your current browser-stored dashboard settings (views and playground scripts) to the server. This does not change your storage preference - use the switch above to select the server as storage location after migration. ⚠️ This overwrites existing server settings."
                 />
               }
               input={
@@ -503,7 +527,7 @@ export default class DashboardSettings extends DashboardView {
               label={
                 <Label
                   text="Delete Settings from Browser"
-                  description="Removes your dashboard settings from the browser's local storage. This action is irreversible. Make sure to migrate your settings to server and test them first."
+                  description="Removes your dashboard settings (views and playground scripts) from the browser's local storage. This action is irreversible. Make sure to migrate your settings to server and test them first."
                 />
               }
               input={

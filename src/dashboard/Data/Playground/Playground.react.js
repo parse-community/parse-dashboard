@@ -10,6 +10,7 @@ import Icon from 'components/Icon/Icon.react';
 import { CurrentApp } from 'context/currentApp';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import Separator from 'components/BrowserMenu/Separator.react';
+import ScriptManager from 'lib/ScriptManager';
 
 import styles from './Playground.scss';
 
@@ -168,6 +169,7 @@ export default function Playground() {
   const context = useContext(CurrentApp);
   const editorRef = useRef(null);
   const consoleOutputRef = useRef(null);
+  const scriptManagerRef = useRef(null);
   const [results, setResults] = useState([]);
   const [running, setRunning] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -200,72 +202,109 @@ export default function Playground() {
   const historyKey = 'parse-dashboard-playground-history';
   const heightKey = 'parse-dashboard-playground-height';
 
+  // Initialize script manager
+  useEffect(() => {
+    if (context) {
+      scriptManagerRef.current = new ScriptManager(context);
+    }
+  }, [context]);
+
   // Load saved code, tabs, and history on mount
   useEffect(() => {
-    if (window.localStorage) {
-      // Load tabs
-      const savedTabs = window.localStorage.getItem(tabsKey);
-      const savedActiveTabId = window.localStorage.getItem(activeTabKey);
-      
-      if (savedTabs) {
-        try {
-          const parsedTabs = JSON.parse(savedTabs);
-          if (parsedTabs.length > 0) {
-            setTabs(parsedTabs);
-            const maxId = Math.max(...parsedTabs.map(tab => tab.id));
-            setNextTabId(maxId + 1);
-            
-            if (savedActiveTabId) {
-              const activeId = parseInt(savedActiveTabId);
-              if (parsedTabs.find(tab => tab.id === activeId)) {
-                setActiveTabId(activeId);
+    const loadData = async () => {
+      // Initialize script manager if not already done
+      if (!scriptManagerRef.current && context) {
+        scriptManagerRef.current = new ScriptManager(context);
+      }
+
+      // First, check if server scripts should be prioritized
+      let serverScriptsLoaded = false;
+      if (scriptManagerRef.current && context) {
+        const storagePreference = scriptManagerRef.current.getStoragePreference(context.applicationId);
+        if (storagePreference === 'server' && scriptManagerRef.current.isServerConfigEnabled()) {
+          try {
+            const serverScripts = await scriptManagerRef.current.getScripts(context.applicationId);
+            // Always use server scripts when server storage is preferred, even if empty
+            setSavedTabs(serverScripts || []);
+            serverScriptsLoaded = true;
+          } catch (error) {
+            console.warn('Failed to load scripts from server:', error);
+            // Still mark as loaded to avoid loading local scripts as fallback
+            setSavedTabs([]);
+            serverScriptsLoaded = true;
+          }
+        }
+      }
+
+      if (window.localStorage) {
+        // Load tabs
+        const savedTabs = window.localStorage.getItem(tabsKey);
+        const savedActiveTabId = window.localStorage.getItem(activeTabKey);
+        
+        if (savedTabs) {
+          try {
+            const parsedTabs = JSON.parse(savedTabs);
+            if (parsedTabs.length > 0) {
+              setTabs(parsedTabs);
+              const maxId = Math.max(...parsedTabs.map(tab => tab.id));
+              setNextTabId(maxId + 1);
+              
+              if (savedActiveTabId) {
+                const activeId = parseInt(savedActiveTabId);
+                if (parsedTabs.find(tab => tab.id === activeId)) {
+                  setActiveTabId(activeId);
+                }
               }
             }
+          } catch (e) {
+            console.warn('Failed to load tabs:', e);
           }
-        } catch (e) {
-          console.warn('Failed to load tabs:', e);
         }
-      }
 
-      // Load all saved tabs (including closed ones)
-      const allSavedTabs = window.localStorage.getItem(savedTabsKey);
-      if (allSavedTabs) {
-        try {
-          const parsedSavedTabs = JSON.parse(allSavedTabs);
-          setSavedTabs(parsedSavedTabs);
-        } catch (e) {
-          console.warn('Failed to load saved tabs:', e);
-        }
-      }
-
-      // Load legacy single code if no tabs exist
-      const initialCode = window.localStorage.getItem(localKey);
-      if (initialCode && !savedTabs) {
-        setTabs([{ id: 1, name: 'Tab 1', code: initialCode }]);
-      }
-
-      const savedHistory = window.localStorage.getItem(historyKey);
-      if (savedHistory) {
-        try {
-          setHistory(JSON.parse(savedHistory));
-        } catch (e) {
-          console.warn('Failed to load execution history:', e);
-        }
-      }
-
-      const savedHeight = window.localStorage.getItem(heightKey);
-      if (savedHeight) {
-        try {
-          const height = parseFloat(savedHeight);
-          if (height >= 0 && height <= 100) {
-            setEditorHeight(height);
+        // Load all saved tabs (including closed ones) from localStorage only if server scripts weren't loaded
+        if (!serverScriptsLoaded) {
+          const allSavedTabs = window.localStorage.getItem(savedTabsKey);
+          if (allSavedTabs) {
+            try {
+              const parsedSavedTabs = JSON.parse(allSavedTabs);
+              setSavedTabs(parsedSavedTabs);
+            } catch (e) {
+              console.warn('Failed to load saved tabs:', e);
+            }
           }
-        } catch (e) {
-          console.warn('Failed to load saved height:', e);
+        }
+
+        // Load legacy single code if no tabs exist
+        const initialCode = window.localStorage.getItem(localKey);
+        if (initialCode && !savedTabs) {
+          setTabs([{ id: 1, name: 'Tab 1', code: initialCode }]);
+        }
+
+        const savedHistory = window.localStorage.getItem(historyKey);
+        if (savedHistory) {
+          try {
+            setHistory(JSON.parse(savedHistory));
+          } catch (e) {
+            console.warn('Failed to load execution history:', e);
+          }
+        }
+
+        const savedHeight = window.localStorage.getItem(heightKey);
+        if (savedHeight) {
+          try {
+            const height = parseFloat(savedHeight);
+            if (height >= 0 && height <= 100) {
+              setEditorHeight(height);
+            }
+          } catch (e) {
+            console.warn('Failed to load saved height:', e);
+          }
         }
       }
-    }
-  }, [localKey, tabsKey, savedTabsKey, activeTabKey, historyKey, heightKey]);
+    };
+
+    loadData();
+  }, [localKey, tabsKey, savedTabsKey, activeTabKey, historyKey, heightKey, context]);
 
   // Get current active tab
   const activeTab = tabs.find(tab => tab.id === activeTabId) || tabs[0];
@@ -456,7 +495,7 @@ export default function Playground() {
     cancelRenaming();
   }, [renamingTabId, renamingValue, renameTab, cancelRenaming]);
 
-  const deleteTabFromSaved = useCallback((tabId) => {
+  const deleteTabFromSaved = useCallback(async (tabId) => {
     // Find the tab to get its name for confirmation
     const tabToDelete = tabs.find(tab => tab.id === tabId) || savedTabs.find(tab => tab.id === tabId);
     const tabName = tabToDelete ? tabToDelete.name : 'this tab';
@@ -474,6 +513,15 @@ export default function Playground() {
     const updatedSavedTabs = savedTabs.filter(saved => saved.id !== tabId);
     setSavedTabs(updatedSavedTabs);
     
+    // Save to server if script manager is available and enabled
+    if (scriptManagerRef.current && context) {
+      try {
+        await scriptManagerRef.current.saveScripts(context.applicationId, updatedSavedTabs);
+      } catch (error) {
+        console.warn('Failed to save scripts to server:', error);
+      }
+    }
+    
     // Save updated saved tabs to localStorage
     if (window.localStorage) {
       try {
@@ -488,7 +536,7 @@ export default function Playground() {
     if (isCurrentlyOpen) {
       closeTab(tabId);
     }
-  }, [tabs, savedTabs, savedTabsKey, closeTab]);
+  }, [tabs, savedTabs, savedTabsKey, closeTab, context]);
 
   const reopenTab = useCallback((savedTab) => {
     // Check if tab is already open
@@ -797,7 +845,7 @@ export default function Playground() {
   }, [context, createConsoleOverride, running, history, historyKey, tabs, activeTabId, activeTab, tabsKey]);
 
   // Save code function - this is the ONLY way tabs get saved to saved tabs
-  const saveCode = useCallback(() => {
+  const saveCode = useCallback(async () => {
     if (!editorRef.current || saving) {
       return;
     }
@@ -830,12 +878,24 @@ export default function Playground() {
         
         setSavedTabs(updatedSavedTabs);
         
-        // Save to localStorage
-        if (window.localStorage) {
+        // Save using script manager if available, otherwise fallback to localStorage
+        if (scriptManagerRef.current && context) {
           try {
-            window.localStorage.setItem(savedTabsKey, JSON.stringify(updatedSavedTabs));
-          } catch (e) {
-            console.warn('Failed to save tabs to saved tabs:', e);
+            await scriptManagerRef.current.saveScripts(context.applicationId, updatedSavedTabs);
+            // Don't save to localStorage when using ScriptManager - it handles storage internally
+          } catch (error) {
+            console.error('Failed to save scripts:', error);
+            // Don't fallback to localStorage - let the error bubble up so user knows
+            throw error;
+          }
+        } else {
+          // Only save to localStorage when ScriptManager is not available
+          if (window.localStorage) {
+            try {
+              window.localStorage.setItem(savedTabsKey, JSON.stringify(updatedSavedTabs));
+            } catch (e) {
+              console.warn('Failed to save tabs to localStorage:', e);
+            }
           }
         }
       }
@@ -853,7 +913,7 @@ export default function Playground() {
       console.error('Save error:', e);
       setSaving(false);
     }
-  }, [saving, tabs, activeTabId, tabsKey, localKey, savedTabs, savedTabsKey]);
+  }, [saving, tabs, activeTabId, tabsKey, localKey, savedTabs, savedTabsKey, context]);
 
   // Clear console
   const clearConsole = useCallback(() => {
