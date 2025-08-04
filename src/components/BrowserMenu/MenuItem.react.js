@@ -8,7 +8,7 @@
 import React from 'react';
 import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
-const MenuItem = ({ text, disabled, active, greenActive, onClick }) => {
+const MenuItem = ({ text, disabled, active, greenActive, onClick, disableMouseDown = false }) => {
   const classes = [styles.item];
   if (disabled) {
     classes.push(styles.disabled);
@@ -30,7 +30,7 @@ const MenuItem = ({ text, disabled, active, greenActive, onClick }) => {
     <div
       className={classes.join(' ')}
       onClick={handleClick}
-      onMouseDown={handleClick} // This is needed - onClick alone doesn't work in this context
+      onMouseDown={disableMouseDown ? undefined : handleClick} // This is needed - onClick alone doesn't work in this context
       style={{
         position: 'relative',
         zIndex: 9999,

@@ -886,10 +886,11 @@ export default function Playground() {
     );
 
     const tabMenu = (
-      <BrowserMenu title="Tabs" icon="folder-solid" setCurrent={() => {}}>
+      <BrowserMenu title="Tab" icon="folder-solid" setCurrent={() => {}}>
         <MenuItem
           text="New Tab"
           onClick={createNewTab}
+          disableMouseDown={true}
         />
         <MenuItem
           text="Rename Tab"
