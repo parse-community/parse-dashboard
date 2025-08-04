@@ -17,9 +17,18 @@
 .editor-section {
   position: relative;
   border-bottom: 1px solid #169cee;
-  flex: 1;
   min-height: 200px;
   overflow: hidden;
+  
+  /* Ensure the code editor fills the container */
+  .ace_editor {
+    height: 100% !important;
+  }
+  
+  /* Ensure the react-ace wrapper also fills the container */
+  & > div {
+    height: 100% !important;
+  }
 }
 
 .resize-handle {
