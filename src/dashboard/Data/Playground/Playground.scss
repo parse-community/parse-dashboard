@@ -134,7 +134,7 @@
 }
 
 .console-output {
-  padding: 12px;
+  padding: 6px 8px;
   overflow-y: auto;
   background-color: #002b36;
   height: 100%;
@@ -209,6 +209,19 @@
   color: #657b83;
   margin-left: auto;
   font-size: 11px;
+}
+
+.buttons-ctn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  & > div {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+  }
 }
 
 /* Custom scrollbar for console output */

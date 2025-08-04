@@ -491,17 +491,7 @@ export default function Playground() {
 
   // Memoized console result renderer
   const ConsoleResultComponent = ({ result }) => {
-    const { type, timestamp, args, id } = result;
-
-    const getTypeIcon = (type) => {
-      switch (type) {
-        case LOG_TYPES.ERROR: return '❌';
-        case LOG_TYPES.WARN: return '⚠️';
-        case LOG_TYPES.INFO: return 'ℹ️';
-        case LOG_TYPES.DEBUG: return '🐛';
-        default: return '📝';
-      }
-    };
+    const { type, args, id } = result;
 
     const getTypeClass = (type) => {
       switch (type) {
@@ -515,11 +505,6 @@ export default function Playground() {
 
     return (
       <div key={id} className={`${styles['console-entry']} ${getTypeClass(type)}`}>
-        <div className={styles['console-header']}>
-          <span className={styles['console-icon']}>{getTypeIcon(type)}</span>
-          <span className={styles['console-type']}>{type}</span>
-          <span className={styles['console-timestamp']}>{timestamp}</span>
-        </div>
         {args.map((arg, index) => {
           try {
             // Validate that the argument is suitable for ReactJson
@@ -550,7 +535,7 @@ export default function Playground() {
             // If the argument is not suitable for ReactJson, render as text
             if (!isValidForReactJson(arg)) {
               return (
-                <div key={`${id}-${index}`} style={{ marginLeft: '20px', marginBottom: '8px', fontFamily: 'monospace' }}>
+                <div key={`${id}-${index}`} style={{ marginLeft: '12px', marginBottom: '4px', fontFamily: 'monospace' }}>
                   {String(arg)}
                 </div>
               );
@@ -567,7 +552,7 @@ export default function Playground() {
                 displayObjectSize={false}
                 displayDataTypes={false}
                 enableClipboard={true}
-                style={{ marginLeft: '20px', marginBottom: '8px' }}
+                style={{ marginLeft: '12px', marginBottom: '4px' }}
                 onError={() => {
                   return false; // Don't show the error in the UI
                 }}
@@ -575,7 +560,7 @@ export default function Playground() {
             );
           } catch {
             return (
-              <div key={`${id}-${index}`} style={{ marginLeft: '20px', marginBottom: '8px', fontFamily: 'monospace', color: '#ff6b6b' }}>
+              <div key={`${id}-${index}`} style={{ marginLeft: '12px', marginBottom: '4px', fontFamily: 'monospace', color: '#ff6b6b' }}>
                 [Error rendering value: {String(arg)}]
               </div>
             );
@@ -657,9 +642,6 @@ export default function Playground() {
           className={styles['console-ctn']}
           style={{ height: `${100 - editorHeight}%` }}
         >
-          <header>
-            <h3>Console</h3>
-          </header>
           <section className={styles['console-output']}>
             {results.length === 0 ? (
               <div className={styles['console-empty']}>
