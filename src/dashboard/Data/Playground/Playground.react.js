@@ -14,11 +14,6 @@ import ScriptManager from 'lib/ScriptManager';
 
 import styles from './Playground.scss';
 
-// Configure ACE editor to prevent worker loading issues
-import ace from 'ace-builds/src-noconflict/ace';
-ace.config.set('useWorker', false);
-ace.config.set('loadWorkerFromBlob', false);
-
 const DEFAULT_CODE_EDITOR_VALUE = `const myObj = new Parse.Object('MyClass');
 myObj.set('myField', 'Hello World!')
 await myObj.save();
