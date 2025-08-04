@@ -192,6 +192,10 @@ export default function Playground() {
   const [, setCurrentMenu] = useState(null); // Track which menu is currently open
   const [, setForceUpdate] = useState({}); // Force re-render for unsaved changes detection
   const renamingInputRef = useRef(null);
+  
+  // Drag and drop state
+  const [draggedTabId, setDraggedTabId] = useState(null);
+  const [dragOverTabId, setDragOverTabId] = useState(null);
 
   // Initialize ScriptManager
   useEffect(() => {
@@ -462,6 +466,73 @@ export default function Playground() {
     }
     cancelRenaming();
   }, [renamingTabId, renamingValue, renameTab, cancelRenaming]);
+
+  // Drag and drop handlers
+  const handleDragStart = useCallback((e, tabId) => {
+    setDraggedTabId(tabId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target);
+  }, []);
+
+  const handleDragOver = useCallback((e, tabId) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverTabId(tabId);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setDragOverTabId(null);
+  }, []);
+
+  const handleDrop = useCallback(async (e, targetTabId) => {
+    e.preventDefault();
+    
+    if (!draggedTabId || draggedTabId === targetTabId) {
+      setDraggedTabId(null);
+      setDragOverTabId(null);
+      return;
+    }
+
+    // Find the indices of the dragged and target tabs
+    const draggedIndex = tabs.findIndex(tab => tab.id === draggedTabId);
+    const targetIndex = tabs.findIndex(tab => tab.id === targetTabId);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedTabId(null);
+      setDragOverTabId(null);
+      return;
+    }
+
+    // Create new tab order
+    const newTabs = [...tabs];
+    const [draggedTab] = newTabs.splice(draggedIndex, 1);
+    newTabs.splice(targetIndex, 0, draggedTab);
+
+    // Update order property for all tabs
+    const reorderedTabs = newTabs.map((tab, index) => ({
+      ...tab,
+      order: index
+    }));
+
+    setTabs(reorderedTabs);
+
+    // Save the new order using ScriptManager
+    if (scriptManagerRef.current && context?.applicationId) {
+      try {
+        await scriptManagerRef.current.updateScriptOrder(context.applicationId, reorderedTabs);
+      } catch (error) {
+        console.error('Failed to update script order:', error);
+      }
+    }
+
+    setDraggedTabId(null);
+    setDragOverTabId(null);
+  }, [draggedTabId, tabs, context?.applicationId]);
+
+  const handleDragEnd = useCallback(() => {
+    setDraggedTabId(null);
+    setDragOverTabId(null);
+  }, []);
 
   const deleteTabFromSaved = useCallback(async (tabId) => {
     // Find the tab to get its name for confirmation
@@ -1156,8 +1227,18 @@ export default function Playground() {
           {tabs.map(tab => (
             <div
               key={tab.id}
-              className={`${styles['tab']} ${tab.id === activeTabId ? styles['tab-active'] : ''}`}
+              className={`${styles['tab']} ${tab.id === activeTabId ? styles['tab-active'] : ''} ${
+                draggedTabId === tab.id ? styles['tab-dragging'] : ''
+              } ${
+                dragOverTabId === tab.id ? styles['tab-drag-over'] : ''
+              }`}
               onClick={() => switchTab(tab.id)}
+              draggable={true}
+              onDragStart={(e) => handleDragStart(e, tab.id)}
+              onDragOver={(e) => handleDragOver(e, tab.id)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, tab.id)}
+              onDragEnd={handleDragEnd}
             >
               {renamingTabId === tab.id ? (
                 <input

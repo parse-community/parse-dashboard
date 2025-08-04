@@ -98,6 +98,27 @@
     color: #fdf6e3;
     border-color: #169cee;
   }
+  
+  /* Drag and drop styles */
+  &.tab-dragging {
+    opacity: 0.5;
+    z-index: 1000;
+    cursor: grabbing;
+  }
+  
+  &.tab-drag-over {
+    border-left: 3px solid #d33682;
+    background: rgba(211, 54, 130, 0.1);
+  }
+  
+  /* Make tabs draggable */
+  &[draggable="true"] {
+    cursor: grab;
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
 }
 
 .tab-name {
