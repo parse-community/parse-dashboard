@@ -39,7 +39,7 @@
   background: #073642;
   border-bottom: 1px solid #169cee;
   padding: 0 8px;
-  align-items: center;
+  align-items: flex-end;
   min-height: 32px;
   flex-shrink: 0;
   overflow-x: auto;
@@ -76,6 +76,7 @@
   align-items: center;
   padding: 4px 12px;
   margin-right: 2px;
+  margin-bottom: -1px;
   background: #002b36;
   border: 1px solid #586e75;
   border-bottom: none;

@@ -289,6 +289,19 @@ export default function Playground() {
       return; // Don't close the last tab
     }
     
+    // Find the tab to get its name for the confirmation dialog
+    const tabToClose = tabs.find(tab => tab.id === tabId);
+    const tabName = tabToClose ? tabToClose.name : 'this tab';
+    
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to close "${tabName}"?\n\nAny unsaved changes will be lost.`
+    );
+    
+    if (!confirmed) {
+      return; // User cancelled, don't close the tab
+    }
+    
     const updatedTabs = tabs.filter(tab => tab.id !== tabId);
     setTabs(updatedTabs);
     
@@ -873,7 +886,7 @@ export default function Playground() {
     );
 
     const tabMenu = (
-      <BrowserMenu title="Tabs" icon="window-solid" setCurrent={() => {}}>
+      <BrowserMenu title="Tabs" icon="folder-solid" setCurrent={() => {}}>
         <MenuItem
           text="New Tab"
           onClick={createNewTab}
