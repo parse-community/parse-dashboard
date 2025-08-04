@@ -4,11 +4,73 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.playground-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
 }
 
 .editor-section {
   position: relative;
   border-bottom: 2px solid #169cee;
+  flex: 1;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.resize-handle {
+  height: 8px;
+  background: linear-gradient(
+    to bottom,
+    #073642 0%,
+    #169cee 25%,
+    #169cee 75%,
+    #073642 100%
+  );
+  cursor: ns-resize;
+  border-top: 1px solid #586e75;
+  border-bottom: 1px solid #586e75;
+  position: relative;
+  user-select: none;
+  
+  &:hover {
+    background: linear-gradient(
+      to bottom,
+      #073642 0%,
+      #2aa198 25%,
+      #2aa198 75%,
+      #073642 100%
+    );
+  }
+  
+  &:active {
+    background: linear-gradient(
+      to bottom,
+      #073642 0%,
+      #cb4b16 25%,
+      #cb4b16 75%,
+      #073642 100%
+    );
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 1px;
+    box-shadow: 
+      0 -2px 0 rgba(255, 255, 255, 0.2),
+      0 2px 0 rgba(255, 255, 255, 0.2);
+  }
 }
 
 .editor-help {
@@ -36,11 +98,9 @@
 
 .console-ctn {
   display: flex;
-  align-items: stretch;
-  justify-content: stretch;
   flex-direction: column;
-  flex: 1;
-  min-height: 300px;
+  min-height: 200px;
+  overflow: hidden;
 
   & h3 {
     height: 28px;
@@ -60,6 +120,9 @@
     justify-content: space-between;
     width: 100%;
     box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   & > section {
@@ -72,10 +135,9 @@
 
 .console-output {
   padding: 12px;
-  min-height: 200px;
-  max-height: 400px;
   overflow-y: auto;
   background-color: #002b36;
+  height: 100%;
 }
 
 .console-empty {
@@ -197,4 +259,19 @@
     font-size: 11px;
     gap: 6px;
   }
+  
+  .resize-handle {
+    height: 12px; /* Make it larger on mobile for easier touch interaction */
+  }
+}
+
+/* Prevent text selection during resize */
+.playground-content.resizing {
+  user-select: none;
+}
+
+/* Enhanced resize handle hover state */
+.resize-handle:hover::before {
+  width: 60px;
+  background: rgba(255, 255, 255, 0.5);
 }

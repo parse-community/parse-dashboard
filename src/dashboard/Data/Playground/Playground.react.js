@@ -170,11 +170,15 @@ export default function Playground() {
   const [savingState, setSavingState] = useState(SaveButton.States.WAITING);
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [editorHeight, setEditorHeight] = useState(50); // Percentage of the container height
+  const [isResizing, setIsResizing] = useState(false);
+  const containerRef = useRef(null);
 
   const section = 'Core';
   const subsection = 'JS Console';
   const localKey = 'parse-dashboard-playground-code';
   const historyKey = 'parse-dashboard-playground-history';
+  const heightKey = 'parse-dashboard-playground-height';
 
   // Load saved code and history on mount
   useEffect(() => {
@@ -192,8 +196,60 @@ export default function Playground() {
           console.warn('Failed to load execution history:', e);
         }
       }
+
+      const savedHeight = window.localStorage.getItem(heightKey);
+      if (savedHeight) {
+        try {
+          const height = parseFloat(savedHeight);
+          if (height >= 20 && height <= 80) {
+            setEditorHeight(height);
+          }
+        } catch (e) {
+          console.warn('Failed to load saved height:', e);
+        }
+      }
     }
-  }, [localKey, historyKey]);
+  }, [localKey, historyKey, heightKey]);
+
+  // Handle mouse down on resize handle
+  const handleResizeStart = useCallback((e) => {
+    e.preventDefault();
+    setIsResizing(true);
+
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) {
+        return;
+      }
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const containerHeight = rect.height;
+      const relativeY = e.clientY - rect.top;
+      
+      // Calculate percentage (20% to 80% range)
+      let percentage = (relativeY / containerHeight) * 100;
+      percentage = Math.max(20, Math.min(80, percentage));
+      
+      setEditorHeight(percentage);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      
+      // Save the height to localStorage
+      if (window.localStorage) {
+        try {
+          window.localStorage.setItem(heightKey, editorHeight.toString());
+        } catch (e) {
+          console.warn('Failed to save height:', e);
+        }
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [editorHeight, heightKey]);
 
   // Create console override function
   const createConsoleOverride = useCallback(() => {
@@ -536,8 +592,11 @@ export default function Playground() {
   return (
     <div className={styles['playground-ctn']}>
       <Toolbar section={section} subsection={subsection} />
-      <div style={{ minHeight: '25vh' }}>
-        <div className={styles['editor-section']}>
+      <div className={`${styles['playground-content']} ${isResizing ? 'resizing' : ''}`} ref={containerRef}>
+        <div
+          className={styles['editor-section']}
+          style={{ height: `${editorHeight}%` }}
+        >
           <CodeEditor
             defaultValue={DEFAULT_CODE_EDITOR_VALUE}
             ref={editorRef}
@@ -551,7 +610,15 @@ export default function Playground() {
             <kbd>Ctrl + ↑/↓</kbd> for history
           </div>
         </div>
-        <div className={styles['console-ctn']}>
+        <div
+          className={styles['resize-handle']}
+          onMouseDown={handleResizeStart}
+          style={{ cursor: isResizing ? 'ns-resize' : 'ns-resize' }}
+        />
+        <div
+          className={styles['console-ctn']}
+          style={{ height: `${100 - editorHeight}%` }}
+        >
           <header>
             <h3>Console</h3>
             <div className={styles['buttons-ctn']}>
