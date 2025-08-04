@@ -176,11 +176,11 @@ export default function Playground() {
   const containerRef = useRef(null);
 
   // Tab management state
+  const initialTabId = useMemo(() => crypto.randomUUID(), []);
   const [tabs, setTabs] = useState([
-    { id: 1, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE }
+    { id: initialTabId, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE }
   ]);
-  const [activeTabId, setActiveTabId] = useState(1);
-  const [nextTabId, setNextTabId] = useState(2);
+  const [activeTabId, setActiveTabId] = useState(initialTabId);
   const [renamingTabId, setRenamingTabId] = useState(null);
   const [renamingValue, setRenamingValue] = useState('');
   const [savedTabs, setSavedTabs] = useState([]); // All saved tabs including closed ones
@@ -235,8 +235,6 @@ export default function Playground() {
 
         if (tabsToOpen.length > 0) {
           setTabs(tabsToOpen);
-          const maxId = Math.max(...allScripts.map(tab => tab.id));
-          setNextTabId(maxId + 1);
 
           // Set active tab to the first one
           setActiveTabId(tabsToOpen[0].id);
@@ -249,8 +247,6 @@ export default function Playground() {
             const firstScript = { ...allScripts[0], order: 0 };
             setTabs([firstScript]);
             setActiveTabId(firstScript.id);
-            const maxId = Math.max(...allScripts.map(tab => tab.id));
-            setNextTabId(maxId + 1);
 
             // Save it as open
             await scriptManagerRef.current.openScript(context.applicationId, firstScript.id, 0);
@@ -258,17 +254,17 @@ export default function Playground() {
             setSavedTabs(allScripts.filter(script => script.saved !== false));
           } else {
             // Fallback to default tab if no scripts exist
-            setTabs([{ id: 1, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE, order: 0 }]);
-            setActiveTabId(1);
-            setNextTabId(2);
+            const defaultTabId = crypto.randomUUID();
+            setTabs([{ id: defaultTabId, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE, order: 0 }]);
+            setActiveTabId(defaultTabId);
           }
         }
       } catch (error) {
         console.warn('Failed to load scripts via ScriptManager:', error);
         // Fallback to default tab if loading fails
-        setTabs([{ id: 1, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE, order: 0 }]);
-        setActiveTabId(1);
-        setNextTabId(2);
+        const defaultTabId = crypto.randomUUID();
+        setTabs([{ id: defaultTabId, name: 'Tab 1', code: DEFAULT_CODE_EDITOR_VALUE, order: 0 }]);
+        setActiveTabId(defaultTabId);
       }
 
       // Load other data from localStorage
@@ -317,18 +313,19 @@ export default function Playground() {
 
   // Tab management functions
   const createNewTab = useCallback(() => {
+    const newTabId = crypto.randomUUID();
+    const tabCount = tabs.length + 1;
     const newTab = {
-      id: nextTabId,
-      name: `Tab ${nextTabId}`,
+      id: newTabId,
+      name: `Tab ${tabCount}`,
       code: '', // Start with empty code instead of default value
       saved: false, // Mark as unsaved initially
       order: tabs.length // Assign order as the last position
     };
     const updatedTabs = [...tabs, newTab];
     setTabs(updatedTabs);
-    setActiveTabId(nextTabId);
-    setNextTabId(nextTabId + 1);
-  }, [tabs, nextTabId]);
+    setActiveTabId(newTabId);
+  }, [tabs]);
 
   const closeTab = useCallback(async (tabId) => {
     if (tabs.length <= 1) {
@@ -591,11 +588,6 @@ export default function Playground() {
     setTabs(updatedTabs);
     setActiveTabId(savedTab.id);
 
-    // Update nextTabId if necessary
-    if (savedTab.id >= nextTabId) {
-      setNextTabId(savedTab.id + 1);
-    }
-
     // Save the open state through ScriptManager
     if (scriptManagerRef.current && context?.applicationId) {
       try {
@@ -604,7 +596,7 @@ export default function Playground() {
         console.error('Failed to open script:', error);
       }
     }
-  }, [tabs, nextTabId, switchTab, context?.applicationId]);
+  }, [tabs, switchTab, context?.applicationId]);
 
   // Focus input when starting to rename
   useEffect(() => {

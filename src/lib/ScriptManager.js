@@ -234,6 +234,14 @@ export default class ScriptManager {
   }
 
   /**
+   * Generates a unique ID for a new script/tab
+   * @returns {string} A UUID string
+   */
+  generateScriptId() {
+    return this._generateScriptId();
+  }
+
+  /**
    * Gets scripts from server storage
    * @private
    */
@@ -248,7 +256,7 @@ export default class ScriptManager {
           const scriptId = key.replace('console.js.script.', '');
 
           scripts.push({
-            id: parseInt(scriptId, 10),
+            id: scriptId, // Keep as string (UUID) instead of parsing as integer
             ...config
           });
         }
@@ -338,7 +346,7 @@ export default class ScriptManager {
       if (legacyCode && legacyCode.trim()) {
         // Create a script with the legacy code, marked as unsaved
         const script = {
-          id: this._generateScriptId({ name: 'Legacy Script', code: legacyCode }),
+          id: this._generateScriptId(),
           name: 'Legacy Script',
           code: legacyCode,
           saved: false, // Mark as unsaved so user can choose to save it
@@ -377,19 +385,11 @@ export default class ScriptManager {
   }
 
   /**
-   * Generates a unique ID for a script
+   * Generates a unique ID for a script using UUID
    * @private
    */
-  _generateScriptId(script) {
-    // Use a hash of the script name and code as a fallback ID
-    const str = `${script.name || 'script'}-${script.code || ''}`;
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    return Math.abs(hash);
+  _generateScriptId() {
+    return crypto.randomUUID();
   }
 }
 
