@@ -47,6 +47,18 @@ export default class ScriptManager {
       localScripts = this._getScriptsFromPlaygroundFormat();
     }
     
+    // If still no scripts found, try the legacy single-script format and migrate it once
+    if (!localScripts || localScripts.length === 0) {
+      const legacyScript = this._getScriptFromLegacySingleFormat();
+      if (legacyScript.length > 0) {
+        // Migrate the legacy script to the new format and save it
+        this._saveScriptsToLocal(appId, legacyScript);
+        // Clear the legacy storage to prevent re-migration
+        this._clearLegacySingleFormat();
+        localScripts = legacyScript;
+      }
+    }
+    
     return localScripts;
   }
 
@@ -85,6 +97,11 @@ export default class ScriptManager {
       localScripts = this._getScriptsFromPlaygroundFormat();
     }
     
+    // If still no scripts found, try the legacy single-script format
+    if (!localScripts || localScripts.length === 0) {
+      localScripts = this._getScriptFromLegacySingleFormat();
+    }
+    
     if (!localScripts || localScripts.length === 0) {
       return { success: true, scriptCount: 0 };
     }
@@ -109,6 +126,8 @@ export default class ScriptManager {
       localStorage.removeItem(this._getLocalPath(appId));
       // Remove from legacy Playground format
       localStorage.removeItem('parse-dashboard-playground-saved-tabs');
+      // Remove from legacy single-script format
+      localStorage.removeItem('parse-dashboard-playground-code');
       return true;
     } catch (error) {
       console.error('Failed to delete scripts from browser:', error);
@@ -251,6 +270,40 @@ export default class ScriptManager {
       return JSON.parse(entry);
     } catch {
       return [];
+    }
+  }
+
+  /**
+   * Gets script from the legacy single-script format (pre-tabs)
+   * @private
+   */
+  _getScriptFromLegacySingleFormat() {
+    try {
+      const legacyCode = localStorage.getItem('parse-dashboard-playground-code');
+      if (legacyCode && legacyCode.trim()) {
+        // Convert the single script to tab format
+        return [{
+          id: 1,
+          name: 'Legacy Script',
+          code: legacyCode,
+          lastModified: Date.now()
+        }];
+      }
+    } catch {
+      // ignore errors
+    }
+    return [];
+  }
+
+  /**
+   * Clears the legacy single-script format storage after migration
+   * @private
+   */
+  _clearLegacySingleFormat() {
+    try {
+      localStorage.removeItem('parse-dashboard-playground-code');
+    } catch {
+      // ignore errors
     }
   }
 
