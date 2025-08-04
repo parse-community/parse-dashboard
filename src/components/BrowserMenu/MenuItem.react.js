@@ -8,7 +8,7 @@
 import React from 'react';
 import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
-const MenuItem = ({ text, disabled, active, greenActive, onClick, disableMouseDown = false }) => {
+const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disableMouseDown = false }) => {
   const classes = [styles.item];
   if (disabled) {
     classes.push(styles.disabled);
@@ -34,10 +34,25 @@ const MenuItem = ({ text, disabled, active, greenActive, onClick, disableMouseDo
       style={{
         position: 'relative',
         zIndex: 9999,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}
     >
-      {text}
+      <span>{text}</span>
+      {shortcut && (
+        <span
+          style={{
+            opacity: 0.5,
+            fontSize: '0.85em',
+            marginLeft: '12px',
+            color: 'inherit'
+          }}
+        >
+          {shortcut}
+        </span>
+      )}
     </div>
   );
 };

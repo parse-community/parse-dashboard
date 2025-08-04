@@ -188,6 +188,7 @@ export default function Playground() {
   const [renamingValue, setRenamingValue] = useState('');
   const [savedTabs, setSavedTabs] = useState([]); // All saved tabs including closed ones
   const [, setCurrentMenu] = useState(null); // Track which menu is currently open
+  const [, setForceUpdate] = useState({}); // Force re-render for unsaved changes detection
   const renamingInputRef = useRef(null);
 
   const section = 'Core';
@@ -1047,6 +1048,7 @@ export default function Playground() {
         {window.localStorage && (
           <MenuItem
             text="Save Tab"
+            shortcut="Cmd+S"
             onClick={() => executeAndCloseMenu(saveCode)}
             disabled={saving}
           />
@@ -1121,6 +1123,40 @@ export default function Playground() {
     );
   };
 
+  // Helper function to check if a tab has unsaved changes
+  const hasUnsavedChanges = useCallback((tab) => {
+    // Get current content for the tab
+    let currentContent = '';
+    if (tab.id === activeTabId && editorRef.current) {
+      // For active tab, get content from editor
+      currentContent = editorRef.current.value;
+    } else {
+      // For inactive tabs, use stored code
+      currentContent = tab.code;
+    }
+    
+    // Find the saved version of this tab
+    const savedTab = savedTabs.find(saved => saved.id === tab.id);
+    
+    if (!savedTab) {
+      // If tab was never saved, it has unsaved changes if it has any content
+      return currentContent.trim() !== '';
+    }
+    
+    // Compare current content with saved content
+    return currentContent !== savedTab.code;
+  }, [activeTabId, savedTabs]);
+
+  // Effect to periodically check for editor changes and trigger re-renders
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Force a re-render to update unsaved change indicators
+      setForceUpdate({});
+    }, 1000); // Check every second
+
+    return () => clearInterval(interval);
+  }, []);
+
   const renderTabs = () => {
     return (
       <div className={styles['tab-bar']} style={{ backgroundColor: '#353446' }}>
@@ -1155,7 +1191,17 @@ export default function Playground() {
                     e.stopPropagation();
                     startRenaming(tab.id, tab.name);
                   }}
+                  style={{ display: 'flex', alignItems: 'center' }}
                 >
+                  {hasUnsavedChanges(tab) && (
+                    <Icon
+                      name="warn-outline"
+                      width={12}
+                      height={12}
+                      fill="#ffffff"
+                      style={{ marginRight: '4px' }}
+                    />
+                  )}
                   {tab.name}
                 </span>
               )}
