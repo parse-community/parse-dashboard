@@ -22,6 +22,7 @@ import AggregationPanel from '../../../components/AggregationPanel/AggregationPa
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
 const BROWSER_SCROLL_TO_TOP = 'browserScrollToTop';
+const AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW = 'aggregationPanelAutoLoadFirstRow';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -86,6 +87,8 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.getItem(AGGREGATION_PANEL_VISIBLE) === 'true';
     const storedScrollToTop =
       window.localStorage?.getItem(BROWSER_SCROLL_TO_TOP) !== 'false';
+    const storedAutoSelectFirstRow =
+      window.localStorage?.getItem(BROWSER_AUTO_SELECT_FIRST_ROW) === 'true';
     const hasAggregation =
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
@@ -111,6 +114,7 @@ export default class DataBrowser extends React.Component {
       frozenColumnIndex: -1,
       showRowNumber: storedRowNumber,
       scrollToTop: storedScrollToTop,
+      autoSelectFirstRow: storedAutoSelectFirstRow,
       prefetchCache: {},
       selectionHistory: [],
     };
@@ -135,6 +139,7 @@ export default class DataBrowser extends React.Component {
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
     this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.toggleScrollToTop = this.toggleScrollToTop.bind(this);
+    this.toggleAutoSelectFirstRow = this.toggleAutoSelectFirstRow.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
@@ -222,6 +227,29 @@ export default class DataBrowser extends React.Component {
       }
     }
 
+    // Auto-select first row if enabled and conditions are met
+    if (
+      this.state.autoSelectFirstRow &&
+      this.state.isPanelVisible &&
+      this.props.data &&
+      this.props.data.length > 0 &&
+      !this.state.selectedObjectId &&
+      ((!prevProps.data || prevProps.data.length === 0) ||
+       prevProps.className !== this.props.className ||
+       prevState.isPanelVisible !== this.state.isPanelVisible)
+    ) {
+      const firstRowObjectId = this.props.data[0].id;
+      this.setShowAggregatedData(true);
+      this.setSelectedObjectId(firstRowObjectId);
+      // Also set the current cell to the first cell of the first row
+      this.setCurrent({ row: 0, col: 0 });
+      this.handleCallCloudFunction(
+        firstRowObjectId,
+        this.props.className,
+        this.props.app.applicationId
+      );
+    }
+
     if (
       (this.props.AggregationPanelData !== prevProps.AggregationPanelData ||
         this.state.selectedObjectId !== prevState.selectedObjectId) &&
@@ -286,6 +314,25 @@ export default class DataBrowser extends React.Component {
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
+    }
+
+    // Auto-select first row when opening panel if enabled and no row is selected
+    if (
+      newVisibility &&
+      this.state.autoSelectFirstRow &&
+      !this.state.selectedObjectId &&
+      this.props.data &&
+      this.props.data.length > 0
+    ) {
+      const firstRowObjectId = this.props.data[0].id;
+      this.setShowAggregatedData(true);
+      this.setSelectedObjectId(firstRowObjectId);
+      this.setCurrent({ row: 0, col: 0 });
+      this.handleCallCloudFunction(
+        firstRowObjectId,
+        this.props.className,
+        this.props.app.applicationId
+      );
     }
 
     if (!newVisibility && this.state.selectedObjectId) {
@@ -694,6 +741,14 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  toggleAutoSelectFirstRow() {
+    this.setState(prevState => {
+      const newAutoSelectFirstRow = !prevState.autoSelectFirstRow;
+      window.localStorage?.setItem(BROWSER_AUTO_SELECT_FIRST_ROW, newAutoSelectFirstRow);
+      return { autoSelectFirstRow: newAutoSelectFirstRow };
+    });
+  }
+
   getPrefetchSettings() {
     const config =
       this.props.classwiseCloudFunctions?.[
@@ -994,6 +1049,8 @@ export default class DataBrowser extends React.Component {
           appName={this.props.appName}
           scrollToTop={this.state.scrollToTop}
           toggleScrollToTop={this.toggleScrollToTop}
+          autoSelectFirstRow={this.state.autoSelectFirstRow}
+          toggleAutoSelectFirstRow={this.toggleAutoSelectFirstRow}
           {...other}
         />
 
