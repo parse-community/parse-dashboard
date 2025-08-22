@@ -85,6 +85,7 @@ export default class AddArrayEntryDialog extends React.Component {
   }
 
   render() {
+    const param = this.props.param;
     const confirmDisabled =
       this.state.value === '' ||
       (this.state.showMismatchRow && !this.state.mismatchConfirmed);
@@ -93,7 +94,8 @@ export default class AddArrayEntryDialog extends React.Component {
       <Modal
         type={Modal.Types.INFO}
         icon="plus-solid"
-        title="Add entry"
+        title={'Add entry'}
+        subtitle={param}
         confirmText="Add Unique"
         cancelText="Cancel"
         onCancel={this.props.onCancel}

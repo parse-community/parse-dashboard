@@ -124,6 +124,7 @@ class Config extends TableView {
             this.addArrayEntry(this.state.addEntryParam, value)
           }
           lastType={this.state.addEntryLastType}
+          param={this.state.addEntryParam}
         />
       );
     }
@@ -575,7 +576,7 @@ class Config extends TableView {
         );
       }
 
-      this.showNote('Entry added');
+      this.showNote(`Entry added to ${param}`);
     } catch (e) {
       this.showNote(`Failed to add entry: ${e.message}`, true);
     } finally {
