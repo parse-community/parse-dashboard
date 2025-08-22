@@ -87,8 +87,8 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.getItem(AGGREGATION_PANEL_VISIBLE) === 'true';
     const storedScrollToTop =
       window.localStorage?.getItem(BROWSER_SCROLL_TO_TOP) !== 'false';
-    const storedAutoSelectFirstRow =
-      window.localStorage?.getItem(BROWSER_AUTO_SELECT_FIRST_ROW) === 'true';
+    const storedAutoLoadFirstRow =
+      window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW) === 'true';
     const hasAggregation =
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
@@ -114,7 +114,7 @@ export default class DataBrowser extends React.Component {
       frozenColumnIndex: -1,
       showRowNumber: storedRowNumber,
       scrollToTop: storedScrollToTop,
-      autoSelectFirstRow: storedAutoSelectFirstRow,
+      autoLoadFirstRow: storedAutoLoadFirstRow,
       prefetchCache: {},
       selectionHistory: [],
     };
@@ -139,7 +139,7 @@ export default class DataBrowser extends React.Component {
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
     this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.toggleScrollToTop = this.toggleScrollToTop.bind(this);
-    this.toggleAutoSelectFirstRow = this.toggleAutoSelectFirstRow.bind(this);
+    this.toggleAutoLoadFirstRow = this.toggleAutoLoadFirstRow.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
@@ -227,9 +227,9 @@ export default class DataBrowser extends React.Component {
       }
     }
 
-    // Auto-select first row if enabled and conditions are met
+    // Auto-load first row if enabled and conditions are met
     if (
-      this.state.autoSelectFirstRow &&
+      this.state.autoLoadFirstRow &&
       this.state.isPanelVisible &&
       this.props.data &&
       this.props.data.length > 0 &&
@@ -316,10 +316,10 @@ export default class DataBrowser extends React.Component {
       }
     }
 
-    // Auto-select first row when opening panel if enabled and no row is selected
+    // Auto-load first row when opening panel if enabled and no row is selected
     if (
       newVisibility &&
-      this.state.autoSelectFirstRow &&
+      this.state.autoLoadFirstRow &&
       !this.state.selectedObjectId &&
       this.props.data &&
       this.props.data.length > 0
@@ -741,11 +741,11 @@ export default class DataBrowser extends React.Component {
     });
   }
 
-  toggleAutoSelectFirstRow() {
+  toggleAutoLoadFirstRow() {
     this.setState(prevState => {
-      const newAutoSelectFirstRow = !prevState.autoSelectFirstRow;
-      window.localStorage?.setItem(BROWSER_AUTO_SELECT_FIRST_ROW, newAutoSelectFirstRow);
-      return { autoSelectFirstRow: newAutoSelectFirstRow };
+      const newAutoLoadFirstRow = !prevState.autoLoadFirstRow;
+      window.localStorage?.setItem(AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW, newAutoLoadFirstRow);
+      return { autoLoadFirstRow: newAutoLoadFirstRow };
     });
   }
 
@@ -1049,8 +1049,8 @@ export default class DataBrowser extends React.Component {
           appName={this.props.appName}
           scrollToTop={this.state.scrollToTop}
           toggleScrollToTop={this.toggleScrollToTop}
-          autoSelectFirstRow={this.state.autoSelectFirstRow}
-          toggleAutoSelectFirstRow={this.toggleAutoSelectFirstRow}
+          autoLoadFirstRow={this.state.autoLoadFirstRow}
+          toggleAutoLoadFirstRow={this.toggleAutoLoadFirstRow}
           {...other}
         />
 

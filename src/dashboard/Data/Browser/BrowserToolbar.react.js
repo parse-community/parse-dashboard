@@ -85,8 +85,8 @@ const BrowserToolbar = ({
   appName,
   scrollToTop,
   toggleScrollToTop,
-  autoSelectFirstRow,
-  toggleAutoSelectFirstRow,
+  autoLoadFirstRow,
+  toggleAutoLoadFirstRow,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -393,7 +393,7 @@ const BrowserToolbar = ({
           <MenuItem
             text={
               <span>
-                {autoSelectFirstRow && (
+                {autoLoadFirstRow && (
                   <Icon
                     name="check"
                     width={12}
@@ -402,11 +402,11 @@ const BrowserToolbar = ({
                     className="menuCheck"
                   />
                 )}
-                Auto-select first row
+                Auto-load first row
               </span>
             }
             onClick={() => {
-              toggleAutoSelectFirstRow();
+              toggleAutoLoadFirstRow();
             }}
           />
         </BrowserMenu>
