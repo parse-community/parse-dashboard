@@ -569,6 +569,8 @@ class Views extends TableView {
                   e.stopPropagation();
                   e.preventDefault();
                   this.handleOpenAllPointers(name);
+                  // Remove focus after action to follow UX best practices
+                  e.currentTarget.blur();
                 }}
                 aria-label={`Open all pointers in ${name} column in new tabs`}
                 title="Open all pointers in new tabs"
