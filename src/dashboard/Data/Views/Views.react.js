@@ -556,7 +556,7 @@ class Views extends TableView {
     return this.state.order.map(({ name, width }, i) => {
       const columnType = this.state.columns[name]?.type;
       const isPointerColumn = columnType === 'Pointer';
-      
+
       return (
         <div key={name} className={styles.headerWrap} style={{ width }}>
           <span className={styles.headerText}>
