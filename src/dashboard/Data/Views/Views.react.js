@@ -570,8 +570,9 @@ class Views extends TableView {
               >
                 <Icon
                   name="right-outline"
-                  width={12}
-                  height={12}
+                  width={20}
+                  height={20}
+                  fill="white"
                 />
               </span>
             )}
