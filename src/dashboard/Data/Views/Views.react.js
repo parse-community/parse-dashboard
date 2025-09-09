@@ -277,6 +277,9 @@ class Views extends TableView {
             }
             if (!columns[key]) {
               columns[key] = { type, width: Math.min(computeWidth(key), 200) };
+            } else if (type === 'Pointer' && columns[key].type !== 'Pointer') {
+              // If we find a pointer value, upgrade the column type to Pointer
+              columns[key].type = 'Pointer';
             }
             const width = computeWidth(val);
             if (width > columns[key].width && columns[key].width < 200) {
