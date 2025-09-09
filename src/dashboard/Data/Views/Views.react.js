@@ -550,12 +550,36 @@ class Views extends TableView {
   }
 
   renderHeaders() {
-    return this.state.order.map(({ name, width }, i) => (
-      <div key={name} className={styles.headerWrap} style={{ width }}>
-        {name}
-        <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
-      </div>
-    ));
+    return this.state.order.map(({ name, width }, i) => {
+      const columnType = this.state.columns[name]?.type;
+      const isPointerColumn = columnType === 'Pointer';
+      
+      return (
+        <div key={name} className={styles.headerWrap} style={{ width }}>
+          <span className={styles.headerText}>
+            {name}
+            {isPointerColumn && (
+              <span
+                className={styles.pointerIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  this.handleOpenAllPointers(name);
+                }}
+                title="Open all pointers in new tabs"
+              >
+                <Icon
+                  name="right-outline"
+                  width={12}
+                  height={12}
+                />
+              </span>
+            )}
+          </span>
+          <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
+        </div>
+      );
+    });
   }
 
   renderEmpty() {
@@ -829,6 +853,59 @@ class Views extends TableView {
 
   handleValueClick(value) {
     this.setState({ viewValue: value });
+  }
+
+  handleOpenAllPointers(columnName) {
+    const data = this.tableData();
+    const pointers = data
+      .map(row => row[columnName])
+      .filter(value => value && value.__type === 'Pointer' && value.className && value.objectId);
+
+    // Open each unique pointer in a new tab
+    const uniquePointers = new Map();
+    pointers.forEach(pointer => {
+      const key = `${pointer.className}-${pointer.objectId}`;
+      if (!uniquePointers.has(key)) {
+        uniquePointers.set(key, pointer);
+      }
+    });
+
+    if (uniquePointers.size === 0) {
+      this.showNote('No pointers found in this column', true);
+      return;
+    }
+
+    const pointersArray = Array.from(uniquePointers.values());
+
+    // Open all tabs immediately to maintain user activation context
+    let successCount = 0;
+
+    pointersArray.forEach((pointer) => {
+      try {
+        const filters = JSON.stringify([{ field: 'objectId', constraint: 'eq', compareTo: pointer.objectId }]);
+        const url = generatePath(
+          this.context,
+          `browser/${pointer.className}?filters=${encodeURIComponent(filters)}`,
+          true
+        );
+        const newWindow = window.open(url, '_blank');
+
+        if (newWindow) {
+          successCount++;
+        }
+      } catch {
+        // Error handled by final notification logic
+      }
+    });
+
+    // Show result notification
+    if (successCount === pointersArray.length) {
+      this.showNote(`Opened ${successCount} pointer${successCount > 1 ? 's' : ''} in new tab${successCount > 1 ? 's' : ''}`, false);
+    } else if (successCount > 0) {
+      this.showNote(`Opened ${successCount} of ${pointersArray.length} tabs. ${pointersArray.length - successCount} blocked by popup blocker.`, true);
+    } else {
+      this.showNote('Unable to open tabs. Please allow popups for this site and try again.', true);
+    }
   }
 
   showNote(message, isError) {
