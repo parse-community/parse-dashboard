@@ -23,9 +23,26 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  min-width: 0; // Enable text truncation in flex containers
+}
+
+.headerLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0; // Enable text truncation
 }
 
 .pointerIcon {
+  // Reset button styles
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.2);
+  
+  // Custom styles
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.2s ease;
@@ -36,7 +53,6 @@
   justify-content: center;
   height: 20px;
   width: 20px;
-  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   margin-left: 5px;
   flex-shrink: 0;
@@ -48,6 +64,13 @@
   &:hover {
     opacity: 1;
     background: rgba(255, 255, 255, 0.3);
+  }
+  
+  &:focus {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.4);
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 1px;
   }
 }
 

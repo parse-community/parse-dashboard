@@ -560,15 +560,17 @@ class Views extends TableView {
       return (
         <div key={name} className={styles.headerWrap} style={{ width }}>
           <span className={styles.headerText}>
-            {name}
+            <span className={styles.headerLabel}>{name}</span>
             {isPointerColumn && (
-              <span
+              <button
+                type="button"
                 className={styles.pointerIcon}
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   this.handleOpenAllPointers(name);
                 }}
+                aria-label={`Open all pointers in ${name} column in new tabs`}
                 title="Open all pointers in new tabs"
               >
                 <Icon
@@ -577,7 +579,7 @@ class Views extends TableView {
                   height={20}
                   fill="white"
                 />
-              </span>
+              </button>
             )}
           </span>
           <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
@@ -851,7 +853,8 @@ class Views extends TableView {
         `browser/${className}?filters=${encodeURIComponent(filters)}`,
         true
       ),
-      '_blank'
+      '_blank',
+      'noopener,noreferrer'
     );
   }
 
@@ -868,7 +871,8 @@ class Views extends TableView {
     // Open each unique pointer in a new tab
     const uniquePointers = new Map();
     pointers.forEach(pointer => {
-      const key = `${pointer.className}-${pointer.objectId}`;
+      // Use a more collision-proof key format with explicit separators
+      const key = `className:${pointer.className}|objectId:${pointer.objectId}`;
       if (!uniquePointers.has(key)) {
         uniquePointers.set(key, pointer);
       }
@@ -881,8 +885,16 @@ class Views extends TableView {
 
     const pointersArray = Array.from(uniquePointers.values());
 
+    // Confirm for large numbers of tabs to prevent overwhelming the user
+    if (pointersArray.length > 10) {
+      const confirmMessage = `This will open ${pointersArray.length} new tabs. This might overwhelm your browser. Continue?`;
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+    }
+
     // Open all tabs immediately to maintain user activation context
-    let successCount = 0;
+    let errorCount = 0;
 
     pointersArray.forEach((pointer) => {
       try {
@@ -892,21 +904,20 @@ class Views extends TableView {
           `browser/${pointer.className}?filters=${encodeURIComponent(filters)}`,
           true
         );
-        const newWindow = window.open(url, '_blank');
-
-        if (newWindow) {
-          successCount++;
-        }
+        window.open(url, '_blank', 'noopener,noreferrer');
+        // Note: window.open with security attributes may return null even when successful,
+        // so we assume success unless an exception is thrown
       } catch (error) {
         console.error('Failed to open tab for pointer:', pointer, error);
+        errorCount++;
       }
     });
 
     // Show result notification
-    if (successCount === pointersArray.length) {
-      this.showNote(`Opened ${successCount} pointer${successCount > 1 ? 's' : ''} in new tab${successCount > 1 ? 's' : ''}`, false);
-    } else if (successCount > 0) {
-      this.showNote(`Opened ${successCount} of ${pointersArray.length} tabs. ${pointersArray.length - successCount} blocked by popup blocker.`, true);
+    if (errorCount === 0) {
+      this.showNote(`Opened ${pointersArray.length} pointer${pointersArray.length > 1 ? 's' : ''} in new tab${pointersArray.length > 1 ? 's' : ''}`, false);
+    } else if (errorCount < pointersArray.length) {
+      this.showNote(`Opened ${pointersArray.length - errorCount} of ${pointersArray.length} tabs. ${errorCount} failed to open.`, true);
     } else {
       this.showNote('Unable to open tabs. Please allow popups for this site and try again.', true);
     }
