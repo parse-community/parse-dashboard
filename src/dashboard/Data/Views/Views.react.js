@@ -897,8 +897,8 @@ class Views extends TableView {
         if (newWindow) {
           successCount++;
         }
-      } catch {
-        // Error handled by final notification logic
+      } catch (error) {
+        console.error('Failed to open tab for pointer:', pointer, error);
       }
     });
 
