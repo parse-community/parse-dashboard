@@ -909,7 +909,7 @@ class Views extends TableView {
     );
 
     window.open(path, '_blank', 'noopener,noreferrer');
-    
+
     // Show success notification
     this.showNote(`Applied filter to show ${uniqueObjectIds.length} pointer${uniqueObjectIds.length > 1 ? 's' : ''} from ${targetClassName}`, false);
   }
