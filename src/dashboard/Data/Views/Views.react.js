@@ -572,8 +572,8 @@ class Views extends TableView {
                   // Remove focus after action to follow UX best practices
                   e.currentTarget.blur();
                 }}
-                aria-label={`Open all pointers in ${name} column in new tabs`}
-                title="Open all pointers in new tabs"
+                aria-label={`Filter to show all pointers from ${name} column`}
+                title="Filter to show all pointers from this column"
               >
                 <Icon
                   name="right-outline"
@@ -870,59 +870,48 @@ class Views extends TableView {
       .map(row => row[columnName])
       .filter(value => value && value.__type === 'Pointer' && value.className && value.objectId);
 
-    // Open each unique pointer in a new tab
-    const uniquePointers = new Map();
-    pointers.forEach(pointer => {
-      // Use a more collision-proof key format with explicit separators
-      const key = `className:${pointer.className}|objectId:${pointer.objectId}`;
-      if (!uniquePointers.has(key)) {
-        uniquePointers.set(key, pointer);
-      }
-    });
-
-    if (uniquePointers.size === 0) {
+    if (pointers.length === 0) {
       this.showNote('No pointers found in this column', true);
       return;
     }
 
-    const pointersArray = Array.from(uniquePointers.values());
-
-    // Confirm for large numbers of tabs to prevent overwhelming the user
-    if (pointersArray.length > 10) {
-      const confirmMessage = `This will open ${pointersArray.length} new tabs. This might overwhelm your browser. Continue?`;
-      if (!confirm(confirmMessage)) {
-        return;
+    // Group pointers by target class
+    const pointersByClass = new Map();
+    pointers.forEach(pointer => {
+      if (!pointersByClass.has(pointer.className)) {
+        pointersByClass.set(pointer.className, new Set());
       }
-    }
-
-    // Open all tabs immediately to maintain user activation context
-    let errorCount = 0;
-
-    pointersArray.forEach((pointer) => {
-      try {
-        const filters = JSON.stringify([{ field: 'objectId', constraint: 'eq', compareTo: pointer.objectId }]);
-        const url = generatePath(
-          this.context,
-          `browser/${pointer.className}?filters=${encodeURIComponent(filters)}`,
-          true
-        );
-        window.open(url, '_blank', 'noopener,noreferrer');
-        // Note: window.open with security attributes may return null even when successful,
-        // so we assume success unless an exception is thrown
-      } catch (error) {
-        console.error('Failed to open tab for pointer:', pointer, error);
-        errorCount++;
-      }
+      pointersByClass.get(pointer.className).add(pointer.objectId);
     });
 
-    // Show result notification
-    if (errorCount === 0) {
-      this.showNote(`Opened ${pointersArray.length} pointer${pointersArray.length > 1 ? 's' : ''} in new tab${pointersArray.length > 1 ? 's' : ''}`, false);
-    } else if (errorCount < pointersArray.length) {
-      this.showNote(`Opened ${pointersArray.length - errorCount} of ${pointersArray.length} tabs. ${errorCount} failed to open.`, true);
-    } else {
-      this.showNote('Unable to open tabs. Please allow popups for this site and try again.', true);
+    // If multiple target classes, show error
+    if (pointersByClass.size > 1) {
+      const classNames = Array.from(pointersByClass.keys()).join(', ');
+      this.showNote(`Cannot filter pointers from multiple classes: ${classNames}. Please use this feature on columns with pointers to a single class.`, true);
+      return;
     }
+
+    // Get the single target class and unique object IDs
+    const targetClassName = Array.from(pointersByClass.keys())[0];
+    const uniqueObjectIds = Array.from(pointersByClass.get(targetClassName));
+
+    // Navigate to the target class with containedIn filter
+    const filters = JSON.stringify([{
+      field: 'objectId',
+      constraint: 'containedIn',
+      compareTo: uniqueObjectIds
+    }]);
+
+    const path = generatePath(
+      this.context,
+      `browser/${targetClassName}?filters=${encodeURIComponent(filters)}`,
+      true
+    );
+
+    window.open(path, '_blank', 'noopener,noreferrer');
+    
+    // Show success notification
+    this.showNote(`Applied filter to show ${uniqueObjectIds.length} pointer${uniqueObjectIds.length > 1 ? 's' : ''} from ${targetClassName}`, false);
   }
 
   showNote(message, isError) {
