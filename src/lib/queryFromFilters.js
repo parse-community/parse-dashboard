@@ -166,7 +166,7 @@ function addConstraint(query, filter) {
       query.notEqualTo(filter.get('field'), filter.get('compareTo'));
       break;
     case 'containedIn':
-      query.containedIn(filter.get('field'), filter.get('array'));
+      query.containedIn(filter.get('field'), filter.get('compareTo'));
       break;
     case 'stringContainsString':
       query.matches(filter.get('field'), filter.get('compareTo'), 'i');

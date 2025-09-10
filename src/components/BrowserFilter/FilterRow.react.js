@@ -28,8 +28,33 @@ function compareValue(
   onKeyDown,
   active,
   parentContentId,
-  setFocus
+  setFocus,
+  currentConstraint
 ) {
+  if (currentConstraint === 'containedIn') {
+    return (
+      <input
+        type="text"
+        value={Array.isArray(value) ? JSON.stringify(value) : value || ''}
+        placeholder="[1, 2, 3]"
+        onChange={e => {
+          try {
+            const parsed = JSON.parse(e.target.value);
+            if (Array.isArray(parsed)) {
+              onChangeCompareTo(parsed);
+            } else {
+              onChangeCompareTo(e.target.value);
+            }
+          } catch {
+            onChangeCompareTo(e.target.value);
+          }
+        }}
+        onKeyDown={onKeyDown}
+        ref={setFocus}
+      />
+    );
+  }
+
   switch (info.type) {
     case null:
       return null;
@@ -223,7 +248,8 @@ const FilterRow = ({
         onKeyDown,
         active,
         parentContentId,
-        setFocus
+        setFocus,
+        currentConstraint
       )}
       <button type="button" className={styles.remove} onClick={onDeleteRow}>
         <Icon name="minus-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />

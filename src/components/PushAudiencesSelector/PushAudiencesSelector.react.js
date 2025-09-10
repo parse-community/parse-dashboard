@@ -24,7 +24,7 @@ const PushAudiencesOptions = ({ current, onChange, onEditAudience, schema, audie
             fromJS({
               field: 'deviceType',
               constraint: 'containedIn',
-              array: query.deviceType['$in'],
+              compareTo: query.deviceType['$in'],
             })
           )
           : query;

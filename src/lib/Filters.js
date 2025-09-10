@@ -175,13 +175,17 @@ export const Constraints = {
     field: null,
     comparable: false,
   },
+  containedIn: {
+    name: 'contained in',
+    comparable: true,
+  },
 };
 
 export const FieldConstraints = {
-  Pointer: ['exists', 'dne', 'eq', 'neq', 'starts', 'unique'],
-  Boolean: ['exists', 'dne', 'eq', 'neq', 'unique'],
-  Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'unique'],
-  String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'unique'],
+  Pointer: ['exists', 'dne', 'eq', 'neq', 'starts', 'containedIn', 'unique'],
+  Boolean: ['exists', 'dne', 'eq', 'neq', 'containedIn', 'unique'],
+  Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'containedIn', 'unique'],
+  String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'stringContainsString', 'containedIn', 'unique'],
   Date: [
     'exists',
     'dne',
@@ -189,6 +193,7 @@ export const FieldConstraints = {
     'onOrBefore',
     'after',
     'onOrAfter',
+    'containedIn',
     'unique',
   ],
   Object: [
