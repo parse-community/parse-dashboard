@@ -62,7 +62,8 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
     field: field,
     constraint: newConstraint,
     compareTo:
-      compareType && prevCompareTo ? prevCompareTo : Filters.DefaultComparisons[compareType],
+      compareType && prevCompareTo ? prevCompareTo : 
+      newConstraint === 'containedIn' ? [] : Filters.DefaultComparisons[compareType],
   });
   return filters.set(index, newFilter);
 }
