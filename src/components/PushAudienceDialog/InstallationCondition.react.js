@@ -162,7 +162,6 @@ export default class InstallationCondition extends React.Component {
 
     return (
       <Field
-        labelWidth={30}
         label={<Label text="Installation Condition" description={labelDescription} />}
         input={input}
       />
