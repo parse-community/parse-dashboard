@@ -10,7 +10,7 @@ import * as PushUtils from 'lib/PushUtils';
 import * as PushConstants from 'dashboard/Push/PushConstants';
 import Button from 'components/Button/Button.react';
 import Field from 'components/Field/Field.react';
-import Filter from 'components/Filter/Filter.react';
+import PushAudienceFilter from 'components/PushAudienceFilter/PushAudienceFilter.react';
 import FormNote from 'components/FormNote/FormNote.react';
 import InstallationCondition from 'components/PushAudienceDialog/InstallationCondition.react';
 import Label from 'components/Label/Label.react';
@@ -100,7 +100,16 @@ export default class PushAudienceDialog extends React.Component {
       return;
     }
     const available = Filters.availableFilters(this.props.schema, this.state.filters);
-    const field = Object.keys(available)[0];
+
+    const keys = Object.keys(available);
+    if (keys.length === 0) {
+      this.setState({
+        errorMessage: 'No condition available.',
+      });
+      return;
+    }
+
+    const field = keys[0];
     this.setState(
       ({ filters }) => ({
         filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
@@ -283,11 +292,14 @@ export default class PushAudienceDialog extends React.Component {
           input={platformSelect}
         />
         <div className={styles.filter}>
-          <Filter
+          <PushAudienceFilter
             schema={this.props.schema}
             filters={this.state.filters}
             onChange={filters => {
               this.setState({ filters }, this.fetchAudienceSize.bind(this));
+            }}
+            onDeleteRow={() => {
+              this.setState({ errorMessage: undefined });
             }}
             renderRow={props => <InstallationCondition {...props} />}
           />
