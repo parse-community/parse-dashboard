@@ -164,8 +164,8 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | `apps.scripts.showConfirmationDialog`  | Bool                | yes      | `false` | `true`                                           | Is `true` if a confirmation dialog should be displayed before the script is executed, `false` if the script should be executed immediately.                                                                                           |
 | `apps.scripts.confirmationDialogStyle` | String              | yes      | `info`  | `critical`                                       | The style of the confirmation dialog. Valid values: `info` (blue style), `critical` (red style).                                                                                                                                      |
 | `apps.cloudConfigHistoryLimit`         | Integer             | yes      | `100`   | `100`                                            | The number of historic values that should be saved in the Cloud Config change history. Valid values: `0`...`Number.MAX_SAFE_INTEGER`.     
-| `apps.config`                          | Object             | yes      | -        | `{ ... }`                                        | App Settings option to store dashboard settings on server.
-| `apps.config.className`                | String             | yes      | _        | `DashboardConfig`                                | The table name will be used to save/migrate the dashboard config   |
+| `apps.config`                          | Object             | yes      | -        | `{ ... }`                                        | App settings option used to store dashboard configuration on the server.
+| `apps.config.className`                | String             | yes      | _        | `DashboardConfig`                                | The table name used to save and migrate the dashboard configuration. |
 
 ### File
 
