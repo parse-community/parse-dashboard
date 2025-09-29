@@ -56,7 +56,7 @@ const SaveButton = ({
   );
 };
 
-SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED']);
+SaveButton.States = keyMirror(['SAVING', 'SUCCEEDED', 'FAILED', 'WAITING']);
 
 const { ...forwardedButtonProps } = Button.propTypes;
 delete forwardedButtonProps.value;

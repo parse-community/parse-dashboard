@@ -155,6 +155,15 @@ export default class ParseApp {
   }
 
   /**
+   * Saves source of a Cloud Code hosted file from api.parse.com
+   * fileName - the name of the file to be fetched
+   * data - the text to save to the cloud file
+   */
+  saveSource(fileName, data) {
+    return this.apiRequest('POST', `scripts/${fileName}`, { data }, { useMasterKey: true });
+  }
+
+  /**
    * Fetches source of a Cloud Code hosted file from api.parse.com
    * fileName - the name of the file to be fetched
    */

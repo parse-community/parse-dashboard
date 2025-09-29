@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import CodeSnippet from 'components/CodeSnippet/CodeSnippet.react';
+import CodeEditor from 'components/CodeEditor/CodeEditor.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import FileTree from 'components/FileTree/FileTree.react';
@@ -14,10 +15,12 @@ import styles from 'dashboard/Data/CloudCode/CloudCode.scss';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';
+import SaveButton from 'components/SaveButton/SaveButton.react';
 
 function getPath(params) {
-  return params.splat;
+  return params['*'];
 }
+
 
 @withRouter
 class CloudCode extends DashboardView {
@@ -29,6 +32,8 @@ class CloudCode extends DashboardView {
     this.state = {
       files: undefined,
       source: undefined,
+      saveState: SaveButton.States.WAITING,
+      saveError: '',
     };
   }
 
@@ -37,7 +42,7 @@ class CloudCode extends DashboardView {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (this.context !== nextContext) {
+    if (this.context !== nextContext || getPath(nextProps.params) !== getPath(this.props.params)) {
       this.fetchSource(nextContext, getPath(nextProps.params));
     }
   }
@@ -54,9 +59,13 @@ class CloudCode extends DashboardView {
 
         if (!fileName || release.files[fileName] === undefined) {
           // Means we're still in /cloud_code/. Let's redirect to /cloud_code/main.js
-          this.props.navigate(generatePath(this.context, 'cloud_code/main.js'), { replace: true });
+
+          this.props.navigate(
+            generatePath(this.context, `cloud_code/${Object.keys(release.files)[0]}`)
+          );
         } else {
           // Means we can load /cloud_code/<fileName>
+          this.setState({ source: undefined });
           app.getSource(fileName).then(
             source => this.setState({ source: source }),
             () => this.setState({ source: undefined })
@@ -90,6 +99,24 @@ class CloudCode extends DashboardView {
     );
   }
 
+  async getCode() { 
+    if (!this.editor) {
+      return;
+    }
+    this.setState({ saveState: SaveButton.States.SAVING });
+    let fileName = getPath(this.props.params);
+    try {
+      await this.context.saveSource(fileName,this.editor.value);
+      this.setState({ saveState: SaveButton.States.SUCCEEDED });
+      setTimeout(()=> {
+        this.setState({ saveState: SaveButton.States.WAITING });
+      },2000);
+    } catch (e) {
+      this.setState({ saveState: SaveButton.States.FAILED });
+      this.setState({ saveError: e.message || e });
+    }
+  }
+
   renderContent() {
     let toolbar = null;
     let content = null;
@@ -113,11 +140,23 @@ class CloudCode extends DashboardView {
       if (fileName) {
         toolbar = <Toolbar section="Cloud Code" subsection={fileName} />;
 
-        const source = this.state.files[fileName];
-        if (source && source.source) {
+        const source = this.state.source;
+        if (source) {
           content = (
             <div className={styles.content}>
-              <CodeSnippet source={source.source} language="javascript" />
+              {/* <CodeSnippet source={source.source} language="javascript" /> */}
+              <CodeEditor
+                defaultValue={source}
+                ref={editor => (this.editor = editor)}
+                fontSize={14}
+              />
+              <div style={{ padding: 10, alignContent: 'center', display: 'flex', justifyContent: 'center' }}>
+                <SaveButton
+                  state={this.state.saveState}
+                  failedText={this.state.saveError}
+                  onClick={() => this.getCode(this)}
+                />
+              </div>
             </div>
           );
         }
