@@ -1093,6 +1093,22 @@ You have direct access to the Parse database through function calls, so you can 
       `);
     });
 
+    // Serve new dashboard static files
+    app.use('/new', express.static(path.join(__dirname, '../new-dashboard/dist')));
+    app.get('/new/*', function(req, res) {
+      if (users && (!req.user || !req.user.isAuthenticated)) {
+        const redirect = req.url.replace('/login', '').replace('/new', '');
+        if (redirect.length > 1) {
+          return res.redirect(`${mountPath}login?redirect=${redirect}`);
+        }
+        return res.redirect(`${mountPath}login`);
+      }
+      if (users && req.user && req.user.matchingUsername) {
+        res.append('username', req.user.matchingUsername);
+      }
+      res.sendFile(path.join(__dirname, '../new-dashboard/dist/index.html'));
+    });
+
     // For every other request, go to index.html. Let client-side handle the rest.
     app.get('/*', function(req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
