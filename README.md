@@ -156,21 +156,39 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 | `appName` | String | yes | `appId` | `--appName` | `PARSE_DASHBOARD_APP_NAME` | `"MyApp"` | Display name of the app. |
 | `masterKeyTtl` | Number | yes | - | `--masterKeyTtl` | - | `3600` | TTL for master key cache in seconds (when `masterKey` is a Function). |
 | `readOnlyMasterKey` | String | yes | - | - | - | `"myReadOnlyKey"` | Read-only master key that prevents mutations. |
-| `graphQLServerURL` | String | yes | - | `--graphQLServerURL` | `PARSE_DASHBOARD_GRAPHQL_SERVER_URL` | `"http://localhost:1337/graphql"` | URL of GraphQL Server. |
+| `clientKey` | String | yes | - | - | - | `"myClientKey"` | Client key for Parse SDK (legacy, mostly unused). |
+| `javascriptKey` | String | yes | - | - | - | `"myJsKey"` | JavaScript key for Parse SDK (legacy, mostly unused). |
+| `restKey` | String | yes | - | - | - | `"myRestKey"` | REST API key for server-side REST applications. |
+| `windowsKey` | String | yes | - | - | - | `"myWindowsKey"` | Windows SDK key (legacy, mostly unused). |
+| `webhookKey` | String | yes | - | - | - | `"myWebhookKey"` | Webhook key for Cloud Code Webhooks. |
+| `apiKey` | String | yes | - | - | - | `"myFileKey"` | File key (also called apiKey) for file migrations. |
+| `graphQLServerURL` | String | yes | - | `--graphQLServerURL` | `PARSE_DASHBOARD_GRAPHQL_SERVER_URL` | `"http://localhost:1337/graphql"` | The URL where your Parse GraphQL Server is running. |
 | `appNameForURL` | String | yes | `appName` | - | - | `"my-app"` | URL-friendly name used in dashboard URLs. |
 | `production` | Boolean | yes | `false` | - | - | `true` | Mark as production environment. |
 | `iconName` | String | yes | - | - | - | `"icon.png"` | Filename of app icon (requires global `iconsFolder`). |
 | `primaryBackgroundColor` | String | yes | - | - | - | `"#FFA500"` | Primary background color (CSS value). |
 | `secondaryBackgroundColor` | String | yes | - | - | - | `"#FF4500"` | Secondary background color (CSS value). |
 | `supportedPushLocales` | Array&lt;String&gt; | yes | - | - | - | `["en","fr"]` | Supported locales for push notifications. |
-| `columnPreference` | Object | yes | - | - | - | `{"_User":[...]}` | Column visibility/sorting/filtering preferences. |
-| `classPreference` | Object | yes | - | - | - | `{"_Role":{...}}` | Persistent filters for all users. |
+| `preventSchemaEdits` | Boolean | yes | `false` | - | - | `true` | Prevent schema modifications through the dashboard. |
+| `columnPreference` | Object | yes | - | - | - | `{"_User":[...]}` | Column visibility/sorting/filtering preferences. See [column preferences details](#prevent-columns-sorting). |
+| `classPreference` | Object | yes | - | - | - | `{"_Role":{...}}` | Persistent filters for all users. See [persistent filters details](#persistent-filters). |
 | `enableSecurityChecks` | Boolean | yes | `false` | - | - | `true` | Enable security checks under App Settings > Security. |
 | `cloudConfigHistoryLimit` | Integer | yes | `100` | - | - | `200` | Number of historic Cloud Config values (0 to Number.MAX_SAFE_INTEGER). |
 | `config` | Object | yes | - | - | - | `{...}` | Settings for storing dashboard config on server. |
 | `config.className` | String | yes | - | - | - | `"DashboardConfig"` | Table name for dashboard configuration. |
 | `scripts` | Array&lt;Object&gt; | yes | `[]` | - | - | `[{...}]` | Scripts for this app. See [scripts table below](#scripts-configuration). |
 | `infoPanel` | Array&lt;Object&gt; | yes | - | - | - | `[{...}]` | Info panel config. See [info panel table below](#info-panel-configuration). |
+
+##### Column Preference Configuration (`apps[].columnPreference.<className>[]`)
+
+Each class in `columnPreference` can have an array of column configurations:
+
+| Parameter | Type | Optional | Default | Example | Description |
+|-----------|------|----------|---------|---------|-------------|
+| `name` | String | no | - | `"createdAt"` | Column/field name. |
+| `visible` | Boolean | yes | `true` | `false` | Whether the column is visible in the data browser. |
+| `preventSort` | Boolean | yes | `false` | `true` | Prevent this column from being sortable. |
+| `filterSortToTop` | Boolean | yes | `false` | `true` | Sort this column to the top in filter popup. |
 
 ##### Scripts Configuration (`apps[].scripts[]`)
 
