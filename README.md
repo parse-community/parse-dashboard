@@ -238,16 +238,6 @@ Each class in `columnPreference` can have an array of column configurations:
 | `apps[].appId` | String | no | - | - | - | `"myAppId"` | App ID user can access. |
 | `apps[].readOnly` | Boolean | yes | `false` | - | - | `true` | Read-only access to this specific app. |
 
-##### AI Agent Configuration (`agent`)
-
-| Parameter | Type | Optional | Example | Description |
-|-----------|------|----------|---------|-------------|
-| `models` | Array&lt;Object&gt; | no | `[{...}]` | Array of AI model configurations. |
-| `models[].name` | String | no | `"ChatGPT 4.1"` | Display name for AI model. |
-| `models[].provider` | String | no | `"openai"` | AI provider (currently only `"openai"`). |
-| `models[].model` | String | no | `"gpt-4.1"` | Model name from provider. |
-| `models[].apiKey` | String | no | `"sk-..."` | API key for authentication. |
-
 #### CLI & Server Options
 
 | Parameter | Type | Optional | Default | CLI | Env Variable | Example | Description |
