@@ -123,22 +123,20 @@ After starting the dashboard, you can visit http://localhost:4040 in your browse
 ## Compatibility
 
 ### Parse Server
-
 Parse Dashboard is compatible with the following Parse Server versions.
 
 | Parse Dashboard Version | Parse Server Version | Compatible |
-| ----------------------- | -------------------- | ---------- |
-| >=1.0                   | >= 2.1.4             | ✅ Yes     |
+|-------------------------|----------------------|------------|
+| >=1.0                   | >= 2.1.4             | ✅ Yes      |
 
 ### Node.js
-
 Parse Dashboard is continuously tested with the most recent releases of Node.js to ensure compatibility. We follow the [Node.js Long Term Support plan](https://github.com/nodejs/Release) and only test against versions that are officially supported and have not reached their end-of-life date.
 
 | Version    | Latest Version | End-of-Life | Compatible |
-| ---------- | -------------- | ----------- | ---------- |
-| Node.js 18 | 18.20.4        | May 2025    | ✅ Yes     |
-| Node.js 20 | 20.18.0        | April 2026  | ✅ Yes     |
-| Node.js 22 | 22.9.0         | April 2027  | ✅ Yes     |
+|------------|----------------|-------------|------------|
+| Node.js 18 | 18.20.4        | May 2025    | ✅ Yes      |
+| Node.js 20 | 20.18.0        | April 2026  | ✅ Yes      |
+| Node.js 22 | 22.9.0         | April 2027  | ✅ Yes      |
 
 ## Configuring Parse Dashboard
 
@@ -389,7 +387,7 @@ After starting the dashboard, you can visit http://0.0.0.0:4040/apps/MyTestApp/a
 
 ## App Icon Configuration
 
-Parse Dashboard supports adding an optional icon for each app, so you can identify them easier in the list. To do so, you _must_ use the configuration file, define an `iconsFolder` in it, and define the `iconName` parameter for each app (including the extension). The path of the `iconsFolder` is relative to the configuration file. If you have installed ParseDashboard globally you need to use the full path as value for the `iconsFolder`. To visualize what it means, in the following example `icons` is a directory located under the same directory as the configuration file:
+Parse Dashboard supports adding an optional icon for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `iconsFolder` in it, and define the `iconName` parameter for each app (including the extension). The path of the `iconsFolder` is relative to the configuration file. If you have installed ParseDashboard globally you need to use the full path as value for the `iconsFolder`. To visualize what it means, in the following example `icons` is a directory located under the same directory as the configuration file:
 
 ```json
 {
@@ -399,7 +397,7 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
       "appId": "myAppId",
       "masterKey": "myMasterKey",
       "appName": "My Parse Server App",
-      "iconName": "MyAppIcon.png"
+      "iconName": "MyAppIcon.png",
     }
   ],
   "iconsFolder": "icons"
@@ -408,7 +406,7 @@ Parse Dashboard supports adding an optional icon for each app, so you can identi
 
 ## App Background Color Configuration
 
-Parse Dashboard supports adding an optional background color for each app, so you can identify them easier in the list. To do so, you _must_ use the configuration file, define an `primaryBackgroundColor` and `secondaryBackgroundColor` in it, parameter for each app. It is `CSS style`. To visualize what it means, in the following example `backgroundColor` is a configuration file:
+Parse Dashboard supports adding an optional background color for each app, so you can identify them easier in the list. To do so, you *must* use the configuration file, define an `primaryBackgroundColor` and `secondaryBackgroundColor` in it, parameter for each app. It is `CSS style`. To visualize what it means, in the following example `backgroundColor` is a configuration file:
 
 ```json
 {
@@ -439,7 +437,7 @@ You can set `appNameForURL` in the config file for each app to control the url o
 
 To change the app to production, simply set `production` to `true` in your config file. The default value is false if not specified.
 
-### Prevent columns sorting
+ ### Prevent columns sorting
 
 You can prevent some columns to be sortable by adding `preventSort` to columnPreference options in each app configuration
 
@@ -562,37 +560,26 @@ You can also specify custom fields with the `scrips` option:
 Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
 
 ```js
-Parse.Cloud.define(
-  'deleteAccount',
-  async req => {
-    req.params.object.set('deleted', true);
-    await req.params.object.save(null, { useMasterKey: true });
-  },
-  {
-    requireMaster: true,
-  }
-);
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
 ```
 
 The field which the script was invoked on can be accessed by `selectedField`:
 
 ```js
-Parse.Cloud.define(
-  'deleteAccount',
-  async req => {
-    if (req.params.selectedField !== 'objectId') {
-      throw new Parse.Error(
-        Parse.Error.SCRIPT_FAILED,
-        'Deleting accounts is only available on the objectId field.'
-      );
-    }
-    req.params.object.set('deleted', true);
-    await req.params.object.save(null, { useMasterKey: true });
-  },
-  {
-    requireMaster: true,
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (req.params.selectedField !== 'objectId') {
+    throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Deleting accounts is only available on the objectId field.');
   }
-);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
 ```
 
 ⚠️ Depending on your Parse Server version you may need to set the Parse Server option `encodeParseObjectInCloudFunction` to `true` so that the selected object in the data browser is made available in the Cloud Function as an instance of `Parse.Object`. If the option is not set, is set to `false`, or you are using an older version of Parse Server, the object is made available as a plain JavaScript object and needs to be converted from a JSON object to a `Parse.Object` instance with `req.params.object = Parse.Object.fromJSON(req.params.object);`, before you can call any `Parse.Object` properties and methods on it.
@@ -603,17 +590,13 @@ For older versions of Parse Server:
 <summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
 
 ```js
-Parse.Cloud.define(
-  'deleteAccount',
-  async req => {
-    req.params.object = Parse.Object.fromJSON(req.params.object);
-    req.params.object.set('deleted', true);
-    await req.params.object.save(null, { useMasterKey: true });
-  },
-  {
-    requireMaster: true,
-  }
-);
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
 ```
 
 </details>
@@ -622,13 +605,13 @@ Parse.Cloud.define(
 <summary>Parse Server &gt;=2.1.4 &lt;4.4.0</summary>
 
 ```js
-Parse.Cloud.define('deleteAccount', async req => {
+Parse.Cloud.define('deleteAccount', async (req) => {
   if (!req.master || !req.params.object) {
     throw 'Unauthorized';
   }
   req.params.object = Parse.Object.fromJSON(req.params.object);
   req.params.object.set('deleted', true);
-  await req.params.object.save(null, { useMasterKey: true });
+  await req.params.object.save(null, {useMasterKey: true});
 });
 ```
 
@@ -639,8 +622,9 @@ Parse.Cloud.define('deleteAccount', async req => {
 Parse Dashboard can cache its resources such as bundles in the browser, so that opening the dashboard in another tab does not reload the dashboard resources from the server but from the local browser cache. Caching only starts after login in the dashboard.
 
 | Parameter             | Type    | Optional | Default | Example | Description                                                                                                    |
-| --------------------- | ------- | -------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+|-----------------------|---------|----------|---------|---------|----------------------------------------------------------------------------------------------------------------|
 | `enableResourceCache` | Boolean | yes      | `false` | `true`  | Enables caching of dashboard resources in the browser for faster dashboard loading in additional browser tabs. |
+
 
 Example configuration:
 
@@ -652,9 +636,9 @@ const dashboard = new ParseDashboard({
       serverURL: 'http://localhost:1337/parse',
       appId: 'myAppId',
       masterKey: 'myMasterKey',
-      appName: 'MyApp',
-    },
-  ],
+      appName: 'MyApp'
+    }
+  ]
 });
 ```
 
@@ -673,14 +657,14 @@ var express = require('express');
 var ParseDashboard = require('parse-dashboard');
 
 var dashboard = new ParseDashboard({
-  apps: [
+  "apps": [
     {
-      serverURL: 'http://localhost:1337/parse',
-      appId: 'myAppId',
-      masterKey: 'myMasterKey',
-      appName: 'MyApp',
-    },
-  ],
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+    }
+  ]
 });
 
 var app = express();
@@ -700,17 +684,14 @@ var ParseServer = require('parse-server').ParseServer;
 var ParseDashboard = require('parse-dashboard');
 
 var api = new ParseServer({
-  // Parse Server settings
+	// Parse Server settings
 });
 
 var options = { allowInsecureHTTP: false };
 
-var dashboard = new ParseDashboard(
-  {
-    // Parse Dashboard settings
-  },
-  options
-);
+var dashboard = new ParseDashboard({
+	// Parse Dashboard settings
+}, options);
 
 var app = express();
 
@@ -731,23 +712,22 @@ httpServer.listen(4040);
 Make sure the server URLs for your apps can be accessed by your browser. If you are deploying the dashboard, then `localhost` urls will not work.
 
 ## Security Considerations
-
 In order to securely deploy the dashboard without leaking your apps master key, you will need to use HTTPS and Basic Authentication.
 
-The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or front-facing proxy, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--trustProxy=1` option (or set the PARSE_DASHBOARD_TRUST_PROXY config var to 1) to rely on the X-Forwarded-\* headers for the client's connection security. This is useful for hosting on services like Heroku, where you can trust the provided proxy headers to correctly determine whether you're using HTTP or HTTPS. You can also turn on this setting when using the dashboard as [express](https://github.com/expressjs/express) middleware:
+The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or front-facing proxy, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--trustProxy=1` option (or set the PARSE_DASHBOARD_TRUST_PROXY config var to 1) to rely on the X-Forwarded-* headers for the client's connection security.  This is useful for hosting on services like Heroku, where you can trust the provided proxy headers to correctly determine whether you're using HTTP or HTTPS.  You can also turn on this setting when using the dashboard as [express](https://github.com/expressjs/express) middleware:
 
 ```javascript
 var trustProxy = true;
 var dashboard = new ParseDashboard({
-  apps: [
+  "apps": [
     {
-      serverURL: 'http://localhost:1337/parse',
-      appId: 'myAppId',
-      masterKey: 'myMasterKey',
-      appName: 'MyApp',
-    },
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+    }
   ],
-  trustProxy: 1,
+  "trustProxy": 1
 });
 ```
 
@@ -770,7 +750,6 @@ const dashboard = new ParseDashboard({
 ```
 
 ### Configuring Basic Authentication
-
 You can configure your dashboard for Basic Authentication by adding usernames and passwords your `parse-dashboard-config.json` configuration file:
 
 ```json
@@ -801,52 +780,49 @@ With MFA enabled, a user must provide a one-time password that is typically boun
 
 The user requires an authenticator app to generate the one-time password. These apps are provided by many 3rd parties and mostly for free.
 
-If you create a new user by running `parse-dashboard --createUser`, you will be asked whether you want to enable MFA for the new user. To enable MFA for an existing user, run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
+If you create a new user by running `parse-dashboard --createUser`, you will be  asked whether you want to enable MFA for the new user. To enable MFA for an existing user, run `parse-dashboard --createMFA` to generate a `mfa` secret that you then add to the existing user configuration, for example:
 
 ```json
 {
-  "apps": [{ "...": "..." }],
+  "apps": [{"...": "..."}],
   "users": [
     {
-      "user": "user1",
-      "pass": "pass",
+      "user":"user1",
+      "pass":"pass",
       "mfa": "lmvmOIZGMTQklhOIhveqkumss"
     }
   ]
 }
 ```
 
-Parse Dashboard follows the industry standard and supports the common OTP algorithm `SHA-1` by default, to be compatible with most authenticator apps. If you have specific security requirements regarding TOTP characteristics (algorithm, digit length, time period) you can customize them by using the guided configuration mentioned above.
+ Parse Dashboard follows the industry standard and supports the common OTP algorithm `SHA-1` by default, to be compatible with most authenticator apps. If you have specific security requirements regarding TOTP characteristics (algorithm, digit length, time period) you can customize them by using the guided configuration mentioned above.
 
 ### Separating App Access Based on User Identity
-
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.
 
 To do so, update your `parse-dashboard-config.json` configuration file to match the following format:
 
 ```json
 {
-  "apps": [{ "...": "..." }],
+  "apps": [{"...": "..."}],
   "users": [
-    {
-      "user": "user1",
-      "pass": "pass1",
-      "apps": [{ "appId": "myAppId1" }, { "appId": "myAppId2" }]
-    },
-    {
-      "user": "user2",
-      "pass": "pass2",
-      "apps": [{ "appId": "myAppId1" }]
-    }
-  ]
+     {
+       "user":"user1",
+       "pass":"pass1",
+       "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
+     },
+     {
+       "user":"user2",
+       "pass":"pass2",
+       "apps": [{"appId": "myAppId1"}]
+     }  ]
 }
 ```
-
 The effect of such a configuration is as follows:
 
 When `user1` logs in, he/she will be able to manage `myAppId1` and `myAppId2` from the dashboard.
 
-When _`user2`_ logs in, he/she will only be able to manage _`myAppId1`_ from the dashboard.
+When *`user2`*  logs in, he/she will only be able to manage *`myAppId1`* from the dashboard.
 
 ## Use Read-Only masterKey
 
@@ -859,8 +835,8 @@ Start your `parse-server` with
 
 ```json
 {
-  "masterKey": "YOUR_MASTER_KEY_HERE",
-  "readOnlyMasterKey": "YOUR_READ_ONLY_MASTER_KEY"
+"masterKey": "YOUR_MASTER_KEY_HERE",
+"readOnlyMasterKey": "YOUR_READ_ONLY_MASTER_KEY",
 }
 ```
 
@@ -869,15 +845,15 @@ Then in your dashboard configuration:
 ```javascript
 var trustProxy = true;
 var dashboard = new ParseDashboard({
-  apps: [
+  "apps": [
     {
-      serverURL: 'http://localhost:1337/parse',
-      appId: 'myAppId',
-      masterKey: 'YOUR_READ_ONLY_MASTER_KEY',
-      appName: 'MyApp',
-    },
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "myAppId",
+      "masterKey": "YOUR_READ_ONLY_MASTER_KEY",
+      "appName": "MyApp"
+    }
   ],
-  trustProxy: 1,
+  "trustProxy": 1
 });
 ```
 
@@ -908,15 +884,15 @@ You can mark a user as a read-only user:
   ],
   "users": [
     {
-      "user": "user1",
-      "pass": "pass1",
+      "user":"user1",
+      "pass":"pass1",
       "readOnly": true,
-      "apps": [{ "appId": "myAppId1" }, { "appId": "myAppId2" }]
+      "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
     },
     {
-      "user": "user2",
-      "pass": "pass2",
-      "apps": [{ "appId": "myAppId1" }]
+      "user":"user2",
+      "pass":"pass2",
+      "apps": [{"appId": "myAppId1"}]
     }
   ]
 }
@@ -940,13 +916,13 @@ You can give read only access to a user on a per-app basis:
       "port": 4040,
       "production": true
     },
-    { "...": "..." }
+    {"...": "..."}
   ],
   "users": [
     {
-      "user": "user",
-      "pass": "pass",
-      "apps": [{ "appId": "myAppId", "readOnly": true }, { "appId": "myAppId2" }]
+      "user":"user",
+      "pass":"pass",
+      "apps": [{"appId": "myAppId", "readOnly": true}, {"appId": "myAppId2"}]
     }
   ]
 }
@@ -979,7 +955,7 @@ You can provide a list of locales or languages you want to support for your dash
 
 The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard)
 
-Run the image with your `config.json` mounted as a volume
+Run the image with your ``config.json`` mounted as a volume
 
 ```
 docker run -d -p 8080:4040 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parseplatform/parse-dashboard --dev
@@ -991,7 +967,7 @@ You can also pass the appId, masterKey and serverURL as arguments:
 docker run -d -p 4040:4040 parseplatform/parse-dashboard --dev --appId $APP_ID --masterKey $MASTER_KEY --serverURL $SERVER_URL
 ```
 
-By default, the container will start the app at port 4040 inside the container. However, you can run custom command as well (see `Deploying in production` for custom setup).
+By default, the container will start the app at port 4040 inside the container. However, you can run custom command as well (see ``Deploying in production`` for custom setup).
 
 In this example, we want to run the application in production mode at port 80 of the host machine.
 
@@ -999,17 +975,16 @@ In this example, we want to run the application in production mode at port 80 of
 docker run -d -p 80:8080 -v host/path/to/config.json:/src/Parse-Dashboard/parse-dashboard-config.json parse-dashboard --port 8080 --dev
 ```
 
-If you are not familiar with Docker, `--port 8080` will be passed in as argument to the entrypoint to form the full command `npm start -- --port 8080`. The application will start at port 8080 inside the container and port `8080` will be mounted to port `80` on your host machine.
+If you are not familiar with Docker, ``--port 8080`` will be passed in as argument to the entrypoint to form the full command ``npm start -- --port 8080``. The application will start at port 8080 inside the container and port ``8080`` will be mounted to port ``80`` on your host machine.
 
 # Features
-
-_(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)_
+*(The following is not a complete list of features but a work in progress to build a comprehensive feature list.)*
 
 ## Data Browser
 
 ### Filters
 
-▶️ _Core > Browser > Filter_
+▶️ *Core > Browser > Filter*
 
 The filter dialog allows to add relational filter conditions based on other classes that have a pointer to the current class.
 
@@ -1027,9 +1002,9 @@ To apply such a filter, simply go to the `_User` class and add the two required 
 
 ### Info Panel
 
-▶️ _Core > Browser > Show Panel / Hide Panel_
+▶️ *Core > Browser > Show Panel / Hide Panel*
 
-The data browser offers an info panel that can display information related to the currently selected object in the data browser table. The info panel is made visible by clicking on the menu button _Show Panel_ in the top right corner when browsing a class for which the info panel is configured in the dashboard options.
+The data browser offers an info panel that can display information related to the currently selected object in the data browser table. The info panel is made visible by clicking on the menu button *Show Panel* in the top right corner when browsing a class for which the info panel is configured in the dashboard options.
 
 The following example dashboard configuration shows an info panel for the `_User` class with the title `User Details`, by calling the Cloud Code Function `getUserDetails` and displaying the returned response.
 
@@ -1058,7 +1033,7 @@ The Cloud Code Function receives the selected object in the payload and returns 
 The info panel can contain multiple segments to display different groups of information.
 
 | Parameter                | Value  | Optional | Description                                                                                                                            |
-| ------------------------ | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------|--------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
 | `segments`               | Array  | No       | An ordered array of segments, where each segment represents a distinct group of items to display.                                      |
 | `segments[i].title`      | String | No       | The title of the segment that will be displayed.                                                                                       |
 | `segments[i].items`      | Array  | No       | An ordered array of items within the segment. Each item can be of different types, such as text, key-value pairs, tables, images, etc. |
@@ -1105,7 +1080,7 @@ Example:
 {
   "type": "text",
   "text": "This user has a high churn risk!",
-  "style": { "backgroundColor": "red" }
+  "style": { "backgroundColor": "red" },
 }
 ```
 
@@ -1114,7 +1089,7 @@ Example:
 A text item that consists of a key and a value. The value can optionally be linked to a URL.
 
 | Parameter       | Value   | Default     | Optional | Description                                                                                                                                                                                             |
-| --------------- | ------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------|---------|-------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `type`          | String  | -           | No       | Must be `"keyValue"`.                                                                                                                                                                                   |
 | `key`           | String  | -           | No       | The key text to display.                                                                                                                                                                                |
 | `value`         | String  | -           | No       | The value text to display.                                                                                                                                                                              |
@@ -1130,7 +1105,7 @@ Examples:
   "type": "keyValue",
   "key": "Lifetime purchase value",
   "value": "$10k",
-  "style": { "backgroundColor": "green" }
+  "style": { "backgroundColor": "green" },
 }
 ```
 
@@ -1176,8 +1151,8 @@ const item = {
   key: 'Purchase',
   value: objectId,
   url,
-  isRelativeUrl: true,
-};
+  isRelativeUrl: true
+}
 ```
 
 ##### Table Item
@@ -1185,7 +1160,7 @@ const item = {
 A table with columns and rows to display data in a structured format.
 
 | Parameter         | Value  | Optional | Description                                                                      |
-| ----------------- | ------ | -------- | -------------------------------------------------------------------------------- |
+|-------------------|--------|----------|----------------------------------------------------------------------------------|
 | `type`            | String | No       | Must be `"table"`.                                                               |
 | `columns`         | Array  | No       | The column definitions, including names and types.                               |
 | `columns[*].name` | String | No       | The name of the column to display.                                               |
@@ -1287,7 +1262,7 @@ Example:
 A button that triggers an action when clicked.
 
 | Parameter        | Value  | Optional | Description                                             |
-| ---------------- | ------ | -------- | ------------------------------------------------------- |
+|------------------|--------|----------|---------------------------------------------------------|
 | `type`           | String | No       | Must be `"button"`.                                     |
 | `text`           | String | No       | The text to display on the button.                      |
 | `action`         | Object | No       | The action to be performed when the button is clicked.  |
@@ -1322,7 +1297,7 @@ Example:
 A sub-panel whose data is loaded on-demand by expanding the item.
 
 | Parameter           | Value  | Optional | Description                                                                                                                                       |
-| ------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+|---------------------|--------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | `type`              | String | No       | Must be `"infoPanel"`.                                                                                                                            |
 | `title`             | String | No       | The title to display in the expandable headline.                                                                                                  |
 | `cloudCodeFunction` | String | No       | The Cloud Code Function to call which receives the selected object in the data browser and returns the response to be displayed in the sub-panel. |
@@ -1335,7 +1310,7 @@ Example:
   "type": "panel",
   "title": "Purchase History",
   "cloudCodeFunction": "getUserPurchaseHistory",
-  "style": { "backgroundColor": "lightGray" }
+  "style": { "backgroundColor": "lightGray" },
 }
 ```
 
@@ -1344,7 +1319,7 @@ Example:
 To reduce the time for info panel data to appear, data can be prefetched.
 
 | Parameter                      | Type   | Optional | Default | Example | Description                                                                                                                       |
-| ------------------------------ | ------ | -------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------|--------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `infoPanel[*].prefetchObjects` | Number | yes      | `0`     | `2`     | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance. |
 | `infoPanel[*].prefetchStale`   | Number | yes      | `0`     | `10`    | Duration in seconds after which prefetched data is discarded as stale.                                                            |
 
@@ -1352,13 +1327,13 @@ Prefetching is particularly useful when navigating through lists of objects. To 
 
 ### Freeze Columns
 
-▶️ _Core > Browser > Freeze column_
+▶️ *Core > Browser > Freeze column*
 
 Right-click on a table column header to freeze columns from the left up to the clicked column in the data browser. When scrolling horizontally, the frozen columns remain visible while the other columns scroll underneath.
 
 ### Browse as User
 
-▶️ _Core > Browser > Browse_
+▶️ *Core > Browser > Browse*
 
 This feature allows you to use the data browser as another user, respecting that user's data permissions. For example, you will only see records and fields the user has permission to see.
 
@@ -1366,7 +1341,7 @@ This feature allows you to use the data browser as another user, respecting that
 
 ### Change Pointer Key
 
-▶️ _Core > Browser > Edit > Change pointer key_
+▶️ *Core > Browser > Edit > Change pointer key*
 
 This feature allows you to change how a pointer is represented in the browser. By default, a pointer is represented by the `objectId` of the linked object. You can change this to any other column of the object class. For example, if class `Installation` has a field that contains a pointer to class `User`, the pointer will show the `objectId` of the user by default. You can change this to display the field `email` of the user, so that a pointer displays the user's email address instead.
 
@@ -1380,7 +1355,7 @@ This feature allows you to change how a pointer is represented in the browser. B
 
 ### CSV Export
 
-▶️ _Core > Browser > Export_
+▶️ *Core > Browser > Export*
 
 This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
 
@@ -1409,20 +1384,20 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
         "provider": "openai",
         "model": "gpt-4.1",
         "apiKey": "YOUR_OPENAI_API_KEY"
-      }
+      },
     ]
   }
 }
 ```
 
-| Parameter                  | Type   | Required | Description                                                                                                                        |
-| -------------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `agent`                    | Object | Yes      | The AI agent configuration object. When using the environment variable, provide the complete agent configuration as a JSON string. |
-| `agent.models`             | Array  | Yes      | Array of AI model configurations available to the agent.                                                                           |
-| `agent.models[*].name`     | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                                                                              |
-| `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai").                                                                                       |
-| `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).                                                                       |
-| `agent.models[*].apiKey`   | String | Yes      | The API key for authenticating with the AI provider.                                                                               |
+| Parameter                  | Type   | Required | Description                                                                                                                         |
+|----------------------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `agent`                    | Object | Yes      | The AI agent configuration object.  When using the environment variable, provide the complete agent configuration as a JSON string. |
+| `agent.models`             | Array  | Yes      | Array of AI model configurations available to the agent.                                                                            |
+| `agent.models[*].name`     | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                                                                               |
+| `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai").                                                                                        |
+| `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).                                                                        |
+| `agent.models[*].apiKey`   | String | Yes      | The API key for authenticating with the AI provider.                                                                                |
 
 The agent will use the configured models to process natural language commands and perform database operations using the master key from your app configuration.
 
@@ -1465,7 +1440,7 @@ To get an OpenAI API key for use with the AI agent:
 
 ## Views
 
-▶️ _Core > Views_
+▶️ *Core > Views*
 
 Views are saved queries that display data in a table format. Saved views appear in the sidebar, where you can select, edit, or delete them. Optionally you can enable the object counter to show in the sidebar how many items match the view.
 
@@ -1477,11 +1452,11 @@ Views are saved queries that display data in a table format. Saved views appear 
 Views can pull their data from the following data sources.
 
 #### Aggregation Pipeline
-
+  
 Display aggregated data from your classes using a MongoDB aggregation pipeline. Create a view by selecting a class and defining an aggregation pipeline.
 
 #### Cloud Function
-
+  
 Display data returned by a Parse Cloud Function. Create a view specifying a Cloud Function that returns an array of objects. Cloud Functions enable custom business logic, computed fields, and complex data transformations.
 
 Cloud Function views can prompt users for text input and/or file upload when opened. Enable "Require text input" or "Require file upload" checkboxes when creating the view. The user provided data will then be available in the Cloud Function as parameters.
@@ -1489,7 +1464,7 @@ Cloud Function views can prompt users for text input and/or file upload when ope
 Cloud Function example:
 
 ```js
-Parse.Cloud.define('myViewFunction', request => {
+Parse.Cloud.define("myViewFunction", request => {
   const text = request.params.text;
   const fileData = request.params.fileData;
   return processDataWithTextAndFile(text, fileData);
@@ -1557,7 +1532,7 @@ Example:
 In the example above, the query string will be escaped and added to the url, resulting in the complete URL:
 
 ```js
-'browser/_Installation?filters=%5B%7B%22field%22%3A%22objectId%22%2C%22constraint%22%3A%22eq%22%2C%22compareTo%22%3A%22xWMyZ4YEGZ%22%2C%22class%22%3A%22_Installation%22%7D%5D';
+"browser/_Installation?filters=%5B%7B%22field%22%3A%22objectId%22%2C%22constraint%22%3A%22eq%22%2C%22compareTo%22%3A%22xWMyZ4YEGZ%22%2C%22class%22%3A%22_Installation%22%7D%5D"
 ```
 
 > [!Tip]
@@ -1589,7 +1564,7 @@ Example:
 
 We really want Parse to be yours, to see it grow and thrive in the open source community. Please see the [Contributing to Parse Dashboard guide](CONTRIBUTING.md).
 
----
+-----
 
 As of April 5, 2017, Parse, LLC has transferred this code to the parse-community organization, and will no longer be contributing to or distributing this code.
 
