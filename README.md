@@ -511,7 +511,7 @@ For example:
 }]
 ```
 
-You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under _App Settings > Export Class Preferences_.
+You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under *App Settings > Export Class Preferences*.
 
 ### Scripts
 
@@ -646,7 +646,7 @@ const dashboard = new ParseDashboard({
 > This feature can make it more difficult to push dashboard updates to users. Enabling the resource cache will start a browser service worker that caches dashboard resources locally only once. As long as the service worker is running, it will prevent loading any dashboard updates from the server, even if the user reloads the browser tab. The service worker is automatically stopped, once the last dashboard browser tab is closed. On the opening of the first dashboard browser tab, a new service worker is started and the dashboard resources are loaded from the server.
 
 > [!Note]
-> For developers: during dashboard development, the resource cache should be disabled to ensure reloading the dashboard tab in the browser loads the new dashboard bundle with any changes you made in the source code. You can inspect the service worker in the developer tools of most browsers. For example in Google Chrome, go to _Developer Tools > Application tab > Service workers_ to see whether the dashboard service worker is currently running and to debug it.
+> For developers: during dashboard development, the resource cache should be disabled to ensure reloading the dashboard tab in the browser loads the new dashboard bundle with any changes you made in the source code. You can inspect the service worker in the developer tools of most browsers. For example in Google Chrome, go to *Developer Tools > Application tab > Service workers* to see whether the dashboard service worker is currently running and to debug it.
 
 # Running as Express Middleware
 
