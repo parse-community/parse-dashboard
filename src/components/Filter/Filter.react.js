@@ -63,6 +63,7 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
     constraint: newConstraint,
     compareTo:
       compareType && prevCompareTo ? prevCompareTo : newConstraint === 'containedIn' ? [] : Filters.DefaultComparisons[compareType],
+    modifiers: newConstraint === 'matches' ? 'i' : undefined,
   });
   return filters.set(index, newFilter);
 }
@@ -70,6 +71,10 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
 function changeCompareTo(schema, filters, index, type, newCompare) {
   const newValue = newCompare;
   return filters.set(index, filters.get(index).set('compareTo', newValue));
+}
+
+function changeModifiers(filters, index, newModifiers) {
+  return filters.set(index, filters.get(index).set('modifiers', newModifiers));
 }
 
 function deleteRow(filters, index) {
@@ -124,6 +129,7 @@ const Filter = ({
         const field = filter.get('field');
         const constraint = filter.get('constraint');
         const compareTo = filter.get('compareTo');
+        const modifiers = filter.get('modifiers');
         let fields = [];
         if (available[currentClassName]) {
           fields = Object.keys(available[currentClassName]).concat([]);
@@ -182,6 +188,7 @@ const Filter = ({
           currentField: field,
           currentConstraint: constraint,
           compareTo,
+          modifiers,
           key: field + '-' + constraint + '-' + i,
           onChangeClass: newClassName => {
             onChange(changeClass(schema, filters, i, newClassName));
@@ -196,6 +203,9 @@ const Filter = ({
           },
           onChangeCompareTo: newCompare => {
             onChange(changeCompareTo(schema, filters, i, compareType, newCompare));
+          },
+          onChangeModifiers: newModifiers => {
+            onChange(changeModifiers(filters, i, newModifiers));
           },
           onKeyDown: ({ key }) => {
             if (key === 'Enter') {

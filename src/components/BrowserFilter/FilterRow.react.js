@@ -29,7 +29,9 @@ function compareValue(
   active,
   parentContentId,
   setFocus,
-  currentConstraint
+  currentConstraint,
+  modifiers,
+  onChangeModifiers
 ) {
   if (currentConstraint === 'containedIn') {
     return (
@@ -60,6 +62,29 @@ function compareValue(
       return null;
     case 'Object':
     case 'String':
+      if (currentConstraint === 'matches') {
+        return (
+          <>
+            <input
+              type="text"
+              value={value}
+              placeholder="regex pattern"
+              onChange={e => onChangeCompareTo(e.target.value)}
+              onKeyDown={onKeyDown}
+              ref={setFocus}
+              style={{ width: '140px' }}
+            />
+            <input
+              type="text"
+              value={modifiers || ''}
+              placeholder="i"
+              onChange={e => onChangeModifiers(e.target.value)}
+              onKeyDown={onKeyDown}
+              style={{ width: '60px', marginLeft: '4px' }}
+            />
+          </>
+        );
+      }
       return (
         <input
           type="text"
@@ -131,10 +156,12 @@ const FilterRow = ({
   currentField,
   currentConstraint,
   compareTo,
+  modifiers,
   onChangeClass,
   onChangeField,
   onChangeConstraint,
   onChangeCompareTo,
+  onChangeModifiers,
   onKeyDown,
   onDeleteRow,
   active,
@@ -249,7 +276,9 @@ const FilterRow = ({
         active,
         parentContentId,
         setFocus,
-        currentConstraint
+        currentConstraint,
+        modifiers,
+        onChangeModifiers
       )}
       <button type="button" className={styles.remove} onClick={onDeleteRow}>
         <Icon name="minus-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />
@@ -267,4 +296,6 @@ FilterRow.propTypes = {
   currentConstraint: PropTypes.string.isRequired,
   compareTo: PropTypes.any,
   compareInfo: PropTypes.object,
+  modifiers: PropTypes.string,
+  onChangeModifiers: PropTypes.func,
 };
