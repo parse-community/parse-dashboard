@@ -73,25 +73,40 @@ export default class ObjectPickerDialog extends React.Component {
   }
 
   async selectRelationRows(relation, filters) {
-    const relationData = await this.fetchParseData(relation, filters);
-    this.setState({ initialRelationData: relationData });
-    relationData.forEach(({ id }) => this.selectRow(id, true));
+    try {
+      const relationData = await this.fetchParseData(relation, filters);
+      this.setState({ initialRelationData: relationData });
+      relationData.forEach(({ id }) => this.selectRow(id, true));
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.props.showNote(msg, true);
+    }
   }
 
   async fetchData(source, filters = new List()) {
-    const data = await this.fetchParseData(source, filters);
-    const filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      filteredCounts[source] = await this.fetchParseDataCount(source, filters);
-    } else {
-      delete filteredCounts[source];
+    try {
+      const data = await this.fetchParseData(source, filters);
+      const filteredCounts = { ...this.state.filteredCounts };
+      if (filters.size > 0) {
+        filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+      } else {
+        delete filteredCounts[source];
+      }
+      this.setState({
+        data: data,
+        filters,
+        lastMax: this.props.limit,
+        filteredCounts: filteredCounts,
+      });
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.setState({
+        data: [],
+        filters,
+        lastMax: this.props.limit,
+      });
+      this.props.showNote(msg, true);
     }
-    this.setState({
-      data: data,
-      filters,
-      lastMax: this.props.limit,
-      filteredCounts: filteredCounts,
-    });
   }
 
   async fetchParseData(source, filters) {
@@ -175,6 +190,9 @@ export default class ObjectPickerDialog extends React.Component {
           data: state.data.concat(nextPage),
         }));
       }
+    }).catch(error => {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.props.showNote(msg, true);
     });
     this.setState({ lastMax: this.state.lastMax + this.props.limit });
   }

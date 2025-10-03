@@ -1114,40 +1114,60 @@ class Browser extends DashboardView {
 
   async fetchData(source, filters = new List()) {
     this.loadingFilters = JSON.stringify(filters.toJSON());
-    const data = await this.fetchParseData(source, filters);
-    if (this.loadingFilters !== JSON.stringify(filters.toJSON())) {
-      return;
-    }
-
-    const filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      if (this.state.isUnique) {
-        filteredCounts[source] = data.length;
-      } else {
-        filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+    try {
+      const data = await this.fetchParseData(source, filters);
+      if (this.loadingFilters !== JSON.stringify(filters.toJSON())) {
+        return;
       }
-    } else {
-      delete filteredCounts[source];
+
+      const filteredCounts = { ...this.state.filteredCounts };
+      if (filters.size > 0) {
+        if (this.state.isUnique) {
+          filteredCounts[source] = data.length;
+        } else {
+          filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+        }
+      } else {
+        delete filteredCounts[source];
+      }
+      this.setState({
+        data: data,
+        filters,
+        lastMax: this.state.limit,
+        filteredCounts: filteredCounts,
+      });
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.setState({
+        data: [],
+        filters,
+        lastMax: this.state.limit,
+      });
+      this.showNote(msg, true);
     }
-    this.setState({
-      data: data,
-      filters,
-      lastMax: this.state.limit,
-      filteredCounts: filteredCounts,
-    });
   }
 
   async fetchRelation(relation, filters = new List()) {
-    const data = await this.fetchParseData(relation, filters);
-    const relationCount = await this.fetchRelationCount(relation);
-    this.setState({
-      relation,
-      relationCount,
-      selection: {},
-      data,
-      filters,
-      lastMax: this.state.limit,
-    });
+    try {
+      const data = await this.fetchParseData(relation, filters);
+      const relationCount = await this.fetchRelationCount(relation);
+      this.setState({
+        relation,
+        relationCount,
+        selection: {},
+        data,
+        filters,
+        lastMax: this.state.limit,
+      });
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.setState({
+        data: [],
+        filters,
+        lastMax: this.state.limit,
+      });
+      this.showNote(msg, true);
+    }
   }
 
   async fetchRelationCount(relation) {
@@ -1209,6 +1229,9 @@ class Browser extends DashboardView {
           data: state.data.concat(nextPage),
         }));
       }
+    }).catch(error => {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.showNote(msg, true);
     });
     this.setState({ lastMax: this.state.lastMax + this.state.limit });
   }
