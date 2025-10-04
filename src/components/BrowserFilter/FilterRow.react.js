@@ -224,7 +224,7 @@ function compareValue(
     case 'String':
       if (currentConstraint === 'matches') {
         return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <input
               type="text"
               value={value}
@@ -232,7 +232,7 @@ function compareValue(
               onChange={e => onChangeCompareTo(e.target.value)}
               onKeyDown={onKeyDown}
               ref={setFocus}
-              style={{ flex: 1 }}
+              style={{ width: '106px' }}
             />
             <RegexOptionsButton modifiers={modifiers} onChangeModifiers={onChangeModifiers} />
           </div>
@@ -414,24 +414,14 @@ const FilterRow = ({
         buildSuggestions={buildFieldSuggestions}
         buildLabel={() => ''}
       />
-      {compareInfo.type ? (
+      <div style={{ flex: 1 }}>
         <ChromeDropdown
-          width="175"
           color={active ? 'blue' : 'purple'}
           value={Constraints[currentConstraint].name}
           options={constraints.map(c => Constraints[c].name)}
           onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
         />
-      ) : (
-        <div style={{ flex: 1 }}>
-          <ChromeDropdown
-            color={active ? 'blue' : 'purple'}
-            value={Constraints[currentConstraint].name}
-            options={constraints.map(c => Constraints[c].name)}
-            onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
-          />
-        </div>
-      )}
+      </div>
       {compareValue(
         compareInfo,
         compareTo,
