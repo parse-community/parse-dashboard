@@ -1069,7 +1069,7 @@ The items array can include various types of content such as text, key-value pai
 A simple text field.
 
 | Parameter | Value  | Optional | Description               |
-| --------- | ------ | -------- | ------------------------- |
+|-----------|--------|----------|---------------------------|
 | `type`    | String | No       | Must be `"text"`.         |
 | `text`    | String | No       | The text to display.      |
 | `style`   | Object | Yes      | The CSS style definition. |
@@ -1202,7 +1202,7 @@ Example:
 An image to be displayed in the panel.
 
 | Parameter | Value  | Optional | Description                      |
-| --------- | ------ | -------- | -------------------------------- |
+|-----------|--------|----------|----------------------------------|
 | `type`    | String | No       | Must be `"image"`.               |
 | `url`     | String | No       | The URL of the image to display. |
 | `style`   | Object | Yes      | The CSS style definition.        |
@@ -1222,7 +1222,7 @@ Example:
 A video to be displayed in the panel.
 
 | Parameter | Value  | Optional | Description                      |
-| --------- | ------ | -------- | -------------------------------- |
+|-----------|--------|----------|----------------------------------|
 | `type`    | String | No       | Must be `"video"`.               |
 | `url`     | String | No       | The URL of the video to display. |
 | `style`   | Object | Yes      | The CSS style definition.        |
@@ -1242,7 +1242,7 @@ Example:
 An audio file to be played in the panel.
 
 | Parameter | Value  | Optional | Description                   |
-| --------- | ------ | -------- | ----------------------------- |
+|-----------|--------|----------|-------------------------------|
 | `type`    | String | No       | Must be `"audio"`.            |
 | `url`     | String | No       | The URL of the audio to play. |
 | `style`   | Object | Yes      | The CSS style definition.     |
@@ -1414,7 +1414,7 @@ To get an OpenAI API key for use with the AI agent:
 
 2. **Access the API section**: Once logged in, navigate to the API section of your OpenAI dashboard.
 
-3. **Create a new project**:
+3. **Create a new project**: 
    - Go to the "Projects" section
    - Click "Create project"
    - Name your project "Parse-Dashboard" (or any descriptive name)
@@ -1425,7 +1425,7 @@ To get an OpenAI API key for use with the AI agent:
    - Select the AI models you want to use (e.g., `gpt-4`, `gpt-3.5-turbo`)
    - These model names will be used as the `agent.models[*].model` parameter in your dashboard configuration
 
-5. **Generate an API key**:
+5. **Generate an API key**: 
    - Go to the "API Keys" page in your project settings
    - Click "Create new secret key"
    - Give your key a descriptive name (e.g., "Parse Dashboard Agent")
