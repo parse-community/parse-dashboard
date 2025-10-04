@@ -57,12 +57,26 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
     compareType = Filters.Constraints[newConstraint].field;
   }
+
+  // Determine compareTo value
+  let compareTo;
+  if (newConstraint === 'containedIn') {
+    compareTo = [];
+  } else if (newConstraint === 'matches') {
+    // For matches constraint, always use empty string, don't reuse previous value
+    compareTo = '';
+  } else if (compareType && prevCompareTo && typeof prevCompareTo === typeof Filters.DefaultComparisons[compareType]) {
+    // Only reuse prevCompareTo if types match
+    compareTo = prevCompareTo;
+  } else {
+    compareTo = Filters.DefaultComparisons[compareType];
+  }
+
   const newFilter = new Map({
     class: currentClassName,
     field: field,
     constraint: newConstraint,
-    compareTo:
-      compareType && prevCompareTo ? prevCompareTo : newConstraint === 'containedIn' ? [] : Filters.DefaultComparisons[compareType],
+    compareTo,
     modifiers: newConstraint === 'matches' ? 'i' : undefined,
   });
   return filters.set(index, newFilter);
