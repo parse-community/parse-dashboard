@@ -426,12 +426,12 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    // Check if the event target is an input or textarea
+    // Check if the event target is an input, textarea, or select element
     const target = e.target;
-    const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+    const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT');
 
-    // Ignore all keyboard events when focus is on input/textarea elements
-    // This allows normal text editing behavior in filter inputs
+    // Ignore all keyboard events when focus is on input/textarea/select elements
+    // This allows normal text editing behavior in filter inputs and dropdown navigation
     if (isInputElement) {
       return;
     }
