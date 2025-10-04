@@ -168,11 +168,8 @@ function addConstraint(query, filter) {
     case 'containedIn':
       query.containedIn(filter.get('field'), filter.get('compareTo'));
       break;
-    case 'stringContainsString':
-      query.matches(filter.get('field'), filter.get('compareTo'), 'i');
-      break;
     case 'matches':
-      query.matches(filter.get('field'), filter.get('compareTo'), filter.get('modifiers'));
+      query.matches(filter.get('field'), String(filter.get('compareTo')), filter.get('modifiers'));
       break;
     case 'keyExists':
       query.exists(filter.get('field') + '.' + filter.get('compareTo'));

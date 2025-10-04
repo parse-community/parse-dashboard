@@ -537,15 +537,24 @@ class Browser extends DashboardView {
           // Convert date strings to Parse Date objects for proper Parse query functionality
           const processedFilter = { ...filter, class: filter.class || props.params.className };
 
-          // Check if compareTo is a date string and convert it to a Parse Date object
-          if (processedFilter.compareTo &&
-              typeof processedFilter.compareTo === 'string' &&
-              !isNaN(Date.parse(processedFilter.compareTo))) {
-            // Convert string date to Parse Date format for proper query functionality
-            processedFilter.compareTo = {
-              __type: 'Date',
-              iso: new Date(processedFilter.compareTo).toISOString()
-            };
+          // Check the schema to see if this field is a Date type
+          const classes = props.schema?.data?.get('classes');
+          const className = processedFilter.class || props.params.className;
+          const fieldName = processedFilter.field;
+
+          if (classes && className && fieldName) {
+            const classSchema = classes.get(className);
+            const fieldType = classSchema?.get(fieldName)?.type;
+
+            // If field type is Date and compareTo is not already a Date object, convert it
+            if (fieldType === 'Date' &&
+                processedFilter.compareTo &&
+                typeof processedFilter.compareTo !== 'object') {
+              processedFilter.compareTo = {
+                __type: 'Date',
+                iso: new Date(processedFilter.compareTo).toISOString()
+              };
+            }
           }
 
           filters = filters.push(Map(processedFilter));
