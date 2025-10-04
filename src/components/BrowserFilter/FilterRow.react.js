@@ -228,7 +228,6 @@ function compareValue(
             <input
               type="text"
               value={value}
-              placeholder="regex pattern"
               onChange={e => onChangeCompareTo(e.target.value)}
               onKeyDown={onKeyDown}
               ref={setFocus}
