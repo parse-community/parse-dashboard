@@ -256,7 +256,7 @@ Each class in `columnPreference` can have an array of column configurations:
 #### Helper CLI Commands
 
 | Command        | Description                                                         |
-| -------------- | ------------------------------------------------------------------- |
+| ---------------|---------------------------------------------------------------------|
 | `--createUser` | Interactive tool to generate secure user passwords and MFA secrets. |
 | `--createMFA`  | Interactive tool to generate MFA secrets for existing users.        |
 
