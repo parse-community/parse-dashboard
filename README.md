@@ -184,7 +184,7 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 Each class in `columnPreference` can have an array of column configurations:
 
 | Parameter         | Type    | Optional | Default | Example       | Description                                        |
-| ----------------- | ------- | -------- | ------- | ------------- | -------------------------------------------------- |
+| ------------------|---------|----------|---------|---------------|----------------------------------------------------|
 | `name`            | String  | no       | -       | `"createdAt"` | Column/field name.                                 |
 | `visible`         | Boolean | yes      | `true`  | `false`       | Whether the column is visible in the data browser. |
 | `preventSort`     | Boolean | yes      | `false` | `true`        | Prevent this column from being sortable.           |
@@ -193,7 +193,7 @@ Each class in `columnPreference` can have an array of column configurations:
 ##### Scripts Configuration (`apps[].scripts[]`)
 
 | Parameter                 | Type                                       | Optional | Default | Example         | Description                                       |
-| ------------------------- | ------------------------------------------ | -------- | ------- | --------------- | ------------------------------------------------- |
+| --------------------------|--------------------------------------------|----------|---------|-----------------|---------------------------------------------------|
 | `title`                   | String                                     | no       | -       | `"Delete User"` | Title in context menu and confirmation dialog.    |
 | `classes`                 | Array&lt;String&gt; \| Array&lt;Object&gt; | no       | -       | `["_User"]`     | Classes for which script can run.                 |
 | `cloudCodeFunction`       | String                                     | no       | -       | `"deleteUser"`  | Parse Cloud Function name to execute.             |
@@ -204,7 +204,7 @@ Each class in `columnPreference` can have an array of column configurations:
 ##### Info Panel Configuration (`apps[].infoPanel[]`)
 
 | Parameter           | Type                | Optional | Default | Example            | Description                                   |
-| ------------------- | ------------------- | -------- | ------- | ------------------ | --------------------------------------------- |
+| --------------------|---------------------|----------|---------|--------------------|-----------------------------------------------|
 | `title`             | String              | no       | -       | `"User Details"`   | Panel title.                                  |
 | `classes`           | Array&lt;String&gt; | no       | -       | `["_User"]`        | Classes for which panel is displayed.         |
 | `cloudCodeFunction` | String              | no       | -       | `"getUserDetails"` | Cloud Function receiving selected object.     |
@@ -214,7 +214,7 @@ Each class in `columnPreference` can have an array of column configurations:
 ##### Global Configuration
 
 | Parameter               | Type                | Optional | Default | CLI            | Env Variable                   | Example   | Description                                                                           |
-| ----------------------- | ------------------- | -------- | ------- | -------------- | ------------------------------ | --------- | ------------------------------------------------------------------------------------- |
+| ------------------------|---------------------|----------|---------|----------------|--------------------------------|-----------| --------------------------------------------------------------------------------------|
 | `apps`                  | Array&lt;Object&gt; | no       | -       | -              | `PARSE_DASHBOARD_CONFIG`       | `[{...}]` | Array of apps to manage.                                                              |
 | `users`                 | Array&lt;Object&gt; | yes      | -       | -              | -                              | `[{...}]` | User accounts for authentication. See [users table below](#user-configuration-users). |
 | `useEncryptedPasswords` | Boolean             | yes      | `false` | -              | -                              | `true`    | Use bcrypt hashes instead of plain text passwords.                                    |
@@ -226,7 +226,7 @@ Each class in `columnPreference` can have an array of column configurations:
 ##### User Configuration (`users[]`)
 
 | Parameter         | Type                | Optional | Default  | CLI              | Env Variable                    | Example              | Description                            |
-| ----------------- | ------------------- | -------- | -------- | ---------------- | ------------------------------- | -------------------- | -------------------------------------- |
+| ------------------|---------------------|----------|----------|------------------|---------------------------------|----------------------|----------------------------------------|
 | `user`            | String              | no       | -        | `--userId`       | `PARSE_DASHBOARD_USER_ID`       | `"admin"`            | Username for authentication.           |
 | `pass`            | String              | no       | -        | `--userPassword` | `PARSE_DASHBOARD_USER_PASSWORD` | `"pass"`             | Password (plain or bcrypt hash).       |
 | `mfa`             | String              | yes      | -        | -                | -                               | `"JBSWY3DPEHPK3PXP"` | MFA secret for TOTP.                   |
@@ -241,7 +241,7 @@ Each class in `columnPreference` can have an array of column configurations:
 #### CLI & Server Options
 
 | Parameter             | Type    | Optional | Default      | CLI                     | Env Variable                             | Example         | Description                                      |
-| --------------------- | ------- | -------- | ------------ | ----------------------- | ---------------------------------------- | --------------- | ------------------------------------------------ |
+| ----------------------|---------|----------|--------------|-------------------------|------------------------------------------|-----------------| -------------------------------------------------|
 | `host`                | String  | yes      | `"0.0.0.0"`  | `--host`                | `HOST`                                   | `"127.0.0.1"`   | Host address to bind server.                     |
 | `port`                | Number  | yes      | `4040`       | `--port`                | `PORT`                                   | `8080`          | Port for dashboard server.                       |
 | `mountPath`           | String  | yes      | `"/"`        | `--mountPath`           | `MOUNT_PATH`                             | `"/dashboard"`  | Mount path for application.                      |
