@@ -97,6 +97,7 @@ const Filter = ({
   if (compare !== hasCompareTo) {
     setCompare(hasCompareTo);
   }
+
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   const available = Filters.findRelatedClasses(className, allClasses, blacklist, filters);
@@ -119,7 +120,7 @@ const Filter = ({
       >
         <div style={{ width: '140px' }}>Class</div>
         <div style={{ width: '140px' }}>Field</div>
-        <div style={{ width: '175px' }}>Condition</div>
+        <div style={compare ? { width: '175px' } : { flex: 1 }}>Condition</div>
         {compare && <div>Value</div>}
         <div></div>
       </div>

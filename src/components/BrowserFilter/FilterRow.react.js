@@ -11,8 +11,10 @@ import { Constraints } from 'lib/Filters';
 import DateTimeEntry from 'components/DateTimeEntry/DateTimeEntry.react';
 import Icon from 'components/Icon/Icon.react';
 import Parse from 'parse';
+import Popover from 'components/Popover/Popover.react';
+import Position from 'lib/Position';
 import PropTypes from 'lib/PropTypes';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import styles from 'components/BrowserFilter/BrowserFilter.scss';
 import validateNumeric from 'lib/validateNumeric';
 
@@ -20,6 +22,164 @@ const constraintLookup = {};
 for (const c in Constraints) {
   constraintLookup[Constraints[c].name] = c;
 }
+
+const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  // Parse modifiers string into individual flags
+  const modifiersArray = modifiers ? modifiers.split('') : [];
+  const hasI = modifiersArray.includes('i');
+  const hasU = modifiersArray.includes('u');
+  const hasM = modifiersArray.includes('m');
+  const hasX = modifiersArray.includes('x');
+  const hasS = modifiersArray.includes('s');
+
+  const toggleModifier = (modifier) => {
+    let newModifiers = [...modifiersArray];
+    if (newModifiers.includes(modifier)) {
+      newModifiers = newModifiers.filter(m => m !== modifier);
+    } else {
+      newModifiers.push(modifier);
+    }
+    onChangeModifiers(newModifiers.join(''));
+  };
+
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setShowOptions(false);
+      }
+    };
+
+    if (showOptions) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showOptions]);
+
+  const optionsDropdown = showOptions ? (
+    <Popover
+      fixed={true}
+      position={Position.inDocument(buttonRef.current)}
+      data-popover-type="inner"
+    >
+      <div
+        ref={dropdownRef}
+        style={{
+          background: '#343445',
+          borderRadius: '5px',
+          padding: '8px',
+          minWidth: '150px',
+          color: 'white',
+          fontSize: '14px'
+        }}
+      >
+        <div style={{ marginBottom: '4px', fontWeight: 'bold', paddingBottom: '4px', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+          Regex Options
+        </div>
+        <label
+          style={{ display: 'flex', alignItems: 'center', padding: '4px 0', cursor: 'pointer' }}
+          onClick={() => toggleModifier('i')}
+        >
+          <input
+            type="checkbox"
+            checked={hasI}
+            readOnly
+            style={{ marginRight: '8px', cursor: 'pointer' }}
+          />
+          <span>Case insensitive (i)</span>
+        </label>
+        <label
+          style={{ display: 'flex', alignItems: 'center', padding: '4px 0', cursor: 'pointer' }}
+          onClick={() => toggleModifier('u')}
+        >
+          <input
+            type="checkbox"
+            checked={hasU}
+            readOnly
+            style={{ marginRight: '8px', cursor: 'pointer' }}
+          />
+          <span>Unicode (u)</span>
+        </label>
+        <label
+          style={{ display: 'flex', alignItems: 'center', padding: '4px 0', cursor: 'pointer' }}
+          onClick={() => toggleModifier('m')}
+        >
+          <input
+            type="checkbox"
+            checked={hasM}
+            readOnly
+            style={{ marginRight: '8px', cursor: 'pointer' }}
+          />
+          <span>Multiline (m)</span>
+        </label>
+        <label
+          style={{ display: 'flex', alignItems: 'center', padding: '4px 0', cursor: 'pointer' }}
+          onClick={() => toggleModifier('x')}
+        >
+          <input
+            type="checkbox"
+            checked={hasX}
+            readOnly
+            style={{ marginRight: '8px', cursor: 'pointer' }}
+          />
+          <span>Extended (x)</span>
+        </label>
+        <label
+          style={{ display: 'flex', alignItems: 'center', padding: '4px 0', cursor: 'pointer' }}
+          onClick={() => toggleModifier('s')}
+        >
+          <input
+            type="checkbox"
+            checked={hasS}
+            readOnly
+            style={{ marginRight: '8px', cursor: 'pointer' }}
+          />
+          <span>Dotall (s)</span>
+        </label>
+      </div>
+    </Popover>
+  ) : null;
+
+  return (
+    <>
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => {
+          setShowOptions(!showOptions);
+        }}
+        style={{
+          background: '#343445',
+          border: 'none',
+          borderRadius: '5px',
+          width: '30px',
+          height: '30px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          color: 'white',
+          fontSize: '18px',
+          fontWeight: 'bold'
+        }}
+        title="Regex options"
+      >
+        ⚙
+      </button>
+      {optionsDropdown}
+    </>
+  );
+};
 
 function compareValue(
   info,
@@ -64,7 +224,7 @@ function compareValue(
     case 'String':
       if (currentConstraint === 'matches') {
         return (
-          <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1 }}>
             <input
               type="text"
               value={value}
@@ -72,17 +232,10 @@ function compareValue(
               onChange={e => onChangeCompareTo(e.target.value)}
               onKeyDown={onKeyDown}
               ref={setFocus}
-              style={{ width: '140px' }}
+              style={{ flex: 1 }}
             />
-            <input
-              type="text"
-              value={modifiers || ''}
-              placeholder="i"
-              onChange={e => onChangeModifiers(e.target.value)}
-              onKeyDown={onKeyDown}
-              style={{ width: '60px', marginLeft: '4px' }}
-            />
-          </>
+            <RegexOptionsButton modifiers={modifiers} onChangeModifiers={onChangeModifiers} />
+          </div>
         );
       }
       return (
@@ -261,13 +414,24 @@ const FilterRow = ({
         buildSuggestions={buildFieldSuggestions}
         buildLabel={() => ''}
       />
-      <ChromeDropdown
-        width={compareInfo.type ? '175' : '325'}
-        color={active ? 'blue' : 'purple'}
-        value={Constraints[currentConstraint].name}
-        options={constraints.map(c => Constraints[c].name)}
-        onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
-      />
+      {compareInfo.type ? (
+        <ChromeDropdown
+          width="175"
+          color={active ? 'blue' : 'purple'}
+          value={Constraints[currentConstraint].name}
+          options={constraints.map(c => Constraints[c].name)}
+          onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
+        />
+      ) : (
+        <div style={{ flex: 1 }}>
+          <ChromeDropdown
+            color={active ? 'blue' : 'purple'}
+            value={Constraints[currentConstraint].name}
+            options={constraints.map(c => Constraints[c].name)}
+            onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
+          />
+        </div>
+      )}
       {compareValue(
         compareInfo,
         compareTo,
