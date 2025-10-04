@@ -155,26 +155,13 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
       <button
         ref={buttonRef}
         type="button"
+        className={styles.remove}
         onClick={() => {
           setShowOptions(!showOptions);
         }}
-        style={{
-          background: '#343445',
-          border: 'none',
-          borderRadius: '5px',
-          width: '30px',
-          height: '30px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          color: 'white',
-          fontSize: '18px',
-          fontWeight: 'bold'
-        }}
         title="Regex options"
       >
-        ⚙
+        <Icon name="gear-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />
       </button>
       {optionsDropdown}
     </>
