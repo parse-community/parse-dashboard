@@ -251,6 +251,7 @@ function compareValue(
     case 'Boolean':
       return (
         <ChromeDropdown
+          width="140"
           color={active ? 'blue' : 'purple'}
           value={value ? 'True' : 'False'}
           options={['True', 'False']}
