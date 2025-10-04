@@ -144,6 +144,18 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 
 This section provides a comprehensive reference for all Parse Dashboard configuration options that can be used in the configuration file, via CLI arguments, or as environment variables.
 
+#### Root Configuration Keys
+
+| Key | Type | Required | Description | Links to Details |
+|-----|------|----------|-------------|------------------|
+| `apps` | Array&lt;Object&gt; | Yes | Array of Parse Server apps to manage | [App Configuration](#app-configuration-apps-array) |
+| `users` | Array&lt;Object&gt; | No | User accounts for dashboard authentication | [User Configuration](#user-configuration-users) |
+| `useEncryptedPasswords` | Boolean | No | Use bcrypt hashes instead of plain text passwords | [Global Configuration](#global-configuration) |
+| `trustProxy` | Boolean \| Number | No | Trust X-Forwarded-* headers when behind proxy | [Global Configuration](#global-configuration) |
+| `iconsFolder` | String | No | Folder for app icons (relative or absolute path) | [Global Configuration](#global-configuration) |
+| `agent` | Object | No | AI agent configuration | [AI Agent Configuration](#ai-agent) |
+| `enableResourceCache` | Boolean | No | Enable browser caching of dashboard resources | [Global Configuration](#global-configuration) |
+
 #### Configuration File Options
 
 ##### App Configuration (`apps` array)
@@ -151,7 +163,7 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 | Parameter                  | Type                | Optional | Default   | CLI                  | Env Variable                         | Example                           | Description                                                                                                  |
 | -------------------------- | ------------------- | -------- | --------- | -------------------- | ------------------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `appId`                    | String              | no       | -         | `--appId`            | `PARSE_DASHBOARD_APP_ID`             | `"myAppId"`                       | The Application ID for your Parse Server instance.                                                           |
-| `masterKey`                | String \| Function  | no       | -         | `--masterKey`        | `PARSE_DASHBOARD_MASTER_KEY`         | `"key"`                           | Master key for full access. Can be a String or Function returning a String.                                  |
+| `masterKey`                | String \| Function  | no       | -         | `--masterKey`        | `PARSE_DASHBOARD_MASTER_KEY`         | `"key"` or `() => "key"`          | Master key for full access. Can be a String or Function returning a String.                                  |
 | `serverURL`                | String              | no       | -         | `--serverURL`        | `PARSE_DASHBOARD_SERVER_URL`         | `"http://localhost:1337/parse"`   | The URL where your Parse Server is running.                                                                  |
 | `appName`                  | String              | yes      | `appId`   | `--appName`          | `PARSE_DASHBOARD_APP_NAME`           | `"MyApp"`                         | Display name of the app.                                                                                     |
 | `masterKeyTtl`             | Number              | yes      | -         | `--masterKeyTtl`     | -                                    | `3600`                            | TTL for master key cache in seconds (when `masterKey` is a Function).                                        |
