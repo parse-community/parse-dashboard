@@ -75,12 +75,14 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
       <div
         ref={dropdownRef}
         style={{
-          background: '#343445',
+          background: '#1e1e2e',
+          border: '1px solid #66637A',
           borderRadius: '5px',
           padding: '8px',
           minWidth: '150px',
           color: 'white',
-          fontSize: '14px'
+          fontSize: '14px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
         }}
       >
         <div style={{ marginBottom: '4px', fontWeight: 'bold', paddingBottom: '4px', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
