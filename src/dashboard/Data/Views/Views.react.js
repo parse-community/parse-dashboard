@@ -731,7 +731,7 @@ class Views extends TableView {
               async () => {
                 if (this.viewPreferencesManager) {
                   try {
-                    await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
+                    await this.viewPreferencesManager.saveView(this.context.applicationId, newView, this.state.views);
                   } catch (error) {
                     console.error('Failed to save views:', error);
                     this.showNote('Failed to save view changes', true);
@@ -766,7 +766,7 @@ class Views extends TableView {
               async () => {
                 if (this.viewPreferencesManager) {
                   try {
-                    await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
+                    await this.viewPreferencesManager.saveView(this.context.applicationId, view, this.state.views);
                   } catch (error) {
                     console.error('Failed to save views:', error);
                     this.showNote('Failed to save view changes', true);
@@ -780,6 +780,7 @@ class Views extends TableView {
       );
     } else if (this.state.deleteIndex !== null) {
       const name = this.state.views[this.state.deleteIndex]?.name || '';
+      const viewToDelete = this.state.views[this.state.deleteIndex];
       extras = (
         <DeleteViewDialog
           name={name}
@@ -793,7 +794,7 @@ class Views extends TableView {
               async () => {
                 if (this.viewPreferencesManager) {
                   try {
-                    await this.viewPreferencesManager.saveViews(this.context.applicationId, this.state.views);
+                    await this.viewPreferencesManager.deleteView(this.context.applicationId, viewToDelete.id, this.state.views);
                   } catch (error) {
                     console.error('Failed to save views:', error);
                     this.showNote('Failed to save view changes', true);
