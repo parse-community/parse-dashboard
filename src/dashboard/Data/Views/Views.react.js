@@ -722,7 +722,7 @@ class Views extends TableView {
             // Generate UUID for new view
             const newView = {
               ...view,
-              id: this.viewPreferencesManager ? this.viewPreferencesManager.generateViewId() : crypto.randomUUID()
+              id: this.viewPreferencesManager.generateViewId()
             };
             this.setState(
               state => ({ showCreate: false, views: [...state.views, newView] }),
