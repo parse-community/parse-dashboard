@@ -2528,6 +2528,8 @@ class Browser extends DashboardView {
                 this.setState({ limit });
                 this.updateOrdering(this.state.ordering);
               }}
+              hasSelectedRows={Object.keys(this.state.selection).length > 0}
+              selectedRowsMessage={SELECTED_ROWS_MESSAGE}
             />
           </>
         );
