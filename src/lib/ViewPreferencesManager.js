@@ -183,7 +183,7 @@ export default class ViewPreferencesManager {
       );
 
       // Delete views that are no longer in the new views array
-      const newViewIds = views.map(view => view.id || this._generateViewId(view));
+      const newViewIds = views.map(view => view.id || this._generateViewId());
       const viewsToDelete = existingViewIds.filter(id => !newViewIds.includes(id));
 
       await Promise.all(
@@ -195,7 +195,7 @@ export default class ViewPreferencesManager {
       // Save or update current views
       await Promise.all(
         views.map(view => {
-          const viewId = view.id || this._generateViewId(view);
+          const viewId = view.id || this._generateViewId();
           const viewConfig = { ...view };
           delete viewConfig.id; // Don't store ID in the config itself
 
@@ -263,18 +263,19 @@ export default class ViewPreferencesManager {
   }
 
   /**
-   * Generates a unique ID for a view
+   * Generates a unique ID for a new view
+   * @returns {string} A UUID string
+   */
+  generateViewId() {
+    return this._generateViewId();
+  }
+
+  /**
+   * Generates a unique ID for a view using UUID
    * @private
    */
-  _generateViewId(view) {
-    if (view.id) {
-      return view.id;
-    }
-    // Generate a unique ID based on view name, timestamp, and random component
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
-    const nameHash = view.name ? view.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : 'view';
-    return `${nameHash}_${timestamp}_${random}`;
+  _generateViewId() {
+    return crypto.randomUUID();
   }
 }
 
