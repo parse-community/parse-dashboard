@@ -1,3 +1,10 @@
+# [7.6.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.3...7.6.0-alpha.4) (2025-10-05)
+
+
+### Bug Fixes
+
+* Missing alert when changing data browser browser data while rows are selected ([#2994](https://github.com/parse-community/parse-dashboard/issues/2994)) ([6cabaa3](https://github.com/parse-community/parse-dashboard/commit/6cabaa36a95b0059ebbcd7b90a744fa9d0a403af))
+
 # [7.6.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.2...7.6.0-alpha.3) (2025-10-04)
 
 
