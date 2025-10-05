@@ -81,6 +81,8 @@ class Views extends TableView {
     }
     if (this.props.params.name !== nextProps.params.name || this.context !== nextContext) {
       window.scrollTo({ top: 0 });
+      // Clear table state immediately when switching views to prevent data retention
+      this.setState({ data: [], order: [], columns: {}, tableWidth: 0 });
       this.loadData(nextProps.params.name);
     }
   }

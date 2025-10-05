@@ -1,3 +1,10 @@
+# [7.6.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.4...7.6.0-alpha.5) (2025-10-05)
+
+
+### Bug Fixes
+
+* View table data may be retained when switching between views ([#2996](https://github.com/parse-community/parse-dashboard/issues/2996)) ([ddc91c9](https://github.com/parse-community/parse-dashboard/commit/ddc91c991f8ef6ea2695448cdb10edec71c8ad1a))
+
 # [7.6.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.3...7.6.0-alpha.4) (2025-10-05)
 
 
