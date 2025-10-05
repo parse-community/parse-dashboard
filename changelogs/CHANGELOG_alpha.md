@@ -1,3 +1,10 @@
+# [7.6.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.6...7.6.0-alpha.7) (2025-10-05)
+
+
+### Bug Fixes
+
+* Dashboard config objects stored on server with public read / write access ([#2997](https://github.com/parse-community/parse-dashboard/issues/2997)) ([31a4639](https://github.com/parse-community/parse-dashboard/commit/31a4639bb44fa7223d669aa40580b2348420f522))
+
 # [7.6.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.5...7.6.0-alpha.6) (2025-10-05)
 
 
