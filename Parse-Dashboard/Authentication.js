@@ -63,7 +63,9 @@ function initialize(app, options) {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: cookieSessionMaxAge
+      maxAge: cookieSessionMaxAge,
+      httpOnly: true,
+      sameSite: 'lax',
     }
   }));
   app.use(require('connect-flash')());
