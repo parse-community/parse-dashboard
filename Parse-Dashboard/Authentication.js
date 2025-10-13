@@ -55,7 +55,7 @@ function initialize(app, options) {
 
   const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
-  app.use(require('connect-flash')());
+
   app.use(require('body-parser').urlencoded({ extended: true }));
   app.use(require('express-session')({
     name: 'parse_dash',
@@ -66,6 +66,7 @@ function initialize(app, options) {
       maxAge: cookieSessionMaxAge
     }
   }));
+  app.use(require('connect-flash')());
   app.use(passport.initialize());
   app.use(passport.session());
 
