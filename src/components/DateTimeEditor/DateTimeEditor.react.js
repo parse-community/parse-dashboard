@@ -33,12 +33,14 @@ export default class DateTimeEditor extends React.Component {
 
   componentDidMount() {
     document.body.addEventListener('click', this.checkExternalClick);
-    this.inputRef.current.addEventListener('keypress', this.handleKey);
+    document.body.addEventListener('touchend', this.checkExternalClick);
+    this.inputRef.current.addEventListener('keydown', this.handleKey);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('click', this.checkExternalClick);
-    this.inputRef.current.removeEventListener('keypress', this.handleKey);
+    document.body.removeEventListener('touchend', this.checkExternalClick);
+    this.inputRef.current.removeEventListener('keydown', this.handleKey);
   }
 
   checkExternalClick(e) {
@@ -51,6 +53,16 @@ export default class DateTimeEditor extends React.Component {
     if (e.keyCode === 13) {
       this.commitDate();
       this.props.onCommit(this.state.value);
+      e.preventDefault();
+    } else if (e.keyCode === 27) {
+      // ESC key - cancel editing
+      if (this.props.onCancel) {
+        this.props.onCancel();
+      } else {
+        this.props.onCommit(this.props.value);
+      }
+      e.preventDefault();
+      e.stopPropagation();
     }
   }
 

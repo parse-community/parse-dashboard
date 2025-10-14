@@ -26,6 +26,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         multiline={!readonly}
         width={width}
         onCommit={onCommit}
+        onCancel={onCancel}
         resizable={true}
       />
     );
@@ -45,6 +46,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         multiline={true}
         width={width}
         onCommit={encodeCommit}
+        onCancel={onCancel}
       />
     );
   } else if (type === 'Polygon') {
@@ -83,6 +85,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         multiline={true}
         width={width}
         onCommit={encodeCommit}
+        onCancel={onCancel}
       />
     );
   } else if (type === 'Date') {
@@ -93,17 +96,18 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
           readonly={true}
           width={width}
           onCommit={() => onCommit(value)}
+          onCancel={onCancel}
         />
       );
     } else {
-      content = <DateTimeEditor value={value || new Date()} width={width} onCommit={onCommit} />;
+      content = <DateTimeEditor value={value || new Date()} width={width} onCommit={onCommit} onCancel={onCancel} />;
     }
   } else if (type === 'Boolean') {
     content = <BooleanEditor value={value} width={width} onCommit={onCommit} />;
   } else if (type === 'Number') {
-    content = <NumberEditor value={value} width={width} onCommit={onCommit} />;
+    content = <NumberEditor value={value} width={width} onCommit={onCommit} onCancel={onCancel} />;
   } else if (type === 'GeoPoint') {
-    content = <GeoPointEditor value={value} width={width} onCommit={onCommit} />;
+    content = <GeoPointEditor value={value} width={width} onCommit={onCommit} onCancel={onCancel} />;
   } else if (type === 'File') {
     content = <FileEditor value={value} width={width} onCommit={onCommit} onCancel={onCancel} />;
   } else if (type === 'ACL') {
@@ -121,7 +125,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         );
       }
     };
-    content = <StringEditor value={value ? value.id : ''} width={width} onCommit={encodeCommit} />;
+    content = <StringEditor value={value ? value.id : ''} width={width} onCommit={encodeCommit} onCancel={onCancel} />;
   }
 
   return <div style={{ position: 'absolute', top: top, left: left }}>{content}</div>;

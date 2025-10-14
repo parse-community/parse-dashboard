@@ -32,8 +32,8 @@ export default class GeoPointEditor extends React.Component {
       this.latitudeRef.current.focus();
     }
     this.latitudeRef.current.setSelectionRange(0, String(this.state.latitude).length);
-    this.latitudeRef.current.addEventListener('keypress', this.handleKeyLatitude);
-    this.longitudeRef.current.addEventListener('keypress', this.handleKeyLongitude);
+    this.latitudeRef.current.addEventListener('keydown', this.handleKeyLatitude);
+    this.longitudeRef.current.addEventListener('keydown', this.handleKeyLongitude);
   }
 
   componentWillReceiveProps(props) {
@@ -48,8 +48,8 @@ export default class GeoPointEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.latitudeRef.current.removeEventListener('keypress', this.handleKeyLatitude);
-    this.longitudeRef.current.removeEventListener('keypress', this.handleKeyLongitude);
+    this.latitudeRef.current.removeEventListener('keydown', this.handleKeyLatitude);
+    this.longitudeRef.current.removeEventListener('keydown', this.handleKeyLongitude);
   }
 
   checkExternalClick() {
@@ -73,12 +73,32 @@ export default class GeoPointEditor extends React.Component {
     if (e.keyCode === 13 || e.keyCode === 44) {
       this.longitudeRef.current.focus();
       this.longitudeRef.current.setSelectionRange(0, String(this.state.longitude).length);
+      e.preventDefault();
+    } else if (e.keyCode === 27) {
+      // ESC key - cancel editing
+      if (this.props.onCancel) {
+        this.props.onCancel();
+      } else {
+        this.props.onCommit(this.props.value);
+      }
+      e.preventDefault();
+      e.stopPropagation();
     }
   }
 
   handleKeyLongitude(e) {
     if (e.keyCode === 13) {
       this.commitValue();
+      e.preventDefault();
+    } else if (e.keyCode === 27) {
+      // ESC key - cancel editing
+      if (this.props.onCancel) {
+        this.props.onCancel();
+      } else {
+        this.props.onCommit(this.props.value);
+      }
+      e.preventDefault();
+      e.stopPropagation();
     }
   }
 
