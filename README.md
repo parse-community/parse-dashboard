@@ -146,15 +146,15 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 
 #### Root Configuration Keys
 
-| Key | Type | Required | Description | Links to Details |
-|-----|------|----------|-------------|------------------|
-| `apps` | Array&lt;Object&gt; | Yes | Array of Parse Server apps to manage | [App Configuration](#app-configuration-apps-array) |
-| `users` | Array&lt;Object&gt; | No | User accounts for dashboard authentication | [User Configuration](#user-configuration-users) |
-| `useEncryptedPasswords` | Boolean | No | Use bcrypt hashes instead of plain text passwords | [Global Configuration](#global-configuration) |
-| `trustProxy` | Boolean \| Number | No | Trust X-Forwarded-* headers when behind proxy | [Global Configuration](#global-configuration) |
-| `iconsFolder` | String | No | Folder for app icons (relative or absolute path) | [Global Configuration](#global-configuration) |
-| `agent` | Object | No | AI agent configuration | [AI Agent Configuration](#ai-agent) |
-| `enableResourceCache` | Boolean | No | Enable browser caching of dashboard resources | [Global Configuration](#global-configuration) |
+| Key | Type | Required | Default | CLI | Env Variable | Example | Description | Links to Details |
+|-----|------|----------|---------|-----|--------------|---------|-------------|------------------|
+| `apps` | Array&lt;Object&gt; | Yes | - | - | `PARSE_DASHBOARD_CONFIG` | `[{...}]` | Array of Parse Server apps to manage | [App Configuration](#app-configuration-apps-array) |
+| `users` | Array&lt;Object&gt; | No | - | - | - | `[{...}]` | User accounts for dashboard authentication | [User Configuration](#user-configuration-users) |
+| `useEncryptedPasswords` | Boolean | No | `false` | - | - | `true` | Use bcrypt hashes instead of plain text passwords | - |
+| `trustProxy` | Boolean \| Number | No | `false` | `--trustProxy` | `PARSE_DASHBOARD_TRUST_PROXY` | `1` | Trust X-Forwarded-* headers when behind proxy | - |
+| `iconsFolder` | String | No | - | - | - | `"icons"` | Folder for app icons (relative or absolute path) | - |
+| `agent` | Object | No | - | - | `PARSE_DASHBOARD_AGENT` (JSON) | `{...}` | AI agent configuration | [AI Agent Configuration](#ai-agent) |
+| `enableResourceCache` | Boolean | No | `false` | - | - | `true` | Enable browser caching of dashboard resources | - |
 
 #### Configuration File Options
 
@@ -223,17 +223,6 @@ Each class in `columnPreference` can have an array of column configurations:
 | `prefetchObjects`   | Number              | yes      | `0`     | `2`                | Number of next rows to prefetch.              |
 | `prefetchStale`     | Number              | yes      | `0`     | `10`               | Seconds after which prefetched data is stale. |
 
-##### Global Configuration
-
-| Parameter               | Type                | Optional | Default | CLI            | Env Variable                   | Example   | Description                                                                           |
-| ------------------------|---------------------|----------|---------|----------------|--------------------------------|-----------| --------------------------------------------------------------------------------------|
-| `apps`                  | Array&lt;Object&gt; | no       | -       | -              | `PARSE_DASHBOARD_CONFIG`       | `[{...}]` | Array of apps to manage.                                                              |
-| `users`                 | Array&lt;Object&gt; | yes      | -       | -              | -                              | `[{...}]` | User accounts for authentication. See [users table below](#user-configuration-users). |
-| `useEncryptedPasswords` | Boolean             | yes      | `false` | -              | -                              | `true`    | Use bcrypt hashes instead of plain text passwords.                                    |
-| `trustProxy`            | Boolean \| Number   | yes      | `false` | `--trustProxy` | `PARSE_DASHBOARD_TRUST_PROXY`  | `1`       | Trust X-Forwarded-\* headers when behind proxy.                                       |
-| `iconsFolder`           | String              | yes      | -       | -              | -                              | `"icons"` | Folder for app icons (relative or absolute path).                                     |
-| `agent`                 | Object              | yes      | -       | -              | `PARSE_DASHBOARD_AGENT` (JSON) | `{...}`   | AI agent config. See [agent table below](#configuration).                             |
-| `enableResourceCache`   | Boolean             | yes      | `false` | -              | -                              | `true`    | Enable browser caching of dashboard resources.                                        |
 
 ##### User Configuration (`users[]`)
 
