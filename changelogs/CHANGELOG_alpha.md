@@ -1,3 +1,10 @@
+# [7.6.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.9...7.6.0-alpha.10) (2025-10-14)
+
+
+### Bug Fixes
+
+* ESC key does not cancel editing in data browser cell ([#3001](https://github.com/parse-community/parse-dashboard/issues/3001)) ([d1d7241](https://github.com/parse-community/parse-dashboard/commit/d1d724169ae12489fb30eeca558e4cc926e4d851))
+
 # [7.6.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.8...7.6.0-alpha.9) (2025-10-14)
 
 
