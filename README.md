@@ -156,7 +156,6 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 | `agent` | Object | No | - | - | `PARSE_DASHBOARD_AGENT` (JSON) | `{...}` | AI agent configuration | [AI Agent Configuration](#ai-agent) |
 | `enableResourceCache` | Boolean | No | `false` | - | - | `true` | Enable browser caching of dashboard resources | - |
 
-#### Configuration File Options
 
 ##### App Configuration (`apps` array)
 
