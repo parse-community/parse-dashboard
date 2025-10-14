@@ -44,24 +44,47 @@ export default class ViewPreferencesManager {
   }
 
   /**
-   * Saves views to either server or local storage based on configuration and user preference
+   * Saves a single view to either server or local storage based on configuration and user preference
    * @param {string} appId - The application ID
-   * @param {Array} views - Array of views to save
+   * @param {Object} view - The view to save
+   * @param {Array} allViews - All views (required for local storage fallback)
    * @returns {Promise}
    */
-  async saveViews(appId, views) {
+  async saveView(appId, view, allViews) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._saveViewsToServer(appId, views);
+        return await this._saveViewToServer(appId, view);
       } catch (error) {
-        console.error('Failed to save views to server:', error);
+        console.error('Failed to save view to server:', error);
         // On error, fallback to local storage
       }
     }
 
     // Use local storage (either by preference or as fallback)
-    return this._saveViewsToLocal(appId, views);
+    return this._saveViewsToLocal(appId, allViews);
+  }
+
+  /**
+   * Deletes a single view from either server or local storage based on configuration and user preference
+   * @param {string} appId - The application ID
+   * @param {string} viewId - The ID of the view to delete
+   * @param {Array} allViews - All views (required for local storage fallback)
+   * @returns {Promise}
+   */
+  async deleteView(appId, viewId, allViews) {
+    // Check if server storage is enabled and user prefers it
+    if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
+      try {
+        return await this._deleteViewFromServer(appId, viewId);
+      } catch (error) {
+        console.error('Failed to delete view from server:', error);
+        // On error, fallback to local storage
+      }
+    }
+
+    // Use local storage (either by preference or as fallback)
+    return this._saveViewsToLocal(appId, allViews);
   }
 
   /**
@@ -183,7 +206,7 @@ export default class ViewPreferencesManager {
       );
 
       // Delete views that are no longer in the new views array
-      const newViewIds = views.map(view => view.id || this._generateViewId(view));
+      const newViewIds = views.map(view => view.id || this._generateViewId());
       const viewsToDelete = existingViewIds.filter(id => !newViewIds.includes(id));
 
       await Promise.all(
@@ -195,7 +218,7 @@ export default class ViewPreferencesManager {
       // Save or update current views
       await Promise.all(
         views.map(view => {
-          const viewId = view.id || this._generateViewId(view);
+          const viewId = view.id || this._generateViewId();
           const viewConfig = { ...view };
           delete viewConfig.id; // Don't store ID in the config itself
 
@@ -220,6 +243,52 @@ export default class ViewPreferencesManager {
       );
     } catch (error) {
       console.error('Failed to save views to server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Saves a single view to server storage
+   * @private
+   */
+  async _saveViewToServer(appId, view) {
+    try {
+      const viewId = view.id || this._generateViewId();
+      const viewConfig = { ...view };
+      delete viewConfig.id; // Don't store ID in the config itself
+
+      // Remove null and undefined values to keep the storage clean
+      Object.keys(viewConfig).forEach(key => {
+        if (viewConfig[key] === null || viewConfig[key] === undefined) {
+          delete viewConfig[key];
+        }
+      });
+
+      // Stringify the query if it exists and is an array/object
+      if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
+        viewConfig.query = JSON.stringify(viewConfig.query);
+      }
+
+      await this.serverStorage.setConfig(
+        `views.view.${viewId}`,
+        viewConfig,
+        appId
+      );
+    } catch (error) {
+      console.error('Failed to save view to server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a single view from server storage
+   * @private
+   */
+  async _deleteViewFromServer(appId, viewId) {
+    try {
+      await this.serverStorage.deleteConfig(`views.view.${viewId}`, appId);
+    } catch (error) {
+      console.error('Failed to delete view from server:', error);
       throw error;
     }
   }
@@ -263,18 +332,19 @@ export default class ViewPreferencesManager {
   }
 
   /**
-   * Generates a unique ID for a view
+   * Generates a unique ID for a new view
+   * @returns {string} A UUID string
+   */
+  generateViewId() {
+    return this._generateViewId();
+  }
+
+  /**
+   * Generates a unique ID for a view using UUID
    * @private
    */
-  _generateViewId(view) {
-    if (view.id) {
-      return view.id;
-    }
-    // Generate a unique ID based on view name, timestamp, and random component
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
-    const nameHash = view.name ? view.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : 'view';
-    return `${nameHash}_${timestamp}_${random}`;
+  _generateViewId() {
+    return crypto.randomUUID();
   }
 }
 

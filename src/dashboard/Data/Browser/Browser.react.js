@@ -537,15 +537,24 @@ class Browser extends DashboardView {
           // Convert date strings to Parse Date objects for proper Parse query functionality
           const processedFilter = { ...filter, class: filter.class || props.params.className };
 
-          // Check if compareTo is a date string and convert it to a Parse Date object
-          if (processedFilter.compareTo &&
-              typeof processedFilter.compareTo === 'string' &&
-              !isNaN(Date.parse(processedFilter.compareTo))) {
-            // Convert string date to Parse Date format for proper query functionality
-            processedFilter.compareTo = {
-              __type: 'Date',
-              iso: new Date(processedFilter.compareTo).toISOString()
-            };
+          // Check the schema to see if this field is a Date type
+          const classes = props.schema?.data?.get('classes');
+          const className = processedFilter.class || props.params.className;
+          const fieldName = processedFilter.field;
+
+          if (classes && className && fieldName) {
+            const classSchema = classes.get(className);
+            const fieldType = classSchema?.get(fieldName)?.type;
+
+            // If field type is Date and compareTo is not already a Date object, convert it
+            if (fieldType === 'Date' &&
+                processedFilter.compareTo &&
+                typeof processedFilter.compareTo !== 'object') {
+              processedFilter.compareTo = {
+                __type: 'Date',
+                iso: new Date(processedFilter.compareTo).toISOString()
+              };
+            }
           }
 
           filters = filters.push(Map(processedFilter));
@@ -1114,40 +1123,60 @@ class Browser extends DashboardView {
 
   async fetchData(source, filters = new List()) {
     this.loadingFilters = JSON.stringify(filters.toJSON());
-    const data = await this.fetchParseData(source, filters);
-    if (this.loadingFilters !== JSON.stringify(filters.toJSON())) {
-      return;
-    }
-
-    const filteredCounts = { ...this.state.filteredCounts };
-    if (filters.size > 0) {
-      if (this.state.isUnique) {
-        filteredCounts[source] = data.length;
-      } else {
-        filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+    try {
+      const data = await this.fetchParseData(source, filters);
+      if (this.loadingFilters !== JSON.stringify(filters.toJSON())) {
+        return;
       }
-    } else {
-      delete filteredCounts[source];
+
+      const filteredCounts = { ...this.state.filteredCounts };
+      if (filters.size > 0) {
+        if (this.state.isUnique) {
+          filteredCounts[source] = data.length;
+        } else {
+          filteredCounts[source] = await this.fetchParseDataCount(source, filters);
+        }
+      } else {
+        delete filteredCounts[source];
+      }
+      this.setState({
+        data: data,
+        filters,
+        lastMax: this.state.limit,
+        filteredCounts: filteredCounts,
+      });
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.setState({
+        data: [],
+        filters,
+        lastMax: this.state.limit,
+      });
+      this.showNote(msg, true);
     }
-    this.setState({
-      data: data,
-      filters,
-      lastMax: this.state.limit,
-      filteredCounts: filteredCounts,
-    });
   }
 
   async fetchRelation(relation, filters = new List()) {
-    const data = await this.fetchParseData(relation, filters);
-    const relationCount = await this.fetchRelationCount(relation);
-    this.setState({
-      relation,
-      relationCount,
-      selection: {},
-      data,
-      filters,
-      lastMax: this.state.limit,
-    });
+    try {
+      const data = await this.fetchParseData(relation, filters);
+      const relationCount = await this.fetchRelationCount(relation);
+      this.setState({
+        relation,
+        relationCount,
+        selection: {},
+        data,
+        filters,
+        lastMax: this.state.limit,
+      });
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.setState({
+        data: [],
+        filters,
+        lastMax: this.state.limit,
+      });
+      this.showNote(msg, true);
+    }
   }
 
   async fetchRelationCount(relation) {
@@ -1209,11 +1238,21 @@ class Browser extends DashboardView {
           data: state.data.concat(nextPage),
         }));
       }
+    }).catch(error => {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.showNote(msg, true);
     });
     this.setState({ lastMax: this.state.lastMax + this.state.limit });
   }
 
   updateFilters(filters) {
+    // Check if there are selected rows
+    if (Object.keys(this.state.selection).length > 0) {
+      if (!window.confirm(SELECTED_ROWS_MESSAGE)) {
+        return;
+      }
+    }
+
     const relation = this.state.relation;
     if (relation) {
       this.setRelation(relation, filters);
@@ -2496,6 +2535,8 @@ class Browser extends DashboardView {
                 this.setState({ limit });
                 this.updateOrdering(this.state.ordering);
               }}
+              hasSelectedRows={Object.keys(this.state.selection).length > 0}
+              selectedRowsMessage={SELECTED_ROWS_MESSAGE}
             />
           </>
         );

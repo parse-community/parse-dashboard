@@ -19,6 +19,10 @@ class BrowserFooter extends React.Component {
   }
 
   handleLimitChange = event => {
+    // Check if there are selected rows
+    if (this.props.hasSelectedRows && !window.confirm(this.props.selectedRowsMessage)) {
+      return;
+    }
     const newLimit = parseInt(event.target.value, 10);
     this.props.setLimit(newLimit);
     this.props.setSkip(0);
@@ -27,6 +31,10 @@ class BrowserFooter extends React.Component {
 
   handlePageChange = newSkip => {
     if (newSkip >= 0 && newSkip < this.props.count) {
+      // Check if there are selected rows
+      if (this.props.hasSelectedRows && !window.confirm(this.props.selectedRowsMessage)) {
+        return;
+      }
       this.props.setSkip(newSkip);
       this.setState({ pageInput: (Math.floor(newSkip / this.props.limit) + 1).toString() });
     }

@@ -30,6 +30,7 @@ export default class EditViewDialog extends React.Component {
     }
 
     this.state = {
+      id: view.id, // Preserve the view ID
       name: view.name || '',
       className: view.className || '',
       dataSourceType,
@@ -73,6 +74,7 @@ export default class EditViewDialog extends React.Component {
         onCancel={onCancel}
         onConfirm={() =>
           onConfirm({
+            id: this.state.id, // Preserve the view ID
             name: this.state.name,
             className: this.state.dataSourceType === 'query' ? this.state.className : null,
             query: this.state.dataSourceType === 'query' ? JSON.parse(this.state.query) : null,

@@ -59,6 +59,9 @@ export default class ServerConfigStorage {
     this._clearAllValueFields(configObject);
     configObject.set(valueType, value);
 
+    // Set empty ACL so object is only accessible with master key
+    configObject.setACL(new Parse.ACL());
+
     // Use master key for operations
     return configObject.save(null, { useMasterKey: true });
   }
