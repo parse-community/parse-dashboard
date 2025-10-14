@@ -757,7 +757,9 @@ class Views extends TableView {
           view={this.state.editView}
           onCancel={() => this.setState({ editView: null, editIndex: null })}
           onConfirm={view => {
-            const isEditingCurrentView = view.name === this.props.params.name;
+            // Use the original view name (before editing) to check if it's the currently displayed view
+            const originalViewName = this.state.editView?.name;
+            const isEditingCurrentView = originalViewName === this.props.params.name;
             this.setState(
               state => {
                 const newViews = [...state.views];
