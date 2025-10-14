@@ -55,13 +55,20 @@ function initialize(app, options) {
 
   const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
-  app.use(require('connect-flash')());
+
   app.use(require('body-parser').urlencoded({ extended: true }));
-  app.use(require('cookie-session')({
-    key    : 'parse_dash',
-    secret : cookieSessionSecret,
-    maxAge : cookieSessionMaxAge
+  app.use(require('express-session')({
+    name: 'parse_dash',
+    secret: cookieSessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: cookieSessionMaxAge,
+      httpOnly: true,
+      sameSite: 'lax',
+    }
   }));
+  app.use(require('connect-flash')());
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -80,9 +87,11 @@ function initialize(app, options) {
     },
   );
 
-  app.get('/logout', function(req, res){
-    req.logout();
-    res.redirect(`${self.mountPath}login`);
+  app.get('/logout', function (req, res, next) {
+    req.logout(function (err) {
+      if (err) { return next(err); }
+      res.redirect(`${self.mountPath}login`);
+    });
   });
 }
 

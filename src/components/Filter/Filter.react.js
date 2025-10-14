@@ -57,12 +57,27 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
   if (Object.prototype.hasOwnProperty.call(Filters.Constraints[newConstraint], 'field')) {
     compareType = Filters.Constraints[newConstraint].field;
   }
+
+  // Determine compareTo value
+  let compareTo;
+  if (newConstraint === 'containedIn') {
+    compareTo = [];
+  } else if (newConstraint === 'matches') {
+    // For matches constraint, always use empty string, don't reuse previous value
+    compareTo = '';
+  } else if (compareType && prevCompareTo && typeof prevCompareTo === typeof Filters.DefaultComparisons[compareType]) {
+    // Only reuse prevCompareTo if types match
+    compareTo = prevCompareTo;
+  } else {
+    compareTo = Filters.DefaultComparisons[compareType];
+  }
+
   const newFilter = new Map({
     class: currentClassName,
     field: field,
     constraint: newConstraint,
-    compareTo:
-      compareType && prevCompareTo ? prevCompareTo : newConstraint === 'containedIn' ? [] : Filters.DefaultComparisons[compareType],
+    compareTo,
+    modifiers: newConstraint === 'matches' ? 'i' : undefined,
   });
   return filters.set(index, newFilter);
 }
@@ -70,6 +85,10 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
 function changeCompareTo(schema, filters, index, type, newCompare) {
   const newValue = newCompare;
   return filters.set(index, filters.get(index).set('compareTo', newValue));
+}
+
+function changeModifiers(filters, index, newModifiers) {
+  return filters.set(index, filters.get(index).set('modifiers', newModifiers));
 }
 
 function deleteRow(filters, index) {
@@ -92,6 +111,7 @@ const Filter = ({
   if (compare !== hasCompareTo) {
     setCompare(hasCompareTo);
   }
+
   const currentApp = React.useContext(CurrentApp);
   blacklist = blacklist || [];
   const available = Filters.findRelatedClasses(className, allClasses, blacklist, filters);
@@ -114,7 +134,7 @@ const Filter = ({
       >
         <div style={{ width: '140px' }}>Class</div>
         <div style={{ width: '140px' }}>Field</div>
-        <div style={{ width: '175px' }}>Condition</div>
+        <div style={compare ? { width: '175px' } : { flex: 1 }}>Condition</div>
         {compare && <div>Value</div>}
         <div></div>
       </div>
@@ -124,6 +144,7 @@ const Filter = ({
         const field = filter.get('field');
         const constraint = filter.get('constraint');
         const compareTo = filter.get('compareTo');
+        const modifiers = filter.get('modifiers');
         let fields = [];
         if (available[currentClassName]) {
           fields = Object.keys(available[currentClassName]).concat([]);
@@ -182,6 +203,7 @@ const Filter = ({
           currentField: field,
           currentConstraint: constraint,
           compareTo,
+          modifiers,
           key: field + '-' + constraint + '-' + i,
           onChangeClass: newClassName => {
             onChange(changeClass(schema, filters, i, newClassName));
@@ -196,6 +218,9 @@ const Filter = ({
           },
           onChangeCompareTo: newCompare => {
             onChange(changeCompareTo(schema, filters, i, compareType, newCompare));
+          },
+          onChangeModifiers: newModifiers => {
+            onChange(changeModifiers(filters, i, newModifiers));
           },
           onKeyDown: ({ key }) => {
             if (key === 'Enter') {

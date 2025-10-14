@@ -491,9 +491,21 @@ export default class BrowserFilter extends React.Component {
         const date = new Date(compareTo.iso);
         return filter.set('compareTo', date);
       } else if (typeof compareTo === 'string' && !isNaN(Date.parse(compareTo))) {
-        // Convert date string to JavaScript Date
-        const date = new Date(compareTo);
-        return filter.set('compareTo', date);
+        // Only convert date strings to JavaScript Date if the field type is actually Date
+        const className = filter.get('class') || this.props.className;
+        const fieldName = filter.get('field');
+        const schema = this.props.schema;
+
+        if (schema && className && fieldName) {
+          const classSchema = schema[className];
+          const fieldType = classSchema?.[fieldName]?.type;
+
+          // Only convert to Date if the field type is actually Date
+          if (fieldType === 'Date') {
+            const date = new Date(compareTo);
+            return filter.set('compareTo', date);
+          }
+        }
       }
       // Leave JavaScript Date objects and other types unchanged
       return filter;

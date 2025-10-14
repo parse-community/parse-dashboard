@@ -425,6 +425,17 @@ export default class DataBrowser extends React.Component {
     if (this.props.disableKeyControls) {
       return;
     }
+
+    // Check if the event target is an input, textarea, or select element
+    const target = e.target;
+    const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT');
+
+    // Ignore all keyboard events when focus is on input/textarea/select elements
+    // This allows normal text editing behavior in filter inputs and dropdown navigation
+    if (isInputElement) {
+      return;
+    }
+
     if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
       // Check for text selection FIRST
       const selection = window.getSelection();
