@@ -25,12 +25,14 @@ export default class NumberEditor extends React.Component {
   componentDidMount() {
     this.inputRef.current.setSelectionRange(0, String(this.state.value).length);
     document.body.addEventListener('click', this.checkExternalClick);
-    document.body.addEventListener('keypress', this.handleKey);
+    document.body.addEventListener('touchend', this.checkExternalClick);
+    document.body.addEventListener('keydown', this.handleKey);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('click', this.checkExternalClick);
-    document.body.removeEventListener('keypress', this.handleKey);
+    document.body.removeEventListener('touchend', this.checkExternalClick);
+    document.body.removeEventListener('keydown', this.handleKey);
   }
 
   checkExternalClick(e) {
@@ -42,6 +44,17 @@ export default class NumberEditor extends React.Component {
   handleKey(e) {
     if (e.keyCode === 13) {
       this.commitValue();
+      e.preventDefault();
+    } else if (e.keyCode === 27) {
+      // ESC key - cancel editing
+      if (this.props.onCancel) {
+        this.props.onCancel();
+      } else {
+        // If no onCancel callback, commit the original value
+        this.props.onCommit(this.props.value);
+      }
+      e.preventDefault();
+      e.stopPropagation();
     }
   }
 

@@ -87,7 +87,7 @@ class Views extends TableView {
     }
   }
 
-  async loadViews(app) {
+  async loadViews(app, skipDataReload = false) {
     // Initialize ViewPreferencesManager if not already done or if app changed
     if (!this.viewPreferencesManager || this.viewPreferencesManager.app !== app) {
       this.viewPreferencesManager = new ViewPreferencesManager(app);
@@ -132,7 +132,7 @@ class Views extends TableView {
             }
           }
         });
-        if (this._isMounted) {
+        if (this._isMounted && !skipDataReload) {
           this.loadData(this.props.params.name);
         }
       });
@@ -141,7 +141,7 @@ class Views extends TableView {
       // Fallback to local storage
       const views = ViewPreferences.getViews(app.applicationId);
       this.setState({ views, counts: {} }, () => {
-        if (this._isMounted) {
+        if (this._isMounted && !skipDataReload) {
           this.loadData(this.props.params.name);
         }
       });
@@ -757,6 +757,9 @@ class Views extends TableView {
           view={this.state.editView}
           onCancel={() => this.setState({ editView: null, editIndex: null })}
           onConfirm={view => {
+            // Use the original view name (before editing) to check if it's the currently displayed view
+            const originalViewName = this.state.editView?.name;
+            const isEditingCurrentView = originalViewName === this.props.params.name;
             this.setState(
               state => {
                 const newViews = [...state.views];
@@ -772,7 +775,10 @@ class Views extends TableView {
                     this.showNote('Failed to save view changes', true);
                   }
                 }
-                this.loadViews(this.context);
+                // Only reload data if we're editing the currently displayed view
+                // Otherwise just reload the view list without reloading data
+                const skipDataReload = !isEditingCurrentView;
+                this.loadViews(this.context, skipDataReload);
               }
             );
           }}
