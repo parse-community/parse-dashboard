@@ -56,7 +56,7 @@
     "node-fetch": "3.3.2",
     "otpauth": "8.0.3",
     "package-json": "7.0.0",
-    "parse": "3.5.1",
+    "parse": "7.0.1",
     "passport": "0.7.0",
     "passport-local": "1.0.0",
     "prismjs": "1.30.0",
