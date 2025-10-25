@@ -55,6 +55,8 @@ import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
 import Security from './Settings/Security/Security.react';
+import semver from 'semver';
+import packageInfo from '../../package.json';
 
 const ShowSchemaOverview = false; //In progress features. Change false to true to work on this feature.
 
@@ -138,6 +140,19 @@ export default class Dashboard extends React.Component {
               .then(
                 serverInfo => {
                   app.serverInfo = serverInfo;
+
+                  // Check Parse Server version compatibility
+                  const supportedVersion = packageInfo.supportedParseServerVersion;
+                  const serverVersion = serverInfo.parseServerVersion;
+
+                  if (serverVersion && serverVersion !== 'unknown' && supportedVersion) {
+                    const cleanedVersion = semver.valid(semver.coerce(serverVersion));
+                    if (cleanedVersion && !semver.satisfies(cleanedVersion, supportedVersion)) {
+                      app.serverInfo.versionWarning =
+                        `Parse Server ${serverVersion} is not officially supported by this version of Parse Dashboard. You may encounter issues or reduced functionality. Supported Parse Server versions are ${supportedVersion}. Either upgrade Parse Server, or downgrade Parse Dashboard to a compatible version.`;
+                    }
+                  }
+
                   return app;
                 },
                 error => {

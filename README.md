@@ -123,11 +123,14 @@ After starting the dashboard, you can visit http://localhost:4040 in your browse
 ## Compatibility
 
 ### Parse Server
-Parse Dashboard is compatible with the following Parse Server versions.
+Parse Dashboard is compatible with the following versions of Parse Server.
 
-| Parse Dashboard Version | Parse Server Version | Compatible |
-|-------------------------|----------------------|------------|
-| >=1.0                   | >= 2.1.4             | ✅ Yes      |
+| Parse Dashboard | Parse Server     |
+|-----------------|------------------|
+| >= 1.0.0        | >= 2.1.4 < 7.0.0 |
+| >= 8.0.0        | >= 7.0.0         |
+
+Parse Dashboard automatically checks the Parse Server version when connecting and displays a warning if the server version does not meet the minimum required version. The required Parse Server version is defined in the `supportedParseServerVersion` field in `package.json`.
 
 ### Node.js
 Parse Dashboard is continuously tested with the most recent releases of Node.js to ensure compatibility. We follow the [Node.js Long Term Support plan](https://github.com/nodejs/Release) and only test against versions that are officially supported and have not reached their end-of-life date.

@@ -1,3 +1,36 @@
+# [8.0.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/8.0.0-alpha.1...8.0.0-alpha.2) (2025-10-25)
+
+
+### Bug Fixes
+
+* Cannot connect to server with error invalid header name ([#3006](https://github.com/parse-community/parse-dashboard/issues/3006)) ([ea4ec07](https://github.com/parse-community/parse-dashboard/commit/ea4ec071ae5d88f4cf6ba2c3b1da72509123b39c))
+
+# [8.0.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.13...8.0.0-alpha.1) (2025-10-25)
+
+
+### Bug Fixes
+
+* Add missing major version increase of dashboard release ([#3005](https://github.com/parse-community/parse-dashboard/issues/3005)) ([5debb4d](https://github.com/parse-community/parse-dashboard/commit/5debb4dc143e4eebcfabb3e25cc882b6ea3594e7))
+
+
+### BREAKING CHANGES
+
+* This increases the required minimum version to Parse Server 7. ([5debb4d](5debb4d))
+
+# [7.6.0-alpha.13](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.12...7.6.0-alpha.13) (2025-10-25)
+
+
+### Features
+
+* Add Parse Server version compatibility detection ([#3004](https://github.com/parse-community/parse-dashboard/issues/3004)) ([9a7a60f](https://github.com/parse-community/parse-dashboard/commit/9a7a60fea3e76e66e5c6e5d39d3ad8fb02ba5e38))
+
+# [7.6.0-alpha.12](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.11...7.6.0-alpha.12) (2025-10-22)
+
+
+### Bug Fixes
+
+* Security upgrade parse from 3.5.1 to 7.0.1 ([#3003](https://github.com/parse-community/parse-dashboard/issues/3003)) ([5123fbf](https://github.com/parse-community/parse-dashboard/commit/5123fbf28f40d6a4e2e3030c2a0b810131397aea))
+
 # [7.6.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/7.6.0-alpha.10...7.6.0-alpha.11) (2025-10-14)
 
 

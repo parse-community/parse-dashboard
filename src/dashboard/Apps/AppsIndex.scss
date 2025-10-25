@@ -103,18 +103,22 @@
   margin: 0 auto;
 
   li {
-    display: flex;
     cursor: pointer;
     background: #193040;
     border-radius: 5px;
     margin: 14px 0;
-    padding: 0 9px;
-    height: 74px;
+    min-height: 74px;
 
     &:hover{
       background: #172C3B;
     }
   }
+}
+
+.appCardContent {
+  display: flex;
+  padding: 0 9px;
+  min-height: 74px;
 }
 
 .icon {
@@ -188,6 +192,17 @@
 
 .serverVersion {
   @include ellipsis();
+}
+
+.versionWarning {
+  background: rgba(255, 152, 0, 0.15);
+  border-top: 1px solid rgba(255, 152, 0, 0.3);
+  color: #ff9800;
+  font-size: 11px;
+  padding: 8px 12px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  border-radius: 0 0 5px 5px;
 }
 
 .edit {
