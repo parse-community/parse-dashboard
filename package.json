@@ -21,6 +21,7 @@
     "Push Status Page",
     "Relation Editor"
   ],
+  "supportedParseServerVersion": ">=7.0.0",
   "keywords": [
     "parse",
     "dashboard"

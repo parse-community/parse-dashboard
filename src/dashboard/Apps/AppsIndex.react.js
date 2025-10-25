@@ -82,25 +82,32 @@ const AppCard = ({ app, icon }) => {
 
   return (
     <li onClick={canBrowse} style={{ background: app.primaryBackgroundColor }}>
-      <a className={styles.icon}>
-        {icon ? (
-          <img src={'appicons/' + icon} width={56} height={56} />
-        ) : (
-          <Icon width={56} height={56} name="blank-app-outline" fill="#1E384D" />
-        )}
-      </a>
-      <div className={styles.details}>
-        <a className={styles.appname}>{app.name}</a>
-        {versionMessage}
+      <div className={styles.appCardContent}>
+        <a className={styles.icon}>
+          {icon ? (
+            <img src={'appicons/' + icon} width={56} height={56} />
+          ) : (
+            <Icon width={56} height={56} name="blank-app-outline" fill="#1E384D" />
+          )}
+        </a>
+        <div className={styles.details}>
+          <a className={styles.appname}>{app.name}</a>
+          {versionMessage}
+        </div>
+        <CountsSection className={styles.glance} title="At a glance">
+          <AppBadge production={app.production} />
+          <Metric number={dash(app.users, prettyNumber(app.users))} label="total users" />
+          <Metric
+            number={dash(app.installations, prettyNumber(app.installations))}
+            label="total installations"
+          />
+        </CountsSection>
       </div>
-      <CountsSection className={styles.glance} title="At a glance">
-        <AppBadge production={app.production} />
-        <Metric number={dash(app.users, prettyNumber(app.users))} label="total users" />
-        <Metric
-          number={dash(app.installations, prettyNumber(app.installations))}
-          label="total installations"
-        />
-      </CountsSection>
+      {!app.serverInfo.error && app.serverInfo.versionWarning && (
+        <div className={styles.versionWarning}>
+          ⚠️ {app.serverInfo.versionWarning}
+        </div>
+      )}
     </li>
   );
 };
