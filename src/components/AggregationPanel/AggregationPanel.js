@@ -113,11 +113,11 @@ const AggregationPanel = ({
             case 'table':
               return <TableElement key={idx} columns={item.columns} rows={item.rows} style={item.style} />;
             case 'image':
-              return <ImageElement key={idx} url={item.url} style={item.style} />;
+              return <ImageElement key={`${idx}-${item.url}`} url={item.url} style={item.style} />;
             case 'video':
-              return <VideoElement key={idx} url={item.url} style={item.style} />;
+              return <VideoElement key={`${idx}-${item.url}`} url={item.url} style={item.style} />;
             case 'audio':
-              return <AudioElement key={idx} url={item.url} style={item.style} />;
+              return <AudioElement key={`${idx}-${item.url}`} url={item.url} style={item.style} />;
             case 'button':
               return <ButtonElement key={idx} item={item} showNote={showNote} style={item.style} />;
             case 'panel':
