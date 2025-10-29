@@ -842,18 +842,17 @@ export default class DataBrowser extends React.Component {
     }
 
     urls.forEach(url => {
-      try {
-        if (mediaType === 'image') {
-          const img = new Image();
-          img.src = url;
-        } else if (mediaType === 'video' || mediaType === 'audio') {
-          // For video and audio, we can use fetch to cache the content
-          fetch(url, { mode: 'no-cors' }).catch(() => {
-            // Silently fail - the media will load normally if prefetch fails
-          });
-        }
-      } catch (error) {
-        // Silently fail - the media will load normally if prefetch fails
+      if (mediaType === 'image') {
+        const img = new Image();
+        img.onerror = () => {
+          console.error(`Failed to prefetch image: ${url}`);
+        };
+        img.src = url;
+      } else if (mediaType === 'video' || mediaType === 'audio') {
+        // For video and audio, we can use fetch to cache the content
+        fetch(url, { mode: 'no-cors' }).catch(error => {
+          console.error(`Failed to prefetch ${mediaType}: ${url}`, error);
+        });
       }
     });
   }
