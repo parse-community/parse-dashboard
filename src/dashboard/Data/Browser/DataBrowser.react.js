@@ -857,18 +857,18 @@ export default class DataBrowser extends React.Component {
       link.as = mediaType;
       link.href = url;
 
+      link.onload = () => {
+        // Resource successfully cached, safe to remove the link element
+        link.remove();
+      };
+
       link.onerror = () => {
         console.error(`Failed to prefetch ${mediaType}: ${url}`);
+        // Failed to fetch, remove the link element
+        link.remove();
       };
 
       document.head.appendChild(link);
-
-      // Clean up the link element after a delay to prevent memory leaks
-      setTimeout(() => {
-        if (link.parentNode) {
-          link.parentNode.removeChild(link);
-        }
-      }, 30000); // Remove after 30 seconds
     });
   }
 
