@@ -812,8 +812,17 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  isSafeHttpUrl(url) {
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
   extractMediaUrls(data) {
-    const urls = { images: [], videos: [], audios: [] };
+    const urls = { images: new Set(), videos: new Set(), audios: new Set() };
 
     if (!data?.panel?.segments) {
       return urls;
@@ -822,12 +831,12 @@ export default class DataBrowser extends React.Component {
     data.panel.segments.forEach(segment => {
       if (segment.items) {
         segment.items.forEach(item => {
-          if (item.type === 'image' && item.url) {
-            urls.images.push(item.url);
-          } else if (item.type === 'video' && item.url) {
-            urls.videos.push(item.url);
-          } else if (item.type === 'audio' && item.url) {
-            urls.audios.push(item.url);
+          if (item.type === 'image' && item.url && this.isSafeHttpUrl(item.url)) {
+            urls.images.add(item.url);
+          } else if (item.type === 'video' && item.url && this.isSafeHttpUrl(item.url)) {
+            urls.videos.add(item.url);
+          } else if (item.type === 'audio' && item.url && this.isSafeHttpUrl(item.url)) {
+            urls.audios.add(item.url);
           }
         });
       }
@@ -837,23 +846,29 @@ export default class DataBrowser extends React.Component {
   }
 
   prefetchMedia(urls, mediaType) {
-    if (!urls || urls.length === 0) {
+    if (!urls || urls.size === 0) {
       return;
     }
 
     urls.forEach(url => {
-      if (mediaType === 'image') {
-        const img = new Image();
-        img.onerror = () => {
-          console.error(`Failed to prefetch image: ${url}`);
-        };
-        img.src = url;
-      } else if (mediaType === 'video' || mediaType === 'audio') {
-        // For video and audio, we can use fetch to cache the content
-        fetch(url, { mode: 'no-cors' }).catch(error => {
-          console.error(`Failed to prefetch ${mediaType}: ${url}`, error);
-        });
-      }
+      // Use link-based prefetching for better browser optimization and caching
+      const link = document.createElement('link');
+      link.rel = mediaType === 'image' ? 'preload' : 'prefetch';
+      link.as = mediaType;
+      link.href = url;
+
+      link.onerror = () => {
+        console.error(`Failed to prefetch ${mediaType}: ${url}`);
+      };
+
+      document.head.appendChild(link);
+
+      // Clean up the link element after a delay to prevent memory leaks
+      setTimeout(() => {
+        if (link.parentNode) {
+          link.parentNode.removeChild(link);
+        }
+      }, 30000); // Remove after 30 seconds
     });
   }
 
@@ -884,13 +899,13 @@ export default class DataBrowser extends React.Component {
       const { prefetchImage, prefetchVideo, prefetchAudio } = this.getPrefetchSettings();
       const mediaUrls = this.extractMediaUrls(result);
 
-      if (prefetchImage && mediaUrls.images.length > 0) {
+      if (prefetchImage && mediaUrls.images.size > 0) {
         this.prefetchMedia(mediaUrls.images, 'image');
       }
-      if (prefetchVideo && mediaUrls.videos.length > 0) {
+      if (prefetchVideo && mediaUrls.videos.size > 0) {
         this.prefetchMedia(mediaUrls.videos, 'video');
       }
-      if (prefetchAudio && mediaUrls.audios.length > 0) {
+      if (prefetchAudio && mediaUrls.audios.size > 0) {
         this.prefetchMedia(mediaUrls.audios, 'audio');
       }
     }).catch(error => {
