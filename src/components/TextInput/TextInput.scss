@@ -12,6 +12,7 @@
   border: 0;
   outline: 0;
   background: $inputBackgroundColor;
+  color: #000;
   font-size: 16px;
   width: 100%;
   min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
@@ -19,6 +20,10 @@
   padding: 6px;
   vertical-align: top;
   resize: both;
+
+  &:disabled {
+    color: $mainTextColor;
+  }
 
   &:focus {
     @include placeholder {
