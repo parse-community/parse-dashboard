@@ -77,6 +77,7 @@ function initialize(app, options) {
     (req,res,next) => {
       let redirect = 'apps';
       if (req.body.redirect) {
+        // Strip leading slash from redirect to prevent double slashes
         redirect = req.body.redirect.charAt(0) === '/' ? req.body.redirect.substring(1) : req.body.redirect
       }
       return passport.authenticate('local', {
