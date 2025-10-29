@@ -109,7 +109,7 @@
     "null-loader": "4.0.1",
     "prettier": "3.6.2",
     "puppeteer": "24.12.1",
-    "react-test-renderer": "16.13.1",
+    "react-test-renderer": "19.2.0",
     "request": "2.88.2",
     "request-promise": "4.2.6",
     "sass": "1.89.2",
