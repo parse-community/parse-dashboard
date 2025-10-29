@@ -1062,11 +1062,25 @@ You have direct access to the Parse database through function calls, so you can 
     }
 
     app.get('/login', csrf(), function(req, res) {
-      let redirectURL = req.url.includes('?redirect=') && req.url.split('?redirect=')[1].length > 1 && req.url.split('?redirect=')[1];
+      let redirectURL = null;
+      try {
+        const url = new URL(req.url, 'http://localhost');
+        redirectURL = url.searchParams.get('redirect');
+      } catch (error) {
+        console.warn('Invalid URL in login redirect:', error.message);
+      }
       if (!users || (req.user && req.user.isAuthenticated)) {
-        // Strip leading slash from redirect to prevent double slashes or malformed URLs
-        if (redirectURL && redirectURL.charAt(0) === '/') {
-          redirectURL = redirectURL.substring(1);
+        // Validate and sanitize redirect URL to prevent open redirect vulnerability
+        if (redirectURL) {
+          // Reject absolute URLs and protocol-relative URLs
+          if (redirectURL.includes('://') || redirectURL.startsWith('//')) {
+            redirectURL = null;
+          } else {
+            // Strip leading slash to prevent double slashes
+            if (redirectURL.charAt(0) === '/') {
+              redirectURL = redirectURL.substring(1);
+            }
+          }
         }
         return res.redirect(`${mountPath}${redirectURL || 'apps'}`);
       }
