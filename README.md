@@ -224,6 +224,9 @@ Each class in `columnPreference` can have an array of column configurations:
 | `cloudCodeFunction` | String              | no       | -       | `"getUserDetails"` | Cloud Function receiving selected object.     |
 | `prefetchObjects`   | Number              | yes      | `0`     | `2`                | Number of next rows to prefetch.              |
 | `prefetchStale`     | Number              | yes      | `0`     | `10`               | Seconds after which prefetched data is stale. |
+| `prefetchImage`     | Boolean             | yes      | `true`  | `false`            | Whether to prefetch image content.            |
+| `prefetchVideo`     | Boolean             | yes      | `true`  | `false`            | Whether to prefetch video content.            |
+| `prefetchAudio`     | Boolean             | yes      | `true`  | `false`            | Whether to prefetch audio content.            |
 
 
 ##### User Configuration (`users[]`)
@@ -1020,7 +1023,10 @@ The following example dashboard configuration shows an info panel for the `_User
         "classes": ["_User"],
         "cloudCodeFunction": "getUserDetails",
         "prefetchObjects": 2,
-        "prefetchStale": 10
+        "prefetchStale": 10,
+        "prefetchImage": true,
+        "prefetchVideo": true,
+        "prefetchAudio": true
       }
     ]
   }
@@ -1321,12 +1327,17 @@ Example:
 
 To reduce the time for info panel data to appear, data can be prefetched.
 
-| Parameter                      | Type   | Optional | Default | Example | Description                                                                                                                       |
-|--------------------------------|--------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `infoPanel[*].prefetchObjects` | Number | yes      | `0`     | `2`     | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance. |
-| `infoPanel[*].prefetchStale`   | Number | yes      | `0`     | `10`    | Duration in seconds after which prefetched data is discarded as stale.                                                            |
+| Parameter                      | Type    | Optional | Default | Example | Description                                                                                                                       |
+|--------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `infoPanel[*].prefetchObjects` | Number  | yes      | `0`     | `2`     | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance. |
+| `infoPanel[*].prefetchStale`   | Number  | yes      | `0`     | `10`    | Duration in seconds after which prefetched data is discarded as stale.                                                            |
+| `infoPanel[*].prefetchImage`   | Boolean | yes      | `true`  | `false` | Whether to prefetch image content when prefetching objects. Only applies when `prefetchObjects` is enabled.                       |
+| `infoPanel[*].prefetchVideo`   | Boolean | yes      | `true`  | `false` | Whether to prefetch video content when prefetching objects. Only applies when `prefetchObjects` is enabled.                       |
+| `infoPanel[*].prefetchAudio`   | Boolean | yes      | `true`  | `false` | Whether to prefetch audio content when prefetching objects. Only applies when `prefetchObjects` is enabled.                       |
 
 Prefetching is particularly useful when navigating through lists of objects. To optimize performance and avoid unnecessary data loading, prefetching is triggered only after the user has moved through 3 consecutive rows using the keyboard down-arrow key or by mouse click.
+
+When `prefetchObjects` is enabled, media content (images, videos, and audio) in the info panel can also be prefetched to improve loading performance. By default, all media types are prefetched, but you can selectively disable prefetching for specific media types using the `prefetchImage`, `prefetchVideo`, and `prefetchAudio` options.
 
 ### Freeze Columns
 

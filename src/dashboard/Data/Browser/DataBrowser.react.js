@@ -768,6 +768,9 @@ export default class DataBrowser extends React.Component {
     return {
       prefetchObjects: config?.prefetchObjects || 0,
       prefetchStale: config?.prefetchStale || 0,
+      prefetchImage: config?.prefetchImage ?? true,
+      prefetchVideo: config?.prefetchVideo ?? true,
+      prefetchAudio: config?.prefetchAudio ?? true,
     };
   }
 
@@ -809,6 +812,52 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  extractMediaUrls(data) {
+    const urls = { images: [], videos: [], audios: [] };
+
+    if (!data?.panel?.segments) {
+      return urls;
+    }
+
+    data.panel.segments.forEach(segment => {
+      if (segment.items) {
+        segment.items.forEach(item => {
+          if (item.type === 'image' && item.url) {
+            urls.images.push(item.url);
+          } else if (item.type === 'video' && item.url) {
+            urls.videos.push(item.url);
+          } else if (item.type === 'audio' && item.url) {
+            urls.audios.push(item.url);
+          }
+        });
+      }
+    });
+
+    return urls;
+  }
+
+  prefetchMedia(urls, mediaType) {
+    if (!urls || urls.length === 0) {
+      return;
+    }
+
+    urls.forEach(url => {
+      try {
+        if (mediaType === 'image') {
+          const img = new Image();
+          img.src = url;
+        } else if (mediaType === 'video' || mediaType === 'audio') {
+          // For video and audio, we can use fetch to cache the content
+          fetch(url, { mode: 'no-cors' }).catch(() => {
+            // Silently fail - the media will load normally if prefetch fails
+          });
+        }
+      } catch (error) {
+        // Silently fail - the media will load normally if prefetch fails
+      }
+    });
+  }
+
   prefetchObject(objectId) {
     const { className, app } = this.props;
     const cloudCodeFunction =
@@ -831,6 +880,20 @@ export default class DataBrowser extends React.Component {
           [objectId]: { data: result, timestamp: Date.now() },
         },
       }));
+
+      // Prefetch media if enabled
+      const { prefetchImage, prefetchVideo, prefetchAudio } = this.getPrefetchSettings();
+      const mediaUrls = this.extractMediaUrls(result);
+
+      if (prefetchImage && mediaUrls.images.length > 0) {
+        this.prefetchMedia(mediaUrls.images, 'image');
+      }
+      if (prefetchVideo && mediaUrls.videos.length > 0) {
+        this.prefetchMedia(mediaUrls.videos, 'video');
+      }
+      if (prefetchAudio && mediaUrls.audios.length > 0) {
+        this.prefetchMedia(mediaUrls.audios, 'audio');
+      }
     }).catch(error => {
       console.error(`Failed to prefetch object ${objectId}:`, error);
     });

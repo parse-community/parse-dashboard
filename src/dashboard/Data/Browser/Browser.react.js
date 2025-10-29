@@ -465,6 +465,9 @@ class Browser extends DashboardView {
               classes: panel.classes,
               prefetchObjects: panel.prefetchObjects || 0,
               prefetchStale: panel.prefetchStale || 0,
+              prefetchImage: panel.prefetchImage ?? true,
+              prefetchVideo: panel.prefetchVideo ?? true,
+              prefetchAudio: panel.prefetchAudio ?? true,
             });
           });
         });
