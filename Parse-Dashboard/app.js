@@ -107,7 +107,7 @@ module.exports = function (config, options) {
     });
 
     // Serve the configuration.
-    app.get('/parse-dashboard-config.json', async function (req, res) {
+    app.get('/parse-dashboard-config.json', async (req, res) => {
       const apps = config.apps.map(app => Object.assign({}, app)); // make a copy
       const response = {
         apps,
@@ -1282,7 +1282,7 @@ You have direct access to the Parse database through function calls, so you can 
     });
 
     // For every other request, go to index.html. Let client-side handle the rest.
-    app.get('/*', function (req, res, next) {
+    app.get('/*', function (req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         const redirect = req.url.replace('/login', '');
         if (redirect.length > 1) {
@@ -1293,8 +1293,7 @@ You have direct access to the Parse database through function calls, so you can 
       if (users && req.user && req.user.matchingUsername) {
         res.append('username', req.user.matchingUsername);
       }
-      if (!req.path.startsWith('/v2')) {
-        res.send(`<!DOCTYPE html>
+      res.send(`<!DOCTYPE html>
       <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
@@ -1311,9 +1310,6 @@ You have direct access to the Parse database through function calls, so you can 
         </body>
       </html>
       `);
-      } else {
-        next();
-      }
     });
   });
 
