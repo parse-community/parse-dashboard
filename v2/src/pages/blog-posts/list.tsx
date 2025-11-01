@@ -1,109 +1,121 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useMany } from '@refinedev/core';
-import {
-  DateField,
-  DeleteButton,
-  EditButton,
-  List,
-  MarkdownField,
-  ShowButton,
-  useDataGrid,
-} from '@refinedev/mui';
-import React from 'react';
+import { useList } from "@refinedev/core";
+import { useTable } from "@refinedev/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import React from "react";
+
+import { DeleteButton } from "@/components/refine-ui/buttons/delete";
+import { EditButton } from "@/components/refine-ui/buttons/edit";
+import { ShowButton } from "@/components/refine-ui/buttons/show";
+import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { ListView } from "@/components/refine-ui/views/list-view";
+import { Badge } from "@/components/ui/badge";
+
+type BlogPost = {
+  id: string;
+  title: string;
+  content: string;
+  status: string;
+  createdAt: string;
+  category: { id: string; title: string };
+};
 
 export const BlogPostList = () => {
-  const { dataGridProps } = useDataGrid({
-    syncWithLocation: true,
-  });
-
-  const { data: categoryData, isLoading: categoryIsLoading } = useMany({
-    resource: 'categories',
-    ids: dataGridProps?.rows?.map((item: any) => item?.category?.id).filter(Boolean) ?? [],
-    queryOptions: {
-      enabled: !!dataGridProps?.rows,
+  // fetch all categories to use in the combobox filter
+  const {
+    result: { data: categories },
+    query: { isLoading: categoryIsLoading },
+  } = useList({
+    resource: "categories",
+    pagination: {
+      currentPage: 1,
+      pageSize: 999,
     },
   });
 
-  const columns = React.useMemo<GridColDef[]>(
-    () => [
-      {
-        field: 'id',
-        headerName: 'ID',
-        type: 'number',
-        minWidth: 50,
-      },
-      {
-        field: 'title',
-        flex: 1,
-        headerName: 'Title',
-        minWidth: 200,
-      },
-      {
-        field: 'content',
-        flex: 1,
-        headerName: 'content',
-        minWidth: 250,
-        renderCell: function render({ value }) {
-          if (!value) return '-';
-          return <MarkdownField value={value?.slice(0, 80) + '...' || ''} />;
-        },
-      },
-      {
-        field: 'category',
-        flex: 1,
-        headerName: 'Category',
-        minWidth: 300,
-        valueGetter: ({ row }) => {
-          const value = row?.category;
-          return value;
-        },
-        renderCell: function render({ value }) {
-          return categoryIsLoading ? (
-            <>Loading...</>
-          ) : (
-            categoryData?.data?.find(item => item.id === value?.id)?.title
-          );
-        },
-      },
-      {
-        field: 'status',
-        flex: 1,
-        headerName: 'Status',
-        minWidth: 200,
-      },
-      {
-        field: 'createdAt',
-        flex: 1,
-        headerName: 'Created at',
-        minWidth: 250,
-        renderCell: function render({ value }) {
-          return <DateField value={value} />;
-        },
-      },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        sortable: false,
-        renderCell: function render({ row }) {
+  const columns = React.useMemo(() => {
+    const columnHelper = createColumnHelper<BlogPost>();
+
+    return [
+      columnHelper.accessor("id", {
+        id: "id",
+        header: "ID",
+        enableSorting: false,
+      }),
+      columnHelper.accessor("title", {
+        id: "title",
+        header: "Title",
+        enableSorting: true,
+      }),
+      columnHelper.accessor("content", {
+        id: "content",
+        header: "Content",
+        enableSorting: false,
+        cell: ({ getValue }) => {
+          const content = getValue();
+          if (!content) return "-";
           return (
-            <>
-              <EditButton hideText recordItemId={row.id} />
-              <ShowButton hideText recordItemId={row.id} />
-              <DeleteButton hideText recordItemId={row.id} />
-            </>
+            <div className="max-w-xs truncate">{content.slice(0, 80)}...</div>
           );
         },
-        align: 'center',
-        headerAlign: 'center',
-        minWidth: 80,
-      },
-    ],
-    [categoryData]
-  );
+      }),
+      columnHelper.accessor("category.title", {
+        id: "category",
+        header: "Category",
+        enableSorting: false,
+        cell: ({ row }) => {
+          const categoryId = row.original.category?.id;
+          const category = categories?.find((item) => item.id === categoryId);
+          return categoryIsLoading ? "Loading..." : category?.title || "-";
+        },
+      }),
+      columnHelper.accessor("status", {
+        id: "status",
+        header: "Status",
+        enableSorting: true,
+        cell: ({ getValue }) => {
+          const status = getValue();
+          return (
+            <Badge variant={status === "published" ? "default" : "secondary"}>
+              {status}
+            </Badge>
+          );
+        },
+      }),
+      columnHelper.accessor("createdAt", {
+        id: "createdAt",
+        header: "Created At",
+        enableSorting: true,
+        cell: ({ getValue }) => {
+          const date = getValue();
+          return date ? new Date(date).toLocaleDateString() : "-";
+        },
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <div className="flex gap-2">
+            <EditButton recordItemId={row.original.id} size="sm" />
+            <ShowButton recordItemId={row.original.id} size="sm" />
+            <DeleteButton recordItemId={row.original.id} size="sm" />
+          </div>
+        ),
+        enableSorting: false,
+        size: 290,
+      }),
+    ];
+  }, [categories, categoryIsLoading]);
+
+  const table = useTable({
+    columns,
+    refineCoreProps: {
+      syncWithLocation: true,
+    },
+  });
 
   return (
-    <List>
-      <DataGrid {...dataGridProps} columns={columns} autoHeight />
-    </List>
+    <ListView>
+      <DataTable table={table} />
+    </ListView>
   );
 };

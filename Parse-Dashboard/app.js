@@ -107,7 +107,7 @@ module.exports = function (config, options) {
     });
 
     // Serve the configuration.
-    app.get('/parse-dashboard-config.json', async function (req, res) {
+    app.get('/parse-dashboard-config.json', async (req, res) => {
       const apps = config.apps.map(app => Object.assign({}, app)); // make a copy
       const response = {
         apps,

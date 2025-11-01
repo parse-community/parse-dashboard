@@ -199,9 +199,10 @@ module.exports = options => {
         )}`
       );
     });
+    const safeMountPath = mountPath && mountPath !== '/' ? mountPath.replace(/\/+$/, '') : '';
     ViteExpress.config({
       inlineViteConfig: {
-        base: `${mountPath}/v2/`,
+        base: `${safeMountPath}/v2/`,
         root: path.join(__dirname, '../v2'),
         build: {
           outDir: path.join(__dirname, './v2'),
@@ -225,9 +226,7 @@ module.exports = options => {
       )
       .listen(port, host, function () {
         console.log(
-          `The dashboard is now available at https://${server.address().address}:${
-            server.address().port
-          }${mountPath}`
+          `The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`
         );
       });
   }

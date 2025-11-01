@@ -1,4 +1,4 @@
-# pretty-mugs-pick
+# v2
 
 <div align="center" style="margin: 30px;">
     <a href="https://refine.dev">
@@ -40,7 +40,7 @@ Refine's hooks and components simplifies the development process and eliminates 
 To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
 
 - **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
-- **Material UI** [Docs](https://refine.dev/docs/ui-frameworks/mui/tutorial/)
+- **shadcn/ui** [Docs](https://refine.dev/docs/guides-concepts/general-concepts/#headless-concept)
 - **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
 
 ## License

@@ -1,25 +1,36 @@
-import { Stack, Typography } from '@mui/material'
-import { useShow } from '@refinedev/core';
-import { NumberField, Show, TextFieldComponent as TextField } from '@refinedev/mui';
+import { useShow } from "@refinedev/core";
+
+import { ShowView } from "@/components/refine-ui/views/show-view";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const CategoryShow = () => {
-  const { queryResult } = useShow({});
-  const { data, isLoading } = queryResult;
-
-  const record = data?.data;
+  const { result: record, query } = useShow({});
+  const { isLoading } = query;
 
   return (
-    <Show isLoading={isLoading}>
-      <Stack gap={1}>
-        <Typography variant="body1" fontWeight="bold">
-          {'ID'}
-        </Typography>
-        <NumberField value={record?.id ?? ''} />
-        <Typography variant="body1" fontWeight="bold">
-          {'Title'}
-        </Typography>
-        <TextField value={record?.title} />
-      </Stack>
-    </Show>
+    <ShowView>
+      <Card>
+        <CardHeader>
+          <CardTitle>{record?.title}</CardTitle>
+          <CardDescription>Category ID: {record?.id}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <h4 className="text-sm font-medium mb-2">Title</h4>
+              <p className="text-sm text-muted-foreground">
+                {record?.title || "-"}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </ShowView>
   );
 };

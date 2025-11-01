@@ -1,107 +1,159 @@
-import { Autocomplete, Box, MenuItem, Select, TextField } from '@mui/material';
-import { Create, useAutocomplete } from '@refinedev/mui';
-import { useForm } from '@refinedev/react-hook-form';
-import { Controller } from 'react-hook-form';
+import { Textarea } from "@/components/ui/textarea";
+import { useSelect } from "@refinedev/core";
+import { useForm } from "@refinedev/react-hook-form";
+import { useNavigate } from "react-router";
+
+import { CreateView } from "@/components/refine-ui/views/create-view";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const BlogPostCreate = () => {
-  const {
-    saveButtonProps,
-    refineCore: { formLoading },
-    register,
-    control,
-    formState: { errors },
-  } = useForm({});
+  const navigate = useNavigate();
 
-  const { autocompleteProps: categoryAutocompleteProps } = useAutocomplete({
-    resource: 'categories',
+  const {
+    refineCore: { onFinish },
+    ...form
+  } = useForm({
+    refineCoreProps: {},
   });
 
+  const { options: categoryOptions } = useSelect({
+    resource: "categories",
+  });
+
+  function onSubmit(values: Record<string, string>) {
+    onFinish(values);
+  }
+
   return (
-    <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
-      <Box component="form" sx={{ display: 'flex', flexDirection: 'column' }} autoComplete="off">
-        <TextField
-          {...register('title', {
-            required: 'This field is required',
-          })}
-          error={!!(errors as any)?.title}
-          helperText={(errors as any)?.title?.message}
-          margin="normal"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          type="text"
-          label={'Title'}
-          name="title"
-        />
-        <TextField
-          {...register('content', {
-            required: 'This field is required',
-          })}
-          error={!!(errors as any)?.content}
-          helperText={(errors as any)?.content?.message}
-          margin="normal"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          multiline
-          label={'Content'}
-          name="content"
-        />
-        <Controller
-          control={control}
-          name={'category.id'}
-          rules={{ required: 'This field is required' }}
-          // eslint-disable-next-line
-          defaultValue={null as any}
-          render={({ field }) => (
-            <Autocomplete
-              {...categoryAutocompleteProps}
-              {...field}
-              onChange={(_, value) => {
-                field.onChange(value.id);
-              }}
-              getOptionLabel={item => {
-                return (
-                  categoryAutocompleteProps?.options?.find(p => {
-                    const itemId =
-                      typeof item === 'object' ? item?.id?.toString() : item?.toString();
-                    const pId = p?.id?.toString();
-                    return itemId === pId;
-                  })?.title ?? ''
-                );
-              }}
-              isOptionEqualToValue={(option, value) => {
-                const optionId = option?.id?.toString();
-                const valueId =
-                  typeof value === 'object' ? value?.id?.toString() : value?.toString();
-                return value === undefined || optionId === valueId;
-              }}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label={'Category'}
-                  margin="normal"
-                  variant="outlined"
-                  error={!!(errors as any)?.category?.id}
-                  helperText={(errors as any)?.category?.id?.message}
-                  required
-                />
-              )}
-            />
-          )}
-        />
-        <Controller
-          name="status"
-          control={control}
-          render={({ field }) => {
-            return (
-              <Select {...field} value={field?.value || 'draft'} label={'Status'}>
-                <MenuItem value="draft">Draft</MenuItem>
-                <MenuItem value="published">Published</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            );
-          }}
-        />
-      </Box>
-    </Create>
+    <CreateView>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="title"
+            rules={{ required: "Title is required" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Enter title"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="content"
+            rules={{ required: "Content is required" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Content</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Enter content"
+                    rows={10}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name={"category.id"}
+            rules={{ required: "Category is required" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categoryOptions?.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="status"
+            rules={{ required: "Status is required" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={"draft"}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex gap-2">
+            <Button
+              type="submit"
+              {...form.saveButtonProps}
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Creating..." : "Create"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </CreateView>
   );
 };

@@ -1,59 +1,86 @@
-import { Stack, Typography } from '@mui/material';
-import { useOne, useShow } from '@refinedev/core';
+import { useOne, useShow } from "@refinedev/core";
+
+import { ShowView } from "@/components/refine-ui/views/show-view";
+import { Badge } from "@/components/ui/badge";
 import {
-  DateField,
-  MarkdownField,
-  NumberField,
-  Show,
-  TextFieldComponent as TextField,
-} from '@refinedev/mui';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 export const BlogPostShow = () => {
-  const { queryResult } = useShow({});
+  const { result: record, query } = useShow({});
 
-  const { data, isLoading } = queryResult;
-
-  const record = data?.data;
-
-  const { data: categoryData, isLoading: categoryIsLoading } = useOne({
-    resource: 'categories',
-    id: record?.category?.id || '',
+  const {
+    result: category,
+    query: { isLoading: categoryIsLoading },
+  } = useOne({
+    resource: "categories",
+    id: record?.category?.id || "",
     queryOptions: {
       enabled: !!record,
     },
   });
+  const { isLoading } = query;
 
   return (
-    <Show isLoading={isLoading}>
-      <Stack gap={1}>
-        <Typography variant="body1" fontWeight="bold">
-          {'ID'}
-        </Typography>
-        <NumberField value={record?.id ?? ''} />
+    <ShowView>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>{record?.title}</CardTitle>
+            <CardDescription>
+              <div className="flex items-center gap-4">
+                <Badge
+                  variant={
+                    record?.status === "published" ? "default" : "secondary"
+                  }
+                >
+                  {record?.status}
+                </Badge>
+                <span className="text-sm text-muted-foreground">
+                  ID: {record?.id}
+                </span>
+              </div>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h4 className="text-sm font-medium mb-2">Category</h4>
+              <p className="text-sm text-muted-foreground">
+                {categoryIsLoading ? "Loading..." : category?.title || "-"}
+              </p>
+            </div>
 
-        <Typography variant="body1" fontWeight="bold">
-          {'Title'}
-        </Typography>
-        <TextField value={record?.title} />
+            <Separator />
 
-        <Typography variant="body1" fontWeight="bold">
-          {'Content'}
-        </Typography>
-        <MarkdownField value={record?.content} />
+            <div>
+              <h4 className="text-sm font-medium mb-2">Created At</h4>
+              <p className="text-sm text-muted-foreground">
+                {record?.createdAt
+                  ? new Date(record.createdAt).toLocaleDateString()
+                  : "-"}
+              </p>
+            </div>
 
-        <Typography variant="body1" fontWeight="bold">
-          {'Category'}
-        </Typography>
-        {categoryIsLoading ? <>Loading...</> : <>{categoryData?.data?.title}</>}
-        <Typography variant="body1" fontWeight="bold">
-          {'Status'}
-        </Typography>
-        <TextField value={record?.status} />
-        <Typography variant="body1" fontWeight="bold">
-          {'CreatedAt'}
-        </Typography>
-        <DateField value={record?.createdAt} />
-      </Stack>
-    </Show>
+            <Separator />
+
+            <div>
+              <h4 className="text-sm font-medium mb-4">Content</h4>
+              <div className="prose prose-sm max-w-none">
+                {record?.content ? (
+                  <div dangerouslySetInnerHTML={{ __html: record.content }} />
+                ) : (
+                  <p className="text-muted-foreground">No content available</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </ShowView>
   );
 };

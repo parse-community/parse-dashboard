@@ -1,48 +1,59 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { DeleteButton, EditButton, List, ShowButton, useDataGrid } from '@refinedev/mui';
-import React from 'react';
+import { useTable } from "@refinedev/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import React from "react";
+
+import { DeleteButton } from "@/components/refine-ui/buttons/delete";
+import { EditButton } from "@/components/refine-ui/buttons/edit";
+import { ShowButton } from "@/components/refine-ui/buttons/show";
+import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { ListView } from "@/components/refine-ui/views/list-view";
+
+type Category = {
+  id: string;
+  title: string;
+};
 
 export const CategoryList = () => {
-  const { dataGridProps } = useDataGrid({});
+  const columns = React.useMemo(() => {
+    const columnHelper = createColumnHelper<Category>();
 
-  const columns = React.useMemo<GridColDef[]>(
-    () => [
-      {
-        field: 'id',
-        headerName: 'ID',
-        type: 'number',
-        minWidth: 50,
-      },
-      {
-        field: 'title',
-        flex: 1,
-        headerName: 'Title',
-        minWidth: 200,
-      },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        sortable: false,
-        renderCell: function render({ row }) {
-          return (
-            <>
-              <EditButton hideText recordItemId={row.id} />
-              <ShowButton hideText recordItemId={row.id} />
-              <DeleteButton hideText recordItemId={row.id} />
-            </>
-          );
-        },
-        align: 'center',
-        headerAlign: 'center',
-        minWidth: 80,
-      },
-    ],
-    []
-  );
+    return [
+      columnHelper.accessor("id", {
+        id: "id",
+        header: "ID",
+        enableSorting: false,
+      }),
+      columnHelper.accessor("title", {
+        id: "title",
+        header: "Title",
+        enableSorting: true,
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <div className="flex gap-2">
+            <EditButton recordItemId={row.original.id} size="sm" />
+            <ShowButton recordItemId={row.original.id} size="sm" />
+            <DeleteButton recordItemId={row.original.id} size="sm" />
+          </div>
+        ),
+        enableSorting: false,
+        size: 290,
+      }),
+    ];
+  }, []);
+
+  const table = useTable({
+    columns,
+    refineCoreProps: {
+      syncWithLocation: true,
+    },
+  });
 
   return (
-    <List>
-      <DataGrid {...dataGridProps} columns={columns} autoHeight />
-    </List>
+    <ListView>
+      <DataTable table={table} />
+    </ListView>
   );
 };
