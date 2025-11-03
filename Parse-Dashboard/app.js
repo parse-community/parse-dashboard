@@ -18,7 +18,10 @@ async function getNewFeaturesInLatestVersion() {
   try {
     // Get latest version
     const packageJson = (await import('package-json')).default;
-    const latestPackage = await packageJson('parse-dashboard', { version: 'latest', fullMetadata: true });
+    const latestPackage = await packageJson('parse-dashboard', {
+      version: 'latest',
+      fullMetadata: true,
+    });
 
     if (latestPackage.parseDashboardFeatures instanceof Array) {
       newFeaturesInLatestVersion = latestPackage.parseDashboardFeatures.filter(feature => {
@@ -30,7 +33,7 @@ async function getNewFeaturesInLatestVersion() {
     newFeaturesInLatestVersion = [];
   }
 }
-getNewFeaturesInLatestVersion().catch(() => {})
+getNewFeaturesInLatestVersion().catch(() => {});
 
 function getMount(mountPath) {
   mountPath = mountPath || '';
@@ -46,10 +49,11 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
     const iconName = currentApp.iconName;
     const path = iconsFolder + '/' + iconName;
 
-    fs.stat(path, function(err) {
+    fs.stat(path, function (err) {
       if (err) {
-        if ('ENOENT' == err.code) {// file does not exist
-          console.warn('Icon with file name: ' + iconName + ' couldn\'t be found in icons folder!');
+        if ('ENOENT' == err.code) {
+          // file does not exist
+          console.warn('Icon with file name: ' + iconName + " couldn't be found in icons folder!");
         } else {
           console.warn('An error occurred while checking for icons, please check permission!');
         }
@@ -60,7 +64,7 @@ function checkIfIconsExistForApps(apps, iconsFolder) {
   }
 }
 
-module.exports = function(config, options) {
+module.exports = function (config, options) {
   options = options || {};
   const app = express();
 
@@ -69,7 +73,7 @@ module.exports = function(config, options) {
   app.use(express.urlencoded({ extended: true }));
 
   // Serve public files.
-  app.use(express.static(path.join(__dirname,'public')));
+  app.use(express.static(path.join(__dirname, 'public')));
 
   // Allow setting via middleware
   if (config.trustProxy && app.disabled('trust proxy')) {
@@ -77,16 +81,21 @@ module.exports = function(config, options) {
   }
 
   // wait for app to mount in order to get mountpath
-  app.on('mount', function() {
+  app.on('mount', function () {
     const mountPath = getMount(app.mountpath);
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
-    authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret, cookieSessionMaxAge: options.cookieSessionMaxAge });
+    authInstance.initialize(app, {
+      cookieSessionSecret: options.cookieSessionSecret,
+      cookieSessionMaxAge: options.cookieSessionMaxAge,
+    });
 
     // CSRF error handler
     app.use(function (err, req, res, next) {
-      if (err.code !== 'EBADCSRFTOKEN') {return next(err)}
+      if (err.code !== 'EBADCSRFTOKEN') {
+        return next(err);
+      }
 
       // handle CSRF token errors here
       res.status(403);
@@ -99,7 +108,7 @@ module.exports = function(config, options) {
 
     // Serve the configuration.
     app.get('/parse-dashboard-config.json', async (req, res) => {
-      const apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
+      const apps = config.apps.map(app => Object.assign({}, app)); // make a copy
       const response = {
         apps,
         newFeaturesInLatestVersion,
@@ -115,12 +124,18 @@ module.exports = function(config, options) {
       if (!options.dev && !requestIsLocal) {
         if (!req.secure && !options.allowInsecureHTTP) {
           //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
-          return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
+          return res.send({
+            success: false,
+            error: 'Parse Dashboard can only be remotely accessed via HTTPS',
+          });
         }
 
         if (!users) {
           //Accessing the dashboard over the internet can only be done with username and password
-          return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
+          return res.send({
+            success: false,
+            error: 'Configure a user to access Parse Dashboard remotely',
+          });
         }
       }
       const authentication = req.user;
@@ -130,7 +145,7 @@ module.exports = function(config, options) {
       const isReadOnly = authentication && authentication.isReadOnly;
       // User is full read-only, replace the masterKey by the read-only one
       if (isReadOnly) {
-        response.apps = response.apps.map((app) => {
+        response.apps = response.apps.map(app => {
           app.masterKey = app.readOnlyMasterKey;
           if (!app.masterKey) {
             throw new Error('You need to provide a readOnlyMasterKey to use read-only features.');
@@ -141,10 +156,8 @@ module.exports = function(config, options) {
       if (successfulAuth) {
         if (appsUserHasAccess) {
           const processedApps = await Promise.all(
-            response.apps.map(async (app) => {
-              const matchingAccess = appsUserHasAccess.find(
-                (access) => access.appId === app.appId
-              );
+            response.apps.map(async app => {
+              const matchingAccess = appsUserHasAccess.find(access => access.appId === app.appId);
 
               if (!matchingAccess) {
                 return null;
@@ -155,14 +168,19 @@ module.exports = function(config, options) {
               }
 
               if (typeof app.masterKey === 'function') {
-                app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
+                app.masterKey = await ConfigKeyCache.get(
+                  app.appId,
+                  'masterKey',
+                  app.masterKeyTtl,
+                  app.masterKey
+                );
               }
 
               return app;
             })
           );
 
-          response.apps = processedApps.filter((app) => app !== null);
+          response.apps = processedApps.filter(app => app !== null);
         }
         // They provided correct auth
         return res.json(response);
@@ -178,9 +196,14 @@ module.exports = function(config, options) {
       if (requestIsLocal || options.dev) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
         await Promise.all(
-          response.apps.map(async (app) => {
+          response.apps.map(async app => {
             if (typeof app.masterKey === 'function') {
-              app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
+              app.masterKey = await ConfigKeyCache.get(
+                app.appId,
+                'masterKey',
+                app.masterKeyTtl,
+                app.masterKey
+              );
             }
           })
         );
@@ -236,7 +259,9 @@ module.exports = function(config, options) {
         }
 
         if (apiKey === 'xxxxx' || apiKey.includes('xxx')) {
-          return res.status(400).json({ error: 'Please replace the placeholder API key with your actual API key' });
+          return res
+            .status(400)
+            .json({ error: 'Please replace the placeholder API key with your actual API key' });
         }
 
         // Only support OpenAI for now
@@ -256,7 +281,15 @@ module.exports = function(config, options) {
         const operationLog = [];
 
         // Make request to OpenAI API with app context and conversation history
-        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory, operationLog, permissions);
+        const response = await makeOpenAIRequest(
+          message,
+          model,
+          apiKey,
+          app,
+          conversationHistory,
+          operationLog,
+          permissions
+        );
 
         // Update conversation history with user message and AI response
         conversationHistory.push(
@@ -270,7 +303,8 @@ module.exports = function(config, options) {
         }
 
         // Generate or use provided conversation ID
-        const finalConversationId = conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const finalConversationId =
+          conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
         res.json({
           response,
@@ -279,10 +313,9 @@ module.exports = function(config, options) {
             timestamp: new Date().toISOString(),
             appId: app.appId,
             modelUsed: model,
-            operations: operationLog
-          }
+            operations: operationLog,
+          },
         });
-
       } catch (error) {
         // Return the full error message to help with debugging
         const errorMessage = error.message || 'Provider error';
@@ -298,143 +331,155 @@ module.exports = function(config, options) {
         type: 'function',
         function: {
           name: 'queryClass',
-          description: 'Query a Parse class/table to retrieve objects. Use this to fetch data from the database.',
+          description:
+            'Query a Parse class/table to retrieve objects. Use this to fetch data from the database.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class to query'
+                description: 'The name of the Parse class to query',
               },
               where: {
                 type: 'object',
-                description: 'Query constraints as a JSON object (e.g., {"name": "John", "age": {"$gte": 18}})'
+                description:
+                  'Query constraints as a JSON object (e.g., {"name": "John", "age": {"$gte": 18}})',
               },
               limit: {
                 type: 'number',
-                description: 'Maximum number of results to return (default 100, max 1000)'
+                description: 'Maximum number of results to return (default 100, max 1000)',
               },
               skip: {
                 type: 'number',
-                description: 'Number of results to skip for pagination'
+                description: 'Number of results to skip for pagination',
               },
               order: {
                 type: 'string',
-                description: 'Field to order by (prefix with \'-\' for descending, e.g., \'-createdAt\')'
+                description:
+                  "Field to order by (prefix with '-' for descending, e.g., '-createdAt')",
               },
               include: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Array of pointer fields to include/populate'
+                description: 'Array of pointer fields to include/populate',
               },
               select: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Array of fields to select (if not provided, all fields are returned)'
-              }
+                description: 'Array of fields to select (if not provided, all fields are returned)',
+              },
             },
-            required: ['className']
-          }
-        }
+            required: ['className'],
+          },
+        },
       },
       {
         type: 'function',
         function: {
           name: 'createObject',
-          description: 'Create a new object in a Parse class/table. IMPORTANT: This is a write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function. You MUST provide the objectData parameter with the actual field values to be saved in the object.',
+          description:
+            'Create a new object in a Parse class/table. IMPORTANT: This is a write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function. You MUST provide the objectData parameter with the actual field values to be saved in the object.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class to create an object in'
+                description: 'The name of the Parse class to create an object in',
               },
               objectData: {
                 type: 'object',
-                description: 'REQUIRED: The object fields and values for the new object as a JSON object. Example: {\'model\': \'Honda Civic\', \'year\': 2023, \'brand\': \'Honda\'}. This parameter is mandatory and cannot be empty.',
-                additionalProperties: true
+                description:
+                  "REQUIRED: The object fields and values for the new object as a JSON object. Example: {'model': 'Honda Civic', 'year': 2023, 'brand': 'Honda'}. This parameter is mandatory and cannot be empty.",
+                additionalProperties: true,
               },
               confirmed: {
                 type: 'boolean',
-                description: 'Must be true to indicate user has explicitly confirmed this write operation',
-                default: false
-              }
+                description:
+                  'Must be true to indicate user has explicitly confirmed this write operation',
+                default: false,
+              },
             },
-            required: ['className', 'objectData', 'confirmed']
-          }
-        }
+            required: ['className', 'objectData', 'confirmed'],
+          },
+        },
       },
       {
         type: 'function',
         function: {
           name: 'updateObject',
-          description: 'Update an existing object in a Parse class/table. IMPORTANT: This is a write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
+          description:
+            'Update an existing object in a Parse class/table. IMPORTANT: This is a write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class containing the object'
+                description: 'The name of the Parse class containing the object',
               },
               objectId: {
                 type: 'string',
-                description: 'The objectId of the object to update'
+                description: 'The objectId of the object to update',
               },
               objectData: {
                 type: 'object',
-                description: 'The fields to update as a JSON object'
+                description: 'The fields to update as a JSON object',
               },
               confirmed: {
                 type: 'boolean',
-                description: 'Must be true to indicate user has explicitly confirmed this write operation',
-                default: false
-              }
+                description:
+                  'Must be true to indicate user has explicitly confirmed this write operation',
+                default: false,
+              },
             },
-            required: ['className', 'objectId', 'objectData', 'confirmed']
-          }
-        }
+            required: ['className', 'objectId', 'objectData', 'confirmed'],
+          },
+        },
       },
       {
         type: 'function',
         function: {
           name: 'deleteObject',
-          description: 'Delete a SINGLE OBJECT/ROW from a Parse class/table using its objectId. Use this when you want to delete one specific record/object, not the entire class. IMPORTANT: This is a destructive write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
+          description:
+            'Delete a SINGLE OBJECT/ROW from a Parse class/table using its objectId. Use this when you want to delete one specific record/object, not the entire class. IMPORTANT: This is a destructive write operation that requires explicit user confirmation before execution. You must ask the user to confirm before calling this function.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class containing the object'
+                description: 'The name of the Parse class containing the object',
               },
               objectId: {
                 type: 'string',
-                description: 'The objectId of the specific object/record to delete'
+                description: 'The objectId of the specific object/record to delete',
               },
               confirmed: {
                 type: 'boolean',
-                description: 'Must be true to indicate user has explicitly confirmed this destructive operation',
-                default: false
-              }
+                description:
+                  'Must be true to indicate user has explicitly confirmed this destructive operation',
+                default: false,
+              },
             },
-            required: ['className', 'objectId', 'confirmed']
-          }
-        }
+            required: ['className', 'objectId', 'confirmed'],
+          },
+        },
       },
       {
         type: 'function',
         function: {
           name: 'getSchema',
-          description: 'Get the schema information for Parse classes. Use this to understand the structure of classes/tables.',
+          description:
+            'Get the schema information for Parse classes. Use this to understand the structure of classes/tables.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class to get schema for (optional - if not provided, returns all schemas)'
-              }
-            }
-          }
-        }
+                description:
+                  'The name of the Parse class to get schema for (optional - if not provided, returns all schemas)',
+              },
+            },
+          },
+        },
       },
       {
         type: 'function',
@@ -446,73 +491,90 @@ module.exports = function(config, options) {
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class to count objects in'
+                description: 'The name of the Parse class to count objects in',
               },
               where: {
                 type: 'object',
-                description: 'Query constraints as a JSON object (optional)'
-              }
+                description: 'Query constraints as a JSON object (optional)',
+              },
             },
-            required: ['className']
-          }
-        }
+            required: ['className'],
+          },
+        },
       },
       {
         type: 'function',
         function: {
           name: 'createClass',
-          description: 'Create a new Parse class/table with specified fields. This creates the class structure without any objects.',
+          description:
+            'Create a new Parse class/table with specified fields. This creates the class structure without any objects.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class to create'
+                description: 'The name of the Parse class to create',
               },
               fields: {
                 type: 'object',
-                description: 'Fields to define for the class as a JSON object where keys are field names and values are field types (e.g., {"name": "String", "age": "Number", "email": "String"})'
+                description:
+                  'Fields to define for the class as a JSON object where keys are field names and values are field types (e.g., {"name": "String", "age": "Number", "email": "String"})',
               },
               confirmed: {
                 type: 'boolean',
-                description: 'Must be true to indicate user has explicitly confirmed this operation',
-                default: false
-              }
+                description:
+                  'Must be true to indicate user has explicitly confirmed this operation',
+                default: false,
+              },
             },
-            required: ['className', 'confirmed']
-          }
-        }
+            required: ['className', 'confirmed'],
+          },
+        },
       },
       {
         type: 'function',
         function: {
           name: 'deleteClass',
-          description: 'Delete an ENTIRE Parse class/table (the class itself) and ALL its data. Use this when the user wants to delete/remove the entire class/table, not individual objects. This completely removes the class schema and all objects within it. IMPORTANT: This is a highly destructive operation that permanently removes the entire class structure and all objects within it. Requires explicit user confirmation before execution.',
+          description:
+            'Delete an ENTIRE Parse class/table (the class itself) and ALL its data. Use this when the user wants to delete/remove the entire class/table, not individual objects. This completely removes the class schema and all objects within it. IMPORTANT: This is a highly destructive operation that permanently removes the entire class structure and all objects within it. Requires explicit user confirmation before execution.',
           parameters: {
             type: 'object',
             properties: {
               className: {
                 type: 'string',
-                description: 'The name of the Parse class/table to completely delete/remove'
+                description: 'The name of the Parse class/table to completely delete/remove',
               },
               confirmed: {
                 type: 'boolean',
-                description: 'Must be true to indicate user has explicitly confirmed this highly destructive operation',
-                default: false
-              }
+                description:
+                  'Must be true to indicate user has explicitly confirmed this highly destructive operation',
+                default: false,
+              },
             },
-            required: ['className', 'confirmed']
-          }
-        }
-      }
+            required: ['className', 'confirmed'],
+          },
+        },
+      },
     ];
 
     /**
      * Execute database function calls
      */
-    async function executeDatabaseFunction(functionName, args, appContext, operationLog = [], permissions = {}) {
+    async function executeDatabaseFunction(
+      functionName,
+      args,
+      appContext,
+      operationLog = [],
+      permissions = {}
+    ) {
       // Check permissions before executing write operations
-      const writeOperations = ['deleteObject', 'deleteClass', 'updateObject', 'createObject', 'createClass'];
+      const writeOperations = [
+        'deleteObject',
+        'deleteClass',
+        'updateObject',
+        'createObject',
+        'createClass',
+      ];
 
       if (writeOperations.includes(functionName)) {
         // Handle both boolean and string values for permissions
@@ -520,7 +582,9 @@ module.exports = function(config, options) {
         const hasPermission = permissionValue === true || permissionValue === 'true';
 
         if (!hasPermission) {
-          throw new Error(`Permission denied: The "${functionName}" operation is currently disabled in the permissions settings. Please enable this permission in the Parse Dashboard Permissions menu if you want to allow this operation.`);
+          throw new Error(
+            `Permission denied: The "${functionName}" operation is currently disabled in the permissions settings. Please enable this permission in the Parse Dashboard Permissions menu if you want to allow this operation.`
+          );
         }
       }
 
@@ -532,7 +596,15 @@ module.exports = function(config, options) {
       try {
         switch (functionName) {
           case 'queryClass': {
-            const { className, where = {}, limit = 100, skip = 0, order, include = [], select = [] } = args;
+            const {
+              className,
+              where = {},
+              limit = 100,
+              skip = 0,
+              order,
+              include = [],
+              select = [],
+            } = args;
             const query = new Parse.Query(className);
 
             // Apply constraints
@@ -542,18 +614,37 @@ module.exports = function(config, options) {
                 // Handle complex queries like {$gte: 18}
                 Object.keys(value).forEach(op => {
                   switch (op) {
-                    case '$gt': query.greaterThan(key, value[op]); break;
-                    case '$gte': query.greaterThanOrEqualTo(key, value[op]); break;
-                    case '$lt': query.lessThan(key, value[op]); break;
-                    case '$lte': query.lessThanOrEqualTo(key, value[op]); break;
-                    case '$ne': query.notEqualTo(key, value[op]); break;
-                    case '$in': query.containedIn(key, value[op]); break;
-                    case '$nin': query.notContainedIn(key, value[op]); break;
-                    case '$exists':
-                      if (value[op]) {query.exists(key);}
-                      else {query.doesNotExist(key);}
+                    case '$gt':
+                      query.greaterThan(key, value[op]);
                       break;
-                    case '$regex': query.matches(key, new RegExp(value[op], value.$options || '')); break;
+                    case '$gte':
+                      query.greaterThanOrEqualTo(key, value[op]);
+                      break;
+                    case '$lt':
+                      query.lessThan(key, value[op]);
+                      break;
+                    case '$lte':
+                      query.lessThanOrEqualTo(key, value[op]);
+                      break;
+                    case '$ne':
+                      query.notEqualTo(key, value[op]);
+                      break;
+                    case '$in':
+                      query.containedIn(key, value[op]);
+                      break;
+                    case '$nin':
+                      query.notContainedIn(key, value[op]);
+                      break;
+                    case '$exists':
+                      if (value[op]) {
+                        query.exists(key);
+                      } else {
+                        query.doesNotExist(key);
+                      }
+                      break;
+                    case '$regex':
+                      query.matches(key, new RegExp(value[op], value.$options || ''));
+                      break;
                   }
                 });
               } else {
@@ -561,8 +652,12 @@ module.exports = function(config, options) {
               }
             });
 
-            if (limit) {query.limit(Math.min(limit, 1000));}
-            if (skip) {query.skip(skip);}
+            if (limit) {
+              query.limit(Math.min(limit, 1000));
+            }
+            if (skip) {
+              query.skip(skip);
+            }
             if (order) {
               if (order.startsWith('-')) {
                 query.descending(order.substring(1));
@@ -570,8 +665,12 @@ module.exports = function(config, options) {
                 query.ascending(order);
               }
             }
-            if (include.length > 0) {query.include(include);}
-            if (select.length > 0) {query.select(select);}
+            if (include.length > 0) {
+              query.include(include);
+            }
+            if (select.length > 0) {
+              query.select(select);
+            }
 
             const results = await query.find({ useMasterKey: true });
             const resultData = results.map(obj => obj.toJSON());
@@ -579,7 +678,7 @@ module.exports = function(config, options) {
               operation: 'queryClass',
               className,
               resultCount: results.length,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             };
 
             operationLog.push(operationSummary);
@@ -590,13 +689,21 @@ module.exports = function(config, options) {
             const { className, objectData, confirmed } = args;
 
             // Validate required parameters
-            if (!objectData || typeof objectData !== 'object' || Object.keys(objectData).length === 0) {
-              throw new Error('Missing or empty \'objectData\' parameter. To create an object, you must provide the objectData fields and values as a JSON object. For example: {\'model\': \'Honda Civic\', \'year\': 2023, \'brand\': \'Honda\'}');
+            if (
+              !objectData ||
+              typeof objectData !== 'object' ||
+              Object.keys(objectData).length === 0
+            ) {
+              throw new Error(
+                "Missing or empty 'objectData' parameter. To create an object, you must provide the objectData fields and values as a JSON object. For example: {'model': 'Honda Civic', 'year': 2023, 'brand': 'Honda'}"
+              );
             }
 
             // Require explicit confirmation for write operations
             if (!confirmed) {
-              throw new Error(`Creating objects requires user confirmation. The AI should ask for permission before creating objects in the ${className} class.`);
+              throw new Error(
+                `Creating objects requires user confirmation. The AI should ask for permission before creating objects in the ${className} class.`
+              );
             }
 
             const ParseObject = Parse.Object.extend(className);
@@ -617,7 +724,9 @@ module.exports = function(config, options) {
 
             // Require explicit confirmation for write operations
             if (!confirmed) {
-              throw new Error(`Updating objects requires user confirmation. The AI should ask for permission before updating object ${objectId} in the ${className} class.`);
+              throw new Error(
+                `Updating objects requires user confirmation. The AI should ask for permission before updating object ${objectId} in the ${className} class.`
+              );
             }
 
             const query = new Parse.Query(className);
@@ -638,7 +747,9 @@ module.exports = function(config, options) {
 
             // Require explicit confirmation for destructive operations
             if (!confirmed) {
-              throw new Error(`Deleting objects requires user confirmation. The AI should ask for permission before permanently deleting object ${objectId} from the ${className} class.`);
+              throw new Error(
+                `Deleting objects requires user confirmation. The AI should ask for permission before permanently deleting object ${objectId} from the ${className} class.`
+              );
             }
 
             const query = new Parse.Query(className);
@@ -670,16 +781,33 @@ module.exports = function(config, options) {
               if (typeof value === 'object' && value !== null) {
                 Object.keys(value).forEach(op => {
                   switch (op) {
-                    case '$gt': query.greaterThan(key, value[op]); break;
-                    case '$gte': query.greaterThanOrEqualTo(key, value[op]); break;
-                    case '$lt': query.lessThan(key, value[op]); break;
-                    case '$lte': query.lessThanOrEqualTo(key, value[op]); break;
-                    case '$ne': query.notEqualTo(key, value[op]); break;
-                    case '$in': query.containedIn(key, value[op]); break;
-                    case '$nin': query.notContainedIn(key, value[op]); break;
+                    case '$gt':
+                      query.greaterThan(key, value[op]);
+                      break;
+                    case '$gte':
+                      query.greaterThanOrEqualTo(key, value[op]);
+                      break;
+                    case '$lt':
+                      query.lessThan(key, value[op]);
+                      break;
+                    case '$lte':
+                      query.lessThanOrEqualTo(key, value[op]);
+                      break;
+                    case '$ne':
+                      query.notEqualTo(key, value[op]);
+                      break;
+                    case '$in':
+                      query.containedIn(key, value[op]);
+                      break;
+                    case '$nin':
+                      query.notContainedIn(key, value[op]);
+                      break;
                     case '$exists':
-                      if (value[op]) {query.exists(key);}
-                      else {query.doesNotExist(key);}
+                      if (value[op]) {
+                        query.exists(key);
+                      } else {
+                        query.doesNotExist(key);
+                      }
                       break;
                   }
                 });
@@ -699,7 +827,9 @@ module.exports = function(config, options) {
 
             // Require explicit confirmation for class creation
             if (!confirmed) {
-              throw new Error(`Creating classes requires user confirmation. The AI should ask for permission before creating the ${className} class.`);
+              throw new Error(
+                `Creating classes requires user confirmation. The AI should ask for permission before creating the ${className} class.`
+              );
             }
 
             const schema = new Parse.Schema(className);
@@ -750,7 +880,9 @@ module.exports = function(config, options) {
 
             // Require explicit confirmation for class deletion - this is highly destructive
             if (!confirmed) {
-              throw new Error(`Deleting classes requires user confirmation. The AI should ask for permission before permanently deleting the ${className} class and ALL its data.`);
+              throw new Error(
+                `Deleting classes requires user confirmation. The AI should ask for permission before permanently deleting the ${className} class and ALL its data.`
+              );
             }
 
             // Check if the class exists first
@@ -773,7 +905,11 @@ module.exports = function(config, options) {
               // Then delete the class schema itself
               await schema.delete({ useMasterKey: true });
 
-              const resultData = { success: true, className, message: `Class "${className}" and all its data have been permanently deleted.` };
+              const resultData = {
+                success: true,
+                className,
+                message: `Class "${className}" and all its data have been permanently deleted.`,
+              };
               return resultData;
             } catch (deleteError) {
               throw new Error(`Failed to delete class "${className}": ${deleteError.message}`);
@@ -790,7 +926,7 @@ module.exports = function(config, options) {
           appId: appContext.appId,
           serverURL: appContext.serverURL,
           error: error.message,
-          stack: error.stack
+          stack: error.stack,
         });
         throw new Error(`Database operation failed: ${error.message}`);
       }
@@ -799,14 +935,22 @@ module.exports = function(config, options) {
     /**
      * Make a request to OpenAI API
      */
-    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
+    async function makeOpenAIRequest(
+      userMessage,
+      model,
+      apiKey,
+      appContext = null,
+      conversationHistory = [],
+      operationLog = [],
+      permissions = {}
+    ) {
       const fetch = (await import('node-fetch')).default;
 
       const url = 'https://api.openai.com/v1/chat/completions';
 
-      const appInfo = appContext ?
-        `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.` :
-        '';
+      const appInfo = appContext
+        ? `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.`
+        : '';
 
       // Build messages array starting with system message
       const messages = [
@@ -837,7 +981,7 @@ IMPORTANT: Choose the correct function based on what the user wants to delete:
 
 CRITICAL SECURITY RULE FOR WRITE OPERATIONS:
 - ANY write operation (create, update, delete) MUST have explicit user confirmation through conversation
-- When a user requests a write operation, explain what you will do and ask for confirmation 
+- When a user requests a write operation, explain what you will do and ask for confirmation
 - Only call the write operation functions with confirmed=true after the user has explicitly agreed
 - If a user says "Create a new class", treat this as confirmation to create objects in that class
 - You CANNOT perform write operations without the user's knowledge and consent
@@ -853,7 +997,7 @@ When working with the database:
 - Read operations (query, getSchema, count) can be performed immediately
 - Write operations require the pattern: 1) Explain what you'll do, 2) Ask for confirmation, 3) Only then execute if confirmed
 - Always use the provided database functions instead of writing code
-- Class names are case-sensitive 
+- Class names are case-sensitive
 - Use proper Parse query syntax for complex queries
 - Handle objectId fields correctly
 - Be mindful of data types (Date, Pointer, etc.)
@@ -889,16 +1033,21 @@ When responding:
   * When listing database classes, format as a numbered list with descriptions
   * Use tables for structured data comparison
 
-You have direct access to the Parse database through function calls, so you can query actual data and provide real-time information.${appInfo}`
-        }
+You have direct access to the Parse database through function calls, so you can query actual data and provide real-time information.${appInfo}`,
+        },
       ];
 
       // Add conversation history if it exists
       if (conversationHistory && conversationHistory.length > 0) {
         // Filter out any messages with null or undefined content to prevent API errors
-        const validHistory = conversationHistory.filter(msg =>
-          msg && typeof msg === 'object' && msg.role &&
-          (msg.content !== null && msg.content !== undefined && msg.content !== '')
+        const validHistory = conversationHistory.filter(
+          msg =>
+            msg &&
+            typeof msg === 'object' &&
+            msg.role &&
+            msg.content !== null &&
+            msg.content !== undefined &&
+            msg.content !== ''
         );
         messages.push(...validHistory);
       }
@@ -906,7 +1055,7 @@ You have direct access to the Parse database through function calls, so you can 
       // Add the current user message
       messages.push({
         role: 'user',
-        content: userMessage
+        content: userMessage,
       });
 
       const requestBody = {
@@ -916,16 +1065,16 @@ You have direct access to the Parse database through function calls, so you can 
         max_tokens: 2000,
         tools: databaseTools,
         tool_choice: 'auto',
-        stream: false
+        stream: false,
       };
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -940,15 +1089,27 @@ You have direct access to the Parse database through function calls, so you can 
         }
 
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = (errorData && typeof errorData === 'object' && 'error' in errorData && errorData.error && typeof errorData.error === 'object' && 'message' in errorData.error)
-          ? errorData.error.message
-          : `HTTP ${response.status}: ${response.statusText}`;
+        const errorMessage =
+          errorData &&
+          typeof errorData === 'object' &&
+          'error' in errorData &&
+          errorData.error &&
+          typeof errorData.error === 'object' &&
+          'message' in errorData.error
+            ? errorData.error.message
+            : `HTTP ${response.status}: ${response.statusText}`;
         throw new Error(`OpenAI API error: ${errorMessage}`);
       }
 
       const data = await response.json();
 
-      if (!data || typeof data !== 'object' || !('choices' in data) || !Array.isArray(data.choices) || data.choices.length === 0) {
+      if (
+        !data ||
+        typeof data !== 'object' ||
+        !('choices' in data) ||
+        !Array.isArray(data.choices) ||
+        data.choices.length === 0
+      ) {
         throw new Error('No response received from OpenAI API');
       }
 
@@ -971,33 +1132,35 @@ You have direct access to the Parse database through function calls, so you can 
                 args: functionArgs,
                 appId: appContext.appId,
                 serverURL: appContext.serverURL,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               });
 
               // Execute the database function
-              const result = await executeDatabaseFunction(functionName, functionArgs, appContext, operationLog, permissions);
+              const result = await executeDatabaseFunction(
+                functionName,
+                functionArgs,
+                appContext,
+                operationLog,
+                permissions
+              );
 
               toolResponses.push({
                 tool_call_id: toolCall.id,
                 role: 'tool',
-                content: result ? JSON.stringify(result) : JSON.stringify({ success: true })
+                content: result ? JSON.stringify(result) : JSON.stringify({ success: true }),
               });
             } catch (error) {
               toolResponses.push({
                 tool_call_id: toolCall.id,
                 role: 'tool',
-                content: JSON.stringify({ error: error.message || 'Unknown error occurred' })
+                content: JSON.stringify({ error: error.message || 'Unknown error occurred' }),
               });
             }
           }
         }
 
         // Make a second request with the tool responses
-        const followUpMessages = [
-          ...messages,
-          responseMessage,
-          ...toolResponses
-        ];
+        const followUpMessages = [...messages, responseMessage, ...toolResponses];
 
         const followUpRequestBody = {
           model: model,
@@ -1006,16 +1169,16 @@ You have direct access to the Parse database through function calls, so you can 
           max_tokens: 2000,
           tools: databaseTools,
           tool_choice: 'auto',
-          stream: false
+          stream: false,
         };
 
         const followUpResponse = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
+            Authorization: `Bearer ${apiKey}`,
           },
-          body: JSON.stringify(followUpRequestBody)
+          body: JSON.stringify(followUpRequestBody),
         });
 
         if (!followUpResponse.ok) {
@@ -1024,13 +1187,21 @@ You have direct access to the Parse database through function calls, so you can 
 
         const followUpData = await followUpResponse.json();
 
-        if (!followUpData || typeof followUpData !== 'object' || !('choices' in followUpData) || !Array.isArray(followUpData.choices) || followUpData.choices.length === 0) {
+        if (
+          !followUpData ||
+          typeof followUpData !== 'object' ||
+          !('choices' in followUpData) ||
+          !Array.isArray(followUpData.choices) ||
+          followUpData.choices.length === 0
+        ) {
           throw new Error('No follow-up response received from OpenAI API');
         }
 
         const followUpContent = followUpData.choices[0].message.content;
         if (!followUpContent) {
-          console.warn('OpenAI returned null content in follow-up response, using fallback message');
+          console.warn(
+            'OpenAI returned null content in follow-up response, using fallback message'
+          );
         }
         return followUpContent || 'Done.';
       }
@@ -1056,12 +1227,11 @@ You have direct access to the Parse database through function calls, so you can 
         }
       } catch {
         // Directory doesn't exist or something.
-        console.warn('Iconsfolder at path: ' + config.iconsFolder +
-          ' not found!');
+        console.warn('Iconsfolder at path: ' + config.iconsFolder + ' not found!');
       }
     }
 
-    app.get('/login', csrf(), function(req, res) {
+    app.get('/login', csrf(), function (req, res) {
       let redirectURL = null;
       try {
         const url = new URL(req.url, 'http://localhost');
@@ -1089,7 +1259,7 @@ You have direct access to the Parse database through function calls, so you can 
       if (errors && errors.length) {
         errors = `<div id="login_errors" style="display: none;">
           ${errors.join(' ')}
-        </div>`
+        </div>`;
       }
       res.send(`<!DOCTYPE html>
       <html>
@@ -1112,7 +1282,7 @@ You have direct access to the Parse database through function calls, so you can 
     });
 
     // For every other request, go to index.html. Let client-side handle the rest.
-    app.get('/*', function(req, res) {
+    app.get('/*', function (req, res, next) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         const redirect = req.url.replace('/login', '');
         if (redirect.length > 1) {
@@ -1123,7 +1293,8 @@ You have direct access to the Parse database through function calls, so you can 
       if (users && req.user && req.user.matchingUsername) {
         res.append('username', req.user.matchingUsername);
       }
-      res.send(`<!DOCTYPE html>
+      if (!req.path.startsWith('/v2')) {
+        res.send(`<!DOCTYPE html>
       <html>
         <head>
           <link rel="shortcut icon" type="image/x-icon" href="${mountPath}favicon.ico" />
@@ -1140,8 +1311,11 @@ You have direct access to the Parse database through function calls, so you can 
         </body>
       </html>
       `);
+      } else {
+        next();
+      }
     });
   });
 
   return app;
-}
+};
