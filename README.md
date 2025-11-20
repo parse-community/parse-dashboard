@@ -809,60 +809,14 @@ When deploying Parse Dashboard with multiple replicas behind a load balancer, yo
 
 #### Using a Custom Session Store
 
-Parse Dashboard supports using any session store compatible with [express-session](https://github.com/expressjs/session), such as Redis, MongoDB, or Memcached. Here's an example using Redis with `connect-redis`:
+Parse Dashboard supports using any session store compatible with [express-session](https://github.com/expressjs/session). The `sessionStore` option must be configured programmatically when initializing the dashboard.
 
-**Step 1:** Install the required dependencies:
+**Suggested Session Stores:**
 
-```bash
-npm install connect-redis redis
-```
-
-**Step 2:** Configure your Parse Dashboard with a session store:
-
-```javascript
-const express = require('express');
-const ParseDashboard = require('parse-dashboard');
-const { createClient } = require('redis');
-const RedisStore = require('connect-redis').default;
-
-// Create Redis client
-const redisClient = createClient({
-  url: 'redis://localhost:6379'
-});
-
-redisClient.connect().catch(console.error);
-
-// Create Redis store
-const sessionStore = new RedisStore({
-  client: redisClient,
-  prefix: 'parse-dashboard:',
-});
-
-// Configure Parse Dashboard with the session store
-const dashboard = new ParseDashboard({
-  apps: [
-    {
-      serverURL: 'http://localhost:1337/parse',
-      appId: 'myAppId',
-      masterKey: 'myMasterKey',
-      appName: 'MyApp'
-    }
-  ],
-  users: [
-    {
-      user: 'admin',
-      pass: 'password'
-    }
-  ],
-  cookieSessionSecret: 'your-session-secret', // Required for multi-replica
-}, {
-  sessionStore: sessionStore // Pass the session store
-});
-
-const app = express();
-app.use('/dashboard', dashboard);
-app.listen(4040);
-```
+- [connect-redis](https://www.npmjs.com/package/connect-redis) - Redis session store
+- [connect-mongo](https://www.npmjs.com/package/connect-mongo) - MongoDB session store
+- [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple) - PostgreSQL session store
+- [memorystore](https://www.npmjs.com/package/memorystore) - Memory session store with TTL support
 
 **Important Notes:**
 
