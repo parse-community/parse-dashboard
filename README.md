@@ -820,27 +820,27 @@ Parse Dashboard supports using any session store compatible with [express-sessio
 
 **Example using connect-redis:**
 
-```javascript
+```js
 const express = require('express');
 const ParseDashboard = require('parse-dashboard');
 const { createClient } = require('redis');
 const RedisStore = require('connect-redis').default;
 
+// Instantiate Redis client
 const redisClient = createClient({ url: 'redis://localhost:6379' });
 redisClient.connect();
 
-const dashboard = new ParseDashboard({
-  apps: [{ serverURL: 'http://localhost:1337/parse', appId: 'myAppId', masterKey: 'myMasterKey', appName: 'MyApp' }],
-  users: [{ user: 'admin', pass: 'password' }]
-}, {
-  sessionStore: new RedisStore({ client: redisClient }),
-  cookieSessionSecret: 'your-secret-key'
-});
+// Instantiate Redis session store
+const sessionStore = new RedisStore({ client: redisClient });
 
-const app = express();
-app.use('/dashboard', dashboard);
-app.listen(4040);
-```
+// Configure dashboard with session store
+const dashboard = new ParseDashboard({
+  apps: [...],
+  users: [{ user: 'user', pass: 'pass' }],
+}, {
+  sessionStore,
+  cookieSessionSecret: 'your-secret-key',
+});
 
 **Important Notes:**
 
