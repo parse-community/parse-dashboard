@@ -836,7 +836,7 @@ const sessionStore = new RedisStore({ client: redisClient });
 // Configure dashboard with session store
 const dashboard = new ParseDashboard({
   apps: [...],
-  users: [{ user: 'user', pass: 'pass' }],
+  users: [...],
 }, {
   sessionStore,
   cookieSessionSecret: 'your-secret-key',
