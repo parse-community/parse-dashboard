@@ -818,6 +818,30 @@ Parse Dashboard supports using any session store compatible with [express-sessio
 - [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple) - PostgreSQL session store
 - [memorystore](https://www.npmjs.com/package/memorystore) - Memory session store with TTL support
 
+**Example using connect-redis:**
+
+```javascript
+const express = require('express');
+const ParseDashboard = require('parse-dashboard');
+const { createClient } = require('redis');
+const RedisStore = require('connect-redis').default;
+
+const redisClient = createClient({ url: 'redis://localhost:6379' });
+redisClient.connect();
+
+const dashboard = new ParseDashboard({
+  apps: [{ serverURL: 'http://localhost:1337/parse', appId: 'myAppId', masterKey: 'myMasterKey', appName: 'MyApp' }],
+  users: [{ user: 'admin', pass: 'password' }]
+}, {
+  sessionStore: new RedisStore({ client: redisClient }),
+  cookieSessionSecret: 'your-secret-key'
+});
+
+const app = express();
+app.use('/dashboard', dashboard);
+app.listen(4040);
+```
+
 **Important Notes:**
 
 - The `cookieSessionSecret` option must be set to the same value across all replicas to ensure session cookies work correctly.
