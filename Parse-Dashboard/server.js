@@ -167,7 +167,7 @@ module.exports = (options) => {
     cookieSessionSecret,
     dev,
     cookieSessionMaxAge,
-    sessionStore: config.data.sessionStore
+    cookieSessionStore: config.data.cookieSessionStore
   };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   let server;

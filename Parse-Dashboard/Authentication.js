@@ -55,7 +55,7 @@ function initialize(app, options) {
 
   const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
-  const sessionStore = options.sessionStore;
+  const cookieSessionStore = options.cookieSessionStore;
 
   app.use(require('body-parser').urlencoded({ extended: true }));
   const sessionConfig = {
@@ -71,8 +71,8 @@ function initialize(app, options) {
   };
 
   // Add custom session store if provided
-  if (sessionStore) {
-    sessionConfig.store = sessionStore;
+  if (cookieSessionStore) {
+    sessionConfig.store = cookieSessionStore;
   }
 
   app.use(require('express-session')(sessionConfig));

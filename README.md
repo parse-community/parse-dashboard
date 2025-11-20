@@ -831,21 +831,21 @@ const redisClient = createClient({ url: 'redis://localhost:6379' });
 redisClient.connect();
 
 // Instantiate Redis session store
-const sessionStore = new RedisStore({ client: redisClient });
+const cookieSessionStore = new RedisStore({ client: redisClient });
 
 // Configure dashboard with session store
 const dashboard = new ParseDashboard({
   apps: [...],
   users: [...],
 }, {
-  sessionStore,
+  cookieSessionStore,
   cookieSessionSecret: 'your-secret-key',
 });
 
 **Important Notes:**
 
 - The `cookieSessionSecret` option must be set to the same value across all replicas to ensure session cookies work correctly.
-- If `sessionStore` is not provided, Parse Dashboard will use the default in-memory session store, which only works for single-instance deployments.
+- If `cookieSessionStore` is not provided, Parse Dashboard will use the default in-memory session store, which only works for single-instance deployments.
 - For production deployments with multiple replicas, always configure a shared session store.
 
 #### Alternative: Using Sticky Sessions

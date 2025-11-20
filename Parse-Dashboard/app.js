@@ -85,7 +85,7 @@ module.exports = function(config, options) {
     authInstance.initialize(app, {
       cookieSessionSecret: options.cookieSessionSecret,
       cookieSessionMaxAge: options.cookieSessionMaxAge,
-      sessionStore: options.sessionStore
+      cookieSessionStore: options.cookieSessionStore
     });
 
     // CSRF error handler

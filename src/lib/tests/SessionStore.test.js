@@ -13,7 +13,7 @@ const session = require('express-session');
 const Authentication = require('../../../Parse-Dashboard/Authentication');
 
 describe('SessionStore Integration', () => {
-  it('uses default in-memory store when sessionStore is not provided', () => {
+  it('uses default in-memory store when cookieSessionStore is not provided', () => {
     const app = express();
     const users = [{ user: 'test', pass: 'password' }];
     const auth = new Authentication(users, false, '/');
@@ -34,7 +34,7 @@ describe('SessionStore Integration', () => {
     // The session function should be called without a custom store
   });
 
-  it('uses custom session store when sessionStore is provided', () => {
+  it('uses custom session store when cookieSessionStore is provided', () => {
     const app = express();
     const users = [{ user: 'test', pass: 'password' }];
     const auth = new Authentication(users, false, '/');
@@ -62,7 +62,7 @@ describe('SessionStore Integration', () => {
     const useSpy = jest.fn();
     app.use = useSpy;
 
-    auth.initialize(app, { sessionStore: mockStore });
+    auth.initialize(app, { cookieSessionStore: mockStore });
 
     // The session middleware should have been configured
     expect(useSpy).toHaveBeenCalled();
@@ -75,7 +75,7 @@ describe('SessionStore Integration', () => {
     expect(sessionCall).toBeDefined();
   });
 
-  it('passes sessionStore through app.js to Authentication', () => {
+  it('passes cookieSessionStore through app.js to Authentication', () => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
 
     // Create a mock session store that implements the Store interface
@@ -115,7 +115,7 @@ describe('SessionStore Integration', () => {
     };
 
     const options = {
-      sessionStore: mockStore,
+      cookieSessionStore: mockStore,
       cookieSessionSecret: 'test-secret',
     };
 
@@ -127,7 +127,7 @@ describe('SessionStore Integration', () => {
     expect(typeof dashboardApp).toBe('function'); // Express app is a function
   });
 
-  it('maintains backward compatibility without sessionStore option', () => {
+  it('maintains backward compatibility without cookieSessionStore option', () => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
 
     const config = {
@@ -151,7 +151,7 @@ describe('SessionStore Integration', () => {
       cookieSessionSecret: 'test-secret',
     };
 
-    // Create dashboard app without sessionStore option
+    // Create dashboard app without cookieSessionStore option
     const dashboardApp = parseDashboard(config, options);
 
     // The app should be created successfully even without session store
