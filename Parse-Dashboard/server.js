@@ -162,7 +162,13 @@ module.exports = (options) => {
   if (allowInsecureHTTP || trustProxy || dev) {app.enable('trust proxy');}
 
   config.data.trustProxy = trustProxy;
-  const dashboardOptions = { allowInsecureHTTP, cookieSessionSecret, dev, cookieSessionMaxAge };
+  const dashboardOptions = {
+    allowInsecureHTTP,
+    cookieSessionSecret,
+    dev,
+    cookieSessionMaxAge,
+    sessionStore: config.data.sessionStore
+  };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
   let server;
   if(!configSSLKey || !configSSLCert){

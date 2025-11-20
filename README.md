@@ -803,6 +803,77 @@ If you create a new user by running `parse-dashboard --createUser`, you will be 
 
  Parse Dashboard follows the industry standard and supports the common OTP algorithm `SHA-1` by default, to be compatible with most authenticator apps. If you have specific security requirements regarding TOTP characteristics (algorithm, digit length, time period) you can customize them by using the guided configuration mentioned above.
 
+### Running Multiple Dashboard Replicas
+
+When deploying Parse Dashboard with multiple replicas behind a load balancer, you need to use a shared session store to ensure that CSRF tokens and user sessions work correctly across all replicas. Without a shared session store, login attempts may fail with "CSRF token validation failed" errors when requests are distributed across different replicas.
+
+#### Using a Custom Session Store
+
+Parse Dashboard supports using any session store compatible with [express-session](https://github.com/expressjs/session), such as Redis, MongoDB, or Memcached. Here's an example using Redis with `connect-redis`:
+
+**Step 1:** Install the required dependencies:
+
+```bash
+npm install connect-redis redis
+```
+
+**Step 2:** Configure your Parse Dashboard with a session store:
+
+```javascript
+const express = require('express');
+const ParseDashboard = require('parse-dashboard');
+const { createClient } = require('redis');
+const RedisStore = require('connect-redis').default;
+
+// Create Redis client
+const redisClient = createClient({
+  url: 'redis://localhost:6379'
+});
+
+redisClient.connect().catch(console.error);
+
+// Create Redis store
+const sessionStore = new RedisStore({
+  client: redisClient,
+  prefix: 'parse-dashboard:',
+});
+
+// Configure Parse Dashboard with the session store
+const dashboard = new ParseDashboard({
+  apps: [
+    {
+      serverURL: 'http://localhost:1337/parse',
+      appId: 'myAppId',
+      masterKey: 'myMasterKey',
+      appName: 'MyApp'
+    }
+  ],
+  users: [
+    {
+      user: 'admin',
+      pass: 'password'
+    }
+  ],
+  cookieSessionSecret: 'your-session-secret', // Required for multi-replica
+}, {
+  sessionStore: sessionStore // Pass the session store
+});
+
+const app = express();
+app.use('/dashboard', dashboard);
+app.listen(4040);
+```
+
+**Important Notes:**
+
+- The `cookieSessionSecret` option must be set to the same value across all replicas to ensure session cookies work correctly.
+- If `sessionStore` is not provided, Parse Dashboard will use the default in-memory session store, which only works for single-instance deployments.
+- For production deployments with multiple replicas, always configure a shared session store.
+
+#### Alternative: Using Sticky Sessions
+
+If you cannot use a shared session store, you can configure your load balancer to use sticky sessions (session affinity), which ensures that requests from the same user are always routed to the same replica. However, using a shared session store is the recommended approach as it provides better reliability and scalability.
+
 ### Separating App Access Based on User Identity
 If you have configured your dashboard to manage multiple applications, you can restrict the management of apps based on user identity.
 

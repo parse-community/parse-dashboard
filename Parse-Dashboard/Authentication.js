@@ -55,9 +55,10 @@ function initialize(app, options) {
 
   const cookieSessionSecret = options.cookieSessionSecret || require('crypto').randomBytes(64).toString('hex');
   const cookieSessionMaxAge = options.cookieSessionMaxAge;
+  const sessionStore = options.sessionStore;
 
   app.use(require('body-parser').urlencoded({ extended: true }));
-  app.use(require('express-session')({
+  const sessionConfig = {
     name: 'parse_dash',
     secret: cookieSessionSecret,
     resave: false,
@@ -67,7 +68,14 @@ function initialize(app, options) {
       httpOnly: true,
       sameSite: 'lax',
     }
-  }));
+  };
+
+  // Add custom session store if provided
+  if (sessionStore) {
+    sessionConfig.store = sessionStore;
+  }
+
+  app.use(require('express-session')(sessionConfig));
   app.use(require('connect-flash')());
   app.use(passport.initialize());
   app.use(passport.session());

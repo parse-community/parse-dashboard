@@ -82,7 +82,11 @@ module.exports = function(config, options) {
     const users = config.users;
     const useEncryptedPasswords = config.useEncryptedPasswords ? true : false;
     const authInstance = new Authentication(users, useEncryptedPasswords, mountPath);
-    authInstance.initialize(app, { cookieSessionSecret: options.cookieSessionSecret, cookieSessionMaxAge: options.cookieSessionMaxAge });
+    authInstance.initialize(app, {
+      cookieSessionSecret: options.cookieSessionSecret,
+      cookieSessionMaxAge: options.cookieSessionMaxAge,
+      sessionStore: options.sessionStore
+    });
 
     // CSRF error handler
     app.use(function (err, req, res, next) {
