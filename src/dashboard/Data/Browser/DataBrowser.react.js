@@ -1089,15 +1089,36 @@ export default class DataBrowser extends React.Component {
       return;
     }
     const [a, b, c] = history.slice(-3);
-    if (a + 1 === b && b + 1 === c) {
+    // Detect step size from the last two selections
+    const stepAB = b - a;
+    const stepBC = c - b;
+    // Check if we have a consistent navigation pattern (same step size)
+    if (stepAB === stepBC && stepAB > 0) {
+      // Prefetch ahead based on the detected step size
+      const stepSize = stepAB;
+      const panelCount = this.state.panelCount;
+
+      // When in multi-panel mode, prefetch all objects in the upcoming batches
       for (
         let i = 1;
-        i <= prefetchObjects && c + i < this.props.data.length;
+        i <= prefetchObjects && c + (i * stepSize) < this.props.data.length;
         i++
       ) {
-        const objId = this.props.data[c + i].id;
-        if (!cache[objId]) {
-          this.prefetchObject(objId);
+        // For each step ahead, prefetch the main object
+        const mainObjId = this.props.data[c + (i * stepSize)].id;
+        if (!Object.prototype.hasOwnProperty.call(cache, mainObjId)) {
+          this.prefetchObject(mainObjId);
+        }
+
+        // If in multi-panel mode, also prefetch the other objects that would be displayed in the batch
+        if (panelCount > 1) {
+          const batchStartIndex = c + (i * stepSize);
+          for (let j = 1; j < panelCount && batchStartIndex + j < this.props.data.length; j++) {
+            const batchObjId = this.props.data[batchStartIndex + j].id;
+            if (!Object.prototype.hasOwnProperty.call(cache, batchObjId)) {
+              this.prefetchObject(batchObjId);
+            }
+          }
         }
       }
     }

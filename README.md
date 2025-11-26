@@ -1378,7 +1378,7 @@ To reduce the time for info panel data to appear, data can be prefetched.
 
 | Parameter                      | Type    | Optional | Default | Example | Description                                                                                                                       |
 |--------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `infoPanel[*].prefetchObjects` | Number  | yes      | `0`     | `2`     | Number of next rows to prefetch when browsing sequential rows. For example, `2` means the next 2 rows will be fetched in advance. |
+| `infoPanel[*].prefetchObjects` | Number  | yes      | `0`     | `2`     | Number of navigation steps to prefetch ahead when browsing sequential rows. For example, `2` means data for the next 2 navigation steps will be fetched in advance. When using multi-panel mode with batch navigation enabled, each navigation step corresponds to a full batch of panels, so the total number of prefetched objects will be `prefetchObjects × panelCount`. |
 | `infoPanel[*].prefetchStale`   | Number  | yes      | `0`     | `10`    | Duration in seconds after which prefetched data is discarded as stale.                                                            |
 | `infoPanel[*].prefetchImage`   | Boolean | yes      | `true`  | `false` | Whether to prefetch image content when prefetching objects. Only applies when `prefetchObjects` is enabled.                       |
 | `infoPanel[*].prefetchVideo`   | Boolean | yes      | `true`  | `false` | Whether to prefetch video content when prefetching objects. Only applies when `prefetchObjects` is enabled.                       |
