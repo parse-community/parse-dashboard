@@ -787,8 +787,22 @@ export default class DataBrowser extends React.Component {
                 const { prefetchCache } = prevState;
                 const { prefetchStale } = this.getPrefetchSettings();
 
-                for (let i = 0; i < prevState.panelCount && currentIndex + i < this.props.data.length; i++) {
-                  const objectId = this.props.data[currentIndex + i].id;
+                // Determine if navigating up or down
+                const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
+                const navigatingUp = currentIndex < oldFirstIndex;
+
+                // Calculate the starting index for the new batch
+                let startIndex;
+                if (navigatingUp) {
+                  // When navigating up, position the new object at the END of the batch
+                  startIndex = Math.max(0, currentIndex - prevState.panelCount + 1);
+                } else {
+                  // When navigating down, position the new object at the START of the batch
+                  startIndex = currentIndex;
+                }
+
+                for (let i = 0; i < prevState.panelCount && startIndex + i < this.props.data.length; i++) {
+                  const objectId = this.props.data[startIndex + i].id;
                   newDisplayedObjectIds.push(objectId);
 
                   // Check if data is already available
