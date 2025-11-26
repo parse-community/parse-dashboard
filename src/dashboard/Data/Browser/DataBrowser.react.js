@@ -24,6 +24,7 @@ const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
 const BROWSER_SCROLL_TO_TOP = 'browserScrollToTop';
 const AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW = 'aggregationPanelAutoLoadFirstRow';
 const AGGREGATION_PANEL_SYNC_SCROLL = 'aggregationPanelSyncScroll';
+const AGGREGATION_PANEL_BATCH_NAVIGATE = 'aggregationPanelBatchNavigate';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -92,6 +93,8 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW) === 'true';
     const storedSyncPanelScroll =
       window.localStorage?.getItem(AGGREGATION_PANEL_SYNC_SCROLL) !== 'false';
+    const storedBatchNavigate =
+      window.localStorage?.getItem(AGGREGATION_PANEL_BATCH_NAVIGATE) !== 'false';
     const hasAggregation =
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
@@ -119,6 +122,7 @@ export default class DataBrowser extends React.Component {
       scrollToTop: storedScrollToTop,
       autoLoadFirstRow: storedAutoLoadFirstRow,
       syncPanelScroll: storedSyncPanelScroll,
+      batchNavigate: storedBatchNavigate,
       prefetchCache: {},
       selectionHistory: [],
       displayedObjectIds: [], // Array of object IDs currently displayed in the panel
@@ -149,6 +153,7 @@ export default class DataBrowser extends React.Component {
     this.toggleScrollToTop = this.toggleScrollToTop.bind(this);
     this.toggleAutoLoadFirstRow = this.toggleAutoLoadFirstRow.bind(this);
     this.toggleSyncPanelScroll = this.toggleSyncPanelScroll.bind(this);
+    this.toggleBatchNavigate = this.toggleBatchNavigate.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.addPanel = this.addPanel.bind(this);
     this.removePanel = this.removePanel.bind(this);
@@ -621,7 +626,9 @@ export default class DataBrowser extends React.Component {
         // Up - standalone (move to the previous row)
         // or with ctrl/meta (excel style - move to the first row)
         const prevObjectID = this.state.selectedObjectId;
-        const newRow = e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - 1, 0);
+        // Calculate step size based on batch navigation mode
+        const stepSize = this.state.panelCount > 1 && this.state.batchNavigate ? this.state.panelCount : 1;
+        const newRow = e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - stepSize, 0);
         this.setState({
           current: {
             row: newRow,
@@ -664,10 +671,12 @@ export default class DataBrowser extends React.Component {
         // Down - standalone (move to the next row)
         // or with ctrl/meta (excel style - move to the last row)
         const prevObjectID = this.state.selectedObjectId;
+        // Calculate step size based on batch navigation mode
+        const stepSizeDown = this.state.panelCount > 1 && this.state.batchNavigate ? this.state.panelCount : 1;
         const newRow =
           e.ctrlKey || e.metaKey
             ? this.props.data.length - 1
-            : Math.min(this.state.current.row + 1, this.props.data.length - 1);
+            : Math.min(this.state.current.row + stepSizeDown, this.props.data.length - 1);
         this.setState({
           current: {
             row: newRow,
@@ -778,42 +787,80 @@ export default class DataBrowser extends React.Component {
           const objectsToFetch = [];
 
           if (prevState.panelCount > 1 && selectedObjectId) {
-            // If the selected object is not in the displayed list, update all displayed objects
-            if (!newDisplayedObjectIds.includes(selectedObjectId)) {
-              // Shift to the next batch of objects
-              const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
-              if (currentIndex !== -1) {
-                newDisplayedObjectIds = [];
-                const { prefetchCache } = prevState;
-                const { prefetchStale } = this.getPrefetchSettings();
+            // Check if batch navigation is enabled
+            if (prevState.batchNavigate) {
+              // If the selected object is not in the displayed list, update all displayed objects
+              if (!newDisplayedObjectIds.includes(selectedObjectId)) {
+                // Shift to the next batch of objects
+                const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
+                if (currentIndex !== -1) {
+                  newDisplayedObjectIds = [];
+                  const { prefetchCache } = prevState;
+                  const { prefetchStale } = this.getPrefetchSettings();
 
-                // Determine if navigating up or down
-                const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
-                const navigatingUp = currentIndex < oldFirstIndex;
+                  // Determine if navigating up or down
+                  const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
+                  const navigatingUp = currentIndex < oldFirstIndex;
 
-                // Calculate the starting index for the new batch
-                let startIndex;
-                if (navigatingUp) {
-                  // When navigating up, position the new object at the END of the batch
-                  startIndex = Math.max(0, currentIndex - prevState.panelCount + 1);
-                } else {
-                  // When navigating down, position the new object at the START of the batch
-                  startIndex = currentIndex;
+                  // Calculate the starting index for the new batch
+                  let startIndex;
+                  if (navigatingUp) {
+                    // When navigating up, position the new object at the END of the batch
+                    startIndex = Math.max(0, currentIndex - prevState.panelCount + 1);
+                  } else {
+                    // When navigating down, position the new object at the START of the batch
+                    startIndex = currentIndex;
+                  }
+
+                  for (let i = 0; i < prevState.panelCount && startIndex + i < this.props.data.length; i++) {
+                    const objectId = this.props.data[startIndex + i].id;
+                    newDisplayedObjectIds.push(objectId);
+
+                    // Check if data is already available
+                    if (!newMultiPanelData[objectId]) {
+                      const cached = prefetchCache[objectId];
+                      if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
+                        // Use cached data immediately
+                        newMultiPanelData[objectId] = cached.data;
+                      } else {
+                        // Mark for fetching
+                        objectsToFetch.push({ objectId, delay: i * 100 });
+                      }
+                    }
+                  }
                 }
+              }
+            } else {
+              // Individual navigation mode: slide the window one object at a time
+              if (!newDisplayedObjectIds.includes(selectedObjectId)) {
+                const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
+                if (currentIndex !== -1) {
+                  const { prefetchCache } = prevState;
+                  const { prefetchStale } = this.getPrefetchSettings();
 
-                for (let i = 0; i < prevState.panelCount && startIndex + i < this.props.data.length; i++) {
-                  const objectId = this.props.data[startIndex + i].id;
-                  newDisplayedObjectIds.push(objectId);
+                  // Determine if navigating up or down
+                  const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
+                  const navigatingUp = currentIndex < oldFirstIndex;
 
-                  // Check if data is already available
-                  if (!newMultiPanelData[objectId]) {
-                    const cached = prefetchCache[objectId];
+                  if (navigatingUp) {
+                    // Remove the last object and add the new object at the beginning
+                    newDisplayedObjectIds.pop();
+                    newDisplayedObjectIds.unshift(selectedObjectId);
+                  } else {
+                    // Remove the first object and add the new object at the end
+                    newDisplayedObjectIds.shift();
+                    newDisplayedObjectIds.push(selectedObjectId);
+                  }
+
+                  // Check if data is already available for the new object
+                  if (!newMultiPanelData[selectedObjectId]) {
+                    const cached = prefetchCache[selectedObjectId];
                     if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
                       // Use cached data immediately
-                      newMultiPanelData[objectId] = cached.data;
+                      newMultiPanelData[selectedObjectId] = cached.data;
                     } else {
                       // Mark for fetching
-                      objectsToFetch.push({ objectId, delay: i * 100 });
+                      objectsToFetch.push({ objectId: selectedObjectId, delay: 0 });
                     }
                   }
                 }
@@ -884,6 +931,14 @@ export default class DataBrowser extends React.Component {
       const newSyncPanelScroll = !prevState.syncPanelScroll;
       window.localStorage?.setItem(AGGREGATION_PANEL_SYNC_SCROLL, newSyncPanelScroll);
       return { syncPanelScroll: newSyncPanelScroll };
+    });
+  }
+
+  toggleBatchNavigate() {
+    this.setState(prevState => {
+      const newBatchNavigate = !prevState.batchNavigate;
+      window.localStorage?.setItem(AGGREGATION_PANEL_BATCH_NAVIGATE, newBatchNavigate);
+      return { batchNavigate: newBatchNavigate };
     });
   }
 
@@ -1468,6 +1523,8 @@ export default class DataBrowser extends React.Component {
           toggleAutoLoadFirstRow={this.toggleAutoLoadFirstRow}
           syncPanelScroll={this.state.syncPanelScroll}
           toggleSyncPanelScroll={this.toggleSyncPanelScroll}
+          batchNavigate={this.state.batchNavigate}
+          toggleBatchNavigate={this.toggleBatchNavigate}
           {...other}
         />
 

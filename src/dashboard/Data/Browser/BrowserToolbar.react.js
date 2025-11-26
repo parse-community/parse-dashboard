@@ -92,6 +92,8 @@ const BrowserToolbar = ({
   toggleAutoLoadFirstRow,
   syncPanelScroll,
   toggleSyncPanelScroll,
+  batchNavigate,
+  toggleBatchNavigate,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -434,6 +436,25 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleSyncPanelScroll();
+            }}
+          />
+          <MenuItem
+            text={
+              <span>
+                {batchNavigate && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Batch-navigate panels
+              </span>
+            }
+            onClick={() => {
+              toggleBatchNavigate();
             }}
           />
         </BrowserMenu>
