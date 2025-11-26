@@ -28,21 +28,18 @@
     display: flex;
     flex-direction: row;
     height: 100%;
-    overflow-x: auto;
+    width: 100%;
 }
 
 .panelColumn {
     flex: 1;
     min-width: 0;
-    display: flex;
-    flex-direction: row;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .panelSeparator {
     width: 1px;
     background-color: #e3e3ea;
-    align-self: stretch;
-    margin: 0;
     flex-shrink: 0;
 }

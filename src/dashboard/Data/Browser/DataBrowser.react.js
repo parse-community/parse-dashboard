@@ -750,7 +750,14 @@ export default class DataBrowser extends React.Component {
               if (currentIndex !== -1) {
                 newDisplayedObjectIds = [];
                 for (let i = 0; i < prevState.panelCount && currentIndex + i < this.props.data.length; i++) {
-                  newDisplayedObjectIds.push(this.props.data[currentIndex + i].id);
+                  const objectId = this.props.data[currentIndex + i].id;
+                  newDisplayedObjectIds.push(objectId);
+                  // Fetch data for objects not already in multiPanelData
+                  if (!prevState.multiPanelData[objectId]) {
+                    setTimeout(() => {
+                      this.fetchDataForMultiPanel(objectId);
+                    }, i * 100);
+                  }
                 }
               }
             }
@@ -800,6 +807,52 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  fetchDataForMultiPanel(objectId) {
+    // Fetch data for a specific object and store it in multiPanelData
+    const { className, app } = this.props;
+    const { prefetchCache } = this.state;
+    const { prefetchStale } = this.getPrefetchSettings();
+
+    const cached = prefetchCache[objectId];
+    if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
+      // Use cached data
+      this.setState(prev => ({
+        multiPanelData: {
+          ...prev.multiPanelData,
+          [objectId]: cached.data
+        }
+      }));
+    } else {
+      // Fetch fresh data
+      const cloudCodeFunction =
+        this.props.classwiseCloudFunctions?.[
+          `${app.applicationId}${this.props.appName}`
+        ]?.[className]?.[0]?.cloudCodeFunction;
+
+      if (!cloudCodeFunction) {
+        return;
+      }
+
+      const params = {
+        object: Parse.Object.extend(className)
+          .createWithoutData(objectId)
+          .toPointer(),
+      };
+      const options = { useMasterKey: true };
+
+      Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
+        this.setState(prev => ({
+          multiPanelData: {
+            ...prev.multiPanelData,
+            [objectId]: result
+          }
+        }));
+      }).catch(error => {
+        console.error(`Failed to fetch panel data for ${objectId}:`, error);
+      });
+    }
+  }
+
   addPanel() {
     const currentIndex = this.props.data?.findIndex(obj => obj.id === this.state.selectedObjectId);
     const newPanelCount = this.state.panelCount + 1;
@@ -819,11 +872,7 @@ export default class DataBrowser extends React.Component {
         // Fetch data for this object if not already in multiPanelData
         if (!currentObjectData[objectId]) {
           setTimeout(() => {
-            this.handleCallCloudFunction(
-              objectId,
-              this.props.className,
-              this.props.app.applicationId
-            );
+            this.fetchDataForMultiPanel(objectId);
           }, i * 100); // Stagger requests slightly
         }
       }
@@ -1193,23 +1242,25 @@ export default class DataBrowser extends React.Component {
                       const panelData = this.state.multiPanelData[objectId] || {};
                       const isLoading = objectId === this.state.selectedObjectId && this.props.isLoadingCloudFunction;
                       return (
-                        <div key={objectId} className={styles.panelColumn}>
-                          <AggregationPanel
-                            data={panelData}
-                            isLoadingCloudFunction={isLoading}
-                            showAggregatedData={true}
-                            errorAggregatedData={objectId === this.state.selectedObjectId ? this.props.errorAggregatedData : {}}
-                            showNote={this.props.showNote}
-                            setErrorAggregatedData={this.props.setErrorAggregatedData}
-                            setSelectedObjectId={this.setSelectedObjectId}
-                            selectedObjectId={objectId}
-                            appName={this.props.appName}
-                            className={this.props.className}
-                          />
+                        <React.Fragment key={objectId}>
+                          <div className={styles.panelColumn}>
+                            <AggregationPanel
+                              data={panelData}
+                              isLoadingCloudFunction={isLoading}
+                              showAggregatedData={true}
+                              errorAggregatedData={objectId === this.state.selectedObjectId ? this.props.errorAggregatedData : {}}
+                              showNote={this.props.showNote}
+                              setErrorAggregatedData={this.props.setErrorAggregatedData}
+                              setSelectedObjectId={this.setSelectedObjectId}
+                              selectedObjectId={objectId}
+                              appName={this.props.appName}
+                              className={this.props.className}
+                            />
+                          </div>
                           {index < this.state.displayedObjectIds.length - 1 && (
                             <div className={styles.panelSeparator} />
                           )}
-                        </div>
+                        </React.Fragment>
                       );
                     })}
                   </div>
