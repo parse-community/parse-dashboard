@@ -169,7 +169,18 @@ export default class DataBrowser extends React.Component {
     this.panelColumnRefs = [];
     this.activePanelIndex = -1;
     this.isWheelScrolling = false;
-    this.multiPanelWrapperRef = React.createRef();
+    this.multiPanelWrapperElement = null;
+    this.setMultiPanelWrapperRef = this.setMultiPanelWrapperRef.bind(this);
+  }
+
+  setMultiPanelWrapperRef(element) {
+    if (this.multiPanelWrapperElement) {
+      this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
+    }
+    this.multiPanelWrapperElement = element;
+    if (element && this.state.panelCount > 1 && this.state.syncPanelScroll) {
+      element.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
+    }
   }
 
   componentWillReceiveProps(props) {
@@ -231,18 +242,13 @@ export default class DataBrowser extends React.Component {
   componentDidMount() {
     document.body.addEventListener('keydown', this.handleKey);
     window.addEventListener('resize', this.updateMaxWidth);
-    // Add wheel event listener for multi-panel scrolling
-    if (this.multiPanelWrapperRef.current && this.state.panelCount > 1 && this.state.syncPanelScroll) {
-      this.multiPanelWrapperRef.current.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
-    }
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.handleKey);
     window.removeEventListener('resize', this.updateMaxWidth);
-    // Remove wheel event listener
-    if (this.multiPanelWrapperRef.current) {
-      this.multiPanelWrapperRef.current.removeEventListener('wheel', this.handleWrapperWheel);
+    if (this.multiPanelWrapperElement) {
+      this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
     }
   }
 
@@ -314,13 +320,13 @@ export default class DataBrowser extends React.Component {
     const prevNeedsListener = prevState.panelCount > 1 && prevState.syncPanelScroll;
     const nowNeedsListener = this.state.panelCount > 1 && this.state.syncPanelScroll;
 
-    if (prevNeedsListener !== nowNeedsListener && this.multiPanelWrapperRef.current) {
+    if (prevNeedsListener !== nowNeedsListener && this.multiPanelWrapperElement) {
       if (nowNeedsListener) {
         // Add listener
-        this.multiPanelWrapperRef.current.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
+        this.multiPanelWrapperElement.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
       } else {
         // Remove listener
-        this.multiPanelWrapperRef.current.removeEventListener('wheel', this.handleWrapperWheel);
+        this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
       }
     }
   }
@@ -1447,7 +1453,7 @@ export default class DataBrowser extends React.Component {
                 {this.state.panelCount > 1 ? (
                   <div
                     className={styles.multiPanelWrapper}
-                    ref={this.multiPanelWrapperRef}
+                    ref={this.setMultiPanelWrapperRef}
                   >
                     {(() => {
                       // Initialize refs array if needed
