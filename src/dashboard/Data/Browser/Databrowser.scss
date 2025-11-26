@@ -47,21 +47,21 @@
     }
 
     &::-webkit-scrollbar-track {
-        background: #f0f0f0;
+        background: transparent;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: #c0c0c0;
+        background: rgba(0, 0, 0, 0.2);
         border-radius: 3px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-        background: #a0a0a0;
+        background: rgba(0, 0, 0, 0.4);
     }
 
     /* Firefox scrollbar support */
     scrollbar-width: thin;
-    scrollbar-color: #c0c0c0 #f0f0f0;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .panelSeparator {
