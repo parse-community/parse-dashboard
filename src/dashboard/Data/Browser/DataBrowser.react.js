@@ -788,7 +788,7 @@ export default class DataBrowser extends React.Component {
 
           // Check if the new object is already displayed in the panel
           let newDisplayedObjectIds = [...prevState.displayedObjectIds];
-          let newMultiPanelData = { ...prevState.multiPanelData };
+          const newMultiPanelData = { ...prevState.multiPanelData };
           const objectsToFetch = [];
 
           if (prevState.panelCount > 1 && selectedObjectId) {
