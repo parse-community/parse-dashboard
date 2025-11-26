@@ -219,11 +219,19 @@ export default class DataBrowser extends React.Component {
   componentDidMount() {
     document.body.addEventListener('keydown', this.handleKey);
     window.addEventListener('resize', this.updateMaxWidth);
+    // Add wheel event listener for multi-panel scrolling
+    if (this.multiPanelWrapperRef.current && this.state.panelCount > 1 && this.state.syncPanelScroll) {
+      this.multiPanelWrapperRef.current.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
+    }
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.handleKey);
     window.removeEventListener('resize', this.updateMaxWidth);
+    // Remove wheel event listener
+    if (this.multiPanelWrapperRef.current) {
+      this.multiPanelWrapperRef.current.removeEventListener('wheel', this.handleWrapperWheel);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -288,6 +296,20 @@ export default class DataBrowser extends React.Component {
           [this.state.selectedObjectId]: this.props.AggregationPanelData
         }
       }));
+    }
+
+    // Manage wheel event listener based on state changes
+    const prevNeedsListener = prevState.panelCount > 1 && prevState.syncPanelScroll;
+    const nowNeedsListener = this.state.panelCount > 1 && this.state.syncPanelScroll;
+
+    if (prevNeedsListener !== nowNeedsListener && this.multiPanelWrapperRef.current) {
+      if (nowNeedsListener) {
+        // Add listener
+        this.multiPanelWrapperRef.current.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
+      } else {
+        // Remove listener
+        this.multiPanelWrapperRef.current.removeEventListener('wheel', this.handleWrapperWheel);
+      }
     }
   }
 
@@ -1338,7 +1360,6 @@ export default class DataBrowser extends React.Component {
                   <div
                     className={styles.multiPanelWrapper}
                     ref={this.multiPanelWrapperRef}
-                    onWheel={this.handleWrapperWheel}
                   >
                     {(() => {
                       // Initialize refs array if needed
