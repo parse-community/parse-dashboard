@@ -429,7 +429,7 @@ const BrowserToolbar = ({
                     className="menuCheck"
                   />
                 )}
-                Scroll multiple panels
+                Sync panel scrolling
               </span>
             }
             onClick={() => {
