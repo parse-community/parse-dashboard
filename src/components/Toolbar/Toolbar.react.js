@@ -161,13 +161,15 @@ const Toolbar = props => {
         <div className={styles.panelButtons}>
           {props.isPanelVisible && (
             <>
+              {props.panelCount > 1 && (
+                <button onClick={props.removePanel} className={styles.btn}>
+                  <Icon width={18} height={18} fill="#797592" name="minus-outline" />
+                    Remove Panel
+                </button>
+              )}
               <button onClick={props.addPanel} className={styles.btn}>
                 <Icon width={18} height={18} fill="#797592" name="plus-outline" />
                   Add Panel
-              </button>
-              <button onClick={props.removePanel} className={styles.btn} disabled={props.panelCount <= 1}>
-                <Icon width={18} height={18} fill="#797592" name="minus-outline" />
-                  Remove Panel
               </button>
             </>
           )}

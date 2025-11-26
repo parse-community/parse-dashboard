@@ -65,8 +65,8 @@
 }
 
 .panelSeparator {
-    width: 1px;
-    background-color: white;
+    width: 0px;
+    background-color: #ebebeb;
     flex-shrink: 0;
 }
 
@@ -75,8 +75,8 @@
     top: 0;
     z-index: 10;
     background-color: #67637a;
-    padding: 8px 8px 5px 8px;
-    border-bottom: 1px solid #e3e3ea;
+    border-left: 1px solid #878396;
+    padding: 8px 8px 6px 8px;
     display: flex;
     align-items: center;
     justify-content: center;
