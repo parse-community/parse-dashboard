@@ -168,6 +168,7 @@ export default class DataBrowser extends React.Component {
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
     this.multiPanelWrapperRef = React.createRef();
+    this.panelScrollPositions = [];
     this.isSyncingPanelScroll = false;
   }
 
@@ -908,22 +909,90 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  applySyncedScroll(delta, sourceIndex, sourcePreviousScrollTop) {
+    if (
+      !this.state.syncPanelScroll ||
+      this.state.panelCount <= 1 ||
+      this.isSyncingPanelScroll ||
+      delta === 0
+    ) {
+      return;
+    }
+
+    const panels = this.panelColumnRefs;
+    if (panels.length === 0) {
+      return;
+    }
+
+    const maxScrollTops = panels.map(ref => {
+      const node = ref?.current;
+      return node ? Math.max(0, node.scrollHeight - node.clientHeight) : 0;
+    });
+    const minMaxScrollTop = maxScrollTops.length ? Math.min(...maxScrollTops) : 0;
+
+    const previousPositions = panels.map((ref, i) => {
+      if (i === sourceIndex && sourcePreviousScrollTop !== undefined) {
+        return sourcePreviousScrollTop;
+      }
+      const stored = this.panelScrollPositions[i];
+      if (stored !== undefined) {
+        return stored;
+      }
+      const node = ref?.current;
+      return node ? node.scrollTop : 0;
+    });
+
+    const hasPanelBeyondShortest = previousPositions.some(pos => pos > minMaxScrollTop);
+
+    this.isSyncingPanelScroll = true;
+
+    panels.forEach((ref, i) => {
+      const node = ref?.current;
+      if (!node) {
+        return;
+      }
+
+      const maxScroll = maxScrollTops[i];
+      const baseScrollTop = previousPositions[i] ?? 0;
+      let nextScrollTop = baseScrollTop + delta;
+
+      if (delta < 0) {
+        if (hasPanelBeyondShortest) {
+          if (baseScrollTop > minMaxScrollTop) {
+            nextScrollTop = Math.max(nextScrollTop, minMaxScrollTop);
+          } else {
+            // Keep shortest (or already-caught-up) panels pinned until others reach the same position.
+            nextScrollTop = minMaxScrollTop;
+          }
+        } else {
+          nextScrollTop = Math.max(nextScrollTop, 0);
+        }
+      } else {
+        nextScrollTop = Math.min(nextScrollTop, maxScroll);
+      }
+
+      nextScrollTop = Math.max(0, Math.min(nextScrollTop, maxScroll));
+      node.scrollTop = nextScrollTop;
+      this.panelScrollPositions[i] = nextScrollTop;
+    });
+
+    requestAnimationFrame(() => {
+      this.isSyncingPanelScroll = false;
+    });
+  }
+
   handlePanelScroll(event, index) {
+    const currentScrollTop = event.target.scrollTop;
+    const previousScrollTop =
+      this.panelScrollPositions[index] !== undefined ? this.panelScrollPositions[index] : currentScrollTop;
+    this.panelScrollPositions[index] = currentScrollTop;
+
     if (!this.state.syncPanelScroll || this.state.panelCount <= 1 || this.isSyncingPanelScroll) {
       return;
     }
 
-    this.isSyncingPanelScroll = true;
-    // Sync scroll position to all other panel columns
-    const scrollTop = event.target.scrollTop;
-    this.panelColumnRefs.forEach((ref, i) => {
-      if (i !== index && ref && ref.current) {
-        ref.current.scrollTop = scrollTop;
-      }
-    });
-    requestAnimationFrame(() => {
-      this.isSyncingPanelScroll = false;
-    });
+    const delta = currentScrollTop - previousScrollTop;
+    this.applySyncedScroll(delta, index, previousScrollTop);
   }
 
   handleWrapperWheel(event) {
@@ -934,17 +1003,9 @@ export default class DataBrowser extends React.Component {
     // Prevent default scrolling
     event.preventDefault();
 
-    this.isSyncingPanelScroll = true;
     // Apply scroll to all columns
     const delta = event.deltaY;
-    this.panelColumnRefs.forEach((ref) => {
-      if (ref && ref.current) {
-        ref.current.scrollTop += delta;
-      }
-    });
-    requestAnimationFrame(() => {
-      this.isSyncingPanelScroll = false;
-    });
+    this.applySyncedScroll(delta);
   }
 
   fetchDataForMultiPanel(objectId) {
