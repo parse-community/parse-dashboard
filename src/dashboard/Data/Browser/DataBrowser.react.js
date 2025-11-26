@@ -25,6 +25,7 @@ const BROWSER_SCROLL_TO_TOP = 'browserScrollToTop';
 const AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW = 'aggregationPanelAutoLoadFirstRow';
 const AGGREGATION_PANEL_SYNC_SCROLL = 'aggregationPanelSyncScroll';
 const AGGREGATION_PANEL_BATCH_NAVIGATE = 'aggregationPanelBatchNavigate';
+const AGGREGATION_PANEL_SHOW_CHECKBOX = 'aggregationPanelShowCheckbox';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -95,6 +96,8 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.getItem(AGGREGATION_PANEL_SYNC_SCROLL) !== 'false';
     const storedBatchNavigate =
       window.localStorage?.getItem(AGGREGATION_PANEL_BATCH_NAVIGATE) !== 'false';
+    const storedShowPanelCheckbox =
+      window.localStorage?.getItem(AGGREGATION_PANEL_SHOW_CHECKBOX) !== 'false';
     const hasAggregation =
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
@@ -123,6 +126,7 @@ export default class DataBrowser extends React.Component {
       autoLoadFirstRow: storedAutoLoadFirstRow,
       syncPanelScroll: storedSyncPanelScroll,
       batchNavigate: storedBatchNavigate,
+      showPanelCheckbox: storedShowPanelCheckbox,
       prefetchCache: {},
       selectionHistory: [],
       displayedObjectIds: [], // Array of object IDs currently displayed in the panel
@@ -154,6 +158,7 @@ export default class DataBrowser extends React.Component {
     this.toggleAutoLoadFirstRow = this.toggleAutoLoadFirstRow.bind(this);
     this.toggleSyncPanelScroll = this.toggleSyncPanelScroll.bind(this);
     this.toggleBatchNavigate = this.toggleBatchNavigate.bind(this);
+    this.toggleShowPanelCheckbox = this.toggleShowPanelCheckbox.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.addPanel = this.addPanel.bind(this);
     this.removePanel = this.removePanel.bind(this);
@@ -904,6 +909,14 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  toggleShowPanelCheckbox() {
+    this.setState(prevState => {
+      const newShowPanelCheckbox = !prevState.showPanelCheckbox;
+      window.localStorage?.setItem(AGGREGATION_PANEL_SHOW_CHECKBOX, String(newShowPanelCheckbox));
+      return { showPanelCheckbox: newShowPanelCheckbox };
+    });
+  }
+
   handlePanelScroll(event, index) {
     if (!this.state.syncPanelScroll || this.state.panelCount <= 1) {
       return;
@@ -1421,6 +1434,7 @@ export default class DataBrowser extends React.Component {
                       return this.state.displayedObjectIds.map((objectId, index) => {
                         const panelData = this.state.multiPanelData[objectId] || {};
                         const isLoading = objectId === this.state.selectedObjectId && this.props.isLoadingCloudFunction;
+                        const isRowSelected = this.props.selection[objectId];
                         return (
                           <React.Fragment key={objectId}>
                             <div
@@ -1428,6 +1442,20 @@ export default class DataBrowser extends React.Component {
                               ref={this.panelColumnRefs[index]}
                               onScroll={(e) => this.handlePanelScroll(e, index)}
                             >
+                              {this.state.showPanelCheckbox && (
+                                <div className={styles.panelHeader}>
+                                  <input
+                                    type="checkbox"
+                                    checked={!!isRowSelected}
+                                    onChange={() => {
+                                      this.props.selectRow(objectId, !isRowSelected);
+                                    }}
+                                    onMouseDown={(e) => {
+                                      e.preventDefault();
+                                    }}
+                                  />
+                                </div>
+                              )}
                               <AggregationPanel
                                 data={panelData}
                                 isLoadingCloudFunction={isLoading}
@@ -1508,6 +1536,8 @@ export default class DataBrowser extends React.Component {
           toggleSyncPanelScroll={this.toggleSyncPanelScroll}
           batchNavigate={this.state.batchNavigate}
           toggleBatchNavigate={this.toggleBatchNavigate}
+          showPanelCheckbox={this.state.showPanelCheckbox}
+          toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
           {...other}
         />
 

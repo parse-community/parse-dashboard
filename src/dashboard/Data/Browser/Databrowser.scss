@@ -66,6 +66,24 @@
 
 .panelSeparator {
     width: 1px;
-    background-color: #e3e3ea;
+    background-color: white;
     flex-shrink: 0;
+}
+
+.panelHeader {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+    padding: 8px;
+    border-bottom: 1px solid #e3e3ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input[type="checkbox"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+    }
 }

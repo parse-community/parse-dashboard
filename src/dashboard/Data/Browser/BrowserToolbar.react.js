@@ -94,6 +94,8 @@ const BrowserToolbar = ({
   toggleSyncPanelScroll,
   batchNavigate,
   toggleBatchNavigate,
+  showPanelCheckbox,
+  toggleShowPanelCheckbox,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -455,6 +457,25 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleBatchNavigate();
+            }}
+          />
+          <MenuItem
+            text={
+              <span>
+                {showPanelCheckbox && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Show panel selection
+              </span>
+            }
+            onClick={() => {
+              toggleShowPanelCheckbox();
             }}
           />
         </BrowserMenu>
