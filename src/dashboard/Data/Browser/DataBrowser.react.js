@@ -167,6 +167,8 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
+    this.activePanelIndex = -1;
+    this.isWheelScrolling = false;
     this.multiPanelWrapperRef = React.createRef();
   }
 
@@ -912,6 +914,18 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
+    if (this.isWheelScrolling) {
+      return;
+    }
+
+    if (
+      this.activePanelIndex !== -1 &&
+      this.activePanelIndex !== undefined &&
+      this.activePanelIndex !== index
+    ) {
+      return;
+    }
+
     // Sync scroll position to all other panel columns
     const scrollTop = event.target.scrollTop;
     this.panelColumnRefs.forEach((ref, i) => {
@@ -926,14 +940,33 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
+    // Set wheel scrolling flag
+    this.isWheelScrolling = true;
+    if (this.wheelTimeout) {
+      clearTimeout(this.wheelTimeout);
+    }
+    this.wheelTimeout = setTimeout(() => {
+      this.isWheelScrolling = false;
+    }, 100);
+
     // Prevent default scrolling
     event.preventDefault();
 
-    // Apply scroll to all columns
+    // Find the maximum scrollTop among all panels to use as the base
+    let maxScrollTop = 0;
+    this.panelColumnRefs.forEach((ref) => {
+      if (ref && ref.current && ref.current.scrollTop > maxScrollTop) {
+        maxScrollTop = ref.current.scrollTop;
+      }
+    });
+
+    // Apply delta to the max scrollTop and set it to all panels
     const delta = event.deltaY;
+    const newScrollTop = maxScrollTop + delta;
+
     this.panelColumnRefs.forEach((ref) => {
       if (ref && ref.current) {
-        ref.current.scrollTop += delta;
+        ref.current.scrollTop = newScrollTop;
       }
     });
   }
@@ -1430,6 +1463,9 @@ export default class DataBrowser extends React.Component {
                             <div
                               className={styles.panelColumn}
                               ref={this.panelColumnRefs[index]}
+                              onMouseEnter={() => (this.activePanelIndex = index)}
+                              onTouchStart={() => (this.activePanelIndex = index)}
+                              onFocus={() => (this.activePanelIndex = index)}
                               onScroll={(e) => this.handlePanelScroll(e, index)}
                             >
                               {this.state.showPanelCheckbox && (
