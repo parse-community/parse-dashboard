@@ -137,14 +137,14 @@ body:global(.expanded) {
 .btn {
   position: relative;
   border: none;
-  padding: 6px 3px;
-  width: 110px;
+  padding: 6px 8px;
   background: none;
   color: white;
   display: flex;
   align-items: center;
   gap: 5px;
   cursor: pointer;
+  white-space: nowrap;
 
   svg {
 
