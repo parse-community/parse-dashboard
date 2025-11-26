@@ -90,6 +90,8 @@ const BrowserToolbar = ({
   toggleScrollToTop,
   autoLoadFirstRow,
   toggleAutoLoadFirstRow,
+  syncPanelScroll,
+  toggleSyncPanelScroll,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -413,6 +415,25 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleAutoLoadFirstRow();
+            }}
+          />
+          <MenuItem
+            text={
+              <span>
+                {syncPanelScroll && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Scroll multiple panels
+              </span>
+            }
+            onClick={() => {
+              toggleSyncPanelScroll();
             }}
           />
         </BrowserMenu>
