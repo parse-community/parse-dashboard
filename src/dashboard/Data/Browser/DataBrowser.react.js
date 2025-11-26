@@ -168,6 +168,7 @@ export default class DataBrowser extends React.Component {
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
     this.multiPanelWrapperRef = React.createRef();
+    this.isSyncingPanelScroll = false;
   }
 
   componentWillReceiveProps(props) {
@@ -908,16 +909,20 @@ export default class DataBrowser extends React.Component {
   }
 
   handlePanelScroll(event, index) {
-    if (!this.state.syncPanelScroll || this.state.panelCount <= 1) {
+    if (!this.state.syncPanelScroll || this.state.panelCount <= 1 || this.isSyncingPanelScroll) {
       return;
     }
 
+    this.isSyncingPanelScroll = true;
     // Sync scroll position to all other panel columns
     const scrollTop = event.target.scrollTop;
     this.panelColumnRefs.forEach((ref, i) => {
       if (i !== index && ref && ref.current) {
         ref.current.scrollTop = scrollTop;
       }
+    });
+    requestAnimationFrame(() => {
+      this.isSyncingPanelScroll = false;
     });
   }
 
@@ -929,12 +934,16 @@ export default class DataBrowser extends React.Component {
     // Prevent default scrolling
     event.preventDefault();
 
+    this.isSyncingPanelScroll = true;
     // Apply scroll to all columns
     const delta = event.deltaY;
     this.panelColumnRefs.forEach((ref) => {
       if (ref && ref.current) {
         ref.current.scrollTop += delta;
       }
+    });
+    requestAnimationFrame(() => {
+      this.isSyncingPanelScroll = false;
     });
   }
 
