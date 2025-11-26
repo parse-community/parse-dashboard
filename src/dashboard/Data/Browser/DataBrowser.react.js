@@ -787,80 +787,42 @@ export default class DataBrowser extends React.Component {
           const objectsToFetch = [];
 
           if (prevState.panelCount > 1 && selectedObjectId) {
-            // Check if batch navigation is enabled
-            if (prevState.batchNavigate) {
-              // If the selected object is not in the displayed list, update all displayed objects
-              if (!newDisplayedObjectIds.includes(selectedObjectId)) {
-                // Shift to the next batch of objects
-                const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
-                if (currentIndex !== -1) {
-                  newDisplayedObjectIds = [];
-                  const { prefetchCache } = prevState;
-                  const { prefetchStale } = this.getPrefetchSettings();
+            // If the selected object is not in the displayed list, update displayed objects
+            if (!newDisplayedObjectIds.includes(selectedObjectId)) {
+              const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
+              if (currentIndex !== -1) {
+                const { prefetchCache } = prevState;
+                const { prefetchStale } = this.getPrefetchSettings();
 
-                  // Determine if navigating up or down
-                  const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
-                  const navigatingUp = currentIndex < oldFirstIndex;
+                // Determine if navigating up or down
+                const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
+                const navigatingUp = currentIndex < oldFirstIndex;
 
-                  // Calculate the starting index for the new batch
-                  let startIndex;
-                  if (navigatingUp) {
-                    // When navigating up, position the new object at the END of the batch
-                    startIndex = Math.max(0, currentIndex - prevState.panelCount + 1);
-                  } else {
-                    // When navigating down, position the new object at the START of the batch
-                    startIndex = currentIndex;
-                  }
-
-                  for (let i = 0; i < prevState.panelCount && startIndex + i < this.props.data.length; i++) {
-                    const objectId = this.props.data[startIndex + i].id;
-                    newDisplayedObjectIds.push(objectId);
-
-                    // Check if data is already available
-                    if (!newMultiPanelData[objectId]) {
-                      const cached = prefetchCache[objectId];
-                      if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
-                        // Use cached data immediately
-                        newMultiPanelData[objectId] = cached.data;
-                      } else {
-                        // Mark for fetching
-                        objectsToFetch.push({ objectId, delay: i * 100 });
-                      }
-                    }
-                  }
+                // Calculate the starting index for the new batch
+                let startIndex;
+                if (navigatingUp) {
+                  // When navigating up, position the new object at the END of the batch
+                  startIndex = Math.max(0, currentIndex - prevState.panelCount + 1);
+                } else {
+                  // When navigating down, position the new object at the START of the batch
+                  startIndex = currentIndex;
                 }
-              }
-            } else {
-              // Individual navigation mode: slide the window one object at a time
-              if (!newDisplayedObjectIds.includes(selectedObjectId)) {
-                const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
-                if (currentIndex !== -1) {
-                  const { prefetchCache } = prevState;
-                  const { prefetchStale } = this.getPrefetchSettings();
 
-                  // Determine if navigating up or down
-                  const oldFirstIndex = this.props.data?.findIndex(obj => obj.id === prevState.displayedObjectIds[0]);
-                  const navigatingUp = currentIndex < oldFirstIndex;
+                // Build the new batch of displayed objects
+                newDisplayedObjectIds = [];
+                for (let i = 0; i < prevState.panelCount && startIndex + i < this.props.data.length; i++) {
+                  const objectId = this.props.data[startIndex + i].id;
+                  newDisplayedObjectIds.push(objectId);
 
-                  if (navigatingUp) {
-                    // Remove the last object and add the new object at the beginning
-                    newDisplayedObjectIds.pop();
-                    newDisplayedObjectIds.unshift(selectedObjectId);
-                  } else {
-                    // Remove the first object and add the new object at the end
-                    newDisplayedObjectIds.shift();
-                    newDisplayedObjectIds.push(selectedObjectId);
-                  }
-
-                  // Check if data is already available for the new object
-                  if (!newMultiPanelData[selectedObjectId]) {
-                    const cached = prefetchCache[selectedObjectId];
+                  // Check if data is already available
+                  if (!newMultiPanelData[objectId]) {
+                    const cached = prefetchCache[objectId];
                     if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
                       // Use cached data immediately
-                      newMultiPanelData[selectedObjectId] = cached.data;
+                      newMultiPanelData[objectId] = cached.data;
                     } else {
                       // Mark for fetching
-                      objectsToFetch.push({ objectId: selectedObjectId, delay: 0 });
+                      objectsToFetch.push({ objectId, delay: i * 100 });
                     }
                   }
                 }
