@@ -120,6 +120,7 @@ export default class DataBrowser extends React.Component {
       displayedObjectIds: [], // Array of object IDs currently displayed in the panel
       panelCount: 1, // Number of panels to display
       multiPanelData: {}, // Object mapping objectId to panel data
+      _objectsToFetch: [], // Temporary field for async fetch handling
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -742,6 +743,9 @@ export default class DataBrowser extends React.Component {
 
           // Check if the new object is already displayed in the panel
           let newDisplayedObjectIds = [...prevState.displayedObjectIds];
+          let newMultiPanelData = { ...prevState.multiPanelData };
+          const objectsToFetch = [];
+
           if (prevState.panelCount > 1 && selectedObjectId) {
             // If the selected object is not in the displayed list, update all displayed objects
             if (!newDisplayedObjectIds.includes(selectedObjectId)) {
@@ -749,14 +753,23 @@ export default class DataBrowser extends React.Component {
               const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
               if (currentIndex !== -1) {
                 newDisplayedObjectIds = [];
+                const { prefetchCache } = prevState;
+                const { prefetchStale } = this.getPrefetchSettings();
+
                 for (let i = 0; i < prevState.panelCount && currentIndex + i < this.props.data.length; i++) {
                   const objectId = this.props.data[currentIndex + i].id;
                   newDisplayedObjectIds.push(objectId);
-                  // Fetch data for objects not already in multiPanelData
-                  if (!prevState.multiPanelData[objectId]) {
-                    setTimeout(() => {
-                      this.fetchDataForMultiPanel(objectId);
-                    }, i * 100);
+
+                  // Check if data is already available
+                  if (!newMultiPanelData[objectId]) {
+                    const cached = prefetchCache[objectId];
+                    if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
+                      // Use cached data immediately
+                      newMultiPanelData[objectId] = cached.data;
+                    } else {
+                      // Mark for fetching
+                      objectsToFetch.push({ objectId, delay: i * 100 });
+                    }
                   }
                 }
               }
@@ -766,10 +779,24 @@ export default class DataBrowser extends React.Component {
           return {
             selectedObjectId,
             selectionHistory: history,
-            displayedObjectIds: newDisplayedObjectIds
+            displayedObjectIds: newDisplayedObjectIds,
+            multiPanelData: newMultiPanelData,
+            _objectsToFetch: objectsToFetch // Temporary field to handle after setState
           };
         },
-        () => this.handlePrefetch()
+        () => {
+          // Fetch any objects that weren't in cache
+          if (this.state._objectsToFetch && this.state._objectsToFetch.length > 0) {
+            this.state._objectsToFetch.forEach(({ objectId, delay }) => {
+              setTimeout(() => {
+                this.fetchDataForMultiPanel(objectId);
+              }, delay);
+            });
+            // Clean up temporary field
+            this.setState({ _objectsToFetch: [] });
+          }
+          this.handlePrefetch();
+        }
       );
     }
   }
@@ -808,7 +835,7 @@ export default class DataBrowser extends React.Component {
   }
 
   fetchDataForMultiPanel(objectId) {
-    // Fetch data for a specific object and store it in multiPanelData
+    // Fetch data for a specific object and store it in both prefetchCache and multiPanelData
     const { className, app } = this.props;
     const { prefetchCache } = this.state;
     const { prefetchStale } = this.getPrefetchSettings();
@@ -841,7 +868,12 @@ export default class DataBrowser extends React.Component {
       const options = { useMasterKey: true };
 
       Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
+        // Store in both prefetchCache and multiPanelData
         this.setState(prev => ({
+          prefetchCache: {
+            ...prev.prefetchCache,
+            [objectId]: { data: result, timestamp: Date.now() }
+          },
           multiPanelData: {
             ...prev.multiPanelData,
             [objectId]: result
@@ -866,21 +898,39 @@ export default class DataBrowser extends React.Component {
         currentObjectData[this.state.selectedObjectId] = this.props.AggregationPanelData;
       }
 
+      const { prefetchCache } = this.state;
+      const { prefetchStale } = this.getPrefetchSettings();
+      const objectsToFetch = [];
+
       for (let i = 0; i < newPanelCount && currentIndex + i < this.props.data.length; i++) {
         const objectId = this.props.data[currentIndex + i].id;
         newDisplayedObjectIds.push(objectId);
-        // Fetch data for this object if not already in multiPanelData
+
+        // Check if data is already available
         if (!currentObjectData[objectId]) {
-          setTimeout(() => {
-            this.fetchDataForMultiPanel(objectId);
-          }, i * 100); // Stagger requests slightly
+          const cached = prefetchCache[objectId];
+          if (cached && (!prefetchStale || (Date.now() - cached.timestamp) / 1000 < prefetchStale)) {
+            // Use cached data immediately
+            currentObjectData[objectId] = cached.data;
+          } else {
+            // Mark for fetching
+            objectsToFetch.push(objectId);
+          }
         }
       }
 
+      // Update state with all available data
       this.setState({
         panelCount: newPanelCount,
         displayedObjectIds: newDisplayedObjectIds,
         multiPanelData: currentObjectData
+      });
+
+      // Fetch missing data asynchronously
+      objectsToFetch.forEach((objectId, i) => {
+        setTimeout(() => {
+          this.fetchDataForMultiPanel(objectId);
+        }, i * 100);
       });
     }
   }
