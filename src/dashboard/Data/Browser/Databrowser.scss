@@ -36,6 +36,32 @@
     min-width: 0;
     overflow-y: auto;
     overflow-x: hidden;
+
+    /* Custom narrow scrollbar for webkit browsers */
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar:hover {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f0f0f0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #c0c0c0;
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a0a0a0;
+    }
+
+    /* Firefox scrollbar support */
+    scrollbar-width: thin;
+    scrollbar-color: #c0c0c0 #f0f0f0;
 }
 
 .panelSeparator {
