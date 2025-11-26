@@ -1433,16 +1433,19 @@ export default class DataBrowser extends React.Component {
                               onScroll={(e) => this.handlePanelScroll(e, index)}
                             >
                               {this.state.showPanelCheckbox && (
-                                <div className={styles.panelHeader}>
+                                <div
+                                  className={styles.panelHeader}
+                                  onClick={() => {
+                                    this.props.selectRow(objectId, !isRowSelected);
+                                  }}
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                >
                                   <input
                                     type="checkbox"
                                     checked={!!isRowSelected}
-                                    onChange={() => {
-                                      this.props.selectRow(objectId, !isRowSelected);
-                                    }}
-                                    onMouseDown={(e) => {
-                                      e.preventDefault();
-                                    }}
+                                    readOnly
                                   />
                                 </div>
                               )}

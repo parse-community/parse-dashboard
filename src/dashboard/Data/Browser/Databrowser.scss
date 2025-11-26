@@ -74,15 +74,16 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: white;
-    padding: 8px;
+    background-color: #67637a;
+    padding: 8px 8px 5px 8px;
     border-bottom: 1px solid #e3e3ea;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 
     input[type="checkbox"] {
-        cursor: pointer;
+        pointer-events: none;
         width: 16px;
         height: 16px;
     }
