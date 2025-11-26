@@ -153,9 +153,11 @@ export default class DataBrowser extends React.Component {
     this.addPanel = this.addPanel.bind(this);
     this.removePanel = this.removePanel.bind(this);
     this.handlePanelScroll = this.handlePanelScroll.bind(this);
+    this.handleWrapperWheel = this.handleWrapperWheel.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
+    this.multiPanelWrapperRef = React.createRef();
   }
 
   componentWillReceiveProps(props) {
@@ -863,6 +865,23 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  handleWrapperWheel(event) {
+    if (!this.state.syncPanelScroll || this.state.panelCount <= 1) {
+      return;
+    }
+
+    // Prevent default scrolling
+    event.preventDefault();
+
+    // Apply scroll to all columns
+    const delta = event.deltaY;
+    this.panelColumnRefs.forEach((ref) => {
+      if (ref && ref.current) {
+        ref.current.scrollTop += delta;
+      }
+    });
+  }
+
   fetchDataForMultiPanel(objectId) {
     // Fetch data for a specific object and store it in both prefetchCache and multiPanelData
     const { className, app } = this.props;
@@ -1316,7 +1335,11 @@ export default class DataBrowser extends React.Component {
                 ref={this.aggregationPanelRef}
               >
                 {this.state.panelCount > 1 ? (
-                  <div className={styles.multiPanelWrapper}>
+                  <div
+                    className={styles.multiPanelWrapper}
+                    ref={this.multiPanelWrapperRef}
+                    onWheel={this.handleWrapperWheel}
+                  >
                     {(() => {
                       // Initialize refs array if needed
                       if (this.panelColumnRefs.length !== this.state.displayedObjectIds.length) {
