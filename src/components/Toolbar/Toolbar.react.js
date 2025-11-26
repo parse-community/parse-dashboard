@@ -158,19 +158,33 @@ const Toolbar = props => {
       {props.classwiseCloudFunctions &&
         props.classwiseCloudFunctions[`${props.appId}${props.appName}`] &&
         props.classwiseCloudFunctions[`${props.appId}${props.appName}`][props.className] && (
-        <button onClick={props.togglePanel} className={styles.btn}>
-          {props.isPanelVisible ? (
+        <div className={styles.panelButtons}>
+          {props.isPanelVisible && (
             <>
-              <Icon width={18} height={18} fill="#797592" name="x-outline" />
-                Hide Panel
-            </>
-          ) : (
-            <>
-              <Icon width={18} height={18} fill="#797592" name="left-outline" />
-                Show Panel
+              <button onClick={props.addPanel} className={styles.btn}>
+                <Icon width={18} height={18} fill="#797592" name="plus-outline" />
+                  Add Panel
+              </button>
+              <button onClick={props.removePanel} className={styles.btn} disabled={props.panelCount <= 1}>
+                <Icon width={18} height={18} fill="#797592" name="minus-outline" />
+                  Remove Panel
+              </button>
             </>
           )}
-        </button>
+          <button onClick={props.togglePanel} className={styles.btn}>
+            {props.isPanelVisible ? (
+              <>
+                <Icon width={18} height={18} fill="#797592" name="x-outline" />
+                  Hide Panel
+              </>
+            ) : (
+              <>
+                <Icon width={18} height={18} fill="#797592" name="left-outline" />
+                  Show Panel
+              </>
+            )}
+          </button>
+        </div>
       )}
     </div>
   );

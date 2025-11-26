@@ -80,6 +80,9 @@ const BrowserToolbar = ({
 
   togglePanel,
   isPanelVisible,
+  addPanel,
+  removePanel,
+  panelCount,
   classwiseCloudFunctions,
   appId,
   appName,
@@ -282,6 +285,9 @@ const BrowserToolbar = ({
       selectedData={selectedData}
       togglePanel={togglePanel}
       isPanelVisible={isPanelVisible}
+      addPanel={addPanel}
+      removePanel={removePanel}
+      panelCount={panelCount}
       classwiseCloudFunctions={classwiseCloudFunctions}
       appId={appId}
       appName={appName}

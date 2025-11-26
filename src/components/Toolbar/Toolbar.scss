@@ -126,10 +126,16 @@ body:global(.expanded) {
   background-color: white;
 }
 
-.btn {
+.panelButtons {
   position: absolute;
   right: 5px;
   bottom: 5px;
+  display: flex;
+  gap: 5px;
+}
+
+.btn {
+  position: relative;
   border: none;
   padding: 6px 3px;
   width: 110px;
@@ -150,6 +156,17 @@ body:global(.expanded) {
   &:hover {
     svg {
       fill: #ffffff;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover {
+      svg {
+        fill: #797592;
+      }
     }
   }
 }
