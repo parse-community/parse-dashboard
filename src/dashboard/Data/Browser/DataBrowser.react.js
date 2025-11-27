@@ -1063,10 +1063,14 @@ export default class DataBrowser extends React.Component {
       }
 
       // Update state with all available data
+      const newWidth = (this.state.panelWidth / this.state.panelCount) * newPanelCount;
+      const limitedWidth = Math.min(newWidth, this.state.maxWidth);
+
       this.setState({
         panelCount: newPanelCount,
         displayedObjectIds: newDisplayedObjectIds,
-        multiPanelData: currentObjectData
+        multiPanelData: currentObjectData,
+        panelWidth: limitedWidth,
       });
 
       // Fetch missing data asynchronously
@@ -1086,9 +1090,13 @@ export default class DataBrowser extends React.Component {
       const newPanelCount = prevState.panelCount - 1;
       // Remove the last displayed object
       const newDisplayedObjectIds = prevState.displayedObjectIds.slice(0, -1);
+
+      const newWidth = (prevState.panelWidth / prevState.panelCount) * newPanelCount;
+
       return {
         panelCount: newPanelCount,
-        displayedObjectIds: newDisplayedObjectIds
+        displayedObjectIds: newDisplayedObjectIds,
+        panelWidth: newWidth,
       };
     });
   }
