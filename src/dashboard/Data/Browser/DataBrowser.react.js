@@ -133,6 +133,7 @@ export default class DataBrowser extends React.Component {
       panelCount: 1, // Number of panels to display
       multiPanelData: {}, // Object mapping objectId to panel data
       _objectsToFetch: [], // Temporary field for async fetch handling
+      loadingObjectIds: new Set(),
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -1010,20 +1011,34 @@ export default class DataBrowser extends React.Component {
       };
       const options = { useMasterKey: true };
 
+      this.setState(prev => ({
+        loadingObjectIds: new Set(prev.loadingObjectIds).add(objectId)
+      }));
+
       Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
         // Store in both prefetchCache and multiPanelData
-        this.setState(prev => ({
-          prefetchCache: {
-            ...prev.prefetchCache,
-            [objectId]: { data: result, timestamp: Date.now() }
-          },
-          multiPanelData: {
-            ...prev.multiPanelData,
-            [objectId]: result
-          }
-        }));
+        this.setState(prev => {
+          const newLoading = new Set(prev.loadingObjectIds);
+          newLoading.delete(objectId);
+          return {
+            loadingObjectIds: newLoading,
+            prefetchCache: {
+              ...prev.prefetchCache,
+              [objectId]: { data: result, timestamp: Date.now() }
+            },
+            multiPanelData: {
+              ...prev.multiPanelData,
+              [objectId]: result
+            }
+          };
+        });
       }).catch(error => {
         console.error(`Failed to fetch panel data for ${objectId}:`, error);
+        this.setState(prev => {
+          const newLoading = new Set(prev.loadingObjectIds);
+          newLoading.delete(objectId);
+          return { loadingObjectIds: newLoading };
+        });
       });
     }
   }
@@ -1470,7 +1485,7 @@ export default class DataBrowser extends React.Component {
                       }
                       return this.state.displayedObjectIds.map((objectId, index) => {
                         const panelData = this.state.multiPanelData[objectId] || {};
-                        const isLoading = objectId === this.state.selectedObjectId && this.props.isLoadingCloudFunction;
+                        const isLoading = (objectId === this.state.selectedObjectId && this.props.isLoadingCloudFunction) || this.state.loadingObjectIds.has(objectId);
                         const isRowSelected = this.props.selection[objectId];
                         return (
                           <React.Fragment key={objectId}>
