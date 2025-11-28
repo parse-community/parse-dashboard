@@ -1060,7 +1060,7 @@ class Browser extends DashboardView {
         ...initialState,
         relation: null,
       });
-      await this.fetchData(this.props.params.className, prevFilters);
+      this.fetchData(this.props.params.className, prevFilters);
     }
     return true;
   }
