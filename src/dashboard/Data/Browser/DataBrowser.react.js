@@ -374,11 +374,11 @@ export default class DataBrowser extends React.Component {
     }, 1000);
   }
 
-  handleRefresh() {
-    this.props.onRefresh();
+  async handleRefresh() {
+    const shouldReload = await this.props.onRefresh();
 
     // If panel is visible and we have selected objects, refresh their data
-    if (this.state.isPanelVisible) {
+    if (shouldReload && this.state.isPanelVisible) {
       // Refresh current selected object
       if (this.state.selectedObjectId) {
         // Clear from cache to force reload
