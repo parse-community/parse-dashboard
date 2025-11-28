@@ -106,7 +106,6 @@ export default class DataBrowser extends React.Component {
     this.state = {
       order: order,
       current: null,
-      lastSelectedCol: 0,
       editing: false,
       copyableValue: undefined,
       selectedObjectId: undefined,
@@ -198,7 +197,6 @@ export default class DataBrowser extends React.Component {
       this.setState({
         order: order,
         current: null,
-        lastSelectedCol: 0,
         editing: false,
         simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
         allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
@@ -272,12 +270,6 @@ export default class DataBrowser extends React.Component {
       }
     }
 
-    if (this.state.current && this.state.current !== prevState.current) {
-      if (this.state.current.col !== this.state.lastSelectedCol) {
-        this.setState({ lastSelectedCol: this.state.current.col });
-      }
-    }
-
     // Auto-load first row if enabled and conditions are met
     if (
       this.state.autoLoadFirstRow &&
@@ -293,15 +285,7 @@ export default class DataBrowser extends React.Component {
       this.setShowAggregatedData(true);
       this.setSelectedObjectId(firstRowObjectId);
       // Also set the current cell to the first cell of the first row
-      let col =
-        this.state.lastSelectedCol !== undefined &&
-        prevProps.className === this.props.className
-          ? this.state.lastSelectedCol
-          : 0;
-      if (col >= this.state.order.length) {
-        col = 0;
-      }
-      this.setCurrent({ row: 0, col });
+      this.setCurrent({ row: 0, col: 0 });
       this.handleCallCloudFunction(
         firstRowObjectId,
         this.props.className,
@@ -453,12 +437,7 @@ export default class DataBrowser extends React.Component {
       const firstRowObjectId = this.props.data[0].id;
       this.setShowAggregatedData(true);
       this.setSelectedObjectId(firstRowObjectId);
-      let col =
-        this.state.lastSelectedCol !== undefined ? this.state.lastSelectedCol : 0;
-      if (col >= this.state.order.length) {
-        col = 0;
-      }
-      this.setCurrent({ row: 0, col });
+      this.setCurrent({ row: 0, col: 0 });
       this.handleCallCloudFunction(
         firstRowObjectId,
         this.props.className,
