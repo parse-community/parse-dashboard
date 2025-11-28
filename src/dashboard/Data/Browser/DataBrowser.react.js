@@ -143,6 +143,7 @@ export default class DataBrowser extends React.Component {
     this.handleKey = this.handleKey.bind(this);
     this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
     this.togglePanelVisibility = this.togglePanelVisibility.bind(this);
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
@@ -371,6 +372,45 @@ export default class DataBrowser extends React.Component {
       ColumnPreferences.updatePreferences(order, appId, className);
       shouldReload && this.props.onRefresh();
     }, 1000);
+  }
+
+  handleRefresh() {
+    this.props.onRefresh();
+
+    // If panel is visible and we have selected objects, refresh their data
+    if (this.state.isPanelVisible) {
+      // Refresh current selected object
+      if (this.state.selectedObjectId) {
+        // Clear from cache to force reload
+        this.setState(prev => {
+          const n = { ...prev.prefetchCache };
+          delete n[this.state.selectedObjectId];
+          return { prefetchCache: n };
+        }, () => {
+          this.handleCallCloudFunction(
+            this.state.selectedObjectId,
+            this.props.className,
+            this.props.app.applicationId
+          );
+        });
+      }
+
+      // Refresh other displayed objects if in multi-panel mode
+      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
+        this.state.displayedObjectIds.forEach(objectId => {
+          if (objectId !== this.state.selectedObjectId) {
+            // Clear from cache
+            this.setState(prev => {
+              const n = { ...prev.prefetchCache };
+              delete n[objectId];
+              return { prefetchCache: n };
+            }, () => {
+              this.fetchDataForMultiPanel(objectId);
+            });
+          }
+        });
+      }
+    }
   }
 
   togglePanelVisibility() {
@@ -1597,6 +1637,7 @@ export default class DataBrowser extends React.Component {
           showPanelCheckbox={this.state.showPanelCheckbox}
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
           {...other}
+          onRefresh={this.handleRefresh}
         />
 
         {this.state.contextMenuX && (
