@@ -1,3 +1,10 @@
+# [8.1.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.6...8.1.0-alpha.7) (2025-11-28)
+
+
+### Bug Fixes
+
+* Info panel data not reloading when clicking refresh button in data browser ([#3027](https://github.com/parse-community/parse-dashboard/issues/3027)) ([8f91d15](https://github.com/parse-community/parse-dashboard/commit/8f91d15e2553f906ff8c078df58ee523a3d845a9))
+
 # [8.1.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.5...8.1.0-alpha.6) (2025-11-27)
 
 
