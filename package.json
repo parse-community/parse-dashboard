@@ -39,7 +39,7 @@
     "@babel/runtime": "7.27.4",
     "@babel/runtime-corejs3": "7.28.3",
     "bcryptjs": "3.0.2",
-    "body-parser": "2.2.0",
+    "body-parser": "2.2.1",
     "commander": "13.1.0",
     "connect-flash": "0.1.1",
     "copy-to-clipboard": "3.3.3",
