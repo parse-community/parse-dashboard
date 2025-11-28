@@ -374,91 +374,41 @@ export default class DataBrowser extends React.Component {
     }, 1000);
   }
 
-  async refreshPanels() {
-    if (!this.state.isPanelVisible) {
-      return;
-    }
-
-    const { selectedObjectId, panelCount, displayedObjectIds, prefetchCache } = this.state;
-
-    // Prepare a new cache object by removing entries we want to refresh
-    const newPrefetchCache = { ...prefetchCache };
-
-    if (selectedObjectId) {
-      delete newPrefetchCache[selectedObjectId];
-    }
-
-    if (panelCount > 1 && displayedObjectIds.length > 0) {
-      displayedObjectIds.forEach(objectId => {
-        if (objectId !== selectedObjectId) {
-          delete newPrefetchCache[objectId];
-        }
-      });
-    }
-
-    // Batch state update
-    await new Promise(resolve => {
-      this.setState({ prefetchCache: newPrefetchCache }, resolve);
-    });
-
-    // Now perform fetches
-    const promises = [];
-
-    if (selectedObjectId) {
-      promises.push(this.handleCallCloudFunction(
-        selectedObjectId,
-        this.props.className,
-        this.props.app.applicationId
-      ));
-    }
-
-    if (panelCount > 1 && displayedObjectIds.length > 0) {
-      displayedObjectIds.forEach(objectId => {
-        if (objectId !== selectedObjectId) {
-          promises.push(this.fetchDataForMultiPanel(objectId));
-        }
-      });
-    }
-
-    await Promise.all(promises);
-  }
-
-  setPanelsLoading() {
-    if (!this.state.isPanelVisible) {
-      return;
-    }
-    // Set loading for the main selected panel
-    this.props.setLoadingInfoPanel(true);
-
-    // Set loading for all displayed panels
-    if (this.state.displayedObjectIds.length > 0) {
-      this.setState({
-        loadingObjectIds: new Set(this.state.displayedObjectIds)
-      });
-    }
-  }
-
   async handleRefresh() {
-    try {
-      const onRefreshStart = () => {
-        this.setPanelsLoading();
-      };
+    const shouldReload = await this.props.onRefresh();
 
-      const success = await this.props.onRefresh(onRefreshStart);
-
-      if (success) {
-        await this.refreshPanels();
-      } else {
-        // If refresh failed, reset loading state
-        this.props.setLoadingInfoPanel(false);
-        this.setState({ loadingObjectIds: new Set() });
+    // If panel is visible and we have selected objects, refresh their data
+    if (shouldReload && this.state.isPanelVisible) {
+      // Refresh current selected object
+      if (this.state.selectedObjectId) {
+        // Clear from cache to force reload
+        this.setState(prev => {
+          const n = { ...prev.prefetchCache };
+          delete n[this.state.selectedObjectId];
+          return { prefetchCache: n };
+        }, () => {
+          this.handleCallCloudFunction(
+            this.state.selectedObjectId,
+            this.props.className,
+            this.props.app.applicationId
+          );
+        });
       }
-    } catch (error) {
-      console.error('Error refreshing data:', error);
-      this.props.setLoadingInfoPanel(false);
-      this.setState({ loadingObjectIds: new Set() });
-      if (this.props.showNote) {
-        this.props.showNote('Failed to refresh data', true);
+
+      // Refresh other displayed objects if in multi-panel mode
+      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
+        this.state.displayedObjectIds.forEach(objectId => {
+          if (objectId !== this.state.selectedObjectId) {
+            // Clear from cache
+            this.setState(prev => {
+              const n = { ...prev.prefetchCache };
+              delete n[objectId];
+              return { prefetchCache: n };
+            }, () => {
+              this.fetchDataForMultiPanel(objectId);
+            });
+          }
+        });
       }
     }
   }
@@ -1083,7 +1033,6 @@ export default class DataBrowser extends React.Component {
           [objectId]: cached.data
         }
       }));
-      return Promise.resolve();
     } else {
       // Fetch fresh data
       const cloudCodeFunction =
@@ -1092,7 +1041,7 @@ export default class DataBrowser extends React.Component {
         ]?.[className]?.[0]?.cloudCodeFunction;
 
       if (!cloudCodeFunction) {
-        return Promise.resolve();
+        return;
       }
 
       const params = {
@@ -1106,7 +1055,7 @@ export default class DataBrowser extends React.Component {
         loadingObjectIds: new Set(prev.loadingObjectIds).add(objectId)
       }));
 
-      return Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
+      Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
         // Store in both prefetchCache and multiPanelData
         this.setState(prev => {
           const newLoading = new Set(prev.loadingObjectIds);
@@ -1398,7 +1347,6 @@ export default class DataBrowser extends React.Component {
           [objectId]: cached.data
         }
       }));
-      return Promise.resolve();
     } else {
       if (cached) {
         this.setState(prev => {
@@ -1407,7 +1355,7 @@ export default class DataBrowser extends React.Component {
           return { prefetchCache: n };
         });
       }
-      return this.props.callCloudFunction(objectId, className, appId);
+      this.props.callCloudFunction(objectId, className, appId);
     }
   }
 

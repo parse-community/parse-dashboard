@@ -411,7 +411,6 @@ class Browser extends DashboardView {
         this.currentInfoPanelQuery = null;
       }
     });
-    return promise;
   }
 
   setAggregationPanelData(data) {
@@ -1038,17 +1037,12 @@ class Browser extends DashboardView {
     return schemaSimplifiedData;
   }
 
-  async refresh(onRefreshStart) {
+  async refresh() {
     if (Object.keys(this.state.selection).length > 0) {
       if (!window.confirm(SELECTED_ROWS_MESSAGE)) {
         return false;
       }
     }
-
-    if (onRefreshStart && typeof onRefreshStart === 'function') {
-      onRefreshStart();
-    }
-
     const relation = this.state.relation;
     const prevFilters = this.state.filters || new List();
     const initialState = {
@@ -1058,21 +1052,17 @@ class Browser extends DashboardView {
       selection: {},
       editCloneRows: null,
     };
-    try {
-      if (relation) {
-        this.setState(initialState);
-        await this.setRelation(relation, prevFilters);
-      } else {
-        this.setState({
-          ...initialState,
-          relation: null,
-        });
-        await this.fetchData(this.props.params.className, prevFilters);
-      }
-      return true;
-    } catch {
-      return false;
+    if (relation) {
+      this.setState(initialState);
+      this.setRelation(relation, prevFilters);
+    } else {
+      this.setState({
+        ...initialState,
+        relation: null,
+      });
+      this.fetchData(this.props.params.className, prevFilters);
     }
+    return true;
   }
 
   async fetchParseData(source, filters) {
@@ -1519,7 +1509,7 @@ class Browser extends DashboardView {
         this.props.navigate(url);
       }
     );
-    return this.fetchRelation(relation, filters);
+    this.fetchRelation(relation, filters);
   }
 
   handlePointerClick({ className, id, field = 'objectId' }) {
