@@ -29,17 +29,69 @@ export default class CategoryList extends React.Component {
       this.highlight = document.createElement('div');
       this.highlight.className = styles.highlight;
       listWrapper.appendChild(this.highlight);
+      this._autoExpandForSelectedFilter();
       this._updateHighlight();
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    // Auto-expand if the URL params changed (e.g., user navigated to a different filter)
+    if (prevProps.params !== this.props.params) {
+      this._autoExpandForSelectedFilter();
+    }
     this._updateHighlight();
   }
 
   componentWillUnmount() {
     if (this.highlight) {
       this.highlight.parentNode.removeChild(this.highlight);
+    }
+  }
+
+  _findMatchingFilterIndex(filters, queryFilter, queryFilterId) {
+    // Find the index of a filter that matches the URL parameters
+    // Prioritize filterId matching, then fall back to content comparison
+    for (let i = 0; i < filters?.length; i++) {
+      const filter = filters[i];
+      // First priority: match by filterId if both URL and filter have an ID
+      if (queryFilterId && queryFilterId === filter.id) {
+        return i;
+      }
+    }
+    // Second priority: match by filter content (legacy fallback)
+    for (let i = 0; i < filters?.length; i++) {
+      const filter = filters[i];
+      if (queryFilter === filter.filter) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  _autoExpandForSelectedFilter() {
+    // Check if a saved filter is selected in the URL and auto-expand the corresponding class
+    const query = new URLSearchParams(this.props.params);
+    if (query.has('filters')) {
+      const queryFilter = query.get('filters');
+      const filterId = query.get('filterId');
+
+      // Find the class that contains the selected filter
+      for (let i = 0; i < this.props.categories.length; i++) {
+        const c = this.props.categories[i];
+        const id = c.id || c.name;
+
+        // Check if this is the current class and it has filters
+        if (id === this.props.current && c.filters && c.filters.length > 0) {
+          // Check if any filter in this class matches the URL filter
+          const matchIndex = this._findMatchingFilterIndex(c.filters, queryFilter, filterId);
+
+          // If a matching filter is found, auto-expand this class
+          if (matchIndex !== -1 && !this.state.openClasses.includes(id)) {
+            this.setState({ openClasses: [id] });
+          }
+          break;
+        }
+      }
     }
   }
 
@@ -55,19 +107,9 @@ export default class CategoryList extends React.Component {
             if (query.has('filters')) {
               const queryFilter = query.get('filters');
               const filterId = query.get('filterId');
-              for (let i = 0; i < c.filters?.length; i++) {
-                const filter = c.filters[i];
-                // Prioritize filterId matching, only fall back to content comparison if no filterId
-                if (filterId) {
-                  if (filterId === filter.id) {
-                    height += (i + 1) * 20;
-                    break;
-                  }
-                } else if (queryFilter === filter.filter) {
-                  // Legacy fallback: match by filter content when no filterId is present
-                  height += (i + 1) * 20;
-                  break;
-                }
+              const matchIndex = this._findMatchingFilterIndex(c.filters, queryFilter, filterId);
+              if (matchIndex !== -1) {
+                height += (matchIndex + 1) * 20;
               }
             }
           }
@@ -118,21 +160,9 @@ export default class CategoryList extends React.Component {
             if (query.has('filters')) {
               const queryFilter = query.get('filters');
               const queryFilterId = query.get('filterId');
-              for (let i = 0; i < c.filters?.length; i++) {
-                const filter = c.filters[i];
-                // Prioritize filterId matching, only fall back to content comparison if no filterId
-                if (queryFilterId) {
-                  if (queryFilterId === filter.id) {
-                    selectedFilter = i;
-                    className = '';
-                    break;
-                  }
-                } else if (queryFilter === filter.filter) {
-                  // Legacy fallback: match by filter content when no filterId is present
-                  selectedFilter = i;
-                  className = '';
-                  break;
-                }
+              selectedFilter = this._findMatchingFilterIndex(c.filters, queryFilter, queryFilterId);
+              if (selectedFilter !== -1) {
+                className = '';
               }
             }
           }
