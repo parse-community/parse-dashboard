@@ -1040,7 +1040,7 @@ class Browser extends DashboardView {
   async refresh() {
     if (Object.keys(this.state.selection).length > 0) {
       if (!window.confirm(SELECTED_ROWS_MESSAGE)) {
-        return;
+        return false;
       }
     }
     const relation = this.state.relation;
@@ -1060,8 +1060,9 @@ class Browser extends DashboardView {
         ...initialState,
         relation: null,
       });
-      await this.fetchData(this.props.params.className, prevFilters);
+      this.fetchData(this.props.params.className, prevFilters);
     }
+    return true;
   }
 
   async fetchParseData(source, filters) {

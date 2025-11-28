@@ -106,6 +106,7 @@ export default class DataBrowser extends React.Component {
     this.state = {
       order: order,
       current: null,
+      lastSelectedCol: 0,
       editing: false,
       copyableValue: undefined,
       selectedObjectId: undefined,
@@ -133,6 +134,7 @@ export default class DataBrowser extends React.Component {
       panelCount: 1, // Number of panels to display
       multiPanelData: {}, // Object mapping objectId to panel data
       _objectsToFetch: [], // Temporary field for async fetch handling
+      loadingObjectIds: new Set(),
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -142,6 +144,7 @@ export default class DataBrowser extends React.Component {
     this.handleKey = this.handleKey.bind(this);
     this.handleHeaderDragDrop = this.handleHeaderDragDrop.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
     this.togglePanelVisibility = this.togglePanelVisibility.bind(this);
     this.setCurrent = this.setCurrent.bind(this);
     this.setEditing = this.setEditing.bind(this);
@@ -167,7 +170,20 @@ export default class DataBrowser extends React.Component {
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
-    this.multiPanelWrapperRef = React.createRef();
+    this.activePanelIndex = -1;
+    this.isWheelScrolling = false;
+    this.multiPanelWrapperElement = null;
+    this.setMultiPanelWrapperRef = this.setMultiPanelWrapperRef.bind(this);
+  }
+
+  setMultiPanelWrapperRef(element) {
+    if (this.multiPanelWrapperElement) {
+      this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
+    }
+    this.multiPanelWrapperElement = element;
+    if (element && this.state.panelCount > 1 && this.state.syncPanelScroll) {
+      element.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
+    }
   }
 
   componentWillReceiveProps(props) {
@@ -182,6 +198,7 @@ export default class DataBrowser extends React.Component {
       this.setState({
         order: order,
         current: null,
+        lastSelectedCol: 0,
         editing: false,
         simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
         allClassesSchema: this.getAllClassesSchema(props.schema, props.classes),
@@ -229,18 +246,13 @@ export default class DataBrowser extends React.Component {
   componentDidMount() {
     document.body.addEventListener('keydown', this.handleKey);
     window.addEventListener('resize', this.updateMaxWidth);
-    // Add wheel event listener for multi-panel scrolling
-    if (this.multiPanelWrapperRef.current && this.state.panelCount > 1 && this.state.syncPanelScroll) {
-      this.multiPanelWrapperRef.current.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
-    }
   }
 
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.handleKey);
     window.removeEventListener('resize', this.updateMaxWidth);
-    // Remove wheel event listener
-    if (this.multiPanelWrapperRef.current) {
-      this.multiPanelWrapperRef.current.removeEventListener('wheel', this.handleWrapperWheel);
+    if (this.multiPanelWrapperElement) {
+      this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
     }
   }
 
@@ -260,6 +272,12 @@ export default class DataBrowser extends React.Component {
       }
     }
 
+    if (this.state.current && this.state.current !== prevState.current) {
+      if (this.state.current.col !== this.state.lastSelectedCol) {
+        this.setState({ lastSelectedCol: this.state.current.col });
+      }
+    }
+
     // Auto-load first row if enabled and conditions are met
     if (
       this.state.autoLoadFirstRow &&
@@ -275,7 +293,15 @@ export default class DataBrowser extends React.Component {
       this.setShowAggregatedData(true);
       this.setSelectedObjectId(firstRowObjectId);
       // Also set the current cell to the first cell of the first row
-      this.setCurrent({ row: 0, col: 0 });
+      let col =
+        this.state.lastSelectedCol !== undefined &&
+        prevProps.className === this.props.className
+          ? this.state.lastSelectedCol
+          : 0;
+      if (col >= this.state.order.length) {
+        col = 0;
+      }
+      this.setCurrent({ row: 0, col });
       this.handleCallCloudFunction(
         firstRowObjectId,
         this.props.className,
@@ -312,13 +338,13 @@ export default class DataBrowser extends React.Component {
     const prevNeedsListener = prevState.panelCount > 1 && prevState.syncPanelScroll;
     const nowNeedsListener = this.state.panelCount > 1 && this.state.syncPanelScroll;
 
-    if (prevNeedsListener !== nowNeedsListener && this.multiPanelWrapperRef.current) {
+    if (prevNeedsListener !== nowNeedsListener && this.multiPanelWrapperElement) {
       if (nowNeedsListener) {
         // Add listener
-        this.multiPanelWrapperRef.current.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
+        this.multiPanelWrapperElement.addEventListener('wheel', this.handleWrapperWheel, { passive: false });
       } else {
         // Remove listener
-        this.multiPanelWrapperRef.current.removeEventListener('wheel', this.handleWrapperWheel);
+        this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
       }
     }
   }
@@ -364,6 +390,45 @@ export default class DataBrowser extends React.Component {
     }, 1000);
   }
 
+  async handleRefresh() {
+    const shouldReload = await this.props.onRefresh();
+
+    // If panel is visible and we have selected objects, refresh their data
+    if (shouldReload && this.state.isPanelVisible) {
+      // Refresh current selected object
+      if (this.state.selectedObjectId) {
+        // Clear from cache to force reload
+        this.setState(prev => {
+          const n = { ...prev.prefetchCache };
+          delete n[this.state.selectedObjectId];
+          return { prefetchCache: n };
+        }, () => {
+          this.handleCallCloudFunction(
+            this.state.selectedObjectId,
+            this.props.className,
+            this.props.app.applicationId
+          );
+        });
+      }
+
+      // Refresh other displayed objects if in multi-panel mode
+      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
+        this.state.displayedObjectIds.forEach(objectId => {
+          if (objectId !== this.state.selectedObjectId) {
+            // Clear from cache
+            this.setState(prev => {
+              const n = { ...prev.prefetchCache };
+              delete n[objectId];
+              return { prefetchCache: n };
+            }, () => {
+              this.fetchDataForMultiPanel(objectId);
+            });
+          }
+        });
+      }
+    }
+  }
+
   togglePanelVisibility() {
     const newVisibility = !this.state.isPanelVisible;
     this.setState({ isPanelVisible: newVisibility });
@@ -388,7 +453,12 @@ export default class DataBrowser extends React.Component {
       const firstRowObjectId = this.props.data[0].id;
       this.setShowAggregatedData(true);
       this.setSelectedObjectId(firstRowObjectId);
-      this.setCurrent({ row: 0, col: 0 });
+      let col =
+        this.state.lastSelectedCol !== undefined ? this.state.lastSelectedCol : 0;
+      if (col >= this.state.order.length) {
+        col = 0;
+      }
+      this.setCurrent({ row: 0, col });
       this.handleCallCloudFunction(
         firstRowObjectId,
         this.props.className,
@@ -912,6 +982,18 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
+    if (this.isWheelScrolling) {
+      return;
+    }
+
+    if (
+      this.activePanelIndex !== -1 &&
+      this.activePanelIndex !== undefined &&
+      this.activePanelIndex !== index
+    ) {
+      return;
+    }
+
     // Sync scroll position to all other panel columns
     const scrollTop = event.target.scrollTop;
     this.panelColumnRefs.forEach((ref, i) => {
@@ -926,14 +1008,33 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
+    // Set wheel scrolling flag
+    this.isWheelScrolling = true;
+    if (this.wheelTimeout) {
+      clearTimeout(this.wheelTimeout);
+    }
+    this.wheelTimeout = setTimeout(() => {
+      this.isWheelScrolling = false;
+    }, 100);
+
     // Prevent default scrolling
     event.preventDefault();
 
-    // Apply scroll to all columns
+    // Find the maximum scrollTop among all panels to use as the base
+    let maxScrollTop = 0;
+    this.panelColumnRefs.forEach((ref) => {
+      if (ref && ref.current && ref.current.scrollTop > maxScrollTop) {
+        maxScrollTop = ref.current.scrollTop;
+      }
+    });
+
+    // Apply delta to the max scrollTop and set it to all panels
     const delta = event.deltaY;
+    const newScrollTop = maxScrollTop + delta;
+
     this.panelColumnRefs.forEach((ref) => {
       if (ref && ref.current) {
-        ref.current.scrollTop += delta;
+        ref.current.scrollTop = newScrollTop;
       }
     });
   }
@@ -971,20 +1072,34 @@ export default class DataBrowser extends React.Component {
       };
       const options = { useMasterKey: true };
 
+      this.setState(prev => ({
+        loadingObjectIds: new Set(prev.loadingObjectIds).add(objectId)
+      }));
+
       Parse.Cloud.run(cloudCodeFunction, params, options).then(result => {
         // Store in both prefetchCache and multiPanelData
-        this.setState(prev => ({
-          prefetchCache: {
-            ...prev.prefetchCache,
-            [objectId]: { data: result, timestamp: Date.now() }
-          },
-          multiPanelData: {
-            ...prev.multiPanelData,
-            [objectId]: result
-          }
-        }));
+        this.setState(prev => {
+          const newLoading = new Set(prev.loadingObjectIds);
+          newLoading.delete(objectId);
+          return {
+            loadingObjectIds: newLoading,
+            prefetchCache: {
+              ...prev.prefetchCache,
+              [objectId]: { data: result, timestamp: Date.now() }
+            },
+            multiPanelData: {
+              ...prev.multiPanelData,
+              [objectId]: result
+            }
+          };
+        });
       }).catch(error => {
         console.error(`Failed to fetch panel data for ${objectId}:`, error);
+        this.setState(prev => {
+          const newLoading = new Set(prev.loadingObjectIds);
+          newLoading.delete(objectId);
+          return { loadingObjectIds: newLoading };
+        });
       });
     }
   }
@@ -1024,10 +1139,14 @@ export default class DataBrowser extends React.Component {
       }
 
       // Update state with all available data
+      const newWidth = (this.state.panelWidth / this.state.panelCount) * newPanelCount;
+      const limitedWidth = Math.min(newWidth, this.state.maxWidth);
+
       this.setState({
         panelCount: newPanelCount,
         displayedObjectIds: newDisplayedObjectIds,
-        multiPanelData: currentObjectData
+        multiPanelData: currentObjectData,
+        panelWidth: limitedWidth,
       });
 
       // Fetch missing data asynchronously
@@ -1047,9 +1166,13 @@ export default class DataBrowser extends React.Component {
       const newPanelCount = prevState.panelCount - 1;
       // Remove the last displayed object
       const newDisplayedObjectIds = prevState.displayedObjectIds.slice(0, -1);
+
+      const newWidth = (prevState.panelWidth / prevState.panelCount) * newPanelCount;
+
       return {
         panelCount: newPanelCount,
-        displayedObjectIds: newDisplayedObjectIds
+        displayedObjectIds: newDisplayedObjectIds,
+        panelWidth: newWidth,
       };
     });
   }
@@ -1414,7 +1537,7 @@ export default class DataBrowser extends React.Component {
                 {this.state.panelCount > 1 ? (
                   <div
                     className={styles.multiPanelWrapper}
-                    ref={this.multiPanelWrapperRef}
+                    ref={this.setMultiPanelWrapperRef}
                   >
                     {(() => {
                       // Initialize refs array if needed
@@ -1423,13 +1546,16 @@ export default class DataBrowser extends React.Component {
                       }
                       return this.state.displayedObjectIds.map((objectId, index) => {
                         const panelData = this.state.multiPanelData[objectId] || {};
-                        const isLoading = objectId === this.state.selectedObjectId && this.props.isLoadingCloudFunction;
+                        const isLoading = (objectId === this.state.selectedObjectId && this.props.isLoadingCloudFunction) || this.state.loadingObjectIds.has(objectId);
                         const isRowSelected = this.props.selection[objectId];
                         return (
                           <React.Fragment key={objectId}>
                             <div
                               className={styles.panelColumn}
                               ref={this.panelColumnRefs[index]}
+                              onMouseEnter={() => (this.activePanelIndex = index)}
+                              onTouchStart={() => (this.activePanelIndex = index)}
+                              onFocus={() => (this.activePanelIndex = index)}
                               onScroll={(e) => this.handlePanelScroll(e, index)}
                             >
                               {this.state.showPanelCheckbox && (
@@ -1532,6 +1658,7 @@ export default class DataBrowser extends React.Component {
           showPanelCheckbox={this.state.showPanelCheckbox}
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
           {...other}
+          onRefresh={this.handleRefresh}
         />
 
         {this.state.contextMenuX && (

@@ -36,6 +36,7 @@
     min-width: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    position: relative;
 
     /* Custom narrow scrollbar for webkit browsers */
     &::-webkit-scrollbar {

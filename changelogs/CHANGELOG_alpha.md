@@ -1,3 +1,45 @@
+# [8.1.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.7...8.1.0-alpha.8) (2025-11-28)
+
+
+### Features
+
+* Remember selected column when navigating between saved filters of a class with auto-load first row enabled ([#3028](https://github.com/parse-community/parse-dashboard/issues/3028)) ([964584c](https://github.com/parse-community/parse-dashboard/commit/964584cb2e1a6d318c1fac3087118e1ebe5bf157))
+
+# [8.1.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.6...8.1.0-alpha.7) (2025-11-28)
+
+
+### Bug Fixes
+
+* Info panel data not reloading when clicking refresh button in data browser ([#3027](https://github.com/parse-community/parse-dashboard/issues/3027)) ([8f91d15](https://github.com/parse-community/parse-dashboard/commit/8f91d15e2553f906ff8c078df58ee523a3d845a9))
+
+# [8.1.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.5...8.1.0-alpha.6) (2025-11-27)
+
+
+### Bug Fixes
+
+* No individual data loading indicators when displaying multiple info panels ([#3026](https://github.com/parse-community/parse-dashboard/issues/3026)) ([5ca8218](https://github.com/parse-community/parse-dashboard/commit/5ca82188428b017f4a3d4d34af2eaa2b5e53075f))
+
+# [8.1.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.4...8.1.0-alpha.5) (2025-11-27)
+
+
+### Features
+
+* Automatically resize info panel sidebar width when adding or removing panels ([#3025](https://github.com/parse-community/parse-dashboard/issues/3025)) ([1032301](https://github.com/parse-community/parse-dashboard/commit/1032301246f1763f77e328f650b16101194f7f8f))
+
+# [8.1.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.3...8.1.0-alpha.4) (2025-11-26)
+
+
+### Bug Fixes
+
+* Sync-scrolling multiple panels stops at bottom of shortest panel when scrolling down ([#3024](https://github.com/parse-community/parse-dashboard/issues/3024)) ([bf46938](https://github.com/parse-community/parse-dashboard/commit/bf46938feaaf9793f8525a726510ea6d5b931dcf))
+
+# [8.1.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.2...8.1.0-alpha.3) (2025-11-26)
+
+
+### Bug Fixes
+
+* Sync-scrolling multiple panels jumps to bottom of shortest panel when scrolling up ([#3023](https://github.com/parse-community/parse-dashboard/issues/3023)) ([3f85f89](https://github.com/parse-community/parse-dashboard/commit/3f85f8944a8b5100956e2c4390f2d8a6bb0ed9cf))
+
 # [8.1.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/8.1.0-alpha.1...8.1.0-alpha.2) (2025-11-26)
 
 
