@@ -26,6 +26,7 @@ const AGGREGATION_PANEL_AUTO_LOAD_FIRST_ROW = 'aggregationPanelAutoLoadFirstRow'
 const AGGREGATION_PANEL_SYNC_SCROLL = 'aggregationPanelSyncScroll';
 const AGGREGATION_PANEL_BATCH_NAVIGATE = 'aggregationPanelBatchNavigate';
 const AGGREGATION_PANEL_SHOW_CHECKBOX = 'aggregationPanelShowCheckbox';
+const AGGREGATION_PANEL_WIDTH = 'aggregationPanelWidth';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -98,6 +99,8 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.getItem(AGGREGATION_PANEL_BATCH_NAVIGATE) !== 'false';
     const storedShowPanelCheckbox =
       window.localStorage?.getItem(AGGREGATION_PANEL_SHOW_CHECKBOX) !== 'false';
+    const storedPanelWidth = window.localStorage?.getItem(AGGREGATION_PANEL_WIDTH);
+    const parsedPanelWidth = storedPanelWidth ? parseInt(storedPanelWidth, 10) : 300;
     const hasAggregation =
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
@@ -117,7 +120,7 @@ export default class DataBrowser extends React.Component {
       firstSelectedCell: null,
       selectedData: [],
       prevClassName: props.className,
-      panelWidth: 300,
+      panelWidth: parsedPanelWidth,
       isResizing: false,
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
@@ -358,6 +361,7 @@ export default class DataBrowser extends React.Component {
       isResizing: false,
       panelWidth: size.width,
     });
+    window.localStorage?.setItem(AGGREGATION_PANEL_WIDTH, size.width);
   }
 
   handleResizeDiv(event, { size }) {
