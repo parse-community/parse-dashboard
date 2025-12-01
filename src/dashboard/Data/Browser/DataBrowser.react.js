@@ -141,6 +141,7 @@ export default class DataBrowser extends React.Component {
       multiPanelData: {}, // Object mapping objectId to panel data
       _objectsToFetch: [], // Temporary field for async fetch handling
       loadingObjectIds: new Set(),
+      pendingPanelRefresh: false, // Flag to track if panel refresh is pending after data reload
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -315,6 +316,40 @@ export default class DataBrowser extends React.Component {
       );
     }
 
+    // Handle pending panel refresh after data has loaded
+    if (
+      this.state.pendingPanelRefresh &&
+      this.props.data !== prevProps.data &&
+      this.props.data !== null
+    ) {
+      // Data has been refreshed, now refresh the panels based on the new data
+      this.setState({ pendingPanelRefresh: false });
+
+      // Refresh current selected object if it still exists in the new data
+      if (this.state.selectedObjectId) {
+        const objectStillExists = this.props.data.some(obj => obj.id === this.state.selectedObjectId);
+        if (objectStillExists) {
+          this.handleCallCloudFunction(
+            this.state.selectedObjectId,
+            this.props.className,
+            this.props.app.applicationId
+          );
+        }
+      }
+
+      // Refresh other displayed objects if in multi-panel mode
+      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
+        this.state.displayedObjectIds.forEach(objectId => {
+          if (objectId !== this.state.selectedObjectId) {
+            const objectStillExists = this.props.data.some(obj => obj.id === objectId);
+            if (objectStillExists) {
+              this.fetchDataForMultiPanel(objectId);
+            }
+          }
+        });
+      }
+    }
+
     if (
       (this.props.AggregationPanelData !== prevProps.AggregationPanelData ||
         this.state.selectedObjectId !== prevState.selectedObjectId) &&
@@ -400,39 +435,26 @@ export default class DataBrowser extends React.Component {
   async handleRefresh() {
     const shouldReload = await this.props.onRefresh();
 
-    // If panel is visible and we have selected objects, refresh their data
+    // If panel is visible and we have selected objects, set flag to refresh panels after data loads
     if (shouldReload && this.state.isPanelVisible) {
-      // Refresh current selected object
+      // Clear the cache for all selected objects so they will be refreshed
+      const newPrefetchCache = { ...this.state.prefetchCache };
+
       if (this.state.selectedObjectId) {
-        // Clear from cache to force reload
-        this.setState(prev => {
-          const n = { ...prev.prefetchCache };
-          delete n[this.state.selectedObjectId];
-          return { prefetchCache: n };
-        }, () => {
-          this.handleCallCloudFunction(
-            this.state.selectedObjectId,
-            this.props.className,
-            this.props.app.applicationId
-          );
+        delete newPrefetchCache[this.state.selectedObjectId];
+      }
+
+      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
+        this.state.displayedObjectIds.forEach(objectId => {
+          delete newPrefetchCache[objectId];
         });
       }
 
-      // Refresh other displayed objects if in multi-panel mode
-      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
-        this.state.displayedObjectIds.forEach(objectId => {
-          if (objectId !== this.state.selectedObjectId) {
-            // Clear from cache
-            this.setState(prev => {
-              const n = { ...prev.prefetchCache };
-              delete n[objectId];
-              return { prefetchCache: n };
-            }, () => {
-              this.fetchDataForMultiPanel(objectId);
-            });
-          }
-        });
-      }
+      // Set the flag to refresh panels after data loads, and update the cache
+      this.setState({
+        pendingPanelRefresh: true,
+        prefetchCache: newPrefetchCache
+      });
     }
   }
 
