@@ -264,6 +264,23 @@ export default class DataBrowser extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // Clear panels when data becomes null (filter change, class change, etc.)
+    if (
+      this.props.data === null &&
+      prevProps.data !== null &&
+      this.state.isPanelVisible &&
+      this.state.selectedObjectId !== undefined
+    ) {
+      // Clear panel data and selection to show "No object selected"
+      this.props.setAggregationPanelData({});
+      this.props.setLoadingInfoPanel(false);
+      this.setState({
+        selectedObjectId: undefined,
+        multiPanelData: {},
+        displayedObjectIds: []
+      });
+    }
+
     if (
       this.state.current === null &&
       this.state.selectedObjectId !== undefined &&
