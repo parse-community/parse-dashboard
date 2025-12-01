@@ -2765,12 +2765,13 @@ class Browser extends DashboardView {
         />
       );
     }
+    const selectionCount = Object.keys(this.state.selection).length;
     return (
       <div>
         <Helmet>
           <title>{pageTitle}</title>
         </Helmet>
-        <SelectedRowsNavigationPrompt when={Object.keys(this.state.selection).length > 0} />
+        <SelectedRowsNavigationPrompt when={selectionCount > 0 && !this.state.exporting} />
         {browser}
         {notification}
         {extras}
