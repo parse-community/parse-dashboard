@@ -141,7 +141,6 @@ export default class DataBrowser extends React.Component {
       multiPanelData: {}, // Object mapping objectId to panel data
       _objectsToFetch: [], // Temporary field for async fetch handling
       loadingObjectIds: new Set(),
-      pendingPanelRefresh: false, // Flag to track if panel refresh is pending after data reload
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -350,40 +349,6 @@ export default class DataBrowser extends React.Component {
       );
     }
 
-    // Handle pending panel refresh after data has loaded
-    if (
-      this.state.pendingPanelRefresh &&
-      this.props.data !== prevProps.data &&
-      this.props.data !== null
-    ) {
-      // Data has been refreshed, now refresh the panels based on the new data
-      this.setState({ pendingPanelRefresh: false });
-
-      // Refresh current selected object if it still exists in the new data
-      if (this.state.selectedObjectId) {
-        const objectStillExists = this.props.data.some(obj => obj.id === this.state.selectedObjectId);
-        if (objectStillExists) {
-          this.handleCallCloudFunction(
-            this.state.selectedObjectId,
-            this.props.className,
-            this.props.app.applicationId
-          );
-        }
-      }
-
-      // Refresh other displayed objects if in multi-panel mode
-      if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0) {
-        this.state.displayedObjectIds.forEach(objectId => {
-          if (objectId !== this.state.selectedObjectId) {
-            const objectStillExists = this.props.data.some(obj => obj.id === objectId);
-            if (objectStillExists) {
-              this.fetchDataForMultiPanel(objectId);
-            }
-          }
-        });
-      }
-    }
-
     if (
       (this.props.AggregationPanelData !== prevProps.AggregationPanelData ||
         this.state.selectedObjectId !== prevState.selectedObjectId) &&
@@ -486,7 +451,6 @@ export default class DataBrowser extends React.Component {
       this.props.setAggregationPanelData({});
       this.props.setLoadingInfoPanel(false);
       this.setState({
-        pendingPanelRefresh: true,
         prefetchCache: newPrefetchCache,
         multiPanelData: {}, // Clear multi-panel data as well
         displayedObjectIds: [], // Clear displayed object IDs
@@ -495,12 +459,7 @@ export default class DataBrowser extends React.Component {
       });
     }
 
-    const shouldReload = await this.props.onRefresh();
-
-    // If refresh was cancelled, reset the pending refresh state
-    if (!shouldReload && this.state.isPanelVisible) {
-      this.setState({ pendingPanelRefresh: false });
-    }
+    await this.props.onRefresh();
   }
 
   togglePanelVisibility() {
