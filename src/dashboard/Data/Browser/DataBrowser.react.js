@@ -489,6 +489,7 @@ export default class DataBrowser extends React.Component {
         pendingPanelRefresh: true,
         prefetchCache: newPrefetchCache,
         multiPanelData: {}, // Clear multi-panel data as well
+        displayedObjectIds: [], // Clear displayed object IDs
         selectedObjectId: undefined, // Clear selection to show "No object selected"
         showAggregatedData: true, // Keep true to show "No object selected" message
       });
