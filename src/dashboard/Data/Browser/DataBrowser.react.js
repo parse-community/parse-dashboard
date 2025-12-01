@@ -274,6 +274,7 @@ export default class DataBrowser extends React.Component {
       this.props.setLoadingInfoPanel(false);
       this.setState({
         selectedObjectId: undefined,
+        showAggregatedData: true, // Keep true to show "No object selected" message
         multiPanelData: {},
         displayedObjectIds: []
       });
@@ -291,6 +292,7 @@ export default class DataBrowser extends React.Component {
       this.props.setLoadingInfoPanel(false);
       this.setState({
         selectedObjectId: undefined,
+        showAggregatedData: true, // Keep true to show "No object selected" message
         multiPanelData: {},
         displayedObjectIds: []
       });
@@ -488,6 +490,7 @@ export default class DataBrowser extends React.Component {
         prefetchCache: newPrefetchCache,
         multiPanelData: {}, // Clear multi-panel data as well
         selectedObjectId: undefined, // Clear selection to show "No object selected"
+        showAggregatedData: true, // Keep true to show "No object selected" message
       });
     }
 
@@ -1615,6 +1618,24 @@ export default class DataBrowser extends React.Component {
                     ref={this.setMultiPanelWrapperRef}
                   >
                     {(() => {
+                      // If no objects are displayed, show a single panel with "No object selected"
+                      if (this.state.displayedObjectIds.length === 0) {
+                        return (
+                          <AggregationPanel
+                            data={{}}
+                            isLoadingCloudFunction={false}
+                            showAggregatedData={true}
+                            errorAggregatedData={{}}
+                            showNote={this.props.showNote}
+                            setErrorAggregatedData={this.props.setErrorAggregatedData}
+                            setSelectedObjectId={this.setSelectedObjectId}
+                            selectedObjectId={undefined}
+                            appName={this.props.appName}
+                            className={this.props.className}
+                          />
+                        );
+                      }
+
                       // Initialize refs array if needed
                       if (this.panelColumnRefs.length !== this.state.displayedObjectIds.length) {
                         this.panelColumnRefs = this.state.displayedObjectIds.map(() => React.createRef());
