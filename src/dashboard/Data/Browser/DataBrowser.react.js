@@ -433,10 +433,8 @@ export default class DataBrowser extends React.Component {
   }
 
   async handleRefresh() {
-    const shouldReload = await this.props.onRefresh();
-
-    // If panel is visible and we have selected objects, set flag to refresh panels after data loads
-    if (shouldReload && this.state.isPanelVisible) {
+    // If panel is visible, clear it immediately and show "No object selected"
+    if (this.state.isPanelVisible) {
       // Clear the cache for all selected objects so they will be refreshed
       const newPrefetchCache = { ...this.state.prefetchCache };
 
@@ -450,11 +448,22 @@ export default class DataBrowser extends React.Component {
         });
       }
 
-      // Set the flag to refresh panels after data loads, and update the cache
+      // Clear panel data immediately (shows "No object selected" message)
+      this.props.setAggregationPanelData({});
+      this.props.setLoadingInfoPanel(false);
       this.setState({
         pendingPanelRefresh: true,
-        prefetchCache: newPrefetchCache
+        prefetchCache: newPrefetchCache,
+        multiPanelData: {}, // Clear multi-panel data as well
+        selectedObjectId: undefined, // Clear selection to show "No object selected"
       });
+    }
+
+    const shouldReload = await this.props.onRefresh();
+
+    // If refresh was cancelled, reset the pending refresh state
+    if (!shouldReload && this.state.isPanelVisible) {
+      this.setState({ pendingPanelRefresh: false });
     }
   }
 
