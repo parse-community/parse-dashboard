@@ -1578,18 +1578,24 @@ export default class DataBrowser extends React.Component {
                     ref={this.setMultiPanelWrapperRef}
                   >
                     {(() => {
-                      // If no objects are displayed, show a single panel with "No object selected"
+                      // If no objects are displayed, show a single panel
                       if (this.state.displayedObjectIds.length === 0) {
+                        // If there's a selected object, show its data
+                        const panelData = this.state.selectedObjectId
+                          ? (this.state.multiPanelData[this.state.selectedObjectId] || this.props.AggregationPanelData)
+                          : {};
+                        const isLoading = this.state.selectedObjectId && this.props.isLoadingCloudFunction;
+
                         return (
                           <AggregationPanel
-                            data={{}}
-                            isLoadingCloudFunction={false}
+                            data={panelData}
+                            isLoadingCloudFunction={isLoading}
                             showAggregatedData={true}
-                            errorAggregatedData={{}}
+                            errorAggregatedData={this.state.selectedObjectId ? this.props.errorAggregatedData : {}}
                             showNote={this.props.showNote}
                             setErrorAggregatedData={this.props.setErrorAggregatedData}
                             setSelectedObjectId={this.setSelectedObjectId}
-                            selectedObjectId={undefined}
+                            selectedObjectId={this.state.selectedObjectId}
                             appName={this.props.appName}
                             className={this.props.className}
                           />
