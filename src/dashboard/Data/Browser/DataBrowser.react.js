@@ -383,15 +383,31 @@ export default class DataBrowser extends React.Component {
   }
 
   handleResizeStop(event, { size }) {
+    // Convert effective width back to full panel width when there are hidden panels
+    let newPanelWidth = size.width;
+    if (this.state.panelCount > 1 && this.state.displayedObjectIds.length < this.state.panelCount) {
+      const actualPanelCount = Math.max(this.state.displayedObjectIds.length, 1);
+      // Reverse the calculation: fullWidth = (effectiveWidth / actualPanelCount) * panelCount
+      newPanelWidth = (size.width / actualPanelCount) * this.state.panelCount;
+    }
+
     this.setState({
       isResizing: false,
-      panelWidth: size.width,
+      panelWidth: newPanelWidth,
     });
-    window.localStorage?.setItem(AGGREGATION_PANEL_WIDTH, size.width);
+    window.localStorage?.setItem(AGGREGATION_PANEL_WIDTH, newPanelWidth);
   }
 
   handleResizeDiv(event, { size }) {
-    this.setState({ panelWidth: size.width });
+    // Convert effective width back to full panel width when there are hidden panels
+    let newPanelWidth = size.width;
+    if (this.state.panelCount > 1 && this.state.displayedObjectIds.length < this.state.panelCount) {
+      const actualPanelCount = Math.max(this.state.displayedObjectIds.length, 1);
+      // Reverse the calculation: fullWidth = (effectiveWidth / actualPanelCount) * panelCount
+      newPanelWidth = (size.width / actualPanelCount) * this.state.panelCount;
+    }
+
+    this.setState({ panelWidth: newPanelWidth });
   }
 
   setShowAggregatedData(bool) {
