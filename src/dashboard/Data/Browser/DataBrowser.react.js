@@ -297,6 +297,26 @@ export default class DataBrowser extends React.Component {
       });
     }
 
+    // Clear panels when data reloads (e.g., after script execution, refresh, filter change)
+    if (
+      this.props.data !== null &&
+      prevProps.data !== null &&
+      this.props.data !== prevProps.data &&
+      this.state.isPanelVisible &&
+      (this.state.selectedObjectId !== undefined || this.state.displayedObjectIds.length > 0)
+    ) {
+      // Clear panel data and selection to show "No object selected"
+      this.props.setAggregationPanelData({});
+      this.props.setLoadingInfoPanel(false);
+      this.setState({
+        selectedObjectId: undefined,
+        showAggregatedData: true, // Keep true to show "No object selected" message
+        multiPanelData: {},
+        displayedObjectIds: [],
+        prefetchCache: {}, // Also clear the cache since data has changed
+      });
+    }
+
     if (
       this.state.current === null &&
       this.state.selectedObjectId !== undefined &&
