@@ -1511,10 +1511,11 @@ export default class DataBrowser extends React.Component {
     // Calculate effective panel width based on actual displayed panels
     // When panelCount > 1 but fewer panels are actually displayed, reduce width proportionally
     let effectivePanelWidth = this.state.panelWidth;
-    if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0 && this.state.displayedObjectIds.length < this.state.panelCount) {
+    if (this.state.panelCount > 1 && this.state.displayedObjectIds.length < this.state.panelCount) {
       // Width per panel = total width / configured panel count
-      // Effective width = width per panel * actual number of displayed panels
-      effectivePanelWidth = (this.state.panelWidth / this.state.panelCount) * this.state.displayedObjectIds.length;
+      // Effective width = width per panel * actual number of displayed panels (or 1 if none)
+      const actualPanelCount = Math.max(this.state.displayedObjectIds.length, 1);
+      effectivePanelWidth = (this.state.panelWidth / this.state.panelCount) * actualPanelCount;
     }
 
     return (
