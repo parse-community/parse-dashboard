@@ -1507,6 +1507,16 @@ export default class DataBrowser extends React.Component {
       ...other
     } = this.props;
     const { preventSchemaEdits, applicationId } = app;
+
+    // Calculate effective panel width based on actual displayed panels
+    // When panelCount > 1 but fewer panels are actually displayed, reduce width proportionally
+    let effectivePanelWidth = this.state.panelWidth;
+    if (this.state.panelCount > 1 && this.state.displayedObjectIds.length > 0 && this.state.displayedObjectIds.length < this.state.panelCount) {
+      // Width per panel = total width / configured panel count
+      // Effective width = width per panel * actual number of displayed panels
+      effectivePanelWidth = (this.state.panelWidth / this.state.panelCount) * this.state.displayedObjectIds.length;
+    }
+
     return (
       <div>
         <div>
@@ -1535,7 +1545,7 @@ export default class DataBrowser extends React.Component {
             selectedCells={this.state.selectedCells}
             handleCellClick={this.handleCellClick}
             isPanelVisible={this.state.isPanelVisible}
-            panelWidth={this.state.panelWidth}
+            panelWidth={effectivePanelWidth}
             isResizing={this.state.isResizing}
             setShowAggregatedData={this.setShowAggregatedData}
             showRowNumber={this.state.showRowNumber}
@@ -1547,7 +1557,7 @@ export default class DataBrowser extends React.Component {
           />
           {this.state.isPanelVisible && (
             <ResizableBox
-              width={this.state.panelWidth}
+              width={effectivePanelWidth}
               height={Infinity}
               minConstraints={[100, Infinity]}
               maxConstraints={[this.state.maxWidth, Infinity]}
