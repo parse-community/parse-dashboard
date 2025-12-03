@@ -108,6 +108,8 @@ jobs:
             NODE_VERSION: 20.18.0
           - name: Node 22
             NODE_VERSION: 22.12.0
+          - name: Node 24
+            NODE_VERSION: 24.0.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
