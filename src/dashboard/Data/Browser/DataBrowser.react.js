@@ -275,7 +275,8 @@ export default class DataBrowser extends React.Component {
         selectedObjectId: undefined,
         showAggregatedData: true, // Keep true to show "No object selected" message
         multiPanelData: {},
-        displayedObjectIds: []
+        displayedObjectIds: [],
+        prefetchCache: {}, // Clear cache when switching classes to prevent memory leak
       });
     }
 
@@ -293,7 +294,8 @@ export default class DataBrowser extends React.Component {
         selectedObjectId: undefined,
         showAggregatedData: true, // Keep true to show "No object selected" message
         multiPanelData: {},
-        displayedObjectIds: []
+        displayedObjectIds: [],
+        prefetchCache: {}, // Clear cache to prevent memory leak
       });
     }
 
