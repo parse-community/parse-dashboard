@@ -177,12 +177,12 @@ const Toolbar = props => {
             {props.isPanelVisible ? (
               <>
                 <Icon width={18} height={18} fill="#797592" name="x-outline" />
-                  Hide Panel
+                  Hide {props.panelCount > 1 ? `${props.panelCount} Panels` : 'Panel'}
               </>
             ) : (
               <>
                 <Icon width={18} height={18} fill="#797592" name="left-outline" />
-                  Show Panel
+                  Show {props.panelCount > 1 ? `${props.panelCount} Panels` : 'Panel'}
               </>
             )}
           </button>
