@@ -865,8 +865,6 @@ When starting the dashboard with a config file, you can specify `cookieSessionSe
 }
 ```
 
-Note: `cookieSessionStore` must still be configured programmatically as it requires an object instance, but `cookieSessionSecret` can now be specified in the config file for convenience.
-
 **Important Notes:**
 
 - The `cookieSessionSecret` option must be set to the same value across all replicas to ensure session cookies work correctly.
