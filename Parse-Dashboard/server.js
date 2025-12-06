@@ -164,7 +164,7 @@ module.exports = (options) => {
   config.data.trustProxy = trustProxy;
   const dashboardOptions = {
     allowInsecureHTTP,
-    cookieSessionSecret,
+    cookieSessionSecret: cookieSessionSecret || config.data.cookieSessionSecret,
     dev,
     cookieSessionMaxAge,
     cookieSessionStore: config.data.cookieSessionStore

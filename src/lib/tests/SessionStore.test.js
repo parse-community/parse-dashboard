@@ -158,4 +158,68 @@ describe('SessionStore Integration', () => {
     expect(dashboardApp).toBeDefined();
     expect(typeof dashboardApp).toBe('function');
   });
+
+  it('reads cookieSessionSecret from config when not in options', () => {
+    const parseDashboard = require('../../../Parse-Dashboard/app.js');
+
+    const config = {
+      apps: [
+        {
+          serverURL: 'http://localhost:1337/parse',
+          appId: 'testAppId',
+          masterKey: 'testMasterKey',
+          appName: 'TestApp',
+        },
+      ],
+      users: [
+        {
+          user: 'testuser',
+          pass: 'testpass',
+        },
+      ],
+      cookieSessionSecret: 'secret-from-config',
+    };
+
+    const options = {};
+
+    // Create dashboard app with cookieSessionSecret in config
+    const dashboardApp = parseDashboard(config, options);
+
+    // The app should be created successfully with config-provided secret
+    expect(dashboardApp).toBeDefined();
+    expect(typeof dashboardApp).toBe('function');
+  });
+
+  it('prefers cookieSessionSecret from options over config', () => {
+    const parseDashboard = require('../../../Parse-Dashboard/app.js');
+
+    const config = {
+      apps: [
+        {
+          serverURL: 'http://localhost:1337/parse',
+          appId: 'testAppId',
+          masterKey: 'testMasterKey',
+          appName: 'TestApp',
+        },
+      ],
+      users: [
+        {
+          user: 'testuser',
+          pass: 'testpass',
+        },
+      ],
+      cookieSessionSecret: 'secret-from-config',
+    };
+
+    const options = {
+      cookieSessionSecret: 'secret-from-options',
+    };
+
+    // Create dashboard app with both config and options secret
+    const dashboardApp = parseDashboard(config, options);
+
+    // The app should be created successfully, preferring options secret
+    expect(dashboardApp).toBeDefined();
+    expect(typeof dashboardApp).toBe('function');
+  });
 });

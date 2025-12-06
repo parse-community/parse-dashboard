@@ -819,7 +819,7 @@ When deploying Parse Dashboard with multiple replicas behind a load balancer, yo
 
 #### Using a Custom Session Store
 
-Parse Dashboard supports using any session store compatible with [express-session](https://github.com/expressjs/session). The `sessionStore` option must be configured programmatically when initializing the dashboard.
+Parse Dashboard supports using any session store compatible with [express-session](https://github.com/expressjs/session). Both `cookieSessionSecret` and `cookieSessionStore` can be configured either programmatically when initializing the dashboard or via a configuration file (note: `cookieSessionStore` can only be configured programmatically as it requires an object instance).
 
 **Suggested Session Stores:**
 
@@ -851,6 +851,21 @@ const dashboard = new ParseDashboard({
   cookieSessionStore,
   cookieSessionSecret: 'your-secret-key',
 });
+```
+
+**Example using a configuration file:**
+
+When starting the dashboard with a config file, you can specify `cookieSessionSecret` directly in the JSON configuration:
+
+```json
+{
+  "apps": [...],
+  "users": [...],
+  "cookieSessionSecret": "your-secret-key"
+}
+```
+
+Note: `cookieSessionStore` must still be configured programmatically as it requires an object instance, but `cookieSessionSecret` can now be specified in the config file for convenience.
 
 **Important Notes:**
 
