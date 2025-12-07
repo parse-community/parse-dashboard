@@ -740,7 +740,7 @@ export default class DataBrowser extends React.Component {
         // or with ctrl/meta (excel style - move to the first row)
         const prevObjectID = this.state.selectedObjectId;
         // Calculate step size based on batch navigation mode
-        const stepSize = this.state.panelCount > 1 && this.state.batchNavigate ? this.state.panelCount : 1;
+        const stepSize = this.state.panelCount > 1 && this.state.batchNavigate && this.state.isPanelVisible ? this.state.panelCount : 1;
         const newRow = e.ctrlKey || e.metaKey ? 0 : Math.max(this.state.current.row - stepSize, 0);
         this.setState({
           current: {
@@ -785,7 +785,7 @@ export default class DataBrowser extends React.Component {
         // or with ctrl/meta (excel style - move to the last row)
         const prevObjectID = this.state.selectedObjectId;
         // Calculate step size based on batch navigation mode
-        const stepSizeDown = this.state.panelCount > 1 && this.state.batchNavigate ? this.state.panelCount : 1;
+        const stepSizeDown = this.state.panelCount > 1 && this.state.batchNavigate && this.state.isPanelVisible ? this.state.panelCount : 1;
         const newRow =
           e.ctrlKey || e.metaKey
             ? this.props.data.length - 1
