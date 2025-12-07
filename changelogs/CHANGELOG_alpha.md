@@ -1,3 +1,10 @@
+# [8.2.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.2...8.2.0-alpha.3) (2025-12-07)
+
+
+### Bug Fixes
+
+* Batch-navigation is active even if info panels are not visible ([#3053](https://github.com/parse-community/parse-dashboard/issues/3053)) ([91b544a](https://github.com/parse-community/parse-dashboard/commit/91b544a11cba5954c85e41eed7183c5dd11cb954))
+
 # [8.2.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.1...8.2.0-alpha.2) (2025-12-04)
 
 
