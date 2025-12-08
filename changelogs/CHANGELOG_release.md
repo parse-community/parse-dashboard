@@ -55,6 +55,7 @@
 ### BREAKING CHANGES
 
 * This increases the required minimum version to Parse Server 7. ([5debb4d](5debb4d))
+* Multi-instance deployments require a shared session store, either sticky sessions at the load balancer level, or a shared session store using the `cookieSessionStore` option. Setting `cookieSessionSecret` alone is no longer sufficient for multi-instance deployments. ([#3000](https://github.com/parse-community/parse-dashboard/issues/3000))
 
 # [7.5.0](https://github.com/parse-community/parse-dashboard/compare/7.4.0...7.5.0) (2025-10-02)
 
