@@ -273,6 +273,8 @@ class Views extends TableView {
                 type = 'Link';
               } else if (val.__type === 'Image') {
                 type = 'Image';
+              } else if (val.__type === 'Video') {
+                type = 'Video';
               } else {
                 type = 'Object';
               }
@@ -406,6 +408,8 @@ class Views extends TableView {
               type = 'Link';
             } else if (value.__type === 'Image') {
               type = 'Image';
+            } else if (value.__type === 'Video') {
+              type = 'Video';
             } else {
               type = 'Object';
             }
@@ -489,6 +493,43 @@ class Views extends TableView {
                   }
                 }}
               />
+            );
+          } else if (type === 'Video') {
+            // Sanitize URL
+            let url = value.url;
+            if (
+              !url ||
+              url.match(/javascript/i) ||
+              url.match(/<script/i)
+            ) {
+              url = '#';
+            }
+
+            // Parse dimensions, ensuring they are positive numbers
+            const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+            const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+
+            // Create style object for scale-to-fit behavior
+            const videoStyle = {
+              maxWidth: width ? `${width}px` : '100%',
+              maxHeight: height ? `${height}px` : '100%',
+              objectFit: 'contain', // This ensures scale-to-fit behavior maintaining aspect ratio
+              display: 'block'
+            };
+
+            content = (
+              <video
+                src={url}
+                controls
+                style={videoStyle}
+                onError={(e) => {
+                  if (e.target && e.target.style) {
+                    e.target.style.display = 'none';
+                  }
+                }}
+              >
+                Your browser does not support the video tag.
+              </video>
             );
           } else if (value === undefined) {
             content = '';

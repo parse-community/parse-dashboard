@@ -99,6 +99,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
       - [Pointer](#pointer)
       - [Link](#link)
       - [Image](#image)
+      - [Video](#video)
 - [Contributing](#contributing)
 
 # Getting Started
@@ -1632,6 +1633,24 @@ Example:
 
 > [!Warning]
 > The URL will be directly invoked by the browser when trying to display the image. For security reasons, make sure you either control the full URL, including the image file name, or sanitize the URL before returning it to the dashboard. URLs containing `javascript:` or `<script` will be blocked automatically and replaced with a placeholder.
+
+#### Video
+
+Videos are rendered directly in the output table with a `<video>` tag that includes playback controls. The content mode is always "scale to fit", meaning that the video maintains its aspect ratio within the specified dimensions.
+
+Example:
+
+```json
+{
+  "__type": "Video",
+  "url": "https://example.com/video.mp4",
+  "width": "320",
+  "height": "240"
+}
+```
+
+> [!Warning]
+> The URL will be directly invoked by the browser when trying to display the video. For security reasons, make sure you either control the full URL, including the video file name, or sanitize the URL before returning it to the dashboard. URLs containing `javascript:` or `<script` will be blocked automatically and replaced with a placeholder.
 
 # Contributing
 
