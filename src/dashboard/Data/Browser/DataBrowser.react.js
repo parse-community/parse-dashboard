@@ -1809,7 +1809,7 @@ export default class DataBrowser extends React.Component {
         {this.state.showScriptConfirmationDialog && (
           <ScriptConfirmationModal
             script={this.state.selectedScript}
-            onCancel={() => this.setState({ showScriptConfirmationDialog: false })}
+            onCancel={() => this.setState({ showScriptConfirmationDialog: false, selectedScript: null })}
             onConfirm={() => {
               executeScript(
                 this.state.selectedScript,
@@ -1818,7 +1818,7 @@ export default class DataBrowser extends React.Component {
                 this.props.showNote,
                 this.props.onRefresh
               );
-              this.setState({ showScriptConfirmationDialog: false });
+              this.setState({ showScriptConfirmationDialog: false, selectedScript: null });
             }}
           />
         )}

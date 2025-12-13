@@ -69,6 +69,6 @@ export async function executeScript(script, className, objectId, showNote, onRef
     onRefresh();
   } catch (e) {
     showNote(e.message, true);
-    console.log(`Could not run ${script.title}: ${e}`);
+    console.error(`Could not run ${script.title}:`, e);
   }
 }
