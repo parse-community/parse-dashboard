@@ -63,12 +63,12 @@ export async function executeScript(script, className, objectId, showNote, onRef
       { object: object.toPointer() },
       { useMasterKey: true }
     );
-    showNote(
+    showNote?.(
       response || `Ran script "${script.title}" on "${className}" object "${object.id}".`
     );
-    onRefresh();
+    onRefresh?.();
   } catch (e) {
-    showNote(e.message, true);
+    showNote?.(e.message, true);
     console.error(`Could not run ${script.title}:`, e);
   }
 }
