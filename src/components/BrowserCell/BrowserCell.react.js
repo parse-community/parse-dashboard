@@ -9,14 +9,15 @@ import * as Filters from 'lib/Filters';
 import { List, Map } from 'immutable';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
+import { getValidScripts, executeScript } from 'lib/ScriptUtils';
 import Parse from 'parse';
 import Pill from 'components/Pill/Pill.react';
 import React, { Component } from 'react';
+import ScriptConfirmationModal from 'components/ScriptConfirmationModal/ScriptConfirmationModal.react';
 import styles from 'components/BrowserCell/BrowserCell.scss';
 import baseStyles from 'stylesheets/base.scss';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import labelStyles from 'components/Label/Label.scss';
-import Modal from 'components/Modal/Modal.react';
 
 export default class BrowserCell extends Component {
   constructor() {
@@ -348,33 +349,8 @@ export default class BrowserCell extends Component {
     }
 
     const { className, objectId, field, scripts = [], rowValue } = this.props;
-    let validator = null;
-    const validScripts = (scripts || []).filter(script => {
-      if (script.classes?.includes(className)) {
-        return true;
-      }
-      for (const script of script?.classes || []) {
-        if (script?.name !== className) {
-          continue;
-        }
-        const fields = script?.fields || [];
-        if (script?.fields.includes(field) || script?.fields.includes('*')) {
-          return true;
-        }
-        for (const currentField of fields) {
-          if (Object.prototype.toString.call(currentField) === '[object Object]') {
-            if (currentField.name === field) {
-              if (typeof currentField.validator === 'string') {
-                validator = eval(currentField.validator);
-              } else {
-                validator = currentField.validator;
-              }
-              return true;
-            }
-          }
-        }
-      }
-    });
+    const { validScripts, validator } = getValidScripts(scripts, className, field);
+
     if (validScripts.length) {
       onEditSelectedRow &&
         contextMenuOptions.push({
@@ -400,24 +376,13 @@ export default class BrowserCell extends Component {
   }
 
   async executeScript(script) {
-    try {
-      const object = Parse.Object.extend(this.props.className).createWithoutData(
-        this.props.objectId
-      );
-      const response = await Parse.Cloud.run(
-        script.cloudCodeFunction,
-        { object: object.toPointer() },
-        { useMasterKey: true }
-      );
-      this.props.showNote(
-        response ||
-          `Ran script "${script.title}" on "${this.props.className}" object "${object.id}".`
-      );
-      this.props.onRefresh();
-    } catch (e) {
-      this.props.showNote(e.message, true);
-      console.log(`Could not run ${script.title}: ${e}`);
-    }
+    await executeScript(
+      script,
+      this.props.className,
+      this.props.objectId,
+      this.props.showNote,
+      this.props.onRefresh
+    );
   }
 
   toggleConfirmationDialog() {
@@ -590,26 +555,14 @@ export default class BrowserCell extends Component {
     let extras = null;
     if (this.state.showConfirmationDialog) {
       extras = (
-        <Modal
-          type={
-            this.selectedScript.confirmationDialogStyle === 'critical'
-              ? Modal.Types.DANGER
-              : Modal.Types.INFO
-          }
-          icon="warn-outline"
-          title={this.selectedScript.title}
-          confirmText="Continue"
-          cancelText="Cancel"
+        <ScriptConfirmationModal
+          script={this.selectedScript}
           onCancel={() => this.toggleConfirmationDialog()}
           onConfirm={() => {
-            this.executeSript(this.selectedScript);
+            this.executeScript(this.selectedScript);
             this.toggleConfirmationDialog();
           }}
-        >
-          <div className={[labelStyles.label, labelStyles.text, styles.action].join(' ')}>
-            {`Do you want to run script "${this.selectedScript.title}" on "${this.selectedScript.className}" object "${this.selectedScript.objectId}"?`}
-          </div>
-        </Modal>
+        />
       );
     }
 

@@ -13,9 +13,11 @@ import * as ColumnPreferences from 'lib/ColumnPreferences';
 import { CurrentApp } from 'context/currentApp';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
+import { getValidScripts, executeScript } from '../../../lib/ScriptUtils';
 import Parse from 'parse';
 import React from 'react';
 import { ResizableBox } from 'react-resizable';
+import ScriptConfirmationModal from '../../../components/ScriptConfirmationModal/ScriptConfirmationModal.react';
 import styles from './Databrowser.scss';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
@@ -144,6 +146,11 @@ export default class DataBrowser extends React.Component {
       multiPanelData: {}, // Object mapping objectId to panel data
       _objectsToFetch: [], // Temporary field for async fetch handling
       loadingObjectIds: new Set(),
+      showScriptConfirmationDialog: false,
+      selectedScript: null,
+      contextMenuX: null,
+      contextMenuY: null,
+      contextMenuItems: null,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -971,37 +978,9 @@ export default class DataBrowser extends React.Component {
     const className = this.props.className;
     const field = 'objectId';
 
-    const menuItems = [];
-    let validator = null;
+    const { validScripts, validator } = getValidScripts(scripts, className, field);
 
-    // Filter scripts valid for this class and field
-    const validScripts = (scripts || []).filter(script => {
-      if (script.classes?.includes(className)) {
-        return true;
-      }
-      for (const scriptClass of script?.classes || []) {
-        if (scriptClass?.name !== className) {
-          continue;
-        }
-        const fields = scriptClass?.fields || [];
-        if (scriptClass?.fields.includes(field) || scriptClass?.fields.includes('*')) {
-          return true;
-        }
-        for (const currentField of fields) {
-          if (Object.prototype.toString.call(currentField) === '[object Object]') {
-            if (currentField.name === field) {
-              if (typeof currentField.validator === 'string') {
-                validator = eval(currentField.validator);
-              } else {
-                validator = currentField.validator;
-              }
-              return true;
-            }
-          }
-        }
-      }
-      return false;
-    });
+    const menuItems = [];
 
     // Add Scripts menu if there are valid scripts
     if (validScripts.length && this.props.onEditSelectedRow) {
@@ -1011,21 +990,21 @@ export default class DataBrowser extends React.Component {
           return {
             text: script.title,
             disabled: validator?.(objectId, field) === false,
-            callback: async () => {
-              try {
-                const object = Parse.Object.extend(className).createWithoutData(objectId);
-                const response = await Parse.Cloud.run(
-                  script.cloudCodeFunction,
-                  { object: object.toPointer() },
-                  { useMasterKey: true }
+            callback: () => {
+              const selectedScript = { ...script, className, objectId };
+              if (script.showConfirmationDialog) {
+                this.setState({
+                  showScriptConfirmationDialog: true,
+                  selectedScript
+                });
+              } else {
+                executeScript(
+                  script,
+                  className,
+                  objectId,
+                  this.props.showNote,
+                  this.props.onRefresh
                 );
-                this.props.showNote(
-                  response || `Ran script "${script.title}" on "${className}" object "${objectId}".`
-                );
-                this.props.onRefresh();
-              } catch (e) {
-                this.props.showNote(e.message, true);
-                console.log(`Could not run ${script.title}: ${e}`);
               }
             },
           };
@@ -1825,6 +1804,22 @@ export default class DataBrowser extends React.Component {
             x={this.state.contextMenuX}
             y={this.state.contextMenuY}
             items={this.state.contextMenuItems}
+          />
+        )}
+        {this.state.showScriptConfirmationDialog && (
+          <ScriptConfirmationModal
+            script={this.state.selectedScript}
+            onCancel={() => this.setState({ showScriptConfirmationDialog: false })}
+            onConfirm={() => {
+              executeScript(
+                this.state.selectedScript,
+                this.state.selectedScript.className,
+                this.state.selectedScript.objectId,
+                this.props.showNote,
+                this.props.onRefresh
+              );
+              this.setState({ showScriptConfirmationDialog: false });
+            }}
           />
         )}
       </div>
