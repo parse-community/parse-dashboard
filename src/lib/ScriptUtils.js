@@ -32,6 +32,11 @@ export function getValidScripts(scripts, className, field) {
         if (Object.prototype.toString.call(currentField) === '[object Object]') {
           if (currentField.name === field) {
             if (typeof currentField.validator === 'string') {
+              // SAFETY: eval() is used here on validator strings from trusted admin-controlled
+              // dashboard configuration only (not user input). These validators are used solely
+              // for UI validation logic to enable/disable script menu items. This is an accepted
+              // tradeoff in this trusted admin context. If requirements change, consider replacing
+              // with Function constructor or a safer expression parser.
               validator = eval(currentField.validator);
             } else {
               validator = currentField.validator;
