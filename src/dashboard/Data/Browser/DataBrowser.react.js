@@ -10,6 +10,7 @@ import copy from 'copy-to-clipboard';
 import BrowserTable from 'dashboard/Data/Browser/BrowserTable.react';
 import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
+import { CurrentApp } from 'context/currentApp';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
 import Parse from 'parse';
@@ -76,6 +77,8 @@ function formatValueForCopy(value, type) {
  * and the keyboard interactions for the data table.
  */
 export default class DataBrowser extends React.Component {
+  static contextType = CurrentApp;
+
   constructor(props) {
     super(props);
 
@@ -172,6 +175,7 @@ export default class DataBrowser extends React.Component {
     this.addPanel = this.addPanel.bind(this);
     this.removePanel = this.removePanel.bind(this);
     this.handlePanelScroll = this.handlePanelScroll.bind(this);
+    this.handlePanelHeaderContextMenu = this.handlePanelHeaderContextMenu.bind(this);
     this.handleWrapperWheel = this.handleWrapperWheel.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
@@ -962,6 +966,79 @@ export default class DataBrowser extends React.Component {
     this.setState({ contextMenuX, contextMenuY, contextMenuItems });
   }
 
+  handlePanelHeaderContextMenu(event, objectId) {
+    const { scripts = [] } = this.context || {};
+    const className = this.props.className;
+    const field = 'objectId';
+
+    const menuItems = [];
+    let validator = null;
+
+    // Filter scripts valid for this class and field
+    const validScripts = (scripts || []).filter(script => {
+      if (script.classes?.includes(className)) {
+        return true;
+      }
+      for (const scriptClass of script?.classes || []) {
+        if (scriptClass?.name !== className) {
+          continue;
+        }
+        const fields = scriptClass?.fields || [];
+        if (scriptClass?.fields.includes(field) || scriptClass?.fields.includes('*')) {
+          return true;
+        }
+        for (const currentField of fields) {
+          if (Object.prototype.toString.call(currentField) === '[object Object]') {
+            if (currentField.name === field) {
+              if (typeof currentField.validator === 'string') {
+                validator = eval(currentField.validator);
+              } else {
+                validator = currentField.validator;
+              }
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    });
+
+    // Add Scripts menu if there are valid scripts
+    if (validScripts.length && this.props.onEditSelectedRow) {
+      menuItems.push({
+        text: 'Scripts',
+        items: validScripts.map(script => {
+          return {
+            text: script.title,
+            disabled: validator?.(objectId, field) === false,
+            callback: async () => {
+              try {
+                const object = Parse.Object.extend(className).createWithoutData(objectId);
+                const response = await Parse.Cloud.run(
+                  script.cloudCodeFunction,
+                  { object: object.toPointer() },
+                  { useMasterKey: true }
+                );
+                this.props.showNote(
+                  response || `Ran script "${script.title}" on "${className}" object "${objectId}".`
+                );
+                this.props.onRefresh();
+              } catch (e) {
+                this.props.showNote(e.message, true);
+                console.log(`Could not run ${script.title}: ${e}`);
+              }
+            },
+          };
+        }),
+      });
+    }
+
+    const { pageX, pageY } = event;
+    if (menuItems.length) {
+      this.setContextMenu(pageX, pageY, menuItems);
+    }
+  }
+
   freezeColumns(index) {
     this.setState({ frozenColumnIndex: index });
   }
@@ -1644,6 +1721,10 @@ export default class DataBrowser extends React.Component {
                                   }}
                                   onMouseDown={(e) => {
                                     e.preventDefault();
+                                  }}
+                                  onContextMenu={(e) => {
+                                    e.preventDefault();
+                                    this.handlePanelHeaderContextMenu(e, objectId);
                                   }}
                                 >
                                   <input
