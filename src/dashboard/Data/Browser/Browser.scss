@@ -94,6 +94,7 @@ body:global(.expanded) {
   white-space: nowrap;
   height: 30px;
   border-bottom: 1px solid #e3e3ea;
+  will-change: transform;
 
   &:nth-child(odd) {
     background: #f4f5f7;

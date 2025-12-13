@@ -15,10 +15,12 @@
   height: 0;
   background: #66637a;
   white-space: nowrap;
-  display: inline-block;
+  display: block;
   min-width: 100%;
+  width: max-content;
   // to resolve rendering issue with retina displays
   -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 .wrap {
