@@ -17,7 +17,6 @@ import ScriptConfirmationModal from 'components/ScriptConfirmationModal/ScriptCo
 import styles from 'components/BrowserCell/BrowserCell.scss';
 import baseStyles from 'stylesheets/base.scss';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
-import labelStyles from 'components/Label/Label.scss';
 
 export default class BrowserCell extends Component {
   constructor() {
