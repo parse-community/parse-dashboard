@@ -55,7 +55,7 @@
     "inquirer": "12.9.0",
     "js-beautify": "1.15.4",
     "node-fetch": "3.3.2",
-    "otpauth": "8.0.3",
+    "otpauth": "9.4.1",
     "package-json": "7.0.0",
     "parse": "7.1.2",
     "passport": "0.7.0",
