@@ -27,8 +27,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       dataBrowserReloadData: '',
       dataBrowserToggleInfoPanels: '',
       hasChanges: false,
-      message: null,
-      loading: true,
+      message: undefined,
     };
 
     this.manager = null;
@@ -56,12 +55,10 @@ export default class KeyboardShortcutsSettings extends DashboardView {
         dataBrowserReloadData: shortcuts.dataBrowserReloadData?.key || '',
         dataBrowserToggleInfoPanels: shortcuts.dataBrowserToggleInfoPanels?.key || '',
         hasChanges: false,
-        loading: false,
       });
     } catch (error) {
       console.error('Failed to load keyboard shortcuts:', error);
       this.showNote('Failed to load keyboard shortcuts', true);
-      this.setState({ loading: false });
     }
   }
 
@@ -143,40 +140,25 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     this.setState({ message: { text: message, isError } });
 
     this.noteTimeout = setTimeout(() => {
-      this.setState({ message: null });
+      this.setState({ message: undefined });
     }, 3500);
   }
 
   renderContent() {
-    if (this.state.loading) {
-      return (
-        <div>
-          <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
-          <div className={styles.settings_page}>
-            <div>Loading keyboard shortcuts...</div>
-          </div>
-        </div>
-      );
-    }
+    // Show error if server config is not enabled
+    const serverConfigError = this.manager && !this.manager.isServerConfigEnabled()
+      ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration to use keyboard shortcuts.'
+      : null;
 
-    if (this.manager && !this.manager.isServerConfigEnabled()) {
-      return (
-        <div>
-          <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
-          <div className={styles.settings_page}>
-            <Notification
-              note="Server configuration is not enabled for this app. Please add a 'config' section to your app configuration to use keyboard shortcuts."
-              isErrorNote={true}
-            />
-          </div>
-        </div>
-      );
-    }
+    // Show either server config error or user message
+    const message = this.state.message;
+    const notificationMessage = serverConfigError || (message && message.text);
+    const isError = serverConfigError ? true : (message && message.isError);
 
     return (
       <div>
         <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
-        <Notification note={this.state.message?.text} isErrorNote={this.state.message?.isError} />
+        <Notification note={notificationMessage} isErrorNote={isError} />
         <div className={styles.settings_page}>
           <Fieldset
             legend="Data Browser"
