@@ -533,27 +533,9 @@ You can conveniently create a filter definition without having to write it by ha
 
 ### Keyboard Shortcuts
 
-You can configure custom keyboard shortcuts for common Data Browser actions through the dashboard settings UI. Navigate to **App Settings > Keyboard Shortcuts** to configure your shortcuts.
+Configure custom keyboard shortcuts for dashboard actions in **App Settings > Keyboard Shortcuts**.
 
-**Available Shortcuts:**
-
-| Action | Default | Description |
-|--------|---------|-------------|
-| Reload Data | `"r"` | Refreshes the data in the Data Browser or View |
-| Toggle Panels | `"p"` | Shows/hides the info panel in Data Browser (only works for classes with info panels configured) |
-
-**Features:**
-- Configure shortcuts through the settings UI (no config file editing required)
-- Shortcuts are case-insensitive (both "r" and "R" will work)
-- Shortcuts only work when not editing a field (to avoid conflicts with typing)
-- Shortcuts are stored in browser localStorage per app
-- Reset to defaults button available in settings
-
-**To configure shortcuts:**
-1. Navigate to your app in the Parse Dashboard
-2. Go to **App Settings > Keyboard Shortcuts**
-3. Enter your preferred keys for each action
-4. Click "Save Shortcuts"
+Delete a shortcut key to disable the shortcut.
 
 ### Scripts
 
