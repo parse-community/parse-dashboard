@@ -474,7 +474,7 @@ export default class DashboardSettings extends DashboardView {
         {this.viewPreferencesManager && this.scriptManager && this.viewPreferencesManager.isServerConfigEnabled() && (
           <Fieldset legend="Settings Storage">
             <div style={{ marginBottom: '20px', color: '#666', fontSize: '14px', textAlign: 'center' }}>
-              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Views and JS Console scripts.
+              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Views, Keyboard Shortcuts and JS Console scripts.
             </div>
             <Field
               label={

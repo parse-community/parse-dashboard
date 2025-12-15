@@ -8,3 +8,11 @@
 .settings_page {
   padding: 120px 0 80px 0;
 }
+
+.form_buttons {
+  max-width: 50%;
+  margin: 20px auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}

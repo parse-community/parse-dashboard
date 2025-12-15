@@ -177,8 +177,8 @@ export default class KeyboardShortcutsSettings extends DashboardView {
         <Notification note={this.state.message?.text} isErrorNote={this.state.message?.isError} />
         <div className={styles.settings_page}>
           <Fieldset
-            legend="Data Browser Shortcuts"
-            description="Configure keyboard shortcuts for common actions in the Data Browser. Leave empty to disable a shortcut."
+            legend="Data Browser"
+            description="Leave empty to disable a shortcut."
           >
             <Field
               labelWidth={62}
@@ -219,20 +219,18 @@ export default class KeyboardShortcutsSettings extends DashboardView {
             />
           </Fieldset>
 
-          <Fieldset legend="Actions">
-            <div className={styles.form_buttons}>
-              <FormButton
-                value="Save Shortcuts"
-                disabled={!this.state.hasChanges}
-                onClick={this.handleSave.bind(this)}
-              />
-              <FormButton
-                value="Reset to Defaults"
-                onClick={this.handleReset.bind(this)}
-                color="white"
-              />
-            </div>
-          </Fieldset>
+          <div className={styles.form_buttons}>
+            <FormButton
+              value="Save Shortcuts"
+              disabled={!this.state.hasChanges}
+              onClick={this.handleSave.bind(this)}
+            />
+            <FormButton
+              value="Reset to Defaults"
+              onClick={this.handleReset.bind(this)}
+              color="white"
+            />
+          </div>
         </div>
         <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
       </div>
