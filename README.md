@@ -204,7 +204,6 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 | `config.className`         | String              | yes      | -         | -                    | -                                    | `"DashboardConfig"`               | Table name for dashboard configuration.                                                                      |
 | `scripts`                  | Array&lt;Object&gt; | yes      | `[]`      | -                    | -                                    | `[{...}]`                         | Scripts for this app. See [scripts table below](#scripts).                                                   |
 | `infoPanel`                | Array&lt;Object&gt; | yes      | -         | -                    | -                                    | `[{...}]`                         | Info panel config. See [info panel table below](#info-panel).                                                |
-| `keyboardShortcuts`        | Object              | yes      | See below | -                    | -                                    | `{"reloadData":"r"}`              | Keyboard shortcuts for data browser actions. See [keyboard shortcuts details](#keyboard-shortcuts).          |
 
 ##### Column Options
 
@@ -534,41 +533,27 @@ You can conveniently create a filter definition without having to write it by ha
 
 ### Keyboard Shortcuts
 
-You can configure custom keyboard shortcuts for common Data Browser actions using the `keyboardShortcuts` option. This allows you to quickly perform actions without using the mouse.
-
-```json
-"apps": [
-  {
-    "appId": "myAppId",
-    "keyboardShortcuts": {
-      "reloadData": "r",
-      "togglePanels": "p"
-    }
-  }
-]
-```
+You can configure custom keyboard shortcuts for common Data Browser actions through the dashboard settings UI. Navigate to **App Settings > Keyboard Shortcuts** to configure your shortcuts.
 
 **Available Shortcuts:**
 
-| Action | Config Key | Default | Description |
-|--------|------------|---------|-------------|
-| Reload Data | `reloadData` | `"r"` | Refreshes the data in the Data Browser or View |
-| Toggle Panels | `togglePanels` | `"p"` | Shows/hides the info panel in Data Browser |
+| Action | Default | Description |
+|--------|---------|-------------|
+| Reload Data | `"r"` | Refreshes the data in the Data Browser or View |
+| Toggle Panels | `"p"` | Shows/hides the info panel in Data Browser (only works for classes with info panels configured) |
 
-**Notes:**
+**Features:**
+- Configure shortcuts through the settings UI (no config file editing required)
 - Shortcuts are case-insensitive (both "r" and "R" will work)
 - Shortcuts only work when not editing a field (to avoid conflicts with typing)
-- You can use any single character as a shortcut key
-- If `keyboardShortcuts` is not specified, the default values shown above are used
+- Shortcuts are stored in browser localStorage per app
+- Reset to defaults button available in settings
 
-**Example with custom shortcuts:**
-
-```json
-"keyboardShortcuts": {
-  "reloadData": "f5",
-  "togglePanels": "i"
-}
-```
+**To configure shortcuts:**
+1. Navigate to your app in the Parse Dashboard
+2. Go to **App Settings > Keyboard Shortcuts**
+3. Enter your preferred keys for each action
+4. Click "Save Shortcuts"
 
 ### Scripts
 

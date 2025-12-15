@@ -19,6 +19,7 @@ import React from 'react';
 import { ResizableBox } from 'react-resizable';
 import ScriptConfirmationModal from '../../../components/ScriptConfirmationModal/ScriptConfirmationModal.react';
 import styles from './Databrowser.scss';
+import * as KeyboardShortcutsPreferences from 'lib/KeyboardShortcutsPreferences';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 
@@ -850,30 +851,30 @@ export default class DataBrowser extends React.Component {
         break;
       }
       default: {
-        // Handle custom keyboard shortcuts from config
-        const shortcuts = this.props.app.keyboardShortcuts;
-        if (shortcuts) {
-          const key = e.key.toLowerCase();
+        // Handle custom keyboard shortcuts from localStorage
+        const shortcuts = KeyboardShortcutsPreferences.getKeyboardShortcuts(
+          this.props.app.applicationId
+        );
+        const key = e.key.toLowerCase();
 
-          // Reload data shortcut
-          if (key === shortcuts.reloadData?.toLowerCase()) {
-            this.handleRefresh();
+        // Reload data shortcut (only if enabled)
+        if (shortcuts.reloadData && key === shortcuts.reloadData.toLowerCase()) {
+          this.handleRefresh();
+          e.preventDefault();
+          break;
+        }
+
+        // Toggle panels shortcut (only if enabled and class has info panels configured)
+        if (shortcuts.togglePanels && key === shortcuts.togglePanels.toLowerCase()) {
+          const hasAggregation =
+            this.props.classwiseCloudFunctions?.[
+              `${this.props.app.applicationId}${this.props.appName}`
+            ]?.[this.props.className];
+          if (hasAggregation) {
+            this.togglePanelVisibility();
             e.preventDefault();
-            break;
           }
-
-          // Toggle panels shortcut - only if class has info panels configured
-          if (key === shortcuts.togglePanels?.toLowerCase()) {
-            const hasAggregation =
-              this.props.classwiseCloudFunctions?.[
-                `${this.props.app.applicationId}${this.props.appName}`
-              ]?.[this.props.className];
-            if (hasAggregation) {
-              this.togglePanelVisibility();
-              e.preventDefault();
-            }
-            break;
-          }
+          break;
         }
         break;
       }

@@ -55,6 +55,7 @@ import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
 import Security from './Settings/Security/Security.react';
+import KeyboardShortcutsSettings from './Settings/KeyboardShortcutsSettings.react';
 import semver from 'semver';
 import packageInfo from '../../package.json';
 
@@ -235,6 +236,7 @@ export default class Dashboard extends React.Component {
       <Route element={<SettingsData />}>
         <Route path="dashboard" element={<DashboardSettings />} />
         <Route path="security" element={<Security />} />
+        <Route path="keyboard-shortcuts" element={<KeyboardShortcutsSettings />} />
         <Route path="general" element={<GeneralSettings />} />
         <Route path="keys" element={<SecuritySettings />} />
         <Route path="users" element={<UsersSettings />} />

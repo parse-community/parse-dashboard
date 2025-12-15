@@ -212,6 +212,10 @@ export default class DashboardView extends React.Component {
         name: 'Dashboard',
         link: '/settings/dashboard',
       },
+      {
+        name: 'Keyboard Shortcuts',
+        link: '/settings/keyboard-shortcuts',
+      },
     ];
 
     if (this.context.enableSecurityChecks) {
