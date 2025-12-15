@@ -15,7 +15,7 @@ import TextInput from 'components/TextInput/TextInput.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import styles from 'dashboard/Settings/Settings.scss';
-import * as KeyboardShortcutsPreferences from 'lib/KeyboardShortcutsPreferences';
+import KeyboardShortcutsManager, { DEFAULT_SHORTCUTS, isValidShortcut, createShortcut } from 'lib/KeyboardShortcutsPreferences';
 
 export default class KeyboardShortcutsSettings extends DashboardView {
   constructor() {
@@ -24,27 +24,40 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     this.subsection = 'Keyboard Shortcuts';
 
     this.state = {
-      reloadData: '',
-      togglePanels: '',
+      dataBrowserReloadData: '',
+      dataBrowserToggleInfoPanels: '',
       hasChanges: false,
       message: null,
+      loading: true,
     };
+
+    this.manager = null;
   }
 
   componentDidMount() {
-    this.loadShortcuts();
+    if (this.context) {
+      this.manager = new KeyboardShortcutsManager(this.context);
+      this.loadShortcuts();
+    }
   }
 
-  loadShortcuts() {
-    if (this.context) {
-      const shortcuts = KeyboardShortcutsPreferences.getKeyboardShortcuts(
-        this.context.applicationId
-      );
+  async loadShortcuts() {
+    if (!this.context || !this.manager) {
+      return;
+    }
+
+    try {
+      const shortcuts = await this.manager.getKeyboardShortcuts(this.context.applicationId);
       this.setState({
-        reloadData: shortcuts.reloadData || '',
-        togglePanels: shortcuts.togglePanels || '',
+        dataBrowserReloadData: shortcuts.dataBrowserReloadData?.key || '',
+        dataBrowserToggleInfoPanels: shortcuts.dataBrowserToggleInfoPanels?.key || '',
         hasChanges: false,
+        loading: false,
       });
+    } catch (error) {
+      console.error('Failed to load keyboard shortcuts:', error);
+      this.showNote('Failed to load keyboard shortcuts', true);
+      this.setState({ loading: false });
     }
   }
 
@@ -57,51 +70,58 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     });
   }
 
-  handleSave() {
-    if (!this.context) {
+  async handleSave() {
+    if (!this.context || !this.manager) {
       return;
     }
 
+    // Create shortcut objects from the key strings
     const shortcuts = {
-      reloadData: this.state.reloadData || null,
-      togglePanels: this.state.togglePanels || null,
+      dataBrowserReloadData: this.state.dataBrowserReloadData ? createShortcut(this.state.dataBrowserReloadData) : null,
+      dataBrowserToggleInfoPanels: this.state.dataBrowserToggleInfoPanels ? createShortcut(this.state.dataBrowserToggleInfoPanels) : null,
     };
 
     // Validate shortcuts (only if they are set)
-    if (shortcuts.reloadData && !KeyboardShortcutsPreferences.isValidKey(shortcuts.reloadData)) {
+    if (shortcuts.dataBrowserReloadData && !isValidShortcut(shortcuts.dataBrowserReloadData)) {
       this.showNote('Invalid key for "Reload Data". Please enter a valid key.', true);
       return;
     }
 
-    if (shortcuts.togglePanels && !KeyboardShortcutsPreferences.isValidKey(shortcuts.togglePanels)) {
+    if (shortcuts.dataBrowserToggleInfoPanels && !isValidShortcut(shortcuts.dataBrowserToggleInfoPanels)) {
       this.showNote('Invalid key for "Toggle Panels". Please enter a valid key.', true);
       return;
     }
 
     // Check for duplicates (only if both are set)
-    if (shortcuts.reloadData && shortcuts.togglePanels &&
-        shortcuts.reloadData.toLowerCase() === shortcuts.togglePanels.toLowerCase()) {
+    if (shortcuts.dataBrowserReloadData && shortcuts.dataBrowserToggleInfoPanels &&
+        shortcuts.dataBrowserReloadData.key.toLowerCase() === shortcuts.dataBrowserToggleInfoPanels.key.toLowerCase()) {
       this.showNote('Keyboard shortcuts must be unique. Please use different keys.', true);
       return;
     }
 
-    KeyboardShortcutsPreferences.setKeyboardShortcuts(
-      this.context.applicationId,
-      shortcuts
-    );
-
-    this.setState({ hasChanges: false });
-    this.showNote('Keyboard shortcuts saved successfully!', false);
+    try {
+      await this.manager.saveKeyboardShortcuts(this.context.applicationId, shortcuts);
+      this.setState({ hasChanges: false });
+      this.showNote('Keyboard shortcuts saved successfully!', false);
+    } catch (error) {
+      console.error('Failed to save keyboard shortcuts:', error);
+      this.showNote('Failed to save keyboard shortcuts. Please try again.', true);
+    }
   }
 
-  handleReset() {
-    if (!this.context) {
+  async handleReset() {
+    if (!this.context || !this.manager) {
       return;
     }
 
-    KeyboardShortcutsPreferences.resetKeyboardShortcuts(this.context.applicationId);
-    this.loadShortcuts();
-    this.showNote('Keyboard shortcuts reset to defaults', false);
+    try {
+      await this.manager.resetKeyboardShortcuts(this.context.applicationId);
+      await this.loadShortcuts();
+      this.showNote('Keyboard shortcuts reset to defaults', false);
+    } catch (error) {
+      console.error('Failed to reset keyboard shortcuts:', error);
+      this.showNote('Failed to reset keyboard shortcuts. Please try again.', true);
+    }
   }
 
   showNote(message, isError = false) {
@@ -119,7 +139,30 @@ export default class KeyboardShortcutsSettings extends DashboardView {
   }
 
   renderContent() {
-    const shortcuts = KeyboardShortcutsPreferences.DEFAULT_SHORTCUTS;
+    if (this.state.loading) {
+      return (
+        <div>
+          <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
+          <div className={styles.settings_page}>
+            <div>Loading keyboard shortcuts...</div>
+          </div>
+        </div>
+      );
+    }
+
+    if (this.manager && !this.manager.isServerConfigEnabled()) {
+      return (
+        <div>
+          <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
+          <div className={styles.settings_page}>
+            <Notification
+              note="Server configuration is not enabled for this app. Please add a 'config' section to your app configuration to use keyboard shortcuts."
+              isErrorNote={true}
+            />
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div>
@@ -134,14 +177,14 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               labelWidth={62}
               label={<Label
                 text="Reload Data"
-                description={`Reloads the data browser table data. (Default: ${shortcuts.reloadData})`}
+                description={`Reloads the data browser table data. (Default: ${DEFAULT_SHORTCUTS.dataBrowserReloadData.key})`}
               />
               }
               input={
                 <TextInput
-                  placeholder={shortcuts.reloadData}
-                  value={this.state.reloadData}
-                  onChange={this.handleFieldChange.bind(this, 'reloadData')}
+                  placeholder={DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
+                  value={this.state.dataBrowserReloadData}
+                  onChange={this.handleFieldChange.bind(this, 'dataBrowserReloadData')}
                   maxLength={1}
                 />
               }
@@ -151,14 +194,14 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               label={
                 <Label
                   text="Toggle Info Panels"
-                  description={`Shows/hides the info panels. (Default: ${shortcuts.togglePanels})`}
+                  description={`Shows/hides the info panels. (Default: ${DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key})`}
                 />
               }
               input={
                 <TextInput
-                  placeholder={shortcuts.togglePanels}
-                  value={this.state.togglePanels}
-                  onChange={this.handleFieldChange.bind(this, 'togglePanels')}
+                  placeholder={DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
+                  value={this.state.dataBrowserToggleInfoPanels}
+                  onChange={this.handleFieldChange.bind(this, 'dataBrowserToggleInfoPanels')}
                   maxLength={1}
                 />
               }
