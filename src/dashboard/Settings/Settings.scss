@@ -15,4 +15,10 @@
   display: flex;
   justify-content: center;
   gap: 5px;
+
+  & > div {
+    background: transparent !important;
+    padding: 0 !important;
+    height: auto !important;
+  }
 }
