@@ -51,6 +51,7 @@ export default class ParseApp {
     enableSecurityChecks,
     cloudConfigHistoryLimit,
     config,
+    keyboardShortcuts,
   }) {
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
@@ -81,6 +82,10 @@ export default class ParseApp {
     this.enableSecurityChecks = !!enableSecurityChecks;
     this.cloudConfigHistoryLimit = cloudConfigHistoryLimit;
     this.config = config;
+    this.keyboardShortcuts = keyboardShortcuts || {
+      reloadData: 'r',
+      togglePanels: 'p',
+    };
 
     if (!supportedPushLocales) {
       console.warn(

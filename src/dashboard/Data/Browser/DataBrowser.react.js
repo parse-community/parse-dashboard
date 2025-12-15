@@ -849,6 +849,34 @@ export default class DataBrowser extends React.Component {
         }
         break;
       }
+      default: {
+        // Handle custom keyboard shortcuts from config
+        const shortcuts = this.props.app.keyboardShortcuts;
+        if (shortcuts) {
+          const key = e.key.toLowerCase();
+
+          // Reload data shortcut
+          if (key === shortcuts.reloadData?.toLowerCase()) {
+            this.handleRefresh();
+            e.preventDefault();
+            break;
+          }
+
+          // Toggle panels shortcut - only if class has info panels configured
+          if (key === shortcuts.togglePanels?.toLowerCase()) {
+            const hasAggregation =
+              this.props.classwiseCloudFunctions?.[
+                `${this.props.app.applicationId}${this.props.appName}`
+              ]?.[this.props.className];
+            if (hasAggregation) {
+              this.togglePanelVisibility();
+              e.preventDefault();
+            }
+            break;
+          }
+        }
+        break;
+      }
     }
   }
 

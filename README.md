@@ -50,6 +50,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Prevent columns sorting](#prevent-columns-sorting)
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
     - [Persistent Filters](#persistent-filters)
+    - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [Scripts](#scripts)
     - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
@@ -203,6 +204,7 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 | `config.className`         | String              | yes      | -         | -                    | -                                    | `"DashboardConfig"`               | Table name for dashboard configuration.                                                                      |
 | `scripts`                  | Array&lt;Object&gt; | yes      | `[]`      | -                    | -                                    | `[{...}]`                         | Scripts for this app. See [scripts table below](#scripts).                                                   |
 | `infoPanel`                | Array&lt;Object&gt; | yes      | -         | -                    | -                                    | `[{...}]`                         | Info panel config. See [info panel table below](#info-panel).                                                |
+| `keyboardShortcuts`        | Object              | yes      | See below | -                    | -                                    | `{"reloadData":"r"}`              | Keyboard shortcuts for data browser actions. See [keyboard shortcuts details](#keyboard-shortcuts).          |
 
 ##### Column Options
 
@@ -529,6 +531,44 @@ For example:
 ```
 
 You can conveniently create a filter definition without having to write it by hand by first saving a filter in the data browser, then exporting the filter definition under *App Settings > Export Class Preferences*.
+
+### Keyboard Shortcuts
+
+You can configure custom keyboard shortcuts for common Data Browser actions using the `keyboardShortcuts` option. This allows you to quickly perform actions without using the mouse.
+
+```json
+"apps": [
+  {
+    "appId": "myAppId",
+    "keyboardShortcuts": {
+      "reloadData": "r",
+      "togglePanels": "p"
+    }
+  }
+]
+```
+
+**Available Shortcuts:**
+
+| Action | Config Key | Default | Description |
+|--------|------------|---------|-------------|
+| Reload Data | `reloadData` | `"r"` | Refreshes the data in the Data Browser or View |
+| Toggle Panels | `togglePanels` | `"p"` | Shows/hides the info panel in Data Browser |
+
+**Notes:**
+- Shortcuts are case-insensitive (both "r" and "R" will work)
+- Shortcuts only work when not editing a field (to avoid conflicts with typing)
+- You can use any single character as a shortcut key
+- If `keyboardShortcuts` is not specified, the default values shown above are used
+
+**Example with custom shortcuts:**
+
+```json
+"keyboardShortcuts": {
+  "reloadData": "f5",
+  "togglePanels": "i"
+}
+```
 
 ### Scripts
 
