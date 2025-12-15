@@ -32,8 +32,6 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     };
 
     this.manager = null;
-    this.reloadDataInputRef = React.createRef();
-    this.togglePanelsInputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -189,7 +187,6 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  ref={this.reloadDataInputRef}
                   placeholder={DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
                   value={this.state.dataBrowserReloadData}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserReloadData')}
@@ -208,7 +205,6 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  ref={this.togglePanelsInputRef}
                   placeholder={DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
                   value={this.state.dataBrowserToggleInfoPanels}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserToggleInfoPanels')}
@@ -232,7 +228,6 @@ export default class KeyboardShortcutsSettings extends DashboardView {
             />
           </div>
         </div>
-        <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
       </div>
     );
   }

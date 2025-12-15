@@ -47,7 +47,12 @@ export default class KeyboardShortcutsManager {
       for (const [key, value] of Object.entries(configs)) {
         // Extract the shortcut name from keys like "settings.keyboard.binding.dataBrowserReloadData"
         const shortcutName = key.replace('settings.keyboard.binding.', '');
-        shortcuts[shortcutName] = value;
+        // Validate the shortcut structure before storing
+        if (isValidShortcut(value)) {
+          shortcuts[shortcutName] = value;
+        } else {
+          console.warn(`Invalid shortcut for ${shortcutName}, using default`);
+        }
       }
 
       // Merge with defaults, but preserve null values (which mean disabled)
@@ -73,6 +78,13 @@ export default class KeyboardShortcutsManager {
   async saveKeyboardShortcuts(appId, shortcuts) {
     if (!this.serverStorage.isServerConfigEnabled()) {
       throw new Error('Server configuration is not enabled for this app');
+    }
+
+    // Validate all shortcuts before saving
+    for (const [shortcutName, value] of Object.entries(shortcuts)) {
+      if (!isValidShortcut(value)) {
+        throw new Error(`Invalid shortcut for ${shortcutName}`);
+      }
     }
 
     try {
@@ -110,6 +122,8 @@ export default class KeyboardShortcutsManager {
 
 /**
  * Validates that a shortcut object has the correct structure
+ * Note: Currently only single-character keys are supported (a-z, 0-9).
+ * Special keys like "Enter", "Escape", "Tab" are not supported.
  * @param {Object} shortcut - The shortcut object to validate
  * @returns {boolean} True if valid
  */
@@ -128,6 +142,7 @@ export function isValidShortcut(shortcut) {
   }
 
   // Modifier keys are optional booleans
+  // Note: Meta/Cmd key support could be added in the future
   if (shortcut.ctrl !== undefined && typeof shortcut.ctrl !== 'boolean') {
     return false;
   }
@@ -155,6 +170,8 @@ export function createShortcut(key) {
 
 /**
  * Checks if a keyboard event matches a shortcut
+ * Note: Consumers should check event.target to prevent triggering
+ * shortcuts when typing in input fields (INPUT, TEXTAREA, contentEditable).
  * @param {KeyboardEvent} event - The keyboard event
  * @param {Object} shortcut - The shortcut object
  * @returns {boolean} True if matches
