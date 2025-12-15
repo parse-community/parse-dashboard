@@ -41,6 +41,10 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.noteTimeout);
+  }
+
   async loadShortcuts() {
     if (!this.context || !this.manager) {
       return;
