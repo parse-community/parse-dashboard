@@ -32,6 +32,8 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     };
 
     this.manager = null;
+    this.reloadDataInputRef = React.createRef();
+    this.togglePanelsInputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -62,12 +64,17 @@ export default class KeyboardShortcutsSettings extends DashboardView {
   }
 
   handleFieldChange(field, value) {
-    // Restrict to single character
-    const restrictedValue = value.slice(0, 1);
     this.setState({
-      [field]: restrictedValue,
+      [field]: value,
       hasChanges: true,
     });
+  }
+
+  handleInputFocus(event) {
+    // Auto-select the text when focusing on the input
+    if (event.target.value) {
+      event.target.select();
+    }
   }
 
   async handleSave() {
@@ -171,20 +178,22 @@ export default class KeyboardShortcutsSettings extends DashboardView {
         <div className={styles.settings_page}>
           <Fieldset
             legend="Data Browser Shortcuts"
-            description="Configure keyboard shortcuts for common actions in the Data Browser. Shortcuts are case-insensitive and only work when not editing a field. Leave empty to disable a shortcut."
+            description="Configure keyboard shortcuts for common actions in the Data Browser. Leave empty to disable a shortcut."
           >
             <Field
               labelWidth={62}
               label={<Label
                 text="Reload Data"
-                description={`Reloads the data browser table data. (Default: ${DEFAULT_SHORTCUTS.dataBrowserReloadData.key})`}
+                description={'Reloads the data browser table data.'}
               />
               }
               input={
                 <TextInput
+                  ref={this.reloadDataInputRef}
                   placeholder={DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
                   value={this.state.dataBrowserReloadData}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserReloadData')}
+                  onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
                 />
               }
@@ -194,14 +203,16 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               label={
                 <Label
                   text="Toggle Info Panels"
-                  description={`Shows/hides the info panels. (Default: ${DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key})`}
+                  description={'Shows/hides the info panels.'}
                 />
               }
               input={
                 <TextInput
+                  ref={this.togglePanelsInputRef}
                   placeholder={DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
                   value={this.state.dataBrowserToggleInfoPanels}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserToggleInfoPanels')}
+                  onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
                 />
               }

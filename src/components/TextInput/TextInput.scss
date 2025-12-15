@@ -21,6 +21,11 @@
   vertical-align: top;
   resize: both;
 
+  @include placeholder {
+    color: #999;
+    opacity: 1;
+  }
+
   &:disabled {
     color: $mainTextColor;
   }

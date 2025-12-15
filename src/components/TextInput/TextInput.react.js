@@ -69,6 +69,8 @@ class TextInput extends React.Component {
         value={this.props.value}
         onChange={this.changeValue.bind(this)}
         onBlur={this.updateValue.bind(this)}
+        onFocus={this.props.onFocus}
+        maxLength={this.props.maxLength}
       />
     );
   }
@@ -87,11 +89,13 @@ TextInput.propTypes = {
     'A function fired when the input is changed. It receives the new value as its only parameter.'
   ),
   onBlur: PropTypes.func.describe('A function fired when the input is blurred.'),
+  onFocus: PropTypes.func.describe('A function fired when the input is focused.'),
   placeholder: PropTypes.string.describe('A placeholder string, for when the input is empty'),
   value: PropTypes.string.describe('The current value of the controlled input'),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).describe(
     'The height of the field. Can be a string containing any CSS unit, or a number of pixels. Default is 80px.'
   ),
+  maxLength: PropTypes.number.describe('The maximum length of the input.'),
 };
 
 export default withForwardedRef(TextInput);

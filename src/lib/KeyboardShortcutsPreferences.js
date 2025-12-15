@@ -50,8 +50,14 @@ export default class KeyboardShortcutsManager {
         shortcuts[shortcutName] = value;
       }
 
-      // Merge with defaults to ensure all keys exist
-      return { ...DEFAULT_SHORTCUTS, ...shortcuts };
+      // Merge with defaults, but preserve null values (which mean disabled)
+      const result = {};
+      for (const shortcutName of Object.keys(DEFAULT_SHORTCUTS)) {
+        result[shortcutName] = shortcuts.hasOwnProperty(shortcutName)
+          ? shortcuts[shortcutName]
+          : DEFAULT_SHORTCUTS[shortcutName];
+      }
+      return result;
     } catch (error) {
       console.warn('Failed to get keyboard shortcuts from server:', error);
       return DEFAULT_SHORTCUTS;
