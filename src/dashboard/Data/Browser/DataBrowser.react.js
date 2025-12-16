@@ -1074,9 +1074,9 @@ export default class DataBrowser extends React.Component {
   }
 
   getRelatedObjectsMenuItemForPanel(objectId, pointerClassName) {
-    const { schema, onPointerClick } = this.props;
+    const { schema, onPointerCmdClick } = this.props;
 
-    if (!pointerClassName || !schema || !onPointerClick) {
+    if (!pointerClassName || !schema || !onPointerCmdClick) {
       return undefined;
     }
 
@@ -1099,7 +1099,7 @@ export default class DataBrowser extends React.Component {
             callback: () => {
               const relatedObject = new Parse.Object(pointerClassName);
               relatedObject.id = objectId;
-              onPointerClick({
+              onPointerCmdClick({
                 className,
                 id: relatedObject.toPointer(),
                 field,
