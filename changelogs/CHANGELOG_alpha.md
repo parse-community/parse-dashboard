@@ -1,3 +1,10 @@
+# [8.2.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.9...8.2.0-alpha.10) (2025-12-16)
+
+
+### Bug Fixes
+
+* Right-click on info panel header selects the object ([#3082](https://github.com/parse-community/parse-dashboard/issues/3082)) ([ae87114](https://github.com/parse-community/parse-dashboard/commit/ae87114131518b8f921946d24bc083930ed98fab))
+
 # [8.2.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.8...8.2.0-alpha.9) (2025-12-16)
 
 
