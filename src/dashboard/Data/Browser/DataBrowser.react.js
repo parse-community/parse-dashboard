@@ -1097,9 +1097,11 @@ export default class DataBrowser extends React.Component {
             text: `${className}`,
             subtext: `${field}`,
             callback: () => {
+              const relatedObject = new Parse.Object(pointerClassName);
+              relatedObject.id = objectId;
               onPointerCmdClick({
                 className,
-                id: objectId,
+                id: relatedObject.toPointer(),
                 field,
               });
             },
