@@ -957,8 +957,11 @@ export default class DataBrowser extends React.Component {
           const objectsToFetch = [];
 
           if (prevState.panelCount > 1 && selectedObjectId) {
-            // If the selected object is not in the displayed list, update displayed objects
-            if (!newDisplayedObjectIds.includes(selectedObjectId)) {
+            // When batch-navigate is enabled, always rebuild the batch starting from the selected row
+            // to ensure prefetched data is properly utilized
+            const shouldRebuildBatch = !newDisplayedObjectIds.includes(selectedObjectId) || prevState.batchNavigate;
+
+            if (shouldRebuildBatch) {
               const currentIndex = this.props.data?.findIndex(obj => obj.id === selectedObjectId);
               if (currentIndex !== -1) {
                 const { prefetchCache } = prevState;
