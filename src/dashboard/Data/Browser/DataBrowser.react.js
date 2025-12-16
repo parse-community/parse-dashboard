@@ -1828,6 +1828,10 @@ export default class DataBrowser extends React.Component {
                                 <div
                                   className={styles.panelHeader}
                                   onMouseDown={(e) => {
+                                    // Ignore right-click (button 2) and middle-click (button 1)
+                                    if (e.button !== 0) {
+                                      return;
+                                    }
                                     e.preventDefault();
                                     this.onMouseDownPanelCheckBox(objectId, isRowSelected);
                                   }}
