@@ -1031,6 +1031,12 @@ export default class DataBrowser extends React.Component {
 
     const menuItems = [];
 
+    // Add "Get related records from..." menu item
+    const relatedRecordsMenuItem = this.getRelatedObjectsMenuItemForPanel(objectId, className);
+    if (relatedRecordsMenuItem) {
+      menuItems.push(relatedRecordsMenuItem);
+    }
+
     // Add Scripts menu if there are valid scripts
     if (validScripts.length && this.props.onEditSelectedRow) {
       menuItems.push({
@@ -1065,6 +1071,45 @@ export default class DataBrowser extends React.Component {
     if (menuItems.length) {
       this.setContextMenu(pageX, pageY, menuItems);
     }
+  }
+
+  getRelatedObjectsMenuItemForPanel(objectId, pointerClassName) {
+    const { schema, onPointerClick } = this.props;
+
+    if (!pointerClassName || !schema || !onPointerClick) {
+      return undefined;
+    }
+
+    const relatedRecordsMenuItem = {
+      text: 'Get related records from...',
+      items: [],
+    };
+
+    schema.data
+      .get('classes')
+      .sortBy((v, k) => k)
+      .forEach((cl, className) => {
+        cl.forEach((column, field) => {
+          if (column.targetClass !== pointerClassName) {
+            return;
+          }
+          relatedRecordsMenuItem.items.push({
+            text: `${className}`,
+            subtext: `${field}`,
+            callback: () => {
+              const relatedObject = new Parse.Object(pointerClassName);
+              relatedObject.id = objectId;
+              onPointerClick({
+                className,
+                id: relatedObject.toPointer(),
+                field,
+              });
+            },
+          });
+        });
+      });
+
+    return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
   }
 
   freezeColumns(index) {
