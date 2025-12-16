@@ -153,6 +153,8 @@ export default class DataBrowser extends React.Component {
       contextMenuX: null,
       contextMenuY: null,
       contextMenuItems: null,
+      panelCheckboxDragging: false,
+      draggedPanelSelection: false,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -186,6 +188,9 @@ export default class DataBrowser extends React.Component {
     this.handlePanelScroll = this.handlePanelScroll.bind(this);
     this.handlePanelHeaderContextMenu = this.handlePanelHeaderContextMenu.bind(this);
     this.handleWrapperWheel = this.handleWrapperWheel.bind(this);
+    this.onMouseDownPanelCheckBox = this.onMouseDownPanelCheckBox.bind(this);
+    this.onMouseUpPanelCheckBox = this.onMouseUpPanelCheckBox.bind(this);
+    this.onMouseEnterPanelCheckBox = this.onMouseEnterPanelCheckBox.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
@@ -265,6 +270,7 @@ export default class DataBrowser extends React.Component {
   async componentDidMount() {
     document.body.addEventListener('keydown', this.handleKey);
     window.addEventListener('resize', this.updateMaxWidth);
+    window.addEventListener('mouseup', this.onMouseUpPanelCheckBox);
 
     // Load keyboard shortcuts from server
     try {
@@ -279,6 +285,7 @@ export default class DataBrowser extends React.Component {
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.handleKey);
     window.removeEventListener('resize', this.updateMaxWidth);
+    window.removeEventListener('mouseup', this.onMouseUpPanelCheckBox);
     if (this.multiPanelWrapperElement) {
       this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
     }
@@ -1136,6 +1143,30 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  onMouseDownPanelCheckBox(objectId, checked) {
+    const newSelectionState = !checked;
+    this.props.selectRow(objectId, newSelectionState);
+    this.setState({
+      panelCheckboxDragging: true,
+      draggedPanelSelection: newSelectionState,
+    });
+  }
+
+  onMouseUpPanelCheckBox() {
+    if (this.state.panelCheckboxDragging) {
+      this.setState({
+        panelCheckboxDragging: false,
+        draggedPanelSelection: false,
+      });
+    }
+  }
+
+  onMouseEnterPanelCheckBox(objectId) {
+    if (this.state.panelCheckboxDragging) {
+      this.props.selectRow(objectId, this.state.draggedPanelSelection);
+    }
+  }
+
   handleWrapperWheel(event) {
     if (!this.state.syncPanelScroll || this.state.panelCount <= 1) {
       return;
@@ -1734,12 +1765,12 @@ export default class DataBrowser extends React.Component {
                               {this.state.showPanelCheckbox && (
                                 <div
                                   className={styles.panelHeader}
-                                  onClick={() => {
-                                    this.props.selectRow(objectId, !isRowSelected);
-                                  }}
                                   onMouseDown={(e) => {
                                     e.preventDefault();
+                                    this.onMouseDownPanelCheckBox(objectId, isRowSelected);
                                   }}
+                                  onMouseUp={this.onMouseUpPanelCheckBox}
+                                  onMouseEnter={() => this.onMouseEnterPanelCheckBox(objectId)}
                                   onContextMenu={(e) => {
                                     e.preventDefault();
                                     this.handlePanelHeaderContextMenu(e, objectId);
