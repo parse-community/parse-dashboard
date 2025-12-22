@@ -18,6 +18,7 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import * as ClassPreferences from 'lib/ClassPreferences';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
+import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import ScriptManager from 'lib/ScriptManager';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
@@ -29,6 +30,7 @@ export default class DashboardSettings extends DashboardView {
     this.section = 'App Settings';
     this.subsection = 'Dashboard Configuration';
     this.viewPreferencesManager = null;
+    this.filterPreferencesManager = null;
     this.scriptManager = null;
 
     this.state = {
@@ -65,6 +67,7 @@ export default class DashboardSettings extends DashboardView {
   initializeManagers() {
     if (this.context) {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
+      this.filterPreferencesManager = new FilterPreferencesManager(this.context);
       this.scriptManager = new ScriptManager(this.context);
       this.loadStoragePreference();
     }
@@ -85,11 +88,21 @@ export default class DashboardSettings extends DashboardView {
       // Show a notification about the change
       this.showNote(`Storage preference changed to ${preference === 'server' ? 'server' : 'browser'}`);
     }
+
+    // Filters use the same storage preference as views
+    if (this.filterPreferencesManager) {
+      this.filterPreferencesManager.setStoragePreference(this.context.applicationId, preference);
+    }
   }
 
   async migrateToServer() {
     if (!this.viewPreferencesManager) {
       this.showNote('ViewPreferencesManager not initialized');
+      return;
+    }
+
+    if (!this.filterPreferencesManager) {
+      this.showNote('FilterPreferencesManager not initialized');
       return;
     }
 
@@ -101,16 +114,30 @@ export default class DashboardSettings extends DashboardView {
     this.setState({ migrationLoading: true });
 
     try {
-      const result = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
-      if (result.success) {
-        if (result.viewCount > 0) {
-          this.showNote(`Successfully migrated ${result.viewCount} view(s) to server storage.`);
+      // Migrate views
+      const viewsResult = await this.viewPreferencesManager.migrateToServer(this.context.applicationId);
+
+      // Migrate filters
+      const filtersResult = await this.filterPreferencesManager.migrateToServer(this.context.applicationId);
+
+      const totalItems = viewsResult.viewCount + filtersResult.filterCount;
+
+      if (viewsResult.success && filtersResult.success) {
+        if (totalItems > 0) {
+          const messages = [];
+          if (viewsResult.viewCount > 0) {
+            messages.push(`${viewsResult.viewCount} view(s)`);
+          }
+          if (filtersResult.filterCount > 0) {
+            messages.push(`${filtersResult.filterCount} filter(s)`);
+          }
+          this.showNote(`Successfully migrated ${messages.join(' and ')} to server storage.`);
         } else {
-          this.showNote('No views found to migrate.');
+          this.showNote('No views or filters found to migrate.');
         }
       }
     } catch (error) {
-      this.showNote(`Failed to migrate views: ${error.message}`);
+      this.showNote(`Failed to migrate settings: ${error.message}`);
     } finally {
       this.setState({ migrationLoading: false });
     }
@@ -126,15 +153,21 @@ export default class DashboardSettings extends DashboardView {
       return;
     }
 
+    if (!this.filterPreferencesManager) {
+      this.showNote('FilterPreferencesManager not initialized');
+      return;
+    }
+
     if (!this.scriptManager) {
       this.showNote('ScriptManager not initialized');
       return;
     }
 
     const viewsSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    const filtersSuccess = this.filterPreferencesManager.deleteFromBrowser(this.context.applicationId);
     const scriptsSuccess = this.scriptManager.deleteFromBrowser(this.context.applicationId);
 
-    if (viewsSuccess && scriptsSuccess) {
+    if (viewsSuccess && filtersSuccess && scriptsSuccess) {
       this.showNote('Successfully deleted dashboard settings from browser storage.');
     } else {
       this.showNote('Failed to delete all dashboard settings from browser storage.');
@@ -474,7 +507,7 @@ export default class DashboardSettings extends DashboardView {
         {this.viewPreferencesManager && this.scriptManager && this.viewPreferencesManager.isServerConfigEnabled() && (
           <Fieldset legend="Settings Storage">
             <div style={{ marginBottom: '20px', color: '#666', fontSize: '14px', textAlign: 'center' }}>
-              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Views, Keyboard Shortcuts and JS Console scripts.
+              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Views, DataBrowser Filters, Keyboard Shortcuts and JS Console scripts.
             </div>
             <Field
               label={

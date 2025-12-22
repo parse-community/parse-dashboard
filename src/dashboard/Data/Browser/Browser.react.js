@@ -38,6 +38,7 @@ import { ActionTypes } from 'lib/stores/SchemaStore';
 import stringCompare from 'lib/stringCompare';
 import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
+import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import Parse from 'parse';
 import React from 'react';
 import { Helmet } from 'react-helmet';
@@ -129,6 +130,7 @@ class Browser extends DashboardView {
     this.subsection = 'Browser';
     this.noteTimeout = null;
     this.currentQuery = null;
+    this.filterPreferencesManager = null;
     const limit = window.localStorage?.getItem('browserLimit');
 
     this.state = {
@@ -298,6 +300,11 @@ class Browser extends DashboardView {
       this.setState({ configData: data });
       this.classAndCloudFuntionMap(this.state.configData);
     });
+
+    // Initialize FilterPreferencesManager
+    if (this.context) {
+      this.filterPreferencesManager = new FilterPreferencesManager(this.context);
+    }
   }
 
   componentWillUnmount() {
@@ -1294,7 +1301,7 @@ class Browser extends DashboardView {
     });
   }
 
-  saveFilters(filters, name, relativeDate, filterId = null) {
+  async saveFilters(filters, name, relativeDate, filterId = null) {
     const jsonFilters = filters.toJSON();
     if (relativeDate && jsonFilters?.length) {
       for (let i = 0; i < jsonFilters.length; i++) {
@@ -1388,11 +1395,28 @@ class Browser extends DashboardView {
       }
     }
 
-    ClassPreferences.updatePreferences(
-      preferences,
-      this.context.applicationId,
-      this.props.params.className
-    );
+    // Use FilterPreferencesManager if available, otherwise fallback to local storage
+    if (this.filterPreferencesManager) {
+      const filterToSave = {
+        id: newFilterId,
+        name,
+        className: this.props.params.className,
+        filter: _filters,
+      };
+      await this.filterPreferencesManager.saveFilter(
+        this.context.applicationId,
+        this.props.params.className,
+        filterToSave,
+        preferences.filters
+      );
+    } else {
+      // Fallback to local storage
+      ClassPreferences.updatePreferences(
+        preferences,
+        this.context.applicationId,
+        this.props.params.className
+      );
+    }
 
     super.forceUpdate();
 
@@ -1400,7 +1424,7 @@ class Browser extends DashboardView {
     return newFilterId;
   }
 
-  deleteFilter(filterIdOrObject) {
+  async deleteFilter(filterIdOrObject) {
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
       this.props.params.className
@@ -1425,11 +1449,22 @@ class Browser extends DashboardView {
         }
       }
 
-      ClassPreferences.updatePreferences(
-        { ...preferences, filters: updatedFilters },
-        this.context.applicationId,
-        this.props.params.className
-      );
+      // Use FilterPreferencesManager if available, otherwise fallback to local storage
+      if (this.filterPreferencesManager) {
+        await this.filterPreferencesManager.deleteFilter(
+          this.context.applicationId,
+          this.props.params.className,
+          filterIdOrObject,
+          updatedFilters
+        );
+      } else {
+        // Fallback to local storage
+        ClassPreferences.updatePreferences(
+          { ...preferences, filters: updatedFilters },
+          this.context.applicationId,
+          this.props.params.className
+        );
+      }
     }
 
     super.forceUpdate();

@@ -23,7 +23,26 @@ export function getPreferences(appId, className) {
     return null;
   }
   try {
-    return JSON.parse(entry);
+    const preferences = JSON.parse(entry);
+
+    // Ensure all filters have UUIDs
+    if (preferences.filters && Array.isArray(preferences.filters)) {
+      let needsUpdate = false;
+      preferences.filters = preferences.filters.map(filter => {
+        if (!filter.id) {
+          needsUpdate = true;
+          return { ...filter, id: crypto.randomUUID() };
+        }
+        return filter;
+      });
+
+      // If we added UUIDs to any filters, save the updated preferences
+      if (needsUpdate) {
+        updatePreferences(preferences, appId, className);
+      }
+    }
+
+    return preferences;
   } catch {
     return null;
   }
