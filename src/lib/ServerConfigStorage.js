@@ -97,9 +97,10 @@ export default class ServerConfigStorage {
    * @param {string} keyPrefix - The key prefix to filter by
    * @param {string} appId - The app ID
    * @param {string | null} userId - The user ID (optional)
+   * @param {Object | null} objectFilter - Optional filter for object field properties (e.g., {className: '_User'})
    * @returns {Promise<Object>} Object with keys and values
    */
-  async getConfigsByPrefix(keyPrefix, appId, userId = null) {
+  async getConfigsByPrefix(keyPrefix, appId, userId = null, objectFilter = null) {
     const query = new Parse.Query(this.className);
     query.equalTo('appId', appId);
     query.startsWith('key', keyPrefix);
@@ -108,6 +109,13 @@ export default class ServerConfigStorage {
       query.equalTo('user', new Parse.User({ objectId: userId }));
     } else {
       query.doesNotExist('user');
+    }
+
+    // Add nested object field filters if provided
+    if (objectFilter && typeof objectFilter === 'object') {
+      Object.entries(objectFilter).forEach(([field, value]) => {
+        query.equalTo(`object.${field}`, value);
+      });
     }
 
     const results = await query.find({ useMasterKey: true });

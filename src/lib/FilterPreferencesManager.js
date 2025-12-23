@@ -184,19 +184,17 @@ export default class FilterPreferencesManager {
    */
   async _getFiltersFromServer(appId, className) {
     try {
+      // Query server with className filter to only fetch filters for this class
       const filterConfigs = await this.serverStorage.getConfigsByPrefix(
         'browser.filters.filter.',
-        appId
+        appId,
+        null,
+        { className } // Filter by className in the object field
       );
       const filters = [];
 
       Object.entries(filterConfigs).forEach(([key, config]) => {
         if (config && typeof config === 'object') {
-          // Only include filters for this class
-          if (config.className !== className) {
-            return;
-          }
-
           // Extract filter ID from key (browser.filters.filter.{FILTER_ID})
           const filterId = key.replace('browser.filters.filter.', '');
 
@@ -229,15 +227,17 @@ export default class FilterPreferencesManager {
   async _saveFiltersToServer(appId, className, filters) {
     try {
       // First, get existing filters from server to know which ones to delete
+      // Only fetch filters for this specific class
       const existingFilterConfigs = await this.serverStorage.getConfigsByPrefix(
         'browser.filters.filter.',
-        appId
+        appId,
+        null,
+        { className } // Filter by className in the object field
       );
 
-      // Filter to only this class's filters
-      const existingFilterIds = Object.entries(existingFilterConfigs)
-        .filter(([key, config]) => config.className === className)
-        .map(([key]) => key.replace('browser.filters.filter.', ''));
+      // Extract filter IDs
+      const existingFilterIds = Object.keys(existingFilterConfigs)
+        .map(key => key.replace('browser.filters.filter.', ''));
 
       // Delete filters that are no longer in the new filters array
       const newFilterIds = filters.map(filter => filter.id || this._generateFilterId());
