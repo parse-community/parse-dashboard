@@ -36,7 +36,8 @@ export default class CategoryList extends React.Component {
 
   componentDidUpdate(prevProps) {
     // Auto-expand if the URL params changed (e.g., user navigated to a different filter)
-    if (prevProps.params !== this.props.params) {
+    // OR if categories changed (e.g., filters finished loading asynchronously)
+    if (prevProps.params !== this.props.params || prevProps.categories !== this.props.categories) {
       this._autoExpandForSelectedFilter();
     }
     this._updateHighlight();
