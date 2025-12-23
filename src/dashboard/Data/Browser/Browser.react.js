@@ -307,20 +307,14 @@ class Browser extends DashboardView {
     if (this.context) {
       this.filterPreferencesManager = new FilterPreferencesManager(this.context);
       // Load all class filters if schema is already available
-      console.log('[DEBUG] componentDidMount - schema available?', !!this.props.schema?.data?.get('classes'));
       if (this.props.schema?.data?.get('classes')) {
-        console.log('[DEBUG] componentDidMount - calling loadAllClassFilters');
         this.loadAllClassFilters();
-      } else {
-        console.log('[DEBUG] componentDidMount - schema not ready, waiting for componentWillReceiveProps');
       }
     }
   }
 
   async loadAllClassFilters(propsToUse) {
-    console.log('[DEBUG] loadAllClassFilters called');
     if (!this.filterPreferencesManager) {
-      console.log('[DEBUG] loadAllClassFilters - no filterPreferencesManager');
       return;
     }
 
@@ -328,7 +322,6 @@ class Browser extends DashboardView {
     const props = propsToUse || this.props;
     const schema = props.schema;
     if (!schema || !schema.data) {
-      console.log('[DEBUG] loadAllClassFilters - no schema or schema.data');
       return;
     }
 
@@ -338,7 +331,6 @@ class Browser extends DashboardView {
     const classList = schema.data.get('classes');
     if (classList) {
       const classNames = Object.keys(classList.toObject());
-      console.log('[DEBUG] loadAllClassFilters - loading filters for classes:', classNames);
       await Promise.all(
         classNames.map(async (className) => {
           try {
@@ -346,7 +338,6 @@ class Browser extends DashboardView {
               this.context.applicationId,
               className
             );
-            console.log(`[DEBUG] loadAllClassFilters - loaded ${filters?.length || 0} filters for ${className}`);
             classFilters[className] = filters || [];
           } catch (error) {
             console.error(`Failed to load filters for class ${className}:`, error);
@@ -356,7 +347,6 @@ class Browser extends DashboardView {
       );
     }
 
-    console.log('[DEBUG] loadAllClassFilters - setting state with classFilters:', classFilters);
     this.setState({ classFilters });
   }
 
@@ -402,19 +392,12 @@ class Browser extends DashboardView {
     }
 
     // Load filters when schema becomes available or changes
-    console.log('[DEBUG] componentWillReceiveProps - checking filters load condition');
-    console.log('[DEBUG] nextProps has schema?', !!nextProps.schema?.data?.get('classes'));
-    console.log('[DEBUG] this.props had schema?', !!this.props.schema?.data?.get('classes'));
-    console.log('[DEBUG] appId changed?', this.props.params.appId !== nextProps.params.appId);
     if (
       nextProps.schema?.data?.get('classes') &&
       (!this.props.schema?.data?.get('classes') ||
         this.props.params.appId !== nextProps.params.appId)
     ) {
-      console.log('[DEBUG] componentWillReceiveProps - calling loadAllClassFilters with nextProps');
       this.loadAllClassFilters(nextProps);
-    } else {
-      console.log('[DEBUG] componentWillReceiveProps - NOT calling loadAllClassFilters');
     }
   }
 
@@ -2393,10 +2376,8 @@ class Browser extends DashboardView {
       special.push({ type: 'separator', id: 'classSeparator' });
     }
     const allCategories = [];
-    console.log('[DEBUG] render - state.classFilters:', this.state.classFilters);
     for (const row of [...special, ...categories]) {
       let filters = this.state.classFilters[row.name];
-      console.log(`[DEBUG] render - ${row.name}: filters from state =`, filters);
 
       // Fallback to local storage ONLY if not using server storage and filters not loaded yet
       if (filters === undefined &&
@@ -2404,10 +2385,8 @@ class Browser extends DashboardView {
            !prefersServerStorage(this.context.applicationId))) {
         const prefs = ClassPreferences.getPreferences(this.context.applicationId, row.name);
         filters = prefs?.filters || [];
-        console.log(`[DEBUG] render - ${row.name}: using local fallback, filters =`, filters);
       } else if (filters === undefined) {
         filters = [];
-        console.log(`[DEBUG] render - ${row.name}: filters undefined, using empty array`);
       }
 
       // Set filters sorted alphabetically and create a new row object to trigger re-render
