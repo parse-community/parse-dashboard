@@ -39,6 +39,7 @@ import stringCompare from 'lib/stringCompare';
 import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
+import { prefersServerStorage } from 'lib/StoragePreferences';
 import Parse from 'parse';
 import React from 'react';
 import { Helmet } from 'react-helmet';
@@ -190,6 +191,7 @@ class Browser extends DashboardView {
       AggregationPanelData: {},
       isLoadingInfoPanel: false,
       errorAggregatedData: {},
+      classFilters: {}, // Map of className -> filters array
     };
 
     this.addLocation = this.addLocation.bind(this);
@@ -304,7 +306,53 @@ class Browser extends DashboardView {
     // Initialize FilterPreferencesManager
     if (this.context) {
       this.filterPreferencesManager = new FilterPreferencesManager(this.context);
+      // Load all class filters
+      this.loadAllClassFilters();
     }
+  }
+
+  async loadAllClassFilters() {
+    console.log('[Browser] loadAllClassFilters - Starting...');
+
+    if (!this.filterPreferencesManager) {
+      console.log('[Browser] loadAllClassFilters - No filterPreferencesManager, aborting');
+      return;
+    }
+
+    const schema = this.props.schema;
+    if (!schema || !schema.data) {
+      console.log('[Browser] loadAllClassFilters - No schema data, aborting');
+      return;
+    }
+
+    const classFilters = {};
+
+    // Load filters for all classes
+    const classList = schema.data.get('classes');
+    if (classList) {
+      const classNames = Object.keys(classList.toObject());
+      console.log('[Browser] loadAllClassFilters - Loading filters for', classNames.length, 'classes:', classNames);
+      await Promise.all(
+        classNames.map(async (className) => {
+          console.log('[Browser] loadAllClassFilters - Loading filters for class:', className);
+          try {
+            const filters = await this.filterPreferencesManager.getFilters(
+              this.context.applicationId,
+              className
+            );
+            console.log('[Browser] loadAllClassFilters - Filters loaded for', className, ':', filters);
+            classFilters[className] = filters || [];
+          } catch (error) {
+            console.error(`[Browser] loadAllClassFilters - Failed to load filters for class ${className}:`, error);
+            classFilters[className] = [];
+          }
+        })
+      );
+    }
+
+    console.log('[Browser] loadAllClassFilters - Setting state with classFilters:', classFilters);
+    this.setState({ classFilters });
+    console.log('[Browser] loadAllClassFilters - State updated');
   }
 
   componentWillUnmount() {
@@ -346,6 +394,15 @@ class Browser extends DashboardView {
         nextProps.schema.data.get('classes')
       );
       this.redirectToFirstClass(nextProps.schema.data.get('classes'), nextContext);
+    }
+
+    // Load filters when schema becomes available or changes
+    if (
+      nextProps.schema?.data?.get('classes') &&
+      (!this.props.schema?.data?.get('classes') ||
+        this.props.params.appId !== nextProps.params.appId)
+    ) {
+      this.loadAllClassFilters();
     }
   }
 
@@ -1418,10 +1475,34 @@ class Browser extends DashboardView {
       );
     }
 
+    // Reload filters for this class to update the sidebar
+    await this.reloadClassFilters(this.props.params.className);
+
     super.forceUpdate();
 
     // Return the filter ID for new filters so the caller can apply them
     return newFilterId;
+  }
+
+  async reloadClassFilters(className) {
+    if (!this.filterPreferencesManager) {
+      return;
+    }
+
+    try {
+      const filters = await this.filterPreferencesManager.getFilters(
+        this.context.applicationId,
+        className
+      );
+      this.setState(prevState => ({
+        classFilters: {
+          ...prevState.classFilters,
+          [className]: filters || []
+        }
+      }));
+    } catch (error) {
+      console.error(`Failed to reload filters for class ${className}:`, error);
+    }
   }
 
   async deleteFilter(filterIdOrObject) {
@@ -1466,6 +1547,9 @@ class Browser extends DashboardView {
         );
       }
     }
+
+    // Reload filters for this class to update the sidebar
+    await this.reloadClassFilters(this.props.params.className);
 
     super.forceUpdate();
   }
@@ -2298,13 +2382,29 @@ class Browser extends DashboardView {
     }
     const allCategories = [];
     for (const row of [...special, ...categories]) {
-      const { filters = [] } = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        row.name
-      );
-      // Set filters sorted alphabetically
-      row.filters = filters.sort((a, b) => a.name.localeCompare(b.name));
-      allCategories.push(row);
+      let filters = this.state.classFilters[row.name];
+
+      console.log('[Browser] Render - Processing class:', row.name, 'filters from state:', filters);
+
+      // Fallback to local storage ONLY if not using server storage and filters not loaded yet
+      if (filters === undefined &&
+          (!this.filterPreferencesManager?.isServerConfigEnabled() ||
+           !prefersServerStorage(this.context.applicationId))) {
+        const prefs = ClassPreferences.getPreferences(this.context.applicationId, row.name);
+        filters = prefs?.filters || [];
+        console.log('[Browser] Render - Using local fallback for', row.name, ':', filters);
+      } else if (filters === undefined) {
+        filters = [];
+        console.log('[Browser] Render - No filters available for', row.name, '(server mode, no fallback)');
+      }
+
+      // Set filters sorted alphabetically and create a new row object to trigger re-render
+      const sortedFilters = filters.sort((a, b) => a.name.localeCompare(b.name));
+      console.log('[Browser] Render - Final filters for', row.name, ':', sortedFilters);
+      allCategories.push({
+        ...row,
+        filters: sortedFilters
+      });
     }
 
     return (

@@ -29,21 +29,37 @@ export default class FilterPreferencesManager {
    * @returns {Promise<Array>} Array of filters
    */
   async getFilters(appId, className) {
+    console.log('[FilterPreferencesManager] getFilters called:', { appId, className });
+
+    const serverConfigEnabled = this.serverStorage.isServerConfigEnabled();
+    const prefersServer = prefersServerStorage(appId);
+
+    console.log('[FilterPreferencesManager] Storage configuration:', {
+      serverConfigEnabled,
+      prefersServer,
+      willUseServer: serverConfigEnabled && prefersServer
+    });
+
     // Check if server storage is enabled and user prefers it
-    if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
+    if (serverConfigEnabled && prefersServer) {
       try {
+        console.log('[FilterPreferencesManager] Fetching filters from server...');
         const serverFilters = await this._getFiltersFromServer(appId, className);
+        console.log('[FilterPreferencesManager] Server filters retrieved:', serverFilters);
         // Always return server filters (even if empty) when server storage is preferred
         return serverFilters || [];
       } catch (error) {
-        console.error('Failed to get filters from server:', error);
+        console.error('[FilterPreferencesManager] Failed to get filters from server:', error);
         // When server storage is preferred, return empty array instead of falling back to local
         return [];
       }
     }
 
     // Use local storage when server storage is not preferred
-    return this._getFiltersFromLocal(appId, className);
+    console.log('[FilterPreferencesManager] Fetching filters from local storage...');
+    const localFilters = this._getFiltersFromLocal(appId, className);
+    console.log('[FilterPreferencesManager] Local filters retrieved:', localFilters);
+    return localFilters;
   }
 
   /**
@@ -184,45 +200,54 @@ export default class FilterPreferencesManager {
    */
   async _getFiltersFromServer(appId, className) {
     try {
+      console.log('[FilterPreferencesManager] _getFiltersFromServer - Fetching configs with prefix "dataBrowser.filter."');
       const filterConfigs = await this.serverStorage.getConfigsByPrefix(
         'dataBrowser.filter.',
         appId
       );
+      console.log('[FilterPreferencesManager] _getFiltersFromServer - Raw configs from server:', filterConfigs);
+
       const filters = [];
 
       Object.entries(filterConfigs).forEach(([key, config]) => {
+        console.log('[FilterPreferencesManager] _getFiltersFromServer - Processing config:', { key, config });
+
         if (config && typeof config === 'object') {
           // Only include filters for this class
           if (config.className !== className) {
+            console.log('[FilterPreferencesManager] _getFiltersFromServer - Skipping filter (wrong class):', {
+              key,
+              configClassName: config.className,
+              targetClassName: className
+            });
             return;
           }
 
           // Extract filter ID from key (dataBrowser.filter.{FILTER_ID})
           const filterId = key.replace('dataBrowser.filter.', '');
 
-          // Parse the filter if it's a string (it was stringified for storage)
           const filterConfig = { ...config };
-          if (filterConfig.filter && typeof filterConfig.filter === 'string') {
-            try {
-              filterConfig.filter = JSON.parse(filterConfig.filter);
-            } catch (e) {
-              console.warn('Failed to parse filter from server storage:', e);
-              console.error(`Skipping filter ${filterId} due to corrupted filter data`);
-              // Skip filters with corrupted data
-              return;
-            }
-          }
 
-          filters.push({
+          // Remove className from the filter object (it's only used for server-side filtering)
+          delete filterConfig.className;
+
+          // Note: We keep the filter property as a string (not parsed) to match the format
+          // returned by _getFiltersFromLocal, which uses getPreferences that stores filters as strings
+
+          const filter = {
             id: filterId,
             ...filterConfig
-          });
+          };
+
+          console.log('[FilterPreferencesManager] _getFiltersFromServer - Adding filter:', filter);
+          filters.push(filter);
         }
       });
 
+      console.log('[FilterPreferencesManager] _getFiltersFromServer - Final filters array:', filters);
       return filters;
     } catch (error) {
-      console.error('Failed to get filters from server:', error);
+      console.error('[FilterPreferencesManager] _getFiltersFromServer - Error:', error);
       return [];
     }
   }
