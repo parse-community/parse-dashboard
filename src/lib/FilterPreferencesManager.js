@@ -13,6 +13,13 @@ import { getPreferences, updatePreferences, getAllPreferences } from './ClassPre
 const VERSION = 1;
 
 /**
+ * In-memory cache for filters fetched from server storage
+ * Cache persists for the lifetime of the page (until browser reload)
+ * Structure: { appId: { className: filters[] } }
+ */
+const serverFiltersCache = {};
+
+/**
  * FilterPreferencesManager with server-side storage support
  * Manages DataBrowser filters for specific classes
  */
@@ -32,9 +39,23 @@ export default class FilterPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
+        // Check cache first
+        if (serverFiltersCache[appId] && serverFiltersCache[appId][className]) {
+          return serverFiltersCache[appId][className];
+        }
+
+        // Fetch from server and cache the result
         const serverFilters = await this._getFiltersFromServer(appId, className);
         // Always return server filters (even if empty) when server storage is preferred
-        return serverFilters || [];
+        const filters = serverFilters || [];
+
+        // Cache the fetched filters
+        if (!serverFiltersCache[appId]) {
+          serverFiltersCache[appId] = {};
+        }
+        serverFiltersCache[appId][className] = filters;
+
+        return filters;
       } catch (error) {
         console.error('Failed to get filters from server:', error);
         // When server storage is preferred, return empty array instead of falling back to local
@@ -61,7 +82,14 @@ export default class FilterPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._saveFilterToServer(appId, className, filterWithId);
+        await this._saveFilterToServer(appId, className, filterWithId);
+
+        // Invalidate cache for this class - will be reloaded on next getFilters call
+        if (serverFiltersCache[appId]) {
+          delete serverFiltersCache[appId][className];
+        }
+
+        return;
       } catch (error) {
         console.error('Failed to save filter to server:', error);
         // On error, fallback to local storage
@@ -84,7 +112,14 @@ export default class FilterPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._deleteFilterFromServer(appId, filterId);
+        await this._deleteFilterFromServer(appId, filterId);
+
+        // Invalidate cache for this class - will be reloaded on next getFilters call
+        if (serverFiltersCache[appId]) {
+          delete serverFiltersCache[appId][className];
+        }
+
+        return;
       } catch (error) {
         console.error('Failed to delete filter from server:', error);
         // On error, fallback to local storage
@@ -165,6 +200,9 @@ export default class FilterPreferencesManager {
           conflicts: allConflicts
         };
       }
+
+      // Invalidate cache after migration
+      delete serverFiltersCache[appId];
 
       return { success: true, filterCount: totalFilterCount };
     } catch (error) {
