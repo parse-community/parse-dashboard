@@ -90,15 +90,16 @@ class MockBrowser {
         });
       }
     } else {
-      // Check if this is updating a legacy filter (no filterId but filter content matches existing filter without ID)
-      const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
-        !filter.id && filter.name === name && filter.filter === _filters
+      // Check if this is updating an existing filter by name and content match
+      // (legacy filters get auto-assigned UUIDs when read, so we match by content)
+      const existingFilterIndex = preferences.filters.findIndex(filter =>
+        filter.name === name && filter.filter === _filters
       );
 
-      if (existingLegacyFilterIndex !== -1) {
-        // Convert legacy filter to modern filter by adding an ID
-        newFilterId = crypto.randomUUID();
-        preferences.filters[existingLegacyFilterIndex] = {
+      if (existingFilterIndex !== -1) {
+        // Update existing filter, keeping its ID
+        newFilterId = preferences.filters[existingFilterIndex].id;
+        preferences.filters[existingFilterIndex] = {
           name,
           id: newFilterId,
           filter: _filters,
@@ -170,12 +171,15 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
     );
 
     // Now call saveFilters to update the same filter
+    // Note: With automatic UUID assignment, the legacy filter gets a UUID when read,
+    // so saveFilters will update the existing filter by ID rather than converting it
     const result = browser.saveFilters(filters, 'Legacy Filter', false);
 
-    // Check that the legacy filter was converted to modern filter
+    // The filter should get the auto-assigned UUID
     expect(result).toBe('test-uuid-123');
 
     const updatedPreferences = ClassPreferences.getPreferences('testApp', 'TestClass');
+    // Should have only 1 filter (the updated one, not a duplicate)
     expect(updatedPreferences.filters).toHaveLength(1);
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'Legacy Filter',
@@ -214,9 +218,10 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
     const updatedPreferences = ClassPreferences.getPreferences('testApp', 'TestClass');
     expect(updatedPreferences.filters).toHaveLength(2);
 
-    // Original legacy filter should remain unchanged
+    // Original legacy filter should now have UUID auto-assigned
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'My Filter',
+      id: 'test-uuid-123',
       filter: JSON.stringify(originalFilterData)
     });
 

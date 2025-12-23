@@ -25,7 +25,7 @@ export function getPreferences(appId, className) {
   try {
     const preferences = JSON.parse(entry);
 
-    // Ensure all filters have UUIDs
+    // Ensure all filters have UUIDs - legacy filters are automatically upgraded
     if (preferences.filters && Array.isArray(preferences.filters)) {
       let needsUpdate = false;
       preferences.filters = preferences.filters.map(filter => {

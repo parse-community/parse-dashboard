@@ -1423,15 +1423,16 @@ class Browser extends DashboardView {
         });
       }
     } else {
-      // Check if this is updating a legacy filter (no filterId but filter content matches existing filter without ID)
-      const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
-        !filter.id && filter.name === name && filter.filter === _filters
+      // Check if this is updating an existing filter by name and content match
+      // (legacy filters get auto-assigned UUIDs when read, so we match by content)
+      const existingFilterIndex = preferences.filters.findIndex(filter =>
+        filter.name === name && filter.filter === _filters
       );
 
-      if (existingLegacyFilterIndex !== -1) {
-        // Convert legacy filter to modern filter by adding an ID
-        newFilterId = crypto.randomUUID();
-        preferences.filters[existingLegacyFilterIndex] = {
+      if (existingFilterIndex !== -1) {
+        // Update existing filter, keeping its ID
+        newFilterId = preferences.filters[existingFilterIndex].id;
+        preferences.filters[existingFilterIndex] = {
           name,
           id: newFilterId,
           filter: _filters,
