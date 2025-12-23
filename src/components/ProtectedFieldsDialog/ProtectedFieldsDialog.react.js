@@ -52,7 +52,7 @@ export default class ProtectedFieldsDialog extends React.Component {
     });
 
     this.state = {
-      entryTypes: undefined,
+      entryTypes: new Map({}),
       transitioning: false,
       columns: columns,
       protectedFields: new Map(protectedFields || {}), // protected fields map

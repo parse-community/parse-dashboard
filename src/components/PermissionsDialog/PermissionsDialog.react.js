@@ -597,7 +597,7 @@ export default class PermissionsDialog extends React.Component {
       transitioning: false,
       showLevels: false,
       level: 'Simple', // 'Simple' | 'Advanced'
-      entryTypes: undefined,
+      entryTypes: new Map({}),
       perms: Map(perms), // Permissions map
       keys: uniqueKeys, // Permissions row order
       pointerPerms: Map(fromJS(pointerPerms)), // Pointer permissions map
