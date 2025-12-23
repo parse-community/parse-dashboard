@@ -12,6 +12,13 @@ import { prefersServerStorage, setStoragePreference } from './StoragePreferences
 const VERSION = 1;
 
 /**
+ * In-memory cache for views fetched from server storage
+ * Cache persists for the lifetime of the page (until browser reload)
+ * Structure: { appId: views[] }
+ */
+const serverViewsCache = {};
+
+/**
  * Enhanced ViewPreferences with server-side storage support
  */
 export default class ViewPreferencesManager {
@@ -29,9 +36,20 @@ export default class ViewPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
+        // Check cache first
+        if (serverViewsCache[appId]) {
+          return serverViewsCache[appId];
+        }
+
+        // Fetch from server and cache the result
         const serverViews = await this._getViewsFromServer(appId);
         // Always return server views (even if empty) when server storage is preferred
-        return serverViews || [];
+        const views = serverViews || [];
+
+        // Cache the fetched views
+        serverViewsCache[appId] = views;
+
+        return views;
       } catch (error) {
         console.error('Failed to get views from server:', error);
         // When server storage is preferred, return empty array instead of falling back to local
@@ -54,7 +72,12 @@ export default class ViewPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._saveViewToServer(appId, view);
+        await this._saveViewToServer(appId, view);
+
+        // Invalidate cache - will be reloaded on next getViews call
+        delete serverViewsCache[appId];
+
+        return;
       } catch (error) {
         console.error('Failed to save view to server:', error);
         // On error, fallback to local storage
@@ -76,7 +99,12 @@ export default class ViewPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._deleteViewFromServer(appId, viewId);
+        await this._deleteViewFromServer(appId, viewId);
+
+        // Invalidate cache - will be reloaded on next getViews call
+        delete serverViewsCache[appId];
+
+        return;
       } catch (error) {
         console.error('Failed to delete view from server:', error);
         // On error, fallback to local storage
@@ -137,6 +165,10 @@ export default class ViewPreferencesManager {
 
       // Proceed with migration (merge mode)
       await this._migrateViewsToServer(appId, localViews, overwriteConflicts);
+
+      // Invalidate cache after migration
+      delete serverViewsCache[appId];
+
       return { success: true, viewCount: localViews.length };
     } catch (error) {
       console.error('Failed to migrate views to server:', error);

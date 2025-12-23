@@ -1,3 +1,10 @@
+# [8.2.0-alpha.14](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.13...8.2.0-alpha.14) (2025-12-23)
+
+
+### Performance Improvements
+
+* Add local caching for server-stored settings to reduce loading from server ([#3094](https://github.com/parse-community/parse-dashboard/issues/3094)) ([409973a](https://github.com/parse-community/parse-dashboard/commit/409973a03cc59fb2253bfc314ccd0afb95d8ec94))
+
 # [8.2.0-alpha.13](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.12...8.2.0-alpha.13) (2025-12-23)
 
 
