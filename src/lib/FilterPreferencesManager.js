@@ -185,7 +185,7 @@ export default class FilterPreferencesManager {
   async _getFiltersFromServer(appId, className) {
     try {
       const filterConfigs = await this.serverStorage.getConfigsByPrefix(
-        'dataBrowser.filter.',
+        'browser.filters.filter.',
         appId
       );
       const filters = [];
@@ -197,8 +197,8 @@ export default class FilterPreferencesManager {
             return;
           }
 
-          // Extract filter ID from key (dataBrowser.filter.{FILTER_ID})
-          const filterId = key.replace('dataBrowser.filter.', '');
+          // Extract filter ID from key (browser.filters.filter.{FILTER_ID})
+          const filterId = key.replace('browser.filters.filter.', '');
 
           const filterConfig = { ...config };
 
@@ -230,14 +230,14 @@ export default class FilterPreferencesManager {
     try {
       // First, get existing filters from server to know which ones to delete
       const existingFilterConfigs = await this.serverStorage.getConfigsByPrefix(
-        'dataBrowser.filter.',
+        'browser.filters.filter.',
         appId
       );
 
       // Filter to only this class's filters
       const existingFilterIds = Object.entries(existingFilterConfigs)
         .filter(([key, config]) => config.className === className)
-        .map(([key]) => key.replace('dataBrowser.filter.', ''));
+        .map(([key]) => key.replace('browser.filters.filter.', ''));
 
       // Delete filters that are no longer in the new filters array
       const newFilterIds = filters.map(filter => filter.id || this._generateFilterId());
@@ -245,7 +245,7 @@ export default class FilterPreferencesManager {
 
       await Promise.all(
         filtersToDelete.map(id =>
-          this.serverStorage.deleteConfig(`dataBrowser.filter.${id}`, appId)
+          this.serverStorage.deleteConfig(`browser.filters.filter.${id}`, appId)
         )
       );
 
@@ -272,7 +272,7 @@ export default class FilterPreferencesManager {
           }
 
           return this.serverStorage.setConfig(
-            `dataBrowser.filter.${filterId}`,
+            `browser.filters.filter.${filterId}`,
             filterConfig,
             appId
           );
@@ -310,7 +310,7 @@ export default class FilterPreferencesManager {
       }
 
       await this.serverStorage.setConfig(
-        `dataBrowser.filter.${filterId}`,
+        `browser.filters.filter.${filterId}`,
         filterConfig,
         appId
       );
@@ -326,7 +326,7 @@ export default class FilterPreferencesManager {
    */
   async _deleteFilterFromServer(appId, className, filterId) {
     try {
-      await this.serverStorage.deleteConfig(`dataBrowser.filter.${filterId}`, appId);
+      await this.serverStorage.deleteConfig(`browser.filters.filter.${filterId}`, appId);
     } catch (error) {
       console.error('Failed to delete filter from server:', error);
       throw error;
