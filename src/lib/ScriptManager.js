@@ -192,9 +192,10 @@ export default class ScriptManager {
   /**
    * Migrates scripts from local storage to server storage
    * @param {string} appId - The application ID
-   * @returns {Promise<{success: boolean, scriptCount: number}>}
+   * @param {boolean} overwriteConflicts - If true, overwrite server scripts with same ID
+   * @returns {Promise<{success: boolean, scriptCount: number, conflicts?: Array}>}
    */
-  async migrateToServer(appId) {
+  async migrateToServer(appId, overwriteConflicts = false) {
     if (!this.serverStorage.isServerConfigEnabled()) {
       throw new Error('Server configuration is not enabled for this app');
     }
@@ -207,7 +208,39 @@ export default class ScriptManager {
     }
 
     try {
-      await this._saveScriptsToServer(appId, localScripts);
+      // Get existing scripts from server to detect conflicts
+      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix('console.js.script.', appId);
+      const existingScriptIds = Object.keys(existingScriptConfigs).map(key =>
+        key.replace('console.js.script.', '')
+      );
+
+      // Check for conflicts
+      const localScriptIds = localScripts.map(script => script.id).filter(Boolean);
+      const conflictingIds = localScriptIds.filter(id => existingScriptIds.includes(id));
+
+      if (conflictingIds.length > 0 && !overwriteConflicts) {
+        // Return conflicts for user decision
+        const conflicts = conflictingIds.map(id => {
+          const localScript = localScripts.find(s => s.id === id);
+          const serverScriptKey = `console.js.script.${id}`;
+          const serverScript = existingScriptConfigs[serverScriptKey];
+          return {
+            id,
+            type: 'script',
+            local: localScript,
+            server: serverScript
+          };
+        });
+
+        return {
+          success: false,
+          scriptCount: 0,
+          conflicts
+        };
+      }
+
+      // Proceed with migration (merge mode)
+      await this._migrateScriptsToServer(appId, localScripts, overwriteConflicts);
       return { success: true, scriptCount: localScripts.length };
     } catch (error) {
       console.error('Failed to migrate scripts to server:', error);
@@ -263,6 +296,52 @@ export default class ScriptManager {
    */
   generateScriptId() {
     return this._generateScriptId();
+  }
+
+  /**
+   * Migrates scripts to server storage with merge/overwrite logic
+   * @private
+   */
+  async _migrateScriptsToServer(appId, localScripts, overwriteConflicts) {
+    try {
+      // Get existing scripts from server
+      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix('console.js.script.', appId);
+      const existingScriptIds = Object.keys(existingScriptConfigs).map(key =>
+        key.replace('console.js.script.', '')
+      );
+
+      // Save local scripts to server
+      await Promise.all(
+        localScripts.map(script => {
+          const scriptId = script.id || this._generateScriptId();
+          const scriptConfig = { ...script };
+          delete scriptConfig.id; // Don't store ID in the config itself
+
+          // Remove null and undefined values to keep the storage clean
+          Object.keys(scriptConfig).forEach(key => {
+            if (scriptConfig[key] === null || scriptConfig[key] === undefined) {
+              delete scriptConfig[key];
+            }
+          });
+
+          // Only save if we're overwriting conflicts or if this script doesn't exist on server
+          if (overwriteConflicts || !existingScriptIds.includes(scriptId)) {
+            return this.serverStorage.setConfig(
+              `console.js.script.${scriptId}`,
+              scriptConfig,
+              appId
+            );
+          }
+          return Promise.resolve(); // Skip conflicting scripts when not overwriting
+        })
+      );
+
+      // Note: We don't delete server scripts that aren't in local storage
+      // This preserves server-side settings that don't conflict with local ones
+    } catch (error) {
+      console.error('Failed to migrate scripts to server:', error);
+      throw error;
+    }
   }
 
   /**

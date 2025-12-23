@@ -109,6 +109,11 @@ export default class DashboardSettings extends DashboardView {
       return;
     }
 
+    if (!this.scriptManager) {
+      this.showNote('ScriptManager not initialized');
+      return;
+    }
+
     if (!this.viewPreferencesManager.isServerConfigEnabled()) {
       this.showNote('Server configuration is not enabled for this app. Please add a "config" section to your app configuration.');
       return;
@@ -123,10 +128,14 @@ export default class DashboardSettings extends DashboardView {
       // Migrate filters
       const filtersResult = await this.filterPreferencesManager.migrateToServer(this.context.applicationId, overwriteConflicts);
 
+      // Migrate scripts
+      const scriptsResult = await this.scriptManager.migrateToServer(this.context.applicationId, overwriteConflicts);
+
       // Check for conflicts
       const allConflicts = [
         ...(viewsResult.conflicts || []),
-        ...(filtersResult.conflicts || [])
+        ...(filtersResult.conflicts || []),
+        ...(scriptsResult.conflicts || [])
       ];
 
       if (allConflicts.length > 0 && !overwriteConflicts) {
@@ -135,9 +144,9 @@ export default class DashboardSettings extends DashboardView {
         return;
       }
 
-      const totalItems = viewsResult.viewCount + filtersResult.filterCount;
+      const totalItems = viewsResult.viewCount + filtersResult.filterCount + scriptsResult.scriptCount;
 
-      if (viewsResult.success && filtersResult.success) {
+      if (viewsResult.success && filtersResult.success && scriptsResult.success) {
         if (totalItems > 0) {
           const messages = [];
           if (viewsResult.viewCount > 0) {
@@ -146,9 +155,12 @@ export default class DashboardSettings extends DashboardView {
           if (filtersResult.filterCount > 0) {
             messages.push(`${filtersResult.filterCount} filter(s)`);
           }
-          this.showNote(`Successfully migrated ${messages.join(' and ')} to server storage.`);
+          if (scriptsResult.scriptCount > 0) {
+            messages.push(`${scriptsResult.scriptCount} script(s)`);
+          }
+          this.showNote(`Successfully migrated ${messages.join(', ')} to server storage.`);
         } else {
-          this.showNote('No views or filters found to migrate.');
+          this.showNote('No views, filters, or scripts found to migrate.');
         }
       }
     } catch (error) {
@@ -612,6 +624,7 @@ export default class DashboardSettings extends DashboardView {
     // Format conflict details
     const viewConflicts = migrationConflicts.filter(c => c.type === 'view');
     const filterConflicts = migrationConflicts.filter(c => c.type === 'filter');
+    const scriptConflicts = migrationConflicts.filter(c => c.type === 'script');
 
     const conflictList = (
       <div style={{ padding: '20px', fontSize: '14px' }}>
@@ -628,7 +641,7 @@ export default class DashboardSettings extends DashboardView {
           padding: '10px'
         }}>
           {viewConflicts.length > 0 && (
-            <div style={{ marginBottom: filterConflicts.length > 0 ? '15px' : '0' }}>
+            <div style={{ marginBottom: (filterConflicts.length > 0 || scriptConflicts.length > 0) ? '15px' : '0' }}>
               <strong>Views ({viewConflicts.length}):</strong>
               <ul style={{ marginTop: '5px', marginBottom: '0', paddingLeft: '20px' }}>
                 {viewConflicts.map(conflict => {
@@ -647,7 +660,7 @@ export default class DashboardSettings extends DashboardView {
           )}
 
           {filterConflicts.length > 0 && (
-            <div>
+            <div style={{ marginBottom: scriptConflicts.length > 0 ? '15px' : '0' }}>
               <strong>Filters ({filterConflicts.length}):</strong>
               <ul style={{ marginTop: '5px', marginBottom: '0', paddingLeft: '20px' }}>
                 {filterConflicts.map(conflict => {
@@ -659,6 +672,25 @@ export default class DashboardSettings extends DashboardView {
                   return (
                     <li key={conflict.id}>
                       {displayText}
+                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                        [{conflict.id}]
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {scriptConflicts.length > 0 && (
+            <div>
+              <strong>Scripts ({scriptConflicts.length}):</strong>
+              <ul style={{ marginTop: '5px', marginBottom: '0', paddingLeft: '20px' }}>
+                {scriptConflicts.map(conflict => {
+                  const scriptName = conflict.local?.name || conflict.server?.name || '';
+                  return (
+                    <li key={conflict.id}>
+                      {scriptName || 'Unnamed script'}
                       <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
                         [{conflict.id}]
                       </span>
