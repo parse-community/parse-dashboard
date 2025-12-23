@@ -55,15 +55,13 @@ export default class FilterPreferencesManager {
    * @returns {Promise}
    */
   async saveFilter(appId, className, filter, allFilters) {
-    // Ensure filter has a UUID
-    if (!filter.id) {
-      filter.id = this._generateFilterId();
-    }
+    // Ensure filter has a UUID (create new object to avoid mutating input)
+    const filterWithId = filter.id ? filter : { ...filter, id: this._generateFilterId() };
 
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._saveFilterToServer(appId, className, filter);
+        return await this._saveFilterToServer(appId, className, filterWithId);
       } catch (error) {
         console.error('Failed to save filter to server:', error);
         // On error, fallback to local storage
@@ -86,7 +84,7 @@ export default class FilterPreferencesManager {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
       try {
-        return await this._deleteFilterFromServer(appId, className, filterId);
+        return await this._deleteFilterFromServer(appId, filterId);
       } catch (error) {
         console.error('Failed to delete filter from server:', error);
         // On error, fallback to local storage
@@ -239,8 +237,15 @@ export default class FilterPreferencesManager {
       const existingFilterIds = Object.keys(existingFilterConfigs)
         .map(key => key.replace('browser.filters.filter.', ''));
 
+      // Validate all filters have IDs before proceeding
+      filters.forEach((filter, index) => {
+        if (!filter.id) {
+          throw new Error(`Filter at index ${index} is missing an ID. All filters must have IDs before saving to server.`);
+        }
+      });
+
       // Delete filters that are no longer in the new filters array
-      const newFilterIds = filters.map(filter => filter.id || this._generateFilterId());
+      const newFilterIds = filters.map(filter => filter.id);
       const filtersToDelete = existingFilterIds.filter(id => !newFilterIds.includes(id));
 
       await Promise.all(
@@ -252,7 +257,7 @@ export default class FilterPreferencesManager {
       // Save or update current filters
       await Promise.all(
         filters.map(filter => {
-          const filterId = filter.id || this._generateFilterId();
+          const filterId = filter.id;
           const filterConfig = { ...filter };
           delete filterConfig.id; // Don't store ID in the config itself
 
@@ -324,7 +329,7 @@ export default class FilterPreferencesManager {
    * Deletes a single filter from server storage
    * @private
    */
-  async _deleteFilterFromServer(appId, className, filterId) {
+  async _deleteFilterFromServer(appId, filterId) {
     try {
       await this.serverStorage.deleteConfig(`browser.filters.filter.${filterId}`, appId);
     } catch (error) {
@@ -339,17 +344,8 @@ export default class FilterPreferencesManager {
    */
   _getFiltersFromLocal(appId, className) {
     const preferences = getPreferences(appId, className);
-    if (!preferences || !preferences.filters) {
-      return [];
-    }
-
-    // Ensure all filters have UUIDs
-    return preferences.filters.map(filter => {
-      if (!filter.id) {
-        return { ...filter, id: this._generateFilterId() };
-      }
-      return filter;
-    });
+    // getPreferences() already ensures all filters have UUIDs
+    return preferences?.filters || [];
   }
 
   /**

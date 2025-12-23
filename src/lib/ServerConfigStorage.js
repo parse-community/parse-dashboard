@@ -112,7 +112,7 @@ export default class ServerConfigStorage {
     }
 
     // Add nested object field filters if provided
-    if (objectFilter && typeof objectFilter === 'object') {
+    if (objectFilter && typeof objectFilter === 'object' && !Array.isArray(objectFilter)) {
       Object.entries(objectFilter).forEach(([field, value]) => {
         query.equalTo(`object.${field}`, value);
       });
