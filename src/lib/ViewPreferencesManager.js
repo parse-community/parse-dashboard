@@ -90,9 +90,10 @@ export default class ViewPreferencesManager {
   /**
    * Migrates views from local storage to server storage
    * @param {string} appId - The application ID
-   * @returns {Promise<{success: boolean, viewCount: number}>}
+   * @param {boolean} overwriteConflicts - If true, overwrite server views with same ID
+   * @returns {Promise<{success: boolean, viewCount: number, conflicts?: Array}>}
    */
-  async migrateToServer(appId) {
+  async migrateToServer(appId, overwriteConflicts = false) {
     if (!this.serverStorage.isServerConfigEnabled()) {
       throw new Error('Server configuration is not enabled for this app');
     }
@@ -103,7 +104,39 @@ export default class ViewPreferencesManager {
     }
 
     try {
-      await this._saveViewsToServer(appId, localViews);
+      // Get existing views from server to detect conflicts
+      const existingViewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.', appId);
+      const existingViewIds = Object.keys(existingViewConfigs).map(key =>
+        key.replace('views.view.', '')
+      );
+
+      // Check for conflicts
+      const localViewIds = localViews.map(view => view.id).filter(Boolean);
+      const conflictingIds = localViewIds.filter(id => existingViewIds.includes(id));
+
+      if (conflictingIds.length > 0 && !overwriteConflicts) {
+        // Return conflicts for user decision
+        const conflicts = conflictingIds.map(id => {
+          const localView = localViews.find(v => v.id === id);
+          const serverViewKey = `views.view.${id}`;
+          const serverView = existingViewConfigs[serverViewKey];
+          return {
+            id,
+            type: 'view',
+            local: localView,
+            server: serverView
+          };
+        });
+
+        return {
+          success: false,
+          viewCount: 0,
+          conflicts
+        };
+      }
+
+      // Proceed with migration (merge mode)
+      await this._migrateViewsToServer(appId, localViews, overwriteConflicts);
       return { success: true, viewCount: localViews.length };
     } catch (error) {
       console.error('Failed to migrate views to server:', error);
@@ -150,6 +183,57 @@ export default class ViewPreferencesManager {
    */
   isServerConfigEnabled() {
     return this.serverStorage.isServerConfigEnabled();
+  }
+
+  /**
+   * Migrates views to server storage with merge/overwrite logic
+   * @private
+   */
+  async _migrateViewsToServer(appId, localViews, overwriteConflicts) {
+    try {
+      // Get existing views from server
+      const existingViewConfigs = await this.serverStorage.getConfigsByPrefix('views.view.', appId);
+      const existingViewIds = Object.keys(existingViewConfigs).map(key =>
+        key.replace('views.view.', '')
+      );
+
+      // Save local views to server
+      await Promise.all(
+        localViews.map(view => {
+          const viewId = view.id || this._generateViewId();
+          const viewConfig = { ...view };
+          delete viewConfig.id; // Don't store ID in the config itself
+
+          // Remove null and undefined values to keep the storage clean
+          Object.keys(viewConfig).forEach(key => {
+            if (viewConfig[key] === null || viewConfig[key] === undefined) {
+              delete viewConfig[key];
+            }
+          });
+
+          // Stringify the query if it exists and is an array/object
+          if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
+            viewConfig.query = JSON.stringify(viewConfig.query);
+          }
+
+          // Only save if we're overwriting conflicts or if this view doesn't exist on server
+          if (overwriteConflicts || !existingViewIds.includes(viewId)) {
+            return this.serverStorage.setConfig(
+              `views.view.${viewId}`,
+              viewConfig,
+              appId
+            );
+          }
+          return Promise.resolve(); // Skip conflicting views when not overwriting
+        })
+      );
+
+      // Note: We don't delete server views that aren't in local storage
+      // This preserves server-side settings that don't conflict with local ones
+    } catch (error) {
+      console.error('Failed to migrate views to server:', error);
+      throw error;
+    }
   }
 
   /**

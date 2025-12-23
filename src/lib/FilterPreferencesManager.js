@@ -98,17 +98,28 @@ export default class FilterPreferencesManager {
   /**
    * Migrates filters from local storage to server storage for all classes
    * @param {string} appId - The application ID
-   * @returns {Promise<{success: boolean, filterCount: number}>}
+   * @param {boolean} overwriteConflicts - If true, overwrite server filters with same ID
+   * @returns {Promise<{success: boolean, filterCount: number, conflicts?: Array}>}
    */
-  async migrateToServer(appId) {
+  async migrateToServer(appId, overwriteConflicts = false) {
     if (!this.serverStorage.isServerConfigEnabled()) {
       throw new Error('Server configuration is not enabled for this app');
     }
 
     const allPreferences = getAllPreferences(appId);
     let totalFilterCount = 0;
+    const allConflicts = [];
 
     try {
+      // Get all existing filters from server
+      const existingFilterConfigs = await this.serverStorage.getConfigsByPrefix(
+        'browser.filters.filter.',
+        appId
+      );
+      const existingFilterIds = Object.keys(existingFilterConfigs).map(key =>
+        key.replace('browser.filters.filter.', '')
+      );
+
       for (const [className, preferences] of Object.entries(allPreferences)) {
         if (preferences.filters && preferences.filters.length > 0) {
           // Ensure all filters have UUIDs before migrating
@@ -119,9 +130,40 @@ export default class FilterPreferencesManager {
             return filter;
           });
 
-          await this._saveFiltersToServer(appId, className, filtersWithIds);
-          totalFilterCount += filtersWithIds.length;
+          // Check for conflicts in this class
+          const localFilterIds = filtersWithIds.map(f => f.id);
+          const conflictingIds = localFilterIds.filter(id => existingFilterIds.includes(id));
+
+          if (conflictingIds.length > 0 && !overwriteConflicts) {
+            // Collect conflicts
+            conflictingIds.forEach(id => {
+              const localFilter = filtersWithIds.find(f => f.id === id);
+              const serverFilterKey = `browser.filters.filter.${id}`;
+              const serverFilter = existingFilterConfigs[serverFilterKey];
+              allConflicts.push({
+                id,
+                type: 'filter',
+                className,
+                local: localFilter,
+                server: serverFilter
+              });
+            });
+          }
+
+          if (overwriteConflicts || conflictingIds.length === 0) {
+            // Only migrate if no conflicts or overwriting
+            await this._migrateFiltersToServer(appId, className, filtersWithIds, existingFilterIds, overwriteConflicts);
+            totalFilterCount += filtersWithIds.length;
+          }
         }
+      }
+
+      if (allConflicts.length > 0 && !overwriteConflicts) {
+        return {
+          success: false,
+          filterCount: 0,
+          conflicts: allConflicts
+        };
       }
 
       return { success: true, filterCount: totalFilterCount };
@@ -174,6 +216,54 @@ export default class FilterPreferencesManager {
    */
   isServerConfigEnabled() {
     return this.serverStorage.isServerConfigEnabled();
+  }
+
+  /**
+   * Migrates filters to server storage with merge/overwrite logic
+   * @private
+   */
+  async _migrateFiltersToServer(appId, className, filters, existingFilterIds, overwriteConflicts) {
+    try {
+      // Save local filters to server
+      await Promise.all(
+        filters.map(filter => {
+          const filterId = filter.id;
+          const filterConfig = { ...filter };
+          delete filterConfig.id; // Don't store ID in the config itself
+
+          // Add className to the object
+          filterConfig.className = className;
+
+          // Remove null and undefined values to keep the storage clean
+          Object.keys(filterConfig).forEach(key => {
+            if (filterConfig[key] === null || filterConfig[key] === undefined) {
+              delete filterConfig[key];
+            }
+          });
+
+          // Stringify the filter if it exists and is an array/object
+          if (filterConfig.filter && (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')) {
+            filterConfig.filter = JSON.stringify(filterConfig.filter);
+          }
+
+          // Only save if we're overwriting conflicts or if this filter doesn't exist on server
+          if (overwriteConflicts || !existingFilterIds.includes(filterId)) {
+            return this.serverStorage.setConfig(
+              `browser.filters.filter.${filterId}`,
+              filterConfig,
+              appId
+            );
+          }
+          return Promise.resolve(); // Skip conflicting filters when not overwriting
+        })
+      );
+
+      // Note: We don't delete server filters that aren't in local storage
+      // This preserves server-side settings that don't conflict with local ones
+    } catch (error) {
+      console.error('Failed to migrate filters to server:', error);
+      throw error;
+    }
   }
 
   /**
