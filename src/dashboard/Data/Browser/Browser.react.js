@@ -1419,10 +1419,6 @@ class Browser extends DashboardView {
       // filters param change is making the fetch call
       this.props.navigate(generatePath(this.context, url));
     }
-
-    this.setState({
-      skip: 0,
-    });
   }
 
   async saveFilters(filters, name, relativeDate, filterId = null) {
@@ -2730,15 +2726,13 @@ class Browser extends DashboardView {
               setSkip={skip => {
                 this.setState({ skip }, () => {
                   this.updateURL(skip, null);
-                  this.updateOrdering(this.state.ordering);
                 });
               }}
               count={count}
               limit={this.state.limit}
               setLimit={limit => {
                 this.setState({ limit, skip: 0 }, () => {
-                  this.updateURL(0, limit); // Reset to first page when limit changes
-                  this.updateOrdering(this.state.ordering);
+                  this.updateURL(0, limit);
                 });
               }}
               hasSelectedRows={Object.keys(this.state.selection).length > 0}
