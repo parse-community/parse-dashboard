@@ -203,6 +203,7 @@ class Browser extends DashboardView {
     this.fetchRelationCount = this.fetchRelationCount.bind(this);
     this.fetchNextPage = this.fetchNextPage.bind(this);
     this.updateFilters = this.updateFilters.bind(this);
+    this.updateURL = this.updateURL.bind(this);
     this.showRemoveColumn = this.showRemoveColumn.bind(this);
     this.showDeleteRows = this.showDeleteRows.bind(this);
     this.showDropClass = this.showDropClass.bind(this);
@@ -549,6 +550,7 @@ class Browser extends DashboardView {
 
   async prefetchData(props, context) {
     const filters = this.extractFiltersFromQuery(props);
+    const pagination = this.extractPaginationFromQuery(props);
     const { className, entityId, relationName } = props.params;
     const isRelationRoute = entityId && relationName;
 
@@ -563,6 +565,11 @@ class Browser extends DashboardView {
       const parent = await parentObjectQuery.get(entityId, { useMasterKey });
       relation = parent.relation(relationName);
     }
+
+    // Use pagination from URL if available, otherwise keep current state or use defaults
+    const skip = pagination.skip;
+    const limit = pagination.limit !== null ? pagination.limit : this.state.limit;
+
     this.setState(
       {
         data: isEditFilterMode ? [] : null, // Set empty array in edit mode to avoid loading
@@ -571,6 +578,8 @@ class Browser extends DashboardView {
         ordering: ColumnPreferences.getColumnSort(false, context.applicationId, className),
         selection: {},
         relation: isRelationRoute ? relation : null,
+        skip,
+        limit,
       },
       () => {
         // Only fetch data if not in edit filter mode
@@ -624,6 +633,66 @@ class Browser extends DashboardView {
       );
     }
     return filters;
+  }
+
+  extractPaginationFromQuery(props) {
+    const pagination = { skip: 0, limit: null };
+    if (!props || !props.location || !props.location.search) {
+      return pagination;
+    }
+    const query = new URLSearchParams(props.location.search);
+    if (query.has('skip')) {
+      const skip = parseInt(query.get('skip'), 10);
+      if (!isNaN(skip) && skip >= 0) {
+        pagination.skip = skip;
+      }
+    }
+    if (query.has('limit')) {
+      const limit = parseInt(query.get('limit'), 10);
+      if (!isNaN(limit) && limit > 0) {
+        pagination.limit = limit;
+      }
+    }
+    return pagination;
+  }
+
+  updateURL(newSkip = null, newLimit = null) {
+    const source = this.props.params.className;
+    if (!source || this.state.relation) {
+      return; // Don't update URL for relations
+    }
+
+    const skip = newSkip !== null ? newSkip : this.state.skip;
+    const limit = newLimit !== null ? newLimit : this.state.limit;
+
+    // Build query parameters preserving existing ones
+    const currentUrlParams = new URLSearchParams(window.location.search);
+    const queryParams = new URLSearchParams();
+
+    // Preserve filters and filterId
+    if (currentUrlParams.has('filters')) {
+      queryParams.set('filters', currentUrlParams.get('filters'));
+    }
+    if (currentUrlParams.has('filterId')) {
+      queryParams.set('filterId', currentUrlParams.get('filterId'));
+    }
+    if (currentUrlParams.has('editFilter')) {
+      queryParams.set('editFilter', currentUrlParams.get('editFilter'));
+    }
+
+    // Add pagination parameters (only if non-default)
+    if (skip > 0) {
+      queryParams.set('skip', skip.toString());
+    }
+    if (limit !== 100) { // Only include limit if it's not the default
+      queryParams.set('limit', limit.toString());
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `browser/${source}?${queryString}` : `browser/${source}`;
+
+    // Push new history entry instead of replacing to enable browser back button
+    this.props.navigate(generatePath(this.context, url));
   }
 
   redirectToFirstClass(classList, context) {
@@ -1327,22 +1396,25 @@ class Browser extends DashboardView {
       const currentUrlParams = new URLSearchParams(window.location.search);
       const currentFilterId = currentUrlParams.get('filterId');
 
-      let url = `browser/${source}`;
-      if (filters.size === 0) {
-        // If no filters, don't include any query parameters
-        url = `browser/${source}`;
-      } else {
-        // Build query parameters
-        const queryParams = new URLSearchParams();
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+
+      if (filters.size > 0) {
         queryParams.set('filters', _filters);
-
-        // Preserve filterId if it exists in current URL
-        if (currentFilterId) {
-          queryParams.set('filterId', currentFilterId);
-        }
-
-        url = `browser/${source}?${queryParams.toString()}`;
       }
+
+      // Preserve filterId if it exists in current URL
+      if (currentFilterId) {
+        queryParams.set('filterId', currentFilterId);
+      }
+
+      // Preserve pagination if not default (skip is reset to 0 when filters change)
+      if (this.state.limit !== 100) {
+        queryParams.set('limit', this.state.limit.toString());
+      }
+
+      const queryString = queryParams.toString();
+      const url = queryString ? `browser/${source}?${queryString}` : `browser/${source}`;
 
       // filters param change is making the fetch call
       this.props.navigate(generatePath(this.context, url));
@@ -2656,14 +2728,18 @@ class Browser extends DashboardView {
             <BrowserFooter
               skip={this.state.skip}
               setSkip={skip => {
-                this.setState({ skip });
-                this.updateOrdering(this.state.ordering);
+                this.setState({ skip }, () => {
+                  this.updateURL(skip, null);
+                  this.updateOrdering(this.state.ordering);
+                });
               }}
               count={count}
               limit={this.state.limit}
               setLimit={limit => {
-                this.setState({ limit });
-                this.updateOrdering(this.state.ordering);
+                this.setState({ limit, skip: 0 }, () => {
+                  this.updateURL(0, limit); // Reset to first page when limit changes
+                  this.updateOrdering(this.state.ordering);
+                });
               }}
               hasSelectedRows={Object.keys(this.state.selection).length > 0}
               selectedRowsMessage={SELECTED_ROWS_MESSAGE}
