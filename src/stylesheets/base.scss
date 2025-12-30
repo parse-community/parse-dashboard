@@ -7,6 +7,10 @@
  */
 @import 'globals.scss';
 
+:root {
+  --sidebar-width: 300px;
+}
+
 html, body {
   min-height: 100vh;
 }

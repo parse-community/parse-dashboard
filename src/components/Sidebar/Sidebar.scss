@@ -14,13 +14,23 @@ $footerHeight: 36px;
 
 .sidebar {
   position: fixed;
-  width: 300px;
+  width: var(--sidebar-width, 300px);
   top: 0;
   left: 0;
   bottom: 0;
   background: #0c5582;
   color: #fff;
   z-index: 100;
+
+  .resizeHandle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    user-select: none;
+  }
 
   &.collapsed {
     left: 0;
@@ -161,7 +171,7 @@ $footerHeight: 36px;
 .appsMenu {
   overflow: auto;
   background: #094162;
-  width: 300px;
+  width: var(--sidebar-width, 300px);
 
   .menuRow:hover {
     background: #0c5582;

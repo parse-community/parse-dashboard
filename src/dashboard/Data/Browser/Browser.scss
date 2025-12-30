@@ -10,7 +10,7 @@
 .browser {
   position: fixed;
   top: 96px;
-  left: 300px;
+  left: var(--sidebar-width, 300px);
   right: 0;
   bottom: 36px;
   overflow: auto;
@@ -24,7 +24,7 @@ body:global(.expanded) {
 
 .empty {
   position: fixed;
-  left: 300px;
+  left: var(--sidebar-width, 300px);
   top: 0;
   bottom: 0;
   right: 0;

@@ -10,7 +10,7 @@
 .footer {
   @include animation('footer-enter 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)');
   position: fixed;
-  left: 300px;
+  left: var(--sidebar-width, 300px);
   right: 0;
   bottom: 0;
   background: #fbfbfc;

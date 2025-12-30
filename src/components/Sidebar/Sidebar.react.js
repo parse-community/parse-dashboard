@@ -10,7 +10,7 @@ import AppsMenu from 'components/Sidebar/AppsMenu.react';
 import AppName from 'components/Sidebar/AppName.react';
 import isInsidePopover from 'lib/isInsidePopover';
 import Pin from 'components/Sidebar/Pin.react';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import SidebarHeader from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
@@ -36,6 +36,9 @@ const Sidebar = ({
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [fixed, setFixed] = useState(true);
+  const initialWidth = parseInt(localStorage.getItem('sidebarWidth') || '300', 10);
+  const [width, setWidth] = useState(initialWidth);
+  const widthRef = useRef(initialWidth);
   const [dashboardUser, setDashboardUser] = useState('');
   fetch(mountPath).then(response => {
     setDashboardUser(response.headers.get('username'));
@@ -65,6 +68,11 @@ const Sidebar = ({
       window.removeEventListener('resize', windowResizeHandler);
     };
   });
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--sidebar-width', `${width}px`);
+    widthRef.current = width;
+  }, [width]);
 
   const sidebarClasses = [styles.sidebar];
   if (fixed) {
@@ -111,6 +119,24 @@ const Sidebar = ({
       setFixed(true);
       setCollapsed(false);
     }
+  };
+
+  const startResize = e => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startWidth = widthRef.current;
+    const doDrag = ev => {
+      const newWidth = Math.max(200, startWidth + ev.clientX - startX);
+      widthRef.current = newWidth;
+      setWidth(newWidth);
+    };
+    const stopDrag = () => {
+      document.removeEventListener('mousemove', doDrag);
+      document.removeEventListener('mouseup', stopDrag);
+      localStorage.setItem('sidebarWidth', widthRef.current.toString());
+    };
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('mouseup', stopDrag);
   };
 
   let sidebarContent;
@@ -193,6 +219,7 @@ const Sidebar = ({
           </a>
         </div>
       )}
+      <div className={styles.resizeHandle} onMouseDown={startResize} />
     </div>
   );
 };

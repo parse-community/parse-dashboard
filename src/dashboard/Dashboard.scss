@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .content {
-  margin-left: 300px;
+  margin-left: var(--sidebar-width, 300px);
   overflow: auto;
   max-height: 100vh;
 }

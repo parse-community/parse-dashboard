@@ -11,7 +11,7 @@
 .sidebar {
   position: fixed;
   background: white;
-  width: 300px;
+  width: var(--sidebar-width, 300px);
   padding: 10px;
   border-right: 1px solid #b0b8bf;
   top: 0;
@@ -53,7 +53,7 @@
 }
 
 .content {
-  margin-left: 300px;
+  margin-left: var(--sidebar-width, 300px);
   padding: 20px 10px 10px 10px;
   min-height: 100vh;
 }

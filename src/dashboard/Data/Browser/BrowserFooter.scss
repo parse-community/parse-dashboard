@@ -2,7 +2,7 @@
 
 .footer {
   position: absolute;
-  width: calc(100% - 300px);
+  width: calc(100% - var(--sidebar-width, 300px));
   bottom: 0;
   gap: 10px;
   padding: 0px 15px;
