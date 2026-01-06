@@ -8,24 +8,19 @@
 @import 'stylesheets/globals.scss';
 
 .headers {
-  position: fixed;
+  position: sticky;
   top: 96px;
-  left: 300px;
+  left: 0;
   right: 0;
   background: #66637A;
   height: 30px;
   white-space: nowrap;
-}
-
-body:global(.expanded) {
-  .headers {
-    left: $sidebarCollapsedWidth;
-  }
+  z-index: 10;
 }
 
 .content {
   position: relative;
-  padding-top: 126px;
+  padding-top: 96px;
   min-height: 100vh;
 }
 
