@@ -80,6 +80,8 @@ const BrowserToolbar = ({
 
   togglePanel,
   isPanelVisible,
+  toggleChartPanel,
+  isChartPanelVisible,
   addPanel,
   removePanel,
   panelCount,
@@ -291,6 +293,8 @@ const BrowserToolbar = ({
       selectedData={selectedData}
       togglePanel={togglePanel}
       isPanelVisible={isPanelVisible}
+      toggleChartPanel={toggleChartPanel}
+      isChartPanelVisible={isChartPanelVisible}
       addPanel={addPanel}
       removePanel={removePanel}
       panelCount={panelCount}

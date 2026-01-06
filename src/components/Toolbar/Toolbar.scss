@@ -170,3 +170,106 @@ body:global(.expanded) {
     }
   }
 }
+
+.dataControls {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+}
+
+.chartButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #169cee, #1976d2);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(22, 156, 238, 0.3);
+
+  &:hover {
+    background: linear-gradient(135deg, #1976d2, #1565c0);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 156, 238, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(22, 156, 238, 0.3);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dataControls {
+    right: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dataControls {
+    right: 15px;
+    bottom: 10px;
+    gap: 12px;
+  }
+
+  .chartButton {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .stats {
+    right: 110px;
+    bottom: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dataControls {
+    right: 10px;
+    bottom: 10px;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .chartButton {
+    padding: 5px 8px;
+    font-size: 11px;
+
+    span {
+      display: none;
+    }
+  }
+
+  .stats {
+    right: 80px;
+    bottom: 10px;
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+}

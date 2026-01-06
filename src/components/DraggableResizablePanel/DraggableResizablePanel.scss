@@ -1,0 +1,188 @@
+.draggablePanel {
+  position: fixed;
+  z-index: 1000;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: white;
+  border: 1px solid #e1e5e9;
+}
+
+.resizableContainer {
+  border-radius: 8px;
+  overflow: visible; // Change: allow handles to be visible outside the border
+
+  :global(.react-resizable-handle) {
+    position: absolute;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  // Show handles when hovering over the window
+  &:hover :global(.react-resizable-handle) {
+    opacity: 1;
+  }
+
+  :global(.react-resizable-handle-se) {
+    bottom: -5px;
+    right: -5px;
+    width: 16px;
+    height: 16px;
+    cursor: se-resize;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    //background: #1f8ce6;
+    //border: 2px solid white;
+  }
+
+  :global(.react-resizable-handle-e) {
+    right: -4px;
+    top: 20%;
+    bottom: 20%;
+    width: 8px;
+    cursor: e-resize;
+    border-radius: 4px;
+    //background: #1f8ce6;
+    //border: 1px solid white;
+  }
+
+  :global(.react-resizable-handle-s) {
+    bottom: -4px;
+    left: 20%;
+    right: 20%;
+    height: 8px;
+    cursor: s-resize;
+    border-radius: 4px;
+    //background: #1f8ce6;
+    //border: 1px solid white;
+  }
+
+  :global(.react-resizable-handle-w) {
+    left: -4px;
+    top: 20%;
+    bottom: 20%;
+    width: 8px;
+    cursor: w-resize;
+    border-radius: 4px;
+    //background: #1f8ce6;
+    //border: 1px solid white;
+  }
+
+  :global(.react-resizable-handle-n) {
+    top: -4px;
+    left: 20%;
+    right: 20%;
+    height: 8px;
+    cursor: n-resize;
+    border-radius: 4px;
+    //background: #1f8ce6;
+    //border: 1px solid white;
+  }
+
+  :global(.react-resizable-handle-ne) {
+    top: -5px;
+    right: -5px;
+    width: 12px;
+    height: 12px;
+    cursor: ne-resize;
+    border-radius: 50%;
+    //background: #1f8ce6;
+    //border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  :global(.react-resizable-handle-nw) {
+    top: -5px;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    cursor: nw-resize;
+    border-radius: 50%;
+    //background: #1f8ce6;
+    //border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  :global(.react-resizable-handle-sw) {
+    bottom: -5px;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    cursor: sw-resize;
+    border-radius: 50%;
+    //background: #1f8ce6;
+    //border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.panelContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+}
+
+.titleBar {
+  background: linear-gradient(135deg, #1f8ce6 0%, #1470c7 100%);
+  color: white;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  user-select: none;
+  border-radius: 8px 8px 0 0;
+  min-height: 32px;
+
+  &:hover {
+    background: linear-gradient(135deg, #1a7dd6 0%, #1260b7 100%);
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+
+  span {
+    margin: 0;
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  border-radius: 0 0 8px 8px;
+}
