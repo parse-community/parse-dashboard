@@ -22,6 +22,8 @@ import styles from './Databrowser.scss';
 import KeyboardShortcutsManager, { matchesShortcut } from 'lib/KeyboardShortcutsPreferences';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
+import ChartVisualization from '../../../components/ChartVisualization/ChartVisualization.react';
+import DraggableResizablePanel from '../../../components/DraggableResizablePanel/DraggableResizablePanel.react';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
@@ -128,6 +130,9 @@ export default class DataBrowser extends React.Component {
       selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
       firstSelectedCell: null,
       selectedData: [],
+      numericSelectedData: [], // Only numeric values for Sum operations
+      hasDateInSelection: false, // Flag to know if there are dates
+      isChartPanelVisible: false, // Flag for chart panel visibility
       prevClassName: props.className,
       panelWidth: parsedPanelWidth,
       isResizing: false,
@@ -182,6 +187,7 @@ export default class DataBrowser extends React.Component {
     this.toggleSyncPanelScroll = this.toggleSyncPanelScroll.bind(this);
     this.toggleBatchNavigate = this.toggleBatchNavigate.bind(this);
     this.toggleShowPanelCheckbox = this.toggleShowPanelCheckbox.bind(this);
+    this.toggleChartPanel = this.toggleChartPanel.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.addPanel = this.addPanel.bind(this);
     this.removePanel = this.removePanel.bind(this);
@@ -543,6 +549,12 @@ export default class DataBrowser extends React.Component {
         this.props.app.applicationId
       );
     }
+  }
+
+  toggleChartPanel() {
+    this.setState(prevState => ({
+      isChartPanelVisible: !prevState.isChartPanelVisible,
+    }));
   }
 
   getAllClassesSchema(schema) {
@@ -1649,7 +1661,9 @@ export default class DataBrowser extends React.Component {
       let validColumns = true;
       for (let i = colStart; i <= colEnd; i++) {
         const name = this.state.order[i].name;
-        if (this.props.columns[name].type !== 'Number') {
+        const colType = this.props.columns[name].type;
+        // Allow Number, Date, String (which can contain numbers) for visualization
+        if (colType !== 'Number' && colType !== 'Date' && colType !== 'String') {
           validColumns = false;
           break;
         }
@@ -1657,6 +1671,9 @@ export default class DataBrowser extends React.Component {
 
       const newSelection = new Set();
       const selectedData = [];
+      let hasDateColumns = false; // Flag to detect if there are date columns
+      let numericData = []; // Create array with only numbers for sum operations (excluding dates)
+      
       for (let x = rowStart; x <= rowEnd; x++) {
         let rowData = null;
         if (validColumns) {
@@ -1664,9 +1681,27 @@ export default class DataBrowser extends React.Component {
         }
         for (let y = colStart; y <= colEnd; y++) {
           if (rowData) {
-            const value = rowData.attributes[this.state.order[y].name];
-            if (typeof value === 'number' && !isNaN(value)) {
-              selectedData.push(rowData.attributes[this.state.order[y].name]);
+            const colName = this.state.order[y].name;
+            const value = rowData.attributes[colName];
+            const colType = this.props.columns[colName].type;
+            
+            // Add all valid data for chart visualization
+            if (value !== null && value !== undefined) {
+              if (colType === 'Date') {
+                selectedData.push(value);
+                hasDateColumns = true; // Mark that there are dates
+              } else if (typeof value === 'number' && !isNaN(value)) {
+                selectedData.push(value);
+                numericData.push(value); // Also add to numeric-only array
+              } else if (typeof value === 'string') {
+                const numValue = parseFloat(value);
+                if (!isNaN(numValue)) {
+                  selectedData.push(numValue);
+                  numericData.push(numValue);
+                } else {
+                  selectedData.push(value);
+                }
+              }
             }
           }
           newSelection.add(`${x}-${y}`);
@@ -1685,7 +1720,9 @@ export default class DataBrowser extends React.Component {
             colEnd,
           },
           selectedObjectId: undefined,
-          selectedData,
+          selectedData, // All data for chart visualization  
+          numericSelectedData: numericData, // Only numbers for Sum operations
+          hasDateInSelection: hasDateColumns, // Flag to know if there are dates
         });
       } else {
         this.setCurrent({ row, col });
@@ -1694,6 +1731,8 @@ export default class DataBrowser extends React.Component {
       this.setState({
         selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
         selectedData: [],
+        numericSelectedData: [], // Clear numeric data
+        hasDateInSelection: false, // Clear dates flag
         current: { row, col },
         firstSelectedCell: clickedCellKey,
       });
@@ -1931,9 +1970,28 @@ export default class DataBrowser extends React.Component {
           toggleBatchNavigate={this.toggleBatchNavigate}
           showPanelCheckbox={this.state.showPanelCheckbox}
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
+          toggleChartPanel={this.toggleChartPanel}
+          isChartPanelVisible={this.state.isChartPanelVisible}
           {...other}
           onRefresh={this.handleRefresh}
         />
+
+        {this.state.isChartPanelVisible && this.state.selectedData.length > 1 && (
+          <DraggableResizablePanel
+            title="Data Visualization"
+            onClose={this.toggleChartPanel}
+            initialWidth={700}
+            initialHeight={620}
+          >
+            <ChartVisualization
+              selectedData={this.state.selectedData}
+              selectedCells={this.state.selectedCells}
+              data={this.props.data}
+              order={this.state.order}
+              columns={this.props.columns}
+            />
+          </DraggableResizablePanel>
+        )}
 
         {this.state.contextMenuX && (
           <ContextMenu

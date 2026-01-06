@@ -83,6 +83,8 @@ const BrowserToolbar = ({
   addPanel,
   removePanel,
   panelCount,
+  toggleChartPanel,
+  isChartPanelVisible,
   classwiseCloudFunctions,
   appId,
   appName,
@@ -294,6 +296,8 @@ const BrowserToolbar = ({
       addPanel={addPanel}
       removePanel={removePanel}
       panelCount={panelCount}
+      toggleChartPanel={toggleChartPanel}
+      isChartPanelVisible={isChartPanelVisible}
       classwiseCloudFunctions={classwiseCloudFunctions}
       appId={appId}
       appName={appName}
