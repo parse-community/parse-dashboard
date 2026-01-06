@@ -356,25 +356,30 @@ class Views extends TableView {
     return (
       <div>
         <LoaderContainer loading={loading} solid={false}>
-          <div style={{ paddingTop: 96 }}>
-            <div style={{ width: this.state.tableWidth }}>
+          <div style={{
+            position: 'fixed',
+            top: 96,
+            left: 300,
+            right: 0,
+            bottom: 0,
+            overflow: 'auto'
+          }}>
+            <div style={{ minWidth: this.state.tableWidth }}>
               <div
                 className={tableStyles.headers}
                 style={{
-                  width: this.state.tableWidth,
-                  right: 'auto',
                   position: 'sticky',
-                  top: 96,
+                  top: 0,
                   left: 0,
+                  right: 0,
                   zIndex: 10,
+                  background: '#66637A',
                 }}
                 ref={this.headersRef}
               >
                 {headers}
               </div>
-              <div className={tableStyles.content} style={{ overflowX: 'auto', paddingTop: 0 }}>
-                {content}
-              </div>
+              {content}
             </div>
           </div>
         </LoaderContainer>
