@@ -175,7 +175,13 @@ export default class CategoryList extends React.Component {
                   title={c.name}
                   to={{ pathname: link }}
                   className={className}
-                  onClick={() => this.props.classClicked()}
+                  onClick={() => {
+                    this.props.classClicked();
+                    // Auto-expand filter list when clicking on a class that has filters
+                    if ((c.filters || []).length > 0 && !this.state.openClasses.includes(id)) {
+                      this.setState({ openClasses: [...this.state.openClasses, id] });
+                    }
+                  }}
                 >
                   {c.name}
                 </Link>
