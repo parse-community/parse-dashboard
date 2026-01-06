@@ -88,7 +88,7 @@ export default class CategoryList extends React.Component {
 
           // If a matching filter is found, auto-expand this class
           if (matchIndex !== -1 && !this.state.openClasses.includes(id)) {
-            this.setState({ openClasses: [id] });
+            this.setState({ openClasses: [...this.state.openClasses, id] });
           }
           break;
         }
