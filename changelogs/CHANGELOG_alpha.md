@@ -1,3 +1,10 @@
+# [8.2.0-alpha.17](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.16...8.2.0-alpha.17) (2026-01-06)
+
+
+### Features
+
+* Auto-expand filter list when clicking on class in data browser ([#3101](https://github.com/parse-community/parse-dashboard/issues/3101)) ([30a733c](https://github.com/parse-community/parse-dashboard/commit/30a733c52db88350193681f2e05c0b754137f09c))
+
 # [8.2.0-alpha.16](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.15...8.2.0-alpha.16) (2025-12-28)
 
 
