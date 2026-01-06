@@ -610,31 +610,30 @@ class Views extends TableView {
 
       return (
         <div key={name} className={styles.headerWrap} style={{ width }}>
-          <span className={styles.headerText}>
-            <span className={styles.headerLabel}>{name}</span>
-            {isPointerColumn && (
-              <button
-                type="button"
-                className={styles.pointerIcon}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  this.handleOpenAllPointers(name);
-                  // Remove focus after action to follow UX best practices
-                  e.currentTarget.blur();
-                }}
-                aria-label={`Filter to show all pointers from ${name} column`}
-                title="Filter to show all pointers from this column"
-              >
-                <Icon
-                  name="right-outline"
-                  width={20}
-                  height={20}
-                  fill="white"
-                />
-              </button>
-            )}
-          </span>
+          <div className={styles.headerName}>{name}</div>
+          <div className={styles.headerType}>{columnType || 'String'}</div>
+          {isPointerColumn && (
+            <button
+              type="button"
+              className={styles.pointerIcon}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                this.handleOpenAllPointers(name);
+                // Remove focus after action to follow UX best practices
+                e.currentTarget.blur();
+              }}
+              aria-label={`Filter to show all pointers from ${name} column`}
+              title="Filter to show all pointers from this column"
+            >
+              <Icon
+                name="right-outline"
+                width={20}
+                height={20}
+                fill="white"
+              />
+            </button>
+          )}
           <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
         </div>
       );
