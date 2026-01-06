@@ -5,10 +5,12 @@
 }
 
 .headerWrap {
+  @include MonospaceFont;
   display: inline-block;
   vertical-align: top;
   background: #66637A;
   color: white;
+  font-size: 12px;
   line-height: 30px;
   padding: 0 16px;
   border-right: 1px solid #e3e3ea;
@@ -27,6 +29,8 @@
 }
 
 .headerLabel {
+  color: white;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
