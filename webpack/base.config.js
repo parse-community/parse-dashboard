@@ -25,6 +25,7 @@ module.exports = {
   },
   resolve: {
     modules: [__dirname, path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')],
+    fullySpecified: false,
   },
   resolveLoader: {
     modules: [path.join(__dirname, '../node_modules')],
@@ -35,6 +36,12 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: ['babel-loader'],
+      },
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
       },
       {
         test: /\.scss$/,
