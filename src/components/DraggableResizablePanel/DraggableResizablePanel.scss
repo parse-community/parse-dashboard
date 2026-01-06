@@ -31,8 +31,6 @@
     cursor: se-resize;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-    //background: #1f8ce6;
-    //border: 2px solid white;
   }
 
   :global(.react-resizable-handle-e) {
@@ -42,8 +40,6 @@
     width: 8px;
     cursor: e-resize;
     border-radius: 4px;
-    //background: #1f8ce6;
-    //border: 1px solid white;
   }
 
   :global(.react-resizable-handle-s) {
@@ -53,8 +49,6 @@
     height: 8px;
     cursor: s-resize;
     border-radius: 4px;
-    //background: #1f8ce6;
-    //border: 1px solid white;
   }
 
   :global(.react-resizable-handle-w) {
@@ -64,8 +58,6 @@
     width: 8px;
     cursor: w-resize;
     border-radius: 4px;
-    //background: #1f8ce6;
-    //border: 1px solid white;
   }
 
   :global(.react-resizable-handle-n) {
@@ -75,8 +67,6 @@
     height: 8px;
     cursor: n-resize;
     border-radius: 4px;
-    //background: #1f8ce6;
-    //border: 1px solid white;
   }
 
   :global(.react-resizable-handle-ne) {
@@ -86,8 +76,6 @@
     height: 12px;
     cursor: ne-resize;
     border-radius: 50%;
-    //background: #1f8ce6;
-    //border: 2px solid white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
   }
 
@@ -98,8 +86,6 @@
     height: 12px;
     cursor: nw-resize;
     border-radius: 50%;
-    //background: #1f8ce6;
-    //border: 2px solid white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
   }
 
@@ -110,8 +96,6 @@
     height: 12px;
     cursor: sw-resize;
     border-radius: 50%;
-    //background: #1f8ce6;
-    //border: 2px solid white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
   }
 }
