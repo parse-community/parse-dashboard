@@ -27,7 +27,9 @@ const DraggableResizablePanel = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const panelRef = useRef(null);
-  const titleBarRef = useRef(null);  const handleMouseDown = (e) => {
+  const titleBarRef = useRef(null);
+
+  const handleMouseDown = (e) => {
     // Check if the click was on the title bar or its children
     if (titleBarRef.current && (
       e.target === titleBarRef.current ||
@@ -45,7 +47,9 @@ const DraggableResizablePanel = ({
         e.stopPropagation();
       }
     }
-  };  const handleMouseMove = (e) => {
+  };
+
+  const handleMouseMove = (e) => {
     if (isDragging) {
       const newX = e.clientX - dragStart.x;
       const newY = e.clientY - dragStart.y;

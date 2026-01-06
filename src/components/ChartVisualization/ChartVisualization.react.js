@@ -492,7 +492,7 @@ const ChartVisualization = ({
           />
         );
       } else {
-        // Bar ou Line Chart
+        // Bar or Line Chart
         const ChartComponent = chartType === 'bar' ? Bar : Line;
 
         // Improve options for correct sizing
