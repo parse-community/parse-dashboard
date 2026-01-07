@@ -18,6 +18,17 @@ export default class BrowserMenu extends React.Component {
 
     this.state = { open: false, openToLeft: false };
     this.wrapRef = React.createRef();
+    this.id = Math.random().toString(36);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Close this submenu if setCurrent was called with a different ID
+    if (this.props.currentSubmenu !== undefined &&
+        this.props.currentSubmenu !== this.id &&
+        this.props.currentSubmenu !== prevProps.currentSubmenu &&
+        this.state.open) {
+      this.setState({ open: false });
+    }
   }
 
   render() {
@@ -76,6 +87,8 @@ export default class BrowserMenu extends React.Component {
                       this.setState({ open: false });
                       this.props.parentClose?.();
                     },
+                    currentSubmenu: this.state.currentSubmenu,
+                    setCurrent: (id) => this.setState({ currentSubmenu: id }),
                   });
                 }
                 return child;
@@ -100,7 +113,7 @@ export default class BrowserMenu extends React.Component {
           const width = this.wrapRef.current.clientWidth;
           const openToLeft = rect.right + width > window.innerWidth;
           this.setState({ open: true, openToLeft });
-          this.props.setCurrent?.(null);
+          this.props.setCurrent?.(this.id);
         };
       } else {
         entryEvents.onClick = () => {

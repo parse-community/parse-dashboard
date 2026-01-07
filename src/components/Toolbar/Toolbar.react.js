@@ -154,16 +154,6 @@ const Toolbar = props => {
             appId={props.appId}
             appName={props.appName}
           />
-          {props?.selectedData?.length > 1 && (
-            <button
-              onClick={props.toggleChartPanel}
-              className={styles.chartButton}
-              title={props.isChartPanelVisible ? 'Hide Data Visualization' : 'Show Data Visualization'}
-            >
-              <Icon width={16} height={16} fill="currentColor" name="analytics-outline" />
-              <span>{props.isChartPanelVisible ? 'Hide Chart' : 'Show Chart'}</span>
-            </button>
-          )}
         </div>
       ) : null}
       <div className={styles.actions}>{props.children}</div>

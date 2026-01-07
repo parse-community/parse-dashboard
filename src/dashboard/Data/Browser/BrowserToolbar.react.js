@@ -296,8 +296,6 @@ const BrowserToolbar = ({
       addPanel={addPanel}
       removePanel={removePanel}
       panelCount={panelCount}
-      toggleChartPanel={toggleChartPanel}
-      isChartPanelVisible={isChartPanelVisible}
       classwiseCloudFunctions={classwiseCloudFunctions}
       appId={appId}
       appName={appName}
@@ -480,6 +478,27 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleShowPanelCheckbox();
+            }}
+          />
+        </BrowserMenu>
+        <BrowserMenu title="Chart" setCurrent={setCurrent}>
+          <MenuItem
+            text={
+              <span>
+                {isChartPanelVisible && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Show Chart
+              </span>
+            }
+            onClick={() => {
+              toggleChartPanel();
             }}
           />
         </BrowserMenu>

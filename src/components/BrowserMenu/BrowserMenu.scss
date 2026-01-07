@@ -9,6 +9,14 @@
 
 .wrap {
   display: inline-block;
+
+  // When used as a submenu item, make it full width
+  .body &,
+  .subMenuBody &,
+  .subMenuBodyLeft & {
+    display: block;
+    width: 100%;
+  }
 }
 
 .entry {
