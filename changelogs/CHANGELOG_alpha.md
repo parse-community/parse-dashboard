@@ -1,3 +1,10 @@
+# [8.2.0-alpha.18](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.17...8.2.0-alpha.18) (2026-01-07)
+
+
+### Bug Fixes
+
+* Header row in View table disappears when scrolling up ([#3105](https://github.com/parse-community/parse-dashboard/issues/3105)) ([2923e86](https://github.com/parse-community/parse-dashboard/commit/2923e86be1d0378906d83d411da65fa0f03aa68d))
+
 # [8.2.0-alpha.17](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.16...8.2.0-alpha.17) (2026-01-06)
 
 
