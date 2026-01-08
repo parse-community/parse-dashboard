@@ -38,9 +38,20 @@ export default class ResizableSplitView extends React.Component {
     const containerHeight = containerRect.height;
     const mouseY = e.clientY - containerRect.top;
 
-    // Calculate new percentage, with min/max constraints
-    let newPercentage = (mouseY / containerHeight) * 100;
-    newPercentage = Math.max(20, Math.min(80, newPercentage)); // Between 20% and 80%
+    // Define minimum heights in pixels
+    const minTopPaneHeight = 200; // Minimum height for table + toolbar
+    const minBottomPaneHeight = 250; // Minimum height for chart (200px chart + 50px controls)
+    const dividerHeight = 6; // Height of the divider
+
+    // Calculate constraints in pixels
+    const minTopPx = minTopPaneHeight;
+    const maxTopPx = containerHeight - minBottomPaneHeight - dividerHeight;
+
+    // Constrain mouse position to valid range
+    const constrainedMouseY = Math.max(minTopPx, Math.min(maxTopPx, mouseY));
+
+    // Convert to percentage
+    const newPercentage = (constrainedMouseY / containerHeight) * 100;
 
     this.setState({ topPaneHeight: newPercentage });
   }
