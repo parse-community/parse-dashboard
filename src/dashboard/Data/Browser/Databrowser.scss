@@ -1,9 +1,17 @@
+@import 'stylesheets/globals.scss';
+
 .dataBrowserContainer {
     position: fixed;
     top: 96px;
     left: 300px;
     right: 0;
     bottom: 36px;
+}
+
+body:global(.expanded) {
+    .dataBrowserContainer {
+        left: $sidebarCollapsedWidth;
+    }
 }
 
 .resizablePanel{
