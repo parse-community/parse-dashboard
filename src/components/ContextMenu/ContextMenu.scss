@@ -3,6 +3,9 @@
 .menu {
 	position: absolute;
 	font-size: 14px;
+	// To be shown above the toolbar with also z-index set
+	// src/components/Toolbar/Toolbar.scss
+	z-index: 6;
 
 	ul {
 		background: $purple;
