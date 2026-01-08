@@ -23,7 +23,7 @@ import KeyboardShortcutsManager, { matchesShortcut } from 'lib/KeyboardShortcuts
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 import ChartVisualization from '../../../components/ChartVisualization/ChartVisualization.react';
-import DraggableResizablePanel from '../../../components/DraggableResizablePanel/DraggableResizablePanel.react';
+import ResizableSplitView from '../../../components/ResizableSplitView/ResizableSplitView.react';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
@@ -1761,10 +1761,11 @@ export default class DataBrowser extends React.Component {
       effectivePanelWidth = (this.state.panelWidth / this.state.panelCount) * actualPanelCount;
     }
 
-    return (
-      <div>
-        <div>
-          <BrowserTable
+    const showChart = this.state.isChartPanelVisible;
+
+    const topPaneContent = (
+      <>
+        <BrowserTable
             appId={applicationId}
             order={this.state.order}
             current={this.state.current}
@@ -1926,7 +1927,6 @@ export default class DataBrowser extends React.Component {
               </div>
             </ResizableBox>
           )}
-        </div>
 
         <BrowserToolbar
           count={count}
@@ -1974,23 +1974,30 @@ export default class DataBrowser extends React.Component {
           isChartPanelVisible={this.state.isChartPanelVisible}
           {...other}
           onRefresh={this.handleRefresh}
-        />
+          />
+      </>
+    );
 
-        {this.state.isChartPanelVisible && this.state.selectedData.length > 1 && (
-          <DraggableResizablePanel
-            title="Data Visualization"
-            onClose={this.toggleChartPanel}
-            initialWidth={700}
-            initialHeight={620}
-          >
-            <ChartVisualization
-              selectedData={this.state.selectedData}
-              selectedCells={this.state.selectedCells}
-              data={this.props.data}
-              order={this.state.order}
-              columns={this.props.columns}
-            />
-          </DraggableResizablePanel>
+    const bottomPaneContent = (
+      <ChartVisualization
+        selectedData={this.state.selectedData}
+        selectedCells={this.state.selectedCells}
+        data={this.props.data}
+        order={this.state.order}
+        columns={this.props.columns}
+      />
+    );
+
+    return (
+      <div className={styles.dataBrowserContainer}>
+        {showChart ? (
+          <ResizableSplitView
+            initialTopHeight={50}
+            topPane={topPaneContent}
+            bottomPane={bottomPaneContent}
+          />
+        ) : (
+          topPaneContent
         )}
 
         {this.state.contextMenuX && (
