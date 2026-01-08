@@ -260,10 +260,7 @@ const processNumericSeriesData = (selectedCells, data, order, columns, chartType
         },
         plugins: {
           title: {
-            display: true,
-            text: 'Selected Data Visualization',
-            font: { size: 16, weight: 'bold' },
-            color: '#333'
+            display: false
           },
           legend: {
             display: datasets.length > 1 // Show legend if multiple columns
@@ -336,10 +333,7 @@ const processNumericSeriesData = (selectedCells, data, order, columns, chartType
         },
         plugins: {
           title: {
-            display: true,
-            text: 'Selected Data Visualization',
-            font: { size: 16, weight: 'bold' },
-            color: '#333'
+            display: false
           },
           legend: {
             display: false // Single column doesn't need legend
@@ -527,19 +521,7 @@ const ChartVisualization = ({
           plugins: {
             ...chartData.options.plugins,
             title: {
-              display: true,
-              text: 'Selected Data Visualization',
-              position: 'top',
-              align: 'center',
-              font: {
-                size: 16,
-                weight: 'bold'
-              },
-              color: '#333',
-              padding: {
-                top: 10,
-                bottom: 20
-              }
+              display: false
             },
             tooltip: {
               enabled: true,

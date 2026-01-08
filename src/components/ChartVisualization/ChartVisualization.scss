@@ -15,10 +15,9 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 0px 0px 8px 8px;
   overflow: hidden;
-  min-width: 600px;
-  min-height: 500px;
+  min-width: 300px;
+  min-height: 200px;
   position: relative;
-  z-index: 1000;
 }
 
 .chartHeader {
@@ -98,8 +97,7 @@
 .chartContainer {
   flex: 1;
   position: relative;
-  min-height: 450px;
-  height: calc(100vh - 280px);
+  min-height: 150px;
   width: 100%;
   padding: 20px;
   display: flex;
@@ -135,20 +133,19 @@
 
     > div {
       max-width: 100% !important;
-      min-width: 300px !important;
+      min-width: 250px !important;
     }
   }
 }
 
 @media (max-width: 768px) {
   .chartContainer {
-    min-height: 350px;
+    min-height: 150px;
     padding: 15px;
-    height: calc(100vh - 250px);
 
     > div {
-      min-height: 300px !important;
-      min-width: 280px !important;
+      min-height: 150px !important;
+      min-width: 200px !important;
     }
   }
 
@@ -172,11 +169,11 @@
 @media (max-width: 480px) {
   .chartContainer {
     padding: 10px;
-    min-height: 300px;
+    min-height: 120px;
 
     > div {
-      min-height: 250px !important;
-      min-width: 250px !important;
+      min-height: 120px !important;
+      min-width: 180px !important;
     }
   }
 }
