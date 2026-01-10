@@ -27,6 +27,7 @@ const BrowserToolbar = ({
   perms,
   schema,
   filters,
+  savedFilters,
   selection,
   relation,
   setCurrent,
@@ -490,6 +491,7 @@ const BrowserToolbar = ({
         setCurrent={setCurrent}
         schema={schemaSimplifiedData}
         filters={filters}
+        savedFilters={savedFilters}
         onChange={onFilterChange}
         onSaveFilter={onFilterSave}
         onDeleteFilter={onDeleteFilter}

@@ -47,6 +47,7 @@ import { useBeforeUnload } from 'react-router-dom';
 import BrowserFooter from './BrowserFooter.react';
 
 const SELECTED_ROWS_MESSAGE = 'There are selected rows. Are you sure you want to leave this page?';
+const EMPTY_FILTERS_ARRAY = [];
 
 function SelectedRowsNavigationPrompt({ when }) {
   const message = SELECTED_ROWS_MESSAGE;
@@ -1441,10 +1442,26 @@ class Browser extends DashboardView {
     }
 
     const _filters = JSON.stringify(jsonFilters);
+    const className = this.props.params.className;
+
+    // Use server-loaded filters from state if available, otherwise fallback to local storage
+    const existingFilters = this.state.classFilters[className] || [];
+
     const preferences = ClassPreferences.getPreferences(
       this.context.applicationId,
-      this.props.params.className
+      className
     );
+
+    // Initialize preferences.filters from state if needed
+    if (!preferences.filters) {
+      preferences.filters = [];
+    }
+
+    // Merge server filters into preferences for the update logic
+    // Use server filters as source of truth
+    const serverFilterIds = new Set(existingFilters.map(f => f.id));
+    const localOnlyFilters = preferences.filters.filter(f => !serverFilterIds.has(f.id));
+    preferences.filters = [...existingFilters, ...localOnlyFilters];
 
     let newFilterId = filterId;
 
@@ -2652,6 +2669,7 @@ class Browser extends DashboardView {
               perms={this.state.clp[className]}
               schema={this.props.schema}
               filters={this.state.filters}
+              savedFilters={this.state.classFilters[className] || EMPTY_FILTERS_ARRAY}
               onFilterChange={this.updateFilters}
               onFilterSave={(...args) => this.saveFilters(...args)}
               onDeleteFilter={this.deleteFilter}
