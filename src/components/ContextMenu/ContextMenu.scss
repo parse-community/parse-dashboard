@@ -11,6 +11,8 @@
 		background: $purple;
 		@include animation('fade-in .2s linear');
 		opacity: 0;
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	}
 
 	li {
