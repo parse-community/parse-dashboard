@@ -195,6 +195,8 @@ class Browser extends DashboardView {
       classFilters: {}, // Map of className -> filters array
     };
 
+    this._isMounted = false;
+
     this.addLocation = this.addLocation.bind(this);
     this.allClassesSchema = this.getAllClassesSchema.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
@@ -298,6 +300,7 @@ class Browser extends DashboardView {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.addLocation(this.props.params.appId);
     window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
     get('/parse-dashboard-config.json').then(data => {
@@ -349,10 +352,14 @@ class Browser extends DashboardView {
       );
     }
 
-    this.setState({ classFilters });
+    // Check if component is still mounted before updating state
+    if (this._isMounted) {
+      this.setState({ classFilters });
+    }
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     if (this.currentQuery) {
       this.currentQuery.cancel();
     }
@@ -1459,8 +1466,8 @@ class Browser extends DashboardView {
 
     // Merge server filters into preferences for the update logic
     // Use server filters as source of truth
-    const serverFilterIds = new Set(existingFilters.map(f => f.id));
-    const localOnlyFilters = preferences.filters.filter(f => !serverFilterIds.has(f.id));
+    const serverFilterIds = new Set(existingFilters.filter(f => f.id).map(f => f.id));
+    const localOnlyFilters = preferences.filters.filter(f => !f.id || !serverFilterIds.has(f.id));
     preferences.filters = [...existingFilters, ...localOnlyFilters];
 
     let newFilterId = filterId;
