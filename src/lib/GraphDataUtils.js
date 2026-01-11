@@ -40,6 +40,47 @@ export function isNumeric(value) {
 }
 
 /**
+ * Extract a numeric value from various types (number, pointer objectId, etc.)
+ * For pointers, we hash the objectId to get a consistent numeric value
+ * @param {*} value - Value to extract number from
+ * @returns {number|null} Numeric value or null
+ */
+export function extractNumericValue(value) {
+  // Direct numeric value
+  if (isNumeric(value)) {
+    return value;
+  }
+
+  // Handle Parse Pointer objects - use objectId as string for counting
+  if (value && typeof value === 'object') {
+    // Parse pointer has objectId or id
+    const id = value.objectId || value.id;
+    if (id) {
+      // For counting purposes, we'll use a hash of the objectId
+      // This allows us to count unique pointers
+      return simpleHash(String(id));
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Simple hash function to convert strings to numbers
+ * @param {string} str - String to hash
+ * @returns {number} Hash value
+ */
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash);
+}
+
+/**
  * Check if a value is a valid date
  * @param {*} value - Value to check
  * @returns {boolean} True if valid date
@@ -164,8 +205,15 @@ export function groupAndAggregate(data, groupByColumn, valueColumn, aggregationT
   const groups = {};
 
   data.forEach(item => {
-    const groupValue = getNestedValue(item, groupByColumn);
-    const value = getNestedValue(item, valueColumn);
+    const rawGroupValue = getNestedValue(item, groupByColumn);
+    const rawValue = getNestedValue(item, valueColumn);
+    const value = extractNumericValue(rawValue);
+
+    // Handle pointer grouping - use objectId
+    let groupValue = rawGroupValue;
+    if (rawGroupValue && typeof rawGroupValue === 'object') {
+      groupValue = rawGroupValue.objectId || rawGroupValue.id || rawGroupValue;
+    }
 
     // Handle null/undefined group values
     const groupKey = groupValue != null ? String(groupValue) : 'Other';
@@ -175,7 +223,7 @@ export function groupAndAggregate(data, groupByColumn, valueColumn, aggregationT
     }
 
     // Only add numeric values for aggregation
-    if (isNumeric(value)) {
+    if (value !== null) {
       groups[groupKey].push(value);
     }
   });
@@ -252,8 +300,11 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
   } else {
     // Single value aggregation
     const values = data
-      .map(item => getNestedValue(item, valueColumn))
-      .filter(val => isNumeric(val));
+      .map(item => {
+        const rawValue = getNestedValue(item, valueColumn);
+        return extractNumericValue(rawValue);
+      })
+      .filter(val => val !== null);
 
     aggregatedData = {
       'All Data': aggregateValues(values, aggregationType),
@@ -301,9 +352,10 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
   data.forEach(item => {
     const xVal = getNestedValue(item, xColumn);
-    const value = getNestedValue(item, valueColumn);
+    const rawValue = getNestedValue(item, valueColumn);
+    const value = extractNumericValue(rawValue);
 
-    if (xVal == null || !isNumeric(value)) return;
+    if (xVal == null || value === null) return;
 
     // Check if x-axis value is a date
     const normalizedDate = normalizeDate(xVal);
@@ -320,7 +372,18 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
     xValues.set(xKey, xLabel);
 
-    const groupKey = groupByColumn ? String(getNestedValue(item, groupByColumn) || 'Other') : 'All';
+    // Handle groupBy column - extract objectId from pointers
+    let groupKeyValue = 'All';
+    if (groupByColumn) {
+      const rawGroupValue = getNestedValue(item, groupByColumn);
+      if (rawGroupValue && typeof rawGroupValue === 'object') {
+        // Pointer object - use objectId
+        groupKeyValue = String(rawGroupValue.objectId || rawGroupValue.id || 'Other');
+      } else {
+        groupKeyValue = String(rawGroupValue || 'Other');
+      }
+    }
+    const groupKey = groupKeyValue;
 
     if (!groups[groupKey]) {
       groups[groupKey] = {};

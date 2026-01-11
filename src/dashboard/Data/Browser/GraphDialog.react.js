@@ -113,6 +113,14 @@ export default class GraphDialog extends React.Component {
       : [];
   }
 
+  getNumericAndPointerColumns() {
+    return this.props.columns
+      ? Object.entries(this.props.columns)
+          .filter(([key, col]) => (col.type === 'Number' || col.type === 'Pointer') && key !== 'objectId')
+          .map(([key]) => key)
+      : [];
+  }
+
   getAllColumns() {
     return this.props.columns
       ? Object.keys(this.props.columns).filter(key => key !== 'objectId')
@@ -123,6 +131,14 @@ export default class GraphDialog extends React.Component {
     return this.props.columns
       ? Object.entries(this.props.columns)
           .filter(([key, col]) => col.type === 'String' && key !== 'objectId')
+          .map(([key]) => key)
+      : [];
+  }
+
+  getStringAndPointerColumns() {
+    return this.props.columns
+      ? Object.entries(this.props.columns)
+          .filter(([key, col]) => (col.type === 'String' || col.type === 'Pointer') && key !== 'objectId')
           .map(([key]) => key)
       : [];
   }
@@ -148,7 +164,9 @@ export default class GraphDialog extends React.Component {
     const { chartType } = this.state;
     const allColumns = this.getAllColumns();
     const numericColumns = this.getNumericColumns();
+    const numericAndPointerColumns = this.getNumericAndPointerColumns();
     const stringColumns = this.getStringColumns();
+    const stringAndPointerColumns = this.getStringAndPointerColumns();
 
     return (
       <>
@@ -187,9 +205,9 @@ export default class GraphDialog extends React.Component {
             <Dropdown
               value={this.state.valueColumn}
               onChange={valueColumn => this.setState({ valueColumn })}
-              placeholder="Select value column (numeric)"
+              placeholder="Select value column (numeric/pointer)"
             >
-              {numericColumns.map(col => (
+              {numericAndPointerColumns.map(col => (
                 <Option key={col} value={col}>
                   {col}
                 </Option>
@@ -213,7 +231,7 @@ export default class GraphDialog extends React.Component {
           } />
         )}
 
-        {stringColumns.length > 0 && (
+        {stringAndPointerColumns.length > 0 && (
           <Field label={<Label text="Group By (Optional)" />} input={
             <Dropdown
               value={this.state.groupByColumn}
@@ -221,7 +239,7 @@ export default class GraphDialog extends React.Component {
               placeholder="Select grouping column"
             >
               <Option value="">None</Option>
-              {stringColumns.map(col => (
+              {stringAndPointerColumns.map(col => (
                 <Option key={col} value={col}>
                   {col}
                 </Option>
