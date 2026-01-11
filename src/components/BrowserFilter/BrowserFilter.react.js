@@ -97,15 +97,15 @@ export default class BrowserFilter extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props) {
-    if (props.className !== this.props.className) {
+  componentDidUpdate(prevProps) {
+    // Close dialog when className changes
+    if (prevProps.className !== this.props.className) {
       this.setState({ open: false });
     }
 
+    // Reinitialize edit mode when props change
     this.initializeEditFilterMode();
-  }
 
-  componentDidUpdate(prevProps) {
     // Update filter info when savedFilters prop changes (async loading completed)
     if (prevProps.savedFilters !== this.props.savedFilters) {
       this.updateFilterInfoIfNeeded();
@@ -159,9 +159,9 @@ export default class BrowserFilter extends React.Component {
 
       const matchingFilter = savedFilters.find(savedFilter => {
         try {
-          const savedFilters = JSON.parse(savedFilter.filter);
+          const parsedFilterData = JSON.parse(savedFilter.filter);
           // Normalize saved filters for comparison (remove class property if it matches current className)
-          const normalizedSavedFilters = savedFilters.map(filter => {
+          const normalizedSavedFilters = parsedFilterData.map(filter => {
             const normalizedFilter = { ...filter };
             if (normalizedFilter.class === urlClassName) {
               delete normalizedFilter.class;
@@ -246,9 +246,9 @@ export default class BrowserFilter extends React.Component {
 
       const matchingFilter = savedFilters.find(savedFilter => {
         try {
-          const savedFilters = JSON.parse(savedFilter.filter);
+          const parsedFilterData = JSON.parse(savedFilter.filter);
           // Normalize saved filters for comparison (remove class property if it matches current className)
-          const normalizedSavedFilters = savedFilters.map(filter => {
+          const normalizedSavedFilters = parsedFilterData.map(filter => {
             const normalizedFilter = { ...filter };
             if (normalizedFilter.class === urlClassName) {
               delete normalizedFilter.class;
@@ -544,9 +544,9 @@ export default class BrowserFilter extends React.Component {
         const matchingFilter = savedFilters.find(filter => {
           if (!filter.id && filter.name === currentFilterInfo.name) {
             try {
-              const savedFilters = JSON.parse(filter.filter);
+              const parsedFilterData = JSON.parse(filter.filter);
               // Normalize saved filters for comparison
-              const normalizedSavedFilters = savedFilters.map(savedFilter => {
+              const normalizedSavedFilters = parsedFilterData.map(savedFilter => {
                 const normalizedFilter = { ...savedFilter };
                 if (normalizedFilter.class === this.props.className) {
                   delete normalizedFilter.class;
