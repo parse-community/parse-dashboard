@@ -17,7 +17,6 @@ import Popover from 'components/Popover/Popover.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import { CurrentApp } from 'context/currentApp';
 import { List, Map as ImmutableMap } from 'immutable';
-import * as ClassPreferences from 'lib/ClassPreferences';
 import * as Filters from 'lib/Filters';
 import Position from 'lib/Position';
 import React from 'react';
