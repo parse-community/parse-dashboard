@@ -205,7 +205,7 @@ const GraphPanel = ({
     if (validationError) {
       return (
         <div className={styles.error}>
-          <Icon name="exclamation-triangle" width={48} height={48} />
+          <Icon name="exclamation-triangle" width={48} height={48} fill="#ffffff" />
           <p>Configuration Error</p>
           <p>{validationError}</p>
         </div>
@@ -215,7 +215,7 @@ const GraphPanel = ({
     if (!processedData || !graphConfig) {
       return (
         <div className={styles.noData}>
-          <Icon name="chart-line" width={48} height={48} />
+          <Icon name="chart-line" width={48} height={48} fill="#ffffff" />
           <p>No graph data available</p>
           <p>Configure your graph settings and select data to visualize.</p>
         </div>
@@ -245,7 +245,7 @@ const GraphPanel = ({
       default:
         return (
           <div className={styles.error}>
-            <Icon name="exclamation-triangle" width={24} height={24} />
+            <Icon name="exclamation-triangle" width={24} height={24} fill="#ffffff" />
             <p>Unsupported chart type</p>
           </div>
         );
@@ -255,12 +255,12 @@ const GraphPanel = ({
   if (error) {
     return (
       <div className={styles.error}>
-        <Icon name="exclamation-triangle" width={24} height={24} />
+        <Icon name="exclamation-triangle" width={24} height={24} fill="#ffffff" />
         <p>Error loading graph data</p>
         <p>{error.message || 'Unknown error occurred'}</p>
         {onRefresh && (
           <button onClick={onRefresh} className={styles.retryButton}>
-            <Icon name="refresh-solid" width={14} height={14} />
+            <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
             Retry
           </button>
         )}
@@ -277,12 +277,12 @@ const GraphPanel = ({
         <div className={styles.headerButtons}>
           {onEdit && (
             <button onClick={onEdit} className={styles.editButton}>
-              <Icon name="edit-solid" width={14} height={14} />
+              <Icon name="edit-solid" width={14} height={14} fill="#ffffff" />
             </button>
           )}
           {onRefresh && (
             <button onClick={onRefresh} className={styles.refreshButton}>
-              <Icon name="refresh-solid" width={14} height={14} />
+              <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
             </button>
           )}
         </div>
@@ -291,7 +291,7 @@ const GraphPanel = ({
       <div className={styles.chartContainer}>
         {isLoading ? (
           <div className={styles.loading}>
-            <Icon name="spinner" width={24} height={24} />
+            <Icon name="spinner" width={24} height={24} fill="#ffffff" />
             <p>Loading graph data...</p>
           </div>
         ) : (

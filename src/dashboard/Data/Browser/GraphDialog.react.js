@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import Button from 'components/Button/Button.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
@@ -14,6 +15,7 @@ import Modal from 'components/Modal/Modal.react';
 import Option from 'components/Dropdown/Option.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import TextInput from 'components/TextInput/TextInput.react';
+import styles from 'components/Modal/Modal.scss';
 
 const CHART_TYPES = [
   { value: 'bar', label: 'Bar Chart' },
@@ -50,7 +52,7 @@ export default class GraphDialog extends React.Component {
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
       showGrid: initialConfig.showGrid !== undefined ? initialConfig.showGrid : true,
       isStacked: initialConfig.isStacked || false,
-      maxDataPoints: initialConfig.maxDataPoints || 50,
+      maxDataPoints: initialConfig.maxDataPoints || 1000,
     };
   }
 
@@ -85,6 +87,22 @@ export default class GraphDialog extends React.Component {
         groupByColumn: this.state.groupByColumn || null,
       });
     }
+  };
+
+  handleReset = () => {
+    this.setState({
+      chartType: 'bar',
+      xColumn: '',
+      yColumn: '',
+      valueColumn: '',
+      groupByColumn: '',
+      aggregationType: 'count',
+      title: '',
+      showLegend: true,
+      showGrid: true,
+      isStacked: false,
+      maxDataPoints: 1000,
+    });
   };
 
   getNumericColumns() {
@@ -133,7 +151,7 @@ export default class GraphDialog extends React.Component {
     const stringColumns = this.getStringColumns();
 
     return (
-      <div>
+      <>
         <Field label={<Label text="X-Axis Column" />} input={
           <Dropdown
             value={this.state.xColumn}
@@ -211,21 +229,25 @@ export default class GraphDialog extends React.Component {
             </Dropdown>
           } />
         )}
-      </div>
+      </>
+    );
+  }
+
+  renderTitleSection() {
+    return (
+      <Field label={<Label text="Chart Title" />} input={
+        <TextInput
+          value={this.state.title}
+          onChange={title => this.setState({ title })}
+          placeholder="Optional chart title"
+        />
+      } />
     );
   }
 
   renderOptionsSection() {
     return (
-      <div>
-        <Field label={<Label text="Chart Title" />} input={
-          <TextInput
-            value={this.state.title}
-            onChange={title => this.setState({ title })}
-            placeholder="Optional chart title"
-          />
-        } />
-
+      <>
         <Field label={
           <Label
             text="Show Legend"
@@ -281,35 +303,48 @@ export default class GraphDialog extends React.Component {
                 this.setState({ maxDataPoints: num });
               }
             }}
-            placeholder="50"
+            placeholder="1000"
           />
         } />
-      </div>
+      </>
     );
   }
 
   render() {
     const isEditing = this.props.initialConfig && Object.keys(this.props.initialConfig).length > 0;
 
+    const customFooter = (
+      <div style={{ textAlign: 'center' }} className={styles.footer}>
+        <Button value="Reset" onClick={this.handleReset} />
+        <Button value="Cancel" onClick={this.props.onCancel} />
+        <Button
+          primary={true}
+          value={isEditing ? "Update Graph" : "Create Graph"}
+          color="blue"
+          disabled={!this.valid()}
+          onClick={this.handleConfirm}
+        />
+      </div>
+    );
+
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon="chart-line"
+        icon="analytics-outline"
         iconSize={40}
         title={isEditing ? "Edit Graph" : "Create Graph"}
         subtitle={isEditing ? "Modify your data visualization settings" : "Configure your data visualization"}
-        confirmText={isEditing ? "Update Graph" : "Create Graph"}
-        cancelText="Cancel"
-        disabled={!this.valid()}
-        buttonsInCenter={true}
-        onCancel={this.props.onCancel}
-        onConfirm={this.handleConfirm}
+        customFooter={customFooter}
       >
-        <div style={{ padding: '20px 0' }}>
+        <div style={{
+          maxHeight: 'calc(100vh - 260px)',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          border: 'none'
+        }}>
+          {this.renderTitleSection()}
           {this.renderChartTypeSection()}
-          <div style={{ margin: '20px 0' }} />
           {this.renderColumnSelectionSection()}
-          <div style={{ margin: '20px 0' }} />
           {this.renderOptionsSection()}
         </div>
       </Modal>

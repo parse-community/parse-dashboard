@@ -15,14 +15,18 @@
   left: 50%;
   width: auto;
   min-width: var(--modal-min-width);
+  max-height: 90vh;
   background: white;
   border-radius: 5px;
   overflow: hidden;
   transition: width 0.5s cubic-bezier(1, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
 
   > *:not(:first-child):not(:last-child) {
     border-color: $borderGrey;
     border-width: 0 0 1px 0;
+    border-style: solid;
   }
 }
 
@@ -30,6 +34,7 @@
   height: 90px;
   position: relative;
   transition: background 0.3s ease;
+  flex-shrink: 0;
 }
 
 .title {
@@ -85,6 +90,7 @@
 
 .footer {
   padding: 17px 28px;
+  flex-shrink: 0;
 
   > * {
     margin: 0 12px 0 0;
