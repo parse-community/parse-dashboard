@@ -272,7 +272,7 @@ const GraphPanel = ({
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          {graphConfig?.title || 'Data Graph'}
+          Graph
         </h2>
         <div className={styles.headerButtons}>
           {onEdit && (
@@ -304,7 +304,6 @@ const GraphPanel = ({
       {graphConfig && (
         <div className={styles.configInfo}>
           <small>
-            Type: {graphConfig.chartType} |
             Data points: {data?.length || 0}
             {graphConfig.maxDataPoints && data?.length > graphConfig.maxDataPoints &&
               ` (showing first ${graphConfig.maxDataPoints})`
