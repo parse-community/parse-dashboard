@@ -486,7 +486,7 @@ const BrowserToolbar = ({
         </BrowserMenu>
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />
-      <BrowserMenu setCurrent={setCurrent} title="Graph" icon="chart-line">
+      <BrowserMenu setCurrent={setCurrent} title="Graph" icon="analytics-solid">
         <MenuItem text="Configure Graph" onClick={showGraphDialog} />
         {hasGraphConfig && (
           <MenuItem
