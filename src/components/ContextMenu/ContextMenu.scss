@@ -3,9 +3,6 @@
 .menu {
 	position: absolute;
 	font-size: 14px;
-	// To be shown above the toolbar with also z-index set
-	// src/components/Toolbar/Toolbar.scss
-	z-index: 6;
 
 	ul {
 		background: $purple;
@@ -33,6 +30,8 @@
 
 	.category {
 		position: absolute;
+		// Keep above the toolbar (src/components/Toolbar/Toolbar.scss).
+		z-index: 6;
 
 		.item {
 			width: 100%;
