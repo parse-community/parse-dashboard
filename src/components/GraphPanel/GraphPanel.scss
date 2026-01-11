@@ -2,24 +2,34 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: white;
+  background: #fefafb;
   border-radius: 4px;
 }
 
 .header {
+  height: 30px;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  padding-left: 10px;
+  background-color: #169cee;
+  color: white;
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e8e8e8;
-  background: #f8f8f8;
+  justify-content: space-between;
+  box-sizing: border-box;
+  line-height: 30px;
 }
 
 .title {
   margin: 0;
+  padding: 0 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: white;
   flex: 1;
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .headerButtons {
@@ -34,22 +44,19 @@
   cursor: pointer;
   padding: 4px;
   border-radius: 3px;
-  color: #666;
+  color: white;
+  opacity: 0.8;
+  vertical-align: middle;
 
   &:hover {
-    background: #e8e8e8;
-    color: #333;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    opacity: 1;
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(54, 162, 235, 0.3);
-  }
-}
-
-.editButton {
-  &:hover {
-    color: #007acc;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
   }
 }
 

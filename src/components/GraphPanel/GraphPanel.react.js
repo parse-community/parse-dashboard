@@ -271,9 +271,9 @@ const GraphPanel = ({
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>
+        <h2 className={styles.title}>
           {graphConfig?.title || 'Data Graph'}
-        </h3>
+        </h2>
         <div className={styles.headerButtons}>
           {onEdit && (
             <button onClick={onEdit} className={styles.editButton}>
