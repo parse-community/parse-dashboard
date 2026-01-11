@@ -1188,9 +1188,11 @@ export default class DataBrowser extends React.Component {
   }
 
   toggleGraphPanelVisibility() {
-    const newVisibility = !this.state.isGraphPanelVisible;
-    this.setState({ isGraphPanelVisible: newVisibility });
-    window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, newVisibility);
+    this.setState(prevState => {
+      const newVisibility = !prevState.isGraphPanelVisible;
+      window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, newVisibility);
+      return { isGraphPanelVisible: newVisibility };
+    });
   }
 
   handleGraphResizeStart() {

@@ -505,6 +505,7 @@ const BrowserToolbar = ({
               </span>
             }
             onClick={toggleGraphPanel}
+            disableMouseDown={true}
           />
         )}
       </BrowserMenu>
