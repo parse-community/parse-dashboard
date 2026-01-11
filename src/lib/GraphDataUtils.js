@@ -76,6 +76,25 @@ export function normalizeDate(value) {
 }
 
 /**
+ * Format a date in compact format: YYYY-MM-DD HH:mm
+ * @param {Date} date - Date to format
+ * @returns {string} Formatted date string
+ */
+export function formatDateCompact(date) {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return '';
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+/**
  * Filter data based on column type and chart requirements
  * @param {Array} data - Array of Parse objects
  * @param {string} column - Column name to filter by
@@ -276,8 +295,9 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   }
 
   // Collect unique x-axis values and group data
-  const xValues = new Set();
+  const xValues = new Map(); // Use Map to store both raw value and formatted label
   const groups = {};
+  let isDateAxis = false;
 
   data.forEach(item => {
     const xVal = getNestedValue(item, xColumn);
@@ -285,8 +305,20 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
     if (xVal == null || !isNumeric(value)) return;
 
-    const xKey = String(xVal);
-    xValues.add(xKey);
+    // Check if x-axis value is a date
+    const normalizedDate = normalizeDate(xVal);
+    let xKey, xLabel;
+
+    if (normalizedDate) {
+      isDateAxis = true;
+      xKey = normalizedDate.getTime(); // Use timestamp as key for sorting
+      xLabel = formatDateCompact(normalizedDate);
+    } else {
+      xKey = String(xVal);
+      xLabel = String(xVal);
+    }
+
+    xValues.set(xKey, xLabel);
 
     const groupKey = groupByColumn ? String(getNestedValue(item, groupByColumn) || 'Other') : 'All';
 
@@ -303,14 +335,29 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
     return null;
   }
 
-  // Sort x-axis values for consistent display
-  const sortedXValues = Array.from(xValues).sort();
+  // Sort x-axis values in ascending order
+  // For dates, keys are timestamps; for strings/numbers, lexicographic sort
+  const sortedXKeys = Array.from(xValues.keys()).sort((a, b) => {
+    if (isDateAxis) {
+      return a - b; // Numeric sort for timestamps (ascending)
+    }
+    // Try numeric comparison first
+    const numA = Number(a);
+    const numB = Number(b);
+    if (!isNaN(numA) && !isNaN(numB)) {
+      return numA - numB;
+    }
+    // Fall back to string comparison
+    return String(a).localeCompare(String(b));
+  });
+
+  const sortedXLabels = sortedXKeys.map(key => xValues.get(key));
   const groupKeys = Object.keys(groups);
 
   const datasets = groupKeys.map((groupKey, index) => {
     const groupData = groups[groupKey];
-    const values = sortedXValues.map(xVal => {
-      const groupValues = groupData[xVal] || [];
+    const values = sortedXKeys.map(xKey => {
+      const groupValues = groupData[xKey] || [];
       return groupValues.length > 0 ? aggregateValues(groupValues, aggregationType) : 0;
     });
 
@@ -324,7 +371,7 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   });
 
   return {
-    labels: sortedXValues,
+    labels: sortedXLabels,
     datasets,
   };
 }
