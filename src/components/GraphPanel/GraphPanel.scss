@@ -1,0 +1,148 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 4px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f8f8f8;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.editButton,
+.refreshButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 3px;
+  color: #666;
+
+  &:hover {
+    background: #e8e8e8;
+    color: #333;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(54, 162, 235, 0.3);
+  }
+}
+
+.editButton {
+  &:hover {
+    color: #007acc;
+  }
+}
+
+.chartContainer {
+  flex: 1;
+  padding: 16px;
+  min-height: 300px;
+  position: relative;
+}
+
+.chart {
+  height: 100%;
+  width: 100%;
+  canvas {
+    max-height: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+.loading,
+.noData,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: #666;
+
+  svg {
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 4px 0;
+    font-size: 14px;
+
+    &:first-of-type {
+      font-weight: 500;
+    }
+
+    &:last-of-type {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  }
+}
+
+.error {
+  color: #d32f2f;
+
+  svg {
+    color: #d32f2f;
+    opacity: 0.8;
+  }
+}
+
+.noData {
+  svg {
+    color: #666;
+  }
+}
+
+.retryButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+
+  &:hover {
+    background: #e8e8e8;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(54, 162, 235, 0.3);
+  }
+}
+
+.configInfo {
+  padding: 8px 16px;
+  background: #f8f8f8;
+  border-top: 1px solid #e8e8e8;
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}

@@ -97,6 +97,10 @@ const BrowserToolbar = ({
   toggleBatchNavigate,
   showPanelCheckbox,
   toggleShowPanelCheckbox,
+  toggleGraphPanel,
+  isGraphPanelVisible,
+  showGraphDialog,
+  hasGraphConfig,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -480,6 +484,29 @@ const BrowserToolbar = ({
             }}
           />
         </BrowserMenu>
+      </BrowserMenu>
+      <div className={styles.toolbarSeparator} />
+      <BrowserMenu setCurrent={setCurrent} title="Graph" icon="chart-line">
+        <MenuItem text="Configure Graph" onClick={showGraphDialog} />
+        {hasGraphConfig && (
+          <MenuItem
+            text={
+              <span>
+                {isGraphPanelVisible && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Show Graph Panel
+              </span>
+            }
+            onClick={toggleGraphPanel}
+          />
+        )}
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />
       <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>

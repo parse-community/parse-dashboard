@@ -12,6 +12,8 @@ import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import { CurrentApp } from 'context/currentApp';
 import { dateStringUTC } from 'lib/DateUtils';
+import GraphDialog from 'dashboard/Data/Browser/GraphDialog.react';
+import GraphPanel from 'components/GraphPanel/GraphPanel.react';
 import getFileName from 'lib/getFileName';
 import { getValidScripts, executeScript } from '../../../lib/ScriptUtils';
 import Parse from 'parse';
@@ -32,6 +34,9 @@ const AGGREGATION_PANEL_BATCH_NAVIGATE = 'aggregationPanelBatchNavigate';
 const AGGREGATION_PANEL_SHOW_CHECKBOX = 'aggregationPanelShowCheckbox';
 const AGGREGATION_PANEL_WIDTH = 'aggregationPanelWidth';
 const AGGREGATION_PANEL_COUNT = 'aggregationPanelCount';
+const GRAPH_PANEL_VISIBLE = 'graphPanelVisible';
+const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
+const GRAPH_PANEL_CONFIG = 'graphPanelConfig';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -114,6 +119,12 @@ export default class DataBrowser extends React.Component {
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
       ]?.[props.className];
+    const storedGraphPanelVisible =
+      window.localStorage?.getItem(GRAPH_PANEL_VISIBLE) === 'true';
+    const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
+    const parsedGraphPanelWidth = storedGraphPanelWidth ? parseInt(storedGraphPanelWidth, 10) : 400;
+    const storedGraphConfig = window.localStorage?.getItem(GRAPH_PANEL_CONFIG);
+    const parsedGraphConfig = storedGraphConfig ? JSON.parse(storedGraphConfig) : null;
 
     this.state = {
       order: order,
@@ -155,6 +166,10 @@ export default class DataBrowser extends React.Component {
       contextMenuItems: null,
       panelCheckboxDragging: false,
       draggedPanelSelection: false,
+      isGraphPanelVisible: storedGraphPanelVisible,
+      graphPanelWidth: parsedGraphPanelWidth,
+      graphConfig: parsedGraphConfig,
+      showGraphDialog: false,
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -191,6 +206,13 @@ export default class DataBrowser extends React.Component {
     this.onMouseDownPanelCheckBox = this.onMouseDownPanelCheckBox.bind(this);
     this.onMouseUpPanelCheckBox = this.onMouseUpPanelCheckBox.bind(this);
     this.onMouseEnterPanelCheckBox = this.onMouseEnterPanelCheckBox.bind(this);
+    this.toggleGraphPanelVisibility = this.toggleGraphPanelVisibility.bind(this);
+    this.handleGraphResizeStart = this.handleGraphResizeStart.bind(this);
+    this.handleGraphResizeStop = this.handleGraphResizeStop.bind(this);
+    this.handleGraphResizeDiv = this.handleGraphResizeDiv.bind(this);
+    this.showGraphDialog = this.showGraphDialog.bind(this);
+    this.hideGraphDialog = this.hideGraphDialog.bind(this);
+    this.saveGraphConfig = this.saveGraphConfig.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
@@ -1165,6 +1187,44 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  toggleGraphPanelVisibility() {
+    const newVisibility = !this.state.isGraphPanelVisible;
+    this.setState({ isGraphPanelVisible: newVisibility });
+    window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, newVisibility);
+  }
+
+  handleGraphResizeStart() {
+    this.setState({ isResizing: true });
+  }
+
+  handleGraphResizeStop(event, { size }) {
+    this.setState({
+      isResizing: false,
+      graphPanelWidth: size.width,
+    });
+    window.localStorage?.setItem(GRAPH_PANEL_WIDTH, size.width);
+  }
+
+  handleGraphResizeDiv(event, { size }) {
+    this.setState({ graphPanelWidth: size.width });
+  }
+
+  showGraphDialog() {
+    this.setState({ showGraphDialog: true });
+  }
+
+  hideGraphDialog() {
+    this.setState({ showGraphDialog: false });
+  }
+
+  saveGraphConfig(config) {
+    this.setState({
+      graphConfig: config,
+      showGraphDialog: false,
+    });
+    window.localStorage?.setItem(GRAPH_PANEL_CONFIG, JSON.stringify(config));
+  }
+
   handlePanelScroll(event, index) {
     if (!this.state.syncPanelScroll || this.state.panelCount <= 1) {
       return;
@@ -1887,6 +1947,28 @@ export default class DataBrowser extends React.Component {
               </div>
             </ResizableBox>
           )}
+          {this.state.isGraphPanelVisible && this.state.graphConfig && (
+            <ResizableBox
+              width={this.state.graphPanelWidth}
+              height={Infinity}
+              minConstraints={[300, Infinity]}
+              maxConstraints={[this.state.maxWidth, Infinity]}
+              onResizeStart={this.handleGraphResizeStart}
+              onResizeStop={this.handleGraphResizeStop}
+              onResize={this.handleGraphResizeDiv}
+              resizeHandles={['w']}
+              className={styles.resizablePanel}
+            >
+              <GraphPanel
+                graphConfig={this.state.graphConfig}
+                data={this.props.data}
+                columns={this.props.columns}
+                isLoading={false}
+                onRefresh={this.handleRefresh}
+                onEdit={this.showGraphDialog}
+              />
+            </ResizableBox>
+          )}
         </div>
 
         <BrowserToolbar
@@ -1931,6 +2013,10 @@ export default class DataBrowser extends React.Component {
           toggleBatchNavigate={this.toggleBatchNavigate}
           showPanelCheckbox={this.state.showPanelCheckbox}
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
+          toggleGraphPanel={this.toggleGraphPanelVisibility}
+          isGraphPanelVisible={this.state.isGraphPanelVisible}
+          showGraphDialog={this.showGraphDialog}
+          hasGraphConfig={!!this.state.graphConfig}
           {...other}
           onRefresh={this.handleRefresh}
         />
@@ -1956,6 +2042,14 @@ export default class DataBrowser extends React.Component {
               );
               this.setState({ showScriptConfirmationDialog: false, selectedScript: null });
             }}
+          />
+        )}
+        {this.state.showGraphDialog && (
+          <GraphDialog
+            columns={this.props.columns}
+            initialConfig={this.state.graphConfig}
+            onConfirm={this.saveGraphConfig}
+            onCancel={this.hideGraphDialog}
           />
         )}
       </div>
