@@ -129,7 +129,7 @@ const Filter = ({
           gap: '10px',
           padding: '12px 15px 0px 15px',
           color: '#343445',
-          'font-weight': '600',
+          fontWeight: '600',
         }}
       >
         <div style={{ width: '140px' }}>Class</div>
