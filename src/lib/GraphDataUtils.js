@@ -466,6 +466,7 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   const xValues = new Map(); // Use Map to store both raw value and formatted label
   const groups = {};
   let isDateAxis = false;
+  let hasNonDateAxisValue = false;
 
   data.forEach(item => {
     const xVal = getNestedValue(item, xColumn);
@@ -481,6 +482,7 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
       xKey = normalizedDate.getTime(); // Use timestamp as key for sorting
       xLabel = formatDateCompact(normalizedDate);
     } else {
+      hasNonDateAxisValue = true;
       xKey = String(xVal);
       xLabel = String(xVal);
     }
@@ -544,7 +546,7 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   // Sort x-axis values in ascending order
   // For dates, keys are timestamps; for strings/numbers, lexicographic sort
   const sortedXKeys = Array.from(xValues.keys()).sort((a, b) => {
-    if (isDateAxis) {
+    if (isDateAxis && !hasNonDateAxisValue) {
       return a - b; // Numeric sort for timestamps (ascending)
     }
     // Try numeric comparison first
