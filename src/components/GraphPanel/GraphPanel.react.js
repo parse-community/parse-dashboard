@@ -85,6 +85,7 @@ const GraphPanel = ({
       groupByColumn,
       aggregationType,
       maxDataPoints,
+      calculatedValues,
     } = graphConfig;
 
     // Limit data points for performance
@@ -98,12 +99,12 @@ const GraphPanel = ({
           break;
         case 'pie':
         case 'doughnut':
-          result = processPieData(limitedData, valueColumn, groupByColumn, aggregationType);
+          result = processPieData(limitedData, valueColumn, groupByColumn, aggregationType, calculatedValues);
           break;
         case 'bar':
         case 'line':
         case 'radar':
-          result = processBarLineData(limitedData, xColumn, valueColumn, groupByColumn, aggregationType);
+          result = processBarLineData(limitedData, xColumn, valueColumn, groupByColumn, aggregationType, calculatedValues);
           break;
       }
       return { processedData: result, validationError: null };

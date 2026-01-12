@@ -36,6 +36,14 @@ const AGGREGATION_TYPES = [
   { value: 'sum', label: 'Sum' },
 ];
 
+const CALCULATED_VALUE_OPERATORS = [
+  { value: 'sum', label: 'Sum' },
+  { value: 'percent', label: 'Percent' },
+  { value: 'average', label: 'Average' },
+  { value: 'difference', label: 'Difference' },
+  { value: 'ratio', label: 'Ratio' },
+];
+
 export default class GraphDialog extends React.Component {
   constructor(props) {
     super();
@@ -52,12 +60,16 @@ export default class GraphDialog extends React.Component {
       ? (Array.isArray(initialConfig.groupByColumn) ? initialConfig.groupByColumn : [initialConfig.groupByColumn])
       : [];
 
+    // Ensure calculatedValues is always an array
+    const calculatedValues = initialConfig.calculatedValues || [];
+
     this.state = {
       chartType: initialConfig.chartType || 'bar',
       xColumn: initialConfig.xColumn || '',
       yColumn: initialConfig.yColumn || '',
       valueColumn,
       groupByColumn,
+      calculatedValues,
       aggregationType: initialConfig.aggregationType || 'count',
       title: initialConfig.title || '',
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
@@ -94,6 +106,7 @@ export default class GraphDialog extends React.Component {
         yColumn: this.state.yColumn || null,
         valueColumn: this.state.valueColumn.length > 0 ? this.state.valueColumn : null,
         groupByColumn: this.state.groupByColumn.length > 0 ? this.state.groupByColumn : null,
+        calculatedValues: this.state.calculatedValues.length > 0 ? this.state.calculatedValues : null,
       });
     }
   };
@@ -105,6 +118,7 @@ export default class GraphDialog extends React.Component {
       yColumn: '',
       valueColumn: [],
       groupByColumn: [],
+      calculatedValues: [],
       aggregationType: 'count',
       title: '',
       showLegend: true,
@@ -143,6 +157,30 @@ export default class GraphDialog extends React.Component {
   getStringAndPointerColumns() {
     return this.getColumnsByType(['String', 'Pointer']);
   }
+
+  addCalculatedValue = () => {
+    this.setState({
+      calculatedValues: [
+        ...this.state.calculatedValues,
+        { fields: [], operator: 'sum', name: '' }
+      ]
+    });
+  };
+
+  removeCalculatedValue = (index) => {
+    const newCalculatedValues = [...this.state.calculatedValues];
+    newCalculatedValues.splice(index, 1);
+    this.setState({ calculatedValues: newCalculatedValues });
+  };
+
+  updateCalculatedValue = (index, field, value) => {
+    const newCalculatedValues = [...this.state.calculatedValues];
+    newCalculatedValues[index] = {
+      ...newCalculatedValues[index],
+      [field]: value
+    };
+    this.setState({ calculatedValues: newCalculatedValues });
+  };
 
   renderChartTypeSection() {
     return (
@@ -216,6 +254,53 @@ export default class GraphDialog extends React.Component {
               ))}
             </MultiSelect>
           } />
+        )}
+
+        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
+          <>
+            {this.state.calculatedValues.map((calc, index) => (
+              <div key={index} style={{ padding: '10px', border: '1px solid #e3e3e3', borderRadius: '4px', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <Label text={`Calculated Value ${index + 1}`} />
+                  <Button value="Remove" onClick={() => this.removeCalculatedValue(index)} />
+                </div>
+                <Field label={<Label text="Fields" />} input={
+                  <MultiSelect
+                    value={calc.fields}
+                    onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
+                    placeHolder="Select field(s)"
+                    formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                  >
+                    {numericAndPointerColumns.map(col => (
+                      <MultiSelectOption key={col} value={col}>
+                        {col}
+                      </MultiSelectOption>
+                    ))}
+                  </MultiSelect>
+                } />
+                <Field label={<Label text="Operator" />} input={
+                  <Dropdown
+                    value={calc.operator}
+                    onChange={operator => this.updateCalculatedValue(index, 'operator', operator)}
+                  >
+                    {CALCULATED_VALUE_OPERATORS.map(op => (
+                      <Option key={op.value} value={op.value}>
+                        {op.label}
+                      </Option>
+                    ))}
+                  </Dropdown>
+                } />
+                <Field label={<Label text="Name" />} input={
+                  <TextInput
+                    value={calc.name}
+                    onChange={name => this.updateCalculatedValue(index, 'name', name)}
+                    placeholder="Enter name"
+                  />
+                } />
+              </div>
+            ))}
+            <Button value="+ Add Calculated Value" onClick={this.addCalculatedValue} />
+          </>
         )}
 
         {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (

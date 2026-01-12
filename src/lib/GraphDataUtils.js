@@ -194,6 +194,57 @@ export function aggregateValues(values, aggregationType = 'count') {
 }
 
 /**
+ * Calculate a value based on operator and fields
+ * @param {Object} item - Data item
+ * @param {Array<string>} fields - Fields to use in calculation
+ * @param {string} operator - Calculation operator (sum, percent, average, difference, ratio)
+ * @returns {number|null} Calculated value or null
+ */
+function calculateValue(item, fields, operator) {
+  if (!fields || fields.length === 0) {
+    return null;
+  }
+
+  // Extract numeric values from all fields
+  const values = fields
+    .map(field => {
+      const rawValue = getNestedValue(item, field);
+      return extractNumericValue(rawValue);
+    })
+    .filter(val => val !== null);
+
+  if (values.length === 0) {
+    return null;
+  }
+
+  switch (operator) {
+    case 'sum':
+      return values.reduce((acc, val) => acc + val, 0);
+
+    case 'average':
+      return values.reduce((acc, val) => acc + val, 0) / values.length;
+
+    case 'difference':
+      // Subtract all subsequent values from the first
+      return values.reduce((acc, val, index) => index === 0 ? val : acc - val, 0);
+
+    case 'ratio':
+      // Divide first value by second (or product of all others)
+      if (values.length < 2) {return null;}
+      const denominator = values.slice(1).reduce((acc, val) => acc * val, 1);
+      return denominator !== 0 ? values[0] / denominator : null;
+
+    case 'percent':
+      // Calculate percentage: (first value / sum of all values) * 100
+      const total = values.reduce((acc, val) => acc + val, 0);
+      return total !== 0 ? (values[0] / total) * 100 : null;
+
+    default:
+      return null;
+  }
+}
+
+/**
  * Create a composite group key from multiple group-by columns
  * @param {Object} item - Data item
  * @param {string|Array<string>} groupByColumns - Column(s) to group by
@@ -301,9 +352,10 @@ export function processScatterData(data, xColumn, yColumn, maxPoints = 1000) {
  * @param {string|Array<string>} valueColumn - Value column(s) for aggregation
  * @param {string|Array<string>} groupByColumn - Column(s) to group by (optional)
  * @param {string} aggregationType - Aggregation type
+ * @param {Array} calculatedValues - Calculated value definitions (optional)
  * @returns {Object} Chart.js compatible data
  */
-export function processPieData(data, valueColumn, groupByColumn, aggregationType = 'count') {
+export function processPieData(data, valueColumn, groupByColumn, aggregationType = 'count', calculatedValues = null) {
   if (!valueColumn || !Array.isArray(data)) {
     return null;
   }
@@ -344,6 +396,23 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
     });
   }
 
+  // Process calculated values
+  if (calculatedValues && Array.isArray(calculatedValues)) {
+    calculatedValues.forEach(calc => {
+      if (calc.fields && calc.fields.length > 0 && calc.name) {
+        const calcValues = data
+          .map(item => calculateValue(item, calc.fields, calc.operator))
+          .filter(val => val !== null);
+
+        if (calcValues.length > 0) {
+          // For calculated values, always sum the results since the calculation
+          // is already applied at the row level
+          aggregatedData[calc.name] = aggregateValues(calcValues, 'sum');
+        }
+      }
+    });
+  }
+
   const labels = Object.keys(aggregatedData);
   const values = Object.values(aggregatedData);
 
@@ -371,9 +440,10 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
  * @param {string|Array<string>} valueColumn - Value column(s)
  * @param {string|Array<string>} groupByColumn - Column(s) to group by (optional)
  * @param {string} aggregationType - Aggregation type
+ * @param {Array} calculatedValues - Calculated value definitions (optional)
  * @returns {Object} Chart.js compatible data
  */
-export function processBarLineData(data, xColumn, valueColumn, groupByColumn, aggregationType = 'count') {
+export function processBarLineData(data, xColumn, valueColumn, groupByColumn, aggregationType = 'count', calculatedValues = null) {
   if (!xColumn || !valueColumn || !Array.isArray(data)) {
     return null;
   }
@@ -437,6 +507,27 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
       }
       groups[groupKey][xKey].push(value);
     });
+
+    // Process calculated values
+    if (calculatedValues && Array.isArray(calculatedValues)) {
+      calculatedValues.forEach(calc => {
+        if (calc.fields && calc.fields.length > 0 && calc.name) {
+          const calcValue = calculateValue(item, calc.fields, calc.operator);
+
+          if (calcValue !== null) {
+            const groupKey = calc.name;
+
+            if (!groups[groupKey]) {
+              groups[groupKey] = {};
+            }
+            if (!groups[groupKey][xKey]) {
+              groups[groupKey][xKey] = [];
+            }
+            groups[groupKey][xKey].push(calcValue);
+          }
+        }
+      });
+    }
   });
 
   if (xValues.size === 0) {
@@ -466,6 +557,8 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
     const groupData = groups[groupKey];
     const values = sortedXKeys.map(xKey => {
       const groupValues = groupData[xKey] || [];
+      // Use the selected aggregationType for all values (both regular and calculated)
+      // The calculation is already done at row level for calculated values
       return groupValues.length > 0 ? aggregateValues(groupValues, aggregationType) : 0;
     });
 
