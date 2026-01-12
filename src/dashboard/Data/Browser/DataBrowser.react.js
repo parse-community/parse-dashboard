@@ -157,7 +157,8 @@ export default class DataBrowser extends React.Component {
       selectedData: [],
       prevClassName: props.className,
       panelWidth: parsedPanelWidth,
-      isResizing: false,
+      isAggregationPanelResizing: false,
+      isGraphPanelResizing: false,
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
       frozenColumnIndex: -1,
@@ -446,7 +447,7 @@ export default class DataBrowser extends React.Component {
   }
 
   handleResizeStart() {
-    this.setState({ isResizing: true });
+    this.setState({ isAggregationPanelResizing: true });
   }
 
   handleResizeStop(event, { size }) {
@@ -459,7 +460,7 @@ export default class DataBrowser extends React.Component {
     }
 
     this.setState({
-      isResizing: false,
+      isAggregationPanelResizing: false,
       panelWidth: newPanelWidth,
     });
     window.localStorage?.setItem(AGGREGATION_PANEL_WIDTH, newPanelWidth);
@@ -1212,12 +1213,12 @@ export default class DataBrowser extends React.Component {
   }
 
   handleGraphResizeStart() {
-    this.setState({ isResizing: true });
+    this.setState({ isGraphPanelResizing: true });
   }
 
   handleGraphResizeStop(event, { size }) {
     this.setState({
-      isResizing: false,
+      isGraphPanelResizing: false,
       graphPanelWidth: size.width,
     });
     window.localStorage?.setItem(GRAPH_PANEL_WIDTH, size.width);
@@ -1834,7 +1835,7 @@ export default class DataBrowser extends React.Component {
             handleCellClick={this.handleCellClick}
             isPanelVisible={this.state.isPanelVisible}
             panelWidth={effectivePanelWidth}
-            isResizing={this.state.isResizing}
+            isResizing={this.state.isAggregationPanelResizing || this.state.isGraphPanelResizing}
             setShowAggregatedData={this.setShowAggregatedData}
             showRowNumber={this.state.showRowNumber}
             setShowRowNumber={this.setShowRowNumber}
