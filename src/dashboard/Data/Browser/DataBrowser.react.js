@@ -1806,6 +1806,12 @@ export default class DataBrowser extends React.Component {
       effectivePanelWidth = (this.state.panelWidth / this.state.panelCount) * actualPanelCount;
     }
 
+    // Calculate max width for aggregation panel, accounting for graph panel's minimum width when visible
+    const graphPanelMinWidth = 300;
+    const aggregationMaxWidth = this.state.isGraphPanelVisible && this.state.graphConfig
+      ? this.state.maxWidth - graphPanelMinWidth
+      : this.state.maxWidth;
+
     return (
       <div>
         <div>
@@ -1849,7 +1855,7 @@ export default class DataBrowser extends React.Component {
               width={effectivePanelWidth}
               height={Infinity}
               minConstraints={[100, Infinity]}
-              maxConstraints={[this.state.maxWidth, Infinity]}
+              maxConstraints={[aggregationMaxWidth, Infinity]}
               onResizeStart={this.handleResizeStart} // Handle start of resizing
               onResizeStop={this.handleResizeStop} // Handle end of resizing
               onResize={this.handleResizeDiv}
@@ -1971,28 +1977,37 @@ export default class DataBrowser extends React.Component {
               </div>
             </ResizableBox>
           )}
-          {this.state.isGraphPanelVisible && this.state.graphConfig && (
-            <ResizableBox
-              width={this.state.graphPanelWidth}
-              height={Infinity}
-              minConstraints={[300, Infinity]}
-              maxConstraints={[this.state.maxWidth, Infinity]}
-              onResizeStart={this.handleGraphResizeStart}
-              onResizeStop={this.handleGraphResizeStop}
-              onResize={this.handleGraphResizeDiv}
-              resizeHandles={['w']}
-              className={styles.resizablePanel}
-            >
-              <GraphPanel
-                graphConfig={this.state.graphConfig}
-                data={this.props.data}
-                columns={this.props.columns}
-                isLoading={this.props.isLoadingCloudFunction || this.state.loadingObjectIds.size > 0}
-                onRefresh={this.handleRefresh}
-                onEdit={this.showGraphDialog}
-              />
-            </ResizableBox>
-          )}
+          {this.state.isGraphPanelVisible && this.state.graphConfig && (() => {
+            // Calculate max width for graph panel, accounting for aggregation panel when visible
+            const aggregationPanelWidth = this.state.isPanelVisible ? effectivePanelWidth : 0;
+            const graphMaxWidth = Math.max(300, this.state.maxWidth - aggregationPanelWidth);
+            // Clamp the graph panel width to the available space
+            const graphPanelWidth = Math.min(this.state.graphPanelWidth, graphMaxWidth);
+
+            return (
+              <ResizableBox
+                width={graphPanelWidth}
+                height={Infinity}
+                minConstraints={[300, Infinity]}
+                maxConstraints={[graphMaxWidth, Infinity]}
+                onResizeStart={this.handleGraphResizeStart}
+                onResizeStop={this.handleGraphResizeStop}
+                onResize={this.handleGraphResizeDiv}
+                resizeHandles={['w']}
+                className={styles.resizablePanel}
+                style={{ right: aggregationPanelWidth }}
+              >
+                <GraphPanel
+                  graphConfig={this.state.graphConfig}
+                  data={this.props.data}
+                  columns={this.props.columns}
+                  isLoading={this.props.isLoadingCloudFunction || this.state.loadingObjectIds.size > 0}
+                  onRefresh={this.handleRefresh}
+                  onEdit={this.showGraphDialog}
+                />
+              </ResizableBox>
+            );
+          })()}
         </div>
 
         <BrowserToolbar
