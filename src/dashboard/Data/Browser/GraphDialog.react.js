@@ -158,6 +158,14 @@ export default class GraphDialog extends React.Component {
     return this.getColumnsByType(['String', 'Pointer']);
   }
 
+  getNumericAndCalculatedFields() {
+    const numericColumns = this.getNumericColumns();
+    const calculatedFields = this.state.calculatedValues
+      .filter(calc => calc.name && calc.name.trim() !== '')
+      .map(calc => calc.name);
+    return [...numericColumns, ...calculatedFields];
+  }
+
   addCalculatedValue = () => {
     this.setState({
       calculatedValues: [
@@ -213,6 +221,7 @@ export default class GraphDialog extends React.Component {
     const allColumns = this.getAllColumns();
     const numericColumns = this.getNumericColumns();
     const numericAndPointerColumns = this.getNumericAndPointerColumns();
+    const numericAndCalculatedFields = this.getNumericAndCalculatedFields();
     const stringColumns = this.getStringColumns();
     const stringAndPointerColumns = this.getStringAndPointerColumns();
 
@@ -300,21 +309,14 @@ export default class GraphDialog extends React.Component {
                       <div style={{ border: '1px solid #e3e3e3' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <Label text="Fields" />
+                            <Label text="Name" />
                           </div>
                           <div>
-                            <MultiSelect
-                              value={calc.fields}
-                              onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
-                              placeHolder="Select field(s)"
-                              formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
-                            >
-                              {numericAndPointerColumns.map(col => (
-                                <MultiSelectOption key={col} value={col}>
-                                  {col}
-                                </MultiSelectOption>
-                              ))}
-                            </MultiSelect>
+                            <TextInput
+                              value={calc.name}
+                              onChange={name => this.updateCalculatedValue(index, 'name', name)}
+                              placeholder="Enter name"
+                            />
                           </div>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
@@ -334,18 +336,72 @@ export default class GraphDialog extends React.Component {
                             </Dropdown>
                           </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <Label text="Name" />
+                        {calc.operator === 'percent' ? (
+                          <>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Label text="Numerator" />
+                              </div>
+                              <div>
+                                <Dropdown
+                                  value={calc.fields && calc.fields[0] ? calc.fields[0] : ''}
+                                  onChange={numerator => {
+                                    const newFields = [numerator, calc.fields && calc.fields[1] ? calc.fields[1] : ''];
+                                    this.updateCalculatedValue(index, 'fields', newFields);
+                                  }}
+                                  placeHolder="Select field"
+                                >
+                                  {numericAndCalculatedFields.map(col => (
+                                    <Option key={col} value={col}>
+                                      {col}
+                                    </Option>
+                                  ))}
+                                </Dropdown>
+                              </div>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Label text="Denominator" />
+                              </div>
+                              <div>
+                                <Dropdown
+                                  value={calc.fields && calc.fields[1] ? calc.fields[1] : ''}
+                                  onChange={denominator => {
+                                    const newFields = [calc.fields && calc.fields[0] ? calc.fields[0] : '', denominator];
+                                    this.updateCalculatedValue(index, 'fields', newFields);
+                                  }}
+                                  placeHolder="Select field"
+                                >
+                                  {numericAndCalculatedFields.map(col => (
+                                    <Option key={col} value={col}>
+                                      {col}
+                                    </Option>
+                                  ))}
+                                </Dropdown>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Label text="Fields" />
+                            </div>
+                            <div>
+                              <MultiSelect
+                                value={calc.fields}
+                                onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
+                                placeHolder="Select field(s)"
+                                formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                              >
+                                {numericAndPointerColumns.map(col => (
+                                  <MultiSelectOption key={col} value={col}>
+                                    {col}
+                                  </MultiSelectOption>
+                                ))}
+                              </MultiSelect>
+                            </div>
                           </div>
-                          <div>
-                            <TextInput
-                              value={calc.name}
-                              onChange={name => this.updateCalculatedValue(index, 'name', name)}
-                              placeholder="Enter name"
-                            />
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   )}
