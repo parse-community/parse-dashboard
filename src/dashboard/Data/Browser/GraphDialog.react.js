@@ -21,19 +21,19 @@ import styles from 'components/Modal/Modal.scss';
 
 const CHART_TYPES = [
   { value: 'bar', label: 'Bar Chart' },
+  { value: 'doughnut', label: 'Doughnut Chart' },
   { value: 'line', label: 'Line Chart' },
   { value: 'pie', label: 'Pie Chart' },
-  { value: 'doughnut', label: 'Doughnut Chart' },
-  { value: 'scatter', label: 'Scatter Plot' },
   { value: 'radar', label: 'Radar Chart' },
+  { value: 'scatter', label: 'Scatter Plot' },
 ];
 
 const AGGREGATION_TYPES = [
-  { value: 'count', label: 'Count' },
-  { value: 'sum', label: 'Sum' },
   { value: 'avg', label: 'Average' },
-  { value: 'min', label: 'Minimum' },
+  { value: 'count', label: 'Count' },
   { value: 'max', label: 'Maximum' },
+  { value: 'min', label: 'Minimum' },
+  { value: 'sum', label: 'Sum' },
 ];
 
 export default class GraphDialog extends React.Component {
@@ -115,7 +115,8 @@ export default class GraphDialog extends React.Component {
     }
     return Object.entries(this.props.columns)
       .filter(([key, col]) => key !== 'objectId' && (!types || types.includes(col.type)))
-      .map(([key]) => key);
+      .map(([key]) => key)
+      .sort((a, b) => a.localeCompare(b));
   }
 
   getAllColumns() {
@@ -165,11 +166,11 @@ export default class GraphDialog extends React.Component {
 
     return (
       <>
-        <Field label={<Label text="X-Axis Column" />} input={
+        <Field label={<Label text="X-Axis Field" />} input={
           <Dropdown
             value={this.state.xColumn}
             onChange={xColumn => this.setState({ xColumn })}
-            placeholder="Select X-axis column"
+            placeHolder="Select field"
           >
             {allColumns.map(col => (
               <Option key={col} value={col}>
@@ -180,11 +181,11 @@ export default class GraphDialog extends React.Component {
         } />
 
         {(chartType === 'scatter' || chartType === 'line') && (
-          <Field label={<Label text="Y-Axis Column" />} input={
+          <Field label={<Label text="Y-Axis Field" />} input={
             <Dropdown
               value={this.state.yColumn}
               onChange={yColumn => this.setState({ yColumn })}
-              placeholder="Select Y-axis column (numeric)"
+              placeHolder="Select field"
             >
               {numericColumns.map(col => (
                 <Option key={col} value={col}>
@@ -196,11 +197,11 @@ export default class GraphDialog extends React.Component {
         )}
 
         {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
-          <Field label={<Label text="Value Columns" />} input={
+          <Field label={<Label text="Value Fields" />} input={
             <MultiSelect
               value={this.state.valueColumn}
               onChange={valueColumn => this.setState({ valueColumn })}
-              placeHolder="Select value fields"
+              placeHolder="Select field(s)"
               formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
             >
               {numericAndPointerColumns.map(col => (
@@ -228,11 +229,11 @@ export default class GraphDialog extends React.Component {
         )}
 
         {stringAndPointerColumns.length > 0 && (
-          <Field label={<Label text="Group By (Optional)" />} input={
+          <Field label={<Label text="Group By Field" description="Optional"/>} input={
             <Dropdown
               value={this.state.groupByColumn}
               onChange={groupByColumn => this.setState({ groupByColumn })}
-              placeholder="Select grouping column"
+              placeHolder="Select field"
             >
               <Option value="">None</Option>
               {stringAndPointerColumns.map(col => (
@@ -249,11 +250,11 @@ export default class GraphDialog extends React.Component {
 
   renderTitleSection() {
     return (
-      <Field label={<Label text="Chart Title" />} input={
+      <Field label={<Label text="Chart Title" description="Optional"/>} input={
         <TextInput
           value={this.state.title}
           onChange={title => this.setState({ title })}
-          placeholder="Optional chart title"
+          placeholder="Chart title"
         />
       } />
     );
