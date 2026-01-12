@@ -287,7 +287,7 @@ export default class GraphDialog extends React.Component {
               const displayName = calc.name || `Calculated Value ${index + 1}`;
 
               return (
-                <div key={index} style={{ padding: '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: index === this.state.calculatedValues.length - 1 ? '1px solid #e3e3e3' : 'none' }}>
+                <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: index === this.state.calculatedValues.length - 1 ? '1px solid #e3e3e3' : 'none' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isExpanded ? '8px' : '0', cursor: 'pointer' }} onClick={() => this.toggleCalculatedValue(index)}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '12px' }}>{isExpanded ? '▼' : '▶'}</span>
@@ -296,53 +296,55 @@ export default class GraphDialog extends React.Component {
                     <Button value="Remove" onClick={(e) => { e.stopPropagation(); this.removeCalculatedValue(index); }} />
                   </div>
                   {isExpanded && (
-                    <div style={{ border: 'none' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                        <div>
-                          <Label text="Fields" />
+                    <div style={{ border: 'none', paddingBottom: '8px' }}>
+                      <div style={{ border: '1px solid #e3e3e3' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Label text="Fields" />
+                          </div>
+                          <div>
+                            <MultiSelect
+                              value={calc.fields}
+                              onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
+                              placeHolder="Select field(s)"
+                              formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                            >
+                              {numericAndPointerColumns.map(col => (
+                                <MultiSelectOption key={col} value={col}>
+                                  {col}
+                                </MultiSelectOption>
+                              ))}
+                            </MultiSelect>
+                          </div>
                         </div>
-                        <div>
-                          <MultiSelect
-                            value={calc.fields}
-                            onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
-                            placeHolder="Select field(s)"
-                            formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
-                          >
-                            {numericAndPointerColumns.map(col => (
-                              <MultiSelectOption key={col} value={col}>
-                                {col}
-                              </MultiSelectOption>
-                            ))}
-                          </MultiSelect>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Label text="Operator" />
+                          </div>
+                          <div>
+                            <Dropdown
+                              value={calc.operator}
+                              onChange={operator => this.updateCalculatedValue(index, 'operator', operator)}
+                            >
+                              {CALCULATED_VALUE_OPERATORS.map(op => (
+                                <Option key={op.value} value={op.value}>
+                                  {op.label}
+                                </Option>
+                              ))}
+                            </Dropdown>
+                          </div>
                         </div>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                        <div>
-                          <Label text="Operator" />
-                        </div>
-                        <div>
-                          <Dropdown
-                            value={calc.operator}
-                            onChange={operator => this.updateCalculatedValue(index, 'operator', operator)}
-                          >
-                            {CALCULATED_VALUE_OPERATORS.map(op => (
-                              <Option key={op.value} value={op.value}>
-                                {op.label}
-                              </Option>
-                            ))}
-                          </Dropdown>
-                        </div>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                        <div>
-                          <Label text="Name" />
-                        </div>
-                        <div>
-                          <TextInput
-                            value={calc.name}
-                            onChange={name => this.updateCalculatedValue(index, 'name', name)}
-                            placeholder="Enter name"
-                          />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Label text="Name" />
+                          </div>
+                          <div>
+                            <TextInput
+                              value={calc.name}
+                              onChange={name => this.updateCalculatedValue(index, 'name', name)}
+                              placeholder="Enter name"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
