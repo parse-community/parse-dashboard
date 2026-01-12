@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -59,7 +59,6 @@ const GraphPanel = ({
   columns,
   isLoading,
   error,
-  className,
   onRefresh,
   onEdit,
 }) => {

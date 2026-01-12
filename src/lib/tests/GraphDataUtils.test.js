@@ -9,7 +9,6 @@
 import {
   getNestedValue,
   isNumeric,
-  isValidDate,
   aggregateValues,
   validateGraphConfig,
   processScatterData,

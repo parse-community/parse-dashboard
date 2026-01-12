@@ -222,7 +222,6 @@ export default class GraphDialog extends React.Component {
     const numericColumns = this.getNumericColumns();
     const numericAndPointerColumns = this.getNumericAndPointerColumns();
     const numericAndCalculatedFields = this.getNumericAndCalculatedFields();
-    const stringColumns = this.getStringColumns();
     const stringAndPointerColumns = this.getStringAndPointerColumns();
 
     return (
