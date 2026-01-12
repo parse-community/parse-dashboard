@@ -19,6 +19,11 @@ import {
   Tooltip,
   Legend,
   RadialLinearScale,
+  BarController,
+  LineController,
+  PieController,
+  DoughnutController,
+  ScatterController,
   RadarController,
 } from 'chart.js';
 import {
@@ -50,6 +55,11 @@ ChartJS.register(
   Tooltip,
   Legend,
   RadialLinearScale,
+  BarController,
+  LineController,
+  PieController,
+  DoughnutController,
+  ScatterController,
   RadarController
 );
 
@@ -276,7 +286,12 @@ const GraphPanel = ({
         <p>Error loading graph data</p>
         <p>{error.message || 'Unknown error occurred'}</p>
         {onRefresh && (
-          <button onClick={onRefresh} className={styles.retryButton}>
+          <button
+            type="button"
+            onClick={onRefresh}
+            className={styles.retryButton}
+            aria-label="Retry loading graph data"
+          >
             <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
             Retry
           </button>
@@ -293,12 +308,24 @@ const GraphPanel = ({
         </h2>
         <div className={styles.headerButtons}>
           {onEdit && (
-            <button onClick={onEdit} className={styles.editButton}>
+            <button
+              type="button"
+              onClick={onEdit}
+              className={styles.editButton}
+              aria-label="Edit graph configuration"
+              title="Edit graph"
+            >
               <Icon name="edit-solid" width={14} height={14} fill="#ffffff" />
             </button>
           )}
           {onRefresh && (
-            <button onClick={onRefresh} className={styles.refreshButton}>
+            <button
+              type="button"
+              onClick={onRefresh}
+              className={styles.refreshButton}
+              aria-label="Refresh graph data"
+              title="Refresh graph"
+            >
               <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
             </button>
           )}
