@@ -553,13 +553,33 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   const sortedXLabels = sortedXKeys.map(key => xValues.get(key));
   const groupKeys = Object.keys(groups);
 
+  // Create a map of calculated value names to their operators
+  const calcValueOperatorMap = new Map();
+  if (calculatedValues && Array.isArray(calculatedValues)) {
+    calculatedValues.forEach(calc => {
+      if (calc.name && calc.operator) {
+        calcValueOperatorMap.set(calc.name, calc.operator);
+      }
+    });
+  }
+
   const datasets = groupKeys.map((groupKey, index) => {
     const groupData = groups[groupKey];
     const values = sortedXKeys.map(xKey => {
       const groupValues = groupData[xKey] || [];
-      // Use the selected aggregationType for all values (both regular and calculated)
-      // The calculation is already done at row level for calculated values
-      return groupValues.length > 0 ? aggregateValues(groupValues, aggregationType) : 0;
+
+      // Check if this is a calculated value
+      const calcOperator = calcValueOperatorMap.get(groupKey);
+
+      if (calcOperator) {
+        // For calculated values, use the operator as the aggregation type
+        // The operator (sum, average, etc.) is already applied at row level,
+        // so we use it again to aggregate across rows with same x-axis value
+        return groupValues.length > 0 ? aggregateValues(groupValues, calcOperator) : 0;
+      } else {
+        // For regular values, use the selected aggregationType
+        return groupValues.length > 0 ? aggregateValues(groupValues, aggregationType) : 0;
+      }
     });
 
     return {
