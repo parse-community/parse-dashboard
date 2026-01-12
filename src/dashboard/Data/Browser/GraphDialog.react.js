@@ -515,7 +515,7 @@ export default class GraphDialog extends React.Component {
 
     const customFooter = (
       <div style={{ textAlign: 'center' }} className={styles.footer}>
-        <Button value="Reset" onClick={this.handleReset} />
+        <Button value="Reset" onClick={this.handleReset} color="red" />
         <Button value="Cancel" onClick={this.props.onCancel} />
         <Button
           primary={true}
