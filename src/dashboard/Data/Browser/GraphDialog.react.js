@@ -232,7 +232,7 @@ export default class GraphDialog extends React.Component {
             onChange={xColumn => this.setState({ xColumn })}
             placeHolder="Select field"
           >
-            {allColumns.map(col => (
+            {(chartType === 'scatter' ? numericColumns : allColumns).map(col => (
               <Option key={col} value={col}>
                 {col}
               </Option>

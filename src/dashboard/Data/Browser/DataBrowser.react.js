@@ -122,7 +122,8 @@ export default class DataBrowser extends React.Component {
     const storedGraphPanelVisible =
       window.localStorage?.getItem(GRAPH_PANEL_VISIBLE) === 'true';
     const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
-    const parsedGraphPanelWidth = storedGraphPanelWidth ? parseInt(storedGraphPanelWidth, 10) : 400;
+    const parsedWidth = storedGraphPanelWidth ? parseInt(storedGraphPanelWidth, 10) : 400;
+    const parsedGraphPanelWidth = !isNaN(parsedWidth) && parsedWidth > 0 ? parsedWidth : 400;
     const storedGraphConfig = window.localStorage?.getItem(GRAPH_PANEL_CONFIG);
     let parsedGraphConfig = null;
     if (storedGraphConfig) {
