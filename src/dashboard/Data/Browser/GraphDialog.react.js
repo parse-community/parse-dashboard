@@ -162,7 +162,7 @@ export default class GraphDialog extends React.Component {
     this.setState({
       calculatedValues: [
         ...this.state.calculatedValues,
-        { fields: [], operator: 'sum', name: '' }
+        { fields: [], operator: 'sum', name: '', expanded: true }
       ]
     });
   };
@@ -178,6 +178,15 @@ export default class GraphDialog extends React.Component {
     newCalculatedValues[index] = {
       ...newCalculatedValues[index],
       [field]: value
+    };
+    this.setState({ calculatedValues: newCalculatedValues });
+  };
+
+  toggleCalculatedValue = (index) => {
+    const newCalculatedValues = [...this.state.calculatedValues];
+    newCalculatedValues[index] = {
+      ...newCalculatedValues[index],
+      expanded: !newCalculatedValues[index].expanded
     };
     this.setState({ calculatedValues: newCalculatedValues });
   };
@@ -257,53 +266,6 @@ export default class GraphDialog extends React.Component {
         )}
 
         {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
-          <>
-            {this.state.calculatedValues.map((calc, index) => (
-              <div key={index} style={{ padding: '10px', border: '1px solid #e3e3e3', borderRadius: '4px', marginBottom: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <Label text={`Calculated Value ${index + 1}`} />
-                  <Button value="Remove" onClick={() => this.removeCalculatedValue(index)} />
-                </div>
-                <Field label={<Label text="Fields" />} input={
-                  <MultiSelect
-                    value={calc.fields}
-                    onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
-                    placeHolder="Select field(s)"
-                    formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
-                  >
-                    {numericAndPointerColumns.map(col => (
-                      <MultiSelectOption key={col} value={col}>
-                        {col}
-                      </MultiSelectOption>
-                    ))}
-                  </MultiSelect>
-                } />
-                <Field label={<Label text="Operator" />} input={
-                  <Dropdown
-                    value={calc.operator}
-                    onChange={operator => this.updateCalculatedValue(index, 'operator', operator)}
-                  >
-                    {CALCULATED_VALUE_OPERATORS.map(op => (
-                      <Option key={op.value} value={op.value}>
-                        {op.label}
-                      </Option>
-                    ))}
-                  </Dropdown>
-                } />
-                <Field label={<Label text="Name" />} input={
-                  <TextInput
-                    value={calc.name}
-                    onChange={name => this.updateCalculatedValue(index, 'name', name)}
-                    placeholder="Enter name"
-                  />
-                } />
-              </div>
-            ))}
-            <Button value="+ Add Calculated Value" onClick={this.addCalculatedValue} />
-          </>
-        )}
-
-        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
           <Field label={<Label text="Aggregation Type" />} input={
             <Dropdown
               value={this.state.aggregationType}
@@ -316,6 +278,69 @@ export default class GraphDialog extends React.Component {
               ))}
             </Dropdown>
           } />
+        )}
+
+        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
+          <>
+            {this.state.calculatedValues.map((calc, index) => {
+              const isExpanded = calc.expanded !== false;
+              const displayName = calc.name || `Calculated Value ${index + 1}`;
+
+              return (
+                <div key={index} style={{ padding: '10px', border: '1px solid #e3e3e3', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isExpanded ? '8px' : '0', cursor: 'pointer' }} onClick={() => this.toggleCalculatedValue(index)}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '12px' }}>{isExpanded ? '▼' : '▶'}</span>
+                      <Label text={displayName} />
+                    </div>
+                    <Button value="Remove" onClick={(e) => { e.stopPropagation(); this.removeCalculatedValue(index); }} />
+                  </div>
+                  {isExpanded && (
+                    <>
+                      <Field label={<Label text="Fields" />} input={
+                        <MultiSelect
+                          value={calc.fields}
+                          onChange={fields => this.updateCalculatedValue(index, 'fields', fields)}
+                          placeHolder="Select field(s)"
+                          formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                        >
+                          {numericAndPointerColumns.map(col => (
+                            <MultiSelectOption key={col} value={col}>
+                              {col}
+                            </MultiSelectOption>
+                          ))}
+                        </MultiSelect>
+                      } />
+                      <Field label={<Label text="Operator" />} input={
+                        <Dropdown
+                          value={calc.operator}
+                          onChange={operator => this.updateCalculatedValue(index, 'operator', operator)}
+                        >
+                          {CALCULATED_VALUE_OPERATORS.map(op => (
+                            <Option key={op.value} value={op.value}>
+                              {op.label}
+                            </Option>
+                          ))}
+                        </Dropdown>
+                      } />
+                      <Field label={<Label text="Name" />} input={
+                        <TextInput
+                          value={calc.name}
+                          onChange={name => this.updateCalculatedValue(index, 'name', name)}
+                          placeholder="Enter name"
+                        />
+                      } />
+                    </>
+                  )}
+                </div>
+              );
+            })}
+            <Field label={<div style={{ visibility: 'hidden' }}><Label text="&nbsp;" /></div>} input={
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button value="+ Add Calculated Value" onClick={this.addCalculatedValue} />
+              </div>
+            } />
+          </>
         )}
 
         {stringAndPointerColumns.length > 0 && (
