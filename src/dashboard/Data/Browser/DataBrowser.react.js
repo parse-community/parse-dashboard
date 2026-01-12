@@ -38,6 +38,11 @@ const GRAPH_PANEL_VISIBLE = 'graphPanelVisible';
 const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
 const GRAPH_PANEL_CONFIG = 'graphPanelConfig';
 
+// Helper to get scoped localStorage key for graph config
+function getGraphConfigKey(appId, appName, className) {
+  return `${GRAPH_PANEL_CONFIG}_${appId}${appName}_${className}`;
+}
+
 function formatValueForCopy(value, type) {
   if (value === undefined) {
     return '';
@@ -124,7 +129,8 @@ export default class DataBrowser extends React.Component {
     const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
     const parsedWidth = storedGraphPanelWidth ? parseInt(storedGraphPanelWidth, 10) : 400;
     const parsedGraphPanelWidth = !isNaN(parsedWidth) && parsedWidth > 0 ? parsedWidth : 400;
-    const storedGraphConfig = window.localStorage?.getItem(GRAPH_PANEL_CONFIG);
+    const graphConfigKey = getGraphConfigKey(props.app.applicationId, props.appName, props.className);
+    const storedGraphConfig = window.localStorage?.getItem(graphConfigKey);
     let parsedGraphConfig = null;
     if (storedGraphConfig) {
       try {
@@ -132,7 +138,7 @@ export default class DataBrowser extends React.Component {
       } catch (error) {
         console.error('Failed to parse graph panel config from localStorage:', error);
         // Remove the corrupted config from localStorage
-        window.localStorage?.removeItem(GRAPH_PANEL_CONFIG);
+        window.localStorage?.removeItem(graphConfigKey);
       }
     }
 
@@ -1234,7 +1240,12 @@ export default class DataBrowser extends React.Component {
       graphConfig: config,
       showGraphDialog: false,
     });
-    window.localStorage?.setItem(GRAPH_PANEL_CONFIG, JSON.stringify(config));
+    const graphConfigKey = getGraphConfigKey(
+      this.props.app.applicationId,
+      this.props.appName,
+      this.props.className
+    );
+    window.localStorage?.setItem(graphConfigKey, JSON.stringify(config));
   }
 
   handlePanelScroll(event, index) {
