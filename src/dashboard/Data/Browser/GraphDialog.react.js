@@ -40,22 +40,18 @@ export default class GraphDialog extends React.Component {
   constructor(props) {
     super();
 
-    // Pre-fill with existing configuration if editing
     const initialConfig = props.initialConfig || {};
 
     // Ensure valueColumn is always an array
-    let valueColumn = [];
-    if (initialConfig.valueColumn) {
-      valueColumn = Array.isArray(initialConfig.valueColumn)
-        ? initialConfig.valueColumn
-        : [initialConfig.valueColumn];
-    }
+    const valueColumn = initialConfig.valueColumn
+      ? (Array.isArray(initialConfig.valueColumn) ? initialConfig.valueColumn : [initialConfig.valueColumn])
+      : [];
 
     this.state = {
       chartType: initialConfig.chartType || 'bar',
       xColumn: initialConfig.xColumn || '',
       yColumn: initialConfig.yColumn || '',
-      valueColumn: valueColumn,
+      valueColumn,
       groupByColumn: initialConfig.groupByColumn || '',
       aggregationType: initialConfig.aggregationType || 'count',
       title: initialConfig.title || '',
@@ -68,23 +64,18 @@ export default class GraphDialog extends React.Component {
 
   valid() {
     const { chartType, xColumn, yColumn, valueColumn } = this.state;
+    const hasValueColumn = Array.isArray(valueColumn) && valueColumn.length > 0;
 
-    // Basic validation
-    if (!chartType) {
-      return false;
-    }
-
-    // Chart type specific validation
     switch (chartType) {
       case 'pie':
       case 'doughnut':
-        return Array.isArray(valueColumn) && valueColumn.length > 0;
+        return hasValueColumn;
       case 'scatter':
         return !!xColumn && !!yColumn;
       case 'bar':
       case 'line':
       case 'radar':
-        return !!xColumn && Array.isArray(valueColumn) && valueColumn.length > 0;
+        return !!xColumn && hasValueColumn;
       default:
         return false;
     }
@@ -94,12 +85,9 @@ export default class GraphDialog extends React.Component {
     if (this.valid()) {
       this.props.onConfirm({
         ...this.state,
-        // Filter out empty string values
         xColumn: this.state.xColumn || null,
         yColumn: this.state.yColumn || null,
-        valueColumn: Array.isArray(this.state.valueColumn) && this.state.valueColumn.length > 0
-          ? this.state.valueColumn
-          : null,
+        valueColumn: this.state.valueColumn.length > 0 ? this.state.valueColumn : null,
         groupByColumn: this.state.groupByColumn || null,
       });
     }
@@ -121,42 +109,33 @@ export default class GraphDialog extends React.Component {
     });
   };
 
-  getNumericColumns() {
-    return this.props.columns
-      ? Object.entries(this.props.columns)
-        .filter(([key, col]) => col.type === 'Number' && key !== 'objectId')
-        .map(([key]) => key)
-      : [];
-  }
-
-  getNumericAndPointerColumns() {
-    return this.props.columns
-      ? Object.entries(this.props.columns)
-        .filter(([key, col]) => (col.type === 'Number' || col.type === 'Pointer') && key !== 'objectId')
-        .map(([key]) => key)
-      : [];
+  getColumnsByType(types) {
+    if (!this.props.columns) {
+      return [];
+    }
+    return Object.entries(this.props.columns)
+      .filter(([key, col]) => key !== 'objectId' && (!types || types.includes(col.type)))
+      .map(([key]) => key);
   }
 
   getAllColumns() {
-    return this.props.columns
-      ? Object.keys(this.props.columns).filter(key => key !== 'objectId')
-      : [];
+    return this.getColumnsByType();
+  }
+
+  getNumericColumns() {
+    return this.getColumnsByType(['Number']);
+  }
+
+  getNumericAndPointerColumns() {
+    return this.getColumnsByType(['Number', 'Pointer']);
   }
 
   getStringColumns() {
-    return this.props.columns
-      ? Object.entries(this.props.columns)
-        .filter(([key, col]) => col.type === 'String' && key !== 'objectId')
-        .map(([key]) => key)
-      : [];
+    return this.getColumnsByType(['String']);
   }
 
   getStringAndPointerColumns() {
-    return this.props.columns
-      ? Object.entries(this.props.columns)
-        .filter(([key, col]) => (col.type === 'String' || col.type === 'Pointer') && key !== 'objectId')
-        .map(([key]) => key)
-      : [];
+    return this.getColumnsByType(['String', 'Pointer']);
   }
 
   renderChartTypeSection() {
