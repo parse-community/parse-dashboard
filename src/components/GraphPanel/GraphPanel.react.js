@@ -189,9 +189,11 @@ const GraphPanel = ({
       case 'radar':
         return {
           ...baseOptions,
-          scale: {
-            ticks: {
-              display: showGrid,
+          scales: {
+            r: {
+              ticks: {
+                display: showGrid,
+              },
             },
           },
         };

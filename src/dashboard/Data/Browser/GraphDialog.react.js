@@ -240,7 +240,7 @@ export default class GraphDialog extends React.Component {
           </Dropdown>
         } />
 
-        {(chartType === 'scatter' || chartType === 'line') && (
+        {chartType === 'scatter' && (
           <Field label={<Label text="Y-Axis" />} input={
             <Dropdown
               value={this.state.yColumn}
@@ -256,7 +256,7 @@ export default class GraphDialog extends React.Component {
           } />
         )}
 
-        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
+        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut' || chartType === 'radar') && (
           <Field label={<Label text="Values" />} input={
             <MultiSelect
               value={this.state.valueColumn}
@@ -273,7 +273,7 @@ export default class GraphDialog extends React.Component {
           } />
         )}
 
-        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
+        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut' || chartType === 'radar') && (
           <Field label={<Label text="Aggregation Type" />} input={
             <Dropdown
               value={this.state.aggregationType}
@@ -288,7 +288,7 @@ export default class GraphDialog extends React.Component {
           } />
         )}
 
-        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
+        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut' || chartType === 'radar') && (
           <>
             {this.state.calculatedValues.map((calc, index) => {
               const isExpanded = calc.expanded !== false;

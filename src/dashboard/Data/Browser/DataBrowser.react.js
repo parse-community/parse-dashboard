@@ -124,7 +124,16 @@ export default class DataBrowser extends React.Component {
     const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
     const parsedGraphPanelWidth = storedGraphPanelWidth ? parseInt(storedGraphPanelWidth, 10) : 400;
     const storedGraphConfig = window.localStorage?.getItem(GRAPH_PANEL_CONFIG);
-    const parsedGraphConfig = storedGraphConfig ? JSON.parse(storedGraphConfig) : null;
+    let parsedGraphConfig = null;
+    if (storedGraphConfig) {
+      try {
+        parsedGraphConfig = JSON.parse(storedGraphConfig);
+      } catch (error) {
+        console.error('Failed to parse graph panel config from localStorage:', error);
+        // Remove the corrupted config from localStorage
+        window.localStorage?.removeItem(GRAPH_PANEL_CONFIG);
+      }
+    }
 
     this.state = {
       order: order,

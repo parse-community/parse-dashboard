@@ -231,16 +231,18 @@ function calculateValue(item, fields, operator) {
       // Subtract all subsequent values from the first
       return values.reduce((acc, val, index) => index === 0 ? val : acc - val, 0);
 
-    case 'ratio':
+    case 'ratio': {
       // Divide first value by second (or product of all others)
       if (values.length < 2) {return null;}
       const denominator = values.slice(1).reduce((acc, val) => acc * val, 1);
       return denominator !== 0 ? values[0] / denominator : null;
+    }
 
-    case 'percent':
+    case 'percent': {
       // Calculate percentage: (first value / sum of all values) * 100
       const total = values.reduce((acc, val) => acc + val, 0);
       return total !== 0 ? (values[0] / total) * 100 : null;
+    }
 
     default:
       return null;
@@ -566,6 +568,9 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
     });
   }
 
+  // Generate colors once for all datasets
+  const colors = generateColors(groupKeys.length);
+
   const datasets = groupKeys.map((groupKey, index) => {
     const groupData = groups[groupKey];
     const values = sortedXKeys.map(xKey => {
@@ -588,8 +593,8 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
     return {
       label: groupKey,
       data: values,
-      backgroundColor: generateColors(groupKeys.length)[index],
-      borderColor: generateColors(groupKeys.length)[index].replace('0.8', '1'),
+      backgroundColor: colors[index],
+      borderColor: colors[index].replace('0.8', '1'),
       borderWidth: 1,
     };
   });
@@ -662,7 +667,7 @@ export function validateGraphConfig(config, columns) {
       break;
 
     case 'pie':
-    case 'doughnut':
+    case 'doughnut': {
       if (!valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
         return { isValid: false, error: 'Pie charts require at least one value column' };
       }
@@ -674,10 +679,11 @@ export function validateGraphConfig(config, columns) {
         }
       }
       break;
+    }
 
     case 'bar':
     case 'line':
-    case 'radar':
+    case 'radar': {
       if (!xColumn || !valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
         return { isValid: false, error: 'Bar/line charts require both X axis and at least one value column' };
       }
@@ -692,6 +698,7 @@ export function validateGraphConfig(config, columns) {
         }
       }
       break;
+    }
 
     default:
       return { isValid: false, error: 'Unsupported chart type' };
