@@ -194,9 +194,32 @@ export function aggregateValues(values, aggregationType = 'count') {
 }
 
 /**
+ * Create a composite group key from multiple group-by columns
+ * @param {Object} item - Data item
+ * @param {string|Array<string>} groupByColumns - Column(s) to group by
+ * @returns {string} Composite group key
+ */
+function createGroupKey(item, groupByColumns) {
+  const columns = Array.isArray(groupByColumns) ? groupByColumns : [groupByColumns];
+
+  const parts = columns.map(col => {
+    const rawValue = getNestedValue(item, col);
+
+    // Handle pointer objects - use objectId
+    if (rawValue && typeof rawValue === 'object') {
+      return rawValue.objectId || rawValue.id || 'Other';
+    }
+
+    return rawValue != null ? String(rawValue) : 'Other';
+  });
+
+  return parts.join(' | ');
+}
+
+/**
  * Group data by a column and apply aggregation
  * @param {Array} data - Array of Parse objects
- * @param {string} groupByColumn - Column to group by
+ * @param {string|Array<string>} groupByColumn - Column(s) to group by
  * @param {string} valueColumn - Column to aggregate
  * @param {string} aggregationType - Aggregation type
  * @returns {Object} Grouped and aggregated data
@@ -205,18 +228,11 @@ export function groupAndAggregate(data, groupByColumn, valueColumn, aggregationT
   const groups = {};
 
   data.forEach(item => {
-    const rawGroupValue = getNestedValue(item, groupByColumn);
     const rawValue = getNestedValue(item, valueColumn);
     const value = extractNumericValue(rawValue);
 
-    // Handle pointer grouping - use objectId
-    let groupValue = rawGroupValue;
-    if (rawGroupValue && typeof rawGroupValue === 'object') {
-      groupValue = rawGroupValue.objectId || rawGroupValue.id || rawGroupValue;
-    }
-
-    // Handle null/undefined group values
-    const groupKey = groupValue != null ? String(groupValue) : 'Other';
+    // Create composite group key from potentially multiple columns
+    const groupKey = createGroupKey(item, groupByColumn);
 
     if (!groups[groupKey]) {
       groups[groupKey] = [];
@@ -283,7 +299,7 @@ export function processScatterData(data, xColumn, yColumn, maxPoints = 1000) {
  * Process data for pie/doughnut charts
  * @param {Array} data - Array of Parse objects
  * @param {string|Array<string>} valueColumn - Value column(s) for aggregation
- * @param {string} groupByColumn - Column to group by (optional)
+ * @param {string|Array<string>} groupByColumn - Column(s) to group by (optional)
  * @param {string} aggregationType - Aggregation type
  * @returns {Object} Chart.js compatible data
  */
@@ -353,7 +369,7 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
  * @param {Array} data - Array of Parse objects
  * @param {string} xColumn - X-axis column
  * @param {string|Array<string>} valueColumn - Value column(s)
- * @param {string} groupByColumn - Column to group by (optional)
+ * @param {string|Array<string>} groupByColumn - Column(s) to group by (optional)
  * @param {string} aggregationType - Aggregation type
  * @returns {Object} Chart.js compatible data
  */
@@ -401,19 +417,14 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
       if (value === null) {return;}
 
-      // Handle groupBy column - extract objectId from pointers
+      // Handle groupBy column(s) - create composite key if multiple columns
       let groupKeyValue = valCol; // Use column name as default group
-      if (groupByColumn) {
-        const rawGroupValue = getNestedValue(item, groupByColumn);
-        if (rawGroupValue && typeof rawGroupValue === 'object') {
-          // Pointer object - use objectId
-          groupKeyValue = String(rawGroupValue.objectId || rawGroupValue.id || 'Other');
-        } else {
-          groupKeyValue = String(rawGroupValue || 'Other');
-        }
+      if (groupByColumn && (Array.isArray(groupByColumn) ? groupByColumn.length > 0 : true)) {
+        const compositeKey = createGroupKey(item, groupByColumn);
+        groupKeyValue = compositeKey;
         // When groupBy is specified, combine with column name for unique series
         if (valueColumns.length > 1) {
-          groupKeyValue = `${valCol} (${groupKeyValue})`;
+          groupKeyValue = `${valCol} (${compositeKey})`;
         }
       }
       const groupKey = groupKeyValue;

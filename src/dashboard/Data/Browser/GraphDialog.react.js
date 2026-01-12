@@ -47,12 +47,17 @@ export default class GraphDialog extends React.Component {
       ? (Array.isArray(initialConfig.valueColumn) ? initialConfig.valueColumn : [initialConfig.valueColumn])
       : [];
 
+    // Ensure groupByColumn is always an array
+    const groupByColumn = initialConfig.groupByColumn
+      ? (Array.isArray(initialConfig.groupByColumn) ? initialConfig.groupByColumn : [initialConfig.groupByColumn])
+      : [];
+
     this.state = {
       chartType: initialConfig.chartType || 'bar',
       xColumn: initialConfig.xColumn || '',
       yColumn: initialConfig.yColumn || '',
       valueColumn,
-      groupByColumn: initialConfig.groupByColumn || '',
+      groupByColumn,
       aggregationType: initialConfig.aggregationType || 'count',
       title: initialConfig.title || '',
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
@@ -88,7 +93,7 @@ export default class GraphDialog extends React.Component {
         xColumn: this.state.xColumn || null,
         yColumn: this.state.yColumn || null,
         valueColumn: this.state.valueColumn.length > 0 ? this.state.valueColumn : null,
-        groupByColumn: this.state.groupByColumn || null,
+        groupByColumn: this.state.groupByColumn.length > 0 ? this.state.groupByColumn : null,
       });
     }
   };
@@ -99,7 +104,7 @@ export default class GraphDialog extends React.Component {
       xColumn: '',
       yColumn: '',
       valueColumn: [],
-      groupByColumn: '',
+      groupByColumn: [],
       aggregationType: 'count',
       title: '',
       showLegend: true,
@@ -166,7 +171,7 @@ export default class GraphDialog extends React.Component {
 
     return (
       <>
-        <Field label={<Label text="X-Axis Field" />} input={
+        <Field label={<Label text="X-Axis" />} input={
           <Dropdown
             value={this.state.xColumn}
             onChange={xColumn => this.setState({ xColumn })}
@@ -181,7 +186,7 @@ export default class GraphDialog extends React.Component {
         } />
 
         {(chartType === 'scatter' || chartType === 'line') && (
-          <Field label={<Label text="Y-Axis Field" />} input={
+          <Field label={<Label text="Y-Axis" />} input={
             <Dropdown
               value={this.state.yColumn}
               onChange={yColumn => this.setState({ yColumn })}
@@ -197,7 +202,7 @@ export default class GraphDialog extends React.Component {
         )}
 
         {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
-          <Field label={<Label text="Value Fields" />} input={
+          <Field label={<Label text="Values" />} input={
             <MultiSelect
               value={this.state.valueColumn}
               onChange={valueColumn => this.setState({ valueColumn })}
@@ -229,19 +234,19 @@ export default class GraphDialog extends React.Component {
         )}
 
         {stringAndPointerColumns.length > 0 && (
-          <Field label={<Label text="Group By Field" description="Optional"/>} input={
-            <Dropdown
+          <Field label={<Label text="Group By" description="Optional"/>} input={
+            <MultiSelect
               value={this.state.groupByColumn}
               onChange={groupByColumn => this.setState({ groupByColumn })}
-              placeHolder="Select field"
+              placeHolder="Select field(s)"
+              formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
             >
-              <Option value="">None</Option>
               {stringAndPointerColumns.map(col => (
-                <Option key={col} value={col}>
+                <MultiSelectOption key={col} value={col}>
                   {col}
-                </Option>
+                </MultiSelectOption>
               ))}
-            </Dropdown>
+            </MultiSelect>
           } />
         )}
       </>
