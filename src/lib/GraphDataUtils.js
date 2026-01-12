@@ -22,12 +22,15 @@ export function getNestedValue(obj, path) {
   // Handle Parse object attributes vs raw object
   const data = obj.attributes || obj;
 
-  return path.split('.').reduce((current, key) => {
+  const result = path.split('.').reduce((current, key) => {
     if (current && typeof current === 'object') {
       return current[key];
     }
     return null;
   }, data);
+
+  // Convert undefined to null for consistency
+  return result === undefined ? null : result;
 }
 
 /**
@@ -678,13 +681,13 @@ export function validateGraphConfig(config, columns) {
       if (!xColumn || !valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
         return { isValid: false, error: 'Bar/line charts require both X axis and at least one value column' };
       }
-      if (!columns[xColumn]) {
+      if (!columns || !columns[xColumn]) {
         return { isValid: false, error: 'X column does not exist' };
       }
       // Validate all value columns exist
       const barValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
       for (const col of barValueCols) {
-        if (!columns[col]) {
+        if (!columns || !columns[col]) {
           return { isValid: false, error: `Value column '${col}' does not exist` };
         }
       }
