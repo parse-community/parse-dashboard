@@ -114,7 +114,7 @@ const GraphPanel = ({
   }, [data, graphConfig, columns]);
 
   const chartOptions = useMemo(() => {
-    if (!graphConfig) return {};
+    if (!graphConfig) {return {};}
 
     const {
       chartType,

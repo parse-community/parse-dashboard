@@ -17,7 +17,7 @@
  * @returns {*} The value at the path
  */
 export function getNestedValue(obj, path) {
-  if (!path || !obj) return null;
+  if (!path || !obj) {return null;}
 
   // Handle Parse object attributes vs raw object
   const data = obj.attributes || obj;
@@ -95,7 +95,7 @@ export function isValidDate(value) {
  * @returns {Date|null} Converted date or null
  */
 export function normalizeDate(value) {
-  if (!value) return null;
+  if (!value) {return null;}
 
   // Handle Parse Date objects
   if (value && value.iso) {
@@ -282,7 +282,7 @@ export function processScatterData(data, xColumn, yColumn, maxPoints = 1000) {
 /**
  * Process data for pie/doughnut charts
  * @param {Array} data - Array of Parse objects
- * @param {string} valueColumn - Value column for aggregation
+ * @param {string|Array<string>} valueColumn - Value column(s) for aggregation
  * @param {string} groupByColumn - Column to group by (optional)
  * @param {string} aggregationType - Aggregation type
  * @returns {Object} Chart.js compatible data
@@ -292,23 +292,40 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
     return null;
   }
 
-  let aggregatedData;
+  // Convert single valueColumn to array for uniform handling
+  const valueColumns = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+
+  if (valueColumns.length === 0) {
+    return null;
+  }
+
+  let aggregatedData = {};
 
   if (groupByColumn) {
-    // Group by column and aggregate
-    aggregatedData = groupAndAggregate(data, groupByColumn, valueColumn, aggregationType);
+    // Group by column and aggregate for each value column
+    valueColumns.forEach(valCol => {
+      const columnData = groupAndAggregate(data, groupByColumn, valCol, aggregationType);
+      // Prefix keys with column name if multiple columns
+      if (valueColumns.length > 1) {
+        Object.keys(columnData).forEach(key => {
+          aggregatedData[`${valCol} (${key})`] = columnData[key];
+        });
+      } else {
+        aggregatedData = { ...aggregatedData, ...columnData };
+      }
+    });
   } else {
-    // Single value aggregation
-    const values = data
-      .map(item => {
-        const rawValue = getNestedValue(item, valueColumn);
-        return extractNumericValue(rawValue);
-      })
-      .filter(val => val !== null);
+    // Aggregate each value column separately
+    valueColumns.forEach(valCol => {
+      const values = data
+        .map(item => {
+          const rawValue = getNestedValue(item, valCol);
+          return extractNumericValue(rawValue);
+        })
+        .filter(val => val !== null);
 
-    aggregatedData = {
-      'All Data': aggregateValues(values, aggregationType),
-    };
+      aggregatedData[valCol] = aggregateValues(values, aggregationType);
+    });
   }
 
   const labels = Object.keys(aggregatedData);
@@ -335,13 +352,20 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
  * Process data for bar/line/radar charts
  * @param {Array} data - Array of Parse objects
  * @param {string} xColumn - X-axis column
- * @param {string} valueColumn - Value column
+ * @param {string|Array<string>} valueColumn - Value column(s)
  * @param {string} groupByColumn - Column to group by (optional)
  * @param {string} aggregationType - Aggregation type
  * @returns {Object} Chart.js compatible data
  */
 export function processBarLineData(data, xColumn, valueColumn, groupByColumn, aggregationType = 'count') {
   if (!xColumn || !valueColumn || !Array.isArray(data)) {
+    return null;
+  }
+
+  // Convert single valueColumn to array for uniform handling
+  const valueColumns = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+
+  if (valueColumns.length === 0) {
     return null;
   }
 
@@ -352,10 +376,8 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
   data.forEach(item => {
     const xVal = getNestedValue(item, xColumn);
-    const rawValue = getNestedValue(item, valueColumn);
-    const value = extractNumericValue(rawValue);
 
-    if (xVal == null || value === null) return;
+    if (xVal == null) {return;}
 
     // Check if x-axis value is a date
     const normalizedDate = normalizeDate(xVal);
@@ -372,26 +394,38 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
     xValues.set(xKey, xLabel);
 
-    // Handle groupBy column - extract objectId from pointers
-    let groupKeyValue = 'All';
-    if (groupByColumn) {
-      const rawGroupValue = getNestedValue(item, groupByColumn);
-      if (rawGroupValue && typeof rawGroupValue === 'object') {
-        // Pointer object - use objectId
-        groupKeyValue = String(rawGroupValue.objectId || rawGroupValue.id || 'Other');
-      } else {
-        groupKeyValue = String(rawGroupValue || 'Other');
-      }
-    }
-    const groupKey = groupKeyValue;
+    // Process each value column
+    valueColumns.forEach(valCol => {
+      const rawValue = getNestedValue(item, valCol);
+      const value = extractNumericValue(rawValue);
 
-    if (!groups[groupKey]) {
-      groups[groupKey] = {};
-    }
-    if (!groups[groupKey][xKey]) {
-      groups[groupKey][xKey] = [];
-    }
-    groups[groupKey][xKey].push(value);
+      if (value === null) {return;}
+
+      // Handle groupBy column - extract objectId from pointers
+      let groupKeyValue = valCol; // Use column name as default group
+      if (groupByColumn) {
+        const rawGroupValue = getNestedValue(item, groupByColumn);
+        if (rawGroupValue && typeof rawGroupValue === 'object') {
+          // Pointer object - use objectId
+          groupKeyValue = String(rawGroupValue.objectId || rawGroupValue.id || 'Other');
+        } else {
+          groupKeyValue = String(rawGroupValue || 'Other');
+        }
+        // When groupBy is specified, combine with column name for unique series
+        if (valueColumns.length > 1) {
+          groupKeyValue = `${valCol} (${groupKeyValue})`;
+        }
+      }
+      const groupKey = groupKeyValue;
+
+      if (!groups[groupKey]) {
+        groups[groupKey] = {};
+      }
+      if (!groups[groupKey][xKey]) {
+        groups[groupKey][xKey] = [];
+      }
+      groups[groupKey][xKey].push(value);
+    });
   });
 
   if (xValues.size === 0) {
@@ -502,22 +536,33 @@ export function validateGraphConfig(config, columns) {
 
     case 'pie':
     case 'doughnut':
-      if (!valueColumn) {
-        return { isValid: false, error: 'Pie charts require a value column' };
+      if (!valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
+        return { isValid: false, error: 'Pie charts require at least one value column' };
       }
-      if (!columns[valueColumn]) {
-        return { isValid: false, error: 'Selected value column does not exist' };
+      // Validate all value columns exist
+      const pieValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+      for (const col of pieValueCols) {
+        if (!columns[col]) {
+          return { isValid: false, error: `Value column '${col}' does not exist` };
+        }
       }
       break;
 
     case 'bar':
     case 'line':
     case 'radar':
-      if (!xColumn || !valueColumn) {
-        return { isValid: false, error: 'Bar/line charts require both X axis and value columns' };
+      if (!xColumn || !valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
+        return { isValid: false, error: 'Bar/line charts require both X axis and at least one value column' };
       }
-      if (!columns[xColumn] || !columns[valueColumn]) {
-        return { isValid: false, error: 'Selected columns do not exist' };
+      if (!columns[xColumn]) {
+        return { isValid: false, error: 'X column does not exist' };
+      }
+      // Validate all value columns exist
+      const barValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+      for (const col of barValueCols) {
+        if (!columns[col]) {
+          return { isValid: false, error: `Value column '${col}' does not exist` };
+        }
       }
       break;
 

@@ -151,7 +151,9 @@ export default class MultiSelect extends React.Component {
             </Chip>
           );
         })
-        : stringList(selection, this.props.endDelineator);
+        : this.props.formatSelection
+          ? this.props.formatSelection(selection)
+          : stringList(selection, this.props.endDelineator);
     }
 
     return (
@@ -181,4 +183,5 @@ MultiSelect.propTypes = {
   endDelineator: PropTypes.string.describe('End delineator to separate last selected option.'),
   dense: PropTypes.bool.describe('Mini variant - less height'),
   chips: PropTypes.bool.describe('Display chip for every selected item'),
+  formatSelection: PropTypes.func.describe('Custom function to format the display text. Receives array of selected labels.'),
 };

@@ -12,6 +12,8 @@ import Dropdown from 'components/Dropdown/Dropdown.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
+import MultiSelect from 'components/MultiSelect/MultiSelect.react';
+import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';
 import Option from 'components/Dropdown/Option.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import TextInput from 'components/TextInput/TextInput.react';
@@ -41,11 +43,19 @@ export default class GraphDialog extends React.Component {
     // Pre-fill with existing configuration if editing
     const initialConfig = props.initialConfig || {};
 
+    // Ensure valueColumn is always an array
+    let valueColumn = [];
+    if (initialConfig.valueColumn) {
+      valueColumn = Array.isArray(initialConfig.valueColumn)
+        ? initialConfig.valueColumn
+        : [initialConfig.valueColumn];
+    }
+
     this.state = {
       chartType: initialConfig.chartType || 'bar',
       xColumn: initialConfig.xColumn || '',
       yColumn: initialConfig.yColumn || '',
-      valueColumn: initialConfig.valueColumn || '',
+      valueColumn: valueColumn,
       groupByColumn: initialConfig.groupByColumn || '',
       aggregationType: initialConfig.aggregationType || 'count',
       title: initialConfig.title || '',
@@ -60,7 +70,7 @@ export default class GraphDialog extends React.Component {
     const { chartType, xColumn, yColumn, valueColumn } = this.state;
 
     // Basic validation
-    if (!chartType || !xColumn) {
+    if (!chartType) {
       return false;
     }
 
@@ -68,11 +78,15 @@ export default class GraphDialog extends React.Component {
     switch (chartType) {
       case 'pie':
       case 'doughnut':
-        return !!valueColumn;
+        return Array.isArray(valueColumn) && valueColumn.length > 0;
       case 'scatter':
         return !!xColumn && !!yColumn;
+      case 'bar':
+      case 'line':
+      case 'radar':
+        return !!xColumn && Array.isArray(valueColumn) && valueColumn.length > 0;
       default:
-        return !!xColumn;
+        return false;
     }
   }
 
@@ -83,7 +97,9 @@ export default class GraphDialog extends React.Component {
         // Filter out empty string values
         xColumn: this.state.xColumn || null,
         yColumn: this.state.yColumn || null,
-        valueColumn: this.state.valueColumn || null,
+        valueColumn: Array.isArray(this.state.valueColumn) && this.state.valueColumn.length > 0
+          ? this.state.valueColumn
+          : null,
         groupByColumn: this.state.groupByColumn || null,
       });
     }
@@ -94,7 +110,7 @@ export default class GraphDialog extends React.Component {
       chartType: 'bar',
       xColumn: '',
       yColumn: '',
-      valueColumn: '',
+      valueColumn: [],
       groupByColumn: '',
       aggregationType: 'count',
       title: '',
@@ -108,16 +124,16 @@ export default class GraphDialog extends React.Component {
   getNumericColumns() {
     return this.props.columns
       ? Object.entries(this.props.columns)
-          .filter(([key, col]) => col.type === 'Number' && key !== 'objectId')
-          .map(([key]) => key)
+        .filter(([key, col]) => col.type === 'Number' && key !== 'objectId')
+        .map(([key]) => key)
       : [];
   }
 
   getNumericAndPointerColumns() {
     return this.props.columns
       ? Object.entries(this.props.columns)
-          .filter(([key, col]) => (col.type === 'Number' || col.type === 'Pointer') && key !== 'objectId')
-          .map(([key]) => key)
+        .filter(([key, col]) => (col.type === 'Number' || col.type === 'Pointer') && key !== 'objectId')
+        .map(([key]) => key)
       : [];
   }
 
@@ -130,16 +146,16 @@ export default class GraphDialog extends React.Component {
   getStringColumns() {
     return this.props.columns
       ? Object.entries(this.props.columns)
-          .filter(([key, col]) => col.type === 'String' && key !== 'objectId')
-          .map(([key]) => key)
+        .filter(([key, col]) => col.type === 'String' && key !== 'objectId')
+        .map(([key]) => key)
       : [];
   }
 
   getStringAndPointerColumns() {
     return this.props.columns
       ? Object.entries(this.props.columns)
-          .filter(([key, col]) => (col.type === 'String' || col.type === 'Pointer') && key !== 'objectId')
-          .map(([key]) => key)
+        .filter(([key, col]) => (col.type === 'String' || col.type === 'Pointer') && key !== 'objectId')
+        .map(([key]) => key)
       : [];
   }
 
@@ -201,18 +217,19 @@ export default class GraphDialog extends React.Component {
         )}
 
         {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut') && (
-          <Field label={<Label text="Value Column" />} input={
-            <Dropdown
+          <Field label={<Label text="Value Columns" />} input={
+            <MultiSelect
               value={this.state.valueColumn}
               onChange={valueColumn => this.setState({ valueColumn })}
-              placeholder="Select value column (numeric/pointer)"
+              placeHolder="Select value fields"
+              formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
             >
               {numericAndPointerColumns.map(col => (
-                <Option key={col} value={col}>
+                <MultiSelectOption key={col} value={col}>
                   {col}
-                </Option>
+                </MultiSelectOption>
               ))}
-            </Dropdown>
+            </MultiSelect>
           } />
         )}
 
@@ -337,7 +354,7 @@ export default class GraphDialog extends React.Component {
         <Button value="Cancel" onClick={this.props.onCancel} />
         <Button
           primary={true}
-          value={isEditing ? "Update Graph" : "Create Graph"}
+          value={isEditing ? 'Update Graph' : 'Create Graph'}
           color="blue"
           disabled={!this.valid()}
           onClick={this.handleConfirm}
@@ -350,8 +367,8 @@ export default class GraphDialog extends React.Component {
         type={Modal.Types.INFO}
         icon="analytics-outline"
         iconSize={40}
-        title={isEditing ? "Edit Graph" : "Create Graph"}
-        subtitle={isEditing ? "Modify your data visualization settings" : "Configure your data visualization"}
+        title={isEditing ? 'Edit Graph' : 'Create Graph'}
+        subtitle={isEditing ? 'Modify your data visualization settings' : 'Configure your data visualization'}
         customFooter={customFooter}
       >
         <div style={{
