@@ -146,12 +146,18 @@ const GraphPanel = ({
           ...baseOptions,
           scales: {
             x: {
-              display: showGrid,
+              display: true,
               stacked: isStacked,
+              grid: {
+                display: showGrid,
+              },
             },
             y: {
-              display: showGrid,
+              display: true,
               stacked: isStacked,
+              grid: {
+                display: showGrid,
+              },
             },
           },
           interaction: {
@@ -178,10 +184,16 @@ const GraphPanel = ({
           ...baseOptions,
           scales: {
             x: {
-              display: showGrid,
+              display: true,
+              grid: {
+                display: showGrid,
+              },
             },
             y: {
-              display: showGrid,
+              display: true,
+              grid: {
+                display: showGrid,
+              },
             },
           },
         };
@@ -191,8 +203,11 @@ const GraphPanel = ({
           ...baseOptions,
           scales: {
             r: {
-              ticks: {
+              grid: {
                 display: showGrid,
+              },
+              ticks: {
+                display: true,
               },
             },
           },

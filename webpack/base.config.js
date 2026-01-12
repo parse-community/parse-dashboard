@@ -25,6 +25,11 @@ module.exports = {
   },
   resolve: {
     modules: [__dirname, path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')],
+    fullySpecified: false,
+    alias: {
+      'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
+      'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
+    },
   },
   resolveLoader: {
     modules: [path.join(__dirname, '../node_modules')],
@@ -33,7 +38,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /node_modules\/(?!react-chartjs-2)/,
         use: ['babel-loader'],
       },
       {
