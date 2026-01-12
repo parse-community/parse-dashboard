@@ -239,9 +239,11 @@ function calculateValue(item, fields, operator) {
     }
 
     case 'percent': {
-      // Calculate percentage: (first value / sum of all values) * 100
-      const total = values.reduce((acc, val) => acc + val, 0);
-      return total !== 0 ? (values[0] / total) * 100 : null;
+      // Calculate percentage: (numerator / denominator) * 100
+      if (values.length < 2) {return null;}
+      const numerator = values[0];
+      const denominator = values[1];
+      return denominator !== 0 ? (numerator / denominator) * 100 : null;
     }
 
     default:
