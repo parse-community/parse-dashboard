@@ -647,9 +647,10 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   const sortedXLabels = sortedXKeys.map(key => xValues.get(key));
   const groupKeys = Object.keys(groups);
 
-  // Create a map of group keys to their operators
+  // Create maps for calculated value properties (operator, secondary Y axis)
   // This handles both simple calc names and grouped calc names like "CalcName (GroupValue)"
   const calcValueOperatorMap = new Map();
+  const calcValueSecondaryYAxisMap = new Map();
   if (calculatedValues && Array.isArray(calculatedValues)) {
     calculatedValues.forEach(calc => {
       if (calc.name && calc.operator) {
@@ -659,6 +660,9 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
           // It either matches exactly, or starts with "CalcName ("
           if (groupKey === calc.name || groupKey.startsWith(`${calc.name} (`)) {
             calcValueOperatorMap.set(groupKey, calc.operator);
+            if (calc.useSecondaryYAxis) {
+              calcValueSecondaryYAxisMap.set(groupKey, true);
+            }
           }
         });
       }
@@ -699,6 +703,7 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
       backgroundColor: colors[index],
       borderColor: colors[index].replace('0.8', '1'),
       borderWidth: 1,
+      yAxisID: calcValueSecondaryYAxisMap.get(groupKey) ? 'y1' : 'y',
     };
   });
 

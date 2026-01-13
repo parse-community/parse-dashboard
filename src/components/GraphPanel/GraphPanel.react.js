@@ -151,7 +151,28 @@ const GraphPanel = ({
     // Chart type specific options
     switch (chartType) {
       case 'bar':
-      case 'line':
+      case 'line': {
+        // Determine which series are on each axis
+        const primaryAxisSeries = [];
+        const secondaryAxisSeries = [];
+
+        if (processedData && processedData.datasets) {
+          processedData.datasets.forEach(dataset => {
+            if (dataset.yAxisID === 'y1') {
+              secondaryAxisSeries.push(dataset.label);
+            } else {
+              primaryAxisSeries.push(dataset.label);
+            }
+          });
+        }
+
+        const primaryAxisLabel = primaryAxisSeries.length > 0
+          ? primaryAxisSeries.join(', ')
+          : 'Primary Axis';
+        const secondaryAxisLabel = secondaryAxisSeries.length > 0
+          ? secondaryAxisSeries.join(', ')
+          : 'Secondary Axis';
+
         return {
           ...baseOptions,
           scales: {
@@ -168,6 +189,23 @@ const GraphPanel = ({
               grid: {
                 display: showGrid,
               },
+              position: 'left',
+              title: {
+                display: true,
+                text: primaryAxisLabel,
+              },
+            },
+            y1: {
+              display: true,
+              stacked: isStacked,
+              grid: {
+                display: false, // Don't show grid for secondary axis to avoid overlap
+              },
+              position: 'right',
+              title: {
+                display: true,
+                text: secondaryAxisLabel,
+              },
             },
           },
           interaction: {
@@ -175,6 +213,7 @@ const GraphPanel = ({
             intersect: false,
           },
         };
+      }
 
       case 'pie':
       case 'doughnut':
@@ -229,7 +268,7 @@ const GraphPanel = ({
       default:
         return baseOptions;
     }
-  }, [graphConfig]);
+  }, [graphConfig, processedData]);
 
   const renderChart = () => {
     if (validationError) {

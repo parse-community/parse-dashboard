@@ -401,6 +401,20 @@ export default class GraphDialog extends React.Component {
                             </div>
                           </div>
                         )}
+                        {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Label text="Secondary Y Axis" description="Display on right axis" />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '8px' }}>
+                              <Toggle
+                                type={Toggle.Types.YES_NO}
+                                value={calc.useSecondaryYAxis || false}
+                                onChange={useSecondaryYAxis => this.updateCalculatedValue(index, 'useSecondaryYAxis', useSecondaryYAxis)}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
