@@ -133,9 +133,9 @@ const GraphPanel = ({
           break;
       }
       return { processedData: result, validationError: null };
-    } catch (error) {
-      console.error('Error processing graph data:', error);
-      return { processedData: null, validationError: error.message };
+    } catch (err) {
+      console.error('Error processing graph data:', err);
+      return { processedData: null, validationError: err instanceof Error ? err.message : String(err) };
     }
   }, [data, graphConfig, columns]);
 
