@@ -77,6 +77,7 @@ export default class GraphDialog extends React.Component {
       showAxisLabels: initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
       isStacked: initialConfig.isStacked || false,
       maxDataPoints: initialConfig.maxDataPoints || 1000,
+      maxDataPointsInput: null,
     };
   }
 
@@ -127,6 +128,7 @@ export default class GraphDialog extends React.Component {
       showAxisLabels: true,
       isStacked: false,
       maxDataPoints: 1000,
+      maxDataPointsInput: null,
     });
   };
 
@@ -571,12 +573,17 @@ export default class GraphDialog extends React.Component {
           />
         } input={
           <TextInput
-            value={this.state.maxDataPoints.toString()}
+            value={this.state.maxDataPointsInput ?? this.state.maxDataPoints.toString()}
             onChange={value => {
+              this.setState({ maxDataPointsInput: value });
               const num = parseInt(value, 10);
               if (!isNaN(num) && num > 0) {
-                this.setState({ maxDataPoints: num });
+                this.setState({ maxDataPoints: num, maxDataPointsInput: null });
               }
+            }}
+            onBlur={() => {
+              // Reset display to valid value on blur
+              this.setState({ maxDataPointsInput: null });
             }}
             placeholder="1000"
           />
