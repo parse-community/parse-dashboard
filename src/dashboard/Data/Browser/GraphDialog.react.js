@@ -124,6 +124,7 @@ export default class GraphDialog extends React.Component {
       title: '',
       showLegend: true,
       showGrid: true,
+      showAxisLabels: true,
       isStacked: false,
       maxDataPoints: 1000,
     });
