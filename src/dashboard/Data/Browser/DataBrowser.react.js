@@ -331,6 +331,26 @@ export default class DataBrowser extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // Reload graphConfig when className changes
+    if (this.props.className !== prevProps.className) {
+      const graphConfigKey = getGraphConfigKey(
+        this.props.app.applicationId,
+        this.props.appName,
+        this.props.className
+      );
+      const storedGraphConfig = window.localStorage?.getItem(graphConfigKey);
+      let parsedGraphConfig = null;
+      if (storedGraphConfig) {
+        try {
+          parsedGraphConfig = JSON.parse(storedGraphConfig);
+        } catch (error) {
+          console.error('Failed to parse graph panel config from localStorage:', error);
+          window.localStorage?.removeItem(graphConfigKey);
+        }
+      }
+      this.setState({ graphConfig: parsedGraphConfig });
+    }
+
     // Clear panels when className changes, data becomes null, or data reloads
     const shouldClearPanels = this.state.isPanelVisible && (
       // Class changed
