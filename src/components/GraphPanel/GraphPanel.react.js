@@ -216,6 +216,9 @@ const GraphPanel = ({
               grid: {
                 display: showGrid,
               },
+              angleLines: {
+                display: showGrid,
+              },
               ticks: {
                 display: true,
               },
