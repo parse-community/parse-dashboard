@@ -14,6 +14,7 @@ import { CurrentApp } from 'context/currentApp';
 import { dateStringUTC } from 'lib/DateUtils';
 import GraphDialog from 'dashboard/Data/Browser/GraphDialog.react';
 import GraphPanel from 'components/GraphPanel/GraphPanel.react';
+import GraphPreferencesManager from 'lib/GraphPreferencesManager';
 import getFileName from 'lib/getFileName';
 import { getValidScripts, executeScript } from '../../../lib/ScriptUtils';
 import Parse from 'parse';
@@ -237,6 +238,7 @@ export default class DataBrowser extends React.Component {
     this.isWheelScrolling = false;
     this.multiPanelWrapperElement = null;
     this.setMultiPanelWrapperRef = this.setMultiPanelWrapperRef.bind(this);
+    this.graphPreferencesManager = new GraphPreferencesManager(props.app);
   }
 
   setMultiPanelWrapperRef(element) {
@@ -330,25 +332,39 @@ export default class DataBrowser extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     // Reload graphConfig when className changes
     if (this.props.className !== prevProps.className) {
-      const graphConfigKey = getGraphConfigKey(
-        this.props.app.applicationId,
-        this.props.appName,
-        this.props.className
-      );
-      const storedGraphConfig = window.localStorage?.getItem(graphConfigKey);
-      let parsedGraphConfig = null;
-      if (storedGraphConfig) {
-        try {
-          parsedGraphConfig = JSON.parse(storedGraphConfig);
-        } catch (error) {
-          console.error('Failed to parse graph panel config from localStorage:', error);
-          window.localStorage?.removeItem(graphConfigKey);
+      // Try to load from server first, fallback to localStorage
+      try {
+        const graphs = await this.graphPreferencesManager.getGraphs(
+          this.props.app.applicationId,
+          this.props.className
+        );
+        // For now, we'll use the first graph if any exists
+        // In future, we could add UI to select from multiple saved graphs
+        const graphConfig = graphs && graphs.length > 0 ? graphs[0] : null;
+        this.setState({ graphConfig });
+      } catch (error) {
+        console.error('Failed to load graph config from server, trying localStorage:', error);
+        // Fallback to localStorage
+        const graphConfigKey = getGraphConfigKey(
+          this.props.app.applicationId,
+          this.props.appName,
+          this.props.className
+        );
+        const storedGraphConfig = window.localStorage?.getItem(graphConfigKey);
+        let parsedGraphConfig = null;
+        if (storedGraphConfig) {
+          try {
+            parsedGraphConfig = JSON.parse(storedGraphConfig);
+          } catch (error) {
+            console.error('Failed to parse graph panel config from localStorage:', error);
+            window.localStorage?.removeItem(graphConfigKey);
+          }
         }
+        this.setState({ graphConfig: parsedGraphConfig });
       }
-      this.setState({ graphConfig: parsedGraphConfig });
     }
 
     // Clear panels when className changes, data becomes null, or data reloads
@@ -1256,17 +1272,36 @@ export default class DataBrowser extends React.Component {
     this.setState({ showGraphDialog: false });
   }
 
-  saveGraphConfig(config) {
+  async saveGraphConfig(config) {
+    // Ensure config has an ID for server storage
+    const configWithId = {
+      ...config,
+      id: config.id || this.graphPreferencesManager.generateGraphId()
+    };
+
     this.setState({
-      graphConfig: config,
+      graphConfig: configWithId,
       showGraphDialog: false,
     });
-    const graphConfigKey = getGraphConfigKey(
-      this.props.app.applicationId,
-      this.props.appName,
-      this.props.className
-    );
-    window.localStorage?.setItem(graphConfigKey, JSON.stringify(config));
+
+    // Try to save to server first (if enabled), fallback to localStorage
+    try {
+      await this.graphPreferencesManager.saveGraph(
+        this.props.app.applicationId,
+        this.props.className,
+        configWithId,
+        [] // allGraphs not needed for single save
+      );
+    } catch (error) {
+      console.error('Failed to save graph to server, falling back to localStorage:', error);
+      // Fallback: save to localStorage
+      const graphConfigKey = getGraphConfigKey(
+        this.props.app.applicationId,
+        this.props.appName,
+        this.props.className
+      );
+      window.localStorage?.setItem(graphConfigKey, JSON.stringify(configWithId));
+    }
   }
 
   handlePanelScroll(event, index) {
@@ -2109,6 +2144,7 @@ export default class DataBrowser extends React.Component {
         {this.state.showGraphDialog && (
           <GraphDialog
             columns={this.props.columns}
+            className={this.props.className}
             initialConfig={this.state.graphConfig}
             onConfirm={this.saveGraphConfig}
             onCancel={this.hideGraphDialog}

@@ -64,6 +64,7 @@ export default class GraphDialog extends React.Component {
     const calculatedValues = initialConfig.calculatedValues || [];
 
     this.state = {
+      id: initialConfig.id || null, // Preserve existing ID for updates
       chartType: initialConfig.chartType || 'bar',
       xColumn: initialConfig.xColumn || '',
       yColumn: initialConfig.yColumn || '',
@@ -104,6 +105,7 @@ export default class GraphDialog extends React.Component {
     if (this.valid()) {
       this.props.onConfirm({
         ...this.state,
+        className: this.props.className,
         xColumn: this.state.xColumn || null,
         yColumn: this.state.yColumn || null,
         valueColumn: this.state.valueColumn.length > 0 ? this.state.valueColumn : null,
@@ -113,23 +115,10 @@ export default class GraphDialog extends React.Component {
     }
   };
 
-  handleReset = () => {
-    this.setState({
-      chartType: 'bar',
-      xColumn: '',
-      yColumn: '',
-      valueColumn: [],
-      groupByColumn: [],
-      calculatedValues: [],
-      aggregationType: 'count',
-      title: '',
-      showLegend: true,
-      showGrid: true,
-      showAxisLabels: true,
-      isStacked: false,
-      maxDataPoints: 1000,
-      maxDataPointsInput: null,
-    });
+  handleDelete = () => {
+    if (this.state.id && this.props.onDelete) {
+      this.props.onDelete(this.state.id);
+    }
   };
 
   getColumnsByType(types) {
