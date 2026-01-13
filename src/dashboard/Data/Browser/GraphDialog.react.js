@@ -407,7 +407,7 @@ export default class GraphDialog extends React.Component {
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               <Label text="Secondary Y Axis" description="Display on right axis" />
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
                               <Toggle
                                 type={Toggle.Types.YES_NO}
                                 value={calc.useSecondaryYAxis || false}
