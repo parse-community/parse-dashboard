@@ -393,7 +393,7 @@ export default class GraphDialog extends React.Component {
                                 placeHolder="Select field(s)"
                                 formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
                               >
-                                {numericAndPointerColumns.map(col => (
+                                {numericAndCalculatedFields.map(col => (
                                   <MultiSelectOption key={col} value={col}>
                                     {col}
                                   </MultiSelectOption>
