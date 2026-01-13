@@ -120,7 +120,7 @@ const GraphPanel = ({
       let result = null;
       switch (chartType) {
         case 'scatter':
-          result = processScatterData(limitedData, xColumn, yColumn, maxDataPoints);
+          result = processScatterData(data, xColumn, yColumn, maxDataPoints);
           break;
         case 'pie':
         case 'doughnut':
