@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -73,6 +73,21 @@ const GraphPanel = ({
   onEdit,
 }) => {
   const chartRef = useRef(null);
+  const containerRef = useRef(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  // Measure container height for dynamic label sizing
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        setContainerHeight(containerRef.current.clientHeight);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   // Validate configuration and process data
   const { processedData, validationError } = useMemo(() => {
@@ -167,12 +182,41 @@ const GraphPanel = ({
           });
         }
 
-        const primaryAxisLabel = primaryAxisSeries.length > 0
-          ? primaryAxisSeries.join(', ')
-          : 'Primary Axis';
-        const secondaryAxisLabel = secondaryAxisSeries.length > 0
-          ? secondaryAxisSeries.join(', ')
-          : 'Secondary Axis';
+        // Split long labels into multiple lines for better display
+        // Dynamically calculate max line length based on chart height
+        // Formula: Base of 20 chars + 1 additional char per 15px of height
+        // Examples: 300px = 40 chars, 450px = 50 chars, 600px = 60 chars
+        const maxLineLength = Math.max(20, 20 + Math.floor(containerHeight / 15));
+
+        const splitLabel = (series, defaultLabel) => {
+          if (series.length === 0) {
+            return [defaultLabel];
+          }
+          const joined = series.join(', ');
+          // If label is too long, split into multiple lines
+          if (joined.length > maxLineLength) {
+            const lines = [];
+            let currentLine = '';
+            series.forEach((item, idx) => {
+              const separator = idx === 0 ? '' : ', ';
+              const testLine = currentLine + separator + item;
+              if (testLine.length > maxLineLength && currentLine.length > 0) {
+                lines.push(currentLine);
+                currentLine = item;
+              } else {
+                currentLine = testLine;
+              }
+            });
+            if (currentLine) {
+              lines.push(currentLine);
+            }
+            return lines;
+          }
+          return [joined];
+        };
+
+        const primaryAxisTitle = splitLabel(primaryAxisSeries, 'Primary Axis');
+        const secondaryAxisTitle = splitLabel(secondaryAxisSeries, 'Secondary Axis');
 
         const hasSecondaryAxis = secondaryAxisSeries.length > 0;
 
@@ -195,7 +239,14 @@ const GraphPanel = ({
               position: 'left',
               title: {
                 display: showAxisLabels !== false,
-                text: primaryAxisLabel,
+                text: primaryAxisTitle,
+                font: {
+                  size: 12,
+                },
+                padding: {
+                  top: 10,
+                  bottom: 10,
+                },
               },
             },
             y1: {
@@ -207,7 +258,14 @@ const GraphPanel = ({
               position: 'right',
               title: {
                 display: showAxisLabels !== false && hasSecondaryAxis,
-                text: secondaryAxisLabel,
+                text: secondaryAxisTitle,
+                font: {
+                  size: 12,
+                },
+                padding: {
+                  top: 10,
+                  bottom: 10,
+                },
               },
             },
           },
@@ -271,7 +329,7 @@ const GraphPanel = ({
       default:
         return baseOptions;
     }
-  }, [graphConfig, processedData]);
+  }, [graphConfig, processedData, containerHeight]);
 
   const renderChart = () => {
     if (validationError) {
@@ -377,7 +435,7 @@ const GraphPanel = ({
         </div>
       </div>
 
-      <div className={styles.chartContainer}>
+      <div className={styles.chartContainer} ref={containerRef}>
         {isLoading ? (
           <div className={styles.loading}>
             <Icon name="spinner" width={24} height={24} fill="#ffffff" />
