@@ -1868,6 +1868,8 @@ export default class DataBrowser extends React.Component {
             skip={this.props.skip}
             limit={this.props.limit}
             firstSelectedCell={this.state.firstSelectedCell}
+            isGraphPanelVisible={this.state.isGraphPanelVisible && !!this.state.graphConfig}
+            graphPanelWidth={this.state.graphPanelWidth}
             {...other}
           />
           {this.state.isPanelVisible && (

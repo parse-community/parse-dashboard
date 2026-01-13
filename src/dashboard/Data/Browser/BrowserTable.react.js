@@ -565,8 +565,12 @@ export default class BrowserTable extends React.Component {
         );
       }
     }
-    const rightValue =
-      this.props.panelWidth && this.props.isPanelVisible ? `${this.props.panelWidth}px` : '0px';
+    const aggregationPanelWidth =
+      this.props.panelWidth && this.props.isPanelVisible ? this.props.panelWidth : 0;
+    const graphPanelWidth =
+      this.props.graphPanelWidth && this.props.isGraphPanelVisible ? this.props.graphPanelWidth : 0;
+    const totalRightOffset = aggregationPanelWidth + graphPanelWidth;
+    const rightValue = `${totalRightOffset}px`;
 
     return (
       <div
