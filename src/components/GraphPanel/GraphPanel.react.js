@@ -251,7 +251,7 @@ const GraphPanel = ({
               },
             },
             y1: {
-              display: true,
+              display: hasSecondaryAxis,
               stacked: isStacked,
               grid: {
                 display: false, // Don't show grid for secondary axis to avoid overlap
