@@ -407,14 +407,38 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
   if (calculatedValues && Array.isArray(calculatedValues)) {
     calculatedValues.forEach(calc => {
       if (calc.fields && calc.fields.length > 0 && calc.name) {
-        const calcValues = data
-          .map(item => calculateValue(item, calc.fields, calc.operator))
-          .filter(val => val !== null);
+        if (groupByColumn) {
+          // Group calculated values by the same groupByColumn
+          const groups = {};
+          data.forEach(item => {
+            const calcValue = calculateValue(item, calc.fields, calc.operator);
+            if (calcValue !== null) {
+              const groupKey = createGroupKey(item, groupByColumn);
+              if (!groups[groupKey]) {
+                groups[groupKey] = [];
+              }
+              groups[groupKey].push(calcValue);
+            }
+          });
 
-        if (calcValues.length > 0) {
-          // For calculated values, always sum the results since the calculation
-          // is already applied at the row level
-          aggregatedData[calc.name] = aggregateValues(calcValues, 'sum');
+          // Aggregate each group
+          Object.keys(groups).forEach(groupKey => {
+            const labelKey = valueColumns.length > 1 || calculatedValues.length > 1
+              ? `${calc.name} (${groupKey})`
+              : groupKey;
+            aggregatedData[labelKey] = aggregateValues(groups[groupKey], 'sum');
+          });
+        } else {
+          // No grouping - aggregate all calculated values together
+          const calcValues = data
+            .map(item => calculateValue(item, calc.fields, calc.operator))
+            .filter(val => val !== null);
+
+          if (calcValues.length > 0) {
+            // For calculated values, always sum the results since the calculation
+            // is already applied at the row level
+            aggregatedData[calc.name] = aggregateValues(calcValues, 'sum');
+          }
         }
       }
     });
@@ -524,7 +548,17 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
           const calcValue = calculateValue(item, calc.fields, calc.operator);
 
           if (calcValue !== null) {
-            const groupKey = calc.name;
+            // Apply groupBy logic to calculated values, same as regular values
+            let groupKeyValue = calc.name;
+            if (groupByColumn && (Array.isArray(groupByColumn) ? groupByColumn.length > 0 : true)) {
+              const compositeKey = createGroupKey(item, groupByColumn);
+              groupKeyValue = compositeKey;
+              // When groupBy is specified, combine with calc name for unique series
+              if (calculatedValues.length > 1 || valueColumns.length > 0) {
+                groupKeyValue = `${calc.name} (${compositeKey})`;
+              }
+            }
+            const groupKey = groupKeyValue;
 
             if (!groups[groupKey]) {
               groups[groupKey] = {};
