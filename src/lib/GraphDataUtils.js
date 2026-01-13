@@ -403,15 +403,38 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
     });
   }
 
-  // Process calculated values
+  // Process calculated values - with support for referencing other calculated values
   if (calculatedValues && Array.isArray(calculatedValues)) {
+    // First, we need to compute all calculated values for each row
+    const rowsWithCalcValues = data.map(item => {
+      const calculatedValuesForRow = {};
+
+      calculatedValues.forEach(calc => {
+        if (calc.fields && calc.fields.length > 0 && calc.name) {
+          // Create an enhanced item that includes previously calculated values
+          const enhancedItem = { ...item };
+          if (item.attributes) {
+            enhancedItem.attributes = { ...item.attributes, ...calculatedValuesForRow };
+          } else {
+            Object.assign(enhancedItem, calculatedValuesForRow);
+          }
+
+          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator);
+          calculatedValuesForRow[calc.name] = calcValue;
+        }
+      });
+
+      return { item, calculatedValues: calculatedValuesForRow };
+    });
+
+    // Now process each calculated value with grouping
     calculatedValues.forEach(calc => {
       if (calc.fields && calc.fields.length > 0 && calc.name) {
         if (groupByColumn) {
           // Group calculated values by the same groupByColumn
           const groups = {};
-          data.forEach(item => {
-            const calcValue = calculateValue(item, calc.fields, calc.operator);
+          rowsWithCalcValues.forEach(({ item, calculatedValues: calcVals }) => {
+            const calcValue = calcVals[calc.name];
             if (calcValue !== null) {
               const groupKey = createGroupKey(item, groupByColumn);
               if (!groups[groupKey]) {
@@ -426,18 +449,32 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
             const labelKey = valueColumns.length > 1 || calculatedValues.length > 1
               ? `${calc.name} (${groupKey})`
               : groupKey;
-            aggregatedData[labelKey] = aggregateValues(groups[groupKey], 'sum');
+            // For ratio-based operators (percent, ratio), average the results
+            // For other operators, sum the results
+            let aggType = 'sum';
+            if (calc.operator === 'percent' || calc.operator === 'ratio') {
+              aggType = 'avg';
+            } else if (calc.operator === 'average') {
+              aggType = 'avg';
+            }
+            aggregatedData[labelKey] = aggregateValues(groups[groupKey], aggType);
           });
         } else {
           // No grouping - aggregate all calculated values together
-          const calcValues = data
-            .map(item => calculateValue(item, calc.fields, calc.operator))
+          const calcValues = rowsWithCalcValues
+            .map(({ calculatedValues: calcVals }) => calcVals[calc.name])
             .filter(val => val !== null);
 
           if (calcValues.length > 0) {
-            // For calculated values, always sum the results since the calculation
-            // is already applied at the row level
-            aggregatedData[calc.name] = aggregateValues(calcValues, 'sum');
+            // For ratio-based operators (percent, ratio), average the results
+            // For other operators, sum the results
+            let aggType = 'sum';
+            if (calc.operator === 'percent' || calc.operator === 'ratio') {
+              aggType = 'avg';
+            } else if (calc.operator === 'average') {
+              aggType = 'avg';
+            }
+            aggregatedData[calc.name] = aggregateValues(calcValues, aggType);
           }
         }
       }
@@ -513,6 +550,9 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
     xValues.set(xKey, xLabel);
 
+    // Create an extended item that will hold calculated values for this row
+    const calculatedValuesForRow = {};
+
     // Process each value column
     valueColumns.forEach(valCol => {
       const rawValue = getNestedValue(item, valCol);
@@ -541,11 +581,22 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
       groups[groupKey][xKey].push(value);
     });
 
-    // Process calculated values
+    // Process calculated values - with support for referencing other calculated values
     if (calculatedValues && Array.isArray(calculatedValues)) {
       calculatedValues.forEach(calc => {
         if (calc.fields && calc.fields.length > 0 && calc.name) {
-          const calcValue = calculateValue(item, calc.fields, calc.operator);
+          // Create an enhanced item that includes previously calculated values
+          const enhancedItem = { ...item };
+          if (item.attributes) {
+            enhancedItem.attributes = { ...item.attributes, ...calculatedValuesForRow };
+          } else {
+            Object.assign(enhancedItem, calculatedValuesForRow);
+          }
+
+          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator);
+
+          // Store this calculated value so it can be referenced by subsequent calculations
+          calculatedValuesForRow[calc.name] = calcValue;
 
           if (calcValue !== null) {
             // Apply groupBy logic to calculated values, same as regular values
@@ -596,12 +647,20 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   const sortedXLabels = sortedXKeys.map(key => xValues.get(key));
   const groupKeys = Object.keys(groups);
 
-  // Create a map of calculated value names to their operators
+  // Create a map of group keys to their operators
+  // This handles both simple calc names and grouped calc names like "CalcName (GroupValue)"
   const calcValueOperatorMap = new Map();
   if (calculatedValues && Array.isArray(calculatedValues)) {
     calculatedValues.forEach(calc => {
       if (calc.name && calc.operator) {
-        calcValueOperatorMap.set(calc.name, calc.operator);
+        // Map all possible variations of this calculated value's group keys
+        groupKeys.forEach(groupKey => {
+          // Check if this groupKey is for this calculated value
+          // It either matches exactly, or starts with "CalcName ("
+          if (groupKey === calc.name || groupKey.startsWith(`${calc.name} (`)) {
+            calcValueOperatorMap.set(groupKey, calc.operator);
+          }
+        });
       }
     });
   }
@@ -618,10 +677,16 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
       const calcOperator = calcValueOperatorMap.get(groupKey);
 
       if (calcOperator) {
-        // For calculated values, use the operator as the aggregation type
-        // The operator (sum, average, etc.) is already applied at row level,
-        // so we use it again to aggregate across rows with same x-axis value
-        return groupValues.length > 0 ? aggregateValues(groupValues, calcOperator) : 0;
+        // For calculated values, the operator has already been applied at row level
+        // For ratio-based operators (percent, ratio), we should average the results
+        // For other operators (sum, average, difference), we sum the results
+        let aggregationType = 'sum';
+        if (calcOperator === 'percent' || calcOperator === 'ratio') {
+          aggregationType = 'avg';
+        } else if (calcOperator === 'average') {
+          aggregationType = 'avg';
+        }
+        return groupValues.length > 0 ? aggregateValues(groupValues, aggregationType) : 0;
       } else {
         // For regular values, use the selected aggregationType
         return groupValues.length > 0 ? aggregateValues(groupValues, aggregationType) : 0;
