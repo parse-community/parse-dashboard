@@ -241,6 +241,32 @@
   }
 }
 
+.createGraphButton {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #169cee;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #147abd;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(22, 156, 238, 0.3);
+  }
+
+  &:active {
+    background: #0f5a8e;
+  }
+}
+
 .configInfo {
   padding: 8px 16px;
   background: #f8f8f8;

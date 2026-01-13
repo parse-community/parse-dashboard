@@ -364,7 +364,21 @@ const GraphPanel = ({
       );
     }
 
-    if (!processedData || !graphConfig) {
+    if (!graphConfig) {
+      return (
+        <div className={styles.noData}>
+          <Icon name="chart-line" width={48} height={48} fill="#ffffff" />
+          <p>No graph configured</p>
+          {onNewGraph && (
+            <button className={styles.createGraphButton} onClick={() => onNewGraph()}>
+              Create Graph
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    if (!processedData) {
       return (
         <div className={styles.noData}>
           <Icon name="chart-line" width={48} height={48} fill="#ffffff" />

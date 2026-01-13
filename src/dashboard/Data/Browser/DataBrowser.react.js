@@ -2184,8 +2184,6 @@ export default class DataBrowser extends React.Component {
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
           toggleGraphPanel={this.toggleGraphPanelVisibility}
           isGraphPanelVisible={this.state.isGraphPanelVisible}
-          showGraphDialog={this.showGraphDialog}
-          hasGraphConfig={!!this.state.graphConfig}
           {...other}
           onRefresh={this.handleRefresh}
         />
