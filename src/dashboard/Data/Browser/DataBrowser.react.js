@@ -2001,7 +2001,7 @@ export default class DataBrowser extends React.Component {
                   graphConfig={this.state.graphConfig}
                   data={this.props.data}
                   columns={this.props.columns}
-                  isLoading={this.props.isLoadingCloudFunction || this.state.loadingObjectIds.size > 0}
+                  isLoading={!this.props.data}
                   onRefresh={this.handleRefresh}
                   onEdit={this.showGraphDialog}
                 />
