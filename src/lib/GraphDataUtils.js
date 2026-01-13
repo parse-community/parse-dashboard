@@ -665,7 +665,7 @@ export function validateGraphConfig(config, columns) {
       if (!xColumn || !yColumn) {
         return { isValid: false, error: 'Scatter plots require both X and Y axis columns' };
       }
-      if (!columns[xColumn] || !columns[yColumn]) {
+      if (!columns || !columns[xColumn] || !columns[yColumn]) {
         return { isValid: false, error: 'Selected columns do not exist' };
       }
       break;
@@ -678,7 +678,7 @@ export function validateGraphConfig(config, columns) {
       // Validate all value columns exist
       const pieValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
       for (const col of pieValueCols) {
-        if (!columns[col]) {
+        if (!columns || !columns[col]) {
           return { isValid: false, error: `Value column '${col}' does not exist` };
         }
       }
