@@ -71,6 +71,7 @@ const GraphPanel = ({
   error,
   onRefresh,
   onEdit,
+  onClose,
 }) => {
   const chartRef = useRef(null);
   const containerRef = useRef(null);
@@ -430,6 +431,17 @@ const GraphPanel = ({
               title="Refresh graph"
             >
               <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
+            </button>
+          )}
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className={styles.closeButton}
+              aria-label="Close graph panel"
+              title="Close graph"
+            >
+              <Icon name="x-solid" width={14} height={14} fill="#ffffff" />
             </button>
           )}
         </div>

@@ -69,10 +69,20 @@ export default class BrowserMenu extends React.Component {
               }}
             >
               {React.Children.map(this.props.children, (child) => {
-                if (React.isValidElement(child) && child.type === BrowserMenu) {
+                if (React.isValidElement(child)) {
+                  if (child.type === BrowserMenu) {
+                    return React.cloneElement(child, {
+                      ...child.props,
+                      parentClose: () => {
+                        this.setState({ open: false });
+                        this.props.parentClose?.();
+                      },
+                    });
+                  }
+                  // Pass closeMenu prop to all other children (like MenuItem)
                   return React.cloneElement(child, {
                     ...child.props,
-                    parentClose: () => {
+                    closeMenu: () => {
                       this.setState({ open: false });
                       this.props.parentClose?.();
                     },

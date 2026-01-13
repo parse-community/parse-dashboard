@@ -2024,6 +2024,7 @@ export default class DataBrowser extends React.Component {
                   isLoading={!this.props.data}
                   onRefresh={this.handleRefresh}
                   onEdit={this.showGraphDialog}
+                  onClose={this.toggleGraphPanelVisibility}
                 />
               </ResizableBox>
             );
