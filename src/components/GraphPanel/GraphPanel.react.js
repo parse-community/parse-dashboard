@@ -131,6 +131,7 @@ const GraphPanel = ({
       title,
       showLegend,
       showGrid,
+      showAxisLabels,
       isStacked,
     } = graphConfig;
 
@@ -173,6 +174,8 @@ const GraphPanel = ({
           ? secondaryAxisSeries.join(', ')
           : 'Secondary Axis';
 
+        const hasSecondaryAxis = secondaryAxisSeries.length > 0;
+
         return {
           ...baseOptions,
           scales: {
@@ -191,7 +194,7 @@ const GraphPanel = ({
               },
               position: 'left',
               title: {
-                display: true,
+                display: showAxisLabels !== false,
                 text: primaryAxisLabel,
               },
             },
@@ -203,7 +206,7 @@ const GraphPanel = ({
               },
               position: 'right',
               title: {
-                display: true,
+                display: showAxisLabels !== false && hasSecondaryAxis,
                 text: secondaryAxisLabel,
               },
             },

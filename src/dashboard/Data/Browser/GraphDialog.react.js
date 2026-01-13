@@ -74,6 +74,7 @@ export default class GraphDialog extends React.Component {
       title: initialConfig.title || '',
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
       showGrid: initialConfig.showGrid !== undefined ? initialConfig.showGrid : true,
+      showAxisLabels: initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
       isStacked: initialConfig.isStacked || false,
       maxDataPoints: initialConfig.maxDataPoints || 1000,
     };
@@ -485,6 +486,19 @@ export default class GraphDialog extends React.Component {
             type={Toggle.Types.YES_NO}
             value={this.state.showGrid}
             onChange={showGrid => this.setState({ showGrid })}
+          />
+        } />
+
+        <Field label={
+          <Label
+            text="Show Axis Labels"
+            description="Display axis labels"
+          />
+        }         input={
+          <Toggle
+            type={Toggle.Types.YES_NO}
+            value={this.state.showAxisLabels !== false}
+            onChange={showAxisLabels => this.setState({ showAxisLabels })}
           />
         } />
 
