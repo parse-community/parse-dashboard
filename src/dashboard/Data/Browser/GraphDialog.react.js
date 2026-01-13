@@ -79,6 +79,7 @@ export default class GraphDialog extends React.Component {
       isStacked: initialConfig.isStacked || false,
       maxDataPoints: initialConfig.maxDataPoints || 1000,
       maxDataPointsInput: null,
+      showDeleteConfirmation: false,
     };
   }
 
@@ -116,9 +117,17 @@ export default class GraphDialog extends React.Component {
   };
 
   handleDelete = () => {
+    this.setState({ showDeleteConfirmation: true });
+  };
+
+  confirmDelete = () => {
     if (this.state.id && this.props.onDelete) {
       this.props.onDelete(this.state.id);
     }
+  };
+
+  cancelDelete = () => {
+    this.setState({ showDeleteConfirmation: false });
   };
 
   getColumnsByType(types) {
@@ -584,9 +593,21 @@ export default class GraphDialog extends React.Component {
   render() {
     const isEditing = this.props.initialConfig && Object.keys(this.props.initialConfig).length > 0;
 
-    const customFooter = (
+    const customFooter = this.state.showDeleteConfirmation ? (
       <div style={{ textAlign: 'center' }} className={styles.footer}>
-        <Button value="Reset" onClick={this.handleReset} color="red" />
+        <Button value="Cancel" onClick={this.cancelDelete} />
+        <Button
+          primary={true}
+          value="Confirm Delete"
+          color="red"
+          onClick={this.confirmDelete}
+        />
+      </div>
+    ) : (
+      <div style={{ textAlign: 'center' }} className={styles.footer}>
+        {isEditing && this.state.id && (
+          <Button value="Delete" onClick={this.handleDelete} color="red" />
+        )}
         <Button value="Cancel" onClick={this.props.onCancel} />
         <Button
           primary={true}

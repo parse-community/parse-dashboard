@@ -231,6 +231,7 @@ export default class DataBrowser extends React.Component {
     this.showGraphDialog = this.showGraphDialog.bind(this);
     this.hideGraphDialog = this.hideGraphDialog.bind(this);
     this.saveGraphConfig = this.saveGraphConfig.bind(this);
+    this.deleteGraphConfig = this.deleteGraphConfig.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.panelColumnRefs = [];
@@ -1304,6 +1305,37 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  async deleteGraphConfig(graphId) {
+    // Close the dialog and clear the graph config
+    this.setState({
+      graphConfig: null,
+      showGraphDialog: false,
+      isGraphPanelVisible: false,
+    });
+
+    // Try to delete from server first (if enabled), fallback to localStorage
+    try {
+      await this.graphPreferencesManager.deleteGraph(
+        this.props.app.applicationId,
+        this.props.className,
+        graphId,
+        [] // allGraphs not needed for single delete
+      );
+    } catch (error) {
+      console.error('Failed to delete graph from server, falling back to localStorage:', error);
+      // Fallback: delete from localStorage
+      const graphConfigKey = getGraphConfigKey(
+        this.props.app.applicationId,
+        this.props.appName,
+        this.props.className
+      );
+      window.localStorage?.removeItem(graphConfigKey);
+    }
+
+    // Also clear the graph panel visibility from localStorage
+    window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, 'false');
+  }
+
   handlePanelScroll(event, index) {
     if (!this.state.syncPanelScroll || this.state.panelCount <= 1) {
       return;
@@ -2148,6 +2180,7 @@ export default class DataBrowser extends React.Component {
             initialConfig={this.state.graphConfig}
             onConfirm={this.saveGraphConfig}
             onCancel={this.hideGraphDialog}
+            onDelete={this.deleteGraphConfig}
           />
         )}
       </div>
