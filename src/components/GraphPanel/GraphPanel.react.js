@@ -72,10 +72,15 @@ const GraphPanel = ({
   onRefresh,
   onEdit,
   onClose,
+  availableGraphs = [],
+  onGraphSelect,
+  onNewGraph,
 }) => {
   const chartRef = useRef(null);
   const containerRef = useRef(null);
+  const dropdownRef = useRef(null);
   const [containerHeight, setContainerHeight] = useState(0);
+  const [showGraphDropdown, setShowGraphDropdown] = useState(false);
 
   // Measure container height for dynamic label sizing
   useEffect(() => {
@@ -89,6 +94,22 @@ const GraphPanel = ({
     window.addEventListener('resize', updateHeight);
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowGraphDropdown(false);
+      }
+    };
+
+    if (showGraphDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showGraphDropdown]);
 
   // Validate configuration and process data
   const { processedData, validationError } = useMemo(() => {
@@ -404,17 +425,74 @@ const GraphPanel = ({
     );
   }
 
+  const currentGraphTitle = graphConfig?.title || 'Untitled Graph';
+  // Show dropdown when there are saved graphs OR when onGraphSelect is provided
+  // This allows users to see "New Graph" option even with no saved graphs
+  const showDropdown = (availableGraphs && availableGraphs.length > 0) || onGraphSelect;
+
+  const handleGraphSelect = (graph) => {
+    if (onGraphSelect) {
+      onGraphSelect(graph);
+    }
+    setShowGraphDropdown(false);
+  };
+
+  const handleNewGraph = () => {
+    if (onNewGraph) {
+      onNewGraph();
+    } else if (onEdit) {
+      onEdit();
+    }
+    setShowGraphDropdown(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.title}>
-          Graph
-        </h2>
+        <h2 className={styles.title}>{currentGraphTitle}</h2>
         <div className={styles.headerButtons}>
+          {showDropdown && (
+            <div className={styles.dropdown} ref={dropdownRef}>
+              <button
+                className={styles.dropdownTrigger}
+                onClick={() => setShowGraphDropdown(!showGraphDropdown)}
+                aria-label="Select graph"
+                title="Select graph"
+              >
+                <Icon name="down-solid" width={14} height={14} fill="#ffffff" />
+              </button>
+              {showGraphDropdown && (
+                <div className={styles.dropdownMenu}>
+                  {availableGraphs.map((graph) => (
+                    <button
+                      key={graph.id}
+                      className={`${styles.dropdownItem} ${graph.id === graphConfig?.id ? styles.dropdownItemActive : ''}`}
+                      onClick={() => handleGraphSelect(graph)}
+                    >
+                      <span className={styles.dropdownItemTitle}>
+                        {graph.title || 'Untitled Graph'}
+                      </span>
+                      <span className={styles.dropdownItemType}>
+                        {graph.chartType}
+                      </span>
+                    </button>
+                  ))}
+                  <div className={styles.dropdownSeparator} />
+                  <button
+                    className={styles.dropdownItem}
+                    onClick={handleNewGraph}
+                  >
+                    <Icon name="plus" width={12} height={12} />
+                    <span>New Graph</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           {onEdit && (
             <button
               type="button"
-              onClick={onEdit}
+              onClick={() => onEdit()}
               className={styles.editButton}
               aria-label="Edit graph configuration"
               title="Edit graph"
@@ -425,7 +503,7 @@ const GraphPanel = ({
           {onRefresh && (
             <button
               type="button"
-              onClick={onRefresh}
+              onClick={() => onRefresh()}
               className={styles.refreshButton}
               aria-label="Refresh graph data"
               title="Refresh graph"
@@ -436,7 +514,7 @@ const GraphPanel = ({
           {onClose && (
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => onClose()}
               className={styles.closeButton}
               aria-label="Close graph panel"
               title="Close graph"

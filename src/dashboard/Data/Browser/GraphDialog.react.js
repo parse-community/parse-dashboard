@@ -46,7 +46,7 @@ const CALCULATED_VALUE_OPERATORS = [
 
 export default class GraphDialog extends React.Component {
   constructor(props) {
-    super();
+    super(props);
 
     const initialConfig = props.initialConfig || {};
 
