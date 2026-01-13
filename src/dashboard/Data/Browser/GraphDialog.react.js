@@ -159,12 +159,47 @@ export default class GraphDialog extends React.Component {
     return this.getColumnsByType(['String', 'Pointer']);
   }
 
-  getNumericAndCalculatedFields() {
+  getNumericAndCalculatedFields(currentIndex = -1) {
     const numericColumns = this.getNumericColumns();
+    // Only include calculated values that come BEFORE the current one
+    // to prevent forward references and simplify circular reference detection
     const calculatedFields = this.state.calculatedValues
+      .slice(0, currentIndex >= 0 ? currentIndex : this.state.calculatedValues.length)
       .filter(calc => calc.name && calc.name.trim() !== '')
       .map(calc => calc.name);
     return [...numericColumns, ...calculatedFields];
+  }
+
+  // Detect if a calculated value has a circular reference
+  hasCircularReference(calcIndex, visited = new Set()) {
+    const calc = this.state.calculatedValues[calcIndex];
+    if (!calc || !calc.fields || !Array.isArray(calc.fields)) {
+      return false;
+    }
+
+    // Mark this calc as being visited
+    visited.add(calcIndex);
+
+    // Check each field to see if it references another calculated value
+    for (const field of calc.fields) {
+      // Find if this field is a calculated value
+      const referencedCalcIndex = this.state.calculatedValues.findIndex(
+        (c, idx) => idx < calcIndex && c.name === field
+      );
+
+      if (referencedCalcIndex >= 0) {
+        // If we've already visited this calc, we have a circular reference
+        if (visited.has(referencedCalcIndex)) {
+          return true;
+        }
+        // Recursively check the referenced calc
+        if (this.hasCircularReference(referencedCalcIndex, new Set(visited))) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   addCalculatedValue = () => {
@@ -222,7 +257,6 @@ export default class GraphDialog extends React.Component {
     const allColumns = this.getAllColumns();
     const numericColumns = this.getNumericColumns();
     const numericAndPointerColumns = this.getNumericAndPointerColumns();
-    const numericAndCalculatedFields = this.getNumericAndCalculatedFields();
     const stringAndPointerColumns = this.getStringAndPointerColumns();
 
     return (
@@ -294,6 +328,10 @@ export default class GraphDialog extends React.Component {
             {this.state.calculatedValues.map((calc, index) => {
               const isExpanded = calc.expanded !== false;
               const displayName = calc.name || `Calculated Value ${index + 1}`;
+              // Get available fields for this calculated value (only previous ones)
+              const numericAndCalculatedFields = this.getNumericAndCalculatedFields(index);
+              // Check for circular reference
+              const hasCircular = this.hasCircularReference(index);
 
               return (
                 <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: index === this.state.calculatedValues.length - 1 ? '1px solid #e3e3e3' : 'none' }}>
@@ -414,6 +452,14 @@ export default class GraphDialog extends React.Component {
                                 onChange={useSecondaryYAxis => this.updateCalculatedValue(index, 'useSecondaryYAxis', useSecondaryYAxis)}
                               />
                             </div>
+                          </div>
+                        )}
+                        {hasCircular && (
+                          <div style={{ borderTop: '1px solid #e3e3e3', padding: '12px', background: '#fff3cd', color: '#856404' }}>
+                            <strong>⚠ Circular Reference Detected</strong>
+                            <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>
+                              This calculated value references another calculated value that references it back, creating a circular dependency. This will result in null values.
+                            </p>
                           </div>
                         )}
                       </div>
