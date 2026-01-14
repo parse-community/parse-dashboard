@@ -192,121 +192,20 @@ module.exports = (options) => {
   };
 
   // Browser Control API for AI agent verification (development only)
-  // IMPORTANT: Mount BEFORE parseDashboard middleware to bypass authentication
-  const browserControlEnabled = dev || process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
-  let browserControlAPI, browserEventStream, parseServerProcess, mongoDBInstance;
-
-  // Auto-start MongoDB and Parse Server when browser-control mode is enabled
-  if (browserControlEnabled) {
-    const { spawn } = require('child_process');
-    const { MongoCluster } = require('mongodb-runner');
-    const parseServerPort = process.env.PARSE_SERVER_PORT || 1337;
-
-    // Use credentials from config file if available, otherwise fall back to env vars or defaults
-    const firstApp = config.data.apps && config.data.apps.length > 0 ? config.data.apps[0] : null;
-    const parseServerAppId = process.env.PARSE_SERVER_APP_ID || (firstApp ? firstApp.appId : 'testAppId');
-    const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || (firstApp ? firstApp.masterKey : 'testMasterKey');
-    const mongoVersion = process.env.MONGO_VERSION || '8.0.4';
-
-    // Start MongoDB first
-    const startMongoDB = async () => {
-      try {
-        console.log(`Starting MongoDB ${mongoVersion} instance...`);
-        const os = require('os');
-        mongoDBInstance = await MongoCluster.start({
-          topology: 'standalone',
-          version: mongoVersion,
-          tmpDir: os.tmpdir(),
-        });
-        const mongoUri = mongoDBInstance.connectionString;
-        console.log(`MongoDB ${mongoVersion} started at ${mongoUri}`);
-        return mongoUri;
-      } catch (error) {
-        console.warn('Failed to start MongoDB:', error.message);
-        console.warn('Attempting to use existing MongoDB connection...');
-        return null;
-      }
-    };
-
-    // Start Parse Server after MongoDB is ready
-    const startParseServer = (mongoUri) => {
-      try {
-        const parseServerURL = `http://localhost:${parseServerPort}/parse`;
-        console.log('Starting Parse Server for browser control...');
-        parseServerProcess = spawn('npx', [
-          'parse-server',
-          '--appId', parseServerAppId,
-          '--masterKey', parseServerMasterKey,
-          '--databaseURI', mongoUri,
-          '--port', parseServerPort.toString(),
-          '--serverURL', parseServerURL,
-          '--mountPath', '/parse'
-        ], {
-          stdio: ['ignore', 'pipe', 'pipe']
-        });
-
-        // Listen for Parse Server output
-        parseServerProcess.stdout.on('data', (data) => {
-          const output = data.toString();
-          if (output.includes('parse-server running') || output.includes('listening on port')) {
-            console.log(`Parse Server started at ${parseServerURL}`);
-          }
-        });
-
-        parseServerProcess.stderr.on('data', (data) => {
-          const error = data.toString();
-          // Only log actual errors, not warnings
-          if (error.includes('error') || error.includes('Error')) {
-            console.error('[Parse Server]:', error);
-          }
-        });
-
-        parseServerProcess.on('exit', (code) => {
-          if (code !== 0 && code !== null) {
-            console.error(`Parse Server exited with code ${code}`);
-          }
-        });
-
-        // Auto-configure dashboard with test app pointing to Parse Server
-        // Only create new app config if no apps exist
-        if (!config.data.apps || config.data.apps.length === 0) {
-          config.data.apps = [{
-            serverURL: parseServerURL,
-            appId: parseServerAppId,
-            masterKey: parseServerMasterKey,
-            appName: 'Browser Control Test App'
-          }];
-          console.log('Dashboard auto-configured with test app');
-        } else {
-          // Update existing first app's serverURL to point to the auto-started Parse Server
-          config.data.apps[0].serverURL = parseServerURL;
-          console.log(`Dashboard configured to use Parse Server at ${parseServerURL}`);
-        }
-      } catch (error) {
-        console.warn('Failed to start Parse Server:', error.message);
-        console.warn('Browser control will work but you need to configure apps manually');
-      }
-    };
-
-    // Start MongoDB, then Parse Server
-    startMongoDB().then((mongoUri) => {
-      if (mongoUri) {
-        // Wait a bit for MongoDB to be ready
-        setTimeout(() => startParseServer(mongoUri), 1000);
-      }
-    });
-  }
-
-  // Load browser control API BEFORE parseDashboard middleware to bypass authentication
-  if (browserControlEnabled) {
-    try {
-      const createBrowserControlAPI = require('./browser-control/BrowserControlAPI');
-
-      browserControlAPI = createBrowserControlAPI();
-      app.use('/browser-control', browserControlAPI);
-      console.log('Browser Control API enabled at /browser-control');
-    } catch (error) {
-      console.warn('Failed to load Browser Control API:', error.message);
+  // NOTE: Must be mounted BEFORE parseDashboard middleware to bypass authentication
+  let browserControlSetup, browserControlAPI, browserEventStream, parseServerProcess, mongoDBInstance;
+  try {
+    const setupBrowserControl = require('./browser-control/setup');
+    browserControlSetup = setupBrowserControl(app, config, { dev });
+    if (browserControlSetup) {
+      browserControlAPI = browserControlSetup.browserControlAPI;
+      parseServerProcess = browserControlSetup.parseServerProcess;
+      mongoDBInstance = browserControlSetup.mongoDBInstance;
+    }
+  } catch (error) {
+    // Silently ignore if browser-control module doesn't exist (production build)
+    if (error.code !== 'MODULE_NOT_FOUND') {
+      console.warn('Failed to load Browser Control:', error.message);
     }
   }
 
@@ -320,7 +219,7 @@ module.exports = (options) => {
       console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
 
       // Initialize WebSocket event stream after server starts
-      if (browserControlEnabled && browserControlAPI) {
+      if (browserControlAPI) {
         try {
           const BrowserEventStream = require('./browser-control/BrowserEventStream');
           browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
@@ -341,7 +240,7 @@ module.exports = (options) => {
       console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
 
       // Initialize WebSocket event stream after server starts
-      if (browserControlEnabled && browserControlAPI) {
+      if (browserControlAPI) {
         try {
           const BrowserEventStream = require('./browser-control/BrowserEventStream');
           browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);

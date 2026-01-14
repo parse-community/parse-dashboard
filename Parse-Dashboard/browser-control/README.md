@@ -638,13 +638,39 @@ PORT=4041 npm run browser-control
 
 ## Security
 
-- **Browser Control API is ONLY enabled in development mode**
-- Never use in production
-- Only accessible when:
-  - `dev` mode is enabled, OR
-  - `PARSE_DASHBOARD_BROWSER_CONTROL=true` environment variable is set
+The Browser Control API uses **defense-in-depth** with multiple security layers:
+
+### Protection Layers
+
+1. **Config-level opt-in** (Required)
+   - Must set `"browserControl": true` in `parse-dashboard-config.json`
+   - Prevents accidental enablement via environment variables alone
+
+2. **Production environment blocking**
+   - Automatically disabled when `NODE_ENV=production`
+   - Cannot be overridden, even with explicit flags
+
+3. **Development-only deployment**
+   - Only accessible when `dev` mode is enabled, OR
+   - `PARSE_DASHBOARD_BROWSER_CONTROL=true` environment variable is set
+
+### Additional Protections
+
 - Maximum 5 concurrent sessions to prevent resource exhaustion
 - Sessions auto-expire after 30 minutes of inactivity
+- API bypasses authentication (development-only feature)
+
+### Example Configuration
+
+```json
+{
+  "browserControl": true,
+  "apps": [...],
+  "users": [...]
+}
+```
+
+**⚠️ CRITICAL**: Never deploy with `browserControl: true` in production. Remove this field or set to `false` before deploying.
 
 ## Environment Variables
 
