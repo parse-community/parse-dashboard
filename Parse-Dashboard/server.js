@@ -41,12 +41,34 @@ module.exports = (options) => {
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
   const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT;
 
-  function handleSIGs(server) {
+  function handleSIGs(server, parseServerProcess, mongoDBInstance) {
     const signals = {
       'SIGINT': 2,
       'SIGTERM': 15
     };
     function shutdown(signal, value) {
+      // Stop Parse Server if it's running
+      if (parseServerProcess) {
+        console.log('Stopping Parse Server...');
+        parseServerProcess.kill('SIGTERM');
+
+        // Force kill after 5 seconds if still running
+        setTimeout(() => {
+          if (parseServerProcess && !parseServerProcess.killed) {
+            parseServerProcess.kill('SIGKILL');
+          }
+        }, 5000);
+      }
+
+      // Stop MongoDB if it's running
+      if (mongoDBInstance) {
+        console.log('Stopping MongoDB...');
+        const MongoRunner = require('mongo-runner');
+        MongoRunner.stop(mongoDBInstance).catch(err => {
+          console.warn('Error stopping MongoDB:', err.message);
+        });
+      }
+
       server.close(function () {
         console.log('server stopped by ' + signal);
         process.exit(128 + value);
@@ -173,9 +195,99 @@ module.exports = (options) => {
 
   // Browser Control API for AI agent verification (development only)
   const browserControlEnabled = dev || process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
-  let browserControlAPI, browserEventStream;
+  let browserControlAPI, browserEventStream, parseServerProcess, mongoDBInstance;
 
+  // Auto-start MongoDB and Parse Server when browser-control mode is enabled
   if (browserControlEnabled) {
+    const { spawn } = require('child_process');
+    const MongoRunner = require('mongo-runner');
+    const parseServerPort = process.env.PARSE_SERVER_PORT || 1337;
+    const parseServerAppId = process.env.PARSE_SERVER_APP_ID || 'testAppId';
+    const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || 'testMasterKey';
+    const mongoPort = process.env.MONGO_PORT || 27017;
+    const parseServerDB = process.env.PARSE_SERVER_DATABASE_URI || `mongodb://localhost:${mongoPort}/parse-dashboard-test`;
+    const parseServerURL = `http://localhost:${parseServerPort}/parse`;
+
+    // Start MongoDB first
+    const startMongoDB = async () => {
+      try {
+        console.log('Starting MongoDB instance...');
+        mongoDBInstance = await MongoRunner.run({
+          port: mongoPort,
+          quiet: true,
+          // Use a temporary directory for data
+          dbpath: path.join(require('os').tmpdir(), 'parse-dashboard-mongo'),
+        });
+        console.log(`MongoDB started on port ${mongoPort}`);
+        return true;
+      } catch (error) {
+        console.warn('Failed to start MongoDB:', error.message);
+        console.warn('Attempting to use existing MongoDB connection...');
+        return false;
+      }
+    };
+
+    // Start Parse Server after MongoDB is ready
+    const startParseServer = () => {
+      try {
+        console.log('Starting Parse Server for browser control...');
+        parseServerProcess = spawn('npx', [
+          'parse-server',
+          '--appId', parseServerAppId,
+          '--masterKey', parseServerMasterKey,
+          '--databaseURI', parseServerDB,
+          '--port', parseServerPort.toString(),
+          '--serverURL', parseServerURL,
+          '--mountPath', '/parse'
+        ], {
+          stdio: ['ignore', 'pipe', 'pipe']
+        });
+
+        // Listen for Parse Server output
+        parseServerProcess.stdout.on('data', (data) => {
+          const output = data.toString();
+          if (output.includes('parse-server running') || output.includes('listening on port')) {
+            console.log(`Parse Server started at ${parseServerURL}`);
+          }
+        });
+
+        parseServerProcess.stderr.on('data', (data) => {
+          const error = data.toString();
+          // Only log actual errors, not warnings
+          if (error.includes('error') || error.includes('Error')) {
+            console.error('[Parse Server]:', error);
+          }
+        });
+
+        parseServerProcess.on('exit', (code) => {
+          if (code !== 0 && code !== null) {
+            console.error(`Parse Server exited with code ${code}`);
+          }
+        });
+
+        // Auto-configure dashboard with test app pointing to Parse Server
+        if (!config.data.apps || config.data.apps.length === 0) {
+          config.data.apps = [{
+            serverURL: parseServerURL,
+            appId: parseServerAppId,
+            masterKey: parseServerMasterKey,
+            appName: 'Browser Control Test App'
+          }];
+          console.log('Dashboard auto-configured with test app');
+        }
+      } catch (error) {
+        console.warn('Failed to start Parse Server:', error.message);
+        console.warn('Browser control will work but you need to configure apps manually');
+      }
+    };
+
+    // Start MongoDB, then Parse Server
+    startMongoDB().then(() => {
+      // Wait a bit for MongoDB to be ready
+      setTimeout(startParseServer, 1000);
+    });
+
+    // Load browser control API
     try {
       const createBrowserControlAPI = require('./browser-control/BrowserControlAPI');
       const BrowserEventStream = require('./browser-control/BrowserEventStream');
@@ -226,5 +338,5 @@ module.exports = (options) => {
       }
     });
   }
-  handleSIGs(server);
+  handleSIGs(server, parseServerProcess, mongoDBInstance);
 };

@@ -8,17 +8,40 @@ The Browser Control API is a development-time tool that allows AI agents to inte
 
 ## Quick Start
 
+### Prerequisites
+
+**Requirements:**
+- Node.js 20.19.0 or higher
+
+**Note:** MongoDB is automatically started when you run `npm run browser-control` - no manual setup needed!
+
 ### 1. Start Dashboard with Browser Control
+
+When you run the browser-control command, **MongoDB and Parse Server automatically start** alongside the dashboard - zero setup required!
 
 ```bash
 npm run browser-control
 ```
+
+This will:
+1. Start MongoDB instance on port 27017 (using in-memory temporary storage)
+2. Start Parse Server on port 1337 (connects to the auto-started MongoDB)
+3. Start Dashboard on port 4040
+4. Auto-configure dashboard with a test app pointing to Parse Server
+5. Enable Browser Control API at `/browser-control`
 
 Or for visible browser (helpful for debugging):
 
 ```bash
 npm run browser-control:visible
 ```
+
+**What happens automatically:**
+- MongoDB instance spawns on port 27017 with temporary storage
+- Parse Server spawns and connects to the MongoDB instance at `mongodb://localhost:27017/parse-dashboard-test`
+- Dashboard creates a test app called "Browser Control Test App"
+- You can immediately start creating browser sessions and testing
+- Everything stops cleanly when you exit (Ctrl+C)
 
 ### 2. Create a Browser Session
 
@@ -575,13 +598,18 @@ if (errors.length > 0) {
 npm install
 ```
 
-### Parse Server won't start
+### MongoDB or Parse Server won't start
 
-**Error:** `parse-server is not installed`
+**Error:** `Failed to start MongoDB` or `Failed to start Parse Server`
 
-**Solution:** Install parse-server as a dev dependency:
+**Solution:** Make sure all dependencies are installed:
 ```bash
-npm install parse-server --save-dev
+npm install
+```
+
+If MongoDB port is already in use, you can change it:
+```bash
+MONGO_PORT=27018 npm run browser-control
 ```
 
 ### Session timeout
@@ -620,9 +648,35 @@ PORT=4041 npm run browser-control
 
 ## Environment Variables
 
+### Browser Control
 - `PARSE_DASHBOARD_BROWSER_CONTROL=true` - Enable browser control API
 - `BROWSER_HEADLESS=false` - Run browser in visible mode
 - `BROWSER_SLOW_MO=100` - Slow down browser operations by N milliseconds
+
+### MongoDB Auto-Start (when browser-control is enabled)
+MongoDB is automatically started when browser-control mode is enabled using `mongo-runner`.
+
+- `MONGO_PORT=27017` - MongoDB port (default: 27017)
+
+**Note**: MongoDB uses temporary storage in your system's temp directory and is automatically cleaned up on exit.
+
+### Parse Server Auto-Start (when browser-control is enabled)
+Parse Server 9.1.1 is automatically started when browser-control mode is enabled.
+
+- `PARSE_SERVER_PORT=1337` - Parse Server port (default: 1337)
+- `PARSE_SERVER_APP_ID=testAppId` - Application ID (default: testAppId)
+- `PARSE_SERVER_MASTER_KEY=testMasterKey` - Master key (default: testMasterKey)
+- `PARSE_SERVER_DATABASE_URI` - MongoDB connection string (default: auto-generated based on MONGO_PORT)
+
+**Note**: Parse Server 9 requires MongoDB 5.0+
+
+**Example with custom configuration:**
+```bash
+PARSE_SERVER_PORT=1338 \
+PARSE_SERVER_APP_ID=myTestApp \
+PARSE_SERVER_MASTER_KEY=mySecretKey \
+npm run browser-control
+```
 
 ## Limitations
 
