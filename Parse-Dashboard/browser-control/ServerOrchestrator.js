@@ -77,8 +77,16 @@ class ServerOrchestrator {
         if (output.includes('parse-server running') || output.includes(`listening on port ${port}`)) {
           serverStarted = true;
 
+          // Build health check URL from configured mount path
+          // Normalize mount path: ensure single leading slash, no trailing slash
+          const normalizedMountPath = mountPath.startsWith('/') ? mountPath : `/${mountPath}`;
+          const healthPath = normalizedMountPath.endsWith('/')
+            ? `${normalizedMountPath}health`
+            : `${normalizedMountPath}/health`;
+          const healthUrl = `http://localhost:${port}${healthPath}`;
+
           // Wait for server to be ready
-          this.waitForServer(`http://localhost:${port}/health`, 10000)
+          this.waitForServer(healthUrl, 10000)
             .then(() => {
               this.parseServerProcess = parseServer;
               this.parseServerConfig = {
