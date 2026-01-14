@@ -24,7 +24,7 @@ npm run browser-control
 ```
 
 This will:
-1. Start MongoDB instance on port 27017 (using in-memory temporary storage)
+1. Download and start MongoDB 8.0.4 (if not already downloaded)
 2. Start Parse Server on port 1337 (connects to the auto-started MongoDB)
 3. Start Dashboard on port 4040
 4. Auto-configure dashboard with a test app pointing to Parse Server
@@ -37,8 +37,8 @@ npm run browser-control:visible
 ```
 
 **What happens automatically:**
-- MongoDB instance spawns on port 27017 with temporary storage
-- Parse Server spawns and connects to the MongoDB instance at `mongodb://localhost:27017/parse-dashboard-test`
+- MongoDB 8.0.4 is downloaded (on first run) and started automatically
+- Parse Server spawns and connects to the MongoDB instance
 - Dashboard creates a test app called "Browser Control Test App"
 - You can immediately start creating browser sessions and testing
 - Everything stops cleanly when you exit (Ctrl+C)
@@ -654,11 +654,12 @@ PORT=4041 npm run browser-control
 - `BROWSER_SLOW_MO=100` - Slow down browser operations by N milliseconds
 
 ### MongoDB Auto-Start (when browser-control is enabled)
-MongoDB is automatically started when browser-control mode is enabled using `mongo-runner`.
+MongoDB is automatically started when browser-control mode is enabled using `mongodb-runner`.
 
 - `MONGO_PORT=27017` - MongoDB port (default: 27017)
+- `MONGO_VERSION=8.0.4` - MongoDB version (default: 8.0.4)
 
-**Note**: MongoDB uses temporary storage in your system's temp directory and is automatically cleaned up on exit.
+**Note**: MongoDB 8.0.4 is downloaded and started automatically. Data is stored in a temporary directory and cleaned up on exit.
 
 ### Parse Server Auto-Start (when browser-control is enabled)
 Parse Server 9.1.1 is automatically started when browser-control mode is enabled.

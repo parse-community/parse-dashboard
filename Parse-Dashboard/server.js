@@ -63,8 +63,7 @@ module.exports = (options) => {
       // Stop MongoDB if it's running
       if (mongoDBInstance) {
         console.log('Stopping MongoDB...');
-        const MongoRunner = require('mongo-runner');
-        MongoRunner.stop(mongoDBInstance).catch(err => {
+        mongoDBInstance.close().catch(err => {
           console.warn('Error stopping MongoDB:', err.message);
         });
       }
@@ -200,42 +199,40 @@ module.exports = (options) => {
   // Auto-start MongoDB and Parse Server when browser-control mode is enabled
   if (browserControlEnabled) {
     const { spawn } = require('child_process');
-    const MongoRunner = require('mongo-runner');
+    const { MongoCluster } = require('mongodb-runner');
     const parseServerPort = process.env.PARSE_SERVER_PORT || 1337;
     const parseServerAppId = process.env.PARSE_SERVER_APP_ID || 'testAppId';
     const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || 'testMasterKey';
-    const mongoPort = process.env.MONGO_PORT || 27017;
-    const parseServerDB = process.env.PARSE_SERVER_DATABASE_URI || `mongodb://localhost:${mongoPort}/parse-dashboard-test`;
-    const parseServerURL = `http://localhost:${parseServerPort}/parse`;
+    const mongoVersion = process.env.MONGO_VERSION || '8.0.4';
 
     // Start MongoDB first
     const startMongoDB = async () => {
       try {
-        console.log('Starting MongoDB instance...');
-        mongoDBInstance = await MongoRunner.run({
-          port: mongoPort,
-          quiet: true,
-          // Use a temporary directory for data
-          dbpath: path.join(require('os').tmpdir(), 'parse-dashboard-mongo'),
+        console.log(`Starting MongoDB ${mongoVersion} instance...`);
+        mongoDBInstance = await MongoCluster.start({
+          topology: 'standalone',
+          version: mongoVersion,
         });
-        console.log(`MongoDB started on port ${mongoPort}`);
-        return true;
+        const mongoUri = mongoDBInstance.connectionString;
+        console.log(`MongoDB ${mongoVersion} started at ${mongoUri}`);
+        return mongoUri;
       } catch (error) {
         console.warn('Failed to start MongoDB:', error.message);
         console.warn('Attempting to use existing MongoDB connection...');
-        return false;
+        return null;
       }
     };
 
     // Start Parse Server after MongoDB is ready
-    const startParseServer = () => {
+    const startParseServer = (mongoUri) => {
       try {
+        const parseServerURL = `http://localhost:${parseServerPort}/parse`;
         console.log('Starting Parse Server for browser control...');
         parseServerProcess = spawn('npx', [
           'parse-server',
           '--appId', parseServerAppId,
           '--masterKey', parseServerMasterKey,
-          '--databaseURI', parseServerDB,
+          '--databaseURI', mongoUri,
           '--port', parseServerPort.toString(),
           '--serverURL', parseServerURL,
           '--mountPath', '/parse'
@@ -282,9 +279,11 @@ module.exports = (options) => {
     };
 
     // Start MongoDB, then Parse Server
-    startMongoDB().then(() => {
-      // Wait a bit for MongoDB to be ready
-      setTimeout(startParseServer, 1000);
+    startMongoDB().then((mongoUri) => {
+      if (mongoUri) {
+        // Wait a bit for MongoDB to be ready
+        setTimeout(() => startParseServer(mongoUri), 1000);
+      }
     });
 
     // Load browser control API
