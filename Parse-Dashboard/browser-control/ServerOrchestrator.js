@@ -69,42 +69,9 @@ class ServerOrchestrator {
       let serverStarted = false;
       let startupOutput = '';
 
+      // Collect stdout for diagnostics (but don't use for startup detection)
       parseServer.stdout.on('data', (data) => {
-        const output = data.toString();
-        startupOutput += output;
-
-        // Check for successful startup message
-        if (output.includes('parse-server running') || output.includes(`listening on port ${port}`)) {
-          serverStarted = true;
-
-          // Build health check URL from configured mount path
-          // Normalize mount path: ensure single leading slash, no trailing slash
-          const normalizedMountPath = mountPath.startsWith('/') ? mountPath : `/${mountPath}`;
-          const healthPath = normalizedMountPath.endsWith('/')
-            ? `${normalizedMountPath}health`
-            : `${normalizedMountPath}/health`;
-          const healthUrl = `http://localhost:${port}${healthPath}`;
-
-          // Wait for server to be ready
-          this.waitForServer(healthUrl, 10000)
-            .then(() => {
-              this.parseServerProcess = parseServer;
-              this.parseServerConfig = {
-                process: parseServer,
-                port,
-                serverURL,
-                appId,
-                masterKey,
-                databaseURI,
-                mountPath
-              };
-              resolve(this.parseServerConfig);
-            })
-            .catch(err => {
-              parseServer.kill();
-              reject(new Error(`Parse Server started but health check failed: ${err.message}`));
-            });
-        }
+        startupOutput += data.toString();
       });
 
       parseServer.stderr.on('data', (data) => {
@@ -123,13 +90,36 @@ class ServerOrchestrator {
         }
       });
 
-      // Timeout if server doesn't start within 20 seconds
-      setTimeout(() => {
-        if (!serverStarted) {
-          parseServer.kill();
-          reject(new Error(`Parse Server startup timeout. Output: ${startupOutput}`));
-        }
-      }, 20000);
+      // Build health check URL from configured mount path
+      // Normalize mount path: ensure single leading slash, no trailing slash
+      const normalizedMountPath = mountPath.startsWith('/') ? mountPath : `/${mountPath}`;
+      const healthPath = normalizedMountPath.endsWith('/')
+        ? `${normalizedMountPath}health`
+        : `${normalizedMountPath}/health`;
+      const healthUrl = `http://localhost:${port}${healthPath}`;
+
+      // Poll health endpoint to detect when server is ready (more reliable than string matching)
+      this.waitForServer(healthUrl, 20000)
+        .then(() => {
+          serverStarted = true;
+          this.parseServerProcess = parseServer;
+          this.parseServerConfig = {
+            process: parseServer,
+            port,
+            serverURL,
+            appId,
+            masterKey,
+            databaseURI,
+            mountPath
+          };
+          resolve(this.parseServerConfig);
+        })
+        .catch(err => {
+          if (!serverStarted) {
+            parseServer.kill();
+            reject(new Error(`Parse Server health check failed: ${err.message}. Output: ${startupOutput}`));
+          }
+        });
     });
   }
 
