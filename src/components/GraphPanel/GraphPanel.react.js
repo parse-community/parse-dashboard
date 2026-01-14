@@ -368,11 +368,16 @@ const GraphPanel = ({
       return (
         <div className={styles.noData}>
           <Icon name="chart-line" width={48} height={48} fill="#ffffff" />
-          <p>No graph configured</p>
+          <p>No graph configured.</p>
           {onNewGraph && (
-            <button className={styles.createGraphButton} onClick={() => onNewGraph()}>
-              Create Graph
-            </button>
+            <>
+              <button className={styles.createGraphButton} onClick={() => onNewGraph()}>
+                Create Graph
+              </button>
+              <p className={styles.previewNotice}>
+                Graph is a preview feature. Future versions may introduce breaking changes without announcement.
+              </p>
+            </>
           )}
         </div>
       );
@@ -439,7 +444,7 @@ const GraphPanel = ({
     );
   }
 
-  const currentGraphTitle = graphConfig?.title || 'Untitled Graph';
+  const currentGraphTitle = graphConfig?.title || 'Graph';
   // Show dropdown when there are saved graphs OR when onGraphSelect is provided
   // This allows users to see "New Graph" option even with no saved graphs
   const showDropdown = (availableGraphs && availableGraphs.length > 0) || onGraphSelect;
@@ -484,7 +489,7 @@ const GraphPanel = ({
                       onClick={() => handleGraphSelect(graph)}
                     >
                       <span className={styles.dropdownItemTitle}>
-                        {graph.title || 'Untitled Graph'}
+                        {graph.title || 'Graph'}
                       </span>
                       <span className={styles.dropdownItemType}>
                         {graph.chartType}
@@ -497,7 +502,7 @@ const GraphPanel = ({
                     onClick={handleNewGraph}
                   >
                     <Icon name="plus" width={12} height={12} />
-                    <span>New Graph</span>
+                    <span>Create Graph</span>
                   </button>
                 </div>
               )}
