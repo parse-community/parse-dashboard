@@ -45,7 +45,7 @@ class ServerOrchestrator {
     // Check if parse-server is available
     try {
       require.resolve('parse-server');
-    } catch (error) {
+    } catch {
       throw new Error(
         'parse-server is not installed. Please install it with: npm install parse-server --save-dev'
       );
@@ -212,7 +212,7 @@ class ServerOrchestrator {
         if (response.ok || response.status === 200 || response.status === 404) {
           return; // Server is responding
         }
-      } catch (error) {
+      } catch {
         // Server not ready yet, continue waiting
       }
 

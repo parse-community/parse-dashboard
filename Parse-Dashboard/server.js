@@ -193,7 +193,8 @@ module.exports = (options) => {
 
   // Browser Control API for AI agent verification (development only)
   // NOTE: Must be mounted BEFORE parseDashboard middleware to bypass authentication
-  let browserControlSetup, browserControlAPI, browserEventStream, parseServerProcess, mongoDBInstance;
+  // eslint-disable-next-line no-unused-vars
+  let browserControlSetup, browserControlAPI, _browserEventStream, parseServerProcess, mongoDBInstance;
   try {
     const setupBrowserControl = require('./browser-control/setup');
     browserControlSetup = setupBrowserControl(app, config, { dev });
@@ -222,7 +223,7 @@ module.exports = (options) => {
       if (browserControlAPI) {
         try {
           const BrowserEventStream = require('./browser-control/BrowserEventStream');
-          browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
+          _browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
         } catch (error) {
           console.warn('Failed to initialize Browser Event Stream:', error.message);
         }
@@ -243,7 +244,7 @@ module.exports = (options) => {
       if (browserControlAPI) {
         try {
           const BrowserEventStream = require('./browser-control/BrowserEventStream');
-          browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
+          _browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
         } catch (error) {
           console.warn('Failed to initialize Browser Event Stream:', error.message);
         }
