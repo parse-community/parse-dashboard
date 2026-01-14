@@ -307,6 +307,9 @@ Capture a screenshot of the current page.
 
 Execute JavaScript in the page context.
 
+> [!WARNING]
+> This endpoint executes arbitrary JavaScript in the browser page context. While the code runs in a sandboxed browser environment (not on the server), it can access anything visible to the page including cookies, localStorage, and DOM content. This is intentional for AI agent debugging but is a powerful capability. The endpoint is protected by the production block - it cannot be enabled when `NODE_ENV=production`.
+
 **Request Body:**
 ```json
 {
