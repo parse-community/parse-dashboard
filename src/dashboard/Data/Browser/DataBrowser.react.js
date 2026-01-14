@@ -1288,6 +1288,10 @@ export default class DataBrowser extends React.Component {
       id: config.id || this.graphPreferencesManager.generateGraphId()
     };
 
+    // Store previous state for potential rollback
+    const previousGraphConfig = this.state.graphConfig;
+    const previousAvailableGraphs = this.state.availableGraphs;
+
     // Optimistically update availableGraphs to include the new/updated graph
     const existingGraphIndex = this.state.availableGraphs.findIndex(g => g.id === configWithId.id);
     let updatedAvailableGraphs;
@@ -1306,7 +1310,7 @@ export default class DataBrowser extends React.Component {
       availableGraphs: updatedAvailableGraphs,
     });
 
-    // Try to save to server first (if enabled), fallback to localStorage
+    // Try to save to server/localStorage
     try {
       await this.graphPreferencesManager.saveGraph(
         this.props.app.applicationId,
@@ -1322,14 +1326,15 @@ export default class DataBrowser extends React.Component {
       );
       this.setState({ availableGraphs: graphs || [] });
     } catch (error) {
-      console.error('Failed to save/reload graphs:', error);
-      // GraphPreferencesManager handles its own localStorage fallback
-      // Just ensure the graph is in availableGraphs for UI consistency
-      const existingGraphIndex = this.state.availableGraphs.findIndex(g => g.id === configWithId.id);
-      if (existingGraphIndex >= 0) {
-        const updatedGraphs = [...this.state.availableGraphs];
-        updatedGraphs[existingGraphIndex] = configWithId;
-        this.setState({ availableGraphs: updatedGraphs });
+      console.error('Failed to save graph:', error);
+      // Revert optimistic update on error
+      this.setState({
+        graphConfig: previousGraphConfig,
+        availableGraphs: previousAvailableGraphs
+      });
+      // Show error notification to user
+      if (this.props.showNote) {
+        this.props.showNote('Failed to save graph. Please try again.', true);
       }
     }
   }
@@ -1339,14 +1344,19 @@ export default class DataBrowser extends React.Component {
   }
 
   async deleteGraphConfig(graphId) {
-    // Close the dialog and clear the graph config
+    // Store previous state for potential rollback
+    const previousGraphConfig = this.state.graphConfig;
+    const previousAvailableGraphs = this.state.availableGraphs;
+    const previousIsGraphPanelVisible = this.state.isGraphPanelVisible;
+
+    // Optimistically update UI
     this.setState({
       graphConfig: null,
       showGraphDialog: false,
       isGraphPanelVisible: false,
     });
 
-    // Try to delete from server first (if enabled), fallback to localStorage
+    // Try to delete from server/localStorage
     try {
       await this.graphPreferencesManager.deleteGraph(
         this.props.app.applicationId,
@@ -1361,16 +1371,22 @@ export default class DataBrowser extends React.Component {
         this.props.className
       );
       this.setState({ availableGraphs: graphs || [] });
-    } catch (error) {
-      console.error('Failed to delete/reload graphs:', error);
-      // GraphPreferencesManager handles its own localStorage fallback
-      // Just remove from availableGraphs for UI consistency
-      const updatedGraphs = this.state.availableGraphs.filter(g => g.id !== graphId);
-      this.setState({ availableGraphs: updatedGraphs });
-    }
 
-    // Also clear the graph panel visibility from localStorage
-    window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, 'false');
+      // Clear the graph panel visibility from localStorage
+      window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, 'false');
+    } catch (error) {
+      console.error('Failed to delete graph:', error);
+      // Revert optimistic update on error
+      this.setState({
+        graphConfig: previousGraphConfig,
+        availableGraphs: previousAvailableGraphs,
+        isGraphPanelVisible: previousIsGraphPanelVisible
+      });
+      // Show error notification to user
+      if (this.props.showNote) {
+        this.props.showNote('Failed to delete graph. Please try again.', true);
+      }
+    }
   }
 
   handlePanelScroll(event, index) {
