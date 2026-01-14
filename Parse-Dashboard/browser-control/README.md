@@ -638,21 +638,17 @@ PORT=4041 npm run browser-control
 
 ## Security
 
-The Browser Control API uses **defense-in-depth** with multiple security layers:
+The Browser Control API uses a **two-layer security model** to prevent accidental or unauthorized enablement. Browser Control requires **both** of the following conditions to be met:
 
-### Protection Layers
+1. **Explicit opt-in**
+   - Set `"browserControl": true` in `parse-dashboard-config.json`, or
+   - Set `PARSE_DASHBOARD_BROWSER_CONTROL=true` environment variable
 
-1. **Config-level opt-in** (Required)
-   - Must set `"browserControl": true` in `parse-dashboard-config.json`
-   - Prevents accidental enablement via environment variables alone
+2. **Not in production environment**
+   - Feature is automatically blocked when `NODE_ENV=production`
 
-2. **Production environment blocking**
-   - Automatically disabled when `NODE_ENV=production`
-   - Cannot be overridden, even with explicit flags
-
-3. **Development-only deployment**
-   - Only accessible when `dev` mode is enabled, OR
-   - `PARSE_DASHBOARD_BROWSER_CONTROL=true` environment variable is set
+> [!NOTE]
+> The feature enables only when you have opted in (via config or environment variable) AND you're not in production. The production block cannot be bypassed under any circumstances.
 
 ### Additional Protections
 

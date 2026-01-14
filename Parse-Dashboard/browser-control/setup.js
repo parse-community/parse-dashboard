@@ -20,24 +20,20 @@ const { spawn } = require('child_process');
 function setupBrowserControl(app, config, options = {}) {
   const { dev } = options;
 
-  // SECURITY: Multi-layer protection
-  // Layer 1: Prevent loading in production
+  // SECURITY: Two-layer protection
+  // Layer 1: Prevent loading in production (hard block)
   const isProduction = process.env.NODE_ENV === 'production';
-  const explicitlyEnabled = process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
 
-  // Layer 2: Require explicit opt-in in dashboard config
+  // Layer 2: Require explicit opt-in via config OR environment variable
   const configAllowsBrowserControl = config.data.browserControl === true;
+  const envAllowsBrowserControl = process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
+  const explicitlyEnabled = configAllowsBrowserControl || envAllowsBrowserControl;
 
-  const shouldEnable = (dev || explicitlyEnabled) && !isProduction && configAllowsBrowserControl;
+  const shouldEnable = explicitlyEnabled && !isProduction;
 
   if (explicitlyEnabled && isProduction) {
     console.error('⚠️  SECURITY WARNING: Browser Control API cannot be enabled in production (NODE_ENV=production)');
-    console.error('⚠️  This is a development-only feature. Ignoring PARSE_DASHBOARD_BROWSER_CONTROL=true');
-    return null;
-  }
-
-  if (!configAllowsBrowserControl && (dev || explicitlyEnabled)) {
-    console.warn('⚠️  Browser Control disabled: Add "browserControl": true to parse-dashboard-config.json to enable');
+    console.error('⚠️  This is a development-only feature.');
     return null;
   }
 
