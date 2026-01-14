@@ -190,9 +190,9 @@ module.exports = (options) => {
     cookieSessionMaxAge,
     cookieSessionStore: config.data.cookieSessionStore
   };
-  app.use(mountPath, parseDashboard(config.data, dashboardOptions));
 
   // Browser Control API for AI agent verification (development only)
+  // IMPORTANT: Mount BEFORE parseDashboard middleware to bypass authentication
   const browserControlEnabled = dev || process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
   let browserControlAPI, browserEventStream, parseServerProcess, mongoDBInstance;
 
@@ -201,8 +201,11 @@ module.exports = (options) => {
     const { spawn } = require('child_process');
     const { MongoCluster } = require('mongodb-runner');
     const parseServerPort = process.env.PARSE_SERVER_PORT || 1337;
-    const parseServerAppId = process.env.PARSE_SERVER_APP_ID || 'testAppId';
-    const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || 'testMasterKey';
+
+    // Use credentials from config file if available, otherwise fall back to env vars or defaults
+    const firstApp = config.data.apps && config.data.apps.length > 0 ? config.data.apps[0] : null;
+    const parseServerAppId = process.env.PARSE_SERVER_APP_ID || (firstApp ? firstApp.appId : 'testAppId');
+    const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || (firstApp ? firstApp.masterKey : 'testMasterKey');
     const mongoVersion = process.env.MONGO_VERSION || '8.0.4';
 
     // Start MongoDB first
@@ -265,6 +268,7 @@ module.exports = (options) => {
         });
 
         // Auto-configure dashboard with test app pointing to Parse Server
+        // Only create new app config if no apps exist
         if (!config.data.apps || config.data.apps.length === 0) {
           config.data.apps = [{
             serverURL: parseServerURL,
@@ -273,6 +277,10 @@ module.exports = (options) => {
             appName: 'Browser Control Test App'
           }];
           console.log('Dashboard auto-configured with test app');
+        } else {
+          // Update existing first app's serverURL to point to the auto-started Parse Server
+          config.data.apps[0].serverURL = parseServerURL;
+          console.log(`Dashboard configured to use Parse Server at ${parseServerURL}`);
         }
       } catch (error) {
         console.warn('Failed to start Parse Server:', error.message);
@@ -287,11 +295,12 @@ module.exports = (options) => {
         setTimeout(() => startParseServer(mongoUri), 1000);
       }
     });
+  }
 
-    // Load browser control API
+  // Load browser control API BEFORE parseDashboard middleware to bypass authentication
+  if (browserControlEnabled) {
     try {
       const createBrowserControlAPI = require('./browser-control/BrowserControlAPI');
-      const BrowserEventStream = require('./browser-control/BrowserEventStream');
 
       browserControlAPI = createBrowserControlAPI();
       app.use('/browser-control', browserControlAPI);
@@ -300,6 +309,9 @@ module.exports = (options) => {
       console.warn('Failed to load Browser Control API:', error.message);
     }
   }
+
+  // Mount parseDashboard with authentication
+  app.use(mountPath, parseDashboard(config.data, dashboardOptions));
 
   let server;
   if(!configSSLKey || !configSSLCert){
