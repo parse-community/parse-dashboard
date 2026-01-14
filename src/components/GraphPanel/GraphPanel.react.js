@@ -445,9 +445,9 @@ const GraphPanel = ({
   }
 
   const currentGraphTitle = graphConfig?.title || 'Graph';
-  // Show dropdown when there are saved graphs OR when onGraphSelect is provided
-  // This allows users to see "New Graph" option even with no saved graphs
-  const showDropdown = (availableGraphs && availableGraphs.length > 0) || onGraphSelect;
+  // Only show dropdown/buttons when there's an active graph configuration
+  const hasActiveGraph = !!graphConfig;
+  const showDropdown = hasActiveGraph && availableGraphs && availableGraphs.length > 0;
 
   const handleGraphSelect = (graph) => {
     if (onGraphSelect) {
@@ -506,7 +506,7 @@ const GraphPanel = ({
               )}
             </div>
           )}
-          {onEdit && (
+          {hasActiveGraph && onEdit && (
             <button
               type="button"
               onClick={() => onEdit()}
@@ -517,7 +517,7 @@ const GraphPanel = ({
               <Icon name="edit-solid" width={14} height={14} fill="#ffffff" />
             </button>
           )}
-          {onRefresh && (
+          {hasActiveGraph && onRefresh && (
             <button
               type="button"
               onClick={() => onRefresh()}
