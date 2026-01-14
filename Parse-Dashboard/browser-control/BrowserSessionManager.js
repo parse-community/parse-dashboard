@@ -239,14 +239,28 @@ class BrowserSessionManager extends EventEmitter {
    */
   cleanupInactiveSessions() {
     const now = Date.now();
+
+    // Collect inactive session IDs first to avoid mutating this.sessions during iteration
+    const inactiveSessionIds = [];
     for (const [sessionId, session] of this.sessions.entries()) {
-      const inactive = now - session.lastActivity > this.sessionTimeout;
-      if (inactive) {
-        console.log(`Cleaning up inactive session ${sessionId}`);
-        this.cleanup(sessionId).catch(err => {
-          console.error(`Failed to cleanup session ${sessionId}:`, err);
-        });
+      if (now - session.lastActivity > this.sessionTimeout) {
+        inactiveSessionIds.push(sessionId);
       }
+    }
+
+    // Clean up collected sessions outside the iteration
+    if (inactiveSessionIds.length > 0) {
+      console.log(`Cleaning up ${inactiveSessionIds.length} inactive session(s)`);
+
+      Promise.allSettled(
+        inactiveSessionIds.map(sessionId => this.cleanup(sessionId))
+      ).then(results => {
+        results.forEach((result, index) => {
+          if (result.status === 'rejected') {
+            console.error(`Failed to cleanup session ${inactiveSessionIds[index]}:`, result.reason);
+          }
+        });
+      });
     }
   }
 
