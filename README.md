@@ -54,6 +54,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Scripts](#scripts)
     - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
+- [Browser Control API (Development Only)](#browser-control-api-development-only)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
   - [Security Considerations](#security-considerations)
@@ -269,6 +270,7 @@ Each class in `columnPreference` can have an array of column configurations:
 | `cookieSessionSecret` | String  | yes      | Random       | `--cookieSessionSecret` | `PARSE_DASHBOARD_COOKIE_SESSION_SECRET`  | `"secret"`      | Secret for session cookies (for multi-server).   |
 | `cookieSessionMaxAge` | Number  | yes      | Session-only | `--cookieSessionMaxAge` | `PARSE_DASHBOARD_COOKIE_SESSION_MAX_AGE` | `3600`          | Session cookie expiration (seconds).             |
 | `dev`                 | Boolean | yes      | `false`      | `--dev`                 | -                                        | -               | Development mode (**DO NOT use in production**). |
+| `browserControl`      | Boolean | yes      | `false`      | -                       | `PARSE_DASHBOARD_BROWSER_CONTROL`        | `true`          | Enable Browser Control API (dev only, **NEVER in production**). See [Browser Control](Parse-Dashboard/browser-control/). |
 | `config`              | String  | yes      | -            | `--config`              | -                                        | `"config.json"` | Path to JSON configuration file.                 |
 
 #### Helper CLI Commands
@@ -728,6 +730,47 @@ app.use('/dashboard', dashboard);
 var httpServer = require('http').createServer(app);
 httpServer.listen(4040);
 ```
+
+## Browser Control API (Development Only)
+
+The Browser Control API allows AI agents to interact with Parse Dashboard through an automated browser during feature implementation and debugging. This is a **development-only tool** designed for real-time verification during active development.
+
+### ⚠️ Security Requirements
+
+The Browser Control API uses **defense-in-depth** with multiple security layers:
+
+1. **Config-level opt-in** (Required)
+   - Must set `"browserControl": true` in your config file
+   - Prevents accidental enablement via environment variables
+
+2. **Production environment blocking**
+   - Automatically disabled when `NODE_ENV=production`
+   - Cannot be overridden, even with explicit flags
+
+3. **Development-only deployment**
+   - Only accessible in `dev` mode or with `PARSE_DASHBOARD_BROWSER_CONTROL=true`
+
+### Configuration
+
+Add to your `parse-dashboard-config.json`:
+
+```json
+{
+  "browserControl": true,
+  "apps": [...],
+  "users": [...]
+}
+```
+
+**⚠️ CRITICAL**: Never deploy with `browserControl: true` in production. Remove this field or set to `false` before deploying.
+
+### Usage
+
+```bash
+npm run browser-control
+```
+
+For complete documentation, API reference, and examples, see the [Browser Control README](Parse-Dashboard/browser-control/README.md).
 
 # Deploying Parse Dashboard
 
