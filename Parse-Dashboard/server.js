@@ -209,9 +209,11 @@ module.exports = (options) => {
     const startMongoDB = async () => {
       try {
         console.log(`Starting MongoDB ${mongoVersion} instance...`);
+        const os = require('os');
         mongoDBInstance = await MongoCluster.start({
           topology: 'standalone',
           version: mongoVersion,
+          tmpDir: os.tmpdir(),
         });
         const mongoUri = mongoDBInstance.connectionString;
         console.log(`MongoDB ${mongoVersion} started at ${mongoUri}`);
