@@ -167,12 +167,7 @@ class ServerOrchestrator {
 
       // Start server
       return new Promise((resolve, reject) => {
-        const server = app.listen(port, (err) => {
-          if (err) {
-            reject(new Error(`Failed to start Dashboard: ${err.message}`));
-            return;
-          }
-
+        const server = app.listen(port, () => {
           const url = `http://localhost:${port}${mount}`;
           this.dashboardServer = server;
           this.dashboardConfig = {
@@ -188,7 +183,10 @@ class ServerOrchestrator {
           resolve(this.dashboardConfig);
         });
 
-        server.on('error', reject);
+        // Handle errors via server's 'error' event (correct approach)
+        server.on('error', (err) => {
+          reject(new Error(`Failed to start Dashboard: ${err.message}`));
+        });
       });
     } catch (error) {
       throw new Error(`Failed to start Dashboard: ${error.message}`);
