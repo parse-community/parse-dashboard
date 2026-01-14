@@ -36,6 +36,7 @@ function setupBrowserControl(app, config) {
   let parseServerProcess = null;
   let mongoDBInstance = null;
   let browserControlAPI = null;
+  let browserEventStream = null;
 
   // Auto-start MongoDB and Parse Server
   const { MongoCluster } = require('mongodb-runner');
@@ -147,6 +148,13 @@ function setupBrowserControl(app, config) {
 
   // Cleanup function for servers
   const cleanup = () => {
+    // Shutdown WebSocket server
+    if (browserEventStream) {
+      browserEventStream.shutdown().catch(err => {
+        console.warn('Error shutting down Browser Event Stream:', err.message);
+      });
+    }
+
     if (parseServerProcess) {
       console.log('Stopping Parse Server...');
       parseServerProcess.kill('SIGTERM');
@@ -173,7 +181,7 @@ function setupBrowserControl(app, config) {
 
     try {
       const BrowserEventStream = require('./BrowserEventStream');
-      new BrowserEventStream(server, browserControlAPI.sessionManager);
+      browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
     } catch (error) {
       console.warn('Failed to initialize Browser Event Stream:', error.message);
     }
