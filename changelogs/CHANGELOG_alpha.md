@@ -1,3 +1,10 @@
+# [8.2.0-alpha.24](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.23...8.2.0-alpha.24) (2026-01-13)
+
+
+### Bug Fixes
+
+* Graph panel covers right-most columns of data browser table ([#3112](https://github.com/parse-community/parse-dashboard/issues/3112)) ([00b0d70](https://github.com/parse-community/parse-dashboard/commit/00b0d704fb74dc3daafe9d81de2c752b71da6cf8))
+
 # [8.2.0-alpha.23](https://github.com/parse-community/parse-dashboard/compare/8.2.0-alpha.22...8.2.0-alpha.23) (2026-01-13)
 
 
