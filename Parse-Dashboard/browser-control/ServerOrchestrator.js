@@ -238,8 +238,28 @@ class ServerOrchestrator {
       return;
     }
 
+    // Capture reference to avoid race conditions
+    const proc = this.parseServerProcess;
+
+    // Check if process already exited
+    if (proc.exitCode !== null || proc.killed) {
+      this.parseServerProcess = null;
+      this.parseServerConfig = null;
+      console.log('Parse Server already stopped');
+      return;
+    }
+
     return new Promise((resolve) => {
-      this.parseServerProcess.on('exit', () => {
+      let forceKillTimeout = null;
+
+      // Attach exit handler BEFORE sending signals
+      proc.once('exit', () => {
+        // Clear the force kill timeout
+        if (forceKillTimeout) {
+          clearTimeout(forceKillTimeout);
+        }
+
+        // Null references exactly once
         this.parseServerProcess = null;
         this.parseServerConfig = null;
         console.log('Parse Server stopped');
@@ -247,12 +267,13 @@ class ServerOrchestrator {
       });
 
       // Try graceful shutdown first
-      this.parseServerProcess.kill('SIGTERM');
+      proc.kill('SIGTERM');
 
       // Force kill after 5 seconds if still running
-      setTimeout(() => {
-        if (this.parseServerProcess) {
-          this.parseServerProcess.kill('SIGKILL');
+      forceKillTimeout = setTimeout(() => {
+        // Use captured reference, not this.parseServerProcess
+        if (!proc.killed && proc.exitCode === null) {
+          proc.kill('SIGKILL');
         }
       }, 5000);
     });
@@ -267,8 +288,11 @@ class ServerOrchestrator {
       return;
     }
 
+    // Capture reference to avoid race conditions
+    const server = this.dashboardServer;
+
     return new Promise((resolve) => {
-      this.dashboardServer.close(() => {
+      server.close(() => {
         this.dashboardServer = null;
         this.dashboardConfig = null;
         console.log('Parse Dashboard stopped');
