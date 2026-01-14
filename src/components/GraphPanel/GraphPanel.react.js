@@ -459,8 +459,6 @@ const GraphPanel = ({
   const handleNewGraph = () => {
     if (onNewGraph) {
       onNewGraph();
-    } else if (onEdit) {
-      onEdit();
     }
     setShowGraphDropdown(false);
   };
