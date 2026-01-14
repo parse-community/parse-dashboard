@@ -1,7 +1,11 @@
 const { spawn } = require('child_process');
 const express = require('express');
-const getPort = require('get-port');
-const fetch = require('node-fetch');
+
+// ESM-only modules - use .default for CommonJS compatibility
+const getPortModule = require('get-port');
+const getPort = getPortModule.default || getPortModule;
+const fetchModule = require('node-fetch');
+const fetch = fetchModule.default || fetchModule;
 
 /**
  * ServerOrchestrator
