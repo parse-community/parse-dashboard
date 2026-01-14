@@ -76,22 +76,17 @@ export default class GraphPreferencesManager {
   async saveGraph(appId, className, graph, allGraphs) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
-      try {
-        await this._saveGraphToServer(appId, className, graph);
+      await this._saveGraphToServer(appId, className, graph);
 
-        // Invalidate cache - will be reloaded on next getGraphs call
-        if (serverGraphsCache[appId]) {
-          delete serverGraphsCache[appId][className];
-        }
-
-        return;
-      } catch (error) {
-        console.error('Failed to save graph to server:', error);
-        // On error, fallback to local storage
+      // Invalidate cache - will be reloaded on next getGraphs call
+      if (serverGraphsCache[appId]) {
+        delete serverGraphsCache[appId][className];
       }
+
+      return;
     }
 
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._saveGraphsToLocal(appId, className, allGraphs);
   }
 
@@ -106,22 +101,17 @@ export default class GraphPreferencesManager {
   async deleteGraph(appId, className, graphId, allGraphs) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
-      try {
-        await this._deleteGraphFromServer(appId, graphId);
+      await this._deleteGraphFromServer(appId, graphId);
 
-        // Invalidate cache - will be reloaded on next getGraphs call
-        if (serverGraphsCache[appId]) {
-          delete serverGraphsCache[appId][className];
-        }
-
-        return;
-      } catch (error) {
-        console.error('Failed to delete graph from server:', error);
-        // On error, fallback to local storage
+      // Invalidate cache - will be reloaded on next getGraphs call
+      if (serverGraphsCache[appId]) {
+        delete serverGraphsCache[appId][className];
       }
+
+      return;
     }
 
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._saveGraphsToLocal(appId, className, allGraphs);
   }
 
