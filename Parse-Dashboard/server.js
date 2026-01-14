@@ -170,11 +170,39 @@ module.exports = (options) => {
     cookieSessionStore: config.data.cookieSessionStore
   };
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
+
+  // Browser Control API for AI agent verification (development only)
+  const browserControlEnabled = dev || process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
+  let browserControlAPI, browserEventStream;
+
+  if (browserControlEnabled) {
+    try {
+      const createBrowserControlAPI = require('./browser-control/BrowserControlAPI');
+      const BrowserEventStream = require('./browser-control/BrowserEventStream');
+
+      browserControlAPI = createBrowserControlAPI();
+      app.use('/browser-control', browserControlAPI);
+      console.log('Browser Control API enabled at /browser-control');
+    } catch (error) {
+      console.warn('Failed to load Browser Control API:', error.message);
+    }
+  }
+
   let server;
   if(!configSSLKey || !configSSLCert){
     // Start the server.
     server = app.listen(port, host, function () {
       console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
+
+      // Initialize WebSocket event stream after server starts
+      if (browserControlEnabled && browserControlAPI) {
+        try {
+          const BrowserEventStream = require('./browser-control/BrowserEventStream');
+          browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
+        } catch (error) {
+          console.warn('Failed to initialize Browser Event Stream:', error.message);
+        }
+      }
     });
   } else {
     // Start the server using SSL.
@@ -186,6 +214,16 @@ module.exports = (options) => {
       cert: certificate
     }, app).listen(port, host, function () {
       console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
+
+      // Initialize WebSocket event stream after server starts
+      if (browserControlEnabled && browserControlAPI) {
+        try {
+          const BrowserEventStream = require('./browser-control/BrowserEventStream');
+          browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
+        } catch (error) {
+          console.warn('Failed to initialize Browser Event Stream:', error.message);
+        }
+      }
     });
   }
   handleSIGs(server);
