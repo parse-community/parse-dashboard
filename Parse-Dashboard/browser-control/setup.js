@@ -15,7 +15,7 @@ const { spawn } = require('child_process');
  * @param {Object} config - Dashboard configuration
  * @param {Object} options - Setup options
  * @param {boolean} options.dev - Development mode flag
- * @returns {Object} - Cleanup handlers for servers
+ * @returns {Object|null} - Setup result with initialization hook, or null if disabled
  */
 function setupBrowserControl(app, config, options = {}) {
   const { dev } = options;
@@ -157,21 +157,42 @@ function setupBrowserControl(app, config, options = {}) {
     console.warn('Failed to load Browser Control API:', error.message);
   }
 
-  // Return cleanup function and references
-  return {
-    browserControlAPI,
-    parseServerProcess,
-    mongoDBInstance,
-    cleanup: () => {
-      if (parseServerProcess) {
-        parseServerProcess.kill('SIGTERM');
-      }
-      if (mongoDBInstance) {
-        mongoDBInstance.close().catch(err => {
-          console.warn('Error stopping MongoDB:', err.message);
-        });
-      }
+  // Cleanup function for servers
+  const cleanup = () => {
+    if (parseServerProcess) {
+      console.log('Stopping Parse Server...');
+      parseServerProcess.kill('SIGTERM');
+      // Force kill after 5 seconds if still running
+      setTimeout(() => {
+        if (parseServerProcess && !parseServerProcess.killed) {
+          parseServerProcess.kill('SIGKILL');
+        }
+      }, 5000);
     }
+    if (mongoDBInstance) {
+      console.log('Stopping MongoDB...');
+      mongoDBInstance.close().catch(err => {
+        console.warn('Error stopping MongoDB:', err.message);
+      });
+    }
+  };
+
+  // Hook to initialize WebSocket when HTTP server is ready
+  const initializeWebSocket = (server) => {
+    if (!browserControlAPI) return;
+
+    try {
+      const BrowserEventStream = require('./BrowserEventStream');
+      new BrowserEventStream(server, browserControlAPI.sessionManager);
+    } catch (error) {
+      console.warn('Failed to initialize Browser Event Stream:', error.message);
+    }
+  };
+
+  // Return setup result with hooks
+  return {
+    cleanup,
+    initializeWebSocket
   };
 }
 

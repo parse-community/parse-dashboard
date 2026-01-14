@@ -41,31 +41,15 @@ module.exports = (options) => {
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
   const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT;
 
-  function handleSIGs(server, parseServerProcess, mongoDBInstance) {
+  function handleSIGs(server, browserControlSetup) {
     const signals = {
       'SIGINT': 2,
       'SIGTERM': 15
     };
     function shutdown(signal, value) {
-      // Stop Parse Server if it's running
-      if (parseServerProcess) {
-        console.log('Stopping Parse Server...');
-        parseServerProcess.kill('SIGTERM');
-
-        // Force kill after 5 seconds if still running
-        setTimeout(() => {
-          if (parseServerProcess && !parseServerProcess.killed) {
-            parseServerProcess.kill('SIGKILL');
-          }
-        }, 5000);
-      }
-
-      // Stop MongoDB if it's running
-      if (mongoDBInstance) {
-        console.log('Stopping MongoDB...');
-        mongoDBInstance.close().catch(err => {
-          console.warn('Error stopping MongoDB:', err.message);
-        });
+      // Cleanup browser control resources if enabled
+      if (browserControlSetup && browserControlSetup.cleanup) {
+        browserControlSetup.cleanup();
       }
 
       server.close(function () {
@@ -193,16 +177,10 @@ module.exports = (options) => {
 
   // Browser Control API for AI agent verification (development only)
   // NOTE: Must be mounted BEFORE parseDashboard middleware to bypass authentication
-  // eslint-disable-next-line no-unused-vars
-  let browserControlSetup, browserControlAPI, _browserEventStream, parseServerProcess, mongoDBInstance;
+  let browserControlSetup = null;
   try {
     const setupBrowserControl = require('./browser-control/setup');
     browserControlSetup = setupBrowserControl(app, config, { dev });
-    if (browserControlSetup) {
-      browserControlAPI = browserControlSetup.browserControlAPI;
-      parseServerProcess = browserControlSetup.parseServerProcess;
-      mongoDBInstance = browserControlSetup.mongoDBInstance;
-    }
   } catch (error) {
     // Silently ignore if browser-control module doesn't exist (production build)
     if (error.code !== 'MODULE_NOT_FOUND') {
@@ -219,14 +197,9 @@ module.exports = (options) => {
     server = app.listen(port, host, function () {
       console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
 
-      // Initialize WebSocket event stream after server starts
-      if (browserControlAPI) {
-        try {
-          const BrowserEventStream = require('./browser-control/BrowserEventStream');
-          _browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
-        } catch (error) {
-          console.warn('Failed to initialize Browser Event Stream:', error.message);
-        }
+      // Initialize browser control WebSocket if enabled
+      if (browserControlSetup) {
+        browserControlSetup.initializeWebSocket(server);
       }
     });
   } else {
@@ -240,16 +213,11 @@ module.exports = (options) => {
     }, app).listen(port, host, function () {
       console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
 
-      // Initialize WebSocket event stream after server starts
-      if (browserControlAPI) {
-        try {
-          const BrowserEventStream = require('./browser-control/BrowserEventStream');
-          _browserEventStream = new BrowserEventStream(server, browserControlAPI.sessionManager);
-        } catch (error) {
-          console.warn('Failed to initialize Browser Event Stream:', error.message);
-        }
+      // Initialize browser control WebSocket if enabled
+      if (browserControlSetup) {
+        browserControlSetup.initializeWebSocket(server);
       }
     });
   }
-  handleSIGs(server, parseServerProcess, mongoDBInstance);
+  handleSIGs(server, browserControlSetup);
 };
