@@ -41,12 +41,29 @@ function setupBrowserControl(app, config) {
   // Auto-start MongoDB and Parse Server
   const { MongoCluster } = require('mongodb-runner');
   const parseServerPort = process.env.PARSE_SERVER_PORT || 1337;
+  const parseServerURL = `http://localhost:${parseServerPort}/parse`;
 
   // Use credentials from config file if available, otherwise fall back to env vars or defaults
   const firstApp = config.data.apps && config.data.apps.length > 0 ? config.data.apps[0] : null;
   const parseServerAppId = process.env.PARSE_SERVER_APP_ID || (firstApp ? firstApp.appId : 'testAppId');
   const parseServerMasterKey = process.env.PARSE_SERVER_MASTER_KEY || (firstApp ? firstApp.masterKey : 'testMasterKey');
   const mongoVersion = process.env.MONGO_VERSION || '8.0.4';
+
+  // Configure dashboard synchronously before parseDashboard middleware is mounted
+  // to ensure the dashboard knows about the auto-started Parse Server
+  if (!config.data.apps || config.data.apps.length === 0) {
+    config.data.apps = [{
+      serverURL: parseServerURL,
+      appId: parseServerAppId,
+      masterKey: parseServerMasterKey,
+      appName: 'Browser Control Test App'
+    }];
+    console.log('Dashboard auto-configured with test app');
+  } else {
+    // Update existing first app's serverURL to point to the auto-started Parse Server
+    config.data.apps[0].serverURL = parseServerURL;
+    console.log(`Dashboard configured to use Parse Server at ${parseServerURL}`);
+  }
 
   // Start MongoDB first
   const startMongoDB = async () => {
@@ -71,7 +88,6 @@ function setupBrowserControl(app, config) {
   // Start Parse Server after MongoDB is ready
   const startParseServer = (mongoUri) => {
     try {
-      const parseServerURL = `http://localhost:${parseServerPort}/parse`;
       console.log('Starting Parse Server for browser control...');
       parseServerProcess = spawn('npx', [
         'parse-server',
@@ -106,22 +122,6 @@ function setupBrowserControl(app, config) {
           console.error(`Parse Server exited with code ${code}`);
         }
       });
-
-      // Auto-configure dashboard with test app pointing to Parse Server
-      // Only create new app config if no apps exist
-      if (!config.data.apps || config.data.apps.length === 0) {
-        config.data.apps = [{
-          serverURL: parseServerURL,
-          appId: parseServerAppId,
-          masterKey: parseServerMasterKey,
-          appName: 'Browser Control Test App'
-        }];
-        console.log('Dashboard auto-configured with test app');
-      } else {
-        // Update existing first app's serverURL to point to the auto-started Parse Server
-        config.data.apps[0].serverURL = parseServerURL;
-        console.log(`Dashboard configured to use Parse Server at ${parseServerURL}`);
-      }
     } catch (error) {
       console.warn('Failed to start Parse Server:', error.message);
       console.warn('Browser control will work but you need to configure apps manually');
