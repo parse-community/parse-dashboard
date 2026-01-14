@@ -180,7 +180,7 @@ module.exports = (options) => {
   let browserControlSetup = null;
   try {
     const setupBrowserControl = require('./browser-control/setup');
-    browserControlSetup = setupBrowserControl(app, config, { dev });
+    browserControlSetup = setupBrowserControl(app, config);
   } catch (error) {
     // Silently ignore if browser-control module doesn't exist (production build)
     if (error.code !== 'MODULE_NOT_FOUND') {

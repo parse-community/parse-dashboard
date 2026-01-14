@@ -13,18 +13,10 @@ const { spawn } = require('child_process');
  * Initialize browser control for the dashboard
  * @param {Express.Application} app - Express app instance
  * @param {Object} config - Dashboard configuration
- * @param {Object} options - Setup options
- * @param {boolean} options.dev - Development mode flag
  * @returns {Object|null} - Setup result with initialization hook, or null if disabled
  */
-function setupBrowserControl(app, config, options = {}) {
-  const { dev } = options;
-
-  // SECURITY: Two-layer protection
-  // Layer 1: Prevent loading in production (hard block)
+function setupBrowserControl(app, config) {
   const isProduction = process.env.NODE_ENV === 'production';
-
-  // Layer 2: Require explicit opt-in via config OR environment variable
   const configAllowsBrowserControl = config.data.browserControl === true;
   const envAllowsBrowserControl = process.env.PARSE_DASHBOARD_BROWSER_CONTROL === 'true';
   const explicitlyEnabled = configAllowsBrowserControl || envAllowsBrowserControl;
@@ -175,7 +167,9 @@ function setupBrowserControl(app, config, options = {}) {
 
   // Hook to initialize WebSocket when HTTP server is ready
   const initializeWebSocket = (server) => {
-    if (!browserControlAPI) return;
+    if (!browserControlAPI) {
+      return;
+    }
 
     try {
       const BrowserEventStream = require('./BrowserEventStream');
