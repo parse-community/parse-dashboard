@@ -65,6 +65,35 @@ function setupBrowserControl(app, config) {
     console.log(`Dashboard configured to use Parse Server at ${parseServerURL}`);
   }
 
+  // Wait for MongoDB to be ready by polling for successful connections
+  const waitForMongo = async (mongoUri, maxRetries = 20, delayMs = 500) => {
+    const { MongoClient } = require('mongodb');
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const client = new MongoClient(mongoUri, {
+          serverSelectionTimeoutMS: 1000,
+          connectTimeoutMS: 1000
+        });
+
+        await client.connect();
+        await client.close();
+
+        console.log(`MongoDB ready after ${attempt} attempt(s)`);
+        return true;
+      } catch (error) {
+        if (attempt === maxRetries) {
+          throw new Error(
+            `MongoDB not ready after ${maxRetries} attempts (${maxRetries * delayMs}ms): ${error.message}`
+          );
+        }
+        // Wait before next attempt
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
+    return false;
+  };
+
   // Start MongoDB first
   const startMongoDB = async () => {
     try {
@@ -128,13 +157,25 @@ function setupBrowserControl(app, config) {
     }
   };
 
-  // Start MongoDB, then Parse Server
-  startMongoDB().then((mongoUri) => {
-    if (mongoUri) {
-      // Wait a bit for MongoDB to be ready
-      setTimeout(() => startParseServer(mongoUri), 1000);
-    }
-  });
+  // Start MongoDB, wait for it to be ready, then start Parse Server
+  startMongoDB()
+    .then(async (mongoUri) => {
+      if (!mongoUri) {
+        return;
+      }
+
+      try {
+        // Wait for MongoDB to accept connections before starting Parse Server
+        await waitForMongo(mongoUri);
+        startParseServer(mongoUri);
+      } catch (error) {
+        console.error('Failed to connect to MongoDB:', error.message);
+        console.error('Parse Server will not be started');
+      }
+    })
+    .catch(error => {
+      console.error('Error in MongoDB startup sequence:', error.message);
+    });
 
   // Load browser control API BEFORE parseDashboard middleware to bypass authentication
   try {
