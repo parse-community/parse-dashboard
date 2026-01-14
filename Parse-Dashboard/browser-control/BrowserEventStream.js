@@ -21,11 +21,24 @@ class BrowserEventStream {
     this.sessionManager = sessionManager;
     this.clients = new Map(); // sessionId -> Set of WebSocket clients
 
-    // Create WebSocket server
+    // Create WebSocket server without path (we'll handle routing manually)
     this.wss = new WebSocket.Server({
-      server: httpServer,
-      path: '/browser-control/stream',
+      noServer: true,
       clientTracking: true
+    });
+
+    // Handle WebSocket upgrade requests manually to support dynamic paths
+    // Path pattern: /browser-control/stream/:sessionId
+    httpServer.on('upgrade', (request, socket, head) => {
+      const pathname = new URL(request.url, 'http://localhost').pathname;
+
+      // Check if this is a browser-control stream request
+      if (pathname.startsWith('/browser-control/stream/')) {
+        this.wss.handleUpgrade(request, socket, head, (ws) => {
+          this.wss.emit('connection', ws, request);
+        });
+      }
+      // Let other upgrade requests pass through (don't destroy socket)
     });
 
     // Handle new WebSocket connections
