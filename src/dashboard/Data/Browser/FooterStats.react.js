@@ -65,8 +65,25 @@ const statsOptions = [
   },
 ];
 
+const STORAGE_KEY = 'parse_dashboard_footer_stats_type';
+
+const getInitialSelection = () => {
+  try {
+    const savedType = localStorage.getItem(STORAGE_KEY);
+    if (savedType) {
+      const found = statsOptions.find(opt => opt.type === savedType);
+      if (found) {
+        return found;
+      }
+    }
+  } catch (e) {
+    // localStorage not available
+  }
+  return statsOptions[0];
+};
+
 const FooterStats = ({ data }) => {
-  const [selected, setSelected] = React.useState(statsOptions[0]);
+  const [selected, setSelected] = React.useState(getInitialSelection);
   const [open, setOpen] = React.useState(false);
   const buttonRef = React.useRef();
 
@@ -98,6 +115,11 @@ const FooterStats = ({ data }) => {
                   className={itemStyle.join(' ')}
                   onClick={() => {
                     setSelected(item);
+                    try {
+                      localStorage.setItem(STORAGE_KEY, item.type);
+                    } catch (e) {
+                      // localStorage not available
+                    }
                     toggle();
                   }}
                 >
