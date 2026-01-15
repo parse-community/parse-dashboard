@@ -15,7 +15,24 @@ import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom
 
 const POPOVER_CONTENT_ID = 'toolbarStatsPopover';
 
-const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => {
+const formatNumber = (value, isCount = false) => {
+  if (typeof value !== 'number' || isNaN(value)) {
+    return '–';
+  }
+  if (isCount) {
+    return value.toLocaleString();
+  }
+  // For decimal numbers, show up to 2 decimal places
+  if (Number.isInteger(value)) {
+    return value.toLocaleString();
+  }
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+};
+
+const Stats = ({ data, isPanelVisible, panelCount, classwiseCloudFunctions, className, appId, appName }) => {
   const [selected, setSelected] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const buttonRef = React.useRef();
@@ -35,12 +52,23 @@ const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => 
       type: 'count',
       label: 'Count',
       getValue: data => data.length,
+      isCount: true,
+    },
+    {
+      type: 'min',
+      label: 'Min',
+      getValue: data => Math.min(...data),
+    },
+    {
+      type: 'max',
+      label: 'Max',
+      getValue: data => Math.max(...data),
     },
     {
       type: 'p99',
       label: 'P99',
       getValue: data => {
-        const sorted = data.sort((a, b) => a - b);
+        const sorted = [...data].sort((a, b) => a - b);
         return sorted[Math.floor(sorted.length * 0.99)];
       },
     },
@@ -75,6 +103,7 @@ const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => 
               if (item.type === selected?.type) {
                 itemStyle.push(styles.active);
               }
+              const value = item.getValue(data);
               return (
                 <div
                   key={item.type}
@@ -84,7 +113,8 @@ const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => 
                     toggle();
                   }}
                 >
-                  <span>{item.label}</span>
+                  <span className={styles.stats_label}>{item.label}</span>
+                  <span className={styles.stats_value}>{formatNumber(value, item.isCount)}</span>
                 </div>
               );
             })}
@@ -98,24 +128,39 @@ const Stats = ({ data, classwiseCloudFunctions, className, appId, appName }) => 
     setSelected(statsOptions[0]);
   }, []);
 
-  const rightMarginStyle =
+  // Calculate right margin to avoid overlap with panel buttons
+  const hasPanelButtons =
     classwiseCloudFunctions &&
     classwiseCloudFunctions[`${appId}${appName}`] &&
-    classwiseCloudFunctions[`${appId}${appName}`][className]
-      ? '120px'
-      : 'initial';
+    classwiseCloudFunctions[`${appId}${appName}`][className];
+
+  let wrapperStyle = {};
+  if (hasPanelButtons) {
+    // Calculate width based on panel state
+    // Base button widths: "Hide Panel" ~110px, "Add Panel" ~95px, "Remove Panel" ~115px
+    // Plus gaps of 5px between buttons
+    let panelButtonsWidth = 120; // Base for toggle button
+    if (isPanelVisible) {
+      panelButtonsWidth += 100; // Add Panel button
+      if (panelCount > 1) {
+        panelButtonsWidth += 115; // Remove Panel button
+      }
+    }
+    wrapperStyle = { right: `${panelButtonsWidth + 15}px` };
+  }
 
   return (
     <>
       {selected ? (
-        <button
-          ref={buttonRef}
-          className={styles.stats}
-          onClick={toggle}
-          style={{ marginRight: rightMarginStyle }}
-        >
-          {`${selected.label}: ${selected.getValue(data)}`}
-        </button>
+        <div className={styles.statsWrapper} style={wrapperStyle}>
+          <button
+            ref={buttonRef}
+            className={styles.stats}
+            onClick={toggle}
+          >
+            {`${selected.label}: ${formatNumber(selected.getValue(data), selected.isCount)}`}
+          </button>
+        </div>
       ) : null}
       {open ? renderPopover() : null}
     </>
@@ -148,6 +193,8 @@ const Toolbar = props => {
       {props?.selectedData?.length ? (
         <Stats
           data={props.selectedData}
+          isPanelVisible={props.isPanelVisible}
+          panelCount={props.panelCount}
           classwiseCloudFunctions={props.classwiseCloudFunctions}
           className={props.className}
           appId={props.appId}
