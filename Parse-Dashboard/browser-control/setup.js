@@ -116,6 +116,7 @@ function setupBrowserControl(app, config) {
   }
 
   // Wait for MongoDB to be ready by polling for successful connections
+  // Throws an error if MongoDB is not ready after maxRetries attempts
   const waitForMongo = async (mongoUri, maxRetries = 20, delayMs = 500) => {
     const { MongoClient } = require('mongodb');
 
@@ -130,7 +131,7 @@ function setupBrowserControl(app, config) {
         await client.close();
 
         console.log(`MongoDB ready after ${attempt} attempt(s)`);
-        return true;
+        return;
       } catch (error) {
         if (attempt === maxRetries) {
           throw new Error(
@@ -141,7 +142,6 @@ function setupBrowserControl(app, config) {
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
     }
-    return false;
   };
 
   // Start MongoDB first
