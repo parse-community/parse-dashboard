@@ -723,6 +723,19 @@ npm run browser-control
 5. **Use evaluate** to inspect computed styles and DOM properties
 6. **Wait for elements** before interacting to avoid race conditions
 7. **Set appropriate timeouts** based on network conditions
+8. **Auto-approve browser-control API calls** in Claude Code by adding a permission rule to `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl*localhost:4040/browser-control*)"
+    ]
+  }
+}
+```
+
+This eliminates confirmation prompts for `curl` commands to the browser-control API, speeding up development.
 
 ## Contributing
 
