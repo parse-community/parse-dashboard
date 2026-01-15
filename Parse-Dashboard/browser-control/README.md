@@ -36,6 +36,8 @@ Or for visible browser (helpful for debugging):
 npm run browser-control:visible
 ```
 
+Both scripts include webpack watch mode, so code changes are automatically rebuilt. Just reload the page to see updates.
+
 **What happens automatically:**
 - MongoDB 8.0.4 is downloaded (on first run) and started automatically
 - Parse Server spawns and connects to the MongoDB instance
