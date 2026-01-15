@@ -1,6 +1,7 @@
 import Button from 'components/Button/Button.react';
 import React from 'react';
 import styles from './BrowserFooter.scss';
+import FooterStats from './FooterStats.react';
 
 class BrowserFooter extends React.Component {
   state = {
@@ -68,7 +69,7 @@ class BrowserFooter extends React.Component {
   };
 
   render() {
-    const { skip, count, limit } = this.props;
+    const { skip, count, limit, selectedCellsCount, selectedData } = this.props;
     const totalPages = Math.ceil(count / limit);
 
     return (
@@ -85,6 +86,18 @@ class BrowserFooter extends React.Component {
         <span>per page</span>
         <span style={{ color: 'lightgray' }}>|</span>
         <span>Objects {(skip + 1).toLocaleString()} to {Math.min(count ?? limit, skip + limit).toLocaleString()}</span>
+        {selectedCellsCount > 0 && (
+          <>
+            <span style={{ color: 'lightgray' }}>|</span>
+            <span><strong>{selectedCellsCount.toLocaleString()}</strong> cells selected</span>
+          </>
+        )}
+        {selectedData?.length > 0 && (
+          <>
+            <span style={{ color: 'lightgray' }}>|</span>
+            <FooterStats data={selectedData} />
+          </>
+        )}
         <span style={{ marginLeft: 'auto' }}></span>
         <span>Page</span>
         <input

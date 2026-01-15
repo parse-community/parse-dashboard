@@ -193,6 +193,8 @@ class Browser extends DashboardView {
       isLoadingInfoPanel: false,
       errorAggregatedData: {},
       classFilters: {}, // Map of className -> filters array
+      selectedCellsCount: 0,
+      selectedData: [],
     };
 
     this._isMounted = false;
@@ -272,6 +274,7 @@ class Browser extends DashboardView {
     this.classAndCloudFuntionMap = this.classAndCloudFuntionMap.bind(this);
     this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
+    this.handleCellSelectionChange = this.handleCellSelectionChange.bind(this);
 
     // Handle for the ongoing info panel cloud function request
     this.currentInfoPanelQuery = null;
@@ -484,6 +487,11 @@ class Browser extends DashboardView {
   setAggregationPanelData(data) {
     this.setState({ AggregationPanelData: data });
   }
+
+  handleCellSelectionChange(selectedCellsCount, selectedData) {
+    this.setState({ selectedCellsCount, selectedData });
+  }
+
   addLocation(appId) {
     if (window.localStorage) {
       const currentSearch = this.props.location?.search;
@@ -2745,6 +2753,7 @@ class Browser extends DashboardView {
               appName={this.props.params.appId}
               limit={this.state.limit}
               skip={this.state.skip}
+              onCellSelectionChange={this.handleCellSelectionChange}
             />
             <BrowserFooter
               skip={this.state.skip}
@@ -2762,6 +2771,8 @@ class Browser extends DashboardView {
               }}
               hasSelectedRows={Object.keys(this.state.selection).length > 0}
               selectedRowsMessage={SELECTED_ROWS_MESSAGE}
+              selectedCellsCount={this.state.selectedCellsCount}
+              selectedData={this.state.selectedData}
             />
           </>
         );
