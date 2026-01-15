@@ -292,6 +292,13 @@ function setupBrowserControl(app, config) {
           console.error(`Parse Server exited with code ${code}`);
         }
       });
+
+      parseServerProcess.on('error', (err) => {
+        console.error(`Failed to spawn Parse Server: ${err.message}`);
+        console.error('This may happen if npx is not available or parse-server is not installed.');
+        console.error('Browser control will work but you need to configure apps manually.');
+        parseServerProcess = null;
+      });
     } catch (error) {
       console.warn('Failed to start Parse Server:', error.message);
       console.warn('Browser control will work but you need to configure apps manually');
