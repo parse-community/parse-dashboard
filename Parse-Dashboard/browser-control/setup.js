@@ -7,7 +7,56 @@
  * SECURITY: This module will NOT load in production environments (NODE_ENV=production)
  */
 
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
+const net = require('net');
+
+/**
+ * Check if a port is in use by attempting to connect to it
+ * @param {number} port - Port number to check
+ * @returns {Promise<boolean>} - True if port is in use, false otherwise
+ */
+async function isPortInUse(port) {
+  return new Promise((resolve) => {
+    const socket = new net.Socket();
+    socket.setTimeout(1000);
+
+    socket.on('connect', () => {
+      socket.destroy();
+      resolve(true);
+    });
+
+    socket.on('timeout', () => {
+      socket.destroy();
+      resolve(false);
+    });
+
+    socket.on('error', () => {
+      socket.destroy();
+      resolve(false);
+    });
+
+    socket.connect(port, '127.0.0.1');
+  });
+}
+
+/**
+ * Get process info using the port (for error messages)
+ * @param {number} port - Port number
+ * @returns {string|null} - Process info or null if not found
+ */
+function getProcessOnPort(port) {
+  try {
+    const result = execSync(`lsof -i :${port} -t 2>/dev/null || true`, { encoding: 'utf8' }).trim();
+    if (result) {
+      const pid = result.split('\n')[0];
+      const processInfo = execSync(`ps -p ${pid} -o comm= 2>/dev/null || true`, { encoding: 'utf8' }).trim();
+      return processInfo ? `${processInfo} (PID: ${pid})` : `PID: ${pid}`;
+    }
+  } catch {
+    // Silently fail - process info is optional
+  }
+  return null;
+}
 
 /**
  * Initialize browser control for the dashboard
@@ -40,7 +89,8 @@ function setupBrowserControl(app, config) {
 
   // Auto-start MongoDB and Parse Server
   const { MongoCluster } = require('mongodb-runner');
-  const parseServerPort = process.env.PARSE_SERVER_PORT || 1337;
+  const mongoPort = parseInt(process.env.MONGO_PORT, 10) || 27017;
+  const parseServerPort = parseInt(process.env.PARSE_SERVER_PORT, 10) || 1337;
   const parseServerURL = `http://localhost:${parseServerPort}/parse`;
 
   // Use credentials from config file if available, otherwise fall back to env vars or defaults
@@ -96,13 +146,23 @@ function setupBrowserControl(app, config) {
 
   // Start MongoDB first
   const startMongoDB = async () => {
+    // Security check: Abort if MongoDB port is already in use
+    if (await isPortInUse(mongoPort)) {
+      const processInfo = getProcessOnPort(mongoPort);
+      console.error(`\n⛔ SECURITY: MongoDB port ${mongoPort} is already in use${processInfo ? ` by ${processInfo}` : ''}`);
+      console.error('⛔ Browser Control will not start to prevent potential conflicts or security issues.');
+      console.error('⛔ Please stop the existing process or use a different port via MONGO_PORT environment variable.\n');
+      return null;
+    }
+
     try {
-      console.log(`Starting MongoDB ${mongoVersion} instance...`);
+      console.log(`Starting MongoDB ${mongoVersion} instance on port ${mongoPort}...`);
       const os = require('os');
       mongoDBInstance = await MongoCluster.start({
         topology: 'standalone',
         version: mongoVersion,
         tmpDir: os.tmpdir(),
+        args: ['--port', mongoPort.toString()],
       });
       const mongoUri = mongoDBInstance.connectionString;
       console.log(`MongoDB ${mongoVersion} started at ${mongoUri}`);
@@ -115,9 +175,18 @@ function setupBrowserControl(app, config) {
   };
 
   // Start Parse Server after MongoDB is ready
-  const startParseServer = (mongoUri) => {
+  const startParseServer = async (mongoUri) => {
+    // Security check: Abort if Parse Server port is already in use
+    if (await isPortInUse(parseServerPort)) {
+      const processInfo = getProcessOnPort(parseServerPort);
+      console.error(`\n⛔ SECURITY: Parse Server port ${parseServerPort} is already in use${processInfo ? ` by ${processInfo}` : ''}`);
+      console.error('⛔ Browser Control will not start Parse Server to prevent potential conflicts or security issues.');
+      console.error('⛔ Please stop the existing process or use a different port via PARSE_SERVER_PORT environment variable.\n');
+      return;
+    }
+
     try {
-      console.log('Starting Parse Server for browser control...');
+      console.log(`Starting Parse Server for browser control on port ${parseServerPort}...`);
       parseServerProcess = spawn('npx', [
         'parse-server',
         '--appId', parseServerAppId,
@@ -167,7 +236,7 @@ function setupBrowserControl(app, config) {
       try {
         // Wait for MongoDB to accept connections before starting Parse Server
         await waitForMongo(mongoUri);
-        startParseServer(mongoUri);
+        await startParseServer(mongoUri);
       } catch (error) {
         console.error('Failed to connect to MongoDB:', error.message);
         console.error('Parse Server will not be started');
