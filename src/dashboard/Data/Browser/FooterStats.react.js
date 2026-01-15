@@ -76,8 +76,8 @@ const getInitialSelection = () => {
         return found;
       }
     }
-  } catch (e) {
-    // localStorage not available
+  } catch {
+    console.warn('Could not read from localStorage');
   }
   return statsOptions[0];
 };
@@ -117,8 +117,8 @@ const FooterStats = ({ data }) => {
                     setSelected(item);
                     try {
                       localStorage.setItem(STORAGE_KEY, item.type);
-                    } catch (e) {
-                      // localStorage not available
+                    } catch {
+                      console.warn('Could not save to localStorage');
                     }
                     toggle();
                   }}
