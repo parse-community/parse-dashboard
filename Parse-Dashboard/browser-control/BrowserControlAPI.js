@@ -8,9 +8,10 @@ const ServerOrchestrator = require('./ServerOrchestrator');
  * Provides HTTP endpoints for AI agents to control browser sessions.
  * Exposes session management, navigation, interaction, and debugging capabilities.
  *
+ * @param {Function} getWebpackState - Function to get current webpack compilation state
  * @returns {express.Router} Express router with browser control endpoints
  */
-function createBrowserControlAPI() {
+function createBrowserControlAPI(getWebpackState) {
   const router = express.Router();
   const sessionManager = new BrowserSessionManager();
   const orchestrator = new ServerOrchestrator();
@@ -356,6 +357,72 @@ function createBrowserControlAPI() {
   router.get('/servers/status', (req, res) => {
     const status = orchestrator.getStatus();
     res.json(status);
+  });
+
+  /**
+   * GET /ready
+   * Check if the dashboard is ready (webpack compiled, assets available)
+   * Returns ready: true when webpack is not compiling, false otherwise
+   */
+  router.get('/ready', (req, res) => {
+    const webpackState = getWebpackState ? getWebpackState() : { isCompiling: false };
+    const ready = !webpackState.isCompiling;
+
+    res.json({
+      ready,
+      webpack: {
+        compiling: webpackState.isCompiling,
+        lastCompilationTime: webpackState.lastCompilationTime,
+        lastCompilationDuration: webpackState.lastCompilationDuration,
+        compileCount: webpackState.compileCount,
+        hasErrors: webpackState.errors && webpackState.errors.length > 0,
+      }
+    });
+  });
+
+  /**
+   * GET /ready/wait
+   * Wait for the dashboard to be ready (webpack compiled)
+   * Polls until webpack is done compiling or timeout is reached
+   */
+  router.get('/ready/wait', async (req, res) => {
+    const timeout = parseInt(req.query.timeout, 10) || 30000;
+    const pollInterval = 100;
+    const startTime = Date.now();
+
+    const checkReady = () => {
+      const webpackState = getWebpackState ? getWebpackState() : { isCompiling: false };
+      return !webpackState.isCompiling;
+    };
+
+    // Poll until ready or timeout
+    while (!checkReady()) {
+      if (Date.now() - startTime > timeout) {
+        const webpackState = getWebpackState ? getWebpackState() : {};
+        return res.status(408).json({
+          ready: false,
+          error: 'Timeout waiting for webpack to finish compiling',
+          waited: Date.now() - startTime,
+          webpack: {
+            compiling: webpackState.isCompiling,
+            compileCount: webpackState.compileCount,
+          }
+        });
+      }
+      await new Promise(resolve => setTimeout(resolve, pollInterval));
+    }
+
+    const webpackState = getWebpackState ? getWebpackState() : {};
+    res.json({
+      ready: true,
+      waited: Date.now() - startTime,
+      webpack: {
+        compiling: false,
+        lastCompilationTime: webpackState.lastCompilationTime,
+        lastCompilationDuration: webpackState.lastCompilationDuration,
+        compileCount: webpackState.compileCount,
+      }
+    });
   });
 
   /**

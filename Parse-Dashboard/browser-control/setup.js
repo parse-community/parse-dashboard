@@ -9,6 +9,77 @@
 
 const { spawn, execSync } = require('child_process');
 const net = require('net');
+const path = require('path');
+
+/**
+ * Webpack compilation state - shared across the module
+ * Tracks whether webpack is currently compiling or idle
+ */
+const webpackState = {
+  isCompiling: true,  // Start as true since initial compilation hasn't happened
+  lastCompilationTime: null,
+  lastCompilationDuration: null,
+  errors: [],
+  warnings: [],
+  compileCount: 0,
+};
+
+/**
+ * Get the current webpack compilation state
+ * @returns {Object} Current webpack state
+ */
+function getWebpackState() {
+  return { ...webpackState };
+}
+
+/**
+ * Start webpack in watch mode with compilation state tracking
+ * @returns {Object} Webpack compiler instance
+ */
+function startWebpackWatchMode() {
+  const webpack = require('webpack');
+  const webpackConfig = require(path.resolve(__dirname, '../../webpack/build.config.js'));
+
+  const compiler = webpack(webpackConfig);
+
+  // Track compilation start
+  compiler.hooks.watchRun.tap('BrowserControlPlugin', () => {
+    webpackState.isCompiling = true;
+    webpackState.compileCount++;
+    webpackState.compilationStartTime = Date.now();
+    console.log(`[Webpack] Compilation #${webpackState.compileCount} started...`);
+  });
+
+  // Track compilation end
+  compiler.hooks.done.tap('BrowserControlPlugin', (stats) => {
+    const duration = Date.now() - webpackState.compilationStartTime;
+    webpackState.isCompiling = false;
+    webpackState.lastCompilationTime = Date.now();
+    webpackState.lastCompilationDuration = duration;
+    webpackState.errors = stats.hasErrors() ? stats.toJson().errors.map(e => e.message || e) : [];
+    webpackState.warnings = stats.hasWarnings() ? stats.toJson().warnings.length : 0;
+
+    if (stats.hasErrors()) {
+      console.log(`[Webpack] Compilation #${webpackState.compileCount} failed with errors (${duration}ms)`);
+    } else {
+      console.log(`[Webpack] Compilation #${webpackState.compileCount} completed in ${duration}ms`);
+    }
+  });
+
+  // Start watching
+  const watcher = compiler.watch({
+    aggregateTimeout: 300,
+    poll: undefined,
+  }, (err) => {
+    if (err) {
+      console.error('[Webpack] Fatal error:', err);
+      webpackState.isCompiling = false;
+      webpackState.errors = [err.message];
+    }
+  });
+
+  return { compiler, watcher };
+}
 
 /**
  * Check if a port is in use by attempting to connect to it
@@ -86,6 +157,7 @@ function setupBrowserControl(app, config) {
   let mongoDBInstance = null;
   let browserControlAPI = null;
   let browserEventStream = null;
+  let webpackWatcher = null;
 
   // Auto-start MongoDB and Parse Server
   const { MongoCluster } = require('mongodb-runner');
@@ -246,10 +318,21 @@ function setupBrowserControl(app, config) {
       console.error('Error in MongoDB startup sequence:', error.message);
     });
 
+  // Start webpack in watch mode with state tracking
+  try {
+    const webpackResult = startWebpackWatchMode();
+    webpackWatcher = webpackResult.watcher;
+    console.log('Webpack watch mode started with state tracking');
+  } catch (error) {
+    console.warn('Failed to start webpack watch mode:', error.message);
+    // Mark webpack as not compiling if we couldn't start it
+    webpackState.isCompiling = false;
+  }
+
   // Load browser control API BEFORE parseDashboard middleware to bypass authentication
   try {
     const createBrowserControlAPI = require('./BrowserControlAPI');
-    browserControlAPI = createBrowserControlAPI();
+    browserControlAPI = createBrowserControlAPI(getWebpackState);
     app.use('/browser-control', browserControlAPI);
     console.log('Browser Control API enabled at /browser-control');
   } catch (error) {
@@ -262,6 +345,14 @@ function setupBrowserControl(app, config) {
     if (browserEventStream) {
       browserEventStream.shutdown().catch(err => {
         console.warn('Error shutting down Browser Event Stream:', err.message);
+      });
+    }
+
+    // Stop webpack watcher
+    if (webpackWatcher) {
+      console.log('Stopping webpack watcher...');
+      webpackWatcher.close(() => {
+        console.log('Webpack watcher stopped');
       });
     }
 

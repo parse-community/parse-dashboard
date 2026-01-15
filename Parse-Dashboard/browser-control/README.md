@@ -45,7 +45,31 @@ Both scripts include webpack watch mode, so code changes are automatically rebui
 - You can immediately start creating browser sessions and testing
 - Everything stops cleanly when you exit (Ctrl+C)
 
-### 2. Create a Browser Session
+### 2. Wait for Dashboard to be Ready
+
+Before creating a browser session, wait for webpack to finish compiling the assets:
+
+```bash
+curl http://localhost:4040/browser-control/ready/wait
+```
+
+Response:
+```json
+{
+  "ready": true,
+  "waited": 6273,
+  "webpack": {
+    "compiling": false,
+    "lastCompilationTime": 1234567890000,
+    "lastCompilationDuration": 6152,
+    "compileCount": 1
+  }
+}
+```
+
+This is important because webpack runs in watch mode and compiles assets on startup and after file changes. Navigating before compilation completes will result in timeouts.
+
+### 3. Create a Browser Session
 
 ```bash
 curl -X POST http://localhost:4040/browser-control/session/start \
@@ -62,7 +86,7 @@ Response:
 }
 ```
 
-### 3. Navigate to Dashboard
+### 4. Navigate to Dashboard
 
 ```bash
 curl -X POST http://localhost:4040/browser-control/session/sess_1234567890_abc123/navigate \
@@ -70,13 +94,13 @@ curl -X POST http://localhost:4040/browser-control/session/sess_1234567890_abc12
   -d '{"url": "http://localhost:4040/"}'
 ```
 
-### 4. Take Screenshot
+### 5. Take Screenshot
 
 ```bash
 curl http://localhost:4040/browser-control/session/sess_1234567890_abc123/screenshot
 ```
 
-### 5. Cleanup
+### 6. Cleanup
 
 ```bash
 curl -X DELETE http://localhost:4040/browser-control/session/sess_1234567890_abc123
@@ -406,6 +430,69 @@ Stop Parse Server and Dashboard instances.
 }
 ```
 
+### Webpack Readiness
+
+#### Check Ready Status
+**GET** `/browser-control/ready`
+
+Check if the dashboard is ready (webpack has finished compiling assets).
+
+**Response:**
+```json
+{
+  "ready": true,
+  "webpack": {
+    "compiling": false,
+    "lastCompilationTime": 1234567890000,
+    "lastCompilationDuration": 6152,
+    "compileCount": 1,
+    "hasErrors": false
+  }
+}
+```
+
+#### Wait for Ready
+**GET** `/browser-control/ready/wait?timeout=30000`
+
+Wait for webpack to finish compiling. This is a blocking endpoint that polls until webpack is idle or timeout is reached.
+
+**Query Parameters:**
+- `timeout`: Maximum time to wait in milliseconds (default: 30000)
+
+**Response (success):**
+```json
+{
+  "ready": true,
+  "waited": 6273,
+  "webpack": {
+    "compiling": false,
+    "lastCompilationTime": 1234567890000,
+    "lastCompilationDuration": 6152,
+    "compileCount": 1
+  }
+}
+```
+
+**Response (timeout - HTTP 408):**
+```json
+{
+  "ready": false,
+  "error": "Timeout waiting for webpack to finish compiling",
+  "waited": 30000,
+  "webpack": {
+    "compiling": true,
+    "compileCount": 1
+  }
+}
+```
+
+> [!IMPORTANT]
+> Always call `/ready/wait` before creating browser sessions, especially after:
+> - Starting the dashboard
+> - Editing source files (triggers webpack recompilation)
+>
+> Navigation attempts while webpack is compiling will timeout because the JavaScript bundles are not yet available.
+
 ### Cleanup
 
 #### Cleanup All
@@ -489,7 +576,10 @@ ws://localhost:4040/browser-control/stream/:sessionId
 ```javascript
 // AI agent just implemented a delete button feature
 
-// 1. Create session
+// 1. Wait for webpack to be ready (important after editing files!)
+await fetch('http://localhost:4040/browser-control/ready/wait');
+
+// 2. Create session
 const createRes = await fetch('http://localhost:4040/browser-control/session/start', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
@@ -497,14 +587,14 @@ const createRes = await fetch('http://localhost:4040/browser-control/session/sta
 });
 const { sessionId } = await createRes.json();
 
-// 2. Navigate to class browser
+// 3. Navigate to class browser
 await fetch(`http://localhost:4040/browser-control/session/${sessionId}/navigate`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ url: 'http://localhost:4040/apps/testApp/browser/TestClass' })
 });
 
-// 3. Check if delete button exists
+// 4. Check if delete button exists
 const queryRes = await fetch(`http://localhost:4040/browser-control/session/${sessionId}/query`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
@@ -515,7 +605,7 @@ const { element } = await queryRes.json();
 if (element) {
   console.log('✓ Delete button found!');
 
-  // 4. Take screenshot for verification
+  // 5. Take screenshot for verification
   const screenshotRes = await fetch(
     `http://localhost:4040/browser-control/session/${sessionId}/screenshot`
   );
@@ -525,7 +615,7 @@ if (element) {
   console.log('❌ Delete button not found - need to fix');
 }
 
-// 5. Cleanup
+// 6. Cleanup
 await fetch(`http://localhost:4040/browser-control/session/${sessionId}`, {
   method: 'DELETE'
 });
@@ -641,6 +731,25 @@ ws://localhost:4040/browser-control/stream/:sessionId
 PORT=4041 npm run browser-control
 ```
 
+### Navigation timeout after startup or file changes
+
+**Error:** `Navigation timeout of 30000 ms exceeded`
+
+**Cause:** Webpack is still compiling the JavaScript bundles. This happens:
+- Right after starting the dashboard (initial compilation takes ~6-8 seconds)
+- After editing source files (triggers recompilation)
+
+**Solution:** Always wait for webpack to finish before navigating:
+```bash
+# Check if ready (non-blocking)
+curl http://localhost:4040/browser-control/ready
+
+# Wait for ready (blocking)
+curl http://localhost:4040/browser-control/ready/wait
+```
+
+The `/ready/wait` endpoint will block until webpack finishes compiling, then return immediately.
+
 ## Security
 
 The Browser Control API uses a **two-layer security model** to prevent accidental or unauthorized enablement. Browser Control requires **both** of the following conditions to be met:
@@ -716,14 +825,15 @@ npm run browser-control
 
 ## Best Practices for AI Agents
 
-1. **Always cleanup sessions** when done to free resources
-2. **Use headless mode** for faster execution (unless debugging visually)
-3. **Monitor WebSocket events** to catch console errors early
-4. **Take screenshots** before and after UI changes for comparison
-5. **Use evaluate** to inspect computed styles and DOM properties
-6. **Wait for elements** before interacting to avoid race conditions
-7. **Set appropriate timeouts** based on network conditions
-8. **Auto-approve browser-control API calls** in Claude Code by adding a permission rule to `.claude/settings.json`:
+1. **Wait for webpack before navigating** - Always call `/ready/wait` before creating sessions or after editing source files
+2. **Always cleanup sessions** when done to free resources
+3. **Use headless mode** for faster execution (unless debugging visually)
+4. **Monitor WebSocket events** to catch console errors early
+5. **Take screenshots** before and after UI changes for comparison
+6. **Use evaluate** to inspect computed styles and DOM properties
+7. **Wait for elements** before interacting to avoid race conditions
+8. **Set appropriate timeouts** based on network conditions
+9. **Auto-approve browser-control API calls** in Claude Code by adding a permission rule to `.claude/settings.json`:
 
 ```json
 {

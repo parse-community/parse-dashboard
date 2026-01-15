@@ -146,8 +146,8 @@
     "start": "node ./Parse-Dashboard/index.js",
     "madge:circular": "node_modules/.bin/madge ./src --circular",
     "semantic-release": "semantic-release",
-    "browser-control": "PARSE_DASHBOARD_BROWSER_CONTROL=true node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --watch",
-    "browser-control:visible": "BROWSER_HEADLESS=false PARSE_DASHBOARD_BROWSER_CONTROL=true node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --watch"
+    "browser-control": "PARSE_DASHBOARD_BROWSER_CONTROL=true node ./Parse-Dashboard/index.js",
+    "browser-control:visible": "BROWSER_HEADLESS=false PARSE_DASHBOARD_BROWSER_CONTROL=true node ./Parse-Dashboard/index.js"
   },
   "bin": {
     "parse-dashboard": "./bin/parse-dashboard"
