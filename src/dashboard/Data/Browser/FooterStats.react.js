@@ -84,15 +84,7 @@ const FooterStats = ({ data }) => {
         onExternalClick={toggle}
         contentId={POPOVER_CONTENT_ID}
       >
-        <div id={POPOVER_CONTENT_ID}>
-          <div
-            onClick={toggle}
-            style={{
-              cursor: 'pointer',
-              width: node.clientWidth,
-              height: node.clientHeight,
-            }}
-          ></div>
+        <div id={POPOVER_CONTENT_ID} className={styles.popover_wrapper}>
           <div className={styles.stats_popover_container}>
             {statsOptions.map(item => {
               const itemStyle = [styles.stats_popover_item];
@@ -115,6 +107,14 @@ const FooterStats = ({ data }) => {
               );
             })}
           </div>
+          <div
+            onClick={toggle}
+            style={{
+              cursor: 'pointer',
+              width: node.clientWidth,
+              height: node.clientHeight,
+            }}
+          ></div>
         </div>
       </Popover>
     );

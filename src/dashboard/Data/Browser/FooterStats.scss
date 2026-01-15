@@ -1,5 +1,10 @@
 @import 'stylesheets/globals.scss';
 
+.popover_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .stats {
   background: $purple;
   border-radius: 5px;
@@ -32,6 +37,10 @@
 }
 
 .stats_popover_container {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 4px;
   display: flex;
   flex-direction: column;
   background: #797592;
@@ -39,7 +48,7 @@
   padding: 8px 0;
   font-size: 14px;
   color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.1);
   animation: stats-fade-in 0.15s ease-out;
   min-width: 140px;
@@ -48,7 +57,7 @@
 @keyframes stats-fade-in {
   0% {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;
