@@ -1910,9 +1910,12 @@ export default class DataBrowser extends React.Component {
           },
           selectedObjectId: undefined,
           selectedData,
+        }, () => {
+          this.props.onCellSelectionChange?.(newSelection.size, selectedData);
         });
       } else {
         this.setCurrent({ row, col });
+        this.props.onCellSelectionChange?.(0, []);
       }
     } else {
       this.setState({
@@ -1920,6 +1923,8 @@ export default class DataBrowser extends React.Component {
         selectedData: [],
         current: { row, col },
         firstSelectedCell: clickedCellKey,
+      }, () => {
+        this.props.onCellSelectionChange?.(0, []);
       });
     }
   }
@@ -2178,7 +2183,6 @@ export default class DataBrowser extends React.Component {
           editCloneRows={editCloneRows}
           onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
-          selectedData={this.state.selectedData}
           allClasses={Object.keys(this.props.schema.data.get('classes').toObject())}
           allClassesSchema={this.state.allClassesSchema}
           togglePanel={this.togglePanelVisibility}

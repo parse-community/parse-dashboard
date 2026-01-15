@@ -75,7 +75,6 @@ const BrowserToolbar = ({
   logout,
   toggleMasterKeyUsage,
 
-  selectedData,
   allClasses,
   allClassesSchema,
 
@@ -291,7 +290,6 @@ const BrowserToolbar = ({
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}
-      selectedData={selectedData}
       togglePanel={togglePanel}
       isPanelVisible={isPanelVisible}
       addPanel={addPanel}
