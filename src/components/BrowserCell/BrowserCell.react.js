@@ -525,6 +525,17 @@ export default class BrowserCell extends Component {
           if (column.type !== 'String') {
             return;
           }
+          // Exclude objectId - it's a special field referenced by pointers, not strings
+          if (field === 'objectId') {
+            return;
+          }
+          // Exclude hidden/sensitive fields
+          if (field === 'password' && className === '_User') {
+            return;
+          }
+          if (field === 'sessionToken' && (className === '_User' || className === '_Session')) {
+            return;
+          }
           classFields.push({
             text: field,
             callback: () => {
