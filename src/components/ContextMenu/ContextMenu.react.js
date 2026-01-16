@@ -38,7 +38,9 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
 
     // Align submenu vertically with the hovered item in the parent menu
     // offset is the pixel position of the hovered item (index * 30px item height)
-    let proposedTop = prevElBox.top + offset;
+    // Subtract parent's scrollTop to account for scrolled position
+    const adjustedOffset = offset - prevEl.scrollTop;
+    let proposedTop = prevElBox.top + adjustedOffset;
 
     // Clamp to screen bounds
     proposedTop = Math.max(upperLimit, Math.min(proposedTop, lowerLimit - menuHeight));
@@ -60,16 +62,43 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
 const MenuSection = ({ level, items, path, setPath, hide }) => {
   const sectionRef = useRef(null);
   const [position, setPosition] = useState(null);
-  const hasPositioned = useRef(false);
+  const basePosition = useRef(null);
+  const initialParentScrollTop = useRef(0);
 
   useEffect(() => {
-    if (!hasPositioned.current) {
-      const newPosition = getPositionToFitVisibleScreen(sectionRef, path[level] * 30);
-      if (newPosition) {
-        setPosition(newPosition);
-        hasPositioned.current = true;
+    const newPosition = getPositionToFitVisibleScreen(sectionRef, path[level] * 30);
+    if (newPosition) {
+      setPosition(newPosition);
+      basePosition.current = newPosition;
+      // Store the initial scroll position of the parent menu
+      const prevEl = sectionRef.current?.previousSibling;
+      if (prevEl) {
+        initialParentScrollTop.current = prevEl.scrollTop;
       }
     }
+  }, []);
+
+  // Listen for scroll events on the parent menu and adjust position
+  useEffect(() => {
+    const prevEl = sectionRef.current?.previousSibling;
+    if (!prevEl || !basePosition.current) {
+      return;
+    }
+
+    const handleScroll = () => {
+      // Calculate how much the parent has scrolled since the submenu was opened
+      const scrollDelta = prevEl.scrollTop - initialParentScrollTop.current;
+      // Adjust the Y position to follow the parent item
+      setPosition({
+        ...basePosition.current,
+        y: basePosition.current.y - scrollDelta,
+      });
+    };
+
+    prevEl.addEventListener('scroll', handleScroll);
+    return () => {
+      prevEl.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const style = position
