@@ -10,6 +10,7 @@ import Button from 'components/Button/Button.react';
 import ConfigDialog from 'dashboard/Data/Config/ConfigDialog.react';
 import DeleteParameterDialog from 'dashboard/Data/Config/DeleteParameterDialog.react';
 import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
+import RemoveArrayEntryDialog from 'dashboard/Data/Config/RemoveArrayEntryDialog.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
 import { isDate } from 'lib/DateUtils';
@@ -49,6 +50,9 @@ class Config extends TableView {
       showAddEntryDialog: false,
       addEntryParam: '',
       addEntryLastType: null,
+      showRemoveEntryDialog: false,
+      removeEntryParam: '',
+      removeEntryArrayValue: [],
     };
     this.noteTimeout = null;
   }
@@ -125,6 +129,17 @@ class Config extends TableView {
           }
           lastType={this.state.addEntryLastType}
           param={this.state.addEntryParam}
+        />
+      );
+    } else if (this.state.showRemoveEntryDialog) {
+      extras = (
+        <RemoveArrayEntryDialog
+          onCancel={this.closeRemoveEntryDialog.bind(this)}
+          onConfirm={removeConfig =>
+            this.removeArrayEntry(this.state.removeEntryParam, removeConfig)
+          }
+          param={this.state.removeEntryParam}
+          arrayValue={this.state.removeEntryArrayValue}
         />
       );
     }
@@ -290,12 +305,20 @@ class Config extends TableView {
         </td>
         <td style={columnStyleAction}>
           {type === 'Array' && (
-            <a
-              className={configStyles.configActionIcon}
-              onClick={() => this.openAddEntryDialog(data.param)}
-            >
-              <Icon width={18} height={18} name="plus-solid" />
-            </a>
+            <>
+              <a
+                className={configStyles.configActionIcon}
+                onClick={() => this.openAddEntryDialog(data.param)}
+              >
+                <Icon width={18} height={18} name="plus-solid" />
+              </a>
+              <a
+                className={configStyles.configActionIcon}
+                onClick={() => this.openRemoveEntryDialog(data.param)}
+              >
+                <Icon width={18} height={18} name="minus-solid" />
+              </a>
+            </>
           )}
         </td>
         <td style={columnStyleSmall} onClick={openModal}>
@@ -525,6 +548,24 @@ class Config extends TableView {
     });
   }
 
+  openRemoveEntryDialog(param) {
+    const params = this.props.config.data.get('params');
+    const arr = params?.get(param);
+    this.setState({
+      showRemoveEntryDialog: true,
+      removeEntryParam: param,
+      removeEntryArrayValue: Array.isArray(arr) ? arr : [],
+    });
+  }
+
+  closeRemoveEntryDialog() {
+    this.setState({
+      showRemoveEntryDialog: false,
+      removeEntryParam: '',
+      removeEntryArrayValue: [],
+    });
+  }
+
   async addArrayEntry(param, value) {
     try {
       this.setState({ loading: true });
@@ -583,6 +624,117 @@ class Config extends TableView {
       this.setState({ loading: false });
     }
     this.closeAddEntryDialog();
+  }
+
+  /**
+   * Gets a nested value from an object using a dot-notation path.
+   * @param {Object} obj - The object to extract from
+   * @param {string} path - The dot-notation path (e.g., "a.b.c")
+   * @returns {*} - The value at the path, or undefined if not found
+   */
+  getValueAtPath(obj, path) {
+    if (obj === null || typeof obj !== 'object') {
+      return undefined;
+    }
+    const parts = path.split('.');
+    let current = obj;
+    for (const part of parts) {
+      if (current === null || typeof current !== 'object') {
+        return undefined;
+      }
+      current = current[part];
+    }
+    return current;
+  }
+
+  async removeArrayEntry(param, removeConfig) {
+    try {
+      this.setState({ loading: true });
+      const masterKeyOnlyMap = this.props.config.data.get('masterKeyOnly');
+      const masterKeyOnly = masterKeyOnlyMap?.get(param) || false;
+
+      let objectsToRemove;
+
+      if (removeConfig.filterByKey) {
+        // Filter mode: find all objects where keyPath matches the value
+        const { keyPath, value } = removeConfig;
+        const currentArray = this.state.removeEntryArrayValue;
+
+        objectsToRemove = currentArray.filter(item => {
+          if (item === null || typeof item !== 'object' || Array.isArray(item)) {
+            return false;
+          }
+          const itemValue = this.getValueAtPath(item, keyPath);
+          return equal(itemValue, value);
+        });
+
+        if (objectsToRemove.length === 0) {
+          this.showNote(`No matching entries found for ${keyPath} = ${JSON.stringify(value)}`, true);
+          this.closeRemoveEntryDialog();
+          return;
+        }
+      } else {
+        // Direct mode: remove the exact value
+        objectsToRemove = [removeConfig.value];
+      }
+
+      await Parse._request(
+        'PUT',
+        'config',
+        {
+          params: {
+            [param]: { __op: 'Remove', objects: objectsToRemove.map(v => Parse._encode(v)) },
+          },
+          masterKeyOnly: { [param]: masterKeyOnly },
+        },
+        { useMasterKey: true }
+      );
+      await this.props.config.dispatch(ActionTypes.FETCH);
+
+      // Update config history
+      const limit = this.context.cloudConfigHistoryLimit;
+      const applicationId = this.context.applicationId;
+      const params = this.props.config.data.get('params');
+      const updatedValue = params.get(param);
+      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+      const newHistoryEntry = {
+        time: new Date(),
+        value: updatedValue,
+      };
+
+      if (!configHistory) {
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            [param]: [newHistoryEntry],
+          })
+        );
+      } else {
+        const oldConfigHistory = JSON.parse(configHistory);
+        const updatedHistory = !oldConfigHistory[param]
+          ? [newHistoryEntry]
+          : [newHistoryEntry, ...oldConfigHistory[param]].slice(0, limit || 100);
+
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({
+            ...oldConfigHistory,
+            [param]: updatedHistory,
+          })
+        );
+      }
+
+      const removedCount = objectsToRemove.length;
+      const message = removedCount === 1
+        ? `Entry removed from ${param}`
+        : `${removedCount} entries removed from ${param}`;
+      this.showNote(message);
+    } catch (e) {
+      this.showNote(`Failed to remove entry: ${e.message}`, true);
+    } finally {
+      this.setState({ loading: false });
+    }
+    this.closeRemoveEntryDialog();
   }
 }
 

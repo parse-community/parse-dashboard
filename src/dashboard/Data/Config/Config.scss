@@ -8,9 +8,13 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+  margin-right: 4px;
   svg {
     fill: currentColor;
     color: $darkBlue;
+  }
+  &:last-child {
+    margin-right: 0;
   }
 }
 
