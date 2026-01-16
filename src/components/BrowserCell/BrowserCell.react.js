@@ -440,6 +440,7 @@ export default class BrowserCell extends Component {
   /**
    * Returns "Get related records from..." context menu item if cell holds a Pointer
    * or objectId and there's a class in relation.
+   * Groups fields by class name in a hierarchical submenu structure.
    */
   getRelatedObjectsContextMenuOption() {
     const { value, schema, onPointerClick } = this.props;
@@ -451,17 +452,20 @@ export default class BrowserCell extends Component {
         text: 'Get related records from...',
         items: [],
       };
+
+      // Group fields by class name for hierarchical navigation
       schema.data
         .get('classes')
         .sortBy((v, k) => k)
         .forEach((cl, className) => {
+          const classFields = [];
+
           cl.forEach((column, field) => {
             if (column.targetClass !== pointerClassName) {
               return;
             }
-            relatedRecordsMenuItem.items.push({
-              text: `${className}`,
-              subtext: `${field}`,
+            classFields.push({
+              text: field,
               callback: () => {
                 let relatedObject = value;
                 if (this.props.field === 'objectId') {
@@ -476,6 +480,15 @@ export default class BrowserCell extends Component {
               },
             });
           });
+
+          if (classFields.length > 0) {
+            // Sort fields alphabetically
+            classFields.sort((a, b) => a.text.localeCompare(b.text));
+            relatedRecordsMenuItem.items.push({
+              text: className,
+              items: classFields,
+            });
+          }
         });
 
       return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;

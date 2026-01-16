@@ -26,7 +26,6 @@ const getPositionToFitVisibleScreen = (
   const lowerLimit = window.innerHeight - footerHeight;
   const upperLimit = 0;
 
-  const shouldApplyOffset = mainItemCount === 0 || subItemCount > mainItemCount;
   const prevEl = ref.current.previousSibling;
 
   if (prevEl) {
@@ -42,8 +41,11 @@ const getPositionToFitVisibleScreen = (
     const xRight = prevElBox.right - elBox.left;
     const xLeft = prevElBox.left - elBox.left - elBox.width;
 
-    let proposedTop = shouldApplyOffset ? prevElBox.top + offset : prevElBox.top;
+    // Align submenu vertically with the hovered item in the parent menu
+    // offset is the pixel position of the hovered item (index * 30px item height)
+    let proposedTop = prevElBox.top + offset;
 
+    // Clamp to screen bounds
     proposedTop = Math.max(upperLimit, Math.min(proposedTop, lowerLimit - menuHeight));
 
     return {
