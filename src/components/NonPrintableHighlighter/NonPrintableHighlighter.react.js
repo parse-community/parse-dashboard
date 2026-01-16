@@ -157,7 +157,7 @@ export function getNonPrintableChars(str) {
       if (!positionMap.has(char)) {
         positionMap.set(char, []);
       }
-      positionMap.get(char).push(i + 1);
+      positionMap.get(char).push(i);
       totalCount++;
     }
   }
@@ -233,7 +233,7 @@ export function getNonPrintableCharsFromJson(jsonStr) {
         if (!charLocationMap.has(char)) {
           charLocationMap.set(char, []);
         }
-        charLocationMap.get(char).push({ path, position: i + 1 });
+        charLocationMap.get(char).push({ path, position: i });
         totalCount++;
       }
     }
