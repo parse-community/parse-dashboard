@@ -20,6 +20,7 @@ const NON_PRINTABLE_CHARS = {
   '\x07': 'BEL',
   '\x08': 'BS',
   '\x09': 'TAB',
+  '\x0A': 'LF',
   '\x0B': 'VT',
   '\x0C': 'FF',
   '\x0D': 'CR',
@@ -67,8 +68,8 @@ const NON_PRINTABLE_CHARS = {
   '\uFEFF': 'BOM',
 };
 
-// Regex to match non-printable characters (excluding newline \x0A which is allowed in multiline)
-const NON_PRINTABLE_REGEX = /[\x00-\x09\x0B-\x1F\x7F\u00A0\u2000-\u200F\u2028\u2029\u202F\u205F\u3000\uFEFF]/g;
+// Regex to match non-printable characters
+const NON_PRINTABLE_REGEX = /[\x00-\x1F\x7F\u00A0\u2000-\u200F\u2028\u2029\u202F\u205F\u3000\uFEFF]/g;
 
 /**
  * Check if a string contains non-printable characters
@@ -81,30 +82,42 @@ export function hasNonPrintableChars(str) {
 }
 
 /**
- * Get a list of non-printable characters found in a string with counts
- * Returns { totalCount, chars: [{ char, label, code, count }] }
+ * Get a list of non-printable characters found in a string with counts and positions
+ * Returns { totalCount, chars: [{ char, label, code, count, positions }] }
  */
 export function getNonPrintableChars(str) {
   if (!str || typeof str !== 'string') {
     return { totalCount: 0, chars: [] };
   }
-  const matches = str.match(NON_PRINTABLE_REGEX);
-  if (!matches) {
-    return { totalCount: 0, chars: [] };
-  }
 
-  const countMap = new Map();
-  for (const char of matches) {
-    countMap.set(char, (countMap.get(char) || 0) + 1);
+  const positionMap = new Map();
+  let totalCount = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (NON_PRINTABLE_REGEX.test(char)) {
+      NON_PRINTABLE_REGEX.lastIndex = 0;
+      if (!positionMap.has(char)) {
+        positionMap.set(char, []);
+      }
+      positionMap.get(char).push(i + 1);
+      totalCount++;
+    }
   }
 
   const chars = [];
-  for (const [char, count] of countMap) {
+  for (const [char, positions] of positionMap) {
     const label = NON_PRINTABLE_CHARS[char] || `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
-    chars.push({ char, label, code: `0x${char.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`, count });
+    chars.push({
+      char,
+      label,
+      code: `0x${char.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`,
+      count: positions.length,
+      positions,
+    });
   }
 
-  return { totalCount: matches.length, chars };
+  return { totalCount, chars };
 }
 
 /**
@@ -136,17 +149,20 @@ export default class NonPrintableHighlighter extends React.Component {
             >
               <span className={styles.warningIcon}>⚠</span>
               <span className={styles.warningText}>
-                {totalCount} non-printable char{totalCount > 1 ? 's' : ''} detected
+                {totalCount} non-printable character{totalCount > 1 ? 's' : ''} detected
               </span>
             </div>
             {this.state.showDetails && (
               <div className={styles.detailsPanel}>
                 <div className={styles.charList}>
-                  {chars.map(({ label, code, count }, i) => (
+                  {chars.map(({ label, code, count, positions }, i) => (
                     <div key={i} className={styles.charItem}>
                       <span className={styles.charLabel}>{label}</span>
                       <span className={styles.charCode}>{code}</span>
                       {count > 1 && <span className={styles.charCount}>×{count}</span>}
+                      <span className={styles.charPositions}>
+                        @ {positions.length <= 5 ? positions.join(', ') : `${positions.slice(0, 5).join(', ')}...`}
+                      </span>
                     </div>
                   ))}
                 </div>

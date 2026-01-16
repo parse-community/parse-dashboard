@@ -54,22 +54,26 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange) => (
-    <TextInput
-      multiline={true}
-      monospace={true}
-      placeholder={'{\n  ...\n}'}
-      value={value || ''}
-      onChange={onChange}
-    />
+    <NonPrintableHighlighter value={value}>
+      <TextInput
+        multiline={true}
+        monospace={true}
+        placeholder={'{\n  ...\n}'}
+        value={value || ''}
+        onChange={onChange}
+      />
+    </NonPrintableHighlighter>
   ),
   Array: (value, onChange) => (
-    <TextInput
-      multiline={true}
-      monospace={true}
-      placeholder={'[\n  ...\n]'}
-      value={value}
-      onChange={onChange}
-    />
+    <NonPrintableHighlighter value={value}>
+      <TextInput
+        multiline={true}
+        monospace={true}
+        placeholder={'[\n  ...\n]'}
+        value={value}
+        onChange={onChange}
+      />
+    </NonPrintableHighlighter>
   ),
   GeoPoint: (value, onChange) => <GeoPointInput value={value} onChange={onChange} />,
   File: (value, onChange) => (
