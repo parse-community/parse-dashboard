@@ -62,14 +62,39 @@ const NON_PRINTABLE_CHARS = {
   '\u200F': 'RLM',
   '\u2028': 'LS',
   '\u2029': 'PS',
+  // BiDi control characters (can be security risks - "Trojan Source" attacks)
+  '\u202A': 'LRE',
+  '\u202B': 'RLE',
+  '\u202C': 'PDF',
+  '\u202D': 'LRO',
+  '\u202E': 'RLO',
   '\u202F': 'NNBSP',
+  '\u2060': 'WJ',
+  '\u2061': 'FA',
+  '\u2062': 'IT',
+  '\u2063': 'IS',
+  '\u2064': 'IP',
+  '\u2066': 'LRI',
+  '\u2067': 'RLI',
+  '\u2068': 'FSI',
+  '\u2069': 'PDI',
   '\u205F': 'MMSP',
+  '\u206A': 'ISS',
+  '\u206B': 'ASS',
+  '\u206C': 'IAFS',
+  '\u206D': 'AAFS',
+  '\u206E': 'NADS',
+  '\u206F': 'NODS',
   '\u3000': 'IDSP',
   '\uFEFF': 'BOM',
+  '\uFFF9': 'IAA',
+  '\uFFFA': 'IAS',
+  '\uFFFB': 'IAT',
+  '\uFFFC': 'OBJ',
 };
 
 // Regex to match non-printable characters
-const NON_PRINTABLE_REGEX = /[\x00-\x1F\x7F\u00A0\u2000-\u200F\u2028\u2029\u202F\u205F\u3000\uFEFF]/g;
+const NON_PRINTABLE_REGEX = /[\x00-\x1F\x7F\u00A0\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF\uFFF9-\uFFFC]/g;
 
 /**
  * Check if a string contains non-printable characters
