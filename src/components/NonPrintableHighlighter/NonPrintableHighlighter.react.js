@@ -121,8 +121,60 @@ export function getNonPrintableChars(str) {
 }
 
 /**
+ * Extract all string values from a parsed JSON object/array recursively
+ */
+function extractStringValues(obj) {
+  const strings = [];
+
+  function traverse(value) {
+    if (typeof value === 'string') {
+      strings.push(value);
+    } else if (Array.isArray(value)) {
+      for (const item of value) {
+        traverse(item);
+      }
+    } else if (value && typeof value === 'object') {
+      for (const key of Object.keys(value)) {
+        traverse(value[key]);
+      }
+    }
+  }
+
+  traverse(obj);
+  return strings;
+}
+
+/**
+ * Get non-printable characters from JSON string values only
+ * Parses the JSON and only checks string values within it
+ */
+export function getNonPrintableCharsFromJson(jsonStr) {
+  if (!jsonStr || typeof jsonStr !== 'string') {
+    return { totalCount: 0, chars: [] };
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch {
+    // If JSON is invalid, don't report any errors
+    return { totalCount: 0, chars: [] };
+  }
+
+  const stringValues = extractStringValues(parsed);
+  const combinedStr = stringValues.join('');
+
+  return getNonPrintableChars(combinedStr);
+}
+
+/**
  * NonPrintableHighlighter component
  * Displays a warning indicator when non-printable characters are detected in the value
+ *
+ * Props:
+ * - value: The string value to check
+ * - isJson: If true, only check string values within the parsed JSON (for Array/Object types)
+ * - children: The input element to wrap
  */
 export default class NonPrintableHighlighter extends React.Component {
   constructor(props) {
@@ -133,8 +185,10 @@ export default class NonPrintableHighlighter extends React.Component {
   }
 
   render() {
-    const { value, children } = this.props;
-    const { totalCount, chars } = getNonPrintableChars(value);
+    const { value, children, isJson } = this.props;
+    const { totalCount, chars } = isJson
+      ? getNonPrintableCharsFromJson(value)
+      : getNonPrintableChars(value);
     const hasNonPrintable = totalCount > 0;
 
     return (

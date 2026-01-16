@@ -54,7 +54,7 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange) => (
-    <NonPrintableHighlighter value={value}>
+    <NonPrintableHighlighter value={value} isJson={true}>
       <TextInput
         multiline={true}
         monospace={true}
@@ -65,7 +65,7 @@ const EDITORS = {
     </NonPrintableHighlighter>
   ),
   Array: (value, onChange) => (
-    <NonPrintableHighlighter value={value}>
+    <NonPrintableHighlighter value={value} isJson={true}>
       <TextInput
         multiline={true}
         monospace={true}
