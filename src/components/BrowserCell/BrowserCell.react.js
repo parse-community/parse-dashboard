@@ -488,10 +488,11 @@ export default class BrowserCell extends Component {
    * Groups fields by class name in a hierarchical submenu structure.
    */
   getRelatedTextFieldsContextMenuOption() {
-    const { value, type, schema, onPointerClick } = this.props;
+    const { value, type, field, schema, onPointerClick } = this.props;
 
     // Only show for String type cells with a non-empty value
-    if (type !== 'String' || !value || typeof value !== 'string' || value.trim() === '') {
+    // Exclude objectId field - it uses getRelatedObjectsContextMenuOption() for pointer-based lookups
+    if (type !== 'String' || field === 'objectId' || !value || typeof value !== 'string' || value.trim() === '') {
       return;
     }
 
@@ -524,6 +525,8 @@ export default class BrowserCell extends Component {
         });
 
         if (classFields.length > 0) {
+          // Sort fields alphabetically
+          classFields.sort((a, b) => a.text.localeCompare(b.text));
           relatedRecordsMenuItem.items.push({
             text: className,
             items: classFields,
