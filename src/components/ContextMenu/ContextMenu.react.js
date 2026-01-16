@@ -31,16 +31,23 @@ const getPositionToFitVisibleScreen = (
 
   if (prevEl) {
     const prevElBox = prevEl.getBoundingClientRect();
-    const showOnRight = prevElBox.x + prevElBox.width + elBox.width < window.innerWidth;
 
-    let proposedTop = shouldApplyOffset
-      ? prevElBox.top + offset
-      : prevElBox.top;
+    // Position relative to the immediate previous sibling (parent submenu)
+    // Check if there's space to the right of the previous menu
+    const spaceOnRight = window.innerWidth - prevElBox.right;
+    const showOnRight = spaceOnRight >= elBox.width;
+
+    // Calculate x offset relative to current element's position
+    // to place it adjacent to the previous sibling
+    const xRight = prevElBox.right - elBox.left;
+    const xLeft = prevElBox.left - elBox.left - elBox.width;
+
+    let proposedTop = shouldApplyOffset ? prevElBox.top + offset : prevElBox.top;
 
     proposedTop = Math.max(upperLimit, Math.min(proposedTop, lowerLimit - menuHeight));
 
     return {
-      x: showOnRight ? prevElBox.width : -elBox.width,
+      x: showOnRight ? xRight : xLeft,
       y: proposedTop - elBox.top,
     };
   }

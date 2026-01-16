@@ -326,6 +326,9 @@ export default class BrowserCell extends Component {
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
+    const relatedTextFieldsContextMenuOption = this.getRelatedTextFieldsContextMenuOption();
+    relatedTextFieldsContextMenuOption && contextMenuOptions.push(relatedTextFieldsContextMenuOption);
+
     !readonly &&
       onEditSelectedRow &&
       contextMenuOptions.push({
@@ -477,6 +480,58 @@ export default class BrowserCell extends Component {
 
       return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
     }
+  }
+
+  /**
+   * Returns "Get related records from..." context menu item if cell holds a String value
+   * and there are classes with String type fields to filter by.
+   * Groups fields by class name in a hierarchical submenu structure.
+   */
+  getRelatedTextFieldsContextMenuOption() {
+    const { value, type, schema, onPointerClick } = this.props;
+
+    // Only show for String type cells with a non-empty value
+    if (type !== 'String' || !value || typeof value !== 'string' || value.trim() === '') {
+      return;
+    }
+
+    const relatedRecordsMenuItem = {
+      text: 'Get related records from...',
+      items: [],
+    };
+
+    // Group fields by class name for hierarchical navigation
+    schema.data
+      .get('classes')
+      .sortBy((v, k) => k)
+      .forEach((cl, className) => {
+        const classFields = [];
+
+        cl.forEach((column, field) => {
+          if (column.type !== 'String') {
+            return;
+          }
+          classFields.push({
+            text: field,
+            callback: () => {
+              onPointerClick({
+                className,
+                id: value,
+                field,
+              });
+            },
+          });
+        });
+
+        if (classFields.length > 0) {
+          relatedRecordsMenuItem.items.push({
+            text: className,
+            items: classFields,
+          });
+        }
+      });
+
+    return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
   }
 
   pickFilter(constraint, addToExistingFilter) {
