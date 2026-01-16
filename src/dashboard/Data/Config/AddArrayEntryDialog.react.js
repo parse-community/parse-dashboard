@@ -5,12 +5,13 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import Checkbox from 'components/Checkbox/Checkbox.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
+import NonPrintableHighlighter from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
-import Checkbox from 'components/Checkbox/Checkbox.react';
 
 export default class AddArrayEntryDialog extends React.Component {
   constructor() {
@@ -110,18 +111,20 @@ export default class AddArrayEntryDialog extends React.Component {
             />
           }
           input={
-            <TextInput
-              placeholder={'Enter value'}
-              ref={this.inputRef}
-              value={this.state.value}
-              onChange={value =>
-                this.setState({
-                  value,
-                  showMismatchRow: false,
-                  mismatchConfirmed: false,
-                })
-              }
-            />
+            <NonPrintableHighlighter value={this.state.value}>
+              <TextInput
+                placeholder={'Enter value'}
+                ref={this.inputRef}
+                value={this.state.value}
+                onChange={value =>
+                  this.setState({
+                    value,
+                    showMismatchRow: false,
+                    mismatchConfirmed: false,
+                  })
+                }
+              />
+            </NonPrintableHighlighter>
           }
         />
         {this.state.showMismatchRow && (

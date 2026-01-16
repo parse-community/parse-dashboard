@@ -12,6 +12,7 @@ import FileInput from 'components/FileInput/FileInput.react';
 import GeoPointInput from 'components/GeoPointInput/GeoPointInput.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
+import NonPrintableHighlighter from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
 import Option from 'components/Dropdown/Option.react';
 import Parse from 'parse';
 import React from 'react';
@@ -44,7 +45,9 @@ const EDITORS = {
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange) => (
-    <TextInput multiline={true} value={value || ''} onChange={onChange} />
+    <NonPrintableHighlighter value={value}>
+      <TextInput multiline={true} value={value || ''} onChange={onChange} />
+    </NonPrintableHighlighter>
   ),
   Number: (value, onChange) => (
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
