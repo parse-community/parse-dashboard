@@ -329,6 +329,9 @@ export default class BrowserCell extends Component {
     const relatedTextFieldsContextMenuOption = this.getRelatedTextFieldsContextMenuOption();
     relatedTextFieldsContextMenuOption && contextMenuOptions.push(relatedTextFieldsContextMenuOption);
 
+    const relatedNumberFieldsContextMenuOption = this.getRelatedNumberFieldsContextMenuOption();
+    relatedNumberFieldsContextMenuOption && contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
+
     !readonly &&
       onEditSelectedRow &&
       contextMenuOptions.push({
@@ -534,6 +537,60 @@ export default class BrowserCell extends Component {
             return;
           }
           if (field === 'sessionToken' && (className === '_User' || className === '_Session')) {
+            return;
+          }
+          classFields.push({
+            text: field,
+            callback: () => {
+              onPointerClick({
+                className,
+                id: value,
+                field,
+              });
+            },
+          });
+        });
+
+        if (classFields.length > 0) {
+          // Sort fields alphabetically
+          classFields.sort((a, b) => a.text.localeCompare(b.text));
+          relatedRecordsMenuItem.items.push({
+            text: className,
+            items: classFields,
+          });
+        }
+      });
+
+    return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
+  }
+
+  /**
+   * Returns "Get related records from..." context menu item if cell holds a Number value
+   * and there are classes with Number type fields to filter by.
+   * Groups fields by class name in a hierarchical submenu structure.
+   */
+  getRelatedNumberFieldsContextMenuOption() {
+    const { value, type, schema, onPointerClick } = this.props;
+
+    // Only show for Number type cells with a value
+    if (type !== 'Number' || value === undefined || value === null) {
+      return;
+    }
+
+    const relatedRecordsMenuItem = {
+      text: 'Get related records from...',
+      items: [],
+    };
+
+    // Group fields by class name for hierarchical navigation
+    schema.data
+      .get('classes')
+      .sortBy((v, k) => k)
+      .forEach((cl, className) => {
+        const classFields = [];
+
+        cl.forEach((column, field) => {
+          if (column.type !== 'Number') {
             return;
           }
           classFields.push({
