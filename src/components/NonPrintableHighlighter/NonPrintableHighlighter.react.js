@@ -10,90 +10,109 @@ import styles from 'components/NonPrintableHighlighter/NonPrintableHighlighter.s
 
 // Non-printable character ranges and their display representations
 const NON_PRINTABLE_CHARS = {
-  '\x00': 'NUL',
-  '\x01': 'SOH',
-  '\x02': 'STX',
-  '\x03': 'ETX',
-  '\x04': 'EOT',
-  '\x05': 'ENQ',
-  '\x06': 'ACK',
-  '\x07': 'BEL',
-  '\x08': 'BS',
-  '\x09': 'TAB',
-  '\x0A': 'LF',
-  '\x0B': 'VT',
-  '\x0C': 'FF',
-  '\x0D': 'CR',
-  '\x0E': 'SO',
-  '\x0F': 'SI',
-  '\x10': 'DLE',
-  '\x11': 'DC1',
-  '\x12': 'DC2',
-  '\x13': 'DC3',
-  '\x14': 'DC4',
-  '\x15': 'NAK',
-  '\x16': 'SYN',
-  '\x17': 'ETB',
-  '\x18': 'CAN',
-  '\x19': 'EM',
-  '\x1A': 'SUB',
-  '\x1B': 'ESC',
-  '\x1C': 'FS',
-  '\x1D': 'GS',
-  '\x1E': 'RS',
-  '\x1F': 'US',
-  '\x7F': 'DEL',
-  '\u00A0': 'NBSP',
-  '\u2000': 'NQSP',
-  '\u2001': 'MQSP',
-  '\u2002': 'ENSP',
-  '\u2003': 'EMSP',
-  '\u2004': '3MSP',
-  '\u2005': '4MSP',
-  '\u2006': '6MSP',
-  '\u2007': 'FSP',
-  '\u2008': 'PSP',
-  '\u2009': 'THSP',
-  '\u200A': 'HSP',
-  '\u200B': 'ZWSP',
-  '\u200C': 'ZWNJ',
-  '\u200D': 'ZWJ',
-  '\u200E': 'LRM',
-  '\u200F': 'RLM',
-  '\u2028': 'LS',
-  '\u2029': 'PS',
-  // BiDi control characters (can be security risks - "Trojan Source" attacks)
-  '\u202A': 'LRE',
-  '\u202B': 'RLE',
-  '\u202C': 'PDF',
-  '\u202D': 'LRO',
-  '\u202E': 'RLO',
-  '\u202F': 'NNBSP',
-  '\u2060': 'WJ',
-  '\u2061': 'FA',
-  '\u2062': 'IT',
-  '\u2063': 'IS',
-  '\u2064': 'IP',
-  '\u2066': 'LRI',
-  '\u2067': 'RLI',
-  '\u2068': 'FSI',
-  '\u2069': 'PDI',
-  '\u205F': 'MMSP',
-  '\u206A': 'ISS',
-  '\u206B': 'ASS',
-  '\u206C': 'IAFS',
-  '\u206D': 'AAFS',
-  '\u206E': 'NADS',
-  '\u206F': 'NODS',
-  '\u3000': 'IDSP',
-  '\uFEFF': 'BOM',
-  '\uFFF9': 'IAA',
-  '\uFFFA': 'IAS',
-  '\uFFFB': 'IAT',
-  '\uFFFC': 'OBJ',
+  // C0 Control Characters (0x00-0x1F)
+  '\x00': 'NUL', // Null
+  '\x01': 'SOH', // Start of Heading
+  '\x02': 'STX', // Start of Text
+  '\x03': 'ETX', // End of Text
+  '\x04': 'EOT', // End of Transmission
+  '\x05': 'ENQ', // Enquiry
+  '\x06': 'ACK', // Acknowledge
+  '\x07': 'BEL', // Bell
+  '\x08': 'BS', // Backspace
+  '\x09': 'TAB', // Horizontal Tab
+  '\x0A': 'LF', // Line Feed
+  '\x0B': 'VT', // Vertical Tab
+  '\x0C': 'FF', // Form Feed
+  '\x0D': 'CR', // Carriage Return
+  '\x0E': 'SO', // Shift Out
+  '\x0F': 'SI', // Shift In
+  '\x10': 'DLE', // Data Link Escape
+  '\x11': 'DC1', // Device Control 1
+  '\x12': 'DC2', // Device Control 2
+  '\x13': 'DC3', // Device Control 3
+  '\x14': 'DC4', // Device Control 4
+  '\x15': 'NAK', // Negative Acknowledge
+  '\x16': 'SYN', // Synchronous Idle
+  '\x17': 'ETB', // End of Transmission Block
+  '\x18': 'CAN', // Cancel
+  '\x19': 'EM', // End of Medium
+  '\x1A': 'SUB', // Substitute
+  '\x1B': 'ESC', // Escape
+  '\x1C': 'FS', // File Separator
+  '\x1D': 'GS', // Group Separator
+  '\x1E': 'RS', // Record Separator
+  '\x1F': 'US', // Unit Separator
+  '\x7F': 'DEL', // Delete
+
+  // Unicode Space Characters
+  '\u00A0': 'NBSP', // No-Break Space
+  '\u2000': 'NQSP', // En Quad Space
+  '\u2001': 'MQSP', // Em Quad Space
+  '\u2002': 'ENSP', // En Space
+  '\u2003': 'EMSP', // Em Space
+  '\u2004': '3MSP', // Three-Per-Em Space
+  '\u2005': '4MSP', // Four-Per-Em Space
+  '\u2006': '6MSP', // Six-Per-Em Space
+  '\u2007': 'FSP', // Figure Space
+  '\u2008': 'PSP', // Punctuation Space
+  '\u2009': 'THSP', // Thin Space
+  '\u200A': 'HSP', // Hair Space
+
+  // Zero-Width Characters
+  '\u200B': 'ZWSP', // Zero Width Space
+  '\u200C': 'ZWNJ', // Zero Width Non-Joiner
+  '\u200D': 'ZWJ', // Zero Width Joiner
+
+  // Directional Formatting Characters
+  '\u200E': 'LRM', // Left-to-Right Mark
+  '\u200F': 'RLM', // Right-to-Left Mark
+
+  // Line/Paragraph Separators
+  '\u2028': 'LS', // Line Separator
+  '\u2029': 'PS', // Paragraph Separator
+
+  // BiDi Control Characters (security-sensitive - "Trojan Source" attacks)
+  '\u202A': 'LRE', // Left-to-Right Embedding
+  '\u202B': 'RLE', // Right-to-Left Embedding
+  '\u202C': 'PDF', // Pop Directional Formatting
+  '\u202D': 'LRO', // Left-to-Right Override
+  '\u202E': 'RLO', // Right-to-Left Override
+  '\u202F': 'NNBSP', // Narrow No-Break Space
+  '\u2066': 'LRI', // Left-to-Right Isolate
+  '\u2067': 'RLI', // Right-to-Left Isolate
+  '\u2068': 'FSI', // First Strong Isolate
+  '\u2069': 'PDI', // Pop Directional Isolate
+
+  // General Punctuation Format Characters
+  '\u2060': 'WJ', // Word Joiner
+  '\u2061': 'FA', // Function Application
+  '\u2062': 'IT', // Invisible Times
+  '\u2063': 'IS', // Invisible Separator
+  '\u2064': 'IP', // Invisible Plus
+  '\u205F': 'MMSP', // Medium Mathematical Space
+
+  // Deprecated Format Characters
+  '\u206A': 'ISS', // Inhibit Symmetric Swapping
+  '\u206B': 'ASS', // Activate Symmetric Swapping
+  '\u206C': 'IAFS', // Inhibit Arabic Form Shaping
+  '\u206D': 'AAFS', // Activate Arabic Form Shaping
+  '\u206E': 'NADS', // National Digit Shapes
+  '\u206F': 'NODS', // Nominal Digit Shapes
+
+  // Other Special Characters
+  '\u3000': 'IDSP', // Ideographic Space
+  '\uFEFF': 'BOM', // Byte Order Mark
+
+  // Interlinear Annotation Characters
+  '\uFFF9': 'IAA', // Interlinear Annotation Anchor
+  '\uFFFA': 'IAS', // Interlinear Annotation Separator
+  '\uFFFB': 'IAT', // Interlinear Annotation Terminator
+  '\uFFFC': 'OBJ', // Object Replacement Character
 };
 
 // Regex to match non-printable characters
+// eslint-disable-next-line no-control-regex
 const NON_PRINTABLE_REGEX = /[\x00-\x1F\x7F\u00A0\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF\uFFF9-\uFFFC]/g;
 
 /**
