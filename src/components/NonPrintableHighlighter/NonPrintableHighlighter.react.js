@@ -134,6 +134,7 @@ export function hasNonPrintableChars(str) {
   if (!str || typeof str !== 'string') {
     return false;
   }
+  NON_PRINTABLE_REGEX.lastIndex = 0;
   return NON_PRINTABLE_REGEX.test(str);
 }
 
