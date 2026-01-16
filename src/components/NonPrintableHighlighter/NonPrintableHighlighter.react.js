@@ -178,31 +178,32 @@ export function getNonPrintableChars(str) {
 
 /**
  * Extract all string values from a parsed JSON object/array recursively
+ * Returns array of { value, path } where path is the JSON path (e.g., "[0]", "key", "key[0].nested")
  */
-function extractStringValues(obj) {
-  const strings = [];
+function extractStringValuesWithPaths(obj, path = '') {
+  const results = [];
 
-  function traverse(value) {
-    if (typeof value === 'string') {
-      strings.push(value);
-    } else if (Array.isArray(value)) {
-      for (const item of value) {
-        traverse(item);
-      }
-    } else if (value && typeof value === 'object') {
-      for (const key of Object.keys(value)) {
-        traverse(value[key]);
-      }
+  if (typeof obj === 'string') {
+    results.push({ value: obj, path: path || 'root' });
+  } else if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; i++) {
+      const itemPath = path ? `${path}[${i}]` : `[${i}]`;
+      results.push(...extractStringValuesWithPaths(obj[i], itemPath));
+    }
+  } else if (obj && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      const keyPath = path ? `${path}.${key}` : key;
+      results.push(...extractStringValuesWithPaths(obj[key], keyPath));
     }
   }
 
-  traverse(obj);
-  return strings;
+  return results;
 }
 
 /**
  * Get non-printable characters from JSON string values only
  * Parses the JSON and only checks string values within it
+ * Locations show the JSON path and character position (e.g., "[1] @ 5" or "name @ 3")
  */
 export function getNonPrintableCharsFromJson(jsonStr) {
   if (!jsonStr || typeof jsonStr !== 'string') {
@@ -217,10 +218,56 @@ export function getNonPrintableCharsFromJson(jsonStr) {
     return { totalCount: 0, chars: [] };
   }
 
-  const stringValues = extractStringValues(parsed);
-  const combinedStr = stringValues.join('');
+  const stringValuesWithPaths = extractStringValuesWithPaths(parsed);
 
-  return getNonPrintableChars(combinedStr);
+  // Map to track: char -> array of { path, position } objects
+  const charLocationMap = new Map();
+  let totalCount = 0;
+
+  for (const { value, path } of stringValuesWithPaths) {
+    for (let i = 0; i < value.length; i++) {
+      const char = value[i];
+      if (NON_PRINTABLE_REGEX.test(char)) {
+        NON_PRINTABLE_REGEX.lastIndex = 0;
+        if (!charLocationMap.has(char)) {
+          charLocationMap.set(char, []);
+        }
+        charLocationMap.get(char).push({ path, position: i + 1 });
+        totalCount++;
+      }
+    }
+  }
+
+  const chars = [];
+  for (const [char, locationsList] of charLocationMap) {
+    const label =
+      NON_PRINTABLE_CHARS[char] ||
+      `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+
+    // Group positions by path and format as "path @ pos1, pos2, ..."
+    const pathPositions = new Map();
+    for (const { path, position } of locationsList) {
+      if (!pathPositions.has(path)) {
+        pathPositions.set(path, []);
+      }
+      pathPositions.get(path).push(position);
+    }
+
+    const locations = [];
+    for (const [path, positions] of pathPositions) {
+      locations.push(`${path} @ ${positions.join(', ')}`);
+    }
+
+    chars.push({
+      char,
+      label,
+      code: `0x${char.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`,
+      count: locationsList.length,
+      locations,
+    });
+  }
+
+  return { totalCount, chars };
 }
 
 /**
@@ -265,14 +312,21 @@ export default class NonPrintableHighlighter extends React.Component {
             {this.state.showDetails && (
               <div className={styles.detailsPanel}>
                 <div className={styles.charList}>
-                  {chars.map(({ label, code, count, positions }, i) => (
+                  {chars.map(({ label, code, count, positions, locations }, i) => (
                     <div key={i} className={styles.charItem}>
                       <span className={styles.charLabel}>{label}</span>
                       <span className={styles.charCode}>{code}</span>
                       {count > 1 && <span className={styles.charCount}>×{count}</span>}
-                      <span className={styles.charPositions}>
-                        @ {positions.length <= 5 ? positions.join(', ') : `${positions.slice(0, 5).join(', ')}...`}
-                      </span>
+                      {positions && (
+                        <span className={styles.charPositions}>
+                          @ {positions.length <= 5 ? positions.join(', ') : `${positions.slice(0, 5).join(', ')}...`}
+                        </span>
+                      )}
+                      {locations && (
+                        <span className={styles.charPositions}>
+                          in {locations.length <= 3 ? locations.join(', ') : `${locations.slice(0, 3).join(', ')}...`}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
