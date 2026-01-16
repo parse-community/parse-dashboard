@@ -10,12 +10,7 @@ import PropTypes from 'lib/PropTypes';
 import React, { useState, useEffect, useRef } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
-const getPositionToFitVisibleScreen = (
-  ref,
-  offset = 0,
-  mainItemCount = 0,
-  subItemCount = 0
-) => {
+const getPositionToFitVisibleScreen = (ref, offset = 0) => {
   if (!ref.current) {
     return;
   }
@@ -62,19 +57,14 @@ const getPositionToFitVisibleScreen = (
   };
 };
 
-const MenuSection = ({ level, items, path, setPath, hide, parentItemCount = 0 }) => {
+const MenuSection = ({ level, items, path, setPath, hide }) => {
   const sectionRef = useRef(null);
   const [position, setPosition] = useState(null);
   const hasPositioned = useRef(false);
 
   useEffect(() => {
     if (!hasPositioned.current) {
-      const newPosition = getPositionToFitVisibleScreen(
-        sectionRef,
-        path[level] * 30,
-        parentItemCount,
-        items.length
-      );
+      const newPosition = getPositionToFitVisibleScreen(sectionRef, path[level] * 30);
       if (newPosition) {
         setPosition(newPosition);
         hasPositioned.current = true;
@@ -169,8 +159,6 @@ const ContextMenu = ({ x, y, items }) => {
     >
       {path.map((_, level) => {
         const itemsForLevel = getItemsFromLevel(level);
-        const parentItemCount =
-          level === 0 ? items.length : getItemsFromLevel(level - 1).length;
 
         return (
           <MenuSection
@@ -180,7 +168,6 @@ const ContextMenu = ({ x, y, items }) => {
             level={level}
             items={itemsForLevel}
             hide={hide}
-            parentItemCount={parentItemCount}
           />
         );
       })}
