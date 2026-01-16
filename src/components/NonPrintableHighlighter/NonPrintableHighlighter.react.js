@@ -111,9 +111,21 @@ const NON_PRINTABLE_CHARS = {
   '\uFFFC': 'OBJ', // Object Replacement Character
 };
 
-// Regex to match non-printable characters
-// eslint-disable-next-line no-control-regex
-const NON_PRINTABLE_REGEX = /[\x00-\x1F\x7F\u00A0\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF\uFFF9-\uFFFC]/g;
+// Build regex
+const NON_PRINTABLE_REGEX = new RegExp(
+  '[' +
+    Object.keys(NON_PRINTABLE_CHARS)
+      .map(char => {
+        const code = char.charCodeAt(0);
+        if (code < 0x100) {
+          return '\\x' + code.toString(16).padStart(2, '0');
+        }
+        return '\\u' + code.toString(16).padStart(4, '0');
+      })
+      .join('') +
+    ']',
+  'g'
+);
 
 /**
  * Check if a string contains non-printable characters
