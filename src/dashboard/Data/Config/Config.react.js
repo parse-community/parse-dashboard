@@ -650,6 +650,10 @@ class Config extends TableView {
   async removeArrayEntry(param, removeConfig) {
     try {
       this.setState({ loading: true });
+
+      // Fetch latest config data to ensure we have the current array value
+      await this.props.config.dispatch(ActionTypes.FETCH);
+
       const masterKeyOnlyMap = this.props.config.data.get('masterKeyOnly');
       const masterKeyOnly = masterKeyOnlyMap?.get(param) || false;
 
@@ -658,7 +662,8 @@ class Config extends TableView {
       if (removeConfig.filterByKey) {
         // Filter mode: find all objects where keyPath matches the value
         const { keyPath, value } = removeConfig;
-        const currentArray = this.state.removeEntryArrayValue;
+        const params = this.props.config.data.get('params');
+        const currentArray = params?.get(param) || [];
 
         objectsToRemove = currentArray.filter(item => {
           if (item === null || typeof item !== 'object' || Array.isArray(item)) {
