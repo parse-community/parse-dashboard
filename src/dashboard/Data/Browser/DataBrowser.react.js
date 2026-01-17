@@ -1163,13 +1163,14 @@ export default class DataBrowser extends React.Component {
       .get('classes')
       .sortBy((v, k) => k)
       .forEach((cl, className) => {
+        const classFields = [];
+
         cl.forEach((column, field) => {
           if (column.targetClass !== pointerClassName) {
             return;
           }
-          relatedRecordsMenuItem.items.push({
-            text: `${className}`,
-            subtext: `${field}`,
+          classFields.push({
+            text: field,
             callback: () => {
               const relatedObject = new Parse.Object(pointerClassName);
               relatedObject.id = objectId;
@@ -1181,6 +1182,14 @@ export default class DataBrowser extends React.Component {
             },
           });
         });
+
+        if (classFields.length > 0) {
+          classFields.sort((a, b) => a.text.localeCompare(b.text));
+          relatedRecordsMenuItem.items.push({
+            text: className,
+            items: classFields,
+          });
+        }
       });
 
     return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
