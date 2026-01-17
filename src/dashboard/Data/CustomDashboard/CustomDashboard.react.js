@@ -489,7 +489,7 @@ class CustomDashboard extends DashboardView {
         >
           {elements.length === 0 ? (
             <EmptyState
-              icon="analytics-outline"
+              icon="canvas-outline"
               title="Canvas"
               description="Create your own canvas by adding elements like text, graphs, and data tables."
               cta="Add Element"
