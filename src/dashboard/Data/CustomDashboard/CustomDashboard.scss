@@ -11,10 +11,10 @@
   position: relative;
   width: 100%;
   min-height: calc(100vh - 96px);
-  background-color: #1a1a2e;
+  background-color: #f4f5f7;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 16px 16px;
   overflow: auto;
   outline: none;
