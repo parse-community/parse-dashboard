@@ -1,3 +1,10 @@
+# [8.3.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.5...8.3.0-alpha.6) (2026-01-17)
+
+
+### Features
+
+* Add context menu in data browser to add cell content or selected text to Cloud Config parameter ([#3123](https://github.com/parse-community/parse-dashboard/issues/3123)) ([9bc5197](https://github.com/parse-community/parse-dashboard/commit/9bc519724fec9774e7e17f8815a73d0ddb707155))
+
 # [8.3.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.4...8.3.0-alpha.5) (2026-01-17)
 
 
