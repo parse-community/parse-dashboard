@@ -100,14 +100,37 @@
   background-color: #e3effd;
 }
 
-.hasMore {
-  height: auto;
-  max-height: 25px;
-  overflow-y: scroll;
-  padding-right: 3px;
+.pointerList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
   & > li {
-    margin-bottom: 2px;
+    display: block;
+    line-height: 1.2;
+    flex-shrink: 0;
   }
+}
+
+.pointerList::-webkit-scrollbar {
+  -webkit-appearance: none!important;
+  width: 6px!important;
+}
+
+.pointerList::-webkit-scrollbar-thumb {
+  border-radius: 4px!important;
+  background-color: rgba(0, 0, 0, .5)!important;
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5)!important;
+}
+
+.hasMore {
+  // No longer needed for pointer arrays, but kept for backwards compatibility
 }
 
 .removePadding {

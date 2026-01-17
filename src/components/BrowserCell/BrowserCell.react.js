@@ -135,7 +135,7 @@ export default class BrowserCell extends Component {
           );
         });
         content = (
-          <ul>
+          <ul className={styles.pointerList}>
             {array.map((a, i) => (
               <li key={i}>{a}</li>
             ))}
@@ -143,9 +143,6 @@ export default class BrowserCell extends Component {
         );
         // Set copyableValue to JSON string, not JSX (to avoid infinite render loop)
         this.copyableValue = JSON.stringify(this.props.value);
-        if (array.length > 1) {
-          classes.push(styles.hasMore);
-        }
       } else {
         this.copyableValue = content = JSON.stringify(this.props.value);
       }
