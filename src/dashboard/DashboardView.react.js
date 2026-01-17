@@ -92,8 +92,8 @@ export default class DashboardView extends React.Component {
     });
 
     coreSubsections.push({
-      name: 'Dashboard',
-      link: '/custom_dashboard',
+      name: 'Canvas',
+      link: '/canvas',
     });
 
     coreSubsections.push({

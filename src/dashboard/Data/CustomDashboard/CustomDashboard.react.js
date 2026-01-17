@@ -36,7 +36,7 @@ class CustomDashboard extends DashboardView {
   constructor() {
     super();
     this.section = 'Core';
-    this.subsection = 'Dashboard';
+    this.subsection = 'Canvas';
     this.state = {
       elements: [],
       selectedElement: null,
@@ -490,8 +490,8 @@ class CustomDashboard extends DashboardView {
           {elements.length === 0 ? (
             <EmptyState
               icon="analytics-outline"
-              title="Custom Dashboard"
-              description="Create your own dashboard by adding elements like text, graphs, and data tables."
+              title="Canvas"
+              description="Create your own canvas by adding elements like text, graphs, and data tables."
               cta="Add Element"
               action={() => this.setState({ showAddDialog: true })}
             />
@@ -526,7 +526,7 @@ class CustomDashboard extends DashboardView {
     const { selectedElement } = this.state;
 
     return (
-      <Toolbar section="Dashboard" subsection="">
+      <Toolbar section="Canvas" subsection="">
         <button
           type="button"
           className={styles.toolbarButton}

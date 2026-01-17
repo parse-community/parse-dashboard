@@ -36,7 +36,7 @@ const AddElementDialog = ({ onClose, onSelectType }) => {
     <Modal
       type={Modal.Types.INFO}
       title="Add Element"
-      subtitle="Choose an element type to add to your dashboard"
+      subtitle="Choose an element type to add to your canvas"
       onCancel={onClose}
       showCancel={true}
       cancelText="Cancel"
