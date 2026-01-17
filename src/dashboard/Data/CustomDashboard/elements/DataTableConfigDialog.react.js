@@ -25,8 +25,17 @@ const DataTableConfigDialog = ({
   const [filterId, setFilterId] = useState(initialConfig?.filterId || '');
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '100');
 
+  const sortedClasses = useMemo(() => {
+    return [...classes].sort((a, b) => a.localeCompare(b));
+  }, [classes]);
+
   const filtersForClass = useMemo(() => {
-    return availableFilters[className] || [];
+    const filters = availableFilters[className] || [];
+    return [...filters].sort((a, b) => {
+      const nameA = a.name || `${a.field} ${a.constraint}`;
+      const nameB = b.name || `${b.field} ${b.constraint}`;
+      return nameA.localeCompare(nameB);
+    });
   }, [className, availableFilters]);
 
   const columnsForClass = useMemo(() => {
@@ -90,7 +99,7 @@ const DataTableConfigDialog = ({
                 onChange={handleClassChange}
                 placeHolder="Select a class..."
               >
-                {classes.map(c => (
+                {sortedClasses.map(c => (
                   <Option key={c} value={c}>{c}</Option>
                 ))}
               </Dropdown>

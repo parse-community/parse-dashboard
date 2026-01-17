@@ -28,15 +28,27 @@ const GraphConfigDialog = ({
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '1000');
 
   const classesWithGraphs = useMemo(() => {
-    return classes.filter(c => availableGraphs[c] && availableGraphs[c].length > 0);
+    return classes
+      .filter(c => availableGraphs[c] && availableGraphs[c].length > 0)
+      .sort((a, b) => a.localeCompare(b));
   }, [classes, availableGraphs]);
 
   const graphsForClass = useMemo(() => {
-    return availableGraphs[className] || [];
+    const graphs = availableGraphs[className] || [];
+    return [...graphs].sort((a, b) => {
+      const nameA = a.title || `${a.chartType} graph`;
+      const nameB = b.title || `${b.chartType} graph`;
+      return nameA.localeCompare(nameB);
+    });
   }, [className, availableGraphs]);
 
   const filtersForClass = useMemo(() => {
-    return availableFilters[className] || [];
+    const filters = availableFilters[className] || [];
+    return [...filters].sort((a, b) => {
+      const nameA = a.name || `${a.field} ${a.constraint}`;
+      const nameB = b.name || `${b.field} ${b.constraint}`;
+      return nameA.localeCompare(nameB);
+    });
   }, [className, availableFilters]);
 
   const selectedGraph = useMemo(() => {

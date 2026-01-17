@@ -19,13 +19,13 @@ const elementTypes = [
   },
   {
     type: 'graph',
-    icon: 'chart-line',
+    icon: 'analytics-solid',
     title: 'Graph',
     description: 'Display a saved graph from the data browser',
   },
   {
     type: 'dataTable',
-    icon: 'table',
+    icon: 'files-solid',
     title: 'Data Table',
     description: 'Show filtered data in a table format',
   },
@@ -53,7 +53,7 @@ const AddElementDialog = ({ onClose, onSelectType }) => {
             onClick={() => onSelectType(type)}
           >
             <div className={styles.elementIcon}>
-              <Icon name={icon} width={32} height={32} fill="#0e7490" />
+              <Icon name={icon} width={32} height={32} fill="#169cee" />
             </div>
             <div className={styles.elementInfo}>
               <div className={styles.elementTitle}>{title}</div>

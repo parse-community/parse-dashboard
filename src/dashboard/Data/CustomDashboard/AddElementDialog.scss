@@ -12,16 +12,16 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background-color: #1e293b;
-  border: 1px solid #334155;
+  background-color: #ffffff;
+  border: 1px solid #e3e3ea;
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
 
   &:hover {
-    background-color: #334155;
-    border-color: #0e7490;
+    background-color: #f6f6f9;
+    border-color: #169cee;
   }
 }
 
@@ -31,7 +31,7 @@
   justify-content: center;
   width: 56px;
   height: 56px;
-  background-color: rgba(14, 116, 144, 0.1);
+  background-color: rgba(22, 156, 238, 0.1);
   border-radius: 8px;
   flex-shrink: 0;
 }
@@ -43,13 +43,13 @@
 .elementTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #ffffff;
+  color: #0e69a1;
   margin-bottom: 4px;
 }
 
 .elementDescription {
   font-size: 14px;
-  color: #94a3b8;
+  color: #66637a;
 }
 
 .footer {
