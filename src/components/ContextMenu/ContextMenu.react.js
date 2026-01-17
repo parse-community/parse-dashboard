@@ -120,6 +120,16 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
           setPath(newPath);
         };
 
+        // Handle separator items
+        if (item.type === 'separator') {
+          return (
+            <li
+              key={`menu-section-${level}-${index}`}
+              className={styles.separator}
+            />
+          );
+        }
+
         return (
           <li
             key={`menu-section-${level}-${index}`}

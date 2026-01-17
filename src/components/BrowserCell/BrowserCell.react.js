@@ -377,12 +377,17 @@ export default class BrowserCell extends Component {
         });
     }
 
-    // Add to Cloud Config parameter menu
-    const addToConfigOption = this.getAddToConfigContextMenuOption();
-    addToConfigOption && contextMenuOptions.push(addToConfigOption);
-
     // Sort menu items alphabetically by text
     contextMenuOptions.sort((a, b) => a.text.localeCompare(b.text));
+
+    // Add separator and "Add to config parameter..." after the sorted items
+    const addToConfigOption = this.getAddToConfigContextMenuOption();
+    if (addToConfigOption && contextMenuOptions.length > 0) {
+      contextMenuOptions.push({ type: 'separator' });
+      contextMenuOptions.push(addToConfigOption);
+    } else if (addToConfigOption) {
+      contextMenuOptions.push(addToConfigOption);
+    }
 
     return contextMenuOptions;
   }

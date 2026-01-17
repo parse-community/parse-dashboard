@@ -28,6 +28,19 @@
 		background: rgba(255, 255, 255, 0.1);
 	}
 
+	.separator {
+		height: 1px;
+		padding: 0;
+		margin: 5px 10px;
+		background: rgba(255, 255, 255, 0.2);
+		cursor: default;
+		pointer-events: none;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.2);
+		}
+	}
+
 	.category {
 		position: absolute;
 		// Keep above the toolbar (src/components/Toolbar/Toolbar.scss).
