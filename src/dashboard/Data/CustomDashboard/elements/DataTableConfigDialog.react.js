@@ -5,13 +5,15 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
 import Option from 'components/Dropdown/Option.react';
 import TextInput from 'components/TextInput/TextInput.react';
+import MultiSelect from 'components/MultiSelect/MultiSelect.react';
+import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';
 
 const DataTableConfigDialog = ({
   initialConfig,
@@ -23,6 +25,7 @@ const DataTableConfigDialog = ({
 }) => {
   const [className, setClassName] = useState(initialConfig?.className || '');
   const [filterId, setFilterId] = useState(initialConfig?.filterId || '');
+  const [selectedColumns, setSelectedColumns] = useState(initialConfig?.columns || []);
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '100');
 
   const sortedClasses = useMemo(() => {
@@ -38,12 +41,30 @@ const DataTableConfigDialog = ({
     });
   }, [className, availableFilters]);
 
-  const columnsForClass = useMemo(() => {
+  const availableColumns = useMemo(() => {
     if (!className || !classSchemas[className]) {
       return [];
     }
-    return Object.keys(classSchemas[className]).filter(col => col !== 'ACL');
+    return Object.keys(classSchemas[className])
+      .filter(col => col !== 'ACL')
+      .sort((a, b) => a.localeCompare(b));
   }, [className, classSchemas]);
+
+  // Reset selected columns when class changes, default to all columns
+  useEffect(() => {
+    if (className && availableColumns.length > 0) {
+      // If editing and columns were previously selected for this class, keep them
+      if (initialConfig?.className === className && initialConfig?.columns?.length > 0) {
+        // Filter to only keep columns that still exist
+        const validColumns = initialConfig.columns.filter(col => availableColumns.includes(col));
+        setSelectedColumns(validColumns.length > 0 ? validColumns : availableColumns);
+      } else {
+        setSelectedColumns(availableColumns);
+      }
+    } else {
+      setSelectedColumns([]);
+    }
+  }, [className, availableColumns]);
 
   const handleClassChange = (newClass) => {
     setClassName(newClass);
@@ -51,7 +72,7 @@ const DataTableConfigDialog = ({
   };
 
   const handleSave = () => {
-    if (!className) {
+    if (!className || selectedColumns.length === 0) {
       return;
     }
 
@@ -61,12 +82,12 @@ const DataTableConfigDialog = ({
       className,
       filterId: filterId || null,
       filterConfig: selectedFilter ? [selectedFilter] : null,
-      columns: columnsForClass,
+      columns: selectedColumns,
       limit: parseInt(limit, 10) || 100,
     });
   };
 
-  const isValid = className;
+  const isValid = className && selectedColumns.length > 0;
 
   return (
     <Modal
@@ -121,6 +142,25 @@ const DataTableConfigDialog = ({
                     </Option>
                   ))}
                 </Dropdown>
+              }
+            />
+          )}
+          {className && availableColumns.length > 0 && (
+            <Field
+              label={<Label text="Fields" description="Select fields to display" />}
+              input={
+                <MultiSelect
+                  value={selectedColumns}
+                  onChange={setSelectedColumns}
+                  placeHolder="Select fields..."
+                  formatSelection={(selection) => `${selection.length} field${selection.length !== 1 ? 's' : ''} selected`}
+                >
+                  {availableColumns.map(col => (
+                    <MultiSelectOption key={col} value={col}>
+                      {col}
+                    </MultiSelectOption>
+                  ))}
+                </MultiSelect>
               }
             />
           )}
