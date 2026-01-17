@@ -16,7 +16,7 @@ import decode from 'parse/lib/browser/decode';
 import React from 'react';
 import StringEditor from 'components/StringEditor/StringEditor.react';
 
-const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, onCancel }) => {
+const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, onCancel, setContextMenu, arrayConfigParams, onAddToArrayConfig }) => {
   let content = null;
   if (type === 'String') {
     content = (
@@ -28,6 +28,9 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         onCommit={onCommit}
         onCancel={onCancel}
         resizable={true}
+        setContextMenu={setContextMenu}
+        arrayConfigParams={arrayConfigParams}
+        onAddToArrayConfig={onAddToArrayConfig}
       />
     );
   } else if (type === 'Array' || type === 'Object') {
@@ -47,6 +50,9 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         width={width}
         onCommit={encodeCommit}
         onCancel={onCancel}
+        setContextMenu={setContextMenu}
+        arrayConfigParams={arrayConfigParams}
+        onAddToArrayConfig={onAddToArrayConfig}
       />
     );
   } else if (type === 'Polygon') {
@@ -86,6 +92,9 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         width={width}
         onCommit={encodeCommit}
         onCancel={onCancel}
+        setContextMenu={setContextMenu}
+        arrayConfigParams={arrayConfigParams}
+        onAddToArrayConfig={onAddToArrayConfig}
       />
     );
   } else if (type === 'Date') {
@@ -97,6 +106,9 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
           width={width}
           onCommit={() => onCommit(value)}
           onCancel={onCancel}
+          setContextMenu={setContextMenu}
+          arrayConfigParams={arrayConfigParams}
+          onAddToArrayConfig={onAddToArrayConfig}
         />
       );
     } else {
@@ -125,7 +137,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         );
       }
     };
-    content = <StringEditor value={value ? value.id : ''} width={width} onCommit={encodeCommit} onCancel={onCancel} />;
+    content = <StringEditor value={value ? value.id : ''} width={width} onCommit={encodeCommit} onCancel={onCancel} setContextMenu={setContextMenu} arrayConfigParams={arrayConfigParams} onAddToArrayConfig={onAddToArrayConfig} />;
   }
 
   return <div style={{ position: 'absolute', top: top, left: left }}>{content}</div>;

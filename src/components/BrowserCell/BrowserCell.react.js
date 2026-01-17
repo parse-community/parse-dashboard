@@ -377,6 +377,13 @@ export default class BrowserCell extends Component {
         });
     }
 
+    // Add to Cloud Config parameter menu
+    const addToConfigOption = this.getAddToConfigContextMenuOption();
+    addToConfigOption && contextMenuOptions.push(addToConfigOption);
+
+    // Sort menu items alphabetically by text
+    contextMenuOptions.sort((a, b) => a.text.localeCompare(b.text));
+
     return contextMenuOptions;
   }
 
@@ -616,6 +623,33 @@ export default class BrowserCell extends Component {
       });
 
     return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
+  }
+
+  getAddToConfigContextMenuOption() {
+    const { arrayConfigParams, onAddToArrayConfig } = this.props;
+
+    // Only show if there are array config params and handler is available
+    if (!arrayConfigParams || arrayConfigParams.length === 0 || !onAddToArrayConfig) {
+      return;
+    }
+
+    // Get the cell's copyable value as string
+    const cellValue = this.copyableValue !== undefined ? String(this.copyableValue) : '';
+
+    // Don't show for empty or special values
+    if (!cellValue || cellValue === '(undefined)' || cellValue === '(null)' || cellValue === '(hidden)') {
+      return;
+    }
+
+    return {
+      text: 'Add to config parameter...',
+      items: arrayConfigParams.map(param => ({
+        text: param.name,
+        callback: () => {
+          onAddToArrayConfig(param.name, cellValue);
+        },
+      })),
+    };
   }
 
   pickFilter(constraint, addToExistingFilter) {

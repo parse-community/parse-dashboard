@@ -1175,7 +1175,7 @@ export default class DataBrowser extends React.Component {
     // Build context menu items
     const menuItems = [
       {
-        text: 'Add to Cloud Config parameter...',
+        text: 'Add to config parameter...',
         items: arrayParams.map(param => ({
           text: param.name,
           callback: () => {

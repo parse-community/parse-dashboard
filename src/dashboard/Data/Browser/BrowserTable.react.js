@@ -208,6 +208,8 @@ export default class BrowserTable extends React.Component {
                     setShowAggregatedData={this.props.setShowAggregatedData}
                     setErrorAggregatedData={this.props.setErrorAggregatedData}
                     firstSelectedCell={this.props.firstSelectedCell}
+                    arrayConfigParams={this.props.arrayConfigParams}
+                    onAddToArrayConfig={this.props.onAddToArrayConfig}
                   />
                   <Button
                     value="Clone"
@@ -294,6 +296,8 @@ export default class BrowserTable extends React.Component {
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
               firstSelectedCell={this.props.firstSelectedCell}
+              arrayConfigParams={this.props.arrayConfigParams}
+              onAddToArrayConfig={this.props.onAddToArrayConfig}
             />
             <Button
               value="Add"
@@ -389,6 +393,8 @@ export default class BrowserTable extends React.Component {
             setShowAggregatedData={this.props.setShowAggregatedData}
             setErrorAggregatedData={this.props.setErrorAggregatedData}
             firstSelectedCell={this.props.firstSelectedCell}
+            arrayConfigParams={this.props.arrayConfigParams}
+            onAddToArrayConfig={this.props.onAddToArrayConfig}
           />
         );
       }
@@ -484,6 +490,9 @@ export default class BrowserTable extends React.Component {
                   this.props.setEditing(false);
                 }}
                 onCancel={() => this.props.setEditing(false)}
+                setContextMenu={this.props.setContextMenu}
+                arrayConfigParams={this.props.arrayConfigParams}
+                onAddToArrayConfig={this.props.onAddToArrayConfig}
               />
             );
           }
