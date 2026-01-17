@@ -2579,6 +2579,10 @@ class Browser extends DashboardView {
     try {
       const configStore = getStore('Config');
       await configStore.dispatch(ConfigActionTypes.FETCH, {}, this.context);
+      // Check if component is still mounted before updating state
+      if (!this._isMounted) {
+        return;
+      }
       const configData = configStore.getData(this.context);
       if (configData) {
         const params = configData.get('params');
