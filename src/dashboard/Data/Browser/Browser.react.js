@@ -2616,11 +2616,18 @@ class Browser extends DashboardView {
     if (paramData && paramData.value.length > 0) {
       lastType = this.getEntryType(paramData.value[paramData.value.length - 1]);
     }
+
+    // If the last item in the array is a string, wrap the prefilled text in quotes
+    let prefillValue = selectedText;
+    if (lastType === 'string') {
+      prefillValue = `"${selectedText}"`;
+    }
+
     this.setState({
       showAddToConfigDialog: true,
       addToConfigParam: param,
       addToConfigLastType: lastType,
-      addToConfigPrefillValue: selectedText,
+      addToConfigPrefillValue: prefillValue,
     });
   }
 
