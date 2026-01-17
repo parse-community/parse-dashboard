@@ -64,14 +64,22 @@ class CustomDashboard extends DashboardView {
   }
 
   loadClasses() {
-    if (!this.props.schema) {
+    if (!this.props.schema || !this.props.schema.data) {
       return;
     }
 
-    const classes = Object.keys(this.props.schema.data.get('classes').toJS());
+    const classesData = this.props.schema.data.get('classes');
+    if (!classesData) {
+      return;
+    }
+
+    const classes = Object.keys(classesData.toJS());
     const classSchemas = {};
     classes.forEach(className => {
-      classSchemas[className] = this.props.schema.data.get('classes').get(className).toJS();
+      const classSchema = classesData.get(className);
+      if (classSchema) {
+        classSchemas[className] = classSchema.toJS();
+      }
     });
 
     this.setState({ classes, classSchemas }, () => {
@@ -81,6 +89,10 @@ class CustomDashboard extends DashboardView {
   }
 
   async loadAvailableGraphs() {
+    if (!this.context || !this.context.applicationId) {
+      return;
+    }
+
     const graphPreferencesManager = new GraphPreferencesManager(this.context);
     const graphsByClass = {};
 
@@ -102,6 +114,10 @@ class CustomDashboard extends DashboardView {
   }
 
   async loadAvailableFilters() {
+    if (!this.context || !this.context.applicationId) {
+      return;
+    }
+
     const filterPreferencesManager = new FilterPreferencesManager(this.context);
     const filtersByClass = {};
 
