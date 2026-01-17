@@ -134,13 +134,15 @@ export default class BrowserCell extends Component {
             />
           );
         });
-        this.copyableValue = content = (
+        content = (
           <ul>
-            {array.map(a => (
-              <li key={a}>{a}</li>
+            {array.map((a, i) => (
+              <li key={i}>{a}</li>
             ))}
           </ul>
         );
+        // Set copyableValue to JSON string, not JSX (to avoid infinite render loop)
+        this.copyableValue = JSON.stringify(this.props.value);
         if (array.length > 1) {
           classes.push(styles.hasMore);
         }
