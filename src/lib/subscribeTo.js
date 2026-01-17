@@ -16,17 +16,15 @@ export default function subscribeTo(name, prop) {
 
     function SubscribedComponent(props) {
       const currentApp = React.useContext(CurrentApp);
-      const [data, setData] = React.useState(store.getData(currentApp));
+      const [data, setData] = React.useState(() => store.getData(currentApp));
 
       React.useEffect(() => {
+        // Update data when currentApp changes
         setData(store.getData(currentApp));
-      }, [currentApp]);
 
-      React.useEffect(() => {
         const handleNewData = newData => {
-          if (data !== newData) {
-            setData(newData);
-          }
+          // Use functional update to avoid stale closure issue
+          setData(prevData => (prevData !== newData ? newData : prevData));
         };
 
         const subscriptionId = store.subscribe(handleNewData);
@@ -34,7 +32,7 @@ export default function subscribeTo(name, prop) {
         return () => {
           store.unsubscribe(subscriptionId);
         };
-      }, []);
+      }, [currentApp]);
 
       const dispatch = (type, params = {}) => {
         if (store.isGlobal) {

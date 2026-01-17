@@ -35,7 +35,8 @@ export function getStore(name) {
     isGlobal: storeData.isGlobal,
     dispatch(type, params, app) {
       const action = { ...params, type, app };
-      const newState = storeData.store(stateGetter(name, app), action);
+      const currentState = stateGetter(name, app);
+      const newState = storeData.store(currentState, action);
       if (newState instanceof Promise) {
         return newState.then(result => {
           if (storeData.isGlobal) {

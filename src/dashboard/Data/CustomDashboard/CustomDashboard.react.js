@@ -23,6 +23,7 @@ import GraphPreferencesManager from 'lib/GraphPreferencesManager';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import { CurrentApp } from 'context/currentApp';
 import subscribeTo from 'lib/subscribeTo';
+import { ActionTypes } from 'lib/stores/SchemaStore';
 import styles from './CustomDashboard.scss';
 
 function generateId() {
@@ -54,17 +55,18 @@ class CustomDashboard extends DashboardView {
   }
 
   componentDidMount() {
-    this.loadClasses();
+    this.props.schema.dispatch(ActionTypes.FETCH);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.schema !== prevProps.schema && this.props.schema) {
+    // Load classes when schema data becomes available or changes
+    if (this.props.schema?.data !== prevProps.schema?.data) {
       this.loadClasses();
     }
   }
 
   loadClasses() {
-    if (!this.props.schema || !this.props.schema.data) {
+    if (!this.props.schema?.data) {
       return;
     }
 
