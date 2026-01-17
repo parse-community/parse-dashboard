@@ -5,18 +5,47 @@
   border: 1px solid #e3e3ea;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  cursor: move;
+  overflow: visible;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 
   &:hover {
     border-color: #c5c5d3;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    .dragHandle {
+      opacity: 1;
+    }
   }
 
   &.selected {
     border-color: #169cee;
     box-shadow: 0 0 0 2px rgba(22, 156, 238, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    .dragHandle {
+      opacity: 1;
+    }
+  }
+}
+
+.dragHandle {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  cursor: move;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+  z-index: 5;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -26,35 +55,8 @@
   overflow: auto;
   padding: 12px;
   box-sizing: border-box;
-}
-
-.elementControls {
-  position: absolute;
-  top: -32px;
-  right: 0;
-  display: flex;
-  gap: 4px;
-  background-color: #169cee;
-  border-radius: 4px 4px 0 0;
-  padding: 4px;
-  z-index: 10;
-}
-
-.controlButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.15s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
+  border-radius: 8px;
+  background-color: #ffffff;
 }
 
 .resizeHandle {
@@ -63,13 +65,4 @@
   &:hover {
     background: rgba(22, 156, 238, 0.3) !important;
   }
-}
-
-.resizeHandleCorner {
-  width: 10px !important;
-  height: 10px !important;
-  background: #169cee !important;
-  border-radius: 2px !important;
-  border: 1px solid #1a8cd8 !important;
-  z-index: 10 !important;
 }

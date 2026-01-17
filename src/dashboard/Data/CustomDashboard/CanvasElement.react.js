@@ -48,6 +48,7 @@ const CanvasElement = ({
       minWidth={100}
       minHeight={50}
       bounds="parent"
+      dragHandleClassName={styles.dragHandle}
       onDragStop={handleDragStop}
       onResizeStop={handleResizeStop}
       className={`${styles.canvasElement} ${isSelected ? styles.selected : ''}`}
@@ -66,41 +67,18 @@ const CanvasElement = ({
         right: styles.resizeHandle,
         bottom: styles.resizeHandle,
         left: styles.resizeHandle,
-        topRight: styles.resizeHandleCorner,
-        bottomRight: styles.resizeHandleCorner,
-        bottomLeft: styles.resizeHandleCorner,
-        topLeft: styles.resizeHandleCorner,
+        topRight: styles.resizeHandle,
+        bottomRight: styles.resizeHandle,
+        bottomLeft: styles.resizeHandle,
+        topLeft: styles.resizeHandle,
       }}
     >
+      <div className={styles.dragHandle} title="Drag to move">
+        <Icon name="drag-indicator" width={16} height={16} fill="#ffffff" />
+      </div>
       <div className={styles.elementContent} onClick={handleClick}>
         {children}
       </div>
-      {isSelected && (
-        <div className={styles.elementControls}>
-          <button
-            type="button"
-            className={styles.controlButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit();
-            }}
-            title="Edit"
-          >
-            <Icon name="edit-solid" width={12} height={12} fill="#ffffff" />
-          </button>
-          <button
-            type="button"
-            className={styles.controlButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(element.id);
-            }}
-            title="Delete"
-          >
-            <Icon name="trash-solid" width={12} height={12} fill="#ffffff" />
-          </button>
-        </div>
-      )}
     </Rnd>
   );
 };
