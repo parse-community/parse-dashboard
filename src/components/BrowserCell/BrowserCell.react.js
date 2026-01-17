@@ -631,7 +631,12 @@ export default class BrowserCell extends Component {
   }
 
   getAddToConfigContextMenuOption() {
-    const { arrayConfigParams, onAddToArrayConfig } = this.props;
+    const { arrayConfigParams, onAddToArrayConfig, hidden } = this.props;
+
+    // Don't show for hidden cells to prevent leaking sensitive values
+    if (hidden) {
+      return;
+    }
 
     // Only show if there are array config params and handler is available
     if (!arrayConfigParams || arrayConfigParams.length === 0 || !onAddToArrayConfig) {
