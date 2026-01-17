@@ -1,0 +1,23 @@
+@import 'stylesheets/globals.scss';
+
+.graphElement {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.noConfig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #64748b;
+  gap: 8px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}

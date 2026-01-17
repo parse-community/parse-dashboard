@@ -1,0 +1,60 @@
+@import 'stylesheets/globals.scss';
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 96px;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 96px);
+  background-color: #1a1a2e;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 16px 16px;
+  overflow: auto;
+  outline: none;
+}
+
+.toolbarButton {
+  @include NotoSansFont;
+  display: inline-block;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  height: 14px;
+  padding: 0 12px;
+  background: transparent;
+  border: none;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 4px;
+    fill: #66637a;
+  }
+
+  &:hover {
+    svg {
+      fill: white;
+    }
+  }
+
+  span {
+    vertical-align: middle;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+.toolbarSeparator {
+  display: inline-block;
+  height: 18px;
+  width: 1px;
+  background: #66637a;
+  vertical-align: bottom;
+  margin: 0 4px;
+}

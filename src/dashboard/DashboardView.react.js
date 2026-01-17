@@ -92,6 +92,11 @@ export default class DashboardView extends React.Component {
     });
 
     coreSubsections.push({
+      name: 'Dashboard',
+      link: '/custom_dashboard',
+    });
+
+    coreSubsections.push({
       name: 'Agent',
       link: '/agent',
       icon: 'sparkle-solid',

@@ -45,6 +45,7 @@ import styles from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings from './Settings/UsersSettings.react';
 import Webhooks from './Data/Webhooks/Webhooks.react';
 import Views from './Data/Views/Views.react';
+import CustomDashboard from './Data/CustomDashboard/CustomDashboard.react';
 import { AsyncStatus } from 'lib/Constants';
 import baseStyles from 'stylesheets/base.scss';
 import { get } from 'lib/AJAX';
@@ -291,6 +292,7 @@ export default class Dashboard extends React.Component {
         <Route path="cloud_code/*" element={<CloudCode />} />
         <Route path="views/:name" element={<Views />} />
         <Route path="views" element={<Views />} />
+        <Route path="custom_dashboard" element={<CustomDashboard />} />
         <Route path="agent" element={<Agent agentConfig={this.state.agentConfig} />} />
         <Route path="webhooks" element={<Webhooks />} />
 

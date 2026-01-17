@@ -1,0 +1,602 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+import React from 'react';
+import DashboardView from 'dashboard/DashboardView.react';
+import Button from 'components/Button/Button.react';
+import EmptyState from 'components/EmptyState/EmptyState.react';
+import Icon from 'components/Icon/Icon.react';
+import Toolbar from 'components/Toolbar/Toolbar.react';
+import CanvasElement from './CanvasElement.react';
+import AddElementDialog from './AddElementDialog.react';
+import StaticTextElement from './elements/StaticTextElement.react';
+import StaticTextConfigDialog from './elements/StaticTextConfigDialog.react';
+import GraphElement from './elements/GraphElement.react';
+import GraphConfigDialog from './elements/GraphConfigDialog.react';
+import DataTableElement from './elements/DataTableElement.react';
+import DataTableConfigDialog from './elements/DataTableConfigDialog.react';
+import GraphPreferencesManager from 'lib/GraphPreferencesManager';
+import FilterPreferencesManager from 'lib/FilterPreferencesManager';
+import { CurrentApp } from 'context/currentApp';
+import subscribeTo from 'lib/subscribeTo';
+import styles from './CustomDashboard.scss';
+
+function generateId() {
+  return 'el_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+}
+
+@subscribeTo('Schema', 'schema')
+class CustomDashboard extends DashboardView {
+  static contextType = CurrentApp;
+
+  constructor() {
+    super();
+    this.section = 'Core';
+    this.subsection = 'Dashboard';
+    this.state = {
+      elements: [],
+      selectedElement: null,
+      elementData: {},
+      showAddDialog: false,
+      showStaticTextDialog: false,
+      showGraphDialog: false,
+      showDataTableDialog: false,
+      editingElement: null,
+      availableGraphs: {},
+      availableFilters: {},
+      classes: [],
+      classSchemas: {},
+    };
+  }
+
+  componentDidMount() {
+    this.loadClasses();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.schema !== prevProps.schema && this.props.schema) {
+      this.loadClasses();
+    }
+  }
+
+  loadClasses() {
+    if (!this.props.schema) {
+      return;
+    }
+
+    const classes = Object.keys(this.props.schema.data.get('classes').toJS());
+    const classSchemas = {};
+    classes.forEach(className => {
+      classSchemas[className] = this.props.schema.data.get('classes').get(className).toJS();
+    });
+
+    this.setState({ classes, classSchemas }, () => {
+      this.loadAvailableGraphs();
+      this.loadAvailableFilters();
+    });
+  }
+
+  async loadAvailableGraphs() {
+    const graphPreferencesManager = new GraphPreferencesManager(this.context);
+    const graphsByClass = {};
+
+    for (const className of this.state.classes) {
+      try {
+        const graphs = await graphPreferencesManager.getGraphs(
+          this.context.applicationId,
+          className
+        );
+        if (graphs && graphs.length > 0) {
+          graphsByClass[className] = graphs;
+        }
+      } catch (e) {
+        console.error(`Error loading graphs for ${className}:`, e);
+      }
+    }
+
+    this.setState({ availableGraphs: graphsByClass });
+  }
+
+  async loadAvailableFilters() {
+    const filterPreferencesManager = new FilterPreferencesManager(this.context);
+    const filtersByClass = {};
+
+    for (const className of this.state.classes) {
+      try {
+        const filters = await filterPreferencesManager.getFilters(
+          this.context.applicationId,
+          className
+        );
+        if (filters && filters.length > 0) {
+          filtersByClass[className] = filters;
+        }
+      } catch (e) {
+        console.error(`Error loading filters for ${className}:`, e);
+      }
+    }
+
+    this.setState({ availableFilters: filtersByClass });
+  }
+
+  handleAddElement = (type) => {
+    this.setState({ showAddDialog: false });
+    switch (type) {
+      case 'staticText':
+        this.setState({ showStaticTextDialog: true, editingElement: null });
+        break;
+      case 'graph':
+        this.setState({ showGraphDialog: true, editingElement: null });
+        break;
+      case 'dataTable':
+        this.setState({ showDataTableDialog: true, editingElement: null });
+        break;
+    }
+  };
+
+  handleSaveStaticText = (config) => {
+    const { editingElement, elements } = this.state;
+
+    if (editingElement) {
+      const updatedElements = elements.map(el =>
+        el.id === editingElement.id ? { ...el, config } : el
+      );
+      this.setState({
+        elements: updatedElements,
+        showStaticTextDialog: false,
+        editingElement: null,
+      });
+    } else {
+      const newElement = {
+        id: generateId(),
+        type: 'staticText',
+        x: 50,
+        y: 50,
+        width: 300,
+        height: 100,
+        config,
+      };
+      this.setState({
+        elements: [...elements, newElement],
+        showStaticTextDialog: false,
+      });
+    }
+  };
+
+  handleSaveGraph = (config) => {
+    const { editingElement, elements } = this.state;
+
+    if (editingElement) {
+      const updatedElements = elements.map(el =>
+        el.id === editingElement.id ? { ...el, config } : el
+      );
+      this.setState({
+        elements: updatedElements,
+        showGraphDialog: false,
+        editingElement: null,
+      }, () => {
+        this.fetchElementData(editingElement.id);
+      });
+    } else {
+      const newElement = {
+        id: generateId(),
+        type: 'graph',
+        x: 50,
+        y: 50,
+        width: 500,
+        height: 350,
+        config,
+      };
+      this.setState({
+        elements: [...elements, newElement],
+        showGraphDialog: false,
+      }, () => {
+        this.fetchElementData(newElement.id);
+      });
+    }
+  };
+
+  handleSaveDataTable = (config) => {
+    const { editingElement, elements } = this.state;
+
+    if (editingElement) {
+      const updatedElements = elements.map(el =>
+        el.id === editingElement.id ? { ...el, config } : el
+      );
+      this.setState({
+        elements: updatedElements,
+        showDataTableDialog: false,
+        editingElement: null,
+      }, () => {
+        this.fetchElementData(editingElement.id);
+      });
+    } else {
+      const newElement = {
+        id: generateId(),
+        type: 'dataTable',
+        x: 50,
+        y: 50,
+        width: 500,
+        height: 300,
+        config,
+      };
+      this.setState({
+        elements: [...elements, newElement],
+        showDataTableDialog: false,
+      }, () => {
+        this.fetchElementData(newElement.id);
+      });
+    }
+  };
+
+  async fetchElementData(elementId) {
+    const element = this.state.elements.find(el => el.id === elementId);
+    if (!element) {
+      return;
+    }
+
+    const { type, config } = element;
+    if (type === 'staticText') {
+      return;
+    }
+
+    this.setState(state => ({
+      elementData: {
+        ...state.elementData,
+        [elementId]: { data: null, isLoading: true, error: null },
+      },
+    }));
+
+    try {
+      const { className, filterConfig, limit } = config;
+      const query = new Parse.Query(className);
+
+      if (filterConfig && Array.isArray(filterConfig)) {
+        filterConfig.forEach(filter => {
+          this.applyFilterToQuery(query, filter);
+        });
+      }
+
+      if (limit) {
+        query.limit(limit);
+      } else {
+        query.limit(1000);
+      }
+
+      const results = await query.find({ useMasterKey: true });
+      const data = results.map(obj => obj.toJSON());
+
+      this.setState(state => ({
+        elementData: {
+          ...state.elementData,
+          [elementId]: { data, isLoading: false, error: null },
+        },
+      }));
+    } catch (error) {
+      console.error('Error fetching element data:', error);
+      this.setState(state => ({
+        elementData: {
+          ...state.elementData,
+          [elementId]: { data: null, isLoading: false, error },
+        },
+      }));
+    }
+  }
+
+  applyFilterToQuery(query, filter) {
+    const { field, constraint, compareTo } = filter;
+    if (!field || !constraint) {
+      return;
+    }
+
+    switch (constraint) {
+      case 'exists':
+        query.exists(field);
+        break;
+      case 'dne':
+        query.doesNotExist(field);
+        break;
+      case 'eq':
+        query.equalTo(field, compareTo);
+        break;
+      case 'neq':
+        query.notEqualTo(field, compareTo);
+        break;
+      case 'lt':
+        query.lessThan(field, compareTo);
+        break;
+      case 'lte':
+        query.lessThanOrEqualTo(field, compareTo);
+        break;
+      case 'gt':
+        query.greaterThan(field, compareTo);
+        break;
+      case 'gte':
+        query.greaterThanOrEqualTo(field, compareTo);
+        break;
+      case 'starts':
+        query.startsWith(field, compareTo);
+        break;
+      case 'ends':
+        query.endsWith(field, compareTo);
+        break;
+      case 'before':
+        query.lessThan(field, new Date(compareTo));
+        break;
+      case 'after':
+        query.greaterThan(field, new Date(compareTo));
+        break;
+      case 'containsString':
+        query.contains(field, compareTo);
+        break;
+      case 'containsAny':
+        query.containedIn(field, compareTo);
+        break;
+    }
+  }
+
+  handleSelectElement = (id) => {
+    this.setState({ selectedElement: id });
+  };
+
+  handleDeselectElement = (e) => {
+    if (e.target === e.currentTarget) {
+      this.setState({ selectedElement: null });
+    }
+  };
+
+  handlePositionChange = (id, x, y) => {
+    this.setState(state => ({
+      elements: state.elements.map(el =>
+        el.id === id ? { ...el, x, y } : el
+      ),
+    }));
+  };
+
+  handleSizeChange = (id, width, height, x, y) => {
+    this.setState(state => ({
+      elements: state.elements.map(el =>
+        el.id === id ? { ...el, width, height, x, y } : el
+      ),
+    }));
+  };
+
+  handleDeleteElement = (id) => {
+    this.setState(state => ({
+      elements: state.elements.filter(el => el.id !== id),
+      selectedElement: state.selectedElement === id ? null : state.selectedElement,
+      elementData: (() => {
+        const newData = { ...state.elementData };
+        delete newData[id];
+        return newData;
+      })(),
+    }));
+  };
+
+  handleEditElement = () => {
+    const { selectedElement, elements } = this.state;
+    if (!selectedElement) {
+      return;
+    }
+
+    const element = elements.find(el => el.id === selectedElement);
+    if (!element) {
+      return;
+    }
+
+    this.setState({ editingElement: element });
+
+    switch (element.type) {
+      case 'staticText':
+        this.setState({ showStaticTextDialog: true });
+        break;
+      case 'graph':
+        this.setState({ showGraphDialog: true });
+        break;
+      case 'dataTable':
+        this.setState({ showDataTableDialog: true });
+        break;
+    }
+  };
+
+  handleRefreshElement = (id) => {
+    this.fetchElementData(id);
+  };
+
+  handleKeyDown = (e) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (this.state.selectedElement && document.activeElement === document.body) {
+        e.preventDefault();
+        this.handleDeleteElement(this.state.selectedElement);
+      }
+    } else if (e.key === 'Escape') {
+      this.setState({ selectedElement: null });
+    }
+  };
+
+  componentWillMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  renderElementContent(element) {
+    const { elementData, classSchemas } = this.state;
+    const data = elementData[element.id];
+
+    switch (element.type) {
+      case 'staticText':
+        return <StaticTextElement config={element.config} />;
+      case 'graph':
+        return (
+          <GraphElement
+            config={element.config}
+            data={data?.data}
+            columns={classSchemas[element.config?.className]}
+            isLoading={data?.isLoading}
+            error={data?.error}
+            onRefresh={() => this.handleRefreshElement(element.id)}
+          />
+        );
+      case 'dataTable':
+        return (
+          <DataTableElement
+            config={element.config}
+            data={data?.data}
+            columns={classSchemas[element.config?.className]}
+            isLoading={data?.isLoading}
+            error={data?.error}
+            onRefresh={() => this.handleRefreshElement(element.id)}
+          />
+        );
+      default:
+        return null;
+    }
+  }
+
+  renderContent() {
+    const { elements, selectedElement } = this.state;
+    const toolbar = this.renderToolbar();
+    const extras = this.renderExtras();
+
+    return (
+      <div className={styles.wrapper}>
+        <div
+          className={styles.canvas}
+          onClick={this.handleDeselectElement}
+          tabIndex={0}
+        >
+          {elements.length === 0 ? (
+            <EmptyState
+              icon="analytics-outline"
+              title="Custom Dashboard"
+              description="Create your own dashboard by adding elements like text, graphs, and data tables."
+              cta="Add Element"
+              action={() => this.setState({ showAddDialog: true })}
+            />
+          ) : (
+            elements.map(element => (
+              <CanvasElement
+                key={element.id}
+                element={element}
+                isSelected={element.id === selectedElement}
+                onSelect={this.handleSelectElement}
+                onPositionChange={this.handlePositionChange}
+                onSizeChange={this.handleSizeChange}
+                onDelete={this.handleDeleteElement}
+                onEdit={() => {
+                  this.setState({ selectedElement: element.id }, () => {
+                    this.handleEditElement();
+                  });
+                }}
+              >
+                {this.renderElementContent(element)}
+              </CanvasElement>
+            ))
+          )}
+        </div>
+        {toolbar}
+        {extras}
+      </div>
+    );
+  }
+
+  renderToolbar() {
+    const { selectedElement } = this.state;
+
+    return (
+      <Toolbar section="Dashboard" subsection="">
+        <button
+          type="button"
+          className={styles.toolbarButton}
+          onClick={() => this.setState({ showAddDialog: true })}
+        >
+          <Icon name="plus" width={14} height={14} fill="#ffffff" />
+          <span>Add Element</span>
+        </button>
+        {selectedElement && (
+          <>
+            <span className={styles.toolbarSeparator} />
+            <button
+              type="button"
+              className={styles.toolbarButton}
+              onClick={this.handleEditElement}
+            >
+              <Icon name="edit-solid" width={14} height={14} fill="#ffffff" />
+              <span>Edit</span>
+            </button>
+            <span className={styles.toolbarSeparator} />
+            <button
+              type="button"
+              className={styles.toolbarButton}
+              onClick={() => this.handleDeleteElement(selectedElement)}
+            >
+              <Icon name="trash-solid" width={14} height={14} fill="#ffffff" />
+              <span>Delete</span>
+            </button>
+          </>
+        )}
+      </Toolbar>
+    );
+  }
+
+  renderExtras() {
+    const {
+      showAddDialog,
+      showStaticTextDialog,
+      showGraphDialog,
+      showDataTableDialog,
+      editingElement,
+      availableGraphs,
+      availableFilters,
+      classes,
+      classSchemas,
+    } = this.state;
+
+    return (
+      <>
+        {showAddDialog && (
+          <AddElementDialog
+            onClose={() => this.setState({ showAddDialog: false })}
+            onSelectType={this.handleAddElement}
+          />
+        )}
+        {showStaticTextDialog && (
+          <StaticTextConfigDialog
+            initialConfig={editingElement?.config}
+            onClose={() => this.setState({ showStaticTextDialog: false, editingElement: null })}
+            onSave={this.handleSaveStaticText}
+          />
+        )}
+        {showGraphDialog && (
+          <GraphConfigDialog
+            initialConfig={editingElement?.config}
+            availableGraphs={availableGraphs}
+            availableFilters={availableFilters}
+            classes={classes}
+            classSchemas={classSchemas}
+            onClose={() => this.setState({ showGraphDialog: false, editingElement: null })}
+            onSave={this.handleSaveGraph}
+          />
+        )}
+        {showDataTableDialog && (
+          <DataTableConfigDialog
+            initialConfig={editingElement?.config}
+            availableFilters={availableFilters}
+            classes={classes}
+            classSchemas={classSchemas}
+            onClose={() => this.setState({ showDataTableDialog: false, editingElement: null })}
+            onSave={this.handleSaveDataTable}
+          />
+        )}
+      </>
+    );
+  }
+}
+
+export default CustomDashboard;
