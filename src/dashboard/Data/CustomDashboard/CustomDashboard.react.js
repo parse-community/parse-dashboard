@@ -547,7 +547,7 @@ class CustomDashboard extends DashboardView {
           className={styles.toolbarButton}
           onClick={() => this.setState({ showAddDialog: true })}
         >
-          <Icon name="plus" width={14} height={14} fill="#ffffff" />
+          <Icon name="plus-outline" width={14} height={14} fill="#ffffff" />
           <span>Add Element</span>
         </button>
         {hasDataElements && (
