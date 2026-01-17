@@ -424,6 +424,15 @@ class CustomDashboard extends DashboardView {
     this.fetchElementData(id);
   };
 
+  handleReloadAll = () => {
+    const { elements } = this.state;
+    elements.forEach(element => {
+      if (element.type === 'graph' || element.type === 'dataTable') {
+        this.fetchElementData(element.id);
+      }
+    });
+  };
+
   handleKeyDown = (e) => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (this.state.selectedElement && document.activeElement === document.body) {
@@ -527,6 +536,10 @@ class CustomDashboard extends DashboardView {
   renderToolbar() {
     const { selectedElement } = this.state;
 
+    const hasDataElements = this.state.elements.some(
+      el => el.type === 'graph' || el.type === 'dataTable'
+    );
+
     return (
       <Toolbar section="Canvas" subsection="">
         <button
@@ -537,6 +550,19 @@ class CustomDashboard extends DashboardView {
           <Icon name="plus" width={14} height={14} fill="#ffffff" />
           <span>Add Element</span>
         </button>
+        {hasDataElements && (
+          <>
+            <span className={styles.toolbarSeparator} />
+            <button
+              type="button"
+              className={styles.toolbarButton}
+              onClick={this.handleReloadAll}
+            >
+              <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
+              <span>Reload</span>
+            </button>
+          </>
+        )}
         {selectedElement && (
           <>
             <span className={styles.toolbarSeparator} />
