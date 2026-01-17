@@ -427,6 +427,11 @@ class Browser extends DashboardView {
     ) {
       this.loadAllClassFilters(nextProps);
     }
+
+    // Refresh Cloud Config array params when app changes
+    if (this.props.params.appId !== nextProps.params.appId) {
+      this.fetchArrayConfigParams();
+    }
   }
 
   setLoadingInfoPanel(bool) {
