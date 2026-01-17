@@ -37,7 +37,7 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
     const xLeft = prevElBox.left - elBox.left - elBox.width;
 
     // Align submenu vertically with the hovered item in the parent menu
-    // offset is the pixel position of the hovered item (index * 30px item height)
+    // offset is the actual pixel position of the hovered item (via offsetTop)
     // Subtract parent's scrollTop to account for scrolled position
     const adjustedOffset = offset - prevEl.scrollTop;
     let proposedTop = prevElBox.top + adjustedOffset;
@@ -59,14 +59,15 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
   };
 };
 
-const MenuSection = ({ level, items, path, setPath, hide }) => {
+const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) => {
   const sectionRef = useRef(null);
   const [position, setPosition] = useState(null);
   const basePosition = useRef(null);
   const initialParentScrollTop = useRef(0);
 
   useEffect(() => {
-    const newPosition = getPositionToFitVisibleScreen(sectionRef, path[level] * 30);
+    // Use the actual pixel offset of the hovered item instead of index-based calculation
+    const newPosition = getPositionToFitVisibleScreen(sectionRef, hoveredItemOffset);
     if (newPosition) {
       setPosition(newPosition);
       basePosition.current = newPosition;
@@ -76,7 +77,7 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
         initialParentScrollTop.current = prevEl.scrollTop;
       }
     }
-  }, []);
+  }, [hoveredItemOffset]);
 
   // Listen for scroll events on the parent menu and adjust position
   useEffect(() => {
@@ -114,10 +115,13 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
   return (
     <ul ref={sectionRef} className={styles.category} style={style}>
       {items.map((item, index) => {
-        const handleHover = () => {
+        const handleHover = (event) => {
           const newPath = path.slice(0, level + 1);
           newPath.push(index);
-          setPath(newPath);
+          // Get the actual pixel offset of the hovered item relative to its parent
+          const itemElement = event.currentTarget;
+          const itemOffset = itemElement.offsetTop;
+          setPath(newPath, itemOffset);
         };
 
         // Handle separator items
@@ -154,6 +158,8 @@ const MenuSection = ({ level, items, path, setPath, hide }) => {
 
 const ContextMenu = ({ x, y, items }) => {
   const [path, setPath] = useState([0]);
+  // Track the pixel offset of the hovered item for each level
+  const [hoveredOffsets, setHoveredOffsets] = useState([0]);
   const [visible, setVisible] = useState(true);
   const menuRef = useRef(null);
 
@@ -164,6 +170,16 @@ const ContextMenu = ({ x, y, items }) => {
   const hide = () => {
     setVisible(false);
     setPath([0]);
+    setHoveredOffsets([0]);
+  };
+
+  // Combined setter that updates both path and offsets
+  const updatePath = (newPath, itemOffset) => {
+    setPath(newPath);
+    // Update offsets array to match the new path length
+    const newOffsets = hoveredOffsets.slice(0, newPath.length - 1);
+    newOffsets.push(itemOffset);
+    setHoveredOffsets(newOffsets);
   };
 
   useEffect(() => {
@@ -203,10 +219,11 @@ const ContextMenu = ({ x, y, items }) => {
           <MenuSection
             key={`section-${path[level]}-${level}`}
             path={path}
-            setPath={setPath}
+            setPath={updatePath}
             level={level}
             items={itemsForLevel}
             hide={hide}
+            hoveredItemOffset={hoveredOffsets[level] || 0}
           />
         );
       })}
