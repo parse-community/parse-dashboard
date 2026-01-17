@@ -26,6 +26,7 @@ import ExportSelectedRowsDialog from 'dashboard/Data/Browser/ExportSelectedRowsD
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import PointerKeyDialog from 'dashboard/Data/Browser/PointerKeyDialog.react';
 import RemoveColumnDialog from 'dashboard/Data/Browser/RemoveColumnDialog.react';
+import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
 import { List, Map } from 'immutable';
 import { get } from 'lib/AJAX';
 import * as ClassPreferences from 'lib/ClassPreferences';
@@ -35,6 +36,8 @@ import generatePath from 'lib/generatePath';
 import prettyNumber from 'lib/prettyNumber';
 import queryFromFilters from 'lib/queryFromFilters';
 import { ActionTypes } from 'lib/stores/SchemaStore';
+import { ActionTypes as ConfigActionTypes } from 'lib/stores/ConfigStore';
+import { getStore } from 'lib/stores/StoreManager';
 import stringCompare from 'lib/stringCompare';
 import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
@@ -195,6 +198,13 @@ class Browser extends DashboardView {
       classFilters: {}, // Map of className -> filters array
       selectedCellsCount: 0,
       selectedData: [],
+
+      // Cloud Config array params for context menu
+      arrayConfigParams: [],
+      showAddToConfigDialog: false,
+      addToConfigParam: '',
+      addToConfigLastType: null,
+      addToConfigPrefillValue: '',
     };
 
     this._isMounted = false;
@@ -275,6 +285,9 @@ class Browser extends DashboardView {
     this.fetchAggregationPanelData = this.fetchAggregationPanelData.bind(this);
     this.setAggregationPanelData = this.setAggregationPanelData.bind(this);
     this.handleCellSelectionChange = this.handleCellSelectionChange.bind(this);
+    this.fetchArrayConfigParams = this.fetchArrayConfigParams.bind(this);
+    this.handleAddToArrayConfig = this.handleAddToArrayConfig.bind(this);
+    this.handleConfirmAddToConfig = this.handleConfirmAddToConfig.bind(this);
 
     // Handle for the ongoing info panel cloud function request
     this.currentInfoPanelQuery = null;
@@ -310,6 +323,9 @@ class Browser extends DashboardView {
       this.setState({ configData: data });
       this.classAndCloudFuntionMap(this.state.configData);
     });
+
+    // Fetch Cloud Config array params for context menu
+    this.fetchArrayConfigParams();
 
     // Initialize FilterPreferencesManager
     if (this.context) {
@@ -2554,6 +2570,95 @@ class Browser extends DashboardView {
     }, 3500);
   }
 
+  async fetchArrayConfigParams() {
+    try {
+      const configStore = getStore('Config');
+      await configStore.dispatch(ConfigActionTypes.FETCH, {}, this.context);
+      const configData = configStore.getData(this.context);
+      if (configData) {
+        const params = configData.get('params');
+        const masterKeyOnly = configData.get('masterKeyOnly');
+        const arrayParams = [];
+        if (params) {
+          params.forEach((value, key) => {
+            if (Array.isArray(value)) {
+              arrayParams.push({
+                name: key,
+                value: value,
+                masterKeyOnly: masterKeyOnly?.get(key) || false,
+              });
+            }
+          });
+        }
+        // Sort alphabetically by name
+        arrayParams.sort((a, b) => a.name.localeCompare(b.name));
+        this.setState({ arrayConfigParams: arrayParams });
+      }
+    } catch (error) {
+      console.error('Failed to fetch config params:', error);
+    }
+  }
+
+  getEntryType(value) {
+    if (Array.isArray(value)) {
+      return 'array';
+    }
+    if (value === null) {
+      return 'null';
+    }
+    return typeof value;
+  }
+
+  handleAddToArrayConfig(param, selectedText) {
+    const { arrayConfigParams } = this.state;
+    const paramData = arrayConfigParams.find(p => p.name === param);
+    let lastType = null;
+    if (paramData && paramData.value.length > 0) {
+      lastType = this.getEntryType(paramData.value[paramData.value.length - 1]);
+    }
+    this.setState({
+      showAddToConfigDialog: true,
+      addToConfigParam: param,
+      addToConfigLastType: lastType,
+      addToConfigPrefillValue: selectedText,
+    });
+  }
+
+  async handleConfirmAddToConfig(value) {
+    try {
+      const param = this.state.addToConfigParam;
+      const configStore = getStore('Config');
+      const configData = configStore.getData(this.context);
+      const masterKeyOnlyMap = configData?.get('masterKeyOnly');
+      const masterKeyOnly = masterKeyOnlyMap?.get(param) || false;
+
+      await Parse._request(
+        'PUT',
+        'config',
+        {
+          params: {
+            [param]: { __op: 'AddUnique', objects: [Parse._encode(value)] },
+          },
+          masterKeyOnly: { [param]: masterKeyOnly },
+        },
+        { useMasterKey: true }
+      );
+
+      this.showNote(`Entry added to ${param}`, false);
+      // Refresh config params
+      await this.fetchArrayConfigParams();
+    } catch (error) {
+      this.showNote(`Failed to add entry: ${error.message}`, true);
+    } finally {
+      this.setState({
+        showAddToConfigDialog: false,
+        addToConfigParam: '',
+        addToConfigLastType: null,
+        addToConfigPrefillValue: '',
+      });
+    }
+  }
+
   showEditRowDialog(selectRow, objectId) {
     // objectId is optional param which is used for doubleClick event on objectId BrowserCell
     if (selectRow) {
@@ -2754,6 +2859,8 @@ class Browser extends DashboardView {
               limit={this.state.limit}
               skip={this.state.skip}
               onCellSelectionChange={this.handleCellSelectionChange}
+              arrayConfigParams={this.state.arrayConfigParams}
+              onAddToArrayConfig={this.handleAddToArrayConfig}
             />
             <BrowserFooter
               skip={this.state.skip}
@@ -2978,6 +3085,23 @@ class Browser extends DashboardView {
           onConfirm={(type, indentation) =>
             this.confirmExportSelectedRows(this.state.rowsToExport, type, indentation)
           }
+        />
+      );
+    } else if (this.state.showAddToConfigDialog) {
+      extras = (
+        <AddArrayEntryDialog
+          onCancel={() =>
+            this.setState({
+              showAddToConfigDialog: false,
+              addToConfigParam: '',
+              addToConfigLastType: null,
+              addToConfigPrefillValue: '',
+            })
+          }
+          onConfirm={this.handleConfirmAddToConfig}
+          lastType={this.state.addToConfigLastType}
+          param={this.state.addToConfigParam}
+          initialValue={this.state.addToConfigPrefillValue}
         />
       );
     }

@@ -208,6 +208,7 @@ export default class DataBrowser extends React.Component {
     this.removePanel = this.removePanel.bind(this);
     this.handlePanelScroll = this.handlePanelScroll.bind(this);
     this.handlePanelHeaderContextMenu = this.handlePanelHeaderContextMenu.bind(this);
+    this.handleAggregationPanelTextContextMenu = this.handleAggregationPanelTextContextMenu.bind(this);
     this.handleWrapperWheel = this.handleWrapperWheel.bind(this);
     this.onMouseDownPanelCheckBox = this.onMouseDownPanelCheckBox.bind(this);
     this.onMouseUpPanelCheckBox = this.onMouseUpPanelCheckBox.bind(this);
@@ -1147,6 +1148,48 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleAggregationPanelTextContextMenu(event) {
+    // Only show custom menu when Alt/Option key is held
+    if (!event.altKey) {
+      return;
+    }
+
+    // Check if there's selected text
+    const selection = window.getSelection();
+    const selectedText = selection ? selection.toString().trim() : '';
+
+    if (!selectedText) {
+      return;
+    }
+
+    // Get array config params from props
+    const arrayParams = this.props.arrayConfigParams || [];
+
+    if (arrayParams.length === 0) {
+      return;
+    }
+
+    // Prevent default context menu
+    event.preventDefault();
+
+    // Build context menu items
+    const menuItems = [
+      {
+        text: 'Add to Cloud Config parameter...',
+        items: arrayParams.map(param => ({
+          text: param.name,
+          callback: () => {
+            if (this.props.onAddToArrayConfig) {
+              this.props.onAddToArrayConfig(param.name, selectedText);
+            }
+          },
+        })),
+      },
+    ];
+
+    this.setContextMenu(event.pageX, event.pageY, menuItems);
+  }
+
   getRelatedObjectsMenuItemForPanel(objectId, pointerClassName) {
     const { schema, onPointerCmdClick } = this.props;
 
@@ -2048,6 +2091,7 @@ export default class DataBrowser extends React.Component {
                             selectedObjectId={this.state.selectedObjectId}
                             appName={this.props.appName}
                             className={this.props.className}
+                            onContextMenu={this.handleAggregationPanelTextContextMenu}
                           />
                         );
                       }
@@ -2106,6 +2150,7 @@ export default class DataBrowser extends React.Component {
                                 selectedObjectId={objectId}
                                 appName={this.props.appName}
                                 className={this.props.className}
+                                onContextMenu={this.handleAggregationPanelTextContextMenu}
                               />
                             </div>
                             {index < this.state.displayedObjectIds.length - 1 && (
@@ -2128,6 +2173,7 @@ export default class DataBrowser extends React.Component {
                     selectedObjectId={this.state.selectedObjectId}
                     appName={this.props.appName}
                     className={this.props.className}
+                    onContextMenu={this.handleAggregationPanelTextContextMenu}
                   />
                 )}
               </div>

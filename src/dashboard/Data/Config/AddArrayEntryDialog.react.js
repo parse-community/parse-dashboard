@@ -14,10 +14,10 @@ import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 
 export default class AddArrayEntryDialog extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      value: '',
+      value: props.initialValue || '',
       showMismatchRow: false,
       mismatchConfirmed: false,
       parsedType: '',

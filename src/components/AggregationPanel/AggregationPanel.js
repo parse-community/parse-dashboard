@@ -27,6 +27,7 @@ const AggregationPanel = ({
   cloudCodeFunction = null,
   panelTitle = null,
   style,
+  onContextMenu,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [nestedData, setNestedData] = useState(null);
@@ -137,6 +138,7 @@ const AggregationPanel = ({
                     cloudCodeFunction={item.cloudCodeFunction}
                     panelTitle={item.title}
                     style={item.style}
+                    onContextMenu={onContextMenu}
                   />
                 </div>
               );
@@ -205,6 +207,7 @@ const AggregationPanel = ({
   return (
     <div
       onKeyDown={handleKeyDown}
+      onContextMenu={onContextMenu}
       tabIndex={0}
     >
       {isLoadingInfoPanel ? (
