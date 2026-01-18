@@ -13,6 +13,8 @@ import Icon from 'components/Icon/Icon.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import CanvasElement from './CanvasElement.react';
 import AddElementDialog from './AddElementDialog.react';
+import SaveCanvasDialog from './SaveCanvasDialog.react';
+import LoadCanvasDialog from './LoadCanvasDialog.react';
 import StaticTextElement from './elements/StaticTextElement.react';
 import StaticTextConfigDialog from './elements/StaticTextConfigDialog.react';
 import GraphElement from './elements/GraphElement.react';
@@ -21,6 +23,7 @@ import DataTableElement from './elements/DataTableElement.react';
 import DataTableConfigDialog from './elements/DataTableConfigDialog.react';
 import GraphPreferencesManager from 'lib/GraphPreferencesManager';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
+import CanvasPreferencesManager from 'lib/CanvasPreferencesManager';
 import { CurrentApp } from 'context/currentApp';
 import subscribeTo from 'lib/subscribeTo';
 import { ActionTypes } from 'lib/stores/SchemaStore';
@@ -46,6 +49,8 @@ class CustomDashboard extends DashboardView {
       showStaticTextDialog: false,
       showGraphDialog: false,
       showDataTableDialog: false,
+      showSaveDialog: false,
+      showLoadDialog: false,
       editingElement: null,
       availableGraphs: {},
       availableFilters: {},
@@ -53,14 +58,47 @@ class CustomDashboard extends DashboardView {
       classSchemas: {},
       autoReloadInterval: 0,
       autoReloadProgress: 0,
+      savedCanvases: [],
+      currentCanvasId: null,
+      currentCanvasName: null,
+      hasUnsavedChanges: false,
     };
     this.autoReloadTimer = null;
     this.autoReloadProgressTimer = null;
     this.autoReloadStartTime = null;
+    this.canvasPreferencesManager = null;
   }
 
   componentDidMount() {
     this.props.schema.dispatch(ActionTypes.FETCH);
+    this.initCanvasPreferencesManager();
+  }
+
+  initCanvasPreferencesManager() {
+    if (!this.context || !this.context.applicationId) {
+      return;
+    }
+
+    if (!this.canvasPreferencesManager || this.canvasPreferencesManager.app !== this.context) {
+      this.canvasPreferencesManager = new CanvasPreferencesManager(this.context);
+    }
+
+    this.loadSavedCanvases();
+  }
+
+  async loadSavedCanvases() {
+    if (!this.canvasPreferencesManager || !this.context?.applicationId) {
+      return;
+    }
+
+    try {
+      const savedCanvases = await this.canvasPreferencesManager.getCanvases(
+        this.context.applicationId
+      );
+      this.setState({ savedCanvases });
+    } catch (error) {
+      console.error('Failed to load saved canvases:', error);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -171,7 +209,7 @@ class CustomDashboard extends DashboardView {
         elements: updatedElements,
         showStaticTextDialog: false,
         editingElement: null,
-      });
+      }, this.markUnsavedChanges);
     } else {
       const newElement = {
         id: generateId(),
@@ -185,7 +223,7 @@ class CustomDashboard extends DashboardView {
       this.setState({
         elements: [...elements, newElement],
         showStaticTextDialog: false,
-      });
+      }, this.markUnsavedChanges);
     }
   };
 
@@ -202,6 +240,7 @@ class CustomDashboard extends DashboardView {
         editingElement: null,
       }, () => {
         this.fetchElementData(editingElement.id);
+        this.markUnsavedChanges();
       });
     } else {
       const newElement = {
@@ -218,6 +257,7 @@ class CustomDashboard extends DashboardView {
         showGraphDialog: false,
       }, () => {
         this.fetchElementData(newElement.id);
+        this.markUnsavedChanges();
       });
     }
   };
@@ -235,6 +275,7 @@ class CustomDashboard extends DashboardView {
         editingElement: null,
       }, () => {
         this.fetchElementData(editingElement.id);
+        this.markUnsavedChanges();
       });
     } else {
       const newElement = {
@@ -251,6 +292,7 @@ class CustomDashboard extends DashboardView {
         showDataTableDialog: false,
       }, () => {
         this.fetchElementData(newElement.id);
+        this.markUnsavedChanges();
       });
     }
   };
@@ -384,7 +426,7 @@ class CustomDashboard extends DashboardView {
       elements: state.elements.map(el =>
         el.id === id ? { ...el, x, y } : el
       ),
-    }));
+    }), this.markUnsavedChanges);
   };
 
   handleSizeChange = (id, width, height, x, y) => {
@@ -392,7 +434,7 @@ class CustomDashboard extends DashboardView {
       elements: state.elements.map(el =>
         el.id === id ? { ...el, width, height, x, y } : el
       ),
-    }));
+    }), this.markUnsavedChanges);
   };
 
   handleDeleteElement = (id) => {
@@ -404,7 +446,7 @@ class CustomDashboard extends DashboardView {
         delete newData[id];
         return newData;
       })(),
-    }));
+    }), this.markUnsavedChanges);
   };
 
   handleEditElement = () => {
@@ -477,6 +519,117 @@ class CustomDashboard extends DashboardView {
         this.autoReloadStartTime = Date.now();
         this.setState({ autoReloadProgress: 0 });
       }, seconds * 1000);
+    }
+  };
+
+  handleSaveCanvas = async (name) => {
+    if (!this.canvasPreferencesManager || !this.context?.applicationId) {
+      console.error('Canvas preferences manager not initialized');
+      return;
+    }
+
+    const { elements, currentCanvasId, savedCanvases } = this.state;
+
+    // Create canvas object
+    const canvas = {
+      id: currentCanvasId || this.canvasPreferencesManager.generateCanvasId(),
+      name,
+      elements,
+    };
+
+    try {
+      // Update or add to saved canvases
+      let updatedCanvases;
+      if (currentCanvasId) {
+        updatedCanvases = savedCanvases.map(c =>
+          c.id === currentCanvasId ? canvas : c
+        );
+      } else {
+        updatedCanvases = [...savedCanvases, canvas];
+      }
+
+      await this.canvasPreferencesManager.saveCanvas(
+        this.context.applicationId,
+        canvas,
+        updatedCanvases
+      );
+
+      this.setState({
+        showSaveDialog: false,
+        savedCanvases: updatedCanvases,
+        currentCanvasId: canvas.id,
+        currentCanvasName: name,
+        hasUnsavedChanges: false,
+      });
+    } catch (error) {
+      console.error('Failed to save canvas:', error);
+    }
+  };
+
+  handleLoadCanvas = (canvas) => {
+    // Load elements from saved canvas
+    this.setState({
+      elements: canvas.elements || [],
+      elementData: {},
+      selectedElement: null,
+      currentCanvasId: canvas.id,
+      currentCanvasName: canvas.name,
+      hasUnsavedChanges: false,
+      showLoadDialog: false,
+    }, () => {
+      // Fetch data for all graph and data table elements
+      canvas.elements?.forEach(element => {
+        if (element.type === 'graph' || element.type === 'dataTable') {
+          this.fetchElementData(element.id);
+        }
+      });
+    });
+  };
+
+  handleDeleteCanvas = async (canvasId) => {
+    if (!this.canvasPreferencesManager || !this.context?.applicationId) {
+      return;
+    }
+
+    const { savedCanvases, currentCanvasId } = this.state;
+    const updatedCanvases = savedCanvases.filter(c => c.id !== canvasId);
+
+    try {
+      await this.canvasPreferencesManager.deleteCanvas(
+        this.context.applicationId,
+        canvasId,
+        updatedCanvases
+      );
+
+      // If we deleted the currently loaded canvas, reset the state
+      const resetCurrentCanvas = currentCanvasId === canvasId;
+
+      this.setState({
+        savedCanvases: updatedCanvases,
+        ...(resetCurrentCanvas && {
+          currentCanvasId: null,
+          currentCanvasName: null,
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to delete canvas:', error);
+    }
+  };
+
+  handleNewCanvas = () => {
+    this.setState({
+      elements: [],
+      elementData: {},
+      selectedElement: null,
+      currentCanvasId: null,
+      currentCanvasName: null,
+      hasUnsavedChanges: false,
+    });
+  };
+
+  markUnsavedChanges = () => {
+    if (!this.state.hasUnsavedChanges) {
+      this.setState({ hasUnsavedChanges: true });
     }
   };
 
@@ -587,14 +740,59 @@ class CustomDashboard extends DashboardView {
   }
 
   renderToolbar() {
-    const { selectedElement, autoReloadInterval, autoReloadProgress } = this.state;
+    const {
+      selectedElement,
+      autoReloadInterval,
+      autoReloadProgress,
+      currentCanvasName,
+      hasUnsavedChanges,
+      elements,
+    } = this.state;
 
-    const hasDataElements = this.state.elements.some(
+    const hasDataElements = elements.some(
       el => el.type === 'graph' || el.type === 'dataTable'
     );
 
+    const hasElements = elements.length > 0;
+
+    // Build subsection with canvas name and unsaved indicator
+    let subsection = currentCanvasName || '';
+    if (hasUnsavedChanges && subsection) {
+      subsection += ' *';
+    } else if (hasUnsavedChanges && hasElements) {
+      subsection = 'Unsaved *';
+    }
+
     return (
-      <Toolbar section="Canvas" subsection="">
+      <Toolbar section="Canvas" subsection={subsection}>
+        <a
+          className={styles.toolbarButton}
+          onClick={this.handleNewCanvas}
+        >
+          <Icon name="files-outline" width={14} height={14} />
+          <span>New</span>
+        </a>
+        <div className={styles.toolbarSeparator} />
+        <a
+          className={styles.toolbarButton}
+          onClick={() => this.setState({ showLoadDialog: true })}
+        >
+          <Icon name="folder-outline" width={14} height={14} />
+          <span>Load</span>
+        </a>
+        {hasElements && (
+          <>
+            <div className={styles.toolbarSeparator} />
+            <a
+              className={styles.toolbarButton}
+              onClick={() => this.setState({ showSaveDialog: true })}
+            >
+              <Icon name="download" width={14} height={14} />
+              <span>Save</span>
+            </a>
+          </>
+        )}
+        <div className={styles.toolbarSeparator} />
         <a
           className={styles.toolbarButton}
           onClick={() => this.setState({ showAddDialog: true })}
@@ -668,11 +866,15 @@ class CustomDashboard extends DashboardView {
       showStaticTextDialog,
       showGraphDialog,
       showDataTableDialog,
+      showSaveDialog,
+      showLoadDialog,
       editingElement,
       availableGraphs,
       availableFilters,
       classes,
       classSchemas,
+      savedCanvases,
+      currentCanvasName,
     } = this.state;
 
     return (
@@ -709,6 +911,21 @@ class CustomDashboard extends DashboardView {
             classSchemas={classSchemas}
             onClose={() => this.setState({ showDataTableDialog: false, editingElement: null })}
             onSave={this.handleSaveDataTable}
+          />
+        )}
+        {showSaveDialog && (
+          <SaveCanvasDialog
+            currentName={currentCanvasName}
+            onClose={() => this.setState({ showSaveDialog: false })}
+            onSave={this.handleSaveCanvas}
+          />
+        )}
+        {showLoadDialog && (
+          <LoadCanvasDialog
+            canvases={savedCanvases}
+            onClose={() => this.setState({ showLoadDialog: false })}
+            onLoad={this.handleLoadCanvas}
+            onDelete={this.handleDeleteCanvas}
           />
         )}
       </>
