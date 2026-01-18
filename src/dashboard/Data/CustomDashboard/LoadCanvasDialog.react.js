@@ -13,7 +13,7 @@ import styles from './LoadCanvasDialog.scss';
 const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
-  const [collapsedGroups, setCollapsedGroups] = useState({});
+  const [expandedGroups, setExpandedGroups] = useState({});
 
   const handleLoad = () => {
     if (!selectedId) {
@@ -47,7 +47,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
   };
 
   const toggleGroup = (groupName) => {
-    setCollapsedGroups(prev => ({
+    setExpandedGroups(prev => ({
       ...prev,
       [groupName]: !prev[groupName]
     }));
@@ -90,11 +90,16 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
       key={canvas.id}
       className={`${styles.canvasItem} ${selectedId === canvas.id ? styles.selected : ''}`}
       onClick={() => setSelectedId(canvas.id)}
+      onDoubleClick={() => onLoad(canvas)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          if (e.key === ' ') {
-            e.preventDefault();
+        if (e.key === 'Enter') {
+          if (selectedId === canvas.id) {
+            onLoad(canvas);
+          } else {
+            setSelectedId(canvas.id);
           }
+        } else if (e.key === ' ') {
+          e.preventDefault();
           setSelectedId(canvas.id);
         }
       }}
@@ -142,7 +147,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
   );
 
   const renderGroup = (groupName) => {
-    const isCollapsed = collapsedGroups[groupName];
+    const isExpanded = expandedGroups[groupName];
     const groupCanvases = groupedCanvases[groupName];
 
     return (
@@ -151,16 +156,16 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
           type="button"
           className={styles.groupHeader}
           onClick={() => toggleGroup(groupName)}
-          aria-expanded={!isCollapsed}
+          aria-expanded={isExpanded}
         >
           <span
             className={styles.groupArrow}
-            style={{ transform: isCollapsed ? 'scaleY(1)' : 'scaleY(-1)' }}
+            style={{ transform: isExpanded ? 'scaleY(-1)' : 'scaleY(1)' }}
           />
           <span className={styles.groupName}>{groupName}</span>
           <span className={styles.groupCount}>({groupCanvases.length})</span>
         </button>
-        {!isCollapsed && (
+        {isExpanded && (
           <div className={styles.groupContent}>
             {groupCanvases.map(renderCanvasItem)}
           </div>
@@ -195,7 +200,11 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
               <div className={styles.ungroupedLabel}>Ungrouped</div>
             </div>
           )}
-          {ungroupedCanvases.map(renderCanvasItem)}
+          {ungroupedCanvases.length > 0 && (
+            <div className={styles.ungroupedContent}>
+              {ungroupedCanvases.map(renderCanvasItem)}
+            </div>
+          )}
         </div>
       )}
     </Modal>

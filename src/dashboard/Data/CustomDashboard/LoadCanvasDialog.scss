@@ -194,7 +194,7 @@
 }
 
 .groupContent {
-  padding-left: 16px;
+  padding: 0 16px;
   margin-top: 8px;
 }
 
@@ -210,5 +210,9 @@
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 0 4px;
+  padding: 0 16px;
+}
+
+.ungroupedContent {
+  padding: 0 16px;
 }
