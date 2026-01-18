@@ -34,6 +34,7 @@ const formatValue = (value) => {
 const DataTableElement = ({
   config,
   data,
+  columns,
   isLoading,
   error,
   onRefresh,
@@ -77,7 +78,10 @@ const DataTableElement = ({
     );
   }
 
-  const displayColumns = config.columns || Object.keys(data[0]).filter(k => k !== 'ACL');
+  const displayColumns = (
+    config.columns ||
+    (columns ? Object.keys(columns) : Object.keys(data[0]))
+  ).filter(k => k !== 'ACL');
 
   return (
     <div className={styles.dataTableElement}>

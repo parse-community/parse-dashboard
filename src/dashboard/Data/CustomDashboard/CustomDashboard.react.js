@@ -835,6 +835,7 @@ class CustomDashboard extends DashboardView {
           <DataTableElement
             config={element.config}
             data={data?.data}
+            columns={classSchemas[element.config?.className]}
             isLoading={data?.isLoading}
             error={data?.error}
             onRefresh={() => this.handleRefreshElement(element.id)}
