@@ -415,6 +415,11 @@ class CustomDashboard extends DashboardView {
       const results = await query.find({ useMasterKey: true });
       const data = results.map(obj => obj.toJSON());
 
+      // Check if element still exists before updating state
+      if (!this.state.elements.find(el => el.id === elementId)) {
+        return;
+      }
+
       this.setState(state => ({
         elementData: {
           ...state.elementData,
@@ -423,6 +428,12 @@ class CustomDashboard extends DashboardView {
       }));
     } catch (error) {
       console.error('Error fetching element data:', error);
+
+      // Check if element still exists before updating state
+      if (!this.state.elements.find(el => el.id === elementId)) {
+        return;
+      }
+
       this.setState(state => ({
         elementData: {
           ...state.elementData,
