@@ -15,7 +15,7 @@ const sizeMap = {
   h3: styles.h3,
 };
 
-const StaticTextElement = ({ config }) => {
+const StaticTextElement = ({ config = {} }) => {
   const { text, textSize, isBold, isItalic } = config;
 
   const className = [
