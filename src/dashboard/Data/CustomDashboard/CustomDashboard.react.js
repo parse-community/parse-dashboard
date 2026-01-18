@@ -81,6 +81,12 @@ class CustomDashboard extends DashboardView {
     if (schema && schema.data) {
       this.loadClasses();
     }
+
+    // Register event listeners
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', this.handleFullscreenChange);
   }
 
   initCanvasPreferencesManager() {
@@ -767,13 +773,6 @@ class CustomDashboard extends DashboardView {
       }
     }
   };
-
-  componentWillMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
-    document.addEventListener('msfullscreenchange', this.handleFullscreenChange);
-  }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
