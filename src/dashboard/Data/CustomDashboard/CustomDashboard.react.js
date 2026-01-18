@@ -72,9 +72,12 @@ class CustomDashboard extends DashboardView {
     this.autoReloadProgressTimer = null;
     this.autoReloadStartTime = null;
     this.canvasPreferencesManager = null;
+    this._isMounted = false;
+    this._elementSeq = {};
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const { schema } = this.props;
     schema.dispatch(ActionTypes.FETCH);
     this.initCanvasPreferencesManager();
@@ -384,6 +387,14 @@ class CustomDashboard extends DashboardView {
       return;
     }
 
+    // Increment sequence token for this element to invalidate stale responses
+    this._elementSeq[elementId] = (this._elementSeq[elementId] || 0) + 1;
+    const localToken = this._elementSeq[elementId];
+
+    if (!this._isMounted) {
+      return;
+    }
+
     this.setState(state => ({
       elementData: {
         ...state.elementData,
@@ -423,6 +434,11 @@ class CustomDashboard extends DashboardView {
       const results = await query.find({ useMasterKey: true });
       const data = results.map(obj => obj.toJSON());
 
+      // Check if component is still mounted and this is the latest request
+      if (!this._isMounted || localToken !== this._elementSeq[elementId]) {
+        return;
+      }
+
       // Check if element still exists before updating state
       if (!this.state.elements.find(el => el.id === elementId)) {
         return;
@@ -436,6 +452,11 @@ class CustomDashboard extends DashboardView {
       }));
     } catch (error) {
       console.error('Error fetching element data:', error);
+
+      // Check if component is still mounted and this is the latest request
+      if (!this._isMounted || localToken !== this._elementSeq[elementId]) {
+        return;
+      }
 
       // Check if element still exists before updating state
       if (!this.state.elements.find(el => el.id === elementId)) {
@@ -817,6 +838,7 @@ class CustomDashboard extends DashboardView {
   };
 
   componentWillUnmount() {
+    this._isMounted = false;
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
     document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
