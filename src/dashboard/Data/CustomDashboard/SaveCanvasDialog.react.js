@@ -5,24 +5,45 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import TextInput from 'components/TextInput/TextInput.react';
+import Dropdown from 'components/Dropdown/Dropdown.react';
+import Option from 'components/Dropdown/Option.react';
 
-const SaveCanvasDialog = ({ currentName, onClose, onSave }) => {
+const SaveCanvasDialog = ({ currentName, currentGroup, existingGroups = [], onClose, onSave }) => {
   const [name, setName] = useState(currentName || '');
+  const [groupSelection, setGroupSelection] = useState(currentGroup || '');
+  const [newGroup, setNewGroup] = useState('');
+  const [isCreatingNewGroup, setIsCreatingNewGroup] = useState(false);
+
+  const sortedGroups = useMemo(() => {
+    return [...existingGroups].sort((a, b) => a.localeCompare(b));
+  }, [existingGroups]);
 
   const handleSave = () => {
     const trimmedName = name.trim();
     if (!trimmedName) {
       return;
     }
-    onSave(trimmedName);
+    const group = isCreatingNewGroup ? newGroup.trim() : groupSelection;
+    onSave(trimmedName, group || null);
   };
 
-  const isValid = name.trim().length > 0;
+  const handleGroupChange = (value) => {
+    if (value === '__new__') {
+      setIsCreatingNewGroup(true);
+      setGroupSelection('');
+    } else {
+      setIsCreatingNewGroup(false);
+      setGroupSelection(value);
+      setNewGroup('');
+    }
+  };
+
+  const isValid = name.trim().length > 0 && (!isCreatingNewGroup || newGroup.trim().length > 0);
 
   return (
     <Modal
@@ -46,6 +67,34 @@ const SaveCanvasDialog = ({ currentName, onClose, onSave }) => {
           />
         }
       />
+      <Field
+        label={<Label text="Group" description="Optionally organize this canvas into a group" />}
+        input={
+          <Dropdown
+            value={isCreatingNewGroup ? '__new__' : groupSelection}
+            onChange={handleGroupChange}
+            placeholder="No group"
+          >
+            <Option value="">No group</Option>
+            {sortedGroups.map(group => (
+              <Option key={group} value={group}>{group}</Option>
+            ))}
+            <Option value="__new__">+ Create new group...</Option>
+          </Dropdown>
+        }
+      />
+      {isCreatingNewGroup && (
+        <Field
+          label={<Label text="New Group Name" description="Enter a name for the new group" />}
+          input={
+            <TextInput
+              value={newGroup}
+              onChange={setNewGroup}
+              placeholder="My Group"
+            />
+          }
+        />
+      )}
     </Modal>
   );
 };

@@ -64,6 +64,7 @@ class CustomDashboard extends DashboardView {
       savedCanvases: [],
       currentCanvasId: null,
       currentCanvasName: null,
+      currentCanvasGroup: null,
       hasUnsavedChanges: false,
       isFullscreen: false,
     };
@@ -132,6 +133,7 @@ class CustomDashboard extends DashboardView {
       selectedElement: null,
       currentCanvasId: canvas.id,
       currentCanvasName: canvas.name,
+      currentCanvasGroup: canvas.group || null,
       hasUnsavedChanges: false,
     }, () => {
       // Fetch data for all graph and data table elements
@@ -174,6 +176,7 @@ class CustomDashboard extends DashboardView {
             selectedElement: null,
             currentCanvasId: null,
             currentCanvasName: null,
+            currentCanvasGroup: null,
             hasUnsavedChanges: false,
           });
         }
@@ -611,7 +614,7 @@ class CustomDashboard extends DashboardView {
     }
   };
 
-  handleSaveCanvas = async (name) => {
+  handleSaveCanvas = async (name, group) => {
     if (!this.canvasPreferencesManager || !this.context?.applicationId) {
       console.error('Canvas preferences manager not initialized');
       return;
@@ -623,6 +626,7 @@ class CustomDashboard extends DashboardView {
     const canvas = {
       id: currentCanvasId || this.canvasPreferencesManager.generateCanvasId(),
       name,
+      group,
       elements,
     };
 
@@ -651,6 +655,7 @@ class CustomDashboard extends DashboardView {
         savedCanvases: updatedCanvases,
         currentCanvasId: canvas.id,
         currentCanvasName: name,
+        currentCanvasGroup: group,
         hasUnsavedChanges: false,
       }, () => {
         // Navigate to canvas URL if this is a new canvas
@@ -671,6 +676,7 @@ class CustomDashboard extends DashboardView {
       selectedElement: null,
       currentCanvasId: canvas.id,
       currentCanvasName: canvas.name,
+      currentCanvasGroup: canvas.group || null,
       hasUnsavedChanges: false,
       showLoadDialog: false,
     }, () => {
@@ -712,6 +718,7 @@ class CustomDashboard extends DashboardView {
           selectedElement: null,
           currentCanvasId: null,
           currentCanvasName: null,
+          currentCanvasGroup: null,
           hasUnsavedChanges: false,
         }),
       }, () => {
@@ -731,6 +738,7 @@ class CustomDashboard extends DashboardView {
       selectedElement: null,
       currentCanvasId: null,
       currentCanvasName: null,
+      currentCanvasGroup: null,
       hasUnsavedChanges: false,
     }, () => {
       // Clear canvas ID from URL
@@ -1049,7 +1057,15 @@ class CustomDashboard extends DashboardView {
       classSchemas,
       savedCanvases,
       currentCanvasName,
+      currentCanvasGroup,
     } = this.state;
+
+    // Extract unique group names from saved canvases
+    const existingGroups = [...new Set(
+      savedCanvases
+        .map(c => c.group)
+        .filter(g => g != null && g !== '')
+    )];
 
     return (
       <>
@@ -1089,6 +1105,8 @@ class CustomDashboard extends DashboardView {
         {showSaveDialog && (
           <SaveCanvasDialog
             currentName={currentCanvasName}
+            currentGroup={currentCanvasGroup}
+            existingGroups={existingGroups}
             onClose={() => this.setState({ showSaveDialog: false })}
             onSave={this.handleSaveCanvas}
           />
