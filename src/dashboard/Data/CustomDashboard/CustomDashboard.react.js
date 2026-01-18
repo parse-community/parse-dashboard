@@ -5,9 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+/* global Parse */
 import React from 'react';
 import DashboardView from 'dashboard/DashboardView.react';
-import Button from 'components/Button/Button.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
@@ -732,7 +732,6 @@ class CustomDashboard extends DashboardView {
           <DataTableElement
             config={element.config}
             data={data?.data}
-            columns={classSchemas[element.config?.className]}
             isLoading={data?.isLoading}
             error={data?.error}
             onRefresh={() => this.handleRefreshElement(element.id)}
@@ -777,12 +776,6 @@ class CustomDashboard extends DashboardView {
                 onSelect={this.handleSelectElement}
                 onPositionChange={this.handlePositionChange}
                 onSizeChange={this.handleSizeChange}
-                onDelete={this.handleDeleteElement}
-                onEdit={() => {
-                  this.setState({ selectedElement: element.id }, () => {
-                    this.handleEditElement();
-                  });
-                }}
               >
                 {this.renderElementContent(element)}
               </CanvasElement>
@@ -966,7 +959,6 @@ class CustomDashboard extends DashboardView {
             availableGraphs={availableGraphs}
             availableFilters={availableFilters}
             classes={classes}
-            classSchemas={classSchemas}
             onClose={() => this.setState({ showGraphDialog: false, editingElement: null })}
             onSave={this.handleSaveGraph}
           />

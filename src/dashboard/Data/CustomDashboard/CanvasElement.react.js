@@ -15,8 +15,6 @@ const CanvasElement = ({
   onSelect,
   onPositionChange,
   onSizeChange,
-  onDelete,
-  onEdit,
   children,
 }) => {
   const handleDragStop = (e, d) => {

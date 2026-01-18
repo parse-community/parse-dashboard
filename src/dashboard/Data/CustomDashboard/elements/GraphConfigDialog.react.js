@@ -18,7 +18,6 @@ const GraphConfigDialog = ({
   availableGraphs,
   availableFilters,
   classes,
-  classSchemas,
   onClose,
   onSave,
 }) => {

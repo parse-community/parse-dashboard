@@ -34,7 +34,6 @@ const formatValue = (value) => {
 const DataTableElement = ({
   config,
   data,
-  columns,
   isLoading,
   error,
   onRefresh,
