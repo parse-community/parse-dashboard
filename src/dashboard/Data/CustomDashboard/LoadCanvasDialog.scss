@@ -167,8 +167,15 @@
   }
 }
 
-.groupIcon {
+.groupArrow {
   flex-shrink: 0;
+  transition: transform 0.15s ease;
+
+  &:after {
+    @include arrow('down', 10px, 6px, #64748b);
+    content: '';
+    display: block;
+  }
 }
 
 .groupName {

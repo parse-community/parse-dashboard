@@ -153,12 +153,9 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
           onClick={() => toggleGroup(groupName)}
           aria-expanded={!isCollapsed}
         >
-          <Icon
-            name={isCollapsed ? 'right-solid' : 'down-solid'}
-            width={12}
-            height={12}
-            fill="#64748b"
-            className={styles.groupIcon}
+          <span
+            className={styles.groupArrow}
+            style={{ transform: isCollapsed ? 'scaleY(1)' : 'scaleY(-1)' }}
           />
           <span className={styles.groupName}>{groupName}</span>
           <span className={styles.groupCount}>({groupCanvases.length})</span>
