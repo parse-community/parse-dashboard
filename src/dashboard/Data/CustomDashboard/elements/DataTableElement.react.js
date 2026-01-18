@@ -62,9 +62,11 @@ const DataTableElement = ({
       <div className={styles.error}>
         <Icon name="exclamation-triangle" width={24} height={24} fill="#ef4444" />
         <p>Error loading data</p>
-        <button type="button" onClick={onRefresh} className={styles.retryButton}>
-          Retry
-        </button>
+        {onRefresh && (
+          <button type="button" onClick={onRefresh} className={styles.retryButton}>
+            Retry
+          </button>
+        )}
       </div>
     );
   }

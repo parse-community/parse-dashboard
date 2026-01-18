@@ -406,8 +406,13 @@ class CustomDashboard extends DashboardView {
         }
       }
 
-      if (limit) {
-        query.limit(limit);
+      if (limit != null) {
+        const numericLimit = Number(limit);
+        if (Number.isFinite(numericLimit) && numericLimit >= 0) {
+          query.limit(numericLimit);
+        } else {
+          query.limit(1000);
+        }
       } else {
         query.limit(1000);
       }
@@ -702,8 +707,12 @@ class CustomDashboard extends DashboardView {
       this.setState({
         savedCanvases: updatedCanvases,
         ...(resetCurrentCanvas && {
+          elements: [],
+          elementData: {},
+          selectedElement: null,
           currentCanvasId: null,
           currentCanvasName: null,
+          hasUnsavedChanges: false,
         }),
       }, () => {
         if (resetCurrentCanvas) {
