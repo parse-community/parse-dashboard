@@ -760,9 +760,23 @@ class CustomDashboard extends DashboardView {
     this.setState({ isFullscreen: isCurrentlyFullscreen });
   };
 
+  isEditableElement(element) {
+    if (!element) {
+      return false;
+    }
+    const tagName = element.tagName?.toUpperCase();
+    if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT') {
+      return true;
+    }
+    if (element.isContentEditable) {
+      return true;
+    }
+    return false;
+  }
+
   handleKeyDown = (e) => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
-      if (this.state.selectedElement && document.activeElement === document.body) {
+      if (this.state.selectedElement && !this.isEditableElement(document.activeElement)) {
         e.preventDefault();
         this.handleDeleteElement(this.state.selectedElement);
       }
