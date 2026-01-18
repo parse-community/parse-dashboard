@@ -71,8 +71,13 @@ class CustomDashboard extends DashboardView {
   }
 
   componentDidMount() {
-    this.props.schema.dispatch(ActionTypes.FETCH);
+    const { schema } = this.props;
+    schema.dispatch(ActionTypes.FETCH);
     this.initCanvasPreferencesManager();
+    // Load classes if schema data is already available (e.g., when navigating back)
+    if (schema && schema.data) {
+      this.loadClasses();
+    }
   }
 
   initCanvasPreferencesManager() {
