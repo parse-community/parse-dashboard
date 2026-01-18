@@ -292,6 +292,7 @@ export default class Dashboard extends React.Component {
         <Route path="cloud_code/*" element={<CloudCode />} />
         <Route path="views/:name" element={<Views />} />
         <Route path="views" element={<Views />} />
+        <Route path="canvas/:canvasId" element={<CustomDashboard />} />
         <Route path="canvas" element={<CustomDashboard />} />
         <Route path="agent" element={<Agent agentConfig={this.state.agentConfig} />} />
         <Route path="webhooks" element={<Webhooks />} />

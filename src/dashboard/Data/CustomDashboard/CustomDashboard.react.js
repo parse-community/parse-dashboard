@@ -26,7 +26,9 @@ import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import CanvasPreferencesManager from 'lib/CanvasPreferencesManager';
 import { CurrentApp } from 'context/currentApp';
 import subscribeTo from 'lib/subscribeTo';
+import { withRouter } from 'lib/withRouter';
 import { ActionTypes } from 'lib/stores/SchemaStore';
+import generatePath from 'lib/generatePath';
 import styles from './CustomDashboard.scss';
 
 function generateId() {
@@ -34,6 +36,7 @@ function generateId() {
 }
 
 @subscribeTo('Schema', 'schema')
+@withRouter
 class CustomDashboard extends DashboardView {
   static contextType = CurrentApp;
 
@@ -101,16 +104,74 @@ class CustomDashboard extends DashboardView {
       const savedCanvases = await this.canvasPreferencesManager.getCanvases(
         this.context.applicationId
       );
-      this.setState({ savedCanvases });
+      this.setState({ savedCanvases }, () => {
+        // Load canvas from URL if canvasId is present
+        const canvasId = this.props.params?.canvasId;
+        if (canvasId) {
+          const canvas = savedCanvases.find(c => c.id === canvasId);
+          if (canvas) {
+            this.loadCanvasById(canvas);
+          }
+        }
+      });
     } catch (error) {
       console.error('Failed to load saved canvases:', error);
     }
+  }
+
+  loadCanvasById(canvas) {
+    this.setState({
+      elements: canvas.elements || [],
+      elementData: {},
+      selectedElement: null,
+      currentCanvasId: canvas.id,
+      currentCanvasName: canvas.name,
+      hasUnsavedChanges: false,
+    }, () => {
+      // Fetch data for all graph and data table elements
+      canvas.elements?.forEach(element => {
+        if (element.type === 'graph' || element.type === 'dataTable') {
+          this.fetchElementData(element.id);
+        }
+      });
+    });
+  }
+
+  navigateToCanvas(canvasId) {
+    const path = generatePath(this.context, canvasId ? `canvas/${canvasId}` : 'canvas');
+    this.props.navigate(path);
   }
 
   componentDidUpdate(prevProps) {
     // Load classes when schema data becomes available or changes
     if (this.props.schema?.data !== prevProps.schema?.data) {
       this.loadClasses();
+    }
+
+    // Handle URL changes (browser back/forward navigation)
+    const prevCanvasId = prevProps.params?.canvasId;
+    const currentCanvasId = this.props.params?.canvasId;
+
+    if (prevCanvasId !== currentCanvasId) {
+      if (currentCanvasId) {
+        // Load the canvas specified in URL
+        const canvas = this.state.savedCanvases.find(c => c.id === currentCanvasId);
+        if (canvas && this.state.currentCanvasId !== currentCanvasId) {
+          this.loadCanvasById(canvas);
+        }
+      } else if (prevCanvasId && !currentCanvasId) {
+        // URL changed from canvas/:id to canvas/ - reset to empty canvas
+        if (this.state.currentCanvasId) {
+          this.setState({
+            elements: [],
+            elementData: {},
+            selectedElement: null,
+            currentCanvasId: null,
+            currentCanvasName: null,
+            hasUnsavedChanges: false,
+          });
+        }
+      }
     }
   }
 
@@ -560,12 +621,20 @@ class CustomDashboard extends DashboardView {
         updatedCanvases
       );
 
+      // Update URL to include canvas ID
+      const isNewCanvas = !currentCanvasId;
+
       this.setState({
         showSaveDialog: false,
         savedCanvases: updatedCanvases,
         currentCanvasId: canvas.id,
         currentCanvasName: name,
         hasUnsavedChanges: false,
+      }, () => {
+        // Navigate to canvas URL if this is a new canvas
+        if (isNewCanvas) {
+          this.navigateToCanvas(canvas.id);
+        }
       });
     } catch (error) {
       console.error('Failed to save canvas:', error);
@@ -583,6 +652,9 @@ class CustomDashboard extends DashboardView {
       hasUnsavedChanges: false,
       showLoadDialog: false,
     }, () => {
+      // Update URL to include canvas ID
+      this.navigateToCanvas(canvas.id);
+
       // Fetch data for all graph and data table elements
       canvas.elements?.forEach(element => {
         if (element.type === 'graph' || element.type === 'dataTable') {
@@ -607,7 +679,7 @@ class CustomDashboard extends DashboardView {
         updatedCanvases
       );
 
-      // If we deleted the currently loaded canvas, reset the state
+      // If we deleted the currently loaded canvas, reset the state and URL
       const resetCurrentCanvas = currentCanvasId === canvasId;
 
       this.setState({
@@ -616,6 +688,10 @@ class CustomDashboard extends DashboardView {
           currentCanvasId: null,
           currentCanvasName: null,
         }),
+      }, () => {
+        if (resetCurrentCanvas) {
+          this.navigateToCanvas(null);
+        }
       });
     } catch (error) {
       console.error('Failed to delete canvas:', error);
@@ -630,6 +706,9 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: null,
       currentCanvasName: null,
       hasUnsavedChanges: false,
+    }, () => {
+      // Clear canvas ID from URL
+      this.navigateToCanvas(null);
     });
   };
 
