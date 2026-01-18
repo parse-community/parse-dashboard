@@ -20,7 +20,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  right: 50px;
   height: 40px;
   cursor: move;
   user-select: none;
@@ -29,6 +29,7 @@
 }
 
 .elementContent {
+  position: relative;
   width: 100%;
   height: 100%;
   overflow: auto;
