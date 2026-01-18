@@ -9,10 +9,6 @@
 
   &:hover {
     border-color: #c5c5d3;
-
-    .dragHandle {
-      opacity: 1;
-    }
   }
 
   &.selected {
@@ -22,24 +18,14 @@
 
 .dragHandle {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
   cursor: move;
   user-select: none;
-  opacity: 0;
-  transition: opacity 0.15s ease, background-color 0.15s ease;
   z-index: 5;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
+  border-radius: 8px 8px 0 0;
 }
 
 .elementContent {

@@ -7,7 +7,6 @@
  */
 import React from 'react';
 import { Rnd } from 'react-rnd';
-import Icon from 'components/Icon/Icon.react';
 import styles from './CanvasElement.scss';
 
 const CanvasElement = ({
@@ -73,9 +72,7 @@ const CanvasElement = ({
         topLeft: styles.resizeHandle,
       }}
     >
-      <div className={styles.dragHandle} title="Drag to move">
-        <Icon name="drag-indicator" width={16} height={16} fill="#ffffff" />
-      </div>
+      <div className={styles.dragHandle} />
       <div className={styles.elementContent} onClick={handleClick}>
         {children}
       </div>
