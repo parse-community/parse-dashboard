@@ -36,6 +36,7 @@ const GraphElement = ({
         isLoading={isLoading}
         error={error}
         onRefresh={onRefresh}
+        disableAnimation={true}
       />
     </div>
   );

@@ -75,6 +75,7 @@ const GraphPanel = ({
   availableGraphs = [],
   onGraphSelect,
   onNewGraph,
+  disableAnimation = false,
 }) => {
   const chartRef = useRef(null);
   const containerRef = useRef(null);
@@ -175,6 +176,7 @@ const GraphPanel = ({
     const baseOptions = {
       responsive: true,
       maintainAspectRatio: false,
+      animation: disableAnimation ? false : undefined,
       plugins: {
         legend: {
           display: showLegend,
