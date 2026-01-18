@@ -7,6 +7,7 @@
  */
 import React from 'react';
 import Modal from 'components/Modal/Modal.react';
+import Button from 'components/Button/Button.react';
 import Icon from 'components/Icon/Icon.react';
 import styles from './AddElementDialog.scss';
 
@@ -32,17 +33,19 @@ const elementTypes = [
 ];
 
 const AddElementDialog = ({ onClose, onSelectType }) => {
+  const footer = (
+    <div className={styles.footer}>
+      <Button value="Cancel" onClick={onClose} />
+    </div>
+  );
+
   return (
     <Modal
       type={Modal.Types.INFO}
       title="Add Element"
       subtitle="Choose an element type to add to your canvas"
       onCancel={onClose}
-      showCancel={true}
-      cancelText="Cancel"
-      onConfirm={onClose}
-      confirmText="Cancel"
-      customFooter={<div className={styles.footer} />}
+      customFooter={footer}
     >
       <div className={styles.elementTypes}>
         {elementTypes.map(({ type, icon, title, description }) => (
