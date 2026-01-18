@@ -269,13 +269,21 @@ class CustomDashboard extends DashboardView {
     }));
 
     try {
-      const { className, filterConfig, limit } = config;
+      const { className, filterConfig, sortField, sortOrder, limit } = config;
       const query = new Parse.Query(className);
 
       if (filterConfig && Array.isArray(filterConfig)) {
         filterConfig.forEach(filter => {
           this.applyFilterToQuery(query, filter);
         });
+      }
+
+      if (sortField) {
+        if (sortOrder === 'descending') {
+          query.descending(sortField);
+        } else {
+          query.ascending(sortField);
+        }
       }
 
       if (limit) {

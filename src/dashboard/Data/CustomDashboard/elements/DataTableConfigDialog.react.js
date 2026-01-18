@@ -27,6 +27,8 @@ const DataTableConfigDialog = ({
   const [className, setClassName] = useState(initialConfig?.className || '');
   const [filterId, setFilterId] = useState(initialConfig?.filterId || '');
   const [selectedColumns, setSelectedColumns] = useState(initialConfig?.columns || []);
+  const [sortField, setSortField] = useState(initialConfig?.sortField || '');
+  const [sortOrder, setSortOrder] = useState(initialConfig?.sortOrder || 'ascending');
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '100');
 
   const sortedClasses = useMemo(() => {
@@ -70,6 +72,7 @@ const DataTableConfigDialog = ({
   const handleClassChange = (newClass) => {
     setClassName(newClass);
     setFilterId('');
+    setSortField('');
   };
 
   const handleSave = () => {
@@ -85,6 +88,8 @@ const DataTableConfigDialog = ({
       filterId: filterId || null,
       filterConfig: selectedFilter ? [selectedFilter] : null,
       columns: selectedColumns,
+      sortField: sortField || null,
+      sortOrder: sortField ? sortOrder : null,
       limit: parseInt(limit, 10) || 100,
     });
   };
@@ -173,6 +178,37 @@ const DataTableConfigDialog = ({
                     </MultiSelectOption>
                   ))}
                 </MultiSelect>
+              }
+            />
+          )}
+          {className && availableColumns.length > 0 && (
+            <Field
+              label={<Label text="Sort By (Optional)" description="Sort rows by a field" />}
+              input={
+                <Dropdown
+                  value={sortField}
+                  onChange={setSortField}
+                  placeHolder="No sorting"
+                >
+                  <Option value="">No sorting</Option>
+                  {availableColumns.map(col => (
+                    <Option key={col} value={col}>{col}</Option>
+                  ))}
+                </Dropdown>
+              }
+            />
+          )}
+          {className && sortField && (
+            <Field
+              label={<Label text="Sort Order" description="Ascending or descending order" />}
+              input={
+                <Dropdown
+                  value={sortOrder}
+                  onChange={setSortOrder}
+                >
+                  <Option value="ascending">Ascending</Option>
+                  <Option value="descending">Descending</Option>
+                </Dropdown>
               }
             />
           )}
