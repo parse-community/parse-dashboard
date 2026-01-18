@@ -67,7 +67,7 @@ const DataTableConfigDialog = ({
     } else {
       setSelectedColumns([]);
     }
-  }, [className, availableColumns]);
+  }, [className, availableColumns, initialConfig?.className, initialConfig?.columns]);
 
   const handleClassChange = (newClass) => {
     setClassName(newClass);
