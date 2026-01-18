@@ -71,20 +71,15 @@ export default class ViewPreferencesManager {
   async saveView(appId, view, allViews) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
-      try {
-        await this._saveViewToServer(appId, view);
+      await this._saveViewToServer(appId, view);
 
-        // Invalidate cache - will be reloaded on next getViews call
-        delete serverViewsCache[appId];
+      // Invalidate cache - will be reloaded on next getViews call
+      delete serverViewsCache[appId];
 
-        return;
-      } catch (error) {
-        console.error('Failed to save view to server:', error);
-        // On error, fallback to local storage
-      }
+      return;
     }
 
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._saveViewsToLocal(appId, allViews);
   }
 
@@ -98,20 +93,15 @@ export default class ViewPreferencesManager {
   async deleteView(appId, viewId, allViews) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
-      try {
-        await this._deleteViewFromServer(appId, viewId);
+      await this._deleteViewFromServer(appId, viewId);
 
-        // Invalidate cache - will be reloaded on next getViews call
-        delete serverViewsCache[appId];
+      // Invalidate cache - will be reloaded on next getViews call
+      delete serverViewsCache[appId];
 
-        return;
-      } catch (error) {
-        console.error('Failed to delete view from server:', error);
-        // On error, fallback to local storage
-      }
+      return;
     }
 
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._saveViewsToLocal(appId, allViews);
   }
 
