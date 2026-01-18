@@ -51,7 +51,9 @@ class CustomDashboard extends DashboardView {
       availableFilters: {},
       classes: [],
       classSchemas: {},
+      autoReloadInterval: 0,
     };
+    this.autoReloadTimer = null;
   }
 
   componentDidMount() {
@@ -441,6 +443,24 @@ class CustomDashboard extends DashboardView {
     });
   };
 
+  handleAutoReloadChange = (interval) => {
+    const seconds = parseInt(interval, 10) || 0;
+    this.setState({ autoReloadInterval: seconds });
+
+    // Clear existing timer
+    if (this.autoReloadTimer) {
+      clearInterval(this.autoReloadTimer);
+      this.autoReloadTimer = null;
+    }
+
+    // Set up new timer if interval > 0
+    if (seconds > 0) {
+      this.autoReloadTimer = setInterval(() => {
+        this.handleReloadAll();
+      }, seconds * 1000);
+    }
+  };
+
   handleKeyDown = (e) => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (this.state.selectedElement && document.activeElement === document.body) {
@@ -458,6 +478,9 @@ class CustomDashboard extends DashboardView {
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    if (this.autoReloadTimer) {
+      clearInterval(this.autoReloadTimer);
+    }
   }
 
   renderElementContent(element) {
@@ -542,7 +565,7 @@ class CustomDashboard extends DashboardView {
   }
 
   renderToolbar() {
-    const { selectedElement } = this.state;
+    const { selectedElement, autoReloadInterval } = this.state;
 
     const hasDataElements = this.state.elements.some(
       el => el.type === 'graph' || el.type === 'dataTable'
@@ -550,47 +573,59 @@ class CustomDashboard extends DashboardView {
 
     return (
       <Toolbar section="Canvas" subsection="">
-        <button
-          type="button"
+        <a
           className={styles.toolbarButton}
           onClick={() => this.setState({ showAddDialog: true })}
         >
-          <Icon name="plus-outline" width={14} height={14} fill="#ffffff" />
+          <Icon name="plus-outline" width={14} height={14} />
           <span>Add Element</span>
-        </button>
-        {hasDataElements && (
-          <>
-            <span className={styles.toolbarSeparator} />
-            <button
-              type="button"
-              className={styles.toolbarButton}
-              onClick={this.handleReloadAll}
-            >
-              <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
-              <span>Reload</span>
-            </button>
-          </>
-        )}
+        </a>
         {selectedElement && (
           <>
-            <span className={styles.toolbarSeparator} />
-            <button
-              type="button"
+            <div className={styles.toolbarSeparator} />
+            <a
               className={styles.toolbarButton}
               onClick={this.handleEditElement}
             >
-              <Icon name="edit-solid" width={14} height={14} fill="#ffffff" />
+              <Icon name="edit-solid" width={14} height={14} />
               <span>Edit</span>
-            </button>
-            <span className={styles.toolbarSeparator} />
-            <button
-              type="button"
+            </a>
+            <div className={styles.toolbarSeparator} />
+            <a
               className={styles.toolbarButton}
               onClick={() => this.handleDeleteElement(selectedElement)}
             >
-              <Icon name="trash-solid" width={14} height={14} fill="#ffffff" />
+              <Icon name="trash-solid" width={14} height={14} />
               <span>Delete</span>
-            </button>
+            </a>
+          </>
+        )}
+        {hasDataElements && (
+          <>
+            <div className={styles.toolbarSeparator} />
+            <a
+              className={styles.toolbarButton}
+              onClick={this.handleReloadAll}
+            >
+              <Icon name="refresh-solid" width={14} height={14} />
+              <span>Reload</span>
+            </a>
+            <div className={styles.toolbarSeparator} />
+            <div className={styles.autoReloadWrapper}>
+              <span className={styles.autoReloadLabel}>Auto-reload:</span>
+              <select
+                className={styles.autoReloadSelect}
+                value={autoReloadInterval}
+                onChange={(e) => this.handleAutoReloadChange(e.target.value)}
+              >
+                <option value="0">Off</option>
+                <option value="5">5s</option>
+                <option value="10">10s</option>
+                <option value="30">30s</option>
+                <option value="60">1m</option>
+                <option value="300">5m</option>
+              </select>
+            </div>
           </>
         )}
       </Toolbar>

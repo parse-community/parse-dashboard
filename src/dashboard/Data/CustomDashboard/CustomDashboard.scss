@@ -24,8 +24,7 @@
   cursor: pointer;
   height: 14px;
   padding: 0 12px;
-  background: transparent;
-  border: none;
+  margin-top: 8px;
 
   svg {
     vertical-align: middle;
@@ -53,4 +52,46 @@
   background: #66637a;
   vertical-align: bottom;
   margin: 0 4px;
+  margin-top: 8px;
+}
+
+.autoReloadWrapper {
+  display: inline-block;
+  margin-left: 8px;
+  height: 14px;
+  margin-top: 8px;
+}
+
+.autoReloadLabel {
+  @include NotoSansFont;
+  font-size: 14px;
+  color: #66637a;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.autoReloadSelect {
+  @include NotoSansFont;
+  font-size: 13px;
+  color: #ffffff;
+  background-color: transparent;
+  border: 1px solid #66637a;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  outline: none;
+  vertical-align: middle;
+
+  &:hover {
+    border-color: #ffffff;
+  }
+
+  &:focus {
+    border-color: #169cee;
+  }
+
+  option {
+    background-color: #1e2b3c;
+    color: #ffffff;
+  }
 }
