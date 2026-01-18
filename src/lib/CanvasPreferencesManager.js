@@ -72,20 +72,15 @@ export default class CanvasPreferencesManager {
   async saveCanvas(appId, canvas, allCanvases) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
-      try {
-        await this._saveCanvasToServer(appId, canvas);
+      await this._saveCanvasToServer(appId, canvas);
 
-        // Invalidate cache - will be reloaded on next getCanvases call
-        delete serverCanvasesCache[appId];
+      // Invalidate cache - will be reloaded on next getCanvases call
+      delete serverCanvasesCache[appId];
 
-        return;
-      } catch (error) {
-        console.error('Failed to save canvas to server:', error);
-        // On error, fallback to local storage
-      }
+      return;
     }
 
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._saveCanvasesToLocal(appId, allCanvases);
   }
 
@@ -99,20 +94,15 @@ export default class CanvasPreferencesManager {
   async deleteCanvas(appId, canvasId, allCanvases) {
     // Check if server storage is enabled and user prefers it
     if (this.serverStorage.isServerConfigEnabled() && prefersServerStorage(appId)) {
-      try {
-        await this._deleteCanvasFromServer(appId, canvasId);
+      await this._deleteCanvasFromServer(appId, canvasId);
 
-        // Invalidate cache - will be reloaded on next getCanvases call
-        delete serverCanvasesCache[appId];
+      // Invalidate cache - will be reloaded on next getCanvases call
+      delete serverCanvasesCache[appId];
 
-        return;
-      } catch (error) {
-        console.error('Failed to delete canvas from server:', error);
-        // On error, fallback to local storage
-      }
+      return;
     }
 
-    // Use local storage (either by preference or as fallback)
+    // Use local storage when server storage is not preferred
     return this._saveCanvasesToLocal(appId, allCanvases);
   }
 
