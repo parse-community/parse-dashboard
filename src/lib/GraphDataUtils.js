@@ -363,14 +363,16 @@ export function processScatterData(data, xColumn, yColumn, maxPoints = 1000) {
  * @returns {Object} Chart.js compatible data
  */
 export function processPieData(data, valueColumn, groupByColumn, aggregationType = 'count', calculatedValues = null) {
-  if (!valueColumn || !Array.isArray(data)) {
+  if (!Array.isArray(data)) {
     return null;
   }
 
   // Convert single valueColumn to array for uniform handling
-  const valueColumns = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+  const valueColumns = Array.isArray(valueColumn) ? valueColumn : (valueColumn ? [valueColumn] : []);
+  const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
 
-  if (valueColumns.length === 0) {
+  // Must have at least one value column or calculated value
+  if (valueColumns.length === 0 && !hasCalculatedValues) {
     return null;
   }
 
@@ -512,14 +514,16 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
  * @returns {Object} Chart.js compatible data
  */
 export function processBarLineData(data, xColumn, valueColumn, groupByColumn, aggregationType = 'count', calculatedValues = null) {
-  if (!xColumn || !valueColumn || !Array.isArray(data)) {
+  if (!xColumn || !Array.isArray(data)) {
     return null;
   }
 
   // Convert single valueColumn to array for uniform handling
-  const valueColumns = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+  const valueColumns = Array.isArray(valueColumn) ? valueColumn : (valueColumn ? [valueColumn] : []);
+  const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
 
-  if (valueColumns.length === 0) {
+  // Must have at least one value column or calculated value
+  if (valueColumns.length === 0 && !hasCalculatedValues) {
     return null;
   }
 
@@ -757,11 +761,15 @@ export function validateGraphConfig(config, columns) {
     return { isValid: false, error: 'No configuration provided' };
   }
 
-  const { chartType, xColumn, yColumn, valueColumn } = config;
+  const { chartType, xColumn, yColumn, valueColumn, calculatedValues } = config;
 
   if (!chartType) {
     return { isValid: false, error: 'Chart type is required' };
   }
+
+  const hasValueColumn = valueColumn && (!Array.isArray(valueColumn) || valueColumn.length > 0);
+  const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
+  const hasValuesToDisplay = hasValueColumn || hasCalculatedValues;
 
   // Check required columns based on chart type
   switch (chartType) {
@@ -776,14 +784,16 @@ export function validateGraphConfig(config, columns) {
 
     case 'pie':
     case 'doughnut': {
-      if (!valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
-        return { isValid: false, error: 'Pie charts require at least one value column' };
+      if (!hasValuesToDisplay) {
+        return { isValid: false, error: 'Pie charts require at least one value column or calculated value' };
       }
-      // Validate all value columns exist
-      const pieValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
-      for (const col of pieValueCols) {
-        if (!columns || !columns[col]) {
-          return { isValid: false, error: `Value column '${col}' does not exist` };
+      // Validate all value columns exist (only if valueColumn is specified)
+      if (hasValueColumn) {
+        const pieValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+        for (const col of pieValueCols) {
+          if (!columns || !columns[col]) {
+            return { isValid: false, error: `Value column '${col}' does not exist` };
+          }
         }
       }
       break;
@@ -792,17 +802,19 @@ export function validateGraphConfig(config, columns) {
     case 'bar':
     case 'line':
     case 'radar': {
-      if (!xColumn || !valueColumn || (Array.isArray(valueColumn) && valueColumn.length === 0)) {
-        return { isValid: false, error: 'Bar/line charts require both X axis and at least one value column' };
+      if (!xColumn || !hasValuesToDisplay) {
+        return { isValid: false, error: 'Bar/line charts require both X axis and at least one value column or calculated value' };
       }
       if (!columns || !columns[xColumn]) {
         return { isValid: false, error: 'X column does not exist' };
       }
-      // Validate all value columns exist
-      const barValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
-      for (const col of barValueCols) {
-        if (!columns || !columns[col]) {
-          return { isValid: false, error: `Value column '${col}' does not exist` };
+      // Validate all value columns exist (only if valueColumn is specified)
+      if (hasValueColumn) {
+        const barValueCols = Array.isArray(valueColumn) ? valueColumn : [valueColumn];
+        for (const col of barValueCols) {
+          if (!columns || !columns[col]) {
+            return { isValid: false, error: `Value column '${col}' does not exist` };
+          }
         }
       }
       break;

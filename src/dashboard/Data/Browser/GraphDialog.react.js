@@ -84,19 +84,21 @@ export default class GraphDialog extends React.Component {
   }
 
   valid() {
-    const { chartType, xColumn, yColumn, valueColumn } = this.state;
+    const { chartType, xColumn, yColumn, valueColumn, calculatedValues } = this.state;
     const hasValueColumn = Array.isArray(valueColumn) && valueColumn.length > 0;
+    const hasCalculatedValues = Array.isArray(calculatedValues) && calculatedValues.length > 0;
+    const hasValuesToDisplay = hasValueColumn || hasCalculatedValues;
 
     switch (chartType) {
       case 'pie':
       case 'doughnut':
-        return hasValueColumn;
+        return hasValuesToDisplay;
       case 'scatter':
         return !!xColumn && !!yColumn;
       case 'bar':
       case 'line':
       case 'radar':
-        return !!xColumn && hasValueColumn;
+        return !!xColumn && hasValuesToDisplay;
       default:
         return false;
     }
