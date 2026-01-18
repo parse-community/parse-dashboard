@@ -60,6 +60,7 @@
   margin-left: 8px;
   height: 14px;
   margin-top: 8px;
+  position: relative;
 }
 
 .autoReloadLabel {
@@ -75,23 +76,31 @@
   font-size: 13px;
   color: #ffffff;
   background-color: transparent;
-  border: 1px solid #66637a;
-  border-radius: 4px;
-  padding: 2px 6px;
+  border: none;
+  padding: 0;
   cursor: pointer;
   outline: none;
   vertical-align: middle;
-
-  &:hover {
-    border-color: #ffffff;
-  }
-
-  &:focus {
-    border-color: #169cee;
-  }
 
   option {
     background-color: #1e2b3c;
     color: #ffffff;
   }
+}
+
+.autoReloadProgressWrapper {
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #4a4a5a;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.autoReloadProgress {
+  height: 100%;
+  background-color: #169cee;
+  transition: width 0.1s linear;
 }

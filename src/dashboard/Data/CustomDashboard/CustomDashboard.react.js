@@ -52,8 +52,11 @@ class CustomDashboard extends DashboardView {
       classes: [],
       classSchemas: {},
       autoReloadInterval: 0,
+      autoReloadProgress: 0,
     };
     this.autoReloadTimer = null;
+    this.autoReloadProgressTimer = null;
+    this.autoReloadStartTime = null;
   }
 
   componentDidMount() {
@@ -445,18 +448,34 @@ class CustomDashboard extends DashboardView {
 
   handleAutoReloadChange = (interval) => {
     const seconds = parseInt(interval, 10) || 0;
-    this.setState({ autoReloadInterval: seconds });
+    this.setState({ autoReloadInterval: seconds, autoReloadProgress: 0 });
 
-    // Clear existing timer
+    // Clear existing timers
     if (this.autoReloadTimer) {
       clearInterval(this.autoReloadTimer);
       this.autoReloadTimer = null;
     }
+    if (this.autoReloadProgressTimer) {
+      clearInterval(this.autoReloadProgressTimer);
+      this.autoReloadProgressTimer = null;
+    }
 
-    // Set up new timer if interval > 0
+    // Set up new timers if interval > 0
     if (seconds > 0) {
+      this.autoReloadStartTime = Date.now();
+
+      // Progress update timer (every 100ms for smooth animation)
+      this.autoReloadProgressTimer = setInterval(() => {
+        const elapsed = Date.now() - this.autoReloadStartTime;
+        const progress = Math.min((elapsed / (seconds * 1000)) * 100, 100);
+        this.setState({ autoReloadProgress: progress });
+      }, 100);
+
+      // Reload timer
       this.autoReloadTimer = setInterval(() => {
         this.handleReloadAll();
+        this.autoReloadStartTime = Date.now();
+        this.setState({ autoReloadProgress: 0 });
       }, seconds * 1000);
     }
   };
@@ -480,6 +499,9 @@ class CustomDashboard extends DashboardView {
     document.removeEventListener('keydown', this.handleKeyDown);
     if (this.autoReloadTimer) {
       clearInterval(this.autoReloadTimer);
+    }
+    if (this.autoReloadProgressTimer) {
+      clearInterval(this.autoReloadProgressTimer);
     }
   }
 
@@ -565,7 +587,7 @@ class CustomDashboard extends DashboardView {
   }
 
   renderToolbar() {
-    const { selectedElement, autoReloadInterval } = this.state;
+    const { selectedElement, autoReloadInterval, autoReloadProgress } = this.state;
 
     const hasDataElements = this.state.elements.some(
       el => el.type === 'graph' || el.type === 'dataTable'
@@ -625,6 +647,14 @@ class CustomDashboard extends DashboardView {
                 <option value="60">1m</option>
                 <option value="300">5m</option>
               </select>
+              {autoReloadInterval > 0 && (
+                <div className={styles.autoReloadProgressWrapper}>
+                  <div
+                    className={styles.autoReloadProgress}
+                    style={{ width: `${autoReloadProgress}%` }}
+                  />
+                </div>
+              )}
             </div>
           </>
         )}
