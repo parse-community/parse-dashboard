@@ -74,6 +74,16 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
               key={canvas.id}
               className={`${styles.canvasItem} ${selectedId === canvas.id ? styles.selected : ''}`}
               onClick={() => setSelectedId(canvas.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === ' ') {
+                    e.preventDefault();
+                  }
+                  setSelectedId(canvas.id);
+                }
+              }}
+              role="button"
+              tabIndex={0}
             >
               <div className={styles.canvasInfo}>
                 <div className={styles.canvasName}>{canvas.name || 'Untitled Canvas'}</div>
@@ -106,6 +116,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
                     className={styles.deleteButton}
                     onClick={(e) => handleDeleteClick(e, canvas.id)}
                     title="Delete canvas"
+                    aria-label={`Delete canvas ${canvas.name || 'Untitled Canvas'}`}
                   >
                     <Icon name="trash-solid" width={14} height={14} fill="#94a3b8" />
                   </button>
