@@ -62,6 +62,7 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: null,
       currentCanvasName: null,
       hasUnsavedChanges: false,
+      isFullscreen: false,
     };
     this.autoReloadTimer = null;
     this.autoReloadProgressTimer = null;
@@ -633,6 +634,42 @@ class CustomDashboard extends DashboardView {
     }
   };
 
+  toggleFullscreen = () => {
+    const { isFullscreen } = this.state;
+
+    if (!isFullscreen) {
+      // Enter fullscreen
+      const element = document.documentElement;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+      this.setState({ isFullscreen: true });
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+      this.setState({ isFullscreen: false });
+    }
+  };
+
+  handleFullscreenChange = () => {
+    const isCurrentlyFullscreen = !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement
+    );
+    this.setState({ isFullscreen: isCurrentlyFullscreen });
+  };
+
   handleKeyDown = (e) => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (this.state.selectedElement && document.activeElement === document.body) {
@@ -640,16 +677,25 @@ class CustomDashboard extends DashboardView {
         this.handleDeleteElement(this.state.selectedElement);
       }
     } else if (e.key === 'Escape') {
-      this.setState({ selectedElement: null });
+      // Deselect element (fullscreen exit is handled by browser natively)
+      if (!this.state.isFullscreen) {
+        this.setState({ selectedElement: null });
+      }
     }
   };
 
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', this.handleFullscreenChange);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('msfullscreenchange', this.handleFullscreenChange);
     if (this.autoReloadTimer) {
       clearInterval(this.autoReloadTimer);
     }
@@ -693,18 +739,23 @@ class CustomDashboard extends DashboardView {
   }
 
   renderContent() {
-    const { elements, selectedElement } = this.state;
+    const { elements, selectedElement, isFullscreen } = this.state;
     const toolbar = this.renderToolbar();
     const extras = this.renderExtras();
 
+    const wrapperClasses = [styles.wrapper];
+    if (isFullscreen) {
+      wrapperClasses.push(styles.fullscreen);
+    }
+
     return (
-      <div className={styles.wrapper}>
+      <div className={wrapperClasses.join(' ')}>
         <div
           className={styles.canvas}
           onClick={this.handleDeselectElement}
           tabIndex={0}
         >
-          {elements.length === 0 ? (
+          {elements.length === 0 && !isFullscreen ? (
             <EmptyState
               icon="canvas-outline"
               title="Canvas"
@@ -733,7 +784,7 @@ class CustomDashboard extends DashboardView {
             ))
           )}
         </div>
-        {toolbar}
+        {!isFullscreen && toolbar}
         {extras}
       </div>
     );
@@ -854,6 +905,18 @@ class CustomDashboard extends DashboardView {
                 </div>
               )}
             </div>
+          </>
+        )}
+        {hasElements && (
+          <>
+            <div className={styles.toolbarSeparator} />
+            <a
+              className={styles.toolbarButton}
+              onClick={this.toggleFullscreen}
+            >
+              <Icon name="laptop-outline" width={14} height={14} />
+              <span>Fullscreen</span>
+            </a>
           </>
         )}
       </Toolbar>
