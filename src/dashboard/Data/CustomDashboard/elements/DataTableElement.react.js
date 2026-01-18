@@ -83,7 +83,7 @@ const DataTableElement = ({
   return (
     <div className={styles.dataTableElement}>
       <div className={styles.tableHeader}>
-        <span className={styles.tableTitle}>{config.className}</span>
+        <span className={styles.tableTitle}>{config.title || config.className}</span>
         <span className={styles.rowCount}>{data.length} rows</span>
         {onRefresh && (
           <button type="button" onClick={onRefresh} className={styles.refreshButton}>

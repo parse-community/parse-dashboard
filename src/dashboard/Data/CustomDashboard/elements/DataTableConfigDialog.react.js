@@ -23,6 +23,7 @@ const DataTableConfigDialog = ({
   onClose,
   onSave,
 }) => {
+  const [title, setTitle] = useState(initialConfig?.title || '');
   const [className, setClassName] = useState(initialConfig?.className || '');
   const [filterId, setFilterId] = useState(initialConfig?.filterId || '');
   const [selectedColumns, setSelectedColumns] = useState(initialConfig?.columns || []);
@@ -50,16 +51,16 @@ const DataTableConfigDialog = ({
       .sort((a, b) => a.localeCompare(b));
   }, [className, classSchemas]);
 
-  // Reset selected columns when class changes, default to all columns
+  // Reset selected columns when class changes, default to no fields selected
   useEffect(() => {
     if (className && availableColumns.length > 0) {
       // If editing and columns were previously selected for this class, keep them
       if (initialConfig?.className === className && initialConfig?.columns?.length > 0) {
         // Filter to only keep columns that still exist
         const validColumns = initialConfig.columns.filter(col => availableColumns.includes(col));
-        setSelectedColumns(validColumns.length > 0 ? validColumns : availableColumns);
+        setSelectedColumns(validColumns);
       } else {
-        setSelectedColumns(availableColumns);
+        setSelectedColumns([]);
       }
     } else {
       setSelectedColumns([]);
@@ -79,6 +80,7 @@ const DataTableConfigDialog = ({
     const selectedFilter = filtersForClass.find(f => f.id === filterId);
 
     onSave({
+      title: title.trim() || null,
       className,
       filterId: filterId || null,
       filterConfig: selectedFilter ? [selectedFilter] : null,
@@ -112,6 +114,16 @@ const DataTableConfigDialog = ({
         />
       ) : (
         <>
+          <Field
+            label={<Label text="Title (Optional)" description="Display title for the table" />}
+            input={
+              <TextInput
+                value={title}
+                onChange={setTitle}
+                placeholder="Enter a title..."
+              />
+            }
+          />
           <Field
             label={<Label text="Class" description="Select the class to display" />}
             input={
