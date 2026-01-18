@@ -353,7 +353,7 @@ const GraphPanel = ({
       default:
         return baseOptions;
     }
-  }, [graphConfig, processedData, containerHeight]);
+  }, [graphConfig, processedData, containerHeight, disableAnimation]);
 
   const renderChart = () => {
     if (validationError) {
