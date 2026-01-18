@@ -99,7 +99,7 @@ const DataTableConfigDialog = ({
   return (
     <Modal
       type={Modal.Types.INFO}
-      icon="table"
+      icon="files-solid"
       title={initialConfig ? 'Edit Data Table' : 'Add Data Table'}
       subtitle="Configure the data table display"
       onCancel={onClose}

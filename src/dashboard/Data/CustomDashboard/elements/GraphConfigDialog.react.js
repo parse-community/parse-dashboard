@@ -82,7 +82,7 @@ const GraphConfigDialog = ({
   return (
     <Modal
       type={Modal.Types.INFO}
-      icon="chart-line"
+      icon="analytics-solid"
       title={initialConfig ? 'Edit Graph' : 'Add Graph'}
       subtitle="Select a saved graph to display"
       onCancel={onClose}
