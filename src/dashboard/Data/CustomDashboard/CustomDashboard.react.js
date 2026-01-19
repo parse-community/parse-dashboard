@@ -407,8 +407,26 @@ class CustomDashboard extends DashboardView {
       const query = new Parse.Query(className);
 
       if (filterConfig && Array.isArray(filterConfig)) {
-        filterConfig.forEach(filter => {
-          this.applyFilterToQuery(query, filter);
+        filterConfig.forEach(savedFilter => {
+          // Saved filters have structure: { id, name, filter: '[{field, constraint, compareTo}]' }
+          // The 'filter' property contains a JSON string array of filter conditions
+          if (savedFilter.filter) {
+            try {
+              const conditions = typeof savedFilter.filter === 'string'
+                ? JSON.parse(savedFilter.filter)
+                : savedFilter.filter;
+              if (Array.isArray(conditions)) {
+                conditions.forEach(condition => {
+                  this.applyFilterToQuery(query, condition);
+                });
+              }
+            } catch (e) {
+              console.error('Error parsing filter conditions:', e);
+            }
+          } else if (savedFilter.field && savedFilter.constraint) {
+            // Fallback: if filter object has field/constraint directly, use it
+            this.applyFilterToQuery(query, savedFilter);
+          }
         });
       }
 
