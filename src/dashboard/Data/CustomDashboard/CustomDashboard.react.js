@@ -423,9 +423,6 @@ class CustomDashboard extends DashboardView {
             } catch (e) {
               console.error('Error parsing filter conditions:', e);
             }
-          } else if (savedFilter.field && savedFilter.constraint) {
-            // Fallback: if filter object has field/constraint directly, use it
-            this.applyFilterToQuery(query, savedFilter);
           }
         });
       }
