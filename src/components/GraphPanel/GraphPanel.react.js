@@ -169,9 +169,20 @@ const GraphPanel = ({
         });
       }
 
+      // Helper to compute the effective chart type for a dataset
+      // dataset.type overrides global defaults (set by secondary Y-axis type or other means)
+      const getEffectiveType = (dataset) => {
+        if (dataset.type) {
+          return dataset.type;
+        }
+        if (dataset.yAxisID === 'y1' && secondaryYAxisType) {
+          return secondaryYAxisType;
+        }
+        return chartType;
+      };
+
       // Apply line styles to datasets (convert lineStyle to Chart.js borderDash)
-      // Apply when chart type is line, or when dataset is on secondary axis with line type
-      if (result && result.datasets && (chartType === 'line' || secondaryYAxisType === 'line')) {
+      if (result && result.datasets) {
         const lineStyleToBorderDash = {
           solid: [],
           dashed: [8, 4],
@@ -179,11 +190,8 @@ const GraphPanel = ({
         };
 
         result.datasets = result.datasets.map(dataset => {
-          // Apply line style if:
-          // 1. Chart type is line (all datasets are lines), or
-          // 2. Dataset is on secondary axis and secondary axis type is line
-          const isLineDataset = chartType === 'line' || (dataset.yAxisID === 'y1' && secondaryYAxisType === 'line');
-          if (isLineDataset && dataset.lineStyle && lineStyleToBorderDash[dataset.lineStyle]) {
+          const effectiveType = getEffectiveType(dataset);
+          if (effectiveType === 'line' && dataset.lineStyle && lineStyleToBorderDash[dataset.lineStyle]) {
             return {
               ...dataset,
               borderDash: lineStyleToBorderDash[dataset.lineStyle],
@@ -194,14 +202,10 @@ const GraphPanel = ({
       }
 
       // Apply bar styles to datasets
-      // Apply when chart type is bar, or when dataset is on secondary axis with bar type
-      if (result && result.datasets && (chartType === 'bar' || secondaryYAxisType === 'bar')) {
+      if (result && result.datasets) {
         result.datasets = result.datasets.map(dataset => {
-          // Apply bar style if:
-          // 1. Chart type is bar (all datasets are bars), or
-          // 2. Dataset is on secondary axis and secondary axis type is bar
-          const isBarDataset = chartType === 'bar' || (dataset.yAxisID === 'y1' && secondaryYAxisType === 'bar');
-          if (isBarDataset && dataset.barStyle) {
+          const effectiveType = getEffectiveType(dataset);
+          if (effectiveType === 'bar' && dataset.barStyle) {
             switch (dataset.barStyle) {
               case 'outlined':
                 // Outlined: transparent fill with thick border
