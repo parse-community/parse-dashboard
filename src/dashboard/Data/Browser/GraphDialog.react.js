@@ -415,6 +415,10 @@ export default class GraphDialog extends React.Component {
               const hasCircular = this.hasCircularReference(index);
               // Check for formula errors
               const formulaError = this.getFormulaError(index);
+              // Compute effective chart type for this calculated value
+              const effectiveType = calc.useSecondaryYAxis && this.state.secondaryYAxisType
+                ? this.state.secondaryYAxisType
+                : this.state.chartType;
 
               return (
                 <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: index === this.state.calculatedValues.length - 1 ? '1px solid #e3e3e3' : 'none' }}>
@@ -560,7 +564,7 @@ export default class GraphDialog extends React.Component {
                             </div>
                           </div>
                         )}
-                        {(this.state.chartType === 'line' || (calc.useSecondaryYAxis && this.state.secondaryYAxisType === 'line')) && (
+                        {effectiveType === 'line' && (
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               <Label text="Line Style" />
@@ -579,7 +583,7 @@ export default class GraphDialog extends React.Component {
                             </div>
                           </div>
                         )}
-                        {(this.state.chartType === 'bar' || (calc.useSecondaryYAxis && this.state.secondaryYAxisType === 'bar')) && (
+                        {effectiveType === 'bar' && (
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               <Label text="Bar Style" />
