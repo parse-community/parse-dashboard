@@ -52,6 +52,12 @@ const LINE_STYLES = [
   { value: 'dotted', label: 'Dotted' },
 ];
 
+const BAR_STYLES = [
+  { value: 'solid', label: 'Solid' },
+  { value: 'outlined', label: 'Outlined' },
+  { value: 'striped', label: 'Striped' },
+];
+
 export default class GraphDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -565,6 +571,25 @@ export default class GraphDialog extends React.Component {
                                 onChange={lineStyle => this.updateCalculatedValue(index, 'lineStyle', lineStyle)}
                               >
                                 {LINE_STYLES.map(style => (
+                                  <Option key={style.value} value={style.value}>
+                                    {style.label}
+                                  </Option>
+                                ))}
+                              </Dropdown>
+                            </div>
+                          </div>
+                        )}
+                        {(this.state.chartType === 'bar' || (calc.useSecondaryYAxis && this.state.secondaryYAxisType === 'bar')) && (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Label text="Bar Style" />
+                            </div>
+                            <div>
+                              <Dropdown
+                                value={calc.barStyle || 'solid'}
+                                onChange={barStyle => this.updateCalculatedValue(index, 'barStyle', barStyle)}
+                              >
+                                {BAR_STYLES.map(style => (
                                   <Option key={style.value} value={style.value}>
                                     {style.label}
                                   </Option>

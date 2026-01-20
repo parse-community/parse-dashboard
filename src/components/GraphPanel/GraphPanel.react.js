@@ -193,6 +193,39 @@ const GraphPanel = ({
         });
       }
 
+      // Apply bar styles to datasets
+      // Apply when chart type is bar, or when dataset is on secondary axis with bar type
+      if (result && result.datasets && (chartType === 'bar' || secondaryYAxisType === 'bar')) {
+        result.datasets = result.datasets.map(dataset => {
+          // Apply bar style if:
+          // 1. Chart type is bar (all datasets are bars), or
+          // 2. Dataset is on secondary axis and secondary axis type is bar
+          const isBarDataset = chartType === 'bar' || (dataset.yAxisID === 'y1' && secondaryYAxisType === 'bar');
+          if (isBarDataset && dataset.barStyle) {
+            switch (dataset.barStyle) {
+              case 'outlined':
+                // Outlined: transparent fill with thick border
+                return {
+                  ...dataset,
+                  backgroundColor: 'transparent',
+                  borderWidth: 2,
+                };
+              case 'striped':
+                // Striped: lighter fill with dashed border to indicate pattern
+                return {
+                  ...dataset,
+                  backgroundColor: dataset.backgroundColor.replace('0.8', '0.3'),
+                  borderWidth: 2,
+                  borderDash: [4, 4],
+                };
+              default:
+                return dataset;
+            }
+          }
+          return dataset;
+        });
+      }
+
       return { processedData: result, validationError: null };
     } catch (err) {
       console.error('Error processing graph data:', err);
