@@ -6,6 +6,8 @@
  * the root directory of this source tree.
  */
 
+import { evaluateFormula, sanitizeFieldName, buildVariables } from './FormulaEvaluator';
+
 /**
  * Utility functions for processing Parse data into chart-compatible formats
  */
@@ -200,10 +202,45 @@ export function aggregateValues(values, aggregationType = 'count') {
  * Calculate a value based on operator and fields
  * @param {Object} item - Data item
  * @param {Array<string>} fields - Fields to use in calculation
- * @param {string} operator - Calculation operator (sum, percent, average, difference, ratio)
+ * @param {string} operator - Calculation operator (sum, percent, average, difference, ratio, formula)
+ * @param {string} formula - Formula string (only used when operator is 'formula')
+ * @param {Array<string>} availableFields - All available field names for formula evaluation
  * @returns {number|null} Calculated value or null
  */
-function calculateValue(item, fields, operator) {
+function calculateValue(item, fields, operator, formula = null, availableFields = []) {
+  // Handle formula operator separately
+  if (operator === 'formula') {
+    if (!formula || typeof formula !== 'string' || formula.trim() === '') {
+      return null;
+    }
+
+    // Build variables from all available fields
+    const fieldValues = {};
+    for (const field of availableFields) {
+      const rawValue = getNestedValue(item, field);
+      const numericValue = extractNumericValue(rawValue);
+      const sanitizedName = sanitizeFieldName(field);
+      if (sanitizedName) {
+        fieldValues[sanitizedName] = numericValue !== null ? numericValue : 0;
+      }
+    }
+
+    // Add item attributes directly (for previous calculated values)
+    const data = item.attributes || item;
+    for (const key of Object.keys(data)) {
+      const sanitizedKey = sanitizeFieldName(key);
+      if (sanitizedKey && !(sanitizedKey in fieldValues)) {
+        const value = data[key];
+        if (typeof value === 'number' && isFinite(value)) {
+          fieldValues[sanitizedKey] = value;
+        }
+      }
+    }
+
+    return evaluateFormula(formula, fieldValues);
+  }
+
+  // Standard operators require fields
   if (!fields || fields.length === 0) {
     return null;
   }
@@ -412,7 +449,12 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
       const calculatedValuesForRow = {};
 
       calculatedValues.forEach(calc => {
-        if (calc.fields && calc.fields.length > 0 && calc.name) {
+        // Formula operator doesn't require fields, other operators do
+        const hasRequiredConfig = calc.operator === 'formula'
+          ? (calc.formula && calc.name)
+          : (calc.fields && calc.fields.length > 0 && calc.name);
+
+        if (hasRequiredConfig) {
           // Create an enhanced item that includes previously calculated values
           const enhancedItem = { ...item };
           if (item.attributes) {
@@ -421,7 +463,16 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
             Object.assign(enhancedItem, calculatedValuesForRow);
           }
 
-          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator);
+          // Build available fields for formula evaluation
+          const availableFields = [...valueColumns];
+          // Add previously calculated value names
+          Object.keys(calculatedValuesForRow).forEach(name => {
+            if (!availableFields.includes(name)) {
+              availableFields.push(name);
+            }
+          });
+
+          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator, calc.formula, availableFields);
           calculatedValuesForRow[calc.name] = calcValue;
         }
       });
@@ -431,7 +482,12 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
 
     // Now process each calculated value with grouping
     calculatedValues.forEach(calc => {
-      if (calc.fields && calc.fields.length > 0 && calc.name) {
+      // Formula operator doesn't require fields, other operators do
+      const hasRequiredConfig = calc.operator === 'formula'
+        ? (calc.formula && calc.name)
+        : (calc.fields && calc.fields.length > 0 && calc.name);
+
+      if (hasRequiredConfig) {
         if (groupByColumn) {
           // Group calculated values by the same groupByColumn
           const groups = {};
@@ -451,10 +507,10 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
             const labelKey = valueColumns.length > 1 || calculatedValues.length > 1
               ? `${calc.name} (${groupKey})`
               : groupKey;
-            // For ratio-based operators (percent, ratio), average the results
+            // For ratio-based operators (percent, ratio, formula), average the results
             // For other operators, sum the results
             let aggType = 'sum';
-            if (calc.operator === 'percent' || calc.operator === 'ratio') {
+            if (calc.operator === 'percent' || calc.operator === 'ratio' || calc.operator === 'formula') {
               aggType = 'avg';
             } else if (calc.operator === 'average') {
               aggType = 'avg';
@@ -468,10 +524,10 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
             .filter(val => val !== null);
 
           if (calcValues.length > 0) {
-            // For ratio-based operators (percent, ratio), average the results
+            // For ratio-based operators (percent, ratio, formula), average the results
             // For other operators, sum the results
             let aggType = 'sum';
-            if (calc.operator === 'percent' || calc.operator === 'ratio') {
+            if (calc.operator === 'percent' || calc.operator === 'ratio' || calc.operator === 'formula') {
               aggType = 'avg';
             } else if (calc.operator === 'average') {
               aggType = 'avg';
@@ -588,7 +644,12 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
     // Process calculated values - with support for referencing other calculated values
     if (calculatedValues && Array.isArray(calculatedValues)) {
       calculatedValues.forEach(calc => {
-        if (calc.fields && calc.fields.length > 0 && calc.name) {
+        // Formula operator doesn't require fields, other operators do
+        const hasRequiredConfig = calc.operator === 'formula'
+          ? (calc.formula && calc.name)
+          : (calc.fields && calc.fields.length > 0 && calc.name);
+
+        if (hasRequiredConfig) {
           // Create an enhanced item that includes previously calculated values
           const enhancedItem = { ...item };
           if (item.attributes) {
@@ -597,7 +658,16 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
             Object.assign(enhancedItem, calculatedValuesForRow);
           }
 
-          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator);
+          // Build available fields for formula evaluation
+          const availableFields = [...valueColumns];
+          // Add previously calculated value names
+          Object.keys(calculatedValuesForRow).forEach(name => {
+            if (!availableFields.includes(name)) {
+              availableFields.push(name);
+            }
+          });
+
+          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator, calc.formula, availableFields);
 
           // Store this calculated value so it can be referenced by subsequent calculations
           calculatedValuesForRow[calc.name] = calcValue;
@@ -686,10 +756,10 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
 
       if (calcOperator) {
         // For calculated values, the operator has already been applied at row level
-        // For ratio-based operators (percent, ratio), we should average the results
+        // For ratio-based operators (percent, ratio, formula), we should average the results
         // For other operators (sum, average, difference), we sum the results
         let aggregationType = 'sum';
-        if (calcOperator === 'percent' || calcOperator === 'ratio') {
+        if (calcOperator === 'percent' || calcOperator === 'ratio' || calcOperator === 'formula') {
           aggregationType = 'avg';
         } else if (calcOperator === 'average') {
           aggregationType = 'avg';

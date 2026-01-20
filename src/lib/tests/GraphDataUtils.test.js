@@ -172,4 +172,116 @@ describe('GraphDataUtils', () => {
       expect(result.labels).toContain('Feb');
     });
   });
+
+  describe('formula operator', () => {
+    describe('processBarLineData with formula', () => {
+      const mockData = [
+        { attributes: { month: 'Jan', price: 10, quantity: 5 } },
+        { attributes: { month: 'Feb', price: 20, quantity: 3 } },
+        { attributes: { month: 'Mar', price: 15, quantity: 4 } },
+      ];
+
+      it('should evaluate formula with field references', () => {
+        const calculatedValues = [{
+          name: 'Total',
+          operator: 'formula',
+          formula: 'price * quantity',
+        }];
+
+        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets.length).toBe(1);
+        expect(result.datasets[0].label).toBe('Total');
+        // Jan: 10*5=50, Feb: 20*3=60, Mar: 15*4=60
+        expect(result.datasets[0].data).toContain(50);
+        expect(result.datasets[0].data).toContain(60);
+      });
+
+      it('should evaluate formula with math functions', () => {
+        const calculatedValues = [{
+          name: 'Rounded',
+          operator: 'formula',
+          formula: 'round(price / quantity, 2)',
+        }];
+
+        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets[0].label).toBe('Rounded');
+        // Jan: round(10/5, 2)=2, Feb: round(20/3, 2)=6.67, Mar: round(15/4, 2)=3.75
+        expect(result.datasets[0].data).toContain(2);
+      });
+
+      it('should reference previous calculated values in formula', () => {
+        const calculatedValues = [
+          {
+            name: 'Revenue',
+            operator: 'sum',
+            fields: ['price', 'quantity'],
+          },
+          {
+            name: 'Adjusted',
+            operator: 'formula',
+            formula: 'Revenue * 2',
+          },
+        ];
+
+        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets.length).toBe(2);
+        // Revenue for Jan: 10+5=15, Adjusted: 15*2=30
+        const adjustedDataset = result.datasets.find(d => d.label === 'Adjusted');
+        expect(adjustedDataset).toBeDefined();
+        expect(adjustedDataset.data).toContain(30);
+      });
+
+      it('should handle empty formula gracefully', () => {
+        const calculatedValues = [{
+          name: 'Empty',
+          operator: 'formula',
+          formula: '',
+        }];
+
+        const result = processBarLineData(mockData, 'month', 'price', null, 'sum', calculatedValues);
+
+        // Should still work, just without the empty formula calculated value
+        expect(result).toHaveProperty('datasets');
+      });
+
+      it('should handle invalid formula gracefully', () => {
+        const calculatedValues = [{
+          name: 'Invalid',
+          operator: 'formula',
+          formula: 'invalid syntax @@@',
+        }];
+
+        const result = processBarLineData(mockData, 'month', 'price', null, 'sum', calculatedValues);
+
+        // Should not throw, chart should render with regular values
+        expect(result).toHaveProperty('datasets');
+      });
+    });
+
+    describe('processPieData with formula', () => {
+      const mockData = [
+        { attributes: { category: 'A', revenue: 100, cost: 60 } },
+        { attributes: { category: 'B', revenue: 200, cost: 150 } },
+      ];
+
+      it('should evaluate formula in pie chart', () => {
+        const calculatedValues = [{
+          name: 'Profit',
+          operator: 'formula',
+          formula: 'revenue - cost',
+        }];
+
+        const result = processPieData(mockData, null, 'category', 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        // A: 100-60=40, B: 200-150=50
+      });
+    });
+  });
 });
