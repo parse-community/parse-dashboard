@@ -279,8 +279,17 @@ describe('GraphDataUtils', () => {
 
         const result = processPieData(mockData, null, 'category', 'sum', calculatedValues);
 
+        // Verify datasets exist and contain computed formula values
         expect(result).toHaveProperty('datasets');
+        expect(result.datasets).toHaveLength(1);
+        expect(result.datasets[0]).toHaveProperty('data');
         // A: 100-60=40, B: 200-150=50
+        // Labels are category values ('A', 'B')
+        expect(result.datasets[0].data).toEqual([40, 50]);
+
+        // Verify labels match the categories from mockData
+        expect(result.labels).toHaveLength(2);
+        expect(result.labels).toEqual(['A', 'B']);
       });
     });
   });
