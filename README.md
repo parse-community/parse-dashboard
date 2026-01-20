@@ -1492,6 +1492,9 @@ The Formula operator allows you to define custom calculations using a safe expre
 - Use field names directly as variables (e.g., `price`, `quantity`)
 - Reference previous calculated values by name (e.g., `profit`, `total_cost`)
 
+> [!NOTE]
+> Field names that match any of the operator names below like `round`, `min`, `max`, etc. cannot be used as variables in formulas.
+
 **Example formulas:**
 ```
 price * quantity                              # Multiply two fields
