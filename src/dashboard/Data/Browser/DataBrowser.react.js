@@ -2199,7 +2199,7 @@ export default class DataBrowser extends React.Component {
                 className={styles.resizablePanel}
                 style={{ right: aggregationPanelWidth }}
               >
-                  <div className={styles.graphPanelContainer}>
+                <div className={styles.graphPanelContainer}>
                   <GraphPanel
                     graphConfig={this.state.graphConfig}
                     data={this.props.data}
