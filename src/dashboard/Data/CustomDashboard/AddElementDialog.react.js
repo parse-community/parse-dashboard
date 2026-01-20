@@ -30,6 +30,12 @@ const elementTypes = [
     title: 'Data Table',
     description: 'Show filtered data in a table format',
   },
+  {
+    type: 'view',
+    icon: 'visibility',
+    title: 'View',
+    description: 'Display data from a saved View',
+  },
 ];
 
 const AddElementDialog = ({ onClose, onSelectType }) => {

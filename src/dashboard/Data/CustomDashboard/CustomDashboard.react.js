@@ -21,7 +21,10 @@ import GraphElement from './elements/GraphElement.react';
 import GraphConfigDialog from './elements/GraphConfigDialog.react';
 import DataTableElement from './elements/DataTableElement.react';
 import DataTableConfigDialog from './elements/DataTableConfigDialog.react';
+import ViewElement from './elements/ViewElement.react';
+import ViewConfigDialog from './elements/ViewConfigDialog.react';
 import GraphPreferencesManager from 'lib/GraphPreferencesManager';
+import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import CanvasPreferencesManager from 'lib/CanvasPreferencesManager';
 import { CurrentApp } from 'context/currentApp';
@@ -52,11 +55,13 @@ class CustomDashboard extends DashboardView {
       showStaticTextDialog: false,
       showGraphDialog: false,
       showDataTableDialog: false,
+      showViewDialog: false,
       showSaveDialog: false,
       showLoadDialog: false,
       editingElement: null,
       availableGraphs: {},
       availableFilters: {},
+      availableViews: [],
       classes: [],
       classSchemas: {},
       autoReloadInterval: 0,
@@ -139,9 +144,9 @@ class CustomDashboard extends DashboardView {
       currentCanvasGroup: canvas.group || null,
       hasUnsavedChanges: false,
     }, () => {
-      // Fetch data for all graph and data table elements
+      // Fetch data for all graph, data table, and view elements
       canvas.elements?.forEach(element => {
-        if (element.type === 'graph' || element.type === 'dataTable') {
+        if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
           this.fetchElementData(element.id);
         }
       });
@@ -209,6 +214,7 @@ class CustomDashboard extends DashboardView {
     this.setState({ classes, classSchemas }, () => {
       this.loadAvailableGraphs();
       this.loadAvailableFilters();
+      this.loadAvailableViews();
     });
   }
 
@@ -262,6 +268,22 @@ class CustomDashboard extends DashboardView {
     this.setState({ availableFilters: filtersByClass });
   }
 
+  async loadAvailableViews() {
+    if (!this.context || !this.context.applicationId) {
+      return;
+    }
+
+    const viewPreferencesManager = new ViewPreferencesManager(this.context);
+
+    try {
+      const views = await viewPreferencesManager.getViews(this.context.applicationId);
+      this.setState({ availableViews: views || [] });
+    } catch (e) {
+      console.error('Error loading views:', e);
+      this.setState({ availableViews: [] });
+    }
+  }
+
   handleAddElement = (type) => {
     this.setState({ showAddDialog: false });
     switch (type) {
@@ -273,6 +295,9 @@ class CustomDashboard extends DashboardView {
         break;
       case 'dataTable':
         this.setState({ showDataTableDialog: true, editingElement: null });
+        break;
+      case 'view':
+        this.setState({ showViewDialog: true, editingElement: null });
         break;
     }
   };
@@ -376,6 +401,41 @@ class CustomDashboard extends DashboardView {
     }
   };
 
+  handleSaveView = (config) => {
+    const { editingElement, elements } = this.state;
+
+    if (editingElement) {
+      const updatedElements = elements.map(el =>
+        el.id === editingElement.id ? { ...el, config } : el
+      );
+      this.setState({
+        elements: updatedElements,
+        showViewDialog: false,
+        editingElement: null,
+      }, () => {
+        this.fetchElementData(editingElement.id);
+        this.markUnsavedChanges();
+      });
+    } else {
+      const newElement = {
+        id: generateId(),
+        type: 'view',
+        x: 50,
+        y: 50,
+        width: 500,
+        height: 300,
+        config,
+      };
+      this.setState({
+        elements: [...elements, newElement],
+        showViewDialog: false,
+      }, () => {
+        this.fetchElementData(newElement.id);
+        this.markUnsavedChanges();
+      });
+    }
+  };
+
   async fetchElementData(elementId) {
     const element = this.state.elements.find(el => el.id === elementId);
     if (!element) {
@@ -403,51 +463,71 @@ class CustomDashboard extends DashboardView {
     }));
 
     try {
-      const { className, filterConfig, sortField, sortOrder, limit } = config;
-      const query = new Parse.Query(className);
+      let data;
 
-      if (filterConfig && Array.isArray(filterConfig)) {
-        filterConfig.forEach(savedFilter => {
-          // Saved filters have structure: { id, name, filter: '[{field, constraint, compareTo}]' }
-          // The 'filter' property contains a JSON string array of filter conditions
-          if (savedFilter.filter) {
-            try {
-              const conditions = typeof savedFilter.filter === 'string'
-                ? JSON.parse(savedFilter.filter)
-                : savedFilter.filter;
-              if (Array.isArray(conditions)) {
-                conditions.forEach(condition => {
-                  this.applyFilterToQuery(query, condition);
-                });
-              }
-            } catch (e) {
-              console.error('Error parsing filter conditions:', e);
-            }
-          }
-        });
-      }
+      if (type === 'view') {
+        // Handle View element - uses aggregation pipeline or cloud function
+        const { cloudFunction, query: viewQuery, className } = config;
 
-      if (sortField) {
-        if (sortOrder === 'descending') {
-          query.descending(sortField);
+        if (cloudFunction) {
+          // Cloud Function view
+          const results = await Parse.Cloud.run(cloudFunction, {}, { useMasterKey: true });
+          data = this.normalizeViewResults(results);
+        } else if (viewQuery && Array.isArray(viewQuery) && className) {
+          // Aggregation pipeline view
+          const results = await new Parse.Query(className).aggregate(viewQuery, { useMasterKey: true });
+          data = this.normalizeViewResults(results);
         } else {
-          query.ascending(sortField);
+          throw new Error('Invalid view configuration');
         }
-      }
+      } else {
+        // Handle DataTable and Graph elements
+        const { className, filterConfig, sortField, sortOrder, limit } = config;
+        const query = new Parse.Query(className);
 
-      if (limit != null) {
-        const numericLimit = Number(limit);
-        if (Number.isFinite(numericLimit) && numericLimit >= 0) {
-          query.limit(numericLimit);
+        if (filterConfig && Array.isArray(filterConfig)) {
+          filterConfig.forEach(savedFilter => {
+            // Saved filters have structure: { id, name, filter: '[{field, constraint, compareTo}]' }
+            // The 'filter' property contains a JSON string array of filter conditions
+            if (savedFilter.filter) {
+              try {
+                const conditions = typeof savedFilter.filter === 'string'
+                  ? JSON.parse(savedFilter.filter)
+                  : savedFilter.filter;
+                if (Array.isArray(conditions)) {
+                  conditions.forEach(condition => {
+                    this.applyFilterToQuery(query, condition);
+                  });
+                }
+              } catch (e) {
+                console.error('Error parsing filter conditions:', e);
+              }
+            }
+          });
+        }
+
+        if (sortField) {
+          if (sortOrder === 'descending') {
+            query.descending(sortField);
+          } else {
+            query.ascending(sortField);
+          }
+        }
+
+        if (limit != null) {
+          const numericLimit = Number(limit);
+          if (Number.isFinite(numericLimit) && numericLimit >= 0) {
+            query.limit(numericLimit);
+          } else {
+            query.limit(1000);
+          }
         } else {
           query.limit(1000);
         }
-      } else {
-        query.limit(1000);
-      }
 
-      const results = await query.find({ useMasterKey: true });
-      const data = results.map(obj => obj.toJSON());
+        const results = await query.find({ useMasterKey: true });
+        data = results.map(obj => obj.toJSON());
+      }
 
       // Check if component is still mounted and this is the latest request
       if (!this._isMounted || localToken !== this._elementSeq[elementId]) {
@@ -539,6 +619,38 @@ class CustomDashboard extends DashboardView {
     }
   }
 
+  normalizeViewResults(results) {
+    // Normalize Parse.Object instances to raw JSON for consistent rendering
+    const normalizeValue = val => {
+      if (val && typeof val === 'object' && val instanceof Parse.Object) {
+        return {
+          __type: 'Pointer',
+          className: val.className,
+          objectId: val.id
+        };
+      }
+      if (val && typeof val === 'object' && !Array.isArray(val)) {
+        const normalized = {};
+        Object.keys(val).forEach(key => {
+          normalized[key] = normalizeValue(val[key]);
+        });
+        return normalized;
+      }
+      if (Array.isArray(val)) {
+        return val.map(normalizeValue);
+      }
+      return val;
+    };
+
+    return results.map(item => {
+      const normalized = {};
+      Object.keys(item).forEach(key => {
+        normalized[key] = normalizeValue(item[key]);
+      });
+      return normalized;
+    });
+  }
+
   handleSelectElement = (id) => {
     this.setState({ selectedElement: id });
   };
@@ -600,6 +712,9 @@ class CustomDashboard extends DashboardView {
       case 'dataTable':
         this.setState({ showDataTableDialog: true });
         break;
+      case 'view':
+        this.setState({ showViewDialog: true });
+        break;
     }
   };
 
@@ -610,7 +725,7 @@ class CustomDashboard extends DashboardView {
   handleReloadAll = () => {
     const { elements } = this.state;
     elements.forEach(element => {
-      if (element.type === 'graph' || element.type === 'dataTable') {
+      if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
         this.fetchElementData(element.id);
       }
     });
@@ -719,9 +834,9 @@ class CustomDashboard extends DashboardView {
       // Update URL to include canvas ID
       this.navigateToCanvas(canvas.id);
 
-      // Fetch data for all graph and data table elements
+      // Fetch data for all graph, data table, and view elements
       canvas.elements?.forEach(element => {
-        if (element.type === 'graph' || element.type === 'dataTable') {
+        if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
           this.fetchElementData(element.id);
         }
       });
@@ -895,6 +1010,16 @@ class CustomDashboard extends DashboardView {
             onRefresh={() => this.handleRefreshElement(element.id)}
           />
         );
+      case 'view':
+        return (
+          <ViewElement
+            config={element.config}
+            data={data?.data}
+            isLoading={data?.isLoading}
+            error={data?.error}
+            onRefresh={() => this.handleRefreshElement(element.id)}
+          />
+        );
       default:
         return null;
     }
@@ -957,7 +1082,7 @@ class CustomDashboard extends DashboardView {
     } = this.state;
 
     const hasDataElements = elements.some(
-      el => el.type === 'graph' || el.type === 'dataTable'
+      el => el.type === 'graph' || el.type === 'dataTable' || el.type === 'view'
     );
 
     const hasElements = elements.length > 0;
@@ -1085,11 +1210,13 @@ class CustomDashboard extends DashboardView {
       showStaticTextDialog,
       showGraphDialog,
       showDataTableDialog,
+      showViewDialog,
       showSaveDialog,
       showLoadDialog,
       editingElement,
       availableGraphs,
       availableFilters,
+      availableViews,
       classes,
       classSchemas,
       savedCanvases,
@@ -1137,6 +1264,14 @@ class CustomDashboard extends DashboardView {
             classSchemas={classSchemas}
             onClose={() => this.setState({ showDataTableDialog: false, editingElement: null })}
             onSave={this.handleSaveDataTable}
+          />
+        )}
+        {showViewDialog && (
+          <ViewConfigDialog
+            initialConfig={editingElement?.config}
+            availableViews={availableViews}
+            onClose={() => this.setState({ showViewDialog: false, editingElement: null })}
+            onSave={this.handleSaveView}
           />
         )}
         {showSaveDialog && (
