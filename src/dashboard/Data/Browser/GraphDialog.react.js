@@ -75,6 +75,8 @@ export default class GraphDialog extends React.Component {
       calculatedValues,
       aggregationType: initialConfig.aggregationType || 'count',
       title: initialConfig.title || '',
+      yAxisTitlePrimary: initialConfig.yAxisTitlePrimary || '',
+      yAxisTitleSecondary: initialConfig.yAxisTitleSecondary || '',
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
       showGrid: initialConfig.showGrid !== undefined ? initialConfig.showGrid : true,
       showAxisLabels: initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
@@ -650,6 +652,36 @@ export default class GraphDialog extends React.Component {
               type={Toggle.Types.YES_NO}
               value={this.state.isStacked}
               onChange={isStacked => this.setState({ isStacked })}
+            />
+          } />
+        )}
+
+        {(this.state.chartType === 'bar' || this.state.chartType === 'line' || this.state.chartType === 'scatter' || this.state.chartType === 'radar') && (
+          <Field label={
+            <Label
+              text="Y-Axis Title (Primary)"
+              description="Optional label for left axis"
+            />
+          } input={
+            <TextInput
+              value={this.state.yAxisTitlePrimary}
+              onChange={yAxisTitlePrimary => this.setState({ yAxisTitlePrimary })}
+              placeholder="Primary Y-axis title"
+            />
+          } />
+        )}
+
+        {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
+          <Field label={
+            <Label
+              text="Y-Axis Title (Secondary)"
+              description="Optional label for right axis"
+            />
+          } input={
+            <TextInput
+              value={this.state.yAxisTitleSecondary}
+              onChange={yAxisTitleSecondary => this.setState({ yAxisTitleSecondary })}
+              placeholder="Secondary Y-axis title"
             />
           } />
         )}

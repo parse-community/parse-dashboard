@@ -171,6 +171,8 @@ const GraphPanel = ({
       showGrid,
       showAxisLabels,
       isStacked,
+      yAxisTitlePrimary,
+      yAxisTitleSecondary,
     } = graphConfig;
 
     const baseOptions = {
@@ -239,8 +241,13 @@ const GraphPanel = ({
           return [joined];
         };
 
-        const primaryAxisTitle = splitLabel(primaryAxisSeries, 'Primary Axis');
-        const secondaryAxisTitle = splitLabel(secondaryAxisSeries, 'Secondary Axis');
+        // Use custom titles if provided, otherwise fall back to auto-generated
+        const primaryAxisTitle = yAxisTitlePrimary
+          ? [yAxisTitlePrimary]
+          : splitLabel(primaryAxisSeries, 'Primary Axis');
+        const secondaryAxisTitle = yAxisTitleSecondary
+          ? [yAxisTitleSecondary]
+          : splitLabel(secondaryAxisSeries, 'Secondary Axis');
 
         const hasSecondaryAxis = secondaryAxisSeries.length > 0;
 
@@ -327,6 +334,17 @@ const GraphPanel = ({
               display: true,
               grid: {
                 display: showGrid,
+              },
+              title: {
+                display: showAxisLabels !== false && !!yAxisTitlePrimary,
+                text: yAxisTitlePrimary || '',
+                font: {
+                  size: 12,
+                },
+                padding: {
+                  top: 10,
+                  bottom: 10,
+                },
               },
             },
           },
