@@ -1,3 +1,10 @@
+# [8.3.0-alpha.14](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.13...8.3.0-alpha.14) (2026-01-20)
+
+
+### Features
+
+* Add customizable styles for line and bar series in data browser graph ([#3131](https://github.com/parse-community/parse-dashboard/issues/3131)) ([501dd4b](https://github.com/parse-community/parse-dashboard/commit/501dd4b515c2ffdb3a411a30c8e92ebd655dd015))
+
 # [8.3.0-alpha.13](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.12...8.3.0-alpha.13) (2026-01-20)
 
 
