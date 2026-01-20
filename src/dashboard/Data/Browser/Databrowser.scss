@@ -24,6 +24,12 @@
     background-color: #fefafb;
 }
 
+.graphPanelContainer{
+    height: 100%;
+    overflow: auto;
+    background-color: #fefafb;
+}
+
 .multiPanelWrapper {
     display: flex;
     flex-direction: row;

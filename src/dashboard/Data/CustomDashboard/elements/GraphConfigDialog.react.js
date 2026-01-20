@@ -21,6 +21,7 @@ const GraphConfigDialog = ({
   onClose,
   onSave,
 }) => {
+  const [title, setTitle] = useState(initialConfig?.title || '');
   const [className, setClassName] = useState(initialConfig?.className || '');
   const [graphId, setGraphId] = useState(initialConfig?.graphId || '');
   const [filterId, setFilterId] = useState(initialConfig?.filterId || '');
@@ -68,6 +69,7 @@ const GraphConfigDialog = ({
     const selectedFilter = filtersForClass.find(f => f.id === filterId);
 
     onSave({
+      title: title || selectedGraph?.title || 'Graph',
       className,
       graphId,
       graphConfig: selectedGraph,
@@ -102,6 +104,16 @@ const GraphConfigDialog = ({
         />
       ) : (
         <>
+          <Field
+            label={<Label text="Title" description="Custom title for the graph element" />}
+            input={
+              <TextInput
+                value={title}
+                onChange={setTitle}
+                placeholder={selectedGraph?.title || 'Graph'}
+              />
+            }
+          />
           <Field
             label={<Label text="Class" description="Select the class containing the graph" />}
             input={

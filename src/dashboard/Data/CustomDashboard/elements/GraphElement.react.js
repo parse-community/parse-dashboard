@@ -27,17 +27,36 @@ const GraphElement = ({
     );
   }
 
+  const title = config.title || config.graphConfig?.title || 'Graph';
+
+  // Remove title from graphConfig to avoid duplicate display (title is shown in GraphElement header)
+  const graphConfigWithoutTitle = {
+    ...config.graphConfig,
+    title: undefined,
+  };
+
   return (
     <div className={styles.graphElement}>
-      <GraphPanel
-        graphConfig={config.graphConfig}
-        data={data}
-        columns={columns}
-        isLoading={isLoading}
-        error={error}
-        onRefresh={onRefresh}
-        disableAnimation={true}
-      />
+      <div className={styles.graphHeader}>
+        <span className={styles.graphTitle}>{title}</span>
+        {onRefresh && (
+          <button type="button" onClick={onRefresh} className={styles.refreshButton}>
+            <Icon name="refresh-solid" width={12} height={12} fill="#94a3b8" />
+          </button>
+        )}
+      </div>
+      <div className={styles.graphContainer}>
+        <GraphPanel
+          graphConfig={graphConfigWithoutTitle}
+          data={data}
+          columns={columns}
+          isLoading={isLoading}
+          error={error}
+          disableAnimation={true}
+          hideHeader={true}
+          hideFooter={true}
+        />
+      </div>
     </div>
   );
 };

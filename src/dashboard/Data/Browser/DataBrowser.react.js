@@ -2199,18 +2199,20 @@ export default class DataBrowser extends React.Component {
                 className={styles.resizablePanel}
                 style={{ right: aggregationPanelWidth }}
               >
-                <GraphPanel
-                  graphConfig={this.state.graphConfig}
-                  data={this.props.data}
-                  columns={this.props.columns}
-                  isLoading={!this.props.data}
-                  onRefresh={this.handleRefresh}
-                  onEdit={this.showGraphDialog}
-                  onClose={this.toggleGraphPanelVisibility}
-                  availableGraphs={this.state.availableGraphs}
-                  onGraphSelect={this.selectGraph}
-                  onNewGraph={this.showNewGraphDialog}
-                />
+                  <div className={styles.graphPanelContainer}>
+                  <GraphPanel
+                    graphConfig={this.state.graphConfig}
+                    data={this.props.data}
+                    columns={this.props.columns}
+                    isLoading={!this.props.data}
+                    onRefresh={this.handleRefresh}
+                    onEdit={this.showGraphDialog}
+                    onClose={this.toggleGraphPanelVisibility}
+                    availableGraphs={this.state.availableGraphs}
+                    onGraphSelect={this.selectGraph}
+                    onNewGraph={this.showNewGraphDialog}
+                  />
+                </div>
               </ResizableBox>
             );
           })()}
