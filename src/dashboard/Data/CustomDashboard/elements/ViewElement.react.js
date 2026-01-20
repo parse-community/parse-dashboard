@@ -86,6 +86,41 @@ const ViewElement = ({
   onRefresh,
   onPointerClick,
 }) => {
+  // All hooks must be called before any early returns (React Rules of Hooks)
+  const displayColumns = useMemo(() => {
+    return columns || Object.keys(data?.[0] || {}).filter(k => k !== 'ACL');
+  }, [columns, data]);
+
+  const columnWidths = useMemo(() => {
+    if (!data || data.length === 0) {
+      return {};
+    }
+    const widths = {};
+    const maxWidth = 250; // Maximum column width
+
+    displayColumns.forEach(col => {
+      // Start with header width
+      widths[col] = Math.min(computeTextWidth(col), maxWidth);
+    });
+
+    // Check each row's cell content
+    data.forEach(row => {
+      displayColumns.forEach(col => {
+        const cellWidth = computeTextWidth(row[col]);
+        if (cellWidth > widths[col] && widths[col] < maxWidth) {
+          widths[col] = Math.min(cellWidth, maxWidth);
+        }
+      });
+    });
+
+    return widths;
+  }, [data, displayColumns]);
+
+  const tableWidth = useMemo(() => {
+    return Object.values(columnWidths).reduce((sum, w) => sum + w, 0);
+  }, [columnWidths]);
+
+  // Early returns after all hooks
   if (!config || !config.viewId) {
     return (
       <div className={styles.noConfig}>
@@ -126,37 +161,6 @@ const ViewElement = ({
       </div>
     );
   }
-
-  // Get columns from data if not specified
-  const displayColumns = columns || Object.keys(data[0]).filter(k => k !== 'ACL');
-
-  // Calculate column widths based on content
-  const columnWidths = useMemo(() => {
-    const widths = {};
-    const maxWidth = 250; // Maximum column width
-
-    displayColumns.forEach(col => {
-      // Start with header width
-      widths[col] = Math.min(computeTextWidth(col), maxWidth);
-    });
-
-    // Check each row's cell content
-    data.forEach(row => {
-      displayColumns.forEach(col => {
-        const cellWidth = computeTextWidth(row[col]);
-        if (cellWidth > widths[col] && widths[col] < maxWidth) {
-          widths[col] = Math.min(cellWidth, maxWidth);
-        }
-      });
-    });
-
-    return widths;
-  }, [data, displayColumns]);
-
-  // Calculate total table width
-  const tableWidth = useMemo(() => {
-    return Object.values(columnWidths).reduce((sum, w) => sum + w, 0);
-  }, [columnWidths]);
 
   const handlePointerClick = (value) => {
     if (onPointerClick && value.__type === 'Pointer' && value.className && value.objectId) {
