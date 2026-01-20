@@ -55,7 +55,6 @@
 }
 
 .table {
-  width: 100%;
   border-collapse: collapse;
   font-size: 12px;
 
@@ -63,7 +62,6 @@
     padding: 8px 12px;
     text-align: left;
     border-bottom: 1px solid #e3e3ea;
-    max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

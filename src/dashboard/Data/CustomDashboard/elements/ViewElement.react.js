@@ -5,10 +5,47 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import Icon from 'components/Icon/Icon.react';
 import Pill from 'components/Pill/Pill.react';
 import styles from './ViewElement.scss';
+
+// Compute text width using canvas measurement
+const computeTextWidth = (text) => {
+  let str = text;
+  if (str === undefined || str === null) {
+    str = '';
+  } else if (typeof str === 'object') {
+    if (str.__type === 'Date' && str.iso) {
+      str = new Date(str.iso).toLocaleString();
+    } else if (str.__type === 'Link' && str.text) {
+      str = str.text;
+    } else if (str.__type === 'Pointer' && str.objectId) {
+      str = str.objectId;
+    } else if (str.__type === 'File' && str.name) {
+      str = str.name;
+    } else if (str.__type === 'GeoPoint') {
+      str = `(${str.latitude}, ${str.longitude})`;
+    } else if (str.__type === 'Image' || str.__type === 'Video') {
+      // Use specified width if available, otherwise default min width
+      const specifiedWidth = str.width && parseInt(str.width, 10) > 0 ? parseInt(str.width, 10) : null;
+      // Add padding (24px) to account for cell padding
+      return specifiedWidth ? specifiedWidth + 24 : 124;
+    } else {
+      str = JSON.stringify(str);
+    }
+  }
+  str = String(str);
+
+  if (typeof document !== 'undefined') {
+    const canvas = computeTextWidth._canvas || (computeTextWidth._canvas = document.createElement('canvas'));
+    const context = canvas.getContext('2d');
+    context.font = '12px "Source Code Pro", "Courier New", monospace';
+    const width = context.measureText(str).width + 32; // Add padding
+    return Math.max(width, 60); // Minimum 60px
+  }
+  return Math.max((str.length + 2) * 8, 60);
+};
 
 const formatValue = (value) => {
   if (value === null || value === undefined) {
@@ -92,6 +129,34 @@ const ViewElement = ({
 
   // Get columns from data if not specified
   const displayColumns = columns || Object.keys(data[0]).filter(k => k !== 'ACL');
+
+  // Calculate column widths based on content
+  const columnWidths = useMemo(() => {
+    const widths = {};
+    const maxWidth = 250; // Maximum column width
+
+    displayColumns.forEach(col => {
+      // Start with header width
+      widths[col] = Math.min(computeTextWidth(col), maxWidth);
+    });
+
+    // Check each row's cell content
+    data.forEach(row => {
+      displayColumns.forEach(col => {
+        const cellWidth = computeTextWidth(row[col]);
+        if (cellWidth > widths[col] && widths[col] < maxWidth) {
+          widths[col] = Math.min(cellWidth, maxWidth);
+        }
+      });
+    });
+
+    return widths;
+  }, [data, displayColumns]);
+
+  // Calculate total table width
+  const tableWidth = useMemo(() => {
+    return Object.values(columnWidths).reduce((sum, w) => sum + w, 0);
+  }, [columnWidths]);
 
   const handlePointerClick = (value) => {
     if (onPointerClick && value.__type === 'Pointer' && value.className && value.objectId) {
@@ -224,7 +289,12 @@ const ViewElement = ({
         )}
       </div>
       <div className={styles.tableContainer}>
-        <table className={styles.table}>
+        <table className={styles.table} style={{ width: tableWidth, tableLayout: 'fixed' }}>
+          <colgroup>
+            {displayColumns.map(col => (
+              <col key={col} style={{ width: columnWidths[col] }} />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               {displayColumns.map(col => (
