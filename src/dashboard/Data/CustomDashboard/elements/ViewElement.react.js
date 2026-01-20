@@ -15,19 +15,24 @@ const formatValue = (value) => {
     return '-';
   }
   if (typeof value === 'object') {
-    if (value.__type === 'Date') {
-      return new Date(value.iso).toLocaleString();
+    switch (value.__type) {
+      case 'Date':
+        return value.iso ? new Date(value.iso).toLocaleString() : String(value);
+      case 'Pointer':
+        return `${value.className}:${value.objectId}`;
+      case 'File':
+        return value.name || 'File';
+      case 'GeoPoint':
+        return `(${value.latitude}, ${value.longitude})`;
+      case 'Link':
+        return value.text || value.url || 'Link';
+      case 'Image':
+        return value.alt || value.url || 'Image';
+      case 'Video':
+        return value.url || 'Video';
+      default:
+        return JSON.stringify(value);
     }
-    if (value.__type === 'Pointer') {
-      return `${value.className}:${value.objectId}`;
-    }
-    if (value.__type === 'File') {
-      return value.name;
-    }
-    if (value.__type === 'Link') {
-      return value.text || value.url;
-    }
-    return JSON.stringify(value);
   }
   if (typeof value === 'boolean') {
     return value ? 'true' : 'false';
@@ -95,29 +100,116 @@ const ViewElement = ({
   };
 
   const renderCellContent = (value) => {
-    if (value && typeof value === 'object' && value.__type === 'Pointer' && value.className && value.objectId) {
-      return (
-        <Pill
-          value={value.objectId}
-          onClick={() => handlePointerClick(value)}
-          followClick
-          shrinkablePill
-        />
-      );
+    if (value === null || value === undefined) {
+      return '-';
     }
-    if (value && typeof value === 'object' && value.__type === 'Link') {
-      let url = value.url;
-      if (url.match(/javascript/i) || url.match(/<script/i)) {
-        url = '#';
+
+    if (typeof value !== 'object') {
+      if (typeof value === 'boolean') {
+        return value ? 'true' : 'false';
       }
-      const text = value.text || 'Link';
-      return (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {text}
-        </a>
-      );
+      return String(value);
     }
-    return formatValue(value);
+
+    // Handle special __type objects
+    switch (value.__type) {
+      case 'Pointer':
+        if (value.className && value.objectId) {
+          return (
+            <Pill
+              value={value.objectId}
+              onClick={() => handlePointerClick(value)}
+              followClick
+              shrinkablePill
+            />
+          );
+        }
+        return JSON.stringify(value);
+
+      case 'Date':
+        return value.iso ? new Date(value.iso).toLocaleString() : String(value);
+
+      case 'File':
+        return value.name || 'File';
+
+      case 'GeoPoint':
+        return `(${value.latitude}, ${value.longitude})`;
+
+      case 'Link': {
+        let url = value.url || '#';
+        if (url.match(/javascript/i) || url.match(/<script/i)) {
+          url = '#';
+        }
+        let text = value.text;
+        if (!text || text.trim() === '' || text.match(/javascript/i) || text.match(/<script/i)) {
+          text = 'Link';
+        }
+        return (
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {text}
+          </a>
+        );
+      }
+
+      case 'Image': {
+        let url = value.url;
+        if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
+          return '-';
+        }
+        const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+        const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+        const imgStyle = {
+          maxWidth: width ? `${width}px` : '100%',
+          maxHeight: height ? `${height}px` : '100%',
+          objectFit: 'contain',
+          display: 'block'
+        };
+        return (
+          <img
+            src={url}
+            alt={value.alt || 'Image'}
+            style={imgStyle}
+            onError={(e) => {
+              if (e.target && e.target.style) {
+                e.target.style.display = 'none';
+              }
+            }}
+          />
+        );
+      }
+
+      case 'Video': {
+        let url = value.url;
+        if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
+          return '-';
+        }
+        const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+        const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+        const videoStyle = {
+          maxWidth: width ? `${width}px` : '100%',
+          maxHeight: height ? `${height}px` : '100%',
+          objectFit: 'contain',
+          display: 'block'
+        };
+        return (
+          <video
+            src={url}
+            controls
+            style={videoStyle}
+            onError={(e) => {
+              if (e.target && e.target.style) {
+                e.target.style.display = 'none';
+              }
+            }}
+          >
+            Your browser does not support the video tag.
+          </video>
+        );
+      }
+
+      default:
+        return JSON.stringify(value);
+    }
   };
 
   return (
