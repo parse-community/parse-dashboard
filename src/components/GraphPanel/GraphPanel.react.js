@@ -169,6 +169,30 @@ const GraphPanel = ({
         });
       }
 
+      // Apply line styles to datasets (convert lineStyle to Chart.js borderDash)
+      // Apply when chart type is line, or when dataset is on secondary axis with line type
+      if (result && result.datasets && (chartType === 'line' || secondaryYAxisType === 'line')) {
+        const lineStyleToBorderDash = {
+          solid: [],
+          dashed: [8, 4],
+          dotted: [2, 2],
+        };
+
+        result.datasets = result.datasets.map(dataset => {
+          // Apply line style if:
+          // 1. Chart type is line (all datasets are lines), or
+          // 2. Dataset is on secondary axis and secondary axis type is line
+          const isLineDataset = chartType === 'line' || (dataset.yAxisID === 'y1' && secondaryYAxisType === 'line');
+          if (isLineDataset && dataset.lineStyle && lineStyleToBorderDash[dataset.lineStyle]) {
+            return {
+              ...dataset,
+              borderDash: lineStyleToBorderDash[dataset.lineStyle],
+            };
+          }
+          return dataset;
+        });
+      }
+
       return { processedData: result, validationError: null };
     } catch (err) {
       console.error('Error processing graph data:', err);

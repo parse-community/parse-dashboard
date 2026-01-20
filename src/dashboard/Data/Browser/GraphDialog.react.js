@@ -46,6 +46,12 @@ const CALCULATED_VALUE_OPERATORS = [
   { value: 'formula', label: 'Formula' },
 ];
 
+const LINE_STYLES = [
+  { value: 'solid', label: 'Solid' },
+  { value: 'dashed', label: 'Dashed' },
+  { value: 'dotted', label: 'Dotted' },
+];
+
 export default class GraphDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -545,6 +551,25 @@ export default class GraphDialog extends React.Component {
                                 value={calc.useSecondaryYAxis || false}
                                 onChange={useSecondaryYAxis => this.updateCalculatedValue(index, 'useSecondaryYAxis', useSecondaryYAxis)}
                               />
+                            </div>
+                          </div>
+                        )}
+                        {(this.state.chartType === 'line' || (calc.useSecondaryYAxis && this.state.secondaryYAxisType === 'line')) && (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Label text="Line Style" />
+                            </div>
+                            <div>
+                              <Dropdown
+                                value={calc.lineStyle || 'solid'}
+                                onChange={lineStyle => this.updateCalculatedValue(index, 'lineStyle', lineStyle)}
+                              >
+                                {LINE_STYLES.map(style => (
+                                  <Option key={style.value} value={style.value}>
+                                    {style.label}
+                                  </Option>
+                                ))}
+                              </Dropdown>
                             </div>
                           </div>
                         )}
