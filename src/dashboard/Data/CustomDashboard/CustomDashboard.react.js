@@ -931,7 +931,12 @@ class CustomDashboard extends DashboardView {
         updatedCanvases
       );
 
-      this.setState({ savedCanvases: updatedCanvases });
+      const newState = { savedCanvases: updatedCanvases };
+      // Update currentCanvasFavorite if the toggled canvas is the active one
+      if (canvasId === this.state.currentCanvasId) {
+        newState.currentCanvasFavorite = updatedCanvas.favorite;
+      }
+      this.setState(newState);
     } catch (error) {
       console.error('Failed to toggle canvas favorite:', error);
     }
@@ -1146,6 +1151,7 @@ class CustomDashboard extends DashboardView {
       autoReloadInterval,
       autoReloadProgress,
       currentCanvasName,
+      currentCanvasGroup,
       hasUnsavedChanges,
       elements,
     } = this.state;
@@ -1156,8 +1162,13 @@ class CustomDashboard extends DashboardView {
 
     const hasElements = elements.length > 0;
 
-    // Build subsection with canvas name and unsaved indicator
-    let subsection = currentCanvasName || '';
+    // Build subsection with group, canvas name and unsaved indicator
+    let subsection = '';
+    if (currentCanvasGroup && currentCanvasName) {
+      subsection = `${currentCanvasGroup} | ${currentCanvasName}`;
+    } else if (currentCanvasName) {
+      subsection = currentCanvasName;
+    }
     if (hasUnsavedChanges && subsection) {
       subsection += ' *';
     } else if (hasUnsavedChanges && hasElements) {
