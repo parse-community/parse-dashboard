@@ -259,7 +259,13 @@ export default class GraphDialog extends React.Component {
       return null; // Empty names are allowed (will use default "Calculated Value N")
     }
 
-    const name = calc.name.trim();
+    const name = calc.name;
+    const trimmedName = name.trim();
+
+    // Check for leading or trailing whitespace
+    if (name !== trimmedName) {
+      return 'Name cannot start or end with spaces';
+    }
 
     // Check for valid characters (alphanumeric and underscore only)
     if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name)) {
