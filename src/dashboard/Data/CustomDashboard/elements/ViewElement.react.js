@@ -10,6 +10,19 @@ import Icon from 'components/Icon/Icon.react';
 import Pill from 'components/Pill/Pill.react';
 import styles from './ViewElement.scss';
 
+// Check if a URL uses a safe protocol (http: or https:)
+const isSafeUrl = (url) => {
+  if (!url || typeof url !== 'string') {
+    return false;
+  }
+  try {
+    const parsed = new URL(url, window.location.origin);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
 // Compute text width using canvas measurement
 const computeTextWidth = (text) => {
   let str = text;
@@ -205,12 +218,9 @@ const ViewElement = ({
         return `(${value.latitude}, ${value.longitude})`;
 
       case 'Link': {
-        let url = value.url || '#';
-        if (url.match(/javascript/i) || url.match(/<script/i)) {
-          url = '#';
-        }
+        const url = isSafeUrl(value.url) ? value.url : '#';
         let text = value.text;
-        if (!text || text.trim() === '' || text.match(/javascript/i) || text.match(/<script/i)) {
+        if (!text || text.trim() === '' || !isSafeUrl(text)) {
           text = 'Link';
         }
         return (
