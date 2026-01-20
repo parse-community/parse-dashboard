@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import { evaluateFormula, sanitizeFieldName, buildVariables } from './FormulaEvaluator';
+import { evaluateFormula, buildVariables } from './FormulaEvaluator';
 
 /**
  * Utility functions for processing Parse data into chart-compatible formats
@@ -219,20 +219,18 @@ function calculateValue(item, fields, operator, formula = null, availableFields 
     for (const field of availableFields) {
       const rawValue = getNestedValue(item, field);
       const numericValue = extractNumericValue(rawValue);
-      const sanitizedName = sanitizeFieldName(field);
-      if (sanitizedName) {
-        fieldValues[sanitizedName] = numericValue !== null ? numericValue : 0;
+      if (field) {
+        fieldValues[field] = numericValue !== null ? numericValue : 0;
       }
     }
 
     // Add item attributes directly (for previous calculated values)
     const data = item.attributes || item;
     for (const key of Object.keys(data)) {
-      const sanitizedKey = sanitizeFieldName(key);
-      if (sanitizedKey && !(sanitizedKey in fieldValues)) {
+      if (key && !(key in fieldValues)) {
         const value = data[key];
         if (typeof value === 'number' && isFinite(value)) {
-          fieldValues[sanitizedKey] = value;
+          fieldValues[key] = value;
         }
       }
     }

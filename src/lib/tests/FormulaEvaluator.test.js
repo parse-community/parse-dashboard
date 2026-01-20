@@ -10,54 +10,22 @@ import {
   evaluateFormula,
   validateFormula,
   getFormulaVariables,
-  sanitizeFieldName,
   buildVariables,
 } from '../FormulaEvaluator';
 
 describe('FormulaEvaluator', () => {
-  describe('sanitizeFieldName', () => {
-    it('should return empty string for invalid input', () => {
-      expect(sanitizeFieldName(null)).toBe('');
-      expect(sanitizeFieldName(undefined)).toBe('');
-      expect(sanitizeFieldName('')).toBe('');
-      expect(sanitizeFieldName(123)).toBe('');
-    });
-
-    it('should keep valid variable names unchanged', () => {
-      expect(sanitizeFieldName('price')).toBe('price');
-      expect(sanitizeFieldName('quantity')).toBe('quantity');
-      expect(sanitizeFieldName('field_name')).toBe('field_name');
-    });
-
-    it('should replace spaces with underscores', () => {
-      expect(sanitizeFieldName('Field Name')).toBe('Field_Name');
-      expect(sanitizeFieldName('total price')).toBe('total_price');
-    });
-
-    it('should replace special characters with underscores', () => {
-      expect(sanitizeFieldName('price$')).toBe('price_');
-      expect(sanitizeFieldName('field-name')).toBe('field_name');
-      expect(sanitizeFieldName('field.name')).toBe('field_name');
-    });
-
-    it('should prefix names starting with numbers', () => {
-      expect(sanitizeFieldName('123field')).toBe('_123field');
-      expect(sanitizeFieldName('1st')).toBe('_1st');
-    });
-  });
-
   describe('buildVariables', () => {
-    it('should build variables object with sanitized keys', () => {
+    it('should build variables object from field values', () => {
       const fieldValues = {
         price: 10,
         quantity: 5,
-        'Field Name': 100,
+        total: 100,
       };
       const result = buildVariables(fieldValues);
 
       expect(result.price).toBe(10);
       expect(result.quantity).toBe(5);
-      expect(result.Field_Name).toBe(100);
+      expect(result.total).toBe(100);
     });
 
     it('should convert non-numeric values to 0', () => {
@@ -242,8 +210,8 @@ describe('FormulaEvaluator', () => {
       expect(result.isValid).toBe(true);
     });
 
-    it('should handle field names with spaces', () => {
-      const result = validateFormula('Field_Name * 2', ['Field Name']);
+    it('should accept field names with underscores', () => {
+      const result = validateFormula('field_name * 2', ['field_name']);
       expect(result.isValid).toBe(true);
     });
 

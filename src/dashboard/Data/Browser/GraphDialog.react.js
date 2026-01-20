@@ -18,7 +18,7 @@ import Option from 'components/Dropdown/Option.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import styles from 'components/Modal/Modal.scss';
-import { validateFormula, sanitizeFieldName } from 'lib/FormulaEvaluator';
+import { validateFormula } from 'lib/FormulaEvaluator';
 
 const CHART_TYPES = [
   { value: 'bar', label: 'Bar Chart' },
@@ -231,8 +231,7 @@ export default class GraphDialog extends React.Component {
       .filter(c => c.name && c.name.trim() !== '')
       .map(c => c.name);
 
-    // Sanitize all variable names to match what the evaluator expects
-    const availableVariables = [...numericColumns, ...previousCalcNames].map(name => sanitizeFieldName(name));
+    const availableVariables = [...numericColumns, ...previousCalcNames];
 
     const validation = validateFormula(calc.formula, availableVariables);
     return validation.isValid ? null : validation.error;

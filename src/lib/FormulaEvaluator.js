@@ -105,31 +105,15 @@ function preprocessFormula(formula) {
 }
 
 /**
- * Sanitize a field name to be a valid variable name for the expression parser.
- * Replaces spaces and special characters with underscores.
- * @param {string} fieldName - The original field name
- * @returns {string} Sanitized variable name
- */
-export function sanitizeFieldName(fieldName) {
-  if (!fieldName || typeof fieldName !== 'string') {
-    return '';
-  }
-  // Replace spaces and special characters with underscores
-  // Keep alphanumeric and underscore, replace everything else
-  return fieldName.replace(/[^a-zA-Z0-9_]/g, '_').replace(/^(\d)/, '_$1');
-}
-
-/**
- * Build a variables object from field values, with sanitized names
+ * Build a variables object from field values
  * @param {Object} fieldValues - Object mapping field names to their values
- * @returns {Object} Object with sanitized field names as keys
+ * @returns {Object} Object with field names as keys and numeric values
  */
 export function buildVariables(fieldValues) {
   const variables = {};
   for (const [key, value] of Object.entries(fieldValues)) {
-    const sanitizedKey = sanitizeFieldName(key);
-    if (sanitizedKey) {
-      variables[sanitizedKey] = typeof value === 'number' ? value : 0;
+    if (key) {
+      variables[key] = typeof value === 'number' ? value : 0;
     }
   }
   return variables;
@@ -171,7 +155,7 @@ export function evaluateFormula(formula, variables) {
 /**
  * Validate a formula string
  * @param {string} formula - The formula to validate
- * @param {Array<string>} availableVariables - List of available variable names (will be sanitized)
+ * @param {Array<string>} availableVariables - List of available variable names
  * @returns {Object} Validation result with isValid and error properties
  */
 export function validateFormula(formula, availableVariables = []) {
@@ -184,10 +168,9 @@ export function validateFormula(formula, availableVariables = []) {
     const expr = parser.parse(processedFormula);
     const usedVariables = expr.variables();
 
-    // Sanitize available variable names
-    const sanitizedAvailable = new Set(availableVariables.map(v => sanitizeFieldName(v)));
+    const availableSet = new Set(availableVariables);
 
-    const unknownVars = usedVariables.filter(v => !sanitizedAvailable.has(v));
+    const unknownVars = usedVariables.filter(v => !availableSet.has(v));
     if (unknownVars.length > 0) {
       return {
         isValid: false,
@@ -197,7 +180,7 @@ export function validateFormula(formula, availableVariables = []) {
 
     // Test evaluation with dummy values to ensure formula is executable
     const testVars = {};
-    sanitizedAvailable.forEach(v => {
+    availableSet.forEach(v => {
       testVars[v] = 1;
     });
     expr.evaluate(testVars);
