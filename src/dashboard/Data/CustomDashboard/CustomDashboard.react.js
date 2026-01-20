@@ -27,11 +27,13 @@ import GraphPreferencesManager from 'lib/GraphPreferencesManager';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import CanvasPreferencesManager from 'lib/CanvasPreferencesManager';
+import CategoryList from 'components/CategoryList/CategoryList.react';
 import { CurrentApp } from 'context/currentApp';
 import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
 import { ActionTypes } from 'lib/stores/SchemaStore';
 import generatePath from 'lib/generatePath';
+import stringCompare from 'lib/stringCompare';
 import styles from './CustomDashboard.scss';
 
 function generateId() {
@@ -70,6 +72,7 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: null,
       currentCanvasName: null,
       currentCanvasGroup: null,
+      currentCanvasFavorite: false,
       hasUnsavedChanges: false,
       isFullscreen: false,
     };
@@ -142,6 +145,7 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: canvas.id,
       currentCanvasName: canvas.name,
       currentCanvasGroup: canvas.group || null,
+      currentCanvasFavorite: canvas.favorite || false,
       hasUnsavedChanges: false,
     }, () => {
       // Fetch data for all graph, data table, and view elements
@@ -185,6 +189,7 @@ class CustomDashboard extends DashboardView {
             currentCanvasId: null,
             currentCanvasName: null,
             currentCanvasGroup: null,
+            currentCanvasFavorite: false,
             hasUnsavedChanges: false,
           });
         }
@@ -765,7 +770,7 @@ class CustomDashboard extends DashboardView {
     }
   };
 
-  handleSaveCanvas = async (name, group) => {
+  handleSaveCanvas = async (name, group, favorite) => {
     if (!this.canvasPreferencesManager || !this.context?.applicationId) {
       console.error('Canvas preferences manager not initialized');
       return;
@@ -778,6 +783,7 @@ class CustomDashboard extends DashboardView {
       id: currentCanvasId || this.canvasPreferencesManager.generateCanvasId(),
       name,
       group,
+      favorite,
       elements,
     };
 
@@ -807,6 +813,7 @@ class CustomDashboard extends DashboardView {
         currentCanvasId: canvas.id,
         currentCanvasName: name,
         currentCanvasGroup: group,
+        currentCanvasFavorite: favorite,
         hasUnsavedChanges: false,
       }, () => {
         // Navigate to canvas URL if this is a new canvas
@@ -828,6 +835,7 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: canvas.id,
       currentCanvasName: canvas.name,
       currentCanvasGroup: canvas.group || null,
+      currentCanvasFavorite: canvas.favorite || false,
       hasUnsavedChanges: false,
       showLoadDialog: false,
     }, () => {
@@ -870,6 +878,7 @@ class CustomDashboard extends DashboardView {
           currentCanvasId: null,
           currentCanvasName: null,
           currentCanvasGroup: null,
+          currentCanvasFavorite: false,
           hasUnsavedChanges: false,
         }),
       }, () => {
@@ -890,11 +899,42 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: null,
       currentCanvasName: null,
       currentCanvasGroup: null,
+      currentCanvasFavorite: false,
       hasUnsavedChanges: false,
     }, () => {
       // Clear canvas ID from URL
       this.navigateToCanvas(null);
     });
+  };
+
+  handleToggleFavorite = async (canvasId) => {
+    if (!this.canvasPreferencesManager || !this.context?.applicationId) {
+      return;
+    }
+
+    const { savedCanvases } = this.state;
+    const canvas = savedCanvases.find(c => c.id === canvasId);
+    if (!canvas) {
+      return;
+    }
+
+    // Toggle the favorite property
+    const updatedCanvas = { ...canvas, favorite: !canvas.favorite };
+    const updatedCanvases = savedCanvases.map(c =>
+      c.id === canvasId ? updatedCanvas : c
+    );
+
+    try {
+      await this.canvasPreferencesManager.saveCanvas(
+        this.context.applicationId,
+        updatedCanvas,
+        updatedCanvases
+      );
+
+      this.setState({ savedCanvases: updatedCanvases });
+    } catch (error) {
+      console.error('Failed to toggle canvas favorite:', error);
+    }
   };
 
   markUnsavedChanges = () => {
@@ -979,6 +1019,35 @@ class CustomDashboard extends DashboardView {
     if (this.autoReloadProgressTimer) {
       clearInterval(this.autoReloadProgressTimer);
     }
+  }
+
+  renderSidebar() {
+    const { savedCanvases } = this.state;
+
+    // Filter to only favorited canvases and sort alphabetically
+    const favoritedCanvases = savedCanvases
+      .filter(canvas => canvas.favorite)
+      .sort((a, b) => stringCompare(a.name || '', b.name || ''));
+
+    // Don't render sidebar if no favorited canvases
+    if (favoritedCanvases.length === 0) {
+      return null;
+    }
+
+    const categories = favoritedCanvases.map(canvas => ({
+      name: canvas.name || 'Untitled Canvas',
+      id: canvas.id,
+    }));
+
+    const currentCanvasId = this.props.params?.canvasId || '';
+
+    return (
+      <CategoryList
+        current={currentCanvasId}
+        linkPrefix={'canvas/'}
+        categories={categories}
+      />
+    );
   }
 
   renderElementContent(element) {
@@ -1222,6 +1291,7 @@ class CustomDashboard extends DashboardView {
       savedCanvases,
       currentCanvasName,
       currentCanvasGroup,
+      currentCanvasFavorite,
     } = this.state;
 
     // Extract unique group names from saved canvases
@@ -1278,6 +1348,7 @@ class CustomDashboard extends DashboardView {
           <SaveCanvasDialog
             currentName={currentCanvasName}
             currentGroup={currentCanvasGroup}
+            currentFavorite={currentCanvasFavorite}
             existingGroups={existingGroups}
             onClose={() => this.setState({ showSaveDialog: false })}
             onSave={this.handleSaveCanvas}
@@ -1289,6 +1360,7 @@ class CustomDashboard extends DashboardView {
             onClose={() => this.setState({ showLoadDialog: false })}
             onLoad={this.handleLoadCanvas}
             onDelete={this.handleDeleteCanvas}
+            onToggleFavorite={this.handleToggleFavorite}
           />
         )}
       </>

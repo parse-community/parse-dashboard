@@ -10,7 +10,7 @@ import Modal from 'components/Modal/Modal.react';
 import Icon from 'components/Icon/Icon.react';
 import styles from './LoadCanvasDialog.scss';
 
-const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
+const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorite }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState({});
@@ -44,6 +44,13 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
   const handleCancelDelete = (e) => {
     e.stopPropagation();
     setConfirmDelete(null);
+  };
+
+  const handleToggleFavorite = (e, canvasId) => {
+    e.stopPropagation();
+    if (onToggleFavorite) {
+      onToggleFavorite(canvasId);
+    }
   };
 
   const toggleGroup = (groupName) => {
@@ -132,15 +139,26 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete }) => {
             </button>
           </div>
         ) : (
-          <button
-            type="button"
-            className={styles.deleteButton}
-            onClick={(e) => handleDeleteClick(e, canvas.id)}
-            title="Delete canvas"
-            aria-label={`Delete canvas ${canvas.name || 'Untitled Canvas'}`}
-          >
-            <Icon name="trash-solid" width={14} height={14} fill="#94a3b8" />
-          </button>
+          <>
+            <button
+              type="button"
+              className={`${styles.favoriteButton} ${canvas.favorite ? styles.favorited : ''}`}
+              onClick={(e) => handleToggleFavorite(e, canvas.id)}
+              title={canvas.favorite ? 'Remove from favorites' : 'Add to favorites'}
+              aria-label={canvas.favorite ? `Remove ${canvas.name || 'Untitled Canvas'} from favorites` : `Add ${canvas.name || 'Untitled Canvas'} to favorites`}
+            >
+              <Icon name="star-solid" width={22} height={22} fill={canvas.favorite ? '#f59e0b' : '#94a3b8'} />
+            </button>
+            <button
+              type="button"
+              className={styles.deleteButton}
+              onClick={(e) => handleDeleteClick(e, canvas.id)}
+              title="Delete canvas"
+              aria-label={`Delete canvas ${canvas.name || 'Untitled Canvas'}`}
+            >
+              <Icon name="trash-solid" width={18} height={18} fill="#94a3b8" />
+            </button>
+          </>
         )}
       </div>
     </div>
