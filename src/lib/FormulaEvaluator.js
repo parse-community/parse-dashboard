@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import { Parser } from 'expr-eval';
+import { Parser } from 'expr-eval-fork';
 
 // Create parser with safe configuration
 const parser = new Parser({
