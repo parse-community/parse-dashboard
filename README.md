@@ -54,7 +54,10 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Scripts](#scripts)
     - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
-- [Browser Control API (Development Only)](#browser-control-api-development-only)
+  - [Browser Control API (Development Only)](#browser-control-api-development-only)
+    - [⚠️ Security Requirements](#️-security-requirements)
+    - [Configuration](#configuration)
+    - [Usage](#usage)
 - [Deploying Parse Dashboard](#deploying-parse-dashboard)
   - [Preparing for Deployment](#preparing-for-deployment)
   - [Security Considerations](#security-considerations)
@@ -84,13 +87,20 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
         - [Button Item](#button-item)
         - [Panel Item](#panel-item)
       - [Prefetching](#prefetching)
+    - [Graph](#graph)
+      - [Calculated Values](#calculated-values)
+      - [Formula Operator](#formula-operator)
+        - [Arithmetic Operators](#arithmetic-operators)
+        - [Comparison Operators](#comparison-operators)
+        - [Conditional Operator](#conditional-operator)
+        - [Math Functions](#math-functions)
     - [Freeze Columns](#freeze-columns)
     - [Browse as User](#browse-as-user)
     - [Change Pointer Key](#change-pointer-key)
       - [Limitations](#limitations)
     - [CSV Export](#csv-export)
   - [AI Agent](#ai-agent)
-    - [Configuration](#configuration)
+    - [Configuration](#configuration-1)
     - [Providers](#providers)
       - [OpenAI](#openai)
   - [Views](#views)
@@ -1448,6 +1458,100 @@ To reduce the time for info panel data to appear, data can be prefetched.
 Prefetching is particularly useful when navigating through lists of objects. To optimize performance and avoid unnecessary data loading, prefetching is triggered only after the user has moved through 3 consecutive rows using the keyboard down-arrow key or by mouse click.
 
 When `prefetchObjects` is enabled, media content (images, videos, and audio) in the info panel can also be prefetched to improve loading performance. By default, all media types are prefetched, but you can selectively disable prefetching for specific media types using the `prefetchImage`, `prefetchVideo`, and `prefetchAudio` options.
+
+### Graph
+
+▶️ *Core > Browser > Graph*
+
+The data browser includes a graph feature that allows you to visualize data in pie charts, bar charts, or line charts. You can configure calculated values to display aggregated or computed data.
+
+#### Calculated Values
+
+Calculated values allow you to derive new values from your data. The following operators are available:
+
+| Operator | Description |
+|----------|-------------|
+| Sum | Sum of all values in the selected field |
+| Percent | Percentage of numerator relative to denominator |
+| Average | Average of all values in the selected field |
+| Difference | Difference between two fields |
+| Ratio | Ratio of numerator to denominator |
+| Formula | Custom formula using mathematical expressions |
+
+**Naming Rules:**
+Calculated value names must follow Parse field naming conventions:
+- Start with a letter or underscore
+- Contain only letters, numbers, and underscores
+- No spaces or special characters
+
+#### Formula Operator
+
+The Formula operator allows you to define custom calculations using a safe expression syntax. You can reference field values directly by their names.
+
+**Syntax:**
+- Use field names directly as variables (e.g., `price`, `quantity`)
+- Reference previous calculated values by name (e.g., `profit`, `total_cost`)
+
+**Example formulas:**
+```
+price * quantity                              # Multiply two fields
+round(revenue / cost * 100, 2)                # Calculate percentage with rounding
+max(value, 0)                                 # Floor at 0 (no negatives)
+min(value, 100)                               # Cap at 100
+score > 50 ? score : 0                        # Conditional logic
+round((revenue - cost) / revenue * 100, 1)    # Profit margin calculation
+```
+
+##### Arithmetic Operators
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `+` | Addition | `price + tax` |
+| `-` | Subtraction | `revenue - cost` |
+| `*` | Multiplication | `price * quantity` |
+| `/` | Division | `total / count` |
+| `%` | Modulo (remainder) | `value % 10` |
+| `^` | Power | `base ^ 2` |
+| `()` | Grouping | `(a + b) * c` |
+
+##### Comparison Operators
+
+Comparison operators return `1` for true and `0` for false.
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `>` | Greater than | `value > 100` |
+| `<` | Less than | `value < 0` |
+| `>=` | Greater than or equal | `value >= 50` |
+| `<=` | Less than or equal | `value <= 100` |
+| `==` | Equal | `status == 1` |
+| `!=` | Not equal | `status != 0` |
+
+##### Conditional Operator
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `? :` | Ternary conditional | `value > 0 ? value : 0` |
+
+##### Math Functions
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `round(value)` | Round to nearest integer | `round(3.7)` → `4` |
+| `round(value, decimals)` | Round to decimal places | `round(3.14159, 2)` → `3.14` |
+| `floor(value)` | Round down | `floor(3.7)` → `3` |
+| `ceil(value)` | Round up | `ceil(3.2)` → `4` |
+| `trunc(value)` | Truncate decimal part | `trunc(3.7)` → `3` |
+| `abs(value)` | Absolute value | `abs(-5)` → `5` |
+| `sign(value)` | Sign of number (-1, 0, 1) | `sign(-5)` → `-1` |
+| `min(a, b, ...)` | Minimum value | `min(10, 5, 8)` → `5` |
+| `max(a, b, ...)` | Maximum value | `max(10, 5, 8)` → `10` |
+| `sqrt(value)` | Square root | `sqrt(16)` → `4` |
+| `cbrt(value)` | Cube root | `cbrt(27)` → `3` |
+| `exp(value)` | Exponential (e^x) | `exp(1)` → `2.718...` |
+| `log(value)` | Natural logarithm | `log(2.718)` → `1` |
+| `log10(value)` | Base-10 logarithm | `log10(100)` → `2` |
+| `log2(value)` | Base-2 logarithm | `log2(8)` → `3` |
 
 ### Freeze Columns
 

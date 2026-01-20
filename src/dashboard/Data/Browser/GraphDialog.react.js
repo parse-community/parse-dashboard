@@ -91,6 +91,15 @@ export default class GraphDialog extends React.Component {
     const hasCalculatedValues = Array.isArray(calculatedValues) && calculatedValues.length > 0;
     const hasValuesToDisplay = hasValueColumn || hasCalculatedValues;
 
+    // Check for any name errors in calculated values
+    if (hasCalculatedValues) {
+      for (let i = 0; i < calculatedValues.length; i++) {
+        if (this.getNameError(i)) {
+          return false;
+        }
+      }
+    }
+
     switch (chartType) {
       case 'pie':
       case 'doughnut':
@@ -227,6 +236,37 @@ export default class GraphDialog extends React.Component {
 
     const validation = validateFormula(calc.formula, availableVariables);
     return validation.isValid ? null : validation.error;
+  }
+
+  // Validate calculated value name (must follow Parse field name rules)
+  getNameError(calcIndex) {
+    const calc = this.state.calculatedValues[calcIndex];
+    if (!calc || !calc.name || calc.name.trim() === '') {
+      return null; // Empty names are allowed (will use default "Calculated Value N")
+    }
+
+    const name = calc.name.trim();
+
+    // Check for valid characters (alphanumeric and underscore only)
+    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name)) {
+      if (/^\d/.test(name)) {
+        return 'Name cannot start with a number';
+      }
+      if (/\s/.test(name)) {
+        return 'Name cannot contain spaces';
+      }
+      return 'Name can only contain letters, numbers, and underscores';
+    }
+
+    // Check for duplicate names
+    const duplicateIndex = this.state.calculatedValues.findIndex(
+      (c, idx) => idx !== calcIndex && c.name && c.name.trim() === name
+    );
+    if (duplicateIndex >= 0) {
+      return 'Name is already used by another calculated value';
+    }
+
+    return null;
   }
 
   addCalculatedValue = () => {
