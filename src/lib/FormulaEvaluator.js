@@ -78,7 +78,7 @@ const parser = new Parser({
  * @returns {string} The processed formula
  */
 function preprocessFormula(formula) {
-  if (!formula) return formula;
+  if (!formula) {return formula;}
 
   // Replace round(x, n) with roundTo(x, n) - supports round with 2 args
   // This regex matches round( followed by content that ends with , number )
@@ -94,9 +94,9 @@ function preprocessFormula(formula) {
     let depth = 1;
     let hasComma = false;
     for (let i = 0; i < rest.length && depth > 0; i++) {
-      if (rest[i] === '(') depth++;
-      else if (rest[i] === ')') depth--;
-      else if (rest[i] === ',' && depth === 1) hasComma = true;
+      if (rest[i] === '(') {depth++;}
+      else if (rest[i] === ')') {depth--;}
+      else if (rest[i] === ',' && depth === 1) {hasComma = true;}
     }
     return hasComma ? 'roundTo(' : 'round(';
   });
