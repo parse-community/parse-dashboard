@@ -217,7 +217,7 @@ const ViewElement = ({
       }
 
       case 'Image': {
-        let url = value.url;
+        const url = value.url;
         if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
           return '-';
         }
@@ -244,7 +244,7 @@ const ViewElement = ({
       }
 
       case 'Video': {
-        let url = value.url;
+        const url = value.url;
         if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
           return '-';
         }
