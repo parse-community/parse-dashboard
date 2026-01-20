@@ -133,6 +133,7 @@ const GraphPanel = ({
       aggregationType,
       maxDataPoints,
       calculatedValues,
+      secondaryYAxisType,
     } = graphConfig;
 
     // Limit data points for performance
@@ -154,6 +155,20 @@ const GraphPanel = ({
           result = processBarLineData(limitedData, xColumn, valueColumn, groupByColumn, aggregationType, calculatedValues);
           break;
       }
+
+      // Apply secondary Y-axis chart type to datasets on secondary axis
+      if (result && result.datasets && secondaryYAxisType && (chartType === 'bar' || chartType === 'line')) {
+        result.datasets = result.datasets.map(dataset => {
+          if (dataset.yAxisID === 'y1') {
+            return {
+              ...dataset,
+              type: secondaryYAxisType,
+            };
+          }
+          return dataset;
+        });
+      }
+
       return { processedData: result, validationError: null };
     } catch (err) {
       console.error('Error processing graph data:', err);

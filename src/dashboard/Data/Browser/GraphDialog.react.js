@@ -77,6 +77,7 @@ export default class GraphDialog extends React.Component {
       title: initialConfig.title || '',
       yAxisTitlePrimary: initialConfig.yAxisTitlePrimary || '',
       yAxisTitleSecondary: initialConfig.yAxisTitleSecondary || '',
+      secondaryYAxisType: initialConfig.secondaryYAxisType || null,
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
       showGrid: initialConfig.showGrid !== undefined ? initialConfig.showGrid : true,
       showAxisLabels: initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
@@ -683,6 +684,25 @@ export default class GraphDialog extends React.Component {
               onChange={yAxisTitleSecondary => this.setState({ yAxisTitleSecondary })}
               placeholder="Secondary Y-axis title"
             />
+          } />
+        )}
+
+        {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
+          <Field label={
+            <Label
+              text="Secondary Y-Axis Chart Type"
+              description="Chart type for secondary axis series"
+            />
+          } input={
+            <Dropdown
+              value={this.state.secondaryYAxisType || ''}
+              onChange={secondaryYAxisType => this.setState({ secondaryYAxisType: secondaryYAxisType || null })}
+              placeHolder="Same as chart type"
+            >
+              <Option value="">Same as chart type</Option>
+              <Option value="bar">Bar</Option>
+              <Option value="line">Line</Option>
+            </Dropdown>
           } />
         )}
 
