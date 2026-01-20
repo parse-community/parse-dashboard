@@ -28,6 +28,21 @@ describe('FormulaEvaluator', () => {
       expect(result.total).toBe(100);
     });
 
+    it('should create $-prefixed versions of all variables', () => {
+      const fieldValues = {
+        price: 10,
+        round: 5,
+      };
+      const result = buildVariables(fieldValues);
+
+      // Plain field names
+      expect(result.price).toBe(10);
+      expect(result.round).toBe(5);
+      // $-prefixed versions
+      expect(result.$price).toBe(10);
+      expect(result.$round).toBe(5);
+    });
+
     it('should convert non-numeric values to 0', () => {
       const fieldValues = {
         numeric: 42,
@@ -39,6 +54,10 @@ describe('FormulaEvaluator', () => {
       expect(result.numeric).toBe(42);
       expect(result.string).toBe(0);
       expect(result.nullVal).toBe(0);
+      // $-prefixed versions too
+      expect(result.$numeric).toBe(42);
+      expect(result.$string).toBe(0);
+      expect(result.$nullVal).toBe(0);
     });
   });
 
@@ -177,6 +196,13 @@ describe('FormulaEvaluator', () => {
         expect(evaluateFormula(formula, { x: 50, y: 200 })).toBe(25);
         expect(evaluateFormula(formula, { x: -10, y: 200 })).toBe(0);
       });
+
+      it('should allow $-prefixed variables for reserved function names', () => {
+        // Field named "round" can be referenced as $round to avoid conflict
+        const vars = buildVariables({ round: 5, price: 10 });
+        expect(evaluateFormula('round($round, 2)', vars)).toBe(5);
+        expect(evaluateFormula('$round * $price', vars)).toBe(50);
+      });
     });
   });
 
@@ -221,6 +247,23 @@ describe('FormulaEvaluator', () => {
         ['revenue', 'cost']
       );
       expect(result.isValid).toBe(true);
+    });
+
+    it('should accept $-prefixed field names', () => {
+      const result = validateFormula('$price * $quantity', ['price', 'quantity']);
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept $-prefixed names for reserved function names', () => {
+      // Field named "round" can be referenced as $round
+      const result = validateFormula('round($round, 2)', ['round']);
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should reject unknown $-prefixed variables', () => {
+      const result = validateFormula('$unknownVar * 2', ['x', 'y']);
+      expect(result.isValid).toBe(false);
+      expect(result.error).toContain('$unknownVar');
     });
   });
 

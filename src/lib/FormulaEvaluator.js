@@ -105,7 +105,10 @@ function preprocessFormula(formula) {
 }
 
 /**
- * Build a variables object from field values
+ * Build a variables object from field values.
+ * Creates both plain field names and $-prefixed versions for each field.
+ * The $-prefixed version allows explicit field reference when field names
+ * conflict with reserved function names (e.g., $round for a field named "round").
  * @param {Object} fieldValues - Object mapping field names to their values
  * @returns {Object} Object with field names as keys and numeric values
  */
@@ -113,7 +116,11 @@ export function buildVariables(fieldValues) {
   const variables = {};
   for (const [key, value] of Object.entries(fieldValues)) {
     if (key) {
-      variables[key] = typeof value === 'number' ? value : 0;
+      const numericValue = typeof value === 'number' ? value : 0;
+      // Add plain field name
+      variables[key] = numericValue;
+      // Add $-prefixed version for explicit field reference
+      variables[`$${key}`] = numericValue;
     }
   }
   return variables;
@@ -168,7 +175,9 @@ export function validateFormula(formula, availableVariables = []) {
     const expr = parser.parse(processedFormula);
     const usedVariables = expr.variables();
 
+    // Build set of available variables including $-prefixed versions
     const availableSet = new Set(availableVariables);
+    availableVariables.forEach(v => availableSet.add(`$${v}`));
 
     const unknownVars = usedVariables.filter(v => !availableSet.has(v));
     if (unknownVars.length > 0) {

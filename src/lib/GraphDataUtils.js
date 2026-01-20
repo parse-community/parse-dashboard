@@ -235,7 +235,8 @@ function calculateValue(item, fields, operator, formula = null, availableFields 
       }
     }
 
-    return evaluateFormula(formula, fieldValues);
+    // Build variables with both plain and $-prefixed versions
+    return evaluateFormula(formula, buildVariables(fieldValues));
   }
 
   // Standard operators require fields

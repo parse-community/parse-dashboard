@@ -1491,9 +1491,10 @@ The Formula operator allows you to define custom calculations using a safe expre
 **Syntax:**
 - Use field names directly as variables (e.g., `price`, `quantity`)
 - Reference previous calculated values by name (e.g., `profit`, `total_cost`)
+- Optionally prefix field names with `$` (e.g., `$price`, `$quantity`)
 
-> [!NOTE]
-> Field names that match any of the operator names below like `round`, `min`, `max`, etc. cannot be used as variables in formulas.
+> [!TIP]
+> If a field name conflicts with a reserved function name (like `round`, `min`, `max`), prefix it with `$` to reference the field. For example, use `$round` to reference a field named "round": `round($round, 2)`.
 
 **Example formulas:**
 ```
