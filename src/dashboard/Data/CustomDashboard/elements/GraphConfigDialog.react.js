@@ -12,6 +12,7 @@ import Label from 'components/Label/Label.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
 import Option from 'components/Dropdown/Option.react';
 import TextInput from 'components/TextInput/TextInput.react';
+import Toggle from 'components/Toggle/Toggle.react';
 
 const GraphConfigDialog = ({
   initialConfig,
@@ -26,6 +27,8 @@ const GraphConfigDialog = ({
   const [graphId, setGraphId] = useState(initialConfig?.graphId || '');
   const [filterId, setFilterId] = useState(initialConfig?.filterId || '');
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '1000');
+  const [showLegend, setShowLegend] = useState(initialConfig?.showLegend ?? true);
+  const [showAxisLabels, setShowAxisLabels] = useState(initialConfig?.showAxisLabels ?? true);
 
   const classesWithGraphs = useMemo(() => {
     return classes
@@ -76,6 +79,8 @@ const GraphConfigDialog = ({
       filterId: filterId || null,
       filterConfig: selectedFilter ? [selectedFilter] : null,
       limit: parseInt(limit, 10) || 1000,
+      showLegend,
+      showAxisLabels,
     });
   };
 
@@ -176,6 +181,30 @@ const GraphConfigDialog = ({
                 />
               }
             />
+          )}
+          {className && graphId && (
+            <>
+              <Field
+                label={<Label text="Show Legend" description="Display the graph legend" />}
+                input={
+                  <Toggle
+                    value={showLegend}
+                    onChange={setShowLegend}
+                    type={Toggle.Types.YES_NO}
+                  />
+                }
+              />
+              <Field
+                label={<Label text="Show Axis Labels" description="Display the Y-axis labels" />}
+                input={
+                  <Toggle
+                    value={showAxisLabels}
+                    onChange={setShowAxisLabels}
+                    type={Toggle.Types.YES_NO}
+                  />
+                }
+              />
+            </>
           )}
         </>
       )}

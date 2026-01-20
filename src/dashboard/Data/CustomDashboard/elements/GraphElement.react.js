@@ -29,10 +29,12 @@ const GraphElement = ({
 
   const title = config.title || config.graphConfig?.title || 'Graph';
 
-  // Remove title from graphConfig to avoid duplicate display (title is shown in GraphElement header)
-  const graphConfigWithoutTitle = {
+  // Apply overrides from config (title removed, legend and axis labels configurable)
+  const modifiedGraphConfig = {
     ...config.graphConfig,
     title: undefined,
+    showLegend: config.showLegend ?? config.graphConfig?.showLegend ?? true,
+    showAxisLabels: config.showAxisLabels ?? config.graphConfig?.showAxisLabels ?? true,
   };
 
   return (
@@ -47,7 +49,7 @@ const GraphElement = ({
       </div>
       <div className={styles.graphContainer}>
         <GraphPanel
-          graphConfig={graphConfigWithoutTitle}
+          graphConfig={modifiedGraphConfig}
           data={data}
           columns={columns}
           isLoading={isLoading}
