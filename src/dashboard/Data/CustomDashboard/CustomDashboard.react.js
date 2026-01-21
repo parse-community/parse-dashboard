@@ -26,6 +26,7 @@ import ViewConfigDialog from './elements/ViewConfigDialog.react';
 import GraphPreferencesManager from 'lib/GraphPreferencesManager';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
+import { addConstraintFromValues } from 'lib/queryFromFilters';
 import CanvasPreferencesManager from 'lib/CanvasPreferencesManager';
 import CategoryList from 'components/CategoryList/CategoryList.react';
 import { CurrentApp } from 'context/currentApp';
@@ -501,7 +502,13 @@ class CustomDashboard extends DashboardView {
                   : savedFilter.filter;
                 if (Array.isArray(conditions)) {
                   conditions.forEach(condition => {
-                    this.applyFilterToQuery(query, condition);
+                    addConstraintFromValues(
+                      query,
+                      condition.field,
+                      condition.constraint,
+                      condition.compareTo,
+                      condition.modifiers
+                    );
                   });
                 }
               } catch (e) {
@@ -572,59 +579,6 @@ class CustomDashboard extends DashboardView {
     }
   }
 
-  applyFilterToQuery(query, filter) {
-    const { field, constraint, compareTo } = filter;
-    if (!field || !constraint) {
-      return;
-    }
-
-    switch (constraint) {
-      case 'exists':
-        query.exists(field);
-        break;
-      case 'dne':
-        query.doesNotExist(field);
-        break;
-      case 'eq':
-        query.equalTo(field, compareTo);
-        break;
-      case 'neq':
-        query.notEqualTo(field, compareTo);
-        break;
-      case 'lt':
-        query.lessThan(field, compareTo);
-        break;
-      case 'lte':
-      case 'onOrBefore':
-        query.lessThanOrEqualTo(field, compareTo);
-        break;
-      case 'gt':
-        query.greaterThan(field, compareTo);
-        break;
-      case 'gte':
-      case 'onOrAfter':
-        query.greaterThanOrEqualTo(field, compareTo);
-        break;
-      case 'starts':
-        query.startsWith(field, compareTo);
-        break;
-      case 'ends':
-        query.endsWith(field, compareTo);
-        break;
-      case 'before':
-        query.lessThan(field, new Date(compareTo));
-        break;
-      case 'after':
-        query.greaterThan(field, new Date(compareTo));
-        break;
-      case 'containsString':
-        query.contains(field, compareTo);
-        break;
-      case 'containsAny':
-        query.containedIn(field, compareTo);
-        break;
-    }
-  }
 
   normalizeViewResults(results) {
     // Normalize Parse.Object instances to raw JSON for consistent rendering
