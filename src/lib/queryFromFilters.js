@@ -118,7 +118,21 @@ function isParseDate(value) {
   );
 }
 
+function isRelativeDate(value) {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    value.__type === 'RelativeDate' &&
+    typeof value.value === 'number'
+  );
+}
+
 function toDate(value) {
+  if (isRelativeDate(value)) {
+    // RelativeDate stores offset in seconds from current time
+    const now = new Date();
+    return new Date(now.getTime() + value.value * 1000);
+  }
   if (isParseDate(value)) {
     return new Date(value.iso);
   }
