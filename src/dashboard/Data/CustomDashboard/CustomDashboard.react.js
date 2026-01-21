@@ -595,12 +595,14 @@ class CustomDashboard extends DashboardView {
         query.lessThan(field, compareTo);
         break;
       case 'lte':
+      case 'onOrBefore':
         query.lessThanOrEqualTo(field, compareTo);
         break;
       case 'gt':
         query.greaterThan(field, compareTo);
         break;
       case 'gte':
+      case 'onOrAfter':
         query.greaterThanOrEqualTo(field, compareTo);
         break;
       case 'starts':
