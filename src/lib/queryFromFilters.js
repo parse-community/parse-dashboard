@@ -97,7 +97,19 @@ function getPointerField(allClassesSchema, fromClassName, toClassName) {
 }
 
 function addQueryConstraintFromObject(query, field, compareTo, constraintType) {
-  const parsedCompareTo = typeof compareTo === 'string' ? JSON.parse(compareTo) : compareTo;
+  let parsedCompareTo;
+  try {
+    parsedCompareTo = typeof compareTo === 'string' ? JSON.parse(compareTo) : compareTo;
+  } catch (e) {
+    console.error('Invalid JSON in object constraint compareTo:', e);
+    return;
+  }
+
+  if (typeof parsedCompareTo !== 'object' || parsedCompareTo === null) {
+    console.error('Object constraint compareTo must be an object');
+    return;
+  }
+
   for (const key of Object.keys(parsedCompareTo)) {
     query[constraintType](field + '.' + key, parsedCompareTo[key]);
   }
