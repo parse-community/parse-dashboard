@@ -1,6 +1,6 @@
 ## Pull Request
 
-- Report security issues [confidentially](https://github.com/parse-community/parse-server/security/policy).
+- Report security issues [confidentially](https://github.com/parse-community/parse-dashboard/security/policy).
 - Any contribution is under this [license](https://github.com/parse-community/parse-dashboard/blob/alpha/LICENSE).
 
 ## Issue
