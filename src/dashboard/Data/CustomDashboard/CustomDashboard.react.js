@@ -675,7 +675,7 @@ class CustomDashboard extends DashboardView {
   // Returns dimensions only when content extends beyond the default CSS size
   getCanvasSize() {
     const { elements, dragPosition } = this.state;
-    const padding = 100; // Extra padding to allow easy placement at edges
+    const padding = 50; // Extra padding to allow easy placement at edges
 
     let maxRight = 0;
     let maxBottom = 0;
