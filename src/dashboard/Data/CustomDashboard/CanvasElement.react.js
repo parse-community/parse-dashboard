@@ -54,8 +54,8 @@ const CanvasElement = ({
     <Rnd
       position={{ x: element.x, y: element.y }}
       size={{ width: element.width, height: element.height }}
-      dragGrid={[16, 16]}
-      resizeGrid={[16, 16]}
+      dragGrid={[50, 50]}
+      resizeGrid={[50, 50]}
       minWidth={100}
       minHeight={50}
       dragHandleClassName={styles.dragHandle}

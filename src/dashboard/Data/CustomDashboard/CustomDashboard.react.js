@@ -625,10 +625,15 @@ class CustomDashboard extends DashboardView {
     }
   };
 
+  // Snap value to grid
+  snapToGrid(value, gridSize = 50) {
+    return Math.round(value / gridSize) * gridSize;
+  }
+
   handlePositionChange = (id, x, y) => {
-    // Ensure position is not negative
-    const safeX = Math.max(0, x);
-    const safeY = Math.max(0, y);
+    // Snap to grid and ensure position is not negative
+    const safeX = Math.max(0, this.snapToGrid(x));
+    const safeY = Math.max(0, this.snapToGrid(y));
     this.setState(state => ({
       elements: state.elements.map(el =>
         el.id === id ? { ...el, x: safeX, y: safeY } : el
@@ -637,12 +642,14 @@ class CustomDashboard extends DashboardView {
   };
 
   handleSizeChange = (id, width, height, x, y) => {
-    // Ensure position is not negative when resizing from left/top edges
-    const safeX = Math.max(0, x);
-    const safeY = Math.max(0, y);
+    // Snap to grid and ensure position is not negative when resizing from left/top edges
+    const safeX = Math.max(0, this.snapToGrid(x));
+    const safeY = Math.max(0, this.snapToGrid(y));
+    const snappedWidth = this.snapToGrid(width);
+    const snappedHeight = this.snapToGrid(height);
     this.setState(state => ({
       elements: state.elements.map(el =>
-        el.id === id ? { ...el, width, height, x: safeX, y: safeY } : el
+        el.id === id ? { ...el, width: snappedWidth, height: snappedHeight, x: safeX, y: safeY } : el
       ),
     }), this.markUnsavedChanges);
   };
