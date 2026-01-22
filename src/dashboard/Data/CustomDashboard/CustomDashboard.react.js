@@ -76,6 +76,8 @@ class CustomDashboard extends DashboardView {
       currentCanvasFavorite: false,
       hasUnsavedChanges: false,
       isFullscreen: false,
+      // Track dragging element position for canvas auto-extend
+      dragPosition: null,
     };
     this.autoReloadTimer = null;
     this.autoReloadProgressTimer = null;
@@ -83,6 +85,7 @@ class CustomDashboard extends DashboardView {
     this.canvasPreferencesManager = null;
     this._isMounted = false;
     this._elementSeq = {};
+    this.canvasRef = React.createRef();
   }
 
   componentDidMount() {
@@ -623,20 +626,94 @@ class CustomDashboard extends DashboardView {
   };
 
   handlePositionChange = (id, x, y) => {
+    // Ensure position is not negative
+    const safeX = Math.max(0, x);
+    const safeY = Math.max(0, y);
     this.setState(state => ({
       elements: state.elements.map(el =>
-        el.id === id ? { ...el, x, y } : el
+        el.id === id ? { ...el, x: safeX, y: safeY } : el
       ),
     }), this.markUnsavedChanges);
   };
 
   handleSizeChange = (id, width, height, x, y) => {
+    // Ensure position is not negative when resizing from left/top edges
+    const safeX = Math.max(0, x);
+    const safeY = Math.max(0, y);
     this.setState(state => ({
       elements: state.elements.map(el =>
-        el.id === id ? { ...el, width, height, x, y } : el
+        el.id === id ? { ...el, width, height, x: safeX, y: safeY } : el
       ),
     }), this.markUnsavedChanges);
   };
+
+  handleDrag = (id, x, y, width, height) => {
+    // Update drag position to trigger canvas auto-extend during drag
+    this.setState({
+      dragPosition: { id, x, y, width, height },
+    });
+  };
+
+  handleDragEnd = () => {
+    // Clear drag position when drag ends
+    this.setState({ dragPosition: null });
+  };
+
+  handleResize = (id, width, height, x, y) => {
+    // Update drag position to trigger canvas auto-extend during resize
+    this.setState({
+      dragPosition: { id, x, y, width, height },
+    });
+  };
+
+  handleResizeEnd = () => {
+    // Clear drag position when resize ends
+    this.setState({ dragPosition: null });
+  };
+
+  // Calculate the required canvas size based on all elements and current drag position
+  // Returns dimensions only when content extends beyond the default CSS size
+  getCanvasSize() {
+    const { elements, dragPosition } = this.state;
+    const padding = 100; // Extra padding to allow easy placement at edges
+
+    let maxRight = 0;
+    let maxBottom = 0;
+
+    // Calculate bounds from all elements
+    elements.forEach(el => {
+      const right = el.x + el.width;
+      const bottom = el.y + el.height;
+      if (right > maxRight) {
+        maxRight = right;
+      }
+      if (bottom > maxBottom) {
+        maxBottom = bottom;
+      }
+    });
+
+    // Include current drag position if dragging
+    if (dragPosition) {
+      const dragRight = dragPosition.x + dragPosition.width;
+      const dragBottom = dragPosition.y + dragPosition.height;
+      if (dragRight > maxRight) {
+        maxRight = dragRight;
+      }
+      if (dragBottom > maxBottom) {
+        maxBottom = dragBottom;
+      }
+    }
+
+    // Add padding to content bounds
+    const contentWidth = maxRight + padding;
+    const contentHeight = maxBottom + padding;
+
+    // Return the content-based dimensions (CSS handles minimum via width:100% and min-height)
+    return {
+      minWidth: contentWidth,
+      minHeight: contentHeight,
+    };
+  }
 
   handleDeleteElement = (id) => {
     this.setState(state => ({
@@ -1065,13 +1142,30 @@ class CustomDashboard extends DashboardView {
       wrapperClasses.push(styles.fullscreen);
     }
 
+    // Calculate dynamic canvas size based on element positions
+    const canvasSize = this.getCanvasSize();
+
     return (
       <div className={wrapperClasses.join(' ')}>
         <div
+          ref={this.canvasRef}
           className={styles.canvas}
           onClick={this.handleDeselectElement}
           tabIndex={0}
         >
+          {/* Invisible sizing element that expands the canvas when elements extend beyond */}
+          {(canvasSize.minWidth > 0 || canvasSize.minHeight > 0) && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: canvasSize.minWidth,
+                height: canvasSize.minHeight,
+                pointerEvents: 'none',
+              }}
+            />
+          )}
           {elements.length === 0 && !isFullscreen ? (
             <EmptyState
               icon="canvas-outline"
@@ -1087,8 +1181,16 @@ class CustomDashboard extends DashboardView {
                 element={element}
                 isSelected={element.id === selectedElement}
                 onSelect={this.handleSelectElement}
-                onPositionChange={this.handlePositionChange}
-                onSizeChange={this.handleSizeChange}
+                onPositionChange={(id, x, y) => {
+                  this.handleDragEnd();
+                  this.handlePositionChange(id, x, y);
+                }}
+                onSizeChange={(id, width, height, x, y) => {
+                  this.handleResizeEnd();
+                  this.handleSizeChange(id, width, height, x, y);
+                }}
+                onDrag={this.handleDrag}
+                onResize={this.handleResize}
               >
                 {this.renderElementContent(element)}
               </CanvasElement>
