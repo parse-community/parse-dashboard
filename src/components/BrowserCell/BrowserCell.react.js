@@ -316,7 +316,7 @@ export default class BrowserCell extends Component {
     const { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
 
-    // Group 1: Related records and Scripts
+    // Group 1: Navigation
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
@@ -326,30 +326,7 @@ export default class BrowserCell extends Component {
     const relatedNumberFieldsContextMenuOption = this.getRelatedNumberFieldsContextMenuOption();
     !relatedObjectsContextMenuOption && !relatedTextFieldsContextMenuOption && relatedNumberFieldsContextMenuOption && contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
 
-    const { className, objectId, field, scripts = [], rowValue } = this.props;
-    const { validScripts, validator } = getValidScripts(scripts, className, field);
-
-    if (validScripts.length && onEditSelectedRow) {
-      contextMenuOptions.push({
-        text: 'Scripts',
-        items: validScripts.map(script => {
-          return {
-            text: script.title,
-            disabled: validator?.(rowValue, field) === false,
-            callback: () => {
-              this.selectedScript = { ...script, className, objectId };
-              if (script.showConfirmationDialog) {
-                this.toggleConfirmationDialog();
-              } else {
-                this.executeScript(script);
-              }
-            },
-          };
-        }),
-      });
-    }
-
-    // Group 2: Filters (with separator)
+    // Group 2: Filter
     const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
     const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
 
@@ -361,7 +338,7 @@ export default class BrowserCell extends Component {
       setFilterContextMenuOption && contextMenuOptions.push(setFilterContextMenuOption);
     }
 
-    // Group 3: Row actions (with separator)
+    // Group 3: Row Action
     const hasEditRow = !readonly && onEditSelectedRow;
 
     if (hasEditRow) {
@@ -378,13 +355,39 @@ export default class BrowserCell extends Component {
       });
     }
 
-    // Group 4: Config parameter (with separator)
+    // Group 4: Automation
+    const { className, objectId, field, scripts = [], rowValue } = this.props;
+    const { validScripts, validator } = getValidScripts(scripts, className, field);
     const addToConfigOption = this.getAddToConfigContextMenuOption();
-    if (addToConfigOption) {
+
+    if ((validScripts.length && onEditSelectedRow) || addToConfigOption) {
       if (contextMenuOptions.length > 0) {
         contextMenuOptions.push({ type: 'separator' });
       }
-      contextMenuOptions.push(addToConfigOption);
+
+      if (validScripts.length && onEditSelectedRow) {
+        contextMenuOptions.push({
+          text: 'Scripts',
+          items: validScripts.map(script => {
+            return {
+              text: script.title,
+              disabled: validator?.(rowValue, field) === false,
+              callback: () => {
+                this.selectedScript = { ...script, className, objectId };
+                if (script.showConfirmationDialog) {
+                  this.toggleConfirmationDialog();
+                } else {
+                  this.executeScript(script);
+                }
+              },
+            };
+          }),
+        });
+      }
+
+      if (addToConfigOption) {
+        contextMenuOptions.push(addToConfigOption);
+      }
     }
 
     return contextMenuOptions;
