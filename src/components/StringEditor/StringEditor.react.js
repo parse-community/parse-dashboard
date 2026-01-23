@@ -63,15 +63,15 @@ export default class StringEditor extends React.Component {
   }
 
   handleContextMenu(e) {
-    const { setContextMenu, arrayConfigParams, onAddToArrayConfig } = this.props;
+    const { setContextMenu, arrayConfigParams, onAddToArrayConfig, getRelatedRecordsMenuItem } = this.props;
 
     // Only show custom context menu when Alt key is held
     if (!e.altKey) {
       return;
     }
 
-    // Check if there are array config params available
-    if (!arrayConfigParams || arrayConfigParams.length === 0 || !onAddToArrayConfig || !setContextMenu) {
+    // Check if setContextMenu is available
+    if (!setContextMenu) {
       return;
     }
 
@@ -84,13 +84,12 @@ export default class StringEditor extends React.Component {
       return;
     }
 
-    // Prevent default context menu
-    e.preventDefault();
-    e.stopPropagation();
-
     // Build context menu items
-    const menuItems = [
-      {
+    const menuItems = [];
+
+    // Add "Add to config parameter" option if available
+    if (arrayConfigParams && arrayConfigParams.length > 0 && onAddToArrayConfig) {
+      menuItems.push({
         text: 'Add to config parameter...',
         items: arrayConfigParams.map(param => ({
           text: param.name,
@@ -98,8 +97,28 @@ export default class StringEditor extends React.Component {
             onAddToArrayConfig(param.name, selectedText);
           },
         })),
-      },
-    ];
+      });
+    }
+
+    // Add "Related records" option if available (using selected text)
+    if (getRelatedRecordsMenuItem) {
+      const relatedRecordsItem = getRelatedRecordsMenuItem(selectedText);
+      if (relatedRecordsItem) {
+        if (menuItems.length > 0) {
+          menuItems.push({ type: 'separator' });
+        }
+        menuItems.push(relatedRecordsItem);
+      }
+    }
+
+    // Only show context menu if there are items
+    if (menuItems.length === 0) {
+      return;
+    }
+
+    // Prevent default context menu
+    e.preventDefault();
+    e.stopPropagation();
 
     setContextMenu(e.pageX, e.pageY, menuItems);
   }

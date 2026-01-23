@@ -10,6 +10,7 @@ import { List, Map } from 'immutable';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
 import { getValidScripts, executeScript } from 'lib/ScriptUtils';
+import { buildRelatedTextFieldsMenuItem } from 'lib/RelatedRecordsUtils';
 import Parse from 'parse';
 import Pill from 'components/Pill/Pill.react';
 import React, { Component } from 'react';
@@ -521,60 +522,11 @@ export default class BrowserCell extends Component {
 
     // Only show for String type cells with a non-empty value
     // Exclude objectId field - it uses getRelatedObjectsContextMenuOption() for pointer-based lookups
-    if (type !== 'String' || field === 'objectId' || !value || typeof value !== 'string' || value.trim() === '') {
+    if (type !== 'String' || field === 'objectId') {
       return;
     }
 
-    const relatedRecordsMenuItem = {
-      text: 'Related records',
-      items: [],
-    };
-
-    // Group fields by class name for hierarchical navigation
-    schema.data
-      .get('classes')
-      .sortBy((_v, k) => k)
-      .forEach((cl, className) => {
-        const classFields = [];
-
-        cl.forEach((column, field) => {
-          if (column.type !== 'String') {
-            return;
-          }
-          // Exclude objectId - it's a special field referenced by pointers, not strings
-          if (field === 'objectId') {
-            return;
-          }
-          // Exclude hidden/sensitive fields
-          if (field === 'password' && className === '_User') {
-            return;
-          }
-          if (field === 'sessionToken' && (className === '_User' || className === '_Session')) {
-            return;
-          }
-          classFields.push({
-            text: field,
-            callback: () => {
-              onPointerClick({
-                className,
-                id: value,
-                field,
-              });
-            },
-          });
-        });
-
-        if (classFields.length > 0) {
-          // Sort fields alphabetically
-          classFields.sort((a, b) => a.text.localeCompare(b.text));
-          relatedRecordsMenuItem.items.push({
-            text: className,
-            items: classFields,
-          });
-        }
-      });
-
-    return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
+    return buildRelatedTextFieldsMenuItem(schema, value, onPointerClick);
   }
 
   /**

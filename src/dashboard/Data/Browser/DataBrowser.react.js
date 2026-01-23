@@ -25,6 +25,7 @@ import styles from './Databrowser.scss';
 import KeyboardShortcutsManager, { matchesShortcut } from 'lib/KeyboardShortcutsPreferences';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
+import { buildRelatedTextFieldsMenuItem } from '../../../lib/RelatedRecordsUtils';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
@@ -1165,19 +1166,13 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    // Get array config params from props
-    const arrayParams = this.props.arrayConfigParams || [];
-
-    if (arrayParams.length === 0) {
-      return;
-    }
-
-    // Prevent default context menu
-    event.preventDefault();
-
     // Build context menu items
-    const menuItems = [
-      {
+    const menuItems = [];
+
+    // Add "Add to config parameter" option if available
+    const arrayParams = this.props.arrayConfigParams || [];
+    if (arrayParams.length > 0) {
+      menuItems.push({
         text: 'Add to config parameter',
         items: arrayParams.map(param => ({
           text: param.name,
@@ -1187,8 +1182,29 @@ export default class DataBrowser extends React.Component {
             }
           },
         })),
-      },
-    ];
+      });
+    }
+
+    // Add "Related records" option if available (search text in String fields)
+    const relatedRecordsItem = buildRelatedTextFieldsMenuItem(
+      this.props.schema,
+      selectedText,
+      this.props.onPointerCmdClick
+    );
+    if (relatedRecordsItem) {
+      if (menuItems.length > 0) {
+        menuItems.push({ type: 'separator' });
+      }
+      menuItems.push(relatedRecordsItem);
+    }
+
+    // Only show context menu if there are items
+    if (menuItems.length === 0) {
+      return;
+    }
+
+    // Prevent default context menu
+    event.preventDefault();
 
     this.setContextMenu(event.pageX, event.pageY, menuItems);
   }
@@ -2032,6 +2048,11 @@ export default class DataBrowser extends React.Component {
             setSelectedObjectId={this.setSelectedObjectId}
             callCloudFunction={this.handleCallCloudFunction}
             setContextMenu={this.setContextMenu}
+            getRelatedRecordsMenuItem={(textValue) => buildRelatedTextFieldsMenuItem(
+              this.props.schema,
+              textValue,
+              this.props.onPointerCmdClick
+            )}
             freezeIndex={this.state.frozenColumnIndex}
             freezeColumns={this.freezeColumns}
             unfreezeColumns={this.unfreezeColumns}

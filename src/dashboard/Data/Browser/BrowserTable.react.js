@@ -493,6 +493,7 @@ export default class BrowserTable extends React.Component {
                 setContextMenu={this.props.setContextMenu}
                 arrayConfigParams={this.props.arrayConfigParams}
                 onAddToArrayConfig={this.props.onAddToArrayConfig}
+                getRelatedRecordsMenuItem={this.props.getRelatedRecordsMenuItem}
               />
             );
           }
