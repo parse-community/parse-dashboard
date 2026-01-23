@@ -11,6 +11,9 @@ import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
+import BrowserMenu from 'components/BrowserMenu/BrowserMenu.react';
+import MenuItem from 'components/BrowserMenu/MenuItem.react';
+import Separator from 'components/BrowserMenu/Separator.react';
 import CanvasElement from './CanvasElement.react';
 import AddElementDialog from './AddElementDialog.react';
 import SaveCanvasDialog from './SaveCanvasDialog.react';
@@ -1275,69 +1278,54 @@ class CustomDashboard extends DashboardView {
 
     return (
       <Toolbar section="Canvas" subsection={subsection}>
-        <a
-          className={styles.toolbarButton}
-          onClick={this.handleNewCanvas}
+        <BrowserMenu
+          title="Canvas"
+          icon="canvas-outline"
+          setCurrent={() => {}}
         >
-          <Icon name="files-outline" width={14} height={14} />
-          <span>New</span>
-        </a>
+          <MenuItem
+            text="New"
+            onClick={this.handleNewCanvas}
+          />
+          <MenuItem
+            text="Load"
+            onClick={() => this.setState({ showLoadDialog: true })}
+          />
+          <MenuItem
+            text="Save"
+            disabled={!hasElements}
+            onClick={() => this.setState({ showSaveDialog: true })}
+          />
+        </BrowserMenu>
         <div className={styles.toolbarSeparator} />
-        <a
-          className={styles.toolbarButton}
-          onClick={() => this.setState({ showLoadDialog: true })}
+        <BrowserMenu
+          title="Element"
+          icon="files-outline"
+          setCurrent={() => {}}
         >
-          <Icon name="folder-outline" width={14} height={14} />
-          <span>Load</span>
-        </a>
-        {hasElements && (
-          <>
-            <div className={styles.toolbarSeparator} />
-            <a
-              className={styles.toolbarButton}
-              onClick={() => this.setState({ showSaveDialog: true })}
-            >
-              <Icon name="download" width={14} height={14} />
-              <span>Save</span>
-            </a>
-          </>
-        )}
-        <div className={styles.toolbarSeparator} />
-        <a
-          className={styles.toolbarButton}
-          onClick={() => this.setState({ showAddDialog: true })}
-        >
-          <Icon name="plus-outline" width={14} height={14} />
-          <span>Add Element</span>
-        </a>
-        {selectedElement && (
-          <>
-            <div className={styles.toolbarSeparator} />
-            <a
-              className={styles.toolbarButton}
-              onClick={this.handleEditElement}
-            >
-              <Icon name="edit-solid" width={14} height={14} />
-              <span>Edit</span>
-            </a>
-            <div className={styles.toolbarSeparator} />
-            <a
-              className={styles.toolbarButton}
-              onClick={() => this.handleDuplicateElement(selectedElement)}
-            >
-              <Icon name="clone-icon" width={14} height={14} />
-              <span>Duplicate</span>
-            </a>
-            <div className={styles.toolbarSeparator} />
-            <a
-              className={styles.toolbarButton}
-              onClick={() => this.handleDeleteElement(selectedElement)}
-            >
-              <Icon name="trash-solid" width={14} height={14} />
-              <span>Delete</span>
-            </a>
-          </>
-        )}
+          <MenuItem
+            text="Add"
+            onClick={() => this.setState({ showAddDialog: true })}
+          />
+          <MenuItem
+            text="Duplicate"
+            shortcut="⌘D"
+            disabled={!selectedElement}
+            onClick={() => this.handleDuplicateElement(selectedElement)}
+          />
+          <MenuItem
+            text="Edit"
+            disabled={!selectedElement}
+            onClick={this.handleEditElement}
+          />
+          <Separator />
+          <MenuItem
+            text="Delete"
+            shortcut="⌫"
+            disabled={!selectedElement}
+            onClick={() => this.handleDeleteElement(selectedElement)}
+          />
+        </BrowserMenu>
         {hasDataElements && (
           <>
             <div className={styles.toolbarSeparator} />
