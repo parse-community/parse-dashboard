@@ -1,3 +1,10 @@
+# [8.3.0-alpha.25](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.24...8.3.0-alpha.25) (2026-01-23)
+
+
+### Features
+
+* Add cloning of element in canvas ([#3144](https://github.com/parse-community/parse-dashboard/issues/3144)) ([dec06ad](https://github.com/parse-community/parse-dashboard/commit/dec06adf77bcfad6148da02f20243f3b480cca15))
+
 # [8.3.0-alpha.24](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.23...8.3.0-alpha.24) (2026-01-23)
 
 
