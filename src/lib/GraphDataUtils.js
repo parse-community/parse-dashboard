@@ -802,9 +802,24 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
     return dataset;
   });
 
+  // Calculate date range info for tick formatting
+  let dateAxisInfo = null;
+  if (isDateAxis && !hasNonDateAxisValue && sortedXKeys.length > 0) {
+    const firstTimestamp = sortedXKeys[0];
+    const lastTimestamp = sortedXKeys[sortedXKeys.length - 1];
+    const timespanMs = lastTimestamp - firstTimestamp;
+    const timespanHours = timespanMs / (1000 * 60 * 60);
+    dateAxisInfo = {
+      isDateAxis: true,
+      timespanHours,
+      rawXValues: sortedXKeys, // timestamps
+    };
+  }
+
   return {
     labels: sortedXLabels,
     datasets,
+    dateAxisInfo,
   };
 }
 

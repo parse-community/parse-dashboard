@@ -63,6 +63,30 @@ ChartJS.register(
   RadarController
 );
 
+/**
+ * Format a date tick label based on the time span
+ * @param {number} timestamp - The timestamp to format
+ * @param {number} timespanHours - The total time span in hours
+ * @returns {string} Formatted date string
+ */
+function formatDateTickLabel(timestamp, timespanHours) {
+  const date = new Date(timestamp);
+
+  if (timespanHours <= 24) {
+    // Show only time in localized hh:mm format
+    return date.toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } else {
+    // Show only date in localized dd/mm format
+    return date.toLocaleDateString(undefined, {
+      day: '2-digit',
+      month: '2-digit',
+    });
+  }
+}
+
 const GraphPanel = ({
   graphConfig,
   data,
@@ -329,6 +353,26 @@ const GraphPanel = ({
 
         const hasSecondaryAxis = secondaryAxisSeries.length > 0;
 
+        // Get date axis info for tick formatting
+        const dateAxisInfo = processedData?.dateAxisInfo;
+
+        // Build x-axis tick configuration
+        const xAxisTicks = {
+          maxRotation: 0, // Keep labels horizontal
+          minRotation: 0,
+        };
+
+        // Add custom tick callback for date axes
+        if (dateAxisInfo?.isDateAxis && dateAxisInfo.rawXValues) {
+          xAxisTicks.callback = function(value, index) {
+            const timestamp = dateAxisInfo.rawXValues[index];
+            if (timestamp !== undefined) {
+              return formatDateTickLabel(timestamp, dateAxisInfo.timespanHours);
+            }
+            return this.getLabelForValue(value);
+          };
+        }
+
         return {
           ...baseOptions,
           scales: {
@@ -338,6 +382,7 @@ const GraphPanel = ({
               grid: {
                 display: showGrid,
               },
+              ticks: xAxisTicks,
             },
             y: {
               display: true,
