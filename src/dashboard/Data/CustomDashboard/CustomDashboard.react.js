@@ -1087,6 +1087,7 @@ class CustomDashboard extends DashboardView {
 
     // Build categories
     const categories = [];
+    const currentCanvasId = this.props.params?.canvasId || '';
 
     // Add ungrouped canvases as top-level items
     ungroupedCanvases.forEach(canvas => {
@@ -1103,6 +1104,7 @@ class CustomDashboard extends DashboardView {
       categories.push({
         name: groupName,
         id: `group_${groupName}`,
+        link: currentCanvasId || '',
         filters: canvases.map(canvas => ({
           name: canvas.name || 'Untitled Canvas',
           filter: canvas.id,
@@ -1110,8 +1112,6 @@ class CustomDashboard extends DashboardView {
         })),
       });
     });
-
-    const currentCanvasId = this.props.params?.canvasId || '';
 
     // Determine current category (could be a direct canvas or a group containing the canvas)
     let currentCategory = currentCanvasId;
