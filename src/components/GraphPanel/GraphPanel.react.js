@@ -64,23 +64,26 @@ ChartJS.register(
 );
 
 /**
- * Format a date tick label based on the time span
+ * Format a date tick label based on the time span using localized format
  * @param {number} timestamp - The timestamp to format
  * @param {number} timespanHours - The total time span in hours
- * @returns {string} Formatted date string
+ * @returns {string} Formatted date string in user's locale
  */
 function formatDateTickLabel(timestamp, timespanHours) {
   const date = new Date(timestamp);
+  // Use browser's language setting for localization
+  const locale = navigator?.language || navigator?.languages?.[0];
 
   if (timespanHours <= 24) {
-    // Show only time in localized hh:mm format
-    return date.toLocaleTimeString(undefined, {
+    // Show only time in localized 24-hour hh:mm format
+    return date.toLocaleTimeString(locale, {
       hour: '2-digit',
       minute: '2-digit',
+      hour12: false, // Use 24-hour format for compact display
     });
   } else {
-    // Show only date in localized dd/mm format
-    return date.toLocaleDateString(undefined, {
+    // Show only date in localized format (respects user's locale for day/month order)
+    return date.toLocaleDateString(locale, {
       day: '2-digit',
       month: '2-digit',
     });
