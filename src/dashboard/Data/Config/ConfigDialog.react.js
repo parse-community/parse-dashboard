@@ -45,7 +45,7 @@ const EDITORS = {
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange) => (
-    <NonPrintableHighlighter value={value}>
+    <NonPrintableHighlighter value={value} detectNonAlphanumeric={true}>
       <TextInput multiline={true} value={value || ''} onChange={onChange} />
     </NonPrintableHighlighter>
   ),
@@ -54,7 +54,7 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange) => (
-    <NonPrintableHighlighter value={value} isJson={true}>
+    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
       <TextInput
         multiline={true}
         monospace={true}
@@ -65,7 +65,7 @@ const EDITORS = {
     </NonPrintableHighlighter>
   ),
   Array: (value, onChange) => (
-    <NonPrintableHighlighter value={value} isJson={true}>
+    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
       <TextInput
         multiline={true}
         monospace={true}
@@ -301,9 +301,9 @@ export default class ConfigDialog extends React.Component {
               />
             }
             input={
-              <Dropdown value={this.state.selectedIndex} onChange={handleIndexChange}>
+              <Dropdown value={String(this.state.selectedIndex)} onChange={index => handleIndexChange(Number(index))}>
                 {configHistory.map((value, i) => (
-                  <Option key={i} value={i}>
+                  <Option key={i} value={String(i)}>
                     {dateStringUTC(new Date(value.time))}
                   </Option>
                 ))}

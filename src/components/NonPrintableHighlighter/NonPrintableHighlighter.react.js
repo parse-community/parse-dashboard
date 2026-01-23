@@ -233,6 +233,84 @@ export function getNonAlphanumericChars(str) {
 }
 
 /**
+ * Get non-alphanumeric characters from JSON string values only
+ * Parses the JSON and only checks string values within it
+ * Locations show the JSON path and character position (e.g., "[1] @ 5" or "name @ 3")
+ */
+export function getNonAlphanumericCharsFromJson(jsonStr) {
+  if (!jsonStr || typeof jsonStr !== 'string') {
+    return { totalCount: 0, chars: [] };
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch {
+    // If JSON is invalid, don't report any errors
+    return { totalCount: 0, chars: [] };
+  }
+
+  const stringValuesWithPaths = extractStringValuesWithPaths(parsed);
+
+  // Map to track: char -> array of { path, position } objects
+  const charLocationMap = new Map();
+  let totalCount = 0;
+
+  for (const { value, path } of stringValuesWithPaths) {
+    for (let i = 0; i < value.length; i++) {
+      const char = value[i];
+      NON_ALPHANUMERIC_REGEX.lastIndex = 0;
+      if (NON_ALPHANUMERIC_REGEX.test(char)) {
+        if (!charLocationMap.has(char)) {
+          charLocationMap.set(char, []);
+        }
+        charLocationMap.get(char).push({ path, position: i });
+        totalCount++;
+      }
+    }
+  }
+
+  const chars = [];
+  for (const [char, locationsList] of charLocationMap) {
+    // Create a readable label for the character
+    let label;
+    const code = char.charCodeAt(0);
+    if (char === ' ') {
+      label = 'SPACE';
+    } else if (code >= 32 && code <= 126) {
+      // Printable ASCII - show the character itself
+      label = char;
+    } else {
+      label = `U+${code.toString(16).toUpperCase().padStart(4, '0')}`;
+    }
+
+    // Group positions by path and format as "path @ pos1, pos2, ..."
+    const pathPositions = new Map();
+    for (const { path, position } of locationsList) {
+      if (!pathPositions.has(path)) {
+        pathPositions.set(path, []);
+      }
+      pathPositions.get(path).push(position);
+    }
+
+    const locations = [];
+    for (const [path, positions] of pathPositions) {
+      locations.push(`${path} @ ${positions.join(', ')}`);
+    }
+
+    chars.push({
+      char,
+      label,
+      code: `0x${code.toString(16).toUpperCase().padStart(2, '0')}`,
+      count: locationsList.length,
+      locations,
+    });
+  }
+
+  return { totalCount, chars };
+}
+
+/**
  * Get a list of non-printable characters found in a string with counts and positions
  * Returns { totalCount, chars: [{ char, label, code, count, positions }] }
  */
@@ -393,7 +471,9 @@ export default class NonPrintableHighlighter extends React.Component {
     const hasNonPrintable = totalCount > 0;
 
     // Get non-alphanumeric characters if detection is enabled
-    const nonAlphanumericResult = detectNonAlphanumeric ? getNonAlphanumericChars(value) : { totalCount: 0, chars: [] };
+    const nonAlphanumericResult = detectNonAlphanumeric
+      ? (isJson ? getNonAlphanumericCharsFromJson(value) : getNonAlphanumericChars(value))
+      : { totalCount: 0, chars: [] };
     const hasNonAlphanumeric = nonAlphanumericResult.totalCount > 0;
 
     return (
@@ -451,7 +531,7 @@ export default class NonPrintableHighlighter extends React.Component {
             {this.state.showNonAlphanumericDetails && (
               <div className={styles.infoDetailsPanel}>
                 <div className={styles.charList}>
-                  {nonAlphanumericResult.chars.map(({ label, code, count, positions }, i) => (
+                  {nonAlphanumericResult.chars.map(({ label, code, count, positions, locations }, i) => (
                     <div key={i} className={styles.charItem}>
                       <span className={styles.charLabelInfo}>{label}</span>
                       <span className={styles.charCode}>{code}</span>
@@ -459,6 +539,11 @@ export default class NonPrintableHighlighter extends React.Component {
                       {positions && (
                         <span className={styles.charPositions}>
                           @ {positions.length <= 5 ? positions.join(', ') : `${positions.slice(0, 5).join(', ')}...`}
+                        </span>
+                      )}
+                      {locations && (
+                        <span className={styles.charPositions}>
+                          in {locations.length <= 3 ? locations.join(', ') : `${locations.slice(0, 3).join(', ')}...`}
                         </span>
                       )}
                     </div>
