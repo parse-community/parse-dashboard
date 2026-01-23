@@ -287,6 +287,7 @@ const GraphPanel = ({
       plugins: {
         legend: {
           display: showLegend,
+          position: 'bottom',
         },
         title: {
           display: !!title,
@@ -441,7 +442,7 @@ const GraphPanel = ({
             ...baseOptions.plugins,
             legend: {
               display: showLegend,
-              position: 'right',
+              position: 'bottom',
             },
           },
         };
