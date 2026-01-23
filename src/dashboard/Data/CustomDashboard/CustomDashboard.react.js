@@ -734,6 +734,33 @@ class CustomDashboard extends DashboardView {
     }), this.markUnsavedChanges);
   };
 
+  handleDuplicateElement = (id) => {
+    const { elements } = this.state;
+    const element = elements.find(el => el.id === id);
+
+    if (!element) {
+      return;
+    }
+
+    const duplicatedElement = {
+      ...element,
+      id: generateId(),
+      x: element.x + 50,
+      y: element.y + 50,
+      config: { ...element.config },
+    };
+
+    this.setState(state => ({
+      elements: [...state.elements, duplicatedElement],
+      selectedElement: duplicatedElement.id,
+    }), () => {
+      if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
+        this.fetchElementData(duplicatedElement.id);
+      }
+      this.markUnsavedChanges();
+    });
+  };
+
   handleEditElement = () => {
     const { selectedElement, elements } = this.state;
     if (!selectedElement) {
@@ -1049,6 +1076,12 @@ class CustomDashboard extends DashboardView {
       if (!this.state.isFullscreen) {
         this.setState({ selectedElement: null });
       }
+    } else if (e.key === 'd' && (e.metaKey || e.ctrlKey)) {
+      // Duplicate selected element with Cmd/Ctrl+D
+      if (this.state.selectedElement && !this.isEditableElement(document.activeElement)) {
+        e.preventDefault();
+        this.handleDuplicateElement(this.state.selectedElement);
+      }
     }
   };
 
@@ -1286,6 +1319,14 @@ class CustomDashboard extends DashboardView {
             >
               <Icon name="edit-solid" width={14} height={14} />
               <span>Edit</span>
+            </a>
+            <div className={styles.toolbarSeparator} />
+            <a
+              className={styles.toolbarButton}
+              onClick={() => this.handleDuplicateElement(selectedElement)}
+            >
+              <Icon name="clone-icon" width={14} height={14} />
+              <span>Duplicate</span>
             </a>
             <div className={styles.toolbarSeparator} />
             <a
