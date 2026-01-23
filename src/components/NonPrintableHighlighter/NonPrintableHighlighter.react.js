@@ -149,8 +149,8 @@ function stripQuotes(str) {
   if (!str || typeof str !== 'string') {
     return str;
   }
-  // Check for matching single or double quotes
-  if ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith('\'') && str.endsWith('\''))) {
+  // Check for matching single or double quotes (minimum length 2 for valid quoted string)
+  if (str.length >= 2 && ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith('\'') && str.endsWith('\'')))) {
     return str.slice(1, -1);
   }
   return str;
