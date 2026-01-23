@@ -368,8 +368,10 @@ const GraphPanel = ({
 
         // Add custom tick callback for date axes
         if (dateAxisInfo?.isDateAxis && dateAxisInfo.rawXValues) {
-          xAxisTicks.callback = function(value, index) {
-            const timestamp = dateAxisInfo.rawXValues[index];
+          xAxisTicks.callback = function(value) {
+            // Use 'value' (data index) not 'index' (rendered tick position)
+            // This ensures correct lookup when Chart.js auto-skips ticks
+            const timestamp = dateAxisInfo.rawXValues[value];
             if (timestamp !== undefined) {
               return formatDateTickLabel(timestamp, dateAxisInfo.timespanHours);
             }
