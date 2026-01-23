@@ -17,7 +17,6 @@ import Separator from 'components/BrowserMenu/Separator.react';
 import CanvasElement from './CanvasElement.react';
 import AddElementDialog from './AddElementDialog.react';
 import SaveCanvasDialog from './SaveCanvasDialog.react';
-import LoadCanvasDialog from './LoadCanvasDialog.react';
 import StaticTextElement from './elements/StaticTextElement.react';
 import StaticTextConfigDialog from './elements/StaticTextConfigDialog.react';
 import GraphElement from './elements/GraphElement.react';
@@ -63,7 +62,6 @@ class CustomDashboard extends DashboardView {
       showDataTableDialog: false,
       showViewDialog: false,
       showSaveDialog: false,
-      showLoadDialog: false,
       editingElement: null,
       availableGraphs: {},
       availableFilters: {},
@@ -76,11 +74,12 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: null,
       currentCanvasName: null,
       currentCanvasGroup: null,
-      currentCanvasFavorite: false,
       hasUnsavedChanges: false,
       isFullscreen: false,
       // Track dragging element position for canvas auto-extend
       dragPosition: null,
+      // Track expanded groups in sidebar
+      expandedSidebarGroups: [],
     };
     this.autoReloadTimer = null;
     this.autoReloadProgressTimer = null;
@@ -152,7 +151,6 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: canvas.id,
       currentCanvasName: canvas.name,
       currentCanvasGroup: canvas.group || null,
-      currentCanvasFavorite: canvas.favorite || false,
       hasUnsavedChanges: false,
     }, () => {
       // Fetch data for all graph, data table, and view elements
@@ -196,7 +194,6 @@ class CustomDashboard extends DashboardView {
             currentCanvasId: null,
             currentCanvasName: null,
             currentCanvasGroup: null,
-            currentCanvasFavorite: false,
             hasUnsavedChanges: false,
           });
         }
@@ -840,7 +837,7 @@ class CustomDashboard extends DashboardView {
     }
   };
 
-  handleSaveCanvas = async (name, group, favorite) => {
+  handleSaveCanvas = async (name, group) => {
     if (!this.canvasPreferencesManager || !this.context?.applicationId) {
       console.error('Canvas preferences manager not initialized');
       return;
@@ -853,7 +850,6 @@ class CustomDashboard extends DashboardView {
       id: currentCanvasId || this.canvasPreferencesManager.generateCanvasId(),
       name,
       group,
-      favorite,
       elements,
     };
 
@@ -883,7 +879,6 @@ class CustomDashboard extends DashboardView {
         currentCanvasId: canvas.id,
         currentCanvasName: name,
         currentCanvasGroup: group,
-        currentCanvasFavorite: favorite,
         hasUnsavedChanges: false,
       }, () => {
         // Navigate to canvas URL if this is a new canvas
@@ -905,9 +900,7 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: canvas.id,
       currentCanvasName: canvas.name,
       currentCanvasGroup: canvas.group || null,
-      currentCanvasFavorite: canvas.favorite || false,
       hasUnsavedChanges: false,
-      showLoadDialog: false,
     }, () => {
       // Update URL to include canvas ID
       this.navigateToCanvas(canvas.id);
@@ -948,7 +941,6 @@ class CustomDashboard extends DashboardView {
           currentCanvasId: null,
           currentCanvasName: null,
           currentCanvasGroup: null,
-          currentCanvasFavorite: false,
           hasUnsavedChanges: false,
         }),
       }, () => {
@@ -969,47 +961,11 @@ class CustomDashboard extends DashboardView {
       currentCanvasId: null,
       currentCanvasName: null,
       currentCanvasGroup: null,
-      currentCanvasFavorite: false,
       hasUnsavedChanges: false,
     }, () => {
       // Clear canvas ID from URL
       this.navigateToCanvas(null);
     });
-  };
-
-  handleToggleFavorite = async (canvasId) => {
-    if (!this.canvasPreferencesManager || !this.context?.applicationId) {
-      return;
-    }
-
-    const { savedCanvases } = this.state;
-    const canvas = savedCanvases.find(c => c.id === canvasId);
-    if (!canvas) {
-      return;
-    }
-
-    // Toggle the favorite property
-    const updatedCanvas = { ...canvas, favorite: !canvas.favorite };
-    const updatedCanvases = savedCanvases.map(c =>
-      c.id === canvasId ? updatedCanvas : c
-    );
-
-    try {
-      await this.canvasPreferencesManager.saveCanvas(
-        this.context.applicationId,
-        updatedCanvas,
-        updatedCanvases
-      );
-
-      const newState = { savedCanvases: updatedCanvases };
-      // Update currentCanvasFavorite if the toggled canvas is the active one
-      if (canvasId === this.state.currentCanvasId) {
-        newState.currentCanvasFavorite = updatedCanvas.favorite;
-      }
-      this.setState(newState);
-    } catch (error) {
-      console.error('Failed to toggle canvas favorite:', error);
-    }
   };
 
   markUnsavedChanges = () => {
@@ -1105,28 +1061,80 @@ class CustomDashboard extends DashboardView {
   renderSidebar() {
     const { savedCanvases } = this.state;
 
-    // Filter to only favorited canvases and sort alphabetically
-    const favoritedCanvases = savedCanvases
-      .filter(canvas => canvas.favorite)
+    // Sort canvases alphabetically
+    const sortedCanvases = [...savedCanvases]
       .sort((a, b) => stringCompare(a.name || '', b.name || ''));
 
-    // Don't render sidebar if no favorited canvases
-    if (favoritedCanvases.length === 0) {
+    // Don't render sidebar if no canvases
+    if (sortedCanvases.length === 0) {
       return null;
     }
 
-    const categories = favoritedCanvases.map(canvas => ({
-      name: canvas.name || 'Untitled Canvas',
-      id: canvas.id,
-    }));
+    // Group canvases by their group name
+    const groupedCanvases = {};
+    const ungroupedCanvases = [];
+
+    sortedCanvases.forEach(canvas => {
+      if (canvas.group) {
+        if (!groupedCanvases[canvas.group]) {
+          groupedCanvases[canvas.group] = [];
+        }
+        groupedCanvases[canvas.group].push(canvas);
+      } else {
+        ungroupedCanvases.push(canvas);
+      }
+    });
+
+    // Build categories
+    const categories = [];
+
+    // Add ungrouped canvases as top-level items
+    ungroupedCanvases.forEach(canvas => {
+      categories.push({
+        name: canvas.name || 'Untitled Canvas',
+        id: canvas.id,
+      });
+    });
+
+    // Add groups with canvases as nested filters
+    const sortedGroups = Object.keys(groupedCanvases).sort((a, b) => stringCompare(a, b));
+    sortedGroups.forEach(groupName => {
+      const canvases = groupedCanvases[groupName];
+      categories.push({
+        name: groupName,
+        id: `group_${groupName}`,
+        filters: canvases.map(canvas => ({
+          name: canvas.name || 'Untitled Canvas',
+          filter: canvas.id,
+          id: canvas.id,
+        })),
+      });
+    });
 
     const currentCanvasId = this.props.params?.canvasId || '';
 
+    // Determine current category (could be a direct canvas or a group containing the canvas)
+    let currentCategory = currentCanvasId;
+    sortedGroups.forEach(groupName => {
+      const canvases = groupedCanvases[groupName];
+      if (canvases.some(c => c.id === currentCanvasId)) {
+        currentCategory = `group_${groupName}`;
+      }
+    });
+
     return (
       <CategoryList
-        current={currentCanvasId}
+        current={currentCategory}
         linkPrefix={'canvas/'}
         categories={categories}
+        params={`filters=${currentCanvasId}&filterId=${currentCanvasId}`}
+        filterClicked={(url) => {
+          // Extract canvas ID from the filter URL
+          const match = url.match(/filterId=([^&]+)/);
+          if (match) {
+            this.navigateToCanvas(match[1]);
+          }
+        }}
       />
     );
   }
@@ -1288,12 +1296,7 @@ class CustomDashboard extends DashboardView {
             onClick={this.handleNewCanvas}
           />
           <MenuItem
-            text="Load"
-            onClick={() => this.setState({ showLoadDialog: true })}
-          />
-          <MenuItem
-            text="Save"
-            disabled={!hasElements}
+            text="Save..."
             onClick={() => this.setState({ showSaveDialog: true })}
           />
         </BrowserMenu>
@@ -1386,7 +1389,6 @@ class CustomDashboard extends DashboardView {
       showDataTableDialog,
       showViewDialog,
       showSaveDialog,
-      showLoadDialog,
       editingElement,
       availableGraphs,
       availableFilters,
@@ -1396,7 +1398,6 @@ class CustomDashboard extends DashboardView {
       savedCanvases,
       currentCanvasName,
       currentCanvasGroup,
-      currentCanvasFavorite,
     } = this.state;
 
     // Extract unique group names from saved canvases
@@ -1453,19 +1454,9 @@ class CustomDashboard extends DashboardView {
           <SaveCanvasDialog
             currentName={currentCanvasName}
             currentGroup={currentCanvasGroup}
-            currentFavorite={currentCanvasFavorite}
             existingGroups={existingGroups}
             onClose={() => this.setState({ showSaveDialog: false })}
             onSave={this.handleSaveCanvas}
-          />
-        )}
-        {showLoadDialog && (
-          <LoadCanvasDialog
-            canvases={savedCanvases}
-            onClose={() => this.setState({ showLoadDialog: false })}
-            onLoad={this.handleLoadCanvas}
-            onDelete={this.handleDeleteCanvas}
-            onToggleFavorite={this.handleToggleFavorite}
           />
         )}
       </>

@@ -179,11 +179,11 @@ export default class CategoryList extends React.Component {
                     if (typeof this.props.classClicked === 'function') {
                       this.props.classClicked();
                     }
-                    // Auto-expand filter list when clicking on a class that has filters
+                    // Toggle filter list when clicking on a class that has filters
                     if ((c.filters || []).length > 0) {
                       this.setState(prevState => ({
                         openClasses: prevState.openClasses.includes(id)
-                          ? prevState.openClasses
+                          ? prevState.openClasses.filter(c => c !== id)
                           : [...prevState.openClasses, id]
                       }));
                     }

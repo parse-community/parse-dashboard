@@ -12,14 +12,12 @@ import Label from 'components/Label/Label.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
 import Option from 'components/Dropdown/Option.react';
-import Toggle from 'components/Toggle/Toggle.react';
 
-const SaveCanvasDialog = ({ currentName, currentGroup, currentFavorite, existingGroups = [], onClose, onSave }) => {
+const SaveCanvasDialog = ({ currentName, currentGroup, existingGroups = [], onClose, onSave }) => {
   const [name, setName] = useState(currentName || '');
   const [groupSelection, setGroupSelection] = useState(currentGroup || '');
   const [newGroup, setNewGroup] = useState('');
   const [isCreatingNewGroup, setIsCreatingNewGroup] = useState(false);
-  const [favorite, setFavorite] = useState(currentFavorite || false);
 
   const sortedGroups = useMemo(() => {
     return [...existingGroups].sort((a, b) => a.localeCompare(b));
@@ -31,7 +29,7 @@ const SaveCanvasDialog = ({ currentName, currentGroup, currentFavorite, existing
       return;
     }
     const group = isCreatingNewGroup ? newGroup.trim() : groupSelection;
-    onSave(trimmedName, group || null, favorite);
+    onSave(trimmedName, group || null);
   };
 
   const handleGroupChange = (value) => {
@@ -97,16 +95,6 @@ const SaveCanvasDialog = ({ currentName, currentGroup, currentFavorite, existing
           }
         />
       )}
-      <Field
-        label={<Label text="Favorite" description="Show this canvas in the sidebar" />}
-        input={
-          <Toggle
-            value={favorite}
-            onChange={setFavorite}
-            type={Toggle.Types.YES_NO}
-          />
-        }
-      />
     </Modal>
   );
 };
