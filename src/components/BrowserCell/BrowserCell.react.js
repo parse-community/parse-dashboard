@@ -316,23 +316,59 @@ export default class BrowserCell extends Component {
     const { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
 
-    const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
-    setFilterContextMenuOption && contextMenuOptions.push(setFilterContextMenuOption);
-
-    const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
-    addFilterContextMenuOption && contextMenuOptions.push(addFilterContextMenuOption);
-
+    // Group 1: Related records and Scripts
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
     const relatedTextFieldsContextMenuOption = this.getRelatedTextFieldsContextMenuOption();
-    relatedTextFieldsContextMenuOption && contextMenuOptions.push(relatedTextFieldsContextMenuOption);
+    !relatedObjectsContextMenuOption && relatedTextFieldsContextMenuOption && contextMenuOptions.push(relatedTextFieldsContextMenuOption);
 
     const relatedNumberFieldsContextMenuOption = this.getRelatedNumberFieldsContextMenuOption();
-    relatedNumberFieldsContextMenuOption && contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
+    !relatedObjectsContextMenuOption && !relatedTextFieldsContextMenuOption && relatedNumberFieldsContextMenuOption && contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
 
-    !readonly &&
-      onEditSelectedRow &&
+    const { className, objectId, field, scripts = [], rowValue } = this.props;
+    const { validScripts, validator } = getValidScripts(scripts, className, field);
+
+    if (validScripts.length && onEditSelectedRow) {
+      contextMenuOptions.push({
+        text: 'Scripts',
+        items: validScripts.map(script => {
+          return {
+            text: script.title,
+            disabled: validator?.(rowValue, field) === false,
+            callback: () => {
+              this.selectedScript = { ...script, className, objectId };
+              if (script.showConfirmationDialog) {
+                this.toggleConfirmationDialog();
+              } else {
+                this.executeScript(script);
+              }
+            },
+          };
+        }),
+      });
+    }
+
+    // Group 2: Filters (with separator)
+    const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
+    const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
+
+    if (addFilterContextMenuOption || setFilterContextMenuOption) {
+      if (contextMenuOptions.length > 0) {
+        contextMenuOptions.push({ type: 'separator' });
+      }
+      addFilterContextMenuOption && contextMenuOptions.push(addFilterContextMenuOption);
+      setFilterContextMenuOption && contextMenuOptions.push(setFilterContextMenuOption);
+    }
+
+    // Group 3: Row actions (with separator)
+    const hasEditRow = !readonly && onEditSelectedRow;
+
+    if (hasEditRow) {
+      if (contextMenuOptions.length > 0) {
+        contextMenuOptions.push({ type: 'separator' });
+      }
+
       contextMenuOptions.push({
         text: 'Edit row',
         callback: () => {
@@ -340,51 +376,14 @@ export default class BrowserCell extends Component {
           onEditSelectedRow(true, objectId);
         },
       });
-
-    if (this.props.type === 'Pointer') {
-      onEditSelectedRow &&
-        contextMenuOptions.push({
-          text: 'Open pointer in new tab',
-          callback: () => {
-            const { value, onPointerCmdClick } = this.props;
-            onPointerCmdClick(value);
-          },
-        });
     }
 
-    const { className, objectId, field, scripts = [], rowValue } = this.props;
-    const { validScripts, validator } = getValidScripts(scripts, className, field);
-
-    if (validScripts.length) {
-      onEditSelectedRow &&
-        contextMenuOptions.push({
-          text: 'Scripts',
-          items: validScripts.map(script => {
-            return {
-              text: script.title,
-              disabled: validator?.(rowValue, field) === false,
-              callback: () => {
-                this.selectedScript = { ...script, className, objectId };
-                if (script.showConfirmationDialog) {
-                  this.toggleConfirmationDialog();
-                } else {
-                  this.executeScript(script);
-                }
-              },
-            };
-          }),
-        });
-    }
-
-    // Sort menu items alphabetically by text
-    contextMenuOptions.sort((a, b) => a.text.localeCompare(b.text));
-
-    // Add separator and "Add to config parameter..." after the sorted items
+    // Group 4: Config parameter (with separator)
     const addToConfigOption = this.getAddToConfigContextMenuOption();
-    if (addToConfigOption && contextMenuOptions.length > 0) {
-      contextMenuOptions.push({ type: 'separator' });
-      contextMenuOptions.push(addToConfigOption);
-    } else if (addToConfigOption) {
+    if (addToConfigOption) {
+      if (contextMenuOptions.length > 0) {
+        contextMenuOptions.push({ type: 'separator' });
+      }
       contextMenuOptions.push(addToConfigOption);
     }
 
@@ -410,7 +409,7 @@ export default class BrowserCell extends Component {
   getSetFilterContextMenuOption(constraints) {
     if (constraints) {
       return {
-        text: 'Set filter...',
+        text: 'Set filter',
         items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           const copyableValue = String(this.copyableValue);
@@ -436,7 +435,7 @@ export default class BrowserCell extends Component {
   getAddFilterContextMenuOption(constraints) {
     if (constraints && this.props.filters && this.props.filters.size > 0) {
       return {
-        text: 'Add filter...',
+        text: 'Add filter',
         items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           const text = `${this.props.field} ${definition.name}${
@@ -452,7 +451,7 @@ export default class BrowserCell extends Component {
   }
 
   /**
-   * Returns "Get related records from..." context menu item if cell holds a Pointer
+   * Returns "Related records" context menu item if cell holds a Pointer
    * or objectId and there's a class in relation.
    * Groups fields by class name in a hierarchical submenu structure.
    */
@@ -463,14 +462,14 @@ export default class BrowserCell extends Component {
       (value && value.className) || (this.props.field === 'objectId' && this.props.className);
     if (pointerClassName) {
       const relatedRecordsMenuItem = {
-        text: 'Get related records from...',
+        text: 'Related records',
         items: [],
       };
 
       // Group fields by class name for hierarchical navigation
       schema.data
         .get('classes')
-        .sortBy((v, k) => k)
+        .sortBy((_v, k) => k)
         .forEach((cl, className) => {
           const classFields = [];
 
@@ -510,7 +509,7 @@ export default class BrowserCell extends Component {
   }
 
   /**
-   * Returns "Get related records from..." context menu item if cell holds a String value
+   * Returns "Related records" context menu item if cell holds a String value
    * and there are classes with String type fields to filter by.
    * Groups fields by class name in a hierarchical submenu structure.
    */
@@ -524,14 +523,14 @@ export default class BrowserCell extends Component {
     }
 
     const relatedRecordsMenuItem = {
-      text: 'Get related records from...',
+      text: 'Related records',
       items: [],
     };
 
     // Group fields by class name for hierarchical navigation
     schema.data
       .get('classes')
-      .sortBy((v, k) => k)
+      .sortBy((_v, k) => k)
       .forEach((cl, className) => {
         const classFields = [];
 
@@ -576,7 +575,7 @@ export default class BrowserCell extends Component {
   }
 
   /**
-   * Returns "Get related records from..." context menu item if cell holds a Number value
+   * Returns "Related records" context menu item if cell holds a Number value
    * and there are classes with Number type fields to filter by.
    * Groups fields by class name in a hierarchical submenu structure.
    */
@@ -589,14 +588,14 @@ export default class BrowserCell extends Component {
     }
 
     const relatedRecordsMenuItem = {
-      text: 'Get related records from...',
+      text: 'Related records',
       items: [],
     };
 
     // Group fields by class name for hierarchical navigation
     schema.data
       .get('classes')
-      .sortBy((v, k) => k)
+      .sortBy((_v, k) => k)
       .forEach((cl, className) => {
         const classFields = [];
 
@@ -651,7 +650,7 @@ export default class BrowserCell extends Component {
     }
 
     return {
-      text: 'Add to config parameter...',
+      text: 'Add to config parameter',
       items: arrayConfigParams.map(param => ({
         text: param.name,
         callback: () => {
