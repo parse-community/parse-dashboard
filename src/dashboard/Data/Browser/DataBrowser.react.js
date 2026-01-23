@@ -1106,14 +1106,17 @@ export default class DataBrowser extends React.Component {
 
     const menuItems = [];
 
-    // Add "Get related records from..." menu item
+    // Group 1: Navigation
     const relatedRecordsMenuItem = this.getRelatedObjectsMenuItemForPanel(objectId, className);
     if (relatedRecordsMenuItem) {
       menuItems.push(relatedRecordsMenuItem);
     }
 
-    // Add Scripts menu if there are valid scripts
+    // Group 4: Automation
     if (validScripts.length && this.props.onEditSelectedRow) {
+      if (menuItems.length > 0) {
+        menuItems.push({ type: 'separator' });
+      }
       menuItems.push({
         text: 'Scripts',
         items: validScripts.map(script => {
@@ -1175,7 +1178,7 @@ export default class DataBrowser extends React.Component {
     // Build context menu items
     const menuItems = [
       {
-        text: 'Add to config parameter...',
+        text: 'Add to config parameter',
         items: arrayParams.map(param => ({
           text: param.name,
           callback: () => {
@@ -1198,13 +1201,13 @@ export default class DataBrowser extends React.Component {
     }
 
     const relatedRecordsMenuItem = {
-      text: 'Get related records from...',
+      text: 'Related records',
       items: [],
     };
 
     schema.data
       .get('classes')
-      .sortBy((v, k) => k)
+      .sortBy((_v, k) => k)
       .forEach((cl, className) => {
         const classFields = [];
 
