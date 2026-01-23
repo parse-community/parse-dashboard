@@ -102,3 +102,58 @@
   color: #888;
   margin-left: 4px;
 }
+
+// Info badge styles for non-alphanumeric character detection
+.infoContainer {
+  margin-top: 8px;
+}
+
+.infoBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: #bbdefb;
+  }
+
+  &.expanded {
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid #2196f3;
+  }
+}
+
+.infoIcon {
+  color: #1565c0;
+  font-size: 14px;
+}
+
+.infoText {
+  color: #1565c0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.infoDetailsPanel {
+  padding: 10px 12px;
+  background: #e8f4fd;
+  border: 1px solid #90caf9;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+
+.charLabelInfo {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1565c0;
+}

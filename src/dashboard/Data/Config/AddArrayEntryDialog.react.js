@@ -123,7 +123,7 @@ export default class AddArrayEntryDialog extends React.Component {
             />
           }
           input={
-            <NonPrintableHighlighter value={this.state.value}>
+            <NonPrintableHighlighter value={this.state.value} detectNonAlphanumeric={true}>
               <TextInput
                 placeholder={'Enter value'}
                 ref={this.inputRef}
