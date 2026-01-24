@@ -40,7 +40,32 @@
   }
 }
 
-.resizeHandle {
-  background: transparent !important;
+.resizeHandleVisible {
+  width: 20px !important;
+  height: 20px !important;
+  right: 6px !important;
+  bottom: 6px !important;
   user-select: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  cursor: nwse-resize;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #c5c5d3;
+    border-bottom: 2px solid #c5c5d3;
+  }
+
+  :global(.canvasElementWrapper):hover & {
+    opacity: 1;
+  }
+
+  &:hover::after {
+    border-color: #169cee;
+  }
 }
