@@ -5,6 +5,10 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
 }
 
 .body {
