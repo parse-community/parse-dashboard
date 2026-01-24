@@ -1,27 +1,15 @@
 @import 'stylesheets/globals.scss';
 
 .canvasElement {
-  background-color: #ffffff;
-  border: 1px solid #e3e3ea;
-  border-radius: 8px;
   overflow: visible;
-  transition: border-color 0.15s ease;
   user-select: none;
-
-  &:hover {
-    border-color: #c5c5d3;
-  }
-
-  &.selected {
-    border-color: #169cee;
-  }
 }
 
 .dragHandle {
   position: absolute;
   top: 0;
   left: 0;
-  right: 50px;
+  right: 60px;
   height: 40px;
   cursor: move;
   user-select: none;
@@ -30,14 +18,26 @@
 }
 
 .elementContent {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 10px;
+  bottom: 10px;
   overflow: auto;
   padding: 0 12px 12px;
   box-sizing: border-box;
   border-radius: 8px;
   background-color: #ffffff;
+  border: 1px solid #e3e3ea;
+  transition: border-color 0.15s ease;
+
+  .canvasElement:hover & {
+    border-color: #c5c5d3;
+  }
+
+  .canvasElement.selected & {
+    border-color: #169cee;
+  }
 }
 
 .resizeHandle {
