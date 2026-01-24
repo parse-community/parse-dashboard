@@ -1041,6 +1041,21 @@ class CustomDashboard extends DashboardView {
         e.preventDefault();
         this.handleDuplicateElement(this.state.selectedElement);
       }
+    } else if (e.key === 'e' && (e.metaKey || e.ctrlKey)) {
+      // Edit selected element with Cmd/Ctrl+E
+      if (this.state.selectedElement && !this.isEditableElement(document.activeElement)) {
+        e.preventDefault();
+        this.handleEditElement();
+      }
+    } else if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
+      // Reload all elements with Cmd/Ctrl+R
+      const hasDataElements = this.state.elements.some(
+        el => el.type === 'graph' || el.type === 'dataTable' || el.type === 'view'
+      );
+      if (hasDataElements && !this.isEditableElement(document.activeElement)) {
+        e.preventDefault();
+        this.handleReloadAll();
+      }
     }
   };
 
@@ -1318,6 +1333,7 @@ class CustomDashboard extends DashboardView {
           />
           <MenuItem
             text="Edit"
+            shortcut="⌘E"
             disabled={!selectedElement}
             onClick={this.handleEditElement}
           />
@@ -1335,6 +1351,7 @@ class CustomDashboard extends DashboardView {
             <a
               className={styles.toolbarButton}
               onClick={this.handleReloadAll}
+              title="Reload all elements (⌘R)"
             >
               <Icon name="refresh-solid" width={14} height={14} />
               <span>Reload</span>
