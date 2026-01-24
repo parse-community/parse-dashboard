@@ -34,7 +34,12 @@
   border: none;
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.15s ease;
+  opacity: 0;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+
+  :global(.canvasElementWrapper):hover & {
+    opacity: 1;
+  }
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);

@@ -63,7 +63,7 @@ const CanvasElement = ({
       onDragStop={handleDragStop}
       onResize={handleResize}
       onResizeStop={handleResizeStop}
-      className={`${styles.canvasElement} ${isSelected ? styles.selected : ''}`}
+      className={`${styles.canvasElement} ${isSelected ? styles.selected : ''} canvasElementWrapper`}
       enableResizing={{
         top: true,
         right: true,
