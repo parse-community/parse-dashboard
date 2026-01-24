@@ -84,6 +84,14 @@ const CanvasElement = ({
         bottomLeft: styles.resizeHandle,
         topLeft: styles.resizeHandle,
       }}
+      resizeHandleStyles={{
+        top: { top: 10, left: 10, right: 0 },
+        left: { top: 10, left: 10, bottom: 0 },
+        topLeft: { top: 10, left: 10 },
+        topRight: { top: 10, right: 0 },
+        bottomLeft: { left: 10, bottom: 0 },
+        bottomRight: { right: 0, bottom: 0 },
+      }}
     >
       <div className={styles.dragHandle} />
       <div className={styles.elementContent} onClick={handleClick}>
