@@ -16,12 +16,6 @@
   outline: none;
 }
 
-.canvasContent {
-  position: relative;
-  margin: 10px 0 0 10px;
-  min-height: calc(100vh - 96px - 10px);
-}
-
 .toolbarButton {
   @include NotoSansFont;
   display: inline-block;

@@ -1219,51 +1219,49 @@ class CustomDashboard extends DashboardView {
           onClick={this.handleDeselectElement}
           tabIndex={0}
         >
-          <div className={styles.canvasContent}>
-            {/* Invisible sizing element that expands the canvas when elements extend beyond */}
-            {(canvasSize.minWidth > 0 || canvasSize.minHeight > 0) && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: canvasSize.minWidth,
-                  height: canvasSize.minHeight,
-                  pointerEvents: 'none',
+          {/* Invisible sizing element that expands the canvas when elements extend beyond */}
+          {(canvasSize.minWidth > 0 || canvasSize.minHeight > 0) && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: canvasSize.minWidth,
+                height: canvasSize.minHeight,
+                pointerEvents: 'none',
+              }}
+            />
+          )}
+          {elements.length === 0 && !isFullscreen ? (
+            <EmptyState
+              icon="canvas-outline"
+              title="Canvas"
+              description="Create your own canvas by adding elements like text, graphs, and data tables."
+              cta="Add Element"
+              action={() => this.setState({ showAddDialog: true })}
+            />
+          ) : (
+            elements.map(element => (
+              <CanvasElement
+                key={element.id}
+                element={element}
+                isSelected={element.id === selectedElement}
+                onSelect={this.handleSelectElement}
+                onPositionChange={(id, x, y) => {
+                  this.handleDragEnd();
+                  this.handlePositionChange(id, x, y);
                 }}
-              />
-            )}
-            {elements.length === 0 && !isFullscreen ? (
-              <EmptyState
-                icon="canvas-outline"
-                title="Canvas"
-                description="Create your own canvas by adding elements like text, graphs, and data tables."
-                cta="Add Element"
-                action={() => this.setState({ showAddDialog: true })}
-              />
-            ) : (
-              elements.map(element => (
-                <CanvasElement
-                  key={element.id}
-                  element={element}
-                  isSelected={element.id === selectedElement}
-                  onSelect={this.handleSelectElement}
-                  onPositionChange={(id, x, y) => {
-                    this.handleDragEnd();
-                    this.handlePositionChange(id, x, y);
-                  }}
-                  onSizeChange={(id, width, height, x, y) => {
-                    this.handleResizeEnd();
-                    this.handleSizeChange(id, width, height, x, y);
-                  }}
-                  onDrag={this.handleDrag}
-                  onResize={this.handleResize}
-                >
-                  {this.renderElementContent(element)}
-                </CanvasElement>
-              ))
-            )}
-          </div>
+                onSizeChange={(id, width, height, x, y) => {
+                  this.handleResizeEnd();
+                  this.handleSizeChange(id, width, height, x, y);
+                }}
+                onDrag={this.handleDrag}
+                onResize={this.handleResize}
+              >
+                {this.renderElementContent(element)}
+              </CanvasElement>
+            ))
+          )}
         </div>
         {!isFullscreen && toolbar}
         {extras}
