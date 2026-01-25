@@ -1404,10 +1404,8 @@ export default class DataBrowser extends React.Component {
     if (e.keyCode === 18 && this.state.autoScrollEnabled && this.state.isPanelVisible && !this.state.isRecordingAutoScroll) {
       // Stop any existing auto-scroll first
       if (this.state.isAutoScrolling) {
-        console.log('[AutoScroll] Stopping existing auto-scroll to start new recording');
         this.stopAutoScroll();
       }
-      console.log('[AutoScroll] Recording started - Option key pressed');
       this.setState({
         isRecordingAutoScroll: true,
         recordedScrollDelta: 0,
@@ -1421,24 +1419,12 @@ export default class DataBrowser extends React.Component {
     // Option/Alt key = keyCode 18
     if (e.keyCode === 18 && this.state.isRecordingAutoScroll) {
       const { recordedScrollDelta, recordingScrollStart, recordingScrollEnd } = this.state;
-      console.log('[AutoScroll] Recording ended - Option key released', {
-        recordedScrollDelta,
-        recordingScrollStart,
-        recordingScrollEnd,
-      });
 
       // Only start auto-scroll if we actually recorded some scrolling
       if (recordedScrollDelta !== 0 && recordingScrollStart !== null) {
         // Calculate delay: time between scroll end and key release
         const scrollEndTime = recordingScrollEnd || Date.now();
         const delay = Math.max(200, Date.now() - scrollEndTime); // Minimum 200ms delay
-
-        console.log('[AutoScroll] Starting auto-scroll with:', {
-          scrollAmount: recordedScrollDelta,
-          delay,
-          scrollEndTime,
-          keyUpTime: Date.now(),
-        });
 
         this.setState({
           isRecordingAutoScroll: false,
@@ -1448,7 +1434,6 @@ export default class DataBrowser extends React.Component {
           this.startAutoScroll();
         });
       } else {
-        console.log('[AutoScroll] No scroll recorded, not starting auto-scroll');
         // No scroll was recorded, just reset
         this.setState({
           isRecordingAutoScroll: false,
@@ -1465,11 +1450,6 @@ export default class DataBrowser extends React.Component {
       // Extract deltaY immediately to avoid synthetic event pooling issues
       const deltaY = e.deltaY;
       const now = Date.now();
-      console.log('[AutoScroll] Wheel event during recording:', {
-        deltaY,
-        previousTotal: this.state.recordedScrollDelta,
-        newTotal: this.state.recordedScrollDelta + deltaY,
-      });
       this.setState(prevState => ({
         recordedScrollDelta: prevState.recordedScrollDelta + deltaY,
         recordingScrollStart: prevState.recordingScrollStart || now,
@@ -1567,14 +1547,6 @@ export default class DataBrowser extends React.Component {
     const startTime = performance.now();
     const startScrollTop = container.scrollTop;
 
-    console.log('[AutoScroll] Starting scroll step:', {
-      scrollAmount,
-      animationDuration: duration,
-      pauseAfter: this.state.autoScrollDelay,
-      startScrollTop,
-      targetScrollTop: startScrollTop + scrollAmount,
-    });
-
     // Get starting positions for multi-panel sync
     const panelStartPositions = [];
     if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
@@ -1590,7 +1562,6 @@ export default class DataBrowser extends React.Component {
     const animateScroll = (currentTime) => {
       if (!this.state.isAutoScrolling || this.state.autoScrollPaused) {
         // If stopped or paused during animation, schedule next check
-        console.log('[AutoScroll] Animation interrupted (stopped or paused)');
         this.autoScrollTimeoutId = setTimeout(() => {
           this.performAutoScrollStep();
         }, 100);
@@ -1620,13 +1591,6 @@ export default class DataBrowser extends React.Component {
         this.autoScrollAnimationId = requestAnimationFrame(animateScroll);
       } else {
         // Animation complete, wait the full recorded delay before next step
-        console.log('[AutoScroll] Scroll step complete:', {
-          finalScrollTop: container.scrollTop,
-          expectedScrollTop: startScrollTop + scrollAmount,
-          actualDelta: container.scrollTop - startScrollTop,
-          expectedDelta: scrollAmount,
-          waitingFor: this.state.autoScrollDelay,
-        });
         this.autoScrollTimeoutId = setTimeout(() => {
           this.performAutoScrollStep();
         }, this.state.autoScrollDelay);
