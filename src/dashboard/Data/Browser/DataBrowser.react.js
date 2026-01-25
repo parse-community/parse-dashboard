@@ -1400,7 +1400,8 @@ export default class DataBrowser extends React.Component {
 
   handleAutoScrollKeyDown(e) {
     // Option/Alt key = keyCode 18
-    if (e.keyCode === 18 && this.state.autoScrollEnabled && !this.state.isRecordingAutoScroll) {
+    // Only detect when panels are visible and auto-scroll is enabled
+    if (e.keyCode === 18 && this.state.autoScrollEnabled && this.state.isPanelVisible && !this.state.isRecordingAutoScroll) {
       // Stop any existing auto-scroll first
       if (this.state.isAutoScrolling) {
         console.log('[AutoScroll] Stopping existing auto-scroll to start new recording');
