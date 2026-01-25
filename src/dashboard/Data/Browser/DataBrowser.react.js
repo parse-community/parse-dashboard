@@ -241,7 +241,6 @@ export default class DataBrowser extends React.Component {
     this.handleAutoScrollKeyDown = this.handleAutoScrollKeyDown.bind(this);
     this.handleAutoScrollKeyUp = this.handleAutoScrollKeyUp.bind(this);
     this.handleAutoScrollWheel = this.handleAutoScrollWheel.bind(this);
-    this.handleAutoScrollMouseMove = this.handleAutoScrollMouseMove.bind(this);
     this.startAutoScroll = this.startAutoScroll.bind(this);
     this.stopAutoScroll = this.stopAutoScroll.bind(this);
     this.performAutoScrollStep = this.performAutoScrollStep.bind(this);
@@ -1461,11 +1460,6 @@ export default class DataBrowser extends React.Component {
     }
   }
 
-  handleAutoScrollMouseMove() {
-    // Mouse movement no longer pauses auto-scroll
-    // Only manual scrolling (wheel events) will pause it
-  }
-
   pauseAutoScrollWithResume() {
     // Clear any existing resume timeout
     if (this.autoScrollResumeTimeoutId) {
@@ -2379,7 +2373,6 @@ export default class DataBrowser extends React.Component {
                 className={styles.aggregationPanelContainer}
                 ref={this.aggregationPanelRef}
                 onWheel={this.handleAutoScrollWheel}
-                onMouseMove={this.handleAutoScrollMouseMove}
               >
                 {this.state.panelCount > 1 ? (
                   <div
