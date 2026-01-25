@@ -38,6 +38,7 @@ const AGGREGATION_PANEL_WIDTH = 'aggregationPanelWidth';
 const AGGREGATION_PANEL_COUNT = 'aggregationPanelCount';
 const GRAPH_PANEL_VISIBLE = 'graphPanelVisible';
 const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
+const AGGREGATION_PANEL_AUTO_SCROLL = 'aggregationPanelAutoScroll';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -120,6 +121,8 @@ export default class DataBrowser extends React.Component {
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
       ]?.[props.className];
+    const storedAutoScroll =
+      window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_SCROLL) === 'true';
     const storedGraphPanelVisible =
       window.localStorage?.getItem(GRAPH_PANEL_VISIBLE) === 'true';
     const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
@@ -177,6 +180,16 @@ export default class DataBrowser extends React.Component {
       availableGraphs: [],
       showGraphDialog: false,
       isCreatingNewGraph: false,
+      // Auto-scroll feature state
+      autoScrollEnabled: storedAutoScroll, // Whether auto-scroll feature is enabled (menu setting)
+      isAutoScrolling: false, // Whether auto-scroll is currently active
+      isRecordingAutoScroll: false, // Whether we're recording (Option key held during scroll)
+      autoScrollAmount: 0, // The registered scroll amount (pixels)
+      autoScrollDelay: 1000, // The registered wait time (ms)
+      autoScrollPaused: false, // Whether auto-scroll is currently paused
+      recordingScrollStart: null, // Timestamp when scroll recording started
+      recordingScrollEnd: null, // Timestamp when scrolling ended (before Option key release)
+      recordedScrollDelta: 0, // Accumulated scroll delta during recording
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -224,8 +237,21 @@ export default class DataBrowser extends React.Component {
     this.saveGraphConfig = this.saveGraphConfig.bind(this);
     this.deleteGraphConfig = this.deleteGraphConfig.bind(this);
     this.selectGraph = this.selectGraph.bind(this);
+    this.toggleAutoScroll = this.toggleAutoScroll.bind(this);
+    this.handleAutoScrollKeyDown = this.handleAutoScrollKeyDown.bind(this);
+    this.handleAutoScrollKeyUp = this.handleAutoScrollKeyUp.bind(this);
+    this.handleAutoScrollWheel = this.handleAutoScrollWheel.bind(this);
+    this.handleAutoScrollMouseMove = this.handleAutoScrollMouseMove.bind(this);
+    this.startAutoScroll = this.startAutoScroll.bind(this);
+    this.stopAutoScroll = this.stopAutoScroll.bind(this);
+    this.performAutoScrollStep = this.performAutoScrollStep.bind(this);
+    this.pauseAutoScrollWithResume = this.pauseAutoScrollWithResume.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
+    this.autoScrollIntervalId = null;
+    this.autoScrollTimeoutId = null;
+    this.autoScrollResumeTimeoutId = null;
+    this.autoScrollAnimationId = null;
     this.panelColumnRefs = [];
     this.activePanelIndex = -1;
     this.isWheelScrolling = false;
@@ -305,6 +331,9 @@ export default class DataBrowser extends React.Component {
     document.body.addEventListener('keydown', this.handleKey);
     window.addEventListener('resize', this.updateMaxWidth);
     window.addEventListener('mouseup', this.onMouseUpPanelCheckBox);
+    // Auto-scroll event listeners
+    document.body.addEventListener('keydown', this.handleAutoScrollKeyDown);
+    document.body.addEventListener('keyup', this.handleAutoScrollKeyUp);
 
     // Load keyboard shortcuts from server
     try {
@@ -339,6 +368,18 @@ export default class DataBrowser extends React.Component {
     window.removeEventListener('mouseup', this.onMouseUpPanelCheckBox);
     if (this.multiPanelWrapperElement) {
       this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
+    }
+    // Auto-scroll cleanup
+    document.body.removeEventListener('keydown', this.handleAutoScrollKeyDown);
+    document.body.removeEventListener('keyup', this.handleAutoScrollKeyUp);
+    if (this.autoScrollTimeoutId) {
+      clearTimeout(this.autoScrollTimeoutId);
+    }
+    if (this.autoScrollResumeTimeoutId) {
+      clearTimeout(this.autoScrollResumeTimeoutId);
+    }
+    if (this.autoScrollAnimationId) {
+      cancelAnimationFrame(this.autoScrollAnimationId);
     }
   }
 
@@ -707,6 +748,13 @@ export default class DataBrowser extends React.Component {
     // Ignore all keyboard events when focus is on input/textarea/select elements
     // This allows normal text editing behavior in filter inputs and dropdown navigation
     if (isInputElement) {
+      return;
+    }
+
+    // Escape key stops auto-scrolling
+    if (e.keyCode === 27 && this.state.isAutoScrolling) {
+      e.preventDefault();
+      this.stopAutoScroll();
       return;
     }
 
@@ -1308,6 +1356,216 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.setItem(AGGREGATION_PANEL_SHOW_CHECKBOX, String(newShowPanelCheckbox));
       return { showPanelCheckbox: newShowPanelCheckbox };
     });
+  }
+
+  toggleAutoScroll() {
+    this.setState(prevState => {
+      const newAutoScroll = !prevState.autoScrollEnabled;
+      window.localStorage?.setItem(AGGREGATION_PANEL_AUTO_SCROLL, String(newAutoScroll));
+      // If disabling auto-scroll while it's active, stop it
+      if (!newAutoScroll && prevState.isAutoScrolling) {
+        this.stopAutoScroll();
+      }
+      return { autoScrollEnabled: newAutoScroll };
+    });
+  }
+
+  handleAutoScrollKeyDown(e) {
+    // Option/Alt key = keyCode 18
+    if (e.keyCode === 18 && this.state.autoScrollEnabled && !this.state.isAutoScrolling && !this.state.isRecordingAutoScroll) {
+      this.setState({
+        isRecordingAutoScroll: true,
+        recordedScrollDelta: 0,
+        recordingScrollStart: null,
+        recordingScrollEnd: null,
+      });
+    }
+  }
+
+  handleAutoScrollKeyUp(e) {
+    // Option/Alt key = keyCode 18
+    if (e.keyCode === 18 && this.state.isRecordingAutoScroll) {
+      const { recordedScrollDelta, recordingScrollStart, recordingScrollEnd } = this.state;
+
+      // Only start auto-scroll if we actually recorded some scrolling
+      if (recordedScrollDelta !== 0 && recordingScrollStart !== null) {
+        // Calculate delay: time between scroll end and key release
+        const scrollEndTime = recordingScrollEnd || Date.now();
+        const delay = Math.max(200, Date.now() - scrollEndTime); // Minimum 200ms delay
+
+        this.setState({
+          isRecordingAutoScroll: false,
+          autoScrollAmount: recordedScrollDelta,
+          autoScrollDelay: delay,
+        }, () => {
+          this.startAutoScroll();
+        });
+      } else {
+        // No scroll was recorded, just reset
+        this.setState({
+          isRecordingAutoScroll: false,
+          recordedScrollDelta: 0,
+          recordingScrollStart: null,
+          recordingScrollEnd: null,
+        });
+      }
+    }
+  }
+
+  handleAutoScrollWheel(e) {
+    if (this.state.isRecordingAutoScroll) {
+      // Extract deltaY immediately to avoid synthetic event pooling issues
+      const deltaY = e.deltaY;
+      const now = Date.now();
+      this.setState(prevState => ({
+        recordedScrollDelta: prevState.recordedScrollDelta + deltaY,
+        recordingScrollStart: prevState.recordingScrollStart || now,
+        recordingScrollEnd: now,
+      }));
+    } else if (this.state.isAutoScrolling) {
+      // User manually scrolled during auto-scroll, pause it and schedule resume
+      this.pauseAutoScrollWithResume();
+    }
+  }
+
+  handleAutoScrollMouseMove() {
+    if (this.state.isAutoScrolling) {
+      // User moved mouse during auto-scroll, pause it and schedule resume
+      this.pauseAutoScrollWithResume();
+    }
+  }
+
+  pauseAutoScrollWithResume() {
+    // Clear any existing resume timeout
+    if (this.autoScrollResumeTimeoutId) {
+      clearTimeout(this.autoScrollResumeTimeoutId);
+    }
+
+    // Pause auto-scroll
+    if (!this.state.autoScrollPaused) {
+      this.setState({ autoScrollPaused: true });
+    }
+
+    // Schedule resume after 500ms of inactivity
+    this.autoScrollResumeTimeoutId = setTimeout(() => {
+      if (this.state.isAutoScrolling && this.state.autoScrollPaused) {
+        this.setState({ autoScrollPaused: false });
+      }
+    }, 500);
+  }
+
+  startAutoScroll() {
+    if (this.state.isAutoScrolling) {
+      return;
+    }
+
+    this.setState({ isAutoScrolling: true, autoScrollPaused: false }, () => {
+      this.performAutoScrollStep();
+    });
+  }
+
+  stopAutoScroll() {
+    if (this.autoScrollTimeoutId) {
+      clearTimeout(this.autoScrollTimeoutId);
+      this.autoScrollTimeoutId = null;
+    }
+    if (this.autoScrollResumeTimeoutId) {
+      clearTimeout(this.autoScrollResumeTimeoutId);
+      this.autoScrollResumeTimeoutId = null;
+    }
+    if (this.autoScrollAnimationId) {
+      cancelAnimationFrame(this.autoScrollAnimationId);
+      this.autoScrollAnimationId = null;
+    }
+    this.setState({
+      isAutoScrolling: false,
+      autoScrollPaused: false,
+      isRecordingAutoScroll: false,
+      recordedScrollDelta: 0,
+      recordingScrollStart: null,
+      recordingScrollEnd: null,
+    });
+  }
+
+  performAutoScrollStep() {
+    if (!this.state.isAutoScrolling) {
+      return;
+    }
+
+    if (this.state.autoScrollPaused) {
+      // When paused, keep checking but don't scroll
+      this.autoScrollTimeoutId = setTimeout(() => {
+        this.performAutoScrollStep();
+      }, 100);
+      return;
+    }
+
+    // Get the scrollable container
+    const container = this.aggregationPanelRef?.current;
+    if (!container) {
+      this.autoScrollTimeoutId = setTimeout(() => {
+        this.performAutoScrollStep();
+      }, this.state.autoScrollDelay);
+      return;
+    }
+
+    // Animate scroll smoothly over the delay period using requestAnimationFrame
+    const scrollAmount = this.state.autoScrollAmount;
+    const duration = Math.max(this.state.autoScrollDelay * 0.8, 100); // Use 80% of delay for animation
+    const startTime = performance.now();
+    const startScrollTop = container.scrollTop;
+
+    // Get starting positions for multi-panel sync
+    const panelStartPositions = [];
+    if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
+      this.panelColumnRefs.forEach((ref) => {
+        if (ref && ref.current) {
+          panelStartPositions.push(ref.current.scrollTop);
+        } else {
+          panelStartPositions.push(null);
+        }
+      });
+    }
+
+    const animateScroll = (currentTime) => {
+      if (!this.state.isAutoScrolling || this.state.autoScrollPaused) {
+        // If stopped or paused during animation, schedule next check
+        this.autoScrollTimeoutId = setTimeout(() => {
+          this.performAutoScrollStep();
+        }, 100);
+        return;
+      }
+
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Ease-out function for smooth deceleration
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+
+      // Apply scroll to main container
+      container.scrollTop = startScrollTop + (scrollAmount * easeOut);
+
+      // Sync scroll to other panels
+      if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
+        this.panelColumnRefs.forEach((ref, index) => {
+          if (ref && ref.current && panelStartPositions[index] !== null) {
+            ref.current.scrollTop = panelStartPositions[index] + (scrollAmount * easeOut);
+          }
+        });
+      }
+
+      if (progress < 1) {
+        this.autoScrollAnimationId = requestAnimationFrame(animateScroll);
+      } else {
+        // Animation complete, schedule next step after remaining delay
+        const remainingDelay = this.state.autoScrollDelay - duration;
+        this.autoScrollTimeoutId = setTimeout(() => {
+          this.performAutoScrollStep();
+        }, Math.max(remainingDelay, 50));
+      }
+    };
+
+    this.autoScrollAnimationId = requestAnimationFrame(animateScroll);
   }
 
   toggleGraphPanelVisibility() {
@@ -2088,6 +2346,8 @@ export default class DataBrowser extends React.Component {
               <div
                 className={styles.aggregationPanelContainer}
                 ref={this.aggregationPanelRef}
+                onWheel={this.handleAutoScrollWheel}
+                onMouseMove={this.handleAutoScrollMouseMove}
               >
                 {this.state.panelCount > 1 ? (
                   <div
@@ -2283,6 +2543,10 @@ export default class DataBrowser extends React.Component {
           toggleBatchNavigate={this.toggleBatchNavigate}
           showPanelCheckbox={this.state.showPanelCheckbox}
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
+          autoScrollEnabled={this.state.autoScrollEnabled}
+          toggleAutoScroll={this.toggleAutoScroll}
+          isAutoScrolling={this.state.isAutoScrolling}
+          stopAutoScroll={this.stopAutoScroll}
           toggleGraphPanel={this.toggleGraphPanelVisibility}
           isGraphPanelVisible={this.state.isGraphPanelVisible}
           {...other}

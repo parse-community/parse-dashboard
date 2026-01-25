@@ -130,3 +130,22 @@ body:global(.expanded) {
     }
   }
 }
+
+.btnAutoScroll {
+  background-color: #169cee;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+
+  &:hover {
+    background-color: #1486cc;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

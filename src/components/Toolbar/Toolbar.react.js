@@ -39,6 +39,12 @@ const Toolbar = props => {
         props.classwiseCloudFunctions[`${props.appId}${props.appName}`] &&
         props.classwiseCloudFunctions[`${props.appId}${props.appName}`][props.className] && (
         <div className={styles.panelButtons}>
+          {props.isAutoScrolling && (
+            <button onClick={props.stopAutoScroll} className={`${styles.btn} ${styles.btnAutoScroll}`}>
+              <Icon width={18} height={18} fill="#ffffff" name="x-outline" />
+              Auto-scroll
+            </button>
+          )}
           {props.isPanelVisible && (
             <>
               {props.panelCount > 1 && (

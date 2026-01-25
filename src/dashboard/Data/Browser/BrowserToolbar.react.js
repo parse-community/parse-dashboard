@@ -96,6 +96,10 @@ const BrowserToolbar = ({
   toggleBatchNavigate,
   showPanelCheckbox,
   toggleShowPanelCheckbox,
+  autoScrollEnabled,
+  toggleAutoScroll,
+  isAutoScrolling,
+  stopAutoScroll,
   toggleGraphPanel,
   isGraphPanelVisible,
 }) => {
@@ -298,6 +302,8 @@ const BrowserToolbar = ({
       classwiseCloudFunctions={classwiseCloudFunctions}
       appId={appId}
       appName={appName}
+      isAutoScrolling={isAutoScrolling}
+      stopAutoScroll={stopAutoScroll}
     >
       {onAddRow && (
         <a className={classes.join(' ')} onClick={onClick}>
@@ -477,6 +483,25 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleShowPanelCheckbox();
+            }}
+          />
+          <MenuItem
+            text={
+              <span>
+                {autoScrollEnabled && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Auto-scroll
+              </span>
+            }
+            onClick={() => {
+              toggleAutoScroll();
             }}
           />
         </BrowserMenu>
