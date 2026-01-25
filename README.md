@@ -86,6 +86,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
         - [Audio Item](#audio-item)
         - [Button Item](#button-item)
         - [Panel Item](#panel-item)
+      - [Auto-Scroll](#auto-scroll)
       - [Prefetching](#prefetching)
     - [Graph](#graph)
       - [Calculated Values](#calculated-values)
@@ -1442,6 +1443,26 @@ Example:
   "style": { "backgroundColor": "lightGray" },
 }
 ```
+
+#### Auto-Scroll
+
+▶️ *Core > Browser > Settings > Info Panel > Auto-scroll*
+
+The info panel supports automatic scrolling, which is useful for hands-free browsing of panel content, for example to conveniently browse through large sets of data.
+
+**How to use:**
+
+1. Enable auto-scroll via *Settings > Info Panel > Auto-scroll*.
+2. Hold the **Option** (Alt) key while scrolling in the panel to record the scroll amount.
+3. Release the Option key after pausing for the desired interval between scrolls.
+4. Auto-scrolling begins automatically, repeating the recorded scroll amount and pause interval.
+
+**Controls:**
+
+- **Escape key**: Stop auto-scrolling.
+- **Option key**: Stop current auto-scroll and start recording a new scroll pattern.
+- **Manual scroll**: Temporarily pauses auto-scrolling, which resumes after inactivity.
+- **Auto-scroll button**: Click the highlighted "Auto-scroll" button in the toolbar to stop.
 
 #### Prefetching
 
