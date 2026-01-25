@@ -648,6 +648,10 @@ export default class DataBrowser extends React.Component {
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
       }
+      // Stop auto-scroll when panels are hidden
+      if (this.state.isAutoScrolling) {
+        this.stopAutoScroll();
+      }
     }
 
     // Auto-load first row when opening panel if enabled and no row is selected
