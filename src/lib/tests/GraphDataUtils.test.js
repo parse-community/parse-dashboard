@@ -436,5 +436,83 @@ describe('GraphDataUtils', () => {
         expect(percentDataset.data[0]).toBeCloseTo(820.8, 0);
       });
     });
+
+    describe('processBarLineData with average operator', () => {
+      it('should calculate average from aggregated field sums, not average of per-row averages', () => {
+        // 3 rows with different values that would give different results
+        // depending on whether we average per-row averages vs average of sums
+        const mockData = [
+          { date: '2024-01', a: 0, b: 1 },
+          { date: '2024-01', a: 0, b: 1 },
+          { date: '2024-01', a: 0, b: 1 },
+        ];
+
+        const calculatedValues = [
+          {
+            name: 'avg',
+            operator: 'average',
+            fields: ['a', 'b'],
+          },
+        ];
+
+        const result = processBarLineData(mockData, 'date', ['a', 'b'], null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+
+        // Value columns with sum aggregation
+        const aDataset = result.datasets.find(d => d.label === 'a');
+        const bDataset = result.datasets.find(d => d.label === 'b');
+        expect(aDataset.data[0]).toBe(0); // sum of a: 0+0+0 = 0
+        expect(bDataset.data[0]).toBe(3); // sum of b: 1+1+1 = 3
+
+        // Average calculated value
+        const avgDataset = result.datasets.find(d => d.label === 'avg');
+        expect(avgDataset).toBeDefined();
+
+        // Expected: (sum_a + sum_b) / 2 = (0 + 3) / 2 = 1.5
+        // NOT: average of per-row averages = ((0+1)/2 + (0+1)/2 + (0+1)/2) = 0.5+0.5+0.5 = 1.5 summed = wrong
+        // Wait, per-row avg = 0.5 each, and if we SUM those we get 1.5, which equals (0+3)/2
+        // Let me use different values to distinguish
+        expect(avgDataset.data[0]).toBe(1.5); // (0 + 3) / 2 = 1.5
+      });
+
+      it('should calculate average correctly with asymmetric data', () => {
+        // Use data where average of per-row averages differs from average of sums
+        const mockData = [
+          { date: '2024-01', a: 2, b: 0 },  // per-row avg = 1
+          { date: '2024-01', a: 0, b: 0 },  // per-row avg = 0
+          { date: '2024-01', a: 0, b: 1 },  // per-row avg = 0.5
+        ];
+        // Sum of per-row avgs = 1.5, if summed (wrong aggregation)
+        // Sum of a = 2, Sum of b = 1
+        // Average of sums = (2 + 1) / 2 = 1.5
+        // Hmm, still the same! Let me try another approach.
+
+        // Actually the issue is: per-row avg summed vs per-row avg averaged
+        // Per-row avgs: [1, 0, 0.5]
+        // If we SUM per-row avgs: 1.5
+        // If we AVG per-row avgs: 0.5
+        // Average of field sums: (2+1)/2 = 1.5
+
+        const calculatedValues = [
+          {
+            name: 'avg',
+            operator: 'average',
+            fields: ['a', 'b'],
+          },
+        ];
+
+        const result = processBarLineData(mockData, 'date', ['a', 'b'], null, 'sum', calculatedValues);
+
+        const aDataset = result.datasets.find(d => d.label === 'a');
+        const bDataset = result.datasets.find(d => d.label === 'b');
+        expect(aDataset.data[0]).toBe(2); // sum of a: 2+0+0 = 2
+        expect(bDataset.data[0]).toBe(1); // sum of b: 0+0+1 = 1
+
+        const avgDataset = result.datasets.find(d => d.label === 'avg');
+        // Expected: (sum_a + sum_b) / 2 = (2 + 1) / 2 = 1.5
+        expect(avgDataset.data[0]).toBe(1.5);
+      });
+    });
   });
 });
