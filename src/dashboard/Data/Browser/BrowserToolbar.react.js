@@ -488,44 +488,46 @@ const BrowserToolbar = ({
             }}
           />
           <Separator />
-          <MenuItem
-            text={
-              <span>
-                {autoScrollEnabled && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Auto-scroll
-              </span>
-            }
-            onClick={() => {
-              toggleAutoScroll();
-            }}
-          />
-          <MenuItem
-            text={
-              <span>
-                {autoScrollRequireHover && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Auto-scroll requires hover
-              </span>
-            }
-            onClick={() => {
-              toggleAutoScrollRequireHover();
-            }}
-          />
+          <BrowserMenu title="Auto-scroll" setCurrent={setCurrent}>
+            <MenuItem
+              text={
+                <span>
+                  {autoScrollEnabled && (
+                    <Icon
+                      name="check"
+                      width={12}
+                      height={12}
+                      fill="#ffffffff"
+                      className="menuCheck"
+                    />
+                  )}
+                  Enabled
+                </span>
+              }
+              onClick={() => {
+                toggleAutoScroll();
+              }}
+            />
+            <MenuItem
+              text={
+                <span>
+                  {autoScrollRequireHover && (
+                    <Icon
+                      name="check"
+                      width={12}
+                      height={12}
+                      fill="#ffffffff"
+                      className="menuCheck"
+                    />
+                  )}
+                  Require hover
+                </span>
+              }
+              onClick={() => {
+                toggleAutoScrollRequireHover();
+              }}
+            />
+          </BrowserMenu>
         </BrowserMenu>
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />

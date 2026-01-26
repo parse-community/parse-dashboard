@@ -54,18 +54,24 @@ export default class BrowserMenu extends React.Component {
                   : styles.body
               }
               style={{
-                minWidth: this.wrapRef.current.clientWidth,
+                // Only apply minWidth for top-level menus, not submenus
                 ...(isSubmenu
-                  ? {
-                    top: 0,
-                    left: this.state.openToLeft
-                      ? 0
-                      : `${this.wrapRef.current.clientWidth - 3}px`,
-                    transform: this.state.openToLeft
-                      ? 'translateX(calc(-100% + 3px))'
-                      : undefined,
-                  }
-                  : {}),
+                  ? (() => {
+                    // Find the parent menu container to get its width for proper positioning
+                    const parentMenuBody = this.wrapRef.current.closest(`.${styles.subMenuBody}`) ||
+                                           this.wrapRef.current.closest(`.${styles.body}`);
+                    const parentWidth = parentMenuBody ? parentMenuBody.clientWidth : this.wrapRef.current.clientWidth;
+                    return {
+                      top: 0,
+                      left: this.state.openToLeft
+                        ? 0
+                        : `${parentWidth - 3}px`,
+                      transform: this.state.openToLeft
+                        ? 'translateX(calc(-100% + 3px))'
+                        : undefined,
+                    };
+                  })()
+                  : { minWidth: this.wrapRef.current.clientWidth }),
               }}
             >
               {React.Children.map(this.props.children, (child) => {
@@ -106,9 +112,12 @@ export default class BrowserMenu extends React.Component {
     if (!this.props.disabled) {
       if (isSubmenu) {
         entryEvents.onMouseEnter = () => {
-          const rect = this.wrapRef.current.getBoundingClientRect();
-          const width = this.wrapRef.current.clientWidth;
-          const openToLeft = rect.right + width > window.innerWidth;
+          // Find the parent menu container to get its right edge for proper positioning
+          const parentMenuBody = this.wrapRef.current.closest(`.${styles.subMenuBody}`) ||
+                                 this.wrapRef.current.closest(`.${styles.body}`);
+          const parentRect = parentMenuBody ? parentMenuBody.getBoundingClientRect() : this.wrapRef.current.getBoundingClientRect();
+          const estimatedSubmenuWidth = 150; // Estimate for edge detection
+          const openToLeft = parentRect.right + estimatedSubmenuWidth > window.innerWidth;
           this.setState({ open: true, openToLeft });
           this.props.setCurrent?.(null);
         };
@@ -124,14 +133,8 @@ export default class BrowserMenu extends React.Component {
         <div className={classes.join(' ')} {...entryEvents}>
           {this.props.icon && <Icon name={this.props.icon} width={14} height={14} />}
           <span>{this.props.title}</span>
-          {isSubmenu &&
-            React.Children.toArray(this.props.children).some(c => React.isValidElement(c) && c.type === BrowserMenu) && (
-            <Icon
-              name="right-outline"
-              width={12}
-              height={12}
-              className={styles.submenuArrow}
-            />
+          {isSubmenu && this.props.children && (
+            <span className={styles.submenuArrow} />
           )}
         </div>
         {menu}

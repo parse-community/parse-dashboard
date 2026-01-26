@@ -11,6 +11,25 @@
   display: inline-block;
 }
 
+.menu {
+  position: relative;
+}
+
+// Make submenu entries stretch to full width within menu bodies
+.body, .subMenuBody, .subMenuBodyLeft {
+  > .wrap {
+    display: block;
+
+    > .entry {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 14px;
+      white-space: nowrap;
+    }
+  }
+}
+
 .entry {
   height: 30px;
   padding: 8px;
@@ -113,15 +132,23 @@
 }
 
 .submenuArrow {
-  margin-left: 4px;
-  fill: #66637A;
+  margin-left: 12px;
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+
+  &::after {
+    content: '›';
+  }
 }
 
 .entry:hover .submenuArrow {
-  fill: white;
+  color: white;
 }
 
 .item {
+  position: relative;
   padding: 4px 14px;
   white-space: nowrap;
   cursor: pointer;
@@ -129,6 +156,10 @@
 
   &:hover {
     background: $blue;
+
+    .submenuArrow {
+      border-left-color: white;
+    }
   }
 
   &.disabled {
