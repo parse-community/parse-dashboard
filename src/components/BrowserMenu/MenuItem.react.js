@@ -35,10 +35,7 @@ const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disa
       className={classes.join(' ')}
       onClick={handleClick}
       onMouseDown={disableMouseDown ? undefined : handleClick} // This is needed - onClick alone doesn't work in this context
-      onMouseEnter={() => {
-        console.log('[MenuItem] onMouseEnter', { text, hasOnItemHover: !!onItemHover });
-        onItemHover?.();
-      }}
+      onMouseEnter={onItemHover}
       style={{
         position: 'relative',
         zIndex: 9999,

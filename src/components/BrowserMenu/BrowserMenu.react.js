@@ -21,23 +21,13 @@ export default class BrowserMenu extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    // Close this submenu if parent signals it should close
-    console.log('[BrowserMenu] componentDidUpdate', {
-      title: this.props.title,
-      shouldClose: this.props.shouldClose,
-      prevShouldClose: prevProps.shouldClose,
-      closeAllTrigger: this.props.closeAllTrigger,
-      prevCloseAllTrigger: prevProps.closeAllTrigger,
-      open: this.state.open,
-      childKey: this.props.childKey,
-    });
-    // Close if shouldClose changed to true, OR if closeAllTrigger incremented
+    // Close if shouldClose changed to true (sibling submenu opened),
+    // OR if closeAllTrigger incremented (MenuItem was hovered)
     const shouldCloseChanged = this.props.shouldClose && !prevProps.shouldClose;
     const closeAllTriggered = this.props.closeAllTrigger !== undefined &&
                                prevProps.closeAllTrigger !== undefined &&
                                this.props.closeAllTrigger !== prevProps.closeAllTrigger;
     if ((shouldCloseChanged || closeAllTriggered) && this.state.open) {
-      console.log('[BrowserMenu] Closing submenu', this.props.title, { shouldCloseChanged, closeAllTriggered });
       this.setState({ open: false });
     }
   }
@@ -101,14 +91,6 @@ export default class BrowserMenu extends React.Component {
                   if (child.type === BrowserMenu) {
                     const childKey = `submenu-${index}`;
                     const shouldClose = this.state.openChildKey !== null && this.state.openChildKey !== childKey;
-                    console.log('[BrowserMenu] Rendering child submenu', {
-                      parentTitle: this.props.title,
-                      childTitle: child.props.title,
-                      childKey,
-                      openChildKey: this.state.openChildKey,
-                      shouldClose,
-                      closeAllTrigger: this.state.closeAllTrigger,
-                    });
                     return React.cloneElement(child, {
                       ...child.props,
                       parentClose: () => {
@@ -118,13 +100,7 @@ export default class BrowserMenu extends React.Component {
                       childKey,
                       shouldClose,
                       closeAllTrigger: this.state.closeAllTrigger,
-                      onSubmenuOpen: (key) => {
-                        console.log('[BrowserMenu] onSubmenuOpen called', {
-                          parentTitle: this.props.title,
-                          key,
-                        });
-                        this.setState({ openChildKey: key });
-                      },
+                      onSubmenuOpen: (key) => this.setState({ openChildKey: key }),
                     });
                   }
                   // Pass closeMenu and onItemHover props to all other children (like MenuItem)
@@ -135,10 +111,6 @@ export default class BrowserMenu extends React.Component {
                       this.props.parentClose?.();
                     },
                     onItemHover: () => {
-                      console.log('[BrowserMenu] onItemHover called, incrementing closeAllTrigger', {
-                        parentTitle: this.props.title,
-                        currentCloseAllTrigger: this.state.closeAllTrigger,
-                      });
                       this.setState(prev => ({
                         openChildKey: null,
                         closeAllTrigger: prev.closeAllTrigger + 1,
@@ -164,11 +136,6 @@ export default class BrowserMenu extends React.Component {
     if (!this.props.disabled) {
       if (isSubmenu) {
         entryEvents.onMouseEnter = () => {
-          console.log('[BrowserMenu] Entry onMouseEnter', {
-            title: this.props.title,
-            childKey: this.props.childKey,
-            hasOnSubmenuOpen: !!this.props.onSubmenuOpen,
-          });
           // Find the parent menu container to get its right edge for proper positioning
           const parentMenuBody = this.wrapRef.current.closest(`.${styles.subMenuBody}`) ||
                                  this.wrapRef.current.closest(`.${styles.body}`);
