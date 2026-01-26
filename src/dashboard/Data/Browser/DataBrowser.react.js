@@ -39,6 +39,7 @@ const AGGREGATION_PANEL_COUNT = 'aggregationPanelCount';
 const GRAPH_PANEL_VISIBLE = 'graphPanelVisible';
 const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
 const AGGREGATION_PANEL_AUTO_SCROLL = 'aggregationPanelAutoScroll';
+const AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER = 'aggregationPanelAutoScrollRequireHover';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -123,6 +124,8 @@ export default class DataBrowser extends React.Component {
       ]?.[props.className];
     const storedAutoScroll =
       window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_SCROLL) === 'true';
+    const storedAutoScrollRequireHover =
+      window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER) !== 'false';
     const storedGraphPanelVisible =
       window.localStorage?.getItem(GRAPH_PANEL_VISIBLE) === 'true';
     const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
@@ -182,6 +185,7 @@ export default class DataBrowser extends React.Component {
       isCreatingNewGraph: false,
       // Auto-scroll feature state
       autoScrollEnabled: storedAutoScroll, // Whether auto-scroll feature is enabled (menu setting)
+      autoScrollRequireHover: storedAutoScrollRequireHover, // Whether auto-scroll requires mouse hover over panel
       isAutoScrolling: false, // Whether auto-scroll is currently active
       isRecordingAutoScroll: false, // Whether we're recording (Command key held during scroll)
       autoScrollAmount: 0, // The registered scroll amount (pixels)
@@ -241,6 +245,7 @@ export default class DataBrowser extends React.Component {
     this.deleteGraphConfig = this.deleteGraphConfig.bind(this);
     this.selectGraph = this.selectGraph.bind(this);
     this.toggleAutoScroll = this.toggleAutoScroll.bind(this);
+    this.toggleAutoScrollRequireHover = this.toggleAutoScrollRequireHover.bind(this);
     this.handleAutoScrollKeyDown = this.handleAutoScrollKeyDown.bind(this);
     this.handleAutoScrollKeyUp = this.handleAutoScrollKeyUp.bind(this);
     this.handleAutoScrollWheel = this.handleAutoScrollWheel.bind(this);
@@ -1432,10 +1437,14 @@ export default class DataBrowser extends React.Component {
       nativeContextMenuOpen,
       mouseOutsidePanel,
       mouseOverPanelHeader,
+      autoScrollRequireHover,
     } = this.state;
 
     // disableKeyControls is true when parent Browser has a modal open
     const { disableKeyControls } = this.props;
+
+    // Check hover-related blocking only if autoScrollRequireHover is enabled
+    const hoverBlocked = autoScrollRequireHover && (mouseOutsidePanel || mouseOverPanelHeader);
 
     return (
       autoScrollPaused ||
@@ -1445,8 +1454,7 @@ export default class DataBrowser extends React.Component {
       showGraphDialog ||
       nativeContextMenuOpen ||
       disableKeyControls ||
-      mouseOutsidePanel ||
-      mouseOverPanelHeader
+      hoverBlocked
     );
   }
 
@@ -1459,6 +1467,14 @@ export default class DataBrowser extends React.Component {
         this.stopAutoScroll();
       }
       return { autoScrollEnabled: newAutoScroll };
+    });
+  }
+
+  toggleAutoScrollRequireHover() {
+    this.setState(prevState => {
+      const newRequireHover = !prevState.autoScrollRequireHover;
+      window.localStorage?.setItem(AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER, String(newRequireHover));
+      return { autoScrollRequireHover: newRequireHover };
     });
   }
 
@@ -2699,6 +2715,8 @@ export default class DataBrowser extends React.Component {
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
           autoScrollEnabled={this.state.autoScrollEnabled}
           toggleAutoScroll={this.toggleAutoScroll}
+          autoScrollRequireHover={this.state.autoScrollRequireHover}
+          toggleAutoScrollRequireHover={this.toggleAutoScrollRequireHover}
           isAutoScrolling={this.state.isAutoScrolling}
           stopAutoScroll={this.stopAutoScroll}
           toggleGraphPanel={this.toggleGraphPanelVisibility}

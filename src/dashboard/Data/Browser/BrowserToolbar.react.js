@@ -98,6 +98,8 @@ const BrowserToolbar = ({
   toggleShowPanelCheckbox,
   autoScrollEnabled,
   toggleAutoScroll,
+  autoScrollRequireHover,
+  toggleAutoScrollRequireHover,
   isAutoScrolling,
   stopAutoScroll,
   toggleGraphPanel,
@@ -485,6 +487,7 @@ const BrowserToolbar = ({
               toggleShowPanelCheckbox();
             }}
           />
+          <Separator />
           <MenuItem
             text={
               <span>
@@ -502,6 +505,25 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleAutoScroll();
+            }}
+          />
+          <MenuItem
+            text={
+              <span>
+                {autoScrollRequireHover && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Auto-scroll requires hover
+              </span>
+            }
+            onClick={() => {
+              toggleAutoScrollRequireHover();
             }}
           />
         </BrowserMenu>
