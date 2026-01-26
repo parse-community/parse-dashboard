@@ -339,9 +339,15 @@ export default class DataBrowser extends React.Component {
     // Native context menu detection for auto-scroll pause
     // Use capture phase to ensure we detect the event before the menu handles it
     document.addEventListener('contextmenu', this.handleNativeContextMenu, true);
-    // Listen for click (fires after menu closes) and keydown (Escape closes menu)
-    document.addEventListener('click', this.handleNativeContextMenuClose, true);
-    document.addEventListener('keydown', this.handleNativeContextMenuClose, true);
+    // Listen for events that indicate the context menu was closed:
+    // - mousemove: user moved mouse after menu closed (most reliable)
+    // - keydown: Escape key closes the menu
+    // - blur: switching windows/tabs closes the menu
+    // NOTE: click/mousedown don't fire while native context menu is open
+    // NOTE: scroll is not used because auto-scroll itself triggers it
+    window.addEventListener('mousemove', this.handleNativeContextMenuClose);
+    window.addEventListener('keydown', this.handleNativeContextMenuClose, true);
+    window.addEventListener('blur', this.handleNativeContextMenuClose);
 
     // Load keyboard shortcuts from server
     try {
@@ -381,8 +387,9 @@ export default class DataBrowser extends React.Component {
     document.body.removeEventListener('keydown', this.handleAutoScrollKeyDown);
     document.body.removeEventListener('keyup', this.handleAutoScrollKeyUp);
     document.removeEventListener('contextmenu', this.handleNativeContextMenu, true);
-    document.removeEventListener('click', this.handleNativeContextMenuClose, true);
-    document.removeEventListener('keydown', this.handleNativeContextMenuClose, true);
+    window.removeEventListener('mousemove', this.handleNativeContextMenuClose);
+    window.removeEventListener('keydown', this.handleNativeContextMenuClose, true);
+    window.removeEventListener('blur', this.handleNativeContextMenuClose);
     if (this.autoScrollTimeoutId) {
       clearTimeout(this.autoScrollTimeoutId);
     }
@@ -1415,7 +1422,7 @@ export default class DataBrowser extends React.Component {
       nativeContextMenuOpen,
     } = this.state;
 
-    return (
+    const blocked = (
       autoScrollPaused ||
       editing ||
       (contextMenuItems && contextMenuItems.length > 0) ||
@@ -1423,6 +1430,19 @@ export default class DataBrowser extends React.Component {
       showGraphDialog ||
       nativeContextMenuOpen
     );
+
+    if (blocked) {
+      console.log('[AutoScroll] isAutoScrollBlocked = true', {
+        autoScrollPaused,
+        editing,
+        contextMenuItems: contextMenuItems?.length || 0,
+        showScriptConfirmationDialog,
+        showGraphDialog,
+        nativeContextMenuOpen,
+      });
+    }
+
+    return blocked;
   }
 
   toggleAutoScroll() {
@@ -1520,21 +1540,33 @@ export default class DataBrowser extends React.Component {
   }
 
   handleNativeContextMenu() {
+    console.log('[AutoScroll] handleNativeContextMenu called', {
+      isAutoScrolling: this.state.isAutoScrolling,
+      nativeContextMenuOpen: this.state.nativeContextMenuOpen,
+    });
     // Pause auto-scroll when native browser context menu is opened
     if (this.state.isAutoScrolling && !this.state.nativeContextMenuOpen) {
+      console.log('[AutoScroll] Setting nativeContextMenuOpen: true');
       this.setState({ nativeContextMenuOpen: true });
     }
   }
 
   handleNativeContextMenuClose(e) {
-    // Resume auto-scroll when native browser context menu is closed
-    // For keydown events, only handle Escape key
-    if (e.type === 'keydown' && e.key !== 'Escape') {
+    // Only process if native context menu is open
+    if (!this.state.nativeContextMenuOpen) {
       return;
     }
-    if (this.state.nativeContextMenuOpen) {
-      this.setState({ nativeContextMenuOpen: false });
+
+    // For keydown events, only handle Escape key
+    if (e && e.type === 'keydown' && e.key !== 'Escape') {
+      return;
     }
+
+    // mousemove, Escape key, or blur all indicate the menu is closed
+    console.log('[AutoScroll] handleNativeContextMenuClose - clearing nativeContextMenuOpen', {
+      eventType: e?.type,
+    });
+    this.setState({ nativeContextMenuOpen: false });
   }
 
   startAutoScroll() {
