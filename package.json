@@ -37,7 +37,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@babel/runtime": "7.28.4",
+    "@babel/runtime": "7.28.6",
     "@babel/runtime-corejs3": "7.28.3",
     "expr-eval-fork": "3.0.1",
     "bcryptjs": "3.0.3",
