@@ -71,6 +71,7 @@ export default class BrowserMenu extends React.Component {
                   ? (() => {
                     // Find the parent menu container to get its width for proper positioning
                     const parentMenuBody = this.wrapRef.current.closest(`.${styles.subMenuBody}`) ||
+                                           this.wrapRef.current.closest(`.${styles.subMenuBodyLeft}`) ||
                                            this.wrapRef.current.closest(`.${styles.body}`);
                     const parentWidth = parentMenuBody ? parentMenuBody.clientWidth : this.wrapRef.current.clientWidth;
                     return {
@@ -138,6 +139,7 @@ export default class BrowserMenu extends React.Component {
         entryEvents.onMouseEnter = () => {
           // Find the parent menu container to get its right edge for proper positioning
           const parentMenuBody = this.wrapRef.current.closest(`.${styles.subMenuBody}`) ||
+                                 this.wrapRef.current.closest(`.${styles.subMenuBodyLeft}`) ||
                                  this.wrapRef.current.closest(`.${styles.body}`);
           const parentRect = parentMenuBody ? parentMenuBody.getBoundingClientRect() : this.wrapRef.current.getBoundingClientRect();
           const estimatedSubmenuWidth = 150; // Estimate for edge detection
