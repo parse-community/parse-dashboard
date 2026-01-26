@@ -191,6 +191,8 @@ export default class DataBrowser extends React.Component {
       recordingScrollEnd: null, // Timestamp when scrolling ended (before Command key release)
       recordedScrollDelta: 0, // Accumulated scroll delta during recording
       nativeContextMenuOpen: false, // Whether the browser's native context menu is open
+      mouseOutsidePanel: true, // Whether the mouse is outside the AggregationPanel
+      mouseOverPanelHeader: false, // Whether the mouse is over the panel header row
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -248,12 +250,17 @@ export default class DataBrowser extends React.Component {
     this.pauseAutoScrollWithResume = this.pauseAutoScrollWithResume.bind(this);
     this.handleNativeContextMenu = this.handleNativeContextMenu.bind(this);
     this.handleNativeContextMenuClose = this.handleNativeContextMenuClose.bind(this);
+    this.handlePanelMouseEnter = this.handlePanelMouseEnter.bind(this);
+    this.handlePanelMouseLeave = this.handlePanelMouseLeave.bind(this);
+    this.handlePanelHeaderMouseEnter = this.handlePanelHeaderMouseEnter.bind(this);
+    this.handlePanelHeaderMouseLeave = this.handlePanelHeaderMouseLeave.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.autoScrollIntervalId = null;
     this.autoScrollTimeoutId = null;
     this.autoScrollResumeTimeoutId = null;
     this.autoScrollAnimationId = null;
+    this.panelHeaderLeaveTimeoutId = null;
     this.panelColumnRefs = [];
     this.activePanelIndex = -1;
     this.isWheelScrolling = false;
@@ -398,6 +405,9 @@ export default class DataBrowser extends React.Component {
     }
     if (this.autoScrollAnimationId) {
       cancelAnimationFrame(this.autoScrollAnimationId);
+    }
+    if (this.panelHeaderLeaveTimeoutId) {
+      clearTimeout(this.panelHeaderLeaveTimeoutId);
     }
   }
 
@@ -1420,6 +1430,8 @@ export default class DataBrowser extends React.Component {
       showScriptConfirmationDialog,
       showGraphDialog,
       nativeContextMenuOpen,
+      mouseOutsidePanel,
+      mouseOverPanelHeader,
     } = this.state;
 
     // disableKeyControls is true when parent Browser has a modal open
@@ -1432,7 +1444,9 @@ export default class DataBrowser extends React.Component {
       showScriptConfirmationDialog ||
       showGraphDialog ||
       nativeContextMenuOpen ||
-      disableKeyControls
+      disableKeyControls ||
+      mouseOutsidePanel ||
+      mouseOverPanelHeader
     );
   }
 
@@ -1550,6 +1564,42 @@ export default class DataBrowser extends React.Component {
 
     // mousemove, Escape key, or blur all indicate the menu is closed
     this.setState({ nativeContextMenuOpen: false });
+  }
+
+  handlePanelMouseEnter() {
+    if (this.state.mouseOutsidePanel) {
+      this.setState({ mouseOutsidePanel: false });
+    }
+  }
+
+  handlePanelMouseLeave() {
+    if (!this.state.mouseOutsidePanel) {
+      this.setState({ mouseOutsidePanel: true });
+    }
+  }
+
+  handlePanelHeaderMouseEnter() {
+    // Cancel any pending leave timeout
+    if (this.panelHeaderLeaveTimeoutId) {
+      clearTimeout(this.panelHeaderLeaveTimeoutId);
+      this.panelHeaderLeaveTimeoutId = null;
+    }
+    if (!this.state.mouseOverPanelHeader) {
+      this.setState({ mouseOverPanelHeader: true });
+    }
+  }
+
+  handlePanelHeaderMouseLeave() {
+    // Use a small delay to allow moving between adjacent headers without resuming scroll
+    if (this.panelHeaderLeaveTimeoutId) {
+      clearTimeout(this.panelHeaderLeaveTimeoutId);
+    }
+    this.panelHeaderLeaveTimeoutId = setTimeout(() => {
+      this.panelHeaderLeaveTimeoutId = null;
+      if (this.state.mouseOverPanelHeader) {
+        this.setState({ mouseOverPanelHeader: false });
+      }
+    }, 50);
   }
 
   startAutoScroll() {
@@ -2446,6 +2496,8 @@ export default class DataBrowser extends React.Component {
                 className={styles.aggregationPanelContainer}
                 ref={this.aggregationPanelRef}
                 onWheel={this.handleAutoScrollWheel}
+                onMouseEnter={this.handlePanelMouseEnter}
+                onMouseLeave={this.handlePanelMouseLeave}
               >
                 {this.state.panelCount > 1 ? (
                   <div
@@ -2508,7 +2560,11 @@ export default class DataBrowser extends React.Component {
                                     this.onMouseDownPanelCheckBox(objectId, isRowSelected);
                                   }}
                                   onMouseUp={this.onMouseUpPanelCheckBox}
-                                  onMouseEnter={() => this.onMouseEnterPanelCheckBox(objectId)}
+                                  onMouseEnter={() => {
+                                    this.onMouseEnterPanelCheckBox(objectId);
+                                    this.handlePanelHeaderMouseEnter();
+                                  }}
+                                  onMouseLeave={this.handlePanelHeaderMouseLeave}
                                   onContextMenu={(e) => {
                                     e.preventDefault();
                                     this.handlePanelHeaderContextMenu(e, objectId);
