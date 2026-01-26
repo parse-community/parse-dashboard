@@ -292,5 +292,149 @@ describe('GraphDataUtils', () => {
         expect(result.labels).toEqual(['A', 'B']);
       });
     });
+
+    describe('processBarLineData with percent operator', () => {
+      it('should calculate percent from summed numerators and denominators', () => {
+        // Test data with multiple rows per month
+        // Each row has numerator and denominator fields
+        const mockData = [
+          { attributes: { month: 'Jan', numerator: 100, denominator: 10 } },
+          { attributes: { month: 'Jan', numerator: 200, denominator: 25 } },
+          { attributes: { month: 'Feb', numerator: 150, denominator: 30 } },
+        ];
+
+        const calculatedValues = [{
+          name: 'ConversionRate',
+          operator: 'percent',
+          fields: ['numerator', 'denominator'],
+        }];
+
+        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets.length).toBe(1);
+        expect(result.datasets[0].label).toBe('ConversionRate');
+
+        // Find values for Jan and Feb
+        const janIndex = result.labels.indexOf('Jan');
+        const febIndex = result.labels.indexOf('Feb');
+
+        // Jan: (100+200)/(10+25)*100 = 300/35*100 = 857.14%
+        // This is the percentage of totals, not average of individual percentages
+        expect(result.datasets[0].data[janIndex]).toBeCloseTo(857.14, 1);
+
+        // Feb: 150/30*100 = 500%
+        expect(result.datasets[0].data[febIndex]).toBe(500);
+      });
+
+      it('should handle percent calculation with value columns', () => {
+        // Test that percent calculated values work correctly alongside regular value columns
+        const mockData = [
+          { attributes: { month: 'Jan', numerator: 443300, denominator: 54008, revenue: 1000 } },
+        ];
+
+        const calculatedValues = [{
+          name: 'Percent',
+          operator: 'percent',
+          fields: ['numerator', 'denominator'],
+        }];
+
+        const result = processBarLineData(mockData, 'month', 'revenue', null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets.length).toBe(2); // revenue + Percent
+
+        const percentDataset = result.datasets.find(d => d.label === 'Percent');
+        expect(percentDataset).toBeDefined();
+
+        // 443300 / 54008 * 100 = 820.8043...
+        expect(percentDataset.data[0]).toBeCloseTo(820.8, 1);
+      });
+
+      it('should calculate percent using another calculated value as input', () => {
+        // Test scenario: user has calculated values where one uses another as input
+        // CalcValue1: Sum of fieldA (e.g., 443300 total)
+        // CalcValue2: Sum of fieldB (e.g., 54008 total)
+        // PercentCalc: Percent with numerator=CalcValue1, denominator=CalcValue2
+        const mockData = [
+          { attributes: { month: 'Jan', fieldA: 100000, fieldB: 12000 } },
+          { attributes: { month: 'Jan', fieldA: 200000, fieldB: 22000 } },
+          { attributes: { month: 'Jan', fieldA: 143300, fieldB: 20008 } },
+        ];
+        // Total fieldA: 443300, Total fieldB: 54008
+
+        const calculatedValues = [
+          {
+            name: 'TotalA',
+            operator: 'sum',
+            fields: ['fieldA'],
+          },
+          {
+            name: 'TotalB',
+            operator: 'sum',
+            fields: ['fieldB'],
+          },
+          {
+            name: 'PercentOfTotals',
+            operator: 'percent',
+            fields: ['TotalA', 'TotalB'],
+          },
+        ];
+
+        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+
+        const percentDataset = result.datasets.find(d => d.label === 'PercentOfTotals');
+        expect(percentDataset).toBeDefined();
+
+        // With the fix, percent is calculated as (sum of numerators / sum of denominators) * 100
+        // TotalA per row: 100000, 200000, 143300 -> these are the numerator values
+        // TotalB per row: 12000, 22000, 20008 -> these are the denominator values
+        // Percent = (100000+200000+143300) / (12000+22000+20008) * 100
+        //         = 443300 / 54008 * 100 = 820.8%
+        expect(percentDataset.data[0]).toBeCloseTo(820.8, 0);
+      });
+
+      it('should handle percent with 2 value fields and 2 calculated values (user scenario)', () => {
+        // User scenario: line chart with x-axis date, 2 value fields (sum), 2 calculated values
+        const mockData = [
+          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 100, valueB: 50 } },
+          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 200, valueB: 60 } },
+          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 150, valueB: 70 } },
+          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 120, valueB: 80 } },
+          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 180, valueB: 90 } },
+          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 160, valueB: 55 } },
+          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 140, valueB: 65 } },
+          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 130, valueB: 75 } },
+        ];
+        // Total numerator: 443300, Total denominator: 54008
+        // Each row: (55412/6751)*100 = 820.8% or (55413/6751)*100 = 820.8%
+
+        const calculatedValues = [
+          {
+            name: 'SomeCalc',
+            operator: 'sum',
+            fields: ['valueA', 'valueB'],
+          },
+          {
+            name: 'PercentCalc',
+            operator: 'percent',
+            fields: ['numerator', 'denominator'],
+          },
+        ];
+
+        // 2 value fields with aggregation 'sum', plus 2 calculated values
+        const result = processBarLineData(mockData, 'date', ['valueA', 'valueB'], null, 'sum', calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+
+        const percentDataset = result.datasets.find(d => d.label === 'PercentCalc');
+        expect(percentDataset).toBeDefined();
+
+        // Expected: average of 8 rows each at ~820.8% = 820.8% (NOT 8 * 820.8 = 6566.4)
+        expect(percentDataset.data[0]).toBeCloseTo(820.8, 0);
+      });
+    });
   });
 });

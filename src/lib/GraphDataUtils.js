@@ -490,6 +490,9 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
         if (groupByColumn) {
           // Group calculated values by the same groupByColumn
           const groups = {};
+          // For percent operator, track numerator/denominator separately
+          const percentComponents = {};
+
           rowsWithCalcValues.forEach(({ item, calculatedValues: calcVals }) => {
             const calcValue = calcVals[calc.name];
             if (calcValue !== null) {
@@ -498,6 +501,25 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
                 groups[groupKey] = [];
               }
               groups[groupKey].push(calcValue);
+
+              // For percent operator, also track raw numerator/denominator
+              if (calc.operator === 'percent' && calc.fields && calc.fields.length >= 2) {
+                const enhancedItem = { ...item };
+                if (item.attributes) {
+                  enhancedItem.attributes = { ...item.attributes, ...calcVals };
+                } else {
+                  Object.assign(enhancedItem, calcVals);
+                }
+                const numVal = extractNumericValue(getNestedValue(enhancedItem, calc.fields[0]));
+                const denVal = extractNumericValue(getNestedValue(enhancedItem, calc.fields[1]));
+                if (numVal !== null && denVal !== null) {
+                  if (!percentComponents[groupKey]) {
+                    percentComponents[groupKey] = { numerators: [], denominators: [] };
+                  }
+                  percentComponents[groupKey].numerators.push(numVal);
+                  percentComponents[groupKey].denominators.push(denVal);
+                }
+              }
             }
           });
 
@@ -506,15 +528,24 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
             const labelKey = valueColumns.length > 1 || calculatedValues.length > 1
               ? `${calc.name} (${groupKey})`
               : groupKey;
-            // For ratio-based operators (percent, ratio, formula), average the results
-            // For other operators, sum the results
-            let aggType = 'sum';
-            if (calc.operator === 'percent' || calc.operator === 'ratio' || calc.operator === 'formula') {
-              aggType = 'avg';
-            } else if (calc.operator === 'average') {
-              aggType = 'avg';
+
+            // For percent operator, calculate (sum of numerators / sum of denominators) * 100
+            if (calc.operator === 'percent' && percentComponents[groupKey]) {
+              const components = percentComponents[groupKey];
+              const sumNumerator = components.numerators.reduce((acc, val) => acc + val, 0);
+              const sumDenominator = components.denominators.reduce((acc, val) => acc + val, 0);
+              aggregatedData[labelKey] = sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
+            } else {
+              // For other ratio-based operators (ratio, formula), average the results
+              // For other operators, sum the results
+              let aggType = 'sum';
+              if (calc.operator === 'ratio' || calc.operator === 'formula') {
+                aggType = 'avg';
+              } else if (calc.operator === 'average') {
+                aggType = 'avg';
+              }
+              aggregatedData[labelKey] = aggregateValues(groups[groupKey], aggType);
             }
-            aggregatedData[labelKey] = aggregateValues(groups[groupKey], aggType);
           });
         } else {
           // No grouping - aggregate all calculated values together
@@ -523,15 +554,36 @@ export function processPieData(data, valueColumn, groupByColumn, aggregationType
             .filter(val => val !== null);
 
           if (calcValues.length > 0) {
-            // For ratio-based operators (percent, ratio, formula), average the results
-            // For other operators, sum the results
-            let aggType = 'sum';
-            if (calc.operator === 'percent' || calc.operator === 'ratio' || calc.operator === 'formula') {
-              aggType = 'avg';
-            } else if (calc.operator === 'average') {
-              aggType = 'avg';
+            // For percent operator, calculate (sum of numerators / sum of denominators) * 100
+            if (calc.operator === 'percent' && calc.fields && calc.fields.length >= 2) {
+              let sumNumerator = 0;
+              let sumDenominator = 0;
+              rowsWithCalcValues.forEach(({ item, calculatedValues: calcVals }) => {
+                const enhancedItem = { ...item };
+                if (item.attributes) {
+                  enhancedItem.attributes = { ...item.attributes, ...calcVals };
+                } else {
+                  Object.assign(enhancedItem, calcVals);
+                }
+                const numVal = extractNumericValue(getNestedValue(enhancedItem, calc.fields[0]));
+                const denVal = extractNumericValue(getNestedValue(enhancedItem, calc.fields[1]));
+                if (numVal !== null && denVal !== null) {
+                  sumNumerator += numVal;
+                  sumDenominator += denVal;
+                }
+              });
+              aggregatedData[calc.name] = sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
+            } else {
+              // For other ratio-based operators (ratio, formula), average the results
+              // For other operators, sum the results
+              let aggType = 'sum';
+              if (calc.operator === 'ratio' || calc.operator === 'formula') {
+                aggType = 'avg';
+              } else if (calc.operator === 'average') {
+                aggType = 'avg';
+              }
+              aggregatedData[calc.name] = aggregateValues(calcValues, aggType);
             }
-            aggregatedData[calc.name] = aggregateValues(calcValues, aggType);
           }
         }
       }
@@ -585,6 +637,9 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
   // Collect unique x-axis values and group data
   const xValues = new Map(); // Use Map to store both raw value and formatted label
   const groups = {};
+  // Special tracking for percent operator - stores raw numerator/denominator values
+  // so we can calculate (sum of numerators / sum of denominators) * 100 instead of averaging percentages
+  const percentComponents = {};
   let isDateAxis = false;
   let hasNonDateAxisValue = false;
 
@@ -690,6 +745,29 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
             if (!groups[groupKey][xKey]) {
               groups[groupKey][xKey] = [];
             }
+
+            // For percent operator, store raw numerator/denominator values separately
+            // so we can calculate (sum of numerators / sum of denominators) * 100
+            // instead of averaging individual percentages
+            if (calc.operator === 'percent' && calc.fields && calc.fields.length >= 2) {
+              // Extract numerator and denominator values
+              const numeratorValue = getNestedValue(enhancedItem, calc.fields[0]);
+              const denominatorValue = getNestedValue(enhancedItem, calc.fields[1]);
+              const numVal = extractNumericValue(numeratorValue);
+              const denVal = extractNumericValue(denominatorValue);
+
+              if (numVal !== null && denVal !== null) {
+                if (!percentComponents[groupKey]) {
+                  percentComponents[groupKey] = {};
+                }
+                if (!percentComponents[groupKey][xKey]) {
+                  percentComponents[groupKey][xKey] = { numerators: [], denominators: [] };
+                }
+                percentComponents[groupKey][xKey].numerators.push(numVal);
+                percentComponents[groupKey][xKey].denominators.push(denVal);
+              }
+            }
+
             groups[groupKey][xKey].push(calcValue);
           }
         }
@@ -762,11 +840,19 @@ export function processBarLineData(data, xColumn, valueColumn, groupByColumn, ag
       const calcOperator = calcValueOperatorMap.get(groupKey);
 
       if (calcOperator) {
-        // For calculated values, the operator has already been applied at row level
-        // For ratio-based operators (percent, ratio, formula), we should average the results
-        // For other operators (sum, average, difference), we sum the results
+        // Special handling for percent operator: calculate (sum of numerators / sum of denominators) * 100
+        // This gives the correct percentage of totals rather than average of individual percentages
+        if (calcOperator === 'percent' && percentComponents[groupKey] && percentComponents[groupKey][xKey]) {
+          const components = percentComponents[groupKey][xKey];
+          const sumNumerator = components.numerators.reduce((acc, val) => acc + val, 0);
+          const sumDenominator = components.denominators.reduce((acc, val) => acc + val, 0);
+          return sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
+        }
+
+        // For other ratio-based operators (ratio, formula), average the results
+        // For other operators (sum, average, difference), sum the results
         let aggregationType = 'sum';
-        if (calcOperator === 'percent' || calcOperator === 'ratio' || calcOperator === 'formula') {
+        if (calcOperator === 'ratio' || calcOperator === 'formula') {
           aggregationType = 'avg';
         } else if (calcOperator === 'average') {
           aggregationType = 'avg';
