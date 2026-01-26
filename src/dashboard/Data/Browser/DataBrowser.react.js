@@ -1422,13 +1422,17 @@ export default class DataBrowser extends React.Component {
       nativeContextMenuOpen,
     } = this.state;
 
+    // disableKeyControls is true when parent Browser has a modal open
+    const { disableKeyControls } = this.props;
+
     return (
       autoScrollPaused ||
       editing ||
       (contextMenuItems && contextMenuItems.length > 0) ||
       showScriptConfirmationDialog ||
       showGraphDialog ||
-      nativeContextMenuOpen
+      nativeContextMenuOpen ||
+      disableKeyControls
     );
   }
 

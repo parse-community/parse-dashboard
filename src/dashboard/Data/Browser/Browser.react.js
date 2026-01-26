@@ -2032,7 +2032,8 @@ class Browser extends DashboardView {
       this.state.showCloneSelectedRowsDialog ||
       this.state.showEditRowDialog ||
       this.state.showPermissionsDialog ||
-      this.state.showExportSelectedRowsDialog
+      this.state.showExportSelectedRowsDialog ||
+      this.state.showAddToConfigDialog
     );
   }
 
