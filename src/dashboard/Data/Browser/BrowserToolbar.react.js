@@ -395,25 +395,6 @@ const BrowserToolbar = ({
           <MenuItem
             text={
               <span>
-                {scrollToTop && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Scroll to top
-              </span>
-            }
-            onClick={() => {
-              toggleScrollToTop();
-            }}
-          />
-          <MenuItem
-            text={
-              <span>
                 {autoLoadFirstRow && (
                   <Icon
                     name="check"
@@ -428,25 +409,6 @@ const BrowserToolbar = ({
             }
             onClick={() => {
               toggleAutoLoadFirstRow();
-            }}
-          />
-          <MenuItem
-            text={
-              <span>
-                {syncPanelScroll && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Sync panel scrolling
-              </span>
-            }
-            onClick={() => {
-              toggleSyncPanelScroll();
             }}
           />
           <MenuItem
@@ -488,6 +450,44 @@ const BrowserToolbar = ({
             }}
           />
           <Separator />
+          <MenuItem
+            text={
+              <span>
+                {scrollToTop && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Scroll to top
+              </span>
+            }
+            onClick={() => {
+              toggleScrollToTop();
+            }}
+          />
+          <MenuItem
+            text={
+              <span>
+                {syncPanelScroll && (
+                  <Icon
+                    name="check"
+                    width={12}
+                    height={12}
+                    fill="#ffffffff"
+                    className="menuCheck"
+                  />
+                )}
+                Sync panel scrolling
+              </span>
+            }
+            onClick={() => {
+              toggleSyncPanelScroll();
+            }}
+          />
           <BrowserMenu title="Auto-scroll" setCurrent={setCurrent}>
             <MenuItem
               text={
