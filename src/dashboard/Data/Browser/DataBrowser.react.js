@@ -190,6 +190,7 @@ export default class DataBrowser extends React.Component {
       recordingScrollStart: null, // Timestamp when scroll recording started
       recordingScrollEnd: null, // Timestamp when scrolling ended (before Option key release)
       recordedScrollDelta: 0, // Accumulated scroll delta during recording
+      nativeContextMenuOpen: false, // Whether the browser's native context menu is open
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -245,6 +246,8 @@ export default class DataBrowser extends React.Component {
     this.stopAutoScroll = this.stopAutoScroll.bind(this);
     this.performAutoScrollStep = this.performAutoScrollStep.bind(this);
     this.pauseAutoScrollWithResume = this.pauseAutoScrollWithResume.bind(this);
+    this.handleNativeContextMenu = this.handleNativeContextMenu.bind(this);
+    this.handleNativeContextMenuClose = this.handleNativeContextMenuClose.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.autoScrollIntervalId = null;
@@ -333,6 +336,12 @@ export default class DataBrowser extends React.Component {
     // Auto-scroll event listeners
     document.body.addEventListener('keydown', this.handleAutoScrollKeyDown);
     document.body.addEventListener('keyup', this.handleAutoScrollKeyUp);
+    // Native context menu detection for auto-scroll pause
+    // Use capture phase to ensure we detect the event before the menu handles it
+    document.addEventListener('contextmenu', this.handleNativeContextMenu, true);
+    // Listen for click (fires after menu closes) and keydown (Escape closes menu)
+    document.addEventListener('click', this.handleNativeContextMenuClose, true);
+    document.addEventListener('keydown', this.handleNativeContextMenuClose, true);
 
     // Load keyboard shortcuts from server
     try {
@@ -371,6 +380,9 @@ export default class DataBrowser extends React.Component {
     // Auto-scroll cleanup
     document.body.removeEventListener('keydown', this.handleAutoScrollKeyDown);
     document.body.removeEventListener('keyup', this.handleAutoScrollKeyUp);
+    document.removeEventListener('contextmenu', this.handleNativeContextMenu, true);
+    document.removeEventListener('click', this.handleNativeContextMenuClose, true);
+    document.removeEventListener('keydown', this.handleNativeContextMenuClose, true);
     if (this.autoScrollTimeoutId) {
       clearTimeout(this.autoScrollTimeoutId);
     }
@@ -1385,6 +1397,34 @@ export default class DataBrowser extends React.Component {
     });
   }
 
+  /**
+   * Checks if auto-scroll should be blocked due to user interactions.
+   * Auto-scroll pauses when:
+   * - A modal is displayed (script confirmation, graph dialog)
+   * - A context menu is displayed (custom or native browser menu)
+   * - The user is editing a cell in the databrowser table
+   * - Manual scroll pause is active
+   */
+  isAutoScrollBlocked() {
+    const {
+      autoScrollPaused,
+      editing,
+      contextMenuItems,
+      showScriptConfirmationDialog,
+      showGraphDialog,
+      nativeContextMenuOpen,
+    } = this.state;
+
+    return (
+      autoScrollPaused ||
+      editing ||
+      (contextMenuItems && contextMenuItems.length > 0) ||
+      showScriptConfirmationDialog ||
+      showGraphDialog ||
+      nativeContextMenuOpen
+    );
+  }
+
   toggleAutoScroll() {
     this.setState(prevState => {
       const newAutoScroll = !prevState.autoScrollEnabled;
@@ -1479,6 +1519,24 @@ export default class DataBrowser extends React.Component {
     }, 500);
   }
 
+  handleNativeContextMenu() {
+    // Pause auto-scroll when native browser context menu is opened
+    if (this.state.isAutoScrolling && !this.state.nativeContextMenuOpen) {
+      this.setState({ nativeContextMenuOpen: true });
+    }
+  }
+
+  handleNativeContextMenuClose(e) {
+    // Resume auto-scroll when native browser context menu is closed
+    // For keydown events, only handle Escape key
+    if (e.type === 'keydown' && e.key !== 'Escape') {
+      return;
+    }
+    if (this.state.nativeContextMenuOpen) {
+      this.setState({ nativeContextMenuOpen: false });
+    }
+  }
+
   startAutoScroll() {
     if (this.state.isAutoScrolling) {
       return;
@@ -1517,8 +1575,8 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    if (this.state.autoScrollPaused) {
-      // When paused, keep checking but don't scroll
+    if (this.isAutoScrollBlocked()) {
+      // When blocked (modal, context menu, editing, or manual pause), keep checking but don't scroll
       this.autoScrollTimeoutId = setTimeout(() => {
         this.performAutoScrollStep();
       }, 100);
@@ -1554,8 +1612,8 @@ export default class DataBrowser extends React.Component {
     }
 
     const animateScroll = (currentTime) => {
-      if (!this.state.isAutoScrolling || this.state.autoScrollPaused) {
-        // If stopped or paused during animation, schedule next check
+      if (!this.state.isAutoScrolling || this.isAutoScrollBlocked()) {
+        // If stopped or blocked during animation, schedule next check
         this.autoScrollTimeoutId = setTimeout(() => {
           this.performAutoScrollStep();
         }, 100);
@@ -2583,6 +2641,7 @@ export default class DataBrowser extends React.Component {
             x={this.state.contextMenuX}
             y={this.state.contextMenuY}
             items={this.state.contextMenuItems}
+            onHide={() => this.setState({ contextMenuX: null, contextMenuY: null, contextMenuItems: null })}
           />
         )}
         {this.state.showScriptConfirmationDialog && (

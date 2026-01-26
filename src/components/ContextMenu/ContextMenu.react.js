@@ -156,7 +156,7 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
   );
 };
 
-const ContextMenu = ({ x, y, items }) => {
+const ContextMenu = ({ x, y, items, onHide }) => {
   const [path, setPath] = useState([0]);
   // Track the pixel offset of the hovered item for each level
   const [hoveredOffsets, setHoveredOffsets] = useState([0]);
@@ -171,6 +171,7 @@ const ContextMenu = ({ x, y, items }) => {
     setVisible(false);
     setPath([0]);
     setHoveredOffsets([0]);
+    onHide?.();
   };
 
   // Combined setter that updates both path and offsets
@@ -235,6 +236,7 @@ ContextMenu.propTypes = {
   x: PropTypes.number.isRequired.describe('X context menu position.'),
   y: PropTypes.number.isRequired.describe('Y context menu position.'),
   items: PropTypes.array.isRequired.describe('Array with tree representation of context menu items.'),
+  onHide: PropTypes.func.describe('Callback when context menu is hidden.'),
 };
 
 export default ContextMenu;
