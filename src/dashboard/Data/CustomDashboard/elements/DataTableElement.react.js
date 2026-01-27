@@ -5,8 +5,9 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from 'components/Icon/Icon.react';
+import ExpandModal from './ExpandModal.react';
 import styles from './DataTableElement.scss';
 
 const formatValue = (value) => {
@@ -39,6 +40,8 @@ const DataTableElement = ({
   error,
   onRefresh,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   if (!config || !config.className) {
     return (
       <div className={styles.noConfig}>
@@ -85,11 +88,44 @@ const DataTableElement = ({
     (columns ? Object.keys(columns) : Object.keys(data[0]))
   ).filter(k => k !== 'ACL');
 
+  const title = config.title || config.className;
+
+  const renderTable = () => (
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          {displayColumns.map(col => (
+            <th key={col}>{col}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, i) => (
+          <tr key={row.objectId || i}>
+            {displayColumns.map(col => (
+              <td key={col} title={formatValue(row[col])}>
+                {formatValue(row[col])}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
   return (
     <div className={styles.dataTableElement}>
       <div className={styles.tableHeader}>
-        <span className={styles.tableTitle}>{config.title || config.className}</span>
+        <span className={styles.tableTitle}>{title}</span>
         <span className={styles.rowCount}>{data.length} rows</span>
+        <button
+          type="button"
+          onClick={() => setIsExpanded(true)}
+          className={styles.expandButton}
+          title="Expand"
+        >
+          <Icon name="expand-outline" width={12} height={12} fill="#94a3b8" />
+        </button>
         {onRefresh && (
           <button type="button" onClick={onRefresh} className={styles.refreshButton}>
             <Icon name="refresh-solid" width={12} height={12} fill="#94a3b8" />
@@ -97,27 +133,15 @@ const DataTableElement = ({
         )}
       </div>
       <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              {displayColumns.map(col => (
-                <th key={col}>{col}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, i) => (
-              <tr key={row.objectId || i}>
-                {displayColumns.map(col => (
-                  <td key={col} title={formatValue(row[col])}>
-                    {formatValue(row[col])}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {renderTable()}
       </div>
+      {isExpanded && (
+        <ExpandModal title={title} onClose={() => setIsExpanded(false)}>
+          <div className={styles.expandedTableContainer}>
+            {renderTable()}
+          </div>
+        </ExpandModal>
+      )}
     </div>
   );
 };

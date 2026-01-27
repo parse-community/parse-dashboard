@@ -5,9 +5,10 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Icon from 'components/Icon/Icon.react';
 import Pill from 'components/Pill/Pill.react';
+import ExpandModal from './ExpandModal.react';
 import styles from './ViewElement.scss';
 
 // Check if a URL uses a safe protocol (http: or https:)
@@ -132,6 +133,8 @@ const ViewElement = ({
   const tableWidth = useMemo(() => {
     return Object.values(columnWidths).reduce((sum, w) => sum + w, 0);
   }, [columnWidths]);
+
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Early returns after all hooks
   if (!config || !config.viewId) {
@@ -291,11 +294,57 @@ const ViewElement = ({
     }
   };
 
+  const title = config.title || config.viewName;
+
+  const renderTable = () => (
+    <table className={styles.table} style={{ width: tableWidth, tableLayout: 'fixed' }}>
+      <colgroup>
+        {displayColumns.map(col => (
+          <col key={col} style={{ width: columnWidths[col] }} />
+        ))}
+      </colgroup>
+      <thead>
+        <tr>
+          {displayColumns.map(col => (
+            <th key={col}>{col}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, i) => (
+          <tr key={row.objectId || i}>
+            {displayColumns.map(col => {
+              const value = row[col];
+              const isPointer = value && typeof value === 'object' && value.__type === 'Pointer';
+              return (
+                <td
+                  key={col}
+                  title={formatValue(value)}
+                  className={isPointer ? styles.pointerCell : undefined}
+                >
+                  {renderCellContent(value)}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
   return (
     <div className={styles.viewElement}>
       <div className={styles.tableHeader}>
-        <span className={styles.tableTitle}>{config.title || config.viewName}</span>
+        <span className={styles.tableTitle}>{title}</span>
         <span className={styles.rowCount}>{data.length} rows</span>
+        <button
+          type="button"
+          onClick={() => setIsExpanded(true)}
+          className={styles.expandButton}
+          title="Expand"
+        >
+          <Icon name="expand-outline" width={12} height={12} fill="#94a3b8" />
+        </button>
         {onRefresh && (
           <button type="button" onClick={onRefresh} className={styles.refreshButton}>
             <Icon name="refresh-solid" width={12} height={12} fill="#94a3b8" />
@@ -303,40 +352,15 @@ const ViewElement = ({
         )}
       </div>
       <div className={styles.tableContainer}>
-        <table className={styles.table} style={{ width: tableWidth, tableLayout: 'fixed' }}>
-          <colgroup>
-            {displayColumns.map(col => (
-              <col key={col} style={{ width: columnWidths[col] }} />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              {displayColumns.map(col => (
-                <th key={col}>{col}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, i) => (
-              <tr key={row.objectId || i}>
-                {displayColumns.map(col => {
-                  const value = row[col];
-                  const isPointer = value && typeof value === 'object' && value.__type === 'Pointer';
-                  return (
-                    <td
-                      key={col}
-                      title={formatValue(value)}
-                      className={isPointer ? styles.pointerCell : undefined}
-                    >
-                      {renderCellContent(value)}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {renderTable()}
       </div>
+      {isExpanded && (
+        <ExpandModal title={title} onClose={() => setIsExpanded(false)}>
+          <div className={styles.expandedTableContainer}>
+            {renderTable()}
+          </div>
+        </ExpandModal>
+      )}
     </div>
   );
 };
