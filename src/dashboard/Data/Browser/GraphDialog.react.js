@@ -76,6 +76,14 @@ const PREDEFINED_COLORS = [
   { value: '#5733FF', label: 'Indigo' },
 ];
 
+// Validate hex color format: #RRGGBB only
+const isValidHexColor = (color) => {
+  if (!color) {
+    return true;
+  }
+  return /^#[0-9A-Fa-f]{6}$/.test(color);
+};
+
 export default class GraphDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -160,6 +168,24 @@ export default class GraphDialog extends React.Component {
     if (hasCalculatedValues) {
       for (let i = 0; i < calculatedValues.length; i++) {
         if (this.getNameError(i)) {
+          return false;
+        }
+      }
+    }
+
+    // Check for invalid hex colors in series
+    if (hasSeries) {
+      for (const s of series) {
+        if (s.color && !isValidHexColor(s.color)) {
+          return false;
+        }
+      }
+    }
+
+    // Check for invalid hex colors in calculated values
+    if (hasCalculatedValues) {
+      for (const calc of calculatedValues) {
+        if (calc.color && !isValidHexColor(calc.color)) {
           return false;
         }
       }
@@ -537,50 +563,54 @@ export default class GraphDialog extends React.Component {
               )}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Label text="Color" description="Preset or custom value" />
+                  <Label text="Color" description="Preset or custom HEX" />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f6fafb' }}>
-                  <div
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '4px',
-                      border: '1px solid #ccc',
-                      backgroundColor: s.color || '#ccc',
-                      flexShrink: 0,
-                      marginLeft: '14px',
-                    }}
-                  />
-                  <div style={{ flex: '0 0 80px' }}>
-                    <TextInput
-                      value={s.color || ''}
-                      onChange={color => this.updateSeries(index, 'color', color)}
-                      placeholder="# HEX"
-                    />
+                  <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14px' }}>
+                    <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>#</span>
+                    <div style={{ width: '70px' }}>
+                      <TextInput
+                        value={s.color ? s.color.replace(/^#/, '') : ''}
+                        onChange={hex => {
+                          const cleaned = hex.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
+                          this.updateSeries(index, 'color', cleaned ? '#' + cleaned : '');
+                        }}
+                        placeholder="RRGGBB"
+                        style={{ textAlign: 'left', paddingLeft: 0 }}
+                      />
+                    </div>
                   </div>
                   <div style={{ flex: 1 }}>
                     <Dropdown
-                      value={
-                        !s.color ? '' :
-                        PREDEFINED_COLORS.find(c => c.value === s.color) ? s.color :
-                        'custom'
-                      }
-                      onChange={color => {
-                        if (color !== 'custom') {
-                          this.updateSeries(index, 'color', color);
-                        }
-                      }}
+                      value={PREDEFINED_COLORS.find(c => c.value === s.color) ? s.color : (s.color ? (isValidHexColor(s.color) ? 'custom' : 'invalid') : '')}
+                      onChange={color => { if (color !== 'custom' && color !== 'invalid') { this.updateSeries(index, 'color', color); } }}
                       placeHolder="Preset"
                     >
                       <Option value="">Auto</Option>
+                      {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && !isValidHexColor(s.color) && (
+                        <Option value="invalid">
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
+                            Invalid
+                          </span>
+                        </Option>
+                      )}
+                      {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && isValidHexColor(s.color) && (
+                        <Option value="custom">
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: s.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            Custom
+                          </span>
+                        </Option>
+                      )}
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
-                          {c.label}
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            {c.label}
+                          </span>
                         </Option>
                       ))}
-                      {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && (
-                        <Option value="custom">Custom</Option>
-                      )}
                     </Dropdown>
                   </div>
                 </div>
@@ -807,50 +837,54 @@ export default class GraphDialog extends React.Component {
               )}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Label text="Color" description="Preset or custom value" />
+                  <Label text="Color" description="Preset or custom HEX" />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f6fafb' }}>
-                  <div
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '4px',
-                      border: '1px solid #ccc',
-                      backgroundColor: calc.color || '#ccc',
-                      flexShrink: 0,
-                      marginLeft: '14px',
-                    }}
-                  />
-                  <div style={{ flex: '0 0 80px' }}>
-                    <TextInput
-                      value={calc.color || ''}
-                      onChange={color => this.updateCalculatedValue(index, 'color', color)}
-                      placeholder="# HEX"
-                    />
+                  <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14px' }}>
+                    <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>#</span>
+                    <div style={{ width: '70px' }}>
+                      <TextInput
+                        value={calc.color ? calc.color.replace(/^#/, '') : ''}
+                        onChange={hex => {
+                          const cleaned = hex.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
+                          this.updateCalculatedValue(index, 'color', cleaned ? '#' + cleaned : '');
+                        }}
+                        placeholder="RRGGBB"
+                        style={{ textAlign: 'left', paddingLeft: 0 }}
+                      />
+                    </div>
                   </div>
                   <div style={{ flex: 1 }}>
                     <Dropdown
-                      value={
-                        !calc.color ? '' :
-                        PREDEFINED_COLORS.find(c => c.value === calc.color) ? calc.color :
-                        'custom'
-                      }
-                      onChange={color => {
-                        if (color !== 'custom') {
-                          this.updateCalculatedValue(index, 'color', color);
-                        }
-                      }}
+                      value={PREDEFINED_COLORS.find(c => c.value === calc.color) ? calc.color : (calc.color ? (isValidHexColor(calc.color) ? 'custom' : 'invalid') : '')}
+                      onChange={color => { if (color !== 'custom' && color !== 'invalid') { this.updateCalculatedValue(index, 'color', color); } }}
                       placeHolder="Preset"
                     >
                       <Option value="">Auto</Option>
+                      {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && !isValidHexColor(calc.color) && (
+                        <Option value="invalid">
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
+                            Invalid
+                          </span>
+                        </Option>
+                      )}
+                      {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && isValidHexColor(calc.color) && (
+                        <Option value="custom">
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: calc.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            Custom
+                          </span>
+                        </Option>
+                      )}
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
-                          {c.label}
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            {c.label}
+                          </span>
                         </Option>
                       ))}
-                      {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && (
-                        <Option value="custom">Custom</Option>
-                      )}
                     </Dropdown>
                   </div>
                 </div>
