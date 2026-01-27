@@ -524,6 +524,7 @@ export default class GraphDialog extends React.Component {
                       border: '1px solid #ccc',
                       backgroundColor: s.color || '#ccc',
                       flexShrink: 0,
+                      marginLeft: '8px',
                     }}
                   />
                   <Dropdown
@@ -753,6 +754,7 @@ export default class GraphDialog extends React.Component {
                       border: '1px solid #ccc',
                       backgroundColor: calc.color || '#ccc',
                       flexShrink: 0,
+                      marginLeft: '8px',
                     }}
                   />
                   <Dropdown
