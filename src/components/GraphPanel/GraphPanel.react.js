@@ -157,9 +157,8 @@ const GraphPanel = ({
       chartType,
       xColumn,
       yColumn,
-      valueColumn,
+      series,
       groupByColumn,
-      aggregationType,
       maxDataPoints,
       calculatedValues,
       secondaryYAxisType,
@@ -176,12 +175,12 @@ const GraphPanel = ({
           break;
         case 'pie':
         case 'doughnut':
-          result = processPieData(limitedData, valueColumn, groupByColumn, aggregationType, calculatedValues);
+          result = processPieData(limitedData, series || [], groupByColumn, calculatedValues);
           break;
         case 'bar':
         case 'line':
         case 'radar':
-          result = processBarLineData(limitedData, xColumn, valueColumn, groupByColumn, aggregationType, calculatedValues);
+          result = processBarLineData(limitedData, xColumn, series || [], groupByColumn, calculatedValues);
           break;
       }
 

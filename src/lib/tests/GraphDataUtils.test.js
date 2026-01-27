@@ -145,7 +145,8 @@ describe('GraphDataUtils', () => {
     ];
 
     it('should process pie data with grouping', () => {
-      const result = processPieData(mockData, 'value', 'category', 'sum');
+      const series = [{ field: 'value', aggregationType: 'sum' }];
+      const result = processPieData(mockData, series, 'category');
 
       expect(result).toHaveProperty('labels');
       expect(result).toHaveProperty('datasets');
@@ -164,7 +165,8 @@ describe('GraphDataUtils', () => {
     ];
 
     it('should process bar/line data correctly', () => {
-      const result = processBarLineData(mockData, 'month', 'sales', null, 'sum');
+      const series = [{ field: 'sales', aggregationType: 'sum' }];
+      const result = processBarLineData(mockData, 'month', series, null);
 
       expect(result).toHaveProperty('labels');
       expect(result).toHaveProperty('datasets');
@@ -188,7 +190,7 @@ describe('GraphDataUtils', () => {
           formula: 'price * quantity',
         }];
 
-        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+        const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
         expect(result.datasets.length).toBe(1);
@@ -205,7 +207,7 @@ describe('GraphDataUtils', () => {
           formula: 'round(price / quantity, 2)',
         }];
 
-        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+        const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
         expect(result.datasets[0].label).toBe('Rounded');
@@ -227,7 +229,7 @@ describe('GraphDataUtils', () => {
           },
         ];
 
-        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+        const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
         expect(result.datasets.length).toBe(2);
@@ -244,7 +246,8 @@ describe('GraphDataUtils', () => {
           formula: '',
         }];
 
-        const result = processBarLineData(mockData, 'month', 'price', null, 'sum', calculatedValues);
+        const series = [{ field: 'price', aggregationType: 'sum' }];
+        const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
 
         // Should still work, just without the empty formula calculated value
         expect(result).toHaveProperty('datasets');
@@ -257,7 +260,8 @@ describe('GraphDataUtils', () => {
           formula: 'invalid syntax @@@',
         }];
 
-        const result = processBarLineData(mockData, 'month', 'price', null, 'sum', calculatedValues);
+        const series = [{ field: 'price', aggregationType: 'sum' }];
+        const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
 
         // Should not throw, chart should render with regular values
         expect(result).toHaveProperty('datasets');
@@ -277,7 +281,7 @@ describe('GraphDataUtils', () => {
           formula: 'revenue - cost',
         }];
 
-        const result = processPieData(mockData, null, 'category', 'sum', calculatedValues);
+        const result = processPieData(mockData, [], 'category', calculatedValues);
 
         // Verify datasets exist and contain computed formula values
         expect(result).toHaveProperty('datasets');
@@ -309,7 +313,7 @@ describe('GraphDataUtils', () => {
           fields: ['numerator', 'denominator'],
         }];
 
-        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+        const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
         expect(result.datasets.length).toBe(1);
@@ -339,7 +343,8 @@ describe('GraphDataUtils', () => {
           fields: ['numerator', 'denominator'],
         }];
 
-        const result = processBarLineData(mockData, 'month', 'revenue', null, 'sum', calculatedValues);
+        const series = [{ field: 'revenue', aggregationType: 'sum' }];
+        const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
         expect(result.datasets.length).toBe(2); // revenue + Percent
@@ -381,7 +386,7 @@ describe('GraphDataUtils', () => {
           },
         ];
 
-        const result = processBarLineData(mockData, 'month', null, null, 'sum', calculatedValues);
+        const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
 
@@ -425,7 +430,11 @@ describe('GraphDataUtils', () => {
         ];
 
         // 2 value fields with aggregation 'sum', plus 2 calculated values
-        const result = processBarLineData(mockData, 'date', ['valueA', 'valueB'], null, 'sum', calculatedValues);
+        const series = [
+          { field: 'valueA', aggregationType: 'sum' },
+          { field: 'valueB', aggregationType: 'sum' },
+        ];
+        const result = processBarLineData(mockData, 'date', series, null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
 
@@ -455,7 +464,11 @@ describe('GraphDataUtils', () => {
           },
         ];
 
-        const result = processBarLineData(mockData, 'date', ['a', 'b'], null, 'sum', calculatedValues);
+        const series = [
+          { field: 'a', aggregationType: 'sum' },
+          { field: 'b', aggregationType: 'sum' },
+        ];
+        const result = processBarLineData(mockData, 'date', series, null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
 
@@ -502,7 +515,11 @@ describe('GraphDataUtils', () => {
           },
         ];
 
-        const result = processBarLineData(mockData, 'date', ['a', 'b'], null, 'sum', calculatedValues);
+        const series = [
+          { field: 'a', aggregationType: 'sum' },
+          { field: 'b', aggregationType: 'sum' },
+        ];
+        const result = processBarLineData(mockData, 'date', series, null, calculatedValues);
 
         const aDataset = result.datasets.find(d => d.label === 'a');
         const bDataset = result.datasets.find(d => d.label === 'b');
