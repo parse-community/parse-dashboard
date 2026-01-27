@@ -39,7 +39,7 @@ const GraphElement = ({
     showAxisLabels: config.showAxisLabels ?? config.graphConfig?.showAxisLabels ?? true,
   };
 
-  const renderGraph = (inModal = false) => (
+  const renderGraph = () => (
     <GraphPanel
       graphConfig={modifiedGraphConfig}
       data={data}
@@ -76,7 +76,7 @@ const GraphElement = ({
       {isExpanded && (
         <ExpandModal title={title} onClose={() => setIsExpanded(false)}>
           <div className={styles.expandedGraphContainer}>
-            {renderGraph(true)}
+            {renderGraph()}
           </div>
         </ExpandModal>
       )}
