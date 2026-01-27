@@ -26,6 +26,7 @@ const ExpandModal = ({ title, children, onClose }) => {
   }, [onClose]);
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
     document.body.appendChild(container);
     // Use capture phase to handle event before it reaches other listeners
     document.addEventListener('keydown', handleKeyDown, true);
@@ -33,7 +34,7 @@ const ExpandModal = ({ title, children, onClose }) => {
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
       if (document.body.contains(container)) {
         document.body.removeChild(container);
       }
