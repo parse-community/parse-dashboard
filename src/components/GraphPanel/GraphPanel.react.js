@@ -161,7 +161,6 @@ const GraphPanel = ({
       groupByColumn,
       maxDataPoints,
       calculatedValues,
-      secondaryYAxisType,
     } = graphConfig;
 
     // Limit data points for performance
@@ -184,29 +183,10 @@ const GraphPanel = ({
           break;
       }
 
-      // Apply secondary Y-axis chart type to datasets on secondary axis
-      if (result && result.datasets && secondaryYAxisType && (chartType === 'bar' || chartType === 'line')) {
-        result.datasets = result.datasets.map(dataset => {
-          if (dataset.yAxisID === 'y1') {
-            return {
-              ...dataset,
-              type: secondaryYAxisType,
-            };
-          }
-          return dataset;
-        });
-      }
-
       // Helper to compute the effective chart type for a dataset
-      // dataset.type overrides global defaults (set by secondary Y-axis type or other means)
+      // dataset.type overrides the global chart type
       const getEffectiveType = (dataset) => {
-        if (dataset.type) {
-          return dataset.type;
-        }
-        if (dataset.yAxisID === 'y1' && secondaryYAxisType) {
-          return secondaryYAxisType;
-        }
-        return chartType;
+        return dataset.type || chartType;
       };
 
       // Apply line styles to datasets (convert lineStyle to Chart.js borderDash)

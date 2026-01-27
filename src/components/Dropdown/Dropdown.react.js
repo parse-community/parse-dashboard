@@ -67,7 +67,7 @@ export default class Dropdown extends React.Component {
       const popoverChildren = (
         <SliderWrap direction={Directions.DOWN} expanded={true}>
           <div style={{ width }} className={styles.menu}>
-            {React.Children.map(this.props.children, c => (
+            {React.Children.map(this.props.children, c => c && (
               <button type="button" onClick={this.select.bind(this, c.props.value)}>
                 {c}
               </button>
@@ -87,7 +87,7 @@ export default class Dropdown extends React.Component {
     }
     let content = null;
     React.Children.forEach(this.props.children, c => {
-      if (!content && c.props.value === this.props.value) {
+      if (!content && c && c.props.value === this.props.value) {
         content = c;
       }
     });

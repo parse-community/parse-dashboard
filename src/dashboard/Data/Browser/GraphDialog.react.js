@@ -58,17 +58,22 @@ const BAR_STYLES = [
   { value: 'striped', label: 'Striped' },
 ];
 
+const SERIES_CHART_TYPES = [
+  { value: 'bar', label: 'Bar' },
+  { value: 'line', label: 'Line' },
+];
+
 const PREDEFINED_COLORS = [
-  { value: 'rgba(255, 99, 132, 0.8)', label: 'Red' },
-  { value: 'rgba(54, 162, 235, 0.8)', label: 'Blue' },
-  { value: 'rgba(255, 205, 86, 0.8)', label: 'Yellow' },
-  { value: 'rgba(75, 192, 192, 0.8)', label: 'Teal' },
-  { value: 'rgba(153, 102, 255, 0.8)', label: 'Purple' },
-  { value: 'rgba(255, 159, 64, 0.8)', label: 'Orange' },
-  { value: 'rgba(201, 203, 207, 0.8)', label: 'Grey' },
-  { value: 'rgba(255, 87, 51, 0.8)', label: 'Coral' },
-  { value: 'rgba(51, 255, 87, 0.8)', label: 'Green' },
-  { value: 'rgba(87, 51, 255, 0.8)', label: 'Indigo' },
+  { value: '#FF6384', label: 'Red' },
+  { value: '#36A2EB', label: 'Blue' },
+  { value: '#FFCD56', label: 'Yellow' },
+  { value: '#4BC0C0', label: 'Teal' },
+  { value: '#9966FF', label: 'Purple' },
+  { value: '#FF9F40', label: 'Orange' },
+  { value: '#C9CBCF', label: 'Grey' },
+  { value: '#FF5733', label: 'Coral' },
+  { value: '#33FF57', label: 'Green' },
+  { value: '#5733FF', label: 'Indigo' },
 ];
 
 export default class GraphDialog extends React.Component {
@@ -135,7 +140,6 @@ export default class GraphDialog extends React.Component {
       title: initialConfig.title || '',
       yAxisTitlePrimary: initialConfig.yAxisTitlePrimary || '',
       yAxisTitleSecondary: initialConfig.yAxisTitleSecondary || '',
-      secondaryYAxisType: initialConfig.secondaryYAxisType || null,
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
       showGrid: initialConfig.showGrid !== undefined ? initialConfig.showGrid : true,
       showAxisLabels: initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
@@ -261,7 +265,7 @@ export default class GraphDialog extends React.Component {
     this.setState({
       series: [
         ...this.state.series,
-        { title: '', fields: [], aggregationType: 'count', color: '', lineStyle: '', barStyle: '', expanded: true }
+        { title: '', fields: [], aggregationType: 'count', chartType: '', color: '', lineStyle: '', barStyle: '', expanded: true }
       ]
     });
   };
@@ -381,7 +385,7 @@ export default class GraphDialog extends React.Component {
     this.setState({
       calculatedValues: [
         ...this.state.calculatedValues,
-        { fields: [], operator: 'sum', name: '', expanded: true }
+        { fields: [], operator: 'sum', name: '', chartType: '', expanded: true }
       ]
     });
   };
@@ -428,14 +432,13 @@ export default class GraphDialog extends React.Component {
   }
 
   renderSeriesBox(s, index) {
-    const { chartType, secondaryYAxisType } = this.state;
+    const { chartType } = this.state;
     const isExpanded = s.expanded !== false;
     // Display name: title if set, otherwise first field, otherwise "Series N"
     const displayName = s.title || (s.fields && s.fields.length > 0 ? (s.fields.length === 1 ? s.fields[0] : `${s.fields.length} fields`) : `Series ${index + 1}`);
     const numericAndPointerColumns = this.getNumericAndPointerColumns();
-    const effectiveType = s.useSecondaryYAxis && secondaryYAxisType
-      ? secondaryYAxisType
-      : chartType;
+    // Use series-specific chart type, or fall back to global chart type
+    const effectiveType = s.chartType || chartType;
 
     return (
       <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: 'none' }}>
@@ -500,6 +503,27 @@ export default class GraphDialog extends React.Component {
               {(chartType === 'bar' || chartType === 'line') && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Label text="Chart Type" />
+                  </div>
+                  <div>
+                    <Dropdown
+                      value={s.chartType || ''}
+                      onChange={seriesChartType => this.updateSeries(index, 'chartType', seriesChartType)}
+                      placeHolder={`Default (${chartType === 'bar' ? 'Bar' : 'Line'})`}
+                    >
+                      <Option value="">Default ({chartType === 'bar' ? 'Bar' : 'Line'})</Option>
+                      {SERIES_CHART_TYPES.map(type => (
+                        <Option key={type.value} value={type.value}>
+                          {type.label}
+                        </Option>
+                      ))}
+                    </Dropdown>
+                  </div>
+                </div>
+              )}
+              {(chartType === 'bar' || chartType === 'line') && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Secondary Y Axis" description="Display on right axis" />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
@@ -513,7 +537,7 @@ export default class GraphDialog extends React.Component {
               )}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Label text="Color" />
+                  <Label text="Color" description="Preset or custom value" />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f6fafb' }}>
                   <div
@@ -524,21 +548,41 @@ export default class GraphDialog extends React.Component {
                       border: '1px solid #ccc',
                       backgroundColor: s.color || '#ccc',
                       flexShrink: 0,
-                      marginLeft: '8px',
+                      marginLeft: '14px',
                     }}
                   />
-                  <Dropdown
-                    value={s.color || ''}
-                    onChange={color => this.updateSeries(index, 'color', color)}
-                    placeHolder="Auto"
-                  >
-                    <Option value="">Auto</Option>
-                    {PREDEFINED_COLORS.map(c => (
-                      <Option key={c.value} value={c.value}>
-                        {c.label}
-                      </Option>
-                    ))}
-                  </Dropdown>
+                  <div style={{ flex: '0 0 80px' }}>
+                    <TextInput
+                      value={s.color || ''}
+                      onChange={color => this.updateSeries(index, 'color', color)}
+                      placeholder="# HEX"
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Dropdown
+                      value={
+                        !s.color ? '' :
+                        PREDEFINED_COLORS.find(c => c.value === s.color) ? s.color :
+                        'custom'
+                      }
+                      onChange={color => {
+                        if (color !== 'custom') {
+                          this.updateSeries(index, 'color', color);
+                        }
+                      }}
+                      placeHolder="Preset"
+                    >
+                      <Option value="">Auto</Option>
+                      {PREDEFINED_COLORS.map(c => (
+                        <Option key={c.value} value={c.value}>
+                          {c.label}
+                        </Option>
+                      ))}
+                      {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && (
+                        <Option value="custom">Custom</Option>
+                      )}
+                    </Dropdown>
+                  </div>
                 </div>
               </div>
               {effectiveType === 'line' && (
@@ -587,15 +631,14 @@ export default class GraphDialog extends React.Component {
   }
 
   renderCalculatedValueBox(calc, index) {
-    const { chartType, secondaryYAxisType } = this.state;
+    const { chartType } = this.state;
     const isExpanded = calc.expanded !== false;
     const displayName = calc.name || `Calculated Value ${index + 1}`;
     const numericAndCalculatedFields = this.getNumericAndCalculatedFields(index);
     const hasCircular = this.hasCircularReference(index);
     const formulaError = this.getFormulaError(index);
-    const effectiveType = calc.useSecondaryYAxis && secondaryYAxisType
-      ? secondaryYAxisType
-      : chartType;
+    // Use calculated value-specific chart type, or fall back to global chart type
+    const effectiveType = calc.chartType || chartType;
 
     return (
       <div key={`calc-${index}`} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: 'none' }}>
@@ -730,6 +773,27 @@ export default class GraphDialog extends React.Component {
               {(chartType === 'bar' || chartType === 'line') && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Label text="Chart Type" />
+                  </div>
+                  <div>
+                    <Dropdown
+                      value={calc.chartType || ''}
+                      onChange={calcChartType => this.updateCalculatedValue(index, 'chartType', calcChartType)}
+                      placeHolder={`Default (${chartType === 'bar' ? 'Bar' : 'Line'})`}
+                    >
+                      <Option value="">Default ({chartType === 'bar' ? 'Bar' : 'Line'})</Option>
+                      {SERIES_CHART_TYPES.map(type => (
+                        <Option key={type.value} value={type.value}>
+                          {type.label}
+                        </Option>
+                      ))}
+                    </Dropdown>
+                  </div>
+                </div>
+              )}
+              {(chartType === 'bar' || chartType === 'line') && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Secondary Y Axis" description="Display on right axis" />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
@@ -743,7 +807,7 @@ export default class GraphDialog extends React.Component {
               )}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Label text="Color" />
+                  <Label text="Color" description="Preset or custom value" />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f6fafb' }}>
                   <div
@@ -754,21 +818,41 @@ export default class GraphDialog extends React.Component {
                       border: '1px solid #ccc',
                       backgroundColor: calc.color || '#ccc',
                       flexShrink: 0,
-                      marginLeft: '8px',
+                      marginLeft: '14px',
                     }}
                   />
-                  <Dropdown
-                    value={calc.color || ''}
-                    onChange={color => this.updateCalculatedValue(index, 'color', color)}
-                    placeHolder="Auto"
-                  >
-                    <Option value="">Auto</Option>
-                    {PREDEFINED_COLORS.map(c => (
-                      <Option key={c.value} value={c.value}>
-                        {c.label}
-                      </Option>
-                    ))}
-                  </Dropdown>
+                  <div style={{ flex: '0 0 80px' }}>
+                    <TextInput
+                      value={calc.color || ''}
+                      onChange={color => this.updateCalculatedValue(index, 'color', color)}
+                      placeholder="# HEX"
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Dropdown
+                      value={
+                        !calc.color ? '' :
+                        PREDEFINED_COLORS.find(c => c.value === calc.color) ? calc.color :
+                        'custom'
+                      }
+                      onChange={color => {
+                        if (color !== 'custom') {
+                          this.updateCalculatedValue(index, 'color', color);
+                        }
+                      }}
+                      placeHolder="Preset"
+                    >
+                      <Option value="">Auto</Option>
+                      {PREDEFINED_COLORS.map(c => (
+                        <Option key={c.value} value={c.value}>
+                          {c.label}
+                        </Option>
+                      ))}
+                      {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && (
+                        <Option value="custom">Custom</Option>
+                      )}
+                    </Dropdown>
+                  </div>
                 </div>
               </div>
               {effectiveType === 'line' && (
@@ -994,25 +1078,6 @@ export default class GraphDialog extends React.Component {
               onChange={yAxisTitleSecondary => this.setState({ yAxisTitleSecondary })}
               placeholder="Secondary Y-axis title"
             />
-          } />
-        )}
-
-        {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
-          <Field label={
-            <Label
-              text="Secondary Y-Axis Chart Type"
-              description="Chart type for secondary axis series"
-            />
-          } input={
-            <Dropdown
-              value={this.state.secondaryYAxisType || ''}
-              onChange={secondaryYAxisType => this.setState({ secondaryYAxisType: secondaryYAxisType || null })}
-              placeHolder="Same as chart type"
-            >
-              <Option value="">Same as chart type</Option>
-              <Option value="bar">Bar</Option>
-              <Option value="line">Line</Option>
-            </Dropdown>
           } />
         )}
 

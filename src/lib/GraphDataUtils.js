@@ -1001,9 +1001,10 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
   const sortedXLabels = sortedXKeys.map(key => xValues.get(key));
   const groupKeys = Object.keys(groups);
 
-  // Create maps for series properties (aggregationType, color, line style, bar style, secondary Y axis)
+  // Create maps for series properties (aggregationType, chartType, color, line style, bar style, secondary Y axis)
   // This handles both simple series labels and grouped names like "SeriesLabel (GroupValue)"
   const seriesAggregationMap = new Map();
+  const seriesChartTypeMap = new Map();
   const seriesSecondaryYAxisMap = new Map();
   const seriesColorMap = new Map();
   const seriesLineStyleMap = new Map();
@@ -1016,6 +1017,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       // It either matches exactly, or starts with "SeriesLabel ("
       if (groupKey === seriesLabel || groupKey.startsWith(`${seriesLabel} (`)) {
         seriesAggregationMap.set(groupKey, s.aggregationType || 'count');
+        if (s.chartType) {
+          seriesChartTypeMap.set(groupKey, s.chartType);
+        }
         if (s.useSecondaryYAxis) {
           seriesSecondaryYAxisMap.set(groupKey, true);
         }
@@ -1032,9 +1036,10 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     });
   });
 
-  // Create maps for calculated value properties (operator, secondary Y axis, color, line style, bar style)
+  // Create maps for calculated value properties (operator, chartType, secondary Y axis, color, line style, bar style)
   // This handles both simple calc names and grouped calc names like "CalcName (GroupValue)"
   const calcValueOperatorMap = new Map();
+  const calcValueChartTypeMap = new Map();
   const calcValueSecondaryYAxisMap = new Map();
   const calcValueColorMap = new Map();
   const calcValueLineStyleMap = new Map();
@@ -1048,6 +1053,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
           // It either matches exactly, or starts with "CalcName ("
           if (groupKey === calc.name || groupKey.startsWith(`${calc.name} (`)) {
             calcValueOperatorMap.set(groupKey, calc.operator);
+            if (calc.chartType) {
+              calcValueChartTypeMap.set(groupKey, calc.chartType);
+            }
             if (calc.useSecondaryYAxis) {
               calcValueSecondaryYAxisMap.set(groupKey, true);
             }
@@ -1113,6 +1121,13 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     // Priority: series color > calculated value color > default
     const color = seriesColorMap.get(groupKey) || calcValueColorMap.get(groupKey) || defaultColors[index];
 
+    // Get line style - prefer series style, then calculated value style
+    const lineStyle = seriesLineStyleMap.get(groupKey) || calcValueLineStyleMap.get(groupKey);
+    // Get bar style - prefer series style, then calculated value style
+    const barStyle = seriesBarStyleMap.get(groupKey) || calcValueBarStyleMap.get(groupKey);
+    // Get chart type - prefer series type, then calculated value type (for mixed bar/line charts)
+    const datasetChartType = seriesChartTypeMap.get(groupKey) || calcValueChartTypeMap.get(groupKey);
+
     const dataset = {
       label: groupKey,
       data: values,
@@ -1120,19 +1135,10 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       borderColor: color.replace('0.8', '1'),
       borderWidth: 1,
       yAxisID: (seriesSecondaryYAxisMap.get(groupKey) || calcValueSecondaryYAxisMap.get(groupKey)) ? 'y1' : 'y',
+      type: datasetChartType || undefined,
+      lineStyle: lineStyle || undefined,
+      barStyle: barStyle || undefined,
     };
-
-    // Add line style - prefer series style, then calculated value style
-    const lineStyle = seriesLineStyleMap.get(groupKey) || calcValueLineStyleMap.get(groupKey);
-    if (lineStyle) {
-      dataset.lineStyle = lineStyle;
-    }
-
-    // Add bar style - prefer series style, then calculated value style
-    const barStyle = seriesBarStyleMap.get(groupKey) || calcValueBarStyleMap.get(groupKey);
-    if (barStyle) {
-      dataset.barStyle = barStyle;
-    }
 
     return dataset;
   });
