@@ -484,7 +484,7 @@ export default class GraphDialog extends React.Component {
                 <div>
                   <TextInput
                     value={s.title || ''}
-                    onChange={title => this.updateSeries(index, 'title', title)}
+                    onChange={title => this.updateSeries(index, 'title', title.replace(/[()]/g, ''))}
                     placeholder="Auto-generated from fields"
                   />
                 </div>
@@ -707,7 +707,7 @@ export default class GraphDialog extends React.Component {
                 <div>
                   <TextInput
                     value={calc.name}
-                    onChange={name => this.updateCalculatedValue(index, 'name', name)}
+                    onChange={name => this.updateCalculatedValue(index, 'name', name.replace(/[()]/g, ''))}
                     placeholder="Enter name"
                   />
                 </div>
