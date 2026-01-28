@@ -971,8 +971,20 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     const seriesLabel = getSeriesLabel(s, idx);
     // Map all possible variations of this series' group keys
     groupKeys.forEach(groupKey => {
-      // Check if this groupKey belongs to this series by matching label or "Label (groupValue)" pattern
-      const belongsToSeries = groupKey === seriesLabel || groupKey.startsWith(`${seriesLabel} (`);
+      // Check if this groupKey belongs to this series
+      // Must handle edge case where seriesLabel contains " (" (e.g., "Foo (bar)")
+      let belongsToSeries = false;
+      if (groupKey === seriesLabel) {
+        // Exact match (no groupBy case)
+        belongsToSeries = true;
+      } else if (groupKey.endsWith(')')) {
+        // Check if it's seriesLabel with groupBy suffix by finding the LAST " ("
+        const lastParenIndex = groupKey.lastIndexOf(' (');
+        if (lastParenIndex > 0) {
+          const prefix = groupKey.substring(0, lastParenIndex);
+          belongsToSeries = prefix === seriesLabel;
+        }
+      }
 
       if (belongsToSeries) {
         seriesAggregationMap.set(groupKey, s.aggregationType || 'count');
@@ -1012,9 +1024,22 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       if (calc.name && calc.operator) {
         // Map all possible variations of this calculated value's group keys
         groupKeys.forEach(groupKey => {
-          // Check if this groupKey is for this calculated value
-          // It either matches exactly, or starts with "CalcName ("
-          if (groupKey === calc.name || groupKey.startsWith(`${calc.name} (`)) {
+          // Check if this groupKey belongs to this calculated value
+          // Must handle edge case where calc.name contains " (" (e.g., "Total (adj)")
+          let belongsToCalc = false;
+          if (groupKey === calc.name) {
+            // Exact match (no groupBy case)
+            belongsToCalc = true;
+          } else if (groupKey.endsWith(')')) {
+            // Check if it's calc.name with groupBy suffix by finding the LAST " ("
+            const lastParenIndex = groupKey.lastIndexOf(' (');
+            if (lastParenIndex > 0) {
+              const prefix = groupKey.substring(0, lastParenIndex);
+              belongsToCalc = prefix === calc.name;
+            }
+          }
+
+          if (belongsToCalc) {
             calcValueOperatorMap.set(groupKey, calc.operator);
             if (calc.chartType) {
               calcValueChartTypeMap.set(groupKey, calc.chartType);
