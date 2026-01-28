@@ -22,6 +22,19 @@ export default class Dropdown extends React.Component {
     };
 
     this.dropdownRef = React.createRef();
+    this.menuRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // When dropdown opens, scroll to the selected item
+    if (this.state.open && !prevState.open && this.menuRef.current) {
+      const menu = this.menuRef.current;
+      const selectedButton = menu.querySelector('button[data-selected="true"]');
+      if (selectedButton) {
+        // Scroll so the selected item is at the top of the visible list
+        menu.scrollTop = selectedButton.offsetTop;
+      }
+    }
   }
 
   toggle() {
@@ -66,9 +79,13 @@ export default class Dropdown extends React.Component {
       const width = this.dropdownRef.current.clientWidth;
       const popoverChildren = (
         <SliderWrap direction={Directions.DOWN} expanded={true}>
-          <div style={{ width }} className={styles.menu}>
+          <div style={{ width }} className={styles.menu} ref={this.menuRef}>
             {React.Children.map(this.props.children, c => c && (
-              <button type="button" onClick={this.select.bind(this, c.props.value)}>
+              <button
+                type="button"
+                onClick={this.select.bind(this, c.props.value)}
+                data-selected={c.props.value === this.props.value ? 'true' : undefined}
+              >
                 {c}
               </button>
             ))}
