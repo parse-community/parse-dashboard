@@ -586,10 +586,10 @@ export default class GraphDialog extends React.Component {
                       onChange={color => { if (color !== 'custom' && color !== 'invalid') { this.updateSeries(index, 'color', color); } }}
                       placeHolder="Preset"
                     >
-                      <Option value="">Auto</Option>
+                      <Option value=""><span style={{ display: 'flex' }}>Auto</span></Option>
                       {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && !isValidHexColor(s.color) && (
                         <Option value="invalid">
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
                             <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
                             Invalid
                           </span>
@@ -597,7 +597,7 @@ export default class GraphDialog extends React.Component {
                       )}
                       {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && isValidHexColor(s.color) && (
                         <Option value="custom">
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '14px', height: '14px', backgroundColor: s.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
                             Custom
                           </span>
@@ -605,7 +605,7 @@ export default class GraphDialog extends React.Component {
                       )}
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
                             {c.label}
                           </span>
@@ -860,10 +860,10 @@ export default class GraphDialog extends React.Component {
                       onChange={color => { if (color !== 'custom' && color !== 'invalid') { this.updateCalculatedValue(index, 'color', color); } }}
                       placeHolder="Preset"
                     >
-                      <Option value="">Auto</Option>
+                      <Option value=""><span style={{ display: 'flex' }}>Auto</span></Option>
                       {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && !isValidHexColor(calc.color) && (
                         <Option value="invalid">
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
                             <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
                             Invalid
                           </span>
@@ -871,7 +871,7 @@ export default class GraphDialog extends React.Component {
                       )}
                       {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && isValidHexColor(calc.color) && (
                         <Option value="custom">
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '14px', height: '14px', backgroundColor: calc.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
                             Custom
                           </span>
@@ -879,7 +879,7 @@ export default class GraphDialog extends React.Component {
                       )}
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
                             {c.label}
                           </span>
