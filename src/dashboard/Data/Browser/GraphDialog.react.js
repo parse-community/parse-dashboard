@@ -565,8 +565,8 @@ export default class GraphDialog extends React.Component {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Color" description="Preset or custom HEX" />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f6fafb' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', background: '#f6fafb' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
                     <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>#</span>
                     <div style={{ width: '70px' }}>
                       <TextInput
@@ -839,8 +839,8 @@ export default class GraphDialog extends React.Component {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Color" description="Preset or custom HEX" />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f6fafb' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', background: '#f6fafb' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
                     <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>#</span>
                     <div style={{ width: '70px' }}>
                       <TextInput
