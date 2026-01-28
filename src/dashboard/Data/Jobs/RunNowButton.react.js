@@ -7,6 +7,7 @@
  */
 import Button from 'components/Button/Button.react';
 import React from 'react';
+import RunJobDialog from 'dashboard/Data/Jobs/RunJobDialog.react';
 import { CurrentApp } from 'context/currentApp';
 
 export default class RunNowButton extends React.Component {
@@ -17,6 +18,7 @@ export default class RunNowButton extends React.Component {
     this.state = {
       progress: null,
       result: null,
+      showDialog: false,
     };
 
     this.timeout = null;
@@ -27,8 +29,16 @@ export default class RunNowButton extends React.Component {
   }
 
   handleClick() {
-    this.setState({ progress: true });
-    this.context.runJob(this.props.job).then(
+    this.setState({ showDialog: true });
+  }
+
+  handleCancel = () => {
+    this.setState({ showDialog: false });
+  };
+
+  handleConfirm = (jobWithParams) => {
+    this.setState({ showDialog: false, progress: true });
+    this.context.runJob(jobWithParams).then(
       () => {
         this.setState({ progress: false, result: 'success' });
         this.timeout = setTimeout(() => this.setState({ result: null }), 3000);
@@ -38,24 +48,33 @@ export default class RunNowButton extends React.Component {
         this.timeout = setTimeout(() => this.setState({ result: null }), 3000);
       }
     );
-  }
+  };
 
   render() {
-    const { ...other } = this.props;
-    let value = 'Run now';
+    const { job, ...other } = this.props;
+    let value = 'Run...';
     if (this.state.result === 'error') {
       value = 'Failed.';
     } else if (this.state.result === 'success') {
       value = 'Success!';
     }
     return (
-      <Button
-        progress={this.state.progress}
-        onClick={this.handleClick.bind(this)}
-        color={this.state.result === 'error' ? 'red' : 'blue'}
-        value={value}
-        {...other}
-      />
+      <>
+        <Button
+          progress={this.state.progress}
+          onClick={this.handleClick.bind(this)}
+          color={this.state.result === 'error' ? 'red' : 'blue'}
+          value={value}
+          {...other}
+        />
+        {this.state.showDialog && (
+          <RunJobDialog
+            job={job}
+            onCancel={this.handleCancel}
+            onConfirm={this.handleConfirm}
+          />
+        )}
+      </>
     );
   }
 }
