@@ -1632,15 +1632,15 @@ export default class DataBrowser extends React.Component {
 
   handleOptionKeyDown(e) {
     // Option/Alt key = keyCode 18
-    // Pause auto-scroll while Option key is held
-    if (e.keyCode === 18 && this.state.isAutoScrolling && !this.state.optionKeyPressed) {
+    // Track Option key state to pause auto-scroll while held
+    if (e.keyCode === 18 && !this.state.optionKeyPressed) {
       this.setState({ optionKeyPressed: true });
     }
   }
 
   handleOptionKeyUp(e) {
     // Option/Alt key = keyCode 18
-    // Resume auto-scroll when Option key is released
+    // Track Option key release to resume auto-scroll
     if (e.keyCode === 18 && this.state.optionKeyPressed) {
       this.setState({ optionKeyPressed: false });
     }
