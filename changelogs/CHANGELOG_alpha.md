@@ -1,3 +1,10 @@
+# [8.3.0-alpha.37](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.36...8.3.0-alpha.37) (2026-01-28)
+
+
+### Features
+
+* Allow to pause auto-scroll of info panel by holding the Option key ([#3160](https://github.com/parse-community/parse-dashboard/issues/3160)) ([db38f14](https://github.com/parse-community/parse-dashboard/commit/db38f1436c39e1297545253ad0e6ccaab7fdbb04))
+
 # [8.3.0-alpha.36](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.35...8.3.0-alpha.36) (2026-01-28)
 
 
