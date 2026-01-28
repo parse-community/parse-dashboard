@@ -67,9 +67,13 @@ const GraphConfigDialog = ({
   }, [graphsForClass, graphId]);
 
   const isLineChart = useMemo(() => {
-    if (!selectedGraph) return false;
+    if (!selectedGraph) {
+      return false;
+    }
     // Check if main chart type is line, or if any series/calculated value has line type
-    if (selectedGraph.chartType === 'line') return true;
+    if (selectedGraph.chartType === 'line') {
+      return true;
+    }
     const hasMixedLine = (selectedGraph.series || []).some(s => s.chartType === 'line') ||
       (selectedGraph.calculatedValues || []).some(c => c.chartType === 'line');
     return hasMixedLine;

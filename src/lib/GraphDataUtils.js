@@ -405,13 +405,15 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
     seriesStyleMap.set(seriesLabel, s);
   });
 
-  let aggregatedData = {};
+  const aggregatedData = {};
 
   if (groupByColumn) {
     // Group by column and aggregate for each series
     seriesArray.forEach((s, idx) => {
       const fields = s.fields || [];
-      if (fields.length === 0) return;
+      if (fields.length === 0) {
+        return;
+      }
 
       const seriesLabel = getSeriesLabel(s, idx);
 
@@ -452,7 +454,9 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
     // Aggregate each series separately
     seriesArray.forEach((s, idx) => {
       const fields = s.fields || [];
-      if (fields.length === 0) return;
+      if (fields.length === 0) {
+        return;
+      }
 
       const seriesLabel = getSeriesLabel(s, idx);
 
@@ -789,7 +793,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     // Process each series
     seriesArray.forEach((s, idx) => {
       const fields = s.fields || [];
-      if (fields.length === 0) return;
+      if (fields.length === 0) {
+        return;
+      }
 
       const seriesLabel = getSeriesLabel(s, idx);
 
