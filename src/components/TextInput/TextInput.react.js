@@ -48,7 +48,9 @@ class TextInput extends React.Component {
           className={classes.join(' ')}
           rows={this.props.rows && this.props.rows > 3 ? this.props.rows : null}
           style={
-            this.props.rows && this.props.rows > 3 ? null : { height: this.props.height || 80 }
+            this.props.rows && this.props.rows > 3
+              ? this.props.style
+              : { height: this.props.height || 80, ...this.props.style }
           }
           placeholder={this.props.placeholder}
           value={this.props.value}
