@@ -44,7 +44,7 @@ export default class RunJobDialog extends React.Component {
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon="gears"
+        icon="cloud-happy"
         iconSize={40}
         title={`Run ${job.jobName}`}
         subtitle="Optionally specify parameters to pass to the job"
