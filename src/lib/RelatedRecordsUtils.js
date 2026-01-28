@@ -8,7 +8,7 @@
 
 /**
  * Builds a "Related records" context menu item for a text value.
- * Finds all classes with String type fields that can be filtered by this value.
+ * Lists all classes with objectId first, followed by String type fields.
  * Groups fields by class name in a hierarchical submenu structure.
  *
  * @param {Object} schema - The schema object containing class definitions
@@ -26,6 +26,9 @@ export function buildRelatedTextFieldsMenuItem(schema, textValue, onNavigate) {
     items: [],
   };
 
+  const systemClasses = [];
+  const regularClasses = [];
+
   schema.data
     .get('classes')
     .sortBy((_v, k) => k)
@@ -36,7 +39,7 @@ export function buildRelatedTextFieldsMenuItem(schema, textValue, onNavigate) {
         if (column.type !== 'String') {
           return;
         }
-        // Exclude objectId - it's a special field referenced by pointers, not strings
+        // Skip objectId here - it's added separately as first element
         if (field === 'objectId') {
           return;
         }
@@ -59,15 +62,43 @@ export function buildRelatedTextFieldsMenuItem(schema, textValue, onNavigate) {
         });
       });
 
+      // Sort fields alphabetically
+      classFields.sort((a, b) => a.text.localeCompare(b.text));
+      // Add separator after objectId if there are more fields
       if (classFields.length > 0) {
-        // Sort fields alphabetically
-        classFields.sort((a, b) => a.text.localeCompare(b.text));
-        relatedRecordsMenuItem.items.push({
-          text: className,
-          items: classFields,
-        });
+        classFields.unshift({ type: 'separator' });
+      }
+      // Add objectId as first element
+      classFields.unshift({
+        text: 'objectId',
+        callback: () => {
+          onNavigate({
+            className,
+            id: textValue,
+            field: 'objectId',
+          });
+        },
+      });
+
+      const classItem = {
+        text: className,
+        items: classFields,
+      };
+
+      // Group classes by system (starting with "_") and regular
+      if (className.startsWith('_')) {
+        systemClasses.push(classItem);
+      } else {
+        regularClasses.push(classItem);
       }
     });
+
+  // Add system classes first, then separator, then regular classes
+  relatedRecordsMenuItem.items.push(...systemClasses);
+  if (systemClasses.length > 0 && regularClasses.length > 0) {
+    relatedRecordsMenuItem.items.push({ type: 'separator' });
+  }
+  relatedRecordsMenuItem.items.push(...regularClasses);
 
   return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
 }
