@@ -444,9 +444,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
       // Apply aggregation to each group
       Object.keys(groups).forEach(groupKey => {
-        const labelKey = seriesArray.length > 1 || hasCalculatedValues
-          ? `${seriesLabel} (${groupKey})`
-          : groupKey;
+        const labelKey = `${seriesLabel} (${groupKey})`;
         aggregatedData[labelKey] = aggregateValues(groups[groupKey], s.aggregationType || 'count');
       });
     });
@@ -594,9 +592,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
           // Aggregate each group
           Object.keys(groups).forEach(groupKey => {
-            const labelKey = seriesArray.length > 0 || calculatedValues.length > 1
-              ? `${calc.name} (${groupKey})`
-              : groupKey;
+            const labelKey = `${calc.name} (${groupKey})`;
 
             // For percent operator, calculate (sum of numerators / sum of denominators) * 100
             if (calc.operator === 'percent' && percentComponents[groupKey]) {
@@ -817,11 +813,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       let groupKeyValue = seriesLabel; // Use series label as default group
       if (groupByColumn && (Array.isArray(groupByColumn) ? groupByColumn.length > 0 : true)) {
         const compositeKey = createGroupKey(item, groupByColumn);
-        groupKeyValue = compositeKey;
-        // When groupBy is specified, combine with series label for unique series
-        if (seriesArray.length > 1 || hasCalculatedValues) {
-          groupKeyValue = `${seriesLabel} (${compositeKey})`;
-        }
+        groupKeyValue = `${seriesLabel} (${compositeKey})`;
       }
       const groupKey = groupKeyValue;
 
@@ -983,9 +975,10 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     const seriesLabel = getSeriesLabel(s, idx);
     // Map all possible variations of this series' group keys
     groupKeys.forEach(groupKey => {
-      // Check if this groupKey is for this series
-      // It either matches exactly, or starts with "SeriesLabel ("
-      if (groupKey === seriesLabel || groupKey.startsWith(`${seriesLabel} (`)) {
+      // Check if this groupKey belongs to this series by matching label or "Label (groupValue)" pattern
+      const belongsToSeries = groupKey === seriesLabel || groupKey.startsWith(`${seriesLabel} (`);
+
+      if (belongsToSeries) {
         seriesAggregationMap.set(groupKey, s.aggregationType || 'count');
         if (s.chartType) {
           seriesChartTypeMap.set(groupKey, s.chartType);

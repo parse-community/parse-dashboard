@@ -145,13 +145,13 @@ describe('GraphDataUtils', () => {
     ];
 
     it('should process pie data with grouping', () => {
-      const series = [{ fields: ['value'], aggregationType: 'sum' }];
+      const series = [{ fields: ['value'], aggregationType: 'sum', title: 'Value' }];
       const result = processPieData(mockData, series, 'category');
 
       expect(result).toHaveProperty('labels');
       expect(result).toHaveProperty('datasets');
-      expect(result.labels).toContain('A');
-      expect(result.labels).toContain('B');
+      expect(result.labels).toContain('Value (A)');
+      expect(result.labels).toContain('Value (B)');
       expect(result.datasets[0].data).toContain(30); // A: 10 + 20
       expect(result.datasets[0].data).toContain(30); // B: 30
     });
@@ -291,9 +291,9 @@ describe('GraphDataUtils', () => {
         // Labels are category values ('A', 'B')
         expect(result.datasets[0].data).toEqual([40, 50]);
 
-        // Verify labels match the categories from mockData
+        // Verify labels match the categories from mockData with calc name prefix
         expect(result.labels).toHaveLength(2);
-        expect(result.labels).toEqual(['A', 'B']);
+        expect(result.labels).toEqual(['Profit (A)', 'Profit (B)']);
       });
     });
 
