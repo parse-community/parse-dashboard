@@ -119,44 +119,12 @@ export default class GraphDialog extends React.Component {
       ? (Array.isArray(initialConfig.groupByColumn) ? initialConfig.groupByColumn : [initialConfig.groupByColumn])
       : [];
 
-    // Migrate from old format (valueColumn + aggregationType) to new format (series)
-    let series = initialConfig.series || [];
-    if (series.length === 0 && initialConfig.valueColumn) {
-      // Convert old valueColumn format to series
-      const valueColumns = Array.isArray(initialConfig.valueColumn)
-        ? initialConfig.valueColumn
-        : [initialConfig.valueColumn];
-      const aggregationType = initialConfig.aggregationType || 'count';
-      const seriesStyles = initialConfig.seriesStyles || {};
-
-      series = valueColumns.map(field => ({
-        title: '',
-        fields: [field],
-        aggregationType,
-        color: seriesStyles[field]?.color || '',
-        lineStyle: seriesStyles[field]?.lineStyle || '',
-        barStyle: seriesStyles[field]?.barStyle || '',
-        expanded: false,
-      }));
-    } else {
-      // Migrate existing series from old single-field format to multi-field format
-      series = series.map(s => {
-        if (s.field !== undefined && s.fields === undefined) {
-          // Old format: convert field to fields array
-          return {
-            ...s,
-            title: s.title || '',
-            fields: s.field ? [s.field] : [],
-            field: undefined, // Remove old property
-          };
-        }
-        return {
-          ...s,
-          title: s.title || '',
-          fields: s.fields || [],
-        };
-      });
-    }
+    // Series configuration
+    const series = (initialConfig.series || []).map(s => ({
+      ...s,
+      title: s.title || '',
+      fields: s.fields || [],
+    }));
 
     // Ensure calculatedValues is always an array
     const calculatedValues = initialConfig.calculatedValues || [];

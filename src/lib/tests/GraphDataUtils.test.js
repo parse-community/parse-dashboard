@@ -80,7 +80,7 @@ describe('GraphDataUtils', () => {
       const config = {
         chartType: 'bar',
         xColumn: 'category',
-        valueColumn: 'sales',
+        series: [{ fields: ['sales'], aggregationType: 'sum' }],
       };
       const columns = { category: { type: 'String' }, sales: { type: 'Number' } };
 
@@ -105,7 +105,7 @@ describe('GraphDataUtils', () => {
       const config = {
         chartType: 'bar',
         xColumn: 'category',
-        valueColumn: 'sales',
+        series: [{ fields: ['sales'], aggregationType: 'sum' }],
       };
 
       expect(validateGraphConfig(config, null).isValid).toBe(false);
@@ -145,7 +145,7 @@ describe('GraphDataUtils', () => {
     ];
 
     it('should process pie data with grouping', () => {
-      const series = [{ field: 'value', aggregationType: 'sum' }];
+      const series = [{ fields: ['value'], aggregationType: 'sum' }];
       const result = processPieData(mockData, series, 'category');
 
       expect(result).toHaveProperty('labels');
@@ -165,7 +165,7 @@ describe('GraphDataUtils', () => {
     ];
 
     it('should process bar/line data correctly', () => {
-      const series = [{ field: 'sales', aggregationType: 'sum' }];
+      const series = [{ fields: ['sales'], aggregationType: 'sum' }];
       const result = processBarLineData(mockData, 'month', series, null);
 
       expect(result).toHaveProperty('labels');
@@ -246,7 +246,7 @@ describe('GraphDataUtils', () => {
           formula: '',
         }];
 
-        const series = [{ field: 'price', aggregationType: 'sum' }];
+        const series = [{ fields: ['price'], aggregationType: 'sum' }];
         const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
 
         // Should still work, just without the empty formula calculated value
@@ -260,7 +260,7 @@ describe('GraphDataUtils', () => {
           formula: 'invalid syntax @@@',
         }];
 
-        const series = [{ field: 'price', aggregationType: 'sum' }];
+        const series = [{ fields: ['price'], aggregationType: 'sum' }];
         const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
 
         // Should not throw, chart should render with regular values
@@ -343,7 +343,7 @@ describe('GraphDataUtils', () => {
           fields: ['numerator', 'denominator'],
         }];
 
-        const series = [{ field: 'revenue', aggregationType: 'sum' }];
+        const series = [{ fields: ['revenue'], aggregationType: 'sum' }];
         const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
 
         expect(result).toHaveProperty('datasets');
@@ -431,8 +431,8 @@ describe('GraphDataUtils', () => {
 
         // 2 value fields with aggregation 'sum', plus 2 calculated values
         const series = [
-          { field: 'valueA', aggregationType: 'sum' },
-          { field: 'valueB', aggregationType: 'sum' },
+          { fields: ['valueA'], aggregationType: 'sum' },
+          { fields: ['valueB'], aggregationType: 'sum' },
         ];
         const result = processBarLineData(mockData, 'date', series, null, calculatedValues);
 
@@ -465,8 +465,8 @@ describe('GraphDataUtils', () => {
         ];
 
         const series = [
-          { field: 'a', aggregationType: 'sum' },
-          { field: 'b', aggregationType: 'sum' },
+          { fields: ['a'], aggregationType: 'sum' },
+          { fields: ['b'], aggregationType: 'sum' },
         ];
         const result = processBarLineData(mockData, 'date', series, null, calculatedValues);
 
@@ -516,8 +516,8 @@ describe('GraphDataUtils', () => {
         ];
 
         const series = [
-          { field: 'a', aggregationType: 'sum' },
-          { field: 'b', aggregationType: 'sum' },
+          { fields: ['a'], aggregationType: 'sum' },
+          { fields: ['b'], aggregationType: 'sum' },
         ];
         const result = processBarLineData(mockData, 'date', series, null, calculatedValues);
 

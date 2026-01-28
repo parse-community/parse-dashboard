@@ -311,43 +311,6 @@ function createGroupKey(item, groupByColumns) {
 }
 
 /**
- * Group data by a column and apply aggregation
- * @param {Array} data - Array of Parse objects
- * @param {string|Array<string>} groupByColumn - Column(s) to group by
- * @param {string} valueColumn - Column to aggregate
- * @param {string} aggregationType - Aggregation type
- * @returns {Object} Grouped and aggregated data
- */
-export function groupAndAggregate(data, groupByColumn, valueColumn, aggregationType = 'count') {
-  const groups = {};
-
-  data.forEach(item => {
-    const rawValue = getNestedValue(item, valueColumn);
-    const value = extractNumericValue(rawValue);
-
-    // Create composite group key from potentially multiple columns
-    const groupKey = createGroupKey(item, groupByColumn);
-
-    if (!groups[groupKey]) {
-      groups[groupKey] = [];
-    }
-
-    // Only add numeric values for aggregation
-    if (value !== null) {
-      groups[groupKey].push(value);
-    }
-  });
-
-  // Apply aggregation to each group
-  const result = {};
-  Object.keys(groups).forEach(groupKey => {
-    result[groupKey] = aggregateValues(groups[groupKey], aggregationType);
-  });
-
-  return result;
-}
-
-/**
  * Process data for scatter plots
  * @param {Array} data - Array of Parse objects
  * @param {string} xColumn - X-axis column
@@ -401,7 +364,7 @@ function getSeriesLabel(s, index) {
     return s.title;
   }
   // Fall back to fields
-  const fields = s.fields || (s.field ? [s.field] : []);
+  const fields = s.fields || [];
   if (fields.length === 1) {
     return fields[0];
   }
@@ -447,7 +410,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
   if (groupByColumn) {
     // Group by column and aggregate for each series
     seriesArray.forEach((s, idx) => {
-      const fields = s.fields || (s.field ? [s.field] : []);
+      const fields = s.fields || [];
       if (fields.length === 0) return;
 
       const seriesLabel = getSeriesLabel(s, idx);
@@ -488,7 +451,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
   } else {
     // Aggregate each series separately
     seriesArray.forEach((s, idx) => {
-      const fields = s.fields || (s.field ? [s.field] : []);
+      const fields = s.fields || [];
       if (fields.length === 0) return;
 
       const seriesLabel = getSeriesLabel(s, idx);
@@ -538,7 +501,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
           // Build available fields for formula evaluation
           const availableFields = [];
           seriesArray.forEach((s, idx) => {
-            const fields = s.fields || (s.field ? [s.field] : []);
+            const fields = s.fields || [];
             fields.forEach(field => {
               if (!availableFields.includes(field)) {
                 availableFields.push(field);
@@ -825,7 +788,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
 
     // Process each series
     seriesArray.forEach((s, idx) => {
-      const fields = s.fields || (s.field ? [s.field] : []);
+      const fields = s.fields || [];
       if (fields.length === 0) return;
 
       const seriesLabel = getSeriesLabel(s, idx);
@@ -885,7 +848,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
           // Build available fields for formula evaluation
           const availableFields = [];
           seriesArray.forEach((s, idx) => {
-            const fields = s.fields || (s.field ? [s.field] : []);
+            const fields = s.fields || [];
             fields.forEach(field => {
               if (!availableFields.includes(field)) {
                 availableFields.push(field);
@@ -1208,21 +1171,19 @@ export function validateGraphConfig(config, columns) {
     return { isValid: false, error: 'No configuration provided' };
   }
 
-  const { chartType, xColumn, yColumn, series, valueColumn, calculatedValues } = config;
+  const { chartType, xColumn, yColumn, series, calculatedValues } = config;
 
   if (!chartType) {
     return { isValid: false, error: 'Chart type is required' };
   }
 
-  // Check for series (new format) - a series with at least one field
+  // Check for series - a series with at least one field
   const hasSeries = Array.isArray(series) && series.length > 0 && series.some(s => {
-    const fields = s.fields || (s.field ? [s.field] : []);
+    const fields = s.fields || [];
     return fields.length > 0;
   });
-  // Check for valueColumn (old format) for backward compatibility
-  const hasValueColumn = valueColumn && (!Array.isArray(valueColumn) || valueColumn.length > 0);
   const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
-  const hasValuesToDisplay = hasSeries || hasValueColumn || hasCalculatedValues;
+  const hasValuesToDisplay = hasSeries || hasCalculatedValues;
 
   // Check required columns based on chart type
   switch (chartType) {
@@ -1243,7 +1204,7 @@ export function validateGraphConfig(config, columns) {
       // Validate all series fields exist
       if (hasSeries && columns) {
         for (const s of series) {
-          const fields = s.fields || (s.field ? [s.field] : []);
+          const fields = s.fields || [];
           for (const col of fields) {
             if (!columns[col]) {
               return { isValid: false, error: `Field '${col}' does not exist` };
@@ -1266,7 +1227,7 @@ export function validateGraphConfig(config, columns) {
       // Validate all series fields exist
       if (hasSeries && columns) {
         for (const s of series) {
-          const fields = s.fields || (s.field ? [s.field] : []);
+          const fields = s.fields || [];
           for (const col of fields) {
             if (!columns[col]) {
               return { isValid: false, error: `Field '${col}' does not exist` };
