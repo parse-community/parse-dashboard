@@ -63,17 +63,40 @@ const SERIES_CHART_TYPES = [
   { value: 'line', label: 'Line' },
 ];
 
+// Colors sorted by hue (color wheel order)
 const PREDEFINED_COLORS = [
+  // Reds
   { value: '#FF6384', label: 'Red' },
-  { value: '#36A2EB', label: 'Blue' },
-  { value: '#FFCD56', label: 'Yellow' },
-  { value: '#4BC0C0', label: 'Teal' },
-  { value: '#9966FF', label: 'Purple' },
-  { value: '#FF9F40', label: 'Orange' },
-  { value: '#C9CBCF', label: 'Grey' },
+  { value: '#E53935', label: 'Crimson' },
   { value: '#FF5733', label: 'Coral' },
-  { value: '#33FF57', label: 'Green' },
+  // Oranges
+  { value: '#FF9F40', label: 'Orange' },
+  { value: '#FFB347', label: 'Peach' },
+  // Yellows
+  { value: '#FFCD56', label: 'Yellow' },
+  { value: '#FDD835', label: 'Gold' },
+  // Greens
+  { value: '#8BC34A', label: 'Lime' },
+  { value: '#4CAF50', label: 'Green' },
+  { value: '#2E7D32', label: 'Forest' },
+  // Cyan/Teal
+  { value: '#4BC0C0', label: 'Teal' },
+  { value: '#00BCD4', label: 'Cyan' },
+  // Blues
+  { value: '#36A2EB', label: 'Blue' },
+  { value: '#1E88E5', label: 'Azure' },
+  { value: '#1565C0', label: 'Navy' },
+  // Indigo/Purple
   { value: '#5733FF', label: 'Indigo' },
+  { value: '#9966FF', label: 'Purple' },
+  { value: '#7B1FA2', label: 'Violet' },
+  // Pinks
+  { value: '#E91E63', label: 'Pink' },
+  { value: '#F48FB1', label: 'Rose' },
+  // Neutrals
+  { value: '#795548', label: 'Brown' },
+  { value: '#C9CBCF', label: 'Grey' },
+  { value: '#455A64', label: 'Slate' },
 ];
 
 // Validate hex color format: #RRGGBB only
