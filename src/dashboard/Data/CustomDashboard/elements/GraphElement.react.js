@@ -37,6 +37,7 @@ const GraphElement = ({
     title: undefined,
     showLegend: config.showLegend ?? config.graphConfig?.showLegend ?? true,
     showAxisLabels: config.showAxisLabels ?? config.graphConfig?.showAxisLabels ?? true,
+    strokeWidthOverride: config.strokeWidthOverride || null,
   };
 
   const renderGraph = () => (

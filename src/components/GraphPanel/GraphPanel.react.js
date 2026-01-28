@@ -161,6 +161,7 @@ const GraphPanel = ({
       groupByColumn,
       maxDataPoints,
       calculatedValues,
+      strokeWidthOverride,
     } = graphConfig;
 
     // Limit data points for performance
@@ -199,10 +200,15 @@ const GraphPanel = ({
 
         result.datasets = result.datasets.map(dataset => {
           const effectiveType = getEffectiveType(dataset);
-          if (effectiveType === 'line' && dataset.lineStyle && lineStyleToBorderDash[dataset.lineStyle]) {
+          if (effectiveType === 'line') {
+            // Line charts get custom or default stroke width and optional dash pattern
+            // strokeWidthOverride takes precedence over individual series strokeWidth
             return {
               ...dataset,
-              borderDash: lineStyleToBorderDash[dataset.lineStyle],
+              borderWidth: strokeWidthOverride || dataset.strokeWidth || 2,
+              ...(dataset.lineStyle && lineStyleToBorderDash[dataset.lineStyle]
+                ? { borderDash: lineStyleToBorderDash[dataset.lineStyle] }
+                : {}),
             };
           }
           return dataset;

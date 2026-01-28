@@ -52,6 +52,13 @@ const LINE_STYLES = [
   { value: 'dotted', label: 'Dotted' },
 ];
 
+const STROKE_WIDTHS = [
+  { value: 1, label: 'Thin (1px)' },
+  { value: 2, label: 'Normal (2px)' },
+  { value: 4, label: 'Medium (4px)' },
+  { value: 8, label: 'Thick (8px)' },
+];
+
 const BAR_STYLES = [
   { value: 'solid', label: 'Solid' },
   { value: 'outlined', label: 'Outlined' },
@@ -608,23 +615,42 @@ export default class GraphDialog extends React.Component {
                 </div>
               </div>
               {effectiveType === 'line' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Label text="Line Style" />
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Label text="Line Style" />
+                    </div>
+                    <div>
+                      <Dropdown
+                        value={s.lineStyle || 'solid'}
+                        onChange={lineStyle => this.updateSeries(index, 'lineStyle', lineStyle)}
+                      >
+                        {LINE_STYLES.map(style => (
+                          <Option key={style.value} value={style.value}>
+                            {style.label}
+                          </Option>
+                        ))}
+                      </Dropdown>
+                    </div>
                   </div>
-                  <div>
-                    <Dropdown
-                      value={s.lineStyle || 'solid'}
-                      onChange={lineStyle => this.updateSeries(index, 'lineStyle', lineStyle)}
-                    >
-                      {LINE_STYLES.map(style => (
-                        <Option key={style.value} value={style.value}>
-                          {style.label}
-                        </Option>
-                      ))}
-                    </Dropdown>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Label text="Stroke Width" />
+                    </div>
+                    <div>
+                      <Dropdown
+                        value={s.strokeWidth || 2}
+                        onChange={strokeWidth => this.updateSeries(index, 'strokeWidth', strokeWidth)}
+                      >
+                        {STROKE_WIDTHS.map(sw => (
+                          <Option key={sw.value} value={sw.value}>
+                            {sw.label}
+                          </Option>
+                        ))}
+                      </Dropdown>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
               {effectiveType === 'bar' && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
@@ -882,23 +908,42 @@ export default class GraphDialog extends React.Component {
                 </div>
               </div>
               {effectiveType === 'line' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Label text="Line Style" />
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Label text="Line Style" />
+                    </div>
+                    <div>
+                      <Dropdown
+                        value={calc.lineStyle || 'solid'}
+                        onChange={lineStyle => this.updateCalculatedValue(index, 'lineStyle', lineStyle)}
+                      >
+                        {LINE_STYLES.map(style => (
+                          <Option key={style.value} value={style.value}>
+                            {style.label}
+                          </Option>
+                        ))}
+                      </Dropdown>
+                    </div>
                   </div>
-                  <div>
-                    <Dropdown
-                      value={calc.lineStyle || 'solid'}
-                      onChange={lineStyle => this.updateCalculatedValue(index, 'lineStyle', lineStyle)}
-                    >
-                      {LINE_STYLES.map(style => (
-                        <Option key={style.value} value={style.value}>
-                          {style.label}
-                        </Option>
-                      ))}
-                    </Dropdown>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Label text="Stroke Width" />
+                    </div>
+                    <div>
+                      <Dropdown
+                        value={calc.strokeWidth || 2}
+                        onChange={strokeWidth => this.updateCalculatedValue(index, 'strokeWidth', strokeWidth)}
+                      >
+                        {STROKE_WIDTHS.map(sw => (
+                          <Option key={sw.value} value={sw.value}>
+                            {sw.label}
+                          </Option>
+                        ))}
+                      </Dropdown>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
               {effectiveType === 'bar' && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>

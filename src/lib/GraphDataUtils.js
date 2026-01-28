@@ -972,6 +972,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
   const seriesColorMap = new Map();
   const seriesLineStyleMap = new Map();
   const seriesBarStyleMap = new Map();
+  const seriesStrokeWidthMap = new Map();
   seriesArray.forEach((s, idx) => {
     const seriesLabel = getSeriesLabel(s, idx);
     // Map all possible variations of this series' group keys
@@ -995,6 +996,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
         if (s.barStyle) {
           seriesBarStyleMap.set(groupKey, s.barStyle);
         }
+        if (s.strokeWidth) {
+          seriesStrokeWidthMap.set(groupKey, s.strokeWidth);
+        }
       }
     });
   });
@@ -1007,6 +1011,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
   const calcValueColorMap = new Map();
   const calcValueLineStyleMap = new Map();
   const calcValueBarStyleMap = new Map();
+  const calcValueStrokeWidthMap = new Map();
   if (calculatedValues && Array.isArray(calculatedValues)) {
     calculatedValues.forEach(calc => {
       if (calc.name && calc.operator) {
@@ -1030,6 +1035,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
             }
             if (calc.barStyle) {
               calcValueBarStyleMap.set(groupKey, calc.barStyle);
+            }
+            if (calc.strokeWidth) {
+              calcValueStrokeWidthMap.set(groupKey, calc.strokeWidth);
             }
           }
         });
@@ -1088,6 +1096,8 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     const lineStyle = seriesLineStyleMap.get(groupKey) || calcValueLineStyleMap.get(groupKey);
     // Get bar style - prefer series style, then calculated value style
     const barStyle = seriesBarStyleMap.get(groupKey) || calcValueBarStyleMap.get(groupKey);
+    // Get stroke width - prefer series style, then calculated value style
+    const strokeWidth = seriesStrokeWidthMap.get(groupKey) || calcValueStrokeWidthMap.get(groupKey);
     // Get chart type - prefer series type, then calculated value type (for mixed bar/line charts)
     const datasetChartType = seriesChartTypeMap.get(groupKey) || calcValueChartTypeMap.get(groupKey);
 
@@ -1101,6 +1111,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       type: datasetChartType || undefined,
       lineStyle: lineStyle || undefined,
       barStyle: barStyle || undefined,
+      strokeWidth: strokeWidth || undefined,
     };
 
     return dataset;

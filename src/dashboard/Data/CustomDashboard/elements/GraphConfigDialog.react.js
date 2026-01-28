@@ -14,6 +14,13 @@ import Option from 'components/Dropdown/Option.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
 
+const STROKE_WIDTHS = [
+  { value: 1, label: 'Thin (1px)' },
+  { value: 2, label: 'Normal (2px)' },
+  { value: 4, label: 'Medium (4px)' },
+  { value: 8, label: 'Thick (8px)' },
+];
+
 const GraphConfigDialog = ({
   initialConfig,
   availableGraphs,
@@ -29,6 +36,7 @@ const GraphConfigDialog = ({
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '1000');
   const [showLegend, setShowLegend] = useState(initialConfig?.showLegend ?? true);
   const [showAxisLabels, setShowAxisLabels] = useState(initialConfig?.showAxisLabels ?? true);
+  const [strokeWidthOverride, setStrokeWidthOverride] = useState(initialConfig?.strokeWidthOverride || '');
 
   const classesWithGraphs = useMemo(() => {
     return classes
@@ -58,6 +66,15 @@ const GraphConfigDialog = ({
     return graphsForClass.find(g => g.id === graphId);
   }, [graphsForClass, graphId]);
 
+  const isLineChart = useMemo(() => {
+    if (!selectedGraph) return false;
+    // Check if main chart type is line, or if any series/calculated value has line type
+    if (selectedGraph.chartType === 'line') return true;
+    const hasMixedLine = (selectedGraph.series || []).some(s => s.chartType === 'line') ||
+      (selectedGraph.calculatedValues || []).some(c => c.chartType === 'line');
+    return hasMixedLine;
+  }, [selectedGraph]);
+
   const handleClassChange = (newClass) => {
     setClassName(newClass);
     setGraphId('');
@@ -81,6 +98,7 @@ const GraphConfigDialog = ({
       limit: parseInt(limit, 10) || 1000,
       showLegend,
       showAxisLabels,
+      strokeWidthOverride: strokeWidthOverride || null,
     });
   };
 
@@ -204,6 +222,25 @@ const GraphConfigDialog = ({
                   />
                 }
               />
+              {isLineChart && (
+                <Field
+                  label={<Label text="Line Stroke Width (Optional)" description="Override stroke width for all lines" />}
+                  input={
+                    <Dropdown
+                      value={strokeWidthOverride}
+                      onChange={setStrokeWidthOverride}
+                      placeHolder="Use graph settings"
+                    >
+                      <Option value="">Use graph settings</Option>
+                      {STROKE_WIDTHS.map(sw => (
+                        <Option key={sw.value} value={sw.value}>
+                          {sw.label}
+                        </Option>
+                      ))}
+                    </Dropdown>
+                  }
+                />
+              )}
             </>
           )}
         </>
