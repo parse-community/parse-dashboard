@@ -1,3 +1,10 @@
+# [8.3.0-alpha.34](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.33...8.3.0-alpha.34) (2026-01-28)
+
+
+### Features
+
+* Replace graph fields with graph series for more customization ([#3157](https://github.com/parse-community/parse-dashboard/issues/3157)) ([51feba4](https://github.com/parse-community/parse-dashboard/commit/51feba4901fbba095ef7b4fb106eac711e6b7d97))
+
 # [8.3.0-alpha.33](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.32...8.3.0-alpha.33) (2026-01-27)
 
 
