@@ -444,7 +444,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
       // Apply aggregation to each group
       Object.keys(groups).forEach(groupKey => {
-        const labelKey = seriesArray.length > 1
+        const labelKey = seriesArray.length > 1 || hasCalculatedValues
           ? `${seriesLabel} (${groupKey})`
           : groupKey;
         aggregatedData[labelKey] = aggregateValues(groups[groupKey], s.aggregationType || 'count');
@@ -594,7 +594,7 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
           // Aggregate each group
           Object.keys(groups).forEach(groupKey => {
-            const labelKey = seriesArray.length > 1 || calculatedValues.length > 1
+            const labelKey = seriesArray.length > 0 || calculatedValues.length > 1
               ? `${calc.name} (${groupKey})`
               : groupKey;
 
@@ -819,7 +819,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
         const compositeKey = createGroupKey(item, groupByColumn);
         groupKeyValue = compositeKey;
         // When groupBy is specified, combine with series label for unique series
-        if (seriesArray.length > 1) {
+        if (seriesArray.length > 1 || hasCalculatedValues) {
           groupKeyValue = `${seriesLabel} (${compositeKey})`;
         }
       }
