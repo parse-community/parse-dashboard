@@ -1002,7 +1002,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
         if (s.barStyle) {
           seriesBarStyleMap.set(groupKey, s.barStyle);
         }
-        if (s.strokeWidth) {
+        if (s.strokeWidth != null) {
           seriesStrokeWidthMap.set(groupKey, s.strokeWidth);
         }
       }
@@ -1042,7 +1042,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
             if (calc.barStyle) {
               calcValueBarStyleMap.set(groupKey, calc.barStyle);
             }
-            if (calc.strokeWidth) {
+            if (calc.strokeWidth != null) {
               calcValueStrokeWidthMap.set(groupKey, calc.strokeWidth);
             }
           }
@@ -1103,7 +1103,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     // Get bar style - prefer series style, then calculated value style
     const barStyle = seriesBarStyleMap.get(groupKey) || calcValueBarStyleMap.get(groupKey);
     // Get stroke width - prefer series style, then calculated value style
-    const strokeWidth = seriesStrokeWidthMap.get(groupKey) || calcValueStrokeWidthMap.get(groupKey);
+    const strokeWidth = seriesStrokeWidthMap.get(groupKey) ?? calcValueStrokeWidthMap.get(groupKey);
     // Get chart type - prefer series type, then calculated value type (for mixed bar/line charts)
     const datasetChartType = seriesChartTypeMap.get(groupKey) || calcValueChartTypeMap.get(groupKey);
 
@@ -1117,7 +1117,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       type: datasetChartType || undefined,
       lineStyle: lineStyle || undefined,
       barStyle: barStyle || undefined,
-      strokeWidth: strokeWidth || undefined,
+      strokeWidth: strokeWidth ?? undefined,
     };
 
     return dataset;
