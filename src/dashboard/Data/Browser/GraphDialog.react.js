@@ -97,6 +97,7 @@ const PREDEFINED_COLORS = [
   { value: '#795548', label: 'Brown' },
   { value: '#C9CBCF', label: 'Grey' },
   { value: '#455A64', label: 'Slate' },
+  { value: '#000000', label: 'Black' },
 ];
 
 // Validate hex color format: #RRGGBB only
