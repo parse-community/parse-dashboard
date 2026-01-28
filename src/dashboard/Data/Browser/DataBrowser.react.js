@@ -197,6 +197,7 @@ export default class DataBrowser extends React.Component {
       nativeContextMenuOpen: false, // Whether the browser's native context menu is open
       mouseOutsidePanel: true, // Whether the mouse is outside the AggregationPanel
       mouseOverPanelHeader: false, // Whether the mouse is over the panel header row
+      optionKeyPressed: false, // Whether the Option/Alt key is currently pressed (pauses auto-scroll)
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -259,6 +260,8 @@ export default class DataBrowser extends React.Component {
     this.handlePanelMouseLeave = this.handlePanelMouseLeave.bind(this);
     this.handlePanelHeaderMouseEnter = this.handlePanelHeaderMouseEnter.bind(this);
     this.handlePanelHeaderMouseLeave = this.handlePanelHeaderMouseLeave.bind(this);
+    this.handleOptionKeyDown = this.handleOptionKeyDown.bind(this);
+    this.handleOptionKeyUp = this.handleOptionKeyUp.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.autoScrollIntervalId = null;
@@ -348,6 +351,9 @@ export default class DataBrowser extends React.Component {
     // Auto-scroll event listeners
     document.body.addEventListener('keydown', this.handleAutoScrollKeyDown);
     document.body.addEventListener('keyup', this.handleAutoScrollKeyUp);
+    // Option key listeners for pausing auto-scroll
+    document.body.addEventListener('keydown', this.handleOptionKeyDown);
+    document.body.addEventListener('keyup', this.handleOptionKeyUp);
     // Native context menu detection for auto-scroll pause
     // Use capture phase to ensure we detect the event before the menu handles it
     document.addEventListener('contextmenu', this.handleNativeContextMenu, true);
@@ -398,6 +404,9 @@ export default class DataBrowser extends React.Component {
     // Auto-scroll cleanup
     document.body.removeEventListener('keydown', this.handleAutoScrollKeyDown);
     document.body.removeEventListener('keyup', this.handleAutoScrollKeyUp);
+    // Option key listeners cleanup
+    document.body.removeEventListener('keydown', this.handleOptionKeyDown);
+    document.body.removeEventListener('keyup', this.handleOptionKeyUp);
     document.removeEventListener('contextmenu', this.handleNativeContextMenu, true);
     window.removeEventListener('mousemove', this.handleNativeContextMenuClose);
     window.removeEventListener('keydown', this.handleNativeContextMenuClose, true);
@@ -1426,6 +1435,7 @@ export default class DataBrowser extends React.Component {
    * - A context menu is displayed (custom or native browser menu)
    * - The user is editing a cell in the databrowser table
    * - Manual scroll pause is active
+   * - The Option/Alt key is pressed
    */
   isAutoScrollBlocked() {
     const {
@@ -1438,6 +1448,7 @@ export default class DataBrowser extends React.Component {
       mouseOutsidePanel,
       mouseOverPanelHeader,
       autoScrollRequireHover,
+      optionKeyPressed,
     } = this.state;
 
     // disableKeyControls is true when parent Browser has a modal open
@@ -1454,7 +1465,8 @@ export default class DataBrowser extends React.Component {
       showGraphDialog ||
       nativeContextMenuOpen ||
       disableKeyControls ||
-      hoverBlocked
+      hoverBlocked ||
+      optionKeyPressed
     );
   }
 
@@ -1616,6 +1628,22 @@ export default class DataBrowser extends React.Component {
         this.setState({ mouseOverPanelHeader: false });
       }
     }, 50);
+  }
+
+  handleOptionKeyDown(e) {
+    // Option/Alt key = keyCode 18
+    // Pause auto-scroll while Option key is held
+    if (e.keyCode === 18 && this.state.isAutoScrolling && !this.state.optionKeyPressed) {
+      this.setState({ optionKeyPressed: true });
+    }
+  }
+
+  handleOptionKeyUp(e) {
+    // Option/Alt key = keyCode 18
+    // Resume auto-scroll when Option key is released
+    if (e.keyCode === 18 && this.state.optionKeyPressed) {
+      this.setState({ optionKeyPressed: false });
+    }
   }
 
   startAutoScroll() {
