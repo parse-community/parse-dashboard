@@ -875,11 +875,7 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
             let groupKeyValue = calc.name;
             if (groupByColumn && (Array.isArray(groupByColumn) ? groupByColumn.length > 0 : true)) {
               const compositeKey = createGroupKey(item, groupByColumn);
-              groupKeyValue = compositeKey;
-              // When groupBy is specified, combine with calc name for unique series
-              if (calculatedValues.length > 1 || seriesArray.length > 0) {
-                groupKeyValue = `${calc.name} (${compositeKey})`;
-              }
+              groupKeyValue = `${calc.name} (${compositeKey})`;
             }
             const groupKey = groupKeyValue;
 
