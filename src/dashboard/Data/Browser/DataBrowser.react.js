@@ -197,6 +197,7 @@ export default class DataBrowser extends React.Component {
       nativeContextMenuOpen: false, // Whether the browser's native context menu is open
       mouseOutsidePanel: true, // Whether the mouse is outside the AggregationPanel
       mouseOverPanelHeader: false, // Whether the mouse is over the panel header row
+      commandKeyPressed: false, // Whether the Command/Meta key is currently pressed
       optionKeyPressed: false, // Whether the Option/Alt key is currently pressed (pauses auto-scroll)
     };
 
@@ -1492,47 +1493,47 @@ export default class DataBrowser extends React.Component {
 
   handleAutoScrollKeyDown(e) {
     // Command/Meta key = keyCode 91 (left) or 93 (right)
-    // Only detect when panels are visible and auto-scroll is enabled
+    // Only track that Command key is held; don't stop auto-scroll or enter
+    // recording mode until the user actually scrolls (handled in handleAutoScrollWheel)
     if ((e.keyCode === 91 || e.keyCode === 93) && this.state.autoScrollEnabled && this.state.isPanelVisible && !this.state.isRecordingAutoScroll) {
-      // Stop any existing auto-scroll first
-      if (this.state.isAutoScrolling) {
-        this.stopAutoScroll();
-      }
-      this.setState({
-        isRecordingAutoScroll: true,
-        recordedScrollDelta: 0,
-        recordingScrollStart: null,
-        recordingScrollEnd: null,
-      });
+      this.setState({ commandKeyPressed: true });
     }
   }
 
   handleAutoScrollKeyUp(e) {
     // Command/Meta key = keyCode 91 (left) or 93 (right)
-    if ((e.keyCode === 91 || e.keyCode === 93) && this.state.isRecordingAutoScroll) {
-      const { recordedScrollDelta, recordingScrollStart, recordingScrollEnd } = this.state;
+    if (e.keyCode === 91 || e.keyCode === 93) {
+      if (this.state.isRecordingAutoScroll) {
+        const { recordedScrollDelta, recordingScrollStart, recordingScrollEnd } = this.state;
 
-      // Only start auto-scroll if we actually recorded some scrolling
-      if (recordedScrollDelta !== 0 && recordingScrollStart !== null) {
-        // Calculate delay: time between scroll end and key release
-        const scrollEndTime = recordingScrollEnd || Date.now();
-        const delay = Math.max(200, Date.now() - scrollEndTime); // Minimum 200ms delay
+        // Only start auto-scroll if we actually recorded some scrolling
+        if (recordedScrollDelta !== 0 && recordingScrollStart !== null) {
+          // Calculate delay: time between scroll end and key release
+          const scrollEndTime = recordingScrollEnd || Date.now();
+          const delay = Math.max(200, Date.now() - scrollEndTime); // Minimum 200ms delay
 
-        this.setState({
-          isRecordingAutoScroll: false,
-          autoScrollAmount: recordedScrollDelta,
-          autoScrollDelay: delay,
-        }, () => {
-          this.startAutoScroll();
-        });
+          this.setState({
+            commandKeyPressed: false,
+            isRecordingAutoScroll: false,
+            autoScrollAmount: recordedScrollDelta,
+            autoScrollDelay: delay,
+          }, () => {
+            this.startAutoScroll();
+          });
+        } else {
+          // No scroll was recorded, just reset
+          this.setState({
+            commandKeyPressed: false,
+            isRecordingAutoScroll: false,
+            recordedScrollDelta: 0,
+            recordingScrollStart: null,
+            recordingScrollEnd: null,
+          });
+        }
       } else {
-        // No scroll was recorded, just reset
-        this.setState({
-          isRecordingAutoScroll: false,
-          recordedScrollDelta: 0,
-          recordingScrollStart: null,
-          recordingScrollEnd: null,
-        });
+        // Command key released without entering recording mode (no scroll occurred);
+        // just clear the key state, auto-scroll continues undisturbed
+        this.setState({ commandKeyPressed: false });
       }
     }
   }
@@ -1547,6 +1548,20 @@ export default class DataBrowser extends React.Component {
         recordingScrollStart: prevState.recordingScrollStart || now,
         recordingScrollEnd: now,
       }));
+    } else if (this.state.commandKeyPressed) {
+      // First scroll while Command key is held: stop any existing auto-scroll
+      // and enter recording mode
+      if (this.state.isAutoScrolling) {
+        this.stopAutoScroll();
+      }
+      const deltaY = e.deltaY;
+      const now = Date.now();
+      this.setState({
+        isRecordingAutoScroll: true,
+        recordedScrollDelta: deltaY,
+        recordingScrollStart: now,
+        recordingScrollEnd: now,
+      });
     } else if (this.state.isAutoScrolling) {
       // User manually scrolled during auto-scroll, pause it and schedule resume
       this.pauseAutoScrollWithResume();
@@ -1672,6 +1687,7 @@ export default class DataBrowser extends React.Component {
     this.setState({
       isAutoScrolling: false,
       autoScrollPaused: false,
+      commandKeyPressed: false,
       isRecordingAutoScroll: false,
       recordedScrollDelta: 0,
       recordingScrollStart: null,
