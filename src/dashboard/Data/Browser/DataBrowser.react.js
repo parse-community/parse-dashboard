@@ -1580,7 +1580,8 @@ export default class DataBrowser extends React.Component {
     this.autoScrollResumeTimeoutId = setTimeout(() => {
       if (this.state.isAutoScrolling && this.state.autoScrollPaused) {
         // Clear so the 2-second post-block delay doesn't stack on top
-        this.autoScrollWasBlocked = false;
+        this.autoScrollLastUnblockedAt = 0;
+        this.autoScrollIsBlocked = false;
         this.setState({ autoScrollPaused: false });
       }
     }, 1000);
@@ -1703,6 +1704,9 @@ export default class DataBrowser extends React.Component {
   handleMouseButtonUp(e) {
     if (e.button === 0) {
       this.mouseButtonPressed = false;
+      if (this.state.isAutoScrolling) {
+        this.autoScrollLastUnblockedAt = Date.now();
+      }
     }
   }
 
@@ -1711,7 +1715,8 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    this.autoScrollWasBlocked = false;
+    this.autoScrollLastUnblockedAt = 0;
+    this.autoScrollIsBlocked = false;
     this.setState({ isAutoScrolling: true, autoScrollPaused: false }, () => {
       this.performAutoScrollStep();
     });
@@ -1730,7 +1735,8 @@ export default class DataBrowser extends React.Component {
       cancelAnimationFrame(this.autoScrollAnimationId);
       this.autoScrollAnimationId = null;
     }
-    this.autoScrollWasBlocked = false;
+    this.autoScrollLastUnblockedAt = 0;
+    this.autoScrollIsBlocked = false;
     this.setState({
       isAutoScrolling: false,
       autoScrollPaused: false,
@@ -1748,20 +1754,27 @@ export default class DataBrowser extends React.Component {
     }
 
     if (this.isAutoScrollBlocked()) {
-      this.autoScrollWasBlocked = true;
+      this.autoScrollIsBlocked = true;
       this.autoScrollTimeoutId = setTimeout(() => {
         this.performAutoScrollStep();
       }, 100);
       return;
     }
 
-    // After unblocking, wait 2 seconds before resuming
-    if (this.autoScrollWasBlocked) {
-      this.autoScrollWasBlocked = false;
-      this.autoScrollTimeoutId = setTimeout(() => {
-        this.performAutoScrollStep();
-      }, 2000);
-      return;
+    // Record when block cleared; wait 2 seconds from the most recent unblock
+    if (this.autoScrollIsBlocked) {
+      this.autoScrollIsBlocked = false;
+      this.autoScrollLastUnblockedAt = Date.now();
+    }
+    if (this.autoScrollLastUnblockedAt) {
+      const elapsed = Date.now() - this.autoScrollLastUnblockedAt;
+      if (elapsed < 2000) {
+        this.autoScrollTimeoutId = setTimeout(() => {
+          this.performAutoScrollStep();
+        }, 2000 - elapsed);
+        return;
+      }
+      this.autoScrollLastUnblockedAt = 0;
     }
 
     // Get the scrollable container
@@ -1794,7 +1807,7 @@ export default class DataBrowser extends React.Component {
 
     const animateScroll = (currentTime) => {
       if (!this.state.isAutoScrolling || this.isAutoScrollBlocked()) {
-        this.autoScrollWasBlocked = true;
+        this.autoScrollIsBlocked = true;
         // If stopped or blocked during animation, schedule next check
         this.autoScrollTimeoutId = setTimeout(() => {
           this.performAutoScrollStep();
